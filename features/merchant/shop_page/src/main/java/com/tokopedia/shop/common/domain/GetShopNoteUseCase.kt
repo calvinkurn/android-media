@@ -55,6 +55,7 @@ class GetShopNoteUseCase @Inject constructor(
                       content
                       isTerms
                       updateTime
+                      updateTimeUTC
                       position
                       url
                     }

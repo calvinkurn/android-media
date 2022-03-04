@@ -54,6 +54,7 @@ class FeaturedShopViewHolder(
         },{
             if(element.channelModel.channelGrids.size < SIZE_2){
                 binding?.contentContainer?.hide()
+                binding?.loadingView?.root?.hide()
             } else {
                 binding?.contentContainer?.show()
                 binding?.loadingView?.root?.hide()
@@ -135,7 +136,8 @@ class FeaturedShopViewHolder(
                     grid = element,
                     applink = channel.channelHeader.applink,
                     componentName = this::class.java.simpleName,
-                    listener = this
+                    listener = this,
+                    impressHolder = element
             ))
         }
         return list

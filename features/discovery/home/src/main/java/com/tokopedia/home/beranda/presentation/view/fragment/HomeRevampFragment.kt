@@ -95,6 +95,7 @@ import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.IS_SUCCESS_RESET
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
 import com.tokopedia.home.constant.HomePerformanceConstant
+import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.model.ChannelGrid
@@ -176,20 +177,21 @@ import kotlin.collections.ArrayList
  */
 @SuppressLint("SyntheticAccessor")
 open class HomeRevampFragment : BaseDaggerFragment(),
-    OnRefreshListener,
-    HomeCategoryListener,
-    AllNotificationListener,
-    FragmentListener,
-    HomeEggListener,
-    HomeTabFeedListener,
-    HomeFeedsListener,
-    HomeReviewListener,
-    PopularKeywordListener,
-    FramePerformanceIndexInterface,
-    HomeAutoRefreshListener,
-    PlayWidgetListener,
-    RecommendationWidgetListener,
-    QuestWidgetCallbacks {
+        OnRefreshListener,
+        HomeCategoryListener,
+        AllNotificationListener,
+        FragmentListener,
+        HomeEggListener,
+        HomeTabFeedListener,
+        HomeFeedsListener,
+        HomeReviewListener,
+        PopularKeywordListener,
+        FramePerformanceIndexInterface,
+        HomeAutoRefreshListener,
+        PlayWidgetListener,
+        RecommendationWidgetListener,
+        QuestWidgetCallbacks,
+        CMHomeWidgetCallback {
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
@@ -358,12 +360,21 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var coachmarkTokonow: CoachMark2? = null
     private var tokonowIconRef: View? = null
     private var tokonowIconParentPosition: Int = -1
+    private val coachMarkItemGopay = ArrayList<CoachMark2Item>()
+    private val coachMarkItemTokopoints = ArrayList<CoachMark2Item>()
+    private val coachMarkItemTokonow = ArrayList<CoachMark2Item>()
+    private var scrollPositionY = 0
+    private var positionWidgetGopay = 0
+    private var positionWidgetTokopoints = 0
+    private var positionWidgetTokonow = 0
 
     private var bannerCarouselCallback: BannerComponentCallback? = null
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
     private var chooseAddressWidgetInitialized: Boolean = false
-
+    private var fragmentCurrentCacheState: Boolean = true
+    private var fragmentCurrentVisitableCount: Int = -1
+    private var fragmentCurrentScrollPosition: Int = -1
 
     @Suppress("TooGenericExceptionCaught")
     private fun isEligibleForBeautyFest(): Boolean {
@@ -605,25 +616,31 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             isGopayActivated?.let {
                 if (it) {
                     val ctaButton = getGopayNewBalanceWidgetView()
-                    ctaButton?.let {
-                        this.add(
-                            CoachMark2Item(
-                                ctaButton,
-                                getString(R.string.home_gopay_new_coachmark_title),
-                                getString(R.string.home_gopay_new_coachmark_description)
+                    ctaButton?.let { gopayWidget ->
+                        if (this.isEmpty()) {
+                            positionWidgetGopay = gopayWidget.getPositionWidgetVertical()
+                            this.add(
+                                CoachMark2Item(
+                                    ctaButton,
+                                    getString(R.string.home_gopay_new_coachmark_title),
+                                    getString(R.string.home_gopay_new_coachmark_description)
+                                )
                             )
-                        )
+                        }
                     }
                 } else {
                     val gopayWidget = getGopayNewActivateBalanceWidgetView()
-                    gopayWidget?.let {
-                        this.add(
-                            CoachMark2Item(
-                                gopayWidget,
-                                getString(R.string.home_gopay_new_active_cta_coachmark_title),
-                                getString(R.string.home_gopay_new_active_cta_coachmark_description)
+                    gopayWidget?.let { gopayWidget ->
+                        if (this.isEmpty()) {
+                            positionWidgetGopay = gopayWidget.getPositionWidgetVertical()
+                            this.add(
+                                CoachMark2Item(
+                                    gopayWidget,
+                                    getString(R.string.home_gopay_new_active_cta_coachmark_title),
+                                    getString(R.string.home_gopay_new_active_cta_coachmark_description)
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }
@@ -634,13 +651,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         context?.let { currentContext ->
             val tokopointWidget = getTokopointsNewBalanceWidgetView()
             tokopointWidget?.let {
-                this.add(
-                    CoachMark2Item(
-                        tokopointWidget,
-                        tokopointsBalanceCoachmark.title,
-                        tokopointsBalanceCoachmark.description
+                if (this.isEmpty()) {
+                    positionWidgetTokopoints = it.getPositionWidgetVertical()
+                    this.add(
+                        CoachMark2Item(
+                            tokopointWidget,
+                            tokopointsBalanceCoachmark.title,
+                            tokopointsBalanceCoachmark.description
+                        )
                     )
-                )
+                }
             }
         }
     }
@@ -648,15 +668,18 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun ArrayList<CoachMark2Item>.buildTokonowCoachmark(tokonowIcon: View?) {
         context?.let { currentContext ->
             if (!isHomeTokonowCoachmarkShown(currentContext)) {
-                 tokonowIcon?.let {
-                    this.add(
+                tokonowIcon?.let { tokonowIcon ->
+                    if (this.isEmpty()) {
+                        positionWidgetTokonow = tokonowIcon.getPositionWidgetVertical()
+                        this.add(
                             CoachMark2Item(
-                                    tokonowIcon,
-                                    getString(R.string.home_tokonow_coachmark_title),
-                                    getString(R.string.home_tokonow_coachmark_description),
-                                    position = CoachMark2.POSITION_TOP
+                                tokonowIcon,
+                                getString(R.string.home_tokonow_coachmark_title),
+                                getString(R.string.home_tokonow_coachmark_description),
+                                position = CoachMark2.POSITION_TOP
                             )
-                    )
+                        )
+                    }
                 }
             }
         }
@@ -681,12 +704,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         tokopointsBalanceCoachmark: BalanceCoachmark? = null
     ) {
         context?.let {
-            val coachMarkItem = ArrayList<CoachMark2Item>()
-            coachmarkGopay = CoachMark2(it)
-            coachMarkItem.buildGopayNewCoachmark()
+            coachMarkItemGopay.buildGopayNewCoachmark()
             coachmarkGopay?.let { gopayCoachmark ->
                 try {
-                    if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark() && !gopayCoachmarkIsShowing) {
+                    if (coachMarkItemGopay.isNotEmpty() && isValidToShowCoachMark() && !gopayCoachmarkIsShowing) {
                         gopayCoachmark.onDismissListener = {
                             if (!isNewTokopointCoachmarkShown(it) && tokopointsBalanceCoachmark != null) {
                                 showTokopointsEligibleCoachmark(tokopointsBalanceCoachmark)
@@ -695,7 +716,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                             }
                             setNewWalletAppCoachmarkShown(it)
                         }
-                        gopayCoachmark.showCoachMark(step = coachMarkItem, index = COACHMARK_FIRST_INDEX)
+                        gopayCoachmark.showCoachMark(step = coachMarkItemGopay, index = COACHMARK_FIRST_INDEX)
                         gopayCoachmarkIsShowing = true
                     }
                 } catch (e: Exception) {
@@ -711,17 +732,15 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         tokopointsBalanceCoachmark: BalanceCoachmark? = null) {
         context?.let {
             tokopointsBalanceCoachmark?.let { tokopointsBalanceCoachmark ->
-                val coachMarkItem = ArrayList<CoachMark2Item>()
-                coachmarkTokopoint = CoachMark2(it)
-                coachMarkItem.buildTokopointNewCoachmark(tokopointsBalanceCoachmark)
+                coachMarkItemTokopoints.buildTokopointNewCoachmark(tokopointsBalanceCoachmark)
                 coachmarkTokopoint?.let { tokopointCoachmark ->
                     try {
-                        if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark() && !tokopointsCoachmarkIsShowing) {
+                        if (coachMarkItemTokopoints.isNotEmpty() && isValidToShowCoachMark() && !tokopointsCoachmarkIsShowing) {
                             tokopointCoachmark?.onDismissListener = {
                                 setNewTokopointCoachmarkShown(it)
                                 showTokonowCoachmark()
                             }
-                            tokopointCoachmark.showCoachMark(step = coachMarkItem, index = COACHMARK_FIRST_INDEX)
+                            tokopointCoachmark.showCoachMark(step = coachMarkItemTokopoints, index = COACHMARK_FIRST_INDEX)
                             tokopointsCoachmarkIsShowing = true
                         }
                     } catch (e: Exception) {
@@ -738,16 +757,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (!userVisibleHint) return
 
         context?.let {
-            val coachMarkItem = ArrayList<CoachMark2Item>()
-            if (coachmarkTokonow == null) coachmarkTokonow = CoachMark2(it)
-            coachMarkItem.buildTokonowCoachmark(tokonowIconRef)
+            coachMarkItemTokonow.buildTokonowCoachmark(tokonowIconRef)
             coachmarkTokonow?.let { coachmarkTokonow ->
                 try {
-                    if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark() && !tokonowCoachmarkIsShowing) {
+                    if (coachMarkItemTokonow.isNotEmpty() && isValidToShowCoachMark() && !tokonowCoachmarkIsShowing) {
                         coachmarkTokonow.onDismissListener = {
                             setHomeTokonowCoachmarkShown(it)
                         }
-                        coachmarkTokonow.showCoachMark(step = coachMarkItem, index = COACHMARK_FIRST_INDEX)
+                        coachmarkTokonow.showCoachMark(step = coachMarkItemTokonow, index = COACHMARK_FIRST_INDEX)
                         tokonowCoachmarkIsShowing = true
                     }
                 } catch (e: Exception) {
@@ -861,9 +878,35 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         homeRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
+                scrollPositionY += dy
                 evaluateHomeComponentOnScroll(recyclerView)
             }
         })
+        setupEmbraceBreadcrumbListener()
+    }
+
+    private fun setupEmbraceBreadcrumbListener() {
+        if (remoteConfig.getBoolean(RemoteConfigKey.HOME_ENABLE_SCROLL_EMBRACE_BREADCRUMB)) {
+            homeRecyclerView?.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    trackEmbraceBreadcrumbPosition()
+                }
+            })
+        }
+    }
+
+    private fun trackEmbraceBreadcrumbPosition() {
+        if (fragmentCurrentScrollPosition != layoutManager?.findLastVisibleItemPosition()) {
+            fragmentCurrentScrollPosition = layoutManager?.findLastVisibleItemPosition() ?: -1
+            HomeServerLogger.sendEmbraceBreadCrumb(
+                fragment = this@HomeRevampFragment,
+                isLoggedIn = userSession.isLoggedIn,
+                isCache = fragmentCurrentCacheState,
+                visitableListCount = fragmentCurrentVisitableCount,
+                scrollPosition = fragmentCurrentScrollPosition
+            )
+        }
     }
 
     private fun setupStatusBar() {
@@ -882,6 +925,48 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             statusBarBackground.visibility = View.VISIBLE
         //initial condition for status and searchbar
         setStatusBarAlpha(STATUS_BAR_DEFAULT_ALPHA)
+    }
+
+    private fun evaluateScrollGopayCoachmark() {
+        coachmarkGopay?.let { gopayCoachmark ->
+            context?.let {ctx ->
+                if (scrollPositionY > positionWidgetGopay && gopayCoachmarkIsShowing)
+                    gopayCoachmark.hideCoachMark()
+                else if (!isNewWalletAppCoachmarkShown(ctx)) {
+                    gopayCoachmark.showCoachMark(coachMarkItemGopay)
+                }
+            }
+        }
+    }
+
+    private fun evaluateScrollTokopointsCoachmark() {
+        coachmarkTokopoint?.let { tokopointsCoachmark ->
+            context?.let {ctx ->
+                if (scrollPositionY > positionWidgetTokopoints && tokopointsCoachmarkIsShowing)
+                    tokopointsCoachmark.hideCoachMark()
+                else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx) && coachMarkItemTokopoints.isNotEmpty()) {
+                    tokopointsCoachmark.showCoachMark(coachMarkItemTokopoints)
+                }
+            }
+        }
+    }
+
+    private fun evaluateScrollTokonowCoachmark() {
+        coachmarkTokonow?.let { tokonowCoachmark ->
+            context?.let {ctx ->
+                if (scrollPositionY > positionWidgetTokonow && tokonowCoachmarkIsShowing)
+                    tokonowCoachmark.hideCoachMark()
+                else if (isNewWalletAppCoachmarkShown(ctx) && (isNewTokopointCoachmarkShown(ctx) || coachMarkItemTokopoints.isEmpty())) {
+                    tokonowCoachmark.showCoachMark(coachMarkItemTokonow)
+                }
+            }
+        }
+    }
+
+    private fun evaluateShowCoachmark() {
+        evaluateScrollGopayCoachmark()
+        evaluateScrollTokopointsCoachmark()
+        evaluateScrollTokonowCoachmark()
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView) { //set refresh layout to only enabled when reach 0 offset
@@ -903,12 +988,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             homeRecyclerView?.setNestedCanScroll(true)
         }
 
-        if (tokonowCoachmarkIsShowing) coachmarkTokonow?.dismissCoachMark()
+        evaluateShowCoachmark()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         initAdapter()
+        initCoachmark()
         initRefreshLayout()
         subscribeHome()
         initEggTokenScrollListener()
@@ -919,6 +1005,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
 
         if (isSuccessReset()) showSuccessResetPasswordDialog()
+    }
+
+    private fun initCoachmark() {
+        context?.let {
+            coachmarkGopay = CoachMark2(it)
+            coachmarkTokopoint = CoachMark2(it)
+            coachmarkTokonow = CoachMark2(it)
+        }
     }
 
     private fun initStickyLogin() {
@@ -990,6 +1084,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
         refreshQuestWidget()
 
+        // refresh home-to-do-widget data if needed
+        getHomeViewModel().getCMHomeWidgetData(false)
     }
 
     private fun refreshQuestWidget() {
@@ -1377,6 +1473,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 getPageLoadTimeCallback()?.startRenderPerformanceMonitoring()
                 setOnRecyclerViewLayoutReady(isCache)
             }
+            this.fragmentCurrentCacheState = isCache
+            this.fragmentCurrentVisitableCount = data.size
+
+            HomeServerLogger.sendEmbraceBreadCrumb(
+                fragment = this,
+                isLoggedIn = userSession.isLoggedIn,
+                isCache = isCache,
+                visitableListCount = data.size,
+                scrollPosition = layoutManager?.findLastVisibleItemPosition()
+            )
             adapter?.submitList(data)
             showCoachmarkWithDataValidation(data)
         }
@@ -1466,7 +1572,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun dismissTokonowCoachmark(parentPosition: Int) {
         if (tokonowIconParentPosition == parentPosition) {
-            coachmarkTokonow?.dismissCoachMark()
+            coachmarkTokonow?.let {
+                if (it.isShowing) {
+                    it.dismissCoachMark()
+                }
+            }
         }
     }
 
@@ -1526,7 +1636,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             DynamicIconComponentCallback(context, this),
             Lego6AutoBannerComponentCallback(context, this),
             CampaignWidgetComponentCallback(context, this),
-            this
+                    this,
+                    this
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1695,7 +1806,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             RouteManager.route(requireActivity(), ApplinkConstInternalPromo.PROMO_LIST)
         } else {
             if (activity != null) {
-                showBannerWebViewOnAllPromoClickFromHomeIntent(BerandaUrl.PROMO_URL + BerandaUrl.FLAG_APP, getString(R.string.title_activity_promo))
+                showBannerWebViewOnAllPromoClickFromHomeIntent(BerandaUrl.PROMO_URL + BerandaUrl.FLAG_APP, getString(com.tokopedia.loyalty.R.string.title_activity_promo))
             }
         }
     }
@@ -1805,6 +1916,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
         stickyLoginView?.loadContent()
+        loadEggData(isPageRefresh)
     }
 
     override fun onChooseAddressUpdated() {
@@ -2779,5 +2891,17 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun updateQuestWidget(position: Int) {
         this.questWidgetPosition = position
+    }
+
+    override fun onCMHomeWidgetDismissClick() {
+        getHomeViewModel().deleteCMHomeWidget()
+    }
+
+    override fun onRemoveCMWidgetLocally() {
+        getHomeViewModel().deleteCMHomeWidgetLocally()
+    }
+
+    override fun getCMHomeWidget() {
+        getHomeViewModel().getCMHomeWidgetData()
     }
 }

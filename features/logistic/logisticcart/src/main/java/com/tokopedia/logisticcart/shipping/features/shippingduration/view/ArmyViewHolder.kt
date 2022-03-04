@@ -40,7 +40,6 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         tvTitleExtra.visibility = View.GONE
         tvEta.visibility = View.GONE
 
-
         if (data.codData.isCodAvailable == 1) {
             lblCodAvailableEta.apply {
                 visibility = View.VISIBLE

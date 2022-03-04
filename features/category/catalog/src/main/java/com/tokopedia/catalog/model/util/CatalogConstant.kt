@@ -13,7 +13,8 @@ object CatalogConstant {
     const val TOP_SPECIFICATIONS = "catalog-spec-horizontal-scroll"
     const val VIDEO = "catalog-video-horizontal-scroll"
     const val REVIEW = "catalog-product-review"
-    const val COMPARISION = "catalog-product-recommendation"
+    const val COMPARISON = "catalog-product-recommendation"
+    const val COMPARISON_PRODUCT = "catalog-comparison-product"
     const val CATALOG_PRODUCT_FILTER = "product-filter"
     const val CATALOG_PRODUCT_LIST = "product-list-infinite-scroll"
     // Self Made
@@ -55,4 +56,6 @@ object CatalogConstant {
     const val HTTPS_TEXT = "https://"
     const val HTTPS_WWW_DOT_TEXT = "https://www."
 
+    const val DEBOUNCE_SEARCH = 250L
+    const val KEY_UNIQUE_CATALOG_FOR_YOU_TRACKING  = "Catalog For You List Analytics"
 }

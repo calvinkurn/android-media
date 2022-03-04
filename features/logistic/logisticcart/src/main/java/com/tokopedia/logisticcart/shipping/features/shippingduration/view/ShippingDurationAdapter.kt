@@ -11,18 +11,23 @@ import com.tokopedia.logisticcart.shipping.model.*
 
 class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    // list of eligible services that user can choose
     private var mData: MutableList<RatesViewModelType>
+    // list of all available services from rates (for logistic promo)
+    private var allServices: List<ShippingDurationUiModel>
     private var shippingDurationAdapterListener: ShippingDurationAdapterListener? = null
     private var cartPosition: Int = 0
     private var isDisableOrderPrioritas = false
 
     init {
         mData = mutableListOf()
+        allServices = mutableListOf()
     }
 
     fun setShippingDurationViewModels(shippingDurationUiModels: List<ShippingDurationUiModel>, promoUiModel: List<LogisticPromoUiModel>, isDisableOrderPrioritas: Boolean, preOrderModel: PreOrderModel?) {
         this.isDisableOrderPrioritas = isDisableOrderPrioritas
-        this.mData = shippingDurationUiModels.toMutableList()
+        this.allServices = shippingDurationUiModels
+        this.mData = shippingDurationUiModels.filter { !it.serviceData.isUiRatesHidden }.toMutableList()
         if (preOrderModel?.display == true)  {
             preOrderModel.let { this.mData.add(0, it) }
             if (promoUiModel.isNotEmpty()) {
@@ -48,12 +53,10 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
     }
 
     fun getRatesDataFromLogisticPromo(serId: Int): ShippingDurationUiModel? {
-        mData.firstOrNull { it is ShippingDurationUiModel && it.serviceData.serviceId == serId }
-                ?.let {
-                    if (it is ShippingDurationUiModel) {
-                        return it
-                    }
-                }
+        allServices.firstOrNull { it.serviceData.serviceId == serId }
+            ?.let {
+                return it
+            }
         return null
     }
 

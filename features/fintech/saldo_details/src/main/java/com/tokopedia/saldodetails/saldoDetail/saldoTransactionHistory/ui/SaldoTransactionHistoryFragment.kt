@@ -19,6 +19,7 @@ import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
 import com.tokopedia.saldodetails.commom.design.SaldoHistoryTabItem
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.listener.setSafeOnClickListener
+import com.tokopedia.saldodetails.commom.utils.AllTransaction
 import com.tokopedia.saldodetails.commom.utils.SaldoDateUtil
 import com.tokopedia.saldodetails.commom.utils.TransactionTitle
 import com.tokopedia.saldodetails.saldoDetail.coachmark.SaldoCoachMarkListener
@@ -35,6 +36,7 @@ import javax.inject.Inject
 class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     OnDateRangeSelectListener {
 
+    private lateinit var saldoHistoryPagerAdapter: SaldoHistoryPagerAdapter
     private var selectedDateFrom: Date = Date()
     private var selectedDateTo: Date = Date()
 
@@ -84,6 +86,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         // when back from saldo withdrawal reset current item
         transactionHistoryViewPager.setCurrentItem(0, true)
         SaldoDateUtil.getInitialDateRange(::setDateRangeChanged)
+        transactionHistoryViewModel.selectTransactionFilter(0, AllTransaction)
     }
 
     private fun setDateRangeChanged(dateFrom: Date, endDate: Date) {
@@ -105,11 +108,11 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
 
     private fun initialVar() {
         loadMultipleTabItem()
-        val saldoHistoryPagerAdapter = SaldoHistoryPagerAdapter(childFragmentManager)
+        saldoHistoryPagerAdapter = SaldoHistoryPagerAdapter(childFragmentManager)
         saldoHistoryPagerAdapter.setItems(saldoTabItems)
         transactionHistoryViewPager.adapter = saldoHistoryPagerAdapter
-        saldoTransactionTabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
-        saldoTransactionTabsUnify.customTabGravity = TabLayout.GRAVITY_START
+        saldoTransactionTabsUnify.customTabMode = TabLayout.MODE_FIXED
+        saldoTransactionTabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
         saldoTransactionTabsUnify.setupWithViewPager(transactionHistoryViewPager)
     }
 
@@ -117,27 +120,14 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         saldoTabItems.clear()
         //semua tab
         saldoTabItems.add(SaldoHistoryTabItem().apply {
-            title = TransactionTitle.ALL_TRANSACTION
-            fragment = SaldoTransactionListFragment.getInstance(TransactionTitle.ALL_TRANSACTION)
+            title = TransactionTitle.ALL_TAB
+            fragment = FilteredSaldoTransactionListFragment.getInstance(TransactionTitle.ALL_TRANSACTION)
         })
 
         //penjualan tab
         saldoTabItems.add(SaldoHistoryTabItem().apply {
             title = TransactionTitle.SALDO_SALES
-            fragment = SaldoTransactionListFragment.getInstance(TransactionTitle.SALDO_SALES)
-        })
-
-        //Saldo Refund
-        saldoTabItems.add(SaldoHistoryTabItem().apply {
-            title = TransactionTitle.SALDO_REFUND
-            fragment = SaldoTransactionListFragment.getInstance(TransactionTitle.SALDO_REFUND)
-        })
-
-        //Saldo Penghasilan tab
-
-        saldoTabItems.add(SaldoHistoryTabItem().apply {
-            title = TransactionTitle.SALDO_INCOME
-            fragment = SaldoTransactionListFragment.getInstance(TransactionTitle.SALDO_INCOME)
+            fragment = BaseSaldoTransactionListFragment.getInstance(TransactionTitle.SALDO_SALES)
         })
 
         saldoTransactionTabsUnify.run {
@@ -155,7 +145,10 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         saldoTransactionTabsUnify.tabLayout.onTabSelected {
             transactionHistoryViewModel.getEventLabelForTab(it.getCustomText())
                 .also { actionLabel ->
-                    analytics.sendTransactionHistoryEvents(actionLabel)
+                    // different event names for different tabs here
+                    if (it.position == 0)
+                        analytics.sendClickPaymentEvents(actionLabel)
+                    else analytics.sendTransactionHistoryEvents(actionLabel)
                 }
         }
     }

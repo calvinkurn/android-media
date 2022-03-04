@@ -668,6 +668,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(null);
                 shipmentCartItemModel.getSelectedShipmentDetailData().setOrderPriority(null);
                 shipmentCartItemModel.setShippingBorderRed(false);
+                shipmentCartItemModel.setHideChangeCourierCard(newCourierItemData.isHideChangeCourierCard());
+                shipmentCartItemModel.setDurationCardDescription(newCourierItemData.getDurationCardDescription());
                 CourierItemData oldCourierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
                 checkAppliedCourierPromo(position, oldCourierItemData, newCourierItemData, shipmentCartItemModel);
                 shipmentCartItemModel.getSelectedShipmentDetailData().setSelectedCourier(newCourierItemData);
@@ -680,6 +682,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 shipmentDetailData.setShipmentCartData(shipmentCartItemModel.getShipmentCartData());
                 shipmentCartItemModel.setSelectedShipmentDetailData(shipmentDetailData);
                 shipmentCartItemModel.setShippingBorderRed(false);
+                shipmentCartItemModel.setHideChangeCourierCard(newCourierItemData.isHideChangeCourierCard());
+                shipmentCartItemModel.setDurationCardDescription(newCourierItemData.getDurationCardDescription());
                 if (!newCourierItemData.isAllowDropshiper()) {
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(null);
                 }

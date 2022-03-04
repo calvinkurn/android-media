@@ -27,6 +27,7 @@ class ShopNoteDetailViewModel @Inject constructor(
     fun getShopNoteList(shopId: String, noteId: String) {
         launchCatchError(dispatcherProvider.io,block = {
             getShopNoteUseCase.params = GetShopNoteUseCase.createParams(shopId, noteId)
+            getShopNoteUseCase.isFromCacheFirst = false
             val shopNoteDetailData = getShopNoteUseCase.executeOnBackground()
             _shopNoteDetailData.postValue(Success(shopNoteDetailData.first()))
         }){

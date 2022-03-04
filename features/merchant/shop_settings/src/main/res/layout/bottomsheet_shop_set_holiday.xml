@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/text_field_start_date_holiday"
+        android:layout_width="140dp"
+        android:layout_height="@dimen/dp_60"
+        app:text_field_label_static="true"
+        app:text_field_placeholder="Pilih Tanggal"
+        app:text_field_label="Mulai"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/text_field_end_date_holiday"
+        android:layout_width="140dp"
+        android:layout_height="@dimen/dp_60"
+        app:text_field_label_static="true"
+        app:text_field_placeholder="Pilih Tanggal"
+        app:text_field_label="Selesai"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/checkbox_close_now"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/shop_operational_hour_close_now_text"
+        app:layout_constraintTop_toBottomOf="@id/text_field_start_date_holiday"
+        app:layout_constraintStart_toStartOf="@id/text_field_start_date_holiday"
+        android:layout_marginTop="@dimen/dp_8"
+        />
+
+    <com.tokopedia.calendar.UnifyCalendar
+        android:id="@+id/ops_hour_holiday_calendar_start"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/checkbox_close_now"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="@dimen/dp_8"
+        android:visibility="gone"
+        />
+
+    <com.tokopedia.calendar.UnifyCalendar
+        android:id="@+id/ops_hour_holiday_calendar_end"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/checkbox_close_now"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="@dimen/dp_8"
+        android:visibility="gone"
+        />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/ops_hour_save_button_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/dp_16"
+        app:cardBackgroundColor="@color/Unify_N0"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="@dimen/dp_16"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_8">
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_save_holiday_schedule"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/label_save"
+                android:enabled="false"
+                />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 <resources>
 
     <!-- add edit product screen name -->
+    <string name="product_add_edit_preview">Informasi Produk</string>
     <string name="product_add_edit_detail">Detail Produk</string>
     <string name="label_title_add_product">Tambah Produk</string>
     <string name="label_title_edit_product">Ubah Produk</string>
@@ -24,6 +25,7 @@
     <string name="action_add">Tambah</string>
     <string name="action_done">Selesai</string>
     <string name="action_save">Simpan</string>
+    <string name="action_learn">Pelajari Selengkapnya</string>
     <string name="action_oke">Oke</string>
 
     <!-- add edit product photo -->
@@ -436,6 +438,9 @@
     <string name="label_product_limitation_bottomsheet_button_draft">Simpan Sebagai Draft</string>
     <string name="title_product_limitation_cant_add_product">Tidak bisa menambahkan produk</string>
     <string name="title_product_limitation_add_product_rules">Aturan jumlah produk toko</string>
+    <string name="title_product_limitation_add_product_rules_nodata">Aturan jumlah produk yang dapat ditambahkan</string>
+    <string name="title_product_limitation_add_product_rules_nodata_wide">Aturan jumlah produk yang dapat ditambahkan di tokomu</string>
+    <string name="title_product_limitation_bottomsheet_info_nodata">Kamu bisa menambahkan produk di tokomu  maksimal hingga %1d produk. Jumlah maksimal produk didasarkan oleh tipe seller.</string>
 
     <!-- Title Validation -->
     <string name="title_product_title_validation_bottomsheet">Tips menamakan produk</string>
@@ -489,5 +494,15 @@
     <string name="content_desc_buttonSave">button simpan</string>
     <string name="content_desc_textFieldUnifyCustomValue">input tambah varian</string>
     <string name="content_desc_textFieldUnifyVariantUnit">dropdown ukuran</string>
+
+    <!-- CPL -->
+    <string name="title_cpl">Layanan Pengiriman</string>
+    <string name="description_cpl">Atur layanan pengiriman sesuai jenis produkmu.</string>
+    <string name="cpl_standard_shipment">Standar</string>
+    <string name="cpl_custom_shipment">Custom</string>
+    <string name="cpl_custom_on_demand">Dijemput Kurir</string>
+    <string name="cpl_custom_on_demand_button">Ubah</string>
+    <string name="cpl_custom_agen">Antar ke Kantor Agen</string>
+    <string name="cpl_custom_agen_button">Ubah</string>
 
 </resources>

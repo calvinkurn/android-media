@@ -22,6 +22,7 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val listener: OrderPreferenceCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) : RecyclerView.ViewHolder(binding.root) {
@@ -74,6 +75,8 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     renderBboTicker(shipping)
                     if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
                         renderBboShipping(shipping, shipping.logisticPromoViewModel)
+                    } else if (shipping.isHideChangeCourierCard) {
+                        renderNormalShippingWithoutChooseCourierCard(shipping)
                     } else if (shipping.shippingEta != null) {
                         renderShippingCourierWithEta(shipping, shipping.shippingEta)
                     } else {
@@ -253,6 +256,53 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                                 orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
                             }
                         }
+                        listener.chooseDuration(false, shipping.getRealShipperProductId().toString(), list)
+                    }
+                }
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun renderNormalShippingWithoutChooseCourierCard(shipping: OrderShipment) {
+        binding.apply {
+            tvShippingCourier.text = root.context.getString(
+                R.string.lbl_shipping_with_name_and_price,
+                "${shipping.serviceName}",
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    shipping.shippingPrice
+                        ?: 0, false
+                ).removeDecimalSuffix()
+            )
+            tvShippingCourier.setWeight(Typography.BOLD)
+            tvShippingDuration.gone()
+            btnChangeDuration.gone()
+            tvShippingCourierNotes.gone()
+            tvShippingPrice.gone()
+            if (shipping.serviceEta != null) {
+                tvShippingCourierEta.text = shipping.serviceEta
+                tvShippingCourierEta.visible()
+            } else {
+                tvShippingCourierEta.gone()
+            }
+            setMultiViewsOnClickListener(tvShippingCourier, tvShippingCourierEta, btnChangeCourier) {
+                if (profile.enable) {
+                    val shippingRecommendationData = shipment.shippingRecommendationData
+                    if (shippingRecommendationData != null) {
+                        val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationUiModels)
+                        val logisticPromoList = shippingRecommendationData.listLogisticPromo
+                        if (logisticPromoList.isNotEmpty()) {
+                            list.addAll(
+                                0,
+                                logisticPromoList + listOf<RatesViewModelType>(DividerModel())
+                            )
+                            if (logisticPromoList.any { promo ->
+                                    promo.disabled && promo.description.contains(
+                                        BBO_DESCRIPTION_MINIMUM_LIMIT[0]
+                                    ) && promo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])
+                                }) {
+                                orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
+                            }
                         listener.chooseDuration(false, shipping.getRealShipperProductId().toString(), list)
                     }
                 }

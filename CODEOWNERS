@@ -144,6 +144,8 @@
 /features/travel/travel_country_code                    @tokopedia/android-minionmark-dev
 /features/travel/travel_homepage                        @tokopedia/android-minionmark-dev
 /features/travel/travel_passenger                       @tokopedia/android-minionmark-dev
+/dynamic-features-customerapp_pro/travel                @tokopedia/android-minionmark-dev
+/dynamic-features/travel                                @tokopedia/android-minionmark-dev
 
 /features/salam/umrah                                   @tokopedia/android-minionmark-dev
 /libraries/travel_calendar                              @tokopedia/android-minionmark-dev
@@ -205,6 +207,7 @@
 /features/user/user_identification_no_op/       		@tokopedia/android-minionkevin-dev
 /features/user/fcm_common/                              @tokopedia/android-minionkevin-dev
 /features/user/seamless_login/                          @tokopedia/android-minionkevin-dev
+/features/user/seamless_login_common/                   @tokopedia/android-minionkevin-dev
 /features/user/kyc_centralized/                         @tokopedia/android-minionkevin-dev
 /features/user/attachvoucher/                           @tokopedia/android-minionkevin-dev
 /features/user/stickylogin/                             @tokopedia/android-minionkevin-dev
@@ -224,6 +227,7 @@
 /features/communication/inbox/                          @tokopedia/android-minionkevin-dev
 /features/communication/inbox_common/                   @tokopedia/android-minionkevin-dev
 /features/communication/notifcenter/                    @tokopedia/android-minionkevin-dev
+/features/communication/push-notification-common/       @tokopedia/android-minionyoda-dev
 
 /features/operational/contact_us        				@tokopedia/android-minionsolo-dev
 /features/operational/csat_rating        				@tokopedia/android-minionsolo-dev
@@ -253,6 +257,7 @@
 /features/im/install_referral                           @tokopedia/android-core-dev
 /features/im/common_promo                               @tokopedia/android-core-dev
 /features/im/referral                   				@tokopedia/android-minionyoda-dev
+/features/im/cm_home_widget                   			@tokopedia/android-minionyoda-dev
 /features/ovop2p                                        @tokopedia/android-minionyoda-dev
 /features/payment/common_payment                        @tokopedia/android-minionyoda-dev
 /features/fintech/wallet                				@tokopedia/android-minionyoda-dev
@@ -302,6 +307,7 @@
 /libraries/image_preview/								@tokopedia/android-core-dev
 /libraries/imageuploader/								@tokopedia/android-core-dev
 /libraries/inappupdate/									@tokopedia/android-core-dev
+/libraries/interceptors/                                @tokopedia/android-minionkevin-dev
 /libraries/instrumentation_test                         @tokopedia/android-core-dev
 /libraries/iris/										@tokopedia/android-gatekeeperanalytic-dev
 /libraries/iris_session/	                            @tokopedia/android-gatekeeperanalytic-dev
@@ -313,6 +319,7 @@
 /libraries/logger/										@tokopedia/android-core-dev
 /libraries/keys/										@tokopedia/android-core-dev
 /libraries/mapviewer/								    @tokopedia/android-core-dev
+/libraries/network/                                     @tokopedia/android-minionkevin-dev
 /libraries/oms/											@tokopedia/android-core-dev
 /libraries/pre_release_inspector/			            @tokopedia/android-core-dev
 /libraries/pre_release_inspector_no_op/					@tokopedia/android-core-dev
@@ -328,6 +335,7 @@
 /libraries/travel_calendar/								@tokopedia/android-core-dev
 /libraries/twitter_share/								@tokopedia/android-core-dev
 /libraries/unit_test                                    @tokopedia/android-core-dev
+/libraries/user_session                                 @tokopedia/android-minionkevin-dev
 /libraries/utils                                        @tokopedia/android-core-dev
 /libraries/videoplayer/									@tokopedia/android-core-dev
 /libraries/videouploader/								@tokopedia/android-core-dev
@@ -343,6 +351,8 @@
 /libraries/screen_recorder                              @tokopedia/android-core-dev
 /libraries/screenshot_observer                          @tokopedia/android-core-dev
 /libraries/tokopatch                                    @tokopedia/android-core-dev
+/libraries/macrobenchmark/								@tokopedia/android-core-dev
+/libraries/universal_sharing/							@tokopedia/android-gatekeeperloadtime-dev
 
 /buildconfig/                                           @tokopedia/android-core-dev
 /dynamic-features/                                      @tokopedia/android-core-dev
@@ -359,6 +369,7 @@
 /tkpdabstraction/                                   	@tokopedia/android-gatekeeperlegacy-dev
 
 /customerapp/                                       	@tokopedia/android-core-dev
+/customerapp_pro/                                       @tokopedia/android-core-dev
 /customer_mid_app/                                      @tokopedia/android-core-dev
 /sellerapp/                                         	@tokopedia/android-minionstuart-dev
 /testapp/                                               @tokopedia/android-core-dev
