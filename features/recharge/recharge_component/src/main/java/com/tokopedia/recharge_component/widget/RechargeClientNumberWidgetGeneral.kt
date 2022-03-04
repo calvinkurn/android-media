@@ -161,11 +161,11 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
                 if (number.subtitle.isEmpty()) {
                     setContactName("")
                     setInputNumber(number.title, true)
-                    mFilterChipListener?.onClickFilterChip(false)
+                    mFilterChipListener?.onClickFilterChip(false, number.trackingData.operatorId)
                 } else {
                     setContactName(number.title)
                     setInputNumber(number.subtitle, true)
-                    mFilterChipListener?.onClickFilterChip(true)
+                    mFilterChipListener?.onClickFilterChip(true, number.trackingData.operatorId)
                 }
                 clearFocusAutoComplete()
             }
@@ -173,7 +173,7 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
         }
 
         // create extra chip for navigation
-        val isMoreThanLimit = favnum.size > SORT_FILTER_LIMIT
+        val isMoreThanLimit = true
         if (isMoreThanLimit) {
             val sortFilterItem = SortFilterItem(
                 "",
@@ -380,6 +380,18 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
                 }
             }
             addItem(filterItems)
+        }
+    }
+
+    fun selectChipOperatorByPosition(position: Int) {
+        binding.clientNumberWidgetGeneralChipOperator.run {
+            chipItems?.forEachIndexed { index, sortFilterItem ->
+                if (index == position) {
+                    sortFilterItem.type = ChipsUnify.TYPE_SELECTED
+                } else {
+                    sortFilterItem.type = ChipsUnify.TYPE_NORMAL
+                }
+            }
         }
     }
 

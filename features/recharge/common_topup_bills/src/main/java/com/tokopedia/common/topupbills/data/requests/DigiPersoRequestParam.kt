@@ -18,5 +18,8 @@ data class DigiPersoRequestParam(
     val dgCategoryIDs: List<Int>,
     @SerializedName("pgCategoryIDs")
     @Expose
-    val pgCategoryIDs: List<Int>
+    val pgCategoryIDs: List<Int>,
+    @SerializedName("dgOperatorIDs")
+    @Expose
+    val dgOperatorIds: List<Int>
 ) :Parcelable

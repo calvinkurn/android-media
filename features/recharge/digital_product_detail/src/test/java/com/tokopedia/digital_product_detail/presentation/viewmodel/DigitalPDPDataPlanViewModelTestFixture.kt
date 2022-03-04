@@ -5,6 +5,7 @@ import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSele
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberData
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.InputMultiTabDenomModel
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
@@ -112,7 +113,7 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         } throws errorThrowable
     }
 
-    protected fun onGetAddToCart_thenReturn(response: String) {
+    protected fun onGetAddToCart_thenReturn(response: DigitalAtcResult) {
         coEvery {
             repo.addToCart(any(), any(), any(), any())
         } returns response
@@ -228,7 +229,7 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         Assert.assertNull(actualResponse)
     }
 
-    protected fun verifyAddToCartSuccess(expectedResponse: String) {
+    protected fun verifyAddToCartSuccess(expectedResponse: DigitalAtcResult) {
         val actualResponse = viewModel.addToCartResult.value
         Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
     }

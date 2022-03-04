@@ -32,7 +32,7 @@ class GetRechargeFavoriteNumberUseCase @Inject constructor(
         }
     }
 
-    fun setRequestParams(categoryIds: List<Int>){
+    fun setRequestParams(categoryIds: List<Int>, operatorIds: List<Int> = listOf()){
         params = RequestParams.create().apply {
             putObject(
                 FAVORITE_NUMBER_PARAM_INPUT, DigiPersoRequestParam(
@@ -40,6 +40,7 @@ class GetRechargeFavoriteNumberUseCase @Inject constructor(
                     clientNumbers = listOf(),
                     dgCategoryIDs = categoryIds,
                     pgCategoryIDs = listOf(),
+                    dgOperatorIds = operatorIds
                 )
             )
         }

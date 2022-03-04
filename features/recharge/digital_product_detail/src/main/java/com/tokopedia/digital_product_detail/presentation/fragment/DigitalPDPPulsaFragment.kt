@@ -301,7 +301,18 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             when(atcData) {
                 is RechargeNetworkResult.Success -> {
                     onLoadingBuyWidget(false)
-                    navigateToCart(atcData.data)
+                    digitalPDPTelcoAnalytics.addToCart(
+                        categoryId.toString(),
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        operator.attributes.name,
+                        loyaltyStatus,
+                        userSession.userId,
+                        atcData.data.cartId,
+                        viewModel.digitalCheckoutPassData.productId.toString(),
+                        operator.attributes.name,
+                        atcData.data.priceProduct
+                    )
+                    navigateToCart(atcData.data.categoryId)
                 }
 
                 is RechargeNetworkResult.Fail -> {
@@ -539,7 +550,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                         }
                     }
 
-                    override fun onClickFilterChip(isLabeled: Boolean) {
+                    override fun onClickFilterChip(isLabeled: Boolean, operatorId: String) {
                         inputNumberActionType = InputNumberActionType.CHIP
                         if (isLabeled) {
                             onHideBuyWidget()
@@ -628,8 +639,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 it,
                 clientNumber,
                 dgCategoryIds,
+                arrayListOf(),
                 categoryName,
-                viewModel.operatorData,
                 isSwitchChecked,
                 loyaltyStatus
             )
@@ -667,7 +678,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private fun onShimmeringDenomGrid() {
         binding?.let {
-            it.rechargePdpPulsaDenomGridWidget.renderDenomGridShimmering()
+            it.rechargePdpPulsaDenomGridWidget.run {
+                show()
+                renderDenomGridShimmering()
+            }
         }
     }
 

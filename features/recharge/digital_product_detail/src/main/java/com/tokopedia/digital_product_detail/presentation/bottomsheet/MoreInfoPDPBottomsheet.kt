@@ -12,13 +12,14 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class MoreInfoPDPBottomsheet(
-    private val listInfo: List<String>
+    private val listInfo: List<String>,
+    private val title: String
 ): BottomSheetUnify() {
 
     init {
         isFullpage = false
         isDragable = false
-        showCloseIcon = false
+        showCloseIcon = true
         clearContentPadding = true
     }
 
@@ -33,11 +34,6 @@ class MoreInfoPDPBottomsheet(
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        bottomSheetBehaviorKnob(view, true)
-    }
-
     private fun initView(){
         binding = BottomSheetMoreInfoBinding.inflate(LayoutInflater.from(context))
         binding?.run {
@@ -49,7 +45,7 @@ class MoreInfoPDPBottomsheet(
                 adapterMoreInfo.setListInfo(listInfo)
             }
         }
-        setTitle(getString(R.string.bottom_sheet_more_info))
+        setTitle(title)
         setChild(binding?.root)
     }
 }

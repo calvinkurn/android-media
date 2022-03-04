@@ -339,7 +339,18 @@ class DigitalPDPDataPlanFragment :
             when(atcData) {
                 is RechargeNetworkResult.Success -> {
                     onLoadingBuyWidget(false)
-                    navigateToCart(atcData.data)
+                    digitalPDPTelcoAnalytics.addToCart(
+                        categoryId.toString(),
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        operator.attributes.name,
+                        loyaltyStatus,
+                        userSession.userId,
+                        atcData.data.cartId,
+                        viewModel.digitalCheckoutPassData.productId.toString(),
+                        operator.attributes.name,
+                        atcData.data.priceProduct
+                    )
+                    navigateToCart(atcData.data.categoryId)
                 }
 
                 is RechargeNetworkResult.Fail -> {
@@ -580,7 +591,10 @@ class DigitalPDPDataPlanFragment :
 
     private fun onShimmeringDenomFull() {
         binding?.let {
-            it.rechargePdpPaketDataDenomFullWidget.renderDenomFullShimmering()
+            it.rechargePdpPaketDataDenomFullWidget.run {
+                show()
+                renderDenomFullShimmering()
+            }
         }
     }
 
@@ -880,8 +894,8 @@ class DigitalPDPDataPlanFragment :
                 it,
                 clientNumber,
                 dgCategoryIds,
+                arrayListOf(),
                 categoryName,
-                viewModel.operatorData,
                 isSwitchChecked,
                 loyaltyStatus
             )
@@ -913,7 +927,6 @@ class DigitalPDPDataPlanFragment :
         viewModel.run {
             setAddToCartLoading()
             addToCart(
-                viewModel.digitalCheckoutPassData,
                 DeviceUtil.getDigitalIdentifierParam(requireActivity()),
                 DigitalSubscriptionParams(),
                 userSession.userId
@@ -1000,7 +1013,7 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    override fun onClickFilterChip(isLabeled: Boolean) {
+    override fun onClickFilterChip(isLabeled: Boolean, operatorId: String) {
         inputNumberActionType = InputNumberActionType.CHIP
         if (isLabeled) {
             onHideBuyWidget()
