@@ -79,7 +79,10 @@ class CalendarViewHolder(
     }
 
     private fun setShadowBackground() {
-        binding.viewShcCalendarShadow.setBackgroundResource(R.drawable.bg_shc_calendar_shadow)
+        try {
+            binding.viewShcCalendarShadow.setBackgroundResource(R.drawable.bg_shc_calendar_shadow)
+        } catch (e: Exception) {
+        }
     }
 
     private fun observeState(element: CalendarWidgetUiModel) {
