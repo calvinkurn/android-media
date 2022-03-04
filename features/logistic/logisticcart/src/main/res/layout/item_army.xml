@@ -33,6 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toStartOf="@id/img_check"
+            android:layout_marginBottom="4dp"
             android:orientation="horizontal">
 
             <FrameLayout
@@ -68,7 +69,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/ll_top_container"
-            android:layout_marginTop="4dp"
             android:lineSpacingExtra="4sp"
             android:textColor="@color/Unify_N700_96"
             app:typographyType="body_2"
