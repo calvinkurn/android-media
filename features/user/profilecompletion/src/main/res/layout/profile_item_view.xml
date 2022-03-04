@@ -18,7 +18,7 @@
         tools:text="Title"
         android:layout_width="0dp"
         android:textColor="@color/Unify_NN600"
-        app:typographyType="body_1"
+        app:typographyType="body_2"
         app:typographyWeight="reguler"
         android:layout_height="wrap_content"/>
 
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content">
 
         <com.tokopedia.unifyprinciples.Typography
-            app:typographyType="body_1"
+            app:typographyType="body_2"
             app:typographyWeight="reguler"
             android:id="@+id/fragmentProfileItemValue"
             android:layout_weight="7"

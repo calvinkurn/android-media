@@ -73,8 +73,8 @@ class AddBodFragment: BaseDaggerFragment(){
         initVar()
         initDatepicker()
 
-        chooseDate.textFieldInput.setFocusable(false)
-        chooseDate.textFieldInput.setOnClickListener {
+        chooseDate.editText.setFocusable(false)
+        chooseDate.editText.setOnClickListener {
             fragmentManager?.run {
                 unifyDatePicker?.show(this, TAG)
             }
@@ -92,7 +92,7 @@ class AddBodFragment: BaseDaggerFragment(){
     }
 
     private fun setChoosenDateFormat(date: String){
-        chooseDate.textFieldInput.setText(DateFormatUtils.formatDate(
+        chooseDate.editText.setText(DateFormatUtils.formatDate(
                 DateFormatUtils.FORMAT_YYYY_MM_DD,
                 DateFormatUtils.FORMAT_DD_MMMM_YYYY,
                 date))

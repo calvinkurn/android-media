@@ -13,7 +13,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/profileItemTitle"
-        app:typographyType="heading_3"
+        app:typographyType="heading_4"
         tools:text="Info Pribadi"
         android:textColor="@color/Unify_NN950"
         android:layout_width="wrap_content"

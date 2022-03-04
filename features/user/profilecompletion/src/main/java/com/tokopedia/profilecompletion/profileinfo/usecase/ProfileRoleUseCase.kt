@@ -27,6 +27,8 @@ class ProfileRoleUseCase @Inject constructor(
 		chancesChangeGender
         changeNameMessageInfoTitle
         changeNameMessageInfo
+        changeDobMessageInfo
+        changeDobMessageInfoTitle
 	    }
         }""".trimIndent()
 }

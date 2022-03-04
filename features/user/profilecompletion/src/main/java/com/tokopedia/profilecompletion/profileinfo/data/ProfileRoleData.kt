@@ -21,6 +21,10 @@ data class ProfileRoleData(
     @SerializedName("changeNameMessageInfoTitle")
     var changeNameMessageInfoTitle: String = "",
     @SerializedName("changeNameMessageInfo")
-    var changeNameMessageInfo: String = ""
+    var changeNameMessageInfo: String = "",
+    @SerializedName("changeDobMessageInfoTitle")
+    var changeDobMessageInfoTitle: String = "",
+    @SerializedName("changeDobMessageInfo")
+    var changeDobMessageInfo: String = ""
 
 )

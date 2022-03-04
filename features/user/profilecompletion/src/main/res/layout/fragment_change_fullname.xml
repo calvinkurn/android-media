@@ -22,9 +22,9 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyWeight="reguler"
             app:typographyType="body_2"
-            />
+            android:textColor="@color/Unify_NN600"
+            app:typographyWeight="reguler" />
 
         <com.tokopedia.unifycomponents.TextFieldUnify2
             android:id="@+id/changeNameTextName"
@@ -36,17 +36,6 @@
             app:layout_constraintTop_toBottomOf="@id/changeNameTextNote"
             app:unify_text_field_append_drawable_icon_2="@drawable/unify_chips_ic_close"
             app:unify_text_field_label="@string/change_name_fullname" />
-
-        <!--        <com.tokopedia.unifyprinciples.Typography-->
-        <!--            app:typographyType="body_2"-->
-        <!--            android:id="@+id/changeNameTextMessage"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginStart="@dimen/spacing_lvl2"-->
-        <!--            android:layout_marginLeft="@dimen/spacing_lvl2"-->
-        <!--            android:text="@string/change_name_visible_on_another_user"-->
-        <!--            app:layout_constraintLeft_toLeftOf="parent"-->
-        <!--            app:layout_constraintTop_toBottomOf="@id/changeNameTextName" />-->
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/changeNameButtonSave"

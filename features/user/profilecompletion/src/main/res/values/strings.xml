@@ -80,7 +80,7 @@
   <!-- ADD PHONE -->
     <string name="title_add_phone">Tambah Nomor HP</string>
     <string name="title_verify_phone">Verifikasi Nomor HP</string>
-    <string name="warning_add_phone">Jaga akun dan transaksi Anda tetap aman dengan menambahkan nomor HP</string>
+    <string name="warning_add_phone">Biar akunmu aman, pastikan nomor HP-mu aktif.</string>
     <string name="title_phone">Nomor HP</string>
     <string name="sample_phone">Contoh: 08xxxxxxxxxx</string>
     <string name="wrong_phone_format">Format nomor HP salah</string>
@@ -110,7 +110,7 @@
     <!-- ADD BOD -->
     <string name="title_add_bod">Tambah Tanggal Lahir</string>
     <string name="title_change_bod">Ubah Tanggal Lahir</string>
-    <string name="page_description">Kamu hanya dapat mengatur tanggal lahirmu satu kali. Pastikan tanggal lahir sudah benar</string>
+    <string name="page_description">Pastikan tanggal lahirmu diisi dengan benar, ya.</string>
     <string name="success_add_bod">Tanggal lahir berhasil ditambah</string>
     <string name="success_change_bod">Tanggal lahir berhasil diubah</string>
     <string name="failed_add_bod">Tanggal lahir gagal ditambah</string>
@@ -192,5 +192,7 @@
     <string name="title_username">Username</string>
     <string name="title_bio">Bio</string>
     <string name="placeholder_bio">Tulis bio kamu</string>
+    <string name="profile_info_title">Info Profil</string>
+    <string name="title_item_name">Nama</string>
 
 </resources>

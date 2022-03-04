@@ -89,12 +89,12 @@ open class AddPhoneFragment : BaseDaggerFragment() {
 
     private fun presetView() {
         arguments?.getString(AddPhoneActivity.PARAM_PHONE_NUMBER)?.let {
-            phone -> etPhone.textFieldInput.setText(phone)
+            phone -> etPhone.editText.setText(phone)
         }
     }
 
     private fun setListener() {
-        etPhone?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+        etPhone?.editText?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
 
             }
@@ -121,7 +121,7 @@ open class AddPhoneFragment : BaseDaggerFragment() {
         }
 
         buttonSubmit?.setOnClickListener {
-            val phone = etPhone?.textFieldInput?.text.toString()
+            val phone = etPhone?.editText?.text.toString()
             if (phone.isBlank()) {
                 setErrorText(getString(R.string.error_field_required))
                 phoneNumberTracker.clickOnButtonNext(false, getString(R.string.wrong_phone_format))
@@ -136,7 +136,7 @@ open class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun goToVerificationActivity() {
-        val phone = etPhone?.textFieldInput?.text.toString().trim()
+        val phone = etPhone?.editText?.text.toString().trim()
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
         val bundle = Bundle()
         bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
@@ -151,11 +151,11 @@ open class AddPhoneFragment : BaseDaggerFragment() {
 
     private fun setErrorText(s: String) {
         if (TextUtils.isEmpty(s)) {
-            etPhone.setError(false)
+            etPhone.isInputError = false
             etPhone.setMessage(getString(R.string.sample_phone))
             buttonSubmit?.isEnabled = true
         } else {
-            etPhone.setError(true)
+            etPhone.isInputError = true
             etPhone.setMessage(s)
             buttonSubmit?.isEnabled = false
         }
@@ -240,7 +240,7 @@ open class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessVerifyPhone(data: Intent?) {
-        val phone = etPhone.textFieldInput.text.toString()
+        val phone = etPhone.editText.text.toString()
         viewModel.mutateAddPhone(phone.trim())
     }
 

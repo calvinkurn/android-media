@@ -177,8 +177,8 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 
     private fun setProfileData(data: ProfileInfoUiModel) {
         val listItem = listOf(
-	    ProfileInfoTitleUiModel(ProfileInfoConstants.PROFILE_INFO_SECTION, "Info Profil"),
-	    ProfileInfoItemUiModel(ProfileInfoConstants.NAME, title = "Nama", itemValue = data.profileInfoData.fullName) {
+	    ProfileInfoTitleUiModel(ProfileInfoConstants.PROFILE_INFO_SECTION, getString(R.string.profile_info_title)),
+	    ProfileInfoItemUiModel(ProfileInfoConstants.NAME, title = getString(R.string.title_item_name), itemValue = data.profileInfoData.fullName) {
 	    	if (!data.profileRoleData.isAllowedChangeName) {
 				val intent = RouteManager.getIntent(
 					context,
@@ -188,7 +188,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 				)
 				startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_CHANGE_NAME)
 			} else {
-				openBottomSheetChangeName(data)
+				openBottomSheetWarning(data.profileRoleData.changeNameMessageInfoTitle, data.profileRoleData.changeNameMessageInfo)
 			}
 		},
 	    ProfileInfoItemUiModel(ProfileInfoConstants.USERNAME,
@@ -251,13 +251,16 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 	    },
 	    ProfileInfoItemUiModel(ProfileInfoConstants.BIRTH_DATE, title = "Tanggal Lahir",
 			itemValue = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD, DateFormatUtils.FORMAT_DD_MMMM_YYYY, data.profileInfoData.birthDay),
-			isEnable = data.profileRoleData.isAllowedChangeDob,
 			placeholder = getString(R.string.placeholder_dob)
 		) {
 		if(data.profileInfoData.birthDay.isEmpty()) {
 		    goToAddDob()
 		} else {
-		    goToChangeDob(data.profileInfoData.birthDay)
+			if (data.profileRoleData.isAllowedChangeDob) {
+				goToChangeDob(data.profileInfoData.birthDay)
+			} else {
+				openBottomSheetWarning(data.profileRoleData.changeDobMessageInfoTitle, data.profileRoleData.changeDobMessageInfo)
+			}
 		}
 	    },
 	)
@@ -265,12 +268,12 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 	renderWarningTickerName(data.profileInfoData)
     }
 
-	private fun openBottomSheetChangeName(data: ProfileInfoUiModel) {
+	private fun openBottomSheetWarning(title: String, msg: String) {
 		val bottomSheetUnify = BottomSheetUnify()
-		bottomSheetUnify.setTitle(data.profileRoleData.changeNameMessageInfoTitle)
+		bottomSheetUnify.setTitle(title)
 		val view = View.inflate(context, R.layout.layout_bottomsheet_change_name, null).apply {
 			this.findViewById<Typography>(R.id.tv_body).apply {
-				this.text = data.profileRoleData.changeNameMessageInfo
+				this.text = msg
 			}
 			this.findViewById<UnifyButton>(R.id.btn_ok)?.setOnClickListener {
 				bottomSheetUnify.dismiss()
