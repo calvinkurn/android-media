@@ -8,14 +8,14 @@ interface BaseIntent<T : Parcelable> {
     val appLink: String
     val keyName: String
 
-    fun extractData(intent: Intent?): ArrayList<T> {
+    fun extractData(intent: Intent?, key: String = keyName): ArrayList<T> {
         if (intent == null) error("intent not found")
-        return intent.getParcelableArrayListExtra(keyName)?: arrayListOf()
+        return intent.getParcelableArrayListExtra(key)?: arrayListOf()
     }
 
-    fun extractData(bundle: Bundle?): ArrayList<T> {
+    fun extractData(bundle: Bundle?, key: String = keyName): ArrayList<T> {
         if (bundle == null) error("intent not found")
-        return bundle.getParcelableArrayList(keyName)?: arrayListOf()
+        return bundle.getParcelableArrayList(key)?: arrayListOf()
     }
 
 }
