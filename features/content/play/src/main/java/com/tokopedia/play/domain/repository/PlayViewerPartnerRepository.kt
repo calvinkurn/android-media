@@ -15,5 +15,5 @@ interface PlayViewerPartnerRepository {
 
     suspend fun getFollowingKOL(followedKol: String): Boolean
 
-    suspend fun postFollowKol(followedKol: String): Boolean
+    suspend fun postFollowKol(followedKol: String, followAction: PartnerFollowAction): Boolean
 }

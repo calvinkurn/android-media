@@ -17,6 +17,7 @@ class PlayViewerPartnerRepositoryImpl @Inject constructor(
     private val getProfileInfoUseCase: GetProfileInfoUseCase,
     private val getFollowingKOLUseCase: GetFollowingKOLUseCase,
     private val postFollowKolUseCase: PostFollowKolUseCase,
+    private val postUnfollowKolUseCase: PostUnfollowKolUseCase,
     private val mapper: PlayUiModelMapper,
     private val dispatchers: CoroutineDispatchers,
 ) : PlayViewerPartnerRepository {
@@ -51,10 +52,15 @@ class PlayViewerPartnerRepositoryImpl @Inject constructor(
         return@withContext mapper.mapFollowingKol(status.response.followedKOLInfo)
     }
 
-    override suspend fun postFollowKol(followedKol: String): Boolean = withContext(dispatchers.io){
-        val status = postFollowKolUseCase.apply {
-            setRequestParams(createParam(followedKol).parameters)
-        }.executeOnBackground()
-        return@withContext mapper.mapFollowKol(status.followedKOLInfo)
+    override suspend fun postFollowKol(followedKol: String, followAction: PartnerFollowAction): Boolean = withContext(dispatchers.io){
+        return@withContext if (followAction == PartnerFollowAction.Follow){
+            postFollowKolUseCase.apply {
+                setRequestParams(createParam(followedKol).parameters)
+            }.executeOnBackground().followedKOLInfo.data.isSuccess
+        } else{
+            postUnfollowKolUseCase.apply {
+                setRequestParams(createParam(followedKol).parameters)
+            }.executeOnBackground().unFollowedKOLInfo.data.isSuccess
+        }
     }
 }

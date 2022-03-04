@@ -887,7 +887,7 @@ class PlayViewModel @AssistedInject constructor(
 
         updateChannelInfo(channelData)
 
-        getKolHeader(channelData.partnerInfo.id.toString())
+        getKolHeader(channelData.partnerInfo)
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
@@ -1569,7 +1569,7 @@ class PlayViewModel @AssistedInject constructor(
                     followAction = followAction,
                 )
             } else {
-                repo.postFollowKol(_observableKolId.toString())
+                repo.postFollowKol(followedKol = _observableKolId.toString(), followAction = followAction)
             }
             _partnerInfo.setValue {
                 val result = if(isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
@@ -2029,10 +2029,10 @@ class PlayViewModel @AssistedInject constructor(
         )
     }
 
-    private fun getKolHeader(partnerId: String){
+    private fun getKolHeader(partnerInfo: PlayPartnerInfo){
         if(userSession.isLoggedIn && latestCompleteChannelData.partnerInfo.type ==  PartnerType.Buyer){
             viewModelScope.launch {
-                val kolId = repo.getProfileHeader(partnerId)
+                val kolId = repo.getProfileHeader(partnerInfo.id.toString())
                 _observableKolId.value = kolId
             }
         }
