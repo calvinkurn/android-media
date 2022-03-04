@@ -597,10 +597,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Review Credibility
             add(DFP({ it.startsWith(ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY)}, DF_MERCHANT_REVIEW, R.string.title_review_credibility))
-            add(DFP({
-                val uri = Uri.parse(it).buildUpon().build()
-                uri.host == FEEDBACK_FORM
-            }, DF_FEEDBACKFORM, R.string.internal_feedback))
+            add(DFP({ it.startsWith(ApplinkConstInternalGlobal.FEEDBACK_FORM) }, DF_FEEDBACKFORM, R.string.internal_feedback))
         }
     }
 
