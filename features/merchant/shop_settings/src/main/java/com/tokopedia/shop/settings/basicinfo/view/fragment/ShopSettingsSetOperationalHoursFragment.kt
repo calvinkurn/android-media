@@ -270,12 +270,18 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
             if (result is Success) {
                 val updateShopOperationalHoursListResult = result.data
                 if (updateShopOperationalHoursListResult.success) {
-                    activity?.intent?.putExtra(EXTRA_SET_OPS_HOUR_RESPONSE_KEY, updateShopOperationalHoursListResult.message)
+                    val toasterSuccessMessage = updateShopOperationalHoursListResult.message.takeIf {
+                        it.isNotEmpty()
+                    } ?: getString(R.string.shop_operational_success_update_operational_hours)
+                    activity?.intent?.putExtra(EXTRA_SET_OPS_HOUR_RESPONSE_KEY, toasterSuccessMessage)
                     activity?.setResult(Activity.RESULT_OK)
                     activity?.finish()
                 } else {
                     hideLoader()
-                    showToaster(updateShopOperationalHoursListResult.message, Toaster.TYPE_ERROR)
+                    val toasterErrorMessage = updateShopOperationalHoursListResult.message.takeIf {
+                        it.isNotEmpty()
+                    } ?: getString(R.string.shop_operational_failed_update_operational_hours)
+                    showToaster(toasterErrorMessage, Toaster.TYPE_ERROR)
                     opsHourAccordion?.collapseAllGroup()
                 }
             }

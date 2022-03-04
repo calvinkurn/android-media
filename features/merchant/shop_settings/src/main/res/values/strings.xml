@@ -50,6 +50,8 @@
     <string name="shop_operational_hour_desc_ticker_holiday">Saat toko libur, pembeli tidak bisa membeli produkmu. <![CDATA[<a href="%1$s">Baca Selengkapnya</a>]]></string>
     <string name="shop_operational_hour_desc_ticker_holiday_url">https://seller.tokopedia.com/edu/atur-jadwal-toko/</string>
     <string name="shop_operational_copy_to_all_day_text_description">Jam operasional tokomu untuk semua hari sudah sama.</string>
+    <string name="shop_operational_success_update_operational_hours">Jam operasional toko diubah</string>
+    <string name="shop_operational_failed_update_operational_hours">Oops, jam operasional tidak tersimpan. Cek koneksi dan ulangi lagi, ya.</string>
     <string name="shop_operational_hour_24_hours">Buka 24 Jam</string>
     <string name="shop_operational_hour_holiday">Libur rutin (Produkmu bisa dibeli)</string>
     <string name="shop_operational_hour_holiday_cannot_atc">Libur rutin (Produkmu tidak bisa dibeli)</string>
