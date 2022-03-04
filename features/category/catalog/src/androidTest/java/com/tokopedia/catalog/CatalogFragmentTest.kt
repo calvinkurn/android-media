@@ -60,6 +60,7 @@ class CatalogFragmentTest
         login()
         launchActivity()
         setupIdlingResource()
+        Thread.sleep(3000)
     }
 
     @After
@@ -177,10 +178,12 @@ class CatalogFragmentTest
     @Test
     fun check_lihat_specifications_page_opening() {
         actionTest {
+            Thread.sleep(2000)
             onView(withId(R.id.catalog_detail_rv))
                     .perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
                             ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.catalog_specification_rv))),
                             ViewActions.scrollTo()))
+            Thread.sleep(2000)
             onView(withId(R.id.catalog_specification_rv)).perform(CatalogViewActions.ScrollToBottomAction())
             Thread.sleep(2000)
             val viewInteraction = onView(withId(R.id.catalog_specification_rv))
@@ -352,7 +355,7 @@ class CatalogFragmentTest
                 .perform(
                         CatalogViewActions.withCustomConstraints(
                                 GeneralSwipeAction(
-                                        Swipe.FAST,
+                                        Swipe.SLOW,
                                         GeneralLocation.VISIBLE_CENTER,
                                         { view: View -> floatArrayOf(view.width / 2.toFloat(), 0f) },
                                         Press.FINGER),
@@ -365,7 +368,7 @@ class CatalogFragmentTest
                 .perform(
                         CatalogViewActions.withCustomConstraints(
                                 GeneralSwipeAction(
-                                        Swipe.FAST,
+                                        Swipe.SLOW,
                                         GeneralLocation.TOP_CENTER,
                                         { view: View -> floatArrayOf(view.width / 2.toFloat(),view.height.toFloat()) },
                                         Press.FINGER),

@@ -7,4 +7,8 @@ class EmbraceConfig {
     @SerializedName("allowed_moments")
     @Expose
     val allowedMoments: List<String> = arrayListOf()
+
+    @SerializedName("breadcrumb_categories")
+    @Expose
+    val breadcrumb_categories: List<String> = arrayListOf()
 }

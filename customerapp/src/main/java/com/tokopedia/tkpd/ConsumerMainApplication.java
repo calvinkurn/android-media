@@ -1,14 +1,13 @@
 package com.tokopedia.tkpd;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.net.Uri;
-import android.os.Build;
-import android.content.Intent;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
@@ -32,8 +31,6 @@ import com.tokopedia.remoteconfig.RollenceKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.screenshot_observer.Screenshot;
 import com.tokopedia.tkpd.BuildConfig;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 
@@ -198,7 +195,6 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
             map.put("type", "init");
             map.put("error", Log.getStackTraceString(throwable));
             ServerLogger.log(Priority.P1, "WORK_MANAGER", map);
-            throw new RuntimeException("WorkManager failed to initialize", throwable);
         }).build();
     }
 }

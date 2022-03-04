@@ -39,8 +39,7 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         tvTitle.text = formattedTitle
         tvTitle.visibility = View.VISIBLE
         tvTitleExtra.visibility = View.GONE
-
-        if (!data.isBebasOngkirExtra || !isOcc) {
+        if (!data.isBebasOngkirExtra) {
             if (data.etaData.errorCode == 0 && data.etaData.textEta.isNotEmpty()) {
                 tvEta.visibility = View.VISIBLE
                 tvEta.text = data.etaData.textEta
