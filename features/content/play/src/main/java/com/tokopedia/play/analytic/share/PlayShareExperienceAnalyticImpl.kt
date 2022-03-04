@@ -13,7 +13,7 @@ class PlayShareExperienceAnalyticImpl @Inject constructor(
 ): PlayShareExperienceAnalytic{
 
     private val userId: String
-        get() = userSession.userId
+        get() = if(userSession.userId.isNotEmpty()) userSession.userId else "0"
 
     private fun sendGeneralClickEvent(action: String, label: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
