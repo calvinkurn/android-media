@@ -6,7 +6,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.data.FollowKOL
-import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 /**
@@ -23,13 +22,7 @@ class GetFollowingKOLUseCase @Inject constructor(
         setTypeClass(FollowKOL.Response::class.java)
     }
 
-    fun createParam(followedUserId: String): RequestParams {
-        return RequestParams.create().apply {
-            mapOf(
-                FOLLOWED_USER_ID_PARAMS to followedUserId
-            )
-        }
-    }
+    fun createParam(followedUserId: String): Map<String, Any> = mapOf(FOLLOWED_USER_ID_PARAMS to followedUserId)
 
     companion object {
         const val FOLLOWED_USER_ID_PARAMS = "followingUserIDs"

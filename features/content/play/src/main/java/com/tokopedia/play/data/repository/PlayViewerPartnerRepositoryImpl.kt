@@ -40,14 +40,14 @@ class PlayViewerPartnerRepositoryImpl @Inject constructor(
      * */
     override suspend fun getProfileHeader(kolId: String): String = withContext(dispatchers.io){
         val encUserId = getProfileInfoUseCase.apply {
-            setRequestParams(createParam(kolId).parameters)
+            setRequestParams(createParam(kolId))
         }.executeOnBackground()
         return@withContext mapper.mapProfileHeader(encUserId.response)
     }
 
     override suspend fun getFollowingKOL(followedKol: String): Boolean = withContext(dispatchers.io){
         val status = getFollowingKOLUseCase.apply {
-            setRequestParams(createParam(followedKol).parameters)
+            setRequestParams(createParam(followedKol))
         }.executeOnBackground()
         return@withContext mapper.mapFollowingKol(status.response.followedKOLInfo)
     }
@@ -55,11 +55,11 @@ class PlayViewerPartnerRepositoryImpl @Inject constructor(
     override suspend fun postFollowKol(followedKol: String, followAction: PartnerFollowAction): Boolean = withContext(dispatchers.io){
         return@withContext if (followAction == PartnerFollowAction.Follow){
             postFollowKolUseCase.apply {
-                setRequestParams(createParam(followedKol).parameters)
+                setRequestParams(createParam(followedKol))
             }.executeOnBackground().followedKOLInfo.data.isSuccess
         } else{
             postUnfollowKolUseCase.apply {
-                setRequestParams(createParam(followedKol).parameters)
+                setRequestParams(createParam(followedKol))
             }.executeOnBackground().unFollowedKOLInfo.data.isSuccess
         }
     }

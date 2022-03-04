@@ -6,7 +6,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.data.KOLFollowStatus
-import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 /**
@@ -23,13 +22,7 @@ class PostFollowKolUseCase @Inject constructor(
         setTypeClass(KOLFollowStatus::class.java)
     }
 
-    fun createParam(userId: String): RequestParams {
-        return RequestParams.create().apply {
-            mapOf(
-                PostUnfollowKolUseCase.USER_ID to userId
-            )
-        }
-    }
+    fun createParam(userId: String): Map<String, Any> = mapOf(PostUnfollowKolUseCase.USER_ID to userId)
 
     companion object {
         const val QUERY_NAME = "PostFollowKolUseCaseQuery"

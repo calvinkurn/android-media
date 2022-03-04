@@ -23,13 +23,7 @@ class GetProfileInfoUseCase @Inject constructor(
         setTypeClass(ProfileHeader.Response::class.java)
     }
 
-    fun createParam(userId: String): RequestParams {
-        return RequestParams.create().apply {
-            mapOf(
-                USER_ID to userId
-            )
-        }
-    }
+    fun createParam(userId: String): Map<String, Any> = mapOf(USER_ID to userId)
 
     companion object {
         const val USER_ID = "username"
