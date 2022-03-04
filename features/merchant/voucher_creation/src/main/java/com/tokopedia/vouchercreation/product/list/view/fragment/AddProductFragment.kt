@@ -373,7 +373,8 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                 is Success -> {
                     val validationResults = result.data.response.voucherValidationData.validationPartial
                     val productList = viewModel.getProductUiModels()
-                    val isSelectAll = binding?.cbuSelectAllProduct?.isChecked ?: false
+                    val isIndeterminate = binding?.cbuSelectAllProduct?.getIndeterminate() ?: false
+                    val isSelectAll = binding?.cbuSelectAllProduct?.isChecked ?: false && !isIndeterminate
                     val updatedProductList = viewModel.applyValidationResult(
                             isSelectAll,
                             productList = productList,
