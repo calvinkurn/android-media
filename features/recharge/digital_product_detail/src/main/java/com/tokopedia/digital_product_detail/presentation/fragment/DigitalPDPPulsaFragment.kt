@@ -623,7 +623,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun initEmptyState(banners: List<TopupBillsBanner>) {
-        binding?.rechargePdpPulsaEmptyStateWidget?.setImageUrl(banners[0].imageUrl)
+        binding?.rechargePdpPulsaEmptyStateWidget?.imageUrl = banners[0].imageUrl
     }
 
     private fun onSuccessDenomGrid(denomData: DenomWidgetModel, selectedPosition: Int?) {
@@ -752,7 +752,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         binding?.run {
             if (!rechargePdpPulsaEmptyStateWidget.isVisible) {
                 digitalPDPTelcoAnalytics.impressionBannerEmptyState(
-                    "TODO Creative Link",
+                    rechargePdpPulsaEmptyStateWidget.imageUrl,
                     categoryId.toString(),
                     DigitalPDPCategoryUtil.getCategoryName(categoryId),
                     loyaltyStatus,

@@ -537,7 +537,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     }
 
     private fun initEmptyState(banners: List<TopupBillsBanner>) {
-        binding?.rechargePdpTagihanListrikEmptyStateWidget?.setImageUrl(banners[0].imageUrl)
+        binding?.rechargePdpTagihanListrikEmptyStateWidget?.imageUrl = banners[0].imageUrl
     }
 
     private fun renderTicker(tickers: List<TopupBillsTicker>) {
@@ -626,7 +626,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
         binding?.run {
             if (!rechargePdpTagihanListrikEmptyStateWidget.isVisible) {
                 digitalPDPTelcoAnalytics.impressionBannerEmptyState(
-                    "TODO Creative Link",
+                    rechargePdpTagihanListrikEmptyStateWidget.imageUrl,
                     categoryId.toString(),
                     DigitalPDPCategoryUtil.getCategoryName(categoryId),
                     loyaltyStatus,

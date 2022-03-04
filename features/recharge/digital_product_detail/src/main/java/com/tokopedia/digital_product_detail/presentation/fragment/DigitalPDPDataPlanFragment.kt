@@ -689,14 +689,14 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun initEmptyState(banners: List<TopupBillsBanner>) {
-        binding?.rechargePdpPaketDataEmptyStateWidget?.setImageUrl(banners[0].imageUrl)
+        binding?.rechargePdpPaketDataEmptyStateWidget?.imageUrl = banners[0].imageUrl
     }
 
     private fun showEmptyState() {
         binding?.run {
             if (!rechargePdpPaketDataEmptyStateWidget.isVisible) {
                 digitalPDPTelcoAnalytics.impressionBannerEmptyState(
-                    "TODO Creative Link",
+                    rechargePdpPaketDataEmptyStateWidget.imageUrl,
                     categoryId.toString(),
                     DigitalPDPCategoryUtil.getCategoryName(categoryId),
                     loyaltyStatus,
