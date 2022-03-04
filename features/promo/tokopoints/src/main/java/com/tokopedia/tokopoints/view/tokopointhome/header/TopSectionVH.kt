@@ -56,10 +56,6 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.webview.KEY_TITLEBAR
-import android.widget.RelativeLayout
-
-
-
 
 class TopSectionVH(
     itemView: View,
@@ -92,7 +88,7 @@ class TopSectionVH(
     private var tierIconProgress: ImageUnify? = null
     private var currentTier: Typography? = null
     private val MEMBER_STATUS_BG_RADII = 16F
-    private val ANIMATION_DURATION = 800L
+    private val ANIMATION_DURATION = 600L
     private val TP_CONFETTI_STATUS_MATCHING = "tp_confetti_entry_point.zip"
     private var digitContainer: LinearLayout? = null
     private var popupNotification: PopupNotification? = null
@@ -142,7 +138,7 @@ class TopSectionVH(
                 renderStatusMatchingView(it.rewardsTickerList?.tickerList)
             }
         }
-        isNextTier = model.popupNotification?.tokoPoints?.popupNotif?.isEmpty == true
+        isNextTier = model.popupNotification?.tokoPoints?.popupNotif?.title?.isEmpty() == true
         popupNotification = model.popupNotification?.tokoPoints?.popupNotif
         topSectionData = model
     }
@@ -538,7 +534,9 @@ class TopSectionVH(
     private fun progressBarAnimation(progressInfoList: List<ProgressInfoList>) {
 
         val container = progressBar?.progressBarContainer
-        val progress = getProgress(progressInfoList).second ?: -1
+        val progressValues = getProgress(progressInfoList)
+        val progressLast = progressValues.first ?: -1
+        val progressCurrent = progressValues.second ?: -1
         progressBar?.apply {
             progressBarHeight = ProgressBarUnify.SIZE_LARGE
             progressBarColorType = ProgressBarUnify.COLOR_GREEN
@@ -547,40 +545,49 @@ class TopSectionVH(
             (progressBarIndicatorWrapper).clipChildren = false
             (progressBarWrapper.parent as ViewGroup).clipToPadding = false
             gravity = Gravity.CENTER_VERTICAL
-            if (progress > 0) {
-                setProgressIcon(itemView.resources.getDrawable(R.drawable.tp_tier_progress))
-                setValue(progress, true)
+            if (progressLast > 0) {
+                setProgressIcon(null)
+                setValue(progressLast, false)
             } else {
                 setProgressIcon(null)
             }
         }
-        if (container?.childCount?.minus(1) ?: 0 >= 0) {
-                val target = container?.getChildAt(container.childCount - 1)
-                val moveXX =
-                    ObjectAnimator.ofFloat(target, View.SCALE_X, 1.5f).setDuration(ANIMATION_DURATION)
-                val animatorContainerX =
-                    ObjectAnimator.ofFloat(target, View.SCALE_Y, 1.5f).setDuration(ANIMATION_DURATION)
-                val animSet = AnimatorSet()
 
-                animSet.addListener(object : Animator.AnimatorListener {
-                    override fun onAnimationStart(p0: Animator?) {
-                    }
-                    override fun onAnimationEnd(p0: Animator?) {
-                        progressBar?.setProgressIcon(null)
-                        if (!isNextTier) {
-                            topSectionData?.popupNotification = null
-                            refreshOnTierUpgrade.refreshReward(popupNotification)
+        progressBar?.postDelayed(
+            {
+                progressBar?.setValue(progressCurrent, true)
+                progressBar?.setProgressIcon(itemView.resources.getDrawable(R.drawable.tp_tier_progress))
+                if (container?.childCount?.minus(1) ?: 0 >= 0) {
+                    val target = container?.getChildAt(container.childCount - 1)
+                    val animationScaleX =
+                        ObjectAnimator.ofFloat(target, View.SCALE_X, 1.5f)
+                            .setDuration(ANIMATION_DURATION)
+                    val animationScaleY =
+                        ObjectAnimator.ofFloat(target, View.SCALE_Y, 1.5f)
+                            .setDuration(ANIMATION_DURATION)
+
+                    val animSet = AnimatorSet()
+                    animSet.addListener(object : Animator.AnimatorListener {
+                        override fun onAnimationStart(p0: Animator?) {
                         }
-                    }
-                    override fun onAnimationCancel(p0: Animator?) {
-                    }
-                    override fun onAnimationRepeat(p0: Animator?) {
-                    }
-                })
-                animSet.playTogether(animatorContainerX, moveXX)
-                animSet.start()
-            }
-        }
+                        override fun onAnimationEnd(p0: Animator?) {
+                            progressBar?.setProgressIcon(null)
+                            if (!isNextTier) {
+                                topSectionData?.popupNotification = null
+                                refreshOnTierUpgrade.refreshReward(popupNotification)
+                            }
+                        }
+                        override fun onAnimationCancel(p0: Animator?) {
+                        }
+                        override fun onAnimationRepeat(p0: Animator?) {
+                        }
+                    })
+                    animSet.playTogether(animationScaleY, animationScaleX)
+                    animSet.start()
+                }
+            }, 1000L
+        )
+    }
 
     private fun hideTierComponents() {
         textTransaksi?.hide()
