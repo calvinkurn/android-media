@@ -1202,8 +1202,8 @@ class PlayViewModel @AssistedInject constructor(
     private suspend fun getFollowingStatus(partnerInfo: PlayPartnerInfo) : Boolean {
         return if (userSession.isLoggedIn) {
             when(partnerInfo.type){
-                PartnerType.Shop -> repo.getIsFollowingPartner(partnerId = partnerInfo.id)
-                PartnerType.Buyer -> repo.getFollowingKOL(partnerInfo.id.toString())
+                PartnerType.Buyer -> repo.getIsFollowingPartner(partnerId = partnerInfo.id)
+                PartnerType.Shop -> repo.getFollowingKOL(partnerInfo.id.toString())
                 else -> false
             }
         } else false
@@ -2030,11 +2030,11 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun getKolHeader(partnerInfo: PlayPartnerInfo){
-        if(userSession.isLoggedIn && latestCompleteChannelData.partnerInfo.type ==  PartnerType.Buyer){
-            viewModelScope.launch {
+        if(userSession.isLoggedIn && partnerInfo.type == PartnerType.Buyer){
+            viewModelScope.launchCatchError(dispatchers.io, block =  {
                 val kolId = repo.getProfileHeader(partnerInfo.id.toString())
                 _observableKolId.value = kolId
-            }
+            }){}
         }
     }
 
