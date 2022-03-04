@@ -40,7 +40,7 @@ class VoucherGameDetailActivityTest{
     fun setUp(){
         Intents.init()
         gtmLogDBSource.deleteAll().toBlocking().first()
-        setupGraphqlMockResponseWithCheck {
+        setupGraphqlMockResponse {
             addMockResponse(
                     KEY_QUERY_VOUCHER_DETAIL,
                     InstrumentationMockHelper.getRawString(targetContext, R.raw.mock_response_recharge_product_input),
