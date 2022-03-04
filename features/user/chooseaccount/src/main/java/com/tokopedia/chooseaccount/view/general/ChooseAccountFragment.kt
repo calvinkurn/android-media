@@ -102,13 +102,13 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
         })
 
         chooseAccountViewModel.loginPhoneNumberResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            dismissLoadingProgress()
             when (it) {
                 is Success -> onSuccessLoginToken()
                 is Fail -> {
                     onErrorLoginToken(it.throwable)
                 }
             }
-            dismissLoadingProgress()
         })
 
         chooseAccountViewModel.popupError.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
