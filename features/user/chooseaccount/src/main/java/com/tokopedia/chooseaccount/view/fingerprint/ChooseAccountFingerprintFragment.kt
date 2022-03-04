@@ -110,7 +110,7 @@ class ChooseAccountFingerprintFragment: BaseChooseAccountFragment() {
 
     private fun onErrorGetFingerprintAccounts(throwable: Throwable) {
         dismissLoadingProgress()
-        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable, builder = getErrorHandlerBuilder())
         showToaster(errorMessage) {
             showLoadingProgress()
             getFingerprintAccounts()

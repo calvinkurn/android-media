@@ -95,7 +95,7 @@ abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountLis
         if (throwable is AkamaiErrorException) {
             showPopupErrorAkamai()
         } else {
-            onErrorLogin(ErrorHandler.getErrorMessage(context, throwable))
+            onErrorLogin(ErrorHandler.getErrorMessage(context, throwable, builder = getErrorHandlerBuilder()))
         }
     }
 
@@ -141,7 +141,17 @@ abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountLis
 
     //Impossible Flow
     protected fun onGoToActivationPage(messageErrorException: MessageErrorException) {
-        onErrorLogin(ErrorHandler.getErrorMessage(context, messageErrorException))
+        onErrorLogin(ErrorHandler.getErrorMessage(
+            context,
+            messageErrorException,
+            getErrorHandlerBuilder()
+        ))
+    }
+
+    protected fun getErrorHandlerBuilder(): ErrorHandler.Builder {
+        return ErrorHandler.Builder().apply {
+                className = this.javaClass.name
+        }.build()
     }
 
     protected fun onGoToSecurityQuestion() {
@@ -158,9 +168,5 @@ abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountLis
         const val OTP_MODE_PIN = "PIN"
 
         const val TOKOPEDIA_CARE_PATH = "help"
-
-        const val GOTO_ACTIVATION_FLOW = "goto_activation_flow"
-        const val LOGIN_TOKEN_CHOOSE_ACC= "login_token_choose_account"
-
     }
 }
