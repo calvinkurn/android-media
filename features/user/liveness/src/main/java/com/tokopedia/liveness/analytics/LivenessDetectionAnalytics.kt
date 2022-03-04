@@ -226,10 +226,15 @@ class LivenessDetectionAnalytics @Inject constructor() {
     }
 
     private fun getKycType(projectID: String): String {
-        val homeCreditProjectId = "16"
-        val coBrandProjectId = "18"
+        /**
+         * KYC - Ala Carte Project Id's
+         * - HomeCredit     = 16
+         * - CoBrand        = 18
+         * - GoCicil        = 21
+         */
 
-        return if (projectID == homeCreditProjectId || projectID == coBrandProjectId) {
+        val projectIdAlaCarte = listOf("16", "18", "21")
+        return if (projectIdAlaCarte.contains(projectID)) {
             "ala carte"
         } else {
             "ckyc"

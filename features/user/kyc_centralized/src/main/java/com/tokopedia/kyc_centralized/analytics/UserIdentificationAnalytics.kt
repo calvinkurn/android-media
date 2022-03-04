@@ -3,6 +3,7 @@ package com.tokopedia.kyc_centralized.analytics
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user_identification_common.KYCConstant.Companion.CO_BRAND_PROJECT_ID
+import com.tokopedia.user_identification_common.KYCConstant.Companion.GO_CICIL_PROJECT_ID
 import com.tokopedia.user_identification_common.KYCConstant.Companion.HOME_CREDIT_PROJECT_ID
 
 /**
@@ -218,7 +219,11 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
     }
 
     private fun getKycType(projectID: String): String {
-        return if (projectID == HOME_CREDIT_PROJECT_ID || projectID == CO_BRAND_PROJECT_ID) {
+        return if (
+                projectID == HOME_CREDIT_PROJECT_ID ||
+                projectID == CO_BRAND_PROJECT_ID ||
+                projectID == GO_CICIL_PROJECT_ID
+        ) {
             "ala carte"
         } else {
             "ckyc"
