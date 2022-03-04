@@ -75,6 +75,7 @@ private const val CLICK_COBA_AUO_ADS = "click - coba auto ads"
 private const val CLICK_DATE_PICKER = "click - date filter dashboard iklan produk"
 private const val CLICK_TANPA_GRUP = "click - tab iklan tanpa group"
 private const val CLICK_MULAI_BERIKLAN = "click - mulai beriklan iklan produk dashboard"
+private const val DEFAULT_FRAGMENT_LOAD_COUNT = 3
 class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView {
     private var adCurrentState = 0
     private var datePickerSheet: DatePickerSheet? = null
@@ -225,6 +226,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     }
     private fun renderManualViewPager() {
         view_pager_frag?.adapter = getViewPagerAdapter()
+        view_pager_frag.offscreenPageLimit = DEFAULT_FRAGMENT_LOAD_COUNT
         view_pager_frag.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {}
 
@@ -246,6 +248,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     private fun getViewPagerAdapter(): TopAdsDashboardBasePagerAdapter? {
         val list: ArrayList<FragmentTabItem> = arrayListOf()
         tab_layout?.getUnifyTabLayout()?.removeAllTabs()
+        tab_layout.tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
         tab_layout?.addNewTab(GRUP)
         tab_layout?.addNewTab(TANPA_GRUP)
         tab_layout?.addNewTab(DIHAPUS)
