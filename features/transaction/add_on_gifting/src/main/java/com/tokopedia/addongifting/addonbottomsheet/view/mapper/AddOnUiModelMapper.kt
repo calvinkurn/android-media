@@ -1,5 +1,6 @@
 package com.tokopedia.addongifting.addonbottomsheet.view.mapper
 
+import com.tokopedia.addongifting.addonbottomsheet.data.getaddonbyproduct.BasicInfoResponse
 import com.tokopedia.addongifting.addonbottomsheet.data.getaddonbyproduct.GetAddOnByProductResponse
 import com.tokopedia.addongifting.addonbottomsheet.data.getaddonsavedstate.AddOnDataResponse
 import com.tokopedia.addongifting.addonbottomsheet.data.getaddonsavedstate.GetAddOnSavedStateResponse
@@ -12,8 +13,10 @@ import kotlin.math.roundToLong
 
 object AddOnUiModelMapper {
 
+    const val ADD_ON_TYPE_GREETING_CARD = "Kartu Ucapan"
+    const val ADD_ON_TYPE_GREETING_CARD_AND_PACKAGING = "Kemasan & Kartu Ucapan"
+
     fun mapProduct(addOnProductData: AddOnProductData, getAddOnByProductResponse: GetAddOnByProductResponse): ProductUiModel {
-        val addOnByProduct = getAddOnByProductResponse.dataResponse.addOnByProducts.firstOrNull()
         val productData = addOnProductData.availableBottomSheetData.products.firstOrNull()
         return ProductUiModel().apply {
             isTokoCabang = addOnProductData.availableBottomSheetData.isTokoCabang
@@ -35,9 +38,9 @@ object AddOnUiModelMapper {
             productCount = addOnProductData.availableBottomSheetData.products.size
             mainProductQuantity = addOnProductData.availableBottomSheetData.products.firstOrNull()?.productQuantity ?: 0
             addOnId = addOn?.basicInfo?.id ?: ""
-            addOnName = addOn?.basicInfo?.name ?: ""
             addOnType = addOn?.basicInfo?.productAddOnType ?: ""
-            addOnDescription = ""
+            addOnTypeName = getAddOnTypeName(addOnType)
+            addOnName = addOn?.basicInfo?.name ?: ""
             addOnPrice = addOn?.inventory?.price?.roundToLong() ?: 0
             addOnQty = 1
             addOnSquareImageUrl = addOn?.basicInfo?.metadata?.pictures?.firstOrNull()?.url ?: ""
@@ -76,6 +79,20 @@ object AddOnUiModelMapper {
             packagingAndGreetingCardInfo = addOnProductData.availableBottomSheetData.addOnInfoWording.packagingAndGreetingCard
             invoiceNotSentToRecipientInfo = addOnProductData.availableBottomSheetData.addOnInfoWording.invoiceNotSendToRecipient
             isLoadingNoteState = false
+        }
+    }
+
+    private fun getAddOnTypeName(addOnType: String): String {
+        return when (addOnType) {
+            BasicInfoResponse.ADD_ON_TYPE_GREETING_CARD -> {
+                ADD_ON_TYPE_GREETING_CARD
+            }
+            BasicInfoResponse.ADD_ON_TYPE_GREETING_CARD_AND_PACKAGING -> {
+                ADD_ON_TYPE_GREETING_CARD_AND_PACKAGING
+            }
+            else -> {
+                ""
+            }
         }
     }
 

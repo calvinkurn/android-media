@@ -52,9 +52,9 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
             imageAddOn.setOnClickListener {
                 listener.onAddOnImageClicked(element)
             }
-            labelAddOnName.text = element.addOnName
-            if (element.addOnDescription.isNotBlank()) {
-                labelAddOnDescription.text = element.addOnDescription
+            labelAddOnName.text = element.addOnTypeName
+            if (element.addOnName.isNotBlank()) {
+                labelAddOnDescription.text = element.addOnName
                 labelAddOnDescription.show()
             } else {
                 labelAddOnDescription.gone()
