@@ -133,7 +133,7 @@ object CartUiModelMapper {
                 addOnText = availableGroup.giftingAddOn.tickerText
                 addOnImgUrl = availableGroup.giftingAddOn.iconUrl
                 if (availableGroup.giftingAddOn.addOnIds.isNotEmpty()) {
-                    addOnId = availableGroup.giftingAddOn.addOnIds.get(0)
+                    addOnId = availableGroup.giftingAddOn.addOnIds[0]
                 }
             }
             cartShopHolderDataList.add(shopUiModel)

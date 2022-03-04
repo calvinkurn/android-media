@@ -569,6 +569,11 @@ fun getQueryShipmentAddressFormV3(): String {
                 additional_vertical_id
                 transaction_type
               }
+              add_on_wording {
+                packaging_and_greeting_card
+                only_greeting_card
+                invoice_not_sent_to_recipient
+              }
             }
           }
         }
