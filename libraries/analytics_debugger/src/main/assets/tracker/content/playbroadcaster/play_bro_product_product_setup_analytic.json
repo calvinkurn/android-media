@@ -11,6 +11,26 @@
       "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
+    },
+    {
+      "event": "clickSellerBroadcast",
+      "eventAction": "click - confirm close on add product page",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickSellerBroadcast",
+      "eventAction": "click - cancel close on add product page",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
     }
   ]
 }
