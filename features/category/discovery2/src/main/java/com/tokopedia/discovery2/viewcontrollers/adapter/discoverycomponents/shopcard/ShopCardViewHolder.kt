@@ -117,7 +117,7 @@ class ShopCardViewHolder(itemView: View, private val fragment: Fragment) : Abstr
                 val totalItemCount: Int = linearLayoutManager.itemCount
                 val firstVisibleItemPosition: Int = linearLayoutManager.findFirstVisibleItemPosition()
                 if (!mShopCardViewModel.isLoadingData() && !mShopCardViewModel.isLastPage()) {
-                    if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition >= 0 && totalItemCount >= mShopCardViewModel.getPageSize()) {
+                    if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition >= 0) {
                         mShopCardViewModel.fetchShopCardPaginatedData()
                     }
                 }
