@@ -80,8 +80,8 @@ class GatewayViewHolder(
     private fun View.setDisableData(checkoutData: CheckoutData) {
         gatewaySubHeader2.visibility = View.GONE
         gatewaySubHeader.visibility = View.VISIBLE
-        if (!checkoutData.reason_long.isNullOrBlank())
-            gatewaySubHeader.text = checkoutData.reason_long
+        if (!checkoutData.reason_short.isNullOrBlank())
+            gatewaySubHeader.text = checkoutData.reason_short
         else
             gatewaySubHeader.visibility = View.GONE
     }

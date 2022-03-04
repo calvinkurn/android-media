@@ -27,6 +27,7 @@ data class CheckoutData(
     @SerializedName("dark_img_url") val dark_img_url: String?,
     @SerializedName("disable") val disable: Boolean,
     @SerializedName("reason_long") val reason_long: String?,
+    @SerializedName("reason_short") val reason_short: String?,
     @SerializedName("detail") val tenureDetail: List<TenureDetail>,
     @SerializedName("user_state") val userState: String? = null,
     @SerializedName("user_balance_amt") val userAmount: String? = null,

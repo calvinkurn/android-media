@@ -110,6 +110,7 @@ const val GQL_PAYLATER_ACTIVATION = """
       light_img_url
       dark_img_url
       disable
+      reason_short
       reason_long
       user_state
       user_balance_amt
