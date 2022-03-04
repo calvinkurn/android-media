@@ -30,6 +30,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
+import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
@@ -40,6 +41,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDa
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteDiscussion
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
 import com.tokopedia.product.util.ProductDetailTestUtil
 import com.tokopedia.product.util.ProductDetailTestUtil.generateMiniCartMock
@@ -919,13 +921,15 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val productId = "123"
         val productParams = ProductParams(productId, "", "", "", "", "")
         val userLocation = UserLocationRequest("123")
+        val tokoNow = TokoNowParam("456", "789", "now15")
         `co every p1 success`(dataP1)
 
         coEvery {
             getPdpLayoutUseCase.requestParams
         } returns GetPdpLayoutUseCase.createParams(productParams.productId
                 ?: "", productParams.shopDomain ?: "", productParams.productName
-                ?: "", productParams.warehouseId ?: "", "", userLocation, "")
+                ?: "", productParams.warehouseId ?: "", "", userLocation, "",
+                tokoNow)
 
         viewModel.getProductP1(productParams, true, "", userLocationLocal = getUserLocationCache())
 
@@ -933,6 +937,10 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_KEY, "").isEmpty())
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_SHOP_DOMAIN, "").isEmpty())
         Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_USER_LOCATION) as? UserLocationRequest) != null)
+
+        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.shopId == "456")
+        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.warehouseId == "789")
+        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.serviceType == "now15")
     }
 
     @Test
@@ -942,13 +950,15 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val productKey = "productYehez"
         val productParams = ProductParams("", shopDomain, productKey, "", "", "")
         val userLocation = UserLocationRequest("123")
+        val tokoNow = TokoNowParam("456", "789", "now15")
 
         `co every p1 success`(dataP1)
         coEvery {
             getPdpLayoutUseCase.requestParams
         } returns GetPdpLayoutUseCase.createParams(productParams.productId
                 ?: "", productParams.shopDomain ?: "", productParams.productName
-                ?: "", productParams.warehouseId ?: "", "", userLocation, "")
+                ?: "", productParams.warehouseId ?: "", "", userLocation, "",
+                tokoNow)
 
         viewModel.getProductP1(productParams, true, " ", userLocationLocal = getUserLocationCache())
 
@@ -956,6 +966,10 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_KEY, "") == productKey)
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_SHOP_DOMAIN, "") == shopDomain)
         Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_USER_LOCATION) as? UserLocationRequest)?.districtID == "123")
+
+        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.shopId == "456")
+        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.warehouseId == "789")
+        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.serviceType == "now15")
     }
 
     @Test
@@ -964,13 +978,15 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val productParams = ProductParams("", "", "", "", "", "")
         val userLocation = UserLocationRequest("")
         val extParam = anyString()
+        val tokoNow = TokoNowParam("123")
 
         `co every p1 success`(dataP1)
         coEvery {
             getPdpLayoutUseCase.requestParams
         } returns GetPdpLayoutUseCase.createParams(productParams.productId
-            ?: "", productParams.shopDomain ?: "", productParams.productName
-            ?: "", productParams.warehouseId ?: "", "", userLocation, extParam.encodeToUtf8())
+                ?: "", productParams.shopDomain ?: "", productParams.productName
+                ?: "", productParams.warehouseId ?: "", "", userLocation, extParam.encodeToUtf8(),
+                tokoNow)
 
         viewModel.getProductP1(productParams, userLocationLocal = getUserLocationCache(), extParam = extParam)
 
@@ -1440,6 +1456,37 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     //getProductTopadsStatus
     @Test
+    fun `when get topads status then verify error response`() = runBlockingTest {
+        val productId = "12345"
+        val paramsTest = "txsc=asdf"
+
+        val isSuccess = slot<Boolean>()
+        val errorMessage = slot<String>()
+
+        coEvery {
+            getTopadsIsAdsUseCase.executeOnBackground()
+        } throws Throwable("error")
+
+        coEvery { remoteConfigInstance.getLong(any(), any())
+        }  returns 5000
+
+        viewModel.getProductTopadsStatus(productId, paramsTest)
+        coVerify { getTopadsIsAdsUseCase.executeOnBackground() }
+        verify(exactly = 1) {
+            ProductDetailServerLogger.logBreadCrumbTopAdsIsAds(
+                    isSuccess = capture(isSuccess),
+                    errorMessage = capture(errorMessage))
+        }
+
+        Assert.assertTrue(viewModel.topAdsRecomChargeData.value is Fail)
+        Assert.assertEquals(isSuccess.captured, false)
+        Assert.assertEquals(errorMessage.captured, "error")
+
+        Assert.assertEquals((viewModel.topAdsRecomChargeData.value as Fail).throwable.message,
+                "error")
+    }
+
+    @Test
     fun `when get topads status then verify success response and enable to charge`() = runBlockingTest {
         val productId = "12345"
         val paramsTest = "txsc=asdf"
@@ -1451,14 +1498,29 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
                                 message = "OK"
                         )
                 ))
+        val isSuccess = slot<Boolean>()
+        val errorCode = slot<Int>()
+        val isTopAds = slot<Boolean>()
+
+        coEvery { remoteConfigInstance.getLong(any(), any())
+        }  returns 5000
+
         coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns expectedResponse
 
         viewModel.getProductTopadsStatus(productId, paramsTest)
         coVerify { getTopadsIsAdsUseCase.executeOnBackground() }
+        coVerify(exactly = 1) {
+            ProductDetailServerLogger.logBreadCrumbTopAdsIsAds(
+                    isSuccess = capture(isSuccess),
+                    errorCode = capture(errorCode),
+                    isTopAds = capture(isTopAds))
+        }
 
         Assert.assertTrue(expectedResponse.data.status.error_code in 200..300 && expectedResponse.data.productList[0].isCharge)
+        Assert.assertEquals(isSuccess.captured, true)
+        Assert.assertEquals(errorCode.captured, 200)
+        Assert.assertEquals(isTopAds.captured, true)
     }
-
 
     /**
      * tokonow recom section
@@ -1627,33 +1689,33 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         val expectedResponse = PlayWidget()
         val expectedUiModel = PlayWidgetUiModel.Medium(
-            "title",
-            "action title",
-            "applink",
-            true,
-            PlayWidgetConfigUiModel(
+                "title",
+                "action title",
+                "applink",
                 true,
-                1000,
-                true,
-                1,
-                1,
-                2,
-                1
-            ),
-            PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
-            listOf()
+                PlayWidgetConfigUiModel(
+                        true,
+                        1000,
+                        true,
+                        1,
+                        1,
+                        2,
+                        1
+                ),
+                PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+                listOf()
         )
 
 
         coEvery {
             playWidgetTools.getWidgetFromNetwork(
-                widgetType = widgetType
+                    widgetType = widgetType
             )
         } returns expectedResponse
 
         coEvery {
             playWidgetTools.mapWidgetToModel(
-                expectedResponse
+                    expectedResponse
             )
         } returns expectedUiModel
 
@@ -1686,13 +1748,13 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             playWidgetTools.getWidgetFromNetwork(
-                widgetType = widgetType
+                    widgetType = widgetType
             )
         } returns expectedResponse
 
         coEvery {
             playWidgetTools.mapWidgetToModel(
-                expectedResponse
+                    expectedResponse
             )
         } throws expectedThrowable
 
@@ -1705,21 +1767,21 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     fun `play widget toggle reminder success`() {
 
         val fakeUiModel = PlayWidgetUiModel.Medium(
-            "title",
-            "action title",
-            "applink",
-            true,
-            PlayWidgetConfigUiModel(
+                "title",
+                "action title",
+                "applink",
                 true,
-                1000,
-                true,
-                1,
-                1,
-                2,
-                1
-            ),
-            PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
-            listOf()
+                PlayWidgetConfigUiModel(
+                        true,
+                        1000,
+                        true,
+                        1,
+                        1,
+                        2,
+                        1
+                ),
+                PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+                listOf()
         )
         val fakeChannelId = "123"
         val fakeReminderType = PlayWidgetReminderType.Reminded
@@ -1729,7 +1791,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             playWidgetTools.updateActionReminder(
-                fakeUiModel, fakeChannelId, fakeReminderType
+                    fakeUiModel, fakeChannelId, fakeReminderType
             )
         } returns fakeUiModel
 
@@ -1742,9 +1804,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         } returns expectedMapReminder
 
         viewModel.updatePlayWidgetToggleReminder(
-            fakeUiModel,
-            fakeChannelId,
-            fakeReminderType
+                fakeUiModel,
+                fakeChannelId,
+                fakeReminderType
         )
 
         viewModel.playWidgetModel.verifySuccessEquals(Success(fakeUiModel))
@@ -1755,21 +1817,21 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     fun `play widget toggle reminder fail cause by map reminder return false`() {
 
         val fakeUiModel = PlayWidgetUiModel.Medium(
-            "title",
-            "action title",
-            "applink",
-            true,
-            PlayWidgetConfigUiModel(
+                "title",
+                "action title",
+                "applink",
                 true,
-                1000,
-                true,
-                1,
-                1,
-                2,
-                1
-            ),
-            PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
-            listOf()
+                PlayWidgetConfigUiModel(
+                        true,
+                        1000,
+                        true,
+                        1,
+                        1,
+                        2,
+                        1
+                ),
+                PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+                listOf()
         )
         val fakeChannelId = "123"
         val fakeReminderType = PlayWidgetReminderType.Reminded
@@ -1779,7 +1841,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             playWidgetTools.updateActionReminder(
-                fakeUiModel, fakeChannelId, fakeReminderType
+                    fakeUiModel, fakeChannelId, fakeReminderType
             )
         } returns fakeUiModel
 
@@ -1793,14 +1855,14 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             playWidgetTools.updateActionReminder(
-                fakeUiModel, fakeChannelId, fakeReminderType.switch()
+                    fakeUiModel, fakeChannelId, fakeReminderType.switch()
             )
         } returns fakeUiModel
 
         viewModel.updatePlayWidgetToggleReminder(
-            fakeUiModel,
-            fakeChannelId,
-            fakeReminderType
+                fakeUiModel,
+                fakeChannelId,
+                fakeReminderType
         )
 
         viewModel.playWidgetModel.verifySuccessEquals(Success(fakeUiModel))
@@ -1811,21 +1873,21 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     fun `play widget toggle reminder fail cause by exception`() {
 
         val fakeUiModel = PlayWidgetUiModel.Medium(
-            "title",
-            "action title",
-            "applink",
-            true,
-            PlayWidgetConfigUiModel(
+                "title",
+                "action title",
+                "applink",
                 true,
-                1000,
-                true,
-                1,
-                1,
-                2,
-                1
-            ),
-            PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
-            listOf()
+                PlayWidgetConfigUiModel(
+                        true,
+                        1000,
+                        true,
+                        1,
+                        1,
+                        2,
+                        1
+                ),
+                PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+                listOf()
         )
         val fakeChannelId = "123"
         val fakeReminderType = PlayWidgetReminderType.Reminded
@@ -1834,7 +1896,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             playWidgetTools.updateActionReminder(
-                fakeUiModel, fakeChannelId, fakeReminderType
+                    fakeUiModel, fakeChannelId, fakeReminderType
             )
         } returns fakeUiModel
 
@@ -1844,14 +1906,14 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             playWidgetTools.updateActionReminder(
-                fakeUiModel, fakeChannelId, fakeReminderType.switch()
+                    fakeUiModel, fakeChannelId, fakeReminderType.switch()
             )
         } returns fakeUiModel
 
         viewModel.updatePlayWidgetToggleReminder(
-            fakeUiModel,
-            fakeChannelId,
-            fakeReminderType
+                fakeUiModel,
+                fakeChannelId,
+                fakeReminderType
         )
 
         viewModel.playWidgetModel.verifySuccessEquals(Success(fakeUiModel))
@@ -1912,5 +1974,6 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         const val PARAM_PRODUCT_KEY = "productKey"
         const val PARAM_USER_LOCATION = "userLocation"
         const val PARAM_EXT_PARAM = "extParam"
+        const val PARAM_TOKONOW = "tokonow"
     }
 }

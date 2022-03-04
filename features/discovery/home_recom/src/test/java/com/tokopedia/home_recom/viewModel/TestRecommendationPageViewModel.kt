@@ -27,6 +27,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -51,6 +52,7 @@ class TestRecommendationPageViewModel {
     private val getTopAdsHeadlineUseCase = mockk<GetTopAdsHeadlineUseCase>(relaxed = true)
     private val addToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
+    private val remoteConfig = mockk<FirebaseRemoteConfigImpl>(relaxed = true)
 
     private val viewModel: RecommendationPageViewModel = RecommendationPageViewModel(
             userSessionInterface = userSession,
@@ -62,7 +64,8 @@ class TestRecommendationPageViewModel {
             addToCartUseCase = addToCartUseCase,
             getTopadsIsAdsUseCase = getTopadsIsAdsUseCase,
             getPrimaryProductUseCase = getPrimaryProductUseCase,
-            getTopAdsHeadlineUseCase = getTopAdsHeadlineUseCase
+            getTopAdsHeadlineUseCase = getTopAdsHeadlineUseCase,
+            remoteConfig = remoteConfig
     )
     private val recommendation = RecommendationItem(productId = 1234)
     private val recommendationTopads = RecommendationItem(productId = 1234, isTopAds = true, wishlistUrl = "1234")

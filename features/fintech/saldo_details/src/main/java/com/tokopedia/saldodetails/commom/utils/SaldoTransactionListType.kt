@@ -1,6 +1,7 @@
 package com.tokopedia.saldodetails.commom.utils
 
 object TransactionTitle{
+    const val ALL_TAB = "Semua Transaksi"
     const val ALL_TRANSACTION = "Semua"
     const val SALDO_REFUND = "Saldo Refund"
     const val SALDO_SALES = "Penjualan"
@@ -24,6 +25,14 @@ object TransactionTypeMapper{
             TransactionTitle.ALL_TRANSACTION -> AllTransaction
             else -> null
         }
+    }
+
+    fun getFilterList(): ArrayList<String> {
+        val filterList = arrayListOf<String>()
+        filterList.add(TransactionTitle.ALL_TRANSACTION)
+        filterList.add(TransactionTitle.SALDO_REFUND)
+        filterList.add(TransactionTitle.SALDO_INCOME)
+        return filterList
     }
 
 

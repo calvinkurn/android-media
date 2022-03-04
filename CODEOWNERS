@@ -207,6 +207,7 @@
 /features/user/user_identification_no_op/       		@tokopedia/android-minionkevin-dev
 /features/user/fcm_common/                              @tokopedia/android-minionkevin-dev
 /features/user/seamless_login/                          @tokopedia/android-minionkevin-dev
+/features/user/seamless_login_common/                   @tokopedia/android-minionkevin-dev
 /features/user/kyc_centralized/                         @tokopedia/android-minionkevin-dev
 /features/user/attachvoucher/                           @tokopedia/android-minionkevin-dev
 /features/user/stickylogin/                             @tokopedia/android-minionkevin-dev
@@ -226,6 +227,7 @@
 /features/communication/inbox/                          @tokopedia/android-minionkevin-dev
 /features/communication/inbox_common/                   @tokopedia/android-minionkevin-dev
 /features/communication/notifcenter/                    @tokopedia/android-minionkevin-dev
+/features/communication/push-notification-common/       @tokopedia/android-minionyoda-dev
 
 /features/operational/contact_us        				@tokopedia/android-minionsolo-dev
 /features/operational/csat_rating        				@tokopedia/android-minionsolo-dev
@@ -349,6 +351,8 @@
 /libraries/screen_recorder                              @tokopedia/android-core-dev
 /libraries/screenshot_observer                          @tokopedia/android-core-dev
 /libraries/tokopatch                                    @tokopedia/android-core-dev
+/libraries/macrobenchmark/								@tokopedia/android-core-dev
+/libraries/universal_sharing/							@tokopedia/android-gatekeeperloadtime-dev
 
 /buildconfig/                                           @tokopedia/android-core-dev
 /dynamic-features/                                      @tokopedia/android-core-dev

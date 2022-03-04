@@ -747,7 +747,8 @@
                 android:value="androidx.startup"
                 tools:node="remove" />
         </provider>
-
+        <meta-data android:name="google_analytics_deferred_deep_link_enabled"
+            android:value="true"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.tokopedia.tkpd.provider"

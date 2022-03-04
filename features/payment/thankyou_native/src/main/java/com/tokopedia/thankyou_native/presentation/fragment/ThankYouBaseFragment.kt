@@ -18,7 +18,10 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
+import com.tokopedia.localizationchooseaddress.domain.model.WarehouseModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
+import com.tokopedia.localizationchooseaddress.domain.response.Warehouse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.thankyou_native.R
@@ -143,7 +146,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     private fun getFeatureRecommendationData() {
         thanksPageData.configFlagData?.apply {
             if (isThanksWidgetEnabled && shouldHideFeatureRecom == false)
-                thanksPageDataViewModel.getFeatureEngine(thanksPageData)
+                thanksPageDataViewModel.checkForGoPayActivation(thanksPageData)
         }
     }
 
@@ -279,7 +282,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                     defaultAddress.address_id, defaultAddress.city_id, defaultAddress.district_id,
                     defaultAddress.lat, defaultAddress.long, defaultAddress.label,
                     defaultAddress.postal_code,
-                    data.tokonow.shopId.toString(), data.tokonow.warehouseId.toString()
+                    data.tokonow.shopId.toString(), data.tokonow.warehouseId.toString(),
+                    TokonowWarehouseMapper.mapWarehousesResponseToLocal(data.tokonow.warehouses), data.tokonow.serviceType
                 )
             }
         } else {
@@ -292,7 +296,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                     addressData.latitude, addressData.longitude,
                     "${addressData.addressName} ${addressData.receiverName}",
                     addressData.postalCode,
-                    data.tokonow.shopId.toString(), data.tokonow.warehouseId.toString()
+                    data.tokonow.shopId.toString(), data.tokonow.warehouseId.toString(),
+                    TokonowWarehouseMapper.mapWarehousesResponseToLocal(data.tokonow.warehouses), data.tokonow.serviceType
                 )
             }
         }

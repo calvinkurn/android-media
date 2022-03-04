@@ -52,4 +52,13 @@ class CentralizedPromoResourceProvider @Inject constructor(
     fun getPromoCreationDescriptionFreeShipping(): String {
         return getString(R.string.centralized_promo_promo_creation_free_shipping_description).orEmpty()
     }
+
+    fun getPromoCreationTitleVoucherProduct(): String {
+        return getString(R.string.centralized_promo_promo_creation_voucher_product_title).orEmpty()
+    }
+
+    fun getPromoCreationDescriptionVoucherProduct(): String {
+        return getString(R.string.centralized_promo_promo_creation_voucher_product_description).orEmpty()
+    }
+
 }

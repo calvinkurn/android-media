@@ -72,6 +72,7 @@ open class ProductAttachmentUiModel protected constructor(
     var campaignId: Long = builder.campaignId
     var isFulfillment: Boolean = builder.isFulfillment
     var urlTokocabang: String = builder.urlTokoCabang
+    var descTokoCabang: String = builder.descTokoCabang
     var parentId: String = "0"
 
     var colorVariantId: String = ""
@@ -124,6 +125,7 @@ open class ProductAttachmentUiModel protected constructor(
             campaignId = attribute.productProfile.campaignId
             isFulfillment = attribute.productProfile.isFulFillment
             urlTokocabang = attribute.productProfile.urlTokocabang
+            descTokoCabang = attribute.productProfile.descTokocabang
             if (variants.isNotEmpty()) {
                 setupVariantsField()
             }
@@ -351,6 +353,7 @@ open class ProductAttachmentUiModel protected constructor(
         internal var isUpcomingCampaign: Boolean = false
         internal var isFulfillment: Boolean = false
         internal var urlTokoCabang: String = ""
+        internal var descTokoCabang: String = ""
 
         fun withProductAttributesResponse(product: ProductAttachmentAttributes): Builder {
             withProductId(product.productId)
@@ -381,6 +384,7 @@ open class ProductAttachmentUiModel protected constructor(
             withIsUpcomingCampaign(product.productProfile.isUpcomingCampaign)
             withIsFulfillment(product.productProfile.isFulFillment)
             withUrlTokoCabang(product.productProfile.urlTokocabang)
+            withDescTokoCabang(product.productProfile.descTokocabang)
             return self()
         }
 
@@ -531,6 +535,11 @@ open class ProductAttachmentUiModel protected constructor(
 
         fun withUrlTokoCabang(urlTokoCabang: String): Builder {
             this.urlTokoCabang = urlTokoCabang
+            return self()
+        }
+
+        fun withDescTokoCabang(descTokoCabang: String): Builder {
+            this.descTokoCabang = descTokoCabang
             return self()
         }
 

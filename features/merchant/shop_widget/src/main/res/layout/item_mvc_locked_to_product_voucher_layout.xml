@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    android:clipChildren="true"
+    android:clipToPadding="true">
+
+    <com.tokopedia.shop_widget.customview.ShadowOutlineLayout
+        android:elevation="6dp"
+        app:srcCompat="@drawable/mvc_locked_to_product_voucher_shadow"
+        android:layout_gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:translationY="-2dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="18dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="2dp"
+        android:layout_height="54dp">
+
+    </com.tokopedia.shop_widget.customview.ShadowOutlineLayout>
+
+    <FrameLayout
+        android:elevation="6dp"
+        android:outlineProvider="none"
+        android:id="@+id/mvc_container"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:clipChildren="false">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:clipChildren="true"
+            android:clipToPadding="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="fitXY"
+                android:layout_marginStart="@dimen/dp_3"
+                app:srcCompat="@drawable/mvc_locked_to_product_voucher_background" />
+
+            <com.tokopedia.shop_widget.customview.SquareImageView
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:id="@+id/image_coupon_bg"
+                app:srcCompat="@drawable/ic_mvc_locked_to_product_voucher_left_background"
+                android:layout_width="48dp"
+                android:layout_height="match_parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:scaleType="fitStart"
+                tools:layout_height="54dp" />
+
+            <com.tokopedia.shop_widget.customview.MvcLockedToProductVoucherTextContainer
+                android:id="@+id/mvc_text_container"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_width="0dp"
+                android:layout_height="0dp"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+</FrameLayout>

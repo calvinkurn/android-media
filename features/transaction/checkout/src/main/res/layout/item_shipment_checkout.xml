@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_invoice_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_Background"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/layout_warning_and_error"
+        layout="@layout/layout_item_warning_and_error"
+        tools:visibility="gone" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/checkout_custom_ticker_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        app:card_type="clear">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/pp_ticker_error_background">
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/checkout_custom_ticker_icon"
+                android:layout_width="@dimen/unify_ticker_icon_size"
+                android:layout_height="@dimen/unify_ticker_icon_size"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:icon_color_light_enable="@color/tickerunify_error_icon_color"
+                app:icon_color_night_enable="@color/tickerunify_error_icon_color"
+                app:icon_name="ERROR"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/checkout_custom_ticker_description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginBottom="@dimen/spacing_lvl3"
+                android:textColor="@color/tickerunify_content_text_color"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/checkout_custom_ticker_action"
+                app:layout_constraintStart_toEndOf="@+id/checkout_custom_ticker_icon"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/checkout_custom_ticker_action"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:paddingStart="16dp"
+                android:text="@string/checkout_label_see_error_product"
+                android:textColor="@color/Unify_G500"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="heading_6"
+                tools:ignore="RtlSymmetry" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+
+    <LinearLayout
+        android:id="@+id/container_order"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            layout="@layout/item_shipment_seller_info"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/ticker_warning_closable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"
+            app:closeButtonVisibility="visible"
+            app:tickerShapeType="loose"
+            app:tickerType="warning" />
+
+        <include
+            layout="@layout/item_shipment_product"
+            tools:visibility="visible" />
+
+        <include
+            layout="@layout/item_shipment_other_product"
+            tools:visibility="gone" />
+
+        <!--Shipping: Shipping Experience-->
+        <include
+            layout="@layout/item_shipment_shipping_experience"
+            tools:visibility="visible" />
+
+        <!--Shipping: Option (Insurance, dropshipper, etc)-->
+        <include
+            layout="@layout/item_shipment_shipping_options"
+            tools:visibility="gone" />
+
+        <include
+            layout="@layout/item_shipment_subtotal"
+            tools:visibility="visible" />
+
+    </LinearLayout>
+
+</LinearLayout>
