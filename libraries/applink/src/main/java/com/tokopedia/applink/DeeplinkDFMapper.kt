@@ -2,6 +2,7 @@ package com.tokopedia.applink
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.ApplinkConst.*
@@ -597,7 +598,14 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Review Credibility
             add(DFP({ it.startsWith(ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY)}, DF_MERCHANT_REVIEW, R.string.title_review_credibility))
-            add(DFP({ it.startsWith(ApplinkConstInternalGlobal.FEEDBACK_FORM) }, DF_FEEDBACKFORM, R.string.internal_feedback))
+
+            //Feedback Form
+            add(DFP({
+                Log.d("Feedbackform", it)
+                Log.d("Feedbackform", ApplinkConstInternalGlobal.FEEDBACK_FORM)
+                Log.d("Feedbackform", "apakah true ${it.startsWith(ApplinkConstInternalGlobal.FEEDBACK_FORM) }")
+                it.startsWith(ApplinkConstInternalGlobal.FEEDBACK_FORM) || it == ApplinkConstInternalGlobal.FEEDBACK_FORM
+                    }, DF_FEEDBACKFORM, R.string.internal_feedback))
         }
     }
 
