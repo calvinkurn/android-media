@@ -251,7 +251,7 @@ object ProductTrackingConstant {
         const val VIDEO_DURATION = "duration:"
         const val VIDEO_LAST_STOP_TIME = "stop time:"
         const val VIDEO_AUTO_PLAY = "auto play:"
-        const val EVENT_LABEL_CLICK_SHIPMENT = "title:%s;labelShipping:%s;cod:%s"
+        const val EVENT_LABEL_CLICK_SHIPMENT = "title:%s;labelShipping:%s;cod:%s;"
         const val EVENT_LABEL_CLICK_SHIPMENT_ERROR = "error message:%s;"
         const val VIEW_LABEL_CLICK_SHIPMENT_ERROR_BOTTOM_SHEET = "bottomsheet title:%s;"
         const val EVENT_LABEL_CLICK_BEST_SELLER = "label:%s;category_id:%s;category_name:%s;"
