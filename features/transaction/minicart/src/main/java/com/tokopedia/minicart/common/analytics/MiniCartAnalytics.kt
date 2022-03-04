@@ -6,13 +6,12 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
 import javax.inject.Inject
 
 class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterface) {
 
     enum class Page {
-        HOME_PAGE, SEARCH_PAGE, CATEGORY_PAGE,DISCOVERY_PAGE, RECOMMENDATION_INFINITE
+        HOME_PAGE, SEARCH_PAGE, CATEGORY_PAGE, DISCOVERY_PAGE, RECOMMENDATION_INFINITE, MVC_PAGE
     }
 
     companion object {
@@ -31,6 +30,9 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val KEY_CHECKOUT_OPTION = "checkout_option"
         const val KEY_CHECKOUT_STEP = "checkout step"
         const val KEY_ITEMS = "items"
+        const val KEY_SHOP_ID = "shopId"
+        const val KEY_PROMO_CODE = "promoCode"
+        const val KEY_PAGE_SOURCE = "pageSource"
 
         // EXTRA KEY'S VALUE
         const val VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM = "purchase platform"
@@ -40,6 +42,9 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val VALUE_CHECKOUT_OPTION_VIEW_MINI_CART_PAGE = "view minicart page"
         const val VALUE_CHECKOUT_STEP_ZERO = "0"
         const val VALUE_CHECKOUT_STEP_ONE = "1"
+        const val VALUE_PROMO_CODE_FULFILLED = "fulfilled"
+        const val VALUE_PROMO_CODE_NOT_FULFILLED = "not_fulfilled"
+        const val VALUE_PAGE_SOURCE_MVC_PAGE = "mvcpage"
 
         // EVENT NAME
         const val EVENT_NAME_CLICK_MINICART = "clickMinicart"
@@ -47,10 +52,13 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val EVENT_NAME_BEGIN_CHECKOUT = "begin_checkout"
         const val EVENT_NAME_CHECKOUT_PROGRESS = "checkout_progress"
         const val EVENT_NAME_CHECKOUT = "checkout"
+        const val EVENT_NAME_CLICK_PG = "clickPG"
+        const val EVENT_NAME_VIEW_PG_IRIS = "viewPGIris"
 
         // EVENT CATEGORY
         const val EVENT_CATEGORY_MINICART = "minicart"
         const val EVENT_CATEGORY_CLICK_BUY = "tokonow %s"
+        const val EVENT_CATEGORY_SHOP_PAGE_BUYER = "shop page - buyer"
 
         // EVENT ACTION
         const val EVENT_ACTION_CLICK_PRODUCT_NAME = "click product name"
@@ -77,6 +85,8 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val EVENT_ACTION_CLICK_DIRECT_CHAT_ON_BOTTOM_SHEET = "click langsung chat on minicart chat attachment"
         const val EVENT_ACTION_CLICK_PRODUCT_CARD_TICK_BOX_CHAT_ON_BOTTOM_SHEET = "click product tickbox on minicart chat attachment"
         const val EVENT_ACTION_CLICK_ASK_PRODUCT_CHAT_ON_BOTTOM_SHEET = "click tanya soal produk on minicart chat attachment"
+        const val EVENT_ACTION_CLICK_CHECK_CART = "click check cart"
+        const val EVENT_ACTION_MVC_PROGRESS_BAR_IMPRESSION = "mvc progress bar impression"
 
         // EVENT LABEL
         const val EVENT_LABEL_SUCCESS = "success"
@@ -559,5 +569,32 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
             eventAction = EVENT_ACTION_CLICK_ASK_PRODUCT_CHAT_ON_BOTTOM_SHEET
         )
         sendGeneralEvent(data)
+    }
+
+    /* MINI CART SIMPLIFIED MVC Page : https://mynakama.tokopedia.com/datatracker/requestdetail/view/2549 */
+    // 6
+    fun eventClickCheckCart(basketSize: String, isFulfilled: Boolean, shopId: String,
+                            pageSource: Page?, businessUnit: String, currentSite: String) {
+        val trackingData = TrackAppUtils.gtmData(EVENT_NAME_CLICK_PG, EVENT_CATEGORY_SHOP_PAGE_BUYER,
+                EVENT_ACTION_CLICK_CHECK_CART, basketSize)
+        trackingData[KEY_BUSINESS_UNIT] = businessUnit
+        trackingData[KEY_CURRENT_SITE] = currentSite
+        trackingData[KEY_PAGE_SOURCE] = if (pageSource == Page.MVC_PAGE) VALUE_PAGE_SOURCE_MVC_PAGE else ""
+        trackingData[KEY_PROMO_CODE] = if (isFulfilled) VALUE_PROMO_CODE_FULFILLED else VALUE_PROMO_CODE_NOT_FULFILLED
+        trackingData[KEY_SHOP_ID] = shopId
+        trackingData[KEY_USER_ID] = userSession.userId
+        sendGeneralEvent(trackingData)
+    }
+
+    // 8
+    fun eventMvcProgressBarImpression(basketSize: String, promoPercentage: String, shopId: String,
+                                      businessUnit: String, currentSite: String) {
+        val trackingData = TrackAppUtils.gtmData(EVENT_NAME_VIEW_PG_IRIS, EVENT_CATEGORY_SHOP_PAGE_BUYER,
+                EVENT_ACTION_MVC_PROGRESS_BAR_IMPRESSION, "$basketSize - $promoPercentage%")
+        trackingData[KEY_BUSINESS_UNIT] = businessUnit
+        trackingData[KEY_CURRENT_SITE] = currentSite
+        trackingData[KEY_SHOP_ID] = shopId
+        trackingData[KEY_USER_ID] = userSession.userId
+        sendGeneralEvent(trackingData)
     }
 }

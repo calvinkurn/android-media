@@ -3,6 +3,7 @@ package com.tokopedia.minicart.common.simplified
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
@@ -20,9 +21,12 @@ class MiniCartSimplifiedViewModel @Inject constructor(private val getMiniCartLis
     : ViewModel() {
 
     // Global Data
-    var currentShopIds: List<String> = emptyList()
-    var currentPromoId: String = "0"
-    var currentPromoCode: String = ""
+    internal var currentShopIds: List<String> = emptyList()
+    internal var currentPromoId: String = "0"
+    internal var currentPromoCode: String = ""
+    internal var currentPageSource: MiniCartAnalytics.Page = MiniCartAnalytics.Page.MVC_PAGE
+    internal var currentBusinessUnit: String = ""
+    internal var currentSite: String = ""
 
     // State Data
     private val _miniCartSimplifiedState = MutableLiveData<MiniCartSimplifiedState>()
@@ -38,6 +42,9 @@ class MiniCartSimplifiedViewModel @Inject constructor(private val getMiniCartLis
     private val _validateUseMvcData = MutableLiveData<ValidateUseMvcData>()
     val validateUseMvcData: LiveData<ValidateUseMvcData>
         get() = _validateUseMvcData
+
+    // Flag
+    internal var isFirstValidate: Boolean = true
 
     // API Call & Callback
 
