@@ -117,8 +117,8 @@ class RechargeOrderDetailViewModelTest {
             recommendationUseCase.getRecommendationPosition(any(), any(), any())
         } coAnswers {
             Success(listOf(
-                "dg_order_detail",
-                "pg_order_detail"
+                "dg_order_detail_dgu",
+                "pg_order_detail_dgu"
             ))
         }
 
@@ -142,8 +142,8 @@ class RechargeOrderDetailViewModelTest {
             recommendationUseCase.getRecommendationPosition(any(), any(), any())
         } coAnswers {
             Success(listOf(
-                "pg_order_detail",
-                "dg_order_detail"
+                "pg_order_detail_dgu",
+                "dg_order_detail_dgu"
             ))
         }
 
@@ -192,8 +192,8 @@ class RechargeOrderDetailViewModelTest {
     fun getDigitalRecommendationPositionData_whenValueSuccess_shouldReturnListOfString() {
         // given
         val expectedRecommendationList = listOf(
-            "dg_order_detail",
-            "pg_order_detail"
+            "dg_order_detail_dgu",
+            "pg_order_detail_dgu"
         )
         coEvery {
             orderDetailUseCase.execute(any())
