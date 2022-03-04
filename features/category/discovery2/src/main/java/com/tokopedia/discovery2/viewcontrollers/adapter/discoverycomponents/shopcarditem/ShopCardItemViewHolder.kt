@@ -50,11 +50,9 @@ class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let { lifecycle ->
             mShopCardItemViewModel.getComponentLiveData().observe(lifecycle, { item ->
-                item.data?.let {
-                    if (it.isNotEmpty()) {
-                        shopCardDataItem = it.firstOrNull()
-                        shopCardDataItem?.let { it1 -> populateData(it1) }
-                    }
+                item.data?.firstOrNull()?.let {
+                        shopCardDataItem = it
+                        populateData(it)
                 }
             })
             mShopCardItemViewModel.getSyncPageLiveData().observe(lifecycle, {

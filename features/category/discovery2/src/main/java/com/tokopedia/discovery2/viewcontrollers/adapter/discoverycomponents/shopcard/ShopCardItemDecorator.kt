@@ -3,7 +3,6 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sho
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.discovery2.R
 
 internal class ShopCardItemDecorator(val dimen : Int? = null) : RecyclerView.ItemDecoration() {
     override fun getItemOffsets(outRect: Rect,
@@ -16,9 +15,9 @@ internal class ShopCardItemDecorator(val dimen : Int? = null) : RecyclerView.Ite
         val itemCount = state.itemCount
 
         if (itemPosition == 0) {
-            outRect.left = dimen ?: view.context.resources.getDimensionPixelSize(R.dimen.dp_16)
+            outRect.left = dimen ?: view.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
         } else if (itemCount > 0 && itemPosition == itemCount - 1) {
-            outRect.right = dimen ?: view.context.resources.getDimensionPixelSize(R.dimen.dp_16)
+            outRect.right = dimen ?: view.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
         }
     }
 }
