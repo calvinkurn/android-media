@@ -196,7 +196,6 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                         categoryId.toString(),
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
                         viewModel.operatorData.attributes.name,
-                        loyaltyStatus,
                         userSession.userId,
                         it.data.cartId,
                         viewModel.digitalCheckoutPassData.productId.toString(),
@@ -392,6 +391,17 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                 setInputNumber(clientNumber, true)
             }
         }
+
+        digitalPDPTelcoAnalytics.openScreenPDPPage(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            userSession.userId,
+            userSession.isLoggedIn
+        )
+
+        digitalPDPTelcoAnalytics.viewPDPPage(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            userSession.userId
+        )
     }
 
     private fun onSuccessGetOperatorSelectGroup(operatorGroup: DigitalCatalogOperatorSelectGroup) {

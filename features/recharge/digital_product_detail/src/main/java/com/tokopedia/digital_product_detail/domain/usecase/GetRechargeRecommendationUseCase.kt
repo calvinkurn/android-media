@@ -38,6 +38,7 @@ class GetRechargeRecommendationUseCase @Inject constructor(
                     clientNumbers = clientNumbers,
                     dgCategoryIDs = dgCategoryIds,
                     pgCategoryIDs = listOf(),
+                    dgOperatorIds = listOf()
                 )
             )
         }

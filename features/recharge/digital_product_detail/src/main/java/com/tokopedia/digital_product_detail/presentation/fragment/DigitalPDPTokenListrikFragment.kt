@@ -181,6 +181,17 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                 setInputNumber(clientNumber)
             }
         }
+
+        digitalPDPTelcoAnalytics.openScreenPDPPage(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            userSession.userId,
+            userSession.isLoggedIn
+        )
+
+        digitalPDPTelcoAnalytics.viewPDPPage(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            userSession.userId
+        )
     }
 
     private fun initEmptyState() {
@@ -255,7 +266,6 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                         categoryId.toString(),
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
                         viewModel.operatorData.attributes.name,
-                        loyaltyStatus,
                         userSession.userId,
                         atcData.data.cartId,
                         viewModel.digitalCheckoutPassData.productId.toString(),

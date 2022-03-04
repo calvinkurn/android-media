@@ -12,6 +12,8 @@ interface DigitalPDPEventTracking {
             const val ITEMS = "items"
             const val ITEM_LIST = "item_list"
             const val PROMOTIONS = "promotions"
+            const val IS_LOGGEDIN_STATUS = "isLoggedInStatus"
+            const val SCREEN_NAME = "screenName"
 
             const val INDEX = "index"
             const val ITEM_BRAND = "item_brand"
@@ -44,6 +46,7 @@ interface DigitalPDPEventTracking {
             const val CLICK_DIGITAL = "clickDigital"
             const val SELECT_CONTENT = "select_content"
             const val ADD_TO_CART = "add_to_cart"
+            const val OPEN_SCREEN = "openScreen"
         }
     }
 
@@ -84,7 +87,8 @@ interface DigitalPDPEventTracking {
             const val CLICK_SCAN_BARCODE = "click scan barcode"
             const val CLICK_TRANSACTION_DETAIL_INFO = "click transaction detail info"
             const val CLICK_LIST_FAVORITE_NUMBER = "click list favorite number"
-            const val CLICK_LANJUT_BAYAR = "click lanjut bayar"
+            const val CLICK_LANJUT_BAYAR = "click beli"
+            const val VIEW_PDP_PAGE = "view pdp page"
         }
     }
 }
