@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -75,6 +76,8 @@ class PlayUpcomingViewModel @Inject constructor(
     private val _partnerInfo = MutableStateFlow(PlayPartnerInfo())
     private val _upcomingInfo = MutableStateFlow(PlayUpcomingUiModel())
     private val _upcomingState = MutableStateFlow<PlayUpcomingState>(PlayUpcomingState.Unknown)
+
+    private val _observableKolId = MutableLiveData<String>()
 
     private val _partnerUiState = _partnerInfo.map {
         PlayUpcomingPartnerUiState(it.name, it.status)
@@ -358,7 +361,7 @@ class PlayUpcomingViewModel @Inject constructor(
                     followAction = followAction,
                 )
             } else {
-                repo.postFollowKol(shopId.toString())
+                repo.postFollowKol(_observableKolId.toString())
             }
         }) {}
 
@@ -568,6 +571,16 @@ class PlayUpcomingViewModel @Inject constructor(
             metaDescription = shareInfo.metaDescription,
         )
     }
+
+    private fun getKolHeader(partnerId: String){
+        if(userSession.isLoggedIn && latestChannelData.partnerInfo.type !=  PartnerType.Shop){
+            viewModelScope.launch {
+                val kolId = repo.getProfileHeader(partnerId)
+                _observableKolId.value = kolId
+            }
+        }
+    }
+
 
     companion object {
         const val REQUEST_CODE_LOGIN_REMIND_ME = 678

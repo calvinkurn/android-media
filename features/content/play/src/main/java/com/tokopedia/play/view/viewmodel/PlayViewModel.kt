@@ -1568,7 +1568,7 @@ class PlayViewModel @AssistedInject constructor(
                     followAction = followAction,
                 )
             } else {
-                repo.postFollowKol(shopId.toString())
+                repo.postFollowKol(_observableKolId.toString())
             }
             _partnerInfo.setValue {
                 val result = if(isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
