@@ -75,6 +75,9 @@
     <string name="shop_operational_hour_delete_holiday_text">Hapus tanggal libur</string>
     <string name="shop_operational_hour_selected_holiday_date_text">%1$s, %2$s</string>
     <string name="shop_operational_hour_ticker_description_auto_chat">Balas chat pembeli secara otomatis ketika tokomu libur. <![CDATA[<a href="%1$s">Atur di Sini</a>]]></string>
+    <string name="shop_operational_hour_set_holiday_schedule_success">Tanggal toko libur disimpan.</string>
+    <string name="shop_operational_hour_abort_holiday_schedule_success">Tanggal toko libur dihapus.</string>
+    <string name="shop_operational_hour_abort_ongoing_holiday_schedule_success">Tokomu sudah buka kembali. Cek jam operasional hari ini, ya.</string>
     <string name="shop_operational_hour_ticker_description_auto_chat_dummy_url">https://tokopedia.com/#open-auto-reply-chat-settings</string>
     <string name="shop_operational_hour_set_holiday_schedule_title">Atur tanggal libur</string>
     <string name="shop_operational_hour_set_holiday_schedule_dialog_title">Simpan tanggal libur tokomu?</string>

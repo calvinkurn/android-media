@@ -159,8 +159,8 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 Activity.RESULT_OK -> {
                     setShopHolidayScheduleStatusMessage = data?.extras?.getString(
                             ShopSettingsSetOperationalHoursFragment.EXTRA_SET_OPS_HOUR_RESPONSE_KEY,
-                            ""
-                    ) ?: ""
+                            getString(R.string.shop_operational_success_update_operational_hours)
+                    ) ?: getString(R.string.shop_operational_success_update_operational_hours)
                     setShopHolidayScheduleStatusType = Toaster.TYPE_NORMAL
                     isNeedToShowToaster = true
                     showLoader()
@@ -452,7 +452,9 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         // observe abort shop close schedule
         observe(shopSettingsOperationalHoursViewModel.shopInfoAbortSchedule) { result ->
             if (result is Success) {
-                setShopHolidayScheduleStatusMessage = result.data
+                setShopHolidayScheduleStatusMessage = result.data.takeIf {
+                    it.isNotEmpty()
+                } ?: getString(R.string.shop_operational_hour_abort_holiday_schedule_success)
                 setShopHolidayScheduleStatusType = Toaster.TYPE_NORMAL
                 getInitialData()
             }
@@ -467,7 +469,15 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         // observe create shop close schedule
         observe(shopSettingsOperationalHoursViewModel.shopInfoCloseSchedule) { result ->
             if (result is Success) {
-                setShopHolidayScheduleStatusMessage = result.data
+                setShopHolidayScheduleStatusMessage = result.data.takeIf {
+                    it.isNotEmpty()
+                } ?: if (!isShopOnScheduledHoliday) {
+                    // create holiday schedule success
+                    getString(R.string.shop_operational_hour_set_holiday_schedule_success)
+                } else {
+                    // open shop immediately success
+                    getString(R.string.shop_operational_hour_abort_ongoing_holiday_schedule_success)
+                }
                 setShopHolidayScheduleStatusType = Toaster.TYPE_NORMAL
                 getInitialData()
             }
