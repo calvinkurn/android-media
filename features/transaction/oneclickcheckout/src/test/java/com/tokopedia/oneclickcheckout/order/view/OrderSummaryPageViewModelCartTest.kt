@@ -144,6 +144,48 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
+    fun `Get Occ Cart Success Should Trigger Payment Tracker`() {
+        // Given
+        val response = helper.orderData
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        // When
+        orderSummaryPageViewModel.getOccCart("")
+
+        // Then
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventViewPaymentMethod(any())
+        }
+    }
+
+    @Test
+    fun `Get Occ Cart Success With CC Should Trigger Payment Tracker And Tenure Tracker`() {
+        // Given
+        val selectedTenure = 1
+        val response = helper.orderData.copy(
+                payment = OrderPayment(
+                        creditCard = OrderPaymentCreditCard(
+                                selectedTerm = OrderPaymentInstallmentTerm(
+                                        term = selectedTenure
+                                )
+                        )
+                )
+        )
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        // When
+        orderSummaryPageViewModel.getOccCart("")
+
+        // Then
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventViewPaymentMethod(any())
+            orderSummaryAnalytics.eventViewTenureOption(selectedTenure.toString())
+        }
+    }
+
+    @Test
     fun `Get Occ Cart Failed`() {
         // Given
         val response = Throwable()
@@ -274,6 +316,64 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Get Occ Cart Success With Preference And Rates`() {
+        // Given
+        val shipment = OrderProfileShipment(serviceId = 1)
+        val address = OrderProfileAddress(addressId = 1)
+        val payment = OrderProfilePayment(gatewayCode = "payment")
+        val profile = OrderProfile(shipment = shipment, address = address, payment = payment)
+        val cart = OrderCart(products = mutableListOf(OrderProduct(productId = 1, orderQuantity = 1)))
+        val promo = OrderPromo(LastApplyUiModel(listOf("promo")))
+        val response = OrderData(cart = cart, preference = profile, promo = promo)
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        val shippingRecommendationData = ShippingRecommendationData().apply {
+            shippingDurationUiModels = listOf(
+                    ShippingDurationUiModel().apply {
+                        serviceData = ServiceData().apply {
+                            serviceId = 1
+                            serviceName = "kirimaja (2 hari)"
+                        }
+                        shippingCourierViewModelList = listOf(
+                                ShippingCourierUiModel().apply {
+                                    productData = ProductData().apply {
+                                        shipperName = "kirimin"
+                                        shipperProductId = 1
+                                        shipperId = 1
+                                        insurance = InsuranceData()
+                                        price = PriceData()
+                                    }
+                                    ratesId = "0"
+                                }
+                        )
+                    }
+            )
+        }
+        every { ratesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+
+        // When
+        orderSummaryPageViewModel.getOccCart("")
+
+        // Then
+        assertEquals(OccState.FirstLoad(OrderPreference(hasValidProfile = true)), orderSummaryPageViewModel.orderPreference.value)
+        assertEquals(profile, orderSummaryPageViewModel.orderProfile.value)
+        assertEquals(OrderShipment(serviceName = "kirimaja (2 hari)", serviceDuration = "kirimaja (2 hari)", serviceId = 1, shipperName = "kirimin",
+                shipperId = 1, shipperProductId = 1, ratesId = "0", shippingPrice = 0, shippingRecommendationData = shippingRecommendationData,
+                insurance = OrderInsurance(shippingRecommendationData.shippingDurationUiModels[0].shippingCourierViewModelList[0].productData.insurance)),
+                orderSummaryPageViewModel.orderShipment.value)
+        assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventViewOrderSummaryPage(any(), any(), any())
+        }
+        assertEquals(cart, orderSummaryPageViewModel.orderCart)
+        assertEquals(1, orderSummaryPageViewModel.orderShipment.value.getRealShipperId())
+        verify(exactly = 1) { ratesUseCase.execute(any()) }
+        coVerify(exactly = 1) { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() }
+    }
+
+    @Test
+    fun `Get Occ Cart Success Trigger Payment Tracker`() {
         // Given
         val shipment = OrderProfileShipment(serviceId = 1)
         val address = OrderProfileAddress(addressId = 1)

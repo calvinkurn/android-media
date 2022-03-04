@@ -10,6 +10,7 @@ import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Compa
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.PRICE_CHANGE_ACTION_MESSAGE
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.PRICE_CHANGE_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletAdditionalData.Companion.WALLET_TYPE_GOPAYLATERCICIL
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
@@ -48,7 +49,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         // Then
         assertEquals(true, isOnSuccessCalled)
         assertEquals(OccGlobalEvent.Loading, orderSummaryPageViewModel.globalEvent.value)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), any(), any(), any()) }
+        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), any(), any(), any(), any()) }
         verify(inverse = true) { orderSummaryAnalytics.eventPPClickBayar(any(), any(), any(), any(), any(), any()) }
     }
 
@@ -73,7 +74,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), transactionId, any(), any()) }
+        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), transactionId, any(), any(), any()) }
     }
 
     @Test
@@ -98,7 +99,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), transactionId, paymentType, any()) }
+        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), transactionId, paymentType, "", any()) }
     }
 
     @Test
@@ -122,7 +123,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), transactionId, OrderSummaryPageEnhanceECommerce.DEFAULT_EMPTY_VALUE, any()) }
+        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), transactionId, OrderSummaryPageEnhanceECommerce.DEFAULT_EMPTY_VALUE, any(), any()) }
     }
 
     @Test
@@ -146,7 +147,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), transactionId, any(), any()) }
+        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), transactionId, any(), any(), any()) }
     }
 
     @Test
@@ -169,7 +170,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), "", any(), any()) }
+        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), "", any(), any(), any()) }
     }
 
     @Test
@@ -192,7 +193,71 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), "", any(), any()) }
+        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), "", any(), any(), any()) }
+    }
+
+    @Test
+    fun `Checkout Success With GoCicil Tenure`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        val paymentType = "paymentType"
+        val selectedTenure = 2
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(payment = OrderProfilePayment(gatewayName = paymentType, gatewayCode = "payment"))
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(
+                walletData = OrderPaymentWalletAdditionalData(walletType = WALLET_TYPE_GOPAYLATERCICIL,
+                        goCicilData = OrderPaymentGoCicilData(
+                                selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = selectedTenure)
+                        ))
+        )
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        val transactionId = "123"
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl", form = "transaction_id=$transactionId&success=1"))))
+
+        // When
+        var isOnSuccessCalled = false
+        orderSummaryPageViewModel.finalUpdate({
+            isOnSuccessCalled = true
+        }, false)
+
+        // Then
+        assertEquals(true, isOnSuccessCalled)
+        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), transactionId, paymentType, selectedTenure.toString(), any()) }
+    }
+
+    @Test
+    fun `Checkout Success With CC Tenure`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        val paymentType = "paymentType"
+        val selectedTenure = 3
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
+                payment = OrderProfilePayment(metadata = """{"express_checkout_param":{"installment_term":"3"}}""", gatewayName = paymentType, gatewayCode = "payment"))
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(
+                creditCard = OrderPaymentCreditCard(
+                        selectedTerm = OrderPaymentInstallmentTerm(term = selectedTenure)
+                )
+        )
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        val transactionId = "123"
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl", form = "transaction_id=$transactionId&success=1"))))
+
+        // When
+        var isOnSuccessCalled = false
+        orderSummaryPageViewModel.finalUpdate({
+            isOnSuccessCalled = true
+        }, false)
+
+        // Then
+        assertEquals(true, isOnSuccessCalled)
+        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), transactionId, paymentType, selectedTenure.toString(), any()) }
     }
 
     @Test
@@ -215,7 +280,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), any(), any(), any()) }
+        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), any(), any(), any(), any()) }
     }
 
     @Test
@@ -240,7 +305,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), any(), any(), any()) }
+        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), any(), any(), any(), any()) }
     }
 
     @Test
@@ -265,7 +330,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), any(), any(), any()) }
+        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), any(), any(), any(), any()) }
     }
 
     @Test
@@ -297,7 +362,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), any(), any(), any()) }
+        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), any(), any(), any(), any()) }
     }
 
     @Test
@@ -697,7 +762,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), any(), any(), any()) }
+        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), any(), any(), any(), any()) }
     }
 
     @Test
