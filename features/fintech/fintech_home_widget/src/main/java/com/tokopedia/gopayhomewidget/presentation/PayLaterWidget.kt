@@ -25,6 +25,8 @@ class PayLaterWidget @JvmOverloads constructor(
     @AttrRes defStyleAttr: Int = 0,
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
+    val applink = 1
+    val webLink = 2
     private var payLaterWidgetListener: PayLaterWidgetListener? = null
     private lateinit var layoutGopayBinding: LayoutGopayHomeWidgetBinding
 
@@ -109,7 +111,7 @@ class PayLaterWidget @JvmOverloads constructor(
         button: PayLaterButton
     ) {
         when (payLaterWidgetData.button?.ctaType) {
-            1 -> {
+            applink -> {
                 analyticsUpload.sendWidgetAnalyticsEvent(
                     AnalyticsEventGenerator.WidgetCtaClickedButton(
                         payLaterWidgetData.caseType.toString(),
@@ -118,7 +120,7 @@ class PayLaterWidget @JvmOverloads constructor(
                 )
                 RouteManager.route(context, button.appsUrl)
             }
-            2 -> {
+            webLink -> {
                 analyticsUpload.sendWidgetAnalyticsEvent(
                     AnalyticsEventGenerator.WidgetCtaClickedButton(
                         payLaterWidgetData.caseType.toString(),
