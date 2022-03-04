@@ -12,10 +12,9 @@ class RechargeEmptyStateWidget @JvmOverloads constructor(@NotNull context: Conte
     : BaseCustomView(context, attrs, defStyleAttr) {
 
     private var rechargeEmptyStateBinding = WidgetRechargeEmptyStateBinding.inflate(LayoutInflater.from(context), this, true)
-
-    fun setImageUrl(url: String) {
-        rechargeEmptyStateBinding.run {
-            emptyStateWidgetImage.setImageUrl(url)
+    var imageUrl = ""
+        set(url: String) {
+            field = url
+            rechargeEmptyStateBinding.emptyStateWidgetImage.setImageUrl(url)
         }
-    }
 }

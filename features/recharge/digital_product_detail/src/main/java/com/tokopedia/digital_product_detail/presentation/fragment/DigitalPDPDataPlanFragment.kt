@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
@@ -163,7 +164,6 @@ class DigitalPDPDataPlanFragment :
         getDataFromBundle()
         setupKeyboardWatcher()
         initClientNumberWidget()
-        initEmptyState()
         setAnimationAppBarLayout()
         observeData()
 
@@ -437,6 +437,7 @@ class DigitalPDPDataPlanFragment :
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
         getFavoriteNumber()
+        initEmptyState(data.banners)
 
         renderPrefill(data.userPerso)
         renderTicker(data.tickers)
@@ -728,18 +729,15 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    private fun initEmptyState() {
-        // [Misael] replace with catalogMenuDetail.banners
-        binding?.rechargePdpPaketDataEmptyStateWidget?.setImageUrl(
-            "https://images.tokopedia.net/img/ULHhFV/2022/1/7/8324919c-fa15-46d9-84f7-426adb6994e0.jpg"
-        )
+    private fun initEmptyState(banners: List<TopupBillsBanner>) {
+        binding?.rechargePdpPaketDataEmptyStateWidget?.imageUrl = banners[0].imageUrl
     }
 
     private fun showEmptyState() {
         binding?.run {
             if (!rechargePdpPaketDataEmptyStateWidget.isVisible) {
                 digitalPDPTelcoAnalytics.impressionBannerEmptyState(
-                    "TODO Creative Link",
+                    rechargePdpPaketDataEmptyStateWidget.imageUrl,
                     categoryId.toString(),
                     DigitalPDPCategoryUtil.getCategoryName(categoryId),
                     loyaltyStatus,
