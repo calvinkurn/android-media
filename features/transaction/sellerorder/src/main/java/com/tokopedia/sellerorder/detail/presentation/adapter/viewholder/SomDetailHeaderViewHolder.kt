@@ -49,6 +49,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
             binding?.run {
                 if (item.dataObject.isWarehouse) {
                     warehouseLabel.apply {
+                        setLabel(getWarehouseLabelString(context))
                         show()
                         unlockFeature = true
                         setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
@@ -176,6 +177,10 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                 String.format(context.getString(R.string.som_detail_ticker_description), message, tickerInfo.actionText)
             }
         }.orEmpty()
+    }
+
+    private fun getWarehouseLabelString(context: Context?): String {
+        return context?.getString(R.string.warehouse_label).orEmpty()
     }
 
     companion object {

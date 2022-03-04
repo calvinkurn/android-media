@@ -8,7 +8,7 @@ import android.content.Intent
 import android.os.Build
 
 import androidx.core.app.NotificationCompat
-import com.tokopedia.analyticsdebugger.cassava.debugger.AnalyticsDebuggerActivity
+import com.tokopedia.analyticsdebugger.cassava.ui.debugger.AnalyticsDebuggerActivity
 
 import com.tokopedia.analyticsdebugger.debugger.domain.model.AnalyticsLogData
 import com.tokopedia.analyticsdebugger.debugger.domain.model.ApplinkLogModel

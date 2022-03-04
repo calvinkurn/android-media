@@ -52,7 +52,7 @@ val SEARCH_STATISTICS_DATA = FlightSearchStatisticModel(
 
 val JOURNEY_LIST_DATA = arrayListOf(
         FlightJourneyModel(
-                "", "DummyId", false, true, "CGK",
+                "", "DummyId", "", "Seat Distancing", "CGK",
                 "Bandara International Soekarno Hatta", "",
                 "10.00", 111111, "BTJ", "12.40",
                 "Bandara International Sultan Iskandar Muda", "",
@@ -66,7 +66,7 @@ val JOURNEY_LIST_DATA = arrayListOf(
                 arrayListOf(), "", ""
         ),
         FlightJourneyModel(
-                "", "DummyId", true, false, "CGK",
+                "", "DummyId", "Free Rapid Test", "", "CGK",
                 "Bandara International Soekarno Hatta", "",
                 "10.00", 111111, "BTJ", "12.40",
                 "Bandara International Sultan Iskandar Muda", "",
@@ -94,7 +94,7 @@ val META_MODEL_NEED_REFRESH_MAX_RETRY = FlightSearchMetaModel(
         arrayListOf("GA", "QA"), "asdasd", "", 0)
 
 val DEPARTURE_JOURNEY = FlightJourneyModel(
-        "", "DummyId", true, true, "CGK",
+        "", "DummyId", "Free Rapid Test", "Seat Distancing", "CGK",
         "Bandara International Soekarno Hatta", "",
         "10.00", 111111, "BTJ", "12.40",
         "Bandara International Sultan Iskandar Muda", "",
@@ -109,7 +109,7 @@ val DEPARTURE_JOURNEY = FlightJourneyModel(
 )
 
 val VALID_RETURN_JOURNEY = FlightJourneyModel(
-        "", "DummyId", false, false, "BTJ",
+        "", "DummyId", "", "", "BTJ",
         "Bandara International Sultan Iskandar Muda", "",
         "10.00", 111111, "CGK", "12.40",
         "Bandara International Soekarno Hatta", "",
@@ -124,7 +124,7 @@ val VALID_RETURN_JOURNEY = FlightJourneyModel(
 )
 
 val NOT_VALID_DIFF_HOUR_RETURN_JOURNEY = FlightJourneyModel(
-        "", "DummyId", false, false, "BTJ",
+        "", "DummyId", "", "", "BTJ",
         "Bandara International Sultan Iskandar Muda", "",
         "10.00", 111111, "CGK", "12.40",
         "Bandara International Soekarno Hatta", "",
@@ -139,7 +139,7 @@ val NOT_VALID_DIFF_HOUR_RETURN_JOURNEY = FlightJourneyModel(
 )
 
 val NOT_VALID_RETURN_JOURNEY = FlightJourneyModel(
-        "", "DummyId", false, false, "BTJ",
+        "", "DummyId", "", "", "BTJ",
         "Bandara International Sultan Iskandar Muda", "",
         "10.00", 111111, "CGK", "12.40",
         "Bandara International Soekarno Hatta", "",

@@ -31,6 +31,8 @@ class ShipmentCartItemModel(
         var shopAlertMessage: String? = null,
         var shopTypeInfoData: ShopTypeInfoData? = null,
         var isTokoNow: Boolean = false,
+        var shopTickerTitle: String = "",
+        var shopTicker: String = "",
 
         // Cart item state
         var cartString: String? = null,
@@ -92,6 +94,10 @@ class ShipmentCartItemModel(
         var isAutoCourierSelection: Boolean = false,
         var hasGeolocation: Boolean = false,
 
+        // regular shipment service but do not show change courier card
+        var isHideChangeCourierCard: Boolean = false,
+        var durationCardDescription: String = "",
+
         // Courier Selection Error
         var courierSelectionErrorTitle: String? = null,
         var courierSelectionErrorDescription: String? = null,
@@ -149,6 +155,8 @@ class ShipmentCartItemModel(
             newShipmentCartItemModel.shopTypeInfoData = shipmentCartItemModel.shopTypeInfoData
             newShipmentCartItemModel.isDisableChangeCourier = shipmentCartItemModel.isDisableChangeCourier
             newShipmentCartItemModel.isAutoCourierSelection = shipmentCartItemModel.isAutoCourierSelection
+            newShipmentCartItemModel.isHideChangeCourierCard = shipmentCartItemModel.isHideChangeCourierCard
+            newShipmentCartItemModel.durationCardDescription = shipmentCartItemModel.durationCardDescription
             return newShipmentCartItemModel
         }
     }

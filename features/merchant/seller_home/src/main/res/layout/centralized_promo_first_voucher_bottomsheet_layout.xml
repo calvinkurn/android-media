@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:layout_marginTop="@dimen/centralized_promo_first_voucher_bottomsheet_margin_top"
     android:paddingBottom="@dimen/centralized_promo_first_voucher_bottomsheet_padding_bottom"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/firstVoucherBottomSheetTitle"
@@ -12,9 +13,9 @@
         android:layout_height="wrap_content"
         android:maxLines="2"
         android:textColor="@color/Unify_N700"
-        android:text="@string/centralized_promo_bottomsheet_title"
         app:typographyType="heading_2"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/centralized_promo_bottomsheet_title"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/firstVoucherBottomSheetDetail"
@@ -49,10 +50,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl3"
-        android:text="@string/centralized_promo_bottomsheet_next"
         app:unifyButtonVariant="filled"
         app:unifyButtonSize="large"
         app:unifyButtonType="main"
-        app:layout_constraintTop_toBottomOf="@id/firstVoucherTicker"/>
+        app:layout_constraintTop_toBottomOf="@id/firstVoucherTicker"
+        tools:text="@string/centralized_promo_bottomsheet_next"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

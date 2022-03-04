@@ -33,10 +33,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:textColor="@color/Unify_N700_68"
-        app:labelTitle="@string/warehouse_label"
         app:labelType="general_light_grey"
         app:layout_constraintStart_toEndOf="@id/header_title"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:labelTitle="@string/warehouse_label"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/header_see_history"
