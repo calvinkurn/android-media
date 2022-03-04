@@ -6,6 +6,7 @@ import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.response.Tokonow
@@ -51,6 +52,51 @@ fun createHomeLayoutList(): List<HomeLayoutResponse> {
                             serverTimeUnix = 0
                     )
             )
+    )
+}
+
+fun createDynamicChannelLayoutList(): List<HomeLayoutResponse> {
+    return listOf(
+        HomeLayoutResponse(
+            id = "34923",
+            layout = "lego_3_image",
+            header = Header(
+                name = "Lego Banner",
+                serverTimeUnix = 0
+            ),
+        ),
+        HomeLayoutResponse(
+            id = "11111",
+            layout = "6_image",
+            header = Header(
+                name = "Lego 6",
+                serverTimeUnix = 0
+            )
+        ),
+        HomeLayoutResponse(
+            id = "2222",
+            layout = "banner_carousel_v2",
+            header = Header(
+                name = "Banner Tokonow",
+                serverTimeUnix = 0
+            )
+        ),
+        HomeLayoutResponse(
+            id = "2322",
+            layout = "top_carousel_tokonow",
+            header = Header(
+                name = "Product Recommendation",
+                serverTimeUnix = 0
+            )
+        ),
+        HomeLayoutResponse(
+            id = "2122",
+            layout = "left_carousel",
+            header = Header(
+                name = "Mix Left Carousel",
+                serverTimeUnix = 0
+            )
+        )
     )
 }
 
@@ -247,14 +293,15 @@ fun createDynamicLegoBannerDataModel(
     id: String,
     groupId: String,
     headerName: String,
-    headerServerTimeUnix: Long = 0
+    headerServerTimeUnix: Long = 0,
+    layout: String = "lego_3_image"
 ): DynamicLegoBannerDataModel {
     val channelHeader = ChannelHeader(name = headerName, serverTimeUnix = headerServerTimeUnix)
-    val channelConfig = ChannelConfig(layout = "lego_3_image")
+    val channelConfig = ChannelConfig(layout = layout)
     val channelModel = ChannelModel(
         id = id,
         groupId = groupId,
-        layout = "lego_3_image",
+        layout = layout,
         channelHeader = channelHeader,
         channelConfig = channelConfig
     )
@@ -277,6 +324,25 @@ fun createSliderBannerDataModel(
         channelConfig = channelConfig
     )
     return BannerDataModel(channelModel = channelModel)
+}
+
+fun createMixLeftDataModel(
+    id: String,
+    groupId: String,
+    headerName: String,
+    headerServerTimeUnix: Long = 0,
+    layout: String = "lego_3_image"
+): MixLeftDataModel {
+    val channelHeader = ChannelHeader(name = headerName, serverTimeUnix = headerServerTimeUnix)
+    val channelConfig = ChannelConfig(layout = layout)
+    val channelModel = ChannelModel(
+        id = id,
+        groupId = groupId,
+        layout = layout,
+        channelHeader = channelHeader,
+        channelConfig = channelConfig
+    )
+    return MixLeftDataModel(channelModel = channelModel)
 }
 
 fun createCategoryGridDataModel(

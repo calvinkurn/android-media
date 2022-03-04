@@ -13,11 +13,16 @@ import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactory
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
+import com.tokopedia.catalog.model.datamodel.CatalogForYouModel
+import com.tokopedia.catalog.viewholder.components.CatalogForYouViewHolder
 import com.tokopedia.catalog.viewholder.containers.CatalogProductsContainerViewHolder
+import com.tokopedia.catalog.viewholder.products.CatalogForYouContainerViewHolder
 
 class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailListener: CatalogDetailListener, val catalogId: String ,asyncDifferConfig: AsyncDifferConfig<BaseCatalogDataModel>,
                             private val catalogAdapterTypeFactory: CatalogDetailAdapterFactory)
     :ListAdapter<BaseCatalogDataModel, AbstractViewHolder<*>>(asyncDifferConfig){
+
+    private val catalogForYouImpressionSet = HashSet<Int>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
         val view = onCreateViewItem(parent, viewType)
@@ -53,12 +58,23 @@ class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailLis
         if(holder is CatalogProductsContainerViewHolder){
             catalogDetailListener.hideFloatingLayout()
         }
+        if (holder is CatalogForYouViewHolder) {
+            val position = holder.adapterPosition
+            if (!catalogForYouImpressionSet.add(position)) {
+                val item = currentList[position] as? CatalogForYouModel
+                item?.let { catalogForYouModel ->
+                    catalogDetailListener.onCatalogForYouImpressed(catalogForYouModel,holder.adapterPosition)
+                }
+            }
+        }
         super.onViewAttachedToWindow(holder)
     }
 
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder<*>) {
         if(holder is CatalogProductsContainerViewHolder){
             catalogDetailListener.showFloatingLayout()
+        }else if(holder is CatalogForYouContainerViewHolder){
+            holder.removeObservers()
         }
         super.onViewDetachedFromWindow(holder)
     }

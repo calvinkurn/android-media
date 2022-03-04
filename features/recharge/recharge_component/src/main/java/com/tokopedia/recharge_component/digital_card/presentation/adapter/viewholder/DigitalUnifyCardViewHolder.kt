@@ -116,10 +116,16 @@ class DigitalUnifyCardViewHolder(
             )
         }
 
-        val fullText = TextUtils.concat(leftProductInfoText, " ", rightProductInfoText)
+        val fullText = if (leftProductInfoText.isNotEmpty() && rightProductInfoText.isNotEmpty())
+            TextUtils.concat(leftProductInfoText, " ", rightProductInfoText)
+        else if (leftProductInfoText.isNotEmpty())
+            leftProductInfoText
+        else if (rightProductInfoText.isNotEmpty())
+            rightProductInfoText
+        else ""
 
         with(binding.dguProductInfo) {
-            if (leftProductInfoText.isNotEmpty() || rightProductInfoText.isNotEmpty()) {
+            if (fullText.isNotEmpty()) {
                 text = fullText
 
                 ellipsize = TextUtils.TruncateAt.END

@@ -24,6 +24,7 @@ object VoucherCreationAnalyticConstant {
         const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
         const val PHYSICAL_GOODS = "physical goods"
         const val COMMUNICATION = "communication"
+        const val SHARING_EXPERIENCE = "sharingexperience"
     }
 
     object ScreenName {

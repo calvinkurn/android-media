@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.filter.common.data.Option
 import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -152,8 +151,7 @@ internal fun createSuggestionListener(): SuggestionListener {
 
 internal fun createEmptyStateListener(): EmptyStateListener {
     return object: EmptyStateListener {
-        override fun getSelectedFilterAsOptionList(): MutableList<Option> { return mutableListOf() }
-        override fun onSelectedFilterRemoved(uniqueId: String?) {}
+        override fun resetFilters() {}
         override fun onEmptySearchToGlobalSearchClicked(applink: String?) {}
         override fun onEmptyButtonClicked() {}
     }

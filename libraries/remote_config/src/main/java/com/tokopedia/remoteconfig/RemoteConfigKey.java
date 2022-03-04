@@ -167,6 +167,8 @@ public class RemoteConfigKey {
     public static final String DISABLE_OFFICIAL_STORE_MAPPING_BANNERS = "android_disable_officialstore_mapping_banners";
     public static final String DISABLE_OFFICIAL_STORE_REMOVE_BEST_SELLER_WIDGET = "android_disable_officialstore_remove_best_seller_widget";
     public static final String DISABLE_OFFICIAL_STORE_REMOVE_SHOP_WIDGET = "android_disable_officialstore_remove_shop_widget";
+    public static final String DISABLE_OFFICIAL_STORE_MAPPING_BENEFIT = "android_disable_officialstore_mapping_benefit";
+    public static final String DISABLE_OFFICIAL_STORE_MAPPING_OFFICIAL_FEATURED_SHOP = "android_disable_officialstore_mapping_official_featured_shop";
 
     public static final String ENABLE_NEW_WISHLIST_PAGE = "android_flag_enable_new_wishlist_page";
 
@@ -240,6 +242,7 @@ public class RemoteConfigKey {
     public static final String HOME_ENABLE_SHARED_PREF_CACHE = "android_customer_home_enable_shared_pref_cache";
     public static final String HOME_ENABLE_AUTO_REFRESH_WISHLIST = "android_customer_home_auto_refresh_wishlist";
     public static final String HOME_ENABLE_AUTO_REFRESH_UOH = "android_customer_home_auto_refresh_uoh";
+    public static final String HOME_ENABLE_SCROLL_EMBRACE_BREADCRUMB = "android_customer_home_enable_scroll_breadcrumb";
 
     public static final String NAVIGATION_ENABLE_NOTIF = "android_customer_navigation_enable_notif";
 
@@ -272,5 +275,9 @@ public class RemoteConfigKey {
     public static final String ENABLE_MPC_LIFECYCLE_OBSERVER = "android_mainapp_enable_mpc_lifecycle_observer";
     public static final String ENABLE_MPC_VIDEO_AUTOPLAY ="android_mainapp_enable_mpc_video_autoplay";
 
+    public static final String ENABLE_APLHA_OBSERVER = "android_enable_alpha_observer";
+
     public static final String ANDROID_EMBRACE_CONFIG = "android_customerapp_embrace_config";
+
+    public static final String ENABLE_MVC_PRODUCT = "android_enable_mvc_product";
 }

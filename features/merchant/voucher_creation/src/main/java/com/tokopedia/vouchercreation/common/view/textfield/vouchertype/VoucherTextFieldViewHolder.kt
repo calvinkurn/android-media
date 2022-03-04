@@ -12,7 +12,7 @@ import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.create.view.enums.PromotionType
+import com.tokopedia.vouchercreation.shop.create.view.enums.PromotionType
 import kotlinx.android.synthetic.main.mvc_textfield.view.*
 
 class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTextFieldUiModel>(itemView) {

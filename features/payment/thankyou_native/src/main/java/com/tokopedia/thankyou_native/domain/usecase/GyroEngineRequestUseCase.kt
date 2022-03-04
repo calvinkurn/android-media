@@ -8,45 +8,76 @@ import com.tokopedia.thankyou_native.data.mapper.PaymentItemKey
 import com.tokopedia.thankyou_native.domain.model.*
 import com.tokopedia.thankyou_native.domain.query.GQL_GYRO_RECOMMENDATION
 import com.tokopedia.user.session.UserSessionInterface
+import org.json.JSONObject
 import javax.inject.Inject
 
 @GqlQuery("GyroRecommendationQuery", GQL_GYRO_RECOMMENDATION)
 class GyroEngineRequestUseCase @Inject constructor(
-        graphqlRepository: GraphqlRepository,val userSession: UserSessionInterface)
-    : GraphqlUseCase<FeatureEngineResponse>(graphqlRepository) {
+    graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface
+) : GraphqlUseCase<FeatureEngineResponse>(graphqlRepository) {
 
-    fun getFeatureEngineData(thanksPageData: ThanksPageData,
-                             onSuccess: (ValidateEngineResponse) -> Unit) {
+    fun getFeatureEngineData(
+        thanksPageData: ThanksPageData, walletBalance: WalletBalance?,
+        onSuccess: (ValidateEngineResponse) -> Unit
+    ) {
         try {
             this.setTypeClass(FeatureEngineResponse::class.java)
-            this.setRequestParams(getRequestParams(thanksPageData))
+            this.setRequestParams(getRequestParams(thanksPageData, walletBalance))
             this.setGraphqlQuery(GyroRecommendationQuery.GQL_QUERY)
             this.execute(
-                    { result ->
-                        onSuccess(result.validateEngineResponse)
-                    }, {
-                it.printStackTrace()
-            }
+                { result ->
+                    onSuccess(result.validateEngineResponse)
+                }, {
+                    it.printStackTrace()
+                }
             )
         } catch (throwable: Throwable) {
             throwable.printStackTrace()
         }
     }
 
-    private fun getRequestParams(thanksPageData: ThanksPageData): Map<String, Any> {
-        var mainGatewayCode = ""
-        thanksPageData.paymentDetails?.forEach {
-            if(it.gatewayName.equals(thanksPageData.gatewayName, true)){
-                mainGatewayCode = it.gatewayCode
-            }
-        }
-        return mapOf(PARAM_REQUEST to Gson().toJson(FeatureEngineRequest(
+    private fun getRequestParams(
+        thanksPageData: ThanksPageData,
+        walletBalance: WalletBalance?
+    ): Map<String, Any> {
+
+        val mainGatewayCode = thanksPageData.paymentDetails?.find {
+            it.gatewayName.equals(thanksPageData.gatewayName, true)
+        }?.gatewayCode ?: ""
+
+        val jsonStr = computeJsonFromFeatureEngine(thanksPageData, mainGatewayCode)
+
+        // adding wallet balance parameters
+        // else return unmodified jsonStr
+        return mapOf(PARAM_REQUEST to addWalletParameters(jsonStr, walletBalance))
+    }
+
+    private fun computeJsonFromFeatureEngine(thanksPageData: ThanksPageData, mainGatewayCode: String) =
+        Gson().toJson(
+            FeatureEngineRequest(
                 thanksPageData.merchantCode, thanksPageData.profileCode, 1, 5,
-                FeatureEngineRequestParameters(true.toString(), thanksPageData.amount.toString(),
-                        mainGatewayCode, isEGoldPurchased(thanksPageData).toString(),
-                        isDonation(thanksPageData).toString(), userSession.userId),
+                FeatureEngineRequestParameters(
+                    true.toString(), thanksPageData.amount.toString(),
+                    mainGatewayCode, isEGoldPurchased(thanksPageData).toString(),
+                    isDonation(thanksPageData).toString(), userSession.userId
+                ),
                 FeatureEngineRequestOperators(),
-                FeatureEngineRequestThresholds())))
+                FeatureEngineRequestThresholds()
+            )
+        )
+
+    private fun addWalletParameters(jsonStr: String, walletBalance: WalletBalance?): String {
+        return walletBalance?.let {
+            val jsonObj = JSONObject(jsonStr)
+            try {
+                val parameterObj = (jsonObj[PARAM_WALLET_PARAMETERS] as JSONObject)
+                walletBalance.balanceList.forEach { item ->
+                    if (item.whitelisted == true)
+                        parameterObj.put(item.walletCode, item.isActive.toString())
+                }
+                jsonObj.toString()
+            } catch (e: Exception) { jsonStr }
+        } ?: run { jsonStr }
     }
 
     private fun isEGoldPurchased(thanksPageData: ThanksPageData): Boolean {
@@ -69,5 +100,6 @@ class GyroEngineRequestUseCase @Inject constructor(
 
     companion object {
         const val PARAM_REQUEST = "request"
+        const val PARAM_WALLET_PARAMETERS = "parameters"
     }
 }

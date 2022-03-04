@@ -289,7 +289,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     override fun onEditShopScheduleClicked() {
         ShopPageTrackingShopPageSetting.clickSetOpenShopTime(customDimensionShopPage)
         whenRoleAuthorized(shopSettingAccess.isInfoAccessAuthorized) {
-            RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
+            RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS)
         }
     }
 
