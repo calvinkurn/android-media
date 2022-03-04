@@ -15,7 +15,7 @@ internal class ShopCardItemDecorator(val dimen : Int? = null) : RecyclerView.Ite
         if (itemPosition == RecyclerView.NO_POSITION) return
         val itemCount = state.itemCount
 
-        if (parent.getChildAdapterPosition(view) == 0) {
+        if (itemPosition == 0) {
             outRect.left = dimen ?: view.context.resources.getDimensionPixelSize(R.dimen.dp_16)
         } else if (itemCount > 0 && itemPosition == itemCount - 1) {
             outRect.right = dimen ?: view.context.resources.getDimensionPixelSize(R.dimen.dp_16)

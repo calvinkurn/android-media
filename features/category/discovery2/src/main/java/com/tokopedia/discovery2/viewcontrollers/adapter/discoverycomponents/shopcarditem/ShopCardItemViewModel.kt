@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
-import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -22,10 +21,6 @@ class ShopCardItemViewModel(val application: Application, val components: Compon
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
-
-    fun getUserId(): String {
-        return UserSession(application).userId
-    }
 
     fun getComponentLiveData() = componentData
 

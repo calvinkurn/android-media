@@ -1847,11 +1847,11 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
-    override fun trackShopCardImpression(componentsItems: ComponentsItem, userID: String) {
+    override fun trackShopCardImpression(componentsItems: ComponentsItem) {
         val list = ArrayList<Map<String, Any>>()
         val shopMap = HashMap<String, Any>()
         componentsItems.data?.firstOrNull()?.let {
-            shopMap[KEY_NAME] = "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - ${componentsItems.properties?.shopInfo ?: ""} - - shop_card_banner"
+            shopMap[KEY_NAME] = "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - ${componentsItems.properties?.shopInfo ?: ""} - - $SHOP_CARD_BANNER"
             shopMap[KEY_ID] = "${componentsItems.parentComponentId}_${componentsItems.data?.firstOrNull()?.shopId}"
             shopMap[KEY_POSITION] = "${componentsItems.position + 1}"
             shopMap[KEY_CREATIVE] = (componentsItems.creativeName ?: EMPTY_STRING)
@@ -1864,7 +1864,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         customDimensionMap[PAGE_PATH] = pagePath
         customDimensionMap[BUSINESS_UNIT] = HOME_BROWSE
         customDimensionMap[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
-        customDimensionMap[USER_ID] = userID
+        customDimensionMap[USER_ID] = userSession.userId
 
         trackingQueue.putEETracking(eventModel, hashMapOf (
                 KEY_ECOMMERCE to hashMapOf(
@@ -1874,11 +1874,11 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         ), customDimensionMap)
     }
 
-    override fun trackEventClickShopCard(componentsItems: ComponentsItem, userID: String) {
+    override fun trackEventClickShopCard(componentsItems: ComponentsItem) {
         val list = ArrayList<Map<String, Any>>()
         val shopMap = HashMap<String, Any>()
         componentsItems.data?.firstOrNull().let {
-            shopMap[KEY_NAME] = "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - ${componentsItems.properties?.shopInfo ?: ""} - - shop_card_banner"
+            shopMap[KEY_NAME] = "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - ${componentsItems.properties?.shopInfo ?: ""} - - $SHOP_CARD_BANNER"
             shopMap[KEY_ID] = "${componentsItems.parentComponentId}_${componentsItems.data?.firstOrNull()?.shopId}"
             shopMap[KEY_POSITION] = "${componentsItems.position + 1}"
             shopMap[KEY_CREATIVE] = (componentsItems.data?.firstOrNull()?.creativeName
@@ -1891,13 +1891,13 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 EVENT_PROMO_CLICK to mapOf(
                         KEY_PROMOTIONS to list))
         val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK,
-                eventAction = ACTION_SHOP_CARD_CLICK, eventLabel = "shop_card_banner - - ${componentsItems.data?.firstOrNull()?.shopId}")
+                eventAction = ACTION_SHOP_CARD_CLICK, eventLabel = "$SHOP_CARD_BANNER - - ${componentsItems.data?.firstOrNull()?.shopId}")
         map[KEY_E_COMMERCE] = eCommerce
         map[PAGE_TYPE] = pageType
         map[PAGE_PATH] = removedDashPageIdentifier
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
-        map[USER_ID] = userID
+        map[USER_ID] = userSession.userId
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 }

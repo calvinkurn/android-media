@@ -52,8 +52,8 @@ class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
             mShopCardItemViewModel.getComponentLiveData().observe(lifecycle, { item ->
                 item.data?.let {
                     if (it.isNotEmpty()) {
-                        shopCardDataItem = it.first()
-                        populateData(it.first())
+                        shopCardDataItem = it.firstOrNull()
+                        shopCardDataItem?.let { it1 -> populateData(it1) }
                     }
                 }
             })
@@ -75,24 +75,24 @@ class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
         try {
             imageShop.loadImage(dataItem.products?.firstOrNull()?.imageURL)
             shopLogo.loadImage(dataItem.shopLogo)
-            if(!dataItem.shopBadgeImageUrl.isNullOrEmpty()){
+            if (dataItem.shopBadgeImageUrl.isNullOrEmpty()) {
+                shopSubLogo.invisible()
+            } else {
                 shopSubLogo.show()
                 shopSubLogo.loadImageWithoutPlaceholder(dataItem.shopBadgeImageUrl)
-            }else{
-                shopSubLogo.invisible()
             }
 
-            if (!dataItem.shopName.isNullOrEmpty()) {
+            if (dataItem.shopName.isNullOrEmpty()) {
+                shopNameTextView.invisible()
+            } else {
                 shopNameTextView.show()
                 shopNameTextView.text = dataItem.shopName
-            } else {
-                shopNameTextView.invisible()
             }
-            if (!dataItem.benefitTitle.isNullOrEmpty()) {
+            if (dataItem.benefitTitle.isNullOrEmpty()) {
+                headerTitleTextView.invisible()
+            } else {
                 headerTitleTextView.show()
                 headerTitleTextView.text = dataItem.benefitTitle
-            } else {
-                headerTitleTextView.invisible()
             }
             if (dataItem.showBenefitCurrency == true) {
                 benefitSymbol.show()
@@ -100,17 +100,17 @@ class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
             } else {
                 benefitSymbol.hide()
             }
-            if (!dataItem.benefitAmount.isNullOrEmpty()) {
+            if (dataItem.benefitAmount.isNullOrEmpty()) {
+                benefitAmount.hide()
+            } else {
                 benefitAmount.show()
                 benefitAmount.text = dataItem.benefitAmount
-            } else {
-                benefitAmount.hide()
             }
-            if(!dataItem.benefitSymbolImageUrl.isNullOrEmpty()) {
+            if (dataItem.benefitSymbolImageUrl.isNullOrEmpty()) {
+                benefitSymbolImage.hide()
+            } else {
                 benefitSymbolImage.show()
                 benefitSymbolImage.loadImageWithoutPlaceholder(dataItem.benefitSymbolImageUrl)
-            }else{
-                benefitSymbolImage.hide()
             }
             if (dataItem.showTimer == true) {
                 timerLogo.show()
@@ -137,13 +137,12 @@ class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun sendClickEvent() {
         (fragment as DiscoveryFragment).getDiscoveryAnalytics()
-                .trackEventClickShopCard(mShopCardItemViewModel.components,
-                        mShopCardItemViewModel.getUserId())
+                .trackEventClickShopCard(mShopCardItemViewModel.components)
     }
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
-        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackShopCardImpression(mShopCardItemViewModel.components, mShopCardItemViewModel.getUserId())
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackShopCardImpression(mShopCardItemViewModel.components)
     }
 
 

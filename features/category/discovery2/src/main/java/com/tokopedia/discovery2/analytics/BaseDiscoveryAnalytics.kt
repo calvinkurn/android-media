@@ -141,6 +141,6 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun slideQuestCard(source: Int, direction: String) {}
     open fun trackAnchorTabClick(components: ComponentsItem){}
     open fun viewAnchorTabs(componentsItems: ComponentsItem) {}
-    open fun trackShopCardImpression(componentsItems: ComponentsItem, userID: String) {}
-    open fun trackEventClickShopCard(componentsItems: ComponentsItem, userID: String) {}
+    open fun trackShopCardImpression(componentsItems: ComponentsItem) {}
+    open fun trackEventClickShopCard(componentsItems: ComponentsItem) {}
 }
