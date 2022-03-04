@@ -28,6 +28,7 @@ import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.adapter.beranda.*
 import com.tokopedia.topads.dashboard.view.fragment.education.READ_MORE_URL
+import com.tokopedia.topads.dashboard.view.sheet.RecommendationInfoBottomSheet
 import com.tokopedia.topads.dashboard.view.sheet.SummaryAdTypesBottomSheet
 import com.tokopedia.topads.dashboard.view.sheet.SummaryInformationBottomSheet
 import com.tokopedia.topads.dashboard.viewmodel.TopAdsDashboardViewModel
@@ -49,6 +50,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         context?.resources?.getSummaryAdTypes() ?: listOf()
     }
     private var selectedAdType = Chip()
+    private val recommendationInfoBottomSheet by lazy(LazyThreadSafetyMode.NONE) { RecommendationInfoBottomSheet() }
     private val summaryAdTypesBottomSheet by lazy(LazyThreadSafetyMode.NONE) {
         SummaryAdTypesBottomSheet(summaryAdTypeList, ::adTypeChanged)
     }
@@ -180,10 +182,13 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         summaryRvAdapter.itemClicked = ::onSummaryItemClicked
 
         binding.layoutRecommendasi.apply {
+            ivRecommendasiInfo.setOnClickListener {
+                recommendationInfoBottomSheet.show(childFragmentManager,"")
+            }
             layoutkataKunci.button.setOnClickListener {
                 (activity as? TopAdsDashboardActivity)?.switchTab(3)
             }
-            layoutProdukBerpostensi.button.setOnClickListener {
+            layoutAnggaranHarian.button.setOnClickListener {
                 (activity as? TopAdsDashboardActivity)?.switchTab(3)
             }
             layoutProdukBerpostensi.button.setOnClickListener {

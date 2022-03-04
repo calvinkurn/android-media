@@ -461,5 +461,8 @@
     <string name="topads_dashboard_anggaran_harian_desc"><![CDATA[Wah, <b><font size=17">%d grup iklanmu</font></b> tidak tampil karena Anggaran Hariannya habis. Atur anggarannya yuk!]]></string>
     <string name="topads_dashboard_kata_kunci_desc"><![CDATA[Ada <b><font size=17">%d grup iklanmu</font></b> yang bisa dimaksimalkan. Yuk, pakai rekomendasi kata kunci di bawah ini!]]></string>
     <string name="topads_dashboard_n_grup_iklanmu"><![CDATA[Ada<b><font size=17"> %d </font></b>grup iklanmu]]></string>
+    <string name="topads_dashboard_recommendation_info_sheet_title">Info rekomendasi dari TopAds</string>
+    <string name="topads_dashboard_recommendation_info_sheet_sub_title">Tingkatkan performa iklanmu</string>
+    <string name="topads_dashboard_recommendation_info_sheet_desc">Ikuti rekomendasi jitu dari hasil analisa kami untuk tingkatkan performa iklanmu!</string>
 </resources>
 
