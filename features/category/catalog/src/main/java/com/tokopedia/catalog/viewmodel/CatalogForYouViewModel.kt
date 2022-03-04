@@ -4,9 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
-import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
-import com.tokopedia.catalog.model.datamodel.CatalogStaggeredProductModel
-import com.tokopedia.catalog.model.datamodel.CatalogStaggeredShimmerModel
+import com.tokopedia.catalog.model.datamodel.*
 import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
 import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.usecase.detail.CatalogComparisonProductUseCase
@@ -16,8 +14,8 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class CatalogProductComparisonViewModel @Inject constructor(
-    private val catalogComparisonProductUseCase: CatalogComparisonProductUseCase,
+class CatalogForYouViewModel @Inject constructor(
+        private val catalogComparisonProductUseCase: CatalogComparisonProductUseCase
     ) : BaseViewModel() {
 
     private var shimmerData = MutableLiveData<ArrayList<BaseCatalogDataModel>>()
@@ -26,63 +24,72 @@ class CatalogProductComparisonViewModel @Inject constructor(
     private var hasMoreItems = MutableLiveData<Boolean>()
     private var error = MutableLiveData<Throwable>()
     private val pageFirst = 1
+    var page = 1
+    var lastScrollIndex = 0
+    var isLoading = false
 
-    fun getComparisonProducts(recommendedCatalogId : String, catalogId: String, brand : String, categoryId : String,
-                                       limit: Int, page : Int, name : String) {
+    fun getComparisonProducts(
+        catalogId: String, brand: String, categoryId: String, limit: Int,
+        page: Int, name: String
+    ) {
+        isLoading = true
         addShimmer(page)
         viewModelScope.launchCatchError(block = {
             val result = catalogComparisonProductUseCase.getCatalogComparisonProducts(catalogId,brand,
                 categoryId,limit.toString(),page.toString(),name)
             removeShimmer()
-            processResult(recommendedCatalogId, result)
+            processResult(result)
+            isLoading = false
         }, onError = {
             it.printStackTrace()
             error.value = it
+            isLoading = false
         })
     }
 
-    private fun processResult(recommendedCatalogId : String, result: Result<CatalogComparisonProductsResponse>) {
+    private fun processResult(result: Result<CatalogComparisonProductsResponse>) {
         when(result){
             is Success -> {
                 if(result.data.catalogComparisonList?.catalogComparisonList.isNullOrEmpty()){
                     dataList.value = masterDataList
                     hasMoreItems.value = false
                 }else {
-                    addToMasterList(recommendedCatalogId,result.data.catalogComparisonList)
+                    addToMasterList(result.data.catalogComparisonList)
                     dataList.value = masterDataList
                     hasMoreItems.value = true
+                    page ++
                 }
             }
 
             is Fail -> {
-                handleFail()
+                handleFail(result.throwable)
             }
         }
     }
 
-    private fun handleFail() {
-        hasMoreItems.value = false
+    private fun handleFail(th: Throwable) {
+        error.value = th
+        hasMoreItems.value = true
     }
 
-    private fun addToMasterList(recommendedCatalogId : String, it: CatalogComparisonProductsResponse.CatalogComparisonList?) {
-        it?.catalogComparisonList?.let { items ->
-            for (product in items){
-                product?.let {
-                    product.isActive = (product.id != recommendedCatalogId)
-                    masterDataList.add(CatalogStaggeredProductModel(CatalogConstant.COMPARISON_PRODUCT,
+    private fun addToMasterList(list: CatalogComparisonProductsResponse.CatalogComparisonList?) {
+        if(list != null) {
+            for (product in list.catalogComparisonList){
+                if(product != null){
+                    masterDataList.add(CatalogForYouModel(CatalogConstant.COMPARISON_PRODUCT,
                         CatalogConstant.COMPARISON_PRODUCT,product))
                 }
             }
         }
     }
 
-    private val shimmerItemCount = 4
+    private val shimmerItemCount = 1
     private val shimmerList = arrayListOf<BaseCatalogDataModel>()
 
     private fun addShimmer(page : Int) {
         if(shimmerList.size == 0){
             for (i in 1..shimmerItemCount) {
-                shimmerList.add(CatalogStaggeredShimmerModel())
+                shimmerList.add(CatalogForYouShimmerModel())
             }
             if(page == pageFirst){
                 masterDataList.clear()
@@ -95,6 +102,11 @@ class CatalogProductComparisonViewModel @Inject constructor(
     private fun removeShimmer() {
         masterDataList.removeAll(shimmerList)
         shimmerList.clear()
+        shimmerData.value = masterDataList
+    }
+
+    fun getLoadedItemsSize() : Int{
+        return dataList.value?.size ?: 0
     }
 
 

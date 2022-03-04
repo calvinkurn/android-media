@@ -3,13 +3,7 @@ package com.tokopedia.catalog.model.datamodel
 import android.os.Bundle
 import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactory
 
-data class CatalogProductsContainerDataModel (val name : String = "", val type : String = "",
-                                              val catalogId: String,
-                                              val catalogName : String,
-                                              val catalogUrl : String?,
-                                              val categoryId : String?,
-                                              val catalogBrand : String?)
-    : BaseCatalogDataModel {
+class CatalogForYouShimmerModel(val name : String = "", val type : String = "") : BaseCatalogDataModel {
 
     override fun name(): String = name
 
@@ -20,12 +14,10 @@ data class CatalogProductsContainerDataModel (val name : String = "", val type :
     }
 
     override fun equalsWith(newData: BaseCatalogDataModel): Boolean {
-        return true
+        return newData == this
     }
 
     override fun getChangePayload(newData: BaseCatalogDataModel): Bundle? {
         return null
     }
-
 }
-
