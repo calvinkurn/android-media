@@ -14,9 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -318,7 +316,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                 binding?.buttonAddProduct?.isEnabled = false
                 val isIndeterminate = binding?.cbuSelectAllProduct?.getIndeterminate() ?: false
                 if (isIndeterminate) binding?.cbuSelectAllProduct?.setIndeterminate(false)
-                binding?.tpgSelectAll?.text = getString(R.string.mvc_select_all)
+                binding?.tpgSelectAll?.gone()
                 binding?.selectionBar?.setBackgroundResource(NO_BACKGROUND)
                 binding?.buttonAddProduct?.text = getString(R.string.add_product)
                 binding?.tickerSellerLocationChange?.hide()
@@ -329,6 +327,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                     binding?.buttonAddProduct?.isEnabled = true
                 }
                 binding?.buttonAddProduct?.text = "Tambah $size Produk"
+                binding?.tpgSelectAll?.visible()
                 binding?.tpgSelectAll?.text = "$size Produk dipilih"
                 binding?.selectionBar?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.mvc_grey_f3f4f5))
                 productSelectionListener?.onProductSelectionChanged(size, viewModel.getMaxProductLimit())
