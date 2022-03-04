@@ -135,4 +135,7 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
+	implementation project(rootProject.ext.features.oneclickcheckout)
+	implementation project(rootProject.ext.features.logisticcart)
+	implementation project(rootProject.ext.features.checkout)
 }
