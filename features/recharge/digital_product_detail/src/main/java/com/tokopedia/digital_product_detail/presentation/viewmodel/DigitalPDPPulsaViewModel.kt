@@ -41,7 +41,6 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     var validatorJob: Job? = null
     var catalogProductJob: Job? = null
     var recommendationJob: Job? = null
-
     var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
     var isEligibleToBuy = false
     var selectedGridProduct = SelectedProduct()
@@ -229,6 +228,17 @@ class DigitalPDPPulsaViewModel @Inject constructor(
             isEligibleToBuy = errorMessage.isEmpty()
             delay(VALIDATOR_DELAY_TIME)
             _clientNumberValidatorMsg.value = errorMessage
+        }
+    }
+
+    fun setAutoSelectedDenom(listDenomData: List<DenomData>, productId: String){
+        var denomData: DenomData? = null
+        listDenomData.forEachIndexed{ index, activeDenomData ->
+            if (productId.equals(activeDenomData.id)) denomData = activeDenomData
+        }
+
+        denomData?.let {
+            selectedGridProduct = SelectedProduct(it, DenomWidgetEnum.GRID_TYPE, 0)
         }
     }
 

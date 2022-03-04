@@ -158,7 +158,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         initEmptyState()
         setAnimationAppBarLayout()
         observeData()
-
         getCatalogMenuDetail()
     }
 
@@ -274,6 +273,11 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         viewModel.observableDenomMCCMData.observe(viewLifecycleOwner, { denomData ->
             when (denomData) {
                 is RechargeNetworkResult.Success -> {
+
+                    if (productId >= 0) {
+                        viewModel.setAutoSelectedDenom(denomData.data.denomWidgetModel.listDenomData, productId.toString())
+                    }
+
                     val selectedPositionDenom = viewModel.getSelectedPositionId(denomData.data.denomWidgetModel.listDenomData)
                     val selectedPositionMCCM = viewModel.getSelectedPositionId(denomData.data.mccmFlashSaleModel.listDenomData)
 
@@ -384,8 +388,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
-            setContactName(data.clientName)
-            setInputNumber(data.prefill, true)
+            if (clientNumber.isNotEmpty()){
+                setInputNumber(clientNumber, true)
+            } else {
+                setContactName(data.clientName)
+                setInputNumber(data.prefill, true)
+            }
         }
     }
 

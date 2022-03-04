@@ -166,7 +166,6 @@ class DigitalPDPDataPlanFragment :
         initEmptyState()
         setAnimationAppBarLayout()
         observeData()
-
         getCatalogMenuDetail()
     }
 
@@ -315,6 +314,11 @@ class DigitalPDPDataPlanFragment :
         viewModel.observableDenomMCCMData.observe(viewLifecycleOwner, { denomData ->
             when (denomData) {
                 is RechargeNetworkResult.Success -> {
+
+                    if (productId >= 0) {
+                        viewModel.setAutoSelectedDenom(denomData.data.denomFull.listDenomData, productId.toString())
+                    }
+
                     val selectedPositionDenom = viewModel.getSelectedPositionId(denomData.data.denomFull.listDenomData)
                     val selectedPositionMCCM = viewModel.getSelectedPositionId(denomData.data.denomMCCMFull.listDenomData)
 
@@ -659,8 +663,12 @@ class DigitalPDPDataPlanFragment :
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
-            setContactName(data.clientName)
-            setInputNumber(data.prefill, true)
+            if (clientNumber.isNotEmpty()){
+                setInputNumber(clientNumber, true)
+            } else {
+                setContactName(data.clientName)
+                setInputNumber(data.prefill, true)
+            }
         }
     }
 
