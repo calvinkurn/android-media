@@ -38,8 +38,11 @@ import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
+import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
+import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.data.model.ShopLayoutWidgetV2
 import com.tokopedia.shop.home.domain.CheckCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
@@ -52,6 +55,9 @@ import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
+import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -1287,7 +1293,7 @@ class ShopHomeViewModelTest {
                 getShopPageHomeLayoutV2UseCase.get().executeOnBackground()
             } returns ShopLayoutWidgetV2()
             mockkObject(ShopPageHomeMapper)
-            every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any()) } returns listOf(
+            every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any(), false) } returns listOf(
                     ShopHomeCarousellProductUiModel(widgetId = "1")
             )
             viewModel.getWidgetContentData(
@@ -1300,7 +1306,8 @@ class ShopHomeViewModelTest {
                             )
                     ),
                     mockShopId,
-                    addressWidgetData
+                    addressWidgetData,
+                    false
             )
             assert(shopHomeWidgetContentData.await() is Success)
             assert((shopHomeWidgetContentData.await() as? Success)?.data?.isNotEmpty() == true)
@@ -1338,7 +1345,7 @@ class ShopHomeViewModelTest {
             )
 
             mockkObject(ShopPageHomeMapper)
-            every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any()) } returns listOf(
+            every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any(), false) } returns listOf(
                 resultWidget
             )
 
@@ -1351,7 +1358,8 @@ class ShopHomeViewModelTest {
                     )
                 ),
                 mockShopId,
-                addressWidgetData
+                addressWidgetData,
+                false
             )
             assert((shopHomeWidgetContentData.await() as? Success)?.data?.values?.first() == resultWidget)
         }
@@ -1368,7 +1376,7 @@ class ShopHomeViewModelTest {
             } returns ShopLayoutWidgetV2()
 
             mockkObject(ShopPageHomeMapper)
-            every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any()) } returns listOf(
+            every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any(), false) } returns listOf(
                 ProductCardUiModel()
             )
 
@@ -1381,7 +1389,8 @@ class ShopHomeViewModelTest {
                     )
                 ),
                 mockShopId,
-                addressWidgetData
+                addressWidgetData,
+                false
             )
             assert((shopHomeWidgetContentData.await() as? Success)?.data?.values?.first() == null)
         }
@@ -1404,7 +1413,8 @@ class ShopHomeViewModelTest {
                             ShopPageHomeWidgetLayoutUiModel.WidgetLayout()
                     ),
                     mockShopId,
-                    addressWidgetData
+                    addressWidgetData,
+                    false
             )
             assert(shopHomeWidgetContentData.await() is Fail)
             assert(shopHomeWidgetContentDataError.await().isNotEmpty())
