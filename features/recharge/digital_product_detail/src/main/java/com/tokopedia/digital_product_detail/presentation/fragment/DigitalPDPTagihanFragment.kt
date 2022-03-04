@@ -35,6 +35,7 @@ import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
+import com.tokopedia.digital_product_detail.data.model.param.GeneralExtraParam
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpTagihanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.MoreInfoPDPBottomsheet
@@ -91,7 +92,8 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
 
     private var clientNumber = ""
     private var loyaltyStatus = ""
-    private var productId =  0
+    private var operatorId = ""
+    private var productId = 0
     private var menuId = 0
     private var categoryId = GeneralCategoryType.CATEGORY_LISTRIK_PLN
     private var inputNumberActionType = InputNumberActionType.MANUAL
@@ -376,7 +378,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     private fun getDataFromBundle() {
         arguments?.run {
             val digitalTelcoExtraParam = this.getParcelable(DigitalPDPConstant.EXTRA_PARAM)
-                ?: TopupBillsExtraParam()
+                ?: GeneralExtraParam()
             clientNumber = digitalTelcoExtraParam.clientNumber
             productId = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
             if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
@@ -385,6 +387,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
             if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
                 menuId = digitalTelcoExtraParam.menuId.toIntOrNull() ?: 0
             }
+            operatorId = digitalTelcoExtraParam.operatorId
         }
         if (!clientNumber.isNullOrEmpty()) {
             binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
@@ -452,6 +455,10 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
+
+        if (operatorId.isEmpty()){
+            operatorId = data.userPerso.prefillOperatorId
+        }
 
         renderPrefill(data.userPerso)
         renderTicker(data.tickers)
@@ -523,8 +530,12 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
         binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
-            setContactName(data.clientName)
-            setInputNumber(data.prefill, true)
+            if (clientNumber.isNotEmpty()){
+                setInputNumber(clientNumber, true)
+            } else {
+                setContactName(data.clientName)
+                setInputNumber(data.prefill, true)
+            }
         }
     }
 
@@ -599,6 +610,10 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                 setChipOperators(operators, viewModel.operatorData)
             }
             setTitleGeneral(catalogOperators.response.text)
+        }
+
+        if (operatorId.isNotEmpty()){
+            renderOperatorChipsByAutoSelect(operatorId)
         }
     }
 
@@ -850,9 +865,9 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     }
 
     companion object {
-        fun newInstance(telcoExtraParam: TopupBillsExtraParam) = DigitalPDPTagihanFragment().also {
+        fun newInstance(generalExtraParam: GeneralExtraParam) = DigitalPDPTagihanFragment().also {
             val bundle = Bundle()
-            bundle.putParcelable(DigitalPDPConstant.EXTRA_PARAM, telcoExtraParam)
+            bundle.putParcelable(DigitalPDPConstant.EXTRA_PARAM, generalExtraParam)
             it.arguments = bundle
         }
     }

@@ -113,6 +113,7 @@ object CommonTopupBillsGqlQuery {
                 client_name
                 user_type
                 loyalty_status
+                prefill_operator_id
             }
             recommendations {
               iconUrl
