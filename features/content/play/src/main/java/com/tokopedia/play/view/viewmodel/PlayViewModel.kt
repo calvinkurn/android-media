@@ -887,8 +887,6 @@ class PlayViewModel @AssistedInject constructor(
         updateChannelStatus()
 
         updateChannelInfo(channelData)
-
-        getKolHeader(channelData.partnerInfo)
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
@@ -1183,12 +1181,8 @@ class PlayViewModel @AssistedInject constructor(
      * Update channel data
      */
 
-    /**
-     * Follow status should only be retrieved if and only if the partner is a [PartnerType.Shop]
-     * and if it is not the viewer's own shop id
-     */
     private fun updatePartnerInfo(partnerInfo: PlayPartnerInfo) {
-        if (partnerInfo.status !is PlayPartnerFollowStatus.NotFollowable) {
+        if (partnerInfo.status is PlayPartnerFollowStatus.Followable) {
             viewModelScope.launchCatchError(block = {
                 val isFollowing = getFollowingStatus(partnerInfo)
 
@@ -1704,29 +1698,34 @@ class PlayViewModel @AssistedInject constructor(
      * if false, it depends on the current state
      */
     private fun handleClickFollow(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_FOLLOW) {
-        val action = doFollowUnfollow(shouldForceFollow = isFromLogin) ?: return@needLogin
-        val shopId = _partnerInfo.value.id
-        playAnalytic.clickFollowShop(channelId, channelType, shopId.toString(), action.value)
+        if (_partnerInfo.value.status is PlayPartnerFollowStatus.Followable){
+            val action = doFollowUnfollow(shouldForceFollow = isFromLogin) ?: return@needLogin
+            val shopId = _partnerInfo.value.id
+
+            if(_partnerInfo.value.type == PartnerType.Shop) playAnalytic.clickFollowShop(channelId, channelType, shopId.toString(), action.value)
+        }
     }
 
     /**
      * [PartnerFollowAction] from interactive will definitely [PartnerFollowAction.Follow]
      */
     private fun handleClickFollowInteractive() = needLogin(REQUEST_CODE_LOGIN_FOLLOW) {
-        doFollowUnfollow(shouldForceFollow = true) ?: return@needLogin
+        if (_partnerInfo.value.status is PlayPartnerFollowStatus.Followable) {
+            doFollowUnfollow(shouldForceFollow = true) ?: return@needLogin
 
-        viewModelScope.launch {
-            _uiEvent.emit(
-                ShowInfoEvent(message = UiString.Resource(R.string.play_interactive_follow_success))
-            )
-        }
+            viewModelScope.launch {
+                _uiEvent.emit(
+                    ShowInfoEvent(message = UiString.Resource(R.string.play_interactive_follow_success))
+                )
+            }
 
-        val interactiveId = repo.getActiveInteractiveId() ?: return@needLogin
-        playAnalytic.clickFollowShopInteractive(
+            val interactiveId = repo.getActiveInteractiveId() ?: return@needLogin
+            if (_partnerInfo.value.type == PartnerType.Shop) playAnalytic.clickFollowShopInteractive(
                 channelId,
                 channelType,
                 interactiveId,
-        )
+            )
+        }
     }
 
     private fun handleClickPartnerName(applink: String) {

@@ -188,7 +188,7 @@ class PlayUpcomingViewModel @Inject constructor(
     }
 
     private fun updatePartnerInfo(partnerInfo: PlayPartnerInfo) {
-        if (partnerInfo.status !is PlayPartnerFollowStatus.NotFollowable) {
+        if (partnerInfo.status is PlayPartnerFollowStatus.Followable) {
             viewModelScope.launchCatchError(block = {
                 val isFollowing = getFollowingStatus(partnerInfo)
                 val result = if(isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
@@ -324,9 +324,16 @@ class PlayUpcomingViewModel @Inject constructor(
     }
 
     private fun handleClickFollow(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_FOLLOW) {
-        val action = doFollowUnfollow(shouldForceFollow = isFromLogin) ?: return@needLogin
-        val shopId = _partnerInfo.value.id
-        if(_partnerInfo.value.type == PartnerType.Shop) playAnalytic.clickFollowShop(mChannelId, channelType, shopId.toString(), action.value)
+        if (_partnerInfo.value.status is PlayPartnerFollowStatus.Followable) {
+            val action = doFollowUnfollow(shouldForceFollow = isFromLogin) ?: return@needLogin
+            val shopId = _partnerInfo.value.id
+            if (_partnerInfo.value.type == PartnerType.Shop) playAnalytic.clickFollowShop(
+                mChannelId,
+                channelType,
+                shopId.toString(),
+                action.value
+            )
+        }
     }
 
     private fun handleClickPartnerName() {
