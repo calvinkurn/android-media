@@ -9,7 +9,7 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/bg_image"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0"
+        android:layout_height="@dimen/unify_space_0"
         tools:visibility="visible"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/shop_card_rv"
@@ -31,7 +31,7 @@
         android:id="@+id/shop_card_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="12dp"
+        android:paddingVertical="@dimen/unify_space_12"
         android:visibility="gone"
         tools:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
