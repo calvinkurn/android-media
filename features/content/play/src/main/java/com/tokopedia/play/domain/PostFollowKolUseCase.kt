@@ -13,7 +13,7 @@ import javax.inject.Inject
  * @author by astidhiyaa on 02/03/22
  */
 @GqlQuery(PostFollowKolUseCase.QUERY_NAME, PostFollowKolUseCase.QUERY)
-class ePostFollowKolUseCase @Inject constructor(
+class PostFollowKolUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<KOLFollowStatus>(graphqlRepository) {
 
