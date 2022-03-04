@@ -169,13 +169,17 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     fun getEmptyState(@HomeStaticLayoutId id: String, serviceType: String) {
-        homeLayoutItemList.clear()
-        homeLayoutItemList.addEmptyStateIntoList(id, serviceType)
-        val data = HomeLayoutListUiModel(
+        launchCatchError(block = {
+            homeLayoutItemList.clear()
+            homeLayoutItemList.addEmptyStateIntoList(id, serviceType)
+            val data = HomeLayoutListUiModel(
                 items = getHomeVisitableList(),
                 state = TokoNowLayoutState.HIDE
-        )
-        _homeLayoutList.postValue(Success(data))
+            )
+            _homeLayoutList.postValue(Success(data))
+        }) {
+            _homeLayoutList.postValue(Fail(it))
+        }
     }
 
     fun getProductRecomOoc() {
