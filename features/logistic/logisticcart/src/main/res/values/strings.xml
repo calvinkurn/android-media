@@ -32,6 +32,4 @@
     <string name="content_description_img_logo_rates_promo_prefix">image %1$s</string>
     <string name="message_error_shipping_general">Terjadi kesalahan</string>
     <string name="txt_label_dynamic_pricing">Ongkir Spesial PM Pro</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
