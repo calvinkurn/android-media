@@ -211,6 +211,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_CONTENT_PLAY_BROADCASTER = "df_content_play_broadcaster"
     const val DF_IMAGE_PICKER_INSTA = "df_imagepicker_insta"
     const val DF_CREATE_POST = "df_createpost"
+    const val DF_FEEDBACKFORM = "df_common_feedbackform"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
@@ -596,6 +597,10 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Review Credibility
             add(DFP({ it.startsWith(ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY)}, DF_MERCHANT_REVIEW, R.string.title_review_credibility))
+            add(DFP({
+                val uri = Uri.parse(it).buildUpon().build()
+                uri.host == FEEDBACK_FORM
+            }, DF_FEEDBACKFORM, R.string.internal_feedback))
         }
     }
 

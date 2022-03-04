@@ -308,6 +308,9 @@
     <string name="ent_pdp_title_form">Data Pemesan</string>
     <string name="ent_redeem_title">Redeem Your Ticket</string>
 
+    <!-- Dynamic feature for feedbackform-->
+    <string name = "df_title_feedbackform">Feedback Form</string>
+
     <!--Play-->
     <string name="title_play_df">Play</string>
     <string name="title_play_broadcaster_df">Play Broadcaster</string>
