@@ -264,7 +264,11 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                     }
 
                     override fun onClickNavigationIcon() {
-                        // TODO: [Misael] analytics navigation icon (mgkn QR)
+                        digitalPDPTelcoAnalytics.clickScanBarcode(
+                            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                            loyaltyStatus,
+                            userSession.userId
+                        )
 
                         val intent = RouteManager.getIntent(context,
                             ApplinkConstInternalMarketplace.QR_SCANNEER,
