@@ -14,11 +14,25 @@
         <include layout="@layout/view_background_banner"
             app:layout_constraintTop_toBottomOf="@id/recharge_pdp_paket_data_action_bar_spacer"/>
 
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/recharge_pdp_paket_data_ticker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/recharge_pdp_paket_data_action_bar_spacer"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:visibility="gone"
+            app:closeButtonVisibility="visible"
+            app:enableAutoSlide="true"
+            app:layout_scrollFlags="scroll"
+            app:tickerShapeType="loose"
+            tools:visibility="gone"/>
+
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/recharge_pdp_paket_data_main_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/recharge_pdp_paket_data_action_bar_spacer">
+            android:layout_below="@+id/recharge_pdp_paket_data_ticker">
 
                 <com.google.android.material.appbar.AppBarLayout
                     android:id="@+id/recharge_pdp_paket_data_appbar"
@@ -41,25 +55,11 @@
                             android:layout_below="@+id/recharge_pdp_paket_data_banner_spacer"
                             app:layout_scrollFlags="scroll" />
 
-                        <com.tokopedia.unifycomponents.ticker.Ticker
-                            android:id="@+id/recharge_pdp_paket_data_ticker"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@id/recharge_pdp_paket_data_dynamic_banner_spacer"
-                            android:layout_marginStart="@dimen/spacing_lvl4"
-                            android:layout_marginEnd="@dimen/spacing_lvl4"
-                            android:visibility="gone"
-                            app:closeButtonVisibility="visible"
-                            app:enableAutoSlide="true"
-                            app:layout_scrollFlags="scroll"
-                            app:tickerShapeType="loose"
-                            tools:visibility="gone"/>
-
                         <com.tokopedia.recharge_component.widget.RechargeClientNumberWidget
                             android:id="@+id/recharge_pdp_paket_data_client_number_widget"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/recharge_pdp_paket_data_ticker"
+                            android:layout_below="@id/recharge_pdp_paket_data_dynamic_banner_spacer"
                             android:layout_marginStart="@dimen/spacing_lvl4"
                             android:layout_marginEnd="@dimen/spacing_lvl4"/>
 
