@@ -120,6 +120,7 @@
             android:id="@+id/cbu_select_all_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_marginVertical="@dimen/unify_space_8"
             android:layout_marginStart="@dimen/unify_space_16"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -130,7 +131,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/mvc_dimen_10dp"
-            android:text="@string/mvc_select_all"
+            android:layout_marginStart="@dimen/unify_space_16"
             app:layout_constraintLeft_toRightOf="@id/cbu_select_all_product"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_2" />
