@@ -9,7 +9,6 @@ import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ItemSortListBinding
 import com.tokopedia.play.broadcaster.setup.product.view.model.SortListModel
-import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 
 /**
  * Created by kenny.hadisaputra on 02/02/22
@@ -23,7 +22,7 @@ internal class SortListAdapter(
     }
 
     override fun areItemsTheSame(oldItem: SortListModel, newItem: SortListModel): Boolean {
-        return oldItem.id == newItem.id
+        return oldItem.sort == newItem.sort
     }
 
     override fun areContentsTheSame(oldItem: SortListModel, newItem: SortListModel): Boolean {
@@ -62,7 +61,7 @@ internal class SortListAdapter(
         }
 
         fun bind(item: SortListModel) {
-            binding.tvSortName.text = item.text
+            binding.tvSortName.text = item.sort.text
 
             binding.rbSort.setOnCheckedChangeListener(null)
             binding.rbSort.isChecked = item.isSelected

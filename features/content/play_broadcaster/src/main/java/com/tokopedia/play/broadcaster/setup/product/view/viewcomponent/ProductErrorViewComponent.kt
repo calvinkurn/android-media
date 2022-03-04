@@ -27,6 +27,13 @@ class ProductErrorViewComponent(
         }
     }
 
+    fun setServerError() {
+        view.setType(GlobalError.SERVER_ERROR)
+        view.setActionClickListener {
+            eventBus.emit(Event.RetryClicked)
+        }
+    }
+
     private fun GlobalError.productNotFoundState() {
         errorIllustration.loadImage(getString(R.string.img_search_product_empty))
         errorTitle.text = context.getString(R.string.play_product_not_found_title)
@@ -45,5 +52,6 @@ class ProductErrorViewComponent(
 
     sealed class Event {
         object AddProductClicked : Event()
+        object RetryClicked : Event()
     }
 }

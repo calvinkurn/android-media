@@ -1,42 +1,42 @@
 package com.tokopedia.play.broadcaster.ui.model.sort
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
 /**
  * Created by kenny.hadisaputra on 28/01/22
  */
+@Parcelize
 data class SortUiModel(
-    val id: Int,
+    val key: String,
     val text: String,
-) {
+    val value: SortValue,
+) : Parcelable {
     companion object {
         val supportedSortList: List<SortUiModel> = listOf(
             SortUiModel(
-                id = 2,
+                key = "UPDATE_TIME",
                 text = "Terbaru",
+                value = SortValue.Descending,
             ),
             SortUiModel(
-                id = 23,
-                text = "Paling Sesuai",
-            ),
-            SortUiModel(
-                id = 9,
+                key = "PRICE",
                 text = "Harga Terendah",
+                value = SortValue.Ascending,
             ),
             SortUiModel(
-                id = 10,
+                key = "PRICE",
                 text = "Harga Tertinggi",
-            ),
-            SortUiModel(
-                id = 11,
-                text = "Ulasan Terbanyak",
+                value = SortValue.Descending,
             ),
         )
-
-        fun getSortById(id: Int): SortUiModel? {
-            return supportedSortList.firstOrNull { it.id == id }
-        }
 
         val Empty: SortUiModel
             get() = supportedSortList.first()
     }
 }
 
+enum class SortValue(val value: String) {
+    Ascending("ASC"),
+    Descending("DESC"),
+}

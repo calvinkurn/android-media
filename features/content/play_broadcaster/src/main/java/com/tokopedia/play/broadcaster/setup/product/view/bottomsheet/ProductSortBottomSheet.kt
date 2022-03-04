@@ -4,23 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSortBinding
 import com.tokopedia.play.broadcaster.setup.product.view.model.SortListModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SortListViewComponent
-import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
-import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 /**
@@ -39,6 +33,8 @@ class ProductSortBottomSheet @Inject constructor() : BottomSheetUnify() {
     private val sortListView by viewComponent { SortListViewComponent(binding.rvSort, eventBus) }
 
     private var mListener: Listener? = null
+
+    private var mSelectedSort: SortUiModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,10 +70,10 @@ class ProductSortBottomSheet @Inject constructor() : BottomSheetUnify() {
     }
 
     private fun setupView() {
+        mSelectedSort = requireArguments().getParcelable<SortUiModel>(ARGS_SELECTED_SORT)
         setTitle(getString(R.string.play_bro_etalase_sort))
         setAction(getString(R.string.play_label_save)) {
-            val selectedId = requireArguments().getInt(ARGS_SELECTED_SORT_ID, -1)
-            val selectedSort = SortUiModel.getSortById(selectedId)
+            val selectedSort = mSelectedSort
             if (selectedSort != null) mListener?.onSortChosen(this, selectedSort)
             dismiss()
         }
@@ -90,7 +86,7 @@ class ProductSortBottomSheet @Inject constructor() : BottomSheetUnify() {
             eventBus.subscribe().collect {
                 when (it) {
                     is SortListViewComponent.Event.OnSelected -> {
-                        requireArguments().putInt(ARGS_SELECTED_SORT_ID, it.sort.id)
+                        mSelectedSort = it.sort.sort
                         refreshSortList()
                     }
                 }
@@ -103,11 +99,11 @@ class ProductSortBottomSheet @Inject constructor() : BottomSheetUnify() {
     }
 
     private fun getSortList(): List<SortListModel> {
+        val selectedSort = mSelectedSort
         return SortUiModel.supportedSortList.map {
             SortListModel(
-                id = it.id,
-                text = it.text,
-                isSelected = it.id == arguments?.getInt(ARGS_SELECTED_SORT_ID, -1),
+                sort = it,
+                isSelected = it == selectedSort,
             )
         }
     }
@@ -115,12 +111,12 @@ class ProductSortBottomSheet @Inject constructor() : BottomSheetUnify() {
     companion object {
         private const val TAG = "ProductSortBottomSheet"
 
-        private const val ARGS_SELECTED_SORT_ID = "selected_sort_id"
+        private const val ARGS_SELECTED_SORT = "selected_sort_id"
 
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            selectedId: Int? = null,
+            selected: SortUiModel? = null,
         ): ProductSortBottomSheet {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ProductSortBottomSheet
             val bottomSheet = if (oldInstance != null) oldInstance
@@ -132,8 +128,8 @@ class ProductSortBottomSheet @Inject constructor() : BottomSheetUnify() {
                 ) as ProductSortBottomSheet
             }
             val newArgs = bottomSheet.arguments ?: Bundle()
-            if (selectedId == null) newArgs.remove(ARGS_SELECTED_SORT_ID)
-            else newArgs.putInt(ARGS_SELECTED_SORT_ID, selectedId)
+            if (selected == null) newArgs.remove(ARGS_SELECTED_SORT)
+            else newArgs.putParcelable(ARGS_SELECTED_SORT, selected)
             return bottomSheet.apply {
                 arguments = newArgs
             }

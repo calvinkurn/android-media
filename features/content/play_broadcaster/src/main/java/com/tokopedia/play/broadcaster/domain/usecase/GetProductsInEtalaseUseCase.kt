@@ -5,6 +5,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
+import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import com.tokopedia.play.broadcaster.util.handler.DefaultUseCaseHandler
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -30,6 +31,10 @@ class GetProductsInEtalaseUseCase @Inject constructor(
                         stock
                         pictures {
                             urlThumbnail
+                        }
+                        price {
+                            min
+                            max
                         }
                     }
                     meta {
@@ -73,26 +78,28 @@ class GetProductsInEtalaseUseCase @Inject constructor(
         private const val PARAMS_INPUT_ETALASE_ID = "menu"
         private const val PARAMS_INPUT_STATUS = "status"
 
-        private const val PARAMS_INPUT_UPDATE_TIME = "UPDATE_TIME"
-
         fun createParams(
-                shopId: String,
-                page: Int,
-                perPage: Int,
-                etalaseId: String = "",
-                keyword: String = ""
+            shopId: String,
+            page: Int,
+            perPage: Int,
+            etalaseId: String = "",
+            keyword: String = "",
+            sort: SortUiModel = SortUiModel.Empty,
         ): Map<String, Any> = mapOf(
-                PARAMS_SHOP_ID to shopId,
-                PARAMS_FILTER to mutableListOf(
-                        getFilterInput(PARAMS_INPUT_KEYWORD, keyword),
-                        getFilterInput(PARAMS_INPUT_PAGE, page.toString()),
-                        getFilterInput(PARAMS_INPUT_PER_PAGE, perPage.toString()),
-                        getFilterInput(PARAMS_INPUT_STATUS, "ACTIVE")
-                ).apply {
-                    if (etalaseId.isNotEmpty())
-                        add(getFilterInput(PARAMS_INPUT_ETALASE_ID, etalaseId))
-                },
-                PARAMS_SORT to mapOf(PARAMS_INPUT_UPDATE_TIME to "DESC")
+            PARAMS_SHOP_ID to shopId,
+            PARAMS_FILTER to mutableListOf(
+                getFilterInput(PARAMS_INPUT_KEYWORD, keyword),
+                getFilterInput(PARAMS_INPUT_PAGE, page.toString()),
+                getFilterInput(PARAMS_INPUT_PER_PAGE, perPage.toString()),
+                getFilterInput(PARAMS_INPUT_STATUS, "ACTIVE")
+            ).apply {
+                if (etalaseId.isNotEmpty())
+                    add(getFilterInput(PARAMS_INPUT_ETALASE_ID, etalaseId))
+            },
+            PARAMS_SORT to mapOf(
+                PARAMS_ID to sort.key,
+                PARAMS_VALUE to sort.value.value
+            )
         )
 
         private fun getFilterInput(

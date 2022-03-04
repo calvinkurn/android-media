@@ -5,6 +5,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 
 /**
  * Created by kenny.hadisaputra on 26/01/22
@@ -19,7 +20,7 @@ interface PlayBroProductRepository {
         etalaseId: String,
         page: Int,
         keyword: String,
-        sort: Int,
+        sort: SortUiModel,
     ): PagedDataUiModel<ProductUiModel>
 
     suspend fun getProductsInCampaign(
