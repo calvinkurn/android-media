@@ -29,11 +29,7 @@ class PostFollowKolUseCase @Inject constructor(
         const val QUERY = """
             mutation followKOL(${'$'}userIDEnc: String){
                 SocialNetworkFollow(userIDEnc: ${'$'}userIDEnc){
-                    data{
-                        user_id_source
-                        user_id_target
-                        relation
-                    }
+                    error_code
                     messages
                 }
             }

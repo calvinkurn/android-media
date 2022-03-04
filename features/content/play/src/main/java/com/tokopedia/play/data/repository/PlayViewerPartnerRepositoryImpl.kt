@@ -56,7 +56,7 @@ class PlayViewerPartnerRepositoryImpl @Inject constructor(
         return@withContext if (followAction == PartnerFollowAction.Follow){
             postFollowKolUseCase.apply {
                 setRequestParams(createParam(followedKol))
-            }.executeOnBackground().followedKOLInfo.data.isSuccess
+            }.executeOnBackground().followedKOLInfo.errorCode.isEmpty()
         } else{
             postUnfollowKolUseCase.apply {
                 setRequestParams(createParam(followedKol))
