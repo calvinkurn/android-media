@@ -408,7 +408,7 @@ class PlayUpcomingViewModel @Inject constructor(
 
     private fun handleSharingOption(shareModel: ShareModel) {
         viewModelScope.launch {
-            playAnalytic.clickSharingOption(mChannelId, partnerId, channelType.value, shareModel.socialMediaName, playShareExperience.isScreenshotBottomSheet())
+            playAnalytic.clickSharingOption(mChannelId, partnerId, channelType.value, shareModel.channel, playShareExperience.isScreenshotBottomSheet())
 
             val playShareExperienceData = getPlayShareExperienceData()
 
