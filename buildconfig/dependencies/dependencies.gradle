@@ -84,7 +84,6 @@ ext {
     robolectricVersion = "4.4"
     orchestratorVersion = '1.3.0'
     leakCanaryVersion = '2.2'
-    embraceSAVersion = '4.15.0'
     embraceVersion = '4.15.0'
     newRelicVersion = '6.2.1'
     windowVersion = '1.0.0-alpha07'
@@ -296,8 +295,6 @@ ext {
             biometric             : "androidx.biometric:biometric:$biometricVersion",
             embraceSdk            : "io.embrace:embrace-android-sdk:$embraceVersion",
             embraceSwazzler       : "io.embrace:embrace-swazzler:$embraceVersion",
-            embraceSdkSA          : "io.embrace:embrace-android-sdk:$embraceSAVersion",
-            embraceSwazzlerSA     : "io.embrace:embrace-swazzler:$embraceSAVersion",
             window                : "androidx.window:window:$windowVersion",
             mp4Composer           : "com.github.MasayukiSuda:Mp4Composer-android:v0.4.1",
             localBroadcastManager : "androidx.localbroadcastmanager:localbroadcastmanager:$localBroadcastManagerVersion",
