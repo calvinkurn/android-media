@@ -21,13 +21,6 @@ import dagger.Provides
 @Module
 class ChooseAccountModule {
 
-//    @ActivityScope
-//    @Provides
-//    @ApplicationContext
-//    fun provideContext(): Context? {
-//	return context?.applicationContext
-//    }
-
     @ActivityScope
     @Provides
     fun provideResources(@ApplicationContext context: Context): Resources {
@@ -42,8 +35,8 @@ class ChooseAccountModule {
 
     @ActivityScope
     @Provides
-    fun provideFingerprintPreferenceManager(@ApplicationContext context: Context?): FingerprintPreference {
-	return FingerprintPreferenceManager(context!!)
+    fun provideFingerprintPreferenceManager(@ApplicationContext context: Context): FingerprintPreference {
+	return FingerprintPreferenceManager(context)
     }
 
     @Provides

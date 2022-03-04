@@ -142,8 +142,6 @@ abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountLis
     //Impossible Flow
     protected fun onGoToActivationPage(messageErrorException: MessageErrorException) {
         onErrorLogin(ErrorHandler.getErrorMessage(context, messageErrorException))
-        val logException = Throwable("LoginPN activation", messageErrorException)
-        logUnknownError(logException, GOTO_ACTIVATION_FLOW)
     }
 
     protected fun onGoToSecurityQuestion() {

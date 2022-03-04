@@ -170,8 +170,6 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
 
     private fun onErrorLoginToken(throwable: Throwable) {
         checkExceptionType(throwable)
-        val logException = Throwable("Failed LoginPN using token", throwable)
-        logUnknownError(logException, LOGIN_TOKEN_CHOOSE_ACC)
     }
 
     private fun onSuccessGetAccountList(accountListDataModel: AccountListDataModel) {
