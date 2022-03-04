@@ -44,6 +44,9 @@ class CatalogOperatorAttributes(
         val productDescriptions: List<String> = listOf(),
         @SerializedName("operator_descriptions")
         @Expose
-        val operatorDescriptions: List<String> = listOf()
+        val operatorDescriptions: List<String> = listOf(),
+        @SerializedName("default_product_id")
+        @Expose
+        val defaultProductId: String = "",
 
 ) : Parcelable

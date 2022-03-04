@@ -54,6 +54,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
@@ -573,6 +574,10 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                     DigitalPDPCategoryUtil.getCategoryName(categoryId),
                     viewModel.operatorData.attributes.name
                 )
+
+                if (productId <= 0) {
+                    productId = viewModel.operatorData.attributes.defaultProductId.toIntOrZero()
+                }
 
                 getRecommendations()
                 getCatalogInputMultiTab(operatorId)

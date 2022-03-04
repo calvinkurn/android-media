@@ -456,10 +456,6 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
 
-        if (operatorId.isEmpty()){
-            operatorId = data.userPerso.prefillOperatorId
-        }
-
         renderPrefill(data.userPerso)
         renderTicker(data.tickers)
         onShowBuyWidget()
@@ -529,6 +525,10 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     }
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
+        if (operatorId.isEmpty()){
+            operatorId = data.prefillOperatorId
+        }
+
         binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
             if (clientNumber.isNotEmpty()){
                 setInputNumber(clientNumber, true)
@@ -640,6 +640,10 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                     DigitalPDPCategoryUtil.getCategoryName(categoryId),
                     viewModel.operatorData.attributes.name
                 )
+
+                if (productId <= 0) {
+                    productId = viewModel.operatorData.attributes.defaultProductId.toIntOrZero()
+                }
 
                 hideEmptyState()
             } else {

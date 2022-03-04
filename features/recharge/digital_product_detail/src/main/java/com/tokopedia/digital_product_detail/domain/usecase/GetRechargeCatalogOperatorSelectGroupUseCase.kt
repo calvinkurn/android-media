@@ -61,6 +61,7 @@ class GetRechargeCatalogOperatorSelectGroupUseCase @Inject constructor(
                   image_url
                   prefix
                   operator_descriptions
+                  default_product_id
                   custom_attributes {
                     id
                   }
