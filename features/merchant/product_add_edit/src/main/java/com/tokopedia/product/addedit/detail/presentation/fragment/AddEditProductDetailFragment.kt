@@ -1468,6 +1468,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     private fun subscribeToHasRequiredSpecification() {
         viewModel.hasRequiredSpecification.observe(viewLifecycleOwner, {
             productSpecificationHeaderTextView.displayRequiredAsterisk(it)
+            val specificationList = viewModel.selectedSpecificationList.value.orEmpty()
+            tooltipSpecificationRequired?.isVisible = it && specificationList.isEmpty()
         })
     }
 
@@ -1478,8 +1480,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
             } else {
                 getString(R.string.action_specification_change)
             }
-            tooltipSpecificationRequired?.isVisible = it.isEmpty()
-                    && viewModel.hasRequiredSpecification.value.orFalse()
+            val hasRequiredSpecification = viewModel.hasRequiredSpecification.value.orFalse()
+            tooltipSpecificationRequired?.isVisible = it.isEmpty() && hasRequiredSpecification
         }
     }
 
