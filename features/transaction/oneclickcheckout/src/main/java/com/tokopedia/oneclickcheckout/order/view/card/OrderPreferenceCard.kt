@@ -285,11 +285,16 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             } else {
                 tvShippingCourierEta.gone()
             }
-            setMultiViewsOnClickListener(tvShippingCourier, tvShippingCourierEta, btnChangeCourier) {
+            setMultiViewsOnClickListener(
+                tvShippingCourier,
+                tvShippingCourierEta,
+                btnChangeCourier
+            ) {
                 if (profile.enable) {
                     val shippingRecommendationData = shipment.shippingRecommendationData
                     if (shippingRecommendationData != null) {
-                        val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationUiModels)
+                        val list: ArrayList<RatesViewModelType> =
+                            ArrayList(shippingRecommendationData.shippingDurationUiModels)
                         val logisticPromoList = shippingRecommendationData.listLogisticPromo
                         if (logisticPromoList.isNotEmpty()) {
                             list.addAll(
@@ -303,7 +308,12 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                                 }) {
                                 orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
                             }
-                        listener.chooseDuration(false, shipping.getRealShipperProductId().toString(), list)
+                            listener.chooseDuration(
+                                false,
+                                shipping.getRealShipperProductId().toString(),
+                                list
+                            )
+                        }
                     }
                 }
             }
