@@ -67,8 +67,9 @@ class HotelEVoucherActivityTest {
 
     private fun clickShareAsImagePopupShown() {
         onView(withText(R.string.hotel_save_as_image)).perform(click())
-        Thread.sleep(2000)
+        Thread.sleep(500)
         onView(withText(R.string.hotel_save_as_image_success)).check(matches(isDisplayed()))
+        Thread.sleep(1000)
     }
 
     private fun clickShareAsPdfPopUpShown(){
