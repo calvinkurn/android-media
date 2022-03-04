@@ -9,7 +9,7 @@ import com.tokopedia.media.common.PickerParam
 import com.tokopedia.media.common.uimodel.MediaUiModel
 import com.tokopedia.media.picker.data.mapper.toUiModel
 import com.tokopedia.media.picker.data.repository.MediaRepository
-import com.tokopedia.media.picker.ui.observer.EventFlowFactory
+import com.tokopedia.media.common.observer.EventFlowFactory
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

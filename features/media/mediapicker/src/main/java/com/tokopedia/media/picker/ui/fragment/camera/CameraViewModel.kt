@@ -3,7 +3,7 @@ package com.tokopedia.media.picker.ui.fragment.camera
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.media.picker.ui.observer.EventFlowFactory
+import com.tokopedia.media.common.observer.EventFlowFactory
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 

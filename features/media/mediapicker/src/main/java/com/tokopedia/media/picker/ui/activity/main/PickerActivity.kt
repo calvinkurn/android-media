@@ -28,7 +28,7 @@ import com.tokopedia.media.picker.ui.*
 import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.media.picker.ui.uimodel.containByName
 import com.tokopedia.media.picker.ui.uimodel.safeRemove
-import com.tokopedia.media.picker.ui.observer.EventFlowFactory
+import com.tokopedia.media.common.observer.EventFlowFactory
 import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnChangePublished
 import com.tokopedia.media.picker.utils.addOnTabSelected

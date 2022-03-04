@@ -1,27 +1,29 @@
 package com.tokopedia.media.picker.ui.observer
 
+import com.tokopedia.media.common.observer.EventFlowFactory
+import com.tokopedia.media.common.observer.EventState
 import com.tokopedia.media.common.uimodel.MediaUiModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 
-fun statePublished(eventState: EventState) {
+fun statePublished(eventState: EventPickerState) {
     EventFlowFactory.emit(eventState)
 }
 
 fun stateOnCameraCapturePublished(element: MediaUiModel) {
-    statePublished(EventState.CameraCaptured(element))
+    statePublished(EventPickerState.CameraCaptured(element))
 }
 
 fun stateOnChangePublished(elements: List<MediaUiModel>) {
-    statePublished(EventState.SelectionChanged(elements))
+    statePublished(EventPickerState.SelectionChanged(elements))
 }
 
 fun stateOnAddPublished(element: MediaUiModel) {
-    statePublished(EventState.SelectionAdded(element))
+    statePublished(EventPickerState.SelectionAdded(element))
 }
 
 fun stateOnRemovePublished(element: MediaUiModel) {
-    statePublished(EventState.SelectionRemoved(element))
+    statePublished(EventPickerState.SelectionRemoved(element))
 }
 
 suspend fun Flow<EventState>.observe(
@@ -32,8 +34,8 @@ suspend fun Flow<EventState>.observe(
 ) {
     this.collect {
         when (it) {
-            is EventState.SelectionChanged -> onChanged(it.data)
-            is EventState.SelectionRemoved -> onRemoved(it.media)
+            is EventPickerState.SelectionChanged -> onChanged(it.data)
+            is EventPickerState.SelectionRemoved -> onRemoved(it.media)
 
             /*
              * the else statement covering the data from

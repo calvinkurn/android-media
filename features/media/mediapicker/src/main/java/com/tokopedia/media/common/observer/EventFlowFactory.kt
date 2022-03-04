@@ -1,4 +1,4 @@
-package com.tokopedia.media.picker.ui.observer
+package com.tokopedia.media.common.observer
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
