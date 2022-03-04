@@ -1197,8 +1197,8 @@ class PlayViewModel @AssistedInject constructor(
     private suspend fun getFollowingStatus(partnerInfo: PlayPartnerInfo) : Boolean {
         return if (userSession.isLoggedIn) {
             when(partnerInfo.type){
-                PartnerType.Buyer -> repo.getIsFollowingPartner(partnerId = partnerInfo.id)
-                PartnerType.Shop -> repo.getFollowingKOL(partnerInfo.id.toString())
+                PartnerType.Shop -> repo.getIsFollowingPartner(partnerId = partnerInfo.id)
+                PartnerType.Buyer -> repo.getFollowingKOL(partnerInfo.id.toString())
                 else -> false
             }
         } else false
