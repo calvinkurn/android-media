@@ -12,6 +12,7 @@ import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
+import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.Called
@@ -47,13 +48,25 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
 
     protected fun onGetMenuDetail_thenReturn(response: MenuDetailModel) {
         coEvery {
-            repo.getMenuDetail(any(), any(), any())
+            repo.getMenuDetail(any(), any())
         } returns response
     }
 
     protected fun onGetMenuDetail_thenReturn(error: Throwable) {
         coEvery {
-            repo.getMenuDetail(any(), any(), any())
+            repo.getMenuDetail(any(), any())
+        } throws error
+    }
+
+    protected fun onGetRecommendation_thenReturn(response: RecommendationWidgetModel) {
+        coEvery {
+            repo.getRecommendations(any(), any(), any())
+        } returns response
+    }
+
+    protected fun onGetRecommendation_thenReturn(error: Throwable) {
+        coEvery {
+            repo.getRecommendations(any(), any(), any())
         } throws error
     }
 
@@ -116,7 +129,15 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
     }
 
     protected fun verifyGetMenuDetailRepoGetCalled() {
-        coVerify { repo.getMenuDetail(any(), any(), any()) }
+        coVerify { repo.getMenuDetail(any(), any()) }
+    }
+
+    protected fun verifyGetRecommendationsRepoGetCalled() {
+        coVerify { repo.getRecommendations(any(), any(), any()) }
+    }
+
+    protected fun verifyGetRecommendationRepoWasNotCalled() {
+        coVerify { repo.getRecommendations(any(), any(), any()) wasNot Called }
     }
 
     protected fun verifyGetFavoriteNumberRepoGetCalled() {
@@ -247,6 +268,26 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
     }
 
+    protected fun verifyGetRecommendationLoading(expectedResponse: RechargeNetworkResult.Loading){
+        val actualResponse = viewModel.recommendationData.value
+        Assert.assertEquals(expectedResponse, actualResponse)
+    }
+
+    protected fun verifyGetRecommendationSuccess(expectedResponse: RecommendationWidgetModel) {
+        val actualResponse = viewModel.recommendationData.value
+        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
+    }
+
+    protected fun verifyGetRecommendationFail() {
+        val actualResponse = viewModel.recommendationData.value
+        Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
+    }
+
+    protected fun verifyGetRecommendationErrorCancellation() {
+        val actualResponse = viewModel.recommendationData.value
+        Assert.assertNull(actualResponse)
+    }
+
     protected fun verifyCheckoutPassDataUpdated(expectedResult: DigitalCheckoutPassData) {
         val actualResult = viewModel.digitalCheckoutPassData
         assertDigitalCheckoutPassDataEqual(expectedResult, actualResult)
@@ -312,6 +353,18 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         Assert.assertTrue(viewModel.catalogProductJob?.isCancelled == true)
     }
 
+    protected fun verifyRecommendationJobIsNull() {
+        Assert.assertNull(viewModel.recommendationJob)
+    }
+
+    protected fun verifyRecommendationJobIsNotNull() {
+        Assert.assertNotNull(viewModel.recommendationJob)
+    }
+
+    protected fun verifyRecommendationJobIsCancelled() {
+        Assert.assertTrue(viewModel.recommendationJob?.isCancelled == true)
+    }
+
     protected fun verifyValidatorJobIsNull() {
         Assert.assertNull(viewModel.validatorJob)
     }
@@ -348,6 +401,10 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
     }
 
     protected fun TestCoroutineScope.skipMultitabDelay() {
+        advanceTimeBy(DigitalPDPConstant.DELAY_MULTI_TAB)
+    }
+
+    protected fun TestCoroutineScope.skipRecommendationDelay() {
         advanceTimeBy(DigitalPDPConstant.DELAY_MULTI_TAB)
     }
 

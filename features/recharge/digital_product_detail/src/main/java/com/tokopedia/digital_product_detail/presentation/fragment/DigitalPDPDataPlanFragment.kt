@@ -76,6 +76,7 @@ import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
+import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -201,6 +202,17 @@ class DigitalPDPDataPlanFragment :
                 setInputNumber(clientNumber, true)
             }
         }
+
+        digitalPDPTelcoAnalytics.openScreenPDPPage(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            userSession.userId,
+            userSession.isLoggedIn
+        )
+
+        digitalPDPTelcoAnalytics.viewPDPPage(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            userSession.userId
+        )
     }
 
     private fun renderProduct() {
@@ -233,6 +245,7 @@ class DigitalPDPDataPlanFragment :
                             showOperatorIcon(selectedOperator.operator.attributes.imageUrl)
                         }
                         hideEmptyState()
+                        getRecommendations()
                         getCatalogProductInputMultiTab(selectedOperator.key, isOperatorChanged,
                             selectedClientNumber)
                     } else {
@@ -241,12 +254,18 @@ class DigitalPDPDataPlanFragment :
 
                 } else {
                     operator = TelcoOperator()
-                    viewModel.cancelCatalogProductJob()
+                    viewModel.run {
+                        cancelRecommendationJob()
+                        cancelCatalogProductJob()
+                    }
                     showEmptyState()
                 }
             } catch (exception: NoSuchElementException) {
                 operator = TelcoOperator()
-                viewModel.cancelCatalogProductJob()
+                viewModel.run {
+                    cancelRecommendationJob()
+                    cancelCatalogProductJob()
+                }
                 binding?.rechargePdpPaketDataClientNumberWidget?.setLoading(false)
                 rechargePdpPaketDataClientNumberWidget.setErrorInputField(
                     getString(com.tokopedia.recharge_component.R.string.client_number_prefix_error),
@@ -282,6 +301,14 @@ class DigitalPDPDataPlanFragment :
                 is RechargeNetworkResult.Success -> onSuccessGetPrefixOperator()
                 is RechargeNetworkResult.Fail -> onFailedGetPrefixOperator(it.error)
                 is RechargeNetworkResult.Loading -> {}
+            }
+        })
+
+        viewModel.recommendationData.observe(viewLifecycleOwner, {
+            when (it) {
+                is RechargeNetworkResult.Success -> onSuccessGetRecommendations(it.data)
+                is RechargeNetworkResult.Fail -> onFailedGetRecommendations()
+                is RechargeNetworkResult.Loading -> onShimmeringRecommendation()
             }
         })
 
@@ -327,7 +354,6 @@ class DigitalPDPDataPlanFragment :
                         categoryId.toString(),
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
                         operator.attributes.name,
-                        loyaltyStatus,
                         userSession.userId,
                         atcData.data.cartId,
                         viewModel.digitalCheckoutPassData.productId.toString(),
@@ -375,6 +401,13 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
+    private fun getRecommendations() {
+        val clientNumbers = listOf(binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "")
+        viewModel.setRecommendationLoading()
+        viewModel.cancelRecommendationJob()
+        viewModel.getRecommendations(clientNumbers, listOf(categoryId))
+    }
+
     private fun getCatalogMenuDetail() {
         viewModel.run {
             setMenuDetailLoading()
@@ -406,7 +439,6 @@ class DigitalPDPDataPlanFragment :
         getFavoriteNumber()
 
         renderPrefill(data.userPerso)
-        renderRecommendation(data.recommendations)
         renderTicker(data.tickers)
     }
 
@@ -463,6 +495,14 @@ class DigitalPDPDataPlanFragment :
     private fun onFailedGetPrefixOperator(throwable: Throwable) {
         showEmptyState()
         showErrorToaster(throwable)
+    }
+
+    private fun onSuccessGetRecommendations(recommendations: RecommendationWidgetModel) {
+        renderRecommendation(recommendations)
+    }
+
+    private fun onFailedGetRecommendations() {
+        binding?.rechargePdpPaketDataRecommendationWidget?.renderFailRecommendation()
     }
 
     private fun onSuccessSortFilter(initialSelectedCounter: Int = 0){
@@ -652,12 +692,13 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    private fun renderRecommendation(recommendations: List<RecommendationCardWidgetModel>) {
+    private fun renderRecommendation(data: RecommendationWidgetModel) {
         binding?.let {
             it.rechargePdpPaketDataRecommendationWidget.show()
-            it.rechargePdpPaketDataRecommendationWidget.renderRecommendationLayout(this,
-                getString(R.string.digital_pdp_recommendation_title),
-                recommendations
+            it.rechargePdpPaketDataRecommendationWidget.renderRecommendationLayout(
+                this,
+                data.title,
+                data.recommendations
             )
         }
     }
@@ -718,7 +759,6 @@ class DigitalPDPDataPlanFragment :
         binding?.run {
             if (rechargePdpPaketDataEmptyStateWidget.isVisible) {
                 rechargePdpPaketDataEmptyStateWidget.hide()
-                rechargePdpPaketDataRecommendationWidget.show()
             }
         }
     }
@@ -1079,9 +1119,9 @@ class DigitalPDPDataPlanFragment :
      * Recommendation Card Listener
      * */
 
-    override fun onProductRecommendationCardClicked(recommendation: RecommendationCardWidgetModel, position: Int) {
+    override fun onProductRecommendationCardClicked(title: String, recommendation: RecommendationCardWidgetModel, position: Int) {
         digitalPDPTelcoAnalytics.clickLastTransactionIcon(
-            getString(R.string.digital_pdp_recommendation_title),
+            title,
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             operator.attributes.name,
             loyaltyStatus,

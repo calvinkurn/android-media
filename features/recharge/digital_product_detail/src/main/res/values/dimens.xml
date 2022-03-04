@@ -2,6 +2,6 @@
 <resources>
     <dimen name="banner_space">18dp</dimen>
     <dimen name="empty_state_margin">20dp</dimen>
-    <dimen name="dynamic_banner_space">60dp</dimen>
+    <dimen name="dynamic_banner_space">30dp</dimen>
     <dimen name="dynamic_banner_space_extended">84dp</dimen>
 </resources>

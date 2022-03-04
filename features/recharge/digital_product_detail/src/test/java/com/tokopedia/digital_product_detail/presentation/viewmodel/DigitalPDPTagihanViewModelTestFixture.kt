@@ -46,13 +46,13 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
 
     protected fun onGetMenuDetail_thenReturn(response: MenuDetailModel) {
         coEvery {
-            repo.getMenuDetail(any(), any(), any())
+            repo.getMenuDetail(any(), any())
         } returns response
     }
 
     protected fun onGetMenuDetail_thenReturn(error: Throwable) {
         coEvery {
-            repo.getMenuDetail(any(), any(), any())
+            repo.getMenuDetail(any(), any())
         } throws error
     }
 
@@ -125,7 +125,7 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
     }
 
     protected fun verifyGetMenuDetailRepoGetCalled() {
-        coVerify { repo.getMenuDetail(any(), any(), any()) }
+        coVerify { repo.getMenuDetail(any(), any()) }
     }
 
     protected fun verifyGetFavoriteNumberRepoGetCalled() {

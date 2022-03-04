@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class FavoriteNumberParam(
+data class DigiPersoRequestParam(
     @SerializedName("channelName")
     @Expose
     val channelName: String,
