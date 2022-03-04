@@ -93,7 +93,15 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     private fun handleOnSuccessGetAddOnByProduct(getAddOnByProductResponse: GetAddOnByProductResponse,
                                                  addOnProductData: AddOnProductData) {
         if (getAddOnByProductResponse.dataResponse.error.errorCode.isBlank()) {
-            loadSavedStateData(addOnProductData, getAddOnByProductResponse)
+            if (addOnProductData.source == AddOnProductData.SOURCE_ONE_CLICK_CHECKOUT) {
+                if (addOnProductData.availableBottomSheetData.addOnSavedStates.isNotEmpty()) {
+                    loadSavedStateData(addOnProductData, getAddOnByProductResponse)
+                } else {
+                    prepareAddOnData(addOnProductData, getAddOnByProductResponse)
+                }
+            } else {
+                loadSavedStateData(addOnProductData, getAddOnByProductResponse)
+            }
         } else {
             throw ResponseErrorException(getAddOnByProductResponse.dataResponse.error.message)
         }
@@ -140,22 +148,28 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     private fun handleOnSuccessGetAddOnSavedState(getAddOnSavedStateResponse: GetAddOnSavedStateResponse,
                                                   addOnProductData: AddOnProductData,
                                                   addOnByProductResponse: GetAddOnByProductResponse) {
-        hasLoadData = true
         // Todo : adjust error validation, should be based on error code not error message
         if (getAddOnSavedStateResponse.getAddOns.errorMessage.firstOrNull()?.isNotBlank() == true) {
             throw ResponseErrorException(getAddOnSavedStateResponse.getAddOns.errorMessage.joinToString(". "))
         } else {
-            launch {
-                _uiEvent.emit(
-                        UiEvent().apply {
-                            state = UiEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA
-                        }
-                )
-                val productUiModel = AddOnUiModelMapper.mapProduct(addOnProductData, addOnByProductResponse)
-                _productUiModel.emit(productUiModel)
-                val addOnUiModel = AddOnUiModelMapper.mapAddOn(addOnProductData, addOnByProductResponse, getAddOnSavedStateResponse)
-                _addOnUiModel.emit(addOnUiModel)
-            }
+            prepareAddOnData(addOnProductData, addOnByProductResponse, getAddOnSavedStateResponse)
+        }
+    }
+
+    private fun prepareAddOnData(addOnProductData: AddOnProductData,
+                                 addOnByProductResponse: GetAddOnByProductResponse,
+                                 getAddOnSavedStateResponse: GetAddOnSavedStateResponse? = null) {
+        hasLoadData = true
+        launch {
+            _uiEvent.emit(
+                    UiEvent().apply {
+                        state = UiEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA
+                    }
+            )
+            val productUiModel = AddOnUiModelMapper.mapProduct(addOnProductData, addOnByProductResponse)
+            _productUiModel.emit(productUiModel)
+            val addOnUiModel = AddOnUiModelMapper.mapAddOn(addOnProductData, addOnByProductResponse, getAddOnSavedStateResponse)
+            _addOnUiModel.emit(addOnUiModel)
         }
     }
 
