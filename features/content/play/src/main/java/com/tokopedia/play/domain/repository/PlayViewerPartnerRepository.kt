@@ -10,4 +10,10 @@ interface PlayViewerPartnerRepository {
     suspend fun getIsFollowingPartner(partnerId: Long): Boolean
 
     suspend fun postFollowStatus(shopId: String, followAction: PartnerFollowAction): Boolean
+
+    suspend fun getProfileHeader(kolId: String): String
+
+    suspend fun getFollowingKOL(followedKol: String): Boolean
+
+    suspend fun postFollowKol(followedKol: String): Boolean
 }
