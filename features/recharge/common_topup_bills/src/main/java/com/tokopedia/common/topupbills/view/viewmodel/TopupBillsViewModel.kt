@@ -203,27 +203,6 @@ class TopupBillsViewModel @Inject constructor(
         }
     }
 
-    fun getPersoFavoriteNumbers(
-        categoryIds: List<Int>,
-        shouldRefreshInputNumber: Boolean = true,
-        prevActionType: FavoriteNumberActionType? = null
-    ) {
-        launchCatchError(block = {
-            val favoriteNumber = getRechargeFavoriteNumberUseCase.apply {
-                setRequestParams(categoryIds)
-            }.executeOnBackground()
-            _persoFavNumberData.postValue(Success(favoriteNumber.persoFavoriteNumber to shouldRefreshInputNumber))
-        }) {
-            val errMsg = when (prevActionType) {
-                UPDATE -> ERROR_FETCH_AFTER_UPDATE
-                DELETE -> ERROR_FETCH_AFTER_DELETE
-                UNDO_DELETE -> ERROR_FETCH_AFTER_UNDO_DELETE
-                else -> it.message
-            }
-            _persoFavNumberData.postValue(Fail(Throwable(errMsg)))
-        }
-    }
-
     fun modifySeamlessFavoriteNumber(
         rawQuery: String,
         mapParam: Map<String, Any>,

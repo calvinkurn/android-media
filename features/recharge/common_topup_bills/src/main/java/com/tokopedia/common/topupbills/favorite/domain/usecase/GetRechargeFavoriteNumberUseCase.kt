@@ -32,11 +32,15 @@ class GetRechargeFavoriteNumberUseCase @Inject constructor(
         }
     }
 
-    fun setRequestParams(categoryIds: List<Int>, operatorIds: List<Int> = listOf()){
+    fun setRequestParams(
+        categoryIds: List<Int>,
+        operatorIds: List<Int> = listOf(),
+        channelName: String
+    ){
         params = RequestParams.create().apply {
             putObject(
                 FAVORITE_NUMBER_PARAM_INPUT, DigiPersoRequestParam(
-                    channelName = CHANNEL_NAME,
+                    channelName = channelName,
                     clientNumbers = listOf(),
                     dgCategoryIDs = categoryIds,
                     pgCategoryIDs = listOf(),
@@ -47,7 +51,6 @@ class GetRechargeFavoriteNumberUseCase @Inject constructor(
     }
 
     companion object {
-        const val CHANNEL_NAME = "favorite_number_list"
         const val FAVORITE_NUMBER_PARAM_INPUT = "input"
     }
 }

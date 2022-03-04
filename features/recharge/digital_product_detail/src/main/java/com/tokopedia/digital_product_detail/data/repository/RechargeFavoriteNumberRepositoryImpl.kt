@@ -12,13 +12,17 @@ class RechargeFavoriteNumberRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ): RechargeFavoriteNumberRepository {
 
-    override suspend fun getFavoriteNumber(
+    override suspend fun getFavoriteNumberChips(
         categoryIds: List<Int>,
         operatorIds: List<Int>
     ): TopupBillsPersoFavNumberData = withContext(dispatchers.io) {
 
         return@withContext getRechargeFavoriteNumberUseCase.apply {
-            setRequestParams(categoryIds, operatorIds)
+            setRequestParams(categoryIds, operatorIds, CHANNEL_FAVORITE_NUMBER_CHIP)
         }.executeOnBackground()
+    }
+
+    companion object {
+        const val CHANNEL_FAVORITE_NUMBER_CHIP = "favorite_number_chips"
     }
 }
