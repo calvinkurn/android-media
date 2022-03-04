@@ -383,11 +383,9 @@ class PlayUpcomingViewModel @Inject constructor(
 
     private fun handleOpenSharingOption(isScreenshot: Boolean) {
         viewModelScope.launch {
-            if(isScreenshot)
-                playAnalytic.takeScreenshotForSharing(mChannelId, partnerId, channelType.value)
-
             if(playShareExperience.isCustomSharingAllow()) {
-                playAnalytic.impressShareBottomSheet(mChannelId, partnerId, channelType.value)
+                if(isScreenshot) playAnalytic.takeScreenshotForSharing(mChannelId, partnerId, channelType.value)
+                else playAnalytic.impressShareBottomSheet(mChannelId, partnerId, channelType.value)
 
                 _uiEvent.emit(PlayUpcomingUiEvent.OpenSharingOptionEvent(
                     title = _channelDetail.value.channelInfo.title,
