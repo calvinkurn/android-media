@@ -2141,11 +2141,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         val reData = data.getReByProductId(viewModel.getDynamicProductInfoP1?.basic?.productID
                 ?: "")
 
-        ProductDetailRestrictionHelper.renderNplUi(
+        ProductDetailRestrictionHelper.renderRestrictionUi(
                 reData = reData,
                 isFavoriteShop = pdpUiUpdater?.shopCredibility?.isFavorite ?: false,
                 isShopOwner = viewModel.isShopOwner(),
-                nplView = nplFollowersButton
+                reView = nplFollowersButton
         )
     }
 
@@ -2221,14 +2221,30 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         val reData = viewModel.p2Data.value?.restrictionInfo?.getReByProductId(
                 viewModel.getDynamicProductInfoP1?.basic?.productID ?: "") ?: return
 
-        if (reData.restrictionShopFollowersType()) {
-            DynamicProductDetailTracking.Click.eventClickFollowNpl(viewModel.getDynamicProductInfoP1, viewModel.userId)
-            onShopFavoriteClick(isNplFollowType = true)
-        } else if (reData.restrictionCategoriesType()) {
-            reData.action.firstOrNull()?.buttonLink?.let {
-                if (it.isEmpty()) {
-                    activity?.finish()
-                } else {
+        when {
+            reData.restrictionShopFollowersType() -> {
+                DynamicProductDetailTracking.Click.eventClickFollowNpl(
+                        viewModel.getDynamicProductInfoP1,
+                        viewModel.userId)
+
+                onShopFavoriteClick(isNplFollowType = true)
+            }
+            reData.restrictionCategoriesType() -> {
+                reData.action.firstOrNull()?.buttonLink?.let {
+                    if (it.isEmpty()) {
+                        activity?.finish()
+                    } else {
+                        goToApplink(it)
+                    }
+                }
+            }
+            reData.restrictionGamificationType() -> {
+                DynamicProductDetailTracking.Click.onRestrictionGamificationClicked(
+                        viewModel.getDynamicProductInfoP1,
+                        reData,
+                        viewModel.userId
+                )
+                reData.action.firstOrNull()?.buttonLink?.let {
                     goToApplink(it)
                 }
             }
