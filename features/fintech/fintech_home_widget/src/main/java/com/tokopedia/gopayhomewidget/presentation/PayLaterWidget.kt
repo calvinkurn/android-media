@@ -55,6 +55,11 @@ class PayLaterWidget @JvmOverloads constructor(
         this.payLaterWidgetListener = payLaterWidgetListener
     }
 
+    /**
+     * Set data for the widget
+     * @param payLaterWidgetData all the data for the widget
+     */
+
     @SuppressLint("SetTextI18n")
     fun setData(payLaterWidgetData: PayLaterWidgetData) {
         if (payLaterWidgetData.isShow == true) {
@@ -92,6 +97,12 @@ class PayLaterWidget @JvmOverloads constructor(
             payLaterWidgetListener?.onClosePayLaterWidget()
         }
     }
+
+    /**
+     * Implemented the button click logic
+     * @param payLaterWidgetData widget data
+     * @param button button data
+     */
 
     private fun ctaLogic(
         payLaterWidgetData: PayLaterWidgetData,

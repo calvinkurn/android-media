@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/unify_space_16"
-    android:layout_marginRight="@dimen/unify_space_16"
+    android:layout_marginStart="@dimen/paylater_home_widget_dp_11"
+    android:layout_marginEnd="@dimen/paylater_home_widget_dp_11"
     app:card_type="shadow"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
@@ -16,16 +16,18 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/gatewayIconBackground"
-            android:layout_width="@dimen/paylater_home_widger_dp_68"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="@dimen/unify_space_0"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="@id/squiCircle"
             app:srcCompat="@drawable/paylater_homewidget_icon" />
 
 
         <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/squiCircle"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="@dimen/unify_space_0"
             app:layout_constraintBottom_toBottomOf="@+id/gatewayIcon"
@@ -36,10 +38,11 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/gatewayIcon"
-            android:layout_width="@dimen/paylater_home_widger_dp_50"
-            android:layout_height="@dimen/paylater_home_widger_dp_50"
+            android:layout_width="@dimen/paylater_home_widget_dp_60"
+            android:layout_height="@dimen/paylater_home_widget_dp_60"
             android:layout_marginStart="@dimen/unify_space_8"
-            android:padding="@dimen/paylater_home_widger_dp_9"
+            android:layout_marginEnd="@dimen/unify_space_4"
+            android:padding="@dimen/paylater_home_widget_dp_9"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -50,7 +53,7 @@
             android:id="@+id/userName"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/paylater_home_widger_dp_14"
+            android:layout_marginStart="@dimen/paylater_home_widget_dp_14"
             android:layout_marginTop="@dimen/unify_space_8"
             android:ellipsize="end"
             android:maxLines="1"
@@ -66,7 +69,7 @@
             android:id="@+id/proccedToGopay"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/paylater_home_widger_dp_14"
+            android:layout_marginStart="@dimen/paylater_home_widget_dp_14"
             android:layout_marginEnd="@dimen/unify_space_8"
             android:layout_marginBottom="@dimen/unify_space_8"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -93,8 +96,8 @@
             android:id="@+id/crossIcon"
             android:layout_width="@dimen/unify_space_16"
             android:layout_height="@dimen/unify_space_16"
-            android:layout_marginTop="@dimen/paylater_home_widger_dp_10"
-            android:layout_marginEnd="@dimen/paylater_home_widger_dp_10"
+            android:layout_marginTop="@dimen/paylater_home_widget_dp_10"
+            android:layout_marginEnd="@dimen/paylater_home_widget_dp_10"
             app:icon_name="CLOSE"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

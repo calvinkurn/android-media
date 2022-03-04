@@ -30,6 +30,11 @@ class HomePayLaterWidgetViewHolder (
         bind(element)
     }
 
+    /**
+     * Setting widget divider
+     * @param channel : Fintech widget
+     * @author minion-yoda
+     */
     private fun setChannelDivider(channel: DynamicHomeChannel.Channels) {
         HomeChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = channel,

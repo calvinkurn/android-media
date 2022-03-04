@@ -32,7 +32,9 @@ class GetPayLaterWidgetUseCase @Inject constructor(graphqlRepository: GraphqlRep
         }
     }
 
-
+    /**
+     * Set the url query
+     */
     private fun getRequestParam(backUrl: String): MutableMap<String, Any?> {
         return mutableMapOf(
             REQUEST_PARAMS to mutableMapOf(

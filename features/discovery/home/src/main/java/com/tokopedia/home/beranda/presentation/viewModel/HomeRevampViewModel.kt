@@ -614,6 +614,11 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Calling fintech api to get detail for the fintech widget
+     * @author minion-yoda
+     */
+
     fun getPayLaterWidgetData() {
         findWidget<HomePayLaterWidgetDataModel> { homePayLaterWidgetDataModel, index ->
             launchCatchError(coroutineContext, {
@@ -632,6 +637,10 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Calling fintech api delete the widget
+     * @author minion-yoda
+     */
     fun deletePayLaterWidget() {
         findWidget<HomePayLaterWidgetDataModel> { homePayLaterWidgetDataModel, index ->
             deleteWidget(homePayLaterWidgetDataModel, index)
