@@ -185,7 +185,7 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     override fun onEmptyButtonClicked(view: ProductSheetViewComponent, partnerAppLink: String) {
-        openPageByApplink(applink = partnerAppLink, pipMode = true)
+        if(partnerAppLink.isNotEmpty()) openPageByApplink(applink = partnerAppLink, pipMode = true) else dismissSheets()
     }
 
     override fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>) {
@@ -550,6 +550,11 @@ class PlayBottomSheetFragment @Inject constructor(
                 .setPrimaryClip(ClipData.newPlainText("play-room-bottom-sheet", content))
     }
 
+    private fun dismissSheets(){
+        playFragment.hideKeyboard()
+        playViewModel.hideInsets(isKeyboardHandled = true)
+    }
+
     /**
      * Observe
      */
@@ -583,8 +588,7 @@ class PlayBottomSheetFragment @Inject constructor(
         viewModel.observableUserReportSubmission.observe(viewLifecycleOwner, DistinctObserver {
             when (it) {
                 is PlayResult.Success -> {
-                    playFragment.hideKeyboard()
-                    playViewModel.hideInsets(isKeyboardHandled = true)
+                    dismissSheets()
                     listenKeyboard()
                 }
                 is PlayResult.Failure -> doShowToaster(
