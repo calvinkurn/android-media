@@ -60,6 +60,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
@@ -197,7 +198,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                         selectedOperator.operator.attributes.name
                     )
 
-                    if (operator.id != selectedOperator.operator.id || rechargePdpPulsaClientNumberWidget.getInputNumber()
+                    val isOperatorChanged = operator.id != selectedOperator.operator.id
+
+                    //set default id when prefix changed, initial
+                    if (isOperatorChanged && operator.id.isNotEmpty()){
+                        productId = selectedOperator.operator.attributes.defaultProductId.toIntOrZero()
+                    }
+
+                    if (isOperatorChanged || rechargePdpPulsaClientNumberWidget.getInputNumber()
                             .length in MINIMUM_VALID_NUMBER_LENGTH .. MAXIMUM_VALID_NUMBER_LENGTH
                     ) {
                         operator = selectedOperator.operator
@@ -205,6 +213,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                             showOperatorIcon(selectedOperator.operator.attributes.imageUrl)
                         }
                         hideEmptyState()
+                        onHideBuyWidget()
                         getRecommendations()
                         getCatalogProductInput(selectedOperator.key)
                     } else {

@@ -62,6 +62,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
@@ -236,6 +237,12 @@ class DigitalPDPDataPlanFragment :
                         selectedOperator.operator.attributes.name
                     )
                     val isOperatorChanged = operator.id != selectedOperator.operator.id
+
+                    //set default id when prefix changed, initial
+                    if (isOperatorChanged && operator.id.isNotEmpty()){
+                        productId = selectedOperator.operator.attributes.defaultProductId.toIntOrZero()
+                    }
+
                     if (isOperatorChanged || selectedClientNumber
                             .length in MINIMUM_VALID_NUMBER_LENGTH..MAXIMUM_VALID_NUMBER_LENGTH
                     ) {
@@ -244,6 +251,7 @@ class DigitalPDPDataPlanFragment :
                             showOperatorIcon(selectedOperator.operator.attributes.imageUrl)
                         }
                         hideEmptyState()
+                        onHideBuyWidget()
                         getRecommendations()
                         getCatalogProductInputMultiTab(selectedOperator.key, isOperatorChanged,
                             selectedClientNumber)
