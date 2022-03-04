@@ -42,7 +42,12 @@ class RechargeHomepageCategoryViewHolder(
                 setAdapterItems(section.items)
                 rvRechargeHomeCategory.adapter = adapter
 
-                tvRechargeHomeCategoryTitle.text = section.title
+                if (section.title.isNotEmpty()) {
+                    tvRechargeHomeCategoryTitle.text = section.title
+                    tvRechargeHomeCategoryTitle.show()
+                } else {
+                    tvRechargeHomeCategoryTitle.hide()
+                }
 
                 setupChevron(bind, element)
 

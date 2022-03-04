@@ -3,7 +3,6 @@ package com.tokopedia.search.result.presentation.view.fragment
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,8 +26,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.coachmark.CoachMarkBuilder
-import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.manager.AdultManager
@@ -70,7 +67,6 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_MPC_LIFECYCLE_OBSERVER
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
@@ -135,14 +131,9 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelChildren
 import org.json.JSONArray
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 class ProductListFragment: BaseDaggerFragment(),
     OnItemChangeView,
@@ -161,8 +152,7 @@ class ProductListFragment: BaseDaggerFragment(),
     ChooseAddressListener,
     BannerListener,
     LastFilterListener,
-    ProductListParameterListener,
-    CoroutineScope {
+    ProductListParameterListener {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -224,20 +214,19 @@ class ProductListFragment: BaseDaggerFragment(),
                 FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE
         )
     }
+    private var coachMark: CoachMark2? = null
 
     override val carouselRecycledViewPool = RecyclerView.RecycledViewPool()
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
         private set
 
-    private lateinit var masterJob: Job
-
-    override val coroutineContext: CoroutineContext
-        get() = masterJob + Dispatchers.Main
+    private val productVideoAutoplay : ProductVideoAutoplay by lazy {
+        ProductVideoAutoplay(remoteConfig)
+    }
 
     //region onCreate Fragments
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        masterJob = Job()
 
         loadDataFromArguments()
         initTrackingQueue()
@@ -304,7 +293,7 @@ class ProductListFragment: BaseDaggerFragment(),
         restoreInstanceState(savedInstanceState)
         initViews(view)
         addDefaultSelectedSort()
-        viewLifecycleOwner.lifecycle.addObserver(productVideoAutoplay)
+        initProductVideoAutoplayLifecycleObserver()
 
         presenter?.onViewCreated()
     }
@@ -319,6 +308,10 @@ class ProductListFragment: BaseDaggerFragment(),
         val searchParameter = searchParameter ?: return
         if (searchParameter.get(SearchApiConst.OB).isEmpty())
             searchParameter.set(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
+    }
+
+    private fun initProductVideoAutoplayLifecycleObserver() {
+        productVideoAutoplay.registerLifecycleObserver(viewLifecycleOwner)
     }
     //endregion
 
@@ -439,7 +432,7 @@ class ProductListFragment: BaseDaggerFragment(),
             adapter = productListAdapter
             addItemDecoration(createProductItemDecoration())
             addOnScrollListener(onScrollListener)
-            setUpProductVideoAutoplayListener(this)
+            productVideoAutoplay.setUp(this)
         }
     }
 
@@ -481,61 +474,6 @@ class ProductListFragment: BaseDaggerFragment(),
 
     private fun getSearchParameterMap(): Map<String, Any> =
         searchParameter?.getSearchParameterMap() ?: mapOf()
-    //endregion
-
-    //region product video autoplay
-    private val productVideoAutoplay : ProductVideoAutoplay<Visitable<*>, ProductItemDataView> by lazy {
-        ProductVideoAutoplay(this)
-    }
-
-    private val isAutoplayProductVideoEnabled : Boolean by lazy {
-        remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MPC_VIDEO_AUTOPLAY, true)
-    }
-
-    private val autoPlayScrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            super.onScrollStateChanged(recyclerView, newState)
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                startVideoAutoplayWhenRecyclerViewIsIdle()
-            }
-        }
-    }
-
-    private val autoPlayAdapterDataObserver = object : RecyclerView.AdapterDataObserver() {
-        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-            super.onItemRangeInserted(positionStart, itemCount)
-            if (positionStart == 0) {
-                recyclerView?.viewTreeObserver
-                    ?.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-                        override fun onGlobalLayout() {
-                            startVideoAutoplayWhenRecyclerViewIsIdle()
-                            recyclerView?.viewTreeObserver
-                                ?.removeOnGlobalLayoutListener(this)
-                        }
-                    })
-            }
-        }
-    }
-
-    private fun setUpProductVideoAutoplayListener(recyclerView: RecyclerView) {
-        if(isAutoplayProductVideoEnabled) {
-            recyclerView.addOnScrollListener(autoPlayScrollListener)
-            recyclerView.adapter?.registerAdapterDataObserver(autoPlayAdapterDataObserver)
-        }
-    }
-
-    private fun startVideoAutoplayWhenRecyclerViewIsIdle() {
-        productVideoAutoplay.startVideoAutoplay(
-            recyclerView,
-            staggeredGridLayoutManager,
-            productListAdapter?.itemList
-        ) { visitableList ->
-            visitableList.filterIsInstance<ProductItemDataView>()
-                .filter {
-                    it.hasVideo
-                }
-        }
-    }
     //endregion
 
     //region onAttach
@@ -775,6 +713,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onPause() {
         super.onPause()
 
+        coachMark?.dismissCoachMark()
         trackingQueue?.sendAll()
     }
 
@@ -1157,6 +1096,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
         showRefreshLayout()
 
+        coachMark?.dismissCoachMark()
         presenter?.clearData()
         productListAdapter?.clearData()
         productVideoAutoplay.stopVideoAutoplay()
@@ -1235,20 +1175,8 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun onDestroyView() {
-        unregisterVideoAutoplayAdapterObserver()
-        masterJob.cancelChildren()
         super.onDestroyView()
         presenter?.detachView()
-    }
-
-    private fun unregisterVideoAutoplayAdapterObserver() {
-        if (isAutoplayProductVideoEnabled) {
-            try {
-                recyclerView?.adapter?.unregisterAdapterDataObserver(autoPlayAdapterDataObserver)
-            } catch (t: Throwable) {
-                Timber.d(t)
-            }
-        }
     }
 
     override fun getScreenName(): String {
@@ -1875,15 +1803,11 @@ class ProductListFragment: BaseDaggerFragment(),
     //endregion
 
     //region on boarding / coachmark
-    override fun showOnBoarding(firstProductPositionWithBOELabel: Int) {
-        val productWithBOELabel = getFirstProductWithBOELabel(firstProductPositionWithBOELabel)
+    override fun showOnBoarding(firstProductPosition: Int) {
+        val productWithBOELabel = getFirstProductWithBOELabel(firstProductPosition)
 
         recyclerView?.postDelayed({
-            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
-                buildCoachMark(productWithBOELabel)
-            } else {
-                buildCoachMark2(productWithBOELabel)
-            }
+            buildCoachMark2(productWithBOELabel)
         }, ON_BOARDING_DELAY_MS)
     }
 
@@ -1895,39 +1819,14 @@ class ProductListFragment: BaseDaggerFragment(),
         else null
     }
 
-    private fun buildCoachMark(view: View?) {
-        val coachMarkItemList = createCoachMarkItemList(view)
-        if (coachMarkItemList.isEmpty()) return
-
-        val builder = CoachMarkBuilder()
-        builder.allowPreviousButton(false)
-        builder.build().show(activity, SEARCH_RESULT_PRODUCT_ONBOARDING_TAG, coachMarkItemList)
-    }
-
-    private fun createCoachMarkItemList(boeLabelProductCard: View?): ArrayList<CoachMarkItem> {
-        val coachMarkItemList = ArrayList<CoachMarkItem>()
-
-        if (boeLabelProductCard != null)
-            coachMarkItemList.add(createBOELabelCoachMarkItem(boeLabelProductCard))
-
-        return coachMarkItemList
-    }
-
-    private fun createBOELabelCoachMarkItem(boeLabelProductCard: View): CoachMarkItem {
-        return CoachMarkItem(
-                boeLabelProductCard,
-                getString(R.string.search_product_boe_label_onboarding_title),
-                getString(R.string.search_product_boe_label_onboarding_description)
-        )
-    }
-
     private fun buildCoachMark2(view: View?) {
-        context?.let {
-            val coachMark2ItemList = createCoachMark2ItemList(view)
-            if (coachMark2ItemList.isEmpty()) return
+        val context = context ?: return
+        val coachMark2ItemList = createCoachMark2ItemList(view)
+        if (coachMark2ItemList.isEmpty()) return
 
-            val coachMark = CoachMark2(it)
-            coachMark.showCoachMark(coachMark2ItemList, null, 0)
+        coachMark = CoachMark2(context).apply {
+            setOnDismissListener { coachMark = null }
+            showCoachMark(coachMark2ItemList, null, 0)
         }
     }
 

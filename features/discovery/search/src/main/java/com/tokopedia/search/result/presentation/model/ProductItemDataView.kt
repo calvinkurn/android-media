@@ -124,9 +124,6 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
             else -> "reguler"
         }
 
-    val hasVideo : Boolean
-        get() = customVideoURL.isNotBlank()
-
     override fun describeContents(): Int {
         return 0
     }
