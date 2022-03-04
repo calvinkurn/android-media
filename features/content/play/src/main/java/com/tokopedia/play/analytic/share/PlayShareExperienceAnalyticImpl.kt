@@ -45,20 +45,6 @@ class PlayShareExperienceAnalyticImpl @Inject constructor(
         )
     }
 
-    private fun mapSharingOption(sharingOption: String?): String {
-        return sharingOption?.let {
-            return@let when(it) {
-                "FB Feed" -> "Facebook NewsFeed"
-                "FB Story" -> "Facebook Story"
-                "IG DM" -> "Instagram DirectMessage"
-                "IG Feed" -> "Instagram Feed"
-                "IG Story" -> "Instagram Story"
-                "E-mail" -> "Email"
-                else -> it
-            }
-        } ?: ""
-    }
-
     private fun mapPermissionLabel(label: String): String = when(label) {
         "allow", "deny" -> label.replaceFirstChar(Char::titlecase)
         else -> label
@@ -96,7 +82,7 @@ class PlayShareExperienceAnalyticImpl @Inject constructor(
         val action = if(isScreenshot) "channel share bottom sheet - screenshot" else "sharing channel"
         sendGeneralClickEvent(
             action,
-            "${mapSharingOption(sharingOption)} - $channelId - ${getPartnerId(partnerId)} - $channelType"
+            "$sharingOption - $channelId - ${getPartnerId(partnerId)} - $channelType"
         )
     }
 
