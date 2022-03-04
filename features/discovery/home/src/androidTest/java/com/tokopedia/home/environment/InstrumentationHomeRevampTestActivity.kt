@@ -110,4 +110,6 @@ class InstrumentationHomeRevampTestActivity : AppCompatActivity(),
     override fun isOsExperiment(): Boolean {
         return false
     }
+
+    override fun currentVisibleFragment(): String = ""
 }
