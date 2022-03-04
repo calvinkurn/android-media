@@ -1718,7 +1718,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun goToMvcPage(applink: String) {
         //If seller in MA, show toaster
-        GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
         if(!GlobalConfig.isSellerApp() && isSeller()) {
             view?.let {
                 val text = getStringResource(R.string.topchat_mvc_not_available)
