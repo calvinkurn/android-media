@@ -9,6 +9,7 @@
         android:id="@+id/product_bundling_single_image"
         android:layout_width="@dimen/dp_64"
         android:layout_height="@dimen/dp_64"
+        android:scaleType="fitCenter"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/avatars" />
