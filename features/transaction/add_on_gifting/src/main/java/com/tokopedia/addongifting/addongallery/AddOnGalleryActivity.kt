@@ -44,6 +44,7 @@ class AddOnGalleryActivity : BaseSimpleActivity() {
             if (imageGalleryItems.isNotEmpty()) {
                 imageGalleryAddOn.apply {
                     isHiddenOverlay = true
+                    overlayContainer.gone()
                     setImages(imageGalleryItems)
                 }
                 imageGalleryAddOn.show()

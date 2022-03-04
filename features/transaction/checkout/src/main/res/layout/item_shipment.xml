@@ -93,11 +93,6 @@
                 layout="@layout/item_shipment_other_product"
                 tools:visibility="gone" />
 
-            <!--Shipping: Shipping Experience-->
-            <include
-                layout="@layout/item_shipment_shipping_experience"
-                tools:visibility="visible" />
-
             <!--Gifting: Gifting Experience - Order Level-->
             <LinearLayout
                 android:id="@+id/ll_gifting_addon_order_level"
@@ -112,6 +107,11 @@
                     tools:visibility="gone" />
 
             </LinearLayout>
+
+            <!--Shipping: Shipping Experience-->
+            <include
+                layout="@layout/item_shipment_shipping_experience"
+                tools:visibility="visible" />
 
             <!--Shipping: Option (Insurance, dropshipper, etc)-->
             <include

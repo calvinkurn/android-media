@@ -40,9 +40,9 @@ object AddOnUiModelMapper {
             addOnDescription = ""
             addOnPrice = addOn?.inventory?.price?.roundToLong() ?: 0
             addOnQty = 1
-            addOnSquareImageUrl = addOn?.pictures?.firstOrNull()?.url100 ?: ""
+            addOnSquareImageUrl = addOn?.basicInfo?.metadata?.pictures?.firstOrNull()?.url ?: ""
             val imageUrls = mutableListOf<String>()
-            addOn?.pictures?.forEach {
+            addOn?.basicInfo?.metadata?.pictures?.forEach {
                 imageUrls.add(it.url)
             }
             addOnAllImageUrls = imageUrls

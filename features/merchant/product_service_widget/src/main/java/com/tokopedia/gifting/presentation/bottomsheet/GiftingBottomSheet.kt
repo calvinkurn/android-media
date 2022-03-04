@@ -43,6 +43,8 @@ class GiftingBottomSheet(private val addOnId: String) : BottomSheetUnify() {
     private val textShopName by lazy { binding?.layoutContent?.textShopName }
     private val textShopLocation by lazy { binding?.layoutContent?.textShopLocation }
     private val textCaptionShopName by lazy { binding?.layoutContent?.textCaptionShopName }
+    private val textCaptionPromo by lazy { binding?.layoutContent?.textCaptionPromo }
+    private val iconPromo by lazy { binding?.layoutContent?.iconPromo }
     private val layoutContent by lazy { binding?.layoutContent?.root }
     private val layoutShimmer by lazy { binding?.layoutShimmer?.root }
 
@@ -77,7 +79,8 @@ class GiftingBottomSheet(private val addOnId: String) : BottomSheetUnify() {
     private fun observeGetAddOnByProduct() {
         viewModel.getAddOnResult.observe(viewLifecycleOwner) {
             setPageLoading(false)
-            setTextShopLocationAction(it.staticInfo.infoURL.orEmpty())
+            setTextShopLocationAction(it.staticInfo.infoURL)
+            setTextPromo(it.staticInfo.promoText)
             setupPageFromResponseData(it.addOnByIDResponse.firstOrNull())
             GiftingBottomsheetTracking.trackPageImpression(
                 bottomSheetTitle.text.toString(), userSession.userId, it.addOnByIDResponse)
@@ -128,6 +131,12 @@ class GiftingBottomSheet(private val addOnId: String) : BottomSheetUnify() {
         layoutContent?.isVisible = !isLoading
         layoutShimmer?.isVisible = isLoading
         bottomSheetHeader.isVisible = !isLoading
+    }
+
+    private fun setTextPromo(promoText: String) {
+        textCaptionPromo?.text = promoText
+        textCaptionPromo?.isVisible = promoText.isNotEmpty()
+        iconPromo?.isVisible = promoText.isNotEmpty()
     }
 
     private fun setTextShopLocationAction(infoUrl: String) {

@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.gson.Gson
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiExternalUseCase
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
@@ -75,6 +76,9 @@ open class BaseOrderSummaryPageViewModelTest {
     @MockK(relaxed = true)
     lateinit var orderSummaryAnalytics: OrderSummaryAnalytics
 
+    @MockK(relaxed = true)
+    lateinit var gson: Gson
+
     val testDispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers
 
     lateinit var helper: OrderSummaryPageViewModelTestHelper
@@ -88,7 +92,7 @@ open class BaseOrderSummaryPageViewModelTest {
         orderSummaryPageViewModel = OrderSummaryPageViewModel(testDispatchers,
                 OrderSummaryPageCartProcessor(addToCartOccMultiExternalUseCase, getOccCartUseCase, updateCartOccUseCase, testDispatchers),
                 OrderSummaryPageLogisticProcessor(ratesUseCase, ratesResponseStateConverter, chooseAddressRepository, chooseAddressMapper, editAddressUseCase, orderSummaryAnalytics, testDispatchers),
-                OrderSummaryPageCheckoutProcessor(checkoutOccUseCase, orderSummaryAnalytics, testDispatchers),
+                OrderSummaryPageCheckoutProcessor(checkoutOccUseCase, orderSummaryAnalytics, testDispatchers, gson),
                 OrderSummaryPagePromoProcessor(validateUsePromoRevampUseCase, clearCacheAutoApplyStackUseCase, orderSummaryAnalytics, testDispatchers),
                 { OrderSummaryPagePaymentProcessor(creditCardTenorListUseCase, testDispatchers) },
                 OrderSummaryPageCalculator(orderSummaryAnalytics, testDispatchers),
