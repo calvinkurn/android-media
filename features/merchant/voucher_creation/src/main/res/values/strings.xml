@@ -495,8 +495,8 @@
     <string name="mvc_location">Lokasi</string>
     <string name="mvc_empty_products_header">Oops, kamu tidak\npunya produk</string>
     <string name="mvc_empty_products_message">Buat produk pertamamu\ndulu ya.</string>
-    <string name="mvc_max_product_limit_reached_title">Jumlah produk sudah mencapai batas</string>
-    <string name="mvc_max_product_limit_reached_message">Kamu tidak bisa tambah produk lagi, ya</string>
+    <string name="mvc_max_product_limit_reached_title">Jumlah produk melebihi batas</string>
+    <string name="mvc_max_product_limit_reached_message">Hapus %d produk terlebih dahulu</string>
     <string name="mvc_no_products">Nggak ada Produk</string>
     <string name="mvc_add_coupon_product">Yuk, mulai tambah produk untuk kuponmu</string>
     <string name="mvc_product_seller_location_warning_title">Kupon tidak bisa dipasang</string>

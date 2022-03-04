@@ -293,6 +293,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                 binding.tickerMaxProductWording.show()
                 adapter?.isProductListEnabled(false)
                 binding.buttonAddProduct.isEnabled = false
+                updateTickerWording(selectedProducts.size, viewModel.getMaxProductLimit())
             } else {
                 binding.tickerMaxProductWording.hide()
                 val extraSelectedProducts = ArrayList<ProductUiModel>()
@@ -306,6 +307,12 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                 this.activity?.finish()
             }
         }
+    }
+
+    private fun updateTickerWording(size: Int, maxProductLimit: Int) {
+        val removeCount = size - maxProductLimit
+        val descriptionText = getString(R.string.mvc_max_product_limit_reached_message, removeCount)
+        binding?.tickerMaxProductWording?.setTextDescription(descriptionText)
     }
 
     private fun observeLiveData() {
