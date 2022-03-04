@@ -4,4 +4,5 @@
     <color name="pdp_fintech_widget_light_blue_A200">#FF40C4FF</color>
     <color name="pdp_fintech_widget_light_blue_A400">#FF00B0FF</color>
     <color name="pdp_fintech_widget_black_overlay">#66000000</color>
+    <color name="pdp_fintech_widget_black_transparent">#00000000</color>
 </resources>
