@@ -38,6 +38,7 @@ class ProductDetailUseCase @Inject constructor(graphqlRepository: GraphqlReposit
         optionMap["picture"] = true
         optionMap["variant"] = true
         optionMap["shop"] = true
+        optionMap["campaign"] = true
         val requestMap = mutableMapOf<String, Any?>()
         requestMap["productID"] = productId
         requestMap["options"] = optionMap

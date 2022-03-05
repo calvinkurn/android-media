@@ -64,9 +64,9 @@ class PayLaterViewModel @Inject constructor(
 
     private fun onAvailableProductDetail(baseProductDetailClass: BaseProductDetailClass) {
         baseProductDetailClass.getProductV3?.let { data ->
-            if (data.pictures?.size == 0 || data.productName.isNullOrEmpty() || data.price?.equals(
+            if (data.pictures?.size == 0 || data.productName.isNullOrEmpty() || ((data.campaingnDetail?.discountedPrice?.equals(
                     0.0
-                ) == true
+                ) == true) && data.price?.equals(0.0) == true)
             )
                 onFailProductDetail(IllegalStateException("Data invalid"))
             else _productDetailLiveData.postValue(Success(data))

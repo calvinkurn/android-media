@@ -81,15 +81,31 @@ class PayLaterActivationViewModel @Inject constructor(
 
     private fun onAvailableProductDetail(baseProductDetailClass: BaseProductDetailClass) {
         baseProductDetailClass.getProductV3?.let {
-            if (it.pictures?.size == 0 || it.productName.isNullOrEmpty() || it.price?.equals(0.0) == true)
+            if (it.pictures?.size == 0 || it.productName.isNullOrEmpty() || ((it.campaingnDetail?.discountedPrice?.equals(
+                    0.0
+                ) == true) && it.price?.equals(0.0) == true)
+            )
                 onFailProductDetail(IllegalStateException("Data invalid"))
-            it.price?.let { productPrice ->
-                price = productPrice
+            it.campaingnDetail?.discountedPrice?.let { campaignPrice ->
+                setProductPrice(campaignPrice, it)
             }
             it.shopDetail?.shopId?.let { shopID ->
                 shopId = shopID
             }
             _productDetailLiveData.value = Success(it)
+        }
+    }
+
+    private fun setProductPrice(
+        campaignPrice: Double,
+        it: GetProductV3
+    ) {
+        if (campaignPrice == 0.0) {
+            it.price?.let { originalPrice ->
+                price = originalPrice
+            }
+        } else {
+            price = campaignPrice
         }
     }
 

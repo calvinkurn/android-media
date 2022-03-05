@@ -253,11 +253,22 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
     // THis method called on product detail api success
     private fun productDetailSuccess(data: GetProductV3) {
-        payLaterViewModel.getPayLaterAvailableDetail(
-            data.price
-                ?: 0.0, payLaterArgsDescriptor.productId
-        )
+        sendDataToViewModel(data)
         setProductDetailView(data)
+    }
+
+    private fun sendDataToViewModel(data: GetProductV3) {
+        if (data.campaingnDetail?.discountedPrice ?: 0.0 != 0.0) {
+            payLaterViewModel.getPayLaterAvailableDetail(
+                data.campaingnDetail?.discountedPrice
+                    ?: 0.0, payLaterArgsDescriptor.productId
+            )
+        } else {
+            payLaterViewModel.getPayLaterAvailableDetail(
+                data.price
+                    ?: 0.0, payLaterArgsDescriptor.productId
+            )
+        }
     }
 
     // This method called to set view for the product image,price and variant
@@ -271,10 +282,18 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         }
         data.productName?.let { productDetail.productName.text = it }
         productDetail.productPrice.text =
-            PayLaterHelper.convertPriceValueToIdrFormat(data.price ?: 0.0, false)
+            getProductPrice(data)
 
         showProductVariant(data)
     }
+
+    private fun getProductPrice(data: GetProductV3) =
+        if (data.campaingnDetail?.discountedPrice ?: 0.0 != 0.0)
+            PayLaterHelper.convertPriceValueToIdrFormat(
+                data.campaingnDetail?.discountedPrice ?: 0.0, false
+            )
+        else
+            PayLaterHelper.convertPriceValueToIdrFormat(data.price ?: 0.0, false)
 
     /**
      * THis method set data for the product variant

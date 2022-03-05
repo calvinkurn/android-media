@@ -449,10 +449,16 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
         detailHeader.productDetailWidget.productName.text = productData.productName.orEmpty()
         detailHeader.productDetailWidget.productPrice.text =
-            convertPriceValueToIdrFormat(productData.price ?: 0.0, false)
+            productPriceValue(productData)
 
         showVariantProductHeader(productData)
     }
+
+    private fun productPriceValue(productData: GetProductV3) =
+        if (productData.campaingnDetail?.discountedPrice ?: 0.0 != 0.0)
+            convertPriceValueToIdrFormat(productData.campaingnDetail?.discountedPrice ?: 0.0, false)
+        else
+            convertPriceValueToIdrFormat(productData.price ?: 0.0, false)
 
     private fun productStockLogic(productStock: Int) {
         detailHeader.quantityEditor.maxValue = productStock

@@ -81,6 +81,10 @@ const val GQL_GET_PRODUCT_DETAIL =
     id
     }
     price
+     campaign {
+      originalPrice
+      discountedPrice
+    }
     variant{
    selections{
     options{
