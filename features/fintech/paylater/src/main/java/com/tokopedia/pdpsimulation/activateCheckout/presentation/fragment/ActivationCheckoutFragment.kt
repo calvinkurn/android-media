@@ -1,11 +1,13 @@
 package com.tokopedia.pdpsimulation.activateCheckout.presentation.fragment
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -45,6 +47,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.fragment_activation_checkout.*
 import kotlinx.android.synthetic.main.paylater_activation_gateway_detail.view.*
+import kotlinx.android.synthetic.main.paylater_activation_product_detail.*
 import kotlinx.android.synthetic.main.paylater_activation_product_detail.view.*
 import kotlinx.android.synthetic.main.product_detail.view.*
 import java.net.SocketTimeoutException
@@ -474,7 +477,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             detailHeader.quantityEditor.editText.setText("1")
             quantity = 1
         }
-
     }
 
     private fun showVariantProductHeader(data: GetProductV3) {
@@ -505,6 +507,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         gatewayDetailLayout.recyclerTenureDetail.isNestedScrollingEnabled = false
         gatewayDetailLayout.recyclerTenureDetail.layoutManager = LinearLayoutManager(context)
         gatewayDetailLayout.recyclerTenureDetail.adapter = activationTenureAdapter
+        detailHeader.limiterMessage.visibility = View.GONE
     }
 
     private fun addListeners() {
@@ -668,6 +671,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
                     detailHeader.quantityEditor.editText.clearFocus()
+                    closeKeyboard()
                     return true
                 }
                 return false
@@ -696,6 +700,14 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     else -> detailHeader.limiterMessage.visibility = View.GONE
                 }
             }
+        }
+    }
+
+    private fun closeKeyboard() {
+        context?.let {
+            val imm: InputMethodManager =
+                it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(quantityEditor.editText.getWindowToken(), 0)
         }
     }
 

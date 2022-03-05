@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/pay_later_dp_5"
         android:layout_marginTop="@dimen/pay_later_dp_20"
-        app:layout_constraintTop_toBottomOf="@id/showVariantBottomSheet" />
+        app:layout_constraintTop_toBottomOf="@id/limiterMessage" />
 
     <com.tokopedia.unifycomponents.QuantityEditorUnify
         android:id="@+id/quantityEditor"
@@ -49,8 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_16"
         android:layout_marginEnd="@dimen/unify_space_16"
-        android:layout_marginBottom="@dimen/unify_space_16"
-        app:layout_constraintBottom_toTopOf="@id/divider_two"
+        app:layout_constraintBottom_toTopOf="@id/limiterMessage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider_one"
         app:qty_default_value="1"
@@ -62,7 +61,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_4"
+        android:layout_marginBottom="@dimen/unify_font_16"
         android:textColor="@color/Unify_RN500"
+        app:layout_constraintBottom_toTopOf="@id/divider_two"
+        tools:visibility="gone"
         app:layout_constraintRight_toRightOf="@id/quantityEditor"
         app:layout_constraintTop_toBottomOf="@id/quantityEditor"
         app:typographyType="small"
