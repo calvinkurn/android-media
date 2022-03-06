@@ -15,6 +15,11 @@ open class MediaUiModel(
     val name: String = "",
     val path: String = "",
     val uri: Uri? = null,
+
+    /*
+    * this data come from camera tab,
+    * the media file is deletable.
+    * */
     val isFromPickerCamera: Boolean = false,
 ) : Parcelable {
 
