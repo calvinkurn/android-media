@@ -1465,8 +1465,8 @@ class AddEditProductDetailViewModelTest {
         viewModel.productPhotoPaths = mutableListOf("sss")
         assert(viewModel.productPhotoPaths[0] == "sss")
 
-        viewModel.selectedSpecificationList = mutableListOf(SpecificationInputModel(id="123"))
-        assert(viewModel.selectedSpecificationList[0].id == "123")
+        /*viewModel.selectedSpecificationList = mutableListOf(SpecificationInputModel(id="123"))
+        assert(viewModel.selectedSpecificationList[0].id == "123")*/
 
         viewModel.productInputModel = ProductInputModel(productId = 11L)
         assert(viewModel.productInputModel.productId == 11L)
@@ -1498,12 +1498,6 @@ class AddEditProductDetailViewModelTest {
         runValidationAndProvideMessage(provider::getProductNameTips, null) {
             viewModel.validateProductNameInput("toped")
         }
-        runValidationAndProvideMessage(provider::getEmptyProductPriceErrorMessage, null) {
-            viewModel.validateProductPriceInput("")
-        }
-        runValidationAndProvideMessage(provider::getMinLimitProductPriceErrorMessage, null) {
-            viewModel.validateProductPriceInput("-9999")
-        }
 
         runValidationAndProvideMessage(provider::getEmptyWholeSaleQuantityErrorMessage, null) {
             viewModel.validateProductWholeSaleQuantityInput("", "", "")
@@ -1534,12 +1528,6 @@ class AddEditProductDetailViewModelTest {
             viewModel.validateProductWholeSalePriceInput("-1", "10", "1")
         }
 
-        runValidationAndProvideMessage(provider::getEmptyProductStockErrorMessage, null) {
-            viewModel.validateProductStockInput("")
-        }
-        runValidationAndProvideMessage(provider::getEmptyProductStockErrorMessage, null) {
-            viewModel.validateProductStockInput("-9999")
-        }
         runValidationAndProvideMessage(provider::getMaxLimitProductStockErrorMessage, null) {
             viewModel.validateProductStockInput((MAX_PRODUCT_STOCK_LIMIT + 1).toString())
         }
@@ -1588,7 +1576,6 @@ class AddEditProductDetailViewModelTest {
             viewModel.isAdding = true
             viewModel.callPrivateFunc("getMultiLocationStockAllocationMessage") as String
         }
-
     }
 
     private fun getIsTheLastOfWholeSaleTestResult(
