@@ -69,7 +69,7 @@ class GatewayViewHolder(
             gatewayHeader.visibility = View.GONE
 
         if (!checkoutData.disable) {
-            setNotDisableData(checkoutData)
+            setEnableData(checkoutData)
         }
         else
         {
@@ -87,7 +87,7 @@ class GatewayViewHolder(
             gatewaySubHeader.visibility = View.GONE
     }
 
-    private fun View.setNotDisableData(checkoutData: CheckoutData) {
+    private fun View.setEnableData(checkoutData: CheckoutData) {
         gatewaySubHeader.visibility = View.VISIBLE
         gatewaySubHeader2.visibility = View.VISIBLE
         if (!checkoutData.subtitle.isNullOrBlank())
