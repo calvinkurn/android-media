@@ -29,6 +29,7 @@ data class CheckoutData(
     @SerializedName("reason_long") val reason_long: String?,
     @SerializedName("reason_short") val reason_short: String?,
     @SerializedName("detail") val tenureDetail: List<TenureDetail>,
+    @SerializedName("label") val gatewayLable: String,
     @SerializedName("user_state") val userState: String? = null,
     @SerializedName("user_balance_amt") val userAmount: String? = null,
     var selectedGateway: Boolean = false,

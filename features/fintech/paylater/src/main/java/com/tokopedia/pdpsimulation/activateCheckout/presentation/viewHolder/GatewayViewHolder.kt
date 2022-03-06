@@ -78,6 +78,7 @@ class GatewayViewHolder(
     }
 
     private fun View.setDisableData(checkoutData: CheckoutData) {
+        gatewayRecommendation.visibility = View.GONE
         gatewaySubHeader2.visibility = View.GONE
         gatewaySubHeader.visibility = View.VISIBLE
         if (!checkoutData.reason_short.isNullOrBlank())
@@ -98,6 +99,12 @@ class GatewayViewHolder(
             gatewaySubHeader2.text = checkoutData.subtitle2
         else
             gatewaySubHeader2.visibility = View.GONE
+
+        if (!checkoutData.gatewayLable.isNullOrBlank()) {
+            gatewayRecommendation.visibility = View.VISIBLE
+            gatewayRecommendation.text = checkoutData.gatewayLable
+        } else
+            gatewayRecommendation.visibility = View.GONE
     }
 
     private fun View.setIcon(checkoutData: CheckoutData) {
