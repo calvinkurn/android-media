@@ -96,7 +96,7 @@ class PayLaterWidget @JvmOverloads constructor(
             }
         }
         layoutGopayBinding.crossIcon.setOnClickListener {
-            payLaterWidgetListener?.onClosePayLaterWidget()
+            closeHomeWidget()
         }
     }
 
@@ -112,6 +112,7 @@ class PayLaterWidget @JvmOverloads constructor(
     ) {
         when (payLaterWidgetData.button?.ctaType) {
             applink -> {
+                closeHomeWidget()
                 analyticsUpload.sendWidgetAnalyticsEvent(
                     AnalyticsEventGenerator.WidgetCtaClickedButton(
                         payLaterWidgetData.caseType.toString(),
@@ -121,6 +122,7 @@ class PayLaterWidget @JvmOverloads constructor(
                 RouteManager.route(context, button.appsUrl)
             }
             webLink -> {
+                closeHomeWidget()
                 analyticsUpload.sendWidgetAnalyticsEvent(
                     AnalyticsEventGenerator.WidgetCtaClickedButton(
                         payLaterWidgetData.caseType.toString(),
@@ -132,6 +134,10 @@ class PayLaterWidget @JvmOverloads constructor(
                 RouteManager.route(context, webViewAppLink)
             }
         }
+    }
+
+    private fun closeHomeWidget() {
+        payLaterWidgetListener?.onClosePayLaterWidget()
     }
 
 }
