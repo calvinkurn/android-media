@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.MotionEvent
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -31,6 +32,7 @@ import com.tokopedia.media.picker.ui.uimodel.safeRemove
 import com.tokopedia.media.common.observer.EventFlowFactory
 import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnChangePublished
+import com.tokopedia.media.picker.ui.uimodel.hasVideoBy
 import com.tokopedia.media.picker.utils.addOnTabSelected
 import com.tokopedia.media.picker.utils.delegates.permissionGranted
 import com.tokopedia.media.picker.utils.dimensionPixelOffsetOf
@@ -179,6 +181,105 @@ open class PickerActivity : BaseActivity()
 
     override fun mediaSelected(): List<MediaUiModel> {
         return medias
+    }
+
+    override fun hasVideoLimitReached(): Boolean {
+        return medias.hasVideoBy(param.maxVideoCount())
+    }
+
+    override fun hasMediaLimitReached(): Boolean {
+        return medias.size == param.maxMediaAmount()
+    }
+
+    override fun isMinVideoDuration(model: MediaUiModel): Boolean {
+        return model.getVideoDuration(applicationContext) <= param.minVideoDuration()
+    }
+
+    override fun isMaxVideoDuration(model: MediaUiModel): Boolean {
+        return model.getVideoDuration(applicationContext) > param.maxVideoDuration()
+    }
+
+    override fun isMaxVideoSize(model: MediaUiModel): Boolean {
+        return model.isMaxFileSize(param.maxVideoSize())
+    }
+
+    override fun isMinImageResolution(model: MediaUiModel): Boolean {
+        return model.isMinImageRes(param.minImageResolution())
+    }
+
+    override fun isMaxImageResolution(model: MediaUiModel): Boolean {
+        return model.isMaxImageRes(param.maxImageResolution())
+    }
+
+    override fun isMaxImageSize(model: MediaUiModel): Boolean {
+        return model.isMaxFileSize(param.maxImageSize())
+    }
+
+    override fun onShowMediaLimitReachedToast() {
+        Toast.makeText(
+            applicationContext,
+            getString(
+                R.string.picker_selection_limit_message,
+                param.maxMediaAmount()
+            ),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    override fun onShowVideoLimitReachedToast() {
+        Toast.makeText(
+            applicationContext,
+            getString(
+                R.string.picker_selection_limit_video,
+                param.maxVideoCount()
+            ),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    override fun onShowVideoMinDurationToast() {
+        Toast.makeText(
+            applicationContext,
+            getString(
+                R.string.picker_video_duration_min_limit,
+                param.minVideoDuration()
+            ),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    override fun onShowVideoMaxDurationToast() {
+        Toast.makeText(
+            applicationContext,
+            getString(
+                R.string.picker_video_duration_max_limit,
+                param.maxVideoDuration()
+            ),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    override fun onShowVideoMaxFileSizeToast() {
+        Toast.makeText(
+            applicationContext,
+            getString(
+                R.string.picker_video_max_size,
+                param.maxVideoSize()
+            ),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    override fun onShowImageMinResToast() {
+        // TODO
+    }
+
+    override fun onShowImageMaxResToast() {
+        // TODO
+    }
+
+    override fun onShowImageMaxFileSizeToast() {
+        // TODO
     }
 
     private fun setupQueryAndUIConfigBuilder() {

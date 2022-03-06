@@ -1,7 +1,8 @@
 @file:JvmName("PickerUtilities")
-package com.tokopedia.media.picker.utils.files
+package com.tokopedia.media.common.utils
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.text.TextUtils
@@ -20,6 +21,13 @@ private fun fileExtension(path: String): String {
     } else {
         ""
     }
+}
+
+fun getBitmapOptions(filePath: String): BitmapFactory.Options {
+    val bitmapOptions = BitmapFactory.Options()
+    bitmapOptions.inJustDecodeBounds = true
+    BitmapFactory.decodeFile(filePath, bitmapOptions)
+    return bitmapOptions
 }
 
 fun isGifFormat(path: String): Boolean {
@@ -63,7 +71,10 @@ fun extractVideoDuration(context: Context?, uri: Uri): Long? {
 fun extractVideoDuration(context: Context?, filePath: String): Long? {
     val file = File(filePath)
 
-    return extractVideoDuration(context, Uri.fromFile(file))
+    return extractVideoDuration(
+        context,
+        Uri.fromFile(file)
+    )
 }
 
 fun Long?.toVideoDurationFormat(): String {

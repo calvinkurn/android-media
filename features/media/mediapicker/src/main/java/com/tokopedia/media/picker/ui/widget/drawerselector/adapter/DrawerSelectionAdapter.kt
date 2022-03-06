@@ -12,11 +12,10 @@ import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.common.uimodel.MediaUiModel
 import com.tokopedia.media.picker.ui.uimodel.containByName
-import com.tokopedia.media.picker.ui.uimodel.hasVideoBy
+import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerActionType
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
 import com.tokopedia.media.picker.ui.widget.drawerselector.viewholder.PlaceholderViewHolder
 import com.tokopedia.media.picker.ui.widget.drawerselector.viewholder.ThumbnailViewHolder
-import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerActionType
 
 class DrawerSelectionAdapter(
     mediaPathList: List<MediaUiModel>,
@@ -130,14 +129,6 @@ class DrawerSelectionAdapter(
         this.medias.clear()
         this.medias.addAll(medias)
         notifyDataSetChanged()
-    }
-
-    fun containsVideoMaxOf(count: Int): Boolean {
-        return this.medias.hasVideoBy(count)
-    }
-
-    fun getData(): List<MediaUiModel> {
-        return medias
     }
 
     private fun isItemType(position: Int): Boolean {

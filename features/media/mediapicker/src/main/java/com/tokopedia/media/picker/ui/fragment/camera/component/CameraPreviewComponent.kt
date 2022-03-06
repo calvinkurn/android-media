@@ -20,7 +20,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
 import com.tokopedia.media.common.PickerParam
-import com.tokopedia.media.picker.utils.files.FileGenerator
+import com.tokopedia.media.common.utils.FileGenerator
 import com.tokopedia.media.picker.utils.exceptionHandler
 
 class CameraPreviewComponent(

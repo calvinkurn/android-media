@@ -10,10 +10,10 @@ import java.io.File
 data class PickerParam(
     private var maxMediaSize: Int = 4,
     private var maxVideo: Int = 2,
-    private var maxVideoSize: Int = 250, // mb
+    private var maxVideoSize: Long = 250_000_000, // 250 mb
     private var minVideoDuration: Int = 3000, // equals 3 sec
     private var maxVideoDuration: Int = 30000, // equals 30 sec
-    private var maxImageSize: Int = 10, // mb
+    private var maxImageSize: Long = 1_000_000, // 10 mb
     private var minImageResolution: Int = 300, // px
     private var maxImageResolution: Int = 20000, // px
     private var isIncludeVideo: Boolean = true,
@@ -25,6 +25,10 @@ data class PickerParam(
     private var cameraRatio: CameraRatio = CameraRatio.Full
 ) : Parcelable {
 
+    fun isCommonPageType() = pageType == PickerPageType.COMMON
+
+    fun ratioIsSquare() = cameraRatio == CameraRatio.Square
+
     fun isMultipleSelectionType() = isMultipleSelection
 
     fun isIncludeVideoFile() = isIncludeVideo
@@ -35,17 +39,21 @@ data class PickerParam(
 
     fun excludeMedias() = excludedMedias
 
-    fun maxVideoCount() = maxVideo
+    fun maxMediaAmount() = maxMediaSize + maxVideo
 
-    fun limitOfMedia() = maxMediaSize + maxVideo
+    fun maxVideoCount() = maxVideo
 
     fun maxVideoDuration() = maxVideoDuration
 
     fun minVideoDuration() = minVideoDuration
 
-    fun isCommonPageType() = pageType == PickerPageType.COMMON
+    fun maxVideoSize() = maxVideoSize
 
-    fun ratioIsSquare() = cameraRatio == CameraRatio.Square
+    fun maxImageResolution() = maxImageResolution
+
+    fun minImageResolution() = minImageResolution
+
+    fun maxImageSize() = maxImageSize
 
 }
 

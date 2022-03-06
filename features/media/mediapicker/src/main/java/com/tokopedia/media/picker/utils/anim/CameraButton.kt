@@ -39,7 +39,7 @@ object CameraButton {
                 if (needToZoomOut) {
                     zoomOut(rectangle.intrinsicWidth)
                 } else {
-                    zoomInt(rectangle.intrinsicWidth)
+                    zoomIn(rectangle.intrinsicWidth)
                 }
             )
         }.start()
@@ -50,7 +50,7 @@ object CameraButton {
         return ObjectAnimator.ofFloat(this, cornerRadiusProperties, init, end)
     }
 
-    private fun View.zoomInt(intrinsicWidth: Int)
+    private fun View.zoomIn(intrinsicWidth: Int)
         = valueAnimate(intrinsicWidth / RESIZE_BUTTON, intrinsicWidth.toFloat())
 
     private fun View.zoomOut(intrinsicWidth: Int)

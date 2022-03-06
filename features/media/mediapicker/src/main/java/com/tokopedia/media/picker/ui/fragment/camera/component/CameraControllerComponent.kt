@@ -23,7 +23,7 @@ import com.tokopedia.media.picker.ui.uimodel.CameraSelectionMode
 import com.tokopedia.media.picker.ui.widget.thumbnail.MediaThumbnailWidget
 import com.tokopedia.media.picker.utils.anim.CameraButton.animStartRecording
 import com.tokopedia.media.picker.utils.anim.CameraButton.animStopRecording
-import com.tokopedia.media.picker.utils.files.toVideoDurationFormat
+import com.tokopedia.media.common.utils.toVideoDurationFormat
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.Typography
 
@@ -204,16 +204,12 @@ class CameraControllerComponent(
     }
 
     private fun onTakeCamera() {
-        if (isVideoMode() && listener.hasVideoAddedOnMediaSelection()) {
+        if (isVideoMode() && listener.hasVideoLimitReached()) {
             listener.onShowToastVideoLimit()
             return
         }
 
-        if (isPhotoMode()) {
-            // TODO
-        }
-
-        if (listener.hasReachedLimit()) {
+        if (listener.hasMediaLimitReached()) {
             listener.onShowToastMediaLimit()
             return
         }
@@ -268,8 +264,8 @@ class CameraControllerComponent(
         .findLastCompletelyVisibleItemPosition()
 
     interface Listener {
-        fun hasVideoAddedOnMediaSelection(): Boolean
-        fun hasReachedLimit(): Boolean
+        fun hasVideoLimitReached(): Boolean
+        fun hasMediaLimitReached(): Boolean
 
         fun onShowToastVideoLimit()
         fun onShowToastMediaLimit()

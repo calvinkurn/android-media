@@ -3,8 +3,9 @@ package com.tokopedia.media.common.uimodel
 import android.content.Context
 import android.net.Uri
 import android.os.Parcelable
-import com.tokopedia.media.picker.utils.files.extractVideoDuration
-import com.tokopedia.media.picker.utils.files.isVideoFormat
+import com.tokopedia.media.common.utils.extractVideoDuration
+import com.tokopedia.media.common.utils.getBitmapOptions
+import com.tokopedia.media.common.utils.isVideoFormat
 import kotlinx.parcelize.Parcelize
 import java.io.File
 
@@ -19,11 +20,29 @@ open class MediaUiModel(
 
     fun isVideo() = isVideoFormat(path)
 
-    fun isVideoDurationValid(context: Context, minDuration: Int): Boolean {
-        if (!isVideo()) return false
+    fun getVideoDuration(context: Context): Long {
+        return extractVideoDuration(context, path) ?: 0
+    }
 
-        val extractDuration = extractVideoDuration(context, path) ?: 0
-        return extractDuration >= minDuration
+    fun isMaxImageRes(value: Int): Boolean {
+        val bitmapOptions = getBitmapOptions(path)
+        val width = bitmapOptions.outWidth
+        val height = bitmapOptions.outHeight
+        return width > value && height > value
+    }
+
+    fun isMinImageRes(value: Int): Boolean {
+        val bitmapOptions = getBitmapOptions(path)
+        val width = bitmapOptions.outWidth
+        val height = bitmapOptions.outHeight
+        return width < value && height < value
+    }
+
+    fun isMaxFileSize(maxSizeInBytes: Long): Boolean {
+        val file = File(path)
+
+        if (!file.exists()) return false
+        return file.length() > maxSizeInBytes
     }
 
     override fun equals(other: Any?): Boolean {
@@ -46,7 +65,7 @@ open class MediaUiModel(
     }
 
     companion object {
-        fun File.cameraToUiModel() = MediaUiModel(
+        fun File.toUiModel() = MediaUiModel(
             id = System.currentTimeMillis(),
             name = name,
             path = path,

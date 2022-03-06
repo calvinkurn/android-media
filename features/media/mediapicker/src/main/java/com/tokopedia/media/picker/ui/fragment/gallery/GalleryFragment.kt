@@ -1,12 +1,12 @@
 package com.tokopedia.media.picker.ui.fragment.gallery
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,16 +20,19 @@ import com.tokopedia.media.databinding.FragmentGalleryBinding
 import com.tokopedia.media.picker.data.repository.AlbumRepositoryImpl.Companion.RECENT_ALBUM_ID
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.di.module.PickerModule
-import com.tokopedia.media.picker.ui.*
+import com.tokopedia.media.picker.ui.PickerUiConfig
 import com.tokopedia.media.picker.ui.activity.album.AlbumActivity
+import com.tokopedia.media.picker.ui.activity.main.PickerActivity
+import com.tokopedia.media.picker.ui.activity.main.PickerActivityListener
 import com.tokopedia.media.picker.ui.fragment.gallery.recyclers.adapter.GalleryAdapter
 import com.tokopedia.media.picker.ui.fragment.gallery.recyclers.utils.GridItemDecoration
 import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnAddPublished
 import com.tokopedia.media.picker.ui.observer.stateOnChangePublished
 import com.tokopedia.media.picker.ui.observer.stateOnRemovePublished
-import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerActionType
+import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
+import com.tokopedia.media.picker.utils.exceptionHandler
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
@@ -38,6 +41,8 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     @Inject lateinit var factory: ViewModelProvider.Factory
 
     private val binding: FragmentGalleryBinding? by viewBinding()
+    private var listener: PickerActivityListener? = null
+
     private val param by lazy { PickerUiConfig.pickerParam() }
 
     private val adapter by lazy {
@@ -69,6 +74,18 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         initView()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        exceptionHandler {
+            listener = null
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        listener = (context as PickerActivity)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_ALBUM_SELECTOR && resultCode == Activity.RESULT_OK) {
@@ -81,7 +98,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
             // fetch album by bucket id
             viewModel.fetch(bucketId, param)
 
-            // force and scrool to up
+            // force and scroll to up if the bucketId is "recent medias / all media"
             if (bucketId == -1L) {
                 binding?.lstMedia?.smoothScrollToPosition(0)
             }
@@ -150,7 +167,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         val isMultipleSelectionType = PickerUiConfig.paramType == PickerSelectionType.MULTIPLE
 
         if (isMultipleSelectionType) {
-            binding?.drawerSelector?.setMaxAdapterSize(param.limitOfMedia())
+            binding?.drawerSelector?.setMaxAdapterSize(param.maxMediaAmount())
             binding?.drawerSelector?.showWithCondition(isShown)
         }
     }
@@ -185,50 +202,29 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     }
 
     private fun selectMedia(media: MediaUiModel, isSelected: Boolean): Boolean {
-        val mediaSelectionDrawer = binding?.drawerSelector?.getData()?: emptyList()
-
         if (PickerUiConfig.paramType == PickerSelectionType.MULTIPLE) {
-            val containsVideo = binding
-                ?.drawerSelector
-                ?.containsVideoMaxOf(param.maxVideoCount())
-                ?: false
+            if (!isSelected && media.isVideo()) {
+                // video validation
+                if (listener?.hasVideoLimitReached() == true) {
+                    listener?.onShowVideoLimitReachedToast()
+                    return false
+                }
 
-            val mediaSelectionDrawerSize = mediaSelectionDrawer.size
-
-            if (media.isVideo() && containsVideo && !isSelected) {
-                Toast.makeText(
-                    requireContext(),
-                    getString(
-                        R.string.picker_selection_limit_video,
-                        param.maxVideoCount()
-                    ),
-                    Toast.LENGTH_SHORT
-                ).show()
-                return false
+                if (listener?.isMinVideoDuration(media) == true) {
+                    listener?.onShowVideoMinDurationToast()
+                    return false
+                }
+            } else if (!isSelected && !media.isVideo()) {
+                // image validation
+                // TODO
             }
 
-            if (mediaSelectionDrawerSize >= param.limitOfMedia() && !isSelected) {
-                Toast.makeText(
-                    requireContext(),
-                    getString(
-                        R.string.picker_selection_limit_message,
-                        param.limitOfMedia()
-                    ),
-                    Toast.LENGTH_SHORT
-                ).show()
-                return false
-            }
-
-            if (media.isVideo() && !media.isVideoDurationValid(requireContext(), param.minVideoDuration()) && !isSelected) {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.picker_video_duration_min_limit),
-                    Toast.LENGTH_SHORT
-                ).show()
+            if (!isSelected && listener?.hasMediaLimitReached() == true) {
+                listener?.onShowMediaLimitReachedToast()
                 return false
             }
         } else if (PickerUiConfig.paramType == PickerSelectionType.SINGLE) {
-            if (mediaSelectionDrawer.isNotEmpty() || adapter.selectedMedias.isNotEmpty()) {
+            if (listener?.mediaSelected()?.isNotEmpty() == true || adapter.selectedMedias.isNotEmpty()) {
                 adapter.removeAllSelectedSingleClick()
             }
         }

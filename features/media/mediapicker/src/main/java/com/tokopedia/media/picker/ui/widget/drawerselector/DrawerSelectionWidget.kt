@@ -9,8 +9,8 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.media.R
-import com.tokopedia.media.databinding.WidgetSelectionBottomNavBinding
 import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.media.databinding.WidgetSelectionBottomNavBinding
 import com.tokopedia.media.picker.ui.widget.drawerselector.adapter.DrawerSelectionAdapter
 import com.tokopedia.media.picker.utils.Unify_N0
 
@@ -119,10 +119,6 @@ class DrawerSelectionWidget : FrameLayout {
         adapter?.canReorder = canReorder
     }
 
-    fun getData(): List<MediaUiModel>? {
-        return adapter?.getData()
-    }
-
     fun removeData(media: MediaUiModel) {
         adapter?.removeData(media)
     }
@@ -134,10 +130,6 @@ class DrawerSelectionWidget : FrameLayout {
 
     fun addAllData(medias: List<MediaUiModel>) {
         adapter?.setData(medias.toMutableList())
-    }
-
-    fun containsVideoMaxOf(count: Int): Boolean {
-        return adapter?.containsVideoMaxOf(count) == true
     }
 
     fun setPlaceholderPreview(@DrawableRes drawable: Int) {

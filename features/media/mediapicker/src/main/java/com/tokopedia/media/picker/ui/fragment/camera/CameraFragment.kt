@@ -8,7 +8,6 @@ import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.otaliastudios.cameraview.CameraOptions
@@ -21,7 +20,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
 import com.tokopedia.media.common.basecomponent.uiComponent
 import com.tokopedia.media.common.uimodel.MediaUiModel
-import com.tokopedia.media.common.uimodel.MediaUiModel.Companion.cameraToUiModel
+import com.tokopedia.media.common.uimodel.MediaUiModel.Companion.toUiModel
+import com.tokopedia.media.common.utils.FileGenerator
 import com.tokopedia.media.databinding.FragmentCameraBinding
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.di.module.PickerModule
@@ -33,12 +33,11 @@ import com.tokopedia.media.picker.ui.fragment.camera.component.CameraPreviewComp
 import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnCameraCapturePublished
 import com.tokopedia.media.picker.ui.uimodel.containByName
-import com.tokopedia.media.picker.ui.uimodel.hasVideoBy
 import com.tokopedia.media.picker.ui.uimodel.safeRemove
-import com.tokopedia.media.picker.utils.files.FileGenerator
 import com.tokopedia.media.picker.utils.exceptionHandler
 import com.tokopedia.media.picker.utils.wrapper.FlingGestureWrapper
 import com.tokopedia.utils.view.binding.viewBinding
+import java.io.File
 import javax.inject.Inject
 
 open class CameraFragment : BaseDaggerFragment()
@@ -163,33 +162,20 @@ open class CameraFragment : BaseDaggerFragment()
         }
     }
 
-    override fun hasReachedLimit(): Boolean {
-        return listener?.mediaSelected()?.size == param.limitOfMedia()
+    override fun hasMediaLimitReached(): Boolean {
+        return listener?.hasMediaLimitReached()?: false
     }
 
-    override fun hasVideoAddedOnMediaSelection(): Boolean {
-        return listener?.mediaSelected()
-            ?.hasVideoBy(param.maxVideoCount())
-            ?: false
+    override fun hasVideoLimitReached(): Boolean {
+        return listener?.hasVideoLimitReached()?: false
     }
 
     override fun onShowToastMediaLimit() {
-        Toast.makeText(
-            requireContext(),
-            getString(R.string.picker_selection_limit_message, param.limitOfMedia()),
-            Toast.LENGTH_SHORT
-        ).show()
+        listener?.onShowMediaLimitReachedToast()
     }
 
     override fun onShowToastVideoLimit() {
-        Toast.makeText(
-            requireContext(),
-            getString(
-                R.string.picker_selection_limit_video,
-                param.maxVideoCount()
-            ),
-            Toast.LENGTH_SHORT
-        ).show()
+        listener?.onShowVideoLimitReachedToast()
     }
 
     override fun onCameraOpened(options: CameraOptions) {
@@ -206,22 +192,8 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     override fun onVideoTaken(result: VideoResult) {
-        val fileToModel = result.file.cameraToUiModel()
-
-        if (!fileToModel.isVideoDurationValid(requireContext(), param.minVideoDuration())) {
-            Toast.makeText(
-                requireContext(),
-                getString(R.string.picker_video_duration_min_limit),
-                Toast.LENGTH_SHORT
-            ).show()
-
-            // delete unused video file
-            if (result.file.exists()) {
-                result.file.delete()
-            }
-
-            return
-        }
+        val fileToModel = result.file.toUiModel()
+        if (isMinVideoDuration(fileToModel)) return
 
         onShowMediaThumbnail(fileToModel)
     }
@@ -229,7 +201,7 @@ open class CameraFragment : BaseDaggerFragment()
     override fun onPictureTaken(result: PictureResult) {
         FileGenerator.createFileCameraCapture(preview.pictureSize(), result.data) {
             if (it == null) return@createFileCameraCapture
-            val fileToModel = it.cameraToUiModel()
+            val fileToModel = it.toUiModel()
 
             onShowMediaThumbnail(fileToModel)
         }
@@ -274,6 +246,24 @@ open class CameraFragment : BaseDaggerFragment()
     private fun onShowMediaThumbnail(element: MediaUiModel?) {
         if (element == null) return
         stateOnCameraCapturePublished(element)
+    }
+
+    private fun isMinVideoDuration(model: MediaUiModel): Boolean {
+        if (listener?.isMinVideoDuration(model) == true) {
+            listener?.onShowVideoMinDurationToast()
+            deleteFile(model.path)
+            return true
+        }
+
+        return false
+    }
+
+    private fun deleteFile(path: String) {
+        val file = File(path)
+
+        if (file.exists()) {
+            file.delete()
+        }
     }
 
     private fun showShutterEffect(action: () -> Unit) {
