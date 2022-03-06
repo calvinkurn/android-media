@@ -219,7 +219,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
                 return false
             }
 
-            if (media.isVideo() && !media.isVideoDurationValid(requireContext()) && !isSelected) {
+            if (media.isVideo() && !media.isVideoDurationValid(requireContext(), param.minVideoDuration()) && !isSelected) {
                 Toast.makeText(
                     requireContext(),
                     getString(R.string.picker_video_duration_min_limit),

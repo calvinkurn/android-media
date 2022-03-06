@@ -208,7 +208,7 @@ open class CameraFragment : BaseDaggerFragment()
     override fun onVideoTaken(result: VideoResult) {
         val fileToModel = result.file.cameraToUiModel()
 
-        if (!fileToModel.isVideoDurationValid(requireContext())) {
+        if (!fileToModel.isVideoDurationValid(requireContext(), param.minVideoDuration())) {
             Toast.makeText(
                 requireContext(),
                 getString(R.string.picker_video_duration_min_limit),
