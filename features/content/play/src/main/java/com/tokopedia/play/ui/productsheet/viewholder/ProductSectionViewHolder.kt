@@ -100,7 +100,7 @@ class ProductSectionViewHolder(
             }
             is PlayUpcomingBellStatus.Off ->{
                 btnReminder.show()
-                btnReminder.setImage(newIconId = IconUnify.BELL_FILLED, newDarkEnable = color, newLightEnable = color)
+                btnReminder.setImage(newIconId = IconUnify.BELL, newDarkEnable = color, newLightEnable = color)
             }
             else -> btnReminder.hide()
         }
