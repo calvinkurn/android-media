@@ -1,6 +1,7 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
 import android.view.ViewGroup
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ContentRechargeHomepageLastItemBinding
@@ -8,7 +9,6 @@ import com.tokopedia.digital.home.model.RechargeHomepageProductCardCustomLastIte
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.media.loader.loadImage
 
 class RechargeHomepageLastItemViewHolder(
     private val binding: ContentRechargeHomepageLastItemBinding,
@@ -19,7 +19,12 @@ class RechargeHomepageLastItemViewHolder(
 
     override fun bind(element: RechargeHomepageProductCardCustomLastItemModel.LastItem) {
         renderView(element)
-        applyCarousel()
+        itemView.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                itemView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                setCardHeightMatchParent()
+            }
+        })
     }
 
     private fun renderView(element: RechargeHomepageProductCardCustomLastItemModel.LastItem) {
@@ -33,10 +38,6 @@ class RechargeHomepageLastItemViewHolder(
                 listener.onRechargeSectionItemClicked(item)
             }
         }
-    }
-
-    private fun applyCarousel() {
-        setCardHeightMatchParent()
     }
 
     private fun setCardHeightMatchParent() {
