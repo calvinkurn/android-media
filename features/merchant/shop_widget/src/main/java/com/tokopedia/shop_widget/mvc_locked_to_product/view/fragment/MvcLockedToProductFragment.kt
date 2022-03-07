@@ -21,13 +21,14 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.simplified.MiniCartSimplifiedWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
@@ -40,6 +41,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.shop_widget.R
 import com.tokopedia.shop_widget.databinding.FragmentMvcLockedToProductBinding
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTracking
+import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.model.MvcLockedToProductAddToCartTracker
 import com.tokopedia.shop_widget.mvc_locked_to_product.di.component.DaggerMvcLockedToProductComponent
 import com.tokopedia.shop_widget.mvc_locked_to_product.di.component.MvcLockedToProductComponent
@@ -53,7 +55,13 @@ import com.tokopedia.shop_widget.mvc_locked_to_product.view.adapter.viewholder.M
 import com.tokopedia.shop_widget.mvc_locked_to_product.view.adapter.viewholder.MvcLockedToProductGridViewHolder
 import com.tokopedia.shop_widget.mvc_locked_to_product.view.adapter.viewholder.MvcLockedToProductSortSectionViewHolder
 import com.tokopedia.shop_widget.mvc_locked_to_product.view.bottomsheet.MvcLockedToProductSortListBottomSheet
-import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.*
+import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.MvcLockedToProductGlobalErrorUiModel
+import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.MvcLockedToProductGridProductUiModel
+import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.MvcLockedToProductRequestUiModel
+import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.MvcLockedToProductSortListFactory
+import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.MvcLockedToProductSortSectionUiModel
+import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.MvcLockedToProductSortUiModel
+import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.MvcLockedToProductVoucherUiModel
 import com.tokopedia.shop_widget.mvc_locked_to_product.view.viewmodel.MvcLockedToProductViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -324,7 +332,10 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
                 fragment = this@MvcLockedToProductFragment,
                 listener = this@MvcLockedToProductFragment,
                 promoId = voucherId,
-                promoCode = voucherUiModel?.baseCode.orEmpty()
+                promoCode = voucherUiModel?.baseCode.orEmpty(),
+                businessUnit = MvcLockedToProductTrackingConstant.Value.PHYSICAL_GOODS,
+                currentSite = MvcLockedToProductTrackingConstant.Value.TOKOPEDIA_MARKETPLACE,
+                pageSource = MiniCartAnalytics.Page.MVC_PAGE
             )
             updateMiniCartWidget()
         }
