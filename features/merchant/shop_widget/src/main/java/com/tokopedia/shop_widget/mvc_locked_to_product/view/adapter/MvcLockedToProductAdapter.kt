@@ -69,6 +69,11 @@ class MvcLockedToProductAdapter(
     }
 
     private fun submitList(newList: List<Visitable<*>>) {
+        newList.distinctBy {
+            if(it is MvcLockedToProductGridProductUiModel){
+                (it as? MvcLockedToProductGridProductUiModel)?.productID
+            }
+        }
         val diffCallback = MvcLockedToProductDiffUtilCallback(visitables, newList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         visitables.clear()
