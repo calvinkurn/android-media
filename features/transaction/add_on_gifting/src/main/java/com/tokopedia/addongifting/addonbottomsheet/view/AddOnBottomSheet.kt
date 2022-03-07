@@ -198,11 +198,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData, val source: Strin
                         dismiss()
                     }
                     UiEvent.STATE_FAILED_SAVE_ADD_ON -> {
-                        viewBinding.totalAmount.amountCtaView.isLoading = false
-                        Toaster.build(viewBinding.bottomsheetContainer,
-                                getString(R.string.add_on_toaster_message_failed_save_add_on),
-                                Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
-                                .show()
+                        showErrorSaveAddOnFailed(viewBinding, it)
                     }
                     UiEvent.STATE_DISMISS_BOTTOM_SHEET -> {
                         dismiss()
@@ -210,6 +206,18 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData, val source: Strin
                 }
             }
         }
+    }
+
+    private fun showErrorSaveAddOnFailed(viewBinding: LayoutAddOnBottomSheetBinding, it: UiEvent) {
+        viewBinding.totalAmount.amountCtaView.isLoading = false
+        var errorMessage = it.throwable?.message
+        if (errorMessage.isNullOrBlank()) {
+            errorMessage = getString(R.string.add_on_toaster_message_failed_save_add_on)
+        }
+        Toaster.build(viewBinding.bottomsheetContainer,
+                errorMessage,
+                Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                .show()
     }
 
     private fun setResultOnSaveAddOn(uiEvent: UiEvent) {
