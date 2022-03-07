@@ -387,6 +387,9 @@ object HomeLayoutMapper {
                 val recommendationItem = recommendationItemList.firstOrNull {
                     it.productId.toString() == productId
                 }
+
+                if (recommendationItem?.quantity == quantity) return
+
                 val index = recommendationItemList.indexOf(recommendationItem)
 
                 recommendationItemList.getOrNull(index)?.copy(quantity = quantity)?.let {
@@ -402,7 +405,7 @@ object HomeLayoutMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.removeItem(id: String) {
+    fun MutableList<HomeLayoutItemUiModel>.removeItem(id: String?) {
         getItemIndex(id)?.let { removeAt(it) }
     }
 
@@ -462,7 +465,7 @@ object HomeLayoutMapper {
             EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, loadedState, serviceType)
             SHARING_EDUCATION -> mapSharingEducationUiModel(response, state, serviceType)
             MAIN_QUEST -> mapQuestUiModel(response, state)
-            MIX_LEFT_CAROUSEL -> mapToMixLeftCarousel(response, state)
+            MIX_LEFT_CAROUSEL -> mapToMixLeftCarousel(response, loadedState)
             else -> null
         }
     }

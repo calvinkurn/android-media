@@ -1,6 +1,8 @@
 package com.tokopedia.discovery2
 
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapperTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsItemViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannercarousel.BannerCarouselItemViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannercarousel.BannerCarouselViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannercarousel.textcomponent.TextComponentViewModelTest
@@ -22,8 +24,9 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.dyna
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.navigationChips.NavigationChipsViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardItemModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sliderbanner.SliderBannerViewModelTest
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.textcomponent.TextComponentViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.timerSprintSale.TimerSprintSaleItemViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YouTubeViewViewModelTest
 import org.junit.runner.RunWith
@@ -57,7 +60,10 @@ import org.junit.runners.Suite
         CalendarWidgetItemViewModelTest::class,
         CalendarWidgetGridViewModelTest::class,
         CalendarWidgetCarouselViewModelTest::class,
-
+        AnchorTabsViewModelTest::class,
+        AnchorTabsItemViewModelTest::class,
+        ShopCardModelTest::class,
+        ShopCardItemModelTest::class,
 )
 
 
