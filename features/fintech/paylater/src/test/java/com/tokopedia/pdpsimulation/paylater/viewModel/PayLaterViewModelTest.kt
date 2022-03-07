@@ -1,10 +1,7 @@
 package com.tokopedia.pdpsimulation.paylater.viewModel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.pdpsimulation.common.domain.model.BaseProductDetailClass
-import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
-import com.tokopedia.pdpsimulation.common.domain.model.Pictures
-import com.tokopedia.pdpsimulation.common.domain.model.ShopDetail
+import com.tokopedia.pdpsimulation.common.domain.model.*
 import com.tokopedia.pdpsimulation.common.domain.usecase.ProductDetailUseCase
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterAllData
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
@@ -53,11 +50,16 @@ class PayLaterViewModelTest {
     @Test
     fun productDetailSuccessTest()
     {
-        val shopDetail =mockk<ShopDetail>(relaxed = true)
-        val baseProductDetail = BaseProductDetailClass(GetProductV3("name", "url",shopDetail,
-            1000.0, arrayListOf(
-            Pictures("url")
-        ), null,0))
+        val shopDetail = mockk<ShopDetail>(relaxed = true)
+        val campaignDetail = mockk<CampaignDetail>(relaxed = true)
+        val baseProductDetail = BaseProductDetailClass(
+            GetProductV3(
+                "name", "url", shopDetail,
+                1000.0, arrayListOf(
+                    Pictures("url")
+                ), null, 0, campaignDetail
+            )
+        )
         coEvery {
             productDetailUseCase.getProductDetail(any(), any(), "")
         } coAnswers {
