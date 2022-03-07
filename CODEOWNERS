@@ -352,6 +352,7 @@
 /libraries/screenshot_observer                          @tokopedia/android-core-dev
 /libraries/tokopatch                                    @tokopedia/android-core-dev
 /libraries/macrobenchmark/								@tokopedia/android-core-dev
+/libraries/universal_sharing/							@tokopedia/android-gatekeeperloadtime-dev
 
 /buildconfig/                                           @tokopedia/android-core-dev
 /dynamic-features/                                      @tokopedia/android-core-dev

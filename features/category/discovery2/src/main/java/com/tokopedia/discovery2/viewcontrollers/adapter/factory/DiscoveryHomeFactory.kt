@@ -27,6 +27,10 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cate
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.navigationChips.NavigationChipsItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.DefaultComponentViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannedview.BannedViewViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget.*
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget.CalendarWidgetItemViewModel
@@ -73,9 +77,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quic
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter.QuickFilterViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.saleendstates.SaleEndStateViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.saleendstates.SaleEndStateViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerProductCardViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spacing.SpacingViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spacing.SpacingViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemViewHolder
@@ -100,11 +101,16 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merc
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.*
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.MerchantVoucherCarouselViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.SectionViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.SectionViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerCalendarViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.*
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tdnbanner.DiscoveryTDNBannerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tdnbanner.DiscoveryTDNBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topquest.TopQuestViewHolder
@@ -156,6 +162,7 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.QuickCoupon, ::QuickCouponViewHolder, ::QuickCouponViewModel)
             initializeComponent(ComponentsList.BannerCarousel, ::BannerCarouselViewHolder, ::BannerCarouselViewModel)
             initializeComponent(ComponentsList.BannerCarouselItemView, ::BannerCarouselItemViewHolder, ::BannerCarouselItemViewModel)
+            initializeComponent(ComponentsList.BannerCarouselShimmer, ::ShimmerBannerCarouselViewHolder, ::ShimmerViewModel)
 
             // Product Card Revamp
             initializeComponent(ComponentsList.ProductCardRevamp, ::ProductCardRevampViewHolder, ::ProductCardRevampViewModel)
@@ -207,12 +214,16 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.TopadsHeadlineView, ::TopAdsHeadlineViewHolder, ::TopAdsHeadlineViewModel)
 
             initializeComponent(ComponentsList.Section,::SectionViewHolder,::SectionViewModel)
+//            initializeComponent(ComponentsList.AnchorTabs,::AnchorTabsViewHolder,::AnchorTabsViewModel)
+            initializeComponent(ComponentsList.AnchorTabsItem,::AnchorTabsItemViewHolder,::AnchorTabsItemViewModel)
             //Calendar View
             initializeComponent(ComponentsList.CalendarWidgetCarousel, ::CalendarWidgetCarouselViewHolder, ::CalendarWidgetCarouselViewModel)
             initializeComponent(ComponentsList.CalendarWidgetGrid, ::CalendarWidgetGridViewHolder, ::CalendarWidgetGridViewModel)
             initializeComponent(ComponentsList.CalendarWidgetItem, ::CalendarWidgetItemViewHolder, ::CalendarWidgetItemViewModel)
             initializeComponent(ComponentsList.ShimmerCalendarWidget, ::ShimmerCalendarViewHolder, ::ShimmerViewModel)
             initializeComponent(ComponentsList.TopQuestWidget, ::TopQuestViewHolder, ::TopQuestViewModel)
+            initializeComponent(ComponentsList.MyCoupon, ::MyCouponViewHolder, ::MyCouponViewModel)
+            initializeComponent(ComponentsList.MyCouponItem, ::MyCouponItemViewHolder, ::MyCouponItemViewModel)
 
         }
 
@@ -239,7 +250,7 @@ class DiscoveryHomeFactory {
         }
 
         fun isStickyHeader(viewType:Int):Boolean {
-            return viewType == ComponentsList.Tabs.ordinal
+            return viewType == ComponentsList.Tabs.ordinal || viewType == ComponentsList.AnchorTabs.ordinal
         }
     }
 }

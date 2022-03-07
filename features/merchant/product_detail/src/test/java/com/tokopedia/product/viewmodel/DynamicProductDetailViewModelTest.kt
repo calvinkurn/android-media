@@ -1466,6 +1466,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
                                 message = "OK"
                         )
                 ))
+        coEvery { remoteConfigInstance.getLong(any(), any())
+        }  returns 5000
+
         coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns expectedResponse
 
         viewModel.getProductTopadsStatus(productId, paramsTest)

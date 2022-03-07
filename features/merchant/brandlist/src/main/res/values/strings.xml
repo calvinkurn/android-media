@@ -10,6 +10,7 @@
     <string name="subtitle_all_brand_not_found">Coba cari brand favoritmu yang lain</string>
     <string name="button_brand_not_found">Ganti kata kunci</string>
     <string name="button_all_brand_not_found">Cari Brand Lain</string>
+    <string name="header_description">Header Description</string>
 
     <item type="id" name="position" />
     <item type="id" name="brand" />

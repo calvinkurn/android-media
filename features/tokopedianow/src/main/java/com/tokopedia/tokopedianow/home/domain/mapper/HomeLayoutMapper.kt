@@ -152,7 +152,12 @@ object HomeLayoutMapper {
     ) {
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
             if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
-                mapToHomeUiModel(layoutResponse, HomeLayoutItemState.LOADED, miniCartData, serviceType)?.let { item ->
+                val state = when (layoutResponse.layout) {
+                    CATEGORY, REPURCHASE_PRODUCT, SHARING_EDUCATION, MAIN_QUEST -> HomeLayoutItemState.NOT_LOADED
+                    else ->  HomeLayoutItemState.LOADED
+                }
+
+                mapToHomeUiModel(layoutResponse, state, miniCartData, serviceType)?.let { item ->
                     add(item)
                 }
             }
@@ -405,7 +410,7 @@ object HomeLayoutMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.removeItem(id: String) {
+    fun MutableList<HomeLayoutItemUiModel>.removeItem(id: String?) {
         getItemIndex(id)?.let { removeAt(it) }
     }
 
@@ -430,6 +435,12 @@ object HomeLayoutMapper {
             val updatedRecomWidget = recomWidget.copy(recommendationItemList = recomItemList)
             return productRecom.copy(recomWidget = updatedRecomWidget)
         }
+    }
+
+    inline fun<reified T: Visitable<*>> List<HomeLayoutItemUiModel>.getItem(itemClass: Class<T>): T? {
+        return mapNotNull { it.layout }.find {
+            it.javaClass == itemClass
+        } as? T
     }
 
     private fun Visitable<*>.getVisitableId(): String? {
@@ -459,7 +470,7 @@ object HomeLayoutMapper {
             EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, loadedState, serviceType)
             SHARING_EDUCATION -> mapSharingEducationUiModel(response, state, serviceType)
             MAIN_QUEST -> mapQuestUiModel(response, state)
-            MIX_LEFT_CAROUSEL -> mapToMixLeftCarousel(response, state)
+            MIX_LEFT_CAROUSEL -> mapToMixLeftCarousel(response, loadedState)
             else -> null
         }
     }

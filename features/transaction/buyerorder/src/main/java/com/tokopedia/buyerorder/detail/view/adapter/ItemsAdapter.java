@@ -57,6 +57,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final String KEY_TEXT = "text";
     public static final String KEY_VOUCHER_CODE = "vouchercodes";
     public static final String KEY_REDIRECT = "redirect";
+    public static final String KEY_REDIRECT_EXTERNAL = "redirectexternal";
     public static final String CONTENT_TYPE = "application/pdf";
     public static final String KEY_QRCODE = "qrcode";
     public static final String KEY_POPUP = "popup";
@@ -228,6 +229,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
             } else if (actionButton.getControl().equalsIgnoreCase(KEY_QRCODE)) {
                 setEventDetails.openShowQRFragment(actionButton, item);
+            } else if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT_EXTERNAL)){
+                RouteManager.route(context, actionButton.getBody().getAppURL());
             }
         }
 
