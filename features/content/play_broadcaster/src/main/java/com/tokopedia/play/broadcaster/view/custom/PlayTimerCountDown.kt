@@ -14,7 +14,7 @@ import kotlin.math.ceil
 
 
 class PlayTimerCountDown @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     private val progressCircular: LottieAnimationView
@@ -140,9 +140,9 @@ class PlayTimerCountDown @JvmOverloads constructor(
     }
 
     class AnimationProperty private constructor(
-            val fullRotationInterval: Long,
-            val textCountDownInterval: Long,
-            val totalCount: Int
+        val fullRotationInterval: Long,
+        val textCountDownInterval: Long,
+        val totalCount: Int
     ) {
 
         class Builder {
@@ -168,9 +168,9 @@ class PlayTimerCountDown @JvmOverloads constructor(
 
             fun build(): AnimationProperty {
                 return AnimationProperty(
-                        fullRotationInterval = fullRotationInterval,
-                        textCountDownInterval = textCountDownInterval,
-                        totalCount = totalCount
+                    fullRotationInterval = fullRotationInterval,
+                    textCountDownInterval = textCountDownInterval,
+                    totalCount = totalCount
                 )
             }
         }

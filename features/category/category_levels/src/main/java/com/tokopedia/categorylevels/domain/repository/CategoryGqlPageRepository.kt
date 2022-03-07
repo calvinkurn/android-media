@@ -16,10 +16,15 @@ class CategoryGqlPageRepository(private val departmentName: String,
                                 private val categoryUrl: String?) : BaseRepository(), DiscoveryPageRepository {
     companion object {
         const val IDENTIFIER = "identifier"
+        const val IS_LATEST_VERSION = "isLatestVersion"
         const val SEARCH_APPLINK = "tokopedia://search-autocomplete"
         const val ENCODING_UTF_8 = "UTF-8"
         const val BANNED = 1
         const val INDEX_ONE = "1"
+        const val LEVEL_3_CATEGORY = 3
+        const val TABS_HORIZONTAL_SCROLL="tabs-horizontal-scroll"
+        const val SEMUA="Semua"
+        const val DEFAULT_TARGET_COMPONENT_ID="2,3,4,5,6"
     }
 
     val componentMap = mutableMapOf<String, String>()
@@ -31,15 +36,16 @@ class CategoryGqlPageRepository(private val departmentName: String,
         componentMap["product-list-infinite-scroll"] = ComponentNames.ProductCardRevamp.componentName
         componentMap["static-text"] = ComponentNames.LihatSemua.componentName
         componentMap["headline-ads"] = ComponentNames.TopadsHeadlineView.componentName
+        componentMap["tabs-horizontal-scroll"] = ComponentNames.Tabs.componentName
     }
 
-    override suspend fun getDiscoveryPageData(pageIdentifier: String): DiscoveryResponse {
-        val data = getGQLData(GQL_CATEGORY_GET_DETAIL_MODULAR, CategoryGetDetailModularData::class.java, createRequestParameterCategory(departmentId)).categoryGetDetailModular
+    override suspend fun getDiscoveryPageData(pageIdentifier: String, extraParams: Map<String,Any>?): DiscoveryResponse {
+        val data = getGQLData(GQL_CATEGORY_GET_DETAIL_MODULAR, CategoryGetDetailModularData::class.java, createRequestParameterCategory(pageIdentifier)).categoryGetDetailModular
         return data.basicInfo.let { basicInfo ->
             DiscoveryResponse(
-                    components = getCategoryComponents(data),
+                    components = getCategoryComponents(pageIdentifier,data),
                     pageInfo = PageInfo(
-                            identifier = departmentId, name = basicInfo.name, type = "", path = basicInfo.url, id = basicInfo.id
+                            identifier = pageIdentifier, name = basicInfo.name, type = "", path = basicInfo.url, id = basicInfo.id
                             ?: 0, showChooseAddress = true,
                             searchTitle = "Cari di ${basicInfo.name}",
                             searchApplink = "${SEARCH_APPLINK}/searchbox?hint=${encodeURL("Cari di ${basicInfo.name}")}&navsource=catpage&srp_page_id=${basicInfo.id}&srp_page_title=${encodeURL(basicInfo.name)}",
@@ -61,7 +67,10 @@ class CategoryGqlPageRepository(private val departmentName: String,
         }
     }
 
-    private fun getCategoryComponents(data: CategoryGetDetailModularData.CategoryGetDetailModular): ArrayList<ComponentsItem> {
+    private fun getCategoryComponents(
+        pageIdentifier: String,
+        data: CategoryGetDetailModularData.CategoryGetDetailModular
+    ): ArrayList<ComponentsItem> {
         val components = ArrayList<ComponentsItem>()
         data.basicInfo.let { basicInfo ->
             if (!basicInfo.appRedirectionURL.isNullOrEmpty()) {
@@ -81,11 +90,26 @@ class CategoryGqlPageRepository(private val departmentName: String,
                     pagePath = data.basicInfo.url,
                     showFilterCount = false,
                     renderByDefault = true,
-                    properties = Properties(targetId = component.targetId.toString()))
+                    properties = Properties(targetId = component.targetId.toString(),
+                    background = component.properties.background,
+                    dynamic = component.properties.dynamic,
+                    categoryDetail = component.properties.categoryDetail))
             if(component.data.isNotEmpty()) {
                 val dataItems = arrayListOf<DataItem>()
+                if(component.type== TABS_HORIZONTAL_SCROLL) dataItems.add(
+                    DataItem(
+                        name = SEMUA,
+                        id = if(data.basicInfo.tree == LEVEL_3_CATEGORY) data.basicInfo.parent.toString() else departmentId,
+                        targetComponentId = dataItems.firstOrNull()?.targetComponentId
+                            ?: DEFAULT_TARGET_COMPONENT_ID))
                 component.data.forEachIndexed { index, dataItem ->
-                    dataItems.add(DataItem(title = if(dataItem.text!=null) dataItem.text else dataItem.name, id = dataItem.id.toString(), applinks = dataItem.applinks, positionForParentItem = index))
+                    dataItems.add(DataItem(title = if(dataItem.text!=null) dataItem.text else dataItem.name,
+                        id = dataItem.id.toString(),
+                        applinks = dataItem.applinks,
+                        positionForParentItem = index,
+                        targetComponentId = dataItem.targetComponentId,
+                        name = dataItem.categoryName,
+                        isSelected = pageIdentifier == dataItem.id.toString() || data.basicInfo.id == dataItem.id))
                 }
                 componentsItem.data = dataItems
             }
@@ -97,6 +121,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
     private fun createRequestParameterCategory(categoryId: String): Map<String, Any> {
         val request = RequestParams.create()
         request.putString(IDENTIFIER, categoryId)
+        request.putBoolean(IS_LATEST_VERSION, true)
         return request.parameters
     }
 

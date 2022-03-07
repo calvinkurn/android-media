@@ -10,16 +10,12 @@ import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.util.animation.DefaultAnimatorListener
 import com.tokopedia.play.view.custom.realtimenotif.RealTimeNotificationBubbleView
 import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
-import com.tokopedia.play_common.util.extension.awaitLayout
-import com.tokopedia.play_common.util.extension.awaitMeasured
-import com.tokopedia.play_common.util.extension.awaitNextGlobalLayout
 import com.tokopedia.play_common.util.extension.awaitPreDraw
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import kotlinx.coroutines.*

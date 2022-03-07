@@ -44,6 +44,7 @@ object TrackingConstant {
     const val SELLER_APP_SHOP_INSIGHT = "seller app - wawasan toko"
     const val SELLER_APP_BUYER_INSIGHT = "seller app - wawasan pembeli"
     const val SELLER_APP_PRODUCT_INSIGHT = "seller app - wawasan produk"
+    const val STATISTIC_FIREWALL = "statistics firewall"
 
     //action
     const val CLICK_WIDGET_CARD = "click widget card"
@@ -62,6 +63,8 @@ object TrackingConstant {
     const val CLICK_TABLE_WIDGET_FILTER = "click table widget - filter"
     const val CLICK_WIDGET_BAR_CHART = "click widget bar chart"
     const val CLICK_WIDGET_PIE_CHART = "click widget pie chart"
+    const val CLICK_PAYWALL_CTA = "click paywall date filter - upgrade toko"
+    const val CLICK_DISMISS_DATE_FILTER = "click paywall filter - close"
     const val IMPRESSION_WIDGET_CARD = "impression widget card"
     const val IMPRESSION_WIDGET_LINE_GRAPH = "impression widget trend line"
     const val IMPRESSION_WIDGET_DESCRIPTION = "impression widget description"
@@ -73,9 +76,11 @@ object TrackingConstant {
     const val IMPRESSION_WIDGET_PIE_CHART = "impression widget pie chart"
     const val IMPRESSION_WIDGET_BAR_CHART = "impression widget bar chart"
     const val IMPRESSION_MENU_TAB = "impression - tab menu"
-    const val IMPRESSION_CALENDAR = "impression - %s - calendar"
+    const val IMPRESSION_CALENDAR = "impression date filter"
     const val IMPRESSION_3_DOT = "impression - 3 dot"
     const val IMPRESSION_MENU_LAINNYA = "impression - %s - menu lainnya"
+    const val IMPRESSION_PAYWALL_DATE_FILTER = "impression paywall date filter"
+    const val IMPRESSION_EXCLUSIVE_FEATURE = "impression exclusive identifier - date filter"
     const val SLIDE_TABLE_WIDGET = "slide table widget"
     const val SEE_MORE = "see more"
 

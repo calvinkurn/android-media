@@ -2,6 +2,7 @@
   {
     "data": {
       "rechargeGetDynamicPageSkeleton": {
+        "search_bar_screen_name": "/top-up-tagihan",
         "sections": [
           {
             "id": 1,
@@ -36,12 +37,24 @@
             "template": "PRODUCT_CARD_ROW"
           },
           {
+            "id": 933,
+            "template": "SWIPE_BANNER"
+          },
+          {
             "id": 9,
             "template": "COUNTDOWN_SINGLE_BANNER"
           },
           {
             "id": 10,
             "template": "COUNTDOWN_PRODUCT_BANNER"
+          },
+          {
+            "id": 158,
+            "template": "3_ICONS"
+          },
+          {
+            "id": 161,
+            "template": "PRODUCT_CARD_CUSTOM_BANNER_V2"
           }
         ]
       }

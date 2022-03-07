@@ -6,7 +6,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowRecentPurchaseUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.AddToCartTestObject.addToCartQty
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.AddToCartTestObject.addToCartSuccessModel
@@ -51,7 +51,7 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
 
         assertThat(
             visitableList[repurchaseWidgetIndex],
-            instanceOf(TokoNowRecentPurchaseUiModel::class.java)
+            instanceOf(TokoNowRepurchaseUiModel::class.java)
         )
     }
 
@@ -72,7 +72,7 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
     ) {
         assertThat(
             visitableList,
-            everyItem(not(instanceOf(TokoNowRecentPurchaseUiModel::class.java)))
+            everyItem(not(instanceOf(TokoNowRepurchaseUiModel::class.java)))
         )
     }
 
@@ -91,7 +91,7 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
 
         val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
         `Then assert repurchase widget product quantity`(visitableList, miniCartSimplifiedData)
-        `Then assert recent purchase widget visitable is updated`(visitableList)
+        `Then assert repurchase widget visitable is updated`(visitableList)
     }
 
     private fun `Given get mini cart simplified use case will be successful`(
@@ -121,7 +121,7 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
     }
 
     private fun List<Visitable<*>>.getRepurchaseWidgetUiModel() =
-        find { it is TokoNowRecentPurchaseUiModel } as TokoNowRecentPurchaseUiModel
+        find { it is TokoNowRepurchaseUiModel } as TokoNowRepurchaseUiModel
 
     private fun `Then verify non variant product quantity`(
         miniCartItems: List<MiniCartItem>,
@@ -172,12 +172,12 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
     private fun createInvalidVariantQtyReason(productId: String, parentProductId: String) =
         "Product \"$productId\" with parent \"$parentProductId\" variant quantity is invalid"
 
-    private fun `Then assert recent purchase widget visitable is updated`(
+    private fun `Then assert repurchase widget visitable is updated`(
         visitableList: List<Visitable<*>>,
     ) {
         val updatedVisitableList = tokoNowCategoryViewModel.updatedVisitableIndicesLiveData.value!!
         val repurchaseWidgetIndex = visitableList.indexOfFirst {
-            it is TokoNowRecentPurchaseUiModel
+            it is TokoNowRepurchaseUiModel
         }
 
         assertThat(updatedVisitableList, hasItem(repurchaseWidgetIndex))
@@ -408,7 +408,7 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
         `When add to cart repurchase product`(repurchaseWidgetProduct, addToCartQty)
 
         `Then assert route to login page`()
-        `Then assert recent purchase widget visitable is updated`(visitableList)
+        `Then assert repurchase widget visitable is updated`(visitableList)
     }
 
     private fun `Given user not logged in`() {

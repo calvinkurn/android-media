@@ -2,9 +2,9 @@ package com.tokopedia.chatbot.view.listener
 
 import android.app.Activity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
+import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
@@ -30,7 +30,7 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun onReceiveQuickReplyEventWithChatRating(visitable: ChatRatingViewModel)
 
-    fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentViewModel)
+    fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentUiModel)
 
     fun onSuccessSendRating(element: SendRatingPojo, rating: Int,
                             chatRatingViewModel : ChatRatingViewModel,
@@ -38,7 +38,7 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun onClickReasonRating()
 
-    fun onImageUpload(it: ImageUploadViewModel)
+    fun onImageUpload(it: ImageUploadUiModel)
 
     fun scrollToBottom()
 
@@ -58,7 +58,7 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun hideActionBubbleOnSenderMsg()
 
-    fun showRetryUploadImages(it: ImageUploadViewModel, b: Boolean)
+    fun showRetryUploadImages(it: ImageUploadUiModel, b: Boolean)
 
     fun removeDummy(visitable: Visitable<*>)
 

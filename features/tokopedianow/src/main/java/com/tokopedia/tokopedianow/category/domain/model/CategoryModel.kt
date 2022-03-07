@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail.CategoryDetail
-import com.tokopedia.tokopedianow.home.domain.model.GetRecentPurchaseResponse.RecentPurchaseData
+import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProduct
 
 data class CategoryModel(
@@ -31,5 +31,5 @@ data class CategoryModel(
 
         @SerializedName("TokonowRepurchaseWidget")
         @Expose
-        val tokonowRepurchaseWidget: RecentPurchaseData = RecentPurchaseData()
+        val tokonowRepurchaseWidget: RepurchaseData = RepurchaseData()
 )

@@ -11,6 +11,7 @@ import java.math.BigInteger
 object SharedPreferencesUtil {
 
     private const val MA_SA_ADDEDITPRODUCT_FIRST_TIME_SPECIFICATION = "FirstTimeSpecification"
+    private const val MA_SA_ADDEDITPRODUCT_FIRST_TIME_CUSTOM_VARIANT_TYPE = "FirstTimeCVT"
     private const val MA_SA_ADDEDITPRODUCT_PRICE_WHEN_LOADED = "PriceWhenLoaded"
     private const val MA_SA_ADDEDITPRODUCT_PRODUCT_LIMITATION_MODEL = "ProductLimitationModel"
 
@@ -44,7 +45,14 @@ object SharedPreferencesUtil {
     fun getProductLimitationModel(activity: Activity): ProductLimitationModel? {
         val sharedPref = activity.getPreferences(Context.MODE_PRIVATE)
         val json = sharedPref.getString(MA_SA_ADDEDITPRODUCT_PRODUCT_LIMITATION_MODEL, "").orEmpty()
-        return mapJsonToObject(json, ProductLimitationModel::class.java)
+
+        return try {
+            mapJsonToObject(json, ProductLimitationModel::class.java)
+        } catch (e: Exception) {
+            AddEditProductErrorHandler.logExceptionToCrashlytics(e)
+            AddEditProductErrorHandler.logMessage(json)
+            null // catch error parsing exception
+        }
     }
 
     fun setProductLimitationModel(activity: Activity, productLimitationModel: ProductLimitationModel) {
@@ -52,6 +60,19 @@ object SharedPreferencesUtil {
         val json = mapObjectToJson(productLimitationModel).orEmpty()
         with(sharedPref.edit()) {
             putString(MA_SA_ADDEDITPRODUCT_PRODUCT_LIMITATION_MODEL, json)
+            commit()
+        }
+    }
+
+    fun getFirstTimeCustomVariantType(activity: Activity): Boolean {
+        val sharedPref = activity.getPreferences(Context.MODE_PRIVATE)
+        return sharedPref.getBoolean(MA_SA_ADDEDITPRODUCT_FIRST_TIME_CUSTOM_VARIANT_TYPE, false)
+    }
+
+    fun setFirstTimeCustomVariantType(activity: Activity, value: Boolean) {
+        val sharedPref = activity.getPreferences(Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putBoolean(MA_SA_ADDEDITPRODUCT_FIRST_TIME_CUSTOM_VARIANT_TYPE, value)
             commit()
         }
     }

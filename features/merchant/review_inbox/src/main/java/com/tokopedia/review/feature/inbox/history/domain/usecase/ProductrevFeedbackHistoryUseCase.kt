@@ -42,6 +42,7 @@ class ProductrevFeedbackHistoryUseCase @Inject constructor(graphqlRepository: Gr
                             fullSize
                             thumbnail
                           }
+                          badRatingReasonFmt
                         }
                       }
                       hasNext

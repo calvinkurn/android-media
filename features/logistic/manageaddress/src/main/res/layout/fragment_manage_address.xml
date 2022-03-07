@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:id="@+id/swipe_refresh"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:enabled="false">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,13 +23,13 @@
             android:visibility="gone"/>
 
         <com.tokopedia.unifycomponents.SearchBarUnify
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="10dp"
             android:id="@+id/search_input_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
+            android:padding="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ticker_info"
@@ -40,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="@dimen/dp_40"
+            android:layout_marginTop="40dp"
             app:layout_constraintStart_toStartOf="parent"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/search_input_view">
@@ -60,8 +60,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dp_26"
-                android:layout_marginLeft="@dimen/dp_40"
-                android:layout_marginRight="@dimen/dp_40"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
                 app:typographyType="heading_3"
                 android:text="@string/title_empty_search"
                 android:gravity="center"
@@ -72,9 +72,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_40"
-                android:layout_marginRight="@dimen/dp_40"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
                 app:typographyType="body_3"
                 android:text="@string/text_empty_search"
                 android:gravity="center"/>
@@ -85,7 +85,7 @@
             android:id="@+id/address_list"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginBottom="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@id/ll_btn"
@@ -121,17 +121,17 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_4"
+                android:layout_height="4dp"
                 android:background="@drawable/manageaddress_shadow_top" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_choose_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 app:unifyButtonVariant="filled"
                 app:unifyButtonType="main"
                 android:text="@string/pilih_alamat"

@@ -1,8 +1,0 @@
-{
-  uohOrderCount {
-    onProcess
-    onProcessText
-    activeTickets
-    activeTicketsText
-	}
-}

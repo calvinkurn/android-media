@@ -6,7 +6,7 @@ import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 /**
  * Created by Yehezkiel on 04/01/21
  */
-class ProductDetailDiffUtil : DiffUtil.ItemCallback<DynamicPdpDataModel>() {
+class ProductDetailDiffUtilCallback : DiffUtil.ItemCallback<DynamicPdpDataModel>() {
 
     override fun areItemsTheSame(oldItem: DynamicPdpDataModel, newItem: DynamicPdpDataModel): Boolean {
         return oldItem.name() == newItem.name()

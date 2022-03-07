@@ -17,7 +17,7 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.design.keyboard.KeyboardHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.R
-
+import com.tokopedia.resources.common.R as RCommon
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.AbstractDynamicFilterDetailActivity
 import com.tokopedia.filter.newdynamicfilter.DynamicFilterCategoryActivity
@@ -210,7 +210,7 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
         filterMainAdapter = DynamicFilterAdapter(dynamicFilterTypeFactory)
         filterMainRecyclerView?.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         val dividerItemDecoration = DividerItemDecoration(filterMainRecyclerView?.context, DividerItemDecoration.VERTICAL)
-        dividerItemDecoration.setDrawable(resources.getDrawable(R.drawable.bg_line_separator))
+        dividerItemDecoration.setDrawable(resources.getDrawable(RCommon.drawable.bg_line_separator))
         filterMainRecyclerView?.addItemDecoration(dividerItemDecoration)
         filterMainRecyclerView?.adapter = filterMainAdapter
         filterMainRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {

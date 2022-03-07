@@ -11,11 +11,15 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.*
+import com.tokopedia.search.result.presentation.model.BroadMatchDataView
+import com.tokopedia.search.result.presentation.model.LastFilterDataView
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
+import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridInspirationCardViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.inspirationwidget.card.SmallGridInspirationCardViewHolder
 
 class ProductListAdapter(
         private val itemChangeView: OnItemChangeView,
@@ -134,6 +138,11 @@ class ProductListAdapter(
 
     override fun getItemCount() = list.size
 
+    override fun onViewRecycled(holder: AbstractViewHolder<*>) {
+        super.onViewRecycled(holder)
+        holder.onViewRecycled()
+    }
+
     fun appendItems(list: List<Visitable<*>>) {
         val start = itemCount
         this.list.addAll(list)
@@ -199,16 +208,6 @@ class ProductListAdapter(
         }
     }
 
-    fun showEmptyState(globalNavDataView: GlobalNavDataView?, emptySearchProductDataView: EmptySearchProductDataView) {
-        clearData()
-
-        if (globalNavDataView != null)
-            list.add(globalNavDataView)
-
-        list.add(emptySearchProductDataView)
-        notifyItemRangeInserted(0, list.size)
-    }
-
     fun clearData() {
         val itemSizeBeforeCleared = itemCount
         list.clear()
@@ -219,16 +218,25 @@ class ProductListAdapter(
 
     fun removePriceFilterTicker() {
         val tickerIndex = list.indexOfFirst { it is TickerDataView }
-        if (tickerIndex !in list.indices) return
-
-        list.removeAt(tickerIndex)
-        notifyItemRangeRemoved(tickerIndex, 1)
+        removeItem(tickerIndex)
     }
 
     fun refreshItemAtIndex(index: Int) {
         if (index !in list.indices) return
 
         notifyItemChanged(index)
+    }
+
+    fun removeLastFilterWidget() {
+        val lastFilterWidgetIndex = list.indexOfFirst { it is LastFilterDataView }
+        removeItem(lastFilterWidgetIndex)
+    }
+
+    private fun removeItem(index: Int) {
+        if (index !in list.indices) return
+
+        list.removeAt(index)
+        notifyItemRangeRemoved(index, 1)
     }
 
     interface OnItemChangeView {

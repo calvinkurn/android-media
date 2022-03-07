@@ -48,7 +48,7 @@ object PlayAnimationUtil {
         return animatorSet
     }
 
-    fun fadeAnimation(
+    private fun fadeAnimation(
             view: View,
             durationInMs: Long,
             fromAlpha: Float,

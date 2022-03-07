@@ -139,11 +139,18 @@ object ReviewConstants {
     const val REVIEW_GRID_GALLERY_PLT_NETWORK_METRICS = "review_grid_gallery_network_metrics"
     const val REVIEW_GRID_GALLERY_PLT_RENDER_METRICS = "review_grid_gallery_render_metrics"
 
+    const val REVIEW_CREDIBILITY_TRACE = "review_credibility_trace"
+    const val REVIEW_CREDIBILITY_PLT_PREPARE_METRICS = "review_credibility_trace"
+    const val REVIEW_CREDIBILITY_PLT_NETWORK_METRICS = "review_credibility_trace"
+    const val REVIEW_CREDIBILITY_PLT_RENDER_METRICS = "review_credibility_trace"
+
     const val RATING_ONE = 1
     const val RATING_TWO = 2
     const val RATING_THREE = 3
     const val RATING_FOUR = 4
     const val RATING_FIVE = 5
+
+    const val TEMP_IMAGE_EXTENSION = ".0"
 }
 
 

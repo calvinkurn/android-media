@@ -28,7 +28,7 @@ import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 /**
  * @author by milhamj on 2020-02-14.
  */
-class SellerReviewDetailActivity : BaseSimpleActivity(), HasComponent<ReviewProductDetailComponent>, ReviewSellerPerformanceMonitoringListener {
+open class SellerReviewDetailActivity : BaseSimpleActivity(), HasComponent<ReviewProductDetailComponent>, ReviewSellerPerformanceMonitoringListener {
 
     companion object {
         const val APPLINK_PARAM_PRODUCT_ID = "productId"

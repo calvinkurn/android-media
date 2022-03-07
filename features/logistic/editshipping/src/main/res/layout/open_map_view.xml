@@ -10,8 +10,8 @@
         android:id="@+id/layout_value_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_5"
-        android:layout_marginBottom="@dimen/dp_10">
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp">
 
         <ImageView
             android:id="@+id/icon_map"
@@ -28,26 +28,26 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/icon_map"
             android:layout_toEndOf="@id/icon_map"
-            android:layout_marginStart="@dimen/dp_5"
-            android:layout_marginLeft="@dimen/dp_5"
-            android:layout_marginEnd="@dimen/dp_5"
-            android:layout_marginRight="@dimen/dp_5"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
             android:layout_alignParentTop="true"
             android:ellipsize="end"
-            android:textSize="@dimen/sp_14"
+            android:textSize="14sp"
             android:focusable="false"
             android:clickable="true"
             android:hint="@string/choose_location"/>
 
     </RelativeLayout>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/layout_value_location"
         android:text="@string/desc_delivery_location"
         android:textColor="@color/Unify_N300"
-        android:textSize="@dimen/sp_12" />
+        app:typographyType="body_3" />
 
     <!-- Map -->
 </RelativeLayout>

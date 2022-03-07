@@ -1,7 +1,6 @@
 package com.tokopedia.cart.domain.usecase
 
 import com.tokopedia.cart.data.model.request.AddCartToWishlistRequest
-import com.tokopedia.cart.data.model.response.addcarttowishlist.AddCartToWishlistDataResponse
 import com.tokopedia.cart.data.model.response.addcarttowishlist.AddCartToWishlistGqlResponse
 import com.tokopedia.cart.domain.model.cartlist.AddCartToWishlistData
 import com.tokopedia.graphql.data.model.GraphqlRequest

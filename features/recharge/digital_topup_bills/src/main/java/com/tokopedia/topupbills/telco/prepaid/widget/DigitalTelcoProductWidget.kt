@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.telco.data.TelcoAttributesProduct
 import com.tokopedia.topupbills.telco.data.TelcoCatalogDataCollection
 import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
@@ -60,7 +61,11 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
                     if (it.name.isNotEmpty()) {
                         dataCollection.add(TelcoCatalogDataCollection(it.name, listOf()))
                     } else {
-                        dataCollection.add(TelcoCatalogDataCollection(context.getString(R.string.telco_other_recommendation), listOf()))
+                        if (productType == TelcoProductType.PRODUCT_GRID) {
+                            dataCollection.add(TelcoCatalogDataCollection(context.getString(R.string.telco_choose_denom), listOf()))
+                        } else {
+                            dataCollection.add(TelcoCatalogDataCollection(context.getString(R.string.telco_other_recommendation), listOf()))
+                        }
                     }
                 }
                 dataCollection.addAll(it.products)
@@ -76,7 +81,8 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
             val gridLayout = GridLayoutManager(context, PRODUCT_GRID_SPAN_LAYOUT, RecyclerView.VERTICAL, false)
             gridLayout.spanSizeLookup = object : SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
-                    return if (hasMccmProduct && position == 0) PRODUCT_GRID_SPAN_LAYOUT else SINGLE_PRODUCT_GRID_SPAN_LAYOUT
+                    val singleGridThreshold = if (hasMccmProduct) SINGLE_GRID_THRESHOLD_1 else SINGLE_GRID_THRESHOLD_0
+                    return if (position <= singleGridThreshold) PRODUCT_GRID_SPAN_LAYOUT else SINGLE_PRODUCT_GRID_SPAN_LAYOUT
                 }
             }
             recyclerView.layoutManager = gridLayout
@@ -246,19 +252,25 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         return label
     }
 
-    fun selectProductFromFavNumber(productId: String) {
+    fun selectProductById(productId: String) {
         val label = getLabelProductItem(productId)
+        var isSelected = false
         if (!::adapter.isInitialized) return
         for (i in adapter.data.indices) {
             if (adapter.data[i] is TelcoProduct) {
                 val itemProduct = adapter.data[i] as TelcoProduct
                 if (itemProduct.id == productId) {
                     listener.onClickProduct(itemProduct, i, label)
+                    isSelected = true
 
                     scrollToPosition(i)
                     break
                 }
             }
+        }
+
+        if (!isSelected) {
+            listener.onFailedAutoSelectById()
         }
     }
 
@@ -275,6 +287,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         fun onTrackImpressionMccmProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>)
         fun onScrollToPositionItem(position: Int)
         fun onTrackImpressionSpecialProduct(itemProduct: TelcoProduct, position: Int)
+        fun onFailedAutoSelectById()
     }
 
     companion object {
@@ -282,6 +295,9 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
 
         const val PRODUCT_GRID_SPAN_LAYOUT = 2
         const val SINGLE_PRODUCT_GRID_SPAN_LAYOUT = 1
+        
+        const val SINGLE_GRID_THRESHOLD_1 = 1
+        const val SINGLE_GRID_THRESHOLD_0 = 0
     }
 
 }

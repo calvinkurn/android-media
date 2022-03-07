@@ -4,11 +4,11 @@
     android:id="@+id/search_input_view_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
-    android:paddingBottom="@dimen/dp_10"
-    android:paddingLeft="@dimen/dp_10"
-    android:paddingRight="@dimen/dp_10"
-    android:paddingTop="@dimen/dp_10">
+    android:background="@color/Unify_Background"
+    android:paddingBottom="10dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="10dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,15 +16,15 @@
         android:background="@drawable/bg_search_input_text_area"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/dp_10"
-        android:paddingLeft="@dimen/dp_10"
-        android:paddingRight="@dimen/dp_10"
-        android:paddingTop="@dimen/dp_10">
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp">
 
         <ImageView
             android:id="@+id/image_view_search"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             app:srcCompat="@drawable/ic_search_grey" />
 
         <EditText
@@ -42,12 +42,12 @@
             android:imeOptions="actionSearch"
             android:inputType="text"
             android:maxLines="1"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="14sp" />
 
         <ImageButton
             android:id="@+id/image_button_close"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             android:background="@null"
             app:srcCompat="@drawable/ic_ticker_action_close_12dp"
             android:visibility="gone" />

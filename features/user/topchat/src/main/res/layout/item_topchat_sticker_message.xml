@@ -1,27 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sticker_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="start"
     android:orientation="vertical"
-    android:paddingStart="@dimen/spacing_lvl4"
-    android:paddingTop="@dimen/spacing_lvl2"
-    android:paddingEnd="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/spacing_lvl2">
+    android:paddingStart="@dimen/dp_topchat_12"
+    android:paddingEnd="@dimen/dp_topchat_12">
 
-    <com.tokopedia.topchat.chatroom.view.customview.TopchatSquareImageView
-        android:id="@+id/iv_sticker_message"
-        android:layout_width="@dimen/dp_topchat_144"
-        android:layout_height="@dimen/dp_topchat_144"
-        android:layout_gravity="end" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/ll_footer"
-        android:layout_width="@dimen/dp_topchat_144"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:gravity="end|center_vertical"
-        android:orientation="horizontal">
+        <com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
+            android:id="@+id/rba_sticker"
+            android:layout_width="@dimen/dp_topchat_224"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/dp_topchat_27"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
-        <include layout="@layout/item_chatcommon_chat_read_status_attachment" />
-    </LinearLayout>
+        <View
+            android:id="@+id/v_sticker_offset"
+            android:layout_width="@dimen/dp_topchat_144"
+            android:layout_height="@dimen/dp_topchat_1"
+            android:layout_marginBottom="@dimen/dp_topchat_20"
+            app:layout_constraintBottom_toBottomOf="@+id/rba_sticker"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/ll_sticker_body_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:minWidth="@dimen/dp_topchat_144"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/v_sticker_offset">
+
+            <com.tokopedia.topchat.chatroom.view.customview.TopchatSquareImageView
+                android:id="@+id/iv_sticker_message"
+                android:layout_width="@dimen/dp_topchat_144"
+                android:layout_height="@dimen/dp_topchat_144"
+                tools:src="@tools:sample/avatars" />
+
+            <LinearLayout
+                android:id="@+id/ll_footer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="@dimen/dp_topchat_14"
+                android:layout_marginBottom="@dimen/unify_space_8"
+                android:gravity="end|center_vertical"
+                android:orientation="horizontal">
+
+                <include layout="@layout/item_chatcommon_chat_read_status_attachment" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

@@ -1,6 +1,5 @@
 package com.tokopedia.otp.qrcode.viewmodel
 
-import FileUtil
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.otp.qrcode.domain.pojo.VerifyQrData
@@ -36,6 +35,9 @@ class LoginByQrViewModelTest {
 
     private lateinit var viewmodel: LoginByQrViewModel
 
+    private val verifyQrData = VerifyQrData(success = true, imglink = "http://test.com", messageTitle = "title", messageBody = "body", buttonType = "button")
+    private val successVerifyQrResponse = VerifyQrPojo(verifyQrData)
+
     @Before
     fun before() {
         MockKAnnotations.init(this)
@@ -60,6 +62,58 @@ class LoginByQrViewModelTest {
     }
 
     @Test
+    fun `Failed verify qr errorMessage not empty`() {
+        val errMsg = "error"
+        successVerifyQrResponse.data.imglink = ""
+        successVerifyQrResponse.data.errorMessage = errMsg
+
+        viewmodel.verifyQrResult.observeForever(verifyQrResultObserver)
+        coEvery { verifyQrUseCase.getData(any()) } returns successVerifyQrResponse
+
+        viewmodel.verifyQrCode("", "", "")
+
+        verify { verifyQrResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.verifyQrResult.value is Fail)
+
+        val result = viewmodel.verifyQrResult.value as Fail
+        assert(result.throwable.message == errMsg)
+    }
+
+    @Test
+    fun `Failed verify qr message not empty`() {
+        val msg = "message"
+        successVerifyQrResponse.data.imglink = ""
+        successVerifyQrResponse.data.errorMessage = ""
+        successVerifyQrResponse.data.message = msg
+
+        viewmodel.verifyQrResult.observeForever(verifyQrResultObserver)
+        coEvery { verifyQrUseCase.getData(any()) } returns successVerifyQrResponse
+
+        viewmodel.verifyQrCode("", "", "")
+
+        verify { verifyQrResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.verifyQrResult.value is Fail)
+
+        val result = viewmodel.verifyQrResult.value as Fail
+        assert(result.throwable.message == msg)
+    }
+
+    @Test
+    fun `Failed verify qr other error`() {
+        successVerifyQrResponse.data.imglink = ""
+        successVerifyQrResponse.data.errorMessage = ""
+        successVerifyQrResponse.data.message = ""
+
+        viewmodel.verifyQrResult.observeForever(verifyQrResultObserver)
+        coEvery { verifyQrUseCase.getData(any()) } returns successVerifyQrResponse
+
+        viewmodel.verifyQrCode("", "", "")
+
+        verify { verifyQrResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.verifyQrResult.value is Fail)
+    }
+
+    @Test
     fun `Failed verify qr`() {
         viewmodel.verifyQrResult.observeForever(verifyQrResultObserver)
         coEvery { verifyQrUseCase.getData(any()) } coAnswers { throw throwable }
@@ -74,10 +128,6 @@ class LoginByQrViewModelTest {
     }
 
     companion object {
-        private val successVerifyQrResponse: VerifyQrPojo = FileUtil.parse(
-                "/success_verify_qr.json",
-                VerifyQrPojo::class.java
-        )
         private val throwable = Throwable()
     }
 }

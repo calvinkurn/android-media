@@ -38,16 +38,6 @@
         <item name="titleTextAppearance">@style/TitleTextAppearance.SellerHome</item>
     </style>
 
-    <style name="Toolbar.Transparent" parent="Base.Toolbar.Theme">
-        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/transparent</item>
-        <item name="android:background">@android:color/transparent</item>
-        <item name="actionModeBackground">@android:color/transparent</item>
-        <item name="android:actionModeBackground">@android:color/transparent</item>
-        <item name="android:textColorPrimary">@color/Unify_N700_96</item>
-        <item name="android:actionMenuTextColor">@color/Unify_N700_96</item>
-        <item name="android:textColorSecondary">@color/Unify_N700_96</item>
-    </style>
-
     <style name="TitleTextAppearance.SellerHome">
         <item name="android:textColor">@color/Unify_N700_96</item>
     </style>

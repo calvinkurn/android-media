@@ -4,7 +4,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              android:padding="@dimen/dp_16">
+              android:padding="16dp">
 
     <TextView
         android:layout_width="wrap_content"
@@ -35,7 +35,7 @@
                       android:id="@+id/seller_reputation"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
-                      android:layout_marginRight="@dimen/dp_10"
+                      android:layout_marginRight="10dp"
                       android:orientation="horizontal">
 
         </LinearLayout>
@@ -51,7 +51,7 @@
     <Button
         android:id="@+id/close_button"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="10dp"
         android:background="@color/Unify_G400"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"

@@ -1,6 +1,7 @@
 package com.tokopedia.home_wishlist.view.viewholder
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselItemDataModel
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
@@ -33,12 +34,20 @@ class RecommendationCarouselItemViewHolder(
                     if(element.recommendationItem.isTopAds){
                         ImpresionTask(className).execute(element.recommendationItem.trackerImageUrl)
                     }
-                    (listener as WishlistListener).onProductImpression(element, adapterPosition)
+
+                    // to prevent ArrayIndexOutOfBoundsException
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        (listener as WishlistListener).onProductImpression(element, adapterPosition)
+                    }
                 }
             })
 
             setOnClickListener {
-                (listener as WishlistListener).onProductClick(element, element.parentPosition, adapterPosition)
+                // to prevent ArrayIndexOutOfBoundsException
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    (listener as WishlistListener).onProductClick(element, element.parentPosition, adapterPosition)
+                }
+
                 if (element.recommendationItem.isTopAds) {
                     ImpresionTask(className).execute(element.recommendationItem.clickUrl)
                 }

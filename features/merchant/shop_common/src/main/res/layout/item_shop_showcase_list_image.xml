@@ -26,8 +26,8 @@
         app:layout_constraintRight_toLeftOf="@id/showcaseCampaignLabel"
         app:typographyType="body_1"
         app:typographyWeight="bold"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_2"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="2dp"
         android:ellipsize="end"
         android:singleLine="true"
         app:layout_constraintHorizontal_bias="0"
@@ -45,8 +45,8 @@
         app:layout_constraintLeft_toRightOf="@id/tvShowcaseName"
         app:layout_constraintRight_toLeftOf="@id/guideline_action_picker"
         app:layout_constraintHorizontal_chainStyle="spread"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         app:labelType="general_dark_red"
         app:labelTitle="@string/shop_page_showcase_npl_text"
         android:visibility="gone"
@@ -55,8 +55,8 @@
 
     <ImageView
         android:id="@+id/img_menu_more"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         app:layout_constraintRight_toRightOf="@id/guideline_action_picker"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -69,8 +69,8 @@
 
     <ImageView
         android:id="@+id/img_move_showcase"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         app:layout_constraintRight_toRightOf="@id/guideline_action_picker"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -95,7 +95,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="@dimen/dp_10"
+        app:layout_constraintGuide_end="10dp"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -105,8 +105,8 @@
         app:layout_constraintTop_toBottomOf="@+id/tvShowcaseName"
         app:layout_constraintLeft_toRightOf="@id/ivShowcaseImage"
         app:typographyType="body_2"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
         android:textColor="@color/Unify_N300"
         android:visibility="gone"
         tools:text="85 Produk"
@@ -116,7 +116,7 @@
         android:id="@+id/item_separator"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="12dp"
         app:layout_constraintTop_toBottomOf="@id/ivShowcaseImage"
         app:layout_constraintLeft_toLeftOf="@id/tvShowcaseName"
         app:layout_constraintRight_toRightOf="parent"

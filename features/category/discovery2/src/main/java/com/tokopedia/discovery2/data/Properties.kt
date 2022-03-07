@@ -34,6 +34,9 @@ data class Properties(
         @SerializedName("type")
         val type: String? = null,
 
+        @SerializedName("comp_type")
+        val compType: String? = null,
+
         @SerializedName("limit_number")
         val limitNumber: String = "20",
 
@@ -44,7 +47,7 @@ data class Properties(
         var targetId: String? = null,
 
         @SerializedName("template")
-        val template: String = GRID,
+        var template: String = GRID,
 
         @SerializedName("timer_style")
         val timerStyle: String? = null,
@@ -61,5 +64,19 @@ data class Properties(
         @SerializedName("tokonow_add_to_cart_active")
         val tokonowATCActive : Boolean = false,
 
+        @SerializedName("calendar_layout")
+        val calendarLayout: String = "",
+
+        @SerializedName("calendar_type")
+        val calendarType: String = "",
+
+        @SerializedName("background_image_url")
+        val backgroundImageUrl: String? = null,
+
+        @SerializedName("background_color")
+        val backgroundColor: String? = null,
+
+        @SerializedName("shop_info")
+        val shopInfo: String? = null
 
 )

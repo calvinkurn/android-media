@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:clickable="true"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="@dimen/dp_10">
+    android:padding="10dp">
 
     <!-- Untuk onRetry satu halaman -->
     <ImageView
@@ -17,8 +17,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginBottom="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="5dp"
         android:gravity="center_horizontal"
         app:srcCompat="@drawable/unify_globalerrors_connection"
         tools:ignore="ContentDescription" />
@@ -27,7 +27,7 @@
         android:id="@+id/message_retry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_5"
+        android:layout_margin="5dp"
         android:gravity="center"
         android:text="@string/msg_network_error_1"
         android:textColor="@color/Unify_N700"
@@ -39,7 +39,7 @@
         android:id="@+id/sub_message_retry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_5"
+        android:layout_margin="5dp"
         android:gravity="center"
         android:text="@string/msg_network_error_2"
         android:textColor="@color/Unify_N150"
@@ -51,7 +51,7 @@
         android:id="@+id/button_retry"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginTop="40dp"
         android:text="@string/title_try_again"
         app:unifyButtonVariant="filled"
         app:unifyButtonSize="medium"

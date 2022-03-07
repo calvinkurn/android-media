@@ -37,7 +37,7 @@ compileTestKotlin {
 project.ext {
     artifactId = 'gqlquery_annotation_processor'
     groupId = 'com.tokopedia.gqlquery_annotation_processor'
-    versionName = "0.0.21"
+    versionName = "0.0.24"
     artifactName = "gqlquery_annotation_processor"
 }
 

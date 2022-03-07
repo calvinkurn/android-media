@@ -27,9 +27,9 @@ import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.shopcreation.domain.pojo.UserProfileValidate
 import com.tokopedia.loginregister.shopcreation.view.util.PhoneNumberTextWatcher
 import com.tokopedia.loginregister.shopcreation.viewmodel.ShopCreationViewModel
-import com.tokopedia.profilecommon.domain.pojo.UserProfileValidate
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton

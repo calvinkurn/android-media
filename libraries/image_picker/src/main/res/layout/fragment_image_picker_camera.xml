@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_centerInParent="true"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <FrameLayout
         android:id="@+id/layout_camera"
@@ -32,12 +32,12 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/image_button_flash"
-            android:layout_width="@dimen/dp_48"
-            android:layout_height="@dimen/dp_48"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="bottom|start"
-            android:layout_margin="@dimen/dp_8"
+            android:layout_margin="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="@dimen/dp_8"
+            android:padding="8dp"
             android:visibility="gone"
             app:srcCompat="@drawable/ic_auto_flash"
             tools:visibility="visible" />
@@ -47,7 +47,7 @@
             android:layout_width="@dimen/dp_56"
             android:layout_height="@dimen/dp_56"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginBottom="16dp"
             android:clickable="true"
             android:focusable="true">
 
@@ -55,7 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/selector_photo_button"
-                android:padding="@dimen/dp_4" />
+                android:padding="4dp" />
 
             <ImageView
                 android:layout_width="match_parent"
@@ -66,12 +66,12 @@
 
         <ImageButton
             android:id="@+id/image_button_flip"
-            android:layout_width="@dimen/dp_48"
-            android:layout_height="@dimen/dp_48"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/dp_8"
+            android:layout_margin="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="@dimen/dp_8"
+            android:padding="8dp"
             app:srcCompat="@drawable/ic_flip_camera" />
 
     </FrameLayout>
@@ -85,7 +85,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:layout_margin="@dimen/dp_16" >
+            android:layout_margin="16dp" >
             <ImageView
                 android:id="@+id/image_preview"
                 android:layout_width="match_parent"
@@ -99,7 +99,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginBottom="16dp"
             android:layout_gravity="bottom">
 
             <LinearLayout
@@ -110,10 +110,10 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="@dimen/dp_24"
-                    android:layout_height="@dimen/dp_24"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_gravity="center_horizontal"
-                    android:padding="@dimen/dp_4"
+                    android:padding="4dp"
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/ic_close_default" />
 
@@ -121,7 +121,7 @@
                     style="@style/TextView.Small.BlackSecondary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_4"
+                    android:layout_marginTop="4dp"
                     android:gravity="center_horizontal"
                     android:text="@string/retake_image" />
             </LinearLayout>
@@ -134,8 +134,8 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="@dimen/dp_24"
-                    android:layout_height="@dimen/dp_24"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_gravity="center_horizontal"
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/ic_check" />
@@ -144,7 +144,7 @@
                     style="@style/TextView.Small.BlackSecondary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_4"
+                    android:layout_marginTop="4dp"
                     android:gravity="center_horizontal"
                     android:text="@string/use_image"
                     android:textColor="@color/Unify_G400" />

@@ -40,8 +40,8 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
                             shippingCourierUiModel.isSelected = false
                         }
                         for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                            if (isTradeInDropOff || shippingCourierUiModel.productData.shipperProductId == spId &&
-                                    shippingCourierUiModel.productData.shipperId == shipperId) {
+                            if (isTradeInDropOff || (shippingCourierUiModel.productData.shipperProductId == spId &&
+                                    shippingCourierUiModel.productData.shipperId == shipperId && !shippingCourierUiModel.serviceData.isUiRatesHidden)) {
                                 if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
                                     view.renderCourierStateFailed(itemPosition, isTradeInDropOff)
                                     view.logOnErrorLoadCourier(MessageErrorException(shippingCourierUiModel.productData.error?.errorMessage), itemPosition)
@@ -113,6 +113,7 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
                 courierItemData.shipperName = it.shipperName
                 courierItemData.etaText = it.etaData.textEta
                 courierItemData.etaErrorCode = it.etaData.errorCode
+                courierItemData.freeShippingChosenCourierTitle = it.freeShippingChosenCourierTitle
             }
         }
         return courierItemData

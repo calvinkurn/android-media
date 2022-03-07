@@ -88,11 +88,13 @@ class ShopOpenRevampFinishFragment : Fragment() {
                 lottieAnimationView.repeatCount = LottieDrawable.INFINITE
 
                 handler.postDelayed({
-                    activity?.finish()
-                    val intent = RouteManager.getIntent(context, ApplinkConst.SHOP, shopId)
-                    intent.putExtra(ApplinkConstInternalMarketplace.PARAM_FIRST_CREATE_SHOP, true)
-                    startActivity(intent)
-                    EspressoIdlingResource.decrement()
+                    activity?.let{
+                        it.finish()
+                        val intent = RouteManager.getIntent(context, ApplinkConst.SHOP, shopId)
+                        intent.putExtra(ApplinkConstInternalMarketplace.PARAM_FIRST_CREATE_SHOP, true)
+                        startActivity(intent)
+                        EspressoIdlingResource.decrement()
+                    }
                 }, LOTTIE_ANIMATION_DURATION)
             }
         }

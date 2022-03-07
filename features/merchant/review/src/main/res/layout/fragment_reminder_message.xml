@@ -13,22 +13,22 @@
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nested_scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_0"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@id/footer_reminder_message"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/dp_16">
+                android:paddingBottom="16dp">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginEnd="@dimen/dp_16"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
                     android:text="@string/review_reminder_description"
                     app:layout_constraintTop_toTopOf="parent"
                     app:typographyType="body_2"
@@ -38,8 +38,8 @@
                     android:id="@+id/text_title_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginEnd="@dimen/dp_6"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="6dp"
                     android:text="@string/review_reminder_title_message"
                     app:layout_constraintLeft_toLeftOf="@id/text_description"
                     app:layout_constraintTop_toBottomOf="@id/text_description"
@@ -48,9 +48,9 @@
 
                 <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/icon_information"
-                    android:layout_width="@dimen/dp_16"
+                    android:layout_width="16dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_6"
+                    android:layout_marginStart="6dp"
                     android:foregroundGravity="bottom"
                     app:icon_name="INFORMATION"
                     app:layout_constraintBottom_toBottomOf="@id/text_title_message"
@@ -61,8 +61,8 @@
                     android:id="@+id/text_subtitle_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_2"
-                    android:layout_marginEnd="@dimen/dp_6"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="6dp"
                     android:alpha="0.68"
                     android:text="@string/review_reminder_subtitle_message"
                     app:layout_constraintLeft_toLeftOf="@id/text_description"
@@ -74,9 +74,9 @@
                     android:id="@+id/card_sample_chat"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_10"
+                    android:layout_marginStart="10dp"
                     android:layout_marginTop="@dimen/dp_22"
-                    android:layout_marginEnd="@dimen/dp_10"
+                    android:layout_marginEnd="10dp"
                     app:card_type="border"
                     app:layout_constraintTop_toBottomOf="@id/text_subtitle_message">
 
@@ -84,13 +84,13 @@
                         android:id="@+id/testing123"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/dp_16">
+                        android:padding="16dp">
 
                         <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/text_sample_buyer"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/dp_8"
+                            android:layout_marginStart="8dp"
                             android:alpha="0.44"
                             android:text="@string/review_reminder_sample_buyer"
                             app:layout_constraintBottom_toBottomOf="@id/image_smile"
@@ -101,9 +101,9 @@
 
                         <com.tokopedia.unifycomponents.ImageUnify
                             android:id="@+id/image_smile"
-                            android:layout_width="@dimen/dp_20"
-                            android:layout_height="@dimen/dp_20"
-                            android:layout_marginStart="@dimen/dp_12"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="12dp"
                             app:srcCompat="@drawable/ic_akun_inactive"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -112,7 +112,7 @@
                             android:id="@+id/line_divider"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dp_1"
-                            android:layout_marginTop="@dimen/dp_12"
+                            android:layout_marginTop="12dp"
                             android:background="@drawable/line_divider"
                             app:layout_constraintTop_toBottomOf="@id/text_sample_buyer" />
 
@@ -121,13 +121,13 @@
                             android:layout_width="@dimen/dp_250"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/dp_11"
-                            android:layout_marginEnd="@dimen/dp_6"
+                            android:layout_marginEnd="6dp"
                             android:background="@drawable/right_bubble"
                             android:backgroundTint="@color/Unify_N50"
                             android:paddingLeft="@dimen/dp_18"
-                            android:paddingTop="@dimen/dp_8"
+                            android:paddingTop="8dp"
                             android:paddingRight="@dimen/dp_18"
-                            android:paddingBottom="@dimen/dp_8"
+                            android:paddingBottom="8dp"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/line_divider"
                             app:typographyType="body_3" />
@@ -135,15 +135,15 @@
                         <com.tokopedia.unifycomponents.CardUnify
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dp_8"
-                            android:elevation="@dimen/dp_4"
+                            android:layout_marginTop="8dp"
+                            android:elevation="4dp"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/text_sample_message">
 
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:padding="@dimen/dp_8">
+                                android:padding="8dp">
 
                                 <View
                                     android:id="@+id/image_sample_item"
@@ -158,7 +158,7 @@
                                     android:id="@+id/text_sample_item_name"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginStart="@dimen/dp_8"
+                                    android:layout_marginStart="8dp"
                                     android:text="@string/review_reminder_sample_item_name"
                                     app:layout_constraintLeft_toRightOf="@id/image_sample_item"
                                     app:layout_constraintTop_toTopOf="parent"
@@ -185,9 +185,9 @@
                     android:id="@+id/button_edit_message"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginEnd="@dimen/dp_16"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
                     android:text="@string/review_reminder_edit_message"
                     app:layout_constraintTop_toBottomOf="@id/card_sample_chat"
                     app:unifyButtonSize="small"
@@ -197,17 +197,17 @@
                 <com.tokopedia.unifycomponents.DividerUnify
                     android:id="@+id/divider"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_8"
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_height="8dp"
+                    android:layout_marginTop="16dp"
                     app:layout_constraintTop_toBottomOf="@id/button_edit_message" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_title_product"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginEnd="@dimen/dp_16"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
                     android:text="@string/review_reminder_title_product"
                     app:layout_constraintTop_toTopOf="@id/divider"
                     app:typographyType="heading_4"
@@ -217,9 +217,9 @@
                     android:id="@+id/text_subtitle_product"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:layout_marginEnd="@dimen/dp_6"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="6dp"
                     android:text="@string/review_reminder_subtitle_product"
                     app:layout_constraintTop_toBottomOf="@id/text_title_product"
                     app:typographyType="body_2"
@@ -229,9 +229,9 @@
                     android:id="@+id/card_products"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_290"
-                    android:layout_marginStart="@dimen/dp_10"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginEnd="@dimen/dp_10"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="10dp"
                     android:visibility="gone"
                     app:card_type="border"
                     app:layout_constraintTop_toBottomOf="@id/text_subtitle_product">
@@ -247,16 +247,16 @@
                     android:id="@+id/card_no_products"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_10"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginEnd="@dimen/dp_10"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="10dp"
                     app:card_type="border"
                     app:layout_constraintTop_toBottomOf="@id/text_subtitle_product">
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/dp_24"
+                        android:padding="24dp"
                         android:text="@string/review_reminder_no_products"
                         android:textAlignment="center"
                         app:typographyType="body_3"
@@ -270,7 +270,7 @@
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_4"
+            android:layout_height="4dp"
             android:alpha="0.2"
             android:contentDescription="@string/review_reminder_content_description_top_shadow"
             android:scaleY="-1"
@@ -282,14 +282,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/dp_16"
+            android:padding="16dp"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/text_estimation"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/dp_12"
+                android:layout_marginBottom="12dp"
                 android:textAlignment="center"
                 app:typographyType="body_2" />
 

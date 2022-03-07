@@ -11,12 +11,15 @@ import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.domain.usecase.*
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListPresenter
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.recommendation_widget_common.di.RecommendationModule
@@ -90,7 +93,7 @@ class CartModule {
 
     @Provides
     @CartScope
-    fun provideICartListPresenter(getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase,
+    fun provideICartListPresenter(getCartRevampV3UseCase: GetCartRevampV3UseCase,
                                   deleteCartUseCase: DeleteCartUseCase,
                                   undoDeleteCartUseCase: UndoDeleteCartUseCase,
                                   updateCartUseCase: UpdateCartUseCase,
@@ -100,7 +103,7 @@ class CartModule {
                                   removeWishListUseCase: RemoveWishListUseCase,
                                   updateAndReloadCartUseCase: UpdateAndReloadCartUseCase,
                                   userSessionInterface: UserSessionInterface,
-                                  clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
+                                  clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase,
                                   getRecentViewUseCase: GetRecommendationUseCase,
                                   getWishlistUseCase: GetWishlistUseCase,
                                   getRecommendationUseCase: GetRecommendationUseCase,
@@ -109,17 +112,18 @@ class CartModule {
                                   seamlessLoginUsecase: SeamlessLoginUsecase,
                                   updateCartCounterUseCase: UpdateCartCounterUseCase,
                                   updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase,
-                                  validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
+                                  validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
                                   setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
                                   followShopUseCase: FollowShopUseCase,
                                   schedulers: ExecutorSchedulers): ICartListPresenter {
-        return CartListPresenter(getCartListSimplifiedUseCase, deleteCartUseCase,
+        return CartListPresenter(getCartRevampV3UseCase, deleteCartUseCase,
                 undoDeleteCartUseCase, updateCartUseCase, compositeSubscription, addWishListUseCase,
                 addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                 userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
                 getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, addToCartExternalUseCase,
                 seamlessLoginUsecase, updateCartCounterUseCase, updateCartAndValidateUseUseCase,
-                validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase, followShopUseCase, schedulers
+                validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase, followShopUseCase,
+                schedulers
         )
     }
 

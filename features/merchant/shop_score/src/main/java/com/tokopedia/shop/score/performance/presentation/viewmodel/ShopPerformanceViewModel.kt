@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ShopPerformanceViewModel @Inject constructor(
+open class ShopPerformanceViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val shopScoreMapper: ShopScoreMapper,
     val userSession: UserSessionInterface,
@@ -45,7 +45,7 @@ class ShopPerformanceViewModel @Inject constructor(
     val shopInfoPeriod: LiveData<Result<ShopInfoPeriodUiModel>>
         get() = _shopInfoPeriod
 
-    private val _shopPerformancePage =
+    protected val _shopPerformancePage =
         MutableLiveData<Result<Pair<List<BaseShopPerformance>, ShopScoreWrapperResponse>>>()
 
     private val _shopInfoLevel = MutableLiveData<ShopInfoLevelUiModel>()
@@ -68,7 +68,7 @@ class ShopPerformanceViewModel @Inject constructor(
         })
     }
 
-    fun getShopScoreLevel(shopInfoPeriodUiModel: ShopInfoPeriodUiModel) {
+    open fun getShopScoreLevel(shopInfoPeriodUiModel: ShopInfoPeriodUiModel) {
         launchCatchError(block = {
             val shopScoreLevelResponse = withContext(dispatchers.io) {
                 getShopPerformanceUseCase.get().requestParams =

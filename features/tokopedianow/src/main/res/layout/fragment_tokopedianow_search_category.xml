@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tokonowSearchCategoryContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
     android:animateLayoutChanges="true"
-    android:background="@color/Unify_N0"
-    android:fitsSystemWindows="true"
+    android:background="@color/Unify_Background"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -17,30 +14,21 @@
         android:layout_height="wrap_content"
         android:scaleType="fitXY"
         android:contentDescription="@string/tokopedianow_header_background_content_description"
-        app:srcCompat="@drawable/tokopedianow_ic_header_background"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:srcCompat="@drawable/tokopedianow_ic_header_background" />
 
     <View
         android:id="@+id/tokonowSearchCategoryStatusBarBackground"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_25"
+        android:layout_height="25dp"
         android:layout_gravity="top"
         android:background="@color/Unify_G500"
-        android:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:visibility="visible" />
 
     <com.tokopedia.searchbar.navigation_component.NavToolbar
         android:id="@+id/tokonowSearchCategoryNavToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?actionBarSize"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:toolbarAlwaysShowShadow="false"
@@ -50,50 +38,62 @@
         app:toolbarInvertSearchBarColor="true"
         app:toolbarInitialTheme="light" />
 
-    <com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickySingleHeaderView
-        android:id="@+id/tokonowSearchCategoryStickyView"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_0"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/tokonowSearchCategoryContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:fitsSystemWindows="true"
+        android:orientation="horizontal">
 
-        <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-            android:id="@+id/tokonowSearchCategorySwipeRefreshLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickySingleHeaderView
+            android:id="@+id/tokonowSearchCategoryStickyView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/tokonowSearchCategoryRecyclerView"
+            <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+                android:id="@+id/tokonowSearchCategorySwipeRefreshLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:paddingBottom="@dimen/dp_64"/>
+                android:layout_height="match_parent">
 
-        </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/tokonowSearchCategoryRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:paddingBottom="64dp" />
 
-    </com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickySingleHeaderView>
+            </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-    <com.tokopedia.minicart.common.widget.MiniCartWidget
-        android:id="@+id/tokonowSearchCategoryMiniCart"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        </com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickySingleHeaderView>
 
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/tokonowSearchCategoryLoader"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
-        android:layout_gravity="center"
-        app:loader_type="circular"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:visibility="visible" />
+        <com.tokopedia.minicart.common.widget.MiniCartWidget
+            android:id="@+id/tokonowSearchCategoryMiniCart"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/tokonowSearchCategoryLoader"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_type="circular"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+

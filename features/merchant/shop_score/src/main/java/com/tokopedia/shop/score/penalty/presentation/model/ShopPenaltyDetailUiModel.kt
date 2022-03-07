@@ -6,7 +6,7 @@ import androidx.annotation.StringRes
 data class ShopPenaltyDetailUiModel(
     val titleDetail: String = "",
     val startDateDetail: String = "",
-    val descStatusPenalty: String = "",
+    @StringRes val descStatusPenalty: Int? = null,
     val summaryDetail: String = "",
     val deductionPointPenalty: String = "",
     val endDateDetail: String = "",

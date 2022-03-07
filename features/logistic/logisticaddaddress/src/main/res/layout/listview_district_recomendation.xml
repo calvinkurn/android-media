@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/Unify_Background"
     android:orientation="vertical">
 
     <View
@@ -12,11 +13,12 @@
         android:layout_height="1dp"
         android:background="@color/Unify_N100" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_16"
-        tools:text="DKI Jakarta, Jakarta Barat, Palmerah" />
+        android:padding="16dp"
+        tools:text="DKI Jakarta, Jakarta Barat, Palmerah"
+        app:typographyType="body_2" />
 
 </LinearLayout>

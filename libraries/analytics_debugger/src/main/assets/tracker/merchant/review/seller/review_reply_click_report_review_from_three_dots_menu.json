@@ -1,0 +1,16 @@
+{
+  "readme": "Review Reply - click report review from three dots menu",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "review reply page",
+      "productId": "\\d+",
+      "shopId": "\\d+",
+      "screenName": "review reply page",
+      "event": "clickReview",
+      "eventAction": "click - laporkan review from three dots menu",
+      "sessionIris": ".+",
+      "eventLabel": "feedbackId:\\d+"
+    }
+  ]
+}

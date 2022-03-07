@@ -1,42 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.tokopedia.header.HeaderUnify
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:titleTextColor="@color/Unify_N700"
-        app:subtitleTextAppearance="?subtitleTextAppearance"
-        app:titleTextAppearance="?titleTextAppearance">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_done"
-            android:contentDescription="@string/content_desc_tv_done"
-            style="@style/TextView.Title.Green"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginEnd="@dimen/dp_14"
-            android:background="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="@dimen/layout_lvl1"
-            android:text="@string/action_done"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-    </androidx.appcompat.widget.Toolbar>
+        app:unify_header_is_show_shadow="false"
+        app:unify_header_is_show_back_button="true"/>
 
     <fragment
         android:id="@+id/parent_view"
         android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize" />
+        android:layout_height="0dp" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

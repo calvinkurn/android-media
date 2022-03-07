@@ -3,27 +3,27 @@ package com.tokopedia.cart.data.model.response.shopgroupsimplified
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
-/**
- * @author anggaprasetiyo on 31/01/18.
- */
-
 data class Product(
+        @SerializedName("checkbox_state")
+        val isCheckboxState: Boolean = false,
+        @SerializedName("checkbox_show")
+        val isCheckboxShow: Boolean = false,
+        @SerializedName("cart_id")
+        val cartId: String = "",
         @SerializedName("variant_description_detail")
         val variantDescriptionDetail: VariantDescriptionDetail = VariantDescriptionDetail(),
         @SerializedName("product_information")
         val productInformation: List<String> = emptyList(),
         @SerializedName("parent_id")
-        val parentId: Long = 0,
+        val parentId: String = "",
         @SerializedName("product_id")
-        val productId: Long = 0,
+        val productId: String = "",
         @SerializedName("product_name")
         val productName: String = "",
         @SerializedName("sku")
         val sku: String = "",
         @SerializedName("campaign_id")
-        val campaignId: Int = 0,
-        @SerializedName("free_returns")
-        val freeReturns: FreeReturns = FreeReturns(),
+        val campaignId: String = "",
         @SerializedName("initial_price")
         val initialPrice: Long = 0,
         @SerializedName("initial_price_fmt")
@@ -39,11 +39,11 @@ data class Product(
         @SerializedName("slash_price_label")
         val slashPriceLabel: String = "",
         @SerializedName("category_id")
-        val categoryId: Int = 0,
+        val categoryId: String = "",
         @SerializedName("category")
         val category: String = "",
         @SerializedName("catalog_id")
-        val catalogId: Int = 0,
+        val catalogId: String = "",
         @SerializedName("wholesale_price")
         val wholesalePrice: List<WholesalePrice> = ArrayList(),
         @SerializedName("product_weight_fmt")
@@ -111,7 +111,7 @@ data class Product(
         @SerializedName("product_finsurance")
         val productFinsurance: Int = 0,
         @SerializedName("product_shop_id")
-        val productShopId: Int = 0,
+        val productShopId: String = "",
         @SerializedName("is_wishlisted")
         val isWishlisted: Boolean = false,
         @SerializedName("product_tracker_data")
@@ -119,5 +119,9 @@ data class Product(
         @SerializedName("free_shipping")
         val freeShipping: FreeShipping = FreeShipping(),
         @SerializedName("free_shipping_extra")
-        val freeShippingExtra: FreeShipping = FreeShipping()
+        val freeShippingExtra: FreeShipping = FreeShipping(),
+        @SerializedName("selected_unavailable_action_link")
+        val selectedUnavailableActionLink: String = "",
+        @SerializedName("warehouse_id")
+        val warehouseId: String = ""
 )

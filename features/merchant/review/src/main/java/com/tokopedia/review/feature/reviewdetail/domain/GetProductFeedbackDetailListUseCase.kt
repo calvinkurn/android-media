@@ -39,6 +39,7 @@ class GetProductFeedbackDetailListUseCase @Inject constructor(
                     variantName
                     reviewerName
                     isKejarUlasan
+                    badRatingReasonFmt
                 }
                 topics {
                     title

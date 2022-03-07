@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/goPayKycCL"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/capturedImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:scaleType="centerInside"
+        android:visibility="gone"
+        android:contentDescription="@string/gopay_kyc_captured_image_description" />
+
+    <FrameLayout
+        android:id="@+id/gopayCameraLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.otaliastudios.cameraview.CameraView
+            android:id="@+id/camera"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:keepScreenOn="true"
+            app:cameraGestureLongTap="none"
+            app:cameraGesturePinch="zoom"
+            app:cameraGestureScrollHorizontal="none"
+            app:cameraGestureScrollVertical="none"
+            app:cameraGestureTap="autoFocus"
+            app:cameraGrid="off"
+            app:cameraFlash="off"
+            app:cameraPlaySounds="true"
+            app:cameraAudio="off"
+            app:cameraHdr="off"
+            app:cameraMode="picture"
+            app:cameraAutoFocusResetDelay="3000"
+            app:cameraAutoFocusMarker="@string/cameraview_default_autofocus_marker" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/kycCutoutImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/bg_gopay_kyc_card_cutout"
+            app:unify_image_corner_radius="0"
+            app:unify_image_type="rect" />
+
+        <com.tokopedia.header.HeaderUnify
+            android:id="@+id/kycHeader"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            app:unify_header_is_show_back_button="true"
+            app:unify_header_transparent_mode="true"
+            />
+
+    </FrameLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/photoInstructionTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:paddingStart="@dimen/unify_space_8"
+        android:paddingEnd="@dimen/unify_space_8"
+        android:gravity="center"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Test Instructions" />
+
+    <FrameLayout
+        android:id="@+id/cameraControls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <include
+            layout="@layout/gopay_camera_action_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

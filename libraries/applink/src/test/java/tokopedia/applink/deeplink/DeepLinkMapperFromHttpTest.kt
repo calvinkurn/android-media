@@ -2,6 +2,7 @@ package tokopedia.applink.deeplink
 
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -596,5 +597,23 @@ class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
     fun `check link url of pbb subang then should be equal to the actual`() {
         val expectedDeepLink = "${ApplinkConsInternalDigital.GENERAL_TEMPLATE}?category_id=22&operator_id=1027&menu_id=127&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PBB_SUBANG, expectedDeepLink)
+    }
+
+    @Test
+    fun `check link url of play room from home then should be equal to the actual`() {
+        val expectedDeepLink = "${ApplinkConstInternalContent.INTERNAL_PLAY}/${DeepLinkUrlConstant.CONTENT.PLAY_CHANNEL_ID}?source_type=HOME"
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.CONTENT.PLAY_FROM_HOME, expectedDeepLink)
+    }
+
+    @Test
+    fun `check link url of play room from feed then should be equal to the actual`() {
+        val expectedDeepLink = "${ApplinkConstInternalContent.INTERNAL_PLAY}/${DeepLinkUrlConstant.CONTENT.PLAY_CHANNEL_ID}?source_type=FEED"
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.CONTENT.PLAY_FROM_FEED, expectedDeepLink)
+    }
+
+    @Test
+    fun `check link url of play room with starting time then should be equal to the actual`() {
+        val expectedDeepLink = "${ApplinkConstInternalContent.INTERNAL_PLAY}/${DeepLinkUrlConstant.CONTENT.PLAY_CHANNEL_ID}?start_time=60000"
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.CONTENT.PLAY_WITH_START_TIME, expectedDeepLink)
     }
 }

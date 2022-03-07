@@ -223,6 +223,27 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
     }
 
     @Test
+    fun `when createNewComment with attachments should execute expected use case and get expected data`() {
+        val response = TalkCreateNewCommentResponseWrapper(TalkCreateNewComment(data = TalkMutationData(isSuccess = 1)))
+        val questionId = "148148"
+        val comment = "Barangnya ready ga ya?"
+
+        onTalkCreateNewComment_thenReturn(response)
+
+        viewModel.setAttachedProducts(mutableListOf<AttachedProduct>(
+            AttachedProduct("123", "thumbnail", "produk keren", "link produk", "rp 1"),
+            AttachedProduct("1234", "thumbnail", "produk keren banget", "link produk", "rp 12"),
+            AttachedProduct("12345", "thumbnail", "produk keren sekali", "link produk", "rp 13")
+        ))
+        viewModel.createNewComment(comment, questionId)
+
+        val expectedResponse = Success(response)
+
+        verifyTalkCreateNewCommentUseCaseExecuted()
+        verifyTalkCreateNewCommentDataEquals(expectedResponse)
+    }
+
+    @Test
     fun `when createNewComment fails due to backend should execute expected use case and fail with expected error`() {
         val response = TalkCreateNewCommentResponseWrapper(TalkCreateNewComment(messageError = listOf("Some Error"), data = TalkMutationData(isSuccess = 0)))
         val questionId = "148148"

@@ -5,9 +5,9 @@
     android:layout_width="170dp"
     android:layout_height="170dp"
     android:orientation="vertical"
-    android:layout_marginStart="@dimen/dp_10"
-    android:layout_marginEnd="@dimen/dp_16"
-    app:cardCornerRadius="@dimen/dp_4"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="16dp"
+    app:cardCornerRadius="4dp"
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,8 +26,8 @@
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/btn_other_address"
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -43,7 +43,7 @@
                 android:id="@+id/txt_other_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginTop="10dp"
                 android:layout_marginLeft="@dimen/dp_25"
                 android:layout_marginRight="@dimen/dp_25"
                 app:typographyType="heading_5"

@@ -6,99 +6,105 @@ import kotlinx.parcelize.Parcelize
 import java.util.*
 
 @Parcelize
-class ShipmentCartItemModel : Parcelable {
+class ShipmentCartItemModel(
+        var isAllItemError: Boolean = false,
+        var isError: Boolean = false,
+        var errorTitle: String? = null,
+        var errorDescription: String? = null,
+        var isHasUnblockingError: Boolean = false,
+        var unblockingErrorMessage: String? = null,
+        var firstProductErrorIndex: Int = -1,
+        var isTriggerScrollToErrorProduct: Boolean = false,
 
-    var isAllItemError: Boolean = false
-    var isError: Boolean = false
-    var errorTitle: String? = null
-    var errorDescription: String? = null
-    var isHasUnblockingError: Boolean = false
-    var unblockingErrorMessage: String? = null
-    var firstProductErrorIndex: Int = -1
-    var isTriggerScrollToErrorProduct: Boolean = false
+        var shipmentCartData: ShipmentCartData? = null,
+        var selectedShipmentDetailData: ShipmentDetailData? = null,
+        var shopShipmentList: List<ShopShipment>? = null,
 
-    var shipmentCartData: ShipmentCartData? = null
-    var selectedShipmentDetailData: ShipmentDetailData? = null
-    var shopShipmentList: List<ShopShipment>? = null
+        // Shop data
+        var shopId: Long = 0,
+        var shopName: String? = null,
+        var orderNumber: Int = 0,
+        var preOrderInfo: String? = null,
+        var isFreeShippingExtra: Boolean = false,
+        var freeShippingBadgeUrl: String? = null,
+        var shopLocation: String? = null,
+        var shopAlertMessage: String? = null,
+        var shopTypeInfoData: ShopTypeInfoData? = null,
+        var isTokoNow: Boolean = false,
+        var shopTickerTitle: String = "",
+        var shopTicker: String = "",
 
-    // Shop data
-    var shopId: Long = 0
-    var shopName: String? = null
-    var orderNumber: Int = 0
-    var preOrderInfo: String? = null
-    var isFreeShippingExtra: Boolean = false
-    var freeShippingBadgeUrl: String? = null
-    var shopLocation: String? = null
-    var shopAlertMessage: String? = null
-    var shopTypeInfoData: ShopTypeInfoData? = null
-    var isTokoNow: Boolean = false
+        // Cart item state
+        var cartString: String? = null,
+        var shippingId: Int = 0,
+        var spId: Int = 0,
+        var dropshiperName: String? = null,
+        var dropshiperPhone: String? = null,
+        var isInsurance: Boolean = false,
+        var isSaveStateFlag: Boolean = false,
 
-    // Cart item state
-    var cartString: String? = null
-    var shippingId: Int = 0
-    var spId: Int = 0
-    var dropshiperName: String? = null
-    var dropshiperPhone: String? = null
-    var isInsurance: Boolean = false
-    var isSaveStateFlag: Boolean = false
+        var weightUnit: Int = 0,
+        var isProductFinsurance: Boolean = false,
+        var isProductFcancelPartial: Boolean = false,
+        var isProductIsPreorder: Boolean = false,
 
-    var weightUnit: Int = 0
-    var isProductFinsurance: Boolean = false
-    var isProductFcancelPartial: Boolean = false
-    var isProductIsPreorder: Boolean = false
+        var cartItemModels: List<CartItemModel> = ArrayList(),
 
-    var cartItemModels: List<CartItemModel> = ArrayList()
+        // View state
+        var isStateDetailSubtotalViewExpanded: Boolean = false,
+        var isStateAllItemViewExpanded: Boolean = true,
+        var isStateDropshipperDetailExpanded: Boolean = false,
+        var isStateDropshipperHasError: Boolean = false,
+        var isStateLoadingCourierState: Boolean = false,
+        var isStateHasLoadCourierState: Boolean = false,
+        var isStateHasLoadCourierTradeInDropOffState: Boolean = false,
+        var isStateHasExtraMarginTop: Boolean = false,
 
-    // View state
-    var isStateDetailSubtotalViewExpanded: Boolean = false
-    var isStateAllItemViewExpanded: Boolean = true
-    var isStateDropshipperDetailExpanded: Boolean = false
-    var isStateDropshipperHasError: Boolean = false
-    var isStateLoadingCourierState: Boolean = false
-    var isStateHasLoadCourierState: Boolean = false
-    var isStateHasLoadCourierTradeInDropOffState: Boolean = false
-    var isStateHasExtraMarginTop: Boolean = false
+        // Flag for courier recommendation
+        private val useCourierRecommendation: Boolean = false,
+        var isHidingCourier: Boolean = false,
 
-    // Flag for courier recommendation
-    private val useCourierRecommendation: Boolean = false
-    var isHidingCourier: Boolean = false
+        // for robinhood III
+        var isBlackbox: Boolean = false,
+        var addressId: String? = null,
+        var blackboxInfo: String? = null,
 
-    // for robinhood III
-    var isBlackbox: Boolean = false
-    var addressId: String? = null
-    var blackboxInfo: String? = null
+        var isFulfillment: Boolean = false,
+        var fulfillmentBadgeUrl: String? = null,
+        var fulfillmentId: Long = 0,
 
-    var isFulfillment: Boolean = false
-    var fulfillmentBadgeUrl: String? = null
-    var fulfillmentId: Long = 0
+        // promo stacking
+        var hasPromoList: Boolean = false,
+        var voucherLogisticItemUiModel: VoucherLogisticItemUiModel? = null,
 
-    // promo stacking
-    var hasPromoList: Boolean = false
-    var voucherLogisticItemUiModel: VoucherLogisticItemUiModel? = null
+        var isLeasingProduct: Boolean = false,
+        var bookingFee: Int = 0,
+        var listPromoCodes: List<String>? = null,
 
-    var isLeasingProduct: Boolean = false
-    var bookingFee: Int = 0
-    var listPromoCodes: List<String>? = null
+        var isDropshipperDisable: Boolean = false,
+        var isOrderPrioritasDisable: Boolean = false,
 
-    var isDropshipperDisable: Boolean = false
-    var isOrderPrioritasDisable: Boolean = false
+        var isHasSetDropOffLocation: Boolean = false,
 
-    var isHasSetDropOffLocation: Boolean = false
+        // Shipping experiance
+        var isEligibleNewShippingExperience: Boolean = false,
+        var isTriggerShippingVibrationAnimation: Boolean = false,
+        var isShippingBorderRed: Boolean = false,
+        var isDisableChangeCourier: Boolean = false,
+        var isAutoCourierSelection: Boolean = false,
+        var hasGeolocation: Boolean = false,
 
-    // Shipping experiance
-    var isEligibleNewShippingExperience: Boolean = false
-    var isTriggerShippingVibrationAnimation: Boolean = false
-    var isShippingBorderRed: Boolean = false
-    var isDisableChangeCourier: Boolean = false
-    var isAutoCourierSelection: Boolean = false
-    var hasGeolocation: Boolean = false
+        // regular shipment service but do not show change courier card
+        var isHideChangeCourierCard: Boolean = false,
+        var durationCardDescription: String = "",
 
-    // Courier Selection Error
-    var courierSelectionErrorTitle: String? = null
-    var courierSelectionErrorDescription: String? = null
+        // Courier Selection Error
+        var courierSelectionErrorTitle: String? = null,
+        var courierSelectionErrorDescription: String? = null,
 
-    // Flag for tracking
-    var isHasShownCourierError: Boolean = false
+        // Flag for tracking
+        var isHasShownCourierError: Boolean = false,
+) : Parcelable {
 
     val isCustomPinpointError: Boolean
         get() = isDisableChangeCourier && !hasGeolocation
@@ -149,6 +155,8 @@ class ShipmentCartItemModel : Parcelable {
             newShipmentCartItemModel.shopTypeInfoData = shipmentCartItemModel.shopTypeInfoData
             newShipmentCartItemModel.isDisableChangeCourier = shipmentCartItemModel.isDisableChangeCourier
             newShipmentCartItemModel.isAutoCourierSelection = shipmentCartItemModel.isAutoCourierSelection
+            newShipmentCartItemModel.isHideChangeCourierCard = shipmentCartItemModel.isHideChangeCourierCard
+            newShipmentCartItemModel.durationCardDescription = shipmentCartItemModel.durationCardDescription
             return newShipmentCartItemModel
         }
     }

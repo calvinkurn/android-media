@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.TaskStackBuilder
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -19,7 +18,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.common.IOnBackPressed
-import com.tokopedia.onboarding.data.OnboardingConstant
+import com.tokopedia.onboarding.databinding.FragmentDynamicOnboardingBinding
 import com.tokopedia.onboarding.di.OnboardingComponent
 import com.tokopedia.onboarding.domain.model.ConfigDataModel
 import com.tokopedia.onboarding.view.adapter.PageAdapter
@@ -27,9 +26,9 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
-import kotlinx.android.synthetic.main.fragment_dynamic_onboarding.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -53,6 +52,8 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     private var pagesAdapter = PageAdapter()
     private lateinit var sharedPrefs: SharedPreferences
 
+    private val binding: FragmentDynamicOnboardingBinding? by viewBinding()
+
     override fun getScreenName(): String = OnboardingAnalytics.SCREEN_ONBOARDING
 
     override fun initInjector() {
@@ -75,7 +76,7 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
                 return executeViewCreateFlow()
             }
         }
-        Weaver.executeWeaveCoRoutineWithFirebase(executeViewCreatedWeave, RemoteConfigKey.ENABLE_ASYNC_ONBOARDING_CREATE, context)
+        Weaver.executeWeaveCoRoutineWithFirebase(executeViewCreatedWeave, RemoteConfigKey.ENABLE_ASYNC_ONBOARDING_CREATE, context, true)
     }
 
     override fun onBackPressed(): Boolean {
@@ -130,11 +131,11 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
         pagesAdapter.clearAllItems()
         pagesAdapter.addPages(dynamicOnboardingDataModel.pageDataModels)
 
-        pageDots?.addDots(pagesAdapter.itemCount)
+        binding?.pageDots?.addDots(pagesAdapter.itemCount)
     }
 
     private fun preparePages() {
-        viewPagerDynamicOnboarding?.apply {
+        binding?.viewPagerDynamicOnboarding?.apply {
             (getChildAt(0) as RecyclerView).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
             adapter = pagesAdapter
             offscreenPageLimit = 2
@@ -144,11 +145,11 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
                 visibility = View.VISIBLE
             }, DELAY)
 
-            pageDots?.setViewpager(this)
+            binding?.pageDots?.setViewpager(this)
             registerOnPageChangeCallback(OnPageChangeListener())
         }
 
-        navigationDynamicOnbaording?.apply {
+        binding?.navigationDynamicOnbaording?.apply {
             visibility = if (dynamicOnboardingDataModel.navigationDataModel.visibility) {
                 View.VISIBLE
             } else {
@@ -156,7 +157,7 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             }
         }
 
-        skipDynamicOnbaording?.apply {
+        binding?.skipDynamicOnbaording?.apply {
             visibility = if (dynamicOnboardingDataModel.navigationDataModel.skipButtonDataModel.visibility) {
                 View.VISIBLE
             } else {
@@ -166,7 +167,7 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             setOnClickListener(skipButtonClickListener(dynamicOnboardingDataModel.navigationDataModel.skipButtonDataModel.appLink))
         }
 
-        nextDynamicOnbaording?.apply {
+        binding?.nextDynamicOnbaording?.apply {
             visibility = if (dynamicOnboardingDataModel.navigationDataModel.nextDataModel.visibility) {
                 View.VISIBLE
             } else {
@@ -176,34 +177,33 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             setOnClickListener(nextButtonClickListener())
         }
 
-        pageDots?.apply {
+        binding?.pageDots?.apply {
             visibility = if (dynamicOnboardingDataModel.navigationDataModel.indicatorsDataModel.visibility) {
                 View.VISIBLE
             } else {
                 View.GONE
             }
         }
-
         checkGlobalButtonState(0)
     }
 
     private fun globalButtonClickListener(appLink: String): View.OnClickListener {
         return View.OnClickListener {
-            onboardingAnalytics.eventOnboardingJoin(viewPagerDynamicOnboarding?.currentItem ?: 0)
+            onboardingAnalytics.eventOnboardingJoin(binding?.viewPagerDynamicOnboarding?.currentItem ?: 0)
             goToNextPage(appLink)
         }
     }
 
     private fun skipButtonClickListener(appLink: String): View.OnClickListener {
         return View.OnClickListener {
-            onboardingAnalytics.eventOnboardingSkip(viewPagerDynamicOnboarding?.currentItem ?: 0)
+            onboardingAnalytics.eventOnboardingSkip(binding?.viewPagerDynamicOnboarding?.currentItem ?: 0)
             goToNextPage(appLink)
         }
     }
 
     private fun nextButtonClickListener(): View.OnClickListener {
         return View.OnClickListener {
-            viewPagerDynamicOnboarding?.apply {
+            binding?.viewPagerDynamicOnboarding?.apply {
                 onboardingAnalytics.eventOnboardingNext(currentItem)
 
                 var currentPosition = currentItem
@@ -216,7 +216,7 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     }
 
     private fun checkGlobalButtonState(position: Int) {
-        buttonGlobalDynamicOnbaording?.apply {
+        binding?.buttonGlobalDynamicOnbaording?.apply {
             val buttonDataModel = dynamicOnboardingDataModel.pageDataModels[position].componentsDataModel.buttonDataModel
             val appLink = buttonDataModel.appLink
 
@@ -282,14 +282,14 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     inner class OnPageChangeListener : OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             if (position >= pagesAdapter.itemCount - 1) {
-                nextDynamicOnbaording?.visibility = View.GONE
+                binding?.nextDynamicOnbaording?.visibility = View.GONE
             } else {
-                nextDynamicOnbaording?.visibility = View.VISIBLE
+                binding?.nextDynamicOnbaording?.visibility = View.VISIBLE
             }
 
             onboardingAnalytics.trackScreen(position)
             checkGlobalButtonState(position)
-            pageDots?.setCurrent(position)
+            binding?.pageDots?.setCurrent(position)
             super.onPageSelected(position)
         }
     }

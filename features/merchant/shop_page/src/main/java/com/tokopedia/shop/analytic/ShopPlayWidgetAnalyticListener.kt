@@ -194,7 +194,7 @@ class ShopPlayWidgetAnalyticListener(
                     event = PROMO_CLICK,
                     eventCategory = SHOP_PAGE_SELLER,
                     eventAction = CLICK,
-                    eventLabel = "card - widget play - $shopId - ${item.channelId} - $verticalWidgetPosition - $channelPositionInList - $businessWidgetPosition - ${getChannelStatusValue(item.channelType)}}",
+                    eventLabel = "card - widget play - $shopId - ${item.channelId} - $verticalWidgetPosition - $channelPositionInList - $businessWidgetPosition - ${getChannelStatusValue(item.channelType)}",
                     promotions = listOf(
                             BaseTrackerConst.Promotion(
                                     id = item.channelId,

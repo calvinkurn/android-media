@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_16">
+    android:padding="16dp">
 
     <ImageView
         android:id="@+id/iv_location_shipping"
@@ -20,12 +20,12 @@
         android:id="@+id/tv_location_shipping"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/shop_page_setting_shipping"
         android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/sp_14"
+        android:textSize="14sp"
         app:layout_constraintLeft_toRightOf="@id/iv_location_shipping"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,7 +34,7 @@
         android:id="@+id/tv_edit_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_14"
+        android:layout_marginTop="14dp"
         android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/shop_page_setting_action_edit_location"
         android:textColor="@color/Unify_N700_96"
@@ -47,7 +47,7 @@
         android:id="@+id/tv_manage_shipping_service"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/shop_page_setting_action_manage_shipping_service"
         android:textColor="@color/Unify_N700_96"

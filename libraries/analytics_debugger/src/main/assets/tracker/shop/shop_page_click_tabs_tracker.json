@@ -3,14 +3,15 @@
   "mode": "exact",
   "query": [
     {
-      "pageType": "/shoppage",
       "eventCategory": "shop page - (buyer|seller)",
       "shopId": ".+",
-      "shopType": ".+",
+      "userId": ".+",
+      "businessUnit": ".+",
+      "currentSite": ".+",
       "event": "clickShopPage",
-      "eventAction": "click (product|feed|review|home) tab",
+      "eventAction": "click tab",
       "sessionIris": ".+",
-      "eventLabel":""
+      "eventLabel":"click - (Product|Feed|Review|Home) Tab"
     }
   ]
 }

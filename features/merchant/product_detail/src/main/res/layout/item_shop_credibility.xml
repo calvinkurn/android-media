@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/shop_credibility_separator_top"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"/>
+
+    <ViewStub
+        android:id="@+id/shop_credibility_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout="@layout/view_shop_credibility"
+        tools:visibility="visible" />
+
+    <ViewStub
+        android:id="@+id/shop_credibility_shimmering"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout="@layout/view_shop_credibility_shimmering"
+        tools:visibility="visible" />
+
+</LinearLayout>

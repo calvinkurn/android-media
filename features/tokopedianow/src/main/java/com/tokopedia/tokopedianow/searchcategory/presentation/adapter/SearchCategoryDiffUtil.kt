@@ -3,7 +3,13 @@ package com.tokopedia.tokopedianow.searchcategory.presentation.adapter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.ChooseAddressDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 
 open class SearchCategoryDiffUtil: BaseTokopediaNowDiffer() {
 
@@ -46,9 +52,23 @@ open class SearchCategoryDiffUtil: BaseTokopediaNowDiffer() {
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
             safeGuardPosition(oldItemPosition, newItemPosition) { oldItem, newItem ->
-                if (oldItem is TokoNowCategoryGridUiModel && newItem is TokoNowCategoryGridUiModel)
+                if (oldItem is TokoNowCategoryGridUiModel && newItem is TokoNowCategoryGridUiModel) {
                     areGridContentTheSame(oldItem, newItem)
-                else true
+                } else if(oldItem is CategoryFilterDataView && newItem is CategoryFilterDataView) {
+                    oldItem.categoryFilterItemList == newItem.categoryFilterItemList
+                } else if (oldItem is QuickFilterDataView && newItem is QuickFilterDataView) {
+                    oldItem.quickFilterItemList == newItem.quickFilterItemList
+                } else if (oldItem is ProductCountDataView && newItem is ProductCountDataView) {
+                    oldItem.totalDataText == newItem.totalDataText
+                } else if (oldItem is ChooseAddressDataView && newItem is ChooseAddressDataView) {
+                    oldItem.chooseAddressData == newItem.chooseAddressData
+                } else if (oldItem is TitleDataView && newItem is TitleDataView) {
+                    oldItem.serviceType == newItem.serviceType && oldItem.is15mAvailable == newItem.is15mAvailable
+                } else if (oldItem is TokoNowRecommendationCarouselUiModel && newItem is TokoNowRecommendationCarouselUiModel) {
+                    oldItem.pageName == newItem.pageName
+                } else {
+                    oldItem == newItem
+                }
             }
 
     private fun areGridContentTheSame(

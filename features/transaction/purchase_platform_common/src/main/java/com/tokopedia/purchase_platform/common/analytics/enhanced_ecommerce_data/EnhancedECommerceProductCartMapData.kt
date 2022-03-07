@@ -181,10 +181,16 @@ class EnhancedECommerceProductCartMapData {
         Product[KEY_PAGE_SOURCE] = pageSource
     }
 
+    fun setDimension117(bundleType: String) {
+        Product[KEY_DIMENSION117] = bundleType
+    }
+
+    fun setDimension118(bundleId: String) {
+        if (bundleId == "0") Product[KEY_DIMENSION118] = ""
+        else Product[KEY_DIMENSION118] = bundleId
+    }
+
     companion object {
-        const val SHOP_TYPE_REGULER = "reguler"
-        const val SHOP_TYPE_OFFICIAL_STORE = "official_store"
-        const val SHOP_TYPE_GOLD_MERCHANT = "gold_merchant"
         private const val KEY_NAME = "name"
         private const val KEY_ID = "id"
         private const val KEY_PRICE = "price"
@@ -227,6 +233,8 @@ class EnhancedECommerceProductCartMapData {
         private const val KEY_URL = "url"
         private const val KEY_CAMPAIGN_ID = "dimension104"
         private const val KEY_PAGE_SOURCE = "dimension90"
+        private const val KEY_DIMENSION117 = "dimension117"
+        private const val KEY_DIMENSION118 = "dimension118"
         const val DEFAULT_VALUE_NONE_OTHER = "none/other"
         const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
         const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"

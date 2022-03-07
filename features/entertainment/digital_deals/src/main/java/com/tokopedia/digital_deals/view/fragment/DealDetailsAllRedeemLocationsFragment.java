@@ -98,7 +98,9 @@ public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment im
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                KeyboardHandler.hideSoftKeyboard(getActivity());
+                if(getActivity() != null){
+                    KeyboardHandler.hideSoftKeyboard(getActivity());
+                }
             }
         });
 

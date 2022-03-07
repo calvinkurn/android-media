@@ -15,8 +15,9 @@
     <string name="atc_variant_total_stock_empty_label">Total Stok: %1$s</string>
     <string name="atc_variant_min_order_builder">Min. pembelian barang ini %1$d buah </string>
 
+    <string name="atc_variant_see">Lihat</string>
 
-    <string name="atc_variant_tokocabang">Dikirim dari  &lt;a href="#"&gt;TokoCabang&lt;/a&gt;</string>
+    <string name="atc_variant_tokocabang">Dilayani Tokopedia</string>
     <string name="atc_variant_select_empty_variant_message">Pilih varian lain yang tersedia, ya.</string>
 
 </resources>

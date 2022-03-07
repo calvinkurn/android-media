@@ -1,5 +1,12 @@
 package com.tokopedia.checkout.domain.mapper
 
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellBottomSheet
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellInfoData
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellOrderSummary
+import com.tokopedia.checkout.view.uimodel.CrossSellBottomSheetModel
+import com.tokopedia.checkout.view.uimodel.CrossSellInfoModel
+import com.tokopedia.checkout.view.uimodel.CrossSellModel
+import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.*
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop
 import com.tokopedia.checkout.domain.model.cartshipmentform.*
@@ -9,6 +16,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
+import com.tokopedia.logisticCommon.data.entity.address.UserAddressTokoNow
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.model.ShipProd
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
@@ -24,7 +32,7 @@ import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import com.tokopedia.purchase_platform.common.utils.Utils.isNotNullOrEmptyOrZero
-import com.tokopedia.purchase_platform.common.utils.convertToString
+import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import java.util.*
 import javax.inject.Inject
 
@@ -35,6 +43,7 @@ class ShipmentMapper @Inject constructor() {
             var isDisableEgold = false
             var isDisablePPP = false
             var isDisableDonation = false
+            var isDisableCrossSell = false
             for (disabledFeature in shipmentAddressFormDataResponse.disabledFeatures) {
                 when (disabledFeature) {
                     DISABLED_DROPSHIPPER -> isDropshipperDisable = true
@@ -42,6 +51,7 @@ class ShipmentMapper @Inject constructor() {
                     DISABLED_EGOLD -> isDisableEgold = true
                     DISABLED_PURCHASE_PROTECTION -> isDisablePPP = true
                     DISABLED_DONATION -> isDisableDonation = true
+                    DISABLED_CROSS_SELL -> isDisableCrossSell = true
                 }
             }
 
@@ -52,7 +62,7 @@ class ShipmentMapper @Inject constructor() {
             isBlackbox = shipmentAddressFormDataResponse.isBlackbox == 1
             errorCode = shipmentAddressFormDataResponse.errorCode
             isError = shipmentAddressFormDataResponse.errors.isNotEmpty()
-            errorMessage = convertToString(shipmentAddressFormDataResponse.errors)
+            errorMessage = shipmentAddressFormDataResponse.errors.joinToString()
             isShowOnboarding = shipmentAddressFormDataResponse.isShowOnboarding
             isIneligiblePromoDialogEnabled = shipmentAddressFormDataResponse.isIneligiblePromoDialogEnabled
             isOpenPrerequisiteSite = shipmentAddressFormDataResponse.isOpenPrerequisiteSite
@@ -60,7 +70,7 @@ class ShipmentMapper @Inject constructor() {
             addressesData = mapAddressesData(shipmentAddressFormDataResponse)
             cod = mapCod(shipmentAddressFormDataResponse.cod)
             campaignTimerUi = mapCampaignTimer(shipmentAddressFormDataResponse.campaignTimer)
-            lastApplyData = mapPromoLastApply(shipmentAddressFormDataResponse.promoSAFResponse.lastApply?.data)
+            lastApplyData = mapPromoLastApply(shipmentAddressFormDataResponse.promoSAFResponse.lastApply.data)
             promoCheckoutErrorDefault = mapPromoCheckoutErrorDefault(shipmentAddressFormDataResponse.promoSAFResponse.errorDefault)
             errorTicker = shipmentAddressFormDataResponse.errorTicker
             groupAddress = mapGroupAddresses(shipmentAddressFormDataResponse, isDisablePPP)
@@ -74,6 +84,9 @@ class ShipmentMapper @Inject constructor() {
             }
             if (!isDisableDonation) {
                 donation = mapDonation(shipmentAddressFormDataResponse)
+            }
+            if (!isDisableCrossSell) {
+                crossSell = mapCrossSell(shipmentAddressFormDataResponse)
             }
         }
     }
@@ -93,7 +106,7 @@ class ShipmentMapper @Inject constructor() {
             groupAddressListResult.add(
                     GroupAddress().apply {
                         isError = !groupAddress.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
-                        errorMessage = convertToString(groupAddress.errors)
+                        errorMessage = groupAddress.errors.joinToString()
                         userAddress = mapUserAddress(groupAddress)
                         groupShop = mapGroupShops(groupAddress, shipmentAddressFormDataResponse, isDisablePPP)
                     }
@@ -110,9 +123,9 @@ class ShipmentMapper @Inject constructor() {
             groupShopListResult.add(
                     GroupShop().apply {
                         isError = !it.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
-                        errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else convertToString(it.errors)
+                        errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else it.errors.joinToString()
                         hasUnblockingError = !it.unblockingErrors.isNullOrEmpty()
-                        unblockingErrorMessage = convertToString(it.unblockingErrors)
+                        unblockingErrorMessage = it.unblockingErrors.joinToString()
                         shippingId = it.shippingId
                         spId = it.spId
                         dropshipperName = it.dropshiper.name
@@ -151,77 +164,112 @@ class ShipmentMapper @Inject constructor() {
                             shopTypeInfoData: ShopTypeInfoData): Pair<MutableList<Product>, Int> {
         val productListResult = arrayListOf<Product>()
         var firstErrorIndex = -1
-        groupShop.products.forEachIndexed { index, it ->
-            val productResult = Product().apply {
-                analyticsProductCheckoutData = mapAnalyticsProductCheckoutData(
-                        it,
-                        groupAddress.userAddress,
-                        groupShop,
-                        shipmentAddressFormDataResponse.cod,
-                        shipmentAddressFormDataResponse.promoSAFResponse,
-                        shopTypeInfoData
-                )
-                if (it.tradeInInfo.isValidTradeIn) {
-                    productPrice = it.tradeInInfo.newDevicePrice.toLong()
-                }
-                isError = !it.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
-                errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else if (it.errors.isNotEmpty()) it.errors[0] else ""
-                errorMessageDescription = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else if (it.errors.size >= 2) it.errors[1] else ""
-                if (isError) {
-                    if (firstErrorIndex == -1) {
-                        firstErrorIndex = index
+        groupShop.cartDetails.forEachIndexed { index, cartDetail ->
+            cartDetail.products.forEach { product ->
+                val productResult = Product().apply {
+                    analyticsProductCheckoutData = mapAnalyticsProductCheckoutData(
+                            product,
+                            groupAddress.userAddress,
+                            groupShop,
+                            shipmentAddressFormDataResponse.cod,
+                            shipmentAddressFormDataResponse.promoSAFResponse,
+                            shopTypeInfoData
+                    )
+                    if (product.tradeInInfo.isValidTradeIn) {
+                        productPrice = product.tradeInInfo.newDevicePrice.toLong()
+                    }
+                    isError = !product.errors.isNullOrEmpty() ||
+                            shipmentAddressFormDataResponse.errorTicker.isNotEmpty() ||
+                            cartDetail.bundleDetail.bundleId.isNotBlankOrZero() && cartDetail.errors.isNotEmpty()
+                    errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) {
+                        ""
+                    } else if (product.errors.isNotEmpty()) {
+                        product.errors[0]
+                    } else if (cartDetail.bundleDetail.bundleId.isNotBlankOrZero() && cartDetail.errors.isNotEmpty()) {
+                        // Bundle error
+                        cartDetail.errors[0]
+                    } else {
+                        ""
+                    }
+                    errorMessageDescription = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else if (product.errors.size >= 2) product.errors[1] else ""
+                    if (isError) {
+                        if (firstErrorIndex == -1) {
+                            firstErrorIndex = index
+                        }
+                    }
+                    productId = product.productId
+                    cartId = product.cartId
+                    productName = product.productName
+                    productPriceFmt = product.productPriceFmt
+                    productPrice = product.productPrice
+                    productOriginalPrice = product.productOriginalPrice
+                    productWholesalePrice = product.productWholesalePrice
+                    productWholesalePriceFmt = product.productWholesalePriceFmt
+                    productWeightFmt = product.productWeightFmt
+                    productWeight = product.productWeight
+                    productWeightActual = product.productWeightActual
+                    productCondition = product.productCondition
+                    productUrl = product.productUrl
+                    isProductReturnable = product.productReturnable == 1
+                    isProductIsFreeReturns = product.productIsFreeReturns == 1
+                    isProductIsPreorder = product.productIsPreorder == 1
+                    preOrderDurationDay = product.productPreorder.durationDay
+                    if (product.productPreorder.durationText.isNotEmpty()) {
+                        productPreOrderInfo = "PO " + product.productPreorder.durationText
+                    }
+                    productCashback = product.productCashback
+                    productMinOrder = product.productMinOrder
+                    productInvenageValue = product.productInvenageValue
+                    productSwitchInvenage = product.productSwitchInvenage
+                    productPriceCurrency = product.productPriceCurrency
+                    productImageSrc200Square = product.productImageSrc200Square
+                    productNotes = product.productNotes
+                    productQuantity = product.productQuantity
+                    isProductFinsurance = product.productFinsurance == 1
+                    isProductFcancelPartial = product.productFcancelPartial == 1
+                    productCatId = product.productCatId
+                    isShowTicker = product.productTicker.isShowTicker
+                    tickerMessage = product.productTicker.message
+                    if (product.freeShippingExtra.eligible) {
+                        isFreeShippingExtra = true
+                    }
+                    if (product.freeShipping.eligible) {
+                        isFreeShipping = true
+                    }
+                    if (product.tradeInInfo.isValidTradeIn) {
+                        tradeInInfoData = mapTradeInInfoData(product.tradeInInfo)
+                    }
+                    if (!isDisablePPP && product.purchaseProtectionPlanDataResponse.protectionAvailable) {
+                        purchaseProtectionPlanData = mapPurchaseProtectionData(product.purchaseProtectionPlanDataResponse)
+                    }
+                    variant = product.variantDescriptionDetail.variantDescription
+                    productAlertMessage = product.productAlertMessage
+                    productInformation = product.productInformation
+                    if (cartDetail.bundleDetail.bundleId.isNotBlankOrZero()) {
+                        isBundlingItem = true
+                        bundlingItemPosition = if (cartDetail.products.firstOrNull()?.productId == productId) {
+                            BUNDLING_ITEM_HEADER
+                        } else if (cartDetail.products.lastOrNull()?.productId == productId) {
+                            BUNDLING_ITEM_FOOTER
+                        } else {
+                            BUNDLING_ITEM_DEFAULT
+                        }
+                        bundleId = cartDetail.bundleDetail.bundleId
+                        bundleGroupId = cartDetail.bundleDetail.bundleGroupId
+                        bundleType = cartDetail.bundleDetail.bundleType
+                        bundleTitle = cartDetail.bundleDetail.bundleName
+                        bundlePrice = cartDetail.bundleDetail.bundlePrice
+                        bundleSlashPriceLabel = cartDetail.bundleDetail.slashPriceLabel
+                        bundleOriginalPrice = cartDetail.bundleDetail.bundleOriginalPrice
+                        bundleQuantity = cartDetail.bundleDetail.bundleQty
+                        bundleIconUrl = cartDetail.bundleDetail.bundleIconUrl
+                    } else {
+                        isBundlingItem = false
+                        bundleId = "0"
                     }
                 }
-                productId = it.productId
-                cartId = it.cartId
-                productName = it.productName
-                productPriceFmt = it.productPriceFmt
-                productPrice = it.productPrice
-                productOriginalPrice = it.productOriginalPrice
-                productWholesalePrice = it.productWholesalePrice
-                productWholesalePriceFmt = it.productWholesalePriceFmt
-                productWeightFmt = it.productWeightFmt
-                productWeight = it.productWeight
-                productWeightActual = it.productWeightActual
-                productCondition = it.productCondition
-                productUrl = it.productUrl
-                isProductReturnable = it.productReturnable == 1
-                isProductIsFreeReturns = it.productIsFreeReturns == 1
-                isProductIsPreorder = it.productIsPreorder == 1
-                preOrderDurationDay = it.productPreorder.durationDay
-                if (it.productPreorder.durationText.isNotEmpty()) {
-                    productPreOrderInfo = "PO " + it.productPreorder.durationText
-                }
-                productCashback = it.productCashback
-                productMinOrder = it.productMinOrder
-                productInvenageValue = it.productInvenageValue
-                productSwitchInvenage = it.productSwitchInvenage
-                productPriceCurrency = it.productPriceCurrency
-                productImageSrc200Square = it.productImageSrc200Square
-                productNotes = it.productNotes
-                productQuantity = it.productQuantity
-                isProductFinsurance = it.productFinsurance == 1
-                isProductFcancelPartial = it.productFcancelPartial == 1
-                productCatId = it.productCatId
-                isShowTicker = it.productTicker.isShowTicker
-                tickerMessage = it.productTicker.message
-                if (it.freeShippingExtra.eligible) {
-                    isFreeShippingExtra = true
-                }
-                if (it.freeShipping.eligible) {
-                    isFreeShipping = true
-                }
-                if (it.tradeInInfo.isValidTradeIn) {
-                    tradeInInfoData = mapTradeInInfoData(it.tradeInInfo)
-                }
-                if (!isDisablePPP && it.purchaseProtectionPlanDataResponse.protectionAvailable) {
-                    purchaseProtectionPlanData = mapPurchaseProtectionData(it.purchaseProtectionPlanDataResponse)
-                }
-                variant = it.variantDescriptionDetail.variantDescription
-                productAlertMessage = it.productAlertMessage
-                productInformation = it.productInformation
+                productListResult.add(productResult)
             }
-            productListResult.add(productResult)
         }
         return productListResult to firstErrorIndex
     }
@@ -264,8 +312,8 @@ class ShipmentMapper @Inject constructor() {
             isFulfillment = groupShop.isFulfillment.toString()
             isDiscountedPrice = product.productOriginalPrice > 0
             campaignId = product.campaignId
-            promoSAFResponse.lastApply?.data?.trackingDetails?.forEach {
-                if (it?.productId != null && it.productId == product.productId) {
+            promoSAFResponse.lastApply.data.trackingDetails.forEach {
+                if (it.productId == product.productId) {
                     promoCode = it.promoCodesTracking
                     promoDetails = it.promoDetailsTracking
                 }
@@ -328,6 +376,8 @@ class ShipmentMapper @Inject constructor() {
             cityName = shop.cityName
             shopAlertMessage = shop.shopAlertMessage
             isTokoNow = shop.isTokoNow
+            shopTickerTitle = shop.shopTickerTitle
+            shopTicker = shop.shopTicker
         }
     }
 
@@ -397,8 +447,13 @@ class ShipmentMapper @Inject constructor() {
             isCorner = groupAddress.userAddress.isCorner
             state = groupAddress.userAddress.state
             stateDetail = groupAddress.userAddress.stateDetail
-            shopId = groupAddress.userAddress.tokoNow.shopId
-            warehouseId = groupAddress.userAddress.tokoNow.warehouseId
+            tokoNow = UserAddressTokoNow(
+                isModified = groupAddress.userAddress.tokoNow.isModified,
+                shopId = groupAddress.userAddress.tokoNow.shopId,
+                warehouseId = groupAddress.userAddress.tokoNow.warehouseId,
+                warehouses = groupAddress.userAddress.tokoNow.warehouses,
+                serviceType = groupAddress.userAddress.tokoNow.serviceType
+            )
         }
     }
 
@@ -430,28 +485,24 @@ class ShipmentMapper @Inject constructor() {
         }
     }
 
-    private fun mapPromoLastApply(promoData: Data?): LastApplyUiModel {
+    private fun mapPromoLastApply(promoData: Data): LastApplyUiModel {
         return LastApplyUiModel().apply {
             codes = mapPromoGlobalCodes(promoData)
             voucherOrders = mapPromoVoucherOrders(promoData)
-            additionalInfo = mapLastApplyAdditionalInfoUiModel(promoData?.additionalInfo)
-            message = mapLastApplyMessageUiModel(promoData?.message)
-            listRedPromos = mapListRedPromos(promoData)
+            additionalInfo = mapLastApplyAdditionalInfoUiModel(promoData.additionalInfo)
+            message = mapLastApplyMessageUiModel(promoData.message)
+//            listRedPromos = mapListRedPromos(promoData)
             listAllPromoCodes = mapListAllPromos(promoData)
         }
     }
 
-    private fun mapListAllPromos(promoData: Data?): List<String> {
+    private fun mapListAllPromos(promoData: Data): List<String> {
         val listAllPromoCodes = arrayListOf<String>()
-        promoData?.codes?.forEach {
-            it?.let { promoCode ->
-                listAllPromoCodes.add(promoCode)
-            }
+        promoData.codes.forEach { promoCode ->
+            listAllPromoCodes.add(promoCode)
         }
-        promoData?.voucherOrders?.forEach {
-            it?.code?.let { promoCode ->
-                listAllPromoCodes.add(promoCode)
-            }
+        promoData.voucherOrders.forEach {
+            listAllPromoCodes.add(it.code)
         }
         return listAllPromoCodes
     }
@@ -459,110 +510,92 @@ class ShipmentMapper @Inject constructor() {
     private fun mapListRedPromos(promoData: Data?): List<String> {
         val listRedStates = arrayListOf<String>()
         if (promoData?.message?.state.equals(CheckoutConstant.STATE_RED, ignoreCase = true)) {
-            promoData?.codes?.forEach {
-                it?.let { promoCode ->
-                    listRedStates.add(promoCode)
-                }
+            promoData?.codes?.forEach { promoCode ->
+                listRedStates.add(promoCode)
             }
         }
         promoData?.voucherOrders?.forEach {
-            it?.let {
-                if (it.message?.state.equals(CheckoutConstant.STATE_RED, ignoreCase = true)) {
-                    it.code?.let { promoCode ->
-                        listRedStates.add(promoCode)
-                    }
-                }
+            if (it.message.state.equals(CheckoutConstant.STATE_RED, ignoreCase = true)) {
+                listRedStates.add(it.code)
             }
         }
         return listRedStates
     }
 
-    private fun mapLastApplyAdditionalInfoUiModel(additionalInfo: AdditionalInfo?): LastApplyAdditionalInfoUiModel {
+    private fun mapLastApplyAdditionalInfoUiModel(additionalInfo: AdditionalInfo): LastApplyAdditionalInfoUiModel {
         return LastApplyAdditionalInfoUiModel().apply {
-            emptyCartInfo = mapLastApplyEmptyCartInfoUiModel(additionalInfo?.cartEmptyInfo)
-            errorDetail = mapLastApplyErrorDetailUiModel(additionalInfo?.errorDetail)
-            messageInfo = mapLastApplyMessageInfoUiModel(additionalInfo?.messageInfo)
+            emptyCartInfo = mapLastApplyEmptyCartInfoUiModel(additionalInfo.cartEmptyInfo)
+            errorDetail = mapLastApplyErrorDetailUiModel(additionalInfo.errorDetail)
+            messageInfo = mapLastApplyMessageInfoUiModel(additionalInfo.messageInfo)
             promoSpIds = mapPromoSpId(additionalInfo)
-            usageSummaries = mapLastApplyUsageSummariesUiModel(additionalInfo?.listUsageSummaries)
+            usageSummaries = mapLastApplyUsageSummariesUiModel(additionalInfo.listUsageSummaries)
         }
     }
 
-    private fun mapLastApplyUsageSummariesUiModel(listUsageSummaries: List<UsageSummaries>?): List<LastApplyUsageSummariesUiModel> {
-        val tmplistUsageSummaries = arrayListOf<LastApplyUsageSummariesUiModel>()
-        listUsageSummaries?.forEach {
-            tmplistUsageSummaries.add(
-                    LastApplyUsageSummariesUiModel().apply {
-                        description = it.desc ?: ""
-                        type = it.type ?: ""
-                        amountStr = it.amountStr ?: ""
-                        amount = it.amount ?: 0
-                        currencyDetailsStr = it.currencyDetailsStr
+    private fun mapLastApplyUsageSummariesUiModel(listUsageSummaries: List<UsageSummaries>): List<LastApplyUsageSummariesUiModel> {
+        return listUsageSummaries.map {
+            LastApplyUsageSummariesUiModel().apply {
+                description = it.desc
+                type = it.type
+                amountStr = it.amountStr
+                amount = it.amount
+                currencyDetailsStr = it.currencyDetailsStr
+            }
+        }
+    }
+
+    private fun mapLastApplyMessageInfoUiModel(messageInfo: MessageInfo): LastApplyMessageInfoUiModel {
+        return LastApplyMessageInfoUiModel().apply {
+            detail = messageInfo.detail
+            message = messageInfo.message
+        }
+    }
+
+    private fun mapLastApplyErrorDetailUiModel(errorDetail: ErrorDetail): LastApplyErrorDetailUiModel {
+        return LastApplyErrorDetailUiModel().apply {
+            message = errorDetail.message
+        }
+    }
+
+    private fun mapLastApplyEmptyCartInfoUiModel(cartEmptyInfo: CartEmptyInfo): LastApplyEmptyCartInfoUiModel {
+        return LastApplyEmptyCartInfoUiModel().apply {
+            detail = cartEmptyInfo.detail
+            imgUrl = cartEmptyInfo.imageUrl
+            message = cartEmptyInfo.message
+        }
+    }
+
+    private fun mapPromoVoucherOrders(promoData: Data): List<LastApplyVoucherOrdersItemUiModel> {
+        val listVoucherOrdersUiModel = arrayListOf<LastApplyVoucherOrdersItemUiModel>()
+        promoData.voucherOrders.forEach { voucherOrdersItem ->
+            listVoucherOrdersUiModel.add(
+                    LastApplyVoucherOrdersItemUiModel().apply {
+                        code = voucherOrdersItem.code
+                        uniqueId = voucherOrdersItem.uniqueId
+                        message = mapLastApplyMessageUiModel(voucherOrdersItem.message)
                     }
             )
-        }
-        return tmplistUsageSummaries
-    }
-
-    private fun mapLastApplyMessageInfoUiModel(messageInfo: MessageInfo?): LastApplyMessageInfoUiModel {
-        return LastApplyMessageInfoUiModel().apply {
-            detail = messageInfo?.detail ?: ""
-            message = messageInfo?.message ?: ""
-        }
-    }
-
-    private fun mapLastApplyErrorDetailUiModel(errorDetail: ErrorDetail?): LastApplyErrorDetailUiModel {
-        return LastApplyErrorDetailUiModel().apply {
-            message = errorDetail?.message ?: ""
-        }
-    }
-
-    private fun mapLastApplyEmptyCartInfoUiModel(cartEmptyInfo: CartEmptyInfo?): LastApplyEmptyCartInfoUiModel {
-        return LastApplyEmptyCartInfoUiModel().apply {
-            detail = cartEmptyInfo?.detail ?: ""
-            imgUrl = cartEmptyInfo?.imageUrl ?: ""
-            message = cartEmptyInfo?.message ?: ""
-        }
-    }
-
-    private fun mapPromoVoucherOrders(promoData: Data?): List<LastApplyVoucherOrdersItemUiModel> {
-        val listVoucherOrdersUiModel = arrayListOf<LastApplyVoucherOrdersItemUiModel>()
-        promoData?.voucherOrders?.forEach {
-            it?.let { voucherOrdersItem ->
-                listVoucherOrdersUiModel.add(
-                        LastApplyVoucherOrdersItemUiModel().apply {
-                            code = voucherOrdersItem.code ?: ""
-                            uniqueId = voucherOrdersItem.uniqueId ?: ""
-                            message = mapLastApplyMessageUiModel(voucherOrdersItem.message)
-                        }
-                )
-            }
         }
 
         return listVoucherOrdersUiModel
     }
 
-    private fun mapLastApplyMessageUiModel(message: Message?): LastApplyMessageUiModel {
+    private fun mapLastApplyMessageUiModel(message: Message): LastApplyMessageUiModel {
         return LastApplyMessageUiModel().apply {
-            color = message?.color ?: ""
-            state = message?.state ?: ""
-            text = message?.text ?: ""
+            color = message.color
+            state = message.state
+            text = message.text
         }
     }
 
-    private fun mapPromoGlobalCodes(promoData: Data?): MutableList<String> {
-        val tmpCodes = mutableListOf<String>()
-        promoData?.codes?.forEach {
-            it?.let {
-                tmpCodes.add(it)
-            }
-        }
-        return tmpCodes
+    private fun mapPromoGlobalCodes(promoData: Data): MutableList<String> {
+        return promoData.codes.toMutableList()
     }
 
-    private fun mapPromoCheckoutErrorDefault(errorDefault: ErrorDefault?): PromoCheckoutErrorDefault {
+    private fun mapPromoCheckoutErrorDefault(errorDefault: ErrorDefault): PromoCheckoutErrorDefault {
         return PromoCheckoutErrorDefault().apply {
-            title = errorDefault?.title ?: ""
-            desc = errorDefault?.description ?: ""
+            title = errorDefault.title
+            desc = errorDefault.description
         }
     }
 
@@ -595,6 +628,49 @@ class ShipmentMapper @Inject constructor() {
             description = shipmentAddressFormDataResponse.donation.description
             nominal = shipmentAddressFormDataResponse.donation.nominal
             isChecked = shipmentAddressFormDataResponse.isDonationCheckboxStatus
+        }
+    }
+
+    private fun mapCrossSell(shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse): ArrayList<CrossSellModel> {
+        val arrayListCrossSell: ArrayList<CrossSellModel> = arrayListOf()
+        shipmentAddressFormDataResponse.crossSell.forEach { crossSell ->
+            arrayListCrossSell.add(
+                    CrossSellModel().apply {
+                        id = crossSell.id
+                        checkboxDisabled = crossSell.checkboxDisabled
+                        isChecked = crossSell.isChecked
+                        additionalVerticalId = crossSell.additionalVerticalId
+                        transactionType = crossSell.transactionType
+                        price = crossSell.price
+                        bottomSheet = mapCrossSellBottomSheet(crossSell.bottomSheet)
+                        info = mapCrossSellInfo(crossSell.info)
+                        orderSummary = mapCrossSellOrderSummary(crossSell.orderSummary)
+                    }
+            )
+        }
+        return arrayListCrossSell
+    }
+
+    private fun mapCrossSellBottomSheet(bottomSheet: CrossSellBottomSheet): CrossSellBottomSheetModel {
+        return CrossSellBottomSheetModel().apply {
+            subtitle = bottomSheet.subtitle
+            title = bottomSheet.title
+        }
+    }
+
+    private fun mapCrossSellInfo(info: CrossSellInfoData): CrossSellInfoModel {
+        return CrossSellInfoModel().apply {
+            iconUrl = info.iconUrl
+            subtitle = info.subtitle
+            title = info.title
+            tooltipText = info.tooltipText
+        }
+    }
+
+    private fun mapCrossSellOrderSummary(crossSellOrderSummary: CrossSellOrderSummary): CrossSellOrderSummaryModel {
+        return CrossSellOrderSummaryModel().apply {
+            priceWording = crossSellOrderSummary.priceWording
+            title = crossSellOrderSummary.title
         }
     }
 
@@ -707,8 +783,13 @@ class ShipmentMapper @Inject constructor() {
             provinceName = defaultAddress.provinceName
             receiverName = defaultAddress.receiverName
             status = defaultAddress.status
-            shopId = defaultAddress.tokoNow.shopId
-            warehouseId = defaultAddress.tokoNow.warehouseId
+            tokoNow = UserAddressTokoNow(
+                isModified = defaultAddress.tokoNow.isModified,
+                shopId = defaultAddress.tokoNow.shopId,
+                warehouseId = defaultAddress.tokoNow.warehouseId,
+                warehouses = defaultAddress.tokoNow.warehouses,
+                serviceType = defaultAddress.tokoNow.serviceType
+            )
         }
     }
 
@@ -764,5 +845,10 @@ class ShipmentMapper @Inject constructor() {
         const val DISABLED_EGOLD = "egold"
         const val DISABLED_PURCHASE_PROTECTION = "ppp"
         const val DISABLED_DONATION = "donation"
+        const val DISABLED_CROSS_SELL = "cross_sell"
+
+        const val BUNDLING_ITEM_DEFAULT = 0
+        const val BUNDLING_ITEM_HEADER = 1
+        const val BUNDLING_ITEM_FOOTER = 2
     }
 }

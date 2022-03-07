@@ -24,18 +24,18 @@
         android:lineSpacingExtra="@dimen/sp_6"
         android:letterSpacing="0.01"
         android:textSize="@dimen/sp_28"
-        android:layout_marginTop="@dimen/dp_24"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="16dp"
         android:lineSpacingExtra="@dimen/sp_6"
         android:textSize="@dimen/sp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:textColor="@color/Unify_N700_96"
         android:text="@string/shop_splash_screen_sub_info"
         android:layout_width="wrap_content"

@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.domain.model.checkout
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class CheckoutData(
@@ -13,7 +13,7 @@ data class CheckoutData(
         var callbackSuccessUrl: String = "",
         var callbackFailedUrl: String = "",
         var transactionId: String = "",
-        var errorReporter: ErrorReporter = ErrorReporter(),
+        var prompt: Prompt = Prompt(),
         var jsonResponse: String = "",
         var priceValidationData: PriceValidationData = PriceValidationData()
 ) : Parcelable

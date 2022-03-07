@@ -8,19 +8,11 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.shopcreation.domain.param.RegisterCheckParam
 import com.tokopedia.loginregister.shopcreation.domain.param.ShopInfoParam
-import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.shopcreation.domain.pojo.ShopInfoByID
-import com.tokopedia.loginregister.shopcreation.domain.usecase.RegisterCheckUseCase
-import com.tokopedia.loginregister.shopcreation.domain.usecase.ShopInfoUseCase
+import com.tokopedia.loginregister.shopcreation.domain.param.UpdateUserProfileParam
+import com.tokopedia.loginregister.shopcreation.domain.param.ValidateUserProfileParam
+import com.tokopedia.loginregister.shopcreation.domain.pojo.*
+import com.tokopedia.loginregister.shopcreation.domain.usecase.*
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.profilecommon.domain.param.UpdateUserProfileParam
-import com.tokopedia.profilecommon.domain.param.ValidateUserProfileParam
-import com.tokopedia.profilecommon.domain.pojo.UserProfileCompletionData
-import com.tokopedia.profilecommon.domain.pojo.UserProfileUpdate
-import com.tokopedia.profilecommon.domain.pojo.UserProfileValidate
-import com.tokopedia.profilecommon.domain.usecase.GetUserProfileCompletionUseCase
-import com.tokopedia.profilecommon.domain.usecase.UpdateUserProfileUseCase
-import com.tokopedia.profilecommon.domain.usecase.ValidateUserProfileUseCase
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
 import com.tokopedia.sessioncommon.data.register.RegisterPojo
@@ -40,15 +32,15 @@ import javax.inject.Inject
  */
 
 open class ShopCreationViewModel @Inject constructor(
-        private val registerUseCase: RegisterUseCase,
-        private val registerCheckUseCase: RegisterCheckUseCase,
-        private val getUserProfileCompletionUseCase: GetUserProfileCompletionUseCase,
-        private val validateUserProfileUseCase: ValidateUserProfileUseCase,
-        private val updateUserProfileUseCase: UpdateUserProfileUseCase,
-        private val getProfileUseCase: GetProfileUseCase,
-        private val shopInfoUseCase: ShopInfoUseCase,
-        private val userSession: UserSessionInterface,
-        private val dispatchers: CoroutineDispatchers
+    private val registerUseCase: RegisterUseCase,
+    private val registerCheckUseCase: RegisterCheckUseCase,
+    private val getUserProfileCompletionUseCase: GetUserProfileCompletionUseCase,
+    private val validateUserProfileUseCase: ValidateUserProfileUseCase,
+    private val updateUserProfileUseCase: UpdateUserProfileUseCase,
+    private val getProfileUseCase: GetProfileUseCase,
+    private val shopInfoUseCase: ShopInfoUseCase,
+    private val userSession: UserSessionInterface,
+    dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     private val _addNameResponse = MutableLiveData<Result<UserProfileUpdate>>()
@@ -84,47 +76,75 @@ open class ShopCreationViewModel @Inject constructor(
         get() = _getShopInfoResponse
 
     fun addName(name: String) {
-        val updateUserProfileParam = UpdateUserProfileParam(fullname = name)
-
         launchCatchError(block = {
-            val data = updateUserProfileUseCase.getData(updateUserProfileParam)
-            _addNameResponse.value = data
+            val params = UpdateUserProfileParam(fullname = name)
+            val result = updateUserProfileUseCase(params)
+            result.data.let {
+                _addNameResponse.value = when {
+                    it.isSuccess == 1 && it.errors.isEmpty() -> {
+                        Success(it)
+                    }
+                    it.errors.isNotEmpty() && it.errors[0].isNotEmpty() -> {
+                        Fail(MessageErrorException(it.errors[0]))
+                    }
+                    else -> {
+                        Fail(RuntimeException())
+                    }
+                }
+            }
         }, onError = {
-            _addNameResponse.postValue(Fail(it))
+            _addNameResponse.value = Fail(it)
         })
     }
 
     fun addPhone(phone: String) {
-        val updateUserProfileParam = UpdateUserProfileParam(phone = phone)
-
         launchCatchError(block = {
-            val data = updateUserProfileUseCase
-                    .getData(updateUserProfileParam)
-            _addPhoneResponse.value = data
+            val params = UpdateUserProfileParam(phone = phone)
+            val result = updateUserProfileUseCase(params)
+            result.data.let {
+                _addPhoneResponse.value = when {
+                    it.isSuccess == 1 && it.errors.isEmpty() -> {
+                        Success(it)
+                    }
+                    it.errors.isNotEmpty() && it.errors[0].isNotEmpty() -> {
+                        Fail(MessageErrorException(it.errors[0]))
+                    }
+                    else -> {
+                        Fail(RuntimeException())
+                    }
+                }
+            }
         }, onError = {
-            _addPhoneResponse.postValue(Fail(it))
+            _addPhoneResponse.value = Fail(it)
         })
     }
 
     fun registerCheck(phone: String) {
-        val registerCheckParam = RegisterCheckParam(id = phone)
-
         launchCatchError(block = {
-            val data = registerCheckUseCase.getData(registerCheckParam)
-            _registerCheckResponse.value = data
+            val params = RegisterCheckParam(id = phone)
+            val result = registerCheckUseCase(params)
+            result.data.let {
+                _registerCheckResponse.value = when {
+                    it.errors.isNotEmpty() && it.errors[0].isNotEmpty() -> {
+                        Fail(MessageErrorException(it.errors[0]))
+                    }
+                    else -> {
+                        Success(it)
+                    }
+                }
+            }
         }, onError = {
-            _registerCheckResponse.postValue(Fail(it))
+            _registerCheckResponse.value = Fail(it)
         })
     }
 
     fun getShopInfo(shopId: Int) {
-        val shopInfoParam = ShopInfoParam(shopID = shopId)
-
         launchCatchError(block = {
-            val data = shopInfoUseCase.getData(shopInfoParam)
-            _getShopInfoResponse.value = data
+            val params = ShopInfoParam(shopID = shopId)
+            val result = shopInfoUseCase(params)
+            _getShopInfoResponse.value = Success(result.data)
         }, onError = {
-            _getShopInfoResponse.postValue(Fail(it))
+            _getShopInfoResponse.value = Fail(it)
         })
     }
 
@@ -167,22 +187,20 @@ open class ShopCreationViewModel @Inject constructor(
 
     fun getUserProfile() {
         launchCatchError(block = {
-            val data = getUserProfileCompletionUseCase.getData()
-            _getUserProfileResponse.value = data
+            val result = getUserProfileCompletionUseCase(Unit)
+            _getUserProfileResponse.value = Success(result.data)
         }, onError = {
-            _getUserProfileResponse.postValue(Fail(it))
+            _getUserProfileResponse.value = Fail(it)
         })
     }
 
     fun validateUserProfile(phone: String) {
-        val validateUserProfileParam = ValidateUserProfileParam(phone = phone)
-
         launchCatchError(block = {
-            val data = validateUserProfileUseCase
-                    .getData(validateUserProfileParam)
-            _validateUserProfileResponse.value = data
+            val params = ValidateUserProfileParam(phone = phone)
+            val result = validateUserProfileUseCase(params)
+            _validateUserProfileResponse.value = Success(result.data)
         }, onError = {
-            _validateUserProfileResponse.postValue(Fail(it))
+            _validateUserProfileResponse.value = Fail(it)
         })
     }
 

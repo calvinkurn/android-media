@@ -3,7 +3,11 @@ package com.tokopedia.product.detail.view.util
 import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
-import android.text.*
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
@@ -12,6 +16,7 @@ import android.view.animation.Animation
 import android.view.animation.Transformation
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -22,6 +27,7 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -33,7 +39,17 @@ import com.tokopedia.usecase.coroutines.Success
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+
 object ProductDetailUtil {
+
+    const val HOURS_IN_A_DAY = 24
+    const val DAYS_IN_A_MONTH = 30
+    const val MONTHS_IN_A_YEAR = 12
+
+    const val LAST_ONLINE_MONTH_THRESHOLD = 3
+    const val LAST_ONLINE_DAYS_RANGE_START = 3
+    const val LAST_ONLINE_DAYS_RANGE_END = 6
+    const val LAST_ONLINE_MINUTES_RANGE_END = 5
 
     private const val MAX_CHAR = 140
     private const val ALLOW_CLICK = true
@@ -93,7 +109,10 @@ fun String.boldOrLinkText(isLink: Boolean, context: Context,
     return builder
 }
 
-fun String.renderHtmlBold(context: Context): CharSequence? {
+fun String.renderHtmlBold(
+    context: Context,
+    boldColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+): CharSequence? {
     if (this.isEmpty()) return null
     val spannedHtmlString: Spanned = MethodChecker.fromHtml(this)
     val spanHandler = SpannableStringBuilder(spannedHtmlString)
@@ -109,7 +128,7 @@ fun String.renderHtmlBold(context: Context): CharSequence? {
         val boldStart = spanHandler.getSpanStart(it)
         val boldEnd = spanHandler.getSpanEnd(it)
 
-        spanHandler.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)), boldStart, boldEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+        spanHandler.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, boldColor)), boldStart, boldEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
         spanHandler.setSpan(UnifyCustomTypefaceSpan(getTypeface(context, "RobotoBold.ttf")), boldStart, boldEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
     }
 
@@ -164,13 +183,13 @@ internal fun String.getRelativeDate(context: Context): String {
 
     val minuteDivider: Long = 60
     val hourDivider = minuteDivider * 60
-    val dayDivider = hourDivider * 24
-    val monthDivider = dayDivider * 30
-    val yearDivider = monthDivider * 12
+    val dayDivider = hourDivider * ProductDetailUtil.HOURS_IN_A_DAY
+    val monthDivider = dayDivider * ProductDetailUtil.DAYS_IN_A_MONTH
+    val yearDivider = monthDivider * ProductDetailUtil.MONTHS_IN_A_YEAR
 
     return if (diff / yearDivider > 0) {
         context.getString(R.string.shop_online_last_date, getYear)
-    } else if (diff / monthDivider >= 3) {
+    } else if (diff / monthDivider >= ProductDetailUtil.LAST_ONLINE_MONTH_THRESHOLD) {
         context.getString(R.string.shop_online_last_date, getMonthAndYear)
     } else if (diff / dayDivider > 0) {
         val days = diff / dayDivider
@@ -178,7 +197,10 @@ internal fun String.getRelativeDate(context: Context): String {
             days <= 1 -> {
                 context.getString(R.string.shop_online_yesterday)
             }
-            days in 3..6 -> {
+            days in IntRange(
+                ProductDetailUtil.LAST_ONLINE_DAYS_RANGE_START,
+                ProductDetailUtil.LAST_ONLINE_DAYS_RANGE_END
+            ) -> {
                 context.getString(R.string.shop_online_days_ago, diff / dayDivider)
             }
             else -> {
@@ -189,7 +211,7 @@ internal fun String.getRelativeDate(context: Context): String {
         context.getString(R.string.shop_online_hours_ago, diff / hourDivider)
     } else {
         val minutes = diff / minuteDivider
-        if (minutes in 0..5) context.getString(R.string.shop_online) else
+        if (minutes in 0..ProductDetailUtil.LAST_ONLINE_MINUTES_RANGE_END) context.getString(R.string.shop_online) else
             context.getString(R.string.shop_online_minute_ago, minutes)
     }
 }
@@ -253,7 +275,7 @@ inline fun <reified T> GraphqlResponse.doActionIfNotNull(listener: (T) -> Unit) 
 fun getIdLocale() = Locale("id", "ID")
 
 fun String.goToWebView(context: Context) {
-    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, this))
+    RouteManager.route(context, String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, this))
 }
 
 fun <T : Any> T.asSuccess(): Success<T> = Success(this)
@@ -305,6 +327,24 @@ internal fun View?.animateCollapse() = this?.run {
 
     animation.duration = resources.getInteger(com.tokopedia.unifyprinciples.R.integer.Unify_T2).toLong()
     startAnimation(animation)
+}
+
+internal fun String?.checkIfNumber(key: String): String {
+    if (this == null || this.isEmpty()) return ""
+
+    return try {
+        this.toLong()
+        this
+    } catch (t: Throwable) {
+        if (!BuildConfig.DEBUG) {
+            FirebaseCrashlytics.getInstance().recordException(Exception(t.localizedMessage, t))
+        } else {
+            t.printStackTrace()
+        }
+
+        ProductDetailLogger.logLocalization("error $key, value : $this , error: ${t.message}")
+        ""
+    }
 }
 
 internal fun RecommendationItem.createProductCardOptionsModel(position: Int): ProductCardOptionsModel {

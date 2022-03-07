@@ -37,6 +37,21 @@ class EventRedeemViewModelTest {
     @RelaxedMockK
     lateinit var redeemTicketEventUseCase: RedeemTicketEventUseCase
 
+    val errorMessage = "Something went wrong"
+
+    val restResponse = RestResponse(EventRedeem(), 500, false).apply {
+        errorBody = "{\n" +
+                "  \"message_error\": [\"$errorMessage\"]\n" +
+                "}"
+    }
+
+    val codeResponse = RestResponse(EventRedeem(), 200, false).apply {
+        isError = true
+        errorBody = "{\n" +
+                "  \"message_error\": [\"$errorMessage\"]\n" +
+                "}"
+    }
+
     @Before
     fun setUp(){
         MockKAnnotations.init(this)
@@ -64,7 +79,7 @@ class EventRedeemViewModelTest {
     }
 
     @Test
-    fun `RedeemData_ShouldReturnRedeem_showFailResult`(){
+    fun `RedeemData_ShouldReturnRedeem_showFailFromThrowable`(){
         //given
         val restResponse = RestResponse(Throwable(), 500, false)
         val redeemableMap = mapOf<Type, RestResponse>(
@@ -100,7 +115,7 @@ class EventRedeemViewModelTest {
     }
 
     @Test
-    fun `RedeemedData_ShouldReturnRedeem_showFailResult`(){
+    fun `RedeemedData_ShouldReturnRedeem_showFailFromThrowable`(){
         //given
         val restResponse = RestResponse(Throwable(), 500, false)
         val redeemableMap = mapOf<Type, RestResponse>(
@@ -116,4 +131,76 @@ class EventRedeemViewModelTest {
         assertNotNull(eventRedeemViewModel.isError.value)
     }
 
+
+    @Test
+    fun `RedeemData_ShouldReturnRedeem_showFailFromResult`(){
+        //given
+        val redeemableMap = mapOf<Type, RestResponse>(
+            EventRedeem::class.java to restResponse
+        )
+        coEvery {
+            getEventRedeemUseCase.executeOnBackground()
+        } returns redeemableMap
+
+        //when
+        eventRedeemViewModel.getDataRedeem("")
+
+        //then
+        assertNotNull(eventRedeemViewModel.isError.value)
+        assertEquals((eventRedeemViewModel.isError.value)?.message, errorMessage)
+    }
+
+
+    @Test
+    fun `RedeemedData_ShouldReturnRedeem_showFailFromResult`(){
+        //given
+        val redeemedableMap = mapOf<Type, RestResponse>(
+            EventRedeemedData::class.java to restResponse
+        )
+        coEvery {
+            redeemTicketEventUseCase.executeOnBackground()
+        } returns redeemedableMap
+
+        //when
+        eventRedeemViewModel.redeemData("")
+
+        assertNotNull(eventRedeemViewModel.isError.value)
+        assertEquals((eventRedeemViewModel.isError.value)?.message, errorMessage)
+    }
+
+    @Test
+    fun `RedeemData_ShouldReturnRedeem_showFailFromCode`(){
+        //given
+        val codeRedeem = mapOf<Type, RestResponse>(
+            EventRedeem::class.java to codeResponse
+        )
+        coEvery {
+            getEventRedeemUseCase.executeOnBackground()
+        } returns codeRedeem
+
+        //when
+        eventRedeemViewModel.getDataRedeem("")
+
+        //then
+        assertNotNull(eventRedeemViewModel.isError.value)
+        assertEquals((eventRedeemViewModel.isError.value)?.message, errorMessage)
+    }
+
+
+    @Test
+    fun `RedeemedData_ShouldReturnRedeem_showFailFromCode`(){
+        //given
+        val codeRedeem = mapOf<Type, RestResponse>(
+            EventRedeemedData::class.java to codeResponse
+        )
+        coEvery {
+            redeemTicketEventUseCase.executeOnBackground()
+        } returns codeRedeem
+
+        //when
+        eventRedeemViewModel.redeemData("")
+
+        assertNotNull(eventRedeemViewModel.isError.value)
+        assertEquals((eventRedeemViewModel.isError.value)?.message, errorMessage)
+    }
 }

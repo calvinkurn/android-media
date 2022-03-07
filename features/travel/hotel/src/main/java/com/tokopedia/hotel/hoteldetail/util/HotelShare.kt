@@ -12,6 +12,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import java.lang.ref.WeakReference
@@ -56,7 +57,7 @@ class HotelShare(val activity: WeakReference<Activity>) {
                     }))
         } else {
             val seoUrl = "${data.property.name.replace(" ", "-").trimEnd()}-${data.property.id}"
-            openIntentShare(data, context.resources.getString(R.string.hotel_detail_share_weblink, data.city.countryName, seoUrl) , context)
+            openIntentShare(data, TkpdBaseURL.WEB_DOMAIN + context.resources.getString(R.string.hotel_detail_share_weblink, data.city.countryName, seoUrl) , context)
             doneLoadShare()
         }
     }
@@ -75,8 +76,8 @@ class HotelShare(val activity: WeakReference<Activity>) {
                 imgUri = data.property.images.firstOrNull()?.urlMax300 ?: ""
                 custmMsg = if (isPromo) "promo" else ""
                 deepLink = context.resources.getString(R.string.hotel_detail_share_applink, data.property.id.toString())
-                uri = context.resources.getString(R.string.hotel_detail_share_weblink, data.city.countryName, seoUrl)
-                desktopUrl = context.resources.getString(R.string.hotel_detail_share_weblink, data.city.countryName, seoUrl)
+                uri = TkpdBaseURL.WEB_DOMAIN + context.resources.getString(R.string.hotel_detail_share_weblink, data.city.countryName, seoUrl)
+                desktopUrl = TkpdBaseURL.WEB_DOMAIN +context.resources.getString(R.string.hotel_detail_share_weblink, data.city.countryName, seoUrl)
             }
         }
     }

@@ -5,7 +5,8 @@ import com.tokopedia.unifyprinciples.UnifyMotion
 
 class OtherMenuShareButtonAnimator(private val shareButton: AppCompatImageView?) {
 
-    companion object {private const val INITIAL_TRANSLATION_X = 48f
+    companion object {
+        private const val INITIAL_TRANSLATION_X = 48f
         private const val TARGET_TRANSLATION_X = -48f
         private const val DEFAULT_TRANSLATION_X = 0f
         private const val INITIAL_APLHA = 0f

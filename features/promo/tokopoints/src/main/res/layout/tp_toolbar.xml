@@ -14,16 +14,16 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:orientation="horizontal"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingBottom="@dimen/dp_8"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         tools:background="@color/Unify_N700">
 
         <TextView
             android:id="@+id/tv_tpToolbar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:textColor="@color/Unify_N0"
             android:textSize="@dimen/tp_text_size_regular"
             android:textStyle="bold"

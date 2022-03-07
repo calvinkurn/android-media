@@ -11,11 +11,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.android.gms.security.ProviderInstaller;
+import com.google.firebase.FirebaseApp;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
-import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
@@ -25,11 +25,13 @@ import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
+import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
+import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.network.NetworkRouter;
@@ -38,7 +40,6 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.tkpd.ActivityFrameMetrics;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.network.DataSource;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.url.TokopediaUrl;
@@ -85,7 +86,7 @@ public class MyApplication extends BaseMainApplication
 
         upgradeSecurityProvider();
 
-        GraphqlClient.init(this);
+        GraphqlClient.init(this, getAuthenticator());
         NetworkClient.init(this);
         registerActivityLifecycleCallbacks(new ActivityFrameMetrics.Builder().build());
         TrackApp.initTrackApp(this);
@@ -114,8 +115,12 @@ public class MyApplication extends BaseMainApplication
 
         IrisAnalytics.Companion.getInstance(this).initialize();
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
+        FirebaseApp.initializeApp(this);
     }
 
+    private TkpdAuthenticatorGql getAuthenticator() {
+        return new TkpdAuthenticatorGql(this, this, new UserSession(this), new RefreshTokenGql());
+    }
 
     private void upgradeSecurityProvider() {
         try {
@@ -295,7 +300,7 @@ public class MyApplication extends BaseMainApplication
 
     @Override
     public FingerprintModel getFingerprintModel() {
-        return DataSource.generateFingerprintModel();
+        return FingerprintModelGenerator.generateFingerprintModel(this);
     }
 
     @Override
@@ -342,12 +347,6 @@ public class MyApplication extends BaseMainApplication
     @Deprecated
     @Override
     public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
-        return null;
-    }
-
-    @Deprecated
-    @Override
-    public ApplinkDelegate applinkDelegate() {
         return null;
     }
 

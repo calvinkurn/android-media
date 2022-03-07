@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:id="@+id/suggestionTopShopSeeMoreCard"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardBackgroundColor="@color/discovery_common_dms_card_background"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/suggestionTopShopSeeMoreImage"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:layout_marginTop="37dp"
+            app:srcCompat="@drawable/ic_product_action_see_more_arrow_normal_352"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/suggestionTopShopSeeMoreTitle"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/suggestionTopShopSeeMoreTitle"
+            android:layout_width="@dimen/dp_78"
+            android:layout_height="wrap_content"
+            android:text="@string/suggestion_top_shop_card_all"
+            android:textColor="@color/Unify_G500"
+            android:maxLines="2"
+            android:gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="38dp"
+            android:layout_marginLeft="@dimen/dp_36"
+            android:layout_marginStart="@dimen/dp_36"
+            android:layout_marginRight="@dimen/dp_36"
+            android:layout_marginEnd="@dimen/dp_36"
+            app:typographyWeight="bold"
+            app:typographyType="body_3"
+            app:layout_constraintTop_toBottomOf="@id/suggestionTopShopSeeMoreImage"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

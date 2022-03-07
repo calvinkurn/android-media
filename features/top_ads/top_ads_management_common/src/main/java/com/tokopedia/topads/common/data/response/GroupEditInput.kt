@@ -19,6 +19,9 @@ data class GroupEditInput(
     @Parcelize
     data class Group(
 
+            @field:SerializedName("type")
+            var type: String = "",
+
             @field:SerializedName("adOperations")
             var adOperations: List<AdOperationsItem>? = null,
 
@@ -35,8 +38,19 @@ data class GroupEditInput(
             var status: String? = null,
 
             @field:SerializedName("strategies")
-            var strategies: ArrayList<String>? = arrayListOf()
+            var strategies: ArrayList<String>? = arrayListOf(),
+
+            @field:SerializedName("suggestionBidSettings")
+            var suggestionBidSettings : List<TopadsSuggestionBidSetting>? = null
     )  : Parcelable {
+        @Parcelize
+        data class TopadsSuggestionBidSetting(
+            @field:SerializedName("bidType")
+            var bidType: String? = "",
+            @field:SerializedName("suggestionPriceBid")
+            var suggestionPriceBid: Float = 0f,
+        ) : Parcelable
+
         @Parcelize
         data class TopadsGroupBidSetting(
             @field:SerializedName("bidType")

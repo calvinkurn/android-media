@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.imagepreview.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.iconunify.IconUnify
@@ -22,10 +24,12 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
-import com.tokopedia.review.common.data.ToggleProductReviewLike
+import com.tokopedia.review.common.data.ProductrevLikeReview
+import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.common.util.OnBackPressedListener
+import com.tokopedia.review.feature.credibility.presentation.activity.ReviewCredibilityActivity
 import com.tokopedia.review.feature.gallery.data.Detail
 import com.tokopedia.review.feature.gallery.data.ProductrevGetReviewImage
 import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryUiModel
@@ -38,13 +42,14 @@ import com.tokopedia.review.feature.imagepreview.presentation.adapter.ReviewImag
 import com.tokopedia.review.feature.imagepreview.presentation.di.DaggerReviewImagePreviewComponent
 import com.tokopedia.review.feature.imagepreview.presentation.di.ReviewImagePreviewComponent
 import com.tokopedia.review.feature.imagepreview.presentation.listener.*
-import com.tokopedia.review.feature.imagepreview.presentation.uimodel.ReviewImagePreviewFinalLikeCount
+import com.tokopedia.review.feature.imagepreview.presentation.uimodel.ReviewImagePreviewBottomSheetUiModel
 import com.tokopedia.review.feature.imagepreview.presentation.uimodel.ReviewImagePreviewUiModel
 import com.tokopedia.review.feature.imagepreview.presentation.viewmodel.ReviewImagePreviewViewModel
 import com.tokopedia.review.feature.imagepreview.presentation.widget.ReviewImagePreviewDetailWidget
 import com.tokopedia.review.feature.imagepreview.presentation.widget.ReviewImagePreviewExpandedReviewBottomSheet
 import com.tokopedia.review.feature.reading.data.LikeDislike
 import com.tokopedia.review.feature.reading.data.ProductReview
+import com.tokopedia.review.feature.reading.data.UserReviewStats
 import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
@@ -53,14 +58,15 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImagePreviewComponent>,
-    ReviewReportBottomSheetListener,
+    ReviewReportBottomSheetListener, ReviewBasicInfoListener,
     ReviewImagePreviewSwipeListener, ReviewImagePreviewListener,
     OnBackPressedListener, ReviewImagePreviewLoadMoreListener {
 
     companion object {
         const val REPORT_REVIEW_ACTIVITY_CODE = 200
-        private const val DEFAULT_VALUE_INDEX = 0
         private const val POSITION_INDEX_COUNTER = 1
+        const val GALLERY_SOURCE_CREDIBILITY_SOURCE = "gallery"
+        const val READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE = "reading image preview"
         const val KEY_CACHE_ID = "cacheId"
         const val KEY_FINAL_LIKE_COUNT = "final like count"
         fun newInstance(
@@ -146,7 +152,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_review_image_preview, container, false)
+        return inflater.inflate(com.tokopedia.review.R.layout.fragment_review_image_preview, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -232,6 +238,17 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             showToaster(getString(R.string.review_reading_success_submit_report))
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun trackOnUserInfoClicked(feedbackId: String, userId: String, statistics: String) {
+        ReviewImagePreviewTracking.trackClickReviewerName(
+            isFromGallery, feedbackId, userId, statistics,
+            if (isFromGallery) viewModel.getProductId() else productId, viewModel.getUserId()
+        )
+    }
+
+    override fun onUserNameClicked(userId: String) {
+        goToReviewCredibility(userId)
     }
 
     private fun getDataFromArguments() {
@@ -355,10 +372,13 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     private fun setupReviewDetail() {
         with(productReview) {
             reviewImagePreviewDetail?.apply {
+                setCredibilityData(isProductReview, isAnonymous, user.userID, feedbackID)
+                setBasicInfoListener(this@ReviewImagePreviewFragment)
                 setPhotoCount(index, imageAttachments.size.toLong())
                 setRating(productRating)
                 setReviewerName(user.fullName)
                 setTimeStamp(reviewCreateTimestamp)
+                setReviewerImage(user.image)
                 setReviewMessage(message) { openExpandedReviewBottomSheet() }
                 setLikeCount(likeDislike.totalLike.toString())
                 setLikeButtonClickListener {
@@ -378,20 +398,20 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                     }
                     viewModel.toggleLikeReview(
                         productReview.feedbackID,
-                        shopId,
-                        productId,
                         productReview.likeDislike.likeStatus
                     )
                 }
                 setLikeButtonImage(likeDislike.isLiked())
                 setVariantName(variantName)
+                setStats(userReviewStats)
+                setBadRatingReason(badRatingReasonFmt)
             }
             setThreeDotsVisibility(isReportable && !areComponentsHidden)
         }
     }
 
     private fun observeToggleLikeReviewResult() {
-        viewModel.toggleLikeReview.observe(viewLifecycleOwner, {
+        viewModel.toggleLikeReviewReview.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onSuccessLikeReview(it.data)
                 is Fail -> onFailLikeReview(it.throwable)
@@ -408,11 +428,11 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         })
     }
 
-    private fun onSuccessLikeReview(toggleLikeReviewResponse: ToggleProductReviewLike) {
-        with(toggleLikeReviewResponse) {
-            updateLikeCount(reviewId, totalLike)
+    private fun onSuccessLikeReview(toggleLikeReviewResponseReview: ProductrevLikeReview) {
+        with(toggleLikeReviewResponseReview) {
+            updateLikeCount(feedbackId, totalLike)
             updateLikeButton(isLiked())
-            updateLikeStatus(reviewId, likeStatus)
+            updateLikeStatus(feedbackId, likeStatus)
             isLikeValueChange = true
         }
     }
@@ -462,7 +482,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     private fun updateLikeStatus(reviewId: String, likeStatus: Int) {
         if (isFromGallery) {
             galleryRoutingData.loadedReviews.forEach {
-                if (it.feedbackId == reviewId ) {
+                if (it.feedbackId == reviewId) {
                     it.isLiked = isLiked(likeStatus)
                 }
             }
@@ -513,22 +533,46 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             galleryRoutingData.getSelectedReview(currentRecyclerViewPosition)?.let {
                 expandedReviewBottomSheet =
                     ReviewImagePreviewExpandedReviewBottomSheet.createInstance(
-                        it.rating,
-                        it.reviewTime,
-                        it.reviewerName,
-                        it.review,
-                        it.variantName
+                        getBottomSheetUiModel(
+                            it.rating,
+                            it.reviewTime,
+                            it.reviewerName,
+                            it.review,
+                            it.variantName,
+                            it.userStats,
+                            it.userId,
+                            it.isAnonymous,
+                            isProductReview,
+                            it.feedbackId,
+                            viewModel.getProductId(),
+                            isFromGallery,
+                            viewModel.getUserId(),
+                            it.userImage,
+                            it.badRatingReason
+                        )
                     )
             }
         } else {
             with(productReview) {
                 expandedReviewBottomSheet =
                     ReviewImagePreviewExpandedReviewBottomSheet.createInstance(
-                        productRating,
-                        reviewCreateTimestamp,
-                        user.fullName,
-                        message,
-                        variantName
+                        getBottomSheetUiModel(
+                            productRating,
+                            reviewCreateTimestamp,
+                            user.fullName,
+                            message,
+                            variantName,
+                            userReviewStats,
+                            user.userID,
+                            isAnonymous,
+                            isProductReview,
+                            feedbackID,
+                            productId,
+                            isFromGallery,
+                            viewModel.getUserId(),
+                            user.image,
+                            badRatingReasonFmt
+                        )
                     )
             }
         }
@@ -548,28 +592,15 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             clearContentPadding = true
             isDragable = true
             isHideable = true
+            isFullpage = true
         }
     }
 
     private fun finishActivity() {
         activity?.apply {
-            if (isLikeValueChange) setActivityResult()
+            if (isLikeValueChange) activity?.setResult(Activity.RESULT_OK)
             finish()
         }
-    }
-
-    private fun setActivityResult() {
-        activity?.setResult(Activity.RESULT_OK, Intent().apply {
-            val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
-            with(productReview.likeDislike) {
-                cacheManager?.put(
-                    KEY_FINAL_LIKE_COUNT, ReviewImagePreviewFinalLikeCount(
-                        totalLike, likeStatus
-                    )
-                )
-            }
-            putExtra(KEY_CACHE_ID, cacheManager?.id)
-        })
     }
 
     private fun showErrorToaster(
@@ -615,23 +646,28 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             }?.let { selectedReview ->
                 with(selectedReview) {
                     reviewImagePreviewDetail?.apply {
-                        if (isFirstTimeUpdate) setPhotoCount(currentPosition, totalImageCount)
+                        if (isFirstTimeUpdate) {
+                            setPhotoCount(currentPosition, totalImageCount)
+                        }
+                        setCredibilityData(isProductReview, isAnonymous, userId, feedbackId)
+                        setBasicInfoListener(this@ReviewImagePreviewFragment)
                         setRating(rating)
                         setReviewerName(reviewerName)
                         setTimeStamp(reviewTime)
                         setReviewMessage(review) { openExpandedReviewBottomSheet() }
+                        setStats(userStats)
+                        setBadRatingReason(badRatingReason)
+                        setReviewerImage(userImage)
                         setLikeCount(totalLiked.toString())
                         setLikeButtonClickListener {
                             ReviewImagePreviewTracking.trackOnLikeReviewClicked(
                                 feedbackId,
                                 isLiked,
-                                productId,
+                                viewModel.getProductId(),
                                 isFromGallery
                             )
                             viewModel.toggleLikeReview(
                                 feedbackId,
-                                shopId,
-                                productId,
                                 mapToLikeStatus(selectedReview.isLiked)
                             )
                         }
@@ -712,13 +748,18 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                 totalLiked = this.totalLike,
                 review = this.review,
                 reviewTime = this.createTimestamp,
-                isReportable = this.isReportable
+                isReportable = this.isReportable,
+                userStats = this.userStats,
+                isAnonymous = this.isAnonymous,
+                userId = this.user.userId,
+                userImage = this.user.image
             )
         }
         detail.reviewGalleryImages.firstOrNull { it.attachmentId == attachmentId }?.apply {
             reviewGalleryUiModel = reviewGalleryUiModel.copy(
                 imageUrl = this.thumbnailURL,
-                fullImageUrl = this.fullsizeURL
+                fullImageUrl = this.fullsizeURL,
+                attachmentId = this.attachmentId
             )
         }
         reviewGalleryUiModel = reviewGalleryUiModel.copy(
@@ -726,5 +767,55 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             imageNumber = imageNumber
         )
         return reviewGalleryUiModel
+    }
+
+    private fun goToReviewCredibility(userId: String) {
+        RouteManager.route(
+            context,
+            Uri.parse(
+                UriUtil.buildUri(
+                    ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY,
+                    userId,
+                    getCredibilitySource()
+                )
+            ).buildUpon()
+                .appendQueryParameter(
+                    ReviewCredibilityActivity.PARAM_PRODUCT_ID,
+                    if (isFromGallery) viewModel.getProductId() else productId
+                ).build()
+                .toString()
+        )
+    }
+
+    private fun getBottomSheetUiModel(
+        rating: Int, timeStamp: String, reviewerName: String,
+        reviewMessage: String, variantName: String,
+        userStats: List<UserReviewStats>, userId: String,
+        isAnonymous: Boolean = false, isProductReview: Boolean = false, feedbackId: String = "",
+        productId: String, isFromGallery: Boolean, currentUserId: String,
+        reviewerImage: String, badRatingReason: String
+    ): ReviewImagePreviewBottomSheetUiModel {
+        return ReviewImagePreviewBottomSheetUiModel(
+            rating,
+            timeStamp,
+            reviewerName,
+            reviewMessage,
+            variantName,
+            userStats,
+            userId,
+            isAnonymous,
+            isProductReview,
+            feedbackId,
+            productId,
+            isFromGallery,
+            currentUserId,
+            reviewerImage,
+            getCredibilitySource(),
+            badRatingReason
+        )
+    }
+
+    private fun getCredibilitySource(): String {
+        return if (isFromGallery) GALLERY_SOURCE_CREDIBILITY_SOURCE else READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE
     }
 }

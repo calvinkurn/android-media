@@ -17,8 +17,13 @@ import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.BottomsheetPlayWidgetSellerActionListBinding
+import com.tokopedia.shop.databinding.ItemPlayWidgetSellerActionListBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by jegul on 04/11/20
@@ -27,21 +32,21 @@ class PlayWidgetSellerActionBottomSheet : BottomSheetUnify() {
 
     private val adapter = Adapter()
 
-    private lateinit var rvActionList: RecyclerView
-
+    private var rvActionList: RecyclerView? = null
+    private var viewBinding by autoClearedNullable<BottomsheetPlayWidgetSellerActionListBinding>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupBottomSheet()
+        initView()
+    }
+
+    private fun initView() {
+        rvActionList = viewBinding?.rvActionList
     }
 
     private fun setupBottomSheet() {
-        setChild(getContentView())
-    }
-
-    private fun getContentView(): View {
-        val view = View.inflate(requireContext(), R.layout.bottomsheet_play_widget_seller_action_list, null)
-        rvActionList = view.findViewById(R.id.rv_action_list)
-        return view
+        viewBinding = BottomsheetPlayWidgetSellerActionListBinding.inflate(LayoutInflater.from(context))
+        setChild(viewBinding?.root)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -59,8 +64,8 @@ class PlayWidgetSellerActionBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupView(view: View) {
-        rvActionList.adapter = adapter
-        rvActionList.addItemDecoration(ItemDecoration(view.context))
+        rvActionList?.adapter = adapter
+        rvActionList?.addItemDecoration(ItemDecoration(view.context))
     }
 
     companion object {
@@ -93,15 +98,16 @@ class PlayWidgetSellerActionBottomSheet : BottomSheetUnify() {
 
     internal class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private val ivIcon: ImageView = itemView.findViewById(R.id.iv_icon)
-        val tvSubtitle: TextView = itemView.findViewById(R.id.tv_subtitle)
+        private val viewBindingViewHolder: ItemPlayWidgetSellerActionListBinding? by viewBinding()
+        private val ivIcon: ImageView? = viewBindingViewHolder?.ivIcon
+        val tvSubtitle: TextView? = viewBindingViewHolder?.tvSubtitle
 
         fun bind(action: Action) {
-            ivIcon.setImageResource(action.iconRes)
+            ivIcon?.setImageResource(action.iconRes)
             action.tintColor?.let { color ->
-                ImageViewCompat.setImageTintList(ivIcon, ColorStateList.valueOf(color))
+                ivIcon?.let { ImageViewCompat.setImageTintList(it, ColorStateList.valueOf(color)) }
             }
-            tvSubtitle.text = action.subtitle
+            tvSubtitle?.text = action.subtitle
             itemView.setOnClickListener { action.onClick() }
         }
 
@@ -134,7 +140,7 @@ class PlayWidgetSellerActionBottomSheet : BottomSheetUnify() {
                     val viewHolder = parent.getChildViewHolder(child)
 
                     if (viewHolder is ViewHolder) {
-                        val start = viewHolder.tvSubtitle.left
+                        val start = viewHolder.tvSubtitle?.left.orZero()
 
                         c.drawRect(
                                 Rect(start, child.top - dividerHeight, parent.width, child.top),

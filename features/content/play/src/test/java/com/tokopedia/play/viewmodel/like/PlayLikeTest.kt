@@ -11,9 +11,12 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.action.ClickLikeAction
 import com.tokopedia.play.view.uimodel.event.OpenPageEvent
 import com.tokopedia.play.view.uimodel.event.ShowLikeBubbleEvent
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -46,6 +49,15 @@ class PlayLikeTest {
         )
     )
 
+    private val mockRemoteConfig = mockk<RemoteConfig>(relaxed = true)
+
+    @Before
+    fun setUp() {
+        every {
+            mockRemoteConfig.getBoolean(any(), any())
+        } returns true
+    }
+
     @Test
     fun `given user is logged in, channel is VOD, and channel is not liked, when click like, then channel should be liked`() {
         val mockRepo: PlayViewerRepository = mockk(relaxed = true)
@@ -53,18 +65,21 @@ class PlayLikeTest {
 
         val robot = createPlayViewModelRobot(
             repo = mockRepo,
-            dispatchers = testDispatcher
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
         )
 
-        val state = robot.recordState {
-            setLoggedIn(true)
-            createPage(mockVODChannelData)
-            focusPage(mockVODChannelData)
+        robot.use {
+            val state = robot.recordState {
+                setLoggedIn(true)
+                createPage(mockVODChannelData)
+                focusPage(mockVODChannelData)
 
-            submitAction(ClickLikeAction)
+                submitAction(ClickLikeAction)
+            }
+
+            state.like.isLiked.assertTrue()
         }
-
-        state.like.isLiked.assertTrue()
     }
 
     @Test
@@ -74,24 +89,27 @@ class PlayLikeTest {
 
         val robot = createPlayViewModelRobot(
             repo = mockRepo,
-            dispatchers = testDispatcher
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
         )
 
-        val (state, event) = robot.recordStateAndEvent {
-            setLoggedIn(true)
-            createPage(mockLiveChannelData)
-            focusPage(mockLiveChannelData)
+        robot.use {
+            val (state, event) = robot.recordStateAndEvent {
+                setLoggedIn(true)
+                createPage(mockLiveChannelData)
+                focusPage(mockLiveChannelData)
 
-            submitAction(ClickLikeAction)
+                submitAction(ClickLikeAction)
+            }
+
+            state.like.isLiked.assertTrue()
+
+            event.last()
+                .isEqualToIgnoringFields(
+                    ShowLikeBubbleEvent.Single(1, reduceOpacity = false, config = mockk(relaxed = true)),
+                    ShowLikeBubbleEvent.Single::config
+                )
         }
-
-        state.like.isLiked.assertTrue()
-
-        event.last()
-            .isEqualToIgnoringFields(
-                ShowLikeBubbleEvent.Single(1, reduceOpacity = false, config = mockk(relaxed = true)),
-                ShowLikeBubbleEvent.Single::config
-            )
     }
 
     @Test
@@ -101,18 +119,21 @@ class PlayLikeTest {
 
         val robot = createPlayViewModelRobot(
             repo = mockRepo,
-            dispatchers = testDispatcher
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
         )
 
-        val state = robot.recordState {
-            setLoggedIn(true)
-            createPage(mockVODChannelData)
-            focusPage(mockVODChannelData)
+        robot.use {
+            val state = robot.recordState {
+                setLoggedIn(true)
+                createPage(mockVODChannelData)
+                focusPage(mockVODChannelData)
 
-            submitAction(ClickLikeAction)
+                submitAction(ClickLikeAction)
+            }
+
+            state.like.isLiked.assertFalse()
         }
-
-        state.like.isLiked.assertFalse()
     }
 
     @Test
@@ -122,24 +143,27 @@ class PlayLikeTest {
 
         val robot = createPlayViewModelRobot(
             repo = mockRepo,
-            dispatchers = testDispatcher
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
         )
 
-        val (state, event) = robot.recordStateAndEvent {
-            setLoggedIn(true)
-            createPage(mockLiveChannelData)
-            focusPage(mockLiveChannelData)
+        robot.use {
+            val (state, event) = robot.recordStateAndEvent {
+                setLoggedIn(true)
+                createPage(mockLiveChannelData)
+                focusPage(mockLiveChannelData)
 
-            submitAction(ClickLikeAction)
+                submitAction(ClickLikeAction)
+            }
+
+            state.like.isLiked.assertTrue()
+
+            event.last()
+                .isEqualToIgnoringFields(
+                    ShowLikeBubbleEvent.Single(1, reduceOpacity = false, config = mockk(relaxed = true)),
+                    ShowLikeBubbleEvent.Single::config
+                )
         }
-
-        state.like.isLiked.assertTrue()
-
-        event.last()
-            .isEqualToIgnoringFields(
-                ShowLikeBubbleEvent.Single(1, reduceOpacity = false, config = mockk(relaxed = true)),
-                ShowLikeBubbleEvent.Single::config
-            )
     }
 
     @Test
@@ -149,23 +173,26 @@ class PlayLikeTest {
 
         val robot = createPlayViewModelRobot(
             repo = mockRepo,
-            dispatchers = testDispatcher
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
         )
 
-        val (state, event) = robot.recordStateAndEvent {
-            setLoggedIn(false)
-            createPage(mockVODChannelData)
-            focusPage(mockVODChannelData)
+        robot.use {
+            val (state, event) = robot.recordStateAndEvent {
+                setLoggedIn(false)
+                createPage(mockVODChannelData)
+                focusPage(mockVODChannelData)
 
-            submitAction(ClickLikeAction)
+                submitAction(ClickLikeAction)
+            }
+
+            state.like.isLiked.assertFalse()
+            event.last()
+                .isEqualToIgnoringFields(
+                    OpenPageEvent(ApplinkConst.LOGIN),
+                    OpenPageEvent::requestCode
+                )
         }
-
-        state.like.isLiked.assertFalse()
-        event.last()
-            .isEqualToIgnoringFields(
-                OpenPageEvent(ApplinkConst.LOGIN),
-                OpenPageEvent::requestCode
-            )
     }
 
 }

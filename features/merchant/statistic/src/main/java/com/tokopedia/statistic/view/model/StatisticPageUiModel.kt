@@ -1,6 +1,7 @@
 package com.tokopedia.statistic.view.model
 
 import android.os.Parcelable
+import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -13,5 +14,6 @@ data class StatisticPageUiModel(
         val pageSource: String = "",
         val tickerPageName: String = "",
         val actionMenu: List<ActionMenuUiModel> = emptyList(),
-        val dateFilters: List<DateFilterItem> = emptyList()
+        val dateFilters: List<DateFilterItem> = emptyList(),
+        val exclusiveIdentifierDateFilterDesc: String = ""
 ) : Parcelable

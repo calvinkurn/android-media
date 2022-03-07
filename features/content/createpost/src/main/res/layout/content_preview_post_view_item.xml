@@ -5,7 +5,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_2"
+        android:layout_marginEnd="2dp"
     >
 
         <com.tokopedia.unifycomponents.ImageUnify
@@ -29,17 +29,17 @@
                 android:layout_marginBottom="@dimen/unify_space_8"
                 android:minWidth="@dimen/layout_lvl3"
                 app:cardBackgroundColor="@color/Unify_NN900"
-                app:cardCornerRadius="@dimen/dp_12"
+                app:cardCornerRadius="12dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 
                     <com.tokopedia.iconunify.IconUnify
                         android:id="@+id/content_video_tag_button"
-                        android:layout_width="@dimen/dp_16"
-                        android:layout_height="@dimen/dp_16"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
                         android:layout_gravity="center"
-                        android:layout_marginStart="@dimen/dp_4"
-                        android:layout_marginEnd="@dimen/dp_4"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp"
                         app:icon_color_light_enable="@color/Unify_N0"
                         app:icon_color_night_enable="@color/Unify_N0"
                         app:icon_name="PRODUCT"

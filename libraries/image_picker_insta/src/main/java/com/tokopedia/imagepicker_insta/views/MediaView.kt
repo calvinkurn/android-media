@@ -1,5 +1,6 @@
 package com.tokopedia.imagepicker_insta.views
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
@@ -29,7 +30,7 @@ class MediaView @JvmOverloads constructor(
 
     private lateinit var playerView: PlayerView
     private lateinit var playPauseIcon: View
-    private lateinit var assetView: ZoomAssetImageView
+    lateinit var assetView: ZoomAssetImageView
     private var simpleExoPlayer: SimpleExoPlayer? = null
     private val isSdkLowerThanN = Build.VERSION.SDK_INT < Build.VERSION_CODES.N
     private lateinit var dataFactory: DefaultDataSourceFactory
@@ -43,12 +44,11 @@ class MediaView @JvmOverloads constructor(
             //Add logic for scaling in exoplayer as well
             if (value == MediaScaleType.MEDIA_CENTER_CROP) {
                 playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-                assetView.centerCrop(true)
             } else {
                 playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-                assetView.centerInside(true)
             }
             field = value
+            assetView.resetZoom(true)
         }
 
     var imageAdapterData: ImageAdapterData? = null
@@ -65,7 +65,6 @@ class MediaView @JvmOverloads constructor(
         playerView = findViewById(R.id.media_player_view)
         assetView = findViewById(R.id.media_asset_view)
         playPauseIcon = findViewById(R.id.play_icon)
-        assetView.initListeners()
         assetView.mediaScaleTypeContract = object : MediaScaleTypeContract {
             override fun getCurrentMediaScaleType(): Int {
                 return mediaScaleType
@@ -89,6 +88,7 @@ class MediaView @JvmOverloads constructor(
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setListeners() {
         playerView.setOnTouchListener { _, event ->
             gestureDetector.onTouchEvent(event)
@@ -165,7 +165,8 @@ class MediaView @JvmOverloads constructor(
         if (asset is VideoData) {
             playerView.visibility = View.VISIBLE
             assetView.visibility = View.GONE
-            createVideoItem(asset)
+            createVideoItem(asset, zoomInfo)
+            // send zoom info to show preview
         } else if (asset is PhotosData) {
             assetView.visibility = View.VISIBLE
             playerView.visibility = View.GONE
@@ -196,7 +197,7 @@ class MediaView @JvmOverloads constructor(
         assetView.loadAsset(asset, zoomInfo)
     }
 
-    fun createVideoItem(videoData: VideoData) {
+    fun createVideoItem(videoData: VideoData, zoomInfo: ZoomInfo) {
         val tmpUri = videoData.contentUri
         val videoSource = ProgressiveMediaSource.Factory(dataFactory).createMediaSource(tmpUri)
         simpleExoPlayer?.prepare(videoSource)
@@ -249,10 +250,10 @@ class MediaView @JvmOverloads constructor(
     }
 
     fun lockAspectRatio() {
-        assetView.lockMinZoom()
+//        assetView.lockMinZoom()
     }
 
     fun unLockAspectRatio() {
-        assetView.unLockMinZoom()
+//        assetView.unLockMinZoom()
     }
 }

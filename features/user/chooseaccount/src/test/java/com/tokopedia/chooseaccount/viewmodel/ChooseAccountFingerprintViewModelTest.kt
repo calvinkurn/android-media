@@ -8,18 +8,22 @@ import com.tokopedia.chooseaccount.data.ErrorResponseDataModel
 import com.tokopedia.chooseaccount.domain.usecase.GetFingerprintAccountListUseCase
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
 import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.lang.RuntimeException
 
 class ChooseAccountFingerprintViewModelTest {
 
@@ -31,7 +35,8 @@ class ChooseAccountFingerprintViewModelTest {
     val getAccountListUseCase = mockk<GetFingerprintAccountListUseCase>(relaxed = true)
     val fingerprintPreferenceManager = mockk<FingerprintPreference>(relaxed = true)
 
-    private var getAccountListObserver = mockk<Observer<Result<AccountListDataModel>>>(relaxed = true)
+    private var getAccountListObserver =
+        mockk<Observer<Result<AccountListDataModel>>>(relaxed = true)
 
     @Before
     fun setUp() {
@@ -47,9 +52,7 @@ class ChooseAccountFingerprintViewModelTest {
     fun `on Success Get Account List`() {
         val resp = AccountsDataModel()
 
-        every { getAccountListUseCase.getAccounts(any(), any(), any(), any(), any()) } answers {
-            arg<(AccountsDataModel) -> Unit>(3).invoke(resp)
-        }
+        coEvery { getAccountListUseCase.invoke(any()) } returns resp
 
         viewModel.getAccountListFingerprint("abc123")
 
@@ -59,17 +62,25 @@ class ChooseAccountFingerprintViewModelTest {
     @Test
     fun `on Success Get Account List has errors`() {
         val msg = "error message"
-        val accountList = AccountListDataModel(errorResponseDataModels = listOf(ErrorResponseDataModel("error", message = msg)))
+        val accountList = AccountListDataModel(
+            errorResponseDataModels = listOf(
+                ErrorResponseDataModel(
+                    "error",
+                    message = msg
+                )
+            )
+        )
         val resp = AccountsDataModel(accountListDataModel = accountList)
 
-        every { getAccountListUseCase.getAccounts(any(), any(), any(), any(), any()) } answers {
-            arg<(AccountsDataModel) -> Unit>(3).invoke(resp)
-        }
+        coEvery { getAccountListUseCase.invoke(any()) } returns resp
 
         viewModel.getAccountListFingerprint("abc123")
 
         /* Then */
-        MatcherAssert.assertThat(viewModel.getAccountListDataModelResponse.value, CoreMatchers.instanceOf(Fail::class.java))
+        assertThat(
+            viewModel.getAccountListDataModelResponse.value,
+            instanceOf(Fail::class.java)
+        )
         Assert.assertEquals(
             (viewModel.getAccountListDataModelResponse.value as Fail).throwable.message,
             msg
@@ -77,12 +88,31 @@ class ChooseAccountFingerprintViewModelTest {
     }
 
     @Test
+    fun `on Success Get Account List has errors else condition`() {
+        val accountList =
+            AccountListDataModel(errorResponseDataModels = listOf(ErrorResponseDataModel()))
+        val resp = AccountsDataModel(accountListDataModel = accountList)
+
+        coEvery { getAccountListUseCase.invoke(any()) } returns resp
+
+        viewModel.getAccountListFingerprint("abc123")
+
+        /* Then */
+        assertThat(
+            viewModel.getAccountListDataModelResponse.getOrAwaitValue(),
+            instanceOf(Fail::class.java)
+        )
+        assertThat(
+            (viewModel.getAccountListDataModelResponse.getOrAwaitValue() as Fail).throwable,
+            instanceOf(RuntimeException::class.java)
+        )
+    }
+
+    @Test
     fun `on Error Get Account List`() {
         val error = Throwable()
 
-        every { getAccountListUseCase.getAccounts(any(), any(), any(), any(), any()) } answers {
-            arg<(Throwable) -> Unit>(4).invoke(error)
-        }
+        coEvery { getAccountListUseCase.invoke(any()) } throws error
 
         viewModel.getAccountListFingerprint("abc123")
 

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="snapshot_dimen_10dp">10dp</dimen>
+    <dimen name="snapshot_dimen_36dp">36dp</dimen>
     <dimen name="snapshot_dimen_68dp">68dp</dimen>
     <dimen name="snapshot_dimen_103dp">103dp</dimen>
     <dimen name="snapshot_dimen_110dp">110dp</dimen>

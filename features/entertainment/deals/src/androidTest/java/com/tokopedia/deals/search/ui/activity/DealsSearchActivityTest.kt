@@ -85,7 +85,7 @@ class DealsSearchActivityTest {
 
     private fun actionOnVoucherViewHolder() {
         Thread.sleep(2000)
-        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click()).perform(typeText(DUMMY_USER_TYPE_STRING), ViewActions.closeSoftKeyboard())
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(typeText(DUMMY_USER_TYPE_STRING), ViewActions.closeSoftKeyboard())
 
         Thread.sleep(2000)
         onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.voucher_deals_layout), 1)).perform(click())
@@ -94,7 +94,7 @@ class DealsSearchActivityTest {
 
     private fun actionOnMerchantViewHolder() {
         Thread.sleep(2000)
-        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click()).perform(typeText(DUMMY_USER_TYPE_STRING), ViewActions.closeSoftKeyboard())
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(typeText(DUMMY_USER_TYPE_STRING), ViewActions.closeSoftKeyboard())
         Thread.sleep(2000)
         onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.brand_view_holder_layout), 1)).perform(click())
         Thread.sleep(2000)

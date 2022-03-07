@@ -41,7 +41,7 @@ class ShopLocationViewModel @Inject constructor(
         }
     }
 
-    fun setShopLocationState(warehouseId: Int, status: Int) {
+    fun setShopLocationState(warehouseId: Long, status: Int) {
         _result.value = ShopLocationState.Loading
         viewModelScope.launch(onErrorSetShopLocation) {
             val getShopLocationStatus = repo.setShopLocationStatus(warehouseId, status)

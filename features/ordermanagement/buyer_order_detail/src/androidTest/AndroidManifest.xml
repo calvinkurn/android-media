@@ -3,7 +3,26 @@
     package="com.tokopedia.buyerorderdetail"
     android:versionCode="1"
     android:versionName="1.0.0">
+
     <application
         android:label="Buyer Order Detail Test"
-        tools:replace="android:label" />
+        tools:replace="android:label">
+        <activity
+            android:name=".stub.detail.presentation.activity.BuyerOrderDetailActivityStub"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustNothing">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:path="@string/path_buyer_order_detail"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+    </application>
 </manifest>

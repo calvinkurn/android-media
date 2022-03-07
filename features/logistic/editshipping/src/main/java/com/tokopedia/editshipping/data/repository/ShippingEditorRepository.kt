@@ -1,5 +1,6 @@
 package com.tokopedia.editshipping.data.repository
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.editshipping.util.getResponse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -7,7 +8,7 @@ import com.tokopedia.logisticCommon.data.query.ShippingEditorQuery
 import com.tokopedia.logisticCommon.data.response.shippingeditor.*
 import javax.inject.Inject
 
-class ShippingEditorRepository @Inject constructor(private val gql: GraphqlRepository) {
+class ShippingEditorRepository @Inject constructor(@ApplicationContext private val gql: GraphqlRepository) {
 
     suspend fun getShippingEditor(shopId: Long): GetShipperListResponse {
         val param = mapOf("input" to mapOf("shop_id" to shopId))

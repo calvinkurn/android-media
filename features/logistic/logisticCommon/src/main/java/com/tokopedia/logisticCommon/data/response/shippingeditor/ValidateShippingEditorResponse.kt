@@ -1,5 +1,6 @@
 package com.tokopedia.logisticCommon.data.response.shippingeditor
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class ValidateShippingEditorResponse(
@@ -21,8 +22,9 @@ data class DataShippingEditorPopup(
         var state: Int = 0,
         @SerializedName("ui_content")
         var uiContent: UiContent = UiContent(),
+        @SuppressLint("Invalid Data Type")
         @SerializedName("feature_id")
-        var featureId: List<Int> = listOf()
+        var featureId: List<Long> = listOf()
 )
 
 data class UiContent(
@@ -37,7 +39,7 @@ data class UiContent(
         @SerializedName("warehouses")
         var warehouses: List<Warehouses> = listOf(),
         @SerializedName("warehouse_ids")
-        var warehouseId: List<Int> = listOf()
+        var warehouseId: List<Long> = listOf()
 
 )
 

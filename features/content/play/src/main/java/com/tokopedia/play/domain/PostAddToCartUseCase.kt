@@ -1,10 +1,12 @@
 package com.tokopedia.play.domain
 
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.play.util.exception.DefaultErrorException
-import com.tokopedia.usecase.RequestParams
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
+import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
 
@@ -15,17 +17,18 @@ class PostAddToCartUseCase @Inject constructor(
         private val addToCartUseCase: AddToCartUseCase
 ) : UseCase<AddToCartDataModel>() {
 
-    var parameters: RequestParams = RequestParams.EMPTY
+    lateinit var parameters: AddToCartRequestParams
 
     override suspend fun executeOnBackground(): AddToCartDataModel {
-        require(parameters.paramsAllValueInString.isEmpty()) { "Please provide add to cart params" }
+        if(!this::parameters.isInitialized) throw IllegalArgumentException("Please provide add to cart params")
+
         return try {
-             addToCartUseCase.createObservable(parameters)
-                    .toBlocking()
-                    .single()
+            addToCartUseCase.setParams(parameters)
+            addToCartUseCase.executeOnBackground()
         } catch (exception: Exception) {
-            throw DefaultErrorException(exception)
+            if (exception is ResponseErrorException)
+                throw MessageErrorException(exception.message)
+            else throw exception
         }
     }
-
 }

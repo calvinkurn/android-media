@@ -46,12 +46,17 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
 
     override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
         when {
-            url.startsWith(BACK_BTN_APPLINK, ignoreCase = true) -> {
-                // Finish activity from webview
-                if(url.contains(KEY_STATUS) && checkForStatusQuery(url)) {
-                    return true
+            url.startsWith(TKPD_SCHEME, ignoreCase = true) || url.startsWith(TKPD_INTERNAL_SCHEME, ignoreCase = true) -> {
+                if(url.startsWith(BACK_BTN_APPLINK)) {
+                    // Finish activity from webview
+                    if (url.contains(KEY_STATUS) && checkForStatusQuery(url)) {
+                        return true
+                    }
+                    return super.shouldOverrideUrlLoading(webview, BACK_BTN_APPLINK)
+                } else {
+                    activity?.finish()
+                    return super.shouldOverrideUrlLoading(webview, url)
                 }
-                return super.shouldOverrideUrlLoading(webview, BACK_BTN_APPLINK)
             }
             url.contains(GOJEK_LINK, ignoreCase = true) -> {
                 // Check for gojek.link url
@@ -60,6 +65,7 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
                 activity?.finish()
                 return true
             }
+
             else -> {
                 // Default is hidden
                 hideToolbar()
@@ -69,8 +75,10 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
     }
 
     fun hideToolbar() {
-        (activity as LinkAccountWebViewActivity).hideSkipBtnToolbar()
-        (activity as LinkAccountWebViewActivity).hideToolbar()
+        getLinkAccountActivity()?.run {
+            hideSkipBtnToolbar()
+            hideToolbar()
+        }
     }
 
     fun checkPageFinished() {
@@ -79,19 +87,31 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
             mUrl.contains(TokopediaUrl.Companion.getInstance().GOJEK_OTP, ignoreCase = true) -> {
                 // Check gojek accounts page, show toolbar
                 analytics.trackViewGojekOTP()
-                (activity as LinkAccountWebViewActivity).hideSkipBtnToolbar()
-                (activity as LinkAccountWebViewActivity).showToolbar()
-                (activity as LinkAccountWebViewActivity).setToolbarTitle(getString(R.string.label_toolbar_verifikasi_akun))
+                getLinkAccountActivity()?.run {
+                    hideSkipBtnToolbar()
+                    showToolbar()
+                    setToolbarTitle(getString(R.string.label_toolbar_verifikasi_akun))
+                }
             }
             mUrl.contains(TokopediaUrl.Companion.getInstance().GOPAY_PIN, ignoreCase = true) -> {
                 analytics.trackViewGopayPin()
                 // Check gopay input pin page, and hide back btn
-                (activity as LinkAccountWebViewActivity).showToolbar()
-                (activity as LinkAccountWebViewActivity).hideToolbarBackBtn()
-                (activity as LinkAccountWebViewActivity).showSkipBtnToolbar()
-                (activity as LinkAccountWebViewActivity).setToolbarTitle(getString(R.string.label_toolbar_aktifasi_gopay))
+                getLinkAccountActivity()?.run {
+                    showToolbar()
+                    hideToolbarBackBtn()
+                    showSkipBtnToolbar()
+                    setToolbarTitle(getString(R.string.label_toolbar_aktifasi_gopay))
+                }
             }
             else -> { hideToolbar() }
+        }
+    }
+
+    private fun getLinkAccountActivity(): LinkAccountWebViewActivity? {
+        return try {
+            activity as LinkAccountWebViewActivity?
+        } catch (e: Exception) {
+            null
         }
     }
 
@@ -131,6 +151,9 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
         const val KEY_URL = "url"
         const val GOJEK_LINK = "https://gojek.link"
         const val BACK_BTN_APPLINK = "tokopedia://back"
+        const val TKPD_SCHEME = "tokopedia://"
+        const val TKPD_INTERNAL_SCHEME = "tokopedia-android-internal://"
+
         const val KEY_STATUS = "status"
 
         fun newInstance(url: String): BaseSessionWebViewFragment {

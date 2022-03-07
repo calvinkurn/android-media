@@ -18,7 +18,6 @@ import dagger.Component
     HomeAccountUserUsecaseModules::class,
     HomeAccountUserViewModelModules::class,
     HomeAccountUserQueryModules::class,
-    RecommendationCoroutineModule::class,
     SessionModule::class], dependencies = [BaseAppComponent::class])
 interface HomeAccountUserComponents {
     fun inject(view: HomeAccountUserFragment?)

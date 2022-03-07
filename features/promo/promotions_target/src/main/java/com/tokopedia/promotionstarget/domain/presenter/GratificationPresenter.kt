@@ -5,13 +5,10 @@ import android.content.Context
 import android.content.DialogInterface
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.annotation.IntDef
 import androidx.annotation.StringDef
 import androidx.annotation.VisibleForTesting
-import com.tokopedia.notifications.inApp.CmDialogVisibilityContract
-import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataConsumer
-import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener
+import com.tokopedia.notifications.inApp.external.IExternalInAppCallback
 import com.tokopedia.promotionstarget.data.coupon.TokopointsCouponDetailResponse
 import com.tokopedia.promotionstarget.data.di.IO
 import com.tokopedia.promotionstarget.data.di.MAIN
@@ -68,8 +65,7 @@ class GratificationPresenter @Inject constructor(val context: Context,
     private var job: Job? = null
     private var scope: CoroutineScope? = null
     var exceptionCallback: ExceptionCallback? = null
-    var dialogVisibilityContract: CmDialogVisibilityContract? = null
-    var dataConsumer: DataConsumer? = null
+    var iExternalInAppCallback: IExternalInAppCallback? = null
 
     init {
         componentProvider.getComponent(context)
@@ -109,7 +105,7 @@ class GratificationPresenter @Inject constructor(val context: Context,
                     //special handle for push
                     weakActivity?.get()?.let { activity ->
                         if (notificationEntryType == NotificationEntryType.PUSH) {
-                            dialogVisibilityContract?.onDialogDismiss(activity)
+                            iExternalInAppCallback?.onInAppViewDismiss(activity)
                         }
                     }
                     exceptionCallback?.onError(ex)
@@ -149,7 +145,7 @@ class GratificationPresenter @Inject constructor(val context: Context,
                             handler.postAtFrontOfQueue {
                                 if (notificationEntryType == NotificationEntryType.PUSH) {
                                     performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback, screenName, closeCurrentActivity, inAppId)
-                                } else if (dialogVisibilityContract?.isDialogVisible(activity) == true) {
+                                } else if (iExternalInAppCallback?.isInAppViewVisible(activity) == true) {
                                     Timber.d("$TAG Android Side ERROR pop-up is already visible for screen name = $screenName")
                                     gratifPopupCallback?.onIgnored(GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE)
                                 } else {
@@ -189,17 +185,17 @@ class GratificationPresenter @Inject constructor(val context: Context,
                         gratifNotification,
                         couponDetail,
                         notificationEntryType,
-                        gratifPopupCallback, screenName, closeCurrentActivity, inAppId)
-                dialogVisibilityContract?.onDialogShown(activity)
+                        gratifPopupCallback, screenName, closeCurrentActivity, inAppId, iExternalInAppCallback)
+                iExternalInAppCallback?.onInAppViewShown(activity)
 
                 dialog?.setOnDismissListener { dialogInterface ->
-                    dialogVisibilityContract?.onDialogDismiss(activity)
+                    iExternalInAppCallback?.onInAppViewDismiss(activity)
                     gratifPopupCallback?.onDismiss(dialogInterface, notificationEntryType)
                     val userId = UserSession(activity).userId
                     GratificationAnalyticsHelper.handleDismiss(userId, notificationEntryType, gratifNotification, couponDetail, screenName)
                 }
                 dialog?.setOnCancelListener { dialogInterface ->
-                    dialogVisibilityContract?.onDialogDismiss(activity)
+                    iExternalInAppCallback?.onInAppViewDismiss(activity)
                     gratifPopupCallback?.onDismiss(dialogInterface, notificationEntryType)
                 }
             }
@@ -226,14 +222,14 @@ class GratificationPresenter @Inject constructor(val context: Context,
                 initSafeScope()
             }
             weakActivity?.get()?.let { activity ->
-                if (dialogVisibilityContract?.isDialogVisible(activity) == true && (notificationEntryType == NotificationEntryType.ORGANIC)) {
+                if (iExternalInAppCallback?.isInAppViewVisible(activity) == true && (notificationEntryType == NotificationEntryType.ORGANIC)) {
                     Timber.d("$TAG Android Side ERROR pop-up is already visible for screen name = $screenName")
                     gratifPopupCallback.onIgnored(GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE)
                     return null
                 }
                 //special handle for push
                 else if (notificationEntryType == NotificationEntryType.PUSH) {
-                    dialogVisibilityContract?.onDialogShown(activity)
+                    iExternalInAppCallback?.onInAppViewShown(activity)
                 }
             }
             val tempGratifId = if (gratificationId.isNullOrEmpty()) 0 else gratificationId.toInt()
@@ -256,7 +252,7 @@ class GratificationPresenter @Inject constructor(val context: Context,
             //special handle for push
             weakActivity?.get()?.let { activity ->
                 if (notificationEntryType == NotificationEntryType.PUSH) {
-                    dialogVisibilityContract?.onDialogDismiss(activity)
+                    iExternalInAppCallback?.onInAppViewDismiss(activity)
                 }
             }
 

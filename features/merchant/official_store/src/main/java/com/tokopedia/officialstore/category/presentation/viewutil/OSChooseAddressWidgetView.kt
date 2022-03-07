@@ -19,7 +19,6 @@ import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.category.presentation.listener.OSContainerListener
 import com.tokopedia.officialstore.category.presentation.widget.getValueAnimator
 import com.tokopedia.officialstore.official.presentation.listener.OSChooseAddressWidgetCallback
-import kotlinx.android.synthetic.main.layout_choose_address.view.*
 
 /**
  * Created by yfsx on 5/20/21.
@@ -32,6 +31,8 @@ class OSChooseAddressWidgetView : FrameLayout {
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.layout_choose_address, this)
+        widget_choose_address = view.findViewById(R.id.widget_choose_address)
+        motionlayout_choose_address = view.findViewById(R.id.motionlayout_choose_address)
         this.itemView = view
         this.itemContext = view.context
     }
@@ -46,8 +47,10 @@ class OSChooseAddressWidgetView : FrameLayout {
     private var viewMinHeight: Int = 0
     private var chooseAddressWidgetInitialized = false
     private lateinit var osContainerListener: OSContainerListener
+    private var widget_choose_address: ChooseAddressWidget? = null
+    private var motionlayout_choose_address: MotionLayout? = null
 
-    fun getChooseAddressWidget(): ChooseAddressWidget {
+    fun getChooseAddressWidget(): ChooseAddressWidget? {
         return widget_choose_address
     }
 
@@ -62,7 +65,7 @@ class OSChooseAddressWidgetView : FrameLayout {
                                 widgetGone: () -> Unit = {}) {
         if (!chooseAddressWidgetInitialized) {
             osContainerListener = listener
-            widget_choose_address.bindChooseAddress(OSChooseAddressWidgetCallback(context, listener, fragment))
+            widget_choose_address?.bindChooseAddress(OSChooseAddressWidgetCallback(context, listener, fragment))
             widget_choose_address.run {
                 if (needToShowChooseAddress) {
                     widgetShown.invoke()
@@ -121,7 +124,7 @@ class OSChooseAddressWidgetView : FrameLayout {
             if (this.measuredHeight == 0) {
                 animationExpand?.start()
                 isExpand = true
-                motionlayout_choose_address.setTransitionListener(object : MotionLayout.TransitionListener {
+                motionlayout_choose_address?.setTransitionListener(object : MotionLayout.TransitionListener {
                     override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
                     }
 
@@ -134,7 +137,7 @@ class OSChooseAddressWidgetView : FrameLayout {
                     override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
                     }
                 })
-                motionlayout_choose_address.transitionToStart()
+                motionlayout_choose_address?.transitionToStart()
             }
         }
 
@@ -156,7 +159,7 @@ class OSChooseAddressWidgetView : FrameLayout {
             if (this.measuredHeight == viewMaxHeight) {
                 animationCollapse?.start()
                 isExpand = false
-                motionlayout_choose_address.setTransitionListener(object : MotionLayout.TransitionListener {
+                motionlayout_choose_address?.setTransitionListener(object : MotionLayout.TransitionListener {
                     override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
                     }
 
@@ -169,7 +172,7 @@ class OSChooseAddressWidgetView : FrameLayout {
                     override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
                     }
                 })
-                motionlayout_choose_address.transitionToEnd()
+                motionlayout_choose_address?.transitionToEnd()
             }
         }
     }

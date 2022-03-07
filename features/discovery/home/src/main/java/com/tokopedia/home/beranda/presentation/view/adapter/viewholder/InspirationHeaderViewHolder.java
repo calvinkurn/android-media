@@ -1,6 +1,8 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import androidx.annotation.LayoutRes;
+
+import android.annotation.SuppressLint;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,6 +12,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 
 public class InspirationHeaderViewHolder extends AbstractViewHolder<InspirationHeaderDataModel> {
 
+    @SuppressLint("ResourcePackage")
     @LayoutRes
     public static final int LAYOUT = R.layout.inspiration_header;
 

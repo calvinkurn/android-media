@@ -1,8 +1,6 @@
 package com.tokopedia.promotionstarget.cm.dialog
 
 import android.app.Activity
-import com.tokopedia.notifications.inApp.CMInAppManager
-import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import com.tokopedia.promotionstarget.cm.ActivityProvider
 import com.tokopedia.promotionstarget.cm.broadcast.PendingData
 import com.tokopedia.promotionstarget.data.notification.NotificationEntryType

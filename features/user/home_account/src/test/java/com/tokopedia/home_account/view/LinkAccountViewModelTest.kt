@@ -54,6 +54,16 @@ class LinkAccountViewModelTest {
     }
 
     @Test
+    fun `on Success Get Link Status, without get profile - default param` () {
+        coEvery { getLinkStatusUseCase.invoke(any()) } returns mockLinkStatusResponse
+        viewModel.getLinkStatus()
+
+        verify {
+            linkStatusResponse.onChanged(Success(mockLinkStatusResponse))
+        }
+    }
+
+    @Test
     fun `on Success Get Link Status, with get profile` () {
         val mockPhoneNo = "08123123123"
         every { mockGetUserProfile.profileInfo.phone } returns mockPhoneNo
@@ -65,7 +75,37 @@ class LinkAccountViewModelTest {
         coVerify {
             userSession.phoneNumber = mockPhoneNo
             getUserProfile(Unit)
+            mockLinkStatusResponse.response.linkStatus.forEach { it.phoneNo = mockPhoneNo }
             linkStatusResponse.onChanged(Success(mockLinkStatusResponse))
+        }
+    }
+
+    @Test
+    fun `on Success Get Link Status, with get profile, empty phone number` () {
+        val mockPhoneNo = ""
+        every { mockGetUserProfile.profileInfo.phone } returns mockPhoneNo
+        coEvery { getLinkStatusUseCase(any()) } returns mockLinkStatusResponse
+        coEvery { getUserProfile(Unit) } returns mockGetUserProfile
+
+        viewModel.getLinkStatus(true)
+
+        coVerify {
+            getUserProfile(Unit)
+            linkStatusResponse.onChanged(Success(mockLinkStatusResponse))
+        }
+    }
+
+    @Test
+    fun `on Success Get Link Status, with failed get profile` () {
+        val mockPhoneNo = ""
+        every { mockGetUserProfile.profileInfo.phone } returns mockPhoneNo
+        coEvery { getLinkStatusUseCase(any()) } returns mockLinkStatusResponse
+        coEvery { getUserProfile(Unit) } throws throwable
+
+        viewModel.getLinkStatus(true)
+
+        verify {
+            linkStatusResponse.onChanged(Fail(throwable))
         }
     }
 
@@ -73,6 +113,16 @@ class LinkAccountViewModelTest {
     fun `on Failed Get Link Status` () {
         coEvery { getLinkStatusUseCase.invoke(any()) } throws throwable
         viewModel.getLinkStatus(false)
+
+        verify {
+            linkStatusResponse.onChanged(Fail(throwable))
+        }
+    }
+
+    @Test
+    fun `on Failed Get Link Status, with get profile` () {
+        coEvery { getLinkStatusUseCase.invoke(any()) } throws throwable
+        viewModel.getLinkStatus(true)
 
         verify {
             linkStatusResponse.onChanged(Fail(throwable))

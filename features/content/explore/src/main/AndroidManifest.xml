@@ -6,7 +6,8 @@
         <activity
             android:name=".view.activity.HashtagLandingPageActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

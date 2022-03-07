@@ -8,7 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16">
+        android:layout_margin="16dp">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/keywordName"
@@ -25,7 +25,7 @@
             android:id="@+id/keywordData"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="@dimen/dp_30"
             android:gravity="center_vertical"
             android:text="@string/topads_create_keyword_data"
@@ -46,9 +46,9 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/editType"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_4"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="4dp"
             app:icon_color_light_enable="@color/Unify_G600"
             app:icon_name="EDIT"
             app:layout_constraintStart_toEndOf="@id/typeKeyword"
@@ -68,9 +68,9 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/editBudget"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_4"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="4dp"
             app:icon_color_light_enable="@color/Unify_G600"
             app:icon_name="EDIT"
             app:layout_constraintStart_toEndOf="@id/keywordBudget"
@@ -78,8 +78,8 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/btnDelete"
-            android:layout_width="@dimen/dp_20"
-            android:layout_height="@dimen/dp_20"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:background="@color/transparent"
             android:gravity="center_vertical"
             app:icon_name="DELETE"

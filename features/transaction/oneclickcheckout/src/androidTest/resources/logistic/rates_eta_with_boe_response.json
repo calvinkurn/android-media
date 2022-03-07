@@ -1397,6 +1397,12 @@
             "eta": {
               "text_eta": "Estimasi tiba besok - 3 Feb",
               "error_code": 0
+            },
+            "is_bebas_ongkir_extra": true,
+            "texts": {
+              "bottom_sheet": "\u003cb\u003eBebas Ongkir (3-5 hari)\u003c/b\u003e",
+              "chosen_courier": "\u003cb\u003ePengiriman Bebas Ongkir Extra\u003c/b\u003e",
+              "ticker_courier": "Tersedia Bebas Ongkir Extra"
             }
           },
           "info": {

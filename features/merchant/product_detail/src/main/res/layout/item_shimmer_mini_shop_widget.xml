@@ -3,23 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16">
+    android:paddingTop="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/shimmer_avatar"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         app:corners="100"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmer_shop_credibility_title"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_10"
+        android:layout_width="0dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="10dp"
         app:corners="@integer/corner_radius_shimmering"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/shimmer_shop_credibility_desc"
@@ -29,10 +29,10 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmer_shop_credibility_desc"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_width="0dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
         app:corners="@integer/corner_radius_shimmering"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/shimmer_avatar"

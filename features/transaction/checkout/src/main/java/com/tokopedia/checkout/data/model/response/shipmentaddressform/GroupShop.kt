@@ -14,8 +14,8 @@ data class GroupShop(
         val shop: Shop = Shop(),
         @SerializedName("shop_shipments")
         val shopShipments: List<ShopShipment> = emptyList(),
-        @SerializedName("products")
-        val products: List<Product> = emptyList(),
+        @SerializedName("cart_details")
+        val cartDetails: List<CartDetail> = emptyList(),
         @SuppressLint("Invalid Data Type")
         @SerializedName("shipping_id")
         val shippingId: Int = 0,

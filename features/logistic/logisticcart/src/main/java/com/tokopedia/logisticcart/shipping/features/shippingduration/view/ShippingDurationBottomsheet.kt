@@ -273,7 +273,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             }
         } else {
             for (shippingCourierUiModel in shippingCourierUiModelList) {
-                shippingCourierUiModel.isSelected = shippingCourierUiModel.productData.isRecommend
+                shippingCourierUiModel.isSelected = if (serviceData.selectedShipperProductId > 0) shippingCourierUiModel.productData.shipperProductId == serviceData.selectedShipperProductId else shippingCourierUiModel.productData.isRecommend
                 if (shippingCourierUiModel.productData.error != null && shippingCourierUiModel.productData.error.errorMessage != null && shippingCourierUiModel.productData.error.errorId != null && shippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                     flagNeedToSetPinpoint = true
                     selectedServiceId = shippingCourierUiModel.serviceData.serviceId
@@ -283,9 +283,14 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         }
         if (shippingDurationBottomsheetListener != null) {
             try {
+                val courierData = if (serviceData.selectedShipperProductId > 0) presenter!!.getCourierItemDataById(
+                    serviceData.selectedShipperProductId,
+                    shippingCourierUiModelList
+                ) else presenter!!.getCourierItemData(shippingCourierUiModelList)
                 shippingDurationBottomsheetListener?.onShippingDurationChoosen(
-                        shippingCourierUiModelList, presenter!!.getCourierItemData(shippingCourierUiModelList),
-                        mRecipientAddress, cartPosition, selectedServiceId, serviceData,
+                    shippingCourierUiModelList,
+                    courierData,
+                    mRecipientAddress, cartPosition, selectedServiceId, serviceData,
                         flagNeedToSetPinpoint, isDurationClick = true, isClearPromo = true)
                 bottomSheet?.dismiss()
             } catch (e: Exception) {
@@ -325,6 +330,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         courierData.shipperName = data.shipperName
         courierData.etaText = data.etaData.textEta
         courierData.etaErrorCode = data.etaData.errorCode
+        courierData.freeShippingChosenCourierTitle = data.freeShippingChosenCourierTitle
         try {
             shippingDurationBottomsheetListener?.onLogisticPromoChosen(
                     serviceData.shippingCourierViewModelList, courierData,

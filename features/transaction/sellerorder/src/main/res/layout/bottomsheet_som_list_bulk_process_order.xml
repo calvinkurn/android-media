@@ -20,7 +20,7 @@
         android:id="@+id/btnBulkProcessOrderContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_Background"
         android:paddingBottom="@dimen/spacing_lvl3">
 
         <com.tokopedia.unifycomponents.UnifyButton

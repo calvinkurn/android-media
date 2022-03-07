@@ -66,17 +66,19 @@
             tools:visibility="gone"
             />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/play_widget_iv_action"
             android:layout_width="@dimen/play_widget_more_action_size"
             android:layout_height="@dimen/play_widget_more_action_size"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl1"
+            android:scaleType="centerInside"
             android:visibility="gone"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="MENU_KEBAB_VERTICAL"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_play_more_white"
-            android:scaleType="centerInside"
             tools:visibility="visible" />
 
         <include

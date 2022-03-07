@@ -51,20 +51,20 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
 
         override fun onChannelImpressed(view: View, item: PlayWidgetSmallChannelUiModel, position: Int) {
             mAnalyticListener?.onImpressChannelCard(
-                    view = this@PlayWidgetSmallView,
-                    item = item,
-                    channelPositionInList = position,
-                    isAutoPlay = mIsAutoPlay
+                view = this@PlayWidgetSmallView,
+                item = item,
+                channelPositionInList = position,
+                isAutoPlay = mIsAutoPlay
             )
         }
 
         override fun onChannelClicked(view: View, item: PlayWidgetSmallChannelUiModel, position: Int) {
             mWidgetListener?.onWidgetOpenAppLink(view, item.appLink)
             mAnalyticListener?.onClickChannelCard(
-                    view = this@PlayWidgetSmallView,
-                    item = item,
-                    channelPositionInList = position,
-                    isAutoPlay = mIsAutoPlay
+                view = this@PlayWidgetSmallView,
+                item = item,
+                channelPositionInList = position,
+                isAutoPlay = mIsAutoPlay
             )
         }
     }

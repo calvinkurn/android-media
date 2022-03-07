@@ -5,18 +5,15 @@
     <uses-feature
         android:name="android.hardware.fingerprint"
         android:required="false" />
-
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
-
     <application
         android:allowBackup="true"
         android:supportsRtl="true">
-
         <activity
             android:label="@string/title_feature_login_fingerprint_setting"
             android:name=".view.activity.SettingFingerprintActivity"
-            android:theme="@style/Theme.White">
-
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -28,25 +25,42 @@
                     android:pathPattern="@string/applink_account_setting_fingerprint"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
-
         </activity>
-
         <activity
             android:label="@string/title_login_fingerprint"
             android:theme="@style/Theme.AppCompat.Transparent.NoActionBar.Fingerprint"
-            android:name=".view.activity.VerifyFingerprintActivity">
+            android:name=".view.activity.VerifyFingerprintActivity"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="@string/host_global"
                     android:pathPattern="@string/applink_account_verify_fingerprint"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
+        </activity>
 
+        <activity
+            android:label="@string/title_login_fingerprint"
+            android:theme="@style/Theme.AppCompat.Transparent.NoActionBar.Fingerprint"
+            android:name=".view.activity.RegisterFingerprintActivity"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_global"
+                    android:pathPattern="@string/applink_account_register_fingerprint"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
         </activity>
 
     </application>
-
 </manifest>

@@ -149,6 +149,12 @@ data class OrderPaymentWalletAdditionalData(
 
     val isPhoneNumberMissing: Boolean
         get() = phoneNumber.isRequired
+
+    companion object {
+        const val WALLET_TYPE_OVO = 1
+        const val WALLET_TYPE_GOPAY = 2
+        const val WALLET_TYPE_GOPAYLATER = 3
+    }
 }
 
 @Parcelize

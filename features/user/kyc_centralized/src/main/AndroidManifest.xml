@@ -1,73 +1,75 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.kyc_centralized">
 
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    <uses-feature android:name="android.hardware.camera.autofocus"
-        android:required="false"/>
-
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
-
-        <activity android:name=".view.activity.UserIdentificationCameraActivity"
+        <activity
+            android:name=".view.activity.UserIdentificationCameraActivity"
             android:configChanges="orientation"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".view.activity.UserIdentificationFormActivity"
             android:label="@string/title_kyc_form_upload"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_global"
-                    android:pathPattern="@string/path_user_identification_form"/>
+                    android:pathPattern="@string/path_user_identification_form" />
             </intent-filter>
-
         </activity>
-
         <activity
             android:name=".view.activity.UserIdentificationInfoActivity"
             android:label="@string/title_kyc_info"
-            android:theme="@style/Theme.White">
-
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_global"
-                    android:pathPattern="@string/path_user_identification_info"/>
+                    android:pathPattern="@string/path_user_identification_info" />
             </intent-filter>
-
         </activity>
-
         <activity
             android:name=".view.activity.UserIdentificationInfoSimpleActivity"
             android:label="@string/title_kyc_info_simple"
-            android:theme="@style/Theme.WhiteUnify">
+            android:theme="@style/Theme.WhiteUnify"
+            android:screenOrientation="portrait"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_global"
-                    android:pathPattern="@string/path_user_identification_only"/>
+                    android:pathPattern="@string/path_user_identification_only" />
             </intent-filter>
-
         </activity>
     </application>
-
 </manifest>

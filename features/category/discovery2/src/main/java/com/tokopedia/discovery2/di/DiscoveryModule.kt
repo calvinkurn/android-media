@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.common.RepositoryProvider
+import com.tokopedia.discovery2.repository.banner.BannerGQLRepository
+import com.tokopedia.discovery2.repository.banner.BannerRepository
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeGQLRepository
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeRepo
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponGQLRepository
@@ -18,16 +20,23 @@ import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.discovery2.repository.emptystate.EmptyStateRepository
 import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRepository
 import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRestRepository
+import com.tokopedia.discovery2.repository.merchantvoucher.MerchantVoucherGQLRepository
+import com.tokopedia.discovery2.repository.merchantvoucher.MerchantVoucherRepository
+import com.tokopedia.discovery2.repository.mycoupon.MyCouponGQLRepository
+import com.tokopedia.discovery2.repository.mycoupon.MyCouponRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
 import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
-import com.tokopedia.discovery2.repository.quickFilter.FilterRestRepository
 import com.tokopedia.discovery2.repository.quickFilter.IQuickFilterGqlRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterGQLRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponGQLRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponRepository
+import com.tokopedia.discovery2.repository.shopcard.ShopCardGQLRepository
+import com.tokopedia.discovery2.repository.shopcard.ShopCardRepository
+import com.tokopedia.discovery2.repository.section.SectionGQLRepository
+import com.tokopedia.discovery2.repository.section.SectionRepository
 import com.tokopedia.discovery2.repository.tabs.TabsGQLRepository
 import com.tokopedia.discovery2.repository.tabs.TabsRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRepository
@@ -107,6 +116,16 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     }
 
     @Provides
+    fun provideMerchantVoucherRepository():MerchantVoucherRepository{
+        return MerchantVoucherGQLRepository()
+    }
+
+    @Provides
+    fun provideBannerRepository(): BannerRepository {
+        return BannerGQLRepository()
+    }
+
+    @Provides
     fun provideTopAdsHeadlineRepository(): TopAdsHeadlineRepository {
         return repoProvider.provideTopAdsHeadlineRepository()
     }
@@ -157,6 +176,21 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Provides
     fun provideQuickFilterGQLRepository(): IQuickFilterGqlRepository {
         return QuickFilterGQLRepository()
+    }
+
+    @Provides
+    fun provideShopCardRepository(): ShopCardRepository {
+        return ShopCardGQLRepository()
+    }
+
+    @Provides
+    fun provideSectionRepository():SectionRepository{
+        return SectionGQLRepository()
+    }
+
+    @Provides
+    fun provideMyCouponRepository(@ApplicationContext context: Context): MyCouponRepository {
+        return MyCouponGQLRepository(provideGetStringMethod(context))
     }
 
     @DiscoveryScope

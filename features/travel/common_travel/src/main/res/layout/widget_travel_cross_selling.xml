@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:paddingTop="@dimen/spacing_lvl5"
     android:paddingBottom="@dimen/spacing_lvl5"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_tv"

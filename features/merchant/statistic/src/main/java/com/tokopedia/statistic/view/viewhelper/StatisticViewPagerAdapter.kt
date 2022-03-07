@@ -25,4 +25,9 @@ class StatisticViewPagerAdapter(
         fragments.add(fragment)
         titles.add(title)
     }
+
+    fun clear() {
+        fragments.clear()
+        titles.clear()
+    }
 }

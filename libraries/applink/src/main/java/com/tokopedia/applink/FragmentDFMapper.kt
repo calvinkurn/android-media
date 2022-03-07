@@ -8,7 +8,6 @@ import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.FragmentConst.DF_INSTALLER_FRAGMENT_CLASS_PATH
 import com.tokopedia.applink.FragmentConst.FEED_SHOP_FRAGMENT
-import com.tokopedia.applink.FragmentConst.REVIEW_SHOP_FRAGMENT
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
 
@@ -36,9 +35,9 @@ object FragmentDFMapper {
                ))
              */
             add(FragmentDFPattern(
-                    {it == REVIEW_SHOP_FRAGMENT},
+                    {it == FragmentConst.SHOP_SHOWCASE_TAB_FRAGMENT_CLASS_PATH},
                     DeeplinkDFMapper.DF_BASE,
-                    R.string.title_review_shop
+                    R.string.shop_showcase_tab
             ))
 
             add(FragmentDFPattern(
@@ -61,9 +60,9 @@ object FragmentDFMapper {
             ))
              */
             add(FragmentDFPattern(
-                    {it == REVIEW_SHOP_FRAGMENT},
-                    DeeplinkDFMapper.DF_BASE_SELLER_APP,
-                    R.string.title_review_shop
+                {it == FragmentConst.SHOP_SHOWCASE_TAB_FRAGMENT_CLASS_PATH},
+                DeeplinkDFMapper.DF_BASE_SELLER_APP,
+                R.string.shop_showcase_tab
             ))
 
             add(FragmentDFPattern(
@@ -101,7 +100,8 @@ object FragmentDFMapper {
         }
     }
 
-    private fun getMatchedFragmentDFPattern(
+    @JvmStatic
+    fun getMatchedFragmentDFPattern(
             className: String,
     ): FragmentDFPattern? {
         val fragmentDfModuleMapper = if (GlobalConfig.isSellerApp()) {
@@ -115,7 +115,7 @@ object FragmentDFMapper {
     }
 
     @JvmStatic
-    fun getFragmentDFDownloader(activity: AppCompatActivity, className: String, extras: Bundle): Fragment? {
+    fun getFragmentDFDownloader(activity: AppCompatActivity, className: String, extras: Bundle?): Fragment? {
         return getSplitManager(activity)?.let {
             val matchedFragmentDFPattern = getMatchedFragmentDFPattern(className)
             matchedFragmentDFPattern?.let { fragmentDfMapper ->

@@ -1,37 +1,42 @@
 package com.tokopedia.cart.view
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.cart.domain.model.cartlist.CartItemData
-import com.tokopedia.cart.domain.model.cartlist.CartListData
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.view.uimodel.PromoSummaryData
+import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
 import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import java.util.*
 
-/**
- * @author anggaprasetiyo on 18/01/18.
- */
-
 interface ICartListPresenter {
-
-    fun getCartListData(): CartListData?
-
-    fun setCartListData(cartListData: CartListData)
 
     fun attachView(view: ICartListView)
 
     fun detachView()
 
+    fun getCartListData(): CartData?
+
+    fun setCartListData(cartListData: CartData)
+
+    fun getSummaryTransactionUiModel(): SummaryTransactionUiModel?
+
+    fun getPromoSummaryUiModel(): PromoSummaryData?
+
+    fun updatePromoSummaryData(lastApplyUiModel: LastApplyUiModel)
+
     fun processInitialGetCartData(cartId: String, initialLoad: Boolean, isLoadingTypeRefresh: Boolean, getCartState: Int = GET_CART_STATE_DEFAULT)
 
-    fun processDeleteCartItem(allCartItemData: List<CartItemData>,
-                              removedCartItems: List<CartItemData>,
+    fun processDeleteCartItem(allCartItemData: List<CartItemHolderData>,
+                              removedCartItems: List<CartItemHolderData>,
                               addWishList: Boolean,
                               forceExpandCollapsedUnavailableItems: Boolean = false,
-                              isFromGlobalCheckbox: Boolean = false)
+                              isFromGlobalCheckbox: Boolean = false,
+                              isFromEditBundle: Boolean = false)
 
     fun processUndoDeleteCartItem(cartIds: List<String>);
 
@@ -43,7 +48,7 @@ interface ICartListPresenter {
 
     fun reCalculateSubTotal(dataList: List<CartShopHolderData>)
 
-    fun generateDeleteCartDataAnalytics(cartItemDataList: List<CartItemData>): Map<String, Any>
+    fun generateDeleteCartDataAnalytics(cartItemDataList: List<CartItemHolderData>): Map<String, Any>
 
     fun generateRecommendationImpressionDataAnalytics(position: Int, cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>, isEmptyCart: Boolean): Map<String, Any>
 
@@ -89,7 +94,7 @@ interface ICartListPresenter {
 
     fun generateAddToCartEnhanceEcommerceDataLayer(cartRecommendationItemHolderData: CartRecommendationItemHolderData, addToCartDataResponseModel: AddToCartDataModel, isCartEmpty: Boolean): Map<String, Any>
 
-    fun generateCheckoutDataAnalytics(cartItemDataList: List<CartItemData>, step: String): Map<String, Any>
+    fun generateCheckoutDataAnalytics(cartItemDataList: List<CartItemHolderData>, step: String): Map<String, Any>
 
     fun redirectToLite(url: String)
 

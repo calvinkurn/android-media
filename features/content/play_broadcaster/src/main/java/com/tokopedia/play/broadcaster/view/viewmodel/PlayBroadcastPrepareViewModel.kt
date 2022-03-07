@@ -119,13 +119,8 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
     }
 
     private fun isDataAlreadyValid(): Boolean {
-        val currentProduct = mDataStore.getSetupDataStore().getTotalSelectedProduct()
         val currentCover = mDataStore.getSetupDataStore().getSelectedCover()
-
-        val isProductValid = currentProduct > 0
-        val isCoverValid = currentCover?.croppedCover is CoverSetupState.Cropped
-
-        return isProductValid && isCoverValid
+        return currentCover?.croppedCover is CoverSetupState.Cropped
     }
 
     private fun setIngestUrl(ingestUrl: String) {

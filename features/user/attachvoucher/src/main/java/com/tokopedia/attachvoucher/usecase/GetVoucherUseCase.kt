@@ -1,97 +1,63 @@
 package com.tokopedia.attachvoucher.usecase
 
-import androidx.collection.ArrayMap
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.attachvoucher.data.VoucherUiModel
 import com.tokopedia.attachvoucher.data.voucherv2.GetMerchantPromotionGetMVListResponse
 import com.tokopedia.attachvoucher.mapper.VoucherMapper
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import kotlinx.coroutines.*
+import com.tokopedia.attachvoucher.data.FilterParam
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
-class GetVoucherUseCase @Inject constructor(
-        private val gqlUseCase: GraphqlUseCase<GetMerchantPromotionGetMVListResponse>,
-        private val dispatchers: CoroutineDispatchers,
-        private val mapper: VoucherMapper
-) : CoroutineScope {
+open class GetVoucherUseCase @Inject constructor(
+    private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers,
+    private val mapper: VoucherMapper
+) : CoroutineUseCase<FilterParam, List<VoucherUiModel>>(dispatcher.io) {
 
-    var hasNext = false
-    var isLoading = false
-
-    private var getVouchersJob: Job? = null
     private val paramFilter = "Filter"
+    var hasNext = false
 
-    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
+    object MVFilter {
+        const val paramPage = "page"
 
-    fun getVouchers(
-            page: Int,
-            filterVoucherType: Int,
-            onSuccess: (List<VoucherUiModel>) -> Unit,
-            onError: (Throwable) -> Unit
-    ) {
-        getVouchersJob = launchCatchError(dispatchers.io,
-                {
-                    startLoading()
-                    val params = generateParams(page, filterVoucherType)
-                    val response = gqlUseCase.apply {
-                        setTypeClass(GetMerchantPromotionGetMVListResponse::class.java)
-                        setRequestParams(params)
-                        setGraphqlQuery(privateVoucherQuery)
-                    }.executeOnBackground()
-                    hasNext = response.merchantPromotionGetMVList.data.paging.hasNext
-                    val vouchers = mapper.map(response)
-                    withContext(dispatchers.main) {
-                        onSuccess(vouchers)
-                        stopLoading()
-                    }
-                },
-                { exception ->
-                    withContext(dispatchers.main) {
-                        onError(exception)
-                        stopLoading()
-                    }
-                }
-        )
-    }
+        object VoucherStatus {
+            const val param = "voucher_status"
+            const val paramOnGoing = "2"
+            const val paramDeleted = "-1"
+            const val paramProcessing = "0"
+            const val paramNotStarted = "1"
+            const val paramEnded = "3"
+            const val paramStopped = "4"
+        }
 
-    private fun stopLoading() {
-        isLoading = false
-    }
+        object VoucherType {
+            const val param = "voucher_type"
+            const val paramFreeOngkir = 1
+            const val paramDiscount = 2
+            const val paramCashback = 3
+            const val noFilter = -1
+        }
 
-    private fun startLoading() {
-        isLoading = true
-    }
+        object IsPublic {
+            const val param = "is_public"
+        }
 
-    fun cancelCurrentLoad() {
-        getVouchersJob?.cancel()
-        gqlUseCase.cancelJobs()
-        stopLoading()
-    }
-
-    fun safeCancel() {
-        if (coroutineContext.isActive) {
-            cancel()
+        object PerPage {
+            const val param = "per_page"
+            const val default = 15
         }
     }
 
-    private fun generateParams(page: Int, filter: Int): Map<String, Any> {
-        val requestParam = ArrayMap<String, Any>()
-        val paramMVFilter = ArrayMap<String, Any>().apply {
-            put(MVFilter.VoucherStatus.param, MVFilter.VoucherStatus.paramOnGoing)
-            put(MVFilter.PerPage.param, MVFilter.PerPage.default)
-            put(MVFilter.paramPage, page)
-        }
-
-        if (filter != MVFilter.VoucherType.noFilter) {
-            paramMVFilter[MVFilter.VoucherType.param] = filter
-        }
-        requestParam[paramFilter] = paramMVFilter
-        return requestParam
+    override suspend fun execute(params: FilterParam): List<VoucherUiModel> {
+        val data = repository.request<FilterParam, GetMerchantPromotionGetMVListResponse>(graphqlQuery(), params)
+        hasNext = data.merchantPromotionGetMVList.data.paging.hasNext
+        return mapper.map(data)
     }
 
-    private val privateVoucherQuery = """
+    override fun graphqlQuery(): String {
+        return """
         query MerchantPromotionGetMVListQuery($$paramFilter: MVFilter!){
             MerchantPromotionGetMVList(Filter: $$paramFilter){
                 header{
@@ -147,40 +113,13 @@ class GetVoucherUseCase @Inject constructor(
                             stop
                             share
                         }
+                        is_lock_to_product
+                        applink
+                        weblink
                     }
                 }
             }
         }
     """.trimIndent()
-
-    object MVFilter {
-        const val paramPage = "page"
-
-        object VoucherStatus {
-            const val param = "voucher_status"
-            const val paramOnGoing = "2"
-            const val paramDeleted = "-1"
-            const val paramProcessing = "0"
-            const val paramNotStarted = "1"
-            const val paramEnded = "3"
-            const val paramStopped = "4"
-        }
-
-        object VoucherType {
-            const val param = "voucher_type"
-            const val paramFreeOngkir = 1
-            const val paramDiscount = 2
-            const val paramCashback = 3
-            const val noFilter = -1
-        }
-
-        object IsPublic {
-            const val param = "is_public"
-        }
-
-        object PerPage {
-            const val param = "per_page"
-            const val default = 15
-        }
     }
 }

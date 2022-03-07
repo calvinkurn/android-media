@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:orientation="vertical"
-    android:paddingTop="@dimen/dp_8">
+    android:paddingTop="8dp">
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/loader_img"
@@ -21,7 +21,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/loader_title"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
@@ -36,7 +36,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/loader_subtitle"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl8"
@@ -73,7 +73,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/loader_star"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl6"
         android:layout_marginEnd="@dimen/layout_lvl6"
@@ -86,7 +86,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/loader_star_text"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginStart="@dimen/layout_lvl5"
         android:layout_marginEnd="@dimen/layout_lvl5"

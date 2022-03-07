@@ -8,7 +8,7 @@ data class SomListBulkRequestPickupUiModel (
     data class Data(
             val jobId: String = "",
             val message: String = "",
-            val totalOnProcess: Long = 0
+            val totalOnProcess: Int = 0
     )
 
     data class ErrorBulkRequestPickup(

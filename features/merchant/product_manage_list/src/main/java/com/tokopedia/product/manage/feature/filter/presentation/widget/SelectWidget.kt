@@ -2,10 +2,11 @@ package com.tokopedia.product.manage.feature.filter.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
+import com.tokopedia.product.manage.databinding.WidgetSelectBinding
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectUiModel
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.widget_select.view.*
 
 class SelectWidget : BaseCustomView {
 
@@ -23,17 +24,23 @@ class SelectWidget : BaseCustomView {
 
     private var isVisible = false
 
+    private var binding: WidgetSelectBinding? = null
+
     private fun init() {
-        View.inflate(context, com.tokopedia.product.manage.R.layout.widget_select, this)
+        binding = WidgetSelectBinding.inflate(
+            LayoutInflater.from(context),
+            this,
+            true
+        )
     }
 
     fun bind(element: SelectUiModel, selectClickListener: SelectClickListener) {
-        this.title.text = element.name
+        binding?.title?.text = element.name
         if (element.isSelected) {
-            this.check.visibility = View.VISIBLE
+            binding?.check?.visibility = View.VISIBLE
             isVisible = true
         } else {
-            this.check.visibility = View.GONE
+            binding?.check?.visibility = View.GONE
         }
         this.setOnClickListener {
             selectClickListener.onSelectClick(element)
@@ -41,7 +48,7 @@ class SelectWidget : BaseCustomView {
     }
 
     fun bindPayload(element: SelectUiModel, selectClickListener: SelectClickListener) {
-        this.check.visibility = if (element.isSelected ) View.VISIBLE else View.GONE
+        binding?.check?.visibility = if (element.isSelected ) View.VISIBLE else View.GONE
         this.setOnClickListener {
             selectClickListener.onSelectClick(element)
         }

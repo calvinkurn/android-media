@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tkpd.atcvariant.BuildConfig
 import com.tkpd.atcvariant.R
 import com.tkpd.atcvariant.data.uidata.PartialButtonDataModel
 import com.tkpd.atcvariant.data.uidata.VariantErrorDataModel
@@ -22,7 +23,8 @@ import com.tkpd.atcvariant.di.DaggerAtcVariantComponent
 import com.tkpd.atcvariant.util.ATC_LOGIN_REQUEST_CODE
 import com.tkpd.atcvariant.util.AtcCommonMapper
 import com.tkpd.atcvariant.util.BS_SHIPMENT_ERROR_ATC_VARIANT
-import com.tkpd.atcvariant.view.*
+import com.tkpd.atcvariant.view.PartialAtcButtonListener
+import com.tkpd.atcvariant.view.PartialAtcButtonView
 import com.tkpd.atcvariant.view.activity.AtcVariantActivity
 import com.tkpd.atcvariant.view.adapter.AtcVariantAdapter
 import com.tkpd.atcvariant.view.adapter.AtcVariantAdapterTypeFactoryImpl
@@ -33,7 +35,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.globalerror.GlobalError
@@ -43,24 +45,31 @@ import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.product.detail.common.*
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.AtcVariantMapper
+import com.tokopedia.product.detail.common.ProductCartHelper
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_TRADEIN_PDP
-import com.tokopedia.product.detail.common.bottomsheet.TokoMartEducationalInformationBottomSheet
+import com.tokopedia.product.detail.common.ProductTrackingCommon
+import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.showToasterError
+import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
+import com.tokopedia.product.detail.common.view.ProductDetailRestrictionHelper
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -93,6 +102,12 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
     private val sharedViewModel by lazy {
         ViewModelProvider(requireActivity()).get(AtcVariantSharedViewModel::class.java)
+    }
+
+    private val localizationChooseAddressData by lazy(LazyThreadSafetyMode.NONE) {
+        context?.let {
+            ChooseAddressUtils.getLocalizingAddressData(it)
+        }
     }
 
     private var loadingProgressDialog: ProgressDialog? = null
@@ -160,6 +175,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 override fun onStateChanged(p0: View, p1: Int) {
                     if (p1 == BottomSheetBehavior.STATE_HIDDEN) {
                         dismiss()
+                    }
+                    if (p1 == BottomSheetBehavior.STATE_EXPANDED) {
+                        bottomSheetWrapper.invalidate()
+                        bottomSheetWrapper.requestLayout()
                     }
                 }
             })
@@ -242,12 +261,13 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     }
 
     private fun setupButtonAbility(data: ProductVariantBottomSheetParams) {
-        val cartRedirCartType = data.variantAggregator.cardRedirection.values.toList()
-                .firstOrNull()?.availableButtons?.firstOrNull()?.cartType ?: ""
-        shouldSetActivityResult = when (cartRedirCartType) {
-            ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON,
-            ProductDetailCommonConstant.KEY_SAVE_TRADEIN_BUTTON -> false
-            else -> true
+        shouldSetActivityResult = data.saveAfterClose
+    }
+
+    private fun dismissAfterAtc() {
+        val shouldDismiss = sharedViewModel.aggregatorParams.value?.dismissAfterTransaction ?: false
+        if (shouldDismiss) {
+            dismiss()
         }
     }
 
@@ -309,47 +329,12 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     }
 
     private fun renderRestrictionBottomSheet(reData: RestrictionData) {
-        when {
-            reData.restrictionExclusiveType() -> {
-                renderExclusiveBottomSheet(reData)
-            }
-            reData.restrictionShopFollowersType() -> {
-                updateNplButtonFollowers(reData)
-            }
-            else -> {
-                nplFollowersButton?.setupVisibility = false
-            }
-        }
-    }
-
-    private fun renderExclusiveBottomSheet(reData: RestrictionData) {
-        if (reData.action.isNotEmpty()) {
-            val title = reData.action.firstOrNull()?.title ?: ""
-            val desc = reData.action.firstOrNull()?.description ?: ""
-            val badgeUrl = reData.action.firstOrNull()?.badgeURL ?: ""
-            nplFollowersButton?.renderView(title = title,
-                    alreadyFollowShop = false,
-                    desc = desc,
-                    iconUrl = badgeUrl,
-                    hideButton = true,
-                    maxLine = 2,
-                    centerImage = true)
-        }
-        nplFollowersButton?.setupVisibility = reData.isNotEligibleExclusive()
-    }
-
-    private fun updateNplButtonFollowers(reData: RestrictionData) {
-        val shouldShowReShopFollowers = !reData.isEligible && !viewModel.getActivityResultData().isFollowShop
-        if (shouldShowReShopFollowers) {
-            if (nplFollowersButton?.view?.isShown == false) {
-                nplFollowersButton?.view?.translationY = 100.toPx().toFloat()
-            }
-
-            val title = reData.action.firstOrNull()?.title ?: ""
-            val desc = reData.action.firstOrNull()?.description ?: ""
-            nplFollowersButton?.renderView(title, desc, reData.isEligible)
-        }
-        nplFollowersButton?.setupVisibility = shouldShowReShopFollowers
+        ProductDetailRestrictionHelper.renderRestrictionUi(
+                reData = reData,
+                isFavoriteShop = viewModel.getActivityResultData().isFollowShop,
+                isShopOwner = sharedViewModel.aggregatorParams.value?.isShopOwner ?: false,
+                reView = nplFollowersButton
+        )
     }
 
     private fun showToasterSuccess(message: String, ctaText: String = "", ctaListener: () -> Unit = {}) {
@@ -445,6 +430,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
             loadingProgressDialog?.dismiss()
             if (it is Success) {
                 onSuccessTransaction(it.data)
+                dismissAfterAtc()
             } else if (it is Fail) {
                 it.throwable.run {
                     trackAtcError(message ?: "")
@@ -525,6 +511,13 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 ?: ""
         val variantTitle = adapter.getHeaderDataModel()?.listOfVariantTitle?.joinToString(separator = ", ")
                 ?: ""
+
+        val ratesEstimateData = variantAggregatorData?.getP2RatesEstimateByProductId(productId)?.p2RatesData
+        val buyerDistrictId = context?.let {
+            ChooseAddressUtils.getLocalizingAddressData(it)?.district_id ?: ""
+        } ?: ""
+        val sellerDistrictId = viewModel.getSelectedWarehouse(productId)?.districtId ?: ""
+
         ProductTrackingCommon.eventEcommerceAddToCart(
                 userId = userSessionInterface.userId,
                 cartId = cartId,
@@ -545,7 +538,13 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                         ?: "",
                 bebasOngkirType = variantAggregatorData?.getBebasOngkirStringType(productId) ?: "",
                 pageSource = aggregatorParams?.pageSource ?: "",
-                cdListName = aggregatorParams?.trackerCdListName ?: "")
+                cdListName = aggregatorParams?.trackerCdListName ?: "",
+                isCod = variantAggregatorData?.isCod ?: false,
+                ratesEstimateData = ratesEstimateData,
+                buyerDistrictId = buyerDistrictId,
+                sellerDistrictId = sellerDistrictId,
+                lcaWarehouseId = localizationChooseAddressData?.warehouse_id ?: ""
+        )
     }
 
     private fun onSuccessOcs(result: AddToCartDataModel) {
@@ -579,10 +578,17 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
     private fun onSuccessAtc(successMessage: String?) {
         context?.let {
-            val message = if (successMessage == null || successMessage.isEmpty()) it.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default) else
+            val message = if (successMessage == null || successMessage.isEmpty())
+                it.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default)
+            else
                 successMessage
-            viewModel.updateActivityResult(atcSuccessMessage = message)
-            showToasterSuccess(message)
+
+            showToasterSuccess(message, ctaText = getString(R.string.atc_variant_see)) {
+                ProductCartHelper.goToCartCheckout(getAtcActivity(), "")
+            }
+            viewModel.updateActivityResult(
+                    atcSuccessMessage = message,
+                    requestCode = ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
         }
     }
 
@@ -828,7 +834,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     }
 
     private fun goToWishlist() {
-        RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
+        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 
     private fun checkLogin(): Boolean {
@@ -891,7 +897,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         }
     }
 
-    override fun onButtonFollowNplClick() {
+    private fun favoriteShop() {
         if (nplFollowersButton?.getButtonLoadingStatus() == false) {
             val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
             val productId = adapter.getHeaderDataModel()?.productId ?: ""
@@ -902,22 +908,40 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         }
     }
 
+    override fun onButtonFollowNplClick() {
+        val reData = (viewModel.restrictionData.value as? Success)?.data ?: return
+
+        if (reData.restrictionShopFollowersType()) {
+            favoriteShop()
+        } else if (reData.restrictionCategoriesType()) {
+            reData.action.firstOrNull()?.buttonLink?.let {
+                if (it.isEmpty()) {
+                    activity?.finish()
+                } else {
+                    RouteManager.route(context, it)
+                }
+            }
+        } else if (reData.restrictionGamificationType()) {
+            reData.action.firstOrNull()?.buttonLink?.let {
+                RouteManager.route(context, it)
+            }
+        }
+    }
+
     override fun onTokoCabangClicked(uspImageUrl: String) {
         context?.let {
             val isTokoNow = sharedViewModel.aggregatorParams.value?.isTokoNow == true
             val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
             val productId = adapter.getHeaderDataModel()?.productId ?: ""
-            val boImageUrl = viewModel.getVariantAggregatorData()?.getIsFreeOngkirImageUrl(productId)
-                    ?: ""
 
-            val bottomSheet = if (isTokoNow) {
-                TokoMartEducationalInformationBottomSheet()
+            if (isTokoNow) {
+                RouteManager.route(context, EDUCATIONAL_INFO)
             } else {
-                ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(it, boImageUrl, uspImageUrl)
+                val bottomSheet = ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(it, uspImageUrl)
+                bottomSheet.show(childFragmentManager, ProductDetailCommonBottomSheetBuilder.TAG_USP_BOTTOM_SHEET)
             }
 
             ProductTrackingCommon.onTokoCabangClicked(productId, pageSource)
-            bottomSheet.show(childFragmentManager, ProductDetailCommonBottomSheetBuilder.TAG_USP_BOTTOM_SHEET)
         }
     }
 }

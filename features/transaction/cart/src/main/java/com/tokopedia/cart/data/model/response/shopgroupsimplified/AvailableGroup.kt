@@ -3,14 +3,10 @@ package com.tokopedia.cart.data.model.response.shopgroupsimplified
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
-/**
- * Created by Irfan Khoirul on 2019-10-16.
- */
-
 data class AvailableGroup(
         @SuppressLint("Invalid Data Type")
         @SerializedName("user_address_id")
-        val userAddressId: Int = 0,
+        val userAddressId: String = "",
         @SerializedName("shipment_information")
         val shipmentInformation: ShipmentInformation = ShipmentInformation(),
         @SerializedName("cart_string")
@@ -20,7 +16,7 @@ data class AvailableGroup(
         @SerializedName("shop")
         val shop: Shop = Shop(),
         @SerializedName("is_fulfillment_service")
-        val isFulFillment: Boolean = false,
+        val isFulfillment: Boolean = false,
         @SerializedName("warehouse")
         val warehouse: Warehouse = Warehouse(),
         @SerializedName("cart_details")

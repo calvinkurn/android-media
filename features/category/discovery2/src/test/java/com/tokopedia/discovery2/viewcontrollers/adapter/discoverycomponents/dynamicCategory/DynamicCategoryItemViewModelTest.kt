@@ -29,4 +29,9 @@ class DynamicCategoryItemViewModelTest {
     fun `component value is present in live data`() {
         assert(viewModel.getComponentLiveData().value == componentsItem)
     }
+
+    @Test
+    fun `test for position passed`(){
+        assert(viewModel.position == 99)
+    }
 }

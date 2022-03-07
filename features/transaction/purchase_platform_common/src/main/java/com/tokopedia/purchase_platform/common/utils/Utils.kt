@@ -8,12 +8,16 @@ import android.text.Spanned
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.CompoundButton
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.Toaster
 import rx.Emitter
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
@@ -28,12 +32,7 @@ object Utils {
             return SpannableStringBuilder("").toString()
         }
         val replacedText = text.replace("&amp;", "&")
-        val result: Spanned
-        result = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> Html.fromHtml(replacedText, Html.FROM_HTML_MODE_LEGACY)
-            else -> Html.fromHtml(replacedText)
-        }
-        return result.toString()
+        return MethodChecker.fromHtml(replacedText).toString()
     }
 
     @JvmStatic
@@ -61,23 +60,14 @@ object Utils {
         }
         return true
     }
-}
 
-fun convertToString(stringList: List<String>?): String {
-    return if (stringList.isNullOrEmpty()) {
-        ""
-    } else {
-        stringList.joinToString()
+    @JvmStatic
+    fun toIntOrZero(string: String): Int {
+        return string.toIntOrZero()
     }
 }
 
 fun isNullOrEmpty(string: String?): Boolean = string.isNullOrEmpty()
-
-fun <T : Any> List<T>.each(action: T.() -> Unit) {
-    for (item in this) {
-        item.action()
-    }
-}
 
 fun String.removeDecimalSuffix(): String = this.removeSuffix(".00")
 
@@ -109,3 +99,13 @@ fun rxCompoundButtonCheckDebounce(compoundButton: CompoundButton, timeout: Long 
                 .debounce(timeout, TimeUnit.MILLISECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
+
+fun showSoftKeyboard(context: Context?, view: View) {
+    if (context == null) return
+    try {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+    } catch (t: Throwable) {
+        Timber.d(t)
+    }
+}

@@ -3,7 +3,7 @@ package com.tokopedia.checkout.domain.model.cartshipmentform
 import android.os.Parcelable
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Product(
@@ -48,5 +48,16 @@ data class Product(
         var variant: String = "",
         var productAlertMessage: String = "",
         var productInformation: List<String> = emptyList(),
-        var analyticsProductCheckoutData: AnalyticsProductCheckoutData = AnalyticsProductCheckoutData()
+        var analyticsProductCheckoutData: AnalyticsProductCheckoutData = AnalyticsProductCheckoutData(),
+        var isBundlingItem: Boolean = false,
+        var bundlingItemPosition: Int = 0,
+        var bundleId: String = "",
+        var bundleGroupId: String = "",
+        var bundleType: String = "",
+        var bundleTitle: String = "",
+        var bundlePrice: Long = 0L,
+        var bundleSlashPriceLabel: String = "",
+        var bundleOriginalPrice: Long = 0L,
+        var bundleQuantity: Int = 0,
+        var bundleIconUrl: String = ""
 ) : Parcelable

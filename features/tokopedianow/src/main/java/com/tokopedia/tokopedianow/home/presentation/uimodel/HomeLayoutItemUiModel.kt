@@ -4,6 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 
 data class HomeLayoutItemUiModel(
-    val layout: Visitable<*>,
+    val layout: Visitable<*>?,
     val state: HomeLayoutItemState
 )

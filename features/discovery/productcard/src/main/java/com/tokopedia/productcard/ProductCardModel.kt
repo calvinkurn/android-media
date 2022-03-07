@@ -1,10 +1,28 @@
 package com.tokopedia.productcard
 
-import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.productcard.utils.*
+import com.tokopedia.productcard.utils.EXTRA_CHAR_SPACE
+import com.tokopedia.productcard.utils.LABEL_BEST_SELLER
+import com.tokopedia.productcard.utils.LABEL_CAMPAIGN
+import com.tokopedia.productcard.utils.LABEL_CATEGORY
+import com.tokopedia.productcard.utils.LABEL_CATEGORY_BOTTOM
+import com.tokopedia.productcard.utils.LABEL_CATEGORY_SIDE
+import com.tokopedia.productcard.utils.LABEL_COST_PER_UNIT
+import com.tokopedia.productcard.utils.LABEL_ETA
+import com.tokopedia.productcard.utils.LABEL_FULFILLMENT
+import com.tokopedia.productcard.utils.LABEL_GIMMICK
+import com.tokopedia.productcard.utils.LABEL_INTEGRITY
+import com.tokopedia.productcard.utils.LABEL_PRICE
+import com.tokopedia.productcard.utils.LABEL_PRODUCT_STATUS
+import com.tokopedia.productcard.utils.LABEL_SHIPPING
+import com.tokopedia.productcard.utils.LABEL_VARIANT_CHAR_LIMIT
+import com.tokopedia.productcard.utils.MAX_LABEL_VARIANT_COUNT
+import com.tokopedia.productcard.utils.MIN_LABEL_VARIANT_COUNT
+import com.tokopedia.productcard.utils.MIN_QUANTITY_NON_VARIANT
+import com.tokopedia.productcard.utils.TYPE_VARIANT_COLOR
+import com.tokopedia.productcard.utils.TYPE_VARIANT_CUSTOM
+import com.tokopedia.productcard.utils.TYPE_VARIANT_SIZE
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.parcel.Parcelize
 
 data class ProductCardModel (
         val productImageUrl: String = "",
@@ -57,6 +75,10 @@ data class ProductCardModel (
         val variant: Variant? = null,
         val nonVariant: NonVariant? = null,
         val hasSimilarProductButton: Boolean = false,
+        val hasButtonThreeDotsWishlist: Boolean = false,
+        val hasAddToCartWishlist: Boolean = false,
+        val hasSimilarProductWishlist: Boolean = false,
+        val customVideoURL : String = "",
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -64,6 +86,8 @@ data class ProductCardModel (
     var isProductPreOrder: Boolean = false
     @Deprecated("replace with labelGroupList")
     var isProductWholesale: Boolean = false
+
+    val hasVideo : Boolean = customVideoURL.isNotBlank()
 
     @Deprecated("replace with LabelGroup")
     data class Label(
@@ -82,18 +106,12 @@ data class ProductCardModel (
             val imageUrl: String = ""
     )
 
-    @Parcelize
     data class LabelGroup(
             val position: String = "",
             val title: String = "",
             val type: String = "",
             val imageUrl: String = ""
-    ):Parcelable {
-
-        fun isShowLabelCampaign(): Boolean {
-            return imageUrl.isNotEmpty() && title.isNotEmpty()
-        }
-    }
+    )
 
     data class LabelGroupVariant(
             val typeVariant: String = "",
@@ -256,6 +274,8 @@ data class ProductCardModel (
     fun isShowLabelCostPerUnit() = getLabelCostPerUnit()?.title?.isNotEmpty() == true
 
     fun isShowCategoryAndCostPerUnit() = isShowLabelCategory() && isShowLabelCostPerUnit()
+
+    fun willShowPrimaryButtonWishlist() = hasAddToCartWishlist || hasSimilarProductWishlist
 
     fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
         val (colorVariant, sizeVariant, customVariant) = getSplittedLabelGroupVariant()

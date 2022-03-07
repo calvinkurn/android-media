@@ -10,26 +10,26 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.R
+import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.uimodel.ShipmentInsuranceTncModel
 
 class ShipmentInsuranceTncViewHolder(itemView: View, private val shipmentAdapterActionListener: ShipmentAdapterActionListener) : RecyclerView.ViewHolder(itemView) {
-    private val tvInsuranceTnc: TextView = itemView.findViewById(com.tokopedia.checkout.R.id.tv_insurance_tnc)
-    private val llContainer: LinearLayout = itemView.findViewById(com.tokopedia.checkout.R.id.ll_container)
+    private val tvInsuranceTnc: TextView = itemView.findViewById(R.id.tv_insurance_tnc)
+    private val llContainer: LinearLayout = itemView.findViewById(R.id.ll_container)
 
     fun bindViewHolder(shipmentInsuranceTncModel: ShipmentInsuranceTncModel, itemCount: Int) {
         if (shipmentInsuranceTncModel.isVisible) {
             if (adapterPosition == itemCount - INDEX_DIFFERENCE) {
-                val padding = itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_16)
+                val padding = itemView.context.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_16)
                 tvInsuranceTnc.setPadding(padding, 0, padding, padding)
             } else {
-                val padding = itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_16)
-                val paddingBottom = itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_4)
+                val padding = itemView.context.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_16)
+                val paddingBottom = itemView.context.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_4)
                 tvInsuranceTnc.setPadding(padding, padding, padding, paddingBottom)
             }
-            val formatText = tvInsuranceTnc.context.getString(com.tokopedia.checkout.R.string.text_tos_agreement)
-            val messageTosAgreement = tvInsuranceTnc.context.getString(com.tokopedia.checkout.R.string.message_tos_agreement)
+            val formatText = tvInsuranceTnc.context.getString(R.string.text_tos_agreement)
+            val messageTosAgreement = tvInsuranceTnc.context.getString(R.string.message_tos_agreement)
             val startSpan = messageTosAgreement.indexOf(formatText)
             val endSpan = messageTosAgreement.indexOf(formatText) + formatText.length
             val tosAgreementText: Spannable = SpannableString(messageTosAgreement)
@@ -49,7 +49,7 @@ class ShipmentInsuranceTncViewHolder(itemView: View, private val shipmentAdapter
 
     companion object {
         @JvmField
-        val ITEM_VIEW_INSURANCE_TNC = com.tokopedia.checkout.R.layout.item_insurance_tnc
+        val ITEM_VIEW_INSURANCE_TNC = R.layout.item_insurance_tnc
 
         const val INDEX_DIFFERENCE = 3
     }

@@ -6,8 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
+
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.RouteManager
@@ -50,11 +51,11 @@ import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.uimodel.PlayCastState
-import com.tokopedia.play.view.uimodel.PlayCastUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayerType
 import com.tokopedia.play.view.uimodel.recom.isCasting
-import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
@@ -63,6 +64,7 @@ import com.tokopedia.unifycomponents.dpToPx
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -70,7 +72,6 @@ import javax.inject.Inject
  * Created by jegul on 29/11/19
  */
 class PlayVideoFragment @Inject constructor(
-        private val viewModelFactory: ViewModelProvider.Factory,
         private val dispatchers: CoroutineDispatchers,
         private val pipAnalytic: PlayPiPAnalytic,
         private val analytic: PlayAnalytic,
@@ -212,7 +213,9 @@ class PlayVideoFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
+        playViewModel = ViewModelProvider(
+            requireParentFragment(), (requireParentFragment() as PlayFragment).viewModelProviderFactory
+        ).get(PlayViewModel::class.java)
 
         val theActivity = requireActivity()
         if (theActivity is PlayActivity) {
@@ -322,10 +325,11 @@ class PlayVideoFragment @Inject constructor(
         observeVideoMeta()
         observeVideoProperty()
         observeBottomInsetsState()
-        observeStatusInfo()
         observePiPEvent()
         observeOnboarding()
         observeCastState()
+
+        observeUiState()
     }
 
     private fun showVideoThumbnail() {
@@ -348,12 +352,12 @@ class PlayVideoFragment @Inject constructor(
 
     //region observe
     private fun observeVideoMeta() {
-        playViewModel.observableVideoMeta.observe(viewLifecycleOwner, Observer { meta ->
+        playViewModel.observableVideoMeta.observe(viewLifecycleOwner) { meta ->
             videoView.setOrientation(orientation, meta.videoStream.orientation)
 
             videoViewOnStateChanged(videoPlayer = meta.videoPlayer)
             videoLoadingViewOnStateChanged(videoPlayer = meta.videoPlayer)
-        })
+        }
     }
 
     private fun observeVideoProperty() {
@@ -375,19 +379,17 @@ class PlayVideoFragment @Inject constructor(
         })
     }
 
-    private fun observeStatusInfo() {
-        playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
-            val isFreezeOrBanned = it.statusType.isFreeze || it.statusType.isBanned
+    private fun handleStatus(status: PlayStatusUiModel) {
+        val isFreezeOrBanned = status.channelStatus.statusType.isFreeze || status.channelStatus.statusType.isBanned
 
-            videoViewOnStateChanged(isFreezeOrBanned = isFreezeOrBanned)
-            videoLoadingViewOnStateChanged(isFreezeOrBanned = isFreezeOrBanned)
-        })
+        videoViewOnStateChanged(isFreezeOrBanned = isFreezeOrBanned)
+        videoLoadingViewOnStateChanged(isFreezeOrBanned = isFreezeOrBanned)
     }
 
     private fun observePiPEvent() {
-        playViewModel.observableEventPiPState.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableEventPiPState.observe(viewLifecycleOwner) {
             if (it.peekContent() == PiPState.Stop) removePiP()
-        })
+        }
     }
 
     private fun observeOnboarding() {
@@ -403,16 +405,22 @@ class PlayVideoFragment @Inject constructor(
                 PlayCastState.CONNECTED -> videoLoadingView.showCasting()
                 PlayCastState.NO_DEVICE_AVAILABLE,
                 PlayCastState.NOT_CONNECTED-> {
-                    videoLoadingView.hide()
-                    it.previousState.let { previousState ->
-                        if(previousState == PlayCastState.CONNECTING || previousState == PlayCastState.CONNECTED) {
-                            Toaster.toasterCustomBottomHeight = 100
-                            Toaster.build(view = requireView(), text = getString(R.string.play_disconnect_chromecast)).show()
-                        }
+                    if(it.previousState == PlayCastState.CONNECTING || it.previousState == PlayCastState.CONNECTED) {
+                        videoLoadingView.hide()
+                        Toaster.toasterCustomBottomHeight = 100
+                        Toaster.build(view = requireView(), text = getString(R.string.play_disconnect_chromecast)).show()
                     }
                 }
             }
         })
+    }
+
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            playViewModel.uiState.withCache().collectLatest { (_, state) ->
+                handleStatus(state.status)
+            }
+        }
     }
     //endregion
 

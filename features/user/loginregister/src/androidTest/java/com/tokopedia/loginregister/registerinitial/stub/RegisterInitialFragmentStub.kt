@@ -12,10 +12,6 @@ class RegisterInitialFragmentStub : RegisterInitialFragment() {
         registerInitialViewModel.registerGoogle("dummyAccessToken", "dummyEmail")
     }
 
-    override fun goToRegisterFacebook() {
-        registerInitialViewModel.registerFacebook("dummyAccessToken", "dummyEmail")
-    }
-
     override fun goToLoginPage() {
         //stub, do nothing
     }

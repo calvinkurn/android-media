@@ -8,7 +8,6 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
-import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
@@ -27,8 +26,6 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionVie
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.data.Status
 import com.tokopedia.topchat.common.util.ViewUtil
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
 
 class SrwFrameLayout : FrameLayout {
@@ -44,8 +41,6 @@ class SrwFrameLayout : FrameLayout {
     private var titleContainer: LinearLayout? = null
     private var titleIcon: IconUnify? = null
     private var srwContentContainer: LinearLayout? = null
-    private var errorState: LocalLoad? = null
-    private var loadingState: LoaderUnify? = null
 
     private var bgExpanded: Drawable? = null
 
@@ -61,7 +56,6 @@ class SrwFrameLayout : FrameLayout {
     private var latestState: Resource<ChatSmartReplyQuestionResponse>? = null
 
     interface Listener {
-        fun onRetrySrw()
         fun trackViewSrw()
         fun onExpandStateChanged(isExpanded: Boolean)
     }
@@ -69,7 +63,7 @@ class SrwFrameLayout : FrameLayout {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(
-            context: Context, attrs: AttributeSet?, defStyleAttr: Int
+        context: Context, attrs: AttributeSet?, defStyleAttr: Int
     ) : super(context, attrs, defStyleAttr)
 
     init {
@@ -78,29 +72,6 @@ class SrwFrameLayout : FrameLayout {
         initBackground()
         initToggleExpandCollapsed()
         initRecyclerView()
-        initLoadingState()
-        initErrorState()
-    }
-
-    private fun initLoadingState() {
-        loadingState?.avd?.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
-            override fun onAnimationEnd(drawable: Drawable?) {
-                super.onAnimationEnd(drawable)
-                if (!ViewUtil.areSystemAnimationsEnabled(context)) {
-                    loadingState?.avd?.clearAnimationCallbacks()
-                }
-            }
-        })
-    }
-
-    private fun initErrorState() {
-        errorState?.let { errorView ->
-            errorView.refreshBtn?.setOnClickListener {
-                // refresh here
-                listener?.onRetrySrw()
-                errorView.progressState = !errorView.progressState
-            }
-        }
     }
 
     fun updateSrwList(data: ChatSmartReplyQuestionResponse?) {
@@ -115,8 +86,8 @@ class SrwFrameLayout : FrameLayout {
     }
 
     fun initialize(
-            srwState: SrwState,
-            srwBubbleListener: SrwQuestionViewHolder.Listener?
+        srwState: SrwState,
+        srwBubbleListener: SrwQuestionViewHolder.Listener?
     ) {
         typeFactory.srwQuestionListener = srwBubbleListener
         this.listener = srwState.listener
@@ -137,6 +108,9 @@ class SrwFrameLayout : FrameLayout {
             Status.SUCCESS -> {
                 updateSrwList(latestState.data)
             }
+            Status.ERROR -> {
+                resetSrw()
+            }
             else -> {
             }
         }
@@ -148,16 +122,16 @@ class SrwFrameLayout : FrameLayout {
 
     private fun initBackground() {
         bgExpanded = ViewUtil.generateBackgroundWithShadow(
-                this,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0,
-                R.dimen.dp_topchat_20,
-                R.dimen.dp_topchat_0,
-                R.dimen.dp_topchat_20,
-                R.dimen.dp_topchat_20,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-                R.dimen.dp_topchat_2,
-                R.dimen.dp_topchat_2,
-                Gravity.CENTER
+            this,
+            com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            R.dimen.dp_topchat_20,
+            R.dimen.dp_topchat_0,
+            R.dimen.dp_topchat_20,
+            R.dimen.dp_topchat_20,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            R.dimen.dp_topchat_2,
+            R.dimen.dp_topchat_2,
+            Gravity.CENTER
         )
         srwContentContainer?.background = bgExpanded
     }
@@ -168,8 +142,6 @@ class SrwFrameLayout : FrameLayout {
         titleIcon = findViewById(R.id.ic_header_state_partial)
         rvSrw = findViewById(R.id.rv_srw_partial)
         srwContentContainer = findViewById(R.id.rv_srw_content_container)
-        errorState = findViewById(R.id.ll_srw_partial)
-        loadingState = findViewById(R.id.lu_srw_partial)
     }
 
     private fun initToggleExpandCollapsed() {
@@ -208,6 +180,11 @@ class SrwFrameLayout : FrameLayout {
         rvAdapter.updateSrwList(chatSmartReplyQuestion)
     }
 
+    private fun resetSrw() {
+        chatSmartReplyQuestion = ChatSmartReplyQuestion()
+        rvAdapter.resetSrwQuestions()
+    }
+
     fun renderSrwState() {
         show()
         when {
@@ -231,33 +208,21 @@ class SrwFrameLayout : FrameLayout {
 
     private fun renderLoadingState() {
         hideSrwContent()
-        hideErrorState()
-        showLoadingState()
+        resetSrw()
     }
 
     private fun renderSrwContent() {
-        hideErrorState()
-        hideLoadingState()
         showSrwContent()
     }
 
     private fun renderErrorState() {
         hideSrwContent()
-        hideLoadingState()
-        showErrorState()
+        resetSrw()
     }
 
     fun hideSrw() {
         hide()
         hideSrwContent()
-    }
-
-    private fun showErrorState() {
-        errorState?.show()
-    }
-
-    private fun hideErrorState() {
-        errorState?.hide()
     }
 
     private fun showSrwContent() {
@@ -273,14 +238,6 @@ class SrwFrameLayout : FrameLayout {
         srwContentContainer?.hide()
     }
 
-    private fun showLoadingState() {
-        loadingState?.show()
-    }
-
-    private fun hideLoadingState() {
-        loadingState?.hide()
-    }
-
     fun getStateInfo(): SrwState {
         return SrwState(isExpanded, listener, latestState)
     }
@@ -290,9 +247,9 @@ class SrwFrameLayout : FrameLayout {
     }
 
     class SrwState(
-            val isExpanded: Boolean,
-            val listener: Listener? = null,
-            val latestState: Resource<ChatSmartReplyQuestionResponse>? = null
+        val isExpanded: Boolean,
+        val listener: Listener? = null,
+        val latestState: Resource<ChatSmartReplyQuestionResponse>? = null
     )
 
     companion object {
@@ -304,12 +261,17 @@ class SrwFrameLayout : FrameLayout {
  * Adapter used specifically for [SrwFrameLayout]
  */
 class SrwAdapter(
-        srwTypeFactory: SrwTypeFactory
+    srwTypeFactory: SrwTypeFactory
 ) : BaseListAdapter<Visitable<*>, SrwTypeFactory>(srwTypeFactory) {
 
     fun updateSrwList(chatSmartReplyQuestion: ChatSmartReplyQuestion) {
         visitables.clear()
         visitables.addAll(chatSmartReplyQuestion.questions)
+        notifyDataSetChanged()
+    }
+
+    fun resetSrwQuestions() {
+        visitables.clear()
         notifyDataSetChanged()
     }
 

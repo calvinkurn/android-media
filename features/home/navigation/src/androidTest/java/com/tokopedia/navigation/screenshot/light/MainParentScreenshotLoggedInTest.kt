@@ -70,9 +70,6 @@ class MainParentScreenshotLoggedInTest {
 
     private fun setupAbTestRemoteConfig() {
         RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                RollenceKey.NAVIGATION_EXP_TOP_NAV,
-                RollenceKey.NAVIGATION_VARIANT_REVAMP)
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
                 RollenceKey.BALANCE_EXP,
                 RollenceKey.BALANCE_VARIANT_NEW)
     }

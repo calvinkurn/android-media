@@ -1,16 +1,17 @@
 package com.tokopedia.play.viewmodel.play
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.thenVerify
-import com.tokopedia.play.util.isEqualTo
-import com.tokopedia.play.util.isFalse
-import com.tokopedia.play.util.isTrue
+import com.tokopedia.play.util.*
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test
 
@@ -26,11 +27,12 @@ class PlayViewModelFieldTest {
     private val cartInfoBuilder = PlayCartInfoModelBuilder()
     private val partnerInfoBuilder = PlayPartnerInfoModelBuilder()
     private val likeBuilder = PlayLikeModelBuilder()
-    private val statusInfoBuilder = PlayStatusInfoModelBuilder()
     private val channelDataBuilder = PlayChannelDataModelBuilder()
     private val channelReportBuilder = PlayChannelReportModelBuilder()
     private val videoModelBuilder = PlayVideoModelBuilder()
     private val responseBuilder = PlayResponseBuilder()
+
+    private val uiModelBuilder = UiModelBuilder.get()
 
     @Test
     fun `given video player is set, when page is created and video player is retrieved, it should return the same one`() {
@@ -39,13 +41,12 @@ class PlayViewModelFieldTest {
                 videoMetaInfo = videoModelBuilder.buildVideoMeta(videoPlayer = videoPlayer)
         )
 
-        val expectedModel = videoPlayer
         givenPlayViewModelRobot(
         ) andWhen {
             createPage(channelData)
         } thenVerify {
             viewModel.videoPlayer
-                    .isEqualTo(expectedModel)
+                    .isEqualTo(videoPlayer)
         }
     }
 
@@ -53,19 +54,23 @@ class PlayViewModelFieldTest {
     fun `given status info is set, when page is created and status type is retrieved, it should return the same one`() {
         val statusType = PlayStatusType.Banned
         val channelData = channelDataBuilder.buildChannelData(
-                statusInfo = statusInfoBuilder.build(
-                        statusType = statusType
+            status = uiModelBuilder.buildStatus(
+                channelStatus = uiModelBuilder.buildChannelStatus(
+                    statusType = statusType
                 )
+            )
         )
 
-        val expectedModel = statusType
+        val repo = mockk<PlayViewerRepository>(relaxed = true)
+        every { repo.getChannelData(any()) } returns channelData
 
         givenPlayViewModelRobot(
+            repo = repo
         ) andWhen {
             createPage(channelData)
         } thenVerify {
             viewModel.statusType
-                    .isEqualTo(expectedModel)
+                    .isEqualTo(statusType)
         }
     }
 
@@ -80,14 +85,12 @@ class PlayViewModelFieldTest {
                 )
         )
 
-        val expectedModel = videoOrientation
-
         givenPlayViewModelRobot(
         ) andWhen {
             createPage(channelData)
         } thenVerify {
             viewModel.videoOrientation
-                    .isEqualTo(expectedModel)
+                    .isEqualTo(videoOrientation)
         }
     }
 
@@ -102,42 +105,12 @@ class PlayViewModelFieldTest {
                 )
         )
 
-        val expectedModel = channelType
-
         givenPlayViewModelRobot(
         ) andWhen {
             createPage(channelData)
         } thenVerify {
             viewModel.channelType
-                    .isEqualTo(expectedModel)
-        }
-    }
-
-    @Test
-    fun `given status info is set, when page is created and isFreezeOrBanned is retrieved, it should return the correct value`() {
-        val activeStatusInfo = statusInfoBuilder.build(
-                statusType = PlayStatusType.Active
-        )
-
-        val freezeStatusInfo = statusInfoBuilder.build(
-                statusType = PlayStatusType.Freeze
-        )
-
-        givenPlayViewModelRobot(
-        ) andWhen {
-            val channelData = channelDataBuilder.buildChannelData(
-                    statusInfo = activeStatusInfo
-            )
-            createPage(channelData)
-        } thenVerify {
-            viewModel.isFreezeOrBanned.isFalse()
-        } andWhen {
-            val channelData = channelDataBuilder.buildChannelData(
-                    statusInfo = freezeStatusInfo
-            )
-            createPage(channelData)
-        } thenVerify {
-            viewModel.isFreezeOrBanned.isTrue()
+                    .isEqualTo(channelType)
         }
     }
 

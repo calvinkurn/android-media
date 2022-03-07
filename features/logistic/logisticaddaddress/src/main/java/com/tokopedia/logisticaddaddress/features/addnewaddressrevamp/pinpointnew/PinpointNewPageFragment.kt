@@ -105,7 +105,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private var showIllustrationMap: Boolean = false
 
     private var isFromAddressForm: Boolean = false
-    private var districtId: Int? = null
+    private var districtId: Long? = null
     private var currentKotaKecamatan: String? = ""
     private var currentPostalCode: String? = ""
 
@@ -266,7 +266,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             currentDistrictName = it.getString(EXTRA_DISTRICT_NAME)
             districtId = saveAddressDataModel?.districtId
             if (districtId == null) {
-                districtId = it.getInt(EXTRA_DISTRICT_ID)
+                districtId = it.getLong(EXTRA_DISTRICT_ID)
             }
             isPolygon = it.getBoolean(EXTRA_IS_POLYGON, false)
             zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
@@ -281,7 +281,21 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             if (isPositiveFlow) {
                 viewModel.getDistrictData(currentLat, currentLong)
             } else {
-                currentDistrictName?.let { viewModel.getAutoComplete(it) }
+                if (currentLong != 0.0 && currentLat != 0.0) {
+                    // negative flow but already pinpoint before
+                    binding?.mapsEmpty?.visibility = View.GONE
+                    binding?.mapViews?.visibility = View.VISIBLE
+
+                    showDistrictBottomSheet()
+                    moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
+                    saveAddressDataModel?.let {
+                        viewModel.setAddress(it)
+                        updateGetDistrictBottomSheet(it)
+                    }
+                } else {
+                    currentDistrictName?.let { viewModel.getAutoComplete(it) }
+                }
+
             }
         }
     }
@@ -390,7 +404,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun onSuccessPlaceGetDistrict(data: GetDistrictDataUiModel) {
-        if ((data.postalCode.isEmpty() && currentPostalCode.isNullOrEmpty()) || data.districtId == 0) {
+        if ((data.postalCode.isEmpty() && currentPostalCode.isNullOrEmpty()) || data.districtId == 0L) {
             currentLat = data.latitude.toDouble()
             currentLong = data.longitude.toDouble()
             moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
@@ -462,12 +476,11 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 AddNewAddressRevampAnalytics.onClickIsiAlamatManual(userSession.userId)
                 if (isPositiveFlow) {
                     isPositiveFlow = false
+                    viewModel.setAddress(SaveAddressDataModel())
                     goToAddressForm()
                 } else {
                     activity?.run {
                         setResult(Activity.RESULT_OK, Intent().apply {
-                            putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)
-                            putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
                             putExtra(EXTRA_NEGATIVE_FULL_FLOW, true)
                         })
                         finish()
@@ -760,16 +773,17 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun goToSearchPage() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
         if (!isPositiveFlow) {
-            intent.putExtra(EXTRA_IS_POLYGON, isPolygon)
-            intent.putExtra(EXTRA_FROM_PINPOINT, true)
-            intent.putExtra(EXTRA_DISTRICT_ID, districtId)
+            // back to addressform, reset ana state to search page
+            activity?.run {
+                setResult(Activity.RESULT_OK, Intent().apply {
+                    putExtra(EXTRA_RESET_TO_SEARCH_PAGE, true)
+                })
+                finish()
+            }
+        } else {
+            activity?.finish()
         }
-        intent.putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
-        intent.putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
-        intent.putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)
-        startActivityForResult(intent, REQUEST_SEARCH_PAGE)
     }
 
     private fun goToAddressForm() {

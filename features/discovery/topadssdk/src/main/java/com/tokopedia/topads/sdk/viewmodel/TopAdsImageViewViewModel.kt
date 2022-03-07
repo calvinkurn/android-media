@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
+import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -24,7 +25,7 @@ class TopAdsImageViewViewModel constructor(application: Application) :AndroidVie
     private val response: MutableLiveData<Result<ArrayList<TopAdsImageViewModel>>> = MutableLiveData()
     private val viewModelJob = SupervisorJob()
     private var useCase: TopAdsImageViewUseCase =
-            TopAdsImageViewUseCase(UserSession(application.applicationContext).userId, TopAdsRepository())
+            TopAdsImageViewUseCase(UserSession(application.applicationContext).userId, TopAdsRepository(),TopAdsIrisSession(application.applicationContext).getSessionId())
 
     fun getImageData(queryParams: MutableMap<String, Any>) {
         launchCatchError(

@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.play.R
-import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.unifycomponents.UnifyButton
 

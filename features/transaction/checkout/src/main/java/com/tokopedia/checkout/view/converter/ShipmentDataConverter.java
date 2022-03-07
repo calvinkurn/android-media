@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
+import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
@@ -93,6 +94,22 @@ public class ShipmentDataConverter {
             shipmentDonationModel.setDonation(cartShipmentAddressFormData.getDonation());
 
             return shipmentDonationModel;
+        } else {
+            return null;
+        }
+    }
+
+    public ArrayList<ShipmentCrossSellModel> getListShipmentCrossSellModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
+        ArrayList<ShipmentCrossSellModel> listCrossSellModel = new ArrayList<>();
+        if (!cartShipmentAddressFormData.getCrossSell().isEmpty()) {
+            for (int i = 0; i<cartShipmentAddressFormData.getCrossSell().size(); i++) {
+                ShipmentCrossSellModel shipmentCrossSellModel = new ShipmentCrossSellModel();
+                shipmentCrossSellModel.setChecked(cartShipmentAddressFormData.getCrossSell().get(i).isChecked());
+                shipmentCrossSellModel.setEnabled(!cartShipmentAddressFormData.getCrossSell().get(i).getCheckboxDisabled());
+                shipmentCrossSellModel.setCrossSellModel(cartShipmentAddressFormData.getCrossSell().get(i));
+                listCrossSellModel.add(shipmentCrossSellModel);
+            }
+            return listCrossSellModel;
         } else {
             return null;
         }
@@ -198,6 +215,8 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setCourierSelectionErrorTitle(groupShop.getCourierSelectionErrorData().getTitle());
             shipmentCartItemModel.setCourierSelectionErrorDescription(groupShop.getCourierSelectionErrorData().getDescription());
             shipmentCartItemModel.setTokoNow(groupShop.getShop().isTokoNow());
+            shipmentCartItemModel.setShopTickerTitle(groupShop.getShop().getShopTickerTitle());
+            shipmentCartItemModel.setShopTicker(groupShop.getShop().getShopTicker());
             shipmentCartItemModels.add(shipmentCartItemModel);
         }
 
@@ -291,6 +310,7 @@ public class ShipmentDataConverter {
 
         cartItemModel.setCartId(product.getCartId());
         cartItemModel.setProductId(product.getProductId());
+        cartItemModel.setProductCatId(product.getProductCatId());
         cartItemModel.setName(product.getProductName());
         cartItemModel.setImageUrl(product.getProductImageSrc200Square());
         cartItemModel.setCurrency(product.getProductPriceCurrency());
@@ -346,6 +366,18 @@ public class ShipmentDataConverter {
             cartItemModel.setProtectionOptIn(ppp.isProtectionOptIn());
             cartItemModel.setProtectionCheckboxDisabled(ppp.isProtectionCheckboxDisabled());
         }
+
+        cartItemModel.setBundlingItem(product.isBundlingItem());
+        cartItemModel.setBundlingItemPosition(product.getBundlingItemPosition());
+        cartItemModel.setBundleId(product.getBundleId());
+        cartItemModel.setBundleGroupId(product.getBundleGroupId());
+        cartItemModel.setBundleType(product.getBundleType());
+        cartItemModel.setBundleTitle(product.getBundleTitle());
+        cartItemModel.setBundlePrice(product.getBundlePrice());
+        cartItemModel.setBundleSlashPriceLabel(product.getBundleSlashPriceLabel());
+        cartItemModel.setBundleOriginalPrice(product.getBundleOriginalPrice());
+        cartItemModel.setBundleQuantity(product.getBundleQuantity());
+        cartItemModel.setBundleIconUrl(product.getBundleIconUrl());
 
         cartItemModel.setAnalyticsProductCheckoutData(product.getAnalyticsProductCheckoutData());
         return cartItemModel;

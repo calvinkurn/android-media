@@ -19,7 +19,6 @@ internal class SearchShopEmptyResultTest: SearchShopDataViewTestFixtures() {
         `When handle view is visible and added`()
 
         `Then assert search shop state is success and only contains empty search data`()
-        `Then should post empty search tracking event`()
         `Then should NOT post shop recommendation item impression tracking event`()
         `Then should NOT post shop recommendation product preview impression tracking event`()
         `Then should NOT post shop item impression tracking event`()
@@ -51,12 +50,6 @@ internal class SearchShopEmptyResultTest: SearchShopDataViewTestFixtures() {
         searchShopState.shouldBeInstanceOf<State.Success<*>>()
         searchShopState.shouldOnlyHaveEmptySearchModel()
         searchShopState.shouldHaveEmptySearchModelWithExpectedIsFilter(false)
-    }
-
-    private fun `Then should post empty search tracking event`() {
-        val emptySearchTrackingEvent = searchShopViewModel.getEmptySearchTrackingEventLiveData().value
-
-        emptySearchTrackingEvent?.getContentIfNotHandled() shouldBe true
     }
 
     private fun `Then should NOT post shop recommendation item impression tracking event`() {
@@ -108,7 +101,6 @@ internal class SearchShopEmptyResultTest: SearchShopDataViewTestFixtures() {
         `When handle view is visible and added`()
 
         `Then assert search shop state is success, contains empty result view, recommendation title, recommendation items, and load more`()
-        `Then should post empty search tracking event`()
         `Then should post shop recommendation item impression tracking event`()
         `Then should post shop recommendation product preview impression tracking event`()
         `Then should NOT post shop item impression tracking event`()
@@ -160,7 +152,6 @@ internal class SearchShopEmptyResultTest: SearchShopDataViewTestFixtures() {
         `When handle view is visible and added`()
 
         `Then assert search shop state is success, contains empty result view, recommendation title, and recommendation items`()
-        `Then should post empty search tracking event`()
         `Then should post shop recommendation item impression tracking event`()
         `Then should post shop recommendation product preview impression tracking event`()
         `Then should NOT post shop item impression tracking event`()

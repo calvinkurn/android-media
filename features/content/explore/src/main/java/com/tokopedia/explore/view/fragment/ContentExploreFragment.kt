@@ -35,9 +35,7 @@ import com.tokopedia.explore.view.uimodel.ExploreCategoryViewModel
 import com.tokopedia.explore.view.uimodel.ExploreImageViewModel
 import com.tokopedia.explore.view.uimodel.ExploreViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.user.session.UserSessionInterface
-import io.embrace.android.embracesdk.Embrace
 import javax.inject.Inject
 
 /**
@@ -122,7 +120,6 @@ class ContentExploreFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        GraphqlClient.init(requireContext())
         initVar()
         initView()
         presenter.attachView(this)
@@ -179,7 +176,7 @@ class ContentExploreFragment :
 
     private fun initVar() {
         if (arguments != null) {
-            categoryId = Integer.valueOf(arguments!!.getString(
+            categoryId = Integer.valueOf(requireArguments().getString(
                     PARAM_CATEGORY_ID,
                     DEFAULT_CATEGORY)
             )
@@ -191,7 +188,6 @@ class ContentExploreFragment :
         if (userVisibleHint && isAdded && activity != null && ::presenter.isInitialized) {
             if (!hasLoadedOnce) {
                 performanceMonitoring = PerformanceMonitoring.start(PEFORMANCE_EXPLORE)
-                Embrace.getInstance().startEvent(PEFORMANCE_EXPLORE, null, false)
                 presenter.getExploreData(true)
                 hasLoadedOnce = !hasLoadedOnce
             }
@@ -394,7 +390,6 @@ class ContentExploreFragment :
     override fun stopTrace() {
         if (::performanceMonitoring.isInitialized && !isTraceStopped) {
             performanceMonitoring.stopTrace()
-            Embrace.getInstance().endEvent(PEFORMANCE_EXPLORE)
             isTraceStopped = true
         }
     }

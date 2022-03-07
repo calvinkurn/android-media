@@ -78,7 +78,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     private val EXTRA_DETAIL_ADDRESS_LATEST = "EXTRA_DETAIL_ADDRESS_LATEST"
     private var token: Token? = null
     private var isPolygon: Boolean = false
-    private var districtId: Int? = null
+    private var districtId: Long? = null
     private val GREEN_ARGB = 0x40388E3C
     private var isMismatchSolved: Boolean = false
     private var isMismatch: Boolean = false
@@ -187,6 +187,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         prepareMap(savedInstanceState)
         prepareLayout()
         setViewListener()
@@ -344,7 +345,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                 .zoom(zoomLevel)
                 .build()
 
-        googleMap?.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+        googleMap?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
     }
 
     override fun onResume() {
@@ -386,6 +387,11 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         } else {
             showLocationInfoBottomSheet(isFullFlow)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        binding?.mapView?.onStart()
     }
 
     override fun onPause() {
@@ -430,7 +436,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
             goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = false, isZipCodeNull = false, isFullFlow = isFullFlow, isLogisticLabel = isLogisticLabel, isCircuitBreaker = true)
         } else {
             if (!isFullFlow) {
-                if (getDistrictDataUiModel.postalCode.isEmpty() || getDistrictDataUiModel.districtId == 0) {
+                if (getDistrictDataUiModel.postalCode.isEmpty() || getDistrictDataUiModel.districtId == 0L) {
                     currentLat = getDistrictDataUiModel.latitude.toDouble()
                     currentLong = getDistrictDataUiModel.longitude.toDouble()
                     moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
@@ -462,7 +468,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
     override fun onSuccessAutofill(autofillDataUiModel: Data) {
         if (!isFullFlow) {
-            if (autofillDataUiModel.postalCode.isEmpty() || autofillDataUiModel.districtId == 0) {
+            if (autofillDataUiModel.postalCode.isEmpty() || autofillDataUiModel.districtId == 0L) {
                 showNotFoundLocation()
             } else {
                 doAfterSuccessAutofill(autofillDataUiModel)
@@ -698,7 +704,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         }
 
         val addressModel = presenter.getSaveAddressDataModel()
-        if (addressModel.districtId == 0 && addressModel.postalCode.isEmpty()) {
+        if (addressModel.districtId == 0L && addressModel.postalCode.isEmpty()) {
             showFailedDialog()
 
             AddNewAddressAnalytics.eventClickButtonPilihLokasiIniNotSuccess(isFullFlow, isLogisticLabel)

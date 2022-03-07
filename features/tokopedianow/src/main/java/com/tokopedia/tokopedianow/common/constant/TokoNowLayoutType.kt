@@ -14,7 +14,8 @@ import androidx.annotation.StringDef
     TokoNowLayoutType.LEGO_3_IMAGE,
     TokoNowLayoutType.LEGO_6_IMAGE,
     TokoNowLayoutType.PRODUCT_RECOM,
-    TokoNowLayoutType.RECENT_PURCHASE
+    TokoNowLayoutType.REPURCHASE_PRODUCT,
+    TokoNowLayoutType.MAIN_QUEST
 )
 annotation class TokoNowLayoutType {
     companion object {
@@ -23,8 +24,10 @@ annotation class TokoNowLayoutType {
         const val LEGO_3_IMAGE = "lego_3_image"
         const val LEGO_6_IMAGE = "6_image"
         const val PRODUCT_RECOM = "top_carousel_tokonow"
-        const val RECENT_PURCHASE = "recent_purchase_tokonow"
+        const val REPURCHASE_PRODUCT = "recent_purchase_tokonow"
         const val EDUCATIONAL_INFORMATION = "tokonow_usp"
         const val SHARING_EDUCATION = "tokonow_share"
+        const val MAIN_QUEST = "tokonow_main_quest"
+        const val MIX_LEFT_CAROUSEL = "left_carousel"
     }
 }

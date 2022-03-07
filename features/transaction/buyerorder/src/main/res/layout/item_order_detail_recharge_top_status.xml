@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_Background"
+    android:paddingBottom="@dimen/unify_space_16">
+
+    <View
+        android:id="@+id/view_recharge_status_color"
+        android:layout_width="@dimen/unify_space_4"
+        android:layout_height="@dimen/layout_lvl3"
+        android:background="@drawable/bg_recharge_status_color"
+        app:layout_constraintBottom_toBottomOf="@id/tg_recharge_order_detail_status"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tg_recharge_order_detail_status" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_recharge_order_detail_status"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintLeft_toRightOf="@id/view_recharge_status_color"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_5"
+        tools:text="Dalam Proses" />
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_recharge_order_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:layout_marginRight="@dimen/unify_space_16"
+        app:closeButtonVisibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tg_recharge_order_detail_status"
+        app:tickerShapeType="loose" />
+
+    <View
+        android:id="@+id/recharge_top_status_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginRight="@dimen/unify_space_16"
+        android:background="@color/Unify_N50"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ticker_recharge_order_detail" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_recharge_invoice_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recharge_top_status_divider"
+        app:typographyType="body_3"
+        tools:text="INV/20161025/XVI/X/55069657" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_recharge_invoice_copy"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/unify_space_4"
+        app:icon_name="COPY"
+        app:layout_constraintBottom_toBottomOf="@id/tg_recharge_invoice_number"
+        app:layout_constraintLeft_toRightOf="@id/tg_recharge_invoice_number"
+        app:layout_constraintTop_toTopOf="@id/tg_recharge_invoice_number" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_recharge_see_invoice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:text="@string/recharge_order_detail_see_invoice_label"
+        android:textColor="@color/Unify_G500"
+        app:layout_constraintBottom_toBottomOf="@id/tg_recharge_invoice_number"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tg_recharge_invoice_number"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
+
+    <LinearLayout
+        android:id="@+id/container_recharge_order_detail_top_section_titles"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tg_recharge_invoice_number" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

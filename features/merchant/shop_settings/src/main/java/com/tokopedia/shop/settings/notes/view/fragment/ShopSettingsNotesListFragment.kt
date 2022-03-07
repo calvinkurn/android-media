@@ -19,6 +19,8 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.view.adapter.viewholder.MenuViewHolder
@@ -28,18 +30,20 @@ import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
 import com.tokopedia.shop.settings.notes.view.activity.ShopSettingsNotesAddEditActivity
 import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteAdapter
 import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteFactory
-import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingNoteListPresenter
 import com.tokopedia.shop.settings.notes.view.viewholder.ShopNoteViewHolder
+import com.tokopedia.shop.settings.notes.view.viewmodel.ShopSettingsNoteListViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 
-class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNoteFactory>(), ShopSettingNoteListPresenter.View,
+class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNoteFactory>(),
         ShopNoteViewHolder.OnShopNoteViewHolderListener {
 
     @Inject
-    lateinit var shopSettingNoteListPresenter: ShopSettingNoteListPresenter
+    lateinit var viewModel: ShopSettingsNoteListViewModel
 
     private var binding by autoClearedNullable<FragmentNoteListBinding>()
 
@@ -62,6 +66,11 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
         return binding?.root as View
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        observeData()
+    }
+
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
@@ -73,7 +82,6 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
                     .build()
                     .inject(this)
         }
-        shopSettingNoteListPresenter.attachView(this)
     }
 
     override fun getScreenName(): String? {
@@ -83,10 +91,6 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
     override fun onCreate(savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
         super.onCreate(savedInstanceState)
-        context?.let {
-            GraphqlClient.init(it)
-        }
-        shopSettingNoteListPresenter.getShopNotes()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -163,10 +167,6 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
         return emptyModel
     }
 
-    override fun loadData(page: Int) {
-        shopSettingNoteListPresenter.getShopNotes()
-    }
-
     override fun createAdapterInstance(): BaseListAdapter<ShopNoteUiModel, ShopNoteFactory> {
         shopNoteAdapter = ShopNoteAdapter(adapterTypeFactory, this)
         return shopNoteAdapter as ShopNoteAdapter
@@ -223,13 +223,13 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
                     activity?.let { it ->
                         DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                             setTitle(getString(R.string.title_dialog_delete_shop_note))
-                            setDescription(getString(R.string.desc_dialog_delete_shop_note, text))
+                            setDescription(getString(R.string.desc_dialog_delete_shop_note, shopNoteUiModel.title))
                             setPrimaryCTAText(getString(R.string.action_delete))
                             setSecondaryCTAText(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
                             setPrimaryCTAClickListener {
                                 shopNoteIdToDelete = shopNoteUiModel.id
                                 showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
-                                shopSettingNoteListPresenter.deleteShopNote(shopNoteIdToDelete!!)
+                                shopNoteIdToDelete?.let { viewModel.deleteShopNote(it) }
                                 dismiss()
                             }
                             setSecondaryCTAClickListener { dismiss() }
@@ -245,14 +245,9 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
         iconMoreBottomSheet?.show(childFragmentManager, "menu_bottom_sheet")
     }
 
-    override fun onSuccessGetShopNotes(shopNoteModels: ArrayList<ShopNoteUiModel>) {
-        this.shopNoteModels = shopNoteModels
-        renderList(shopNoteModels, false)
-        activity?.invalidateOptionsMenu()
-    }
-
-    override fun onErrorGetShopNotes(throwable: Throwable) {
-        showGetListError(throwable)
+    override fun onAttachActivity(context: Context) {
+        super.onAttachActivity(context)
+        onShopSettingsNoteFragmentListener = context as OnShopSettingsNoteFragmentListener
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -273,6 +268,10 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
         }
     }
 
+    override fun loadData(page: Int) {
+        viewModel.getShopNote()
+    }
+
     override fun onResume() {
         super.onResume()
         if (needReload) {
@@ -281,24 +280,8 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
         }
     }
 
-    override fun onSuccessDeleteShopNote(successMessage: String) {
-        hideSubmitLoading()
-        view?.let {
-            Toaster.make(it, getString(R.string.note_success_delete), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
-        }
-        loadInitialData()
-    }
-
     fun refreshData() {
         loadInitialData()
-    }
-
-    override fun onErrorDeleteShopNote(throwable: Throwable) {
-        hideSubmitLoading()
-        val message = ErrorHandler.getErrorMessage(context, throwable)
-        view?.let {
-            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
-        }
     }
 
     fun showSubmitLoading(message: String) {
@@ -320,14 +303,50 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        shopSettingNoteListPresenter.detachView()
+    private fun onSuccessDeleteShopNote(successMessage: String) {
+        hideSubmitLoading()
+        view?.let {
+            Toaster.make(it, getString(R.string.note_success_delete), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+        }
+        loadInitialData()
     }
 
-    override fun onAttachActivity(context: Context) {
-        super.onAttachActivity(context)
-        onShopSettingsNoteFragmentListener = context as OnShopSettingsNoteFragmentListener
+    private fun onErrorDeleteShopNote(throwable: Throwable) {
+        hideSubmitLoading()
+        val message = ErrorHandler.getErrorMessage(context, throwable)
+        view?.let {
+            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
+    }
+
+    private fun onSuccessGetShopNotes(shopNoteModels: List<ShopNoteModel>) {
+        val shopNoteUiModels = ArrayList<ShopNoteUiModel>()
+        for (shopNoteModel in shopNoteModels) {
+            shopNoteUiModels.add(ShopNoteUiModel(shopNoteModel))
+        }
+        this.shopNoteModels = shopNoteUiModels
+        renderList(shopNoteUiModels, false)
+        activity?.invalidateOptionsMenu()
+    }
+
+    private fun onErrorGetShopNotes(throwable: Throwable) {
+        showGetListError(throwable)
+    }
+
+    private fun observeData() {
+        observe(viewModel.getNote) {
+            when(it) {
+                is Success -> onSuccessGetShopNotes(it.data)
+                is Fail -> onErrorGetShopNotes(it.throwable)
+            }
+        }
+
+        observe(viewModel.deleteNote) {
+            when(it) {
+                is Success -> onSuccessDeleteShopNote(it.data)
+                is Fail -> onErrorDeleteShopNote(it.throwable)
+            }
+        }
     }
 
     companion object {

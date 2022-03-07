@@ -10,10 +10,12 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
+import com.tokopedia.shop.databinding.ItemShopNewproductSmallGridBinding
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -30,10 +32,11 @@ class ShopProductViewHolder(
         private val isShowTripleDot: Boolean
 ) : AbstractViewHolder<ShopProductUiModel>(itemView) {
     private val totalReview: TextView? = null
-    lateinit var productCard: ProductCardGridView
+    private val viewBinding : ItemShopNewproductSmallGridBinding? by viewBinding()
+    private var productCard: ProductCardGridView? = null
 
     init {
-        findViews(itemView)
+        findViews()
     }
 
     companion object {
@@ -42,12 +45,12 @@ class ShopProductViewHolder(
         const val RATIO_WITH_RELATIVE_TO_SCREEN = 2.3
     }
 
-    private fun findViews(view: View) {
-        productCard = view.findViewById(R.id.product_card)
+    private fun findViews() {
+        productCard = viewBinding?.productCard
     }
 
     override fun bind(shopProductUiModel: ShopProductUiModel) {
-        productCard.setProductModel(
+        productCard?.setProductModel(
                 ShopPageProductListMapper.mapToProductCardModel(
                         shopProductUiModel = shopProductUiModel,
                         isWideContent = false,
@@ -56,7 +59,7 @@ class ShopProductViewHolder(
         )
 
         if (shopProductImpressionListener?.getSelectedEtalaseName().orEmpty().isNotEmpty()) {
-            productCard.setImageProductViewHintListener(shopProductUiModel, object : ViewHintListener {
+            productCard?.setImageProductViewHintListener(shopProductUiModel, object : ViewHintListener {
                 override fun onViewHint() {
                     shopProductImpressionListener?.onProductImpression(shopProductUiModel, shopTrackType, adapterPosition)
                 }
@@ -67,11 +70,11 @@ class ShopProductViewHolder(
             itemView.layoutParams.width = (deviceWidth / RATIO_WITH_RELATIVE_TO_SCREEN).toInt()
         }
 
-        productCard.setOnClickListener {
+        productCard?.setOnClickListener {
             shopProductClickedListener?.onProductClicked(shopProductUiModel, shopTrackType, adapterPosition)
         }
 
-        productCard.setThreeDotsOnClickListener {
+        productCard?.setThreeDotsOnClickListener {
             shopProductClickedListener?.onThreeDotsClicked(shopProductUiModel, shopTrackType)
         }
     }
@@ -79,7 +82,7 @@ class ShopProductViewHolder(
     override fun bind(shopProductUiModel: ShopProductUiModel, payloads: MutableList<Any>) {
         if (payloads.getOrNull(0) !is Boolean) return
 
-        productCard.setThreeDotsOnClickListener {
+        productCard?.setThreeDotsOnClickListener {
             shopProductClickedListener?.onThreeDotsClicked(shopProductUiModel, shopTrackType)
         }
     }

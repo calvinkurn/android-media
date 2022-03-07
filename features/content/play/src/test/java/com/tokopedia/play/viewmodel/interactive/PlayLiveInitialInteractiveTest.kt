@@ -1,31 +1,25 @@
 package com.tokopedia.play.viewmodel.interactive
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.withState
 import com.tokopedia.play.robot.thenVerify
+import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.isEqualTo
-import com.tokopedia.play.util.isFalse
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -61,7 +55,7 @@ class PlayLiveInitialInteractiveTest {
 
     private val interactiveModelBuilder = PlayInteractiveModelBuilder()
 
-    private val socket: PlayChannelWebSocket = mockk(relaxed = true)
+    private val socket: PlayWebSocket = mockk(relaxed = true)
 
     init {
         every { mockRemoteConfig.getBoolean(any(), any()) } returns true
@@ -191,7 +185,7 @@ class PlayLiveInitialInteractiveTest {
                 interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.NoInteractive
                 )
-                winnerBadge.shouldShow.isFalse()
+                winnerBadge.shouldShow.assertFalse()
             }
         }
     }

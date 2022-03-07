@@ -21,8 +21,8 @@ object KycUrl {
 
     const val KYC_BENEFIT_BANNER = "https://images.tokopedia.net/img/android/user/kyc_benefit_banner.png"
     const val KYC_BENEFIT_POWER_MERCHANT = "https://images.tokopedia.net/img/android/user/kyc_benefit_power_merchant.png"
-    const val KYC_BENEFIT_FINTECH = "https://images.tokopedia.net/img/android/user/kyc_benefit_ic_fintech.png"
     const val KYC_BENEFIT_SHIELD = "https://images.tokopedia.net/img/android/user/kyc_benefit_shield_star.png"
+    const val KYC_BENEFIT_CART = "https://images.tokopedia.net/img/android/user/kyc_centralized/kyc_benefit_cart.png"
 
     fun getKYCBaseUrl(): String {
         return when (TokopediaUrl.getInstance().TYPE) {

@@ -9,6 +9,7 @@ import com.tokopedia.play.di.PlayScope
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.PlayUserWinnerStatusUiModel
 import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
@@ -30,6 +31,7 @@ class PlaySocketToModelMapper @Inject constructor(
     private val channelInteractiveMapper: PlayChannelInteractiveMapper,
     private val realTimeNotificationMapper: PlayRealTimeNotificationMapper,
     private val multipleLikesMapper: PlayMultipleLikesMapper,
+    private val userWinnerStatusMapper: PlayUserWinnerStatusMapper,
 ) {
 
     fun mapTotalLike(input: TotalLike): Pair<Long, String> {
@@ -43,8 +45,7 @@ class PlaySocketToModelMapper @Inject constructor(
     fun mapPinnedMessage(input: PinnedMessage): PinnedMessageUiModel {
         return PinnedMessageUiModel(
                 id = input.pinnedMessageId,
-                applink = input.redirectUrl,
-                partnerName = "", /**Skip**/
+                appLink = input.redirectUrl,
                 title = input.title,
         )
     }
@@ -53,7 +54,7 @@ class PlaySocketToModelMapper @Inject constructor(
         return PlayQuickReplyInfoUiModel(input.data)
     }
 
-    fun mapProductTag(input: ProductTag): Pair<List<PlayProductUiModel>, Boolean> {
+    fun mapProductTag(input: ProductTag): Pair<List<PlayProductUiModel.Product>, Boolean> {
         return input.listOfProducts.map(productTagMapper::mapProductTag) to input.isShowProductTagging
     }
 
@@ -81,6 +82,10 @@ class PlaySocketToModelMapper @Inject constructor(
         configs: List<MultipleLikeConfig>
     ) : PlayLikeBubbleConfig {
         return multipleLikesMapper.mapMultipleLikeConfig(configs)
+    }
+
+    fun mapUserWinnerStatus(userWinnerStatus: UserWinnerStatus): PlayUserWinnerStatusUiModel {
+        return userWinnerStatusMapper.mapUserWinnerStatus(userWinnerStatus)
     }
 
     /**

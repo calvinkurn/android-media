@@ -91,6 +91,7 @@ public interface SearchConstant {
         String SEARCH_PRODUCT_SKIP_GLOBAL_NAV = "skip_global_nav";
         String SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL = "skip_inspiration_carousel";
         String SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET = "skip_inspiration_widget";
+        String SEARCH_PRODUCT_SKIP_GET_LAST_FILTER_WIDGET = "skip_last_filter";
     }
 
     interface HeadlineAds {
@@ -196,13 +197,22 @@ public interface SearchConstant {
         String TYPE_GUIDED = "guided";
         String TYPE_CURATED = "curated";
         String TYPE_RELATED = "related";
-    }
-
-    interface ImageUrl {
-        String POWER_MERCHANT_PRO_ILLUSTRATION_URL = "https://images.tokopedia.net/img/android/search/PM_Pro_Illustration.png";
+        String TYPE_SIZE_PERSO = "size_perso";
     }
 
     interface CustomDimension {
         String DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL = "none.none.global_search.none";
+    }
+
+    interface SaveLastFilter {
+        String LAST_FILTER = "last_filter";
+        String ACTION = "action";
+        String PARAM = "param";
+        String CATEGORY_ID_L2 = "category_id_l2";
+        String ACTION_CREATE = "create";
+        String ACTION_UPDATE = "update";
+        String ACTION_DELETE = "delete";
+        String INPUT_PARAMS = "input_params";
+        String SAVE_LAST_FILTER_USE_CASE = "save_last_filter_use_case";
     }
 }

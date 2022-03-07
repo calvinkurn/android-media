@@ -52,6 +52,7 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.inApp.CMInAppManager;
+import com.tokopedia.notifications.worker.PushWorker;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -138,7 +139,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
                 return initLibraries();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, ENABLE_ASYNC_CMPUSHNOTIF_INIT, SellerRouterApplication.this);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, ENABLE_ASYNC_CMPUSHNOTIF_INIT, SellerRouterApplication.this, true);
     }
 
     private boolean initLibraries(){
@@ -171,6 +172,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
         excludeScreenList.add(Constants.DEEPLINK_HANDLER_ACTIVITY);
         CMInAppManager.getInstance().setExcludeScreenList(excludeScreenList);
         refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(this), false);
+        PushWorker.Companion.schedulePeriodicWorker(this);
     }
 
     @Override
@@ -350,7 +352,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
                 return true;
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_GCM_LEGACY, getApplicationContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_GCM_LEGACY, getApplicationContext(), true);
     }
 
     @Override

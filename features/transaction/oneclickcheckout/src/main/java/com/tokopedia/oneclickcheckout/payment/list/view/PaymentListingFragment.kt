@@ -47,9 +47,6 @@ import javax.inject.Named
 class PaymentListingFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val MERCHANT_CODE = "tokopedia"
-        private const val PROFILE_CODE = "EXPRESS_SAVE"
-
         private const val QUERY_PARAM_EXPRESS_CHECKOUT_PARAM = "express_checkout_param"
         private const val QUERY_PARAM_USER_ID = "user_id"
         private const val QUERY_PARAM_SUCCESS = "success"
@@ -58,17 +55,20 @@ class PaymentListingFragment : BaseDaggerFragment() {
         private const val ARG_PAYMENT_AMOUNT = "payment_amount"
         private const val ARG_ADDRESS_ID = "address_id"
         private const val ARG_PROFILE_CODE = "profile_code"
+        private const val ARG_MERCHANT_CODE = "merchant_code"
         private const val ARG_PAYMENT_BID = "bid"
 
         private const val REQUEST_CODE_LINK_ACCOUNT = 101
         private const val REQUEST_CODE = 191
 
-        fun newInstance(paymentAmount: Double, addressId: String, profileCode: String, bid: String): PaymentListingFragment {
+        fun newInstance(paymentAmount: Double, addressId: String, profileCode: String,
+                        merchantCode: String, bid: String): PaymentListingFragment {
             val fragment = PaymentListingFragment()
             fragment.arguments = Bundle().apply {
                 putDouble(ARG_PAYMENT_AMOUNT, paymentAmount)
                 putString(ARG_ADDRESS_ID, addressId)
                 putString(ARG_PROFILE_CODE, profileCode)
+                putString(ARG_MERCHANT_CODE, merchantCode)
                 putString(ARG_PAYMENT_BID, bid)
             }
             return fragment
@@ -88,6 +88,7 @@ class PaymentListingFragment : BaseDaggerFragment() {
     private var paymentAmount = 0.0
     private var addressId = ""
     private var profileCode = ""
+    private var merchantCode = ""
     private var bid = ""
 
     private val viewModel: PaymentListingViewModel by lazy {
@@ -135,7 +136,8 @@ class PaymentListingFragment : BaseDaggerFragment() {
     private fun initHeader() {
         paymentAmount = arguments?.getDouble(ARG_PAYMENT_AMOUNT) ?: 0.0
         addressId = arguments?.getString(ARG_ADDRESS_ID) ?: ""
-        profileCode = arguments?.getString(ARG_PROFILE_CODE) ?: PROFILE_CODE
+        profileCode = arguments?.getString(ARG_PROFILE_CODE) ?: ""
+        merchantCode = arguments?.getString(ARG_MERCHANT_CODE) ?: ""
         bid = arguments?.getString(ARG_PAYMENT_BID) ?: ""
         val parent: Context = activity ?: return
         SplitCompat.installActivity(parent)
@@ -191,7 +193,7 @@ class PaymentListingFragment : BaseDaggerFragment() {
     }
 
     private fun generatePaymentListingRequest(): PaymentListingParamRequest {
-        return PaymentListingParamRequest(MERCHANT_CODE,
+        return PaymentListingParamRequest(merchantCode,
                 profileCode,
                 paymentListingUrl,
                 addressId,

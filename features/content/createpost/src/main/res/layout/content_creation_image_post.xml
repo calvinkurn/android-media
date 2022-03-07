@@ -37,7 +37,7 @@
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:minWidth="@dimen/layout_lvl3"
         app:cardBackgroundColor="@color/Unify_NN900"
-        app:cardCornerRadius="@dimen/dp_12"
+        app:cardCornerRadius="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -48,10 +48,10 @@
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/product_content_tag_button"
-                android:layout_width="@dimen/dp_16"
-                android:layout_height="@dimen/dp_16"
-                android:layout_marginStart="@dimen/dp_4"
-                android:layout_marginEnd="@dimen/dp_4"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
                 app:icon_color_light_enable="@color/Unify_N0"
                 app:icon_color_night_enable="@color/Unify_N0"
                 app:icon_name="PRODUCT"
@@ -66,9 +66,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/dp_3"
-                android:paddingEnd="@dimen/dp_8"
-                android:paddingStart="@dimen/dp_2"
-                android:paddingBottom="@dimen/dp_5"
+                android:paddingEnd="8dp"
+                android:paddingStart="2dp"
+                android:paddingBottom="5dp"
                 android:text="@string/feed_content_post_tag_text"
                 android:textColor="@color/Unify_N0"
                 app:layout_constraintEnd_toEndOf="parent"

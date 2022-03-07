@@ -26,6 +26,15 @@ public interface InAppDataDao {
     @Query("SELECT * from inapp_data where s LIKE '%' || :screenName || '%' or s = '*'")
     List<CMInApp> getDataForScreen(String screenName);
 
+    @Query("SELECT * from inapp_data where (s LIKE '%' || :screenName || '%' or s = '*') " +
+            "and st <= :currentUnixTimeStamp and et >= :currentUnixTimeStamp and freq > 0 and shown != 1")
+    List<CMInApp> getActiveDataForScreen(String screenName, long currentUnixTimeStamp);
+
+
+    @Query("SELECT * from inapp_data where is_test = 1 and  (s LIKE '%' || :screenName || '%' or s = '*') " +
+            "and st <= :currentUnixTimeStamp and et >= :currentUnixTimeStamp and freq > 0 and shown != 1")
+    List<CMInApp> getActiveDataForScreenTestCampaign(String screenName, long currentUnixTimeStamp);
+
     @Query("SELECT * from inapp_data where is_test = 1 and (s LIKE '%' || :screenName || '%' or s = '*')")
     List<CMInApp> getDataForScreenTestCampaign(String screenName);
 
@@ -44,7 +53,7 @@ public interface InAppDataDao {
     @Query("SELECT * from inapp_data where id = :id LIMIT 1")
     CMInApp getInAppData(long id);
 
-    @Query("UPDATE inapp_data SET freq = freq-1, last_shown = :currentTime  where parentId = :parentId")
+    @Query("UPDATE inapp_data SET freq = freq-1, last_shown = :currentTime  where parentId = :parentId and freq != 0")
     void updateFrequencyWithShownTime(String parentId, long currentTime);
 
     @Query("UPDATE inapp_data SET shown = 1 where id = :id")
@@ -61,4 +70,9 @@ public interface InAppDataDao {
 
     @Query("UPDATE inapp_data SET freq = 0, is_interacted = 1 where id = :id and perst_on = 0")
     void updateFreqWithPerst(long id);
+
+    /*if et(end time is 0 then inApp only expired when freq == 0)*/
+    @Query("Select * from inapp_data where et < :currentUnixTimeStamp and shown == 0")
+    List<CMInApp> getAllExpiredInApp(long currentUnixTimeStamp);
+
 }

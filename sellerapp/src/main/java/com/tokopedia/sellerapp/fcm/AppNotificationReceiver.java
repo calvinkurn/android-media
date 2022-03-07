@@ -16,7 +16,6 @@ import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
-import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
 import com.tokopedia.pushnotif.PushNotification;
@@ -105,11 +104,6 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
         stringBuilder.append(": ");
         stringBuilder.append(value);
         stringBuilder.append(", \n");
-    }
-
-    @Override
-    public void onMoengageNotificationReceived(RemoteMessage message) {
-        MoengageInteractor.INSTANCE.handlePushPayload(message.getData());
     }
 
     @Override

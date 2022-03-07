@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/dp_6"
-    android:paddingBottom="@dimen/dp_6">
+    android:paddingTop="6dp"
+    android:paddingBottom="6dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_total_cashback_label"
@@ -23,7 +23,7 @@
         android:id="@+id/tv_total_cashback_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginStart="16dp"
         android:layout_weight="1"
         android:gravity="end"
         android:textColor="@color/Unify_N700_96"
@@ -38,7 +38,7 @@
         android:id="@+id/tv_total_cashback_currency_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginStart="16dp"
         android:layout_weight="1"
         android:gravity="end"
         android:maxWidth="@dimen/max_cashback_desc_width"

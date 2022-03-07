@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:paddingStart="@dimen/layout_lvl2"
     android:paddingLeft="@dimen/layout_lvl2"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/hotel_cancellation_reason_hotel_description"

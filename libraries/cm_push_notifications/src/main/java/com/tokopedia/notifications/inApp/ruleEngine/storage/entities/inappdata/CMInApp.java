@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.notifications.common.CMConstant;
 
 /**
  * @author lalit.singh
@@ -118,6 +119,11 @@ public class CMInApp {
 
     @ColumnInfo(name = "customValues")
     private String customValues = "";
+
+    @Expose
+    @SerializedName(CMConstant.PayloadKeys.SHOP_ID)
+    @ColumnInfo(name = "shopId")
+    private String shopId;
 
     public CMInApp(){}
 
@@ -304,5 +310,13 @@ public class CMInApp {
 
     public void setAmplification(boolean amplification) {
         isAmplification = amplification;
+    }
+
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
     }
 }

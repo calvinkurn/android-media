@@ -5,7 +5,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.topchat.R
 
 class EmptySearchChatViewHolder(
@@ -26,7 +26,7 @@ class EmptySearchChatViewHolder(
     }
 
     private fun bindImageIcon(element: EmptyModel) {
-        ImageHandler.LoadImage(ivIcon, iconUrl)
+        ivIcon?.loadIcon(iconUrl)
     }
 
     private fun bindCtaClick(element: EmptyModel) {

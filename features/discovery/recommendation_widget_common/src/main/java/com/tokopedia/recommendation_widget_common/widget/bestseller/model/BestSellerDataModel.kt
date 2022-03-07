@@ -12,6 +12,7 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.Reco
  */
 data class BestSellerDataModel(
         val filterChip: List<RecommendationFilterChipsEntity.RecommendationFilterChip> = listOf(),
+        val channelId: String = "",
         val id: String = "",
         val title: String = "",
         val subtitle: String = "",
@@ -21,7 +22,8 @@ data class BestSellerDataModel(
         val recommendationItemList: List<RecommendationItem> = listOf(),
         val productCardModelList: List<ProductCardModel> = listOf(),
         val height: Int = 0,
-        var chipsPosition: Int = 1
+        var chipsPosition: Int = 1,
+        var dividerType: Int = 0
 ) : RecommendationVisitable{
     override fun visitableId(): String? {
         return id

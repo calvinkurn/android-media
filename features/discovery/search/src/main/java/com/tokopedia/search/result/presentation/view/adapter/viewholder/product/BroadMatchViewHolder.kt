@@ -4,16 +4,18 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.search.R
+import com.tokopedia.search.databinding.SearchResultProductBroadMatchLayoutBinding
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
-import kotlinx.android.synthetic.main.search_result_product_broad_match_layout.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class BroadMatchViewHolder(
         itemView: View,
@@ -25,6 +27,8 @@ class BroadMatchViewHolder(
         @JvmField
         val LAYOUT = R.layout.search_result_product_broad_match_layout
     }
+    
+    private var binding: SearchResultProductBroadMatchLayoutBinding? by viewBinding()
 
     override fun bind(element: BroadMatchDataView) {
         bindTitle(element)
@@ -33,7 +37,12 @@ class BroadMatchViewHolder(
     }
 
     private fun bindTitle(broadMatchDataView: BroadMatchDataView) {
-        itemView.searchBroadMatchTitle?.text = getTitle(broadMatchDataView)
+        val searchBroadMatchTitle = binding?.searchBroadMatchTitle ?: return
+
+        searchBroadMatchTitle.text = getTitle(broadMatchDataView)
+        searchBroadMatchTitle.addOnImpressionListener(broadMatchDataView) {
+            broadMatchListener.onBroadMatchImpressed(broadMatchDataView)
+        }
     }
 
     private fun getTitle(broadMatchDataView: BroadMatchDataView) =
@@ -43,53 +52,57 @@ class BroadMatchViewHolder(
                     else ""
 
     private fun bindSeeMore(broadMatchDataView: BroadMatchDataView) {
-        itemView.searchBroadMatchSeeMore?.showWithCondition(broadMatchDataView.applink.isNotEmpty())
+        binding?.searchBroadMatchSeeMore?.showWithCondition(broadMatchDataView.applink.isNotEmpty())
 
-        itemView.searchBroadMatchSeeMore?.setOnClickListener {
+        binding?.searchBroadMatchSeeMore?.setOnClickListener {
             broadMatchListener.onBroadMatchSeeMoreClicked(broadMatchDataView)
         }
     }
 
     private fun setupRecyclerView(dataData: BroadMatchDataView){
         val products = dataData.broadMatchItemDataViewList
-        itemView.searchBroadMatchList?.bindCarouselProductCardViewGrid(
-                recyclerViewPool = broadMatchListener.carouselRecycledViewPool,
-                productCardModelList = products.map {
-                    ProductCardModel(
-                            productName = it.name,
-                            formattedPrice = it.priceString,
-                            productImageUrl = it.imageUrl,
-                            countSoldRating = it.ratingAverage,
-                            labelGroupList = it.labelGroupDataList.toProductCardLabelGroup(),
-                            shopLocation = if (it.shopLocation.isNotEmpty()) it.shopLocation else it.shopName,
-                            shopBadgeList = it.badgeItemDataViewList.toProductCardModelShopBadges(),
-                            freeOngkir = it.freeOngkirDataView.toProductCardModelFreeOngkir(),
-                            isTopAds = it.isOrganicAds,
-                            hasThreeDots = it.carouselProductType.hasThreeDots
-                    )
-                },
-                carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
-                    override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                        val product = products.getOrNull(carouselProductCardPosition) ?: return
-                        broadMatchListener.onBroadMatchItemClicked(product)
-                    }
-                },
-                carouselProductCardOnItemThreeDotsClickListener = object: CarouselProductCardListener.OnItemThreeDotsClickListener {
-                    override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                        val product = products.getOrNull(carouselProductCardPosition) ?: return
-                        broadMatchListener.onBroadMatchThreeDotsClicked(product)
-                    }
-                },
-                carouselProductCardOnItemImpressedListener = object: CarouselProductCardListener.OnItemImpressedListener {
-                    override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                        val product = products.getOrNull(carouselProductCardPosition) ?: return
-                        broadMatchListener.onBroadMatchItemImpressed(product)
-                    }
+        broadMatchListener.productCardLifecycleObserver?.let {
+            binding?.searchBroadMatchList?.productCardLifecycleObserver = it
+        }
 
-                    override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
-                        return products.getOrNull(carouselProductCardPosition)
-                    }
+        binding?.searchBroadMatchList?.bindCarouselProductCardViewGrid(
+            recyclerViewPool = broadMatchListener.carouselRecycledViewPool,
+            productCardModelList = products.map {
+                ProductCardModel(
+                    productName = it.name,
+                    formattedPrice = it.priceString,
+                    productImageUrl = it.imageUrl,
+                    countSoldRating = it.ratingAverage,
+                    labelGroupList = it.labelGroupDataList.toProductCardLabelGroup(),
+                    shopLocation = if (it.shopLocation.isNotEmpty()) it.shopLocation else it.shopName,
+                    shopBadgeList = it.badgeItemDataViewList.toProductCardModelShopBadges(),
+                    freeOngkir = it.freeOngkirDataView.toProductCardModelFreeOngkir(),
+                    isTopAds = it.isOrganicAds,
+                    hasThreeDots = it.carouselProductType.hasThreeDots,
+                )
+            },
+            carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
+                override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                    val product = products.getOrNull(carouselProductCardPosition) ?: return
+                    broadMatchListener.onBroadMatchItemClicked(product)
                 }
+            },
+            carouselProductCardOnItemThreeDotsClickListener = object: CarouselProductCardListener.OnItemThreeDotsClickListener {
+                override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                    val product = products.getOrNull(carouselProductCardPosition) ?: return
+                    broadMatchListener.onBroadMatchThreeDotsClicked(product)
+                }
+            },
+            carouselProductCardOnItemImpressedListener = object: CarouselProductCardListener.OnItemImpressedListener {
+                override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                    val product = products.getOrNull(carouselProductCardPosition) ?: return
+                    broadMatchListener.onBroadMatchItemImpressed(product)
+                }
+
+                override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
+                    return products.getOrNull(carouselProductCardPosition)
+                }
+            }
         )
     }
 

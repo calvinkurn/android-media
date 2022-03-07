@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -53,7 +52,7 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
         `Then verify top of visitable list is choose address widget`()
     }
 
-    private fun `Setup choose address`(chooseAddressModel: LocalCacheModel?) {
+    private fun `Setup choose address`(chooseAddressModel: LocalCacheModel) {
         `Given choose address is enabled`()
         `Given chosen address data`(chooseAddressModel)
     }
@@ -101,12 +100,11 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
     }
 
     @Test
-    fun `Test choose address data is null`() {
-        `Setup choose address`(null)
+    fun `Test choose address data with empty values`() {
+        `Setup choose address`(LocalCacheModel())
         setUp()
 
         `Given search product API will return data`()
-        `Given visitable list will be captured`()
 
         `When load data`()
 
@@ -124,21 +122,8 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
     }
 
     @Test
-    fun `Test choose address data with empty values`() {
-        `Setup choose address`(LocalCacheModel())
-        setUp()
-
-        `Given search product API will return data`()
-
-        `When load data`()
-
-        `Then verify choose address data is not sent`(requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String, String>)
-    }
-
-    @Test
     fun `Test choose address data with navigation revamp enabled`() {
         `Setup choose address`(dummyChooseAddressData)
-        `Given navigation revamp is enabled`()
         setUp()
 
         `Given search product API will return data`()
@@ -152,12 +137,6 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
 
     private fun `Then verify visitable list does not contain search product count`() {
         visitableList.any { it is SearchProductCountDataView } shouldBe false
-    }
-
-    private fun `Given navigation revamp is enabled`() {
-        every {
-            productListView.abTestRemoteConfig?.getString(RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD)
-        } answers { RollenceKey.NAVIGATION_VARIANT_REVAMP }
     }
 
     @Test

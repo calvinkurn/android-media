@@ -43,7 +43,7 @@
         android:id="@+id/text_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="16dp"
         android:text="@string/pdp_shipping_error_to_home"
         android:textAlignment="center"
         android:textColor="@color/Unify_N700"

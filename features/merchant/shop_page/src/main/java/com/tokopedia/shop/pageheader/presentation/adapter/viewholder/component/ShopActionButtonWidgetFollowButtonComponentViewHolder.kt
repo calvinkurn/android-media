@@ -11,12 +11,14 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.*
+import com.tokopedia.shop.databinding.LayoutShopActionButtonWidgetFollowButtonComponentBinding
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderActionWidgetFollowButtonComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderButtonComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 import com.tokopedia.shop.pageheader.util.TextBaselineSpanAdjuster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.utils.view.binding.viewBinding
 
 
 class ShopActionButtonWidgetFollowButtonComponentViewHolder(
@@ -45,7 +47,8 @@ class ShopActionButtonWidgetFollowButtonComponentViewHolder(
         )
     }
 
-    private val buttonFollow: UnifyButton? = itemView.findViewById(R.id.button_shop_follow)
+    private val viewBinding: LayoutShopActionButtonWidgetFollowButtonComponentBinding? by viewBinding()
+    private val buttonFollow: UnifyButton? = viewBinding?.buttonShopFollow
 
     init {
         val lp = itemView.layoutParams

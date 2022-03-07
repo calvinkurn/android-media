@@ -35,7 +35,7 @@ public class RecipientAddressModel implements Parcelable {
     private boolean isCornerAddress;
     private String cornerId;
     private String userCornerId;
-    private int partnerId;
+    private long partnerId;
     private String partnerName;
 
     // Temporary fix for address adapter bug, will refactor later
@@ -259,11 +259,11 @@ public class RecipientAddressModel implements Parcelable {
         this.selectedTabIndex = selectedTabIndex;
     }
 
-    public int getPartnerId() {
+    public long getPartnerId() {
         return partnerId;
     }
 
-    public void setPartnerId(int partnerId) {
+    public void setPartnerId(long partnerId) {
         this.partnerId = partnerId;
     }
 
@@ -432,7 +432,7 @@ public class RecipientAddressModel implements Parcelable {
         dest.writeByte(this.isCornerAddress ? (byte) 1 : (byte) 0);
         dest.writeString(this.cornerId);
         dest.writeString(this.userCornerId);
-        dest.writeInt(this.partnerId);
+        dest.writeLong(this.partnerId);
         dest.writeString(this.partnerName);
         dest.writeByte(this.isHeader ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isFooter ? (byte) 1 : (byte) 0);

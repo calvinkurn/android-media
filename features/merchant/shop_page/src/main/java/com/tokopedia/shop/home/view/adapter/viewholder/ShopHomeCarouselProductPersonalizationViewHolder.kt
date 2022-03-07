@@ -6,9 +6,11 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ItemShopHomeProductRecommendationCarouselBinding
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.WidgetName.REMINDER
@@ -16,6 +18,7 @@ import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel.Companion.IS_ATC
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * author by Rafli Syam on 17/02/2021
@@ -29,7 +32,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_product_recommendation_carousel
     }
-
+    private val viewBinding: ItemShopHomeProductRecommendationCarouselBinding? by viewBinding()
     private var tvCarouselTitle : TextView? = null
     private var recyclerView : CarouselProductCardView? = null
 
@@ -148,11 +151,18 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
             }
 
         }
+        setWidgetImpressionListener(element)
+    }
+
+    private fun setWidgetImpressionListener(model: ShopHomeCarousellProductUiModel) {
+        itemView.addOnImpressionListener(model.impressHolder) {
+            shopHomeCarouselProductListener.onCarouselProductWidgetImpression(adapterPosition, model)
+        }
     }
 
     private fun initView() {
-        tvCarouselTitle = itemView.findViewById(R.id.tv_title)
-        recyclerView = itemView.findViewById(R.id.rvCarouselRecommendation)
+        tvCarouselTitle = viewBinding?.etalaseHeaderContainer?.tvTitle
+        recyclerView = viewBinding?.rvCarouselRecommendation
     }
 
     private fun isAtcOcc(

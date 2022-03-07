@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginfingerprint.R
 import com.tokopedia.loginfingerprint.data.model.VerifyFingerprint
+import com.tokopedia.loginfingerprint.databinding.ActivityVerifyFingerprintLayoutBinding
 import com.tokopedia.loginfingerprint.di.DaggerLoginFingerprintComponent
 import com.tokopedia.loginfingerprint.di.LoginFingerprintSettingModule
 import com.tokopedia.loginfingerprint.tracker.BiometricTracker
@@ -22,7 +23,7 @@ import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
 import com.tokopedia.loginfingerprint.viewmodel.FingerprintLandingViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.activity_verify_fingerprint_layout.*
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class VerifyFingerprintActivity: BaseActivity() {
@@ -32,6 +33,8 @@ class VerifyFingerprintActivity: BaseActivity() {
 
     @Inject
     lateinit var tracker: BiometricTracker
+
+    private val binding: ActivityVerifyFingerprintLayoutBinding? by viewBinding()
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
 
@@ -94,7 +97,7 @@ class VerifyFingerprintActivity: BaseActivity() {
     }
 
     private fun onErrorVerifyFingerprint() {
-        fingerprint_landing_loader?.hide()
+        binding?.fingerprintLandingLoader?.hide()
         finishWithCanceled()
     }
 
@@ -123,7 +126,7 @@ class VerifyFingerprintActivity: BaseActivity() {
     }
 
     private fun showBiometricPrompt() {
-        BiometricPromptHelper.showBiometricPrompt(this,
+        BiometricPromptHelper.showBiometricPromptActivity(this,
             onSuccess = {
                 onFingerprintValid()
             }, onFailed = {
@@ -135,7 +138,7 @@ class VerifyFingerprintActivity: BaseActivity() {
     }
 
     private fun verifyFingerprint() {
-        fingerprint_landing_loader?.show()
+        binding?.fingerprintLandingLoader?.show()
         viewModel.verifyFingerprint()
     }
 }

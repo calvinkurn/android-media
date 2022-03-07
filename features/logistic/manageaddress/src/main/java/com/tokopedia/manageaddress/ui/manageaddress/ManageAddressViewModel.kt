@@ -7,9 +7,12 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
+import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
+import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.manageaddress.domain.DeletePeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.SetDefaultPeopleAddressUseCase
@@ -27,7 +30,8 @@ class ManageAddressViewModel @Inject constructor(
         private val deletePeopleAddressUseCase: DeletePeopleAddressUseCase,
         private val setDefaultPeopleAddressUseCase: SetDefaultPeopleAddressUseCase,
         private val chooseAddressRepo: ChooseAddressRepository,
-        private val chooseAddressMapper: ChooseAddressMapper) : ViewModel() {
+        private val chooseAddressMapper: ChooseAddressMapper,
+        private val eligibleForAddressUseCase: EligibleForAddressUseCase) : ViewModel() {
 
     var token: Token? = null
     var savedQuery: String = ""
@@ -55,9 +59,13 @@ class ManageAddressViewModel @Inject constructor(
     val setChosenAddress: LiveData<Result<ChosenAddressModel>>
         get() = _setChosenAddress
 
+    private val _eligibleForAnaRevamp = MutableLiveData<Result<EligibleForAddressFeature>>()
+    val eligibleForAnaRevamp: LiveData<Result<EligibleForAddressFeature>>
+        get() = _eligibleForAnaRevamp
+
     private val compositeSubscription = CompositeSubscription()
 
-    fun searchAddress(query: String, prevState: Int, localChosenAddrId: Int, isWhiteListChosenAddress: Boolean) {
+    fun searchAddress(query: String, prevState: Int, localChosenAddrId: Long, isWhiteListChosenAddress: Boolean) {
         _addressList.value = ManageAddressState.Loading
         compositeSubscription.add(
                 getPeopleAddressUseCase.execute(query, prevState = prevState,
@@ -82,7 +90,7 @@ class ManageAddressViewModel @Inject constructor(
         )
     }
 
-    fun loadMore(prevState: Int, localChosenAddrId: Int, isWhitelistChosenAddress: Boolean) {
+    fun loadMore(prevState: Int, localChosenAddrId: Long, isWhitelistChosenAddress: Boolean) {
         _addressList.value = ManageAddressState.Loading
         compositeSubscription.add(
                 getPeopleAddressUseCase.loadMore(savedQuery, page + 1, prevState, localChosenAddrId, isWhitelistChosenAddress)
@@ -105,7 +113,7 @@ class ManageAddressViewModel @Inject constructor(
         )
     }
 
-    fun deletePeopleAddress(id: String, prevState: Int, localChosenAddrId: Int, isWhiteListChosenAddress: Boolean) {
+    fun deletePeopleAddress(id: String, prevState: Int, localChosenAddrId: Long, isWhiteListChosenAddress: Boolean) {
         _result.value = ManageAddressState.Loading
         deletePeopleAddressUseCase.execute(id.toInt(), {
             _result.value = ManageAddressState.Success("Success")
@@ -116,7 +124,7 @@ class ManageAddressViewModel @Inject constructor(
         })
     }
 
-    fun setDefaultPeopleAddress(id: String, setAsStateChosenAddress: Boolean, prevState: Int, localChosenAddrId: Int, isWhiteListChosenAddress: Boolean) {
+    fun setDefaultPeopleAddress(id: String, setAsStateChosenAddress: Boolean, prevState: Int, localChosenAddrId: Long, isWhiteListChosenAddress: Boolean) {
         setDefaultPeopleAddressUseCase.execute(id.toInt(), setAsStateChosenAddress = setAsStateChosenAddress, onSuccess = {
             _setDefault.value = ManageAddressState.Success("Success")
             isClearData = true
@@ -138,6 +146,18 @@ class ManageAddressViewModel @Inject constructor(
             val setStateChosenAddress = chooseAddressRepo.setStateChosenAddressFromAddress(model)
             _setChosenAddress.value = Success(chooseAddressMapper.mapSetStateChosenAddress(setStateChosenAddress.response))
         }
+    }
+
+    fun checkUserEligibilityForAnaRevamp() {
+        eligibleForAddressUseCase.eligibleForAddressFeature(
+            {
+                _eligibleForAnaRevamp.value = Success(it.eligibleForRevampAna)
+            },
+            {
+                _eligibleForAnaRevamp.value = Fail(it)
+            },
+            AddressConstant.ANA_REVAMP_FEATURE_ID
+        )
     }
 
     private val onErrorGetStateChosenAddress = CoroutineExceptionHandler{ _, e ->

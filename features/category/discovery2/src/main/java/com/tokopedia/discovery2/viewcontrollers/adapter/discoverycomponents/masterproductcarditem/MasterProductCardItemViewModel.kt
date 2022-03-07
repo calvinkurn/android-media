@@ -20,8 +20,10 @@ import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -40,7 +42,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
     private val componentPosition: MutableLiveData<Int?> = MutableLiveData()
     private val showLoginLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private val notifyMeCurrentStatus: MutableLiveData<Boolean> = MutableLiveData()
-    private val showNotifyToast: MutableLiveData<Pair<Boolean, String?>> = MutableLiveData()
+    private val showNotifyToast: SingleLiveEvent<Pair<Boolean, String?>> = SingleLiveEvent()
     private var lastQuantity:Int = 0
 
     @Inject
@@ -71,6 +73,10 @@ class MasterProductCardItemViewModel(val application: Application, val component
     private fun setProductStockWording(dataItem: DataItem) {
         if (dataItem.stockWording == null || dataItem.stockWording?.title.isNullOrEmpty()) {
             dataItem.stockWording = getStockWord(dataItem)
+        }else if(dataItem.stockWording?.color.isNullOrEmpty()){
+            dataItem.stockWording?.let {
+                it.color = getStockColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_20)
+            }
         }
     }
 
@@ -169,7 +175,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
     private fun getNotifyRequestBundle(dataItem: DataItem): CampaignNotifyMeRequest {
         val campaignNotifyMeRequest = CampaignNotifyMeRequest()
         campaignNotifyMeRequest.campaignID = dataItem.campaignId.toIntOrZero()
-        campaignNotifyMeRequest.productID = dataItem.productId.toIntOrZero()
+        campaignNotifyMeRequest.productID = dataItem.productId.toLongOrZero()
         campaignNotifyMeRequest.action = if (dataItem.notifyMe == true) {
             UNREGISTER
         } else {

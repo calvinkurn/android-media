@@ -8,7 +8,6 @@ import com.tokopedia.media.loader.loadAsGif
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.media.loader.wrapper.MediaDataSource
-import io.embrace.android.embracesdk.Embrace
 
 const val FPM_ATTRIBUTE_IMAGE_URL = "image_url"
 const val FPM_PRODUCT_ORGANIC_CHANNEL = "home_product_organic"
@@ -20,8 +19,6 @@ const val FPM_DEALS_WIDGET_PRODUCT_IMAGE = "home_deals_widget_product_image"
 const val FPM_SEE_ALL_CARD_BACKGROUND = "home_see_all_card_background_image"
 const val FPM_RECOMMENDATION_LIST_CAROUSEL = "home_recommendation_list_carousel"
 const val TRUNCATED_URL_PREFIX = "https://ecs7.tokopedia.net/img/cache/"
-
-val EXCLUDED_EMBRACE_FPM = arrayListOf(FPM_DYNAMIC_LEGO_BANNER)
 
 fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: ImageHandler.ImageLoaderStateListener? = null){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
@@ -122,10 +119,6 @@ fun getPerformanceMonitoring(url: String, fpmItemLabel: String = "") : Performan
     if (fpmItemLabel.isNotEmpty()) {
         performanceMonitoring = PerformanceMonitoring.start(fpmItemLabel)
         performanceMonitoring.putCustomAttribute(FPM_ATTRIBUTE_IMAGE_URL, truncatedUrl)
-
-        if (!EXCLUDED_EMBRACE_FPM.contains(fpmItemLabel)) {
-            Embrace.getInstance().startEvent(fpmItemLabel, null, false)
-        }
     }
     return performanceMonitoring
 }
@@ -135,8 +128,5 @@ fun handleOnResourceReady(dataSource: MediaDataSource?,
                           fpmItemLabel: String) {
     if (dataSource == MediaDataSource.REMOTE) {
         performanceMonitoring?.stopTrace()
-        if (!EXCLUDED_EMBRACE_FPM.contains(fpmItemLabel)) {
-            Embrace.getInstance().endEvent(fpmItemLabel)
-        }
     }
 }

@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
+import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
@@ -28,7 +28,7 @@ interface ChatbotTypeFactory : AdapterTypeFactory {
             type: Int,
             chatbotAdapterListener: ChatbotAdapterListener): AbstractViewHolder<*>
 
-    fun type(attachInvoiceSentViewModel: AttachInvoiceSentViewModel): Int
+    fun type(attachInvoiceSentUiModel: AttachInvoiceSentUiModel): Int
 
     fun type(attachInvoiceSelectionViewModel: AttachInvoiceSelectionViewModel): Int
 

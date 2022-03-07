@@ -125,6 +125,9 @@ query  tokopointsHomepage(${'$'}apiVersion: String!) {
        layoutTopAdsAttr {
        jsonTopAdsDisplayParam
       }
+      layoutQuestWidgetAttr {
+        jsonQuestWidgetDisplayParam
+      }
      %s
     }
   }

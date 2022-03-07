@@ -684,7 +684,7 @@ class InboxDetailPresenterTest {
 
         every { presenter.isUploadImageValid } returns 0
 
-        coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns response
+        coEvery { postMessageUseCase.getCreateTicketResult(any()).getData<TicketReplyResponse>(TicketReplyResponse::class.java)} returns response
 
         every { response.ticketReply?.ticketReplyData?.status } returns ""
 
@@ -708,7 +708,7 @@ class InboxDetailPresenterTest {
 
         every { presenter.isUploadImageValid } returns 0
 
-        coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns response
+        coEvery { postMessageUseCase.getCreateTicketResult(any()).getData<TicketReplyResponse>(TicketReplyResponse::class.java) } returns response
 
         every { response.ticketReply?.ticketReplyData?.status } returns "OK"
 
@@ -774,7 +774,7 @@ class InboxDetailPresenterTest {
 
         coEvery { postMessageUseCase2.getInboxDataResponse(any()) } returns null
 
-        coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns response
+        coEvery { postMessageUseCase.getCreateTicketResult(any()).getData<TicketReplyResponse>(TicketReplyResponse::class.java) } returns response
 
         every { presenter.getUtils() } returns utils
 
@@ -808,7 +808,7 @@ class InboxDetailPresenterTest {
 
         coEvery { postMessageUseCase2.getInboxDataResponse(any()) } returns null
 
-        coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns response
+        coEvery { postMessageUseCase.getCreateTicketResult(any()).getData<TicketReplyResponse>(TicketReplyResponse::class.java) } returns response
 
         every { presenter.getUtils() } returns utils
 
@@ -849,7 +849,7 @@ class InboxDetailPresenterTest {
 
         coEvery { postMessageUseCase2.getInboxDataResponse(any()) } returns response2
 
-        coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns response
+        coEvery { postMessageUseCase.getCreateTicketResult(any()).getData<TicketReplyResponse>(TicketReplyResponse::class.java) } returns response
 
         every { presenter.getUtils() } returns utils
 
@@ -889,7 +889,7 @@ class InboxDetailPresenterTest {
 
         coEvery { postMessageUseCase2.getInboxDataResponse(any()) } throws java.lang.Exception("my exception")
 
-        coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns response
+        coEvery { postMessageUseCase.getCreateTicketResult(any()).getData<TicketReplyResponse>(TicketReplyResponse::class.java) } returns response
 
         every { presenter.getUtils() } returns utils
 
@@ -932,7 +932,7 @@ class InboxDetailPresenterTest {
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 
         every { postMessageUseCase.createRequestParams(any(), any(), any(), any(), any(), any()) } returns mockk()
-        coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns response
+        coEvery { postMessageUseCase.getCreateTicketResult(any()).getData<TicketReplyResponse>(TicketReplyResponse::class.java) } returns response
 
         coEvery { postMessageUseCase2.getInboxDataResponse(any()) } returns response2
 

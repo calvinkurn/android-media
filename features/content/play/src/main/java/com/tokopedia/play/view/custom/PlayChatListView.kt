@@ -54,9 +54,7 @@ class PlayChatListView : ConstraintLayout {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 csDownView.showIndicatorRed(rvChatList.canScrollDown)
                 if (!csDownView.isVisible || chatAdapter.getItem(chatAdapter.lastIndex).isSelfMessage) {
-                    rvChatList.post {
-                        rvChatList.scrollToPosition(chatAdapter.lastIndex)
-                    }
+                    scrollToLatest()
                 }
             }
         }
@@ -79,6 +77,13 @@ class PlayChatListView : ConstraintLayout {
         }
 
         setupView(view)
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        try {
+            chatAdapter.registerAdapterDataObserver(adapterObserver)
+        } catch (ignored: java.lang.IllegalStateException) {}
     }
 
     override fun onDetachedFromWindow() {
@@ -134,13 +139,19 @@ class PlayChatListView : ConstraintLayout {
             addOnScrollListener(scrollListener)
             addItemDecoration(ChatListItemDecoration(context))
         }
-        chatAdapter.registerAdapterDataObserver(adapterObserver)
 
         csDownView.setOnClickListener {
-            if (rvChatList.canScrollDown) {
-                rvChatList.scrollToPosition(chatAdapter.lastIndex)
-            }
+            if (rvChatList.canScrollDown) scrollToLatest()
         }
+    }
+
+    private fun scrollToLatest() {
+        try {
+            rvChatList.post {
+                rvChatList.scrollBy(0, Integer.MAX_VALUE)
+            }
+        } catch (ignored: Throwable) {}
+
     }
 
     private fun isChatPositionBeyondOffset(recyclerView: RecyclerView): Boolean {

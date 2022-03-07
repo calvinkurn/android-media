@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.menu.common.constant.Constant
-import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.RmTransactionData
@@ -16,6 +15,7 @@ import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.RMTra
 import com.tokopedia.unifyprinciples.Typography
 
 class RMTransactionViewHolder(itemView: View?,
+                              private val onRmTransactionClicked: () -> Unit,
                               private val onErrorClicked: () -> Unit) :
     AbstractViewHolder<RMTransactionWidgetUiModel>(itemView) {
 
@@ -52,6 +52,10 @@ class RMTransactionViewHolder(itemView: View?,
         descTextView?.text = desc
         loadingLayout?.gone()
         errorLayout?.gone()
+
+        itemView.setOnClickListener {
+            onRmTransactionClicked()
+        }
     }
 
     private fun getTransactionTitle(rmTransaction: RmTransactionData): String {
@@ -86,6 +90,8 @@ class RMTransactionViewHolder(itemView: View?,
         successGroup?.gone()
         loadingLayout?.show()
         errorLayout?.gone()
+
+        itemView.setOnClickListener(null)
     }
 
     private fun setErrorTransactionInfo() {
@@ -97,6 +103,8 @@ class RMTransactionViewHolder(itemView: View?,
                 onErrorClicked()
             }
         }
+
+        itemView.setOnClickListener(null)
     }
 
 }

@@ -1,15 +1,28 @@
 package com.tokopedia.mvcwidget.trackers
 
 import com.tokopedia.mvcwidget.FollowWidgetType
-import com.tokopedia.mvcwidget.trackers.MvcSource
 
 class MvcTracker{
     var trackerImpl:MvcTrackerImpl = DefaultMvcTrackerImpl()
     
     //1 Pdp
     //16 Shop
-    fun userClickEntryPoints(shopId: String, userId: String?, @MvcSource source: Int, isTokomember:Boolean){
-        trackerImpl.userClickEntryPoints(shopId,userId,source,isTokomember)
+    fun userClickEntryPoints(
+        shopId: String,
+        userId: String?,
+        @MvcSource source: Int,
+        isTokomember: Boolean,
+        productId: String = ""
+    ){
+        trackerImpl.userClickEntryPoints(shopId,userId,source,isTokomember, productId)
+    }
+
+    fun userClickEntryPointOnMVCLockToProduct(shopId: String, userId: String?, @MvcSource source: Int, productId: String){
+        trackerImpl.userClickEntryPointOnMVCLockToProduct(shopId,userId,source, productId)
+    }
+
+    fun viewMVCLockToProduct(shopId: String, userId: String?, @MvcSource source: Int, productId: String){
+        trackerImpl.viewMVCLockToProduct(shopId,userId,source, productId)
     }
 
     //3, 18
@@ -84,8 +97,8 @@ class MvcTracker{
         trackerImpl.userClickBottomSheetCTA(widgetType,label,userId)
     }
 
-    fun tokomemberImpressionOnPdp(shopId: String,userId: String?){
-        trackerImpl.tokomemberImpressionOnPdp(shopId,userId)
+    fun tokomemberImpressionOnPdp(shopId: String,userId: String?, isTokomember: Boolean){
+        trackerImpl.tokomemberImpressionOnPdp(shopId,userId, isTokomember)
     }
 
     //Multishop
@@ -93,7 +106,7 @@ class MvcTracker{
         trackerImpl.viewMVCCoupon(label,mapData,source)
     }
 
-    fun mvcMultiShopCardClick(shopName: String, eventAction: String, @MvcSource source: Int, userId: String?, label: String = ""){
-        trackerImpl.mvcMultiShopCardClick(shopName,eventAction,source,userId,label)
+    fun mvcMultiShopCardClick(shopName: String, eventAction: String, @MvcSource source: Int, userId: String?, productPosition:Int, label: String = ""){
+        trackerImpl.mvcMultiShopCardClick(shopName,eventAction,source,userId,productPosition,label)
     }
 }

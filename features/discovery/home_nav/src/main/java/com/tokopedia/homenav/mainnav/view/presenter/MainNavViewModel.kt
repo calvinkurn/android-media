@@ -55,7 +55,6 @@ class MainNavViewModel @Inject constructor(
         private val getUohOrdersNavUseCase: Lazy<GetUohOrdersNavUseCase>,
         private val getPaymentOrdersNavUseCase: Lazy<GetPaymentOrdersNavUseCase>,
         private val getProfileDataUseCase: Lazy<GetProfileDataUseCase>,
-        private val getProfileDataCacheUseCase: Lazy<GetProfileDataCacheUseCase>,
         private val getShopInfoUseCase: Lazy<GetShopInfoUseCase>,
         private val accountAdminInfoUseCase: Lazy<AccountAdminInfoUseCase>
 ): BaseViewModel(baseDispatcher.get().io) {
@@ -64,7 +63,6 @@ class MainNavViewModel @Inject constructor(
         private const val INDEX_MODEL_ACCOUNT = 0
         private const val INDEX_HOME_BACK_SEPARATOR = 1
         private const val ON_GOING_TRANSACTION_TO_SHOW = 6
-        private const val INDEX_DEFAULT_BU_POSITION = 1
         private const val INDEX_DEFAULT_ALL_TRANSACTION = 1
 
         private const val SOURCE = "dave_home_nav"
@@ -291,7 +289,7 @@ class MainNavViewModel @Inject constructor(
         })
     }
 
-    suspend fun getProfileDataCached() {
+    fun getProfileDataCached() {
         try {
             mainNavProfileCache?.let {
                 val accountHeaderModel = AccountHeaderDataModel(
@@ -321,13 +319,8 @@ class MainNavViewModel @Inject constructor(
             val adminData = async { getAdminData() }
 
             accountHeaderModel.await().apply {
-                adminData.await().let { (adminRoleText, canGoToSellerAccount, isShopActive) ->
-                    val adminRole =
-                            if (isShopActive) {
-                                adminRoleText
-                            } else {
-                                null
-                            }
+                adminData.await().let { (_, canGoToSellerAccount, _) ->
+                    val adminRole = null
                     setAdminData(adminRole, canGoToSellerAccount)
                 }
             }.let {
@@ -520,25 +513,14 @@ class MainNavViewModel @Inject constructor(
                     }
                 }
                 val response = call.await()
-                val (adminRoleText, canGoToSellerAccount, isShopActive) = adminDataCall.await()
+                val (_, canGoToSellerAccount, _) = adminDataCall.await()
                 val result = (response.takeIf { it is Success } as? Success<ShopData>)?.data
                 result?.let {
                     accountModel.run {
-                        val shopName: String
-                        val shopId: String
-                        val adminRole: String?
-                        val orderCount: Int
-                        if (isShopActive) {
-                            shopName = it.userShopInfo.info.shopName
-                            shopId = it.userShopInfo.info.shopId
-                            orderCount = getTotalOrderCount(it.notifications)
-                            adminRole = adminRoleText
-                        } else {
-                            shopName = ""
-                            shopId = ""
-                            adminRole = null
-                            orderCount = 0
-                        }
+                        val shopName = it.userShopInfo.info.shopName
+                        val shopId: String = if(it.userShopInfo.info.shopId.isBlank()) AccountHeaderDataModel.DEFAULT_SHOP_ID_NOT_OPEN else it.userShopInfo.info.shopId
+                        val adminRole = null
+                        val orderCount = getTotalOrderCount(it.notifications)
                         setUserShopName(shopName, shopId, orderCount)
                         setAdminData(adminRole, canGoToSellerAccount)
                     }

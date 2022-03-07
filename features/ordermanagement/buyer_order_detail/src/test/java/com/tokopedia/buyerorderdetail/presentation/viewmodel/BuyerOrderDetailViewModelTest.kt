@@ -4,6 +4,8 @@ import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailParams
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
+import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -14,7 +16,7 @@ import io.mockk.mockk
 import org.junit.Test
 
 class
-BuyerOrderDetailViewModelTest: BuyerOrderDetailViewModelTestFixture() {
+BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `getBuyerOrderDetail should success when use case return expected data`() {
         val expectedParams = GetBuyerOrderDetailParams(orderId = orderId, paymentId = paymentId, cart = cart)
@@ -147,7 +149,25 @@ BuyerOrderDetailViewModelTest: BuyerOrderDetailViewModelTestFixture() {
         coVerify { atcUseCase.execute(userId, "", atcExpectedParams) }
 
         val result = viewModel.multiAtcResult.value
-        assert(result != null && result is Success)
+        assert(result != null && result is MultiATCState.Success)
+    }
+
+    @Test
+    fun `addMultipleToCart should failed when atc use case return fail`() {
+        val buyerOrderDetailResult = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
+            every { productListUiModel.productListHeaderUiModel.shopId } returns shopId
+            every { productListUiModel.productList } returns listOf(product)
+        }
+
+        coEvery { atcUseCase.execute(any(), any(), any()) } returns Fail(mockk())
+
+        createSuccessBuyerOrderDetailResult(buyerOrderDetailResult)
+        viewModel.addMultipleToCart()
+
+        coVerify { atcUseCase.execute(userId, "", atcExpectedParams) }
+
+        val result = viewModel.multiAtcResult.value
+        assert(result != null && result is MultiATCState.Fail)
     }
 
     @Test
@@ -165,7 +185,7 @@ BuyerOrderDetailViewModelTest: BuyerOrderDetailViewModelTestFixture() {
         coVerify { atcUseCase.execute(userId, "", atcExpectedParams) }
 
         val result = viewModel.multiAtcResult.value
-        assert(result != null && result is Fail)
+        assert(result != null && result is MultiATCState.Fail)
     }
 
     @Test
@@ -178,7 +198,7 @@ BuyerOrderDetailViewModelTest: BuyerOrderDetailViewModelTestFixture() {
         coVerify(inverse = true) { atcUseCase.execute(any(), any(), any()) }
 
         val result = viewModel.multiAtcResult.value
-        assert(result != null && result is Fail)
+        assert(result != null && result is MultiATCState.Fail)
     }
 
     @Test
@@ -258,6 +278,88 @@ BuyerOrderDetailViewModelTest: BuyerOrderDetailViewModelTestFixture() {
         createFailedBuyerOrderDetailResult()
         val returnedShopType = viewModel.getShopType()
         assert(returnedShopType == 0)
+    }
+
+    @Test
+    fun `getCategoryId should return category id when getBuyerOrderDetail result is success`() {
+        val buyerOrderDetailResult = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
+            every { productListUiModel.productList } returns listOf(product)
+        }
+
+        createSuccessBuyerOrderDetailResult(buyerOrderDetailResult)
+        val categoryId = viewModel.getCategoryId()
+        assert(categoryId.size == 1)
+        assert(categoryId[0] == 10)
+    }
+
+    @Test
+    fun `getCategoryId should return unique category id when getBuyerOrderDetail result is success`() {
+        val anotherProduct = ProductListUiModel.ProductUiModel(
+                button = ActionButtonsUiModel.ActionButton(
+                        key = "test_buy_again_button_key",
+                        label = "Beli Lagi",
+                        popUp = ActionButtonsUiModel.ActionButton.PopUp(
+                                actionButton = emptyList(),
+                                body = "",
+                                title = ""
+                        ),
+                        variant = "ghost",
+                        type = "main",
+                        url = ""
+                ),
+                category = "Pakaian Atas",
+                categoryId = "13",
+                orderDetailId = "20531238",
+                orderStatusId = "220",
+                orderId = "166835036",
+                price = 500000.0,
+                priceText = "Rp500.000",
+                productId = "2147819914",
+                productName = "Hengpong jadul",
+                productNote = "Test product note",
+                productThumbnailUrl = "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/5/28/ab64b25e-a59f-4938-a08b-c49ec140eb43.jpg",
+                quantity = 1,
+                totalPrice = "500000",
+                totalPriceText = "Rp500.000",
+                isProcessing = false
+        )
+        val buyerOrderDetailResult = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
+            every { productListUiModel.productList } returns listOf(product, product, anotherProduct)
+        }
+
+        createSuccessBuyerOrderDetailResult(buyerOrderDetailResult)
+        val categoryId = viewModel.getCategoryId()
+        assert(categoryId.size == 2)
+        assert(categoryId.contains(13))
+        assert(categoryId.contains(10))
+    }
+
+    @Test
+    fun `getCategoryId should return 0 shop type when getBuyerOrderDetail result is fail`() {
+        createFailedBuyerOrderDetailResult()
+        val categoryId = viewModel.getCategoryId()
+        assert(categoryId.isEmpty())
+    }
+
+    @Test
+    fun `getCategoryId should return category id for product bundling when getBuyerOrderDetail result is success`() {
+        val productBundlingItem =
+            ProductListUiModel.ProductBundlingUiModel(
+                bundleName = "Bundle test",
+                bundleIconUrl = "www.icon.com",
+                totalPrice = 100.0,
+                totalPriceText = "Rp100.0",
+                bundleItemList = listOf(product)
+            )
+        val buyerOrderDetailResult = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
+            every { productListUiModel.productBundlingList } returns listOf(productBundlingItem)
+        }
+
+        createSuccessBuyerOrderDetailResult(buyerOrderDetailResult)
+
+        val categoryId = viewModel.getCategoryId()
+        assert(categoryId.size == 1)
+        assert(categoryId[0] == 10)
     }
 
     @Test

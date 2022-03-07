@@ -1,22 +1,66 @@
 package com.tokopedia.product.detail.data.util
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.product.detail.common.AtcVariantMapper
-import com.tokopedia.product.detail.common.data.model.pdplayout.*
+import com.tokopedia.product.detail.common.data.model.pdplayout.Component
+import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
+import com.tokopedia.product.detail.common.data.model.pdplayout.Content
+import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.Media
+import com.tokopedia.product.detail.common.data.model.pdplayout.OneLinersContent
+import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
+import com.tokopedia.product.detail.common.data.model.pdplayout.Wholesale
+import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
+import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.affiliate.AffiliateUIIDRequest
-import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
+import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
+import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductReportDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
+import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
+import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.data.model.review.ImageReview
-import com.tokopedia.product.detail.data.model.ticker.GeneralTickerDataModel
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.LAYOUT_FLOATING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
+import com.tokopedia.product.detail.view.util.checkIfNumber
+import com.tokopedia.product.share.ProductData
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
+import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.Product
+import com.tokopedia.universal_sharing.view.model.Shop
 
 object DynamicProductDetailMapper {
 
@@ -62,8 +106,11 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.PRODUCT_LIST -> {
                     when (component.componentName) {
-                        PDP_7 ->
+                        PDP_7, PDP_9_TOKONOW ->
                             listOfComponent.add(ProductRecomWidgetDataModel(type = component.type, name = component.componentName, position = index))
+                        SHOPADS_CAROUSEL -> {
+                            listOfComponent.add(TopadsHeadlineUiModel(type = component.type, name = component.componentName))
+                        }
                         else ->
                             listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
                     }
@@ -104,6 +151,12 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.SHIPMENT -> {
                     listOfComponent.add(ProductShipmentDataModel(type = component.type, name = component.componentName))
                 }
+                /**
+                 * shipment_v2 use the same data model with shipment
+                 */
+                ProductDetailConstant.SHIPMENT_V2 -> {
+                    listOfComponent.add(ProductShipmentDataModel(type = component.type, name = component.componentName))
+                }
                 ProductDetailConstant.MVC -> {
                     listOfComponent.add(ProductMerchantVoucherSummaryDataModel(type = component.type, name = component.componentName))
                 }
@@ -125,6 +178,17 @@ object DynamicProductDetailMapper {
                                         applink = carouselData.applink,
                                         categoryList = carouselData.categoryCarouselList))
                     }
+                }
+                ProductDetailConstant.PRODUCT_BUNDLING -> {
+                    listOfComponent.add(ProductBundlingDataModel(type = component.type, name = component.componentName))
+                }
+                ProductDetailConstant.CONTENT_WIDGET -> {
+                    listOfComponent.add(
+                        ContentWidgetDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
                 }
             }
         }
@@ -209,7 +273,8 @@ object DynamicProductDetailMapper {
                 sizeChart = networkData.sizeChart,
                 defaultChild = networkData.defaultChild,
                 variants = networkData.variants,
-                children = networkData.children
+                children = networkData.children,
+                maxFinalPrice = networkData.maxFinalPrice
         )
     }
 
@@ -257,19 +322,6 @@ object DynamicProductDetailMapper {
         return fallbackUrl
     }
 
-    /**
-     * Ticker is used for show general message like : corona, shipping delay,  etc
-     * since we are using the same GQL as sticky login, we don't want sticky login item so we remove this
-     * LAYOUT_FLOATING should be sticky login
-     * *
-     * update : now it's not used class from sticky login module anymore
-     */
-    fun getTickerInfoData(tickerData: GeneralTickerDataModel.TickerResponse): List<GeneralTickerDataModel.TickerDetailDataModel> {
-        return tickerData.response.tickerDataModels.filter {
-            it.layout != LAYOUT_FLOATING
-        }
-    }
-
     fun generateImageReviewUiData(data: ImageReviewGqlResponse.ProductReviewImageListQuery): ImageReview {
         val result = mutableListOf<ImageReviewItem>()
 
@@ -297,10 +349,18 @@ object DynamicProductDetailMapper {
     fun generateUserLocationRequest(localData: LocalCacheModel): UserLocationRequest {
         val latlong = if (localData.lat.isEmpty() && localData.long.isEmpty()) "" else "${localData.lat},${localData.long}"
         return UserLocationRequest(
-                localData.district_id,
-                localData.address_id,
-                localData.postal_code,
+                localData.district_id.checkIfNumber("district_id"),
+                localData.address_id.checkIfNumber("address_id"),
+                localData.postal_code.checkIfNumber("postal_code"),
                 latlong)
+    }
+
+    fun generateTokoNowRequest(localData: LocalCacheModel): TokoNowParam {
+        return TokoNowParam(
+            shopId = localData.shop_id,
+            warehouseId = localData.warehouse_id,
+            serviceType = localData.service_type
+        )
     }
 
     fun generateUserLocationRequestRates(localData: LocalCacheModel): String {
@@ -325,6 +385,51 @@ object DynamicProductDetailMapper {
                     AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, selectedChild.optionIds)
                 }
             }
+        }
+    }
+
+    fun generateProductShareData(productInfo: DynamicProductInfoP1, userId: String, shopUrl: String): ProductData {
+        return ProductData(
+                userId,
+                productInfo.finalPrice.getCurrencyFormatted(),
+                "${productInfo.data.isCashback.percentage}%",
+                MethodChecker.fromHtml(productInfo.getProductName).toString(),
+                productInfo.data.price.currency,
+                productInfo.basic.url,
+                shopUrl,
+                productInfo.basic.shopName,
+                productInfo.basic.productID,
+                productInfo.data.getProductImageUrl() ?: ""
+        )
+    }
+
+    fun generateAffiliateShareData(productInfo: DynamicProductInfoP1, shopInfo: ShopInfo?,
+                                   variantData: ProductVariant?): AffiliatePDPInput {
+        return AffiliatePDPInput(
+                pageType= "pdp",
+                product = Product(
+                        productID = productInfo.basic.productID,
+                        catLevel1 = productInfo.basic.category.detail.firstOrNull()?.id ?: "0",
+                        catLevel2 = productInfo.basic.category.detail.getOrNull(1)?.id ?: "0",
+                        catLevel3 = productInfo.basic.category.detail.getOrNull(2)?.id ?: "0",
+                        productPrice = productInfo.data.price.value.toString(),
+                        maxProductPrice = getMaxPriceVariant(productInfo, variantData).toString(), //to do
+                        productStatus = productInfo.basic.status
+                ),
+                shop = Shop(
+                        shopID = productInfo.basic.shopID,
+                        isOS = productInfo.data.isOS,
+                        isPM = productInfo.data.isPowerMerchant,
+                        shopStatus = shopInfo?.statusInfo?.shopStatus
+                )
+        )
+    }
+
+    private fun getMaxPriceVariant(productInfo: DynamicProductInfoP1, variantData: ProductVariant?): Double {
+        return if (productInfo.data.variant.isVariant && variantData != null) {
+            variantData.maxFinalPrice.toDouble()
+        } else {
+            productInfo.finalPrice
         }
     }
 }

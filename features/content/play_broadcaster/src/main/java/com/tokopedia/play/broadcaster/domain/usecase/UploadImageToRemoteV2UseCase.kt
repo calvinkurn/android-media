@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.domain.usecase
 
-import com.tokopedia.mediauploader.data.state.UploadResult
-import com.tokopedia.mediauploader.domain.UploaderUseCase
+import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import java.io.File

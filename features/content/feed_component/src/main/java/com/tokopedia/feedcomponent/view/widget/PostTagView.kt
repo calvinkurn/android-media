@@ -1,15 +1,16 @@
 package com.tokopedia.feedcomponent.view.widget
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.util.util.*
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
@@ -55,10 +56,12 @@ class PostTagView @JvmOverloads constructor(
     private var position: Int = 0
     private var feedXTag: com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging = feedXMediaTagging
     private var initialBubbleVisible: Boolean
+    private var view : View
+    private var paddingWidth : Float = 8F
 
     init {
         initialBubbleVisible = false
-        val view =
+        view =
             LayoutInflater.from(context).inflate(R.layout.product_tag_detail_view, this, true)
 
         view.run {
@@ -74,12 +77,21 @@ class PostTagView @JvmOverloads constructor(
             finalPointerView = productTagPointerTop
         }
     }
+
+    fun convertPxToDp( px: Float): Float {
+        return px / context.resources.displayMetrics.density
+    }
+    fun convertDpToPx(dp: Float): Float {
+        return dp * context.resources.displayMetrics.density
+    }
+
     fun bindData(
         dynamicPostListener: DynamicPostViewHolder.DynamicPostListener?,
         products: List<FeedXProduct>,
         width: Int,
         height: Int,
-        positionInFeed: Int
+        positionInFeed: Int,
+        bitmap: Bitmap?
     ) {
         this.listener = dynamicPostListener
         this.dotMarginStart = (width * (feedXTag.posX)).toInt()
@@ -87,7 +99,6 @@ class PostTagView @JvmOverloads constructor(
         this.postImageHeight = height
         this.postImageWidth = width
         val product = products[feedXTag.tagIndex]
-
         productViewName.text = product.name
 
         if (product.isDiscount) {
@@ -98,6 +109,24 @@ class PostTagView @JvmOverloads constructor(
             productViewPrice.text = product.priceFmt
         }
 
+        view.doOnLayout {
+            var result = 0F
+
+            var priceWidthPX: Float = productViewPrice.width.toFloat()
+            var slashedPriceWidthPX: Float = productViewSlashedPrice.width.toFloat()
+            var priceWidthDP = convertPxToDp(priceWidthPX)
+            var slashedPriceWidthDP = convertPxToDp(slashedPriceWidthPX)
+
+            if (priceWidthDP > 0)
+                result += priceWidthPX
+            if (slashedPriceWidthDP > 0)
+                result += slashedPriceWidthPX + convertDpToPx(paddingWidth)
+            if (result > productViewName.maxWidth && productViewSlashedPrice.isVisible)
+                productViewName.maxWidth = result.toInt()
+
+        }
+
+
         if (feedXTag.posY > THRESHOLD_POS_Y_TO_INFLATE_TAGGING_BUBBLE_DOWNWARD) {
             this.finalPointerView = productTagPointerBottom
             position = POSITION_TOP
@@ -106,18 +135,18 @@ class PostTagView @JvmOverloads constructor(
             position = POSITION_BOTTOM
         }
         productTagDot.setMargin(
-            dotMarginStart,
-            dotMarginTop,
-            0,
-            0
+                dotMarginStart - DOT_HALF_DIMEN.toPx(),
+                dotMarginTop - DOT_HALF_DIMEN.toPx(),
+                0,
+                0
         )
         productTagExpandedView.setOnClickListener {
-            listener?.onPostTagBubbleClick(positionInFeed, product.appLink, product)
+            listener?.onPostTagBubbleClick(positionInFeed, product.appLink, product , product.adClickUrl)
         }
 
         productTagExpandedView.doOnLayout {
             val w = productTagExpandedView.width
-            bubbleMarginStart = setProductTagBubbleStartMargin(w)
+            bubbleMarginStart = setProductTagBubbleStartMargin(w, bitmap)
 
             if (position == POSITION_BOTTOM) {
                 productTagExpandedView.setMargin(bubbleMarginStart,
@@ -178,20 +207,21 @@ class PostTagView @JvmOverloads constructor(
     }
 
     private fun setProductTagBubbleStartMargin(
-        bubbleInflatedWidth: Int
+        bubbleInflatedWidth: Int,
+        bitmap: Bitmap?
     ): Int {
         return if (feedXTag.posX <= CENTER_POS_X) {
             if (dotMarginStart >= bubbleInflatedWidth / 2)
-                dotMarginStart - bubbleInflatedWidth / 2
+                dotMarginStart + calculateGreyAreaY(bitmap) - bubbleInflatedWidth / 2
             else
-                0
+                calculateGreyAreaY(bitmap)
 
         } else {
             val endMargin = postImageWidth - dotMarginStart
             if (endMargin >= bubbleInflatedWidth / 2)
-                dotMarginStart - bubbleInflatedWidth / 2
+                dotMarginStart - calculateGreyAreaY(bitmap) - bubbleInflatedWidth / 2
             else
-                postImageWidth - bubbleInflatedWidth
+                postImageWidth - bubbleInflatedWidth - calculateGreyAreaY(bitmap)
         }
     }
     private fun setSlashedPriceText(priceOriginal: String) {
@@ -209,10 +239,10 @@ class PostTagView @JvmOverloads constructor(
         }
         if(!initialBubbleVisible){
             productTagDot.setMargin(
-                dotMarginStart,
-                dotMarginTop,
-                0,
-                0
+                    dotMarginStart - DOT_HALF_DIMEN.toPx(),
+                    dotMarginTop - DOT_HALF_DIMEN.toPx(),
+                    0,
+                    0
             )
         }
 
@@ -233,6 +263,16 @@ class PostTagView @JvmOverloads constructor(
                 }
             }
         }, PRODUCT_DOT_TIMER)
+    }
+    private fun calculateGreyAreaY(bitmap: Bitmap?): Int {
+        bitmap?.let {
+            return if (bitmap.height > bitmap.width) {
+                val newBitmapHeight = (postImageWidth * bitmap.width) / bitmap.height
+                (postImageWidth - newBitmapHeight) / 2
+            } else
+                0
+        }
+        return 0
     }
 }
 

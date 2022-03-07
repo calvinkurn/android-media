@@ -5,14 +5,16 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 
 
-class CarouselDecoration(val marginLeft: Int, maxParentWidth: Int,
+class CarouselDecoration(private val marginLeft: Int, maxParentWidth: Int,
                          minimumVisibleItem: Int,
                          viewHolderWidth: Int) : RecyclerView.ItemDecoration() {
     var leftOutRect = 0
 
     init {
-        val parentWidth = maxParentWidth - (viewHolderWidth*3/4)
-        val leftOutRectTotal = parentWidth - (viewHolderWidth*minimumVisibleItem)
+        val parentWidthTime = 3
+        val parentWidthDivider = 4
+        val parentWidth = maxParentWidth - (viewHolderWidth * parentWidthTime / parentWidthDivider)
+        val leftOutRectTotal = parentWidth - (viewHolderWidth * minimumVisibleItem)
         leftOutRect = leftOutRectTotal / (minimumVisibleItem)
     }
 

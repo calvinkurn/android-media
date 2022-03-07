@@ -9,7 +9,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
@@ -17,47 +16,50 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.google.gson.Gson
 import com.google.gson.JsonArray
-import com.tokopedia.cart.R
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopGroupSimplifiedGqlResponse
-import com.tokopedia.cart.domain.mapper.CartSimplifiedMapper
-import com.tokopedia.cart.domain.model.cartlist.CartListData
+import com.tokopedia.cart.view.mapper.CartUiModelMapper
+import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder
-import com.tokopedia.cart.view.viewholder.CartSelectAllViewHolder
 import com.tokopedia.cart.view.viewholder.CartShopViewHolder
 import com.tokopedia.cart.view.viewholder.CartTickerErrorViewHolder
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.graphql.CommonUtils
+import com.tokopedia.pdpCheckout.testing.R
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.Typography
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 
 fun cartPage(func: CartPageRobot.() -> Unit) = CartPageRobot().apply(func)
 
 class CartPageRobot {
 
-    var cartListData: CartListData? = null
+    private var cartData: CartData? = null
+    private var availableCartList: List<CartShopHolderData> = emptyList()
 
     fun waitForData() {
         Thread.sleep(2000)
     }
 
     fun initData(context: Context) {
-        val jsonString = InstrumentationMockHelper.getRawString(context, com.tokopedia.pdpCheckout.testing.R.raw.cart_happy_flow_response)
+        val jsonString = InstrumentationMockHelper.getRawString(context, R.raw.cart_happy_flow_response)
         val jsonArray: JsonArray = CommonUtils.fromJson(
                 jsonString,
                 JsonArray::class.java
         )
         val jsonObject = jsonArray.asJsonArray[0].asJsonObject.getAsJsonObject("data")
-        val tmpData = Gson().fromJson(jsonObject, ShopGroupSimplifiedGqlResponse::class.java)
-        cartListData = CartSimplifiedMapper(context).convertToCartItemDataList(tmpData.shopGroupSimplifiedResponse.data)
+        cartData = Gson().fromJson(jsonObject, ShopGroupSimplifiedGqlResponse::class.java).shopGroupSimplifiedResponse.data
+        availableCartList = CartUiModelMapper.mapAvailableShopUiModel(cartData!!)
     }
 
     fun assertMainContent() {
@@ -72,23 +74,24 @@ class CartPageRobot {
             override fun getConstraints(): Matcher<View>? = null
 
             override fun perform(uiController: UiController?, view: View) {
-                Assert.assertEquals(View.VISIBLE, view.findViewById<Ticker>(R.id.cartTicker).visibility)
+                assertEquals(View.VISIBLE, view.findViewById<Ticker>(R.id.cartTicker).visibility)
             }
         }))
     }
 
-    fun assertCartSelectAllViewHolder(position: Int) {
-        onView(withId(R.id.rv_cart)).perform(RecyclerViewActions.actionOnItemAtPosition<CartSelectAllViewHolder>(position, object : ViewAction {
-            override fun getDescription(): String = "performing assertion action on CartSelectAllViewHolder"
+    fun assertCartSelectAllViewHolder() {
+        onView(withId(R.id.top_layout)).perform(object : ViewAction {
+            override fun getDescription(): String = "performing assertion action on Top Layout"
 
-            override fun getConstraints(): Matcher<View>? = null
+            override fun getConstraints(): Matcher<View> = ViewMatchers.isDisplayed()
 
             override fun perform(uiController: UiController?, view: View) {
-                Assert.assertEquals(View.VISIBLE, view.findViewById<CheckboxUnify>(R.id.checkbox_global).visibility)
-                Assert.assertEquals(true, view.findViewById<CheckboxUnify>(R.id.checkbox_global).isChecked)
-                Assert.assertEquals(View.VISIBLE, view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.text_select_all).visibility)
+                assertEquals(View.VISIBLE, view.findViewById<CheckboxUnify>(R.id.checkbox_global).visibility)
+                assertEquals(true, view.findViewById<CheckboxUnify>(R.id.checkbox_global).isChecked)
+                assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.text_select_all).visibility)
+                assertEquals(View.VISIBLE, view.visibility)
             }
-        }))
+        })
     }
 
     fun assertCartTickerErrorViewHolder(position: Int, message: String) {
@@ -98,7 +101,7 @@ class CartPageRobot {
             override fun getConstraints(): Matcher<View>? = null
 
             override fun perform(uiController: UiController?, view: View) {
-                Assert.assertEquals(message, view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.ticker_description).text)
+                assertEquals(message, view.findViewById<Typography>(R.id.ticker_description).text)
             }
         }))
     }
@@ -112,14 +115,12 @@ class CartPageRobot {
             override fun getConstraints(): Matcher<View>? = null
 
             override fun perform(uiController: UiController?, view: View) {
-                Assert.assertEquals(cartListData?.shopGroupAvailableDataList?.get(shopIndex)?.shopName
-                        ?: "", view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_shop_name).text)
-                Assert.assertEquals(cartListData?.shopGroupAvailableDataList?.get(shopIndex)?.fulfillmentName
-                        ?: "", view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_fulfill_district).text)
-                Assert.assertEquals(View.VISIBLE, view.findViewById<ImageView>(R.id.image_shop_badge).visibility)
-                Assert.assertEquals(View.VISIBLE, view.findViewById<ImageUnify>(R.id.img_free_shipping).visibility)
-                Assert.assertEquals(View.VISIBLE, view.findViewById<RecyclerView>(R.id.rv_cart_item).visibility)
-                Assert.assertTrue(view.findViewById<CheckBox>(R.id.cb_select_shop).isChecked)
+                assertEquals(availableCartList[shopIndex].shopName, view.findViewById<Typography>(R.id.tv_shop_name).text)
+                assertEquals(availableCartList[shopIndex].fulfillmentName, view.findViewById<Typography>(R.id.tv_fulfill_district).text)
+                assertEquals(View.VISIBLE, view.findViewById<ImageView>(R.id.image_shop_badge).visibility)
+                assertEquals(View.VISIBLE, view.findViewById<ImageUnify>(R.id.img_free_shipping).visibility)
+                assertEquals(View.VISIBLE, view.findViewById<RecyclerView>(R.id.rv_cart_item).visibility)
+                assertTrue(view.findViewById<CheckBox>(R.id.cb_select_shop).isChecked)
             }
         }))
 
@@ -147,7 +148,7 @@ class CartPageRobot {
                             override fun getConstraints(): Matcher<View>? = null
 
                             override fun perform(uiController: UiController?, view: View) {
-                                Assert.assertEquals(cartListData?.shopGroupAvailableDataList?.get(shopIndex)?.cartItemDataList?.get(i)?.cartItemData?.originData?.productName, view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.text_product_name).text.toString())
+                                assertEquals(availableCartList[shopIndex].productUiModelList[i].productName, view.findViewById<Typography>(R.id.text_product_name).text.toString())
                             }
                         }))
 
@@ -171,15 +172,35 @@ class CartPageRobot {
     }
 
     fun clickPromoButton() {
-        onView(withId(R.id.promo_checkout_btn_cart)).perform(ViewActions.click())
+        onView(withId(R.id.promo_checkout_btn_cart)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(object : ViewAction {
+            override fun getConstraints(): Matcher<View> {
+                return ViewMatchers.isDisplayed()
+            }
+
+            override fun getDescription(): String {
+                return "click promo button"
+            }
+
+            override fun perform(uiController: UiController?, view: View?) {
+                view?.performClick()
+            }
+        })
     }
 
     fun clickBuyButton() {
-        onView(withId(R.id.go_to_courier_page_button)).perform(ViewActions.click())
-    }
+        onView(withId(R.id.go_to_courier_page_button)).perform(object : ViewAction {
+            override fun getConstraints(): Matcher<View> {
+                return ViewMatchers.isDisplayed()
+            }
 
-    fun clickBackButton() {
+            override fun getDescription(): String {
+                return "click buy button"
+            }
 
+            override fun perform(uiController: UiController?, view: View?) {
+                view?.performClick()
+            }
+        })
     }
 
     infix fun validateAnalytics(func: ResultRobot.() -> Unit): ResultRobot {

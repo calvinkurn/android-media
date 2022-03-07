@@ -5,8 +5,8 @@ import androidx.annotation.LayoutRes
 import kotlinx.android.synthetic.main.carousel_see_more_card_item_grid_layout.view.*
 
 internal class CarouselSeeMoreCardGridViewHolder(
-        itemView: View
-): BaseProductCardViewHolder<CarouselSeeMoreCardModel>(itemView) {
+    itemView: View
+): BaseProductCardViewHolder<CarouselSeeMoreCardModel>(itemView, null) {
 
     companion object {
         @LayoutRes

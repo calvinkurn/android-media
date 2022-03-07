@@ -60,7 +60,7 @@
         android:id="@+id/overflow"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/Unify_N600"
+        android:background="@color/play_dms_broadcast_summary_info_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll_meta" />
@@ -69,7 +69,7 @@
         android:id="@+id/fl_info"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
-        android:background="@color/Unify_N600"
+        android:background="@color/play_dms_broadcast_summary_info_bg"
         android:paddingStart="@dimen/spacing_lvl4"
         android:paddingTop="@dimen/play_dp_12"
         android:paddingEnd="@dimen/spacing_lvl4"

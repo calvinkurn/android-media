@@ -1,5 +1,6 @@
 package com.tokopedia.shop.score.penalty.presentation
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleRegistry
@@ -23,7 +24,6 @@ abstract class ShopPenaltyViewModelTestFixture {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    @RelaxedMockK
     lateinit var penaltyMapper: PenaltyMapper
 
     @RelaxedMockK
@@ -39,6 +39,8 @@ abstract class ShopPenaltyViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        val context = mockk<Context>(relaxed = true)
+        penaltyMapper = PenaltyMapper(context)
         penaltyViewModel = ShopPenaltyViewModel(
             CoroutineTestDispatchersProvider,
             getShopPenaltyDetailMergeUseCase,

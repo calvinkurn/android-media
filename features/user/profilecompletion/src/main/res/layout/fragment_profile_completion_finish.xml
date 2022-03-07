@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="10dp">
@@ -66,7 +66,7 @@
         android:background="@color/Unify_G400"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_horizontal"
-        android:padding="@dimen/dp_10"
+        android:padding="10dp"
         android:text="@string/see_your_profile"
         android:textColor="@color/Unify_N0"
         android:textSize="@dimen/text_size_14"

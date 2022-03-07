@@ -35,12 +35,12 @@
     <string name="path_change_name">/change-name</string>
     <string name="path_change_gender">/change-gender</string>
     <string name="path_change_phone_number">/change-phone-number</string>
-    <string name="path_change_password">/change-password</string>
     <string name="path_has_password">/has-password</string>
     <string name="path_change_pin">/change-pin</string>
     <string name="path_add_email">/add-email</string>
     <string name="path_add_phone">/add-phone</string>
     <string name="path_cotp">/cotp</string>
+    <string name="path_silent_verif">/silent-verification</string>
     <string name="path_otp_push_notif_receiver">/otp-push-notif-receiver</string>
     <string name="path_otp_push_notif_setting">/otp-push-notif-setting</string>
     <string name="path_qr_login">/qr-login</string>

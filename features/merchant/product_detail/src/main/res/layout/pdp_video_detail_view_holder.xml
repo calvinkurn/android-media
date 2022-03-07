@@ -8,8 +8,8 @@
 
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/pdp_main_video"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_0"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:show_timeout="3000"
         app:surface_type="texture_view"
         app:controller_layout_id="@layout/pdp_video_detail_control_view"

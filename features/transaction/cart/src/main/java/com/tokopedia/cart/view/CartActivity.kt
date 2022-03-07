@@ -5,13 +5,9 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.cart.R
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
 
-/**
- * @author anggaprasetiyo on 18/01/18.
- */
-
 class CartActivity : BaseCheckoutActivity() {
 
-    lateinit var fragment: CartFragment
+    private var fragment: CartFragment? = null
     private var cartId: String? = null
     private var productId: Long = 0L
 
@@ -35,11 +31,15 @@ class CartActivity : BaseCheckoutActivity() {
     }
 
     override fun onBackPressed() {
-        if (::fragment.isInitialized) {
-            fragment.onBackPressed()
+        if (fragment != null) {
+            fragment?.onBackPressed()
         } else {
             finish()
         }
+    }
+
+    override fun setupFragment(savedInstance: Bundle?) {
+        inflateFragment()
     }
 
     override fun getNewFragment(): Fragment? {
@@ -48,7 +48,6 @@ class CartActivity : BaseCheckoutActivity() {
         bundle.putLong(EXTRA_PRODUCT_ID, productId)
         bundle.putBoolean(EXTRA_IS_FROM_CART_ACTIVITY, true)
         fragment = CartFragment.newInstance(bundle, "")
-
         return fragment
     }
 

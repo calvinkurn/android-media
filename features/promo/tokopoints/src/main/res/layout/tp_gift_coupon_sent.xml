@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_160"
             android:layout_marginBottom="@dimen/tp_margin_small"
-            app:cardCornerRadius="@dimen/dp_8"
+            app:cardCornerRadius="8dp"
             app:cardElevation="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -56,7 +56,7 @@
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/btn_sentSuccess"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_height="40dp"
                     android:layout_marginTop="@dimen/dp_50"
                     android:background="@drawable/bg_rounded_gift_sendbtn"
                     android:gravity="center"

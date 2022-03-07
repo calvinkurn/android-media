@@ -19,7 +19,6 @@ import javax.inject.Inject
  */
 class BroadcastScheduleViewModel @Inject constructor(
         private val hydraConfigStore: HydraConfigStore,
-        private val dispatcher: CoroutineDispatchers,
         private val setupDataStore: PlayBroadcastSetupDataStore
 ) : ViewModel() {
 

@@ -13,6 +13,7 @@ import com.tokopedia.common_tradein.model.DeviceDiagInputResponse
 import com.tokopedia.common_tradein.model.DeviceDiagnostics
 import com.tokopedia.common_tradein.model.HomeResult
 import com.tokopedia.common_tradein.usecase.ProcessMessageUseCase
+import com.tokopedia.tradein.view.viewcontrollers.activity.TRADEIN_EXCHANGE
 import com.tokopedia.tradein.viewmodel.liveState.*
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -57,7 +58,7 @@ class TradeInHomeViewModel @Inject constructor(
         }
         tradeInParams.deviceId = diagnostics.imei
         launchCatchError(block = {
-            setDiagnoseResult(processMessageUseCase.processMessage(tradeInParams, diagnostics), diagnostics)
+            setDiagnoseResult(processMessageUseCase.processMessage(tradeInParams, diagnostics, tradeInType), diagnostics)
         }, onError = {
             it.printStackTrace()
             warningMessage.value = it.localizedMessage

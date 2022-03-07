@@ -13,4 +13,7 @@ object BiometricConstant {
     val ENABLE_FINGERPRINT_SELLERAPP = "sellerapp_enable_fingerprint"
     const val FINGERPRINT_LOGIN_TYPE = "biometricType"
     const val PARAM_BIOMETRIC_ID = "device_biometrics"
+
+    const val PARAM_USER_ID = "userID"
+
 }

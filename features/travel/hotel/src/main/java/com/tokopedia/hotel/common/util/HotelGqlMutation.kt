@@ -167,6 +167,17 @@ object HotelGqlMutation {
             meta{
               invoiceID
             }
+            content {
+              success
+              title
+              desc
+                actionButton {
+                   label
+                   buttonType
+                   URI
+                   URIWeb
+                }
+            }
           }
         }
     """

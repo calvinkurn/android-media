@@ -1,0 +1,61 @@
+{
+  "readme": "Search Autocomplete SHP",
+  "mode": "subset",
+  "query": [
+    {
+      "businessUnit": "recharge",
+      "clientId": ".*",
+      "eventCategory": "digital - subhomepage tnb",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "viewDigitalIris",
+      "userId": ".*",
+      "eventAction": "impression search result",
+      "sessionIris": ".*",
+      "eventLabel": ".* - .*"
+    },
+    {
+      "businessUnit": "recharge",
+      "clientId": ".*",
+      "eventCategory": "digital - subhomepage tnb",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "viewDigitalIris",
+      "userId": ".*",
+      "eventAction": "impression category autocomplete",
+      "sessionIris": ".*",
+      "eventLabel": ".* - .* - .*"
+    },
+    {
+      "businessUnit": "recharge",
+      "clientId": ".*",
+      "eventCategory": "digital - subhomepage tnb",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "viewDigitalIris",
+      "userId": ".*",
+      "eventAction": "impression operator autocomplete",
+      "sessionIris": ".*",
+      "eventLabel": ".* - .* - .*"
+    },
+    {
+      "businessUnit": "recharge",
+      "clientId": ".*",
+      "eventCategory": "digital - subhomepage tnb",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "clickDigitalEvent",
+      "userId": ".*",
+      "eventAction": "click category autocomplete",
+      "sessionIris": ".*",
+      "eventLabel": ".* - .* - .*"
+    },
+    {
+      "businessUnit": "recharge",
+      "clientId": ".*",
+      "eventCategory": "digital - subhomepage tnb",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "clickDigitalEvent",
+      "userId": ".*",
+      "eventAction": "click operator autocomplete",
+      "sessionIris": ".*",
+      "eventLabel": ".* - .* - .*"
+    }
+    ]
+}

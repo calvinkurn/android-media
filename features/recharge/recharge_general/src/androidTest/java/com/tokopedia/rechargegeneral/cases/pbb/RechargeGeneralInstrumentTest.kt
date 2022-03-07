@@ -20,6 +20,7 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsRecentNumbersAdapter
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
+import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.RechargeGeneralMockResponseConfig
 import com.tokopedia.rechargegeneral.cases.RechargeGeneralProduct
@@ -42,6 +43,7 @@ class RechargeGeneralInstrumentTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
+    private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
     var mActivityRule: IntentsTestRule<RechargeGeneralActivity> = object : IntentsTestRule<RechargeGeneralActivity>(RechargeGeneralActivity::class.java) {
@@ -55,6 +57,7 @@ class RechargeGeneralInstrumentTest {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            graphqlCacheManager.deleteAll()
             gtmLogDBSource.deleteAll().subscribe()
 
             setupGraphqlMockResponse(RechargeGeneralMockResponseConfig(RechargeGeneralProduct.PBB))

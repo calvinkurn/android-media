@@ -7,13 +7,13 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
+import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
 import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.data.OrderStatusCode
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
@@ -27,7 +27,7 @@ class AttachedInvoiceViewHolder(
         itemView: View,
         private val invoiceThumbnailListener: InvoiceThumbnailListener,
         private val deferredAttachment: DeferredViewHolderAttachment
-) : BaseChatViewHolder<AttachInvoiceSentViewModel>(itemView) {
+) : BaseChatViewHolder<AttachInvoiceSentUiModel>(itemView) {
 
     private val container: RelativeLayout? = itemView.findViewById(R.id.rl_container)
     private val clContainer: ConstraintLayout? = itemView.findViewById(R.id.cl_chat_bubble)
@@ -40,7 +40,7 @@ class AttachedInvoiceViewHolder(
 
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
             clContainer,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            com.tokopedia.unifyprinciples.R.color.Unify_Background,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
@@ -52,7 +52,7 @@ class AttachedInvoiceViewHolder(
     )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
             clContainer,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            com.tokopedia.unifyprinciples.R.color.Unify_Background,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
@@ -67,12 +67,12 @@ class AttachedInvoiceViewHolder(
 
     interface InvoiceThumbnailListener {
         fun onClickInvoiceThumbnail(url: String, id: String)
-        fun trackClickInvoice(viewModel: AttachInvoiceSentViewModel)
+        fun trackClickInvoice(uiModel: AttachInvoiceSentUiModel)
     }
 
     override fun alwaysShowTime(): Boolean = true
 
-    override fun bind(invoice: AttachInvoiceSentViewModel, payloads: MutableList<Any>) {
+    override fun bind(invoice: AttachInvoiceSentUiModel, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
         when (payloads[0]) {
             Payload.REBIND -> bind(invoice)
@@ -80,11 +80,11 @@ class AttachedInvoiceViewHolder(
         }
     }
 
-    private fun bindDeferredAttachment(invoice: AttachInvoiceSentViewModel) {
+    private fun bindDeferredAttachment(invoice: AttachInvoiceSentUiModel) {
         bind(invoice)
     }
 
-    override fun bind(invoice: AttachInvoiceSentViewModel) {
+    override fun bind(invoice: AttachInvoiceSentUiModel) {
         super.bind(invoice)
         bindSyncInvoice(invoice)
         alignLayout(invoice)
@@ -98,7 +98,7 @@ class AttachedInvoiceViewHolder(
         }
     }
 
-    private fun bindBackground(invoice: AttachInvoiceSentViewModel) {
+    private fun bindBackground(invoice: AttachInvoiceSentUiModel) {
         if (invoice.isSender) {
             clContainer?.background = bgSender
         } else {
@@ -106,7 +106,7 @@ class AttachedInvoiceViewHolder(
         }
     }
 
-    private fun bindIsLoading(invoice: AttachInvoiceSentViewModel) {
+    private fun bindIsLoading(invoice: AttachInvoiceSentUiModel) {
         if (invoice.isLoading) {
             loadView?.show()
         } else {
@@ -114,7 +114,7 @@ class AttachedInvoiceViewHolder(
         }
     }
 
-    private fun bindSyncInvoice(invoice: AttachInvoiceSentViewModel) {
+    private fun bindSyncInvoice(invoice: AttachInvoiceSentUiModel) {
         if (!invoice.isLoading) return
         val chatAttachments = deferredAttachment.getLoadedChatAttachments()
         val attachment = chatAttachments[invoice.attachmentId] ?: return
@@ -125,20 +125,20 @@ class AttachedInvoiceViewHolder(
         }
     }
 
-    private fun alignLayout(viewModel: AttachInvoiceSentViewModel) {
-        if (viewModel.isSender) {
-            alignBubbleRight(viewModel)
-            bindChatReadStatus(viewModel)
+    private fun alignLayout(uiModel: AttachInvoiceSentUiModel) {
+        if (uiModel.isSender) {
+            alignBubbleRight(uiModel)
+            bindChatReadStatus(uiModel)
         } else {
-            alignBubbleLeft(viewModel)
+            alignBubbleLeft(uiModel)
         }
     }
 
-    private fun alignBubbleRight(viewModel: AttachInvoiceSentViewModel) {
+    private fun alignBubbleRight(uiModel: AttachInvoiceSentUiModel) {
         alignBubble(Gravity.END)
     }
 
-    private fun alignBubbleLeft(viewModel: AttachInvoiceSentViewModel) {
+    private fun alignBubbleLeft(uiModel: AttachInvoiceSentUiModel) {
         alignBubble(Gravity.START)
     }
 
@@ -146,14 +146,14 @@ class AttachedInvoiceViewHolder(
         container?.gravity = gravity
     }
 
-    private fun bindViewWithModel(viewModel: AttachInvoiceSentViewModel) {
-        val labelType = getLabelType(viewModel.statusId)
+    private fun bindViewWithModel(uiModel: AttachInvoiceSentUiModel) {
+        val labelType = getLabelType(uiModel.statusId)
 
-        ImageHandler.loadImageRounded2(itemView.context, thumbnail, viewModel.imageUrl, radiusInvoice)
-        status?.text = viewModel.status
+        thumbnail?.loadImageRounded(uiModel.imageUrl, radiusInvoice)
+        status?.text = uiModel.status
         status?.setLabelType(labelType)
-        invoiceId?.text = viewModel.invoiceId
-        price?.text = viewModel.totalAmount
+        invoiceId?.text = uiModel.invoiceId
+        price?.text = uiModel.totalAmount
     }
 
     private fun getLabelType(statusId: Int?): Int {
@@ -165,10 +165,10 @@ class AttachedInvoiceViewHolder(
         }
     }
 
-    private fun assignInteraction(viewModel: AttachInvoiceSentViewModel) {
+    private fun assignInteraction(uiModel: AttachInvoiceSentUiModel) {
         itemView.setOnClickListener {
-            invoiceThumbnailListener.trackClickInvoice(viewModel)
-            viewModel.invoiceUrl?.let {
+            invoiceThumbnailListener.trackClickInvoice(uiModel)
+            uiModel.invoiceUrl?.let {
                 invoiceThumbnailListener.onClickInvoiceThumbnail(it, it)
             }
         }

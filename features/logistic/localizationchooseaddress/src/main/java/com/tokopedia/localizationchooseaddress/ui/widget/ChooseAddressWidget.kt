@@ -14,11 +14,13 @@ import com.tokopedia.localizationchooseaddress.R
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.localizationchooseaddress.di.ChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressViewModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.ERROR_CODE_EMPTY_STATE_CHOSEN_ADDRESS
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.LCA_VERSION
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
@@ -95,7 +97,9 @@ class ChooseAddressWidget : ConstraintLayout,
                                 label = defaultAddress.label,
                                 postalCode = defaultAddress.postal_code,
                                 shopId = data.tokonowModel.shopId.toString(),
-                                warehouseId = data.tokonowModel.warehouseId.toString()
+                                warehouseId = data.tokonowModel.warehouseId.toString(),
+                                warehouses = TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses),
+                                serviceType = data.tokonowModel.serviceType
                             )
                             chooseAddressPref?.setLocalCache(localData)
                             chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
@@ -110,7 +114,9 @@ class ChooseAddressWidget : ConstraintLayout,
                                 label = "${data.addressName} ${data.receiverName}",
                                 postalCode = data.postalCode,
                                 shopId = data.tokonowModel.shopId.toString(),
-                                warehouseId = data.tokonowModel.warehouseId.toString()
+                                warehouseId = data.tokonowModel.warehouseId.toString(),
+                                warehouses = TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses),
+                                serviceType = data.tokonowModel.serviceType
                             )
                             chooseAddressPref?.setLocalCache(localData)
                             chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
@@ -156,7 +162,7 @@ class ChooseAddressWidget : ConstraintLayout,
     private fun initChooseAddressFlow() {
         val localData = ChooseAddressUtils.getLocalizingAddressData(context)
         updateWidget()
-        if (localData?.address_id?.isEmpty() == true) {
+        if (localData.address_id.isEmpty() || localData.version != LCA_VERSION) {
             chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()?.let { viewModel.getStateChosenAddress(it, isSupportWarehouseLoc) }
             initObservers()
         }
@@ -188,6 +194,9 @@ class ChooseAddressWidget : ConstraintLayout,
                             _eventLabel
                         )
                     }
+                }
+                if (chooseAddressWidgetListener?.needToTrackTokoNow() == true) {
+                    chooseAddressWidgetListener?.onClickChooseAddressTokoNowTracker()
                 }
                 val chooseAddressBottomSheet = ChooseAddressBottomSheet()
                 chooseAddressBottomSheet.setListener(this)
@@ -302,6 +311,21 @@ class ChooseAddressWidget : ConstraintLayout,
          */
         fun getEventLabelHostPage(): String {
             return ""
+        }
+
+        /**
+         * To differentiate page that needs to track TokoNow or not
+         * By default, this method will return false
+         */
+        fun needToTrackTokoNow(): Boolean {
+            return false
+        }
+
+        /**
+         * custom tracker for choose address widget of TokoNow page
+         * By default, this method will be empty
+         */
+        fun onClickChooseAddressTokoNowTracker() {
         }
 
         /**

@@ -5,8 +5,8 @@
     android:layout_height="match_parent"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingTop="@dimen/dp_12"
-    android:paddingBottom="@dimen/dp_12">
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp">
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:layout_width="@dimen/layout_lvl3"
@@ -22,7 +22,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_marginLeft="12dp"
         android:orientation="vertical">
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView

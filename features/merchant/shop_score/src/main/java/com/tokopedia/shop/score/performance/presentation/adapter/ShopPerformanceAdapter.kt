@@ -1,12 +1,14 @@
 package com.tokopedia.shop.score.performance.presentation.adapter
 
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.shop.score.performance.presentation.adapter.diffutilscallback.ShopPerformanceDiffUtilCallback
 import com.tokopedia.shop.score.performance.presentation.model.BaseShopPerformance
 import com.tokopedia.shop.score.performance.presentation.model.ItemShopPerformanceErrorUiModel
+import com.tokopedia.shop.score.performance.presentation.model.TickerReactivatedUiModel
 
 class ShopPerformanceAdapter(
     shopPerformanceAdapterTypeFactory: ShopPerformanceAdapterTypeFactory
@@ -29,9 +31,9 @@ class ShopPerformanceAdapter(
     }
 
     fun setShopPerformanceError(item: ItemShopPerformanceErrorUiModel) {
-        if (visitables.getOrNull(lastIndex) !is ItemShopPerformanceErrorUiModel) {
+        if (visitables.getOrNull(FIRST_INDEX) !is ItemShopPerformanceErrorUiModel) {
             visitables.add(item)
-            notifyItemInserted(lastIndex)
+            notifyItemInserted(FIRST_INDEX)
         }
     }
 
@@ -43,9 +45,9 @@ class ShopPerformanceAdapter(
     }
 
     fun setShopPerformanceLoading(item: LoadingModel) {
-        if (visitables.getOrNull(lastIndex) !is LoadingModel) {
+        if (visitables.getOrNull(FIRST_INDEX) !is LoadingModel) {
             visitables.add(item)
-            notifyItemInserted(lastIndex)
+            notifyItemInserted(FIRST_INDEX)
         }
     }
 
@@ -54,5 +56,17 @@ class ShopPerformanceAdapter(
             visitables.removeAt(lastIndex)
             notifyItemRemoved(lastIndex)
         }
+    }
+
+    fun removeTickerReactivated() {
+        val tickerReactivatedIndex = visitables.indexOfFirst { it is TickerReactivatedUiModel }
+        if (tickerReactivatedIndex != RecyclerView.NO_POSITION) {
+            visitables.removeAt(tickerReactivatedIndex)
+            notifyItemRemoved(tickerReactivatedIndex)
+        }
+    }
+
+    companion object {
+        private const val FIRST_INDEX = 0
     }
 }

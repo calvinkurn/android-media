@@ -88,7 +88,15 @@ class EventGridEventViewHolder(itemView: View,
             Glide.with(holder.view).load(item.imageUrl).into(holder.view.image)
             holder.view.txt_location.text = item.location
             holder.view.txt_title.text = item.title
-            holder.view.txt_price.text = item.price
+            holder.view.txt_price.apply {
+                if (item.isFree){
+                    text = resources.getString(R.string.ent_free_price)
+                    holder.view.txt_start_title.gone()
+                } else {
+                    text = item.price
+                    holder.view.txt_start_title.show()
+                }
+            }
             holder.view.setOnClickListener {
                 gridlistener.clickSectionEventProduct(item, items, titleGrid,
                         position + 1)

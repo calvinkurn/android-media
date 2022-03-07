@@ -54,7 +54,7 @@ abstract class ShopShowcaseListImageBaseViewHolder(
 
     private fun isShowCampaignLabel(type: Int): Boolean {
         return when (type) {
-            ShopEtalaseTypeDef.ETALASE_CAMPAIGN -> true
+            ShopEtalaseTypeDef.ETALASE_CAMPAIGN, ShopEtalaseTypeDef.ETALASE_FLASH_SALE -> true
             else -> false
         }
     }
@@ -67,6 +67,9 @@ abstract class ShopShowcaseListImageBaseViewHolder(
         return when (type) {
             ShopEtalaseTypeDef.ETALASE_CAMPAIGN -> {
                 itemView.context.getString(R.string.shop_page_showcase_npl_text)
+            }
+            ShopEtalaseTypeDef.ETALASE_FLASH_SALE -> {
+                itemView.context.getString(R.string.shop_page_showcase_flash_sale_text)
             }
             else -> ""
         }

@@ -8,7 +8,7 @@
         android:id="@+id/text_title_edit_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_4"
+        android:layout_marginBottom="4dp"
         android:text="@string/review_reminder_edit_message_title"
         app:layout_constraintBottom_toTopOf="@id/text_subtitle_edit_message"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -17,7 +17,7 @@
     <com.tokopedia.unifycomponents.Label
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginStart="4dp"
         app:labelTitle="@string/review_reminder_bottom_sheet_edit_message_label"
         app:labelType="general_light_grey"
         app:layout_constraintBottom_toBottomOf="@id/text_title_edit_message"
@@ -28,7 +28,7 @@
         android:id="@+id/text_subtitle_edit_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginBottom="16dp"
         android:text="@string/review_reminder_edit_message_subtitle"
         app:layout_constraintBottom_toTopOf="@id/textarea_edit_message"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -38,7 +38,7 @@
         android:id="@+id/textarea_edit_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_40"
+        android:layout_marginBottom="40dp"
         app:layout_constraintBottom_toTopOf="@id/layout_add_buyer"
         app:text_area_clearable="false"
         app:text_area_counter="200"
@@ -48,16 +48,16 @@
         android:id="@+id/layout_add_buyer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@id/footer_edit_message"
         app:layout_constraintLeft_toLeftOf="parent">
 
         <com.tokopedia.iconunify.IconUnify
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="4dp"
             app:icon_color_light_enable="@color/Unify_G500"
             app:icon_name="ADD_CIRCLE" />
 
@@ -73,7 +73,7 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_4"
+        android:layout_height="4dp"
         android:alpha="0.2"
         android:contentDescription="@string/review_reminder_content_description_top_shadow"
         android:scaleY="-1"
@@ -84,8 +84,8 @@
         android:id="@+id/footer_edit_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingBottom="@dimen/dp_8"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <com.tokopedia.unifycomponents.UnifyButton

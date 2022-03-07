@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.review.R
+import com.tokopedia.review.databinding.ItemRatingFilterBottomSheetBinding
 import com.tokopedia.review.feature.inboxreview.presentation.model.ListItemRatingWrapper
-import kotlinx.android.synthetic.main.item_rating_filter_bottom_sheet.view.*
 
 class RatingListAdapter(private val ratingListListener: RatingListListener) : RecyclerView.Adapter<RatingListAdapter.RatingListViewHolder>() {
 
@@ -54,18 +54,21 @@ class RatingListAdapter(private val ratingListListener: RatingListListener) : Re
     }
 
     class RatingListViewHolder(itemView: View, private val ratingListListener: RatingListListener) : RecyclerView.ViewHolder(itemView) {
-        fun bind(data: ListItemRatingWrapper) {
-            with(itemView) {
-                rating_checkbox.setOnCheckedChangeListener(null)
-                rating_checkbox.isChecked = data.isSelected
-                rating_star_label.text = data.sortValue
 
-                rating_checkbox.setOnCheckedChangeListener { _, isChecked ->
+        private val binding = ItemRatingFilterBottomSheetBinding.bind(itemView)
+
+        fun bind(data: ListItemRatingWrapper) {
+            with(binding) {
+                ratingCheckbox.setOnCheckedChangeListener(null)
+                ratingCheckbox.isChecked = data.isSelected
+                ratingStarLabel.text = data.sortValue
+
+                ratingCheckbox.setOnCheckedChangeListener { _, isChecked ->
                     ratingListListener.onItemRatingClicked(data.sortValue, isChecked, adapterPosition)
                 }
 
-                setOnClickListener {
-                    rating_checkbox.isChecked = !rating_checkbox.isChecked
+                root.setOnClickListener {
+                    ratingCheckbox.isChecked = !ratingCheckbox.isChecked
                 }
             }
         }

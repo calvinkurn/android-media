@@ -53,8 +53,6 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Cont
                 listener?.onClickItemPromo(topupBillsPromo, position)
             }
         })
-        this.promoList.addAll(promoList)
-        topupBillsPromoListAdapter.notifyDataSetChanged()
 
         getVisibleRecentItemsToUsersTracking(promoList)
 

@@ -28,7 +28,6 @@ object CartProtectionInfoBottomSheetHelper {
             javaScriptEnabled = true
             domStorageEnabled = true
         }
-
         webView?.loadUrl(url)
         webView?.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {

@@ -20,6 +20,7 @@ class PlayMapperBuilder {
         channelInteractiveMapper: PlayChannelInteractiveMapper = buildChannelInteractiveMapper(),
         realTimeNotificationMapper: PlayRealTimeNotificationMapper = buildRealTimeNotificationMapper(),
         multipleLikesMapper: PlayMultipleLikesMapper = buildMultipleLikesMapper(),
+        userWinnerStatusMapper: PlayUserWinnerStatusMapper = buildUserWinnerStatusMapper()
     ) = PlaySocketToModelMapper(
         productTagMapper = productTagMapper,
         merchantVoucherMapper = merchantVoucherMapper,
@@ -28,6 +29,7 @@ class PlayMapperBuilder {
         channelInteractiveMapper = channelInteractiveMapper,
         realTimeNotificationMapper = realTimeNotificationMapper,
         multipleLikesMapper = multipleLikesMapper,
+        userWinnerStatusMapper = userWinnerStatusMapper
     )
 
     fun buildProductTagMapper() = PlayProductTagUiMapper()
@@ -53,4 +55,6 @@ class PlayMapperBuilder {
     )
 
     fun buildMultipleLikesMapper() = PlayMultipleLikesMapper()
+
+    fun buildUserWinnerStatusMapper() = PlayUserWinnerStatusMapper()
 }

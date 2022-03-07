@@ -5,17 +5,17 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
 
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <TextView
 
         android:id="@+id/tv_location_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="16dp"
         tools:text="Pacific Place"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:textSize="@dimen/sp_14"
+        android:layout_marginLeft="16dp"
+        android:textSize="14sp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintTop_toTopOf="parent" />
@@ -26,21 +26,21 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="2sp"
-        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginLeft="16dp"
         tools:text="PACIFIC PLACE MALL, 4th Floor…"
         style="@style/TextView.Small"
         android:textColor="@color/Unify_N700_32"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginRight="50dp"
-        android:textSize="@dimen/sp_14"
+        android:textSize="14sp"
         app:layout_constraintRight_toLeftOf="@+id/iv_map"
         app:layout_constraintTop_toBottomOf="@id/tv_location_name" />
 
     <ImageView
         android:id="@+id/iv_map"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginRight="16dp"
         app:srcCompat="@drawable/ic_see_location"
         app:layout_constraintBottom_toBottomOf="@id/tv_location_address"
         app:layout_constraintRight_toRightOf="parent"
@@ -49,9 +49,9 @@
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_2"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_height="2dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
         android:background="@color/Unify_N75"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_location_address" />

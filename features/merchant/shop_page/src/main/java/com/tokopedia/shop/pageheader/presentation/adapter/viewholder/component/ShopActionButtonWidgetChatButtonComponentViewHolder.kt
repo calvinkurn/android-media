@@ -12,10 +12,12 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.LayoutShopActionButtonWidgetChatButtonComponentBinding
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderButtonComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyImageButton
+import com.tokopedia.utils.view.binding.viewBinding
 
 
 class ShopActionButtonWidgetChatButtonComponentViewHolder(
@@ -40,7 +42,8 @@ class ShopActionButtonWidgetChatButtonComponentViewHolder(
         )
     }
 
-    private val buttonChat: UnifyButton? = itemView.findViewById(R.id.button_shop_chat)
+    private val viewBinding: LayoutShopActionButtonWidgetChatButtonComponentBinding? by viewBinding()
+    private val buttonChat: UnifyButton? = viewBinding?.buttonShopChat
 
     override fun bind(model: ShopHeaderButtonComponentUiModel) {
         val lp = itemView.layoutParams

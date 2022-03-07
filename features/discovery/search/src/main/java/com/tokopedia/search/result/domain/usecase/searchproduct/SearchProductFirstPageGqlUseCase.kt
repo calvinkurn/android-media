@@ -5,6 +5,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL
 import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.HEADLINE_ITEM_VALUE_FIRST_PAGE
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -13,6 +14,7 @@ import com.tokopedia.search.result.domain.model.QuickFilterModel
 import com.tokopedia.search.result.domain.model.SearchInspirationCarouselModel
 import com.tokopedia.search.result.domain.model.SearchInspirationWidgetModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.domain.model.LastFilterModel
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -53,7 +55,9 @@ class SearchProductFirstPageGqlUseCase(
 
         val query = getQueryFromParameters(searchProductParams)
         val params = UrlParamUtils.generateUrlParamString(searchProductParams)
-        val headlineAdsParams = createHeadlineParams(searchProductParams, HEADLINE_ITEM_VALUE_FIRST_PAGE)
+        val headlineAdsParams = com.tokopedia.topads.sdk.utils.TopAdsHeadlineViewParams.createHeadlineParams(
+                requestParams.parameters[SEARCH_PRODUCT_PARAMS] as? Map<String, Any?>,
+                HEADLINE_ITEM_VALUE_FIRST_PAGE, "0")
 
         val graphqlRequestList = graphqlRequests {
             addAceSearchProductRequest(params)
@@ -63,6 +67,7 @@ class SearchProductFirstPageGqlUseCase(
             addGlobalNavRequest(requestParams, query, params)
             addInspirationCarouselRequest(requestParams, params)
             addInspirationWidgetRequest(requestParams, params)
+            addGetLastFilterRequest(requestParams, params)
         }
 
         graphqlUseCase.clearRequest()
@@ -74,7 +79,11 @@ class SearchProductFirstPageGqlUseCase(
 
         val topAdsImageViewModelObservable = createTopAdsImageViewModelObservable(query)
 
-        return Observable.zip(gqlSearchProductObservable, topAdsImageViewModelObservable, this::setTopAdsImageViewModelList)
+        return Observable.zip(
+            gqlSearchProductObservable,
+            topAdsImageViewModelObservable,
+            ::setTopAdsImageViewModelList,
+        )
     }
 
     private fun getQueryFromParameters(parameters: Map<String?, Any?>): String {
@@ -85,9 +94,10 @@ class SearchProductFirstPageGqlUseCase(
         add(createQuickFilterRequest(query = query, params = params))
     }
 
+    @GqlQuery("QuickFilter", QUICK_FILTER_QUERY)
     private fun createQuickFilterRequest(query: String, params: String) =
             GraphqlRequest(
-                    QUICK_FILTER_QUERY,
+                    QuickFilter(),
                     QuickFilterModel::class.java,
                     mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
             )
@@ -98,9 +108,10 @@ class SearchProductFirstPageGqlUseCase(
         }
     }
 
+    @GqlQuery("GlobalNav", GLOBAL_NAV_GQL_QUERY)
     private fun createGlobalSearchNavigationRequest(query: String, params: String) =
             GraphqlRequest(
-                    GLOBAL_NAV_GQL_QUERY,
+                    GlobalNav(),
                     GlobalSearchNavigationModel::class.java,
                     mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
             )
@@ -111,9 +122,10 @@ class SearchProductFirstPageGqlUseCase(
         }
     }
 
+    @GqlQuery("InspirationCarousel", SEARCH_INSPIRATION_CAROUSEL_QUERY)
     private fun createSearchInspirationCarouselRequest(params: String) =
             GraphqlRequest(
-                    SEARCH_INSPIRATION_CAROUSEL_QUERY,
+                    InspirationCarousel(),
                     SearchInspirationCarouselModel::class.java,
                     mapOf(GQL.KEY_PARAMS to params)
             )
@@ -124,12 +136,29 @@ class SearchProductFirstPageGqlUseCase(
         }
     }
 
+    @GqlQuery("InspirationWidget", SEARCH_INSPIRATION_WIDGET_QUERY)
     private fun createSearchInspirationWidgetRequest(params: String) =
             GraphqlRequest(
-                    SEARCH_INSPIRATION_WIDGET_QUERY,
+                    InspirationWidget(),
                     SearchInspirationWidgetModel::class.java,
                     mapOf(GQL.KEY_PARAMS to params)
             )
+
+    private fun MutableList<GraphqlRequest>.addGetLastFilterRequest(
+        requestParams: RequestParams,
+        params: String,
+    ) {
+        if (!requestParams.isSkipGetLastFilterWidget())
+            add(createGetLastFilterRequest(params = params))
+    }
+
+    @GqlQuery("GetLastFilter", GET_LAST_FILTER_GQL_QUERY)
+    private fun createGetLastFilterRequest(params: String) =
+        GraphqlRequest(
+            GetLastFilter(),
+            LastFilterModel::class.java,
+            mapOf(GQL.KEY_PARAMS to params)
+        )
 
     private fun createTopAdsImageViewModelObservable(query: String): Observable<List<TopAdsImageViewModel>> {
         return Observable.create<List<TopAdsImageViewModel>>({ emitter ->
@@ -266,6 +295,7 @@ class SearchProductFirstPageGqlUseCase(
                         type
                         position
                         layout
+                        tracking_option
                         options {
                             title
                             url
@@ -275,6 +305,7 @@ class SearchProductFirstPageGqlUseCase(
                             banner_applink_url
                             identifier
                             meta
+                            component_id
                             product {
                                 id
                                 name
@@ -287,6 +318,7 @@ class SearchProductFirstPageGqlUseCase(
                                 applink
                                 description
                                 rating_average
+                                component_id
                                 label_groups {
                                     title
                                     type
@@ -334,10 +366,35 @@ class SearchProductFirstPageGqlUseCase(
                             url
                             color
                             applink
+                            component_id
+                            filters {
+                              title
+                              key
+                              name
+                              value
+                            }
                         }
+                        tracking_option
                     }
                 }
             }
         """
+
+        private const val GET_LAST_FILTER_GQL_QUERY = """
+            query GetLastFilter(${'$'}params:String!) {
+              fetchLastFilter(param: ${'$'}params){
+                data {
+                  title
+                  description
+                  category_id_l2
+                  filters {
+                    title
+                    key
+                    name
+                    value
+                  }
+                }
+              }
+            }"""
     }
 }

@@ -20,10 +20,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:typographyType="body_2"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:layout_marginEnd="@dimen/dp_18"
-        android:layout_marginStart="@dimen/dp_14"
+        android:layout_marginStart="14dp"
         android:layout_toEndOf="@id/ic_location"/>
 
     <View

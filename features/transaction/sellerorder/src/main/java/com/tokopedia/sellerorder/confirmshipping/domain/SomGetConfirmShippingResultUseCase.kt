@@ -2,9 +2,6 @@ package com.tokopedia.sellerorder.confirmshipping.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomConfirmShipping
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -12,15 +9,12 @@ import javax.inject.Inject
  */
 class SomGetConfirmShippingResultUseCase @Inject constructor(private val useCase: GraphqlUseCase<SomConfirmShipping.Data>) {
 
-    suspend fun execute(query: String): Result<SomConfirmShipping.Data.MpLogisticConfirmShipping> {
-        useCase.setGraphqlQuery(query)
+    init {
         useCase.setTypeClass(SomConfirmShipping.Data::class.java)
+    }
 
-        return try {
-            val resultConfirmShipping = useCase.executeOnBackground().mpLogisticConfirmShipping
-            Success(resultConfirmShipping)
-        } catch (throwable: Throwable) {
-            Fail(throwable)
-        }
+    suspend fun execute(query: String): SomConfirmShipping.Data.MpLogisticConfirmShipping {
+        useCase.setGraphqlQuery(query)
+        return useCase.executeOnBackground().mpLogisticConfirmShipping
     }
 }

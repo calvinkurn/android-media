@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,20 +21,24 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chooseaccount.R
+import com.tokopedia.chooseaccount.databinding.FragmentChooseLoginPhoneAccountBinding
 import com.tokopedia.chooseaccount.view.adapter.AccountAdapter
 import com.tokopedia.chooseaccount.view.listener.ChooseAccountListener
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.url.TokopediaUrl
-import kotlinx.android.synthetic.main.fragment_choose_login_phone_account.*
-import java.util.*
-
+import com.tokopedia.utils.view.binding.viewBinding
 
 abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountListener {
+
+    private val binding: FragmentChooseLoginPhoneAccountBinding? by viewBinding()
 
     protected var crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
 
@@ -63,7 +68,6 @@ abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountLis
         super.onViewCreated(view, savedInstanceState)
         initToolbar()
         initObserver()
-        showLoadingProgress()
     }
 
     private fun initToolbar() {
@@ -78,29 +82,31 @@ abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountLis
     }
 
     protected fun showLoadingProgress() {
-        main_view?.hide()
-        chooseAccountLoader?.show()
+        binding?.mainView?.hide()
+        binding?.chooseAccountLoader?.show()
     }
 
     protected fun dismissLoadingProgress() {
-        main_view?.show()
-        chooseAccountLoader?.hide()
+        binding?.mainView?.show()
+        binding?.chooseAccountLoader?.hide()
     }
 
     protected fun checkExceptionType(throwable: Throwable) {
         if (throwable is AkamaiErrorException) {
             showPopupErrorAkamai()
         } else {
-            onErrorLogin(ErrorHandler.getErrorMessage(context, throwable))
+            onErrorLogin(ErrorHandler.getErrorMessage(context, throwable, builder = getErrorHandlerBuilder()))
         }
     }
 
-    protected fun logUnknownError(throwable: Throwable) {
-        try {
-            crashlytics.recordException(throwable)
-        } catch (e: IllegalStateException) {
-            e.printStackTrace()
-        }
+    protected fun logUnknownError(throwable: Throwable?, flow: String) {
+        ServerLogger.log(Priority.P2, "BUYER_FLOW_LOGIN",
+            mapOf(
+                "type" to flow,
+                "error" to throwable?.message.toEmptyStringIfNull(),
+                "throwable" to Log.getStackTraceString(throwable).take(1000)
+            )
+        )
     }
 
     protected fun showPopupError(header: String, body: String, url: String) {
@@ -135,9 +141,17 @@ abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountLis
 
     //Impossible Flow
     protected fun onGoToActivationPage(messageErrorException: MessageErrorException) {
-        onErrorLogin(ErrorHandler.getErrorMessage(context, messageErrorException))
-        val logException = Throwable("LoginPN activation", messageErrorException)
-        logUnknownError(logException)
+        onErrorLogin(ErrorHandler.getErrorMessage(
+            context,
+            messageErrorException,
+            getErrorHandlerBuilder()
+        ))
+    }
+
+    protected fun getErrorHandlerBuilder(): ErrorHandler.Builder {
+        return ErrorHandler.Builder().apply {
+                className = this.javaClass.name
+        }.build()
     }
 
     protected fun onGoToSecurityQuestion() {
@@ -148,7 +162,6 @@ abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountLis
     }
 
     companion object {
-        const val FACEBOOK_LOGIN_TYPE = "fb"
         const val REQUEST_CODE_PIN_CHALLENGE = 112
 
         const val OTP_TYPE_AFTER_LOGIN_PHONE = 148

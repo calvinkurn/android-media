@@ -13,6 +13,7 @@ import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.media.loader.utils.MediaTarget
 import com.tokopedia.media.loader.MediaLoaderApi.loadImage as loadImageBuilder
 import com.tokopedia.media.loader.MediaLoaderTarget.loadImage as loadImageWithTarget
@@ -30,37 +31,47 @@ fun ImageView.loadImage(drawable: Drawable?) = this.setImageDrawable(drawable)
 
 fun ImageView.loadImage(resource: Int) = this.setImageResource(resource)
 
+inline fun ImageView.loadImage(
+    resource: Int,
+    crossinline properties: Properties.() -> Unit = {}
+) = call(resource, Properties()
+    .apply(properties))
+
 fun ImageView.loadImage(uri: Uri) = this.setImageURI(uri)
 
 inline fun ImageView.loadImage(
     url: String?,
     crossinline properties: Properties.() -> Unit = {}
-) = call(url, Properties().apply(properties))
+) = call(url, Properties()
+    .apply(properties))
 
 inline fun ImageView.loadImageFitCenter(
     url: String?,
     crossinline properties: Properties.() -> Unit = {}
-) = call(url, Properties().apply(properties).fitCenter())
+) = call(url, Properties()
+    .apply(properties)
+    .fitCenter())
 
 inline fun ImageView.loadImageWithoutPlaceholder(
     url: String?,
     crossinline properties: Properties.() -> Unit = {}
 ) = call(url, Properties()
-        .apply(properties)
-        .setPlaceHolder(-1))
+    .apply(properties)
+    .setPlaceHolder(-1))
 
 inline fun ImageView.loadImageCircle(
     url: String?,
     crossinline properties: Properties.() -> Unit = {}
-) = call(url, Properties().apply(properties)
-        .isCircular(true)
+) = call(url, Properties()
+    .apply(properties)
+    .isCircular(true)
 
-        /*
-         * loadImageCircle() extension must be haven't placeholder,
-         * the loader effect should be handled by team by
-         * using own shimmering.
-         * */
-        .setPlaceHolder(-1)
+    /*
+     * loadImageCircle() extension must be haven't placeholder,
+     * the loader effect should be handled by team by
+     * using own shimmering.
+     * */
+    .setPlaceHolder(-1)
 )
 
 fun ImageView.loadImageRounded(
@@ -97,6 +108,7 @@ inline fun ImageView.loadIcon(
     call(url, Properties()
         .apply(properties)
         .overrideSize(Resize(300, 300))
+        .isIcon(true)
     )
 }
 
@@ -144,7 +156,24 @@ fun <T: View> loadImageWithTarget(
 ) {
     loadImageWithTarget(
         context,
-        Properties().apply(properties).setSource(url),
+        Properties()
+            .apply(properties)
+            .setSource(url),
+        mediaTarget
+    )
+}
+
+fun loadImageWithEmptyTarget(
+    context: Context,
+    url: String,
+    properties: Properties.() -> Unit,
+    mediaTarget: MediaBitmapEmptyTarget<Bitmap>
+) {
+    loadImageWithTarget(
+        context,
+        Properties()
+            .apply(properties)
+            .setSource(url),
         mediaTarget
     )
 }

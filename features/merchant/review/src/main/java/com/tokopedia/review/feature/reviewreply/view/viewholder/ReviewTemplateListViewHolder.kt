@@ -2,24 +2,24 @@ package com.tokopedia.review.feature.reviewreply.view.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.review.databinding.ItemChatTemplateBinding
 import com.tokopedia.review.feature.reviewreply.view.model.ReplyTemplateUiModel
 import com.tokopedia.unifycomponents.ChipsUnify
-import kotlinx.android.synthetic.main.item_chat_template.view.*
 
 class ReviewTemplateListViewHolder(
-        val view: View,
+        view: View,
         private val reviewTemplateListener: ReviewTemplateListener): RecyclerView.ViewHolder(view) {
 
+    private val binding = ItemChatTemplateBinding.bind(view)
+
     fun bind(data: ReplyTemplateUiModel) {
-        with(view) {
-            chipsTemplateChat.apply {
-                centerText = true
-                chipText = data.title
-                chipSize = ChipsUnify.SIZE_MEDIUM
-                chipType = ChipsUnify.TYPE_ALTERNATE
-                setOnClickListener {
-                    reviewTemplateListener.onItemReviewTemplateClicked(view, chipText.orEmpty())
-                }
+        binding.chipsTemplateChat.apply {
+            centerText = true
+            chipText = data.title
+            chipSize = ChipsUnify.SIZE_MEDIUM
+            chipType = ChipsUnify.TYPE_ALTERNATE
+            setOnClickListener {
+                reviewTemplateListener.onItemReviewTemplateClicked(binding.root, chipText.orEmpty())
             }
         }
     }

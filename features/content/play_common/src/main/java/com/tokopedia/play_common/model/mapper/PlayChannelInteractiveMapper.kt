@@ -21,6 +21,6 @@ class PlayChannelInteractiveMapper @Inject constructor() {
                     countdownStartInSec = input.countdownStart,
                     countdownEndInSec = input.countdownEnd,
             ),
-            endGameDelayInMs = TimeUnit.SECONDS.toMillis(input.countdownEndDelay.toLong())
+            endGameDelayInMs = TimeUnit.SECONDS.toMillis(input.waitingDuration.toLong())
     )
 }

@@ -133,7 +133,6 @@ open class RegisterInitialBase: LoginRegisterBase() {
     protected fun setDefaultDiscover() {
         val mockProviders = arrayListOf(
             ProviderData("gplus", "Google", "https://accounts.tokopedia.com/gplus-login", "", "#FFFFFF"),
-            ProviderData("facebook", "Facebook", "https://accounts.tokopedia.com/fb-login", "", "#FFFFFF")
         )
         val response = DiscoverPojo(DiscoverData(mockProviders, ""))
         discoverUseCaseStub.response = response

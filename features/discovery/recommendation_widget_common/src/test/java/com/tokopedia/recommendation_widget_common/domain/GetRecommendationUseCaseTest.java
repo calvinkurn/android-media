@@ -16,6 +16,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @RunWith(MockitoJUnitRunner.class)
 public class GetRecommendationUseCaseTest {
@@ -41,22 +44,27 @@ public class GetRecommendationUseCaseTest {
         );
     }
 
+    private List<String> dummyProductId = new ArrayList<String>() {{
+        add("1234");
+    }};
+
     @Test
     public void getRecomParams_useUserSessionId_whenSetUserIdParams() {
         int dummyPageNumber = 0;
         String dummyUserId = "12345";
         when(userSessionInterface.getUserId()).thenReturn(dummyUserId);
+        when(userSessionInterface.isLoggedIn()).thenReturn(true);
 
         RequestParams requestParams = getRecommendationUseCase.getRecomParams(
                 dummyPageNumber,
                 GetRecommendationUseCase.DEFAULT_VALUE_X_SOURCE,
                 GetRecommendationUseCase.DEFAULT_PAGE_NAME,
-                any(),
-                any()
+                dummyProductId,
+                ""
         );
         int requestParamsId = requestParams.getInt(GetRecommendationUseCase.USER_ID,
                 dummyPageNumber);
-        Assert.assertEquals((long)requestParamsId, (long)Integer.valueOf(dummyUserId));
+        Assert.assertEquals((long) requestParamsId, (long) Integer.valueOf(dummyUserId));
     }
 
     @Test
@@ -64,13 +72,14 @@ public class GetRecommendationUseCaseTest {
         int dummyPageNumber = 99;
         String dummyUserId = "12345";
         when(userSessionInterface.getUserId()).thenReturn(dummyUserId);
+        when(userSessionInterface.isLoggedIn()).thenReturn(true);
 
         RequestParams requestParams = getRecommendationUseCase.getRecomParams(
                 dummyPageNumber,
                 GetRecommendationUseCase.DEFAULT_VALUE_X_SOURCE,
                 GetRecommendationUseCase.DEFAULT_PAGE_NAME,
-                any(),
-                any()
+                dummyProductId,
+                ""
         );
         int requestParamsPageNumber = requestParams.getInt(GetRecommendationUseCase.PAGE_NUMBER,
                 0);
@@ -84,13 +93,14 @@ public class GetRecommendationUseCaseTest {
         int dummyPageNumber = 0;
         String dummyUserId = "12345";
         when(userSessionInterface.getUserId()).thenReturn(dummyUserId);
+        when(userSessionInterface.isLoggedIn()).thenReturn(true);
 
         RequestParams requestParams = getRecommendationUseCase.getRecomParams(
                 dummyPageNumber,
                 dummyXSource,
                 GetRecommendationUseCase.DEFAULT_PAGE_NAME,
-                any(),
-                any()
+                dummyProductId,
+                ""
         );
         String requestXSource = requestParams.getString(GetRecommendationUseCase.X_SOURCE,
                 "");
@@ -104,13 +114,14 @@ public class GetRecommendationUseCaseTest {
         int dummyPageNumber = 0;
         String dummyUserId = "12345";
         when(userSessionInterface.getUserId()).thenReturn(dummyUserId);
+        when(userSessionInterface.isLoggedIn()).thenReturn(true);
 
         RequestParams requestParams = getRecommendationUseCase.getRecomParams(
                 dummyPageNumber,
                 dummyXSource,
                 GetRecommendationUseCase.DEFAULT_PAGE_NAME,
-                any(),
-                any()
+                dummyProductId,
+                ""
         );
         String requestXSource = requestParams.getString(GetRecommendationUseCase.X_SOURCE,
                 "");
@@ -125,13 +136,14 @@ public class GetRecommendationUseCaseTest {
         int dummyPageNumber = 0;
         String dummyUserId = "12345";
         when(userSessionInterface.getUserId()).thenReturn(dummyUserId);
+        when(userSessionInterface.isLoggedIn()).thenReturn(true);
 
         RequestParams requestParams = getRecommendationUseCase.getRecomParams(
                 dummyPageNumber,
                 dummyXSource,
                 GetRecommendationUseCase.DEFAULT_PAGE_NAME,
-                any(),
-                any()
+                dummyProductId,
+                ""
         );
         String requestXDevice = requestParams.getString(GetRecommendationUseCase.X_DEVICE,
                 "");
@@ -146,13 +158,14 @@ public class GetRecommendationUseCaseTest {
         int dummyPageNumber = 0;
         String dummyUserId = "12345";
         when(userSessionInterface.getUserId()).thenReturn(dummyUserId);
+        when(userSessionInterface.isLoggedIn()).thenReturn(true);
 
         RequestParams requestParams = getRecommendationUseCase.getRecomParams(
                 dummyPageNumber,
                 GetRecommendationUseCase.DEFAULT_VALUE_X_SOURCE,
                 dummyPageName,
-                any(),
-                any()
+                dummyProductId,
+                ""
         );
         String requestPageName = requestParams.getString(GetRecommendationUseCase.PAGE_NAME,
                 "");
@@ -166,13 +179,14 @@ public class GetRecommendationUseCaseTest {
         int dummyPageNumber = 0;
         String dummyUserId = "12345";
         when(userSessionInterface.getUserId()).thenReturn(dummyUserId);
+        when(userSessionInterface.isLoggedIn()).thenReturn(true);
 
         RequestParams requestParams = getRecommendationUseCase.getRecomParams(
                 dummyPageNumber,
                 dummyPageName,
                 GetRecommendationUseCase.DEFAULT_PAGE_NAME,
-                any(),
-                any()
+                dummyProductId,
+                ""
         );
         String requestPageName = requestParams.getString(GetRecommendationUseCase.PAGE_NAME,
                 "");

@@ -6,8 +6,10 @@ import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.databinding.ShopShowcaseProductEmptyStateBinding
 import com.tokopedia.shop.product.view.datamodel.ShopProductEmptyShowcaseUiModel
 import com.tokopedia.shop.product.view.listener.ShopShowcaseEmptySearchListener
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopProductEmptyShowcaseViewHolder(val view: View,
                                          private val shopShowcaseEmptySearchListener: ShopShowcaseEmptySearchListener?): AbstractViewHolder<ShopProductEmptyShowcaseUiModel>(view) {
@@ -15,8 +17,9 @@ class ShopProductEmptyShowcaseViewHolder(val view: View,
     companion object {
         val LAYOUT = R.layout.shop_showcase_product_empty_state
     }
-    
-    private val shopShowcaseEmptyState: EmptyStateUnify? = itemView.findViewById(R.id.shopShowcaseEmptyState)
+
+    private val viewBinding : ShopShowcaseProductEmptyStateBinding? by viewBinding()
+    private val shopShowcaseEmptyState: EmptyStateUnify? = viewBinding?.shopShowcaseEmptyState
     
     override fun bind(element: ShopProductEmptyShowcaseUiModel) {
         try {

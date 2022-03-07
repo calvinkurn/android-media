@@ -5,7 +5,7 @@ import android.content.Context
 import android.os.Handler
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
-import com.tokopedia.notifications.inApp.CmDialogVisibilityContract
+import com.tokopedia.notifications.inApp.external.IExternalInAppCallback
 import com.tokopedia.promotionstarget.R
 import com.tokopedia.promotionstarget.data.coupon.TokopointsCouponDetailResponse
 import com.tokopedia.promotionstarget.data.di.components.CmGratificationPresenterComponent
@@ -20,7 +20,6 @@ import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter
 import com.tokopedia.promotionstarget.domain.usecase.NotificationUseCase
 import com.tokopedia.promotionstarget.domain.usecase.TokopointsCouponDetailUseCase
 import io.mockk.*
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.json.JSONObject
@@ -52,7 +51,7 @@ class GratificationPresenterSpekTest : Spek({
     lateinit var tpCouponDetailUseCase: TokopointsCouponDetailUseCase
     lateinit var notificationResponse: GratifNotificationResponse
     lateinit var couponResponse: TokopointsCouponDetailResponse
-    lateinit var visibilityContract: CmDialogVisibilityContract
+    lateinit var iExternalInAppCallback: IExternalInAppCallback
 
     beforeGroup {
         context = mockk()
@@ -76,7 +75,7 @@ class GratificationPresenterSpekTest : Spek({
         dispatcher = TestCoroutineDispatcher()
         notificationUseCase = mockk()
         tpCouponDetailUseCase = mockk()
-        visibilityContract = mockk()
+        iExternalInAppCallback = mockk()
     }
 
 
@@ -119,7 +118,7 @@ class GratificationPresenterSpekTest : Spek({
         }
     }
 
-    fun buildGratifPresenter(visibilityContract: CmDialogVisibilityContract): GratificationPresenter {
+    fun buildGratifPresenter(visibilityContract: IExternalInAppCallback): GratificationPresenter {
         val componentProvider = object : CmGratifiPresenterComponentProvider() {
             override fun getComponent(context: Context): CmGratificationPresenterComponent {
                 return DaggerTestCmGratificationPresenterComponent.builder()
@@ -128,7 +127,7 @@ class GratificationPresenterSpekTest : Spek({
             }
         }
         val gratificationPresenter: GratificationPresenter = GratificationPresenter(context, componentProvider)
-        gratificationPresenter.dialogVisibilityContract = visibilityContract
+        gratificationPresenter.iExternalInAppCallback = visibilityContract
         gratificationPresenter.worker = dispatcher
         gratificationPresenter.uiWorker = dispatcher
         gratificationPresenter.notificationUseCase = notificationUseCase
@@ -147,11 +146,11 @@ class GratificationPresenterSpekTest : Spek({
                                    isCouponApiDown: Boolean,
                                    bottomSheetDialog: BottomSheetDialog = mockk(),
                                    gratifCallback: GratificationPresenter.GratifPopupCallback = spyk(),
-                                   visibilityContract: CmDialogVisibilityContract,
+                                   iExternalInAppCallback: IExternalInAppCallback,
                                    timeout: Long = 0L,
                                    paymentId: Long = 0L,
                                    isCouponCodeEmpty: Boolean = false): GratificationPresenter {
-        val gratificationPresenter = buildGratifPresenter(visibilityContract)
+        val gratificationPresenter = buildGratifPresenter(iExternalInAppCallback)
 
         setupApiResponse(dispatcher = gratificationPresenter.worker as TestCoroutineDispatcher,
                 timeout = timeout,
@@ -168,7 +167,7 @@ class GratificationPresenterSpekTest : Spek({
         every {
             gratificationPresenter.dialogCreator.createGratifDialog(any(),
                     notificationResponse.response!!, couponResponse,
-                    notificationEntryType, gratifCallback, screenName, closeCurrentActivity,any())
+                    notificationEntryType, gratifCallback, screenName, closeCurrentActivity,any(), any())
         } returns bottomSheetDialog
 
         every { bottomSheetDialog.setOnDismissListener(any()) } just runs
@@ -190,9 +189,9 @@ class GratificationPresenterSpekTest : Spek({
 
         test("type organic") {
 
-            every { visibilityContract.isDialogVisible(activity) } returns false
+            every { iExternalInAppCallback.isInAppViewVisible(activity) } returns false
 
-            val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.ORGANIC, true, false, visibilityContract = visibilityContract)
+            val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.ORGANIC, true, false, iExternalInAppCallback = iExternalInAppCallback)
 
             coVerifyOrder {
 
@@ -203,16 +202,16 @@ class GratificationPresenterSpekTest : Spek({
 
                 gratificationPresenter.initSafeJob()
                 gratificationPresenter.initSafeScope()
-                gratificationPresenter.dialogVisibilityContract?.isDialogVisible(activity)
+                gratificationPresenter.iExternalInAppCallback?.isInAppViewVisible(activity)
                 gratificationPresenter.notificationUseCase.getQueryParams(any(), any(), any())
                 gratificationPresenter.notificationUseCase.getResponse(any())
             }
-            verify(exactly = 0) { gratificationPresenter.dialogVisibilityContract?.onDialogDismiss(activity) }
+            verify(exactly = 0) { gratificationPresenter.iExternalInAppCallback?.onInAppViewDismiss(activity) }
         }
 
         test("type push") {
             assertFailsWith(Exception::class) {
-                val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.PUSH, true, false, visibilityContract = visibilityContract)
+                val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.PUSH, true, false, iExternalInAppCallback = iExternalInAppCallback)
 
                 coVerifyOrder {
 
@@ -223,11 +222,11 @@ class GratificationPresenterSpekTest : Spek({
 
                     gratificationPresenter.initSafeJob()
                     gratificationPresenter.initSafeScope()
-                    gratificationPresenter.dialogVisibilityContract?.isDialogVisible(activity)
-                    gratificationPresenter.dialogVisibilityContract?.onDialogShown(activity)
+                    gratificationPresenter.iExternalInAppCallback?.isInAppViewVisible(activity)
+                    gratificationPresenter.iExternalInAppCallback?.onInAppViewShown(activity)
                     gratificationPresenter.notificationUseCase.getQueryParams(any(), any(), any())
                     gratificationPresenter.notificationUseCase.getResponse(any())
-                    gratificationPresenter.dialogVisibilityContract?.onDialogDismiss(activity)
+                    gratificationPresenter.iExternalInAppCallback?.onInAppViewDismiss(activity)
                     gratificationPresenter.exceptionCallback?.onError(any())
                 }
             }
@@ -237,7 +236,7 @@ class GratificationPresenterSpekTest : Spek({
     group("When coupon api is down - fail") {
         test("type push") {
             assertFailsWith(Exception::class) {
-                val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.PUSH, false, true, visibilityContract = visibilityContract)
+                val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.PUSH, false, true, iExternalInAppCallback = iExternalInAppCallback)
 
                 coVerify {
 
@@ -248,22 +247,22 @@ class GratificationPresenterSpekTest : Spek({
 
                     gratificationPresenter.initSafeJob()
                     gratificationPresenter.initSafeScope()
-                    gratificationPresenter.dialogVisibilityContract?.isDialogVisible(activity)
-                    gratificationPresenter.dialogVisibilityContract?.onDialogShown(activity)
+                    gratificationPresenter.iExternalInAppCallback?.isInAppViewVisible(activity)
+                    gratificationPresenter.iExternalInAppCallback?.onInAppViewShown(activity)
                     gratificationPresenter.notificationUseCase.getQueryParams(any(), any(), any())
                     gratificationPresenter.notificationUseCase.getResponse(any())
                     gratificationPresenter.tpCouponDetailUseCase.getQueryParams(any())
                     gratificationPresenter.tpCouponDetailUseCase.getResponse(any())
-                    gratificationPresenter.dialogVisibilityContract?.onDialogDismiss(activity)
+                    gratificationPresenter.iExternalInAppCallback?.onInAppViewDismiss(activity)
                     gratificationPresenter.exceptionCallback?.onError(any())
                 }
             }
         }
 
         test("type organic") {
-            every { visibilityContract.isDialogVisible(activity) } returns false
+            every { iExternalInAppCallback.isInAppViewVisible(activity) } returns false
 
-            val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.ORGANIC, false, true, visibilityContract = visibilityContract)
+            val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.ORGANIC, false, true, iExternalInAppCallback = iExternalInAppCallback)
 
             coVerify {
                 gratificationPresenter.worker = dispatcher
@@ -273,25 +272,25 @@ class GratificationPresenterSpekTest : Spek({
 
                 gratificationPresenter.initSafeJob()
                 gratificationPresenter.initSafeScope()
-                gratificationPresenter.dialogVisibilityContract?.isDialogVisible(activity)
+                gratificationPresenter.iExternalInAppCallback?.isInAppViewVisible(activity)
                 gratificationPresenter.notificationUseCase.getQueryParams(any(), any(), any())
                 gratificationPresenter.notificationUseCase.getResponse(any())
                 gratificationPresenter.tpCouponDetailUseCase.getQueryParams(any())
                 gratificationPresenter.tpCouponDetailUseCase.getResponse(any())
             }
-            verify(exactly = 0) { gratificationPresenter.dialogVisibilityContract?.onDialogDismiss(activity) }
+            verify(exactly = 0) { gratificationPresenter.iExternalInAppCallback?.onInAppViewDismiss(activity) }
         }
     }
 
     group("show gratification dialog - success") {
 
         test("type push") {
-            every { visibilityContract.isDialogVisible(activity) } returns false
-            every { visibilityContract.onDialogShown(activity) } just runs
+            every { iExternalInAppCallback.isInAppViewVisible(activity) } returns false
+            every { iExternalInAppCallback.onInAppViewShown(activity) } just runs
             every { activity.isFinishing } returns false
 
             val bottomSheetDialog: BottomSheetDialog = mockk()
-            val gratificationPresenter = preparePresenterForApiDown(notificationEntryType = NotificationEntryType.PUSH,isNotificationApiDown =  false,isCouponApiDown =  false,bottomSheetDialog= bottomSheetDialog, visibilityContract = visibilityContract)
+            val gratificationPresenter = preparePresenterForApiDown(notificationEntryType = NotificationEntryType.PUSH,isNotificationApiDown =  false,isCouponApiDown =  false,bottomSheetDialog= bottomSheetDialog, iExternalInAppCallback = iExternalInAppCallback)
 
             Assert.assertEquals(gratificationPresenter.worker,dispatcher)
             Assert.assertEquals(gratificationPresenter.uiWorker,dispatcher)
@@ -300,10 +299,10 @@ class GratificationPresenterSpekTest : Spek({
             verifyOrder {
                 gratificationPresenter.initSafeJob()
                 gratificationPresenter.initSafeScope()
-                gratificationPresenter.dialogVisibilityContract?.isDialogVisible(activity)
-                gratificationPresenter.dialogVisibilityContract?.onDialogShown(activity)
-                gratificationPresenter.dialogCreator.createGratifDialog(any(), any(), any(), any(), any(), any(), any(),any())
-                gratificationPresenter.dialogVisibilityContract?.onDialogShown(activity)
+                gratificationPresenter.iExternalInAppCallback?.isInAppViewVisible(activity)
+                gratificationPresenter.iExternalInAppCallback?.onInAppViewShown(activity)
+                gratificationPresenter.dialogCreator.createGratifDialog(any(), any(), any(), any(), any(), any(), any(),any(), any())
+                gratificationPresenter.iExternalInAppCallback?.onInAppViewShown(activity)
                 bottomSheetDialog.setOnDismissListener(any())
                 bottomSheetDialog.setOnCancelListener(any())
             }
@@ -311,12 +310,12 @@ class GratificationPresenterSpekTest : Spek({
 
         test("type organic") {
 
-            every { visibilityContract.isDialogVisible(activity) } returns false
-            every { visibilityContract.onDialogShown(activity) } just runs
+            every { iExternalInAppCallback.isInAppViewVisible(activity) } returns false
+            every { iExternalInAppCallback.onInAppViewShown(activity) } just runs
             every { activity.isFinishing } returns false
 
             val bottomSheetDialog: BottomSheetDialog = mockk()
-            val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.ORGANIC, false, false, bottomSheetDialog, visibilityContract = visibilityContract)
+            val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.ORGANIC, false, false, bottomSheetDialog, iExternalInAppCallback = iExternalInAppCallback)
 
             verify {
 
@@ -327,9 +326,9 @@ class GratificationPresenterSpekTest : Spek({
 
                 gratificationPresenter.initSafeJob()
                 gratificationPresenter.initSafeScope()
-                gratificationPresenter.dialogVisibilityContract?.isDialogVisible(activity)
-                gratificationPresenter.dialogCreator.createGratifDialog(any(), any(), any(), any(), any(), any(), any(),any())
-                gratificationPresenter.dialogVisibilityContract?.onDialogShown(activity)
+                gratificationPresenter.iExternalInAppCallback?.isInAppViewVisible(activity)
+                gratificationPresenter.dialogCreator.createGratifDialog(any(), any(), any(), any(), any(), any(), any(),any(), any())
+                gratificationPresenter.iExternalInAppCallback?.onInAppViewShown(activity)
                 bottomSheetDialog.setOnDismissListener(any())
                 bottomSheetDialog.setOnCancelListener(any())
             }
@@ -340,14 +339,14 @@ class GratificationPresenterSpekTest : Spek({
 
         test("type organic - fail") {
             val gratifCallback: GratificationPresenter.GratifPopupCallback = spyk()
-            val visibilityContract: CmDialogVisibilityContract = spyk()
-            every { visibilityContract.isDialogVisible(activity) } returns true
+            val iExternalInAppCallback: IExternalInAppCallback = spyk()
+            every { iExternalInAppCallback.isInAppViewVisible(activity) } returns true
 
             val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.ORGANIC,
                     false,
                     false,
                     gratifCallback = gratifCallback,
-                    visibilityContract = visibilityContract)
+                    iExternalInAppCallback = iExternalInAppCallback)
 
             verifyOrder {
                 gratificationPresenter.worker = dispatcher
@@ -362,20 +361,20 @@ class GratificationPresenterSpekTest : Spek({
         }
         test("type push - success") {
 
-            every { visibilityContract.onDialogShown(activity) } just runs
+            every { iExternalInAppCallback.onInAppViewShown(activity) } just runs
             every { activity.isFinishing } returns false
 
             val bottomSheetDialog: BottomSheetDialog = mockk()
             val gratifCallback: GratificationPresenter.GratifPopupCallback = spyk()
-            val visibilityContract: CmDialogVisibilityContract = spyk()
-            every { visibilityContract.isDialogVisible(activity) } returns true
+            val iExternalInAppCallback: IExternalInAppCallback = spyk()
+            every { iExternalInAppCallback.isInAppViewVisible(activity) } returns true
 
             val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.PUSH,
                     false,
                     false,
                     bottomSheetDialog = bottomSheetDialog,
                     gratifCallback = gratifCallback,
-                    visibilityContract = visibilityContract)
+                    iExternalInAppCallback = iExternalInAppCallback)
 
             coVerify {
                 gratificationPresenter.worker = dispatcher
@@ -385,14 +384,14 @@ class GratificationPresenterSpekTest : Spek({
 
                 gratificationPresenter.initSafeJob()
                 gratificationPresenter.initSafeScope()
-                gratificationPresenter.dialogVisibilityContract?.isDialogVisible(activity)
-                gratificationPresenter.dialogVisibilityContract?.onDialogShown(activity)
+                gratificationPresenter.iExternalInAppCallback?.isInAppViewVisible(activity)
+                gratificationPresenter.iExternalInAppCallback?.onInAppViewShown(activity)
                 gratificationPresenter.notificationUseCase.getQueryParams(any(), any(), any())
                 gratificationPresenter.notificationUseCase.getResponse(any())
                 gratificationPresenter.tpCouponDetailUseCase.getQueryParams(any())
                 gratificationPresenter.tpCouponDetailUseCase.getResponse(any())
-                gratificationPresenter.dialogCreator.createGratifDialog(any(), any(), any(), any(), any(), any(), any(),any())
-                gratificationPresenter.dialogVisibilityContract?.onDialogShown(activity)
+                gratificationPresenter.dialogCreator.createGratifDialog(any(), any(), any(), any(), any(), any(), any(),any(), any())
+                gratificationPresenter.iExternalInAppCallback?.onInAppViewShown(activity)
                 bottomSheetDialog.setOnDismissListener(any())
                 bottomSheetDialog.setOnCancelListener(any())
             }
@@ -402,8 +401,8 @@ class GratificationPresenterSpekTest : Spek({
     group("when api is taking more than 1 second - fail") {
 
         test("thank you page") {
-            every { visibilityContract.isDialogVisible(activity) } returns false
-            every { visibilityContract.onDialogShown(activity) } just runs
+            every { iExternalInAppCallback.isInAppViewVisible(activity) } returns false
+            every { iExternalInAppCallback.onInAppViewShown(activity) } just runs
             every { activity.isFinishing } returns false
 
             val gratifCallback: GratificationPresenter.GratifPopupCallback = spyk()
@@ -415,7 +414,7 @@ class GratificationPresenterSpekTest : Spek({
                     timeout = 2000L,
                     gratifCallback = gratifCallback,
                     paymentId = 1L,
-                    visibilityContract = visibilityContract)
+                    iExternalInAppCallback = iExternalInAppCallback)
 
             verify {
                 gratifCallback.onIgnored(GratifPopupIngoreType.TIMEOUT)
@@ -426,8 +425,8 @@ class GratificationPresenterSpekTest : Spek({
     group("when coupon code is empty - fail") {
 
         test("type push") {
-            every { visibilityContract.isDialogVisible(activity) } returns false
-            every { visibilityContract.onDialogShown(activity) } just runs
+            every { iExternalInAppCallback.isInAppViewVisible(activity) } returns false
+            every { iExternalInAppCallback.onInAppViewShown(activity) } just runs
             every { activity.isFinishing } returns false
 
             val gratifCallback: GratificationPresenter.GratifPopupCallback = spyk()
@@ -436,7 +435,7 @@ class GratificationPresenterSpekTest : Spek({
                     isCouponApiDown = false,
                     isCouponCodeEmpty = true,
                     gratifCallback = gratifCallback,
-                    visibilityContract = visibilityContract)
+                    iExternalInAppCallback = iExternalInAppCallback)
 
             coVerifyOrder {
 
@@ -447,8 +446,8 @@ class GratificationPresenterSpekTest : Spek({
 
                 gratificationPresenter.initSafeJob()
                 gratificationPresenter.initSafeScope()
-                gratificationPresenter.dialogVisibilityContract?.isDialogVisible(activity)
-                gratificationPresenter.dialogVisibilityContract?.onDialogShown(activity)
+                gratificationPresenter.iExternalInAppCallback?.isInAppViewVisible(activity)
+                gratificationPresenter.iExternalInAppCallback?.onInAppViewShown(activity)
                 gratificationPresenter.notificationUseCase.getQueryParams(any(), any(), any())
                 gratificationPresenter.notificationUseCase.getResponse(any())
                 gratifCallback.onIgnored(GratifPopupIngoreType.COUPON_CODE_EMPTY)
@@ -457,8 +456,8 @@ class GratificationPresenterSpekTest : Spek({
         }
 
         test("type organic") {
-            every { visibilityContract.isDialogVisible(activity) } returns false
-            every { visibilityContract.onDialogShown(activity) } just runs
+            every { iExternalInAppCallback.isInAppViewVisible(activity) } returns false
+            every { iExternalInAppCallback.onInAppViewShown(activity) } just runs
             every { activity.isFinishing } returns false
 
             val gratifCallback: GratificationPresenter.GratifPopupCallback = spyk()
@@ -467,7 +466,7 @@ class GratificationPresenterSpekTest : Spek({
                     isCouponApiDown = false,
                     isCouponCodeEmpty = true,
                     gratifCallback = gratifCallback,
-                    visibilityContract = visibilityContract)
+                    iExternalInAppCallback = iExternalInAppCallback)
 
             coVerifyOrder {
 
@@ -478,7 +477,7 @@ class GratificationPresenterSpekTest : Spek({
 
                 gratificationPresenter.initSafeJob()
                 gratificationPresenter.initSafeScope()
-                gratificationPresenter.dialogVisibilityContract?.isDialogVisible(activity)
+                gratificationPresenter.iExternalInAppCallback?.isInAppViewVisible(activity)
                 gratificationPresenter.notificationUseCase.getQueryParams(any(), any(), any())
                 gratificationPresenter.notificationUseCase.getResponse(any())
                 gratifCallback.onIgnored(GratifPopupIngoreType.COUPON_CODE_EMPTY)

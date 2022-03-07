@@ -13,9 +13,11 @@ import com.tokopedia.productcard.test.grid.productCardGridTestData
 import com.tokopedia.productcard.test.list.ProductCardListActivityTest
 import com.tokopedia.productcard.test.list.productCardListTestData
 import com.tokopedia.productcard.test.utils.productCardInPosition
+import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.Matcher
 import org.junit.Test
 
+@UiTest
 internal class ProductCardTest {
 
     private lateinit var recyclerViewViewInteraction: ViewInteraction

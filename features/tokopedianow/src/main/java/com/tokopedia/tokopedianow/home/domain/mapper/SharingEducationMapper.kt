@@ -6,7 +6,16 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingEducationWidgetUiModel
 
 object SharingEducationMapper {
-    fun mapSharingEducationUiModel(response: HomeLayoutResponse, state: HomeLayoutItemState): HomeLayoutItemUiModel {
-        return HomeLayoutItemUiModel(HomeSharingEducationWidgetUiModel(id = response.id), state)
+    fun mapSharingEducationUiModel(
+        response: HomeLayoutResponse,
+        state: HomeLayoutItemState,
+        serviceType: String
+    ): HomeLayoutItemUiModel {
+        val layout = HomeSharingEducationWidgetUiModel(
+            id = response.id,
+            state = state,
+            serviceType = serviceType,
+        )
+        return HomeLayoutItemUiModel(layout, state)
     }
 }

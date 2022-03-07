@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/cardItemBenefitPackage"
     app:card_type="clear"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -13,10 +14,10 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/icBenefitPackageItem"
-            android:layout_width="@dimen/dp_20"
-            android:layout_height="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/dp_12"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
             android:layout_marginStart="@dimen/spacing_lvl3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -29,6 +30,7 @@
             android:layout_marginStart="@dimen/spacing_lvl3"
             app:typographyType="body_3"
             android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:textColor="@color/Unify_Static_Black_96"
             app:layout_constraintStart_toEndOf="@id/icBenefitPackageItem"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/icBenefitPackageItem"

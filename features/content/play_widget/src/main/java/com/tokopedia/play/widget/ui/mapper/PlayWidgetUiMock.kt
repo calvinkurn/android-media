@@ -89,6 +89,7 @@ object PlayWidgetUiMock {
             video = getVideoUiModel(channelType),
             hasGiveaway = true,
             poolType = "",
+            recommendationType = "",
     )
 
     private fun getSampleMediumCardOverlayBanner() = PlayWidgetMediumOverlayUiModel(
@@ -126,6 +127,7 @@ object PlayWidgetUiMock {
             performanceSummaryLink = "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fshop%2Fituajakak%2Fstatistic%2F10734",
             hasGiveaway = true,
             poolType = "",
+            recommendationType = "",
     )
 
     private fun getVideoUiModel(channelType: PlayWidgetChannelType) = PlayWidgetVideoUiModel(

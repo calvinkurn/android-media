@@ -39,6 +39,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
     private lateinit var departureDate: Date
     private lateinit var returnDate: Date
+    private var isAvailableToday: Boolean = false
 
     init {
         View.inflate(context, R.layout.layout_flight_search_view, this)
@@ -66,20 +67,6 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         setClassView(getClassById(flightDashboardCache.classCache))
 
         renderTripView()
-
-        if (flightDashboardCache.departureDate.isNotEmpty() &&
-                !flightDashboardCache.departureDate.toDate(DateUtil.YYYY_MM_DD).before(generateDefaultDepartureDate())) {
-            setDepartureDate(flightDashboardCache.departureDate.toDate(DateUtil.YYYY_MM_DD))
-        } else {
-            setDepartureDate(generateDefaultDepartureDate())
-        }
-
-        if (flightDashboardCache.returnDate.isNotEmpty() &&
-                !flightDashboardCache.returnDate.toDate(DateUtil.YYYY_MM_DD).before(generateDefaultReturnDate(departureDate))) {
-            setReturnDate(flightDashboardCache.returnDate.toDate(DateUtil.YYYY_MM_DD))
-        } else {
-            setReturnDate(generateDefaultReturnDate(departureDate))
-        }
     }
 
     fun setRoundTrip(isRoundTrip: Boolean) {
@@ -348,8 +335,31 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         separatorReturnDate.hide()
     }
 
-    private fun generateDefaultDepartureDate(): Date =
+    fun setDate(isTodayAllowed: Boolean){
+        this.isAvailableToday = isTodayAllowed
+
+        if (flightDashboardCache.departureDate.isNotEmpty() &&
+            !flightDashboardCache.departureDate.toDate(DateUtil.YYYY_MM_DD).before(generateDefaultDepartureDate())) {
+            setDepartureDate(flightDashboardCache.departureDate.toDate(DateUtil.YYYY_MM_DD))
+        } else {
+            setDepartureDate(generateDefaultDepartureDate())
+        }
+
+        if (flightDashboardCache.returnDate.isNotEmpty() &&
+            !flightDashboardCache.returnDate.toDate(DateUtil.YYYY_MM_DD).before(generateDefaultReturnDate(departureDate))) {
+            setReturnDate(flightDashboardCache.returnDate.toDate(DateUtil.YYYY_MM_DD))
+        } else {
+            setReturnDate(generateDefaultReturnDate(departureDate))
+        }
+    }
+
+    private fun generateDefaultDepartureDate(): Date {
+        return if(isAvailableToday){
+            DateUtil.getCurrentDate().removeTime()
+        }else{
             DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.DATE, DEFAULT_MIN_DEPARTURE_DATE_FROM_TODAY).removeTime()
+        }
+    }
 
     private fun generateDefaultReturnDate(departureDate: Date): Date =
             departureDate.addTimeToSpesificDate(Calendar.DATE, 1).removeTime()

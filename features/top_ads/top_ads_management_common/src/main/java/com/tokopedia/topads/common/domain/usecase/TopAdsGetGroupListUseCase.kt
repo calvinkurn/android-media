@@ -38,6 +38,7 @@ const val GROUP_LIST_QUERY = """
         }
     data {
       group_id
+      group_type
       total_item
       total_keyword
       group_status_desc

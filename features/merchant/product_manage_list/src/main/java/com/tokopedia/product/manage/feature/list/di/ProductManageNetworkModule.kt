@@ -35,10 +35,10 @@ class ProductManageNetworkModule {
         )
     }
 
-    @GMProductManageQualifier
+    @ProductManageQualifier
     @ProductManageListScope
     @Provides
-    fun provideGMRetrofit(@GMProductManageQualifier okHttpClient: OkHttpClient,
+    fun provideGMRetrofit(@ProductManageQualifier okHttpClient: OkHttpClient,
                           retrofitBuilder: Retrofit.Builder): Retrofit {
         return retrofitBuilder.baseUrl(GMCommonUrl.BASE_URL).client(okHttpClient).build()
     }
@@ -51,7 +51,7 @@ class ProductManageNetworkModule {
         return GMAuthInterceptor(context, userSession, abstractionRouter)
     }
 
-    @GMProductManageQualifier
+    @ProductManageQualifier
     @Provides
     fun provideGMOkHttpClient(gmAuthInterceptor: GMAuthInterceptor,
                               chuckInterceptor: ChuckerInterceptor,
@@ -73,7 +73,7 @@ class ProductManageNetworkModule {
 
     @Provides
     @ProductManageListScope
-    fun provideGmCommonApi(@GMProductManageQualifier retrofit: Retrofit): GMCommonApi {
+    fun provideGmCommonApi(@ProductManageQualifier retrofit: Retrofit): GMCommonApi {
         return retrofit.create(GMCommonApi::class.java)
     }
 

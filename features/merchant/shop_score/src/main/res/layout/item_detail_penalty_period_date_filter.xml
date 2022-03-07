@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/itemDetailPenaltyContainer"
-    android:layout_marginBottom="@dimen/dp_12"
+    android:layout_marginBottom="12dp"
     android:layout_marginTop="@dimen/spacing_lvl4"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

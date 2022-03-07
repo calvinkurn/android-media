@@ -13,10 +13,10 @@ data class ActionLikedRequest(
         @SerializedName("is_liked")
         val isLiked: String = "",
         @SerializedName("product_id")
-        val productId: Int = 0,
+        val productId: String = "0",
         @SerializedName("rating")
         val rating: Int = 0,
         @SerializedName("user_id")
-        val userId: Int = 0
+        val userId: String = "0"
     )
 }

@@ -7,13 +7,10 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -27,6 +24,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.imagepicker.common.*
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.sellerfeedback.BuildConfig
 import com.tokopedia.sellerfeedback.R
 import com.tokopedia.sellerfeedback.SellerFeedbackTracking
 import com.tokopedia.sellerfeedback.data.SubmitResult
@@ -35,10 +34,14 @@ import com.tokopedia.sellerfeedback.error.SellerFeedbackException
 import com.tokopedia.sellerfeedback.presentation.SellerFeedback
 import com.tokopedia.sellerfeedback.presentation.adapter.ImageFeedbackAdapter
 import com.tokopedia.sellerfeedback.presentation.bottomsheet.SellerFeedbackPageChooserBottomSheet
+import com.tokopedia.sellerfeedback.presentation.bottomsheet.SettingsBottomSheet
 import com.tokopedia.sellerfeedback.presentation.uimodel.BaseImageFeedbackUiModel
 import com.tokopedia.sellerfeedback.presentation.uimodel.ImageFeedbackUiModel
 import com.tokopedia.sellerfeedback.presentation.uimodel.Score
+import com.tokopedia.sellerfeedback.presentation.util.ScreenShootPageHelper
 import com.tokopedia.sellerfeedback.presentation.util.ScreenshotManager
+import com.tokopedia.sellerfeedback.presentation.util.ScreenshotPreferenceManager
+import com.tokopedia.sellerfeedback.presentation.util.SuccessToasterHelper
 import com.tokopedia.sellerfeedback.presentation.view.SellerFeedbackToolbar
 import com.tokopedia.sellerfeedback.presentation.viewholder.BaseImageFeedbackViewHolder
 import com.tokopedia.sellerfeedback.presentation.viewmodel.SellerFeedbackViewModel
@@ -49,23 +52,31 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE
 import javax.inject.Inject
 
-class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder.ImageClickListener {
+class SellerFeedbackFragment : BaseDaggerFragment(),
+    BaseImageFeedbackViewHolder.ImageClickListener {
 
     companion object {
         const val REQUEST_CODE_IMAGE = 111
         const val EXTRA_URI_IMAGE = "uri_image"
+        const val EXTRA_ACTIVITY_NAME = "extra_activity_name"
         const val ERROR_UPLOAD = "error upload image(s)"
         const val ERROR_SUBMIT = "error submit feedback form"
         const val ERROR_NETWORK = "error, please check cause"
+        private const val EXTRA_SCREEN_SHOOT_TRIGGER = "extra_screen_shoot_trigger"
+        private const val EXTRA_TOASTER_MESSAGE = "extra_toaster_message"
+        private const val EXTRA_SHOW_SETTINGS = "extra_show_settings"
 
-        fun createInstance(uri: Uri?): SellerFeedbackFragment {
+        fun createInstance(uri: Uri?, shouldShowSettings: Boolean, activityName: String): SellerFeedbackFragment {
             return SellerFeedbackFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(EXTRA_URI_IMAGE, uri)
+                    putString(EXTRA_ACTIVITY_NAME, activityName)
+                    putBoolean(EXTRA_SHOW_SETTINGS, shouldShowSettings)
                 }
             }
         }
@@ -74,6 +85,7 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private var preferenceManager by autoClearedNullable<ScreenshotPreferenceManager>()
     private val toolbar by lazy { SellerFeedbackToolbar(requireActivity()) }
     private val feedbackDetailTextWatcher by lazy { getFeedbackDetailWatcher() }
     private val imageFeedbackAdapter by lazy { ImageFeedbackAdapter(this) }
@@ -90,6 +102,7 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
     private var buttonFeedbackGood: Typography? = null
     private var chipFeedback: ChipsUnify? = null
     private var chipReportError: ChipsUnify? = null
+    private var chipFeatureRequest: ChipsUnify? = null
     private var textFieldFeedbackPage: EditText? = null
     private var textAreaFeedbackDetail: TextAreaUnify? = null
     private var buttonSend: UnifyButton? = null
@@ -97,29 +110,38 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
     private var tickerSellerFeedback: Ticker? = null
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
 
-    private var isValidFeedbackPage = false
     private var isValidFeedbackDetail = false
     private var activeScore: Score? = null
     private var feedbackTypeChips: List<ChipsUnify>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(SellerFeedbackViewModel::class.java)
+        setHasOptionsMenu(true)
+        viewModel =
+            ViewModelProvider(this, viewModelFactory).get(SellerFeedbackViewModel::class.java)
         permissionCheckerHelper = PermissionCheckerHelper()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_seller_feedback, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        context?.applicationContext?.let {
+            preferenceManager = ScreenshotPreferenceManager(it)
+        }
         backgroundHeader = view.findViewById(R.id.background_header)
         buttonFeedbackBad = view.findViewById(R.id.button_feedback_bad)
         buttonFeedbackNeutral = view.findViewById(R.id.button_feedback_neutral)
         buttonFeedbackGood = view.findViewById(R.id.button_feedback_good)
         chipFeedback = view.findViewById(R.id.chip_feedback)
         chipReportError = view.findViewById(R.id.chip_report_error)
+        chipFeatureRequest = view.findViewById(R.id.chips_feature_reqeust)
         textFieldFeedbackPage = view.findViewById(R.id.textfield_feedback_page)
         textAreaFeedbackDetail = view.findViewById(R.id.textfield_feedback_detail)
         buttonSend = view.findViewById(R.id.button_send)
@@ -135,11 +157,23 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
         setupTicker()
         observeViewModel()
         checkPermission()
+        showSettings()
+        setDefaultFeedbackResultValue()
+        attachScreenshot()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        permissionCheckerHelper?.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
+        permissionCheckerHelper?.onRequestPermissionsResult(
+            context,
+            requestCode,
+            permissions,
+            grantResults
+        )
     }
 
     override fun getScreenName() = ""
@@ -147,10 +181,60 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
     override fun initInjector() {
         val component = activity?.run {
             DaggerSellerFeedbackComponent.builder()
-                    .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
-                    .build()
+                .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
         }
         component?.inject(this)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.seller_feedback_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.sellerFeedbackSettings -> showSettingsBottomSheet()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onClickRemoveImage(item: BaseImageFeedbackUiModel) {
+        SellerFeedbackTracking.Click.eventClickRemoveAttachment()
+        imageFeedbackAdapter.removeImage(item)
+        checkButtonSend()
+    }
+
+    override fun onClickAddImage() {
+        context?.let {
+            if (!permissionCheckerHelper?.hasPermission(it, arrayOf(PERMISSION_READ_EXTERNAL_STORAGE)).orFalse()) {
+                checkPermission()
+                return@let
+            }
+
+            SellerFeedbackTracking.Click.eventClickPutAttachment()
+            val intent =
+                RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER)
+            val currentSelectedImages = getSelectedImageUrl(imageFeedbackAdapter.getImageFeedbackData())
+            imagePickerMultipleSelectionBuilder.initialSelectedImagePathList = currentSelectedImages
+            imagePickerBuilder.imagePickerMultipleSelectionBuilder = imagePickerMultipleSelectionBuilder
+            intent.putImagePickerBuilder(imagePickerBuilder)
+            intent.putParamPageSource(ImagePickerPageSource.SELLER_FEEDBACK_PAGE)
+            startActivityForResult(intent, REQUEST_CODE_IMAGE)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            REQUEST_CODE_IMAGE -> handleImagePicker(resultCode, data)
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun showSettingsBottomSheet() {
+        if (childFragmentManager.isStateSaved) return
+        SettingsBottomSheet.createInstance()
+            .show(childFragmentManager)
     }
 
     private fun setupViewInteraction() {
@@ -158,22 +242,30 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
         buttonFeedbackNeutral?.setOnClickListener { onClickFeedbackBtn(scoreNeutral) }
         buttonFeedbackGood?.setOnClickListener { onClickFeedbackBtn(scoreGood) }
 
-        feedbackTypeChips = listOfNotNull(chipFeedback, chipReportError)
+        feedbackTypeChips = listOfNotNull(chipFeedback, chipReportError, chipFeatureRequest)
         feedbackTypeChips?.let { chips ->
             chips.forEach { chip ->
                 chip.setOnClickListener {
                     chip.chipType = ChipsUnify.TYPE_SELECTED
                     toggleChipsToNormal(chips - chip)
+                    checkButtonSend()
                 }
             }
         }
 
+        val pageClassName = arguments?.getString(EXTRA_ACTIVITY_NAME).orEmpty()
+        textFieldFeedbackPage?.setText(
+            ScreenShootPageHelper.getPageByClassName(
+                requireContext(),
+                pageClassName
+            )
+        )
+        checkButtonSend()
         textFieldFeedbackPage?.setOnClickListener {
             val currentValue = textFieldFeedbackPage?.text.toString()
             val bottomSheet = SellerFeedbackPageChooserBottomSheet.createInstance(currentValue)
             bottomSheet.setListener {
                 textFieldFeedbackPage?.setText(it)
-                isValidFeedbackPage = true
                 checkButtonSend()
             }
             activity?.supportFragmentManager?.let { bottomSheet.show(it, null) }
@@ -189,10 +281,10 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
                 isLoading = true
                 SellerFeedbackTracking.Click.eventClickSubmit()
                 val sellerFeedback = SellerFeedback(
-                        feedbackScore = getFeedbackScore(),
-                        feedbackType = getFeedbackType(),
-                        feedbackPage = getFeedbackPage(),
-                        feedbackDetail = getFeedbackDetail()
+                    feedbackScore = getFeedbackScore(),
+                    feedbackType = getFeedbackType(),
+                    feedbackPage = getFeedbackPage(),
+                    feedbackDetail = getFeedbackDetail()
                 )
                 viewModel?.submitFeedback(sellerFeedback)
             }
@@ -202,10 +294,11 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
     private fun setupTicker() {
         tickerSellerFeedback?.apply {
             setHtmlDescription(getString(R.string.feedback_form_ticker_description))
-            setDescriptionClickEvent(object: TickerCallback {
+            setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     RouteManager.route(context, ApplinkConst.CONTACT_US_NATIVE)
                 }
+
                 override fun onDismiss() {}
             })
         }
@@ -267,7 +360,8 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
             override fun afterTextChanged(p0: Editable?) {
                 val text = p0?.toString() ?: ""
                 if (text.isBlank()) {
-                    textAreaFeedbackDetail?.textAreaMessage = getString(R.string.feedback_form_detail_error_empty)
+                    textAreaFeedbackDetail?.textAreaMessage =
+                        getString(R.string.feedback_form_detail_error_empty)
                     textAreaFeedbackDetail?.isError = true
                 } else {
                     textAreaFeedbackDetail?.textAreaMessage = ""
@@ -280,6 +374,7 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
     }
 
     private fun checkButtonSend() {
+        val isValidFeedbackPage = !textFieldFeedbackPage?.text.isNullOrBlank()
         buttonSend?.isEnabled = isValidFeedbackPage &&
                 isValidFeedbackDetail &&
                 activeScore != null &&
@@ -317,10 +412,7 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
 
     private val observerSubmitResult = Observer<SubmitResult> {
         when (it) {
-            is SubmitResult.Success -> {
-                showCustomToast()
-                activity?.finish()
-            }
+            is SubmitResult.Success -> setOnSuccessFeedbackSaved()
             is SubmitResult.UploadFail -> {
                 logToCrashlytics(it.cause, ERROR_UPLOAD)
                 showErrorToaster(getString(R.string.feedback_form_toaster_fail_upload))
@@ -340,72 +432,75 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
         }
     }
 
+    private fun setOnSuccessFeedbackSaved() {
+        val uriImage = arguments?.getParcelable<Uri>(EXTRA_URI_IMAGE)
+        val isFromScreenShoot = uriImage != null
+        if (isFromScreenShoot) {
+            preferenceManager?.setFeedbackFormSavedStatus(true)
+            activity?.finish()
+        } else {
+            view?.let {
+                val isScreenShootTriggerEnabled =
+                    preferenceManager?.isScreenShootTriggerEnabled().orFalse()
+                val toasterMessage = SuccessToasterHelper.getToastMessage(
+                    it.context,
+                    isScreenShootTriggerEnabled
+                )
+                activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                    putExtra(EXTRA_SCREEN_SHOOT_TRIGGER, isScreenShootTriggerEnabled)
+                    putExtra(EXTRA_TOASTER_MESSAGE, toasterMessage)
+                })
+                activity?.finish()
+            }
+        }
+    }
+
     private fun showErrorToaster(message: String) {
         Toaster.build(requireView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
     }
 
     private fun attachScreenshot() {
-        val uriImage = arguments?.getParcelable<Uri>(EXTRA_URI_IMAGE) ?: return
-        val screenshotManager = ScreenshotManager(requireContext())
-        screenshotManager.getUiModel(uriImage)?.let {
-            viewModel?.setImages(listOf(it))
+        val uriImage = arguments?.getParcelable<Uri>(EXTRA_URI_IMAGE)
+        if (uriImage != null) {
+            val screenshotManager = ScreenshotManager(requireContext())
+            screenshotManager.getUiModel(uriImage)?.let {
+                viewModel?.setImages(listOf(it))
+            }
+        } else {
+            imageFeedbackAdapter.showAddImageFeedbackBtn()
         }
     }
 
     private fun checkPermission() {
         permissionCheckerHelper?.checkPermission(this, PERMISSION_READ_EXTERNAL_STORAGE,
-                object : PermissionCheckerHelper.PermissionCheckListener {
+            object : PermissionCheckerHelper.PermissionCheckListener {
 
-                    override fun onPermissionDenied(permissionText: String) {
-                        viewModel?.setImages(emptyList())
-                    }
+                override fun onPermissionDenied(permissionText: String) {
+                    viewModel?.setImages(emptyList())
+                }
 
-                    override fun onNeverAskAgain(permissionText: String) {
-                        viewModel?.setImages(emptyList())
-                    }
+                override fun onNeverAskAgain(permissionText: String) {
+                    viewModel?.setImages(emptyList())
+                }
 
-                    override fun onPermissionGranted() {
-                        attachScreenshot()
-                    }
-                })
+                override fun onPermissionGranted() {
+                    attachScreenshot()
+                }
+            })
     }
 
     private fun buildImagePicker(): ImagePickerBuilder {
         return ImagePickerBuilder(
-                title = getString(R.string.feedback_form_gallery_picker_title),
-                galleryType = GalleryType.IMAGE_ONLY,
-                imagePickerTab = arrayOf(ImagePickerTab.TYPE_GALLERY)
+            title = getString(R.string.feedback_form_gallery_picker_title),
+            galleryType = GalleryType.IMAGE_ONLY,
+            imagePickerTab = arrayOf(ImagePickerTab.TYPE_GALLERY)
         )
     }
 
     private fun buildImagePickerMultipleSelectionBuilder(): ImagePickerMultipleSelectionBuilder {
         return ImagePickerMultipleSelectionBuilder(
-                maximumNoPick = ImageFeedbackAdapter.MAX_IMAGE
+            maximumNoPick = ImageFeedbackAdapter.MAX_IMAGE
         )
-    }
-
-    override fun onClickRemoveImage(item: BaseImageFeedbackUiModel) {
-        SellerFeedbackTracking.Click.eventClickRemoveAttachment()
-        imageFeedbackAdapter.removeImage(item)
-        checkButtonSend()
-    }
-
-    override fun onClickAddImage() {
-        SellerFeedbackTracking.Click.eventClickPutAttachment()
-        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER)
-        val currentSelectedImages = getSelectedImageUrl(imageFeedbackAdapter.getImageFeedbackData())
-        imagePickerMultipleSelectionBuilder.initialSelectedImagePathList = currentSelectedImages
-        imagePickerBuilder.imagePickerMultipleSelectionBuilder = imagePickerMultipleSelectionBuilder
-        intent.putImagePickerBuilder(imagePickerBuilder)
-        intent.putParamPageSource(ImagePickerPageSource.SELLER_FEEDBACK_PAGE)
-        startActivityForResult(intent, REQUEST_CODE_IMAGE)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            REQUEST_CODE_IMAGE -> handleImagePicker(resultCode, data)
-        }
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun handleImagePicker(resultCode: Int, data: Intent?) {
@@ -422,32 +517,32 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
 
     private fun getSelectedImageUrl(imageFeedbackDataList: List<BaseImageFeedbackUiModel>): ArrayList<String> {
         return imageFeedbackDataList.filterIsInstance(ImageFeedbackUiModel::class.java)
-                .map { it.imageUrl } as ArrayList<String>
-    }
-
-    private fun showCustomToast() {
-        val currentView = view ?: return
-
-        val viewGroupToast = currentView.findViewById<ViewGroup>(R.id.custom_toast_root)
-        val customToastLayout = layoutInflater.inflate(R.layout.custom_toast, viewGroupToast)
-
-        Toast(context?.applicationContext).apply {
-            duration = Toast.LENGTH_LONG
-            view = customToastLayout
-        }.show()
+            .map { it.imageUrl } as ArrayList<String>
     }
 
     private fun logToCrashlytics(throwable: Throwable, message: String) {
         if (!BuildConfig.DEBUG) {
             val exceptionMessage = "$message - ${throwable.localizedMessage}"
 
-            FirebaseCrashlytics.getInstance().recordException(SellerFeedbackException(
+            FirebaseCrashlytics.getInstance().recordException(
+                SellerFeedbackException(
                     message = exceptionMessage,
                     cause = throwable
-            ))
+                )
+            )
         } else {
             throwable.printStackTrace()
         }
     }
 
+    private fun showSettings() {
+        val shouldShowSettings = arguments?.getBoolean(EXTRA_SHOW_SETTINGS).orFalse()
+        if (shouldShowSettings) {
+            showSettingsBottomSheet()
+        }
+    }
+
+    private fun setDefaultFeedbackResultValue() {
+        preferenceManager?.setFeedbackFormSavedStatus(false)
+    }
 }

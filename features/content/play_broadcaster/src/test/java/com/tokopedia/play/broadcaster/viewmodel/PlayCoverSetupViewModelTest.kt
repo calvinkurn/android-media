@@ -55,8 +55,6 @@ class PlayCoverSetupViewModelTest {
 
     private val modelBuilder = UiModelBuilder()
 
-    private val uploadCoverTitleException = IllegalStateException("error upload cover title")
-
     @Before
     fun setUp() {
         channelConfigStore = ChannelConfigStoreImpl()

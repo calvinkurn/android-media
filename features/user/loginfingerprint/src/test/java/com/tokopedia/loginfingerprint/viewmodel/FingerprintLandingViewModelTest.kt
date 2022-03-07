@@ -13,6 +13,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -60,9 +61,7 @@ class FingerprintLandingViewModelTest {
         val data = VerifyFingerprint(isSuccess = true,  validateToken = "abc123")
         val response = VerifyFingerprintPojo(data)
 
-        every { verifyFingerprintUseCase.verifyFingerprint(any(), any(), any()) } answers {
-            secondArg<(VerifyFingerprintPojo) -> Unit>().invoke(response)
-        }
+        coEvery { verifyFingerprintUseCase.invoke(any()) } returns response
 
         viewModel.verifyFingerprint()
 
@@ -76,9 +75,7 @@ class FingerprintLandingViewModelTest {
     @Test
     fun `on Error Throwable Verify Fingerprint`() {
         /* When */
-        every { verifyFingerprintUseCase.verifyFingerprint(any(), any(), any()) } answers {
-            thirdArg<(Throwable) -> Unit>().invoke(throwable)
-        }
+        coEvery { verifyFingerprintUseCase.invoke(any()) } throws throwable
 
         viewModel.verifyFingerprint()
 
@@ -92,14 +89,26 @@ class FingerprintLandingViewModelTest {
         val data = VerifyFingerprint(isSuccess = true,  validateToken = "abc123", errorMessage = "error")
         val response = VerifyFingerprintPojo(data)
 
-        every { verifyFingerprintUseCase.verifyFingerprint(any(), any(), any()) } answers {
-            secondArg<(VerifyFingerprintPojo) -> Unit>().invoke(response)
-        }
+        coEvery { verifyFingerprintUseCase.invoke(any()) } returns response
 
         viewModel.verifyFingerprint()
 
         /* Then */
         assert((viewModel.verifyFingerprint.value as Fail).throwable is MessageErrorException)
+    }
+
+    @Test
+    fun `on Other Errors Verify Fingerprint`() {
+        /* When */
+        val data = VerifyFingerprint(isSuccess = false,  validateToken = "", errorMessage = "")
+        val response = VerifyFingerprintPojo(data)
+
+        coEvery { verifyFingerprintUseCase.invoke(any()) } returns response
+
+        viewModel.verifyFingerprint()
+
+        /* Then */
+        assert((viewModel.verifyFingerprint.value as Fail).throwable is RuntimeException)
     }
 
 }

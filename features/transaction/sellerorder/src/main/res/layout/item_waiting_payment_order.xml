@@ -3,7 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/waiting_order_product_height">
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="8dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivProduct"
@@ -19,6 +23,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_13"
+        android:ellipsize="end"
         android:lineSpacingExtra="@dimen/layout_lvl0"
         android:maxLines="2"
         android:textColor="@color/Unify_N700_96"
@@ -27,7 +32,7 @@
         app:layout_constraintStart_toEndOf="@id/ivProduct"
         app:layout_constraintTop_toTopOf="@id/ivProduct"
         app:typographyType="heading_6"
-        tool:text="*BROOKS* swallow swallow titanium (honey) C 17 | Brown" />
+        tool:text="*BROOKS* swallow swallow titanium (honey) C 17" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvProductQuantityAndPrice"

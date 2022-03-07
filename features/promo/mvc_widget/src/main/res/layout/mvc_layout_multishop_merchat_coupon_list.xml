@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <ViewFlipper
         android:id="@+id/container"
@@ -55,7 +55,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@null"
-        android:elevation="@dimen/dp_0"
+        android:elevation="0dp"
         android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleGravity="left|bottom"
-            app:expandedTitleMarginBottom="@dimen/dp_8"
+            app:expandedTitleMarginBottom="8dp"
             app:expandedTitleMarginStart="0dp"
             app:layout_scrollFlags="noScroll">
 

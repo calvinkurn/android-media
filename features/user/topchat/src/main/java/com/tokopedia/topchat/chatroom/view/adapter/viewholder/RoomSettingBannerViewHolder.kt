@@ -4,30 +4,30 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBanner
+import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBannerUiModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.item_topchat_room_setting_banner.view.*
 
-class RoomSettingBannerViewHolder(itemView: View?) : AbstractViewHolder<RoomSettingBanner>(itemView) {
+class RoomSettingBannerViewHolder(itemView: View?) : AbstractViewHolder<RoomSettingBannerUiModel>(itemView) {
 
-    override fun bind(element: RoomSettingBanner?) {
+    override fun bind(element: RoomSettingBannerUiModel?) {
         if (element == null) return
         bindBannerType(element)
         bindBannerText(element)
     }
 
-    private fun bindBannerType(element: RoomSettingBanner) {
+    private fun bindBannerType(element: RoomSettingBannerUiModel) {
         val bannerType = when (element.typeString) {
-            RoomSettingBanner.TYPE_INFO -> Ticker.TYPE_ANNOUNCEMENT
-            RoomSettingBanner.TYPE_ERROR -> Ticker.TYPE_ERROR
-            RoomSettingBanner.TYPE_WARNING -> Ticker.TYPE_WARNING
+            RoomSettingBannerUiModel.TYPE_INFO -> Ticker.TYPE_ANNOUNCEMENT
+            RoomSettingBannerUiModel.TYPE_ERROR -> Ticker.TYPE_ERROR
+            RoomSettingBannerUiModel.TYPE_WARNING -> Ticker.TYPE_WARNING
             else -> Ticker.TYPE_ANNOUNCEMENT
         }
         itemView.tkBanner?.tickerType = bannerType
     }
 
-    private fun bindBannerText(element: RoomSettingBanner) {
+    private fun bindBannerText(element: RoomSettingBannerUiModel) {
         itemView.tkBanner?.setHtmlDescription(element.text)
         itemView.tkBanner?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {

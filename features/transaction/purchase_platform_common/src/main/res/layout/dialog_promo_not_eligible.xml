@@ -3,22 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:orientation="vertical"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_16">
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginBottom="@dimen/dp_13"
         android:gravity="left"
         android:text="@string/label_promo_not_eligible_info"
         android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/sp_14"
+        android:textSize="14sp"
         app:typographyType="body_2" />
 
     <FrameLayout
@@ -30,8 +30,8 @@
             android:id="@+id/rv_promo_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/dp_8"
-            android:paddingBottom="@dimen/dp_4" />
+            android:paddingTop="8dp"
+            android:paddingBottom="4dp" />
 
     </FrameLayout>
 
@@ -39,9 +39,9 @@
         android:id="@+id/btn_continue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/label_button_continue"
         app:unifyButtonSize="medium" />
 
@@ -49,9 +49,9 @@
         android:id="@+id/btn_choose_other_promo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/label_button_select_other_promo"
         app:unifyButtonSize="medium"
         app:unifyButtonVariant="text" />

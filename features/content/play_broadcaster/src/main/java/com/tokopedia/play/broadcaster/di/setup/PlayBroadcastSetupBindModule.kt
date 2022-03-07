@@ -24,21 +24,21 @@ abstract class PlayBroadcastSetupBindModule {
 
     @Binds
     @PlayBroadcastSetupScope
-    abstract fun bindCoverDataSource(dataStore: CoverDataStoreImpl): CoverDataStore
+    abstract fun bindCoverDataStore(dataStore: CoverDataStoreImpl): CoverDataStore
 
     @Binds
     @PlayBroadcastSetupScope
-    abstract fun bindTitleDataSource(dataStore: TitleDataStoreImpl): TitleDataStore
+    abstract fun bindTitleDataStore(dataStore: TitleDataStoreImpl): TitleDataStore
 
     @Binds
     @PlayBroadcastSetupScope
-    abstract fun bindTagsDataSource(dataStore: TagsDataStoreImpl): TagsDataStore
+    abstract fun bindTagsDataStore(dataStore: TagsDataStoreImpl): TagsDataStore
 
     @Binds
     @PlayBroadcastSetupScope
-    abstract fun bindBroadcastScheduleDataSource(dataStore: BroadcastScheduleDataStoreImpl): BroadcastScheduleDataStore
+    abstract fun bindBroadcastScheduleDataStore(dataStore: BroadcastScheduleDataStoreImpl): BroadcastScheduleDataStore
 
     @Binds
     @PlayBroadcastSetupScope
-    abstract fun bindInteractiveDataSource(dataStore: InteractiveDataStoreImpl): InteractiveDataStore
+    abstract fun bindInteractiveDataStore(dataStore: InteractiveDataStoreImpl): InteractiveDataStore
 }

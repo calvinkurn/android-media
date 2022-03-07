@@ -13,4 +13,8 @@ data class VoucherOrders (
         var uniqueId: String = "",
 
         @SerializedName("message")
-        var message: MessageVoucherOrders = MessageVoucherOrders())
+        var message: MessageVoucherOrders = MessageVoucherOrders(),
+
+        @SerializedName("cart_id")
+        val cartId: String = ""
+)

@@ -1,0 +1,227 @@
+{
+  "data": {
+    "GetBundleInfo": {
+      "error": {
+        "messages": "",
+        "reason": "",
+        "errorCode": ""
+      },
+      "bundleInfo": [
+        {
+          "bundleID": "1851",
+          "groupID": "1851",
+          "name": "PAKET SK",
+          "type": "1",
+          "status": "1",
+          "shopID": "6552074",
+          "startTimeUnix": "1630901580",
+          "stopTimeUnix": "1632457860",
+          "warehouseID": "342383",
+          "quota": 50,
+          "originalQuota": 50,
+          "maxOrder": 0,
+          "preorder": {
+            "status": "INACTIVE",
+            "statusNum": 0,
+            "processType": "",
+            "processTypeNum": 0,
+            "startTime": "INACTIVE",
+            "endTime": "INACTIVE",
+            "orderLimit": 0,
+            "maxOrder": 0,
+            "processDay": 0,
+            "processTime": "0"
+          },
+          "bundleItem": [
+            {
+              "productID": "2147926782",
+              "name": "Product_Mantap_S1ngL3_V4r1ant",
+              "picURL": "https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2021/9/6/f4c3540b-87a7-4628-a7a8-87fe5d56e2f5.png",
+              "status": "1",
+              "bundlePrice": 0,
+              "stock": 0,
+              "minOrder": 0,
+              "productStatus": "ACTIVE",
+              "originalPrice": 0,
+              "selection": [
+                {
+                  "productVariantID": 148070,
+                  "variantID": 1,
+                  "variantUnitID": 0,
+                  "position": 1,
+                  "name": "warna",
+                  "identifier": "colour",
+                  "option": [
+                    {
+                      "productVariantOptionID": 320821,
+                      "unitValueID": 9,
+                      "value": "Merah",
+                      "hex": "#ff0016"
+                    },
+                    {
+                      "productVariantOptionID": 320822,
+                      "unitValueID": 1,
+                      "value": "Putih",
+                      "hex": "#ffffff"
+                    },
+                    {
+                      "productVariantOptionID": 320823,
+                      "unitValueID": 2,
+                      "value": "Hitam",
+                      "hex": "#000000"
+                    }
+                  ]
+                }
+              ],
+              "children": [
+                {
+                  "productID": "2147926783",
+                  "name": "Product_Mantap_S1ngL3_V4r1ant - Merah",
+                  "picURL": "https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2021/9/6/f4c3540b-87a7-4628-a7a8-87fe5d56e2f5.png",
+                  "minOrder": 3,
+                  "bundlePrice": 60000,
+                  "originalPrice": 100000,
+                  "stock": 999,
+                  "optionID": [
+                    "320821"
+                  ]
+                },
+                {
+                  "productID": "2147926784",
+                  "name": "Product_Mantap_S1ngL3_V4r1ant - Putih",
+                  "picURL": "https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2021/9/6/f4c3540b-87a7-4628-a7a8-87fe5d56e2f5.png",
+                  "minOrder": 3,
+                  "bundlePrice": 60000,
+                  "originalPrice": 100000,
+                  "stock": 999,
+                  "optionID": [
+                    "320822"
+                  ]
+                },
+                {
+                  "productID": "2147926785",
+                  "name": "Product_Mantap_S1ngL3_V4r1ant - Hitam",
+                  "picURL": "https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2021/9/6/f4c3540b-87a7-4628-a7a8-87fe5d56e2f5.png",
+                  "minOrder": 3,
+                  "bundlePrice": 60000,
+                  "originalPrice": 100000,
+                  "stock": 999,
+                  "optionID": [
+                    "320823"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "bundleID": "1852",
+          "groupID": "1851",
+          "name": "PAKET SK",
+          "type": "1",
+          "status": "1",
+          "shopID": "6552074",
+          "startTimeUnix": "1630901580",
+          "stopTimeUnix": "1632457860",
+          "warehouseID": "342383",
+          "quota": 50,
+          "originalQuota": 50,
+          "maxOrder": 0,
+          "preorder": {
+            "status": "INACTIVE",
+            "statusNum": 0,
+            "processType": "",
+            "processTypeNum": 0,
+            "startTime": "INACTIVE",
+            "endTime": "INACTIVE",
+            "orderLimit": 0,
+            "maxOrder": 0,
+            "processDay": 0,
+            "processTime": "0"
+          },
+          "bundleItem": [
+            {
+              "productID": "2147926782",
+              "name": "Product_Mantap_S1ngL3_V4r1ant",
+              "picURL": "https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2021/9/6/f4c3540b-87a7-4628-a7a8-87fe5d56e2f5.png",
+              "status": "1",
+              "bundlePrice": 0,
+              "stock": 0,
+              "minOrder": 0,
+              "productStatus": "ACTIVE",
+              "originalPrice": 0,
+              "selection": [
+                {
+                  "productVariantID": 148070,
+                  "variantID": 1,
+                  "variantUnitID": 0,
+                  "position": 1,
+                  "name": "warna",
+                  "identifier": "colour",
+                  "option": [
+                    {
+                      "productVariantOptionID": 320821,
+                      "unitValueID": 9,
+                      "value": "Merah",
+                      "hex": "#ff0016"
+                    },
+                    {
+                      "productVariantOptionID": 320822,
+                      "unitValueID": 1,
+                      "value": "Putih",
+                      "hex": "#ffffff"
+                    },
+                    {
+                      "productVariantOptionID": 320823,
+                      "unitValueID": 2,
+                      "value": "Hitam",
+                      "hex": "#000000"
+                    }
+                  ]
+                }
+              ],
+              "children": [
+                {
+                  "productID": "2147926785",
+                  "name": "Product_Mantap_S1ngL3_V4r1ant - Hitam",
+                  "picURL": "https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2021/9/6/f4c3540b-87a7-4628-a7a8-87fe5d56e2f5.png",
+                  "minOrder": 5,
+                  "bundlePrice": 60000,
+                  "originalPrice": 100000,
+                  "stock": 999,
+                  "optionID": [
+                    "320823"
+                  ]
+                },
+                {
+                  "productID": "2147926783",
+                  "name": "Product_Mantap_S1ngL3_V4r1ant - Merah",
+                  "picURL": "https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2021/9/6/f4c3540b-87a7-4628-a7a8-87fe5d56e2f5.png",
+                  "minOrder": 5,
+                  "bundlePrice": 60000,
+                  "originalPrice": 100000,
+                  "stock": 999,
+                  "optionID": [
+                    "320821"
+                  ]
+                },
+                {
+                  "productID": "2147926784",
+                  "name": "Product_Mantap_S1ngL3_V4r1ant - Putih",
+                  "picURL": "https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2021/9/6/f4c3540b-87a7-4628-a7a8-87fe5d56e2f5.png",
+                  "minOrder": 5,
+                  "bundlePrice": 60000,
+                  "originalPrice": 100000,
+                  "stock": 999,
+                  "optionID": [
+                    "320822"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

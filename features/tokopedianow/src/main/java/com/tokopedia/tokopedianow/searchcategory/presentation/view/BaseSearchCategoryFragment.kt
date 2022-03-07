@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -38,15 +40,20 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
-import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.ChooseAddressBottomSheetListener
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetViewModel
+import com.tokopedia.recommendation_widget_common.viewutil.initRecomWidgetViewModel
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.data.HintData
@@ -58,10 +65,15 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
+import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_2H
+import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.util.TokoNowSwitcherUtil.switchService
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowSearchCategoryBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCategoryAdapter
@@ -74,7 +86,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAdd
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.OutOfCoverageListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
@@ -83,30 +95,35 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import kotlin.collections.set
 
 abstract class BaseSearchCategoryFragment:
         BaseDaggerFragment(),
         ChooseAddressListener,
         BannerComponentListener,
         TitleListener,
-        CategoryFilterListener,
-        QuickFilterListener,
-        SortFilterBottomSheet.Callback,
-        CategoryChooserBottomSheet.Callback,
-        MiniCartWidgetListener,
-        ProductItemListener,
-        TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
-        ChooseAddressBottomSheetListener,
-        OutOfCoverageListener,
-        TokoNowProductCardListener,
-        TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener {
+    CategoryFilterListener,
+    QuickFilterListener,
+    SortFilterBottomSheet.Callback,
+    CategoryChooserBottomSheet.Callback,
+    MiniCartWidgetListener,
+    ProductItemListener,
+    SwitcherWidgetListener,
+    TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
+    TokoNowProductCardListener,
+    TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
+    TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener {
 
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
-        protected const val OUT_OF_COVERAGE_CHOOSE_ADDRESS = "OUT_OF_COVERAGE_CHOOSE_ADDRESS"
+        protected const val REQUEST_CODE_LOGIN = 69
+        private const val DEFAULT_POSITION = 0
     }
 
     private var binding by autoClearedNullable<FragmentTokopedianowSearchCategoryBinding>()
@@ -119,6 +136,7 @@ abstract class BaseSearchCategoryFragment:
     protected var sortFilterBottomSheet: SortFilterBottomSheet? = null
     protected var categoryChooserBottomSheet: CategoryChooserBottomSheet? = null
     protected var trackingQueue: TrackingQueue? = null
+    protected var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
 
     protected var container: ConstraintLayout? = null
     protected var navToolbar: NavToolbar? = null
@@ -136,13 +154,16 @@ abstract class BaseSearchCategoryFragment:
 
     protected abstract val toolbarPageName: String
 
+    private val recomWidgetViewModel: RecomWidgetViewModel? by initRecomWidgetViewModel()
+
     private val searchCategoryToolbarHeight: Int
         get() {
             val defaultHeight = resources
-                    .getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_status_height)
+                .getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_status_height)
 
             val height = (navToolbar?.height ?: defaultHeight)
-            val padding = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            val padding =
+                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
 
             return height + padding
         }
@@ -207,12 +228,8 @@ abstract class BaseSearchCategoryFragment:
         val navToolbar = navToolbar ?: return
 
         activity?.let {
-            navToolbar.setupToolbarWithStatusBar(
-                    activity = it,
-                    applyPadding = false,
-            )
+            navToolbar.setupToolbarWithStatusBar(activity = it)
         }
-
         viewLifecycleOwner.lifecycle.addObserver(navToolbar)
 
         recyclerView?.addOnScrollListener(createNavRecyclerViewOnScrollListener(navToolbar))
@@ -326,11 +343,37 @@ abstract class BaseSearchCategoryFragment:
     protected open fun getKeyword() =
         getViewModel().queryParam[SearchApiConst.Q] ?: ""
 
+    protected open fun createTokoNowEmptyStateOocListener(eventCategory: String): TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
+        return object : TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
+            override fun onRefreshLayoutPage() {
+                getViewModel().onLocalizingAddressSelected()
+            }
+
+            override fun onGetFragmentManager(): FragmentManager = parentFragmentManager
+
+            override fun onGetEventCategory(): String = eventCategory
+
+            override fun onSwitchService() {
+                getViewModel().refreshMiniCart()
+                getViewModel().switchService()
+            }
+        }
+    }
+
     private fun configureSwipeRefreshLayout() {
         swipeRefreshLayout?.setOnRefreshListener {
-            carouselScrollPosition.clear()
-            getViewModel().onViewReloadPage()
+            refreshLayout()
         }
+    }
+
+    private fun refreshLayout() {
+        resetMovingPosition()
+        carouselScrollPosition.clear()
+        getViewModel().onViewReloadPage()
+    }
+
+    private fun resetMovingPosition() {
+        movingPosition = DEFAULT_POSITION
     }
 
     private fun configureStatusBar() {
@@ -363,10 +406,12 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun configureRecyclerView() {
-        val staggeredGridLayoutManager = StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
-        staggeredGridLayoutManager.gapStrategy = GAP_HANDLING_NONE
+        staggeredGridLayoutManager = StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
+        staggeredGridLayoutManager?.gapStrategy = GAP_HANDLING_NONE
 
-        endlessScrollListener = createEndlessScrollListener(staggeredGridLayoutManager)
+        staggeredGridLayoutManager?.let {
+            endlessScrollListener =  createEndlessScrollListener(it)
+        }
         searchCategoryAdapter = SearchCategoryAdapter(createTypeFactory())
 
         recyclerView?.adapter = searchCategoryAdapter
@@ -396,8 +441,13 @@ abstract class BaseSearchCategoryFragment:
 
     private fun evaluateNavToolbarShadow(recyclerView: RecyclerView, dy: Int) {
         movingPosition += dy
-        headerBackground?.y = -(movingPosition.toFloat())
-        if (recyclerView.canScrollVertically(1) || movingPosition != 0) {
+        headerBackground?.y = if(movingPosition >= DEFAULT_POSITION) {
+            -(movingPosition.toFloat())
+        } else {
+            resetMovingPosition()
+            movingPosition.toFloat()
+        }
+        if (recyclerView.canScrollVertically(1) || movingPosition != DEFAULT_POSITION) {
             navToolbar?.showShadow(lineShadow = false)
         } else {
             navToolbar?.hideShadow(lineShadow = false)
@@ -452,6 +502,8 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().addToCartRepurchaseWidgetTrackingLiveData.observe(
             ::sendAddToCartRepurchaseProductTrackingEvent
         )
+        getViewModel().oocOpenScreenTrackingEvent.observe(::sendOOCOpenScreenTracking)
+        getViewModel().setUserPreferenceLiveData.observe(::setUserPreferenceData)
     }
 
     protected open fun onShopIdUpdated(shopId: String) {
@@ -484,6 +536,11 @@ abstract class BaseSearchCategoryFragment:
         stickyView?.visible()
     }
 
+    private fun hideContent() {
+        loaderUnify?.show()
+        stickyView?.gone()
+    }
+
     protected open fun updateEndlessScrollListener(hasNextPage: Boolean) {
         endlessScrollListener?.updateStateAfterGetData()
         endlessScrollListener?.setHasNextPage(hasNextPage)
@@ -513,8 +570,19 @@ abstract class BaseSearchCategoryFragment:
         )
     }
 
-    override fun onBannerClick(channelModel: ChannelModel, applink: String) {
-        RouteManager.route(context, applink)
+    override fun onBannerClick(channelModel: ChannelModel, applink: String, param: String) {
+        context?.let { context ->
+            switchService(
+                context = context,
+                param = param,
+                onRefreshPage = {
+                    getViewModel().switchService()
+                },
+                onRedirectPage = {
+                    RouteManager.route(it, applink)
+                }
+            )
+        }
     }
 
     override fun onBannerImpressed(channelModel: ChannelModel, position: Int) {
@@ -613,10 +681,12 @@ abstract class BaseSearchCategoryFragment:
         miniCartSimplifiedData ?: return
 
         miniCartWidget?.updateData(miniCartSimplifiedData)
+        recomWidgetViewModel?.updateMiniCartWithPageData(miniCartSimplifiedData)
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         getViewModel().onViewUpdateCartItems(miniCartSimplifiedData)
+        recomWidgetViewModel?.updateMiniCartWithPageData(miniCartSimplifiedData)
     }
 
     private fun updateMiniCartWidgetVisibility(isVisible: Boolean?) {
@@ -654,7 +724,7 @@ abstract class BaseSearchCategoryFragment:
         AtcVariantHelper.goToAtcVariant(
                 context = context,
                 productId = productId,
-                pageSource = "tokonow",
+                pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
                 isTokoNow = true,
                 shopId = shopId,
                 trackerCdListName = getCDListName(),
@@ -765,32 +835,6 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().onViewRemoveFilter(option)
     }
 
-    override fun onChangeAddressClicked() {
-        val parentFragmentManager = parentFragmentManager
-
-        ChooseAddressBottomSheet().also {
-            it.setListener(this)
-            it.show(parentFragmentManager, OUT_OF_COVERAGE_CHOOSE_ADDRESS)
-        }
-    }
-
-    override fun onReturnClick() {
-        RouteManager.route(context, ApplinkConst.HOME)
-    }
-
-    override fun getLocalizingAddressHostSourceBottomSheet() =
-            SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
-
-    override fun onAddressDataChanged() {
-        getViewModel().onLocalizingAddressSelected()
-    }
-
-    override fun onLocalizingAddressServerDown() { }
-
-    override fun onLocalizingAddressLoginSuccessBottomSheet() { }
-
-    override fun onDismissChooseAddressBottomSheet() { }
-
     override fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int) {
         carouselScrollPosition.put(adapterPosition, scrollPosition)
     }
@@ -872,9 +916,9 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onAddVariantRecommendationCarouselItem(
-            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel?,
-            data: RecommendationCarouselData,
-            recomItem: RecommendationItem,
+        recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
     ) {
         val productId = recomItem.productId.toString()
         val shopId = recomItem.shopId.toString()
@@ -883,7 +927,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun sendAddToCartRecommendationTrackingEvent(
-            atcTrackingData: Triple<Int, String, RecommendationItem>
+        atcTrackingData: Triple<Int, String, RecommendationItem>
     ) {
         val (quantity, cartId, recommendationItem) = atcTrackingData
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -901,6 +945,49 @@ abstract class BaseSearchCategoryFragment:
                 listValue = getListValue(false, recommendationItem),
             )
         )
+    }
+
+    override fun onMiniCartUpdatedFromRecomWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        getViewModel().refreshMiniCart()
+    }
+
+    override fun onRecomTokonowAtcSuccess(message: String) {
+        showSuccessATCMessage(message)
+    }
+
+    override fun onRecomTokonowAtcFailed(throwable: Throwable) {
+        context?.let {
+            showErrorATCMessage(ErrorHandler.getErrorMessage(it, throwable))
+        }
+    }
+
+    override fun onRecomTokonowAtcNeedToSendTracker(
+        recommendationItem: RecommendationItem
+    ) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            ProductRecommendationTracking.getAddToCartClickProductTracking(
+                recommendationItem = recommendationItem,
+                position = recommendationItem.position,
+                isLoggedIn = userSession.isLoggedIn,
+                userId = userSession.userId,
+                eventLabel = getEventLabel(false),
+                headerTitle = "",
+                quantity = recommendationItem.quantity,
+                cartId = recommendationItem.cartId,
+                eventAction = getAtcEventAction(false),
+                eventCategory = getEventCategory(false),
+                listValue = getListValue(false, recommendationItem),
+            )
+        )
+    }
+
+    override fun onRecomTokonowDeleteNeedToSendTracker(
+        recommendationItem: RecommendationItem
+    ) {
+    }
+
+    override fun onClickItemNonLoginState() {
+        goToLogin()
     }
 
     abstract fun getListValue(isOOC: Boolean, recommendationItem: RecommendationItem): String
@@ -938,4 +1025,58 @@ abstract class BaseSearchCategoryFragment:
     ) {
 
     }
+
+    override fun onClickSwitcherTo15M() {
+        hideContent()
+        getViewModel().setUserPreference(NOW_15M)
+    }
+
+    override fun onClickSwitcherTo2H() {
+        hideContent()
+        getViewModel().setUserPreference(NOW_2H)
+    }
+
+    private fun setUserPreferenceData(result: Result<SetUserPreference.SetUserPreferenceData>) {
+        showContent()
+        when(result) {
+            is Success -> {
+                swipeRefreshLayout
+                context?.apply {
+                    //Set user preference data to local cache
+                    ChooseAddressUtils.updateTokoNowData(
+                        context = this,
+                        warehouseId = result.data.warehouseId,
+                        shopId = result.data.shopId,
+                        serviceType = result.data.serviceType,
+                        warehouses = result.data.warehouses.map {
+                            LocalWarehouseModel(
+                                it.warehouseId.toLongOrZero(),
+                                it.serviceType
+                            )
+                        }
+                    )
+
+                    //Refresh the page
+                    staggeredGridLayoutManager?.scrollToPosition(DEFAULT_POSITION)
+                    refreshLayout()
+                }
+            }
+            is Fail -> { /* no op */ }
+        }
+    }
+
+    protected open fun goToLogin() {
+        activity?.let {
+            startActivityForResult(
+                RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                REQUEST_CODE_LOGIN
+            )
+        }
+    }
+
+    override fun setViewToLifecycleOwner(observer: LifecycleObserver) {
+        viewLifecycleOwner.lifecycle.addObserver(observer)
+    }
+
+    protected abstract fun sendOOCOpenScreenTracking(isTracked: Boolean)
 }

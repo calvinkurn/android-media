@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.productlimitation.presentation.dialog
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,13 +12,16 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.customview.TabletAdaptiveBottomSheet
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
 import com.tokopedia.product.addedit.productlimitation.domain.constant.AddEditProductUrlConstants.Companion.URL_PRODUCT_LIMITATION_EDU
 import com.tokopedia.product.addedit.productlimitation.presentation.adapter.ProductLimitationItemAdapter
 import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationActionItemModel
-import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.product.addedit.tracking.ProductLimitationTracking
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 
@@ -25,7 +29,7 @@ class ProductLimitationBottomSheet(
         private val actionItems: List<ProductLimitationActionItemModel> = emptyList(),
         private val isEligible: Boolean = false,
         private val limitAmount: Int = 0
-) : BottomSheetUnify() {
+): TabletAdaptiveBottomSheet() {
 
     companion object {
         const val TAG = "Tag Product Limitation Bottom Sheet"
@@ -40,6 +44,8 @@ class ProductLimitationBottomSheet(
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initChildLayout()
         overlayClickDismiss = true
+        useWideModal = true
+        clearContentPadding = context?.let { DeviceScreenInfo.isTablet(it) }.orFalse()
 
         if (isEligible) {
             setTitle(getString(R.string.title_product_limitation_add_product_rules))
@@ -55,8 +61,8 @@ class ProductLimitationBottomSheet(
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         setupDismissButton()
+        super.onActivityCreated(savedInstanceState)
     }
 
     private fun setupDismissButton() {
@@ -64,6 +70,7 @@ class ProductLimitationBottomSheet(
         btnSubmit.text = btnSubmitText
         btnSubmit.isVisible = !isEligible
         btnSubmit.setOnClickListener {
+            ProductLimitationTracking.clickSaveAsDraft()
             val result = if (savingToDraft) RESULT_SAVING_DRAFT else RESULT_FINISH_ACTIVITY
             onBottomSheetResult.invoke(result)
             dismiss()
@@ -82,8 +89,9 @@ class ProductLimitationBottomSheet(
         rvItems?.addItemDecoration(HorizontalItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)))
         rvItems?.adapter = ProductLimitationItemAdapter().apply {
             setData(actionItems)
-            setOnItemClick {
-                onBottomSheetResult.invoke(it)
+            setOnItemClick { category, title: String, url: String ->
+                ProductLimitationTracking.clickActionItem(category, title, url)
+                onBottomSheetResult.invoke(url)
             }
         }
 
@@ -102,6 +110,7 @@ class ProductLimitationBottomSheet(
             }
             setHtmlDescription(tickerDesc)
             setOnClickListener {
+                ProductLimitationTracking.clickEduTicker()
                 onBottomSheetResult.invoke(URL_PRODUCT_LIMITATION_EDU)
             }
         }
@@ -124,9 +133,17 @@ class ProductLimitationBottomSheet(
         this.savingToDraft = savingToDraft
     }
 
-    fun show(manager: FragmentManager?) {
+    fun show(manager: FragmentManager?, context: Context?) {
         manager?.run {
-            super.show(this , TAG)
+            val isTablet = context?.let {
+                DeviceScreenInfo.isTablet(it)
+            }.orFalse()
+            if (isTablet && actionItems.isEmpty() && isEligible) {
+                ProductLimitationNoActionBottomSheet(limitAmount, onBottomSheetResult)
+                    .show(this, TAG)
+            } else {
+                super.show(this , TAG)
+            }
         }
     }
 

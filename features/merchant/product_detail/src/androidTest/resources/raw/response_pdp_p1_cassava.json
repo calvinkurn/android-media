@@ -667,11 +667,6 @@
           },
           {
             "data": [],
-            "name": "discussion",
-            "type": "discussion"
-          },
-          {
-            "data": [],
             "name": "discussion_faq",
             "type": "discussion_faq"
           },

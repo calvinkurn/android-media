@@ -26,7 +26,7 @@
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/dp_4">
+                android:paddingBottom="4dp">
 
                 <ImageView
                     android:id="@+id/ivVoucherBanner"
@@ -40,23 +40,23 @@
                     style="@style/TextView.Title.Bold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_24"
-                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginRight="16dp"
                     tools:text="Lebaran Extra Cashback 20.000" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginRight="16dp"
                     android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="@dimen/dp_20"
-                        android:layout_height="@dimen/dp_20"
-                        android:layout_marginRight="@dimen/dp_8"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginRight="8dp"
                         app:srcCompat="@drawable/ic_price_green" />
 
                     <TextView
@@ -64,7 +64,7 @@
                         style="@style/TextView.Small.BlackSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="@dimen/dp_8"
+                        android:layout_marginRight="8dp"
                         android:text="@string/min_transaction_colon" />
 
                     <TextView
@@ -78,22 +78,22 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginRight="16dp"
                     android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="@dimen/dp_20"
-                        android:layout_height="@dimen/dp_20"
-                        android:layout_marginRight="@dimen/dp_8"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginRight="8dp"
                         app:srcCompat="@drawable/ic_clock_green" />
 
                     <TextView
                         style="@style/TextView.Small.BlackSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="@dimen/dp_8"
+                        android:layout_marginRight="8dp"
                         android:text="@string/valid_thru_colon" />
 
                     <TextView
@@ -108,9 +108,9 @@
                     android:id="@+id/vgVoucherStatus"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_24"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginRight="16dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -118,7 +118,7 @@
                         style="@style/TextView.Small.BlackSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="@dimen/dp_8"
+                        android:layout_marginRight="8dp"
                         android:text="@string/status_colon" />
 
                     <TextView
@@ -126,7 +126,7 @@
                         style="@style/TextView.Small.Bold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="@dimen/dp_8"
+                        android:layout_marginRight="8dp"
                         tools:text="Diterapkan pada keranjang" />
 
                     <TextView
@@ -134,7 +134,7 @@
                         style="@style/TextView.Small.Green"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/dp_4"
+                        android:padding="4dp"
                         android:text="@string/see" />
                 </LinearLayout>
 
@@ -143,16 +143,16 @@
                     style="@style/TextView.Title.Bold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginLeft="16dp"
                     android:layout_marginTop="@dimen/dp_36"
-                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginRight="16dp"
                     android:text="@string/terms_and_conditions" />
 
                 <WebView
                     android:id="@+id/webViewTnc"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -175,7 +175,7 @@
                 style="@style/Button.Submit.Green.Full"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_16"
+                android:layout_margin="16dp"
                 android:text="@string/use_voucher" />-->
 
             <!-- //TOGGLE_MVC_OFF -->
@@ -184,7 +184,7 @@
                 style="@style/Button.Submit.Green.Full"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_16"
+                android:layout_margin="16dp"
                 android:text="@string/copy_to_clipboard" />
         </LinearLayout>
 

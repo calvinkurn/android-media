@@ -1,10 +1,12 @@
 package com.tokopedia.entertainment.pdp.data
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class EventContentByIdEntity(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("event_content_by_id")
         @Expose
         val eventContentById : EventContentById = EventContentById()
@@ -43,7 +45,7 @@ data class Content(
         val contentSectionId: String = "",
         @SerializedName("content_type_id")
         @Expose
-        val contentTypeId: Int = 0,
+        val contentTypeId: String = "0",
         @SerializedName("id")
         @Expose
         val id: String = "",

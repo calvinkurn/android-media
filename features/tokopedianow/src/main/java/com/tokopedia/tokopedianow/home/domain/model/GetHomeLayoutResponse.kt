@@ -79,7 +79,9 @@ data class HomeLayoutResponse(
     val hasCloseButton: Boolean = false,
     @SerializedName("isAutoRefreshAfterExpired")
     val isAutoRefreshAfterExpired: Boolean = false,
+    @SerializedName("token")
     var token: String = "",
+    @SerializedName("timestamp")
     var timestamp: String = ""
 )
 
@@ -205,7 +207,10 @@ data class Grid(
     val benefit: Benefit = Benefit(),
     @Expose
     @SerializedName("textColor")
-    val textColor: String = ""
+    val textColor: String = "",
+    @Expose
+    @SerializedName("param")
+    val param: String = ""
 )
 
 data class Benefit(

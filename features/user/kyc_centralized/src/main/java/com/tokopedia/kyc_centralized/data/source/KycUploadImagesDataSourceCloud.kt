@@ -9,41 +9,38 @@ import okhttp3.RequestBody
 import retrofit2.Retrofit
 import javax.inject.Inject
 
-class KycUploadImagesDataSourceCloud @Inject constructor(private val retrofit: Retrofit) {
-    private var livenessData = KycData()
+class KycUploadImagesDataSourceCloud @Inject constructor(private val api: KycUploadApi) {
 
     suspend fun uploadImage(
-            requestBodyProjectId: RequestBody,
-            params: RequestBody,
-            ktpImage: MultipartBody.Part,
-            faceImage: MultipartBody.Part,
-            projectId: String
+        requestBodyProjectId: RequestBody,
+        params: RequestBody,
+        ktpImage: MultipartBody.Part,
+        faceImage: MultipartBody.Part,
+        projectId: String
     ): KycData {
-        livenessData = when(projectId) {
+        return when (projectId) {
             HOME_CREDIT_PROJECT_ID, CO_BRAND_PROJECT_ID -> uploadImagesAlaCarte(
-                    requestBodyProjectId, params, ktpImage, faceImage)
+                requestBodyProjectId, params, ktpImage, faceImage
+            )
             else -> uploadImagesKyc(requestBodyProjectId, params, ktpImage, faceImage)
         }
-        return livenessData
     }
 
     private suspend fun uploadImagesKyc(
-            projectId: RequestBody,
-            params: RequestBody,
-            ktpImage: MultipartBody.Part,
-            faceImage: MultipartBody.Part
+        projectId: RequestBody,
+        params: RequestBody,
+        ktpImage: MultipartBody.Part,
+        faceImage: MultipartBody.Part
     ): KycData {
-        return retrofit.create(KycUploadApi::class.java)
-                .uploadImages(projectId, params, ktpImage, faceImage).data
+        return api.uploadImages(projectId, params, ktpImage, faceImage).data
     }
 
     private suspend fun uploadImagesAlaCarte(
-            projectId: RequestBody,
-            params: RequestBody,
-            ktpImage: MultipartBody.Part,
-            faceImage: MultipartBody.Part
+        projectId: RequestBody,
+        params: RequestBody,
+        ktpImage: MultipartBody.Part,
+        faceImage: MultipartBody.Part
     ): KycData {
-        return retrofit.create(KycUploadApi::class.java)
-                .uploadImagesAlaCarte(projectId, params, ktpImage, faceImage).data
+        return api.uploadImagesAlaCarte(projectId, params, ktpImage, faceImage).data
     }
 }

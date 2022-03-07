@@ -2,7 +2,7 @@ package com.tokopedia.oneclickcheckout.order.view.processor
 
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
@@ -119,18 +119,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
     }
 
     private fun mapShippingRecommendationData(shippingRecommendationData: ShippingRecommendationData, orderShipment: OrderShipment, listShopShipment: List<ShopShipment>, shipmentProfile: OrderProfileShipment): ShippingRecommendationData {
-        val data = ratesResponseStateConverter.fillState(shippingRecommendationData, listShopShipment, orderShipment.shipperProductId.toZeroIfNull(), orderShipment.serviceId.toZeroIfNull())
-        val logisticPromo = data.logisticPromo
-        if (logisticPromo != null && !shipmentProfile.isDisableChangeCourier) {
-            // validate army courier
-            val serviceData: ShippingDurationUiModel? = getRatesDataFromLogisticPromo(logisticPromo.serviceId, data.shippingDurationUiModels)
-            if (serviceData == null) {
-                data.logisticPromo = null
-            } else if (getCourierDataBySpId(logisticPromo.shipperProductId, serviceData.shippingCourierViewModelList) == null) {
-                data.logisticPromo = null
-            }
-        }
-        return data
+        return ratesResponseStateConverter.fillState(shippingRecommendationData, listShopShipment, orderShipment.shipperProductId.toZeroIfNull(), orderShipment.serviceId.toZeroIfNull())
     }
 
     suspend fun getRates(orderCart: OrderCart, orderProfile: OrderProfile, orderShipment: OrderShipment, orderCost: OrderCost, listShopShipment: List<ShopShipment>): ResultRates {
@@ -197,7 +186,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                                 null
                         )
                     }
-                    shipping = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromo.title}" else null,
+                    shipping = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) logisticPromo.tickerAvailableFreeShippingCourierTitle else null,
                             logisticPromoShipping = null, isApplyLogisticPromo = false)
                 } else if (logisticPromo != null && profileShipment.isDisableChangeCourier) {
                     shipping = shipping.copy(logisticPromoTickerMessage = null, logisticPromoViewModel = logisticPromo, logisticPromoShipping = null, isApplyLogisticPromo = false)
@@ -233,7 +222,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
 
     private fun onRenewShipping(shippingDurationUiModels: List<ShippingDurationUiModel>, shipping: OrderShipment, shippingRecommendationData: ShippingRecommendationData): Pair<OrderShipment, String?> {
         shippingDurationUiModels.forEach {
-            it.isSelected = it.serviceData.serviceId == shipping.serviceId
+            it.isSelected = it.serviceData.serviceId == shipping.serviceId && !it.serviceData.isUiRatesHidden
         }
         val selectedShippingDurationUiModel = shippingDurationUiModels.firstOrNull { it.isSelected }
         if (selectedShippingDurationUiModel == null) {
@@ -243,6 +232,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                             isLoading = false,
                             serviceName = shipping.serviceName,
                             serviceDuration = shipping.serviceDuration,
+                            isHideChangeCourierCard = shipping.isHideChangeCourierCard,
                             serviceErrorMessage = OrderSummaryPageViewModel.NO_DURATION_AVAILABLE,
                             shippingRecommendationData = shippingRecommendationData),
                     null)
@@ -255,6 +245,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                             serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
                             serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
                             serviceName = selectedShippingDurationUiModel.serviceData.serviceName,
+                            isHideChangeCourierCard = selectedShippingDurationUiModel.serviceData.selectedShipperProductId > 0,
                             needPinpoint = durationError.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED,
                             serviceErrorMessage = durationError.errorMessage,
                             shippingRecommendationData = shippingRecommendationData),
@@ -297,13 +288,14 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                         isApplyLogisticPromo = false,
                         logisticPromoViewModel = null,
                         logisticPromoShipping = null,
-                        shippingRecommendationData = shippingRecommendationData),
+                        shippingRecommendationData = shippingRecommendationData,
+                        isHideChangeCourierCard = selectedShippingDurationUiModel.serviceData.selectedShipperProductId > 0),
                 shippingErrorId)
     }
 
     private fun onRevampNewShipping(shippingDurationUiModels: List<ShippingDurationUiModel>, profileShipment: OrderProfileShipment, shippingRecommendationData: ShippingRecommendationData): Triple<OrderShipment, String?, String?> {
         shippingDurationUiModels.forEach {
-            it.isSelected = it.serviceData.serviceId == profileShipment.serviceId
+            it.isSelected = it.serviceData.serviceId == profileShipment.serviceId && !it.serviceData.isUiRatesHidden
         }
         val selectedShippingDurationUiModel: ShippingDurationUiModel = shippingDurationUiModels.firstOrNull { it.isSelected }
                 ?: return onRevampNewShippingFromRecommendation(shippingDurationUiModels, profileShipment, shippingRecommendationData)
@@ -342,6 +334,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                         serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
                         serviceName = selectedShippingDurationUiModel.serviceData.serviceName,
                         shippingPrice = selectedShippingCourierUiModel.productData.price.price,
+                        isHideChangeCourierCard = selectedShippingDurationUiModel.serviceData.selectedShipperProductId > 0,
                         shippingRecommendationData = shippingRecommendationData),
                 shippingErrorId,
                 preselectedSpId)
@@ -352,7 +345,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         var selectedShippingCourierUiModel: ShippingCourierUiModel? = null
         for (shippingDurationUiModel in shippingDurationUiModels) {
             val shippingCourierViewModelList = shippingDurationUiModel.shippingCourierViewModelList
-            shippingDurationUiModel.isSelected = shippingDurationUiModel.serviceData.serviceId == profileShipment.recommendationServiceId
+            shippingDurationUiModel.isSelected = shippingDurationUiModel.serviceData.serviceId == profileShipment.recommendationServiceId && !shippingDurationUiModel.serviceData.isUiRatesHidden
             if (shippingDurationUiModel.isSelected) {
                 for (shippingCourierUiModel in shippingCourierViewModelList) {
                     shippingCourierUiModel.isSelected = false
@@ -385,6 +378,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                             isLoading = false,
                             serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
                             serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
+                            isHideChangeCourierCard = selectedShippingDurationUiModel.serviceData.selectedShipperProductId > 0,
                             serviceName = selectedShippingDurationUiModel.serviceData.serviceName,
                             needPinpoint = durationError.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED,
                             serviceErrorMessage = durationError.errorMessage,
@@ -419,6 +413,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                         insurance = OrderInsurance(selectedShippingCourierUiModel.productData.insurance),
                         serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
                         serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
+                        isHideChangeCourierCard = selectedShippingDurationUiModel.serviceData.selectedShipperProductId > 0,
                         serviceEta = getShippingServiceETA(selectedShippingDurationUiModel.serviceData.texts),
                         shippingEta = getShippingCourierETA(selectedShippingCourierUiModel.productData.estimatedTimeArrival),
                         serviceName = selectedShippingDurationUiModel.serviceData.serviceName,
@@ -596,12 +591,13 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                     logisticPromoTickerMessage = null,
                     logisticPromoViewModel = null,
                     logisticPromoShipping = null,
-                    isApplyLogisticPromo = false)
+                    isApplyLogisticPromo = false,
+                    isHideChangeCourierCard = selectedShippingDurationViewModel.serviceData.selectedShipperProductId > 0)
 
             if (newShipping.serviceErrorMessage.isNullOrEmpty()) {
                 val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo
                 if (logisticPromo != null && !logisticPromo.disabled) {
-                    newShipping = newShipping.copy(logisticPromoTickerMessage = "Tersedia ${logisticPromo.title}", logisticPromoViewModel = logisticPromo, logisticPromoShipping = null)
+                    newShipping = newShipping.copy(logisticPromoTickerMessage = logisticPromo.tickerAvailableFreeShippingCourierTitle, logisticPromoViewModel = logisticPromo, logisticPromoShipping = null)
                 }
             }
             return newShipping
@@ -626,13 +622,13 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             }
             if (logisticPromoShipping != null) {
                 shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo?.copy(isApplied = true)
-                val needPinpoint = logisticPromoShipping.productData?.error?.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
+                val needPinpoint = logisticPromoShipping.productData.error?.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
                 return Pair(
                         shipping.copy(isLoading = false,
                                 shippingRecommendationData = shippingRecommendationData,
                                 isServicePickerEnable = true,
-                                insurance = OrderInsurance(logisticPromoShipping.productData?.insurance),
-                                serviceErrorMessage = if (needPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else logisticPromoShipping.productData?.error?.errorMessage,
+                                insurance = OrderInsurance(logisticPromoShipping.productData.insurance),
+                                serviceErrorMessage = if (needPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else logisticPromoShipping.productData.error?.errorMessage,
                                 needPinpoint = needPinpoint,
                                 logisticPromoTickerMessage = null,
                                 isApplyLogisticPromo = true,
@@ -656,7 +652,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                     shippingRecommendationData = shippingRecommendationData,
                     isApplyLogisticPromo = false,
                     logisticPromoShipping = null,
-                    logisticPromoTickerMessage = "Tersedia ${logisticPromoViewModel.title}")
+                    logisticPromoTickerMessage = logisticPromoViewModel.tickerAvailableFreeShippingCourierTitle)
         }
         return orderShipment
     }

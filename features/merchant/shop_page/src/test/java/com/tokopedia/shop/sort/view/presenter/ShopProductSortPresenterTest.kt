@@ -35,12 +35,12 @@ class ShopProductSortPresenterTest {
                 shopProductMapper,
                 userSession
         )
-        shopProductSortPresenter.attachView(shopProductSortView)
-
+        shopProductSortPresenter.detachView()
     }
 
     @Test
     fun `check whether renderList should be called when success`(){
+        shopProductSortPresenter.attachView(shopProductSortView)
         every { getShopProductFilterUseCase.execute(any()) } answers {
             (firstArg() as Subscriber<List<ShopProductSort>>).onNext(listOf())
         }
@@ -50,13 +50,52 @@ class ShopProductSortPresenterTest {
     }
 
     @Test
+    fun `check whether renderList should not be called when success and view is not attached`(){
+        every { getShopProductFilterUseCase.execute(any()) } answers {
+            (firstArg() as Subscriber<List<ShopProductSort>>).onNext(listOf())
+        }
+        shopProductSortPresenter.getShopFilterList()
+        verify { getShopProductFilterUseCase.execute(any()) }
+        verify(exactly = 0){
+            shopProductSortView.renderList(any())
+        }
+    }
+
+    @Test
     fun `check whether showGetListError should be called when error`(){
+        shopProductSortPresenter.attachView(shopProductSortView)
         every { getShopProductFilterUseCase.execute(any()) } answers {
             (firstArg() as Subscriber<List<ShopProductSort>>).onError(Throwable())
         }
         shopProductSortPresenter.getShopFilterList()
         verify { getShopProductFilterUseCase.execute(any()) }
         verify { shopProductSortView.showGetListError(any()) }
+    }
+
+    @Test
+    fun `check whether showGetListError should not be called when error and view is not attached`(){
+        every { getShopProductFilterUseCase.execute(any()) } answers {
+            (firstArg() as Subscriber<List<ShopProductSort>>).onError(Throwable())
+        }
+        shopProductSortPresenter.getShopFilterList()
+        verify { getShopProductFilterUseCase.execute(any()) }
+        assert(shopProductSortPresenter.view == null)
+        verify(exactly = 0){
+            shopProductSortView.showGetListError(any())
+        }
+    }
+
+    @Test
+    fun `check whether should not call any update view function when onCompleted`(){
+        every { getShopProductFilterUseCase.execute(any()) } answers {
+            (firstArg() as Subscriber<List<ShopProductSort>>).onCompleted()
+        }
+        shopProductSortPresenter.getShopFilterList()
+        verify { getShopProductFilterUseCase.execute(any()) }
+        verify(exactly = 0){
+            shopProductSortView.renderList(any())
+            shopProductSortView.showGetListError(any())
+        }
     }
 
     @Test

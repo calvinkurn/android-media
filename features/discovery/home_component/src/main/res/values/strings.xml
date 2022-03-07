@@ -7,6 +7,7 @@
     <string name="discovery_home_see_more_dc_mix">Lihat Produk Lainnya</string>
 
     <string name="discovery_home_toaster_coupon_copied">Kode kupon berhasil disalin, gunakan saat transaksi.</string>
+    <string name="discovery_home_product_highlight_title_with_ellipsize_format">%s…</string>
 
     <string name="content_desc_lego_image">image lego item</string>
 
@@ -23,5 +24,13 @@
 
     <string name="content_desc_featured_brand_icon">featured brand icon</string>
     <string name="content_desc_featured_brand_image">featured brand image</string>
-    <string name="content_desc_view_all_image">featured view all image</string>
+
+    <string name="content_desc_campaign_image">campaign image</string>
+
+    <string name="content_desc_background_see_more">background see more</string>
+    <string name="content_desc_see_more">see more</string>
+
+    <string name="content_desc_category_icon">category icon</string>
+
+    <string name="content_desc_shimmering_image">shimmering image</string>
 </resources>

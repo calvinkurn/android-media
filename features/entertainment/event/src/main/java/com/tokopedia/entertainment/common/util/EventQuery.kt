@@ -40,6 +40,7 @@ object EventQuery {
                     rating
                     display_name
                     title
+                    is_free
                     image_app
                     sales_price
                     city_name
@@ -738,6 +739,7 @@ object EventQuery {
                 {key: "child_category_ids", value: ${'$'}category_ids}
         ]) {
             products {
+                is_free    
                 id
                 category_id
                 child_category_ids

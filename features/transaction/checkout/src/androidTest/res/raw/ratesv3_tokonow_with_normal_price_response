@@ -145,7 +145,7 @@
             "shipper_disable_text": "Tidak dapat \u003cb\u003eubah kurir\u003c/b\u003e karena promo hanya berlaku untuk kurir yang ditentukan",
             "service_id": 1002,
             "is_applied": 0,
-            "image_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png",
+            "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png",
             "discounted_rate": 0,
             "shipping_rate": 0,
             "benefit_amount": 0,
@@ -163,7 +163,12 @@
               "text_eta": "Estimasi tiba hari ini",
               "error_code": 0
             },
-            "is_bebas_ongkir_extra": false
+            "is_bebas_ongkir_extra": false,
+            "texts": {
+              "bottom_sheet": "\u003cb\u003eBebas Ongkir\u003c/b\u003e",
+              "chosen_courier": "\u003cb\u003eBebas Ongkir \u003c/b\u003e \u003cb\u003e(\u003c/b\u003e\u003cs\u003eRp30.000\u003c/s\u003e \u003cb\u003eRp10.000)\u003c/b\u003e",
+              "ticker_courier": ""
+            }
           },
           "info": {
             "blackbox_info": {

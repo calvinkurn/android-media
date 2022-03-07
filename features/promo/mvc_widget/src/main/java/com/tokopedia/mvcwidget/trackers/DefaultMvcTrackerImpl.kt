@@ -6,7 +6,13 @@ import com.tokopedia.mvcwidget.FollowWidgetType
 open class DefaultMvcTrackerImpl:MvcTrackerImpl {
     //1 Pdp
     //16 Shop
-    override fun userClickEntryPoints(shopId: String, userId: String?, @MvcSource source: Int, isTokomember:Boolean) {
+    override fun userClickEntryPoints(
+        shopId: String,
+        userId: String?,
+        @MvcSource source: Int,
+        isTokomember: Boolean,
+        productId: String
+    ) {
         val map = mutableMapOf<String, Any>()
         when (source) {
             MvcSource.PDP -> {
@@ -19,6 +25,7 @@ open class DefaultMvcTrackerImpl:MvcTrackerImpl {
                 }
 
                 map[Tracker.Constants.EVENT_LABEL] = "${Tracker.Label.PDP_VIEW}-$shopId"
+                map[Tracker.Event.CLICK_MVC_PRODUCT_ID] = "Product ID: $productId"
 
             }
             MvcSource.SHOP -> {
@@ -35,6 +42,59 @@ open class DefaultMvcTrackerImpl:MvcTrackerImpl {
             }
         }
         Tracker.fillCommonItems(map, userId, Tracker.Constants.PHYSICALGOODS_BUSINESSUNIT)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun userClickEntryPointOnMVCLockToProduct(
+        shopId: String,
+        userId: String?,
+        source: Int,
+        productId: String
+    ) {
+        val map = mutableMapOf<String, Any>()
+        when (source) {
+            MvcSource.PDP -> {
+                map[Tracker.Constants.EVENT] = Tracker.Event.EVENT_LOCK_TO_PRODUCT
+                map[Tracker.Constants.EVENT_CATEGORY] = Tracker.Category.MERCHANT_VOUCHER
+                map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_MVC_LOCK_TO_PRODUCT
+                map[Tracker.Constants.EVENT_LABEL] = "${Tracker.Label.PDP_VIEW}-$productId"
+            }
+            MvcSource.SHOP -> {
+                map[Tracker.Constants.EVENT] = Tracker.Event.EVENT_LOCK_TO_PRODUCT
+                map[Tracker.Constants.EVENT_CATEGORY] = Tracker.Category.SHOP_PAGE_BUYER
+                map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_MVC_LOCK_TO_PRODUCT
+                map[Tracker.Constants.EVENT_LABEL] = "${Tracker.Label.SHOP_PAGE}-$shopId"
+            }
+        }
+        Tracker.fillCommonItems(map, userId, Tracker.Constants.BUSINESSUNIT_PROMO)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun viewMVCLockToProduct(
+        shopId: String,
+        userId: String?,
+        source: Int,
+        productId: String
+    ) {
+
+        val map = mutableMapOf<String, Any>()
+        when (source) {
+            MvcSource.PDP -> {
+                map[Tracker.Constants.EVENT] = Tracker.Event.EVENT_LOCK_TO_PRODUCT_VIEW
+                map[Tracker.Constants.EVENT_CATEGORY] = Tracker.Category.MERCHANT_VOUCHER
+                map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.VIEW_MVC_LOCK_TO_PRODUCT
+                map[Tracker.Constants.EVENT_LABEL] = "${Tracker.Label.PDP_VIEW}-$productId"
+
+            }
+            MvcSource.SHOP -> {
+                map[Tracker.Constants.EVENT] = Tracker.Event.EVENT_LOCK_TO_PRODUCT_VIEW
+                map[Tracker.Constants.EVENT_CATEGORY] = Tracker.Category.SHOP_PAGE_BUYER
+                map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.VIEW_MVC_LOCK_TO_PRODUCT
+                map[Tracker.Constants.EVENT_LABEL] = "${Tracker.Label.SHOP_PAGE}-$shopId"
+
+            }
+        }
+        Tracker.fillCommonItems(map, userId, Tracker.Constants.BUSINESSUNIT_PROMO)
         Tracker.getTracker().sendGeneralEvent(map)
     }
 
@@ -337,12 +397,17 @@ open class DefaultMvcTrackerImpl:MvcTrackerImpl {
         Tracker.getTracker().sendGeneralEvent(map)
     }
 
-    override fun tokomemberImpressionOnPdp(shopId: String,userId: String?){
+    override fun tokomemberImpressionOnPdp(shopId: String,userId: String?, isTokomember: Boolean){
         val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = Tracker.Event.VIEW_SHOP
-        map[Tracker.Constants.EVENT_CATEGORY] = Tracker.Category.SHOP_PAGE_BUYER
-        map[Tracker.Constants.EVENT_LABEL] = "${Tracker.Label.SHOP_PAGE}-$shopId"
+        map[Tracker.Constants.EVENT] = Tracker.Event.VIEW_MV
+        map[Tracker.Constants.EVENT_CATEGORY] = Tracker.Category.MERCHANT_VOUCHER
+        map[Tracker.Constants.EVENT_LABEL] = "${Tracker.Label.PDP_VIEW}-$shopId"
         map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.VIEW_TOKOMEMBER
+
+        if(!isTokomember){
+            map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.SEE_ENTRY_POINT
+            map[Tracker.Constants.EVENT_CATEGORY] = Tracker.Category.MERCHANT_VOUCHER
+        }
 
         Tracker.fillCommonItems(map, userId, Tracker.Constants.PHYSICALGOODS_BUSINESSUNIT)
         Tracker.getTracker().sendGeneralEvent(map)
@@ -367,6 +432,7 @@ open class DefaultMvcTrackerImpl:MvcTrackerImpl {
         eventAction: String,
         @MvcSource source: Int,
         userId: String?,
+        productPosition:Int,
         label: String
     ) {
         val map = mutableMapOf<String, Any>()

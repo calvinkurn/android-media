@@ -6,12 +6,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_HEADER_TYPE
+import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_MVC_USAGE_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PAYMENT_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PRODUCTS_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_SHIPPING_TYPE
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailHeaderViewHolder
+import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailMVCUsageViewHolder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailPaymentsViewHolder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailProductsViewHolder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailShippingViewHolder
@@ -42,6 +44,7 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
         private const val LAYOUT_PRODUCTS = 1
         private const val LAYOUT_SHIPPING = 2
         private const val LAYOUT_PAYMENTS = 3
+        private const val LAYOUT_MVC_USAGE = 4
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
@@ -62,6 +65,10 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
             LAYOUT_PAYMENTS -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.detail_payments_item, parent, false)
                 SomDetailPaymentsViewHolder(view)
+            }
+            LAYOUT_MVC_USAGE -> {
+                val view = LayoutInflater.from(context).inflate(R.layout.item_som_detail_mvc_usage, parent, false)
+                SomDetailMVCUsageViewHolder(view)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }
@@ -86,6 +93,9 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
             is SomDetailPaymentsViewHolder -> {
                 holder.bind(element, position)
             }
+            is SomDetailMVCUsageViewHolder -> {
+                holder.bind(element, position)
+            }
         }
     }
 
@@ -95,6 +105,7 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
             DETAIL_PRODUCTS_TYPE -> LAYOUT_PRODUCTS
             DETAIL_SHIPPING_TYPE -> LAYOUT_SHIPPING
             DETAIL_PAYMENT_TYPE -> LAYOUT_PAYMENTS
+            DETAIL_MVC_USAGE_TYPE -> LAYOUT_MVC_USAGE
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }

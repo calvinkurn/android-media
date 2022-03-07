@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView android:id="@+id/order_product_card"
-    android:layout_width="@dimen/dp_250"
+    android:layout_width="250dp"
     android:layout_height="66dp"
-    app:cardElevation="@dimen/dp_4"
-    app:cardCornerRadius="@dimen/dp_8"
-    android:layout_marginBottom="@dimen/dp_4"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="8dp"
+    android:layout_marginBottom="4dp"
     android:foreground="?attr/selectableItemBackground"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -25,7 +25,7 @@
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/order_product_image_shimmer"
-            app:loader_corner_radius="@dimen/dp_8"
+            app:loader_corner_radius="8dp"
             app:loader_type="rect"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -59,12 +59,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/order_product_status"
             android:textSize="@dimen/sp_10"
+            app:typographyType="small"
+            app:typographyWeight="bold"
             android:textStyle="bold"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/order_product_image"
             tools:text="Menunggu Pembayaran"
@@ -74,9 +76,9 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/order_product_name"
             app:typographyType="body_3"
-            android:layout_marginTop="@dimen/dp_2"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             app:layout_constraintTop_toBottomOf="@id/order_product_status"
             app:layout_constraintStart_toEndOf="@id/order_product_image"
             app:layout_constraintEnd_toEndOf="parent"
@@ -90,8 +92,8 @@
             android:id="@+id/order_product_description"
             app:typographyType="small"
             android:textColor="@color/Unify_N700_68"
-            android:layout_marginTop="@dimen/dp_2"
-            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="8dp"
             app:layout_constraintTop_toBottomOf="@id/order_product_name"
             app:layout_constraintStart_toEndOf="@id/order_product_image"
             tools:text="Bayar sebelum 28 Jan, 13:04 WIB dsadawdawdsadaw"
@@ -99,9 +101,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:lines="1"
             android:layout_width="0dp"
-            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginEnd="8dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_8"/>
+            android:layout_marginBottom="8dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

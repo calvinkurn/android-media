@@ -1,7 +1,6 @@
 package com.tokopedia.play.view.contract
 
 import com.tokopedia.play.view.type.ScreenOrientation
-import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.type.PiPState
 
 /**

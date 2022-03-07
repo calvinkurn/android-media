@@ -14,31 +14,31 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="136dp"
         android:layout_height="18dp"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         app:corners="20" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="128dp"
         android:layout_height="18dp"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="4dp"
         app:corners="20" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="128dp"
         android:layout_height="18dp"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="4dp"
         app:corners="20" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="128dp"
         android:layout_height="18dp"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="4dp"
         app:corners="20" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="128dp"
         android:layout_height="18dp"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="4dp"
         app:corners="20" />
 
 </LinearLayout>

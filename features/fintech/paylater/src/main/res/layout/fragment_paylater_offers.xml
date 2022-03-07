@@ -74,7 +74,7 @@
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/sortShimmer"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_10"
+            android:layout_height="10dp"
             android:layout_marginLeft="@dimen/unify_space_16"
             android:layout_marginTop="@dimen/unify_space_8"
             app:layout_constraintLeft_toLeftOf="parent"

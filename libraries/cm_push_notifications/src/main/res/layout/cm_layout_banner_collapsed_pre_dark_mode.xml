@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/push_noti_background"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_72">
+    android:layout_height="72dp">
 
     <RelativeLayout
         android:layout_width="0dp"
@@ -32,14 +32,15 @@
                 android:layout_marginStart="@dimen/dp_3"
                 android:gravity="center_vertical"
                 android:text="@string/cm_app_title_name"
+                android:singleLine="true"
                 android:textColor="@color/medium_green_70"
                 android:textSize="@dimen/sp_12" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_5"
-                android:layout_marginRight="@dimen/dp_5"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:background="@color/transparent"
                 android:src="@drawable/cm_notification_icon_dot" />
 
@@ -49,6 +50,8 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/cm_grey_255"
                 android:textSize="@dimen/sp_12"
+                android:ellipsize="end"
+                android:singleLine="true"
                 tools:text="11:00 am" />
             
           </LinearLayout>
@@ -73,9 +76,9 @@
             android:layout_marginTop="1dp"
             android:ellipsize="end"
             android:singleLine="true"
-            tools:text="@tools:sample/lorem/random"
             android:textColor="@color/cm_light_grey_255"
-            android:textSize="@dimen/cm_sp_13" />
+            android:textSize="@dimen/cm_sp_13"
+            tools:text="@tools:sample/lorem/random" />
 
     </RelativeLayout>
 

@@ -18,7 +18,7 @@
         android:id="@+id/text_show"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_16"
+        android:padding="16dp"
         android:text="Lihat"
         android:textColor="@color/Unify_GN500"
         app:layout_constraintBottom_toBottomOf="@+id/ticker_error"

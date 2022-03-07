@@ -1,5 +1,6 @@
 package com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -17,6 +18,7 @@ public class ServiceData implements Parcelable {
     @SerializedName("service_name")
     @Expose
     private String serviceName;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("service_id")
     @Expose
     private int serviceId;
@@ -50,6 +52,13 @@ public class ServiceData implements Parcelable {
     @SerializedName("mvc")
     @Expose
     private MerchantVoucherData merchantVoucherData;
+    @SerializedName("ui_rates_hidden")
+    @Expose
+    private boolean uiRatesHidden;
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("selected_shipper_product_id")
+    @Expose
+    private int selectedShipperProductId;
 
     public ServiceData() {
     }
@@ -61,8 +70,14 @@ public class ServiceData implements Parcelable {
         isPromo = in.readInt();
         rangePrice = in.readParcelable(RangePriceData.class.getClassLoader());
         texts = in.readParcelable(ServiceTextData.class.getClassLoader());
+        features = in.readParcelable(FeaturesData.class.getClassLoader());
         error = in.readParcelable(ErrorServiceData.class.getClassLoader());
         products = in.createTypedArrayList(ProductData.CREATOR);
+        codData = in.readParcelable(CodData.class.getClassLoader());
+        orderPriority = in.readParcelable(OrderPriority.class.getClassLoader());
+        merchantVoucherData = in.readParcelable(MerchantVoucherData.class.getClassLoader());
+        uiRatesHidden = in.readByte() != 0;
+        selectedShipperProductId = in.readInt();
     }
 
     @Override
@@ -73,8 +88,14 @@ public class ServiceData implements Parcelable {
         dest.writeInt(isPromo);
         dest.writeParcelable(rangePrice, flags);
         dest.writeParcelable(texts, flags);
+        dest.writeParcelable(features, flags);
         dest.writeParcelable(error, flags);
         dest.writeTypedList(products);
+        dest.writeParcelable(codData, flags);
+        dest.writeParcelable(orderPriority, flags);
+        dest.writeParcelable(merchantVoucherData, flags);
+        dest.writeByte((byte) (uiRatesHidden ? 1 : 0));
+        dest.writeInt(selectedShipperProductId);
     }
 
     @Override
@@ -188,5 +209,21 @@ public class ServiceData implements Parcelable {
 
     public void setFeatures(FeaturesData features) {
         this.features = features;
+    }
+
+    public boolean isUiRatesHidden() {
+        return uiRatesHidden;
+    }
+
+    public void setUiRatesHidden(boolean uiRatesHidden) {
+        this.uiRatesHidden = uiRatesHidden;
+    }
+
+    public int getSelectedShipperProductId() {
+        return selectedShipperProductId;
+    }
+
+    public void setSelectedShipperProductId(int selectedShipperProductId) {
+        this.selectedShipperProductId = selectedShipperProductId;
     }
 }

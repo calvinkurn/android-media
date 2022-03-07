@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.view.adapter;
 
+import static com.tokopedia.checkout.domain.mapper.ShipmentMapper.BUNDLING_ITEM_HEADER;
+
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +10,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest;
+import com.tokopedia.checkout.view.uimodel.CrossSellModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
+import com.tokopedia.checkout.view.viewholder.ShipmentCrossSellViewHolder;
+import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter;
@@ -82,6 +87,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private ShipmentInsuranceTncModel shipmentInsuranceTncModel;
     private ShipmentSellerCashbackModel shipmentSellerCashbackModel;
     private ShipmentDonationModel shipmentDonationModel;
+    private List<ShipmentCrossSellModel> shipmentCrossSellModelList;
     private EgoldAttributeModel egoldAttributeModel;
     private ShippingCompletionTickerModel shippingCompletionTickerModel;
     private ShipmentButtonPaymentModel shipmentButtonPaymentModel;
@@ -93,6 +99,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private boolean isShowOnboarding;
     private int lastChooseCourierItemPosition;
     private int lastServiceId;
+    private int counterCrossSell;
 
     @Inject
     public ShipmentAdapter(ShipmentAdapterActionListener shipmentAdapterActionListener,
@@ -128,6 +135,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK;
         } else if (item instanceof ShipmentDonationModel) {
             return ShipmentDonationViewHolder.ITEM_VIEW_DONATION;
+        } else if (item instanceof ShipmentCrossSellModel) {
+            return ShipmentCrossSellViewHolder.ITEM_VIEW_CROSS_SELL;
         } else if (item instanceof EgoldAttributeModel) {
             return ShipmentEmasViewHolder.ITEM_VIEW_EMAS;
         } else if (item instanceof ShipmentButtonPaymentModel) {
@@ -145,14 +154,15 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        View view = layoutInflater.inflate(viewType, parent, false);
 
         if (viewType == ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS) {
             return new ShipmentRecipientAddressViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_ITEM) {
             return new ShipmentItemViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST) {
-            return new ShipmentCostViewHolder(view);
+            return new ShipmentCostViewHolder(view, layoutInflater);
         } else if (viewType == PromoCheckoutViewHolder.getITEM_VIEW_PROMO_CHECKOUT()) {
             return new PromoCheckoutViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentInsuranceTncViewHolder.ITEM_VIEW_INSURANCE_TNC) {
@@ -161,6 +171,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return new ShipmentSellerCashbackViewHolder(view, sellerCashbackListener);
         } else if (viewType == ShipmentDonationViewHolder.ITEM_VIEW_DONATION) {
             return new ShipmentDonationViewHolder(view, shipmentAdapterActionListener);
+        } else if (viewType == ShipmentCrossSellViewHolder.ITEM_VIEW_CROSS_SELL) {
+            return new ShipmentCrossSellViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentEmasViewHolder.ITEM_VIEW_EMAS) {
             return new ShipmentEmasViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentButtonPaymentViewHolder.getITEM_VIEW_PAYMENT_BUTTON()) {
@@ -197,6 +209,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ShipmentSellerCashbackViewHolder) holder).bindViewHolder(shipmentSellerCashbackModel);
         } else if (viewType == ShipmentDonationViewHolder.ITEM_VIEW_DONATION) {
             ((ShipmentDonationViewHolder) holder).bindViewHolder(shipmentDonationModel);
+        } else if (viewType == ShipmentCrossSellViewHolder.ITEM_VIEW_CROSS_SELL) {
+            ((ShipmentCrossSellViewHolder) holder).bindViewHolder(shipmentCrossSellModelList.get(getIndexCrossSell()), getIndexCrossSell());
         } else if (viewType == ShipmentEmasViewHolder.ITEM_VIEW_EMAS) {
             ((ShipmentEmasViewHolder) holder).bindViewHolder(egoldAttributeModel);
         } else if (viewType == ShipmentButtonPaymentViewHolder.getITEM_VIEW_PAYMENT_BUTTON()) {
@@ -428,6 +442,36 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    public void addListShipmentCrossSellModel(List<ShipmentCrossSellModel> shipmentCrossSellModelList) {
+        if (shipmentCrossSellModelList != null && !shipmentCrossSellModelList.isEmpty()) {
+            this.shipmentCrossSellModelList = shipmentCrossSellModelList;
+            shipmentDataList.addAll(shipmentCrossSellModelList);
+        }
+    }
+
+    private int getIndexCrossSell() {
+        int existingIndex = counterCrossSell;
+        if (existingIndex < shipmentCrossSellModelList.size()-1) {
+            counterCrossSell += 1;
+        }
+        return existingIndex;
+    }
+
+    public void updateCrossSell(boolean checked, CrossSellModel crossSellModel) {
+        if (shipmentCrossSellModelList != null && !shipmentCrossSellModelList.isEmpty()) {
+            for (ShipmentCrossSellModel shipmentCrossSellModel : shipmentCrossSellModelList) {
+                if (shipmentCrossSellModel != null && crossSellModel != null) {
+                    if (shipmentCrossSellModel.getCrossSellModel().getId().equals(crossSellModel.getId())) {
+                        shipmentCrossSellModel.setChecked(checked);
+                        updateShipmentCostModel();
+                        notifyItemChanged(getShipmentCostPosition());
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     private void updateEmasCostModel() {
         long totalPrice = (long) shipmentCostModel.getTotalPrice();
         int valueTOCheck = 0;
@@ -624,6 +668,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(null);
                 shipmentCartItemModel.getSelectedShipmentDetailData().setOrderPriority(null);
                 shipmentCartItemModel.setShippingBorderRed(false);
+                shipmentCartItemModel.setHideChangeCourierCard(newCourierItemData.isHideChangeCourierCard());
+                shipmentCartItemModel.setDurationCardDescription(newCourierItemData.getDurationCardDescription());
                 CourierItemData oldCourierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
                 checkAppliedCourierPromo(position, oldCourierItemData, newCourierItemData, shipmentCartItemModel);
                 shipmentCartItemModel.getSelectedShipmentDetailData().setSelectedCourier(newCourierItemData);
@@ -636,6 +682,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 shipmentDetailData.setShipmentCartData(shipmentCartItemModel.getShipmentCartData());
                 shipmentCartItemModel.setSelectedShipmentDetailData(shipmentDetailData);
                 shipmentCartItemModel.setShippingBorderRed(false);
+                shipmentCartItemModel.setHideChangeCourierCard(newCourierItemData.isHideChangeCourierCard());
+                shipmentCartItemModel.setDurationCardDescription(newCourierItemData.getDurationCardDescription());
                 if (!newCourierItemData.isAllowDropshiper()) {
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(null);
                 }
@@ -787,7 +835,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             tradeInPrice += cartItemModel.getOldDevicePrice();
                         }
 
-                        totalItemPrice += (cartItemModel.getPrice() * cartItemModel.getQuantity());
+                        if (cartItemModel.isBundlingItem()) {
+                            if (cartItemModel.getBundlingItemPosition() == BUNDLING_ITEM_HEADER) {
+                                totalItemPrice += (cartItemModel.getBundleQuantity() * cartItemModel.getBundlePrice());
+                            }
+                        } else {
+                            totalItemPrice += (cartItemModel.getQuantity() * cartItemModel.getPrice());
+                        }
                     }
                 }
 
@@ -862,6 +916,18 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         totalPrice += shipmentCostModel.getDonation();
         shipmentCostModel.setTotalPrice(totalPrice);
+
+        if (shipmentCrossSellModelList != null && !shipmentCrossSellModelList.isEmpty()) {
+            ArrayList<ShipmentCrossSellModel> listCheckedCrossModel = new ArrayList<>();
+            for (ShipmentCrossSellModel crossSellModel : shipmentCrossSellModelList) {
+                if (crossSellModel.isChecked()) {
+                    listCheckedCrossModel.add(crossSellModel);
+                    totalPrice += crossSellModel.getCrossSellModel().getPrice();
+                    shipmentCostModel.setTotalPrice(totalPrice);
+                }
+            }
+            shipmentCostModel.setListCrossSell(listCheckedCrossModel);
+        }
 
         if (egoldAttributeModel != null && egoldAttributeModel.isEligible()) {
             updateEmasCostModel();

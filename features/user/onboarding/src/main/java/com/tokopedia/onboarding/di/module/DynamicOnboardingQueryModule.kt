@@ -17,12 +17,4 @@ class DynamicOnboardingQueryModule(private val activity: Activity) {
     @OnboardingScope
     @Provides
     fun getContext(): Context = activity
-
-    @OnboardingScope
-    @Provides
-    @IntoMap
-    @StringKey(OnboardingConstant.Query.QUERY_DYNAMIC_ONBAORDING)
-    fun provideDynamicOnbaordingQuery(context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_dynamic_onbaording)
-    }
 }

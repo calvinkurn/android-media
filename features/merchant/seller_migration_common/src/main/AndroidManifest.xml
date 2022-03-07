@@ -4,7 +4,8 @@
     <application>
         <activity
             android:name=".presentation.activity.SellerMigrationActivity"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

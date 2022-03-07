@@ -31,13 +31,12 @@ open class BaseGiftBoxActivity : BaseActivity() {
         //Intermittent crash ex is layout file not found
         try {
             setContentView(getLayout())
-        } catch (ex: Exception) {
-            Timber.e(ex)
+            fm = findViewById(com.tokopedia.gamification.R.id.fmGiftRoot)
+        } catch (th: Throwable) {
+            Timber.e(th)
             finish()
             return
         }
-
-        fm = findViewById(com.tokopedia.gamification.R.id.fmGiftRoot)
 
         val component = DaggerGiftBoxActivityComponent.builder()
                 .activityContextModule(ActivityContextModule(this))

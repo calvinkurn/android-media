@@ -59,6 +59,7 @@ class GetShopReviewListUseCase @Inject constructor(
                       likeStatus
                       totalLike
                     }
+                    badRatingReasonFmt
                 }
                 hasNext
                 dataStatus {

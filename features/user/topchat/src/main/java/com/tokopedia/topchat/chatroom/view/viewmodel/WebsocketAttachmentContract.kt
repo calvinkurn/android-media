@@ -21,13 +21,14 @@ open class WebsocketAttachmentData (
         val attachment_type: Int,
         val start_time: String,
         val payload: Any,
-        var extras: Any = Any()
+        var extras: Any = Any(),
+        val parent_reply: Any? = null
 ) {
 
     private fun createProductExtrasAttachments(attachments: List<SendablePreview>): JsonElement {
         val extrasProducts = JsonArray()
         attachments.forEach { attachment ->
-            if (attachment is SendableProductPreview) {
+            if (attachment is TopchatProductAttachmentPreviewUiModel) {
                 val product = JsonObject().apply {
                     addProperty("url", attachment.productUrl)
                     addProperty("product_id", attachment.productId.toLongOrZero())

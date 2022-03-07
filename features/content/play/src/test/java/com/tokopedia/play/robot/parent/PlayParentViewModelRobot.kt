@@ -21,11 +21,11 @@ import io.mockk.mockk
  */
 class PlayParentViewModelRobot(
         private val savedStateHandle: SavedStateHandle,
-        private val channelStateStorage: PlayChannelStateStorage,
+        channelStateStorage: PlayChannelStateStorage,
         private val getChannelDetailsWithRecomUseCase: GetChannelDetailsWithRecomUseCase,
-        private val playChannelMapper: PlayChannelDetailsWithRecomMapper,
-        private val dispatchers: CoroutineDispatchers,
-        private val userSession: UserSessionInterface,
+        playChannelMapper: PlayChannelDetailsWithRecomMapper,
+        dispatchers: CoroutineDispatchers,
+        userSession: UserSessionInterface,
         pageMonitoring: PlayPltPerformanceCallback,
 ) {
 

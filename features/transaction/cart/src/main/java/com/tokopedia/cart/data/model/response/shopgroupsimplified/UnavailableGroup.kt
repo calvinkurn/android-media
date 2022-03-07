@@ -8,7 +8,7 @@ data class UnavailableGroup(
         @SerializedName("shop")
         val shop: Shop = Shop(),
         @SerializedName("is_fulfillment_service")
-        val isFulFillment: Boolean = false,
+        val isFulfillment: Boolean = false,
         @SerializedName("warehouse")
         val warehouse: Warehouse = Warehouse(),
         @SerializedName("cart_details")

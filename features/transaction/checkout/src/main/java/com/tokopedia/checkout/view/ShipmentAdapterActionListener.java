@@ -2,14 +2,14 @@ package com.tokopedia.checkout.view;
 
 import androidx.fragment.app.FragmentManager;
 
+import com.tokopedia.checkout.view.uimodel.CrossSellModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest;
-import com.tokopedia.promocheckout.common.domain.model.deals.CartItem;
+import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 
 import java.util.List;
@@ -59,6 +59,8 @@ public interface ShipmentAdapterActionListener {
     void onInsuranceCheckedForTrackingAnalytics();
 
     void onDonationChecked(boolean checked);
+
+    void onCrossSellItemChecked(boolean checked, CrossSellModel crossSellModel, int index);
 
     void onEgoldChecked(boolean checked);
 

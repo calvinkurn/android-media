@@ -17,7 +17,7 @@ import javax.inject.Inject
  */
 class PlayEditProductViewModel @Inject constructor(
         private val channelConfigStore: ChannelConfigStore,
-        private val dispatcher: CoroutineDispatchers,
+        dispatcher: CoroutineDispatchers,
         private val setupDataStore: PlayBroadcastSetupDataStore
 ) : ViewModel() {
 

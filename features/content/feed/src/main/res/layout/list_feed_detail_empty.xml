@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_gravity="center"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:orientation="vertical">
 
     <LinearLayout
@@ -29,7 +29,7 @@
             android:text="@string/feed_deleted"
             android:textColor="@color/Unify_N700_44"
             android:textSize="16sp"
-            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginTop="20dp"
             android:textStyle="normal"
             tools:text="Feed ini telah dihapus" />
 

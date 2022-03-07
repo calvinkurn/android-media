@@ -6,9 +6,9 @@
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/dp_32"
     android:paddingBottom="@dimen/dp_32"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:id="@+id/partial_empty_feed"
-    android:layout_marginBottom="@dimen/dp_8">
+    android:layout_marginBottom="8dp">
 
     <ImageView
         android:id="@+id/iv_image"
@@ -18,10 +18,10 @@
         android:adjustViewBounds="true"
         android:contentDescription="null"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_40"
-        android:layout_marginRight="@dimen/dp_40"
-        android:layout_marginTop="@dimen/dp_24"/>
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="24dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -33,7 +33,7 @@
         android:textStyle="bold"
         android:gravity="center"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_8"/>
+        android:layout_marginTop="8dp"/>
 
     <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/btn_login"
@@ -44,10 +44,10 @@
         app:buttonCompatSize="medium"
         android:text="@string/empty_button"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_24"/>
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="24dp"/>
 
 
 </LinearLayout>

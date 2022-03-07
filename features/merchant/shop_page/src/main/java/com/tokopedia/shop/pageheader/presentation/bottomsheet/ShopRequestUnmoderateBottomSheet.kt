@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ShopRequestUnmoderateBottomsheetBinding
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopRequestUnmoderateBottomSheetAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopRequestUnmoderateBottomsheetViewHolderListener
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentViewHolderListener
@@ -18,6 +19,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
  * author by Rafli Syam on 22/01/2021
@@ -38,6 +40,7 @@ class ShopRequestUnmoderateBottomSheet : BottomSheetUnify(), ShopRequestUnmodera
     private var bottomSheetListener : ShopPageFragmentViewHolderListener? = null
     private var rvRequestOptions: RecyclerView? = null
     private var choosenOptionValue = ""
+    private var viewBinding by autoClearedNullable<ShopRequestUnmoderateBottomsheetBinding>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setupBottomSheetChildView(inflater, container)
@@ -89,13 +92,13 @@ class ShopRequestUnmoderateBottomSheet : BottomSheetUnify(), ShopRequestUnmodera
     }
 
     private fun setupBottomSheetChildView(inflater: LayoutInflater, container: ViewGroup?) {
-        inflater.inflate(LAYOUT, container).apply {
-            rvRequestOptions = findViewById(R.id.rv_req_unmoderate_options)
-            buttonSendUnmoderateRequest = findViewById(R.id.btn_send_req_unmoderate)
-            loaderModerateBottomsheet = findViewById(R.id.loader_moderate_bottomsheet)
-            typographyAlreadySentReq = findViewById(R.id.tv_already_sent_request)
+        viewBinding = ShopRequestUnmoderateBottomsheetBinding.inflate(LayoutInflater.from(context)).apply {
+            rvRequestOptions = this.rvReqUnmoderateOptions
+            buttonSendUnmoderateRequest = this.btnSendReqUnmoderate
+            this@ShopRequestUnmoderateBottomSheet.loaderModerateBottomsheet = this.loaderModerateBottomsheet
+            typographyAlreadySentReq = this.tvAlreadySentRequest
             setTitle(getString(R.string.shop_page_header_request_unmoderate_bottomsheet_title))
-            setChild(this)
+            setChild(this.root)
             setCloseClickListener {
                 dismiss()
             }

@@ -262,7 +262,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             )
         }
         every { ratesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
-        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
 
         // When
         orderSummaryPageViewModel.getOccCart(true, "")
@@ -281,7 +281,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(cart, orderSummaryPageViewModel.orderCart)
         assertEquals(1, orderSummaryPageViewModel.orderShipment.value.getRealShipperId())
         verify(exactly = 1) { ratesUseCase.execute(any()) }
-        verify(exactly = 1) { validateUsePromoRevampUseCase.get().createObservable(any()) }
+        coVerify(exactly = 1) { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() }
     }
 
     @Test
@@ -933,21 +933,6 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(shopId.toString(), orderSummaryPageViewModel.getShopId())
-    }
-
-    @Test
-    fun `Get Payment Profile`() {
-        // Given
-        val paymentProfile = "paymentProfile"
-        val response = helper.orderData.copy(cart = helper.orderData.cart.copy(paymentProfile = paymentProfile))
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
-        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
-
-        // When
-        orderSummaryPageViewModel.getOccCart(true, "")
-
-        // Then
-        assertEquals(paymentProfile, orderSummaryPageViewModel.getPaymentProfile())
     }
 
     @Test

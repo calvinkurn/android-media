@@ -6,8 +6,8 @@ import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.*
 import com.tokopedia.play.robot.thenVerify
-import com.tokopedia.play.util.isFalse
-import com.tokopedia.play.util.isTrue
+import com.tokopedia.play.util.assertFalse
+import com.tokopedia.play.util.assertTrue
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayChannelType
 import org.junit.Rule
@@ -41,7 +41,7 @@ class PlayViewModelInsetsTest {
         } thenVerify {
             viewModel.observableBottomInsetsState
                     .getOrAwaitValue()[BottomInsetsType.Keyboard]!!
-                    .isShown.isTrue()
+                    .isShown.assertTrue()
         }
     }
 
@@ -62,7 +62,7 @@ class PlayViewModelInsetsTest {
         } thenVerify {
             viewModel.observableBottomInsetsState
                     .getOrAwaitValue()[BottomInsetsType.Keyboard]!!
-                    .isHidden.isTrue()
+                    .isHidden.assertTrue()
         }
     }
 
@@ -74,7 +74,7 @@ class PlayViewModelInsetsTest {
         } thenVerify {
             viewModel.observableBottomInsetsState
                     .getOrAwaitValue()[BottomInsetsType.ProductSheet]!!
-                    .isShown.isTrue()
+                    .isShown.assertTrue()
         }
     }
 
@@ -86,7 +86,7 @@ class PlayViewModelInsetsTest {
         } thenVerify {
             viewModel.observableBottomInsetsState
                     .getOrAwaitValue()[BottomInsetsType.VariantSheet]!!
-                    .isShown.isTrue()
+                    .isShown.assertTrue()
         }
     }
 
@@ -98,7 +98,55 @@ class PlayViewModelInsetsTest {
         } thenVerify {
             viewModel.observableBottomInsetsState
                     .getOrAwaitValue()[BottomInsetsType.LeaderboardSheet]!!
-                    .isShown.isTrue()
+                    .isShown.assertTrue()
+        }
+    }
+
+    @Test
+    fun `when show coupon bottom sheet, coupon bottom sheet insets should be shown`() {
+        givenPlayViewModelRobot(
+        ) andWhen {
+            showCouponBottomSheet()
+        } thenVerify {
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.CouponSheet]!!
+                .isShown.assertTrue()
+        }
+    }
+
+    @Test
+    fun `when show kebab bottom sheet, kebab bottom sheet insets should be shown`() {
+        givenPlayViewModelRobot(
+        ) andWhen {
+            showKebabBottomSheet()
+        } thenVerify {
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.KebabMenuSheet]!!
+                .isShown.assertTrue()
+        }
+    }
+
+    @Test
+    fun `when show user report bottom sheet, user report bottom sheet insets should be shown`() {
+        givenPlayViewModelRobot(
+        ) andWhen {
+            showUserReportBottomSheet()
+        } thenVerify {
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.UserReportSheet]!!
+                .isShown.assertTrue()
+        }
+    }
+
+    @Test
+    fun `when show user report submission bottom sheet, user report submission bottom sheet insets should be shown`() {
+        givenPlayViewModelRobot(
+        ) andWhen {
+            showUserReportSubmissionBottomSheet()
+        } thenVerify {
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.UserReportSubmissionSheet]!!
+                .isShown.assertTrue()
         }
     }
 
@@ -118,13 +166,13 @@ class PlayViewModelInsetsTest {
         } thenVerify {
             viewModel.observableBottomInsetsState
                     .getOrAwaitValue()[BottomInsetsType.Keyboard]!!
-                    .isShown.isTrue()
+                    .isShown.assertTrue()
         } andWhen {
             hideKeyboard()
         } thenVerify {
             viewModel.observableBottomInsetsState
                     .getOrAwaitValue()[BottomInsetsType.Keyboard]!!
-                    .isHidden.isTrue()
+                    .isHidden.assertTrue()
         }
     }
 
@@ -135,13 +183,13 @@ class PlayViewModelInsetsTest {
         } thenVerify {
             viewModel.observableBottomInsetsState
                     .getOrAwaitValue()[BottomInsetsType.ProductSheet]!!
-                    .isShown.isTrue()
+                    .isShown.assertTrue()
         } andWhen {
             hideProductBottomSheet()
         } thenVerify {
             viewModel.observableBottomInsetsState
                     .getOrAwaitValue()[BottomInsetsType.ProductSheet]!!
-                    .isHidden.isTrue()
+                    .isHidden.assertTrue()
         }
     }
 
@@ -152,13 +200,13 @@ class PlayViewModelInsetsTest {
         } thenVerify {
             viewModel.observableBottomInsetsState
                     .getOrAwaitValue()[BottomInsetsType.VariantSheet]!!
-                    .isShown.isTrue()
+                    .isShown.assertTrue()
         } andWhen {
             hideVariantBottomSheet()
         } thenVerify {
             viewModel.observableBottomInsetsState
                     .getOrAwaitValue()[BottomInsetsType.VariantSheet]!!
-                    .isHidden.isTrue()
+                    .isHidden.assertTrue()
         }
     }
 
@@ -169,13 +217,81 @@ class PlayViewModelInsetsTest {
         } thenVerify {
             viewModel.observableBottomInsetsState
                     .getOrAwaitValue()[BottomInsetsType.LeaderboardSheet]!!
-                    .isShown.isTrue()
+                    .isShown.assertTrue()
         } andWhen {
             hideLeaderboardBottomSheet()
         } thenVerify {
             viewModel.observableBottomInsetsState
                     .getOrAwaitValue()[BottomInsetsType.LeaderboardSheet]!!
-                    .isHidden.isTrue()
+                    .isHidden.assertTrue()
+        }
+    }
+
+    @Test
+    fun `given coupon bottom sheet is shown, when hide bottom sheet, then bottom sheet should be hidden`() {
+        givenPlayViewModelRobot {
+            showCouponBottomSheet()
+        } thenVerify {
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.CouponSheet]!!
+                .isShown.assertTrue()
+        } andWhen {
+            hideCouponBottomSheet()
+        } thenVerify {
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.CouponSheet]!!
+                .isHidden.assertTrue()
+        }
+    }
+
+    @Test
+    fun `given kebab bottom sheet is shown, when hide bottom sheet, then bottom sheet should be hidden`() {
+        givenPlayViewModelRobot {
+            showKebabBottomSheet()
+        } thenVerify {
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.KebabMenuSheet]!!
+                .isShown.assertTrue()
+        } andWhen {
+            hideKebabBottomSheet()
+        } thenVerify {
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.KebabMenuSheet]!!
+                .isHidden.assertTrue()
+        }
+    }
+
+    @Test
+    fun `given user report bottom sheet is shown, when hide bottom sheet, then bottom sheet should be hidden`() {
+        givenPlayViewModelRobot {
+            showUserReportBottomSheet()
+        } thenVerify {
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.UserReportSheet]!!
+                .isShown.assertTrue()
+        } andWhen {
+            hideUserReportBottomSheet()
+        } thenVerify {
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.UserReportSheet]!!
+                .isHidden.assertTrue()
+        }
+    }
+
+    @Test
+    fun `given user report submission bottom sheet is shown, when hide bottom sheet, then bottom sheet should be hidden`() {
+        givenPlayViewModelRobot {
+            showUserReportSubmissionBottomSheet()
+        } thenVerify {
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.UserReportSubmissionSheet]!!
+                .isShown.assertTrue()
+        } andWhen {
+            hideUserReportSubmissionBottomSheet()
+        } thenVerify {
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.UserReportSubmissionSheet]!!
+                .isHidden.assertTrue()
         }
     }
 
@@ -195,34 +311,34 @@ class PlayViewModelInsetsTest {
         } thenVerify {
             viewModel.observableBottomInsetsState
                     .getOrAwaitValue()[BottomInsetsType.Keyboard]!!
-                    .isShown.isTrue()
+                    .isShown.assertTrue()
         } andWhen {
             goBack()
         } thenVerify { result ->
             viewModel.observableBottomInsetsState
                     .getOrAwaitValue()[BottomInsetsType.Keyboard]!!
-                    .isHidden.isTrue()
+                    .isHidden.assertTrue()
 
-            result.isTrue()
+            result.assertTrue()
         }
     }
 
     @Test
-    fun `given product bottom sheet is shown, when back button is pressed, then product bottom sheet should be hidden and back will be consumed`() {
+    fun `given coupon bottom sheet is shown, when back button is pressed, then coupon bottom sheet should be hidden and back will be consumed`() {
         givenPlayViewModelRobot {
-            showProductBottomSheet()
+            showCouponBottomSheet()
         } thenVerify {
             viewModel.observableBottomInsetsState
-                    .getOrAwaitValue()[BottomInsetsType.ProductSheet]!!
-                    .isShown.isTrue()
+                    .getOrAwaitValue()[BottomInsetsType.CouponSheet]!!
+                    .isShown.assertTrue()
         } andWhen {
             goBack()
         } thenVerify { result ->
             viewModel.observableBottomInsetsState
-                    .getOrAwaitValue()[BottomInsetsType.ProductSheet]!!
-                    .isHidden.isTrue()
+                    .getOrAwaitValue()[BottomInsetsType.CouponSheet]!!
+                    .isHidden.assertTrue()
 
-            result.isTrue()
+            result.assertTrue()
         }
     }
 
@@ -233,15 +349,15 @@ class PlayViewModelInsetsTest {
         } thenVerify {
             viewModel.observableBottomInsetsState
                     .getOrAwaitValue()[BottomInsetsType.VariantSheet]!!
-                    .isShown.isTrue()
+                    .isShown.assertTrue()
         } andWhen {
             goBack()
         } thenVerify { result ->
             viewModel.observableBottomInsetsState
                     .getOrAwaitValue()[BottomInsetsType.VariantSheet]!!
-                    .isHidden.isTrue()
+                    .isHidden.assertTrue()
 
-            result.isTrue()
+            result.assertTrue()
         }
     }
 
@@ -252,15 +368,53 @@ class PlayViewModelInsetsTest {
         } thenVerify {
             viewModel.observableBottomInsetsState
                     .getOrAwaitValue()[BottomInsetsType.LeaderboardSheet]!!
-                    .isShown.isTrue()
+                    .isShown.assertTrue()
         } andWhen {
             goBack()
         } thenVerify { result ->
             viewModel.observableBottomInsetsState
                     .getOrAwaitValue()[BottomInsetsType.LeaderboardSheet]!!
-                    .isHidden.isTrue()
+                    .isHidden.assertTrue()
 
-            result.isTrue()
+            result.assertTrue()
+        }
+    }
+
+    @Test
+    fun `given user report bottom sheet is shown, when back button is pressed, then user report bottom sheet should be hidden and back will be consumed`() {
+        givenPlayViewModelRobot {
+            showUserReportBottomSheet()
+        } thenVerify {
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.UserReportSheet]!!
+                .isShown.assertTrue()
+        } andWhen {
+            goBack()
+        } thenVerify { result ->
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.UserReportSheet]!!
+                .isHidden.assertTrue()
+
+            result.assertTrue()
+        }
+    }
+
+    @Test
+    fun `given user report submission bottom sheet is shown, when back button is pressed, then user report submission bottom sheet should be hidden and back will be consumed`() {
+        givenPlayViewModelRobot {
+            showUserReportSubmissionBottomSheet()
+        } thenVerify {
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.UserReportSubmissionSheet]!!
+                .isShown.assertTrue()
+        } andWhen {
+            goBack()
+        } thenVerify { result ->
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.UserReportSubmissionSheet]!!
+                .isHidden.assertTrue()
+
+            result.assertTrue()
         }
     }
 
@@ -270,7 +424,7 @@ class PlayViewModelInsetsTest {
         ) andWhen {
             goBack()
         } thenVerify { result ->
-            result.isFalse()
+            result.assertFalse()
         }
     }
 }

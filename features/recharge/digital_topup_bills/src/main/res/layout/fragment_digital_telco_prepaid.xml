@@ -83,10 +83,7 @@
                     android:id="@+id/telco_input_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/layout_lvl1"
-                    android:layout_marginTop="@dimen/layout_lvl1"
-                    android:layout_marginRight="@dimen/layout_lvl1"
-                    android:layout_marginBottom="@dimen/layout_lvl1" />
+                    android:background="@color/Unify_Background" />
 
             </androidx.cardview.widget.CardView>
 

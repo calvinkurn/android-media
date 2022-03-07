@@ -20,5 +20,7 @@ data class ImageUploadServiceModel (
         var source: String,
         var imageUrl: String,
         var imageUrlThumbnail: String,
-        var isRetry: Boolean
+        var isRetry: Boolean,
+        val parentReply: String,
+        val localId: String
 ): Parcelable

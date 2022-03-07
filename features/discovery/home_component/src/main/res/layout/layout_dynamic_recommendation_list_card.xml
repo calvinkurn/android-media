@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.productcard.ProductCardListView
-    android:layout_marginStart="@dimen/dp_12"
-    android:layout_marginEnd="@dimen/dp_12"
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
     android:id="@+id/productCardView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"

@@ -39,6 +39,7 @@ class InitialSearchActivityViewModelTest : InitialSearchActivityViewModelTestFix
             advanceTimeBy(300)
 
             verifyGetTypingSearchSuccess(resultKeyword)
+            viewModel.queryChannel.cancel()
         }
     }
 

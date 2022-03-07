@@ -9,10 +9,13 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.search.R
+import com.tokopedia.search.databinding.SearchInspirationCarouselChipsItemBinding
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView.Option
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.utils.view.binding.viewBinding
+import timber.log.Timber
 
 class InspirationCarouselChipsItemViewHolder(
         itemView: View,
@@ -24,23 +27,20 @@ class InspirationCarouselChipsItemViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.search_inspiration_carousel_chips_item
     }
-
-    private var chipsUnify: ChipsUnify? = null
-
-    init {
-        chipsUnify = itemView.findViewById(R.id.inspirationCarouselChipsUnify)
-    }
+    private var binding: SearchInspirationCarouselChipsItemBinding? by viewBinding()
 
     fun bind(
             inspirationCarouselAdapterPosition: Int,
             inspirationCarouselViewModel: InspirationCarouselDataView,
             inspirationCarouselOption: Option,
     ) {
-        chipsUnify?.chipType = getChipType(inspirationCarouselOption)
-        chipsUnify?.chipSize = ChipsUnify.SIZE_SMALL
-        chipsUnify?.chipText = inspirationCarouselOption.title
-        chipsUnify?.showIcon(inspirationCarouselOption)
-        chipsUnify?.setOnClickListener {
+        val binding = binding ?: return
+        val chipsUnify = binding.inspirationCarouselChipsUnify
+        chipsUnify.chipType = getChipType(inspirationCarouselOption)
+        chipsUnify.chipSize = ChipsUnify.SIZE_SMALL
+        chipsUnify.chipText = inspirationCarouselOption.title
+        chipsUnify.showIcon(inspirationCarouselOption)
+        chipsUnify.setOnClickListener {
             onChipsClicked(
                     inspirationCarouselAdapterPosition,
                     inspirationCarouselViewModel,
@@ -83,7 +83,7 @@ class InspirationCarouselChipsItemViewHolder(
             Color.parseColor(color)
         }
         catch (throwable: Throwable) {
-            throwable.printStackTrace()
+            Timber.w(throwable)
             0
         }
     }

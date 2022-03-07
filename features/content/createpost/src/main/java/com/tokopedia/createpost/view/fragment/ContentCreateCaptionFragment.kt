@@ -3,12 +3,14 @@ package com.tokopedia.createpost.view.fragment
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.text.InputType
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.affiliatecommon.view.widget.ClearFocusEditText
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.createpost.R
@@ -19,13 +21,13 @@ import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import kotlinx.android.synthetic.main.content_caption_page_preview.*
 
 class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
 
-    private val adapter: CaptionPagePreviewImageAdapter by lazy {
-        CaptionPagePreviewImageAdapter(listener = activityListener)
-    }
+    private var captionTxt: ClearFocusEditText? = null
+    private var contentPreviewRv : RecyclerView? = null
+    private var adapter: CaptionPagePreviewImageAdapter? =
+        CaptionPagePreviewImageAdapter(onItemClick = this::onItemClick)
 
 
     override fun fetchContentForm() {
@@ -49,12 +51,21 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
             .inject(this)
     }
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.content_caption_page_preview, container, false)
+        val v = inflater.inflate(R.layout.content_caption_page_preview, container, false)
+        initialiseViews(v)
+        return v
     }
+
+    private fun initialiseViews(v: View) {
+        captionTxt = v.findViewById(R.id.caption)
+        contentPreviewRv = v.findViewById(R.id.content_post_image_rv)
+
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -75,6 +86,9 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
+    private fun onItemClick(position: Int) {
+        activityListener?.openProductTaggingPageOnPreviewMediaClick(position)
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -91,15 +105,15 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
         createPostModel = createContentPostViewModel.getPostData()!!
     }
     private fun initView() {
-        adapter.updateProduct(createPostModel.completeImageList)
+        adapter?.updateProduct(createPostModel.completeImageList)
         if (!createPostModel.isEditState)
-            content_post_image_rv.visible()
+            contentPreviewRv?.visible()
         else
-            content_post_image_rv.gone()
-        content_post_image_rv.setHasFixedSize(true)
-        content_post_image_rv.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        content_post_image_rv.adapter = adapter
+            contentPreviewRv?.gone()
+        contentPreviewRv?.setHasFixedSize(true)
+        contentPreviewRv?.layoutManager =
+            LinearLayoutManager(parentFragment?.context, LinearLayoutManager.HORIZONTAL, false)
+        contentPreviewRv?.adapter = adapter
 
         updateCaption()
 
@@ -108,15 +122,13 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
     @SuppressLint("ClickableViewAccessibility")
     private fun updateCaption() {
         if (createPostModel.caption.isNotEmpty())
-            caption.setText(createPostModel.caption)
-        if (createPostModel.caption.isEmpty())
-            caption.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+            captionTxt?.setText(createPostModel.caption)
 
 
-        caption.afterTextChanged {
+        captionTxt?.afterTextChanged {
             createPostModel.caption = it
         }
-        caption.setOnTouchListener { v, event ->
+        captionTxt?.setOnTouchListener { v, event ->
             if (v.id == R.id.caption) {
                 showKeyboard()
                 v.parent.requestDisallowInterceptTouchEvent(true)
@@ -134,8 +146,8 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
     }
 
     override fun onPause() {
-        if (caption.isFocused)
-            caption.clearFocus()
+        if (captionTxt?.isFocused == true)
+            captionTxt?.clearFocus()
         hideKeyboard()
         super.onPause()
     }

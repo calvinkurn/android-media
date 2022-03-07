@@ -5,17 +5,21 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.broadcaster.mediator.LivePusherConfig
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
-import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConfig
-import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConnection
+import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
+import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
+import com.tokopedia.play.broadcaster.type.PriceUnknown
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
-import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
+import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
+import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -64,7 +68,8 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                     },
                     isSelectedHandler = { false },
                     stock = StockAvailable((it % 2) * 10),
-                    isSelectable = { Selectable }
+                    isSelectable = { Selectable },
+                    price = PriceUnknown
             )
         }
     }
@@ -142,38 +147,42 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
 
     override fun mapConfiguration(config: Config): ConfigurationUiModel {
         return ConfigurationUiModel(
-                streamAllowed = true,
-                channelType = ChannelType.Draft,
-                channelId = "10008", // 10008 prod, 10012 stag (status: draft)
-                remainingTime = (30 * 60 * 1000),
-                durationConfig = DurationConfigUiModel(
-                        duration = (30 * 60 * 1000),
-                        maxDurationDesc = "Siaran 30 menit",
-                        pauseDuration = (1 * 60 * 1000),
-                        errorMessage = "Maks. siaran 30 menit"
-                ),
-                productTagConfig = ProductTagConfigUiModel(
-                        maxProduct = 15,
-                        minProduct = 1,
-                        maxProductDesc = "Maks. Produk 15",
-                        errorMessage = "Oops, kamu sudah memilih 15 produk"
-                ),
-                coverConfig = CoverConfigUiModel(
-                        maxChars = 38
-                ),
-                countDown = 5,
-                scheduleConfig = BroadcastScheduleConfigUiModel(
-                        minimum = Date(),
-                        maximum = Date(),
-                        default = Date()
-                )
+            streamAllowed = true,
+            channelType = ChannelType.Draft,
+            channelId = "10008", // 10008 prod, 10012 stag (status: draft)
+            remainingTime = (30 * 60 * 1000),
+            durationConfig = DurationConfigUiModel(
+                duration = (30 * 60 * 1000),
+                maxDurationDesc = "Siaran 30 menit",
+                pauseDuration = (1 * 60 * 1000),
+                errorMessage = "Maks. siaran 30 menit"
+            ),
+            productTagConfig = ProductTagConfigUiModel(
+                maxProduct = 15,
+                minProduct = 1,
+                maxProductDesc = "Maks. Produk 15",
+                errorMessage = "Oops, kamu sudah memilih 15 produk"
+            ),
+            coverConfig = CoverConfigUiModel(
+                maxChars = 38
+            ),
+            countDown = 5,
+            scheduleConfig = BroadcastScheduleConfigUiModel(
+                minimum = Date(),
+                maximum = Date(),
+                default = Date()
+            ),
+            tnc = listOf(
+                TermsAndConditionUiModel("Gak ada izin"),
+                TermsAndConditionUiModel("Gak ada izin sama sekali"),
+            )
         )
     }
 
     override fun mapChannelInfo(channel: GetChannelResponse.Channel): ChannelInfoUiModel {
         return ChannelInfoUiModel(
                 channelId = "1234",
-                title = "Klarififikasi Bisa Tebak Siapa?",
+                title = "Klarifikasi Bisa Tebak Siapa?",
                 description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
                 coverUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
                 ingestUrl = LOCAL_RTMP_URL,
@@ -258,14 +267,29 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
 
     override fun mapLiveInfo(
         activeIngestUrl: String,
-        config: PlayLivePusherConfig
-    ): PlayLiveInfoUiModel {
-        return PlayLiveInfoUiModel(
+        config: LivePusherConfig
+    ): PlayLiveLogState {
+        return PlayLiveLogState.Init(
             "rtmp://tkpd.com",
             config.videoWidth,
             config.videoHeight,
             config.fps,
             config.videoBitrate
+        )
+    }
+
+    override fun mapPinnedMessage(
+        response: GetPinnedMessageResponse.Data
+    ): List<PinnedMessageUiModel> {
+        return emptyList()
+    }
+
+    override fun mapPinnedMessageSocket(response: PinnedMessageSocketResponse): PinnedMessageUiModel {
+        return PinnedMessageUiModel(
+            id = "",
+            message = "",
+            isActive = false,
+            editStatus = PinnedMessageEditStatus.Nothing,
         )
     }
 

@@ -13,7 +13,8 @@
             android:name=".homepage.presentation.activity.HotelHomepageActivity"
             android:label="@string/hotel_app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -35,7 +36,8 @@
             android:name=".search_map.presentation.activity.HotelSearchMapActivity"
             android:label="@string/hotel_app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -57,7 +59,8 @@
             android:name=".hoteldetail.presentation.activity.HotelDetailActivity"
             android:label=""
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -96,7 +99,8 @@
             android:name=".orderdetail.presentation.activity.HotelOrderDetailActivity"
             android:label="@string/hotel_order_detail_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -113,7 +117,8 @@
             android:name=".booking.presentation.activity.HotelBookingActivity"
             android:label="@string/hotel_booking_activity_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify" >
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -143,7 +148,8 @@
             android:name=".cancellation.presentation.activity.HotelCancellationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -164,21 +170,19 @@
             android:name=".orderdetail.presentation.activity.SeeInvoiceActivity"
             android:configChanges="uiMode"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
             </intent-filter>
         </activity>
-
         <activity
             android:name=".booking.presentation.activity.HotelPayAtHotelPromoActivity"
             android:label="@string/hotel_pay_at_hotel_promo_header_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
     </application>
-
 </manifest>

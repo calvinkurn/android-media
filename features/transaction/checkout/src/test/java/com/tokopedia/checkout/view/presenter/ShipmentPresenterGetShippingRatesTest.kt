@@ -10,16 +10,16 @@ import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
@@ -37,7 +37,7 @@ import rx.subscriptions.CompositeSubscription
 class ShipmentPresenterGetShippingRatesTest {
 
     @MockK
-    private lateinit var validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase
+    private lateinit var validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase
 
     @MockK(relaxed = true)
     private lateinit var compositeSubscription: CompositeSubscription
@@ -54,17 +54,14 @@ class ShipmentPresenterGetShippingRatesTest {
     @MockK
     private lateinit var saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase
 
-    @MockK
+    @MockK(relaxed = true)
     private lateinit var getRatesUseCase: GetRatesUseCase
 
-    @MockK
+    @MockK(relaxed = true)
     private lateinit var getRatesApiUseCase: GetRatesApiUseCase
 
     @MockK
-    private lateinit var clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase
-
-    @MockK
-    private lateinit var submitHelpTicketUseCase: SubmitHelpTicketUseCase
+    private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
 
     @MockK(relaxed = true)
     private lateinit var userSessionInterface: UserSessionInterface
@@ -85,7 +82,10 @@ class ShipmentPresenterGetShippingRatesTest {
     private lateinit var view: ShipmentContract.View
 
     @MockK(relaxed = true)
-    private lateinit var getShipmentAddressFormGqlUseCase: GetShipmentAddressFormGqlUseCase
+    private lateinit var getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase
+
+    @MockK
+    private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
     private var shipmentDataConverter = ShipmentDataConverter()
     private var ratesStatesConverter = RatesResponseStateConverter()
@@ -100,13 +100,13 @@ class ShipmentPresenterGetShippingRatesTest {
     fun before() {
         MockKAnnotations.init(this)
         presenter = ShipmentPresenter(
-                compositeSubscription, checkoutUseCase, getShipmentAddressFormGqlUseCase,
+                compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
                 editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
                 getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-                submitHelpTicketUseCase, ratesStatesConverter, shippingCourierConverter,
+                ratesStatesConverter, shippingCourierConverter,
                 shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
                 checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase,
-                validateUsePromoRevampUseCase, gson, TestSchedulers)
+                validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase)
         presenter.attachView(view)
     }
 
@@ -370,4 +370,15 @@ class ShipmentPresenterGetShippingRatesTest {
         assertNull(presenter.getShippingCourierViewModelsState(0))
     }
 
+    @Test
+    fun `WHEN presenter detached THEN all usecases is unsubscribed`() {
+        // When
+        presenter.detachView()
+
+        // Then
+        verify {
+            getRatesUseCase.unsubscribe()
+            getRatesApiUseCase.unsubscribe()
+        }
+    }
 }

@@ -1,13 +1,13 @@
 package com.tokopedia.talk.feature.inbox.analytics
 
 import android.os.Bundle
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.talk.common.analytics.TalkEventTracking
 import com.tokopedia.talk.common.analytics.TalkTrackingConstants
 import com.tokopedia.talk.feature.inbox.data.TalkInboxFilter
 import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
 import com.tokopedia.talk.feature.sellersettings.common.analytics.TalkSellerSettingsTrackingConstants
 import com.tokopedia.track.TrackApp
-import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import javax.inject.Inject
 
@@ -114,30 +114,45 @@ class TalkInboxTracking @Inject constructor() {
 
     fun eventItemImpress(inboxType: String, talkId: String, userId: String, position: Int, isUnread: Boolean, trackingQueue: TrackingQueue) {
         val eventCategory = String.format(TalkTrackingConstants.EVENT_CATEGORY_INBOX_PRODUCT, getInboxType(inboxType))
-        trackingQueue.putEETracking(
-                hashMapOf(
-                        TalkTrackingConstants.TRACKING_EVENT to TalkInboxTrackingConstants.EVENT_PROMO_VIEW,
-                        TalkTrackingConstants.TRACKING_EVENT_ACTION to TalkInboxTrackingConstants.EVENT_ACTION_IMPRESS_ITEM,
-                        TalkTrackingConstants.TRACKING_EVENT_LABEL to "",
-                        TalkTrackingConstants.TRACKING_EVENT_CATEGORY to eventCategory,
-                        TalkTrackingConstants.TRACKING_USER_ID to userId,
-                        TalkTrackingConstants.TRACKING_SCREEN_NAME to TalkInboxTrackingConstants.SCREEN_NAME,
-                        TalkTrackingConstants.TRACKING_CURRENT_SITE to TalkTrackingConstants.CURRENT_SITE_TALK,
-                        TalkTrackingConstants.TRACKING_BUSINESS_UNIT to TalkTrackingConstants.BUSINESS_UNIT_TALK,
-                        TalkTrackingConstants.TRACKING_ECOMMERCE to mapOf(
-                                TalkInboxTrackingConstants.EVENT_PROMO_VIEW to mapOf(
-                                        TalkTrackingConstants.TRACKING_PROMOTIONS to listOf(
-                                                mapOf(
-                                                        TalkTrackingConstants.TRACKING_ID to talkId,
-                                                        TalkTrackingConstants.TRACKING_NAME to eventCategory,
-                                                        TalkTrackingConstants.TRACKING_CREATIVE to String.format(TalkInboxTrackingConstants.CREATIVE_MESSAGE_STATUS, getStatusRead(!isUnread)),
-                                                        TalkTrackingConstants.TRACKING_POSITION to position.toString()
-                                                )
-                                        )
-                                )
+        val trackingMap = DataLayer.mapOf(
+            TalkTrackingConstants.TRACKING_EVENT,
+            TalkInboxTrackingConstants.EVENT_PROMO_VIEW,
+            TalkTrackingConstants.TRACKING_EVENT_ACTION,
+            TalkInboxTrackingConstants.EVENT_ACTION_IMPRESS_ITEM,
+            TalkTrackingConstants.TRACKING_EVENT_LABEL,
+            "",
+            TalkTrackingConstants.TRACKING_EVENT_CATEGORY,
+            eventCategory,
+            TalkTrackingConstants.TRACKING_USER_ID,
+            userId,
+            TalkTrackingConstants.TRACKING_SCREEN_NAME,
+            TalkInboxTrackingConstants.SCREEN_NAME,
+            TalkTrackingConstants.TRACKING_CURRENT_SITE,
+            TalkTrackingConstants.CURRENT_SITE_TALK,
+            TalkTrackingConstants.TRACKING_BUSINESS_UNIT,
+            TalkTrackingConstants.BUSINESS_UNIT_TALK,
+            TalkTrackingConstants.TRACKING_ECOMMERCE,
+            DataLayer.mapOf(
+                TalkInboxTrackingConstants.EVENT_PROMO_VIEW, DataLayer.mapOf(
+                    TalkTrackingConstants.TRACKING_PROMOTIONS, DataLayer.listOf(
+                        DataLayer.mapOf(
+                            TalkTrackingConstants.TRACKING_ID,
+                            talkId,
+                            TalkTrackingConstants.TRACKING_NAME,
+                            eventCategory,
+                            TalkTrackingConstants.TRACKING_CREATIVE,
+                            String.format(
+                                TalkInboxTrackingConstants.CREATIVE_MESSAGE_STATUS,
+                                getStatusRead(!isUnread)
+                            ),
+                            TalkTrackingConstants.TRACKING_POSITION,
+                            position.toString()
                         )
+                    )
                 )
+            )
         )
+        trackingQueue.putEETracking(trackingMap as HashMap<String, Any>?)
     }
 
     fun eventClickSellerFilter(shopId: String, userId: String, filter: String, filterStatus: Boolean, countUnreadMessages: Long) {

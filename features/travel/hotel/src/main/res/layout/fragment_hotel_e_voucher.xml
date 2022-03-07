@@ -90,6 +90,39 @@
 
                     <View
                         android:layout_width="match_parent"
+                        android:layout_height="@dimen/hotel_5dp"
+                        android:layout_marginBottom="@dimen/hotel_12dp"
+                        android:background="@drawable/bg_hotel_ticket_divider"
+                        android:layerType="software" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tv_order_detail_nha"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/layout_lvl2"
+                        android:layout_marginRight="@dimen/layout_lvl2"
+                        android:textColor="@color/Unify_N700_68"
+                        android:gravity="center"
+                        app:typographyType="body_3"
+                        android:visibility="gone"
+                        android:lineSpacingExtra="@dimen/hotel_spacing_4"
+                        tools:visibility="visible"
+                        tools:text="Hubungi untuk konfirmasi check-in:" />
+                    
+                    <com.tokopedia.unifycomponents.UnifyButton
+                        android:id="@+id/btn_nha_phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        app:unifyButtonSize="small"
+                        android:layout_marginLeft="@dimen/layout_lvl2"
+                        android:layout_marginRight="@dimen/layout_lvl2"
+                        android:layout_marginBottom="@dimen/hotel_12dp"
+                        app:unifyButtonVariant="text"
+                        tools:text="021-3377789"/>
+
+                    <View
+                        android:layout_width="match_parent"
                         android:layout_height="5dp"
                         android:layout_marginBottom="@dimen/layout_lvl2"
                         android:background="@drawable/bg_hotel_ticket_divider"
@@ -266,7 +299,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/layout_lvl6"
         android:background="@color/Unify_N0"
         android:orientation="horizontal"
         android:layout_gravity="bottom"
@@ -284,9 +317,12 @@
             app:typographyType="body_3" />
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_dynamic_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_hotel_booking_com_logo" />
+            android:adjustViewBounds="true"
+            tools:visibility="visible"
+            tools:srcCompat="@drawable/ic_hotel_booking_com_logo" />
 
     </LinearLayout>
     <include

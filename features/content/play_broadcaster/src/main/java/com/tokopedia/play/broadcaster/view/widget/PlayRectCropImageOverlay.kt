@@ -91,13 +91,13 @@ class PlayRectCropImageOverlay @JvmOverloads constructor(context: Context, attrs
         // draw bottom black overlay
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             canvas.drawRect(leftPosition,
-                    rectHeight.toFloat() - bottomDetailHeight,
+                    rectHeight - bottomDetailHeight,
                     rightPosition,
                     bottomPosition,
                     mBlackTransparentPaint)
         } else {
             canvas.drawRoundRect(leftPosition,
-                    rectHeight.toFloat() - bottomDetailHeight,
+                    rectHeight - bottomDetailHeight,
                     rightPosition,
                     bottomPosition,
                     CENTER_RECT_RADIUS,

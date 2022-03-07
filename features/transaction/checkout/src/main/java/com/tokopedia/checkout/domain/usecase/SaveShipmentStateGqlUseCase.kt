@@ -4,8 +4,6 @@ import com.tokopedia.checkout.data.model.response.saveshipmentstate.SaveShipment
 import com.tokopedia.checkout.domain.model.saveshipmentstate.SaveShipmentStateData
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers

@@ -12,10 +12,8 @@
         app:cardElevation="0dp"
         app:cardCornerRadius="@dimen/unify_space_4"
         android:id="@+id/card_container_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintWidth_max="@dimen/component_featured_brand_logo_max_widht"
-        app:layout_constraintHeight_max="@dimen/unify_space_32"
+        android:layout_width="@dimen/component_featured_brand_logo_width"
+        android:layout_height="@dimen/component_featured_brand_logo_height"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/item_frame_image"
@@ -29,8 +27,8 @@
             android:adjustViewBounds="true"
             android:id="@+id/item_logo"
             android:scaleType="centerInside"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/component_featured_brand_logo_width"
+            android:layout_height="@dimen/component_featured_brand_logo_height"
             android:contentDescription="@string/content_desc_featured_brand_icon"/>
     </androidx.cardview.widget.CardView>
 

@@ -15,9 +15,13 @@ class VisorFingerprintInstance {
         private var visorToken = ""
         const val KEY_USER_ID = "HASHED_USER_ID"
 
-        const val DV_SHARED_PREF_NAME = "pref_dv"
+        private const val DV_SHARED_PREF_NAME = "pref_dv"
         const val KEY_TOKEN = "tk"
         val DEFAULT_VALUE_DATAVISOR = decodeDecimalToText(intArrayOf(68, 86, 76, 84, 95, 54, 53, 52, 50, 98, 55, 55, 53, 101, 51, 50, 54, 51, 99, 50, 55, 101, 51, 50, 49, 98, 57, 50, 57, 45, 102, 53, 50, 102, 99, 54, 101, 48, 95, 100, 70, 108, 116))
+
+        fun getSharedPrefName(): String {
+            return DV_SHARED_PREF_NAME
+        }
 
         private fun getVisorInstance(applicationContext: Context): DVTokenClient {
             if (visorInstance == null) {
@@ -42,12 +46,12 @@ class VisorFingerprintInstance {
         }
 
         fun setDVToken(context: Context, token: String) {
-            val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
+            val sp = context.getSharedPreferences(getSharedPrefName(), Context.MODE_PRIVATE)
             sp.edit().putString(KEY_TOKEN, token).apply()
         }
 
         fun getDVToken(context: Context): String {
-            val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
+            val sp = context.getSharedPreferences(getSharedPrefName(), Context.MODE_PRIVATE)
             return sp.getString(KEY_TOKEN, DEFAULT_VALUE_DATAVISOR) ?: DEFAULT_VALUE_DATAVISOR
         }
     }

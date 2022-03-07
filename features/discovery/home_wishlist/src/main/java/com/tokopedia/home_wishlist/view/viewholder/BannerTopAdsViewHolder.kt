@@ -2,6 +2,7 @@ package com.tokopedia.home_wishlist.view.viewholder
 
 import android.graphics.drawable.Drawable
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -21,8 +22,14 @@ class BannerTopAdsViewHolder (view: View) : SmartAbstractViewHolder<BannerTopAds
     override fun bind(element: BannerTopAdsDataModel, listener: SmartListener) {
         if(listener is TopAdsListener) {
             loadImageTopAds(element, listener)
+
+
             itemView.wishlist_topads_image_view.setOnClickListener {
-                listener.onBannerTopAdsClick(element, adapterPosition)
+
+                // to prevent ArrayIndexOutOfBoundsException
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    listener.onBannerTopAdsClick(element, adapterPosition)
+                }
             }
         }
     }

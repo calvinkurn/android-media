@@ -8,14 +8,15 @@ import com.tokopedia.review.feature.inbox.pending.data.ProductrevWaitForFeedback
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class ProductrevWaitForFeedbackUseCase @Inject constructor(graphqlRepository: GraphqlRepository) : GraphqlUseCase<ProductrevWaitForFeedbackResponseWrapper>(graphqlRepository) {
+class ProductrevWaitForFeedbackUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
+    GraphqlUseCase<ProductrevWaitForFeedbackResponseWrapper>(graphqlRepository) {
 
     companion object {
         const val PARAM_LIMIT = "limit"
         const val PARAM_PAGE = "page"
         const val WAIT_FOR_FEEDBACK_QUERY_CLASS_NAME = "WaitForFeedback"
         const val WAIT_FOR_FEEDBACK_QUERY =
-                """
+            """
                 query productrevWaitForFeedback(${'$'}limit: Int!, ${'$'}page: Int!) {
                     productrevWaitForFeedback(limit: ${'$'}limit, page: ${'$'}page) {
                       list {
@@ -40,6 +41,17 @@ class ProductrevWaitForFeedbackUseCase @Inject constructor(graphqlRepository: Gr
                       page
                       limit
                       hasNext
+                      state {
+                        labelTitle
+                        labelSubtitle
+                        imageURL
+                      }
+                      banners {
+                        labelTitle
+                        labelSubtitle
+                        imageURL
+                        applink
+                      }
                     }
                 }
             """
@@ -50,10 +62,10 @@ class ProductrevWaitForFeedbackUseCase @Inject constructor(graphqlRepository: Gr
         setGraphqlQuery(WaitForFeedback.GQL_QUERY)
         setTypeClass(ProductrevWaitForFeedbackResponseWrapper::class.java)
         setRequestParams(
-                RequestParams.create().apply {
-                    putInt(PARAM_LIMIT, limit)
-                    putInt(PARAM_PAGE, page)
-                }.parameters
+            RequestParams.create().apply {
+                putInt(PARAM_LIMIT, limit)
+                putInt(PARAM_PAGE, page)
+            }.parameters
         )
     }
 }

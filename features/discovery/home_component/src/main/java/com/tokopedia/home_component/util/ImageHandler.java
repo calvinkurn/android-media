@@ -600,15 +600,7 @@ public class ImageHandler {
     }
 
     public static void loadImageBlur(final Context context, final ImageView imageView, String imageUrl) {
-        if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
-            Glide.with(context)
-                    .load(imageUrl)
-                    .override(80, 80)
-                    .centerCrop()
-                    .into(imageView);
-        }
-
-        if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        if (context != null) {
             Glide.with(context)
                     .asBitmap()
                     .load(imageUrl)
@@ -631,13 +623,7 @@ public class ImageHandler {
     public static void loadImageBlurWithViewTarget(final Context context,
                                      String imageUrl,
                                      CustomTarget<Bitmap> simpleTarget) {
-        if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
-            Glide.with(context)
-                    .asBitmap()
-                    .load(imageUrl)
-                    .centerCrop()
-                    .into(simpleTarget);
-        } else if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        if (context != null) {
             Glide.with(context)
                     .asBitmap()
                     .load(imageUrl)

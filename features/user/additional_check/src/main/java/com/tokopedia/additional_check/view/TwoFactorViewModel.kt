@@ -1,13 +1,12 @@
 package com.tokopedia.additional_check.view
 
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.additional_check.data.GetObjectPojo
-import com.tokopedia.additional_check.data.TwoFactorResult
+import com.tokopedia.additional_check.data.ShowInterruptData
 import com.tokopedia.additional_check.data.pref.AdditionalCheckPreference
-import com.tokopedia.additional_check.domain.usecase.AdditionalCheckUseCase
+import com.tokopedia.additional_check.domain.usecase.ShowInterruptUseCase
+import com.tokopedia.additional_check.internal.AdditionalCheckConstants
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sessioncommon.di.SessionModule
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
@@ -16,16 +15,20 @@ import javax.inject.Named
 class TwoFactorViewModel @Inject constructor (@Named(SessionModule.SESSION_MODULE)
                                               private val userSession: UserSessionInterface,
                                               private val additionalCheckPreference: AdditionalCheckPreference,
-                                              private val additionalCheckUseCase: AdditionalCheckUseCase,
-                                              dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher) {
+                                              private val showInterruptUseCase: ShowInterruptUseCase,
+                                              dispatcher: CoroutineDispatcher
+): BaseViewModel(dispatcher) {
 
-    private val mutableGetDataResponse = MutableLiveData<Result<GetObjectPojo>>()
-
-    fun check(onSuccess: (TwoFactorResult) -> Unit, onError: (Throwable) -> Unit) {
+    fun check(onSuccess: (ShowInterruptData) -> Unit, onError: (Throwable) -> Unit) {
         if(additionalCheckPreference.isNeedCheck() && userSession.isLoggedIn) {
-            additionalCheckUseCase.getBottomSheetData(onSuccess = {
-                additionalCheckPreference.setInterval(it.twoFactorResult?.interval ?: 0)
-                onSuccess(it.twoFactorResult ?: TwoFactorResult())
+            launchCatchError(block = {
+                val result = showInterruptUseCase(ShowInterruptUseCase.MODULE_ACCOUNT_LINKING).data
+                if(result.popupType == AdditionalCheckConstants.POPUP_TYPE_NONE) {
+                    additionalCheckPreference.setInterval(result.accountLinkReminderData.interval)
+                } else {
+                    additionalCheckPreference.setInterval(result.interval)
+                }
+                onSuccess(result)
             }, onError = {
                 onError(it)
             })

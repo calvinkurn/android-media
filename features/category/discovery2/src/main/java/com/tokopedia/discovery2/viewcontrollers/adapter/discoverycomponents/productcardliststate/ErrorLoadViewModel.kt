@@ -3,8 +3,10 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.usecase.MerchantVoucherUseCase
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -22,6 +24,9 @@ class ErrorLoadViewModel(val application: Application,
     @Inject
     lateinit var productCardUseCase: ProductCardsUseCase
 
+    @Inject
+    lateinit var merchantVoucherUseCase: MerchantVoucherUseCase
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
@@ -32,10 +37,34 @@ class ErrorLoadViewModel(val application: Application,
         launchCatchError(block = {
             getComponent(components.parentComponentId, components.pageEndPoint)?.let {
                 if (it.noOfPagesLoaded == 0) {
-                    syncData.value = productCardUseCase.loadFirstPageComponents(components.parentComponentId, components.pageEndPoint)
+                    syncData.value = when (components.parentComponentName) {
+                        ComponentNames.MerchantVoucherList.componentName ->
+                            merchantVoucherUseCase.loadFirstPageComponents(
+                                components.parentComponentId,
+                                components.pageEndPoint
+                            )
+                        else ->
+                            productCardUseCase.loadFirstPageComponents(
+                                components.parentComponentId,
+                                components.pageEndPoint
+                            )
+                    }
                 } else {
-                    syncData.value = productCardUseCase.getProductCardsUseCase(components.id, components.pageEndPoint)
+                    syncData.value =
+                        when (components.parentComponentName) {
+                            ComponentNames.MerchantVoucherList.componentName ->
+                                merchantVoucherUseCase.getVoucherUseCase(
+                                    components.id,
+                                    components.pageEndPoint
+                                )
+                            else ->
+                                productCardUseCase.getProductCardsUseCase(
+                                    components.id,
+                                    components.pageEndPoint
+                                )
+                        }
                 }
+
             }
         }, onError = {
             showLoader.value = false

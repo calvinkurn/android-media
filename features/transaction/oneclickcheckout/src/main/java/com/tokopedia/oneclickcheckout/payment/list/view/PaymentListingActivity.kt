@@ -27,6 +27,7 @@ open class PaymentListingActivity : BaseSimpleActivity(), HasComponent<PaymentCo
         return PaymentListingFragment.newInstance(intent.getDoubleExtra(EXTRA_PAYMENT_AMOUNT, 0.0),
                 intent.getStringExtra(EXTRA_ADDRESS_ID) ?: "",
                 intent.getStringExtra(EXTRA_PAYMENT_PROFILE) ?: "",
+                intent.getStringExtra(EXTRA_PAYMENT_MERCHANT) ?: "",
                 intent.getStringExtra(EXTRA_PAYMENT_BID) ?: ""
         )
     }
@@ -44,6 +45,7 @@ open class PaymentListingActivity : BaseSimpleActivity(), HasComponent<PaymentCo
     companion object {
         internal const val EXTRA_ADDRESS_ID = "address_id"
         internal const val EXTRA_PAYMENT_PROFILE = "payment_profile"
+        internal const val EXTRA_PAYMENT_MERCHANT = "payment_merchant"
         internal const val EXTRA_PAYMENT_AMOUNT = "payment_amount"
         internal const val EXTRA_PAYMENT_BID = "payment_bid"
 

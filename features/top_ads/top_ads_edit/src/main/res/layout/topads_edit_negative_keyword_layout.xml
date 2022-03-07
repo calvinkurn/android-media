@@ -11,8 +11,8 @@
         android:id="@+id/keyword_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="21dp"
         android:text="@string/topads_edit_kata_kunci_negative_count"
         android:textColor="@color/topads_common_select_color_unchecked"
@@ -24,9 +24,9 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/add_image"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_5"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginRight="5dp"
         app:layout_constraintBottom_toBottomOf="@+id/add_keyword"
         app:layout_constraintEnd_toStartOf="@+id/add_keyword"
         app:layout_constraintTop_toTopOf="@+id/add_keyword" />
@@ -35,8 +35,8 @@
         android:id="@+id/add_keyword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:text="@string/add_keyword"
         android:textColor="@color/medium_green"
         app:layout_constraintEnd_toEndOf="parent"
@@ -47,7 +47,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/keyword_list"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/dp_19"
         android:nestedScrollingEnabled="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"

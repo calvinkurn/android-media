@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.common.util
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.graphics.ColorFilter
@@ -10,11 +11,13 @@ import android.os.Parcelable
 import android.text.Spanned
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.PATTERN_DATE_PARAM
 import com.tokopedia.sellerorder.common.util.SomConsts.UNIFY_TICKER_TYPE_ANNOUNCEMENT
@@ -26,6 +29,7 @@ import com.tokopedia.shop.common.constant.SellerHomePermissionGroup
 import com.tokopedia.shop.common.constant.admin_roles.AdminPermissionUrl
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -158,5 +162,17 @@ object Utils {
             onActionClick.invoke()
         }
         show()
+    }
+
+    fun parseRupiah(price: String): String {
+        return "Rp ${CurrencyFormatHelper.convertToRupiah(price)}"
+    }
+
+    fun Fragment?.updateShopActive() {
+        this?.context?.let { UpdateShopActiveService.startService(it) }
+    }
+
+    fun Activity.updateShopActive() {
+        UpdateShopActiveService.startService(this)
     }
 }

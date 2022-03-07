@@ -196,6 +196,13 @@ object CommonTopupBillsGqlQuery {
                 label: Label
                 value: Value
               }
+              additionalInfo: AdditionalInfo{
+                title: Title
+              	detail: Detail {
+                  label: Label
+              	  value: Value
+              	}
+              }
             }
           }
         }

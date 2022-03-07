@@ -9,12 +9,14 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ShopPageWidgetLabelViewBinding
 
 /**
  * Created by zulfikarrahman on 12/29/16.
@@ -54,6 +56,7 @@ class ShopPageLabelView : ShopPageBaseCustomView {
     private var minTitleWidth = 0
     private var isArrowShown = false
     private var enabled = false
+    private var viewBinding : ShopPageWidgetLabelViewBinding? = null
 
     constructor(context: Context) : super(context) {
         init()
@@ -100,13 +103,13 @@ class ShopPageLabelView : ShopPageBaseCustomView {
     }
 
     private fun init() {
-        val view = inflate(context, R.layout.shop_page_widget_label_view, this)
-        imageView = view.findViewById(R.id.image_view)
-        titleTextView = view.findViewById(R.id.text_view_title)
-        subTitleTextView = view.findViewById(R.id.text_view_sub_title)
-        contentTextView = view.findViewById(R.id.text_view_content)
-        rightArrow = view.findViewById(R.id.image_arrow)
-        badgeTextView = view.findViewById(R.id.text_view_badge)
+        viewBinding = ShopPageWidgetLabelViewBinding.inflate(LayoutInflater.from(context), this, true)
+        imageView = viewBinding?.imageView
+        titleTextView = viewBinding?.textViewTitle
+        subTitleTextView = viewBinding?.textViewSubTitle
+        contentTextView = viewBinding?.textViewContent
+        rightArrow = viewBinding?.imageArrow
+        badgeTextView = viewBinding?.textViewBadge
     }
 
     override fun onFinishInflate() {

@@ -14,7 +14,10 @@ import com.tokopedia.seller.menu.common.view.uimodel.*
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.common.SellerHomeConst
+import com.tokopedia.sellerhome.settings.analytics.SocialMediaLinksTracker
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.MenuSettingAccess
+import java.util.*
 
 class MenuSettingAdapter(private val context: Context?,
                          private val listener: Listener,
@@ -27,6 +30,7 @@ class MenuSettingAdapter(private val context: Context?,
 
         private const val DEVELOPER_OPTION_INDEX_FROM_LAST = 4
         private const val SCREEN_RECORDER_INDEX_FROM_LAST = 3
+        private const val SOCIAL_EXPIRED_DATE = 1646326800000 //04-03-2022
     }
 
     private val otherSettingList = listOf(
@@ -59,6 +63,22 @@ class MenuSettingAdapter(private val context: Context?,
             MenuItemUiModel(
                     context?.getString(R.string.setting_menu_review_app).orEmpty(),
                     settingTypeInfix = SettingTrackingConstant.APP_SETTING) { listener.onReviewApplication() },
+            MenuItemUiModel(
+                title = context?.getString(R.string.setting_menu_give_feedback).orEmpty(),
+                settingTypeInfix = SettingTrackingConstant.APP_SETTING
+            ) { listener.onGiveFeedback() },
+            DividerUiModel(DividerType.THIN_INDENTED),
+            MenuItemUiModel(
+                title = context?.getString(R.string.sah_social_menu_title).orEmpty(),
+                settingTypeInfix = SettingTrackingConstant.APP_SETTING,
+                tag = getSocialTag()
+            ) {
+                listener.onOpenSocialMediaLinks()
+            }.apply {
+                clickSendTracker = {
+                    SocialMediaLinksTracker.sendClickEvent()
+                }
+            },
             DividerUiModel(DividerType.THIN_INDENTED)
     )
 
@@ -101,52 +121,84 @@ class MenuSettingAdapter(private val context: Context?,
     }
 
     private fun getShopSettingList(settingAccess: MenuSettingAccess) =
-            listOf(
-                    SettingTitleMenuUiModel(context?.getString(R.string.setting_menu_shop_setting).orEmpty(), IconUnify.SHOP_SETTING),
-                    IndentedSettingTitleUiModel(context?.getString(R.string.setting_menu_shop_profile).orEmpty()),
-                    MenuItemUiModel(
-                            context?.getString(R.string.setting_menu_basic_info).orEmpty(),
-                            settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
-                            clickAction = {
-                                goToApplinkWhenAccessAuthorized(settingAccess.isInfoAccessAuthorized, ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO)
-                            }),
-                    MenuItemUiModel(
-                            context?.getString(R.string.setting_menu_shop_notes).orEmpty(),
-                            settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
-                            clickAction = {
-                                goToApplinkWhenAccessAuthorized(settingAccess.isNotesAccessAuthorized, ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES)
-                            }),
-                    MenuItemUiModel(
-                            context?.getString(R.string.setting_menu_shop_working_hours).orEmpty(),
-                            settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
-                            clickAction = {
-                                goToApplinkWhenAccessAuthorized(settingAccess.isInfoAccessAuthorized, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
-                            }),
-                    DividerUiModel(DividerType.THIN_INDENTED),
-                    IndentedSettingTitleUiModel(context?.getString(R.string.setting_menu_location_and_shipment).orEmpty()),
-                    MenuItemUiModel(
-                            context?.getString(R.string.setting_menu_add_and_shop_location).orEmpty(),
-                            settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
-                            clickAction = {
-                                goToApplinkWhenAccessAuthorized(settingAccess.isAddressAccessAuthorized, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS)
-                            }),
-                    MenuItemUiModel(
-                            context?.getString(R.string.setting_menu_set_shipment_method).orEmpty(),
-                            settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
-                            trackingAlias = SHIPPING_SERVICE_ALIAS,
-                            clickAction = {
-                                goToApplinkWhenAccessAuthorized(settingAccess.isShipmentAccessAuthorized, ApplinkConst.SELLER_SHIPPING_EDITOR)
-                            }),
-                    DividerUiModel(DividerType.THIN_INDENTED),
-                    MenuItemUiModel(
-                            context?.getString(R.string.setting_menu_set_activation_page_cod).orEmpty(),
-                            settingTypeInfix = SettingTrackingConstant.COD_ACTIVATION_SETTING,
-                            clickAction = {
-                                goToApplinkWhenAccessAuthorized(settingAccess.isShipmentAccessAuthorized, ApplinkConst.SELLER_COD_ACTIVATION)
+        listOf(
+            SettingTitleMenuUiModel(
+                context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_setting)
+                    .orEmpty(), IconUnify.SHOP_SETTING
+            ),
+            IndentedSettingTitleUiModel(
+                context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_profile)
+                    .orEmpty()
+            ),
+            MenuItemUiModel(
+                context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_basic_info)
+                    .orEmpty(),
+                settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
+                clickAction = {
+                    goToApplinkWhenAccessAuthorized(
+                        settingAccess.isInfoAccessAuthorized,
+                        ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO
+                    )
+                }),
+            MenuItemUiModel(
+                context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_notes)
+                    .orEmpty(),
+                settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
+                clickAction = {
+                    goToApplinkWhenAccessAuthorized(
+                        settingAccess.isNotesAccessAuthorized,
+                        ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES
+                    )
+                }),
+            MenuItemUiModel(
+                context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_working_hours)
+                    .orEmpty(),
+                settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
+                clickAction = {
+                    goToApplinkWhenAccessAuthorized(
+                        settingAccess.isInfoAccessAuthorized,
+                        ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS
+                    )
+                }),
+            DividerUiModel(DividerType.THIN_INDENTED),
+            IndentedSettingTitleUiModel(
+                context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_location_and_shipment)
+                    .orEmpty()
+            ),
+            MenuItemUiModel(
+                context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_add_and_shop_location)
+                    .orEmpty(),
+                settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
+                clickAction = {
+                    goToApplinkWhenAccessAuthorized(
+                        settingAccess.isAddressAccessAuthorized,
+                        ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS
+                    )
+                }),
+            MenuItemUiModel(
+                context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_set_shipment_method)
+                    .orEmpty(),
+                settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
+                trackingAlias = SHIPPING_SERVICE_ALIAS,
+                clickAction = {
+                    goToApplinkWhenAccessAuthorized(
+                        settingAccess.isShipmentAccessAuthorized,
+                        ApplinkConst.SELLER_SHIPPING_EDITOR
+                    )
+                }),
+            DividerUiModel(DividerType.THIN_INDENTED),
+            MenuItemUiModel(
+                context?.getString(R.string.setting_menu_set_activation_page_cod).orEmpty(),
+                settingTypeInfix = SettingTrackingConstant.COD_ACTIVATION_SETTING,
+                clickAction = {
+                    goToApplinkWhenAccessAuthorized(
+                        settingAccess.isShipmentAccessAuthorized,
+                        ApplinkConst.SELLER_COD_ACTIVATION
+                    )
 
-                            }),
-                    DividerUiModel(DividerType.THICK)
-            )
+                }),
+            DividerUiModel(DividerType.THICK)
+        )
 
     private fun goToApplinkWhenAccessAuthorized(isEligible: Boolean, applink: String) {
         if (isEligible) {
@@ -157,12 +209,23 @@ class MenuSettingAdapter(private val context: Context?,
             listener.onNoAccess()
         }
     }
-    
+
+    private fun getSocialTag(): String {
+        val expiredDateMillis = SOCIAL_EXPIRED_DATE
+        val todayMillis = Date().time
+        return if (todayMillis < expiredDateMillis) {
+            context?.getString(R.string.setting_new_tag).orEmpty()
+        } else {
+            SellerHomeConst.EMPTY_STRING
+        }
+    }
+
     interface Listener {
         fun onAddOrChangePassword()
         fun onShareApplication()
         fun onReviewApplication()
+        fun onGiveFeedback()
+        fun onOpenSocialMediaLinks()
         fun onNoAccess()
     }
-
 }

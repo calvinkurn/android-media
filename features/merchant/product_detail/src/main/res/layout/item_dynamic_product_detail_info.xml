@@ -5,21 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/dp_16">
+    android:paddingBottom="16dp">
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/product_detail_info_separator"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
-        android:background="@color/Unify_N50"
+        android:layout_height="8dp"
         android:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_detail_info_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:text="@string/merchant_product_detail_label_product_detail"
         app:typographyType="heading_4"
         app:typographyWeight="bold"
@@ -29,9 +28,9 @@
         android:id="@+id/rv_product_detail_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:orientation="vertical" />
 
@@ -39,9 +38,9 @@
         android:id="@+id/product_detail_info_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:ellipsize="end"
         android:longClickable="false"
         android:maxLines="5"
@@ -52,10 +51,10 @@
         android:id="@+id/product_detail_info_seemore"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:text="@string/label_read_detail"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         android:textColor="@color/Unify_G500"
         android:visibility="visible"
         app:typographyType="body_3"

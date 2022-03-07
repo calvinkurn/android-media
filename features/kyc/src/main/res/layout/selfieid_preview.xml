@@ -47,7 +47,7 @@
                     android:background="@drawable/btn_bg_rounded_corners"
                     android:text="@string/gnkn"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/sp_14" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/retake_image"
@@ -55,15 +55,15 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:layout_marginLeft="@dimen/dp_30"
-                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginTop="10dp"
                     android:layout_marginRight="@dimen/dp_30"
-                    android:paddingTop="@dimen/dp_10"
-                    android:paddingBottom="@dimen/dp_10"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
                     android:textAllCaps="true"
                     android:text="@string/ulng"
                     android:background="@color/white"
                     android:textColor="@color/clr_06b3ba"
-                    android:textSize="@dimen/sp_14" />
+                    android:textSize="14sp" />
             </LinearLayout>
         </FrameLayout>
     </ScrollView>

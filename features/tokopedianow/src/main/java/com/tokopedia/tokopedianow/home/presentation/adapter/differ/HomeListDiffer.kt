@@ -3,8 +3,10 @@ package com.tokopedia.tokopedianow.home.presentation.adapter.differ
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
-import com.tokopedia.tokopedianow.common.model.TokoNowLayoutUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 
 class HomeListDiffer : BaseTokopediaNowDiffer() {
     private var oldList: List<Visitable<*>> = emptyList()
@@ -14,12 +16,16 @@ class HomeListDiffer : BaseTokopediaNowDiffer() {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
 
-        return if (oldItem is HomeLayoutUiModel && newItem is HomeLayoutUiModel) {
+        return if (oldItem is HomeProductRecomUiModel && newItem is HomeProductRecomUiModel) {
+            oldItem.recomWidget == newItem.recomWidget
+        } else if (oldItem is HomeLayoutUiModel && newItem is HomeLayoutUiModel) {
             oldItem.visitableId == newItem.visitableId
         } else if (oldItem is HomeComponentVisitable && newItem is HomeComponentVisitable) {
             oldItem.visitableId() == newItem.visitableId()
-        } else if (oldItem is TokoNowLayoutUiModel && newItem is TokoNowLayoutUiModel) {
-            oldItem.visitableId == newItem.visitableId
+        } else if (oldItem is TokoNowRepurchaseUiModel && newItem is TokoNowRepurchaseUiModel) {
+            oldItem.id == newItem.id
+        } else if (oldItem is TokoNowCategoryGridUiModel && newItem is TokoNowCategoryGridUiModel) {
+            oldItem.id == newItem.id
         } else {
             oldItem == newItem
         }

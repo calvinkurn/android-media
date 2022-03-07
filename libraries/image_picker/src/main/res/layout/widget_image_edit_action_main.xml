@@ -5,11 +5,11 @@
     android:layout_gravity="center_horizontal"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_2"
-    android:paddingBottom="@dimen/dp_2"
-    android:layout_marginBottom="@dimen/dp_8"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp"
+    android:layout_marginBottom="8dp"
     android:scrollbars="none"
     xmlns:android="http://schemas.android.com/apk/res/android">
 

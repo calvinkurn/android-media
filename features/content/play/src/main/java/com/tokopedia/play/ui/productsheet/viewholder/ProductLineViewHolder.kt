@@ -1,14 +1,17 @@
 package com.tokopedia.play.ui.productsheet.viewholder
 
 import android.view.View
-import android.widget.ImageView
-import androidx.core.graphics.drawable.DrawableCompat
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import androidx.core.content.ContextCompat
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.product.ProductBasicViewHolder
 import com.tokopedia.play.view.type.OutOfStock
 import com.tokopedia.play.view.type.StockAvailable
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**
@@ -17,28 +20,31 @@ import com.tokopedia.unifycomponents.UnifyButton
 class ProductLineViewHolder(itemView: View, private val listener: Listener) : ProductBasicViewHolder(itemView, listener) {
 
     private val btnProductBuy: UnifyButton = itemView.findViewById(R.id.btn_product_buy)
-    private val ivProductAtc: ImageView = itemView.findViewById(R.id.iv_product_atc)
-
-    init {
-        ivProductAtc.drawable.mutate()
-    }
+    private val btnProductAtc: UnifyButton = itemView.findViewById(R.id.btn_product_atc)
+    private val lblOutOfStock: Label = itemView.findViewById(R.id.label_out_of_stock)
+    private val shadowOutOfStock: View = itemView.findViewById(R.id.shadow_out_of_stock)
 
     override fun bind(item: PlayProductUiModel.Product) {
         super.bind(item)
         when (item.stock) {
             OutOfStock -> {
+                shadowOutOfStock.show()
+                lblOutOfStock.show()
+                btnProductAtc.setDrawable(
+                    getIconUnifyDrawable(itemView.context, IconUnify.ADD, ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN100))
+                )
                 btnProductBuy.isEnabled = false
-                ivProductAtc.isEnabled = false
-                btnProductBuy.text = getString(R.string.play_product_empty)
-
-                DrawableCompat.setTint(ivProductAtc.drawable, MethodChecker.getColor(itemView.context, R.color.play_dms_atc_image_disabled))
+                btnProductAtc.isEnabled = false
             }
-            is StockAvailable -> {
-                btnProductBuy.isEnabled = true
-                ivProductAtc.isEnabled = true
-                btnProductBuy.text = getString(R.string.play_product_buy)
 
-                DrawableCompat.setTintList(ivProductAtc.drawable, null)
+            is StockAvailable -> {
+                shadowOutOfStock.gone()
+                lblOutOfStock.gone()
+                btnProductBuy.isEnabled = true
+                btnProductAtc.isEnabled = true
+                btnProductAtc.setDrawable(
+                    getIconUnifyDrawable(itemView.context, IconUnify.ADD, ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                )
             }
         }
 
@@ -46,7 +52,7 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Pr
             listener.onBuyProduct(item)
         }
 
-        ivProductAtc.setOnClickListener {
+        btnProductAtc.setOnClickListener {
             listener.onAtcProduct(item)
         }
     }

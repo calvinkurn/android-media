@@ -123,7 +123,6 @@ class VoucherGameAnalytics {
                         EnhanceEccomerce.CREATIVE_URL, linkUrl,
                         EnhanceEccomerce.POSITION, position
                 )
-                if (promoCode.isNotEmpty()) mappedData[EnhanceEccomerce.PROMO_CODE] = promoCode
                 bannerList.add(mappedData)
             }
         }

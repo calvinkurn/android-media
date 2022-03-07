@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
@@ -18,17 +17,29 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
-import com.tokopedia.review.common.data.*
+import com.tokopedia.review.common.data.Fail
+import com.tokopedia.review.common.data.LoadingView
+import com.tokopedia.review.common.data.ProductrevGetReviewDetailProduct
+import com.tokopedia.review.common.data.ProductrevGetReviewDetailReputation
+import com.tokopedia.review.common.data.ProductrevGetReviewDetailResponse
+import com.tokopedia.review.common.data.ProductrevGetReviewDetailReview
+import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
 import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.review.common.util.ReviewAttachedImagesClickListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.getReviewStar
+import com.tokopedia.review.databinding.FragmentReviewDetailBinding
 import com.tokopedia.review.feature.historydetails.analytics.ReviewDetailTracking
 import com.tokopedia.review.feature.historydetails.di.DaggerReviewDetailComponent
 import com.tokopedia.review.feature.historydetails.di.ReviewDetailComponent
@@ -36,13 +47,12 @@ import com.tokopedia.review.feature.historydetails.presentation.viewmodel.Review
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.ticker.Ticker
-import kotlinx.android.synthetic.main.fragment_review_detail.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class ReviewDetailFragment : BaseDaggerFragment(),
-        HasComponent<ReviewDetailComponent>, ReviewAttachedImagesClickListener,
-        OnBackPressedListener, ReviewScoreClickListener, ReviewPerformanceMonitoringContract {
+    HasComponent<ReviewDetailComponent>, ReviewAttachedImagesClickListener,
+    OnBackPressedListener, ReviewScoreClickListener, ReviewPerformanceMonitoringContract {
 
     companion object {
         const val KEY_FEEDBACK_ID = "feedbackID"
@@ -53,7 +63,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         const val SCORE_ZERO = 0
         const val SCORE_MAX = 2
 
-        fun createNewInstance(feedbackId: String) : ReviewDetailFragment{
+        fun createNewInstance(feedbackId: String): ReviewDetailFragment {
             return ReviewDetailFragment().apply {
                 arguments = Bundle().apply {
                     putString(KEY_FEEDBACK_ID, feedbackId)
@@ -67,6 +77,8 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
     private var reviewConnectionErrorRetryButton: UnifyButton? = null
+
+    private var binding by autoClearedNullable<FragmentReviewDetailBinding>()
 
     override fun stopPreparePerfomancePageMonitoring() {
         reviewPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
@@ -82,17 +94,18 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     override fun startRenderPerformanceMonitoring() {
         reviewPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
-        reviewDetailScrollView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        binding?.reviewDetailScrollView?.viewTreeObserver?.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 reviewPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
                 reviewPerformanceMonitoringListener?.stopPerformanceMonitoring()
-                reviewDetailScrollView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                binding?.reviewDetailScrollView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
         })
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): ReviewPerformanceMonitoringListener? {
-        return if(context is ReviewPerformanceMonitoringListener) {
+        return if (context is ReviewPerformanceMonitoringListener) {
             context
         } else {
             null
@@ -101,12 +114,18 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        reviewPerformanceMonitoringListener = castContextToTalkPerformanceMonitoringListener(context)
+        reviewPerformanceMonitoringListener =
+            castContextToTalkPerformanceMonitoringListener(context)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        activity?.window?.decorView?.setBackgroundColor(
+            ContextCompat.getColor(
+                requireContext(),
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
+            )
+        )
     }
 
     override fun getScreenName(): String {
@@ -117,9 +136,14 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         component?.inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         getDataFromArguments()
-        return inflater.inflate(R.layout.fragment_review_detail, container, false)
+        binding = FragmentReviewDetailBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -136,9 +160,9 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     override fun getComponent(): ReviewDetailComponent? {
         return activity?.run {
             DaggerReviewDetailComponent
-                    .builder()
-                    .reviewComponent(ReviewInstance.getComponent(application))
-                    .build()
+                .builder()
+                .reviewComponent(ReviewInstance.getComponent(application))
+                .build()
         }
     }
 
@@ -148,26 +172,38 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         removeObservers(viewModel.submitReputationResult)
     }
 
-    override fun onAttachedImagesClicked(productName: String, attachedImages: List<String>, position: Int) {
+    override fun onAttachedImagesClicked(
+        productName: String,
+        attachedImages: List<String>,
+        position: Int
+    ) {
         (viewModel.reviewDetails.value as? Success)?.let {
-            ReviewDetailTracking.eventClickImageGallery(it.data.product.productId, it.data.review.feedbackId, viewModel.getUserId())
+            ReviewDetailTracking.eventClickImageGallery(
+                it.data.product.productId,
+                it.data.review.feedbackId,
+                viewModel.getUserId()
+            )
         }
         goToImagePreview(productName, attachedImages.filter { it.isNotEmpty() }, position)
     }
 
     override fun onBackPressed() {
-        if(::viewModel.isInitialized) {
+        if (::viewModel.isInitialized) {
             (viewModel.reviewDetails.value as? Success)?.let {
-                ReviewDetailTracking.eventClickBack(it.data.product.productId, it.data.review.feedbackId, viewModel.getUserId())
+                ReviewDetailTracking.eventClickBack(
+                    it.data.product.productId,
+                    it.data.review.feedbackId,
+                    viewModel.getUserId()
+                )
             }
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when(requestCode) {
+        when (requestCode) {
             EDIT_FORM_REQUEST_CODE -> {
-                if(resultCode == Activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK) {
                     onSuccessEditForm()
                 }
             }
@@ -176,7 +212,11 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     override fun onReviewScoreClicked(score: Int): Boolean {
         (viewModel.reviewDetails.value as? Success)?.let {
-            ReviewDetailTracking.eventClickSmiley(it.data.product.productId, it.data.review.feedbackId, viewModel.getUserId())
+            ReviewDetailTracking.eventClickSmiley(
+                it.data.product.productId,
+                it.data.review.feedbackId,
+                viewModel.getUserId()
+            )
             viewModel.submitReputation(it.data.reputation.reputationId, score)
         }
         return false
@@ -189,12 +229,12 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observeReviewDetails() {
-        viewModel.reviewDetails.observe(viewLifecycleOwner, Observer {
-            when(it) {
+        viewModel.reviewDetails.observe(viewLifecycleOwner, {
+            when (it) {
                 is Success -> {
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
-                    if(it.isRefresh) {
+                    if (it.isRefresh) {
                         hideError()
                         hideLoading()
                         with(it.data) {
@@ -202,7 +242,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                             setReview(review, product.productName)
                             setResponse(response)
                             setReputation(reputation, response.shopName)
-                            setTicker(review.editable)
+                            setTicker(review.editable, review.editDisclaimer)
                         }
                     } else {
                         with(it.data) {
@@ -224,18 +264,21 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observeInsertReputationResult() {
-        viewModel.submitReputationResult.observe(viewLifecycleOwner, Observer {
-            when(it) {
+        viewModel.submitReputationResult.observe(viewLifecycleOwner, {
+            when (it) {
                 is Success -> {
                     viewModel.getReviewDetails(viewModel.feedbackId, false)
                     onSuccessInsertReputation()
                 }
                 is Fail -> {
                     viewModel.getReviewDetails(viewModel.feedbackId, false)
-                    onFailInsertReputation(it.fail.message ?: getString(R.string.review_history_details_toaster_modify_smiley_error_default_message))
+                    onFailInsertReputation(
+                        it.fail.message
+                            ?: getString(R.string.review_history_details_toaster_modify_smiley_error_default_message)
+                    )
                 }
                 is LoadingView -> {
-                    reviewHistoryDetailReputation.showLoading()
+                    binding?.reviewHistoryDetailReputation?.showLoading()
                 }
             }
         })
@@ -243,14 +286,18 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     private fun setProduct(product: ProductrevGetReviewDetailProduct, feedbackId: String) {
         with(product) {
-            reviewDetailProductCard.setOnClickListener {
-                ReviewDetailTracking.eventClickProductCard(productId, feedbackId, viewModel.getUserId())
+            binding?.reviewDetailProductCard?.setOnClickListener {
+                ReviewDetailTracking.eventClickProductCard(
+                    productId,
+                    feedbackId,
+                    viewModel.getUserId()
+                )
                 goToPdp(productId)
             }
-            reviewDetailProductImage.loadImage(productImageUrl)
-            reviewDetailProductName.text = productName
-            if(productVariantName.isNotBlank()) {
-                reviewDetailProductVariant.apply {
+            binding?.reviewDetailProductImage?.loadImage(productImageUrl)
+            binding?.reviewDetailProductName?.text = productName
+            if (productVariantName.isNotBlank()) {
+                binding?.reviewDetailProductVariant?.apply {
                     text = getString(R.string.review_pending_variant, productVariantName)
                     show()
                 }
@@ -260,52 +307,75 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     private fun setReview(review: ProductrevGetReviewDetailReview, productName: String) {
         with(review) {
-            reviewDetailStars.apply {
+            binding?.reviewDetailStars?.apply {
                 setImageResource(getReviewStar(rating))
                 show()
             }
-            reviewDetailName.apply {
+            binding?.reviewDetailName?.apply {
                 context?.let {
                     text = if (sentAsAnonymous) {
-                        HtmlLinkHelper(it, getString(R.string.review_history_details_anonymous)).spannedString
+                        HtmlLinkHelper(
+                            it,
+                            getString(R.string.review_history_details_anonymous)
+                        ).spannedString
                     } else {
-                        HtmlLinkHelper(it, getString(R.string.review_history_details_name, reviewerName)).spannedString
+                        HtmlLinkHelper(
+                            it,
+                            getString(R.string.review_history_details_name, reviewerName)
+                        ).spannedString
                     }
                     show()
                 }
             }
             addHeaderIcons(editable)
-            if(attachments.isNotEmpty()) {
-                reviewDetailAttachedImages.apply {
+            if (attachments.isNotEmpty()) {
+                binding?.reviewDetailAttachedImages?.apply {
                     setImages(attachments, productName, this@ReviewDetailFragment)
                     show()
                 }
             } else {
-                reviewDetailAttachedImages.hide()
+                binding?.reviewDetailAttachedImages?.hide()
             }
-            reviewDetailDate.setTextAndCheckShow(getString(R.string.review_date, reviewTimeFormatted))
-            if(reviewText.isEmpty()) {
-                reviewDetailContent.apply {
+            binding?.reviewDetailDate?.setTextAndCheckShow(
+                getString(
+                    R.string.review_date,
+                    reviewTimeFormatted
+                )
+            )
+            if (reviewText.isEmpty()) {
+                binding?.reviewDetailContent?.apply {
                     text = getString(R.string.no_reviews_yet)
-                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+                    setTextColor(
+                        ContextCompat.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N700_32
+                        )
+                    )
                     show()
                 }
             } else {
-                reviewDetailContent.apply {
+                binding?.reviewDetailContent?.apply {
                     text = reviewText
-                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                    setTextColor(
+                        ContextCompat.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                        )
+                    )
                     show()
                 }
             }
+            binding?.reviewDetailBadRatingReason?.showBadRatingReason(badRatingReasonFmt)
+            binding?.reviewDetailBadRatingDisclaimerWidget?.setDisclaimer(ratingDisclaimer)
         }
     }
 
     private fun setResponse(response: ProductrevGetReviewDetailResponse) {
-        if(response.responseText.isEmpty()) {
-            reviewDetailResponse.hide()
+        if (response.responseText.isEmpty()) {
+            binding?.reviewDetailResponse?.hide()
             return
         }
-        reviewDetailResponse.apply {
+        binding?.reviewDetailResponse?.apply {
             setContent(response)
             show()
         }
@@ -313,7 +383,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     private fun setReputation(reputation: ProductrevGetReviewDetailReputation, shopName: String) {
         with(reputation) {
-            reviewHistoryDetailReputation.apply {
+            binding?.reviewHistoryDetailReputation?.apply {
                 resetState()
                 setReviewScoreClickListener(this@ReviewDetailFragment)
                 when {
@@ -323,7 +393,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                         hideLoading()
                         show()
                     }
-                    !editable && isLocked && score != SCORE_ZERO  -> {
+                    !editable && isLocked && score != SCORE_ZERO -> {
                         setFinalScore(score)
                         setShopName(shopName)
                         hideLoading()
@@ -349,28 +419,29 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun setTicker(isEditable: Boolean) {
-        if(isEditable) {
-            reviewDetailTicker.apply {
-                tickerType = Ticker.TYPE_ANNOUNCEMENT
-                tickerTitle = getString(R.string.review_history_details_ticker_editable_title)
-                setTextDescription(getString(R.string.review_history_details_ticker_editable_subtitle))
+    private fun setTicker(isEditable: Boolean, editDisclaimer: String) {
+        if (isEditable) {
+            binding?.reviewDetailTicker?.run {
+                setTextDescription(editDisclaimer)
+                show()
             }
-            return
-        }
-        reviewDetailTicker.apply {
-            tickerType = Ticker.TYPE_INFORMATION
-            tickerTitle = ""
-            setTextDescription(getString(R.string.review_history_details_ticker_uneditable_subtitle))
+            binding?.reviewDetailTips?.gone()
+        } else {
+            binding?.reviewDetailTips?.run {
+                description = editDisclaimer
+                show()
+            }
+            binding?.reviewDetailTicker?.gone()
         }
     }
 
     private fun bindViews() {
-        reviewConnectionErrorRetryButton = view?.findViewById(com.tokopedia.review.inbox.R.id.reviewConnectionErrorRetryButton)
+        reviewConnectionErrorRetryButton =
+            view?.findViewById(com.tokopedia.review.inbox.R.id.reviewConnectionErrorRetryButton)
     }
 
     private fun initHeader() {
-        reviewDetailHeader.apply {
+        binding?.reviewDetailHeader?.apply {
             title = getString(R.string.review_history_details_toolbar)
             setNavigationOnClickListener {
                 activity?.onBackPressed()
@@ -385,23 +456,31 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     }
 
     private fun addHeaderIcons(editable: Boolean) {
-        reviewDetailHeader.apply {
+        binding?.reviewDetailHeader?.apply {
             clearIcons()
             addRightIcon(R.drawable.ic_history_details_share)
             rightIcons?.firstOrNull()?.setOnClickListener {
                 (viewModel.reviewDetails.value as? Success)?.let {
-                    ReviewDetailTracking.eventClickShare(it.data.product.productId, it.data.review.feedbackId, viewModel.getUserId())
+                    ReviewDetailTracking.eventClickShare(
+                        it.data.product.productId,
+                        it.data.review.feedbackId,
+                        viewModel.getUserId()
+                    )
                 }
                 goToSharing()
             }
-            if(!editable) {
+            if (!editable) {
                 return
             }
             addRightIcon(R.drawable.ic_edit_review_history_detail)
             rightIcons?.let {
                 it[INDEX_OF_EDIT_BUTTON].setOnClickListener {
                     (viewModel.reviewDetails.value as? Success)?.let { success ->
-                        ReviewDetailTracking.eventClickEdit(success.data.product.productId, success.data.review.feedbackId, viewModel.getUserId())
+                        ReviewDetailTracking.eventClickEdit(
+                            success.data.product.productId,
+                            success.data.review.feedbackId,
+                            viewModel.getUserId()
+                        )
                     }
                     goToEditForm()
                 }
@@ -410,27 +489,33 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     }
 
     private fun showError() {
-        reviewDetailConnectionError.show()
+        binding?.reviewDetailConnectionError?.root?.show()
     }
 
     private fun hideError() {
-        reviewDetailConnectionError.hide()
+        binding?.reviewDetailConnectionError?.root?.hide()
     }
 
     private fun showLoading() {
-        reviewDetailShimmer.show()
+        binding?.reviewDetailShimmer?.root?.show()
     }
 
     private fun hideLoading() {
-        reviewDetailShimmer.hide()
+        binding?.reviewDetailShimmer?.root?.hide()
     }
 
     private fun goToEditForm() {
         with((viewModel.reviewDetails.value as Success).data) {
-            val uri = UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputation.reputationId, product.productId)
-            val intent = RouteManager.getIntent(context, Uri.parse(uri).buildUpon()
-                    .appendQueryParameter(ReviewConstants.PARAM_IS_EDIT_MODE, ReviewConstants.EDIT_MODE.toString())
-                    .appendQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID, viewModel.feedbackId).build().toString())
+            val uri = UriUtil.buildUri(
+                ApplinkConstInternalMarketplace.EDIT_REVIEW,
+                reputation.reputationId,
+                product.productId
+            )
+            val intent = RouteManager.getIntent(
+                context, Uri.parse(uri).buildUpon()
+                    .appendQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID, viewModel.feedbackId)
+                    .build().toString()
+            )
             startActivityForResult(intent, EDIT_FORM_REQUEST_CODE)
         }
     }
@@ -447,35 +532,70 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     }
 
     private fun goToImagePreview(productName: String, attachedImages: List<String>, position: Int) {
-        startActivity(context?.let { ImagePreviewSliderActivity.getCallingIntent(it, productName, attachedImages, attachedImages, position) })
+        startActivity(context?.let {
+            ImagePreviewSliderActivity.getCallingIntent(
+                it,
+                productName,
+                attachedImages,
+                attachedImages,
+                position
+            )
+        })
     }
 
     private fun goToPdp(productId: String) {
-        RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId.toString())
+        RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
     }
 
     private fun retry() {
         viewModel.retry()
     }
 
-    private fun getReviewLink() : String {
-        return UriUtil.buildUri(ApplinkConst.PRODUCT_REPUTATION, (viewModel.reviewDetails.value as Success).data.product.productId.toString())
+    private fun getReviewLink(): String {
+        return UriUtil.buildUri(
+            ApplinkConst.PRODUCT_REPUTATION,
+            (viewModel.reviewDetails.value as Success).data.product.productId
+        )
     }
 
     private fun clearIcons() {
-        reviewDetailHeader.rightContentView.removeAllViews()
+        binding?.reviewDetailHeader?.rightContentView?.removeAllViews()
     }
 
     private fun onSuccessEditForm() {
         retry()
-        view?.let { Toaster.build(it, getString(R.string.review_history_detail_toaster_edit_success), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.review_oke)).show() }
+        view?.let {
+            Toaster.build(
+                it,
+                getString(R.string.review_history_detail_toaster_edit_success),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(R.string.review_oke)
+            ).show()
+        }
     }
 
     private fun onSuccessInsertReputation() {
-        view?.let { Toaster.build(it, getString(R.string.review_history_details_toaster_modify_smiley_success), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.review_oke)).show() }
+        view?.let {
+            Toaster.build(
+                it,
+                getString(R.string.review_history_details_toaster_modify_smiley_success),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(R.string.review_oke)
+            ).show()
+        }
     }
 
     private fun onFailInsertReputation(message: String) {
-        view?.let { Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.review_oke)).show() }
+        view?.let {
+            Toaster.build(
+                it,
+                message,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(R.string.review_oke)
+            ).show()
+        }
     }
 }

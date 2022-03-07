@@ -66,5 +66,4 @@ interface HomeRecommendationListener: SmartListener {
     fun onBannerTopAdsClick(homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel, position: Int)
     fun onBannerTopAdsImpress(homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel, position: Int)
     fun onRetryGetProductRecommendationData()
-    fun onProductWithPmProImpressed(pmProView: View?, position: Int)
 }

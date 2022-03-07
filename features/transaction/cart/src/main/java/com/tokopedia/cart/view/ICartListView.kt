@@ -3,23 +3,17 @@ package com.tokopedia.cart.view
 import android.view.View
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.cart.domain.model.cartlist.CartItemData
-import com.tokopedia.cart.domain.model.cartlist.CartListData
-import com.tokopedia.cart.domain.model.cartlist.UndoDeleteCartData
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
-
-/**
- * @author anggaprasetiyo on 18/01/18.
- */
 
 interface ICartListView : CustomerView {
 
@@ -27,11 +21,11 @@ interface ICartListView : CustomerView {
 
     fun getAllShopDataList(): List<CartShopHolderData>
 
-    fun getAllCartDataList(): List<CartItemData>
+    fun getAllCartDataList(): List<CartItemHolderData>
 
-    fun getAllAvailableCartDataList(): List<CartItemData>
+    fun getAllAvailableCartDataList(): List<CartItemHolderData>
 
-    fun getAllSelectedCartDataList(): List<CartItemData>?
+    fun getAllSelectedCartDataList(): List<CartItemHolderData>
 
     fun getCartId(): String
 
@@ -39,12 +33,12 @@ interface ICartListView : CustomerView {
 
     fun hideProgressLoading()
 
-    fun renderInitialGetCartListDataSuccess(cartListData: CartListData?)
+    fun renderInitialGetCartListDataSuccess(cartData: CartData)
 
     fun renderErrorInitialGetCartListData(throwable: Throwable)
 
     fun renderToShipmentFormSuccess(eeCheckoutData: Map<String, Any>,
-                                    cartItemDataList: List<CartItemData>,
+                                    cartItemDataList: List<CartItemHolderData>,
                                     checkoutProductEligibleForCashOnDelivery: Boolean,
                                     condition: Int)
 
@@ -52,9 +46,9 @@ interface ICartListView : CustomerView {
 
     fun renderErrorToShipmentForm(throwable: Throwable)
 
-    fun renderErrorToShipmentForm(outOfServiceData: OutOfService)
+    fun renderErrorToShipmentForm(outOfService: OutOfService)
 
-    fun renderDetailInfoSubTotal(qty: String, subtotalBeforeSlashedPrice: Double, subtotalPrice: Double, selectAllItem: Boolean, unselectAllItem: Boolean, noAvailableItems: Boolean)
+    fun renderDetailInfoSubTotal(qty: String, subtotalPrice: Double, noAvailableItems: Boolean)
 
     fun updateCashback(cashback: Double)
 
@@ -70,9 +64,9 @@ interface ICartListView : CustomerView {
 
     fun renderLoadGetCartDataFinish()
 
-    fun onDeleteCartDataSuccess(deletedCartIds: List<String>, removeAllItems: Boolean, forceExpandCollapsedUnavailableItems: Boolean, isMoveToWishlist: Boolean, isFromGlobalCheckbox: Boolean)
+    fun onDeleteCartDataSuccess(deletedCartIds: List<String>, removeAllItems: Boolean, forceExpandCollapsedUnavailableItems: Boolean, isMoveToWishlist: Boolean, isFromGlobalCheckbox: Boolean, isFromEditBundle: Boolean)
 
-    fun onUndoDeleteCartDataSuccess(undoDeleteCartData: UndoDeleteCartData)
+    fun onUndoDeleteCartDataSuccess()
 
     fun onAddCartToWishlistSuccess(message: String, productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean)
 
@@ -106,8 +100,6 @@ interface ICartListView : CustomerView {
 
     fun updateCartCounter(counter: Int)
 
-    fun updateListRedPromos(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel)
-
     fun updatePromoCheckoutStickyButton(promoUiModel: PromoUiModel)
 
     fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>)
@@ -133,4 +125,5 @@ interface ICartListView : CustomerView {
     fun reCollapseExpandedDeletedUnavailableItems()
 
     fun sendATCTrackingURLRecent(productModel: CartRecentViewItemHolderData)
+
 }

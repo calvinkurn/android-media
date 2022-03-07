@@ -15,6 +15,7 @@
     <dimen name="dimen_dp_120">120dp</dimen>
     <dimen name="dimen_dp_130">130dp</dimen>
     <dimen name="dimen_dp_140">140dp</dimen>
+    <dimen name="dimen_dp_160">160dp</dimen>
     <dimen name="dimen_dp_180">180dp</dimen>
     <dimen name="dimen_dp_200">200dp</dimen>
     <dimen name="dimen_dp_240">240dp</dimen>

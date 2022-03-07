@@ -1,13 +1,13 @@
 package com.tokopedia.editshipping.domain.model.shippingEditor
 
 data class WarehousesModel(
-        var warehouseId: Int = 0,
+        var warehouseId: Long = 0,
         var warehouseName: String = "",
-        var districtId: Int = 0,
+        var districtId: Long = 0,
         var districtName: String = "",
-        var cityId: Int = 0,
+        var cityId: Long = 0,
         var cityName: String = "",
-        var provinceId: Int = 0,
+        var provinceId: Long = 0,
         var provinceName: String = "",
         var status: Int = 0,
         var postalCode: String = "",

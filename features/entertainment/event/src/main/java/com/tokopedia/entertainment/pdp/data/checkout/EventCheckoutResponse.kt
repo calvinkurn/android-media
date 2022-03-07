@@ -1,6 +1,7 @@
 package com.tokopedia.entertainment.pdp.data.checkout
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -76,7 +77,7 @@ data class Parameter(
         val customerEmail: String = "",
         @SerializedName("customer_id")
         @Expose
-        val customerId: Int = 0,
+        val customerId: String = "0",
         @SerializedName("customer_msisdn")
         @Expose
         val customerMsisdn: String = "",
@@ -152,9 +153,10 @@ data class Product(
         @SerializedName("name")
         @Expose
         val name: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
-        val price: Int,
+        val price: Double = 0.0,
         @SerializedName("quantity")
         @Expose
         val quantity: Int

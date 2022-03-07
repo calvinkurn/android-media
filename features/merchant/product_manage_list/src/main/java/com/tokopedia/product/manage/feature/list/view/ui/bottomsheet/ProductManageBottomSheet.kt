@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
@@ -15,17 +15,17 @@ import com.tokopedia.product.manage.feature.list.view.adapter.ProductMenuAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder.ProductMenuListener
 import com.tokopedia.product.manage.feature.list.view.model.ProductItemDivider
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
+import com.tokopedia.product.manage.databinding.BottomSheetProductManageBinding
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel.*
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottom_sheet_product_manage.view.*
 
 class ProductManageBottomSheet : BottomSheetUnify() {
 
     companion object {
-        @LayoutRes
-        private val LAYOUT = R.layout.bottom_sheet_product_manage
         private val TAG: String? = ProductManageBottomSheet::class.java.canonicalName
 
         private const val EXTRA_FEATURE_ACCESS = "extra_feature_access"
@@ -46,17 +46,18 @@ class ProductManageBottomSheet : BottomSheetUnify() {
     private var sellerFeatureCarousel: SellerFeatureCarousel? = null
     private var product: ProductUiModel? = null
     private var isPowerMerchantOrOfficialStore: Boolean = false
+    private var isProductCouponEnabled: Boolean = true
     
     private val access by lazy { arguments?.getParcelable<ProductManageAccess>(EXTRA_FEATURE_ACCESS) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initRemoteConfigValue()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setupChildView(inflater, container)
         return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupView()
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -66,12 +67,23 @@ class ProductManageBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun setupView() = view?.run {
-        setupSellerCarousel()
-        setupMenuAdapter()
+    private fun initRemoteConfigValue() {
+        isProductCouponEnabled =
+            try {
+                context?.let {
+                    FirebaseRemoteConfigImpl(it).getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
+                }.orFalse()
+            } catch (ex: Exception) {
+                false
+            }
     }
 
-    private fun setupMenuAdapter() = view?.run {
+    private fun setupView(binding: BottomSheetProductManageBinding) {
+        setupSellerCarousel(binding)
+        setupMenuAdapter(binding)
+    }
+
+    private fun setupMenuAdapter(binding: BottomSheetProductManageBinding) = binding.run {
         menuAdapterListener?.let {
             val menuList = menuList
             menuAdapter = ProductMenuAdapter(it)
@@ -83,11 +95,15 @@ class ProductManageBottomSheet : BottomSheetUnify() {
         }
 
         product?.let { product ->
-            val menu = createProductManageMenu(product, isPowerMerchantOrOfficialStore)
+            val menu = createProductManageMenu(
+                product,
+                isPowerMerchantOrOfficialStore,
+                isProductCouponEnabled
+            )
             
             if (!GlobalConfig.isSellerApp()) {
                 val sellerFeatureList = createSellerFeatureList(product)
-                sellerFeatureCarousel?.setItems(sellerFeatureList)
+                sellerFeatureCarousel.setItems(sellerFeatureList)
             }
 
             menuAdapter?.clearAllElements()
@@ -95,25 +111,33 @@ class ProductManageBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun setupSellerCarousel() = view?.sellerFeatureCarousel?.run {
-        this@ProductManageBottomSheet.sellerFeatureCarousel = this
-        if (!GlobalConfig.isSellerApp()) {
-            show()
-            setListener(sellerFeatureCarouselListener)
-            this.addItemDecoration()
+    private fun setupSellerCarousel(binding: BottomSheetProductManageBinding) =
+        binding.sellerFeatureCarousel.run {
+            this@ProductManageBottomSheet.sellerFeatureCarousel = this
+            if (!GlobalConfig.isSellerApp()) {
+                show()
+                setListener(sellerFeatureCarouselListener)
+                this.addItemDecoration()
+            }
         }
-    }
 
     private fun setupChildView(inflater: LayoutInflater, container: ViewGroup?) {
-        val itemView = inflater.inflate(LAYOUT, container)
-        val menuTitle = itemView.context.getString(R.string.product_manage_bottom_sheet_title)
+        val binding = BottomSheetProductManageBinding.inflate(
+            inflater,
+            container,
+            false
+        ).also {
+            setupView(it)
+        }
+        val menuTitle = context?.getString(R.string.product_manage_bottom_sheet_title).orEmpty()
         setTitle(menuTitle)
-        setChild(itemView)
+        setChild(binding.root)
     }
 
     private fun createProductManageMenu(
         product: ProductUiModel,
-        isPowerMerchantOrOfficialStore: Boolean
+        isPowerMerchantOrOfficialStore: Boolean,
+        isProductCouponEnabled: Boolean
     ): List<Visitable<*>> {
         val menuList = mutableListOf<Visitable<*>>()
 
@@ -143,6 +167,10 @@ class ProductManageBottomSheet : BottomSheetUnify() {
                             product.hasTopAds() -> add(SeeTopAds(product))
                             else -> add(SetTopAds(product))
                         }
+                    }
+
+                    if (isProductCouponEnabled) {
+                        add(CreateProductCoupon(product))
                     }
 
                     if(broadcastChat) {

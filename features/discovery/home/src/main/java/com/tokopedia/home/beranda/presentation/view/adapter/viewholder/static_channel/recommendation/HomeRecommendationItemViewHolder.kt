@@ -58,11 +58,6 @@ class HomeRecommendationItemViewHolder(itemView: View) : SmartAbstractViewHolder
             )
             setImageProductViewHintListener(element, object: ViewHintListener {
                 override fun onViewHint() {
-                    //if pm pro
-                    val isPmPro = element.product.badges.find { it.title == PM_PRO_TITLE } != null
-                    if (isPmPro) {
-                        listener.onProductWithPmProImpressed(productCardView.getShopBadgeView(), adapterPosition)
-                    }
                     listener.onProductImpression(element, adapterPosition)
                 }
             })
@@ -79,8 +74,6 @@ class HomeRecommendationItemViewHolder(itemView: View) : SmartAbstractViewHolder
     }
 
     override fun bind(element: HomeRecommendationItemDataModel, listener: SmartListener, payloads: List<Any>) {
-        if (payloads.getOrNull(0) !is Boolean) return
-
         productCardView?.setThreeDotsOnClickListener {
             (listener as HomeRecommendationListener).onProductThreeDotsClick(element, adapterPosition)
         }

@@ -58,15 +58,13 @@ class OfficialStoreCategoryViewModel @Inject constructor(
                 }
             }
             val cacheData = cacheResponse.await()
-            if (cacheData is Fail) {
-                throw cacheData.throwable
-            } else {
-                (cacheData as Success).data.isCache = true
+            if (cacheData is Success) {
+                cacheData.data.isCache = true
                 _officialStoreCategoriesResult.value = cacheData
             }
             onCacheStopLoad.invoke()
             val cloudData = cloudResponse.await()
-            if (cloudData is Fail) {
+            if (cloudData is Fail && cacheData is Fail) {
                 throw cloudData.throwable
             } else {
                 _officialStoreCategoriesResult.value = cloudData

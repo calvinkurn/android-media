@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chatroom.view.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.DeferredAttachment
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topchat.chatroom.domain.pojo.review.ReviewCard
@@ -11,7 +11,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 
 class ReviewUiModel private constructor(
     builder: Builder
-) : SendableViewModel(builder), Visitable<TopChatTypeFactory>, DeferredAttachment {
+) : SendableUiModel(builder), Visitable<TopChatTypeFactory>, DeferredAttachment {
 
     var reply: Reply = builder.reply
         private set
@@ -99,7 +99,7 @@ class ReviewUiModel private constructor(
         }
     }
 
-    class Builder : SendableViewModel.Builder<Builder, ReviewUiModel>() {
+    class Builder : SendableUiModel.Builder<Builder, ReviewUiModel>() {
 
         internal var reply: Reply = Reply()
         internal var reviewCard: ReviewCard = ReviewCard()

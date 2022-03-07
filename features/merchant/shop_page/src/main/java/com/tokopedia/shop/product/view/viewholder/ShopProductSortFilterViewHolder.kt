@@ -11,6 +11,8 @@ import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.shop.databinding.ItemShopProductSortFilterBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -35,8 +37,9 @@ class ShopProductSortFilterViewHolder(
         fun onFilterClicked()
     }
 
+    private val viewBinding : ItemShopProductSortFilterBinding? by viewBinding()
     private var shopProductSortFilterUiModel: ShopProductSortFilterUiModel? = null
-    private val sortFilterWidget: SortFilter? = itemView.findViewById(R.id.sort_filter)
+    private val sortFilterWidget: SortFilter? = viewBinding?.sortFilter
 
     private val scrollListener = ViewTreeObserver.OnScrollChangedListener {
         shopProductSortFilterUiModel?.scrollX = sortFilterWidget?.sortFilterHorizontalScrollView?.scrollX

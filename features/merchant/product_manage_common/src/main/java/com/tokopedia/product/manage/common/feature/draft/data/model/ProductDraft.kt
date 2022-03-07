@@ -4,7 +4,7 @@ import android.os.Parcelable
 import com.tokopedia.product.manage.common.feature.draft.data.model.description.DescriptionInputModel
 import com.tokopedia.product.manage.common.feature.draft.data.model.detail.DetailInputModel
 import com.tokopedia.product.manage.common.feature.draft.data.model.shipment.ShipmentInputModel
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ProductDraft(

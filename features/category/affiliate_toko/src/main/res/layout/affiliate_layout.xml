@@ -6,6 +6,7 @@
     android:fitsSystemWindows="true">
 
     <include
+        android:id="@+id/affiliate_background_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         layout="@layout/affiliate_background_layout"/>
@@ -37,7 +38,82 @@
         app:layout_constraintStart_toStartOf="parent"
         app:setViewPagerSwipeable="false"
         app:viewPagerBackground="@color/Unify_N0"
+        android:visibility="gone"
         xmlns:tools="http://schemas.android.com/tools" />
+
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/splash_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="affiliate_splash_image,splash_sub_title,splash_title,affiliate_splash_background_image"
+        />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/affiliate_splash_background_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"
+        app:srcCompat="@drawable/affiliate_splash_background"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/splash_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/affiliate_hai_ana_selamat_bergabung_di_tokopedia_affiliate"
+        android:textColor="@color/Unify_NN950"
+        android:textSize="@dimen/unify_font_28"
+        android:layout_marginHorizontal="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl7"
+        android:visibility="gone"
+        />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/splash_sub_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/splash_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/affiliate_ayo_bagi_inspirasi_raih_komisi"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="body_2"
+        android:visibility="gone"
+        android:layout_marginHorizontal="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/horizontal_guide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5"
+        />
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/affiliate_splash_image"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="W,10:9"
+        app:layout_constraintTop_toBottomOf="@id/horizontal_guide"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_splash_image.png"
+        app:imageDpiSupportType="singleDpi"
+        android:visibility="gone"
+        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

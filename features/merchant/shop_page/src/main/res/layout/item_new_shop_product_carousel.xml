@@ -8,13 +8,15 @@
     android:clipToPadding="false"
     android:clipChildren="false">
 
-    <include layout="@layout/partial_item_new_shop_carousel_title" />
+    <include
+        android:id="@+id/layout_shop_product_carousel_title"
+        layout="@layout/partial_item_new_shop_carousel_title" />
 
     <com.tokopedia.carouselproductcard.CarouselProductCardView
         android:id="@+id/recyclerViewCarousel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         android:descendantFocusability="blocksDescendants"
         android:scrollbars="none"
         app:useDefaultItemDecorator="false" />

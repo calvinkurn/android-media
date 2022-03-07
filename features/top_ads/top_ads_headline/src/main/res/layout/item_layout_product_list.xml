@@ -10,7 +10,7 @@
         android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_14">
+        android:padding="14dp">
 
         <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/checkBox"
@@ -25,9 +25,9 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/product_image"
-            android:layout_width="@dimen/dp_48"
-            android:layout_height="@dimen/dp_48"
-            android:layout_marginStart="@dimen/dp_8"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
             app:layout_constraintStart_toEndOf="@id/checkBox"
             app:layout_constraintTop_toTopOf="parent"
             app:unify_image_corner_radius="6"
@@ -38,8 +38,8 @@
             android:id="@+id/product_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_14"
-            android:layout_marginEnd="@dimen/dp_14"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/topads_heading_color"
@@ -74,9 +74,9 @@
             android:id="@+id/recommendationTag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="8dp"
             android:background="@color/topads_common_neutral"
-            android:padding="@dimen/dp_4"
+            android:padding="4dp"
             android:text="@string/topads_headline_recommendasi"
             android:textColor="@color/topads_common_light_grey"
             app:layout_constraintBottom_toBottomOf="parent"

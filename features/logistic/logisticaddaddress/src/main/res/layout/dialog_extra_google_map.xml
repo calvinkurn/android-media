@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_8"
-    android:paddingTop="@dimen/dp_8"
-    android:background="@color/Unify_N0"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="8dp"
+    android:paddingTop="8dp"
+    android:background="@color/Unify_Background"
     android:gravity="center">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:minHeight="@dimen/dp_56"
         android:text="@string/title_shipping_dest"
-        android:textStyle="bold"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        app:typographyType="heading_3"/>
 
-    <TextView
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:minHeight="@dimen/dp_48"
-        android:id="@+id/text_address_destination" />
+        android:minHeight="48dp"
+        android:id="@+id/text_address_destination"
+        app:typographyType="body_2" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:minHeight="@dimen/dp_48"
+        android:minHeight="48dp"
         android:text="@string/text_information_google_map"
-        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+        app:typographyType="body_3"/>
 
 </LinearLayout>

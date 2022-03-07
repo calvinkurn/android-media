@@ -1,13 +1,10 @@
 package com.tokopedia.cart.view
 
-import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import com.tokopedia.cart.domain.model.cartlist.ActionData
-import com.tokopedia.cart.domain.model.cartlist.CartItemData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
-import com.tokopedia.cart.view.uimodel.DisabledCartItemHolderData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 /**
@@ -31,8 +28,6 @@ interface ActionListener {
     fun onCartDataDisableToCheckout()
 
     fun onShowAllItem(appLink: String)
-
-    fun onAddDisabledItemToWishlist(data: DisabledCartItemHolderData, imageView: ImageView)
 
     fun onAddLastSeenToWishlist(productId: String)
 
@@ -64,33 +59,21 @@ interface ActionListener {
 
     fun onButtonAddToCartClicked(productModel: Any)
 
-    fun onShowActionSeeOtherProduct(productId: String, errorType: String)
-
-    fun onSimilarProductUrlClicked(similarProductUrl: String)
-
-    fun onFollowShopClicked(shopId: String, errorType: String)
-
     fun onDeleteAllDisabledProduct();
 
-    fun onDeleteDisabledItem(data: DisabledCartItemHolderData)
-
     fun onSeeErrorProductsClicked()
-
-    fun onTobaccoLiteUrlClicked(url: String, data: DisabledCartItemHolderData, actionData: ActionData)
-
-    fun onShowTickerTobacco()
 
     fun onCollapseAvailableItem(index: Int)
 
     fun onExpandAvailableItem(index: Int)
 
-    fun onCollapsedProductClicked(parentIndex: Int, clickedProductIndex: Int)
+    fun onCollapsedProductClicked(index: Int, cartItemHolderData: CartItemHolderData)
 
     fun scrollToClickedExpandedProduct(index: Int, offset: Int)
 
     fun onToggleUnavailableItemAccordion(data: DisabledAccordionHolderData, buttonWording: String)
 
-    fun onDisabledCartItemProductClicked(cartItemData: CartItemData)
+    fun onDisabledCartItemProductClicked(cartItemHolderData: CartItemHolderData)
 
     fun onRecentViewProductImpression(element: CartRecentViewItemHolderData)
 

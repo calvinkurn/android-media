@@ -62,7 +62,6 @@ class SomListGetBulkAcceptOrderStatusUseCase @Inject constructor(
                 }
               }
             }
-
         """.trimIndent()
     }
 }

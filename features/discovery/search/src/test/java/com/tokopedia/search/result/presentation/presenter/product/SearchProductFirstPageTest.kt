@@ -12,6 +12,8 @@ import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.usecase.RequestParams
 import io.mockk.*
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.core.Is.`is`
 import org.junit.Test
 import rx.Subscriber
 
@@ -39,6 +41,7 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
         `Then verify view interaction when load data success`(searchProductModel)
         `Then verify start from is incremented`()
         `Then verify visitable list with product items`(visitableListSlot, searchProductModel)
+        `Then assert page component id`(searchProductModel)
     }
 
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
@@ -78,6 +81,8 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
             productListView.updateScrollListener()
 
+            verifySendTrackingOnFirstTimeLoad(productListView)
+
             verifyHideLoading(productListView)
         }
     }
@@ -86,6 +91,13 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
         val startFrom = productListPresenter.startFrom
 
         startFrom shouldBe SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS.toInt()
+    }
+
+    private fun `Then assert page component id`(searchProductModel: SearchProductModel) {
+        assertThat(
+            productListPresenter.pageComponentId,
+            `is`(searchProductModel.searchProduct.header.componentId)
+        )
     }
 
     @Test

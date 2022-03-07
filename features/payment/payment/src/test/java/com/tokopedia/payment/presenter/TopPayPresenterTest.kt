@@ -40,8 +40,6 @@ class TopPayPresenterTest {
         view = mockk(relaxed = true)
 
         presenter = TopPayPresenter(saveFingerPrintUseCase, paymentFingerprintUseCase, getPostDataOtpUseCase, userSession)
-
-        presenter.attachView(view)
     }
 
     @After
@@ -55,6 +53,7 @@ class TopPayPresenterTest {
         every { view.paymentPassData } returns null
 
         // When
+        presenter.attachView(view)
         presenter.processUriPayment()
 
         // Then
@@ -72,6 +71,7 @@ class TopPayPresenterTest {
         every { view.paymentPassData } returns PaymentPassData()
 
         // When
+        presenter.attachView(view)
         presenter.processUriPayment()
 
         // Then
@@ -94,6 +94,7 @@ class TopPayPresenterTest {
         }
 
         // When
+        presenter.attachView(view)
         presenter.processUriPayment()
 
         // Then
@@ -116,6 +117,7 @@ class TopPayPresenterTest {
         }
 
         // When
+        presenter.attachView(view)
         presenter.processUriPayment()
 
         // Then
@@ -137,6 +139,7 @@ class TopPayPresenterTest {
         }
 
         // When
+        presenter.attachView(view)
         presenter.processUriPayment()
 
         // Then
@@ -149,13 +152,30 @@ class TopPayPresenterTest {
     }
 
     @Test
+    fun `When process payment without view Then should not do anything`() {
+        // Given
+        every { view.paymentPassData } returns PaymentPassData()
+
+        // When
+        presenter.processUriPayment()
+
+        // Then
+        verify(inverse = true) {
+            view.renderWebViewPostUrl(any(), any(), any())
+            view.showToastMessageWithForceCloseView(any())
+        }
+    }
+
+    @Test
     fun `When register fingerprint success Then should show success`() {
         // Given
         every { saveFingerPrintUseCase.execute(any(), any()) } answers {
             (secondArg() as Subscriber<Boolean>).onNext(true)
+            (secondArg() as Subscriber<Boolean>).onCompleted()
         }
 
         // When
+        presenter.attachView(view)
         presenter.registerFingerPrint("", "", "", "", "")
 
         // Then
@@ -171,9 +191,11 @@ class TopPayPresenterTest {
         // Given
         every { saveFingerPrintUseCase.execute(any(), any()) } answers {
             (secondArg() as Subscriber<Boolean>).onNext(false)
+            (secondArg() as Subscriber<Boolean>).onCompleted()
         }
 
         // When
+        presenter.attachView(view)
         presenter.registerFingerPrint("", "", "", "", "")
 
         // Then
@@ -189,9 +211,11 @@ class TopPayPresenterTest {
         // Given
         every { saveFingerPrintUseCase.execute(any(), any()) } answers {
             (secondArg() as Subscriber<Boolean>).onError(Throwable())
+            (secondArg() as Subscriber<Boolean>).onCompleted()
         }
 
         // When
+        presenter.attachView(view)
         presenter.registerFingerPrint("", "", "", "", "")
 
         // Then
@@ -203,13 +227,94 @@ class TopPayPresenterTest {
     }
 
     @Test
+    fun `When register fingerprint success without view Then should not show success`() {
+        // Given
+        every { saveFingerPrintUseCase.execute(any(), any()) } answers {
+            presenter.detachView()
+            (secondArg() as Subscriber<Boolean>).onNext(true)
+            (secondArg() as Subscriber<Boolean>).onCompleted()
+        }
+
+        // When
+        presenter.attachView(view)
+        presenter.registerFingerPrint("", "", "", "", "")
+
+        // Then
+        verify(inverse = true) {
+            view.hideProgressDialog()
+            view.onSuccessRegisterFingerPrint()
+        }
+    }
+
+    @Test
+    fun `When register fingerprint failed without view Then should not show failed`() {
+        // Given
+        every { saveFingerPrintUseCase.execute(any(), any()) } answers {
+            presenter.detachView()
+            (secondArg() as Subscriber<Boolean>).onNext(false)
+            (secondArg() as Subscriber<Boolean>).onCompleted()
+        }
+
+        // When
+        presenter.attachView(view)
+        presenter.registerFingerPrint("", "", "", "", "")
+
+        // Then
+        verify(inverse = true) {
+            view.hideProgressDialog()
+            view.onErrorRegisterFingerPrint()
+        }
+    }
+
+    @Test
+    fun `When register fingerprint error without view Then should not show failed`() {
+        // Given
+        every { saveFingerPrintUseCase.execute(any(), any()) } answers {
+            presenter.detachView()
+            (secondArg() as Subscriber<Boolean>).onError(Throwable())
+            (secondArg() as Subscriber<Boolean>).onCompleted()
+        }
+
+        // When
+        presenter.attachView(view)
+        presenter.registerFingerPrint("", "", "", "", "")
+
+        // Then
+        verify(inverse = true) {
+            view.hideProgressDialog()
+            view.onErrorRegisterFingerPrint()
+        }
+    }
+
+    @Test
+    fun `When register fingerprint without view Then should not execute`() {
+        // Given
+        every { saveFingerPrintUseCase.execute(any(), any()) } answers {
+            (secondArg() as Subscriber<Boolean>).onError(Throwable())
+            (secondArg() as Subscriber<Boolean>).onCompleted()
+        }
+
+        // When
+        presenter.registerFingerPrint("", "", "", "", "")
+
+        // Then
+        verify(inverse = true) {
+            view.showProgressDialog()
+            view.hideProgressDialog()
+            saveFingerPrintUseCase.execute(any(), any())
+        }
+    }
+
+    @Test
     fun `When payment fingerprint success Then should show success`() {
         // Given
         every { paymentFingerprintUseCase.execute(any(), any()) } answers {
             (secondArg() as Subscriber<ResponsePaymentFingerprint?>).onNext(ResponsePaymentFingerprint(isSuccess = true))
+            (secondArg() as Subscriber<ResponsePaymentFingerprint?>).onCompleted()
         }
 
         // When
+        presenter.attachView(view)
         presenter.paymentFingerPrint("", "", "", "", "")
 
         // Then
@@ -225,9 +330,31 @@ class TopPayPresenterTest {
         // Given
         every { paymentFingerprintUseCase.execute(any(), any()) } answers {
             (secondArg() as Subscriber<ResponsePaymentFingerprint?>).onNext(ResponsePaymentFingerprint(isSuccess = false))
+            (secondArg() as Subscriber<ResponsePaymentFingerprint?>).onCompleted()
         }
 
         // When
+        presenter.attachView(view)
+        presenter.paymentFingerPrint("", "", "", "", "")
+
+        // Then
+        verify(ordering = Ordering.SEQUENCE) {
+            view.showProgressDialog()
+            view.hideProgressDialog()
+            view.onErrorPaymentFingerPrint()
+        }
+    }
+
+    @Test
+    fun `When payment fingerprint failed with null data Then should show failed`() {
+        // Given
+        every { paymentFingerprintUseCase.execute(any(), any()) } answers {
+            (secondArg() as Subscriber<ResponsePaymentFingerprint?>).onNext(null)
+            (secondArg() as Subscriber<ResponsePaymentFingerprint?>).onCompleted()
+        }
+
+        // When
+        presenter.attachView(view)
         presenter.paymentFingerPrint("", "", "", "", "")
 
         // Then
@@ -243,9 +370,11 @@ class TopPayPresenterTest {
         // Given
         every { paymentFingerprintUseCase.execute(any(), any()) } answers {
             (secondArg() as Subscriber<ResponsePaymentFingerprint?>).onError(Throwable())
+            (secondArg() as Subscriber<ResponsePaymentFingerprint?>).onCompleted()
         }
 
         // When
+        presenter.attachView(view)
         presenter.paymentFingerPrint("", "", "", "", "")
 
         // Then
@@ -253,6 +382,85 @@ class TopPayPresenterTest {
             view.showProgressDialog()
             view.hideProgressDialog()
             view.onErrorPaymentFingerPrint()
+        }
+    }
+
+    @Test
+    fun `When payment fingerprint success without view Then should not show success`() {
+        // Given
+        every { paymentFingerprintUseCase.execute(any(), any()) } answers {
+            presenter.detachView()
+            (secondArg() as Subscriber<ResponsePaymentFingerprint?>).onNext(ResponsePaymentFingerprint(isSuccess = true))
+            (secondArg() as Subscriber<ResponsePaymentFingerprint?>).onCompleted()
+        }
+
+        // When
+        presenter.attachView(view)
+        presenter.paymentFingerPrint("", "", "", "", "")
+
+        // Then
+        verify(inverse = true) {
+            view.hideProgressDialog()
+            view.onSuccessPaymentFingerprint(any(), any())
+        }
+    }
+
+    @Test
+    fun `When payment fingerprint failed without view Then should not show failed`() {
+        // Given
+        every { paymentFingerprintUseCase.execute(any(), any()) } answers {
+            presenter.detachView()
+            (secondArg() as Subscriber<ResponsePaymentFingerprint?>).onNext(ResponsePaymentFingerprint(isSuccess = false))
+            (secondArg() as Subscriber<ResponsePaymentFingerprint?>).onCompleted()
+        }
+
+        // When
+        presenter.attachView(view)
+        presenter.paymentFingerPrint("", "", "", "", "")
+
+        // Then
+        verify(inverse = true) {
+            view.hideProgressDialog()
+            view.onErrorPaymentFingerPrint()
+        }
+    }
+
+    @Test
+    fun `When payment fingerprint error without view Then should not show failed`() {
+        // Given
+        every { paymentFingerprintUseCase.execute(any(), any()) } answers {
+            presenter.detachView()
+            (secondArg() as Subscriber<ResponsePaymentFingerprint?>).onError(Throwable())
+            (secondArg() as Subscriber<ResponsePaymentFingerprint?>).onCompleted()
+        }
+
+        // When
+        presenter.attachView(view)
+        presenter.paymentFingerPrint("", "", "", "", "")
+
+        // Then
+        verify(inverse = true) {
+            view.hideProgressDialog()
+            view.onErrorPaymentFingerPrint()
+        }
+    }
+
+    @Test
+    fun `When payment fingerprint without view Then should not execute`() {
+        // Given
+        every { paymentFingerprintUseCase.execute(any(), any()) } answers {
+            (secondArg() as Subscriber<ResponsePaymentFingerprint?>).onError(Throwable())
+            (secondArg() as Subscriber<ResponsePaymentFingerprint?>).onCompleted()
+        }
+
+        // When
+        presenter.paymentFingerPrint("", "", "", "", "")
+
+        // Then
+        verify(inverse = true) {
+            view.showProgressDialog()
+            view.hideProgressDialog()
+            paymentFingerprintUseCase.execute(any(), any())
         }
     }
 
@@ -265,9 +473,11 @@ class TopPayPresenterTest {
         )
         every { getPostDataOtpUseCase.execute(any(), any()) } answers {
             (secondArg() as Subscriber<HashMap<String, String>?>).onNext(result)
+            (secondArg() as Subscriber<HashMap<String, String>?>).onCompleted()
         }
 
         // When
+        presenter.attachView(view)
         val urlOtp = "urlOtp"
         presenter.getPostDataOtp("", urlOtp)
 
@@ -284,9 +494,11 @@ class TopPayPresenterTest {
         // Given
         every { getPostDataOtpUseCase.execute(any(), any()) } answers {
             (secondArg() as Subscriber<HashMap<String, String>?>).onNext(null)
+            (secondArg() as Subscriber<HashMap<String, String>?>).onCompleted()
         }
 
         // When
+        presenter.attachView(view)
         presenter.getPostDataOtp("", "")
 
         // Then
@@ -302,9 +514,11 @@ class TopPayPresenterTest {
         // Given
         every { getPostDataOtpUseCase.execute(any(), any()) } answers {
             (secondArg() as Subscriber<HashMap<String, String>?>).onError(Throwable())
+            (secondArg() as Subscriber<HashMap<String, String>?>).onCompleted()
         }
 
         // When
+        presenter.attachView(view)
         presenter.getPostDataOtp("", "")
 
         // Then
@@ -316,12 +530,97 @@ class TopPayPresenterTest {
     }
 
     @Test
+    fun `When get otp success without view Then should not show success`() {
+        // Given
+        val result = hashMapOf(
+                "query" to "value",
+                "asdf" to "qwerty"
+        )
+        every { getPostDataOtpUseCase.execute(any(), any()) } answers {
+            presenter.detachView()
+            (secondArg() as Subscriber<HashMap<String, String>?>).onNext(result)
+            (secondArg() as Subscriber<HashMap<String, String>?>).onCompleted()
+        }
+
+        // When
+        presenter.attachView(view)
+        val urlOtp = "urlOtp"
+        presenter.getPostDataOtp("", urlOtp)
+
+        // Then
+        verify(inverse = true) {
+            view.hideProgressDialog()
+            view.onSuccessGetPostDataOTP("asdf=qwerty&query=value", urlOtp)
+        }
+    }
+
+    @Test
+    fun `When get otp failed without view Then should not show failed`() {
+        // Given
+        every { getPostDataOtpUseCase.execute(any(), any()) } answers {
+            presenter.detachView()
+            (secondArg() as Subscriber<HashMap<String, String>?>).onNext(null)
+            (secondArg() as Subscriber<HashMap<String, String>?>).onCompleted()
+        }
+
+        // When
+        presenter.attachView(view)
+        presenter.getPostDataOtp("", "")
+
+        // Then
+        verify(inverse = true) {
+            view.hideProgressDialog()
+            view.onErrorGetPostDataOtp(any())
+        }
+    }
+
+    @Test
+    fun `When get otp error without view Then should not show failed`() {
+        // Given
+        every { getPostDataOtpUseCase.execute(any(), any()) } answers {
+            presenter.detachView()
+            (secondArg() as Subscriber<HashMap<String, String>?>).onError(Throwable())
+            (secondArg() as Subscriber<HashMap<String, String>?>).onCompleted()
+        }
+
+        // When
+        presenter.attachView(view)
+        presenter.getPostDataOtp("", "")
+
+        // Then
+        verify(inverse = true) {
+            view.hideProgressDialog()
+            view.onErrorGetPostDataOtp(any())
+        }
+    }
+
+    @Test
+    fun `When get otp without view Then should not execute`() {
+        // Given
+        every { getPostDataOtpUseCase.execute(any(), any()) } answers {
+            (secondArg() as Subscriber<HashMap<String, String>?>).onError(Throwable())
+            (secondArg() as Subscriber<HashMap<String, String>?>).onCompleted()
+        }
+
+        // When
+        presenter.getPostDataOtp("", "")
+
+        // Then
+        verify(inverse = true) {
+            view.showProgressDialog()
+            view.hideProgressDialog()
+            getPostDataOtpUseCase.execute(any(), any())
+        }
+    }
+
+    @Test
     fun `When get userId Then should return userId from userSession`() {
         // Given
         val userId = "1234"
         every { userSession.userId } returns userId
 
         // When
+        presenter.attachView(view)
         val result = presenter.userId
 
         // Then
@@ -334,6 +633,7 @@ class TopPayPresenterTest {
         val t = PublishSubject.create<Long>()
 
         // When
+        presenter.attachView(view)
         var result = 0L
         presenter.addTimeoutSubscription(t.subscribe {
             result += it
@@ -351,6 +651,7 @@ class TopPayPresenterTest {
         val t = PublishSubject.create<Long>()
 
         // When
+        presenter.attachView(view)
         var result = 0L
         presenter.addTimeoutSubscription(t.subscribe {
             result += it

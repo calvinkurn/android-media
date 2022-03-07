@@ -2,7 +2,7 @@ package com.tokopedia.chatbot.view.adapter.viewholder.chatbubble
 
 import android.view.Gravity
 import android.view.View
-import com.tokopedia.chat_common.data.MessageViewModel
+import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ViewUtil
@@ -26,13 +26,13 @@ open class RightChatMessageViewHolder(
             Gravity.CENTER
     )
 
-    override fun bind(message: MessageViewModel) {
+    override fun bind(message: MessageUiModel) {
         super.bind(message)
         ChatbotMessageViewHolderBinder.bindChatReadStatus(message, customChatLayout)
         bindBackground(message)
     }
 
-    protected open fun bindBackground(message: MessageViewModel) {
+    protected open fun bindBackground(message: MessageUiModel) {
         customChatLayout?.background = bg
     }
 

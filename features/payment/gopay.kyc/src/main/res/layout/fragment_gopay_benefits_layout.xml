@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/Unify_NN0">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/benefitCL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/goPayHeaderBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/bg_gopay_benefit_header"
+            app:unify_image_corner_radius="0"
+            app:unify_image_type="rect" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/goPayPlusImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            app:layout_constraintBottom_toTopOf="@+id/goPayBenefitHeaderTitle"
+            app:layout_constraintStart_toStartOf="@+id/goPayBenefitHeaderTitle"
+            app:srcCompat="@drawable/ic_gopay_plus"
+            app:unify_image_corner_radius="0"
+            app:unify_image_type="rect" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/goPayBenefitHeaderTitle"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/unify_space_4"
+            android:text="@string/gopay_kyc_benefit_header_title_text"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintBottom_toTopOf="@+id/goPayBenefitDescriptionText"
+            app:layout_constraintEnd_toEndOf="@+id/goPayBenefitDescriptionText"
+            app:layout_constraintStart_toStartOf="@+id/goPayBenefitDescriptionText"
+            app:typographyType="heading_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/goPayBenefitDescriptionText"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            android:layout_marginBottom="@dimen/unify_space_16"
+            android:text="@string/gopay_kyc_benefit_header_description_text"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintBottom_toBottomOf="@+id/goPayHeaderBackground"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="body_2" />
+
+        <LinearLayout
+            android:id="@+id/goPayBenefitLL"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_24"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/goPayHeaderBackground" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/upgradeNowButton"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_24"
+            android:layout_marginBottom="@dimen/unify_space_24"
+            android:text="@string/gopay_kyc_upgrade_now"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/goPayBenefitLL"
+            app:layout_constraintStart_toStartOf="@+id/goPayBenefitLL"
+            app:layout_constraintTop_toBottomOf="@+id/goPayBenefitLL"
+            app:layout_constraintVertical_bias="1.0"
+            app:unifyButtonSize="large"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

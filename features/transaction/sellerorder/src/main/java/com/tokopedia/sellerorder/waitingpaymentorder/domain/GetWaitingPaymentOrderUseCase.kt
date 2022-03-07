@@ -5,6 +5,8 @@ import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.waitingpaymentorder.domain.mapper.WaitingPaymentOrderResultMapper
 import com.tokopedia.sellerorder.waitingpaymentorder.domain.model.WaitingPaymentOrderRequestParam
 import com.tokopedia.sellerorder.waitingpaymentorder.domain.model.WaitingPaymentOrderResponse
+import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.Paging
+import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderUiModel
 import javax.inject.Inject
 
 /**
@@ -19,7 +21,9 @@ class GetWaitingPaymentOrderUseCase @Inject constructor(
         useCase.setGraphqlQuery(QUERY)
     }
 
-    suspend fun execute(param: WaitingPaymentOrderRequestParam): Map<String, Any> {
+    suspend fun execute(
+        param: WaitingPaymentOrderRequestParam
+    ): Pair<Paging, List<WaitingPaymentOrderUiModel>> {
         useCase.setTypeClass(WaitingPaymentOrderResponse.Data::class.java)
         useCase.setRequestParams(generateParam(param))
 
@@ -38,12 +42,33 @@ class GetWaitingPaymentOrderUseCase @Inject constructor(
                   order_id
                   buyer_name
                   payment_deadline
+                  have_product_bundle
                   products {
                     product_id
                     product_name
                     product_picture
                     product_qty
                     product_price
+                  }
+                  bundle_detail {
+                    product_bundling_icon
+                    bundle {
+                      bundle_name
+                      order_detail {
+                        product_id
+                        product_name
+                        product_picture
+                        product_qty
+                        product_price
+                      }
+                    }
+                    non_bundle {
+                      product_id
+                      product_name
+                      product_picture
+                      product_qty
+                      product_price
+                    }
                   }
                 }
                 cursor_payment_deadline

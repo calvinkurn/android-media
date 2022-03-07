@@ -42,6 +42,6 @@ class PlaySSEMapper(private val response: SSEResponse) {
     }
 
     companion object {
-        private val TAG = "PlaySSEMapper"
+        private const val TAG = "PlaySSEMapper"
     }
 }

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.akamai.botman.CYFMonitor;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.tokopedia.akamai_bot_lib.UtilsKt;
 import com.tokopedia.graphql.CommonUtils;
 import com.tokopedia.graphql.FingerprintManager;
 import com.tokopedia.graphql.GraphqlCacheManager;
@@ -25,20 +26,25 @@ import com.tokopedia.logger.utils.Priority;
 import java.io.InterruptedIOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLParameters;
 
 import okhttp3.internal.http2.ConnectionShutdownException;
 import retrofit2.Response;
 import rx.Observable;
-import timber.log.Timber;
 
-import static com.tokopedia.akamai_bot_lib.UtilsKt.isAkamai;
+import static com.tokopedia.akamai_bot_lib.UtilsKt.getAkamaiQuery;
 import static com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER;
 import static com.tokopedia.graphql.util.Const.QUERY_HASHING_HEADER;
+import static com.tokopedia.graphql.util.Const.TKPD_AKAMAI;
 
 /**
  * Retrieve the response from Cloud and dump the same in disk if cache was enable by consumer.
@@ -90,10 +96,42 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
             }
             header.put(QUERY_HASHING_HEADER, queryHashingHeaderValue.toString());
         }
-        if (isAkamai(requests.get(0).getQuery())) {
-            header.put(AKAMAI_SENSOR_DATA_HEADER, GraphqlClient.getFunction().getAkamaiValue());
+
+        //akamai query Logic
+        putAkamaiHeader(header, requests);
+
+        String url = requests.get(0).getUrl();
+        if(TextUtils.isEmpty(url)){
+            String opName = requests.get(0).getOperationName();
+            if (TextUtils.isEmpty(opName)) {
+                opName = CacheHelper.getQueryName(requests.get(0).getQuery());
+            }
+            url = CommonUtils.getGraphqlUrlAppend(opName);
         }
-        return mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
+        if(!TextUtils.isEmpty(url)){
+            return mApi.getResponseWithPath(url, requests, header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests));
+        } else {
+            return mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests));
+        }
+    }
+
+    public void putAkamaiHeader(Map<String, String> header, List<GraphqlRequest> requests) {
+        String akamaiQuery = null;
+        for (GraphqlRequest req : requests) {
+            List<String> qnl = req.getQueryNameList();
+            if (qnl != null && qnl.size() > 0) {
+                akamaiQuery = getAkamaiQuery(qnl);
+            } else {
+                akamaiQuery = UtilsKt.getAkamaiQuery(req.getQuery());
+            }
+            if (!TextUtils.isEmpty(akamaiQuery)){
+                break;
+            }
+        }
+        if (!TextUtils.isEmpty(akamaiQuery)) {
+            header.put(AKAMAI_SENSOR_DATA_HEADER, GraphqlClient.getFunction().getAkamaiValue());
+            header.put(TKPD_AKAMAI, akamaiQuery);
+        }
     }
 
     @Override
@@ -104,7 +142,23 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
 
         return getResponse(requests)
                 .doOnError(throwable -> {
-                    if (!(throwable instanceof UnknownHostException) &&
+                    if(throwable instanceof SSLHandshakeException) {
+                        SSLParameters sslParameters;
+                        String tls;
+                        String cipherSuites="";
+                        try {
+                            sslParameters = SSLContext.getDefault().getDefaultSSLParameters();
+                            tls = Arrays.toString(sslParameters.getProtocols());
+                            cipherSuites = Arrays.toString(SSLContext.getDefault().getDefaultSSLParameters().getCipherSuites());
+                        } catch (NoSuchAlgorithmException e) {
+                            tls="Failed to get ssl";
+                        } catch (NullPointerException e){
+                            tls="Got null on ssl";
+                        } catch (Exception e) {
+                            tls= e.getLocalizedMessage();
+                        }
+                        LoggingUtils.logGqlErrorSsl("java", requests.toString(), throwable, tls, cipherSuites);
+                    } else if (!(throwable instanceof UnknownHostException) &&
                             !(throwable instanceof SocketException) &&
                             !(throwable instanceof InterruptedIOException) &&
                             !(throwable instanceof ConnectionShutdownException)) {
@@ -134,13 +188,23 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                         else {
                             header.put(QUERY_HASHING_HEADER, "");
                         }
+                        String opName = requests.get(0).getOperationName();
+                        if (TextUtils.isEmpty(opName)) {
+                            opName = CacheHelper.getQueryName(requests.get(0).getQuery());
+                        }
                         Map<String, String> messageMap = new HashMap<>();
                         messageMap.put("type", "error");
-                        messageMap.put("name", CacheHelper.getQueryName(requests.get(0).getQuery()));
+                        messageMap.put("name", opName);
                         messageMap.put("key", requests.get(0).getMd5());
                         messageMap.put("hash", queryHashValues.toString());
                         ServerLogger.log(Priority.P1, "GQL_HASHING", messageMap);
-                        mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
+
+                        String url = CommonUtils.getGraphqlUrlAppend(opName);
+                        if(!TextUtils.isEmpty(url)){
+                            mApi.getResponseWithPath(url, requests, header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests));
+                        } else {
+                            mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests));
+                        }
                     }
                     if (httpResponse.code() != Const.GQL_RESPONSE_HTTP_OK && httpResponse.body() != null) {
                         LoggingUtils.logGqlResponseCode(httpResponse.code(), requests.toString(), httpResponse.body().toString());
@@ -171,10 +235,14 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                         for (int i = 0; i < size; i++) {
                             GraphqlRequest request = requests.get(i);
                             if(executeQueryHashFlow){
+                                String opName = requests.get(0).getOperationName();
+                                if (TextUtils.isEmpty(opName)) {
+                                    opName = CacheHelper.getQueryName(requests.get(0).getQuery());
+                                }
                                 mCacheManager.saveQueryHash(request.getMd5(), qhValues[i]);
                                 Map<String, String> messageMap = new HashMap<>();
                                 messageMap.put("type", "success");
-                                messageMap.put("name", CacheHelper.getQueryName(request.getQuery()));
+                                messageMap.put("name", opName);
                                 messageMap.put("key", request.getMd5());
                                 messageMap.put("hash", qhValues[i]);
                                 ServerLogger.log(Priority.P1, "GQL_HASHING", messageMap);
@@ -194,7 +262,6 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                             if (executeCacheFlow && childResp != null) {
                                 BackendCache cache = caches.get(request.getMd5());
                                 mCacheManager.save(request.cacheKey(), childResp.toString(), cache.getMaxAge() * 1000);
-                                Timber.d("Android CLC - Request saved to cache " + CacheHelper.getQueryName(request.getQuery()) + " KEY: " + request.cacheKey());
                             }
                         }
 

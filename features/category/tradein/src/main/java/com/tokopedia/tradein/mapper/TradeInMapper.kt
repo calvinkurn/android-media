@@ -36,10 +36,10 @@ class TradeInMapper {
 
         fun mapSavedAddressToKeroAddress(addressDataModel: SaveAddressDataModel) : Data {
             with(addressDataModel) {
-                return Data(id, title, address1, address2, cityId,
-                        "", "", districtId, selectedDistrict, true,
+                return Data(id.toInt(), title, address1, address2, cityId.toInt(),
+                        "", "", districtId.toInt(), selectedDistrict, true,
                         true, true, latitude, longitude, phone, postalCode,
-                        provinceId, "", receiverName, 1)
+                        provinceId.toInt(), "", receiverName, 1)
             }
         }
 

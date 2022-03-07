@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/notif_settting"
-        android:icon="@drawable/ic_system_action_gear_normal_24"
-        android:title="@string/title_setting"
-        app:showAsAction="ifRoom" />
-</menu>

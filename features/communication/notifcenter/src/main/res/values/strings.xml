@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_notif_center">Update</string>
+    <string name="notif_today">Hari Ini</string>
+    <string name="notif_yesterday">Kemarin</string>
+    <string name="notif_filter">Filter</string>
+    <string name="notif_cancel">Batalkan</string>
+    <string name="notif_no_info">Tidak ada info baru</string>
+    <string name="notif_no_info_desc">Dapatkan info seputar transaksi penjualan &amp; pembelian, promo, event, update produk, fitur &amp; layanan terbaru untuk Anda.</string>
+
+    <string name="home">Home</string>
+    <string name="feed">Feed</string>
+    <string name="inbox">Inbox</string>
+    <string name="keranjang">Keranjang</string>
+    <string name="akun">Akun</string>
+    <string name="official">Official Store</string>
+
+    <string name="exit_message">Tekan sekali lagi untuk keluar</string>
+
+    <string name="chat">Chat</string>
+    <string name="chat_desc">Percakapan pribadi Anda</string>
+
+    <string name="diskusi">Diskusi</string>
+    <string name="diskusi_desc">Tanya jawab seputar Produk</string>
+
+    <string name="ulasan">Ulasan</string>
+    <string name="ulasan_desc">Berikan penilaian dan ulasan Produk</string>
+
+    <string name="pesan_bantuan">Pesan Bantuan</string>
+    <string name="pesan_bantuan_desc">Pantau status bantuan dari Tokopedia</string>
+
+    <string name="notifications">Notifikasi</string>
+
+    <string name="info_penjual">Info Penjual</string>
+    <string name="user_info">Info Pengguna</string>
+
+    <string name="penjualan">Penjualan</string>
+    <string name="pembelian">Pembelian</string>
+    <string name="komplain_saya">Komplain Saya</string>
+    <string name="update">Update</string>
+
+    <string name="info_terbaru">Info Terbaru</string>
+
+    <string name="menunggu_pembayaran">Menunggu Pembayaran</string>
+    <string name="menunggu_konfirmasi">Menunggu Konfirmasi</string>
+    <string name="pesanan_diproses">Pesanan Diproses</string>
+    <string name="pesanan_diproses_uoh">Diproses</string>
+
+    <string name="pesanan_baru">Pesanan Baru</string>
+    <string name="siap_dikirim">Siap Dikirim</string>
+
+    <string name="sedang_dikirim">Sedang Dikirim</string>
+    <string name="sedang_dikirim_uoh">Dikirim</string>
+
+    <string name="sampai_tujuan">Sampai Tujuan</string>
+    <string name="sampai_tujuan_uoh">Tiba di Tujuan</string>
+
+    <string name="sebagai_pembeli">Sebagai Pembeli</string>
+    <string name="sebagai_penjual">Sebagai Penjual</string>
+
+    <string name="title_showcase">Tampilan simpel, navigasi mudah!</string>
+    <string name="desc_showcase">Menu Tokopedia kini tampil lebih rapi. Jelajahi dan buktikan kemudahan navigasinya!</string>
+
+    <string name="previous">Sebelumnya</string>
+    <string name="next">Selanjutnya</string>
+    <string name="coupon_copy_text">Kode voucher tersalin</string>
+
+    <string name="navigation_home_label_longpress_beli">Cari</string>
+    <string name="navigation_home_label_longpress_share">Wishlist</string>
+    <string name="navigation_home_label_longpress_bayar">Tagihan</string>
+    <string name="navigation_home_label_longpress_jual">Jual</string>
+    <string name="text_title_filter">Filter</string>
+    <string name="text_title_reset">Reset</string>
+    <string name="text_button_show_filter">Tampilkan Hasil</string>
+    <string name="mark_all_as_read">Tandai semua dibaca</string>
+
+    <string name="seller_label">Untuk Penjual</string>
+    <string name="buyer_label">Untuk Pembeli</string>
+
+    <string name="filter">Filter</string>
+    <string name="recom_go_to_wishlist">Lihat Wishlist</string>
+    <string name="notifcenter_title_view">Lihat</string>
+    <string name="notifcenter_btn_title_ok">OK</string>
+
+    <string name="in_full">Selengkapnya</string>
+
+    <string name="notification_empty_message">Belum ada notifikasi</string>
+    <string name="notification_empty_filter_message">Yuk, coba pakai filter lainnya.</string>
+
+    <string name="coachicon_title_filter">Cari notifikasi lebih cepat dengan filter</string>
+    <string name="coachicon_description_filter">Klik salah satu filter buat menampilkan notifikasi sesuai kebutuhanmu</string>
+    <string name="coachicon_title_tabs">Cek notifikasi terbaru di sini</string>
+    <string name="coachicon_description_tabs">Dapatkan informasi transaksi dan promo terbaru untuk pembeli dan penjual di sini</string>
+    <string name="coachicon_title_notification_setting">Tampilan baru pengaturan notifikasi</string>
+    <string name="coachicon_description_notification_setting">Kini, kamu bisa atur notifikasi dari Tokopedia sesuai kebutuhan</string>
+    <string name="notif_transaction_for_you">Untuk Kamu</string>
+    <string name="notif_transaction_waiting_payment">Menunggu Pembayaran</string>
+    <string name="title_read_more">Lihat Semua</string>
+    <string name="no_notification_update_yet">Belum ada Notification</string>
+    <string name="title_seller_info">Info Penjual</string>
+    <string name="notifcenter_btn_buy">Beli</string>
+    <string name="notifcenter_btn_atc">+ Keranjang</string>
+    <string name="notifcenter_btn_preorder">PreOrder</string>
+    <string name="notifcenter_btn_reminder">Ingatkan Saya</string>
+    <string name="notifcenter_btn_delete_reminder">Hapus Pengingat</string>
+    <string name="notifcenter_btn_check_wishlist">Cek Wishlist Kamu</string>
+    <string name="notifcenter_btn_out_of_stock">Stock Habis</string>
+
+    <string name="product_reminder_success">Kami akan mengabarkan bila barang sudah di stok kembali</string>
+    <string name="product_highlight_empty">Belum ada produk</string>
+    <string name="notifcenter_btn_title_atc">+ Keranjang</string>
+    <string name="notifcenter_title_product_highlight">Produk unggulan dari toko ini</string>
+
+    <string name="notifcenter_out_of_stock">Yaah, stok barangnya habis. Coba cek barang serupa lainnya, yuk.</string>
+    <string name="notifcenter_cd_avatar">avatar</string>
+    <string name="notifcenter_cd_icon_trx">transaction item</string>
+
+    <string name="title_notifcenter_click_here">Klik disini</string>
+    <string name="title_notifcenter_end_in">Berakhir dalam</string>
+    <string name="title_notifcenter_end_until">Berlaku sampai</string>
+    <string name="title_notifcenter_promo_already_ended">Promo telah berakhir</string>
+    <string name="title_notifcenter_see_more">Lihat Lebih Banyak</string>
+    <string name="title_notifcenter_empty_with_recom">Belum ada notifikasi baru, nih. Coba cek pilihan produk menarik di bawah ini, yuk!.</string>
+    <string name="title_success_bump_reminder">Siap-siap, kamu bakal jadi yang pertama dapat kabar saat barang ini tersedia lagi.</string>
+    <string name="title_success_delete_reminder">Pengingat telah dihapus.</string>
+    <string name="title_success_add_to_wishlist">Kamu akan dapat notifikasi ketika barang kembali tersedia. Bisa cek produknya di Wishlist, ya.</string>
+    <string name="title_empty_stock">Stok Habis</string>
+
+    <string name="cta_widget_notifcenter_see_previous">Lihat sebelumnya</string>
+    <string name="cta_widget_notifcenter_close_previous">Tutup</string>
+    <string name="title_notifcenter_see_cart">Lihat Keranjang</string>
+    <string name="desc_notifcenter_empty_state_illustration">Empty State Illustration</string>
+</resources>

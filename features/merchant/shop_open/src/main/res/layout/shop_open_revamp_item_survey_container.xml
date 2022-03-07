@@ -11,9 +11,9 @@
         android:textColor="@color/Unify_N700_96"
         android:lineSpacingExtra="@dimen/sp_6"
         android:letterSpacing="0.01"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_39"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="39dp"
+        android:layout_marginStart="16dp"
         android:textSize="@dimen/sp_16"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,7 +21,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_choice_list"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginStart="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

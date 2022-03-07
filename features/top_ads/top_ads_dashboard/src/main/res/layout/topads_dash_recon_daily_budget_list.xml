@@ -9,8 +9,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingStart="@dimen/dp_16"
-        android:paddingEnd="@dimen/dp_16">
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/daily_budget_title"
@@ -24,7 +24,7 @@
             android:id="@+id/daily_budget_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginTop="2dp"
             app:layout_constraintTop_toBottomOf="@id/daily_budget_title"
             app:typographyType="body_3" />
 

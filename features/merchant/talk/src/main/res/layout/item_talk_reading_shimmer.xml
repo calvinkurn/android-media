@@ -19,7 +19,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/reading_shimmer_inquirer_info"
         android:layout_width="@dimen/dp_80"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginLeft="@dimen/layout_lvl1"
         app:layout_constraintTop_toTopOf="@id/reading_shimmer_inquirer_profile_picture"
@@ -29,7 +29,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/reading_shimmer_question"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl2"
@@ -40,7 +40,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/reading_shimmer_question_2"
         android:layout_width="@dimen/dp_204"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl1"
         app:layout_constraintStart_toStartOf="@id/reading_shimmer_question"
         app:layout_constraintTop_toBottomOf="@id/reading_shimmer_question" />
@@ -67,7 +67,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/reading_shimmer_respondent_info"
         android:layout_width="@dimen/dp_80"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginLeft="@dimen/layout_lvl1"
         app:layout_constraintTop_toTopOf="@id/reading_shimmer_respondent_profile_picture"
@@ -77,7 +77,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/reading_shimmer_respondent_answer"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"

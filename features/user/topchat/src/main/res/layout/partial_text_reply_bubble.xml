@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <ImageView
+        android:id="@+id/iv_reply_icon"
+        android:layout_width="@dimen/unify_space_12"
+        android:layout_height="@dimen/dp_topchat_9"
+        android:layout_marginStart="@dimen/dp_topchat_15"
+        app:layout_constraintBottom_toBottomOf="@+id/tp_reply_from"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tp_reply_from"
+        app:srcCompat="@drawable/ic_chat_reply" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_reply_from"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_topchat_6"
+        android:layout_marginTop="@dimen/dp_topchat_10"
+        android:layout_marginEnd="@dimen/dp_topchat_15"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/topchat_bg_dms_right_bubble_reply_text"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@+id/iv_rb_close"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/iv_reply_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_6"
+        tools:text="@tools:sample/lorem/random" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_reply_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_topchat_15"
+        android:layout_marginEnd="@dimen/dp_topchat_15"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/topchat_bg_dms_right_bubble_reply_text"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@+id/iv_rb_close"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tp_reply_from"
+        app:typographyType="body_3"
+        tools:text="@tools:sample/lorem/random" />
+
+    <ImageView
+        android:id="@+id/iv_rb_close"
+        android:layout_width="@dimen/dp_topchat_41"
+        android:layout_height="0dp"
+        android:paddingTop="@dimen/dp_topchat_10"
+        android:paddingHorizontal="@dimen/dp_topchat_14"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/topchat_ic_close" />
+</merge>

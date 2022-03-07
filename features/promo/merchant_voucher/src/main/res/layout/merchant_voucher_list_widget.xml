@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:orientation="vertical"
     android:clipToPadding="false"
     android:clipChildren="false">
@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:padding="@dimen/dp_8">
+        android:padding="8dp">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvTitle"
@@ -42,8 +42,8 @@
             android:clickable="true"
             android:focusable="true"
             android:text="@string/label_see_all"
-            android:padding="@dimen/dp_4"
-            android:textSize="@dimen/sp_14"
+            android:padding="4dp"
+            android:textSize="14sp"
             android:visibility="gone"
             tools:visibility="visible" />
     </LinearLayout>

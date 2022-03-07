@@ -5,7 +5,7 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
+import com.tokopedia.shop.score.common.presentation.bottomsheet.BaseBottomSheetShopScore
 import com.tokopedia.shop.score.databinding.BottomSheetProtectedParameterBinding
 
 class BottomSheetProtectedParameter :
@@ -33,23 +33,17 @@ class BottomSheetProtectedParameter :
 
     private fun BottomSheetProtectedParameterBinding?.setupView() = this?.run {
         val protectedParameterDesc = arguments?.getString(PROTECTED_PARAMETER_DESC_KEY).orEmpty()
-        tvDescProtectedParameter.text =
-            MethodChecker.fromHtml(
-                getString(
-                    R.string.desc_relief_parameter_for_new_seller_bottom_sheet,
-                    protectedParameterDesc
-                )
-            )
+        tvDescProtectedParameter.text = MethodChecker.fromHtml(protectedParameterDesc)
     }
 
     companion object {
         const val TAG = "BottomSheetProtectedParameter"
         private const val PROTECTED_PARAMETER_DESC_KEY = "PROTECTED_PARAMETER_DESC_KEY"
 
-        fun createInstance(protectedParameterDate: String): BottomSheetProtectedParameter {
+        fun createInstance(protectedParameterDesc: String): BottomSheetProtectedParameter {
             return BottomSheetProtectedParameter().apply {
                 val bundle = Bundle()
-                bundle.putString(PROTECTED_PARAMETER_DESC_KEY, protectedParameterDate)
+                bundle.putString(PROTECTED_PARAMETER_DESC_KEY, protectedParameterDesc)
                 arguments = bundle
             }
         }

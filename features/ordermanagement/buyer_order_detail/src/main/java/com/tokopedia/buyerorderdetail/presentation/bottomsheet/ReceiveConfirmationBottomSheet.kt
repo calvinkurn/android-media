@@ -49,7 +49,7 @@ class ReceiveConfirmationBottomSheet(
     }
 
     private fun createChildView(context: Context): View {
-        return View.inflate(context, R.layout.bottomsheet_finish_order, null).apply {
+        return View.inflate(context, R.layout.buyer_order_detail_bottomsheet_finish_order, null).apply {
             bindViews(this)
             setupDescription()
             btnRight?.setupButton(actionButton.popUp.actionButton.lastOrNull())

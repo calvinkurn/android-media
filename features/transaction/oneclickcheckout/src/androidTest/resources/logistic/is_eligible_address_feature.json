@@ -1,0 +1,18 @@
+[
+  {
+    "data": {
+      "KeroAddrIsEligibleForAddressFeature": {
+        "data": {
+          "eligible": false
+        },
+        "kero_addr_error": {
+          "code": 0,
+          "detail": ""
+        },
+        "status": "",
+        "server_process_time": "",
+        "config": ""
+      }
+    }
+  }
+]

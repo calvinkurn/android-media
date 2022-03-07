@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_4"
+    android:layout_margin="4dp"
     android:clipChildren="false"
     android:clipToPadding="false"
     android:orientation="vertical">
@@ -12,8 +12,8 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/appCompatImageViewDouble"
         android:contentDescription="@string/content_desc_appCompatImageViewDouble"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_0"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:scaleType="fitXY"
         android:visibility="gone"
         app:layout_constraintDimensionRatio="H,2:1"
@@ -28,8 +28,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/appCompatImageView"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_0"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:scaleType="fitXY"
         android:visibility="gone"
         app:layout_constraintDimensionRatio="H,3:1"
@@ -47,7 +47,7 @@
         android:contentDescription="@string/content_desc_claim_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_8"
+        android:layout_margin="8dp"
         android:text="@string/klaim"
         app:unifyButtonInvers="true"
         app:unifyButtonSize="micro"

@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +33,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 @Deprecated
 public class UseCaseIconSectionViewHolder extends AbstractViewHolder<UseCaseIconSectionDataModel> {
-
+    @SuppressLint("ResourcePackage")
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_use_case_icon_section;
     private RecyclerView recyclerView;

@@ -16,7 +16,9 @@ class PlayMultipleLikesMapper @Inject constructor() {
         val bubbleMap = mutableMapOf<String, List<Int>>()
         configs.forEach { config ->
             val color = try {
-                Color.parseColor(config.bgColor)
+                if (config.bgColor.isNotBlank()) {
+                    Color.parseColor(config.bgColor)
+                } else Color.BLACK
             } catch (e: IllegalArgumentException) { null } ?: return@forEach
 
             val savedColorList = bubbleMap[config.icon] ?: emptyList()

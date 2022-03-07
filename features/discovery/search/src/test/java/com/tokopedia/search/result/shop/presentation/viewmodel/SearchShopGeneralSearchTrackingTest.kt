@@ -12,10 +12,14 @@ import org.junit.Test
 
 internal class SearchShopGeneralSearchTrackingTest: SearchShopDataViewTestFixtures() {
 
+    private val defaultParamGeneralSearchTracking = mapOf(
+        SearchApiConst.Q to defaultKeyword
+    )
+
     override fun setUp() { }
 
     private fun `Test general search tracking`(
-            searchShopParameter: Map<String, Any> = searchShopParameterCommon,
+            searchShopParameter: Map<String, Any> = defaultParamGeneralSearchTracking,
             searchShopModel: SearchShopModel,
             expectedGeneralSearchTracking: GeneralSearchTrackingShop,
     ) {
@@ -61,9 +65,10 @@ internal class SearchShopGeneralSearchTrackingTest: SearchShopDataViewTestFixtur
         val relatedKeyword = "${SearchEventTracking.NONE} - ${SearchEventTracking.NONE}"
 
         val expectedGeneralSearchTracking = GeneralSearchTrackingShop(
-                eventLabel = eventLabel,
-                pageSource = Dimension90Utils.getDimension90(searchShopParameterCommon),
-                relatedKeyword = relatedKeyword,
+            eventLabel = eventLabel,
+            pageSource = Dimension90Utils.getDimension90(searchShopParameterCommon),
+            relatedKeyword = relatedKeyword,
+            searchFilter = "",
         )
 
         `Test general search tracking`(
@@ -96,9 +101,10 @@ internal class SearchShopGeneralSearchTrackingTest: SearchShopDataViewTestFixtur
         val relatedKeyword = "${SearchEventTracking.NONE} - ${SearchEventTracking.NONE}"
 
         val expectedGeneralSearchTracking = GeneralSearchTrackingShop(
-                eventLabel = eventLabel,
-                pageSource = Dimension90Utils.getDimension90(searchShopParameter),
-                relatedKeyword = relatedKeyword,
+            eventLabel = eventLabel,
+            pageSource = Dimension90Utils.getDimension90(searchShopParameter),
+            relatedKeyword = relatedKeyword,
+            searchFilter = "",
         )
 
         `Test general search tracking`(
@@ -134,9 +140,10 @@ internal class SearchShopGeneralSearchTrackingTest: SearchShopDataViewTestFixtur
         val relatedKeyword = "${SearchEventTracking.NONE} - ${SearchEventTracking.NONE}"
 
         val expectedGeneralSearchTracking = GeneralSearchTrackingShop(
-                eventLabel = eventLabel,
-                pageSource = Dimension90Utils.getDimension90(searchShopParameter),
-                relatedKeyword = relatedKeyword,
+            eventLabel = eventLabel,
+            pageSource = Dimension90Utils.getDimension90(searchShopParameter),
+            relatedKeyword = relatedKeyword,
+            searchFilter = "",
         )
 
         `Test general search tracking`(
@@ -170,15 +177,55 @@ internal class SearchShopGeneralSearchTrackingTest: SearchShopDataViewTestFixtur
         val relatedKeyword = "$previousKeyword - ${SearchEventTracking.NONE}"
 
         val expectedGeneralSearchTracking = GeneralSearchTrackingShop(
-                eventLabel = eventLabel,
-                pageSource = Dimension90Utils.getDimension90(searchShopParameterCommon),
-                relatedKeyword = relatedKeyword,
+            eventLabel = eventLabel,
+            pageSource = Dimension90Utils.getDimension90(searchShopParameterCommon),
+            relatedKeyword = relatedKeyword,
+            searchFilter = "",
         )
 
         `Test general search tracking`(
                 searchShopParameter = searchShopParameter,
                 searchShopModel = searchShopModel,
                 expectedGeneralSearchTracking = expectedGeneralSearchTracking
+        )
+    }
+
+    @Test
+    fun `general search tracking shop with filter`() {
+        val previousKeyword = "iphone"
+        val searchShopParameter = mapOf(
+            SearchApiConst.Q to defaultKeyword,
+            SearchApiConst.PREVIOUS_KEYWORD to previousKeyword,
+            SearchApiConst.OFFICIAL to true.toString(),
+            SearchApiConst.FCITY to "123",
+        )
+        val searchShopModel = "searchshop/generalsearch/general-search.json".jsonToObject<SearchShopModel>()
+
+        val treatmentType = searchShopModel.aceSearchShop.header.keywordProcess
+        val responseCode = searchShopModel.aceSearchShop.header.responseCode
+        val businessUnit = SearchEventTracking.PHYSICAL_GOODS
+        val totalData = searchShopModel.aceSearchShop.totalShop
+        val eventLabel = "$defaultKeyword|" +
+            "$treatmentType|" +
+            "$responseCode|" +
+            "$businessUnit|" +
+            "${SearchEventTracking.NONE}|" +
+            "${SearchEventTracking.NONE}|" +
+            "$totalData"
+
+        val relatedKeyword = "$previousKeyword - ${SearchEventTracking.NONE}"
+
+        val expectedGeneralSearchTracking = GeneralSearchTrackingShop(
+            eventLabel = eventLabel,
+            pageSource = Dimension90Utils.getDimension90(searchShopParameterCommon),
+            relatedKeyword = relatedKeyword,
+            searchFilter = "${SearchApiConst.OFFICIAL}=true&${SearchApiConst.FCITY}=123"
+        )
+
+        `Test general search tracking`(
+            searchShopParameter = searchShopParameter,
+            searchShopModel = searchShopModel,
+            expectedGeneralSearchTracking = expectedGeneralSearchTracking
         )
     }
 }

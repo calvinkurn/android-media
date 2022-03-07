@@ -8,7 +8,7 @@
         android:id="@+id/deals_in_city"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_16"
+        android:padding="16dp"
         style="@style/TextView.Medium.FontMedium.BlackPrimary"
         tools:text="Deals ‘Spaghetti’ di Jakarta" />
 

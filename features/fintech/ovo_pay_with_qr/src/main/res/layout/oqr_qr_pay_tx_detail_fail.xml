@@ -9,7 +9,7 @@
         android:id="@+id/top_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginTop="24dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent">
@@ -22,7 +22,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="8dp"
             android:gravity="center_horizontal"
             android:src="@drawable/error_msg" />
 
@@ -30,22 +30,22 @@
             android:id="@+id/fail_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_24"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginRight="16dp"
             android:gravity="center_horizontal"
             android:text="@string/oqr_default_error_message"
             android:textColor="@color/oqr_amount_color_black"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="14sp" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/call_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_24"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginRight="16dp"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/top_section">
@@ -53,7 +53,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/dp_12"
+            android:layout_marginRight="12dp"
             app:srcCompat="@drawable/ic_call" />
 
         <TextView
@@ -61,32 +61,32 @@
             android:layout_height="wrap_content"
             android:text="Butuh Bantuan?"
             android:textColor="@color/oqr_aqua_color"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="14sp" />
     </LinearLayout>
 
     <TextView
         android:id="@+id/try_again"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16"
+        android:layout_margin="16dp"
         android:layout_marginBottom="@dimen/dp_50"
         android:background="@drawable/rounded_hollow_btn_bg"
         android:gravity="center_horizontal"
-        android:padding="@dimen/dp_16"
+        android:padding="16dp"
         android:text="@string/oqr_try_again"
         android:textColor="@color/oqr_aqua_color"
-        android:textSize="@dimen/sp_14"
+        android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/back_to_main" />
 
     <TextView
         android:id="@+id/back_to_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_24"
+        android:layout_marginBottom="24dp"
         android:gravity="center_horizontal"
         android:text="@string/oqr_back_to_main"
         android:textColor="@color/oqr_aqua_color"
-        android:textSize="@dimen/sp_14"
+        android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/bottom_section_parent" />
 
     <LinearLayout

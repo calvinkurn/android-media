@@ -114,7 +114,7 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
             if (bottomSheetBehavior != null)
                 bottomSheetBehavior?.peekHeight = height
             params.height = screenHeight
-        } catch (illegalEx: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
         } catch (ignored: Exception) {
         }
 

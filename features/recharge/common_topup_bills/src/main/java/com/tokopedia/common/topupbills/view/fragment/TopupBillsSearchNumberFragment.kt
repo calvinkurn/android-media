@@ -219,7 +219,7 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(), NumberListAdap
     }
 
     enum class InputNumberActionType {
-        MANUAL, CONTACT, FAVORITE, LATEST_TRANSACTION, CONTACT_HOMEPAGE
+        MANUAL, CONTACT, FAVORITE, LATEST_TRANSACTION, CONTACT_HOMEPAGE, CHIP, AUTOCOMPLETE
     }
 
     companion object {

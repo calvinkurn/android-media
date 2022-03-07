@@ -15,5 +15,11 @@ data class ProductrevWaitForFeedbackResponse (
         val limit: Int = 0,
         @SerializedName("hasNext")
         @Expose
-        val hasNext: Boolean = false
+        val hasNext: Boolean = false,
+        @SerializedName("state")
+        @Expose
+        val emptyState: ProductrevWaitForFeedbackLabelAndImage = ProductrevWaitForFeedbackLabelAndImage(),
+        @SerializedName("banners")
+        @Expose
+        val banners: List<ProductrevWaitForFeedbackLabelAndImage> = emptyList()
 )

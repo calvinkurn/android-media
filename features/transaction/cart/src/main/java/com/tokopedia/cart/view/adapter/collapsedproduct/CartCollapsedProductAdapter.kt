@@ -11,7 +11,6 @@ import com.tokopedia.cart.view.viewholder.now.CartCollapsedProductViewHolder
 class CartCollapsedProductAdapter(val actionListener: ActionListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var cartCollapsedProductHolderDataList: List<CartItemHolderData> = arrayListOf()
-    var parentPosition: Int = RecyclerView.NO_POSITION
 
     override fun getItemViewType(position: Int): Int {
         return CartCollapsedProductViewHolder.LAYOUT
@@ -19,7 +18,7 @@ class CartCollapsedProductAdapter(val actionListener: ActionListener) : Recycler
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding = ItemCartCollapsedProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return CartCollapsedProductViewHolder(binding, actionListener, parentPosition)
+        return CartCollapsedProductViewHolder(binding, actionListener)
     }
 
     override fun getItemCount(): Int {

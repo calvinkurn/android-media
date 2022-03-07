@@ -3,7 +3,6 @@ package com.tokopedia.play.analytic
 import com.tokopedia.play.di.PlayScope
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.track.TrackApp
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 

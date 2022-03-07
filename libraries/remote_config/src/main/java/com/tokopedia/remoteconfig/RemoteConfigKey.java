@@ -162,6 +162,14 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_OFFICIAL_STORE_OS = "android_enable_officialstore_native";
 
+    public static final String DISABLE_OFFICIAL_STORE_SHOP_WIDGET = "android_disable_officialstore_shop_widget";
+    public static final String DISABLE_OFFICIAL_STORE_BEST_SELLER_WIDGET = "android_disable_officialstore_best_seller_widget";
+    public static final String DISABLE_OFFICIAL_STORE_MAPPING_BANNERS = "android_disable_officialstore_mapping_banners";
+    public static final String DISABLE_OFFICIAL_STORE_REMOVE_BEST_SELLER_WIDGET = "android_disable_officialstore_remove_best_seller_widget";
+    public static final String DISABLE_OFFICIAL_STORE_REMOVE_SHOP_WIDGET = "android_disable_officialstore_remove_shop_widget";
+    public static final String DISABLE_OFFICIAL_STORE_MAPPING_BENEFIT = "android_disable_officialstore_mapping_benefit";
+    public static final String DISABLE_OFFICIAL_STORE_MAPPING_OFFICIAL_FEATURED_SHOP = "android_disable_officialstore_mapping_official_featured_shop";
+
     public static final String ENABLE_NEW_WISHLIST_PAGE = "android_flag_enable_new_wishlist_page";
 
     public static final String ENABLE_TRACEROUTE_MIN_VERSION = "android_main_app_enabled_traceroute_min_version";
@@ -172,6 +180,7 @@ public class RemoteConfigKey {
 
     public static final String MAINAPP_RECHARGE_OCR = "android_mainapp_enable_ocr_emoney";
     public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";
+    public static final String MAINAPP_RECHARGE_NEW_ORDER_DETAIL = "android_main_app_enable_new_recharge_order_detail";
 
     public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
 
@@ -193,6 +202,7 @@ public class RemoteConfigKey {
     public static final String ENABLE_ASYNC_ADDSHORTCUTS = "android_async_addshortcuts";
     public static final String ENABLE_ASYNC_CHECKAPPSIGNATURE = "android_async_checkappsignature";
     public static final String ENABLE_ASYNC_HANSEL_INIT = "android_async_hansel_init";
+    public static final String ENABLE_ASYNC_GRATIFICATION_INIT = "android_async_gratification_init";
 
     public static final String EXECUTE_GQL_CONNECTION_WARM_UP = "android_gql_connection_warm_up";
 
@@ -232,21 +242,17 @@ public class RemoteConfigKey {
     public static final String HOME_ENABLE_SHARED_PREF_CACHE = "android_customer_home_enable_shared_pref_cache";
     public static final String HOME_ENABLE_AUTO_REFRESH_WISHLIST = "android_customer_home_auto_refresh_wishlist";
     public static final String HOME_ENABLE_AUTO_REFRESH_UOH = "android_customer_home_auto_refresh_uoh";
+    public static final String HOME_ENABLE_SCROLL_EMBRACE_BREADCRUMB = "android_customer_home_enable_scroll_breadcrumb";
 
     public static final String NAVIGATION_ENABLE_NOTIF = "android_customer_navigation_enable_notif";
 
     public static final String ENABLE_UOH = "android_enable_uoh";
-
-    public static final String ENABLE_SLICE_ACTION_SELLER = "android_sellerapp_enable_slice_action";
 
     public static final String MAINAPP_USING_OLD_ACCOUNT = "android_mainapp_old_account_page";
 
     public static final String ENABLE_SEARCH_TDN = "android_customerapp_enable_search_tdn";
 
     public static final String PRE_OTP_LOGIN_CLEAR = "android_pre_otp_login_clear";
-
-    public static final String ENABLE_NEW_SHOP_SCORE = "android_enable_new_shop_score";
-    public static final String ENABLE_NEW_PENALTY = "android_enable_new_penalty";
 
     public static final String PM_SWITCH_TO_WEB_VIEW = "android_pm_switch_to_web_view";
 
@@ -256,6 +262,24 @@ public class RemoteConfigKey {
     public static final String ENABLE_PEDULI_LINDUNGI_SCANQR = "android_customer_enable_peduli_lindungi_scanqr";
 
     public static final String FORCE_LIGHT_MODE = "android_force_light_mode";
-  
+
     public static final String ENABLE_ADD_BILLS_SBM = "android_main_app_enable_add_bills_sbm";
+
+    public static final String ENABLE_CART_CHECKOUT_BUNDLING = "android_enable_cart_checkout_bundling";
+    public static final String ENABLE_NEW_CONTENT_CREATION_FLOW = "app_android_feed_cc_feature_flag";
+    public static final String SHOW_SHOPADS_FEED_NEW_DESIGN = "app_android_feed_shopads_new_design_flag";
+    public static final String ENABLE_QUEST_WIDGET = "android_enable_quest_widget";
+
+    public static final String ENABLE_WISHLIST_REVAMP_v2 = "android_revamp_wishlist_v2";
+
+    public static final String ENABLE_MPC_LIFECYCLE_OBSERVER = "android_mainapp_enable_mpc_lifecycle_observer";
+    public static final String ENABLE_MPC_VIDEO_AUTOPLAY ="android_mainapp_enable_mpc_video_autoplay";
+
+    public static final String ENABLE_APLHA_OBSERVER = "android_enable_alpha_observer";
+
+    public static final String ANDROID_EMBRACE_CONFIG = "android_customerapp_embrace_config";
+
+    public static final String ENABLE_MVC_PRODUCT = "android_enable_mvc_product";
+
+    public static final String ENABLE_THEMATIC_WIDGET_SHOP = "android_enable_thematic_widget_shop";
 }

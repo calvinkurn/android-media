@@ -1,19 +1,15 @@
 package com.tokopedia.cart.domain.model.cartlist
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
-@Parcelize
-data class ShoppingSummaryData(
+data class SummaryTransactionUiModel(
         var qty: String = "",
         var totalWording: String = "",
-        var totalValue: Int = 0,
+        var totalValue: Long = 0,
         var discountTotalWording: String = "",
-        var discountValue: Int = 0,
+        var discountValue: Long = 0,
         var paymentTotalWording: String = "",
-        var paymentTotal: Int = 0,
+        var paymentTotal: Long = 0,
         var promoWording: String = "",
-        var promoValue: Int = 0,
+        var promoValue: Long = 0,
         var sellerCashbackWording: String = "",
-        var sellerCashbackValue: Int = 0
-) : Parcelable
+        var sellerCashbackValue: Long = 0
+)

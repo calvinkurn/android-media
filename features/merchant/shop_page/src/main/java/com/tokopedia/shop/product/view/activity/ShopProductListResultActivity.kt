@@ -22,11 +22,13 @@ import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.databinding.ActivityNewShopProductListResultBinding
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListResultFragment
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListResultFragment.Companion.createInstance
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListResultFragment.ShopPageProductListResultFragmentListener
 import com.tokopedia.shop.product.view.listener.OnShopProductListFragmentListener
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by nathan on 2/15/18.
@@ -47,6 +49,8 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
     private var shopPageTracking: OldShopPageTrackingBuyer? = null
     private var editTextSearch: EditText? = null
     private var actionUpBtn: AppCompatImageView? = null
+    private val viewBinding: ActivityNewShopProductListResultBinding? by viewBinding()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         window?.decorView?.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         shopId = intent.getStringExtra(ShopParamConstant.EXTRA_SHOP_ID)
@@ -73,7 +77,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         shopPageTracking = OldShopPageTrackingBuyer(TrackingQueue(this))
         super.onCreate(savedInstanceState)
         initSearchInputView()
-        findViewById<View>(R.id.mainLayout).requestFocus()
+        viewBinding?.mainLayout?.requestFocus()
     }
 
     private fun getSearchKeywordData(savedInstanceState: Bundle?): String {
@@ -122,8 +126,8 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
     }
 
     private fun initSearchInputView() {
-        editTextSearch = findViewById(R.id.editTextSearchProduct)
-        actionUpBtn = findViewById(R.id.actionUpBtn)
+        editTextSearch = viewBinding?.editTextSearchProduct
+        actionUpBtn = viewBinding?.actionUpBtn
         editTextSearch?.setText(keyword)
         editTextSearch?.setKeyListener(null)
         editTextSearch?.setMovementMethod(null)

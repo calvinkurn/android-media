@@ -27,7 +27,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/message_ticket_title"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:typographyType="heading_4"
         app:typographyWeight="bold"
@@ -51,7 +51,7 @@ dinilaiwbckwbvkbwvwkwbkjewvrrevervrevrvvvrvrrevrvrvevebvwv" />
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:typographyType="body_3"
-        android:layout_marginTop="@dimen/dp_9"
+        android:layout_marginTop="9dp"
         android:textColor="@color/contact_us_grey_n_700_44"
         app:layout_constraintStart_toStartOf="@+id/message_ticket_title"
         app:layout_constraintTop_toBottomOf="@+id/message_ticket_title"
@@ -68,7 +68,7 @@ dinilaiwbckwbvkbwvwkwbkjewvrrevervrevrvvvrvrrevrvrvevebvwv" />
         android:textColor="@color/contact_us_g_500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_id_num"
-        app:layout_goneMarginTop="@dimen/dp_12" />
+        app:layout_goneMarginTop="12dp" />
 
     <View
         android:id="@+id/top_divider"

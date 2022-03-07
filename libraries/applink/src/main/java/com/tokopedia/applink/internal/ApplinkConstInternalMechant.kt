@@ -7,11 +7,19 @@ import com.tokopedia.applink.constant.DeeplinkConstant
  */
 
 object ApplinkConstInternalMechant {
+    // Product Bundle Query Params
+    const val QUERY_PARAM_BUNDLE_ID = "bundleId"
+    const val QUERY_PARAM_PAGE_SOURCE = "source"
+    const val SOURCE_PDP = "pdp"
+    const val SOURCE_SHOP_PAGE = "shop-page"
+
+    // Add Edit Product Query Params
     const val QUERY_PARAM_ID = "id"
     const val QUERY_PARAM_MODE = "mode"
     const val MODE_EDIT_PRODUCT = "edit-product"
     const val MODE_EDIT_DRAFT = "edit-draft"
     const val MODE_DUPLICATE_PRODUCT = "duplicate-product"
+
     const val HOST_MERCHANT = "merchant"
 
     const val INTERNAL_MERCHANT = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_MERCHANT}"
@@ -21,6 +29,9 @@ object ApplinkConstInternalMechant {
     const val MERCHANT_OPEN_PRODUCT_PREVIEW = "${INTERNAL_MERCHANT}/open-product-preview"
 
     const val MERCHANT_PRODUCT_DRAFT = "${INTERNAL_MERCHANT}/product-draft"
+
+    // Product Bundle
+    const val MERCHANT_PRODUCT_BUNDLE = "${INTERNAL_MERCHANT}/product-bundle/{product_id}/"
 
     // Official Store Brandlist
     const val BRANDLIST = "${INTERNAL_MERCHANT}/official-store/brand/{category_id}/"
@@ -36,4 +47,6 @@ object ApplinkConstInternalMechant {
 
     //com.tokopedia.statistic.presentation.view.activity.StatisticActivity
     const val MERCHANT_STATISTIC_DASHBOARD = "$INTERNAL_MERCHANT/statistic_dashboard"
+
+    const val MERCHANT_OFFICIAL_STORE = "$INTERNAL_MERCHANT/official-store"
 }

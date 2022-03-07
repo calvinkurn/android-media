@@ -4,6 +4,6 @@
     <solid android:color="@color/Unify_G500" />
 
     <size
-        android:width="@dimen/dp_16"
-        android:height="@dimen/dp_16" />
+        android:width="16dp"
+        android:height="16dp" />
 </shape>

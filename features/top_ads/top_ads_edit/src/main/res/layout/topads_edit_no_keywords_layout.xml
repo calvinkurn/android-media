@@ -21,13 +21,13 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/description"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_18"
         android:layout_marginRight="@dimen/dp_18"
         android:gravity="center_horizontal"
         android:text="@string/topads_edit_no_keywords_desc"
-        android:textSize="@dimen/dp_14"
+        android:textSize="14dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtTitle"
@@ -37,8 +37,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/add_image"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         app:layout_constraintBottom_toBottomOf="@+id/add"
         app:layout_constraintEnd_toStartOf="@+id/add"
         app:layout_constraintTop_toTopOf="@+id/add"

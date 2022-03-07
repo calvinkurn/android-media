@@ -39,23 +39,16 @@ class PlaySearchBar : ConstraintLayout {
         }
 
     private val view: View = View.inflate(context, R.layout.view_play_search_bar, this)
-    private val clSearch: ConstraintLayout
-    private val ivSearch: ImageView
-    private val etSearch: EditText
-    private val ivClear: ImageView
-    private val tvCancel: TextView
+    private val clSearch: ConstraintLayout = view.findViewById(R.id.cl_search)
+    private val etSearch: EditText = view.findViewById(R.id.et_search)
+    private val ivClear: ImageView = view.findViewById(R.id.iv_clear)
+    private val tvCancel: TextView = view.findViewById(R.id.tv_cancel)
 
     private var mListener: Listener? = null
 
     private lateinit var mTextWatcher: TextWatcher
 
     init {
-        clSearch = view.findViewById(R.id.cl_search)
-        ivSearch = view.findViewById(R.id.iv_search)
-        etSearch = view.findViewById(R.id.et_search)
-        ivClear = view.findViewById(R.id.iv_clear)
-        tvCancel = view.findViewById(R.id.tv_cancel)
-
         setupView(view)
     }
 
@@ -81,7 +74,7 @@ class PlaySearchBar : ConstraintLayout {
         showKeyboard()
     }
 
-    override fun onSaveInstanceState(): Parcelable? {
+    override fun onSaveInstanceState(): Parcelable {
         val superState = super.onSaveInstanceState()
         val newState = SavedState(superState)
         newState.cancelBtnVisibility = tvCancel.visibility

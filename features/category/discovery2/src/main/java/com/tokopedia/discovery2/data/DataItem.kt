@@ -10,6 +10,8 @@ import com.tokopedia.discovery2.data.productcarditem.FreeOngkir
 import com.tokopedia.discovery2.data.productcarditem.LabelsGroup
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
+import com.tokopedia.mvcwidget.multishopmvc.data.ProductsItem
+import com.tokopedia.mvcwidget.multishopmvc.data.ShopInfo
 
 
 data class DataItem(
@@ -47,10 +49,10 @@ data class DataItem(
         @SerializedName("isSelected")
         var isSelected: Boolean = false,
 
-        @SerializedName("end_date")
+        @SerializedName("end_date",alternate = ["end_time"])
         val endDate: String? = "",
 
-        @SerializedName("button_applink")
+        @SerializedName("button_applink", alternate = ["cta_applink"])
         val buttonApplink: String? = "",
 
         @SerializedName("code")
@@ -71,7 +73,7 @@ data class DataItem(
         @SerializedName("notification_id")
         val notificationId: String? = "",
 
-        @SerializedName("image_title")
+        @SerializedName("image_title",alternate = ["title_image_url"])
         val imageTitle: String? = "",
 
         @SerializedName("registered_image_app")
@@ -110,10 +112,10 @@ data class DataItem(
         @SerializedName("notification_description")
         val notificationDescription: String? = "",
 
-        @SerializedName("description")
+        @SerializedName("description", alternate = ["description_copywriting"])
         val description: String? = "",
 
-        @SerializedName("start_date")
+        @SerializedName("start_date",alternate = ["start_time"])
         val startDate: String? = "",
 
         @SerializedName("left_margin_mobile")
@@ -134,11 +136,17 @@ data class DataItem(
         @SerializedName("alternate_background_url_mobile")
         val alternateBackgroundUrlMobile: String? = "",
 
-        @SerializedName("box_color", alternate = ["background_color"])
+        @SerializedName("box_color", alternate = ["background_color", "header_color"])
         val boxColor: String? = "",
 
         @SerializedName("font_color", alternate = ["text_color"])
         val  fontColor: String? = "",
+
+        @SerializedName("variant")
+        val variant: String? = "",
+
+        @SerializedName("color")
+        val color:String? = "",
 
         @SerializedName("button_text")
         var buttonText: String? = "",
@@ -146,7 +154,7 @@ data class DataItem(
         @SerializedName("creative_name")
         var creativeName: String? = "",
 
-        @SerializedName("title")
+        @SerializedName("title", alternate = ["title_copywriting"])
         var title: String? = "",
 
         @SerializedName("thumbnail_url_mobile", alternate = ["imageURL", "icon_url"])
@@ -209,7 +217,7 @@ data class DataItem(
         @SerializedName("coupon_code")
         val couponCode: String? = "",
 
-        @SerializedName("cta")
+        @SerializedName("cta", alternate = ["cta_url"])
         val cta: String? = "",
 
         @SerializedName("cta_desktop")
@@ -238,6 +246,9 @@ data class DataItem(
 
         @SerializedName("subtitle")
         val subtitle: String? = "",
+
+        @SerializedName("subtitle_1")
+        val subtitle_1: String? = "",
 
         @SerializedName("thumbnail_url")
         val thumbnailUrl: String? = "",
@@ -321,7 +332,7 @@ data class DataItem(
         val stock: String? = "",
 
         @SerializedName("stock_sold_percentage")
-        val stockSoldPercentage: String? = "",
+        val stockSoldPercentage: Double? = null,
 
         @SerializedName("topads_click_url")
         var topadsClickUrl: String? = "",
@@ -383,6 +394,15 @@ data class DataItem(
         @SerializedName("badges")
         var badges: List<Badges?>? = null,
 
+        @SerializedName("text_date")
+        var textDate: String? = null,
+
+        @SerializedName("title_logo_url")
+        var titleLogoUrl: String? = null,
+
+        @SerializedName("notify_campaign_id")
+        var notifyCampaignId: Int = 0,
+
         @SerializedName("hasAddToCartButton")
         var hasATC: Boolean = false,
 
@@ -395,7 +415,52 @@ data class DataItem(
         @SerializedName("min_order")
         var minQuantity: Int = 0,
 
+        @SerializedName("shop_type")
+        val shopType: String? = null,
+
+        @SerializedName("shop_badge_image_url")
+        val shopBadgeImageUrl: String? = null,
+
+        @SerializedName("benefit_title")
+        val benefitTitle: String? = null,
+
+        @SerializedName("benefit_amount")
+        val benefitAmount: String? = null,
+
+        @SerializedName("benefit_symbol")
+        val benefitSymbol: String? = null,
+
+        @SerializedName("benefit_symbol_image_url")
+        val benefitSymbolImageUrl: String? = null,
+
+        @SerializedName("show_benefit_currency")
+        var showBenefitCurrency: Boolean? = null,
+
+        @SerializedName("show_timer")
+        var showTimer: Boolean? = null,
+
+        @SerializedName("time_description")
+        val timeDescription: String? = null,
+
         var quantity: Int = 0,
+
+        @SerializedName("backgroud_image_url")
+        var backgroundImageUrl : String? = "",
+
+        @SerializedName("catalog_slugs")
+        var catalogSlug : List<String?>? = null,
+
+        @field:SerializedName("products")
+        val products: List<ProductsItem?>? = null,
+
+        @field:SerializedName("maximumBenefitAmountStr")
+        val maximumBenefitAmountStr: String? = null,
+
+        @field:SerializedName("shopInfo")
+        val shopInfo: ShopInfo? = null,
+
+        @field:SerializedName("target_section_id")
+        val targetSectionID: String? = null,
 
         var shopAdsClickURL: String? = "",
 
@@ -419,7 +484,11 @@ data class DataItem(
 
         var isWishList: Boolean = false,
 
-        var wishlistUrl: String? = ""
+        var maxHeight : Int = 0,
+
+        var wishlistUrl: String? = "",
+
+        var itemWeight: Float? = 1.0f
 ) {
     val leftMargin: Int
         get() {

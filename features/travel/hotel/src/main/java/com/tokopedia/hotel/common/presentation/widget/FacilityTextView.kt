@@ -3,7 +3,7 @@ package com.tokopedia.hotel.common.presentation.widget
 import android.content.Context
 import android.view.View
 import com.tokopedia.hotel.R
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.item_hotel_room_facility_list.view.*
 
@@ -18,7 +18,9 @@ class FacilityTextView(context: Context) : BaseCustomView(context) {
     }
 
     fun setIconAndText(iconUrl: String, text: String) {
-        facility_icon.loadImage(iconUrl, R.drawable.ic_hotel_loading_image)
+        facility_icon.loadIcon(iconUrl){
+            setPlaceHolder(com.tokopedia.unifycomponents.R.drawable.imagestate_placeholder)
+        }
         facility_text_view.text = text
     }
 

@@ -7,16 +7,17 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.cart.databinding.LayoutBottomsheetSummaryTransactionBinding
-import com.tokopedia.cart.domain.model.cartlist.CartListData
+import com.tokopedia.cart.view.uimodel.PromoSummaryData
+import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.view.adapter.cart.CartPromoSummaryAdapter
+import com.tokopedia.cart.databinding.LayoutBottomsheetSummaryTransactionBinding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
-fun showSummaryTransactionBottomsheet(cartListData: CartListData, fragmentManager: FragmentManager, context: Context) {
+fun showSummaryTransactionBottomsheet(summaryTransactionUiModel: SummaryTransactionUiModel, promoSummaryUiModel: PromoSummaryData?, fragmentManager: FragmentManager, context: Context) {
 
     val bottomSheet = BottomSheetUnify().apply {
         showKnob = true
@@ -29,36 +30,37 @@ fun showSummaryTransactionBottomsheet(cartListData: CartListData, fragmentManage
 
     val binding = LayoutBottomsheetSummaryTransactionBinding.inflate(LayoutInflater.from(context))
 
-    renderPriceTotal(binding, cartListData)
-    renderDiscount(cartListData, binding)
-    renderPaymentTotal(binding, cartListData)
-    renderPromo(cartListData, binding)
-    renderSellerCashback(cartListData, binding)
-    renderSeparatorBenefit(cartListData, binding)
+    renderPriceTotal(binding, summaryTransactionUiModel)
+    renderDiscount(binding, summaryTransactionUiModel)
+    renderPaymentTotal(binding, summaryTransactionUiModel)
+    promoSummaryUiModel?.let {
+        renderPromo(binding, it)
+    }
+    renderSellerCashback(binding, summaryTransactionUiModel)
+    renderSeparatorBenefit(binding, summaryTransactionUiModel, promoSummaryUiModel)
 
     bottomSheet.setChild(binding.root)
     bottomSheet.show(fragmentManager, "Cart Summary Transaction")
 }
 
-private fun renderSeparatorBenefit(cartListData: CartListData, binding: LayoutBottomsheetSummaryTransactionBinding) {
-    if (cartListData.promoSummaryData.details.isNotEmpty() ||
-            cartListData.shoppingSummaryData.sellerCashbackValue > 0) {
+private fun renderSeparatorBenefit(binding: LayoutBottomsheetSummaryTransactionBinding, summaryTransactionUiModel: SummaryTransactionUiModel, promoSummaryUiModel: PromoSummaryData?) {
+    if (promoSummaryUiModel?.details?.isNotEmpty() == true || summaryTransactionUiModel.sellerCashbackValue > 0) {
         binding.separatorBenefit.show()
     } else {
         binding.separatorBenefit.gone()
     }
 }
 
-private fun renderSellerCashback(cartListData: CartListData, binding: LayoutBottomsheetSummaryTransactionBinding) {
-    if (cartListData.shoppingSummaryData.sellerCashbackValue > 0) {
+private fun renderSellerCashback(binding: LayoutBottomsheetSummaryTransactionBinding, summaryTransactionUiModel: SummaryTransactionUiModel) {
+    if (summaryTransactionUiModel.sellerCashbackValue > 0) {
         binding.textTotalCashbackValue.apply {
-            text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartListData.shoppingSummaryData.sellerCashbackValue, false)
+            text = CurrencyFormatUtil.convertPriceValueToIdrFormat(summaryTransactionUiModel.sellerCashbackValue, false)
                     .replace("Rp", "")
                     .removeDecimalSuffix()
             visibility = View.VISIBLE
         }
         binding.textTotalCashbackTitle.apply {
-            text = cartListData.shoppingSummaryData.sellerCashbackWording
+            text = summaryTransactionUiModel.sellerCashbackWording
             visibility = View.VISIBLE
         }
         binding.separatorSellerCashback.show()
@@ -69,17 +71,17 @@ private fun renderSellerCashback(cartListData: CartListData, binding: LayoutBott
     }
 }
 
-private fun renderPromo(cartListData: CartListData, binding: LayoutBottomsheetSummaryTransactionBinding) {
+private fun renderPromo(binding: LayoutBottomsheetSummaryTransactionBinding, promoSummaryData: PromoSummaryData) {
     with(binding) {
-        if (cartListData.promoSummaryData.details.isNotEmpty()) {
-            if (cartListData.promoSummaryData.title.isNotEmpty()) {
-                textSummaryPromoTransactionTitle.text = cartListData.promoSummaryData.title
+        if (promoSummaryData.details.isNotEmpty()) {
+            if (promoSummaryData.title.isNotEmpty()) {
+                textSummaryPromoTransactionTitle.text = promoSummaryData.title
                 textSummaryPromoTransactionTitle.visibility = View.VISIBLE
             } else {
                 textSummaryPromoTransactionTitle.visibility = View.GONE
             }
 
-            val adapter = CartPromoSummaryAdapter(cartListData.promoSummaryData.details)
+            val adapter = CartPromoSummaryAdapter(promoSummaryData.details)
 
             recyclerViewCartPromoSummary.layoutManager = LinearLayoutManager(root.context, RecyclerView.VERTICAL, false)
             recyclerViewCartPromoSummary.setHasFixedSize(true)
@@ -93,26 +95,26 @@ private fun renderPromo(cartListData: CartListData, binding: LayoutBottomsheetSu
     }
 }
 
-private fun renderPaymentTotal(binding: LayoutBottomsheetSummaryTransactionBinding, cartListData: CartListData) {
+private fun renderPaymentTotal(binding: LayoutBottomsheetSummaryTransactionBinding, summaryTransactionUiModel: SummaryTransactionUiModel) {
     binding.textTotalPayTitle.apply {
-        cartListData.shoppingSummaryData.paymentTotalWording.let {
+        summaryTransactionUiModel.paymentTotalWording.let {
             text = it
         }
     }
     binding.textTotalPayValue.apply {
-        val totalPay = cartListData.shoppingSummaryData.paymentTotal
+        val totalPay = summaryTransactionUiModel.paymentTotal
         this.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPay, false).removeDecimalSuffix()
     }
 }
 
-private fun renderDiscount(cartListData: CartListData, binding: LayoutBottomsheetSummaryTransactionBinding) {
-    if (cartListData.shoppingSummaryData.discountValue > 0) {
+private fun renderDiscount(binding: LayoutBottomsheetSummaryTransactionBinding, summaryTransactionUiModel: SummaryTransactionUiModel) {
+    if (summaryTransactionUiModel.discountValue > 0) {
         binding.textDiscountTotalValue.apply {
-            text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartListData.shoppingSummaryData.discountValue * -1, false).removeDecimalSuffix()
+            text = CurrencyFormatUtil.convertPriceValueToIdrFormat(summaryTransactionUiModel.discountValue * -1, false).removeDecimalSuffix()
             visibility = View.VISIBLE
         }
         binding.textDiscountTotalTitle.apply {
-            text = cartListData.shoppingSummaryData.discountTotalWording
+            text = summaryTransactionUiModel.discountTotalWording
             visibility = View.VISIBLE
         }
     } else {
@@ -125,13 +127,13 @@ private fun renderDiscount(cartListData: CartListData, binding: LayoutBottomshee
     }
 }
 
-private fun renderPriceTotal(binding: LayoutBottomsheetSummaryTransactionBinding, cartListData: CartListData) {
+private fun renderPriceTotal(binding: LayoutBottomsheetSummaryTransactionBinding, summaryTransactionUiModel: SummaryTransactionUiModel) {
     binding.textPriceTotalTitle.apply {
-        cartListData.shoppingSummaryData.totalWording.let {
-            text = it.replace("[0-9]+".toRegex(), cartListData.shoppingSummaryData.qty)
+        summaryTransactionUiModel.totalWording.let {
+            text = it.replace("[0-9]+".toRegex(), summaryTransactionUiModel.qty)
         }
     }
     binding.textPriceTotalValue.apply {
-        this.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartListData.shoppingSummaryData.totalValue, false).removeDecimalSuffix()
+        this.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(summaryTransactionUiModel.totalValue, false).removeDecimalSuffix()
     }
 }

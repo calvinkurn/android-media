@@ -4,13 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.ordermanagement.snapshot.data.model.GetOrderSnapshot
 import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotParam
 import com.tokopedia.ordermanagement.snapshot.domain.SnapshotUseCase
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotIdlingResource
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -25,11 +24,9 @@ class SnapshotViewModel @Inject constructor(private val dispatcher: CoroutineDis
 
     fun loadSnapshot(paramSnapshot: SnapshotParam) {
         SnapshotIdlingResource.increment()
-        launchCatchError(dispatcher.io, block = {
+        launch(dispatcher.io, block = {
             _snapshotResponse.postValue(snapshotUseCase.executeSuspend(paramSnapshot))
-        }) {
-            _snapshotResponse.postValue(Fail(it))
-        }
+        })
         SnapshotIdlingResource.decrement()
     }
 }

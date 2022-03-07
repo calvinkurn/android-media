@@ -81,10 +81,10 @@ class PlayProductLiveBottomSheet @Inject constructor(
     }
 
     private fun observeProductList() {
-        parentViewModel.observableProductList.observe(viewLifecycleOwner, Observer {
+        parentViewModel.observableProductList.observe(viewLifecycleOwner) {
             bottomSheetTitle.text = getString(R.string.play_product_live_title, it.size)
             productLiveAdapter.setItemsAndAnimateChanges(it)
-        })
+        }
     }
 
     companion object {

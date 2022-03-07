@@ -5,15 +5,15 @@ import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class NewBusinessUnitWidgetDataModel(
-    val channel : DynamicHomeChannel.Channels = DynamicHomeChannel.Channels(),
     private val isCache: Boolean = false,
-    val position: Int = -1,
     val backColor: String = "",
     val tabList: List<HomeWidget.TabItem>? = null,
-    val contentsList: List<BusinessUnitDataModel>? = null
+    val contentsList: List<BusinessUnitDataModel>? = null,
+    val channelModel: ChannelModel
 ) : HomeVisitable{
     override fun isTrackingCombined(): Boolean {
         return false

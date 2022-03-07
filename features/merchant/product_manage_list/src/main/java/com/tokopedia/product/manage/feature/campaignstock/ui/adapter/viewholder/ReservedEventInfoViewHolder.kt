@@ -9,7 +9,8 @@ import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedEventInfoUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.util.convertCheckMaximumStockLimit
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
-import kotlinx.android.synthetic.main.item_campaign_stock_reserved_event_info.view.*
+import com.tokopedia.product.manage.databinding.ItemCampaignStockReservedEventInfoBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ReservedEventInfoViewHolder(itemView: View?,
                                   private val onAccordionStateChange: (Int) -> Unit): AbstractViewHolder<ReservedEventInfoUiModel>(itemView) {
@@ -19,15 +20,17 @@ class ReservedEventInfoViewHolder(itemView: View?,
         val LAYOUT_RES = R.layout.item_campaign_stock_reserved_event_info
     }
 
+    private val binding by viewBinding<ItemCampaignStockReservedEventInfoBinding>()
+
     override fun bind(element: ReservedEventInfoUiModel) {
-        with(itemView) {
-            label_campaign_stock_event_info?.text = element.eventType
-            tv_campaign_stock_event_name?.text = element.eventName
-            tv_campaign_stock_event_count?.text = element.stock.convertCheckMaximumStockLimit(context)
-            tv_campaign_stock_event_description?.text = element.eventDesc
-            divider_campaign_stock_event_info?.showWithCondition(!(element.isLastEvent && element.isVariant))
+        binding?.run {
+            labelCampaignStockEventInfo.text = element.eventType
+            tvCampaignStockEventName.text = element.eventName
+            tvCampaignStockEventCount.text = element.stock.convertCheckMaximumStockLimit(itemView.context)
+            tvCampaignStockEventDescription.text = element.eventDesc
+            dividerCampaignStockEventInfo.showWithCondition(!(element.isLastEvent && element.isVariant))
             if (element.isVariant) {
-                accordion_campaign_stock?.run {
+                accordionCampaignStock.run {
                     setEventVariantInfo(
                             element.products,
                             element.isAccordionOpened
@@ -40,7 +43,7 @@ class ReservedEventInfoViewHolder(itemView: View?,
                 }
             }
             else {
-                accordion_campaign_stock?.gone()
+                accordionCampaignStock.gone()
             }
         }
     }

@@ -12,13 +12,25 @@ data class Header (
     @Expose
     var itemLabel: String = "",
 
+    @SerializedName("item_label")
+    @Expose
+    var item_label: String = "",
+
     @SerializedName("poweredBy")
     @Expose
     var poweredBy: String = "",
 
+    @SerializedName("powered_by")
+    @Expose
+    var powered_by: String = "",
+
     @SerializedName("statusLabel")
     @Expose
     var statusLabel: String = "",
+
+    @SerializedName("status_label")
+    @Expose
+    var status_label: String = "",
 
     @SerializedName("voucherCodes")
     @Expose

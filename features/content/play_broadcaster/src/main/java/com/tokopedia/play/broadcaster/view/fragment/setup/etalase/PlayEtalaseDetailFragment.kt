@@ -50,7 +50,7 @@ import javax.inject.Inject
  */
 class PlayEtalaseDetailFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
-        private val dispatcher: CoroutineDispatchers,
+        dispatcher: CoroutineDispatchers,
         private val analytic: PlayBroadcastAnalytic
 ) : PlayBaseSetupFragment(), FragmentWithDetachableView {
 
@@ -289,7 +289,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
      * Observe
      */
     private fun observeProductsInSelectedEtalase() {
-        viewModel.observableSelectedEtalase.observe(viewLifecycleOwner, Observer {
+        viewModel.observableSelectedEtalase.observe(viewLifecycleOwner) {
             bottomSheetHeader.setHeader(getString(R.string.play_etalase_detail_header, it.currentValue.name, it.currentValue.totalProduct), isRoot = false)
             val flattenValues = it.currentValue.productMap.values.flatten()
             when (it.state) {
@@ -316,18 +316,18 @@ class PlayEtalaseDetailFragment @Inject constructor(
                     showProductEmptyError(flattenValues.isEmpty())
                 }
             }
-        })
+        }
     }
 
     private fun observeSelectedProducts() {
-        viewModel.observableSelectedProducts.observe(viewLifecycleOwner, Observer {
+        viewModel.observableSelectedProducts.observe(viewLifecycleOwner) {
             bottomActionView.setupBottomActionWithProducts(it)
             selectedProductPageView.onSelectedProductsUpdated(it)
-        })
+        }
     }
 
     private fun observeUploadProduct() {
-        viewModel.observableUploadProductEvent.observe(viewLifecycleOwner, Observer {
+        viewModel.observableUploadProductEvent.observe(viewLifecycleOwner) {
             when (it) {
                 NetworkResult.Loading -> bottomActionView.setLoading(true)
                 is NetworkResult.Fail -> onUploadFailed(it.error)
@@ -336,7 +336,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
                     if (data != null) onUploadSuccess()
                 }
             }
-        })
+        }
     }
 
     /**

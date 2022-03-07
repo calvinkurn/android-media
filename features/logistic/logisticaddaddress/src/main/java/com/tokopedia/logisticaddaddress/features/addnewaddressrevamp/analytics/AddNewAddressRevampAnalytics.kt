@@ -7,7 +7,7 @@ import com.tokopedia.track.builder.util.BaseTrackerConst
 object AddNewAddressRevampAnalytics : BaseTrackerConst() {
 
     private const val CLICK_SEARCH = "clickSearch"
-    private const val CLICK_PINPOINT = "clickPinpoint"
+    private const val CLICK_PINPOINT = "clickPinPoint"
     private const val VIEW_PINPOINT_IRIS = "viewPinPointIris"
     private const val VIEW_ADDRESS_IRIS = "viewAddressIris"
     private const val CLICK_ADDRESS = "clickAddress"

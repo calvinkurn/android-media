@@ -2,7 +2,7 @@ package com.tokopedia.checkout.domain.model.cartshipmentform
 
 import android.os.Parcelable
 import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Shop(
@@ -23,5 +23,7 @@ data class Shop(
         var cityName: String = "",
         var shopAlertMessage: String = "",
         var shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
-        var isTokoNow: Boolean = false
+        var isTokoNow: Boolean = false,
+        var shopTickerTitle: String = "",
+        var shopTicker: String = "",
 ) : Parcelable

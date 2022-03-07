@@ -16,16 +16,18 @@ import com.tokopedia.homenav.category.view.adapter.CategoryListAdapter
 import com.tokopedia.homenav.category.view.adapter.typefactory.CategoryListTypeFactory
 import com.tokopedia.homenav.category.view.adapter.typefactory.CategoryListTypeFactoryImpl
 import com.tokopedia.homenav.category.view.di.DaggerCategoryListComponent
+import com.tokopedia.homenav.databinding.FragmentNavCategoryBinding
 import com.tokopedia.homenav.di.DaggerBaseNavComponent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_nav_category.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class CategoryListFragment: BaseDaggerFragment(), HomeNavListener {
+    private var binding: FragmentNavCategoryBinding? by viewBinding()
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
@@ -93,11 +95,11 @@ class CategoryListFragment: BaseDaggerFragment(), HomeNavListener {
     }
 
     private fun initRecyclerView(view: View) {
-        view.recycler_view?.adapter = adapter
+        binding?.recyclerView?.adapter = adapter
     }
 
     private fun showGlobalError(view: View){
-        view.category_global_error?.let {globalError ->
+        binding?.categoryGlobalError?.let {globalError ->
             globalError.errorSecondaryAction.hide()
             globalError.show()
             globalError.findViewById<UnifyButton>(R.id.globalerrors_action)?.text = getString(R.string.category_back_menu)

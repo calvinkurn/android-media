@@ -22,6 +22,7 @@ import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracking
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
 import com.tokopedia.seller.menu.common.constant.Constant
+import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.databinding.LayoutSellerMenuShopInfoBinding
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
@@ -281,7 +282,7 @@ class ShopInfoViewHolder(
             else -> null
         }
 
-        val paddingTop = itemView?.resources?.getDimensionPixelSize(R.dimen.spacing_lvl3)
+        val paddingTop = itemView?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
         val paddingBottom = itemView?.resources?.getDimensionPixelSize(R.dimen.setting_status_padding_bottom)
         if (paddingTop != null && paddingBottom != null) {
             itemView.setPadding(0, paddingTop, 0, paddingBottom)
@@ -295,9 +296,13 @@ class ShopInfoViewHolder(
         }
     }
 
-    private fun goToPowerMerchantSubscribe(tab: String) {
+    private fun goToPowerMerchantSubscribe(tab: String, isUpdate: Boolean = false) {
         val appLink = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
-        val appLinkPMTab = Uri.parse(appLink).buildUpon().appendQueryParameter(TAB_PM_PARAM, tab).build().toString()
+        val appLinkPMTabBuilder = Uri.parse(appLink).buildUpon().appendQueryParameter(TAB_PM_PARAM, tab)
+        if (isUpdate) {
+            appLinkPMTabBuilder.appendQueryParameter(ApplinkConstInternalMarketplace.ARGS_IS_UPGRADE, isUpdate.toString())
+        }
+        val appLinkPMTab = appLinkPMTabBuilder.build().toString()
         context?.let { RouteManager.route(context, appLinkPMTab) }
     }
 
@@ -350,6 +355,7 @@ class ShopInfoViewHolder(
         findViewById<View>(R.id.divider_stats_rm)?.hide()
         findViewById<Typography>(R.id.tx_stats_rm)?.hide()
         findViewById<Typography>(R.id.tx_total_stats_rm)?.hide()
+        findViewById<View>(R.id.view_rm_transaction_cta)?.hide()
     }
 
     private fun View.showTransactionSection() {
@@ -357,6 +363,14 @@ class ShopInfoViewHolder(
         findViewById<View>(R.id.divider_stats_rm)?.setBackgroundResource(R.drawable.ic_divider_stats_rm)
         findViewById<Typography>(R.id.tx_stats_rm)?.show()
         findViewById<Typography>(R.id.tx_total_stats_rm)?.show()
+        findViewById<View>(R.id.view_rm_transaction_cta)?.run {
+            show()
+            setOnClickListener {
+                context?.let {
+                    RouteManager.route(it, SellerBaseUrl.getNewMembershipSchemeApplink())
+                }
+            }
+        }
     }
 
     private fun View.setPowerMerchantShopStatus(powerMerchantStatus: PowerMerchantStatus, statusUiModel: ShopStatusUiModel): View {
@@ -368,7 +382,15 @@ class ShopInfoViewHolder(
         when (powerMerchantStatus) {
             is PowerMerchantStatus.Active -> {
                 if (periodType == Constant.D_DAY_PERIOD_TYPE_PM_PRO) {
-                    upgradePMTextView.showWithCondition(isNewSeller == false)
+                    with(upgradePMTextView) {
+                        val shouldShow = isNewSeller == false
+                        showWithCondition(shouldShow)
+                        if (shouldShow) {
+                            setOnClickListener {
+                                goToPowerMerchantSubscribe(TAB_PM_PRO, true)
+                            }
+                        }
+                    }
                 } else if (periodType == Constant.COMMUNICATION_PERIOD_PM_PRO) {
                     upgradePMTextView.hide()
                 }

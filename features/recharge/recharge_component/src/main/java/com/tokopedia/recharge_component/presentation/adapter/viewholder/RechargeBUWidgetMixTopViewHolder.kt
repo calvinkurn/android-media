@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecoration
-import com.tokopedia.home_component.model.ChannelCtaData
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
@@ -21,8 +20,6 @@ import com.tokopedia.home_component.viewholders.adapter.MixTopComponentAdapter
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.listener.RechargeBUWidgetListener
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
@@ -50,7 +47,8 @@ class RechargeBUWidgetMixTopViewHolder(
     private val background = itemView.findViewById<View>(R.id.recharge_bu_widget_background)
     private var adapter: MixTopComponentAdapter? = null
     private var isCacheData = false
-    companion object{
+
+    companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_recharge_bu_widget_mix_top
         const val BU_WIDGET_TYPE_TOP = "mix-top"
@@ -87,7 +85,6 @@ class RechargeBUWidgetMixTopViewHolder(
     }
 
     override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-
     }
 
     override fun onProductCardClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
@@ -111,8 +108,8 @@ class RechargeBUWidgetMixTopViewHolder(
         mappingItem(element.data)
     }
 
-    private fun mappingHeader(element: RechargeBUWidgetDataModel){
-        with (element.data) {
+    private fun mappingHeader(element: RechargeBUWidgetDataModel) {
+        with(element.data) {
             bannerTitle.text = title
             bannerTitle.visibility = if (title.isEmpty()) View.GONE else View.VISIBLE
             bannerDescription.text = option3
@@ -177,7 +174,11 @@ class RechargeBUWidgetMixTopViewHolder(
                     element.label1,
                     element.label3,
                     element.applink,
-                    this
+                    this,
+                    element.soldPercentageValue,
+                    element.soldPercentageLabel,
+                    element.soldPercentageLabelColor,
+                    element.showSoldPercentage
             ))
         }
         return list

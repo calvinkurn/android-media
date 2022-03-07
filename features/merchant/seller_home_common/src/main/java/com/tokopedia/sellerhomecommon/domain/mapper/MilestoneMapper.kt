@@ -15,8 +15,9 @@ class MilestoneMapper @Inject constructor(
 
     companion object {
         private const val HIDDEN_BUTTON_STATUS = 0
-        private const val ENABLED_BUTTON_STATUS = 1
         private const val DISABLED_BUTTON_STATUS = 2
+        private const val ZERO_MS = 0L
+        private const val ONE_SECOND_MILLIS = 1000L
     }
 
     fun mapMilestoneResponseToUiModel(
@@ -25,8 +26,14 @@ class MilestoneMapper @Inject constructor(
     ): List<MilestoneDataUiModel> {
 
         return data.map {
-            val missionMilestone = mapGetMilestoneMission(it.mission.orEmpty())
-                .plus(mapGetMilestoneFinish(it.finishMission))
+            val missions = mapGetMilestoneMission(it.mission.orEmpty())
+            val finishCard = mapGetMilestoneFinish(it.finishMission)
+            val areAllMissionsCompleted = missions.all { m -> m.missionCompletionStatus }
+            val allMissions = if (areAllMissionsCompleted) {
+                finishCard.plus(missions)
+            } else {
+                missions.plus(finishCard)
+            }
             return@map MilestoneDataUiModel(
                 dataKey = it.dataKey.orEmpty(),
                 error = it.errorMsg.orEmpty(),
@@ -40,10 +47,18 @@ class MilestoneMapper @Inject constructor(
                 isShowMission = sellerHomeCommonPreferenceManager.getIsShowMilestoneWidget(),
                 isError = it.error.orFalse(),
                 milestoneProgress = mapGetMilestoneProgressbar(it.progressBar),
-                milestoneMissions = missionMilestone,
-                milestoneCta = mapGetMilestoneCta(it.cta)
+                milestoneMissions = allMissions,
+                milestoneCta = mapGetMilestoneCta(it.cta),
+                deadlineMillis = convertSecondToMillisecond(it.deadlineMillis.orZero())
             )
         }
+    }
+
+    private fun convertSecondToMillisecond(seconds: Long): Long {
+        if (seconds == ZERO_MS) {
+            return seconds
+        }
+        return seconds.times(ONE_SECOND_MILLIS)
     }
 
     private fun mapGetMilestoneMission(missionData: List<MilestoneData.Mission>): List<MilestoneMissionUiModel> {
@@ -61,6 +76,12 @@ class MilestoneMapper @Inject constructor(
                     urlType = getUrlType(buttonMissionData?.urlType),
                     appLink = buttonMissionData?.applink.orEmpty(),
                     buttonStatus = getButtonStatus(buttonMissionData?.buttonStatus)
+                ),
+                missionProgress = MissionProgressUiModel(
+                    description = it.progress?.description.orEmpty(),
+                    percentage = it.progress?.percentage.orZero(),
+                    completed = it.progress?.completed.orEmpty(),
+                    target = it.progress?.target.orEmpty()
                 )
             )
         }

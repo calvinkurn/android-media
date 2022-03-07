@@ -5,12 +5,12 @@
     android:id="@+id/banner_timer_container_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginTop="@dimen/dp_8"
-    android:layout_marginRight="@dimen/dp_16"
-    android:layout_marginBottom="@dimen/dp_8"
+    android:layout_marginLeft="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginBottom="8dp"
     android:background="@drawable/bg_rect_white_round"
-    android:elevation="@dimen/dp_2">
+    android:elevation="2dp">
 
     <com.tokopedia.unifycomponents.timer.TimerUnifySingle
         android:id="@+id/sprint_sale_timer"

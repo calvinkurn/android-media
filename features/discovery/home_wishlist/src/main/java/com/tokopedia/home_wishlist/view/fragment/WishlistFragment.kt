@@ -23,7 +23,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
@@ -54,7 +53,6 @@ import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -168,7 +166,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
     private fun initInboxAbTest() {
         useNewInbox = getAbTestPlatform().getString(
             RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-        ) == RollenceKey.VARIANT_NEW_INBOX && isNavRevamp()
+        ) == RollenceKey.VARIANT_NEW_INBOX
     }
 
     private fun getAbTestPlatform(): AbTestPlatform {
@@ -194,20 +192,6 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
         return try {
             return getFirebaseRemoteConfig()?.getBoolean(RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_UOH)?:false
         } catch (e: Exception) {
-            false
-        }
-    }
-
-    private fun isNavRevamp(): Boolean {
-        return try {
-            return (context as? MainParentStateListener)?.isNavigationRevamp?: (getAbTestPlatform().getString(
-                RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
-            ) == RollenceKey.NAVIGATION_VARIANT_REVAMP) ||
-                    (getAbTestPlatform().getString(
-                        RollenceKey.NAVIGATION_EXP_TOP_NAV2, RollenceKey.NAVIGATION_VARIANT_OLD
-                    ) == RollenceKey.NAVIGATION_VARIANT_REVAMP2)
-        } catch (e: Exception) {
-            e.printStackTrace()
             false
         }
     }
@@ -387,9 +371,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
                 addIcon(IconList.ID_MESSAGE) {}
                 addIcon(IconList.ID_NOTIFICATION) {}
                 addIcon(IconList.ID_CART) {}
-                if (isNavRevamp()) {
-                    addIcon(IconList.ID_NAV_GLOBAL) {}
-                }
+                addIcon(IconList.ID_NAV_GLOBAL) {}
             }
             it.setIcon(icons)
         }
@@ -436,7 +418,17 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
     }
 
     private fun initRecyclerView() {
-        recyclerView?.layoutManager = staggeredGridLayoutManager
+        recyclerView?.layoutManager = object: StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL) {
+            override fun supportsPredictiveItemAnimations() = false
+
+            override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State?) {
+                try {
+                    super.onLayoutChildren(recycler, state)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
         recyclerView?.adapter = adapter
         GravitySnapHelper(Gravity.TOP, true).attachToRecyclerView(recyclerView)
         recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {

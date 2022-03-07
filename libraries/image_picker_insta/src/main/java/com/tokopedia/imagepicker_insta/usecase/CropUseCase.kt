@@ -9,25 +9,59 @@ import com.tokopedia.imagepicker_insta.models.ImageAdapterData
 import com.tokopedia.imagepicker_insta.models.PhotosData
 import com.tokopedia.imagepicker_insta.models.ZoomInfo
 import com.tokopedia.imagepicker_insta.util.CameraUtil
+import timber.log.Timber
 import javax.inject.Inject
-import kotlin.math.roundToInt
+import kotlin.math.min
 
 class CropUseCase @Inject constructor() {
 
-    suspend fun cropPhotos(context: Context, imageSize: Int, pairList: List<Pair<ImageAdapterData, ZoomInfo>>) :List<Uri>{
+     fun cropPhotos(
+        context: Context,
+        width: Int,
+        height: Int,
+        pairList: List<Pair<ImageAdapterData, ZoomInfo>>
+    ): List<Uri> {
         val uriList = arrayListOf<Uri>()
         pairList.forEach {
             if (it.second.hasChanged()) {
                 val asset = it.first.asset
                 if (asset is PhotosData) {
-                    val drawable = Glide.with(context)
+
+                    val w = it.second.bmpWidth!!
+                    val h = it.second.bmpHeight!!
+
+                    var mBmp = Glide.with(context)
                         .asBitmap()
                         .load(asset.contentUri)
-                        .apply(RequestOptions().override(it.second.bmpWidth!!,it.second.bmpHeight!!))
+                        .apply(RequestOptions().override(w, h))
                         .submit()
                         .get()
-                    val bmp = createTempBitmap(drawable, it.second, imageSize)
-                    val file = CameraUtil.createMediaFile(context, isImage = true, storeInCache = true)
+
+
+                    if (mBmp.width != w || mBmp.height != h) {
+                        val tmpBitmap = Bitmap.createScaledBitmap(mBmp,w,h,false)
+                        mBmp = tmpBitmap
+
+                        if (mBmp.width != w || mBmp.height != h) {
+                            throw Exception("Unable to get specified bitmap")
+                        }
+                    }
+
+                    Timber.d(
+                        "createTempBitmap: uri = ${asset?.contentUri}," +
+                                "scale=${it.second?.scale}," +
+                                "matrix=${it.second?.matrix}," +
+                                "bmpW=${it.second?.bmpWidth}," +
+                                "bmpH=${it.second?.bmpHeight}," +
+                                "left=${it.second?.rectF?.left}," +
+                                "top=${it.second?.rectF?.top}," +
+                                "dw = ${mBmp?.width}," +
+                                " dh = ${mBmp?.height}",
+                    )
+
+                    val bmp = createTempBitmap(mBmp, it.second, width, height)
+                    val file =
+                        CameraUtil.createMediaFile(context, isImage = true, storeInCache = true)
                     val fos = file.outputStream()
                     bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos)
                     fos.flush()
@@ -44,33 +78,20 @@ class CropUseCase @Inject constructor() {
     }
 
     @Throws(Exception::class)
-    private suspend fun createTempBitmap(bmp: Bitmap?, zoomInfo: ZoomInfo, size: Int): Bitmap {
+    private fun createTempBitmap(
+        bmp: Bitmap?,
+        zoomInfo: ZoomInfo,
+        width: Int,
+        height: Int
+    ): Bitmap {
         if (bmp != null && zoomInfo.hasData()) {
-            val translationX: Float = zoomInfo.panX!! * zoomInfo.scale!!
-            val translationY: Float = zoomInfo.panY!! * zoomInfo.scale!!
+            val top = -min(0f, (zoomInfo.rectF!!.top / zoomInfo.scale!!)).toInt()
+            val left = -min(0f, (zoomInfo.rectF!!.left / zoomInfo.scale!!)).toInt()
 
-            val x: Float = if (translationX > 0f) 0f else -translationX
-            val y: Float = if (translationY > 0f) 0f else -translationY
-            val left: Int = (x / zoomInfo.scale!!).toInt()
-            val top: Int = (y / zoomInfo.scale!!).toInt()
-            var newWidth: Int = (size / zoomInfo.scale!!).roundToInt()
-            var newHeight: Int = newWidth
+            val w = min(bmp.width.toFloat(), width / zoomInfo.scale!!)
+            val h = min(bmp.height.toFloat(), height / zoomInfo.scale!!)
 
-            if (top == 0) {
-                newHeight = bmp.height
-            }
-
-            //vertical image
-            if (left == 0) {
-                newHeight = (bmp.height / zoomInfo.scale!!).toInt()
-                newWidth = bmp.width
-            }
-
-            //INVALID
-            if ((left + newWidth > bmp.width) || top + newHeight > bmp.height) throw Exception("Invalid params")
-
-            return Bitmap.createBitmap(bmp, left, top, newWidth, newHeight)
-
+            return Bitmap.createBitmap(bmp, left, top, w.toInt(), h.toInt())
         }
         throw Exception("Unable to create bitmap")
     }

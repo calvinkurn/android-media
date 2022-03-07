@@ -8,6 +8,8 @@ object ShopPageConstant {
     const val MAXIMUM_SELECTED_ETALASE_LIST = 4
     const val START_PAGE = 1
     const val DEFAULT_PER_PAGE = 10
+    const val DEFAULT_PER_PAGE_NON_TABLET = 10
+    const val DEFAULT_PER_PAGE_TABLET = 20
     const val SHOP_PRODUCT_EMPTY_STATE_LIMIT = 20
     const val ETALASE_HIGHLIGHT_COUNT = 5
     const val SHOP_SHARE_DEFAULT_CHANNEL = "default"
@@ -16,6 +18,7 @@ object ShopPageConstant {
     const val SHOP_SHARE_GQL_TRACKER_SOURCE = "shop-page"
     const val DEFAULT_VALUE_ETALASE_TYPE = 0 // It's only for apps or frontend identifier
     const val ATC_SUCCESS_VALUE = 1
+    const val VALUE_INT_ONE = 1
 
     // if the count data <= SMALL_DATA_LIMIT, the data become vertical list
     const val GO_TO_MEMBERSHIP_DETAIL = "membership detail"

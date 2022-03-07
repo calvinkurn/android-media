@@ -5,7 +5,7 @@
     android:id="@+id/container_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,9 +28,9 @@
             android:id="@+id/tv_intro_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginLeft="16dp"
             android:layout_marginTop="@dimen/tp_margin_medium"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginRight="16dp"
             android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +47,7 @@
             android:layout_marginTop="@dimen/tp_margin_medium"
             android:layout_marginRight="@dimen/tp_margin_medium"
             android:gravity="center"
-            android:textSize="@dimen/sp_14"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_intro_title"
@@ -57,9 +57,9 @@
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_learn"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_48"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_12"
+            android:layout_height="48dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="12dp"
             android:gravity="center"
             android:text="Learn More"
             android:textColor="@color/Unify_G400"
@@ -75,10 +75,10 @@
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_check"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_48"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_12"
+            android:layout_height="48dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="12dp"
             android:text="Check Now"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold"

@@ -41,7 +41,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.miscDependencies.cameraView
     implementation projectOrAar(rootProject.ext.libraries.applink)
 
@@ -52,7 +52,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModel
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.mp4Composer
-    implementation rootProject.ext.miscDependencies.zoomLayout
     implementation projectOrAar(rootProject.ext.features.medialoader)
 
     implementation rootProject.ext.miscDependencies.coroutineCore

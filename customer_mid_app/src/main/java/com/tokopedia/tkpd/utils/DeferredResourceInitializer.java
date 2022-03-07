@@ -5,7 +5,6 @@ import android.content.Context;
 import com.tkpd.remoteresourcerequest.callback.DeferredCallback;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.customer_mid_app.R;
-import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.weaver.WeaveInterface;
@@ -24,6 +23,8 @@ public class DeferredResourceInitializer implements DeferredCallback {
     private static final String ENABLE_ASYNC_REMOTERESOURCE_INIT = "android_async_remoteresource_init";
     private static String RELATIVE_URL = "/android/res/";
 
+    private static final String CDN_URL = "https://ecs7.tokopedia.net";
+
     public void initializeResourceDownloadManager(final Context context) {
         WeaveInterface libInitWeave = new WeaveInterface() {
             @NotNull
@@ -32,13 +33,13 @@ public class DeferredResourceInitializer implements DeferredCallback {
                 return init(context);
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(libInitWeave, ENABLE_ASYNC_REMOTERESOURCE_INIT, context.getApplicationContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(libInitWeave, ENABLE_ASYNC_REMOTERESOURCE_INIT, context.getApplicationContext(), true);
     }
 
     private boolean init(Context context) {
         ResourceDownloadManager
                 .Companion.getManager()
-                .setBaseAndRelativeUrl(AccountHomeUrl.CDN_URL, RELATIVE_URL)
+                .setBaseAndRelativeUrl(CDN_URL, RELATIVE_URL)
                 .addDeferredCallback(this)
                 .initialize(context, R.raw.resources_description);
         return true;

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:id="@+id/swipe_refresh"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:enabled="false">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,10 +26,10 @@
                 android:id="@+id/edit_shop_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:orientation="vertical">
@@ -39,7 +39,7 @@
                     style="@style/HintTextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_24"
+                    android:layout_marginTop="24dp"
                     android:hint="@string/et_nama_lokasi_label">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -54,7 +54,7 @@
                         android:scrollbars="vertical"
                         android:maxLength="25"
                         android:textColor="@color/Unify_N700_68"
-                        android:textSize="@dimen/sp_14"/>
+                        android:textSize="14sp"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -62,8 +62,8 @@
                     android:id="@+id/tv_nama_lokasi_watcher"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingStart="@dimen/dp_2"
-                    android:paddingEnd="@dimen/dp_2"
+                    android:paddingStart="2dp"
+                    android:paddingEnd="2dp"
                     android:text=""
                     android:layout_gravity="end"
                     android:textColor="@color/Unify_N700_68"
@@ -74,7 +74,7 @@
                     style="@style/HintTextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginTop="8dp"
                     android:hint="@string/et_kota_kecamatan_label">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -88,7 +88,7 @@
                         android:scrollbarStyle="insideInset"
                         android:scrollbars="vertical"
                         android:textColor="@color/Unify_N700_68"
-                        android:textSize="@dimen/sp_14"/>
+                        android:textSize="14sp"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -97,7 +97,7 @@
                     style="@style/HintTextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_24"
+                    android:layout_marginTop="24dp"
                     android:hint="@string/et_kode_pos_label">
 
 
@@ -110,7 +110,7 @@
                         android:inputType="number"
                         android:maxLength="5"
                         android:textColor="@color/Unify_N700"
-                        android:textSize="@dimen/sp_14" />
+                        android:textSize="14sp" />
 
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -120,7 +120,7 @@
                     style="@style/HintTextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_24"
+                    android:layout_marginTop="24dp"
                     android:hint="@string/detail_alamat">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -135,7 +135,7 @@
                         android:scrollbarStyle="insideInset"
                         android:scrollbars="vertical"
                         android:textColor="@color/Unify_N700_68"
-                        android:textSize="@dimen/sp_14"/>
+                        android:textSize="14sp"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -143,8 +143,8 @@
                     android:id="@+id/tv_detail_alamat_helper"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingStart="@dimen/dp_2"
-                    android:paddingEnd="@dimen/dp_2"
+                    android:paddingStart="2dp"
+                    android:paddingEnd="2dp"
                     android:text=""
                     android:textColor="@color/Unify_R500"
                     android:textSize="@dimen/sp_12" />
@@ -155,14 +155,14 @@
                     android:text="@string/tv_pinpoint_location"
                     android:textColor="@color/Unify_N700_68"
                     app:typographyWeight="bold"
-                    android:layout_marginTop="@dimen/dp_24"
+                    android:layout_marginTop="24dp"
                     app:typographyType="body_3" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_pinpoint_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_marginTop="2dp"
                     android:layout_marginBottom="@dimen/unify_space_8"
                     android:textColor="@color/Unify_N700_68"
                     android:text="@string/tv_pinpoint_desc"
@@ -174,17 +174,31 @@
                     android:id="@+id/tv_transaction_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginTop="16dp"
                     android:textColor="@color/Unify_N700_68"
                     android:text="@string/tv_transaction_desc"
                     app:typographyType="body_3"/>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/Unify_N75"
+                    android:layout_marginVertical="8dp" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_user_consent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:textColor="@color/Unify_N700_68"
+                    app:typographyType="body_3" />
+
                 <com.tokopedia.unifycomponents.UnifyButton
                     android:id="@+id/btn_save_warehouse"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_40"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginBottom="@dimen/dp_14"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="14dp"
                     android:text="@string/save_changes"
                     android:textStyle="bold"
                     app:unifyButtonType="main"/>

@@ -1,5 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="blue_circle_stamp">@color/Unify_N150</color>
-    <color name="blue_background_gradient">@color/Unify_B100</color>
 </resources>

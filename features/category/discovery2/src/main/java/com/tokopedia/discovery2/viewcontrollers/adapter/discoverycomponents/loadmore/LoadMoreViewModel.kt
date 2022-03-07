@@ -1,8 +1,10 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore
 
 import android.app.Application
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.usecase.MerchantVoucherUseCase
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -16,6 +18,8 @@ class LoadMoreViewModel(val application: Application, private val components: Co
 
     @Inject
     lateinit var productCardUseCase: ProductCardsUseCase
+    @Inject
+    lateinit var merchantVoucherUseCase: MerchantVoucherUseCase
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
@@ -25,9 +29,18 @@ class LoadMoreViewModel(val application: Application, private val components: Co
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         launchCatchError(block = {
-            if (!getViewOrientation()) syncData.value = productCardUseCase.getProductCardsUseCase(components.id, components.pageEndPoint)
+            if (!getViewOrientation()) {
+                syncData.value = when(components.parentComponentName){
+                    ComponentNames.MerchantVoucherList.componentName ->
+                        merchantVoucherUseCase.getPaginatedData(components.id,components.pageEndPoint)
+                    else -> productCardUseCase.getProductCardsUseCase(components.id, components.pageEndPoint)
+                }
+            }
         }, onError = {
-            getComponent(components.parentComponentId, components.pageEndPoint)?.verticalProductFailState = true
+            getComponent(
+                components.parentComponentId,
+                components.pageEndPoint
+            )?.verticalProductFailState = true
             syncData.value = true
         })
     }

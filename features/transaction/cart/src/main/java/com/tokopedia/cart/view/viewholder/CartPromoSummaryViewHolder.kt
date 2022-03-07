@@ -4,7 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemCartPromoPriceSummaryBinding
-import com.tokopedia.cart.domain.model.cartlist.PromoSummaryDetailData
+import com.tokopedia.cart.view.uimodel.PromoSummaryDetailData
 
 /**
  * @author by furqan on 17/02/2021

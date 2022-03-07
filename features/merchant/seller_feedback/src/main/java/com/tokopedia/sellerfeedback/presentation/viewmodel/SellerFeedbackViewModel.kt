@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.mediauploader.data.state.UploadResult
-import com.tokopedia.mediauploader.domain.UploaderUseCase
+import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.sellerfeedback.data.SubmitResult
 import com.tokopedia.sellerfeedback.domain.SubmitGlobalFeedbackUseCase
 import com.tokopedia.sellerfeedback.error.SubmitThrowable

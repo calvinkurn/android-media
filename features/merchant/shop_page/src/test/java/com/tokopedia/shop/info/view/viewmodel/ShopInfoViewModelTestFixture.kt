@@ -6,6 +6,7 @@ import com.tokopedia.shop.common.domain.GetShopReputationUseCase
 import com.tokopedia.shop.common.domain.GetShopNoteUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -17,6 +18,9 @@ abstract class ShopInfoViewModelTestFixture {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     @RelaxedMockK
     lateinit var getShopNotesUseCase: GetShopNoteUseCase
@@ -41,7 +45,7 @@ abstract class ShopInfoViewModelTestFixture {
                 getShopNotesUseCase,
                 getShopInfoUseCase,
                 getShopReputationUseCase,
-                testCoroutineDispatcherProvider
+                coroutineTestRule.dispatchers
         )
     }
 }

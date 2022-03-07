@@ -1,7 +1,7 @@
 package com.tokopedia.promocheckoutmarketplace.journey.analytics
 
 import com.tokopedia.promocheckoutmarketplace.BasePromoCheckoutMarketplaceAnalyticsTest
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_CHECKOUT
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.PAGE_OCC
 import org.junit.Test
 

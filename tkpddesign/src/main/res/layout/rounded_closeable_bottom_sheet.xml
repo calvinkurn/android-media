@@ -9,7 +9,7 @@
         android:id="@+id/header_rounded_closeable"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_8"
+        android:padding="8dp"
         android:background="@drawable/bg_header_rounded_closeable_bs"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,7 +20,7 @@
             android:id="@+id/close_button_rounded"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp_8"
+            android:padding="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_centerVertical="true"
@@ -37,7 +37,7 @@
             android:layout_toRightOf="@+id/close_button_rounded"
             android:layout_centerVertical="true"
             android:textSize="@dimen/sp_18"
-            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginLeft="8dp"
             android:textStyle="normal"
             android:visibility="gone"
             tools:visibility="visible"
@@ -54,6 +54,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header_rounded_closeable"
-        tools:layout_height="@dimen/dp_40" />
+        tools:layout_height="40dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

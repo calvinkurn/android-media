@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginStart="@dimen/dp_14"
+    android:layout_marginStart="14dp"
     android:layout_marginTop="@dimen/layout_lvl2"
-    android:layout_marginEnd="@dimen/dp_14"
+    android:layout_marginEnd="14dp"
     app:tickerShapeType="loose" />

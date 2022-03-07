@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -30,13 +29,11 @@ import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Compan
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.domain.pojo.ShopInfoByID
+import com.tokopedia.loginregister.shopcreation.domain.pojo.UserProfileCompletionData
 import com.tokopedia.loginregister.shopcreation.viewmodel.ShopCreationViewModel
-import com.tokopedia.profilecommon.domain.pojo.UserProfileCompletionData
 import com.tokopedia.sessioncommon.ErrorHandlerSession
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -56,6 +53,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private lateinit var mainView: View
     private lateinit var baseView: View
     private lateinit var sharedPrefs: SharedPreferences
+    private var btnDeletedShop: Typography? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -82,6 +80,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         landingImage = view.findViewById(R.id.landing_shop_creation_image)
         loading = view.findViewById(R.id.loading)
         mainView = view.findViewById(R.id.main_view)
+        btnDeletedShop = view.findViewById(R.id.deletedShopInfo2)
         activity?.let {
             baseView = it.findViewById(R.id.base_view)
         }
@@ -154,6 +153,10 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private fun initView() {
         ImageHandler.LoadImage(landingImage, LANDING_PICT_URL)
+
+        btnDeletedShop?.setOnClickListener {
+            RouteManager.route(context, URL_DELETED_SHOP)
+        }
     }
 
     private fun initButtonListener() {
@@ -316,7 +319,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         loading.visibility = View.VISIBLE
         mainView.visibility = View.INVISIBLE
         context?.let {
-            baseView.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            baseView.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         }
     }
 
@@ -345,6 +348,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 
         private const val LANDING_PICT_URL = "https://ecs7.tokopedia.net/android/others/Illustration_buka_toko@3x.png"
+        private const val URL_DELETED_SHOP = "https://www.tokopedia.com/help/article/kebijakan-penonaktifan-toko-secara-permanen"
 
         private const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
         private const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"

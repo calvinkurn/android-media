@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dp_12"
-    android:layout_marginRight="@dimen/dp_12"
+    android:layout_marginLeft="12dp"
+    android:layout_marginRight="12dp"
     android:orientation="vertical"
     app:cardBackgroundColor="@color/Unify_N0">
 
@@ -18,32 +18,32 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_1"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_vertical|left"
             android:layout_marginLeft="-12dp"
             app:cardBackgroundColor="@color/Unify_N0"
-            app:cardCornerRadius="@dimen/dp_12"
-            app:cardElevation="@dimen/dp_4" />
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_2"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_vertical|right"
             android:layout_marginRight="-12dp"
             app:cardBackgroundColor="@color/Unify_N0"
-            app:cardCornerRadius="@dimen/dp_12"
-            app:cardElevation="@dimen/dp_4" />
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp" />
 
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="@dimen/dp_4"
-            app:cardElevation="@dimen/dp_0">
+            app:cardCornerRadius="4dp"
+            app:cardElevation="0dp">
 
             <com.tokopedia.promocheckout.widget.PromoImageView
                 android:id="@+id/imageBanner"
@@ -69,12 +69,12 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_4"
+                android:layout_marginBottom="4dp"
                 android:layout_marginLeft="@dimen/dp_1"
                 android:layout_marginRight="@dimen/dp_1"
                 app:cardBackgroundColor="@color/Unify_N0"
-                app:cardCornerRadius="@dimen/dp_4"
-                app:cardElevation="@dimen/dp_2">
+                app:cardCornerRadius="4dp"
+                app:cardElevation="2dp">
 
                 <include layout="@layout/include_period_tnc_promo" />
             </androidx.cardview.widget.CardView>

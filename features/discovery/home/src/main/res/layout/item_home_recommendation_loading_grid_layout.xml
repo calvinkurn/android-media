@@ -2,24 +2,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_gravity="center_horizontal"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:id="@+id/loading"
     android:orientation="vertical"
-    android:layout_marginLeft="@dimen/dp_8"
-    android:layout_marginRight="@dimen/dp_8">
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        tools:ignore="DisableBaselineAlignment">
 
         <include
             layout="@layout/item_home_recommendation_loading_grid"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/dp_8"
+            android:layout_margin="8dp"
             android:layout_weight="1" />
 
         <include
@@ -27,7 +29,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/dp_8"
+            android:layout_margin="8dp"
             android:layout_weight="1" />
     </LinearLayout>
 
@@ -35,14 +37,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        tools:ignore="DisableBaselineAlignment">
 
         <include
             layout="@layout/item_home_recommendation_loading_grid"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/dp_8"
+            android:layout_margin="8dp"
             android:layout_weight="1" />
 
         <include
@@ -50,7 +53,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/dp_8"
+            android:layout_margin="8dp"
             android:layout_weight="1" />
     </LinearLayout>
 

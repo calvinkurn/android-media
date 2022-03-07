@@ -14,10 +14,13 @@ import com.tokopedia.shop_showcase.shop_showcase_product_add.data.model.Product
 import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.mapper.ProductMapper
 import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.model.GetProductListFilter
 import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.usecase.GetProductListUseCase
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import junit.framework.Assert
 import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -81,6 +84,17 @@ class ShopShowcaseManageViewModel {
         }
     }
 
+    @Test
+    fun `Get Showcase list as Seller Fail Scenario`() {
+        runBlocking {
+            coEvery { getShopEtalaseUseCase.executeOnBackground() } throws Exception()
+            viewModel.getShopShowcaseListAsSeller()
+
+            coVerify { getShopEtalaseUseCase.executeOnBackground() }
+            assertTrue(viewModel.getListSellerShopShowcaseResponse.value is Fail)
+        }
+    }
+
     // Buyerview
     @Test
     fun `given showcase list as a buyer when shopid and isowner is provided`() {
@@ -106,6 +120,48 @@ class ShopShowcaseManageViewModel {
         }
     }
 
+    // Buyerview
+    @Test
+    fun `given showcase list as a buyer with isowner is true`() {
+        runBlocking {
+            val shopId = "123456"
+            val isOwner = true
+            val index = 0
+            val etalaseId = "2"
+            val etalaseName = "Elektronik"
+            val etalaseList = arrayListOf(ShopEtalaseModel(id = etalaseId, name = etalaseName))
+
+            coEvery { getBuyerShowcaseList.createObservable(any()) } returns Observable.just(etalaseList)
+
+            viewModel.getShopShowcaseListAsBuyer(
+                    shopId = shopId,
+                    isOwner = isOwner,
+                    hideShowCaseGroup = false
+            )
+
+            val expectedResponse = Success(etalaseList)
+            val actualResponse = viewModel.getListBuyerShopShowcaseResponse.value as Success<List<ShopEtalaseModel>>
+            assertEquals(expectedResponse, actualResponse)
+        }
+    }
+
+    // Buyerview
+    @Test
+    fun `Get showcase list as buyer Fail Scenario`() {
+        runBlocking {
+            val shopId = "123456"
+            val isOwner = true
+            coEvery { getBuyerShowcaseList.createObservable(any()) } throws Exception()
+
+            viewModel.getShopShowcaseListAsBuyer(
+                    shopId = shopId,
+                    isOwner = isOwner,
+                    hideShowCaseGroup = false
+            )
+            assertTrue(viewModel.getListBuyerShopShowcaseResponse.value is Fail)
+        }
+    }
+
     @Test
     fun `remove showcase when showcaseid is provided`() {
         runBlocking {
@@ -124,6 +180,18 @@ class ShopShowcaseManageViewModel {
             val expectedResponse = Success(DeleteShopShowcaseResponse())
             val actualResponse = viewModel.deleteShopShowcaseResponse.value as Success<DeleteShopShowcaseResponse>
             assertEquals(expectedResponse, actualResponse)
+        }
+    }
+
+    @Test
+    fun `Remove showcase Fail Scenario`() {
+        runBlocking {
+            val showcaseId = "123456"
+            coEvery { deleteShowcase.executeOnBackground() } throws Exception()
+            viewModel.removeSingleShopShowcase(showcaseId)
+
+            coVerify { deleteShowcase.executeOnBackground() }
+            assertTrue(viewModel.deleteShopShowcaseResponse.value is Fail)
         }
     }
 
@@ -149,6 +217,22 @@ class ShopShowcaseManageViewModel {
     }
 
     @Test
+    fun `Reorder showcase Fail Scenario`() {
+        runBlocking {
+            coEvery { reorderShowcase.executeOnBackground() } throws Exception()
+
+            val showcaseList: List<String> = listOf("123456", "987654")
+            viewModel.reorderShopShowcaseList(showcaseList)
+
+            coVerify {
+                reorderShowcase.executeOnBackground()
+            }
+
+            assertTrue(viewModel.reoderShopShowcaseResponse.value is Fail)
+        }
+    }
+
+    @Test
     fun `when get total product should return success`() {
         runBlocking {
 
@@ -168,6 +252,22 @@ class ShopShowcaseManageViewModel {
             val expectedResponse = Success(ArgumentMatchers.anyInt())
             val actualResponse = viewModel.shopTotalProduct.value as Success<Int>
             assertEquals(expectedResponse, actualResponse)
+        }
+    }
+
+    @Test
+    fun `Get total product Fail Scenario`() {
+        runBlocking {
+            coEvery { getProductListUseCase.executeOnBackground() } throws Exception()
+
+            val productListFilter = GetProductListFilter(perPage = 1)
+            viewModel.getTotalProduct(
+                    shopId = "123",
+                    filter = productListFilter
+            )
+
+            coVerify { getProductListUseCase.executeOnBackground() }
+            assertTrue(viewModel.shopTotalProduct.value is Fail)
         }
     }
 

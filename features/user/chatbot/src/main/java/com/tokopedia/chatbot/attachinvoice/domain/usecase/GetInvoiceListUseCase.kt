@@ -3,7 +3,7 @@ package com.tokopedia.chatbot.attachinvoice.domain.usecase
 import android.content.res.Resources
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.model.InvoiceConstants.DEFAULT_LIMIT
 import com.tokopedia.chatbot.attachinvoice.domain.model.InvoiceConstants.IS_SHOW_ALL
@@ -46,7 +46,7 @@ constructor(val resources: Resources,
             if (!TextUtils.isEmpty(query)) param.putString(KEYWORD_KEY, query)
             param.putString(MESSAGE_ID_KEY, messageId.toString())
             param.putBoolean(IS_SHOW_ALL, false)
-            param.putString(START_TIME, SendableViewModel.generateStartTime())
+            param.putString(START_TIME, SendableUiModel.generateStartTime())
             param.putInt(PAGE_KEY, page)
             param.putInt(LIMIT, DEFAULT_LIMIT)
             return param.parameters

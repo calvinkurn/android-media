@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:visibility="gone"
     android:orientation="vertical">
 
@@ -17,14 +17,14 @@
         android:id="@+id/avatar"
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"
-        android:layout_margin="@dimen/dp_5"
+        android:layout_margin="5dp"
         android:contentDescription="null"
-        android:layout_marginStart="@dimen/dp_5"/>
+        android:layout_marginStart="5dp"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/dp_5"
+        android:layout_marginStart="5dp"
         android:layout_toEndOf="@id/avatar"
         android:gravity="center_vertical">
 
@@ -53,11 +53,11 @@
 
     <ImageView
         android:id="@+id/wishlist"
-        android:layout_width="@dimen/dp_20"
-        android:layout_height="@dimen/dp_20"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:contentDescription="null"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginEnd="10dp"
         app:srcCompat="@drawable/ic_wishlist_unchecked"/>
 </RelativeLayout>

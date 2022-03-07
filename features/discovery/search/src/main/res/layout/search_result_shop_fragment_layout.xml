@@ -9,13 +9,12 @@
         android:id="@+id/searchShopQuickSortFilter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/dp_16"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingBottom="@dimen/dp_8"
+        android:paddingStart="16dp"
+        android:paddingLeft="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         app:sort_filter_relationship="AND"
         app:sort_filter_type="advanced"
-        android:background="@color/Unify_N0"
         android:visibility="gone" />
 
     <include

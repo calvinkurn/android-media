@@ -15,9 +15,9 @@
         <ImageView
             android:id="@+id/event_image"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_dp_140"
+            android:layout_height="@dimen/dimen_dp_160"
             android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
+            android:scaleType="fitXY"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -59,7 +59,7 @@
             tools:text="Bekasi Wedding Exhibiti…" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/typography5"
+            android:id="@+id/tg_event_home_start_from"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_N700"
@@ -67,17 +67,17 @@
             app:layout_constraintStart_toStartOf="@+id/event_title"
             app:layout_constraintTop_toTopOf="@+id/event_price"
             app:typographyType="body_3"
-            android:text="Mulai dari" />
+            android:text="@string/ent_home_page_mulai_dari" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/event_price"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl2"
             android:paddingRight="@dimen/spacing_lvl3"
             android:textColor="@color/Unify_N700"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/typography5"
+            app:layout_constraintStart_toEndOf="@+id/tg_event_home_start_from"
             app:layout_constraintTop_toBottomOf="@+id/event_title"
             app:typographyType="heading_4"
             tools:text="Rp1.289.000" />

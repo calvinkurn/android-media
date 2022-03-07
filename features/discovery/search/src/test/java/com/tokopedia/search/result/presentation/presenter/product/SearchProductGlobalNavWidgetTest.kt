@@ -7,7 +7,7 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.CpmDataView
-import com.tokopedia.search.result.presentation.model.GlobalNavDataView
+import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
@@ -40,9 +40,13 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
     }
 
     private fun `Given Search Product API will return SearchProductModel with Global Nav Widget and CPM, and showTopAds is true`() {
+        val searchProductModel = globalNavWidgetAndShowTopAdsTrue.jsonToObject<SearchProductModel>()
+
         every { searchProductFirstPageUseCase.execute(capture(requestParamsSlot), any()) }.answers {
-            secondArg<Subscriber<SearchProductModel>>().complete(globalNavWidgetAndShowTopAdsTrue.jsonToObject())
+            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
         }
+
+        `Given top ads headline helper will process headline ads`(searchProductModel)
     }
 
     private fun `When Load Data`() {
@@ -70,8 +74,8 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
     private fun `Then verify visitable list has global nav widget and CPM`() {
         val visitableList = visitableListSlot.captured
 
-        visitableList[0].shouldBeInstanceOf<GlobalNavDataView>()
-        visitableList[1].shouldBeInstanceOf<CpmDataView>()
+        visitableList[1].shouldBeInstanceOf<GlobalNavDataView>()
+        visitableList[2].shouldBeInstanceOf<CpmDataView>()
     }
 
     @Test
@@ -85,17 +89,21 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
     }
 
     private fun `Given Search Product API will return SearchProductModel with Global Nav Widget and CPM, and showTopAds is false`() {
+        val searchProductModel = globalNavWidgetAndShowTopAdsFalse.jsonToObject<SearchProductModel>()
+
         every { searchProductFirstPageUseCase.execute(capture(requestParamsSlot), any()) }.answers {
-            secondArg<Subscriber<SearchProductModel>>().complete(globalNavWidgetAndShowTopAdsFalse.jsonToObject())
+            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
         }
+
+        `Given top ads headline helper will process headline ads`(searchProductModel)
     }
 
     private fun `Then verify visitable list has global nav widget and no CPM`(
         visitableList: List<Visitable<*>>
     ) {
-        visitableList[0].shouldBeInstanceOf<GlobalNavDataView>()
+        visitableList[1].shouldBeInstanceOf<GlobalNavDataView>()
 
-        for(i in 1 until visitableList.size) {
+        for(i in 2 until visitableList.size) {
             visitableList[i].shouldBeInstanceOf<ProductItemDataView>()
         }
     }
@@ -103,8 +111,8 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
     @Test
     fun `Hide headline ads on page 2 with Global Nav Widget`() {
         `Given Search Product API will return SearchProductModel with Global Nav Widget and CPM, and showTopAds is false`()
-        `Given search more product API will have headline ads`()
         `Given view already load data`()
+        `Given search more product API will have headline ads`()
 
         `When view load more data`()
 
@@ -119,6 +127,8 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
         every { searchProductLoadMoreUseCase.execute(capture(requestParamsSlot), any()) }.answers {
             secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
         }
+
+        `Given top ads headline helper will process headline ads`(searchProductModel, 2)
     }
 
     private fun `Given view already load data`() {
@@ -161,17 +171,21 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
     }
 
     private fun `Given Search Product API will return SearchProductModel without Global Nav Widget`() {
+        val searchProductModel = noGlobalNavWidget.jsonToObject<SearchProductModel>()
+
         every { searchProductFirstPageUseCase.execute(capture(requestParamsSlot), any()) }.answers {
-            secondArg<Subscriber<SearchProductModel>>().complete(noGlobalNavWidget.jsonToObject())
+            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
         }
+
+        `Given top ads headline helper will process headline ads`(searchProductModel)
     }
 
     private fun `Then verify visitable list not showing global nav widget and still show CPM`() {
         val visitableList = visitableListSlot.captured
 
-        visitableList[0].shouldBeInstanceOf<CpmDataView>()
+        visitableList[1].shouldBeInstanceOf<CpmDataView>()
 
-        for (i in 1 until visitableList.size) {
+        for (i in 2 until visitableList.size) {
             visitableList[i].shouldBeInstanceOf<ProductItemDataView>()
         }
     }

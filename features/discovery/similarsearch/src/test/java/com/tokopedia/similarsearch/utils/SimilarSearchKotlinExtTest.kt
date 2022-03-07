@@ -1,115 +1,111 @@
 package com.tokopedia.similarsearch.utils
 
-import com.tokopedia.similarsearch.tracking.ECommerce.Companion.NONE_OTHER
 import com.tokopedia.similarsearch.getsimilarproducts.model.Product
 import com.tokopedia.similarsearch.getsimilarproducts.model.Shop
-import com.tokopedia.similarsearch.testutils.shouldBe
-import com.tokopedia.similarsearch.testutils.shouldBeInstanceOf
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
+import com.tokopedia.similarsearch.tracking.ECommerce
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.core.Is.`is`
+import org.junit.Test
 
-internal class SimilarSearchKotlinExtTest: Spek({
+class SimilarSearchKotlinExtTest {
 
-    describe("Safe cast rupiah to int") {
-
-        it("should return 0 when input rupiah is null OR empty string") {
-            safeCastRupiahToInt("") shouldBe 0
-            safeCastRupiahToInt(null) shouldBe 0
-        }
-
-        it("should return 0 when input rupiah cannot be cast to int") {
-            safeCastRupiahToInt("sfsadfasdf") shouldBe 0
-        }
-
-        it("should remove `Rp` and `.` from rupiah string, and return the integer") {
-            safeCastRupiahToInt("Rp 1.000.000") shouldBe 1000000
-        }
-
-        it("should ignore spaces from rupiah string, and return the integer") {
-            safeCastRupiahToInt("   Rp 1.000.   000     ") shouldBe 1000000
-        }
-    }
-
-    describe("Get Product as Object Data Layer Impression and Click") {
+    @Test
+    fun `GetProductAsObjectDataLayer impression and click`() {
         val position = 1
         val product = Product(
-                name = "Samsung Galaxy A70 - 6GB/128GB - Black - Garansi Resmi 1 Tahun SEIN",
-                id = "465335395",
-                price = "Rp 4.950.000",
-                categoryName = "Handphone & Tablet"
+            name = "Samsung Galaxy A70 - 6GB/128GB - Black - Garansi Resmi 1 Tahun SEIN",
+            id = "465335395",
+            price = "Rp 4.950.000",
+            categoryName = "Handphone & Tablet"
         ).also {
             it.position = position
         }
 
         val objectDataLayer = product.asObjectDataLayerImpressionAndClick()
 
-        it("should be a map with correct data layer key and values") {
-            objectDataLayer.shouldBeInstanceOf<Map<String, Any>>()
+        @Suppress("UNCHECKED_CAST")
+        val objectDataLayerMap = objectDataLayer as Map<String, Any>
 
-            @Suppress("UNCHECKED_CAST")
-            val objectDataLayerMap = objectDataLayer as Map<String, Any>
-
-            objectDataLayerMap["name"] shouldBe product.name
-            objectDataLayerMap["id"] shouldBe product.id
-            objectDataLayerMap["price"] shouldBe safeCastRupiahToInt(product.price).toString()
-            objectDataLayerMap["brand"] shouldBe NONE_OTHER
-            objectDataLayerMap["category"] shouldBe product.categoryName
-            objectDataLayerMap["variant"] shouldBe NONE_OTHER
-            objectDataLayerMap["list"] shouldBe "/similarproduct"
-            objectDataLayerMap["position"] shouldBe position
-        }
+        assertThat(objectDataLayerMap["name"].toString(), `is`(product.name))
+        assertThat(objectDataLayerMap["id"].toString(), `is`(product.id))
+        assertThat(
+            objectDataLayerMap["price"].toString(),
+            `is`(safeCastRupiahToInt(product.price).toString())
+        )
+        assertThat(objectDataLayerMap["brand"].toString(), `is`(ECommerce.NONE_OTHER))
+        assertThat(objectDataLayerMap["category"].toString(), `is`(product.categoryName))
+        assertThat(objectDataLayerMap["variant"].toString(), `is`(ECommerce.NONE_OTHER))
+        assertThat(objectDataLayerMap["list"].toString(), `is`("/similarproduct"))
+        assertThat(objectDataLayerMap["position"].toString(), `is`(position.toString()))
     }
 
-    describe("Shop Get Type") {
-        it ("should return official_store if isOfficial = true") {
-            Shop(isOfficial = true).getType() shouldBe "official_store"
-        }
-        it ("should return gold_merchant if isGoldShop = true") {
-            Shop(isGoldShop = true).getType() shouldBe "gold_merchant"
-        }
-        it("should return official_store if both isOfficial = true and isGoldShop = true") {
-            Shop(isOfficial = true, isGoldShop = true).getType() shouldBe "official_store"
-        }
-        it ("should return reguler if isOfficial and isGoldShop is false") {
-            Shop(isGoldShop = false, isOfficial = false).getType() shouldBe "reguler"
-        }
-    }
-
-    describe("Get Product as Object Data Layer Add to Cart") {
+    @Test
+    fun getProductAsObjectDataLayerAddToCart(){
         val product = Product(
-                name = "Samsung Galaxy A70 - 6GB/128GB - Black - Garansi Resmi 1 Tahun SEIN",
-                id = "465335395",
-                price = "Rp 4.950.000",
-                categoryName = "Handphone & Tablet",
-                shop = Shop(
-                        id = 12345,
-                        isOfficial = true,
-                        name = "enterkomputer2"
-                ),
-                minOrder = 1
+            name = "Samsung Galaxy A70 - 6GB/128GB - Black - Garansi Resmi 1 Tahun SEIN",
+            id = "465335395",
+            price = "Rp 4.950.000",
+            categoryName = "Handphone & Tablet",
+            shop = Shop(
+                id = 12345,
+                isOfficial = true,
+                name = "enterkomputer2"
+            ),
+            minOrder = 1
         )
         val cartId = "12345"
 
         val objectDataLayer = product.asObjectDataLayerAddToCart(cartId)
 
-        it ("should be a map with correct data layer key and values") {
-            objectDataLayer.shouldBeInstanceOf<Map<String, Any>>()
+        @Suppress("UNCHECKED_CAST")
+        val objectDataLayerMap = objectDataLayer as Map<String, Any>
 
-            @Suppress("UNCHECKED_CAST")
-            val objectDataLayerMap = objectDataLayer as Map<String, Any>
-
-            objectDataLayerMap["name"] shouldBe product.name
-            objectDataLayerMap["id"] shouldBe product.id
-            objectDataLayerMap["price"] shouldBe safeCastRupiahToInt(product.price).toString()
-            objectDataLayerMap["brand"] shouldBe NONE_OTHER
-            objectDataLayerMap["category"] shouldBe product.categoryName
-            objectDataLayerMap["variant"] shouldBe NONE_OTHER
-            objectDataLayerMap["quantity"] shouldBe product.minOrder
-            objectDataLayerMap["shop_id"] shouldBe product.shop.id
-            objectDataLayerMap["shop_type"] shouldBe product.shop.getType()
-            objectDataLayerMap["shop_name"] shouldBe product.shop.name
-            objectDataLayerMap["category_id"] shouldBe product.categoryId
-            objectDataLayerMap["dimension82"] shouldBe cartId
-        }
+        assertThat(objectDataLayerMap["name"].toString(), `is`(product.name))
+        assertThat(objectDataLayerMap["id"].toString(), `is`(product.id))
+        assertThat(
+            objectDataLayerMap["price"].toString(),
+            `is`(safeCastRupiahToInt(product.price).toString())
+        )
+        assertThat(objectDataLayerMap["brand"].toString(), `is`(ECommerce.NONE_OTHER))
+        assertThat(objectDataLayerMap["category"].toString(), `is`(product.categoryName))
+        assertThat(objectDataLayerMap["variant"].toString(), `is`(ECommerce.NONE_OTHER))
+        assertThat(objectDataLayerMap["quantity"].toString(), `is`(product.minOrder.toString()))
+        assertThat(objectDataLayerMap["shop_id"].toString(), `is`(product.shop.id.toString()))
+        assertThat(objectDataLayerMap["shop_type"].toString(), `is`(product.shop.getType()))
+        assertThat(objectDataLayerMap["shop_name"].toString(), `is`(product.shop.name))
+        assertThat(objectDataLayerMap["category_id"].toString(), `is`(product.categoryId.toString()))
+        assertThat(objectDataLayerMap["dimension82"].toString(), `is`(cartId))
     }
-})
+
+    @Test
+    fun `Shop getType will return official_store if isOfficial = true`() {
+        assertThat(
+            Shop(isOfficial = true).getType(),
+            `is`("official_store")
+        )
+    }
+
+    @Test
+    fun `Shop getType will return gold_merchant if isGoldShop = true`() {
+        assertThat(
+            Shop(isGoldShop = true).getType(),
+            `is`("gold_merchant")
+        )
+    }
+
+    @Test
+    fun `Shop getType will return official_store if both isOfficial=true and isGoldShop = true`() {
+        assertThat(
+            Shop(isOfficial = true, isGoldShop = true).getType(),
+            `is`("official_store")
+        )
+    }
+
+    @Test
+    fun `Shop getType will return reguler if isOfficial and isGoldShop is false`() {
+        assertThat(
+            Shop(isGoldShop = false, isOfficial = false).getType(),
+            `is`("reguler")
+        )
+    }
+}

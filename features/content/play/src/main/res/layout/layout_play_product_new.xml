@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_product_image"
+        android:layout_width="@dimen/play_product_item_image_size"
+        android:layout_height="@dimen/play_product_item_image_size"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        tools:src="@tools:sample/avatars" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_product_out_of_stock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginTop="0dp"
+        android:maxLines="1"
+        android:textColor="@color/Unify_R500"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@+id/iv_product_image"
+        app:layout_constraintTop_toTopOf="@+id/iv_product_image"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:text="Stok 5"
+        tools:visibility="gone" />
+
+    <View
+        android:id="@+id/shadow_out_of_stock"
+        android:background="@drawable/bg_play_product_out_of_stock"
+        android:layout_width="@dimen/play_product_item_image_size"
+        android:layout_height="@dimen/play_product_item_image_size"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_product_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:ellipsize="end"
+        android:lineSpacingExtra="@dimen/play_line_spacing_4"
+        android:maxLines="2"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tv_product_out_of_stock"
+        app:layout_constraintTop_toBottomOf="@+id/tv_product_out_of_stock"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_goneMarginTop="0dp"
+        app:layout_goneMarginStart="@dimen/spacing_lvl3"
+        app:typographyType="body_2"
+        tools:text="Alyssa Suede Flats Alyssa Suede Flats  Alyssa Suede Flats " />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_current_price"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="0dp"
+        android:paddingEnd="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toStartOf="@+id/tv_product_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_product_title"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Rp150.000" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_product_discount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_play_discount_badge"
+        android:paddingStart="@dimen/spacing_lvl2"
+        android:paddingTop="@dimen/spacing_lvl1"
+        android:paddingEnd="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_R400"
+        android:paddingBottom="@dimen/spacing_lvl1"
+        android:layout_marginBottom="@dimen/spacing_lvl1"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_current_price"
+        app:layout_constraintStart_toEndOf="@+id/tv_current_price"
+        app:layout_constraintTop_toTopOf="@+id/tv_current_price"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:ignore="TextContrastCheck,TextContrastCheck"
+        tools:text="57%" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_original_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_44"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_product_discount"
+        app:layout_constraintStart_toEndOf="@+id/tv_product_discount"
+        app:layout_constraintTop_toTopOf="@+id/tv_product_discount"
+        app:layout_constraintVertical_bias="1.0"
+        android:layout_marginBottom="@dimen/spacing_lvl1"
+        app:typographyType="small"
+        tools:ignore="TextContrastCheck"
+        tools:text="Rp349.000" />
+
+    <LinearLayout
+        android:id="@+id/layout_product_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:orientation="horizontal"
+        android:weightSum="10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/tv_product_title"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/iv_product_image"
+        app:layout_constraintTop_toBottomOf="@+id/tv_current_price"
+        app:layout_constraintVertical_bias="0.0">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_product_atc"
+            android:layout_width="@dimen/layout_lvl8"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_weight="5"
+            android:text="@string/play_product_atc"
+            app:layout_constraintStart_toEndOf="@+id/iv_product_image"
+            app:layout_constraintTop_toBottomOf="@+id/ll_product_discount"
+            app:unifyButtonSize="micro"
+            app:unifyButtonVariant="ghost"
+            tools:ignore="TextContrastCheck,TextContrastCheck,TextContrastCheck" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_product_buy"
+            android:layout_width="@dimen/layout_lvl8"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_weight="5"
+            android:text="@string/play_product_buy"
+            app:layout_constraintStart_toEndOf="@+id/btn_product_atc"
+            app:layout_constraintTop_toTopOf="@+id/btn_product_atc"
+            app:unifyButtonSize="micro"
+            app:unifyButtonType="main"
+            tools:ignore="TextContrastCheck" />
+    </LinearLayout>
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/label_out_of_stock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
+        android:visibility="gone"
+        app:labelType="general_dark_grey"
+        app:labelTitle="@string/play_out_of_stock"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_product_image"
+        app:layout_constraintStart_toStartOf="@+id/iv_product_image"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

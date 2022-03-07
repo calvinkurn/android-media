@@ -8,10 +8,10 @@ data class GetDistrictDataUiModel (
         var formattedAddress: String = "",
         var latitude: String = "",
         var longitude: String = "",
-        var districtId: Int = 0,
+        var districtId: Long = 0,
         var postalCode: String = "",
-        var cityId: Int = 0,
-        var provinceId: Int = 0,
+        var cityId: Long = 0,
+        var provinceId: Long = 0,
         var errMessage: String? = null,
         var errorCode: Int = 0
 )

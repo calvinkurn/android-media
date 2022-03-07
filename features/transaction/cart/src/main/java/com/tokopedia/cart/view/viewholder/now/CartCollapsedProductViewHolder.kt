@@ -9,13 +9,11 @@ import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 
-class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBinding, val actionListener: ActionListener, val parentPosition: Int) : RecyclerView.ViewHolder(viewBinding.root) {
+class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBinding, val actionListener: ActionListener) : RecyclerView.ViewHolder(viewBinding.root) {
 
     companion object {
         var LAYOUT = R.layout.item_cart_collapsed_product
@@ -29,28 +27,28 @@ class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBi
     }
 
     private fun renderPrice(cartItemHolderData: CartItemHolderData) {
-        val productPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemHolderData.cartItemData.originData.pricePlanInt, false).removeDecimalSuffix()
+        val productPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemHolderData.productPrice, false)
         viewBinding.textProductPrice.text = productPrice
     }
 
     private fun renderImage(cartItemHolderData: CartItemHolderData) {
-        viewBinding.imageProduct.loadImage(cartItemHolderData.cartItemData.originData.productImage)
+        ImageHandler.loadImageWithoutPlaceholder(viewBinding.imageProduct, cartItemHolderData.productImage)
         viewBinding.imageProduct.setOnClickListener {
             val position = adapterPosition
-            if (parentPosition != RecyclerView.NO_POSITION && position != RecyclerView.NO_POSITION) {
-                actionListener.onCollapsedProductClicked(parentPosition, position)
+            if (position != RecyclerView.NO_POSITION) {
+                actionListener.onCollapsedProductClicked(position, cartItemHolderData)
             }
         }
     }
 
     private fun renderQuantity(cartItemHolderData: CartItemHolderData) {
-        val textQuantity = "${cartItemHolderData.cartItemData.updatedData.quantity} barang"
+        val textQuantity = "${cartItemHolderData.quantity} barang"
         viewBinding.textProductQuantity.text = textQuantity
     }
 
     private fun renderVariant(cartItemHolderData: CartItemHolderData) {
-        if (cartItemHolderData.cartItemData.originData.variant.isNotBlank()) {
-            viewBinding.textVariantName.text = cartItemHolderData.cartItemData.originData.variant
+        if (cartItemHolderData.variant.isNotBlank()) {
+            viewBinding.textVariantName.text = cartItemHolderData.variant
             viewBinding.textVariantName.show()
         } else {
             viewBinding.textVariantName.gone()

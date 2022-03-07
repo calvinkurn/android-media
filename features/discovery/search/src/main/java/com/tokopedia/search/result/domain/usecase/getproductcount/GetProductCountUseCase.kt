@@ -3,6 +3,7 @@ package com.tokopedia.search.result.domain.usecase.getproductcount
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_PARAMS
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.search.utils.UrlParamUtils
@@ -15,12 +16,13 @@ internal class GetProductCountUseCase(
 ): UseCase<String>() {
 
     companion object {
-        private const val getProductCountQuery: String =
-                "query SearchProduct(\$params: String!) {\n" +
-                        "   searchProduct(params:\$params) {\n" +
-                        "       count_text\n" +
-                        "    }\n" +
-                        "}"
+        private const val GET_PRODUCT_COUNT_QUERY: String = """
+            query SearchProduct(${'$'}params: String!) {
+               searchProduct(params:${'$'}params) {
+                   count_text
+                }
+            }
+        """
     }
 
     override fun createObservable(requestParams: RequestParams): Observable<String> {
@@ -34,13 +36,13 @@ internal class GetProductCountUseCase(
                 .map { it?.searchProductCount?.countText ?: "" }
     }
 
-    private fun createGraphqlRequest(requestParams: RequestParams): GraphqlRequest {
-        val graphqlRequest = GraphqlRequest(getProductCountQuery, GetProductCountModel::class.java)
-
-        graphqlRequest.variables = createVariables(requestParams)
-
-        return graphqlRequest
-    }
+    @GqlQuery("GetProductCount", GET_PRODUCT_COUNT_QUERY)
+    private fun createGraphqlRequest(requestParams: RequestParams): GraphqlRequest =
+        GraphqlRequest(
+            GetProductCount(),
+            GetProductCountModel::class.java,
+            createVariables(requestParams)
+        )
 
     private fun createVariables(requestParams: RequestParams): Map<String, Any> {
         val variables = mutableMapOf<String, Any>()

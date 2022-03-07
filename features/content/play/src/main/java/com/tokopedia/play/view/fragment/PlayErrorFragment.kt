@@ -34,14 +34,13 @@ import javax.inject.Inject
  * Created by mzennis on 2020-01-10.
  */
 class PlayErrorFragment @Inject constructor(
-        private val viewModelFactory: ViewModelProvider.Factory,
-        private val analytic: PlayAnalytic
+    private val analytic: PlayAnalytic
 ): TkpdBaseV4Fragment(), PlayFragmentContract {
 
     private lateinit var parentViewModel: PlayParentViewModel
     private lateinit var container: View
     private lateinit var globalError: GlobalError
-    private lateinit var imgBack: ImageView
+    private lateinit var imgBack: View
 
     override fun getScreenName() = "Play Video"
 

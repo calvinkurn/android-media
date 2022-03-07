@@ -6,27 +6,33 @@ import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 
 data class FeedXMedia(
     @SerializedName("id")
-        var id: String,
+    var id: String = "",
     @SerializedName("type")
-        var type: String,
+    var type: String = "",
     @SerializedName("appLink")
-        var appLink: String,
+    var appLink: String = "",
     @SerializedName("webLink")
-    var webLink: String,
+    var webLink: String = "",
     @SerializedName("coverURL")
-    var coverUrl: String,
+    var coverUrl: String = "",
     @SerializedName("mediaURL")
-    var mediaUrl: String,
+    var mediaUrl: String = "",
     @SerializedName("tagging")
-    var tagging: List<FeedXMediaTagging>,
+    var tagging: List<FeedXMediaTagging> = listOf(),
     @SerializedName("mods")
-    var mods: List<String>,
+    var mods: List<String> = listOf(),
     @Transient
     var videoView: View? = null,
     @Transient
     var imageView: View? = null,
     var canPlay: Boolean = false,
-    var isImageImpressedFirst: Boolean = true
-
+    var isImageImpressedFirst: Boolean = true,
+    var productName : String= "",
+    val price : String = "",
+    val slashedPrice : String = "",
+    val discountPercentage : String = "",
+    val isCashback : Boolean = false,
+    val cashBackFmt:String = "",
+    val variant:Int = 1
 )
 

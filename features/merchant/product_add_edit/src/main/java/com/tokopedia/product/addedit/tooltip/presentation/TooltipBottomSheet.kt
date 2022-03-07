@@ -1,31 +1,32 @@
 package com.tokopedia.product.addedit.tooltip.presentation
 
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.customview.TabletAdaptiveBottomSheet
 import com.tokopedia.product.addedit.tooltip.adapter.TooltipTypeFactory
 import com.tokopedia.product.addedit.tooltip.model.TooltipModel
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottom_sheet_list.*
-import kotlinx.android.synthetic.main.bottom_sheet_list.view.*
 
-class TooltipBottomSheet : BottomSheetUnify() {
+class TooltipBottomSheet : TabletAdaptiveBottomSheet() {
 
     private var contentView: View? = null
     private var isDividerVisible: Boolean = false
     private var listAdapter: BaseListAdapter<TooltipModel, TooltipTypeFactory>? = null
     private var urlImage: String? = null
+    private var bannerTooltip: AppCompatImageView? = null
+    private var rvList: RecyclerView? = null
 
     init {
         listAdapter = BaseListAdapter(TooltipTypeFactory())
@@ -41,52 +42,31 @@ class TooltipBottomSheet : BottomSheetUnify() {
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        changeCloseButtonSize()
         removeContainerPadding()
-        addMarginCloseButton()
         setupBannerImage()
+        super.onActivityCreated(savedInstanceState)
     }
 
     private fun setupBannerImage() {
         urlImage?.apply {
-            bannerTooltip.loadImage(this)
-            bannerTooltip.show()
-        }
-    }
-
-    private fun changeCloseButtonSize() {
-        val fontSize = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl5).toDp()
-        bottomSheetTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize)
-        context?.also { context ->
-            bottomSheetClose.apply {
-                setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_bottomsheet_close))
-                layoutParams.apply {
-                    width = context.resources.getDimension(com.tokopedia.product.addedit.R.dimen.tooltip_close_size).toInt()
-                    height = context.resources.getDimension(com.tokopedia.product.addedit.R.dimen.tooltip_close_size).toInt()
-                }
-            }
+            bannerTooltip?.loadImage(this)
+            bannerTooltip?.show()
         }
     }
 
     private fun removeContainerPadding() {
-        val padding = resources.getDimensionPixelSize(com.tokopedia.product.addedit.R.dimen.tooltip_padding)
-        val paddingTop = resources.getDimensionPixelSize(com.tokopedia.product.addedit.R.dimen.tooltip_padding_top)
+        val padding = resources.getDimensionPixelSize(R.dimen.tooltip_padding)
+        val paddingTop = resources.getDimensionPixelSize(R.dimen.tooltip_padding_top)
+        val closeButtonMargin = resources.getDimensionPixelSize(R.dimen.tooltip_close_margin)
         bottomSheetWrapper.setPadding(padding, paddingTop, padding, padding)
-    }
-
-    private fun addMarginCloseButton() {
-        val topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
-        val horizontalMargin = resources.getDimensionPixelSize(com.tokopedia.product.addedit.R.dimen.tooltip_close_margin)
-        (bottomSheetClose.layoutParams as RelativeLayout.LayoutParams).apply {
-            setMargins(horizontalMargin, topMargin, horizontalMargin, 0)
-            addRule(RelativeLayout.CENTER_VERTICAL)
-        }
+        bottomSheetClose.setMargin(closeButtonMargin, Int.ZERO, closeButtonMargin, Int.ZERO)
     }
 
     private fun initChildLayout() {
         contentView = View.inflate(context, R.layout.bottom_sheet_list, null)
-        contentView?.rvList?.apply {
+        bannerTooltip = contentView?.findViewById(R.id.bannerTooltip)
+        rvList = contentView?.findViewById(R.id.rvList)
+        rvList?.apply {
             setHasFixedSize(true)
             adapter = listAdapter
             if (isDividerVisible) {

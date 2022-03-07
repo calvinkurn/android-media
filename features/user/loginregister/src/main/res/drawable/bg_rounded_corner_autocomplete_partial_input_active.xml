@@ -6,7 +6,7 @@
             <stroke
                 android:width="@dimen/dp_1"
                 android:color="@color/Unify_G500" />
-            <corners android:radius="@dimen/dp_10" />
+            <corners android:radius="10dp" />
         </shape>
     </item>
 </selector>

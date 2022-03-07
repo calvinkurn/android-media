@@ -25,7 +25,7 @@ class ShopPageMockResponseConfig : MockModelConfig() {
         const val KEY_GET_MERCHANT_CAMPAIGN_TNC = "get_merchant_campaign_tnc"
         const val KEY_MUTATION_CHECK_CAMPAIGN_NOTIFY_ME = "check_campaign_notify_me"
         const val KEY_QUERY_GET_PUBLIC_MERCHANT_VOUCHER = "GetPublicMerchantVoucherList"
-
+        const val KEY_QUERY_FOLLOW_STATUS = "followStatus"
     }
 
     override fun createMockModel(context: Context): MockModelConfig {
@@ -126,6 +126,11 @@ class ShopPageMockResponseConfig : MockModelConfig() {
         addMockResponse(
                 KEY_QUERY_GET_PUBLIC_MERCHANT_VOUCHER,
                 getRawString(context, R.raw.response_mock_data_shop_public_merchant_voucher_list),
+                FIND_BY_CONTAINS)
+
+        addMockResponse(
+                KEY_QUERY_FOLLOW_STATUS,
+                getRawString(context, R.raw.response_mock_data_follow_shop),
                 FIND_BY_CONTAINS)
 
         return this

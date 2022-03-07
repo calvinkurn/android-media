@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/settings_label_seller_app"
-        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginStart="12dp"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="@id/talkSettingsOptionText"
         app:layout_constraintBottom_toBottomOf="@id/talkSettingsOptionText"

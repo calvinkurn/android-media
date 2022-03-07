@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:foreground="?selectableItemBackground"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16">
+    android:paddingLeft="16dp"
+    android:paddingTop="16dp"
+    android:paddingRight="16dp">
 
     <FrameLayout
         android:id="@+id/fl_container"
@@ -18,13 +18,13 @@
             android:id="@+id/layout_mvc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_4"
+            android:layout_marginBottom="4dp"
             android:visibility="visible">
 
             <ImageView
                 android:id="@+id/img_mvc"
-                android:layout_width="@dimen/dp_20"
-                android:layout_height="@dimen/dp_20"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="ContentDescription" />
@@ -64,13 +64,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/tv_courier"
-        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginStart="8dp"
         android:layout_toEndOf="@+id/tv_courier"
         android:background="@drawable/bg_promo_potency"
-        android:paddingLeft="@dimen/dp_8"
-        android:paddingTop="@dimen/dp_2"
-        android:paddingRight="@dimen/dp_8"
-        android:paddingBottom="@dimen/dp_2"
+        android:paddingLeft="8dp"
+        android:paddingTop="2dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="2dp"
         android:text="@string/label_text_promo_potency"
         android:textColor="@color/Unify_R600"
         android:visibility="gone"
@@ -82,7 +82,7 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/tv_courier"
         android:layout_alignBottom="@id/tv_courier"
-        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginStart="8dp"
         android:layout_toEndOf="@+id/tv_courier"
         android:text="@string/tersedia_bayar_di_tempat"
         android:visibility="gone"
@@ -93,7 +93,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_courier"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="4dp"
         android:text="@string/tersedia_bayar_di_tempat"
         android:visibility="gone"
         app:labelType="general_light_green" />
@@ -115,7 +115,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_price_or_duration"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="4dp"
         android:text="@string/label_shipping_information"
         android:visibility="gone"
         app:typographyType="small"
@@ -127,16 +127,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_mvc_error"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="4dp"
         android:text="@string/jaminan_tepat_waktu"
-        app:labelType="general_light_green" />
+        app:labelType="general_light_green"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/lbl_dynamic_pricing"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/lbl_otd_available"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="4dp"
         android:text="@string/txt_label_dynamic_pricing"
         android:visibility="gone"
         app:labelType="general_light_green" />
@@ -156,9 +158,9 @@
     <View
         android:id="@+id/separator"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_half"
+        android:layout_height="0.5dp"
         android:layout_below="@id/lbl_dynamic_pricing"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="16dp"
         android:background="@color/Unify_N100" />
 
 </RelativeLayout>

@@ -7,21 +7,38 @@ import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
+import com.tokopedia.abstraction.common.utils.network.AuthUtil
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.chat_common.data.BaseChatViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.network.authentication.AuthHelper
+import com.tokopedia.chat_common.data.BaseChatUiModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
+import com.tokopedia.chatbot.ChatbotConstant.SecureImageUpload.AUTHORIZATION
+import com.tokopedia.chatbot.ChatbotConstant.SecureImageUpload.CONTENT_TYPE
+import com.tokopedia.chatbot.ChatbotConstant.SecureImageUpload.DATE_FORMAT
+import com.tokopedia.chatbot.ChatbotConstant.SecureImageUpload.POST
+import com.tokopedia.chatbot.ChatbotConstant.SecureImageUpload.TKPD_USERID
+import com.tokopedia.chatbot.ChatbotConstant.SecureImageUpload.X_APP_VERSION
+import com.tokopedia.chatbot.ChatbotConstant.SecureImageUpload.X_DEVICE
+import com.tokopedia.chatbot.ChatbotConstant.SecureImageUpload.X_USER_ID
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ChatBotTimeConverter
+import com.tokopedia.chatbot.util.SecureImageUploadUrl
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.user.session.UserSessionInterface
 
 class ChatbotImageUploadViewHolder(itemView: View?,
-                                   private val listener: ImageUploadListener)
+                                   private val listener: ImageUploadListener,
+                                   private val userSession: UserSessionInterface
+)
     : ImageUploadViewHolder(itemView, listener) {
 
     override fun alwaysShowTime() = true
@@ -55,7 +72,7 @@ class ChatbotImageUploadViewHolder(itemView: View?,
     private val imageRadius = itemView?.context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
             ?: 0f
 
-    override fun bind(element: ImageUploadViewModel?) {
+    override fun bind(element: ImageUploadUiModel?) {
         if (element == null) return
         super.bind(element)
         chatStatus?.let { bindChatReadStatus(element, it) }
@@ -68,7 +85,7 @@ class ChatbotImageUploadViewHolder(itemView: View?,
         chatBalloon?.background = bgSender
     }
 
-    override fun bindImageAttachment(element: ImageUploadViewModel) {
+    override fun bindImageAttachment(element: ImageUploadUiModel) {
         changeHourColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         attachment?.scaleType = ImageView.ScaleType.CENTER_CROP
         if (element.isDummy) {
@@ -77,7 +94,7 @@ class ChatbotImageUploadViewHolder(itemView: View?,
             setVisibility(progressBarSendImage, View.GONE)
         }
         element.imageUrl?.let { imageUrl ->
-            attachmentUnify?.let { attachementUnify -> LoadImage(attachementUnify, imageUrl) }
+            attachmentUnify?.let { attachementUnify -> loadImage(attachementUnify, imageUrl, element.attachmentType, element.messageId) }
         }
     }
 
@@ -85,25 +102,47 @@ class ChatbotImageUploadViewHolder(itemView: View?,
         return R.dimen.dp_chatbot_3
     }
 
-    fun LoadImage(imageview: ImageView, url: String?) {
-        try {
-            if (imageview.context != null) {
-                Glide.with(imageview.context)
-                        .load(url)
+    private fun loadImage(imageview: ImageView, url: String?, attachmentType: String, messageId: String) {
+            try {
+                if (imageview.context != null) {
+                    Glide.with(imageview.context)
+                        .load(getGlideUrl(messageId, attachmentType, url, userSession))
                         .fitCenter()
                         .dontAnimate()
                         .placeholder(com.tokopedia.resources.common.R.drawable.chatbot_image_placeloader)
                         .error(com.tokopedia.abstraction.R.drawable.error_drawable)
                         .into(imageview)
+                }
+            } catch (e: Exception) {
+                if (imageview.context != null) {
+                    imageview.setImageDrawable(ContextCompat.getDrawable(imageview.context, com.tokopedia.resources.common.R.drawable.chatbot_image_placeloader))
+                }
             }
-        } catch (e: Exception) {
-            if (imageview.context != null) {
-                imageview.setImageDrawable(ContextCompat.getDrawable(imageview.context, com.tokopedia.resources.common.R.drawable.chatbot_image_placeloader))
-            }
+    }
+
+    private fun getGlideUrl(messageId: String, attachmentType: String, url: String?, userSession: UserSessionInterface): GlideUrl {
+        val map = AuthHelper.getDefaultHeaderMap(path = SecureImageUploadUrl.getUploadSecureUrl(),
+                strParam = messageId,
+                method = POST,
+                contentType = CONTENT_TYPE,
+                authKey = AuthUtil.KEY.KEY_WSV4,
+                dateFormat = DATE_FORMAT,
+                userSession = userSession
+        )
+        return if (attachmentType == TYPE_SECURE_IMAGE_UPLOAD) {
+            GlideUrl(url, LazyHeaders.Builder()
+                    .addHeader(AUTHORIZATION, map[AUTHORIZATION] ?: "")
+                    .addHeader(TKPD_USERID, map[X_USER_ID] ?: "")
+                    .addHeader(X_APP_VERSION, map[X_APP_VERSION] ?: "")
+                    .addHeader(X_DEVICE, map[X_DEVICE] ?: "")
+                    .build())
+        } else {
+            GlideUrl(url)
         }
     }
 
-    private fun bindChatReadStatus(element: ImageUploadViewModel, checkMark: ImageView) {
+
+    private fun bindChatReadStatus(element: ImageUploadUiModel, checkMark: ImageView) {
         if (element.isShowTime && element.isSender) {
             checkMark.show()
             val imageResource = when {
@@ -117,7 +156,7 @@ class ChatbotImageUploadViewHolder(itemView: View?,
         }
     }
 
-    override fun setHeaderDate(element: BaseChatViewModel?) {
+    override fun setHeaderDate(element: BaseChatUiModel?) {
         if (date == null) return
         val time = element?.replyTime?.let {
             ChatBotTimeConverter.getDateIndicatorTime(

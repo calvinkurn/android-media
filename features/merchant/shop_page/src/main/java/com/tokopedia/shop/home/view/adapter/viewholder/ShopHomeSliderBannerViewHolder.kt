@@ -11,11 +11,14 @@ import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_IMAGE_SLIDER_BANNER_TRACE
+import com.tokopedia.shop.databinding.ViewmodelSliderBannerBinding
+import com.tokopedia.shop.databinding.WidgetSliderBannerItemBinding
 import com.tokopedia.shop.home.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 
 /**
@@ -33,22 +36,24 @@ class ShopHomeSliderBannerViewHolder(
         val LAYOUT_RES = R.layout.viewmodel_slider_banner
         const val DURATION_SLIDER_BANNER = 5000L
     }
-
+    private val viewBinding: ViewmodelSliderBannerBinding? by viewBinding()
+    private var viewBindingSliderBannerItem: WidgetSliderBannerItemBinding? = null
     private var carouselShopPage: CarouselUnify? = null
     private var bannerData: ShopHomeDisplayWidgetUiModel? = null
     private var carouselData: ArrayList<Any>? = null
-    private var textViewTitle: Typography? = view?.findViewById(R.id.textViewTitle)
+    private var textViewTitle: Typography? = viewBinding?.textViewTitle
 
     private var itmListener = { view: View, data: Any ->
-        val img: ShopCarouselBannerImageUnify = view.findViewById(R.id.imageCarousel)
+        viewBindingSliderBannerItem = WidgetSliderBannerItemBinding.bind(view)
+        val img: ShopCarouselBannerImageUnify? = viewBindingSliderBannerItem?.imageCarousel
         val carouselItem = data as CarouselData
         val index = carouselData?.indexOf(carouselItem) ?: 0
         bannerData?.let { bannerData ->
             bannerData.data?.let {
-                img.setOnClickListener {
+                img?.setOnClickListener {
                     onClickBannerItem(
                             bannerData,
-                            bannerData.data.get(index),
+                            bannerData.data[index],
                             adapterPosition,
                             index
                     )
@@ -58,21 +63,21 @@ class ShopHomeSliderBannerViewHolder(
         val performanceMonitoring = PerformanceMonitoring.start(SHOP_HOME_IMAGE_SLIDER_BANNER_TRACE)
         //avoid crash in ImageUnify when image url is returned as base64
         try {
-            if(img.context.isValidGlideContext()) {
+            if(img?.context.isValidGlideContext()) {
                 val ratio = bannerData?.let { getHeightRatio(it) } ?: 0f
-                img.heightRatio = ratio
-                img.setImageUrl(carouselItem.imageUrl, ratio)
+                img?.heightRatio = ratio
+                img?.setImageUrl(carouselItem.imageUrl, ratio)
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        img.onUrlLoaded = {
+        img?.onUrlLoaded = {
             performanceMonitoring.stopTrace()
         }
     }
 
     init {
-        carouselShopPage = view?.findViewById(R.id.carousel_shop_page)
+        carouselShopPage = viewBinding?.carouselShopPage
         carouselShopPage?.apply {
             autoplayDuration = DURATION_SLIDER_BANNER
             indicatorPosition = CarouselUnify.INDICATOR_BL

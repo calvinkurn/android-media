@@ -9,15 +9,17 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.search.R
+import com.tokopedia.search.databinding.SearchInspirationCarouselOptionListBinding
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.search_inspiration_carousel_option_list.view.*
+import com.tokopedia.utils.view.binding.viewBinding
+import timber.log.Timber
 
 class InspirationCarouselOptionListViewHolder(
         itemView: View,
@@ -27,6 +29,7 @@ class InspirationCarouselOptionListViewHolder(
     companion object {
         val LAYOUT = R.layout.search_inspiration_carousel_option_list
     }
+    private var binding: SearchInspirationCarouselOptionListBinding? by viewBinding()
 
     override fun bind(item: InspirationCarouselDataView.Option) {
         bindOptionTitle(item.title)
@@ -42,7 +45,7 @@ class InspirationCarouselOptionListViewHolder(
     }
 
     private fun bindOptionTitle(title: String) {
-        itemView.optionTitle?.shouldShowWithAction(title.isNotEmpty()) {
+        binding?.optionTitle?.shouldShowWithAction(title.isNotEmpty()) {
             it.text = MethodChecker.fromHtml(title)
         }
     }
@@ -59,42 +62,43 @@ class InspirationCarouselOptionListViewHolder(
     }
 
     private fun bindOnClickListener(item: InspirationCarouselDataView.Option) {
-        itemView.viewAllOption?.setOnClickListener { _ ->
+        val binding = binding ?: return
+        binding.viewAllOption.setOnClickListener { _ ->
             inspirationCarouselListener.onInspirationCarouselSeeAllClicked(item)
         }
-        itemView.optionListCardView?.setOnClickListener { _ ->
+        binding.optionListCardView.setOnClickListener { _ ->
             val product = item.product.getOrNull(0) ?: return@setOnClickListener
             inspirationCarouselListener.onInspirationCarouselListProductClicked(product)
         }
     }
 
     private fun bindImpressionListener(product: InspirationCarouselDataView.Option.Product) {
-        itemView.productImage?.addOnImpressionListener(product, createViewHintListener(product))
+        binding?.productImage?.addOnImpressionListener(product, createViewHintListener(product))
     }
 
     private fun createViewHintListener(product: InspirationCarouselDataView.Option.Product): ViewHintListener {
         return object: ViewHintListener {
             override fun onViewHint() {
-                inspirationCarouselListener.onImpressedInspirationCarouselListProduct(product)
+                inspirationCarouselListener.onInspirationCarouselListProductImpressed(product)
             }
         }
     }
 
     private fun bindProductImage(imgUrl: String) {
-        itemView.productImage?.shouldShowWithAction(imgUrl.isNotEmpty()) {
+        binding?.productImage?.shouldShowWithAction(imgUrl.isNotEmpty()) {
             it.loadImage(imgUrl)
         }
     }
 
     private fun bindProductName(productName: String) {
-        itemView.productName?.shouldShowWithAction(productName.isNotEmpty()) {
+        binding?.productName?.shouldShowWithAction(productName.isNotEmpty()) {
             it.text = MethodChecker.fromHtml(productName)
         }
     }
 
     private fun bindProductPrice(productPrice: String) {
-        itemView.productPrice?.shouldShowWithAction(productPrice.isNotEmpty()) {
-            itemView.productPrice?.text = productPrice
+        binding?.productPrice?.shouldShowWithAction(productPrice.isNotEmpty()) {
+            it.text = productPrice
         }
     }
 
@@ -104,21 +108,23 @@ class InspirationCarouselOptionListViewHolder(
     }
 
     private fun bindRatingSalesFloat(product: InspirationCarouselDataView.Option.Product) {
+        val binding = binding ?: return
         val willShowSalesRatingFloat = product.willShowRating()
 
-        itemView.optionListCardImageSalesRatingFloat?.showWithCondition(willShowSalesRatingFloat)
+        binding.optionListCardImageSalesRatingFloat.showWithCondition(willShowSalesRatingFloat)
 
-        itemView.optionListCardSalesRatingFloat?.shouldShowWithAction(willShowSalesRatingFloat) {
+        binding.optionListCardSalesRatingFloat.shouldShowWithAction(willShowSalesRatingFloat) {
             it.text = product.ratingAverage
         }
     }
 
     private fun bindTextIntegrityWithSalesRatingFloat(product: InspirationCarouselDataView.Option.Product) {
+        val binding = binding ?: return
         val labelGroupViewModel = product.getLabelIntegrity()
 
-        itemView.optionListCardImageSalesRatingFloatLine?.showWithCondition(product.willShowSalesAndRating())
+        binding.optionListCardImageSalesRatingFloatLine.showWithCondition(product.willShowSalesAndRating())
 
-        itemView.optionListCardTextViewSales?.initLabelGroup(labelGroupViewModel)
+        binding.optionListCardTextViewSales.initLabelGroup(labelGroupViewModel)
     }
 
     private fun Typography.initLabelGroup(labelGroupData: LabelGroupDataView?) {
@@ -143,7 +149,7 @@ class InspirationCarouselOptionListViewHolder(
                 else -> Color.parseColor(this)
             }
         } catch (throwable: Throwable){
-            throwable.printStackTrace()
+            Timber.w(throwable)
             ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
         }
     }

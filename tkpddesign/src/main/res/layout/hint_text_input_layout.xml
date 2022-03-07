@@ -11,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="Label"
-        android:paddingLeft="@dimen/dp_4"
-        android:paddingRight="@dimen/dp_4" />
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp" />
     <FrameLayout
         android:id="@+id/frame_content"
         android:layout_width="match_parent"
@@ -25,8 +25,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/dp_4"
-        android:paddingRight="@dimen/dp_4">
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp">
         <LinearLayout
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -53,8 +53,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|top"
-            android:paddingLeft="@dimen/dp_2"
-            android:paddingRight="@dimen/dp_2"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
             tools:text="2/20"/>
     </LinearLayout>
 

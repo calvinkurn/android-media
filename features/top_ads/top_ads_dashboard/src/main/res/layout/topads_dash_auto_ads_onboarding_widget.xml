@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_16">
+        android:padding="16dp">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/auto_ad_status_image"
@@ -25,7 +25,7 @@
             android:id="@+id/status_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginLeft="10dp"
             android:text="@string/auto_ads_status_widget_title"
             android:textColor="@color/black"
             android:typeface="normal"
@@ -33,13 +33,13 @@
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3"
             app:typographyWeight="bold"
-            android:layout_marginStart="@dimen/dp_10" />
+            android:layout_marginStart="10dp" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/status_desc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/dp_10"
+            android:textSize="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             android:text="@string/auto_ads_status_widget_description"
             app:layout_constraintStart_toStartOf="@id/status_title"
@@ -50,7 +50,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/auto_ads_status_inactive_button"
-            android:layout_marginTop="@dimen/dp_6"
+            android:layout_marginTop="6dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/status_desc"
             app:layout_constraintTop_toBottomOf="@id/status_desc"

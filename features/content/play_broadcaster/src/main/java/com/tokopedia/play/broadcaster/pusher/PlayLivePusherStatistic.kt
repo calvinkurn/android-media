@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.pusher
 
+import com.tokopedia.broadcaster.mediator.LivePusherStatistic
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.broadcaster.util.extension.safeExecute
 import com.wmspanel.libstream.Streamer
@@ -10,7 +11,7 @@ import kotlin.math.ceil
 /**
  * Created by mzennis on 18/06/21.
  */
-class PlayLivePusherStatistic {
+class PlayLivePusherStatistic : LivePusherStatistic {
 
     private var mStreamer: Streamer? = null
     private var mConnectionId: Int? = null
@@ -35,7 +36,7 @@ class PlayLivePusherStatistic {
         mPrevBytes = mStreamer?.getBytesSent(mConnectionId.orZero()).orZero()
     }
 
-    fun getBandwidth(): String {
+    override fun getBandwidth(): String {
         return when {
             mBps < 1000 -> String.format(mLocale, "%4dbps", mBps)
             mBps < 1000 * 1000 -> String.format(mLocale, "%3.1fKbps", mBps.toDouble() / 1000)
@@ -44,7 +45,7 @@ class PlayLivePusherStatistic {
         }
     }
 
-    fun getTraffic(): String {
+    override fun getTraffic(): String {
         return when {
             mPrevBytes < 1024 -> String.format(mLocale, "%4dB", mPrevBytes)
             mPrevBytes < 1024 * 1024 -> String.format(mLocale, "%3.1fKB", mPrevBytes.toDouble() / 1024)
@@ -53,7 +54,7 @@ class PlayLivePusherStatistic {
         }
     }
 
-    fun getFps(): String {
+    override fun getFps(): String {
         val fps = ceil(mFps).toInt()
         return String.format("%d fps", fps)
     }

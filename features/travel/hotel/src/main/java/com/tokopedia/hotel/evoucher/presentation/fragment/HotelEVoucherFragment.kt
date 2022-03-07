@@ -13,6 +13,7 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -31,9 +32,11 @@ import com.tokopedia.hotel.evoucher.presentation.viewmodel.HotelEVoucherViewMode
 import com.tokopedia.hotel.evoucher.presentation.widget.HotelSharePdfBottomSheets
 import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
 import com.tokopedia.hotel.orderdetail.data.model.HotelTransportDetail
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -334,6 +337,29 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
             }
 
             if (propertyDetail.extraInfo.content.isEmpty() && propertyDetail.specialRequest.content.isEmpty()) binding?.hotelDetailSeperator?.hide()
+
+            if(data.hotelTransportDetails.tickerContactHotel.isNotEmpty() && data.hotelTransportDetails.contactInfo.isNotEmpty()) {
+                binding?.tvOrderDetailNha?.show()
+                binding?.tvOrderDetailNha?.text = data.hotelTransportDetails.tickerContactHotel
+            } else {
+                binding?.tvOrderDetailNha?.gone()
+            }
+
+            if(data.hotelTransportDetails.contactInfo.isNotEmpty()){
+                val telNum: String = (data.hotelTransportDetails.contactInfo.firstOrNull()?.number ?: 0).toString()
+                binding?.btnNhaPhone?.setDrawable(
+                    getIconUnifyDrawable(requireContext(), IconUnify.CALL, ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                )
+                binding?.btnNhaPhone?.setTextColor(
+                    ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                )
+                binding?.btnNhaPhone?.text = telNum
+                binding?.btnNhaPhone?.setOnClickListener {
+                    val callIntent = Intent(Intent.ACTION_DIAL)
+                    callIntent.data = Uri.parse("tel:$telNum")
+                    startActivity(callIntent)
+                }
+            }
         }
 
         var phoneString = ""
@@ -349,6 +375,19 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
 
         if (data.hotelTransportDetails.cancellation.cancellationPolicies.isNotEmpty()) {
             renderCancellationPolicies(data.hotelTransportDetails.cancellation.cancellationPolicies)
+        }
+
+        if (data.agent.logo.isNotEmpty()){
+            binding?.ivDynamicLogo?.loadImage(data.agent.logo){
+                listener(
+                    onSuccess = { _, _ ->
+                        binding?.ivDynamicLogo?.show()
+                    },
+                    onError = {
+                        binding?.ivDynamicLogo?.hide()
+                    }
+                )
+            }
         }
     }
 

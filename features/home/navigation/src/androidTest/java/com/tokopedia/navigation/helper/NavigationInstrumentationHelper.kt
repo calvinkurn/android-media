@@ -13,7 +13,6 @@ object NavigationInstrumentationHelper {
         disableOnboarding(context)
         disableChooseAddressCoachmark(context)
         setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK, true)
-        setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_NAV, true)
         setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_INBOX, true)
         setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_CHOOSEADDRESS, true)
         setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_BALANCE, true)

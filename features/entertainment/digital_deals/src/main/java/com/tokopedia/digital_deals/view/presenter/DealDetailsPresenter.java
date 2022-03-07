@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.view.presenter;
 
+import android.app.Activity;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -10,6 +11,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.common.network.data.model.RestResponse;
+import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealDetailsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealLikesUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetEventContentUseCase;
@@ -29,12 +31,14 @@ import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.digital_deals.view.model.response.EventContentData;
 import com.tokopedia.digital_deals.view.model.response.GetLikesResponse;
 import com.tokopedia.digital_deals.view.model.response.SearchResponse;
+import com.tokopedia.digital_deals.view.utils.ShareDealsPDP;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.usecase.RequestParams;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -241,9 +245,11 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
     @Override
     public boolean onOptionMenuClick(int id) {
         if (id == com.tokopedia.digital_deals.R.id.action_menu_share) {
-            Utils.getSingletonInstance().shareDeal(dealsDetailsResponse.getSeoUrl(),
-                    getView().getActivity(), dealsDetailsResponse.getDisplayName(),
-                    dealsDetailsResponse.getImageWeb(), dealsDetailsResponse.getWebUrl());
+            WeakReference<Activity> activityWeakReference = new WeakReference<Activity>(getView().getActivity());
+            ShareDealsPDP shareDealsPDP = new ShareDealsPDP(activityWeakReference);
+            shareDealsPDP.shareDealsPDP(dealsDetailsResponse.getSeoUrl(), dealsDetailsResponse.getDisplayName(),
+                    dealsDetailsResponse.getImageWeb(), dealsDetailsResponse.getWebUrl(),
+                    getView().getActivity().getResources().getString(R.string.share_link));
         } else {
             getView().getActivity().onBackPressed();
         }

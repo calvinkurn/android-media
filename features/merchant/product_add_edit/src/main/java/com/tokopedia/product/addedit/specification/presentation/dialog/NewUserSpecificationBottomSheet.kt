@@ -4,18 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_NEW_USER_SPECIFICATION
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.add_edit_product_specification_new_user_bottom_sheet_content.*
+import com.tokopedia.product.addedit.common.customview.TabletAdaptiveBottomSheet
 
-class NewUserSpecificationBottomSheet: BottomSheetUnify() {
+class NewUserSpecificationBottomSheet: TabletAdaptiveBottomSheet() {
 
     companion object {
         const val TAG = "Tag New User Specification Bottom Sheet"
     }
+
+    private var ivNewUser: AppCompatImageView? = null
 
     init {
         setCloseClickListener {
@@ -29,24 +31,25 @@ class NewUserSpecificationBottomSheet: BottomSheetUnify() {
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         setupImageView()
+        super.onActivityCreated(savedInstanceState)
     }
 
     private fun setupImageView() {
-        ivNewUser.loadImage(PHOTO_NEW_USER_SPECIFICATION)
-    }
-
-    fun show(manager: FragmentManager?) {
-        manager?.run {
-            super.show(this , TAG)
-        }
+        ivNewUser?.loadImage(PHOTO_NEW_USER_SPECIFICATION)
     }
 
     private fun initChildLayout() {
         overlayClickDismiss = true
         val contentView: View? = View.inflate(context,
                 R.layout.add_edit_product_specification_new_user_bottom_sheet_content, null)
+        ivNewUser = contentView?.findViewById(R.id.ivNewUser)
         setChild(contentView)
+    }
+
+    fun show(manager: FragmentManager?) {
+        manager?.run {
+            super.show(this , TAG)
+        }
     }
 }

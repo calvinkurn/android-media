@@ -68,7 +68,6 @@ internal class SearchShopFirstPageTest: SearchShopDataViewTestFixtures() {
     private fun `Then assert successful search shop tracking`() {
         `Then should post shop item impression tracking event`()
         `Then should post product preview impression tracking event`()
-        `Then should not post empty search tracking event`()
     }
 
     private fun `Then should post shop item impression tracking event`() {
@@ -83,12 +82,6 @@ internal class SearchShopFirstPageTest: SearchShopDataViewTestFixtures() {
 
         val productPreviewImpressionTracking = productPreviewImpressionTrackingEventLiveData?.getContentIfNotHandled()
         productPreviewImpressionTracking?.size shouldBe shopItemList.size * shopItemProductList.size
-    }
-
-    private fun `Then should not post empty search tracking event`() {
-        val emptySearchTrackingEvent = searchShopViewModel.getEmptySearchTrackingEventLiveData().value
-
-        emptySearchTrackingEvent?.getContentIfNotHandled() shouldBe null
     }
 
     private fun `Then assert has next page is true`() {

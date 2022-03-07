@@ -28,34 +28,34 @@
                 android:layout_below="@+id/card_id_img"
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="@dimen/dp_30"
-                android:layout_marginTop="@dimen/dp_24"
+                android:layout_marginTop="24dp"
                 android:layout_marginRight="@dimen/dp_30"
                 android:background="@color/transparent"
                 android:gravity="center"
                 android:text="@string/ulng_fto"
                 android:textColor="@color/clr_06b3ba"
-                android:textSize="@dimen/sp_14" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/pre_register_warning"
-                android:paddingTop="@dimen/dp_10"
+                android:paddingTop="10dp"
                 android:background="#fff7e8"
-                android:paddingBottom="@dimen/dp_10"
-                android:paddingLeft="@dimen/dp_6"
-                android:paddingRight="@dimen/dp_6"
+                android:paddingBottom="10dp"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
                 android:layout_below="@+id/retake_photo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_30"
                 android:layout_marginRight="@dimen/dp_30"
-                android:textSize="@dimen/sp_14"
+                android:textSize="14sp"
                 android:textColor="#cd8d00"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="16dp"
                 android:layout_centerInParent="true"
                 android:lineSpacingExtra="4sp"
                 android:text="Pastikan nomor kartu identitas Anda belum pernah terdaftar di OVO"
                 android:drawableLeft="@drawable/ic_info_kyc"
-                android:drawablePadding="@dimen/dp_10"
+                android:drawablePadding="10dp"
                 />
 
             <TextView
@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/pre_register_warning"
                 android:layout_marginLeft="@dimen/dp_30"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="16dp"
                 android:layout_marginRight="@dimen/dp_30"
                 android:text="@string/slct_id_typ"
                 android:textColor="@color/clr_6b767e"
@@ -83,21 +83,21 @@
                     android:id="@+id/KTP_WNI"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginTop="20dp"
                     android:checked="true"
                     android:text="@string/ktpwni"
                     android:textColor="@color/clr_2d263b"
-                    android:textSize="@dimen/sp_14" />
+                    android:textSize="14sp" />
 
                 <RadioButton
                     android:id="@+id/passport"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_25"
-                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginTop="20dp"
                     android:text="@string/psprt"
                     android:textColor="@color/clr_2d263b"
-                    android:textSize="@dimen/sp_14" />
+                    android:textSize="14sp" />
             </RadioGroup>
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
@@ -158,7 +158,7 @@
                 android:gravity="center"
                 android:text="@string/cnfrm"
                 android:textColor="@color/white"
-                android:textSize="@dimen/sp_14" />
+                android:textSize="14sp" />
 
         </RelativeLayout>
     </ScrollView>

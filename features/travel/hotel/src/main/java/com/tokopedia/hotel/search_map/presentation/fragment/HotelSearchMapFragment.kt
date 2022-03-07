@@ -63,6 +63,7 @@ import com.tokopedia.hotel.search_map.presentation.widget.HotelFilterBottomSheet
 import com.tokopedia.hotel.search_map.presentation.widget.SubmitFilterListener
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.locationmanager.LocationDetectorHelper
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -431,7 +432,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 setTextColor(
                     ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                        R.color.hotel_dms_max_radius_font_color
                     )
                 )
                 text = getString(R.string.hotel_search_map_max_radius_info)
@@ -606,11 +607,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 )
             }
         }
-    }
-
-    override fun onDestroyView() {
-        googleMap.clear()
-        super.onDestroyView()
     }
 
     override fun onSubmitFilter(selectedFilter: MutableList<ParamFilterV2>) {

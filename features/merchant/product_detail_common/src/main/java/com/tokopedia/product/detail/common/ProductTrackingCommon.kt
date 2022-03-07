@@ -5,6 +5,7 @@ import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.CURR
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_CURRENT_SITE
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_PRODUCT_ID
+import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
@@ -179,7 +180,8 @@ object ProductTrackingCommon {
             variantName: String, isMultiOrigin: Boolean,
             shopType: String = "", shopName: String = "",
             categoryName: String = "", categoryId: String = "", bebasOngkirType: String = "", pageSource: String = "",
-            cdListName: String = ""
+            cdListName: String = "", isCod: Boolean, ratesEstimateData: P2RatesEstimateData?,
+            buyerDistrictId: String, sellerDistrictId: String, lcaWarehouseId: String
     ) {
         val generateButtonActionString = when (buttonAction) {
             ProductDetailCommonConstant.OCS_BUTTON -> "$buttonText ocs"
@@ -192,13 +194,25 @@ object ProductTrackingCommon {
             else -> "regular"
         }
 
+        val cheapestShippingPrice = ratesEstimateData?.cheapestShippingPrice?.toLong()?.toString()
+                ?: ""
+        val shippingCourier = ratesEstimateData?.title ?: ""
+        val shippingEta = ratesEstimateData?.etaText ?: ""
+        val buyerSellerDistrictId = "$buyerDistrictId - $sellerDistrictId"
+
+        val eventAction = if (buttonAction == ProductDetailCommonConstant.ATC_BUTTON)
+            "click - tambah ke keranjang on global variant bottomsheet"
+        else
+            "click - $buttonText on global variant bottomsheet"
+
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 ProductTrackingConstant.Tracking.KEY_EVENT, "addToCart",
                 ProductTrackingConstant.Tracking.KEY_CATEGORY, String.format(ProductTrackingConstant.Category.GLOBAL_VARIANT_BOTTOM_SHEET, pageSource),
-                ProductTrackingConstant.Tracking.KEY_ACTION, "click - tambah ke keranjang on global variant bottomsheet",
+                ProductTrackingConstant.Tracking.KEY_ACTION, eventAction,
                 ProductTrackingConstant.Tracking.KEY_LABEL, if (buttonAction == ProductDetailCommonConstant.ATC_BUTTON) "" else "fitur : $generateButtonActionString",
                 KEY_PRODUCT_ID, productId,
-                ProductTrackingConstant.Tracking.KEY_USER_ID, userId,
+                ProductTrackingConstant.Tracking.KEY_HIT_USER_ID, userId,
+                ProductTrackingConstant.Tracking.KEY_WAREHOUSE_ID, lcaWarehouseId,
                 ProductTrackingConstant.Tracking.KEY_ISLOGGIN, (userId.isNotEmpty()).toString(),
                 KEY_BUSINESS_UNIT, generateBusinessUnit(pageSource),
                 KEY_CURRENT_SITE, CURRENT_SITE,
@@ -215,6 +229,15 @@ object ProductTrackingCommon {
                         ProductTrackingConstant.Tracking.CATEGORY, categoryName,
                         ProductTrackingConstant.Tracking.VARIANT, variantName,
                         ProductTrackingConstant.Tracking.QUANTITY, quantity,
+                        ProductTrackingConstant.Tracking.KEY_PRODUCT_CATEGORY_ID, categoryId,
+                        ProductTrackingConstant.Tracking.KEY_PRODUCT_SHOP_ID, shopId,
+                        ProductTrackingConstant.Tracking.KEY_PRODUCT_SHOP_NAME, shopName,
+                        ProductTrackingConstant.Tracking.KEY_PRODUCT_SHOP_TYPE, shopType,
+                        ProductTrackingConstant.Tracking.KEY_DIMENSION_10, isCod.toString(),
+                        ProductTrackingConstant.Tracking.KEY_DIMENSION_12, cheapestShippingPrice,
+                        ProductTrackingConstant.Tracking.KEY_DIMENSION_14, shippingCourier,
+                        ProductTrackingConstant.Tracking.KEY_DIMENSION_16, shippingEta,
+                        ProductTrackingConstant.Tracking.KEY_DIMENSION_120, buyerSellerDistrictId,
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_79, shopId,
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_80, shopName,
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_81, shopType,
@@ -227,7 +250,7 @@ object ProductTrackingCommon {
                 ))))))
     }
 
-    private fun generateBusinessUnit(pageSource: String) = if (pageSource == AtcVariantHelper.PDP_PAGESOURCE) {
+    private fun generateBusinessUnit(pageSource: String) = if (pageSource == VariantPageSource.PDP_PAGESOURCE.source) {
         ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
     } else {
         ProductTrackingConstant.Tracking.BUSINESS_UNIT

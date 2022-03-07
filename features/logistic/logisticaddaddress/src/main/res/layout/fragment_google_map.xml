@@ -22,7 +22,7 @@
             android:hint="@string/hint_gojek_pick_address"
             android:background="@android:color/transparent"
             android:textSize="@dimen/sp_16"
-            android:padding="@dimen/dp_10"
+            android:padding="10dp"
             android:focusable="true"
             android:focusableInTouchMode="true"
             />
@@ -58,25 +58,24 @@
             android:id="@+id/view_address_pointer"
             android:layout_width="@dimen/geolocation_box_width"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_20"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_marginStart="@dimen/dp_10"
-            android:layout_marginRight="@dimen/dp_10"
-            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_above="@+id/icon_pointer"
             android:layout_centerHorizontal="true"
             android:background="@drawable/cards_ui_2_lg">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/pointer_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@+id/pointer_submit"
                 android:layout_toStartOf="@+id/pointer_submit"
                 android:text="@string/wait_generate_address"
-                android:padding="@dimen/dp_10"
-                android:textSize="@dimen/sp_14"
-                />
+                android:padding="10dp"
+                app:typographyType="body_2" />
 
             <RelativeLayout
                 android:id="@+id/pointer_submit"

@@ -10,21 +10,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="@dimen/dp_16" />
+        app:layout_constraintGuide_begin="16dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guide_margin_end"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="@dimen/dp_16" />
+        app:layout_constraintGuide_end="16dp" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/anggaran_harian"
         app:layout_constraintEnd_toStartOf="@id/toggle"
         app:layout_constraintStart_toStartOf="@id/guide_margin_start"
@@ -42,8 +42,8 @@
         android:id="@+id/summary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/dp_24"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
         android:text="@string/optimalkan_penjualan_dengan_atur_anggaran_harian_iklan"
         android:textColor="@color/topads_common_select_color_unchecked"
         app:layout_constraintEnd_toStartOf="@id/toggle"
@@ -55,7 +55,7 @@
         android:id="@+id/daily_budget"
         android:layout_width="@dimen/dp_160"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="16dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="@id/guide_margin_start"
         app:layout_constraintTop_toBottomOf="@id/summary"
@@ -67,15 +67,15 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_height="8dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/daily_budget" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="12dp"
         android:text="@string/topads_create_group_name"
         app:layout_constraintStart_toStartOf="@id/guide_margin_start"
         app:layout_constraintTop_toBottomOf="@id/divider"
@@ -85,9 +85,9 @@
         android:id="@+id/groupInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintTop_toBottomOf="@id/txt_group"
         app:text_field_input_type="text"
         app:text_field_label_static="true"
@@ -98,15 +98,15 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider1"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_height="8dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintTop_toBottomOf="@id/groupInput" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_list"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="12dp"
         android:text="@string/ringkasan_iklan"
         app:layout_constraintEnd_toEndOf="@id/guide_margin_end"
         app:layout_constraintStart_toStartOf="@id/guide_margin_start"
@@ -117,7 +117,7 @@
         android:id="@+id/product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="20dp"
         android:text="@string/topads_create_product"
         app:layout_constraintStart_toStartOf="@id/guide_margin_start"
         app:layout_constraintTop_toBottomOf="@id/title_list"
@@ -136,8 +136,8 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/goToProduct"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         app:icon_color_light_enable="@color/Unify_G600"
         app:icon_name="EDIT"
         app:layout_constraintEnd_toEndOf="@id/guide_margin_end"
@@ -146,8 +146,8 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider2"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_2"
-        android:layout_marginTop="@dimen/dp_14"
+        android:layout_height="2dp"
+        android:layout_marginTop="14dp"
         app:layout_constraintTop_toBottomOf="@id/goToProduct" />
 
     <androidx.constraintlayout.widget.Group
@@ -186,8 +186,8 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/goToAutobid"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         app:icon_color_light_enable="@color/Unify_G600"
         app:icon_name="EDIT"
         app:layout_constraintEnd_toEndOf="@id/guide_margin_end"
@@ -196,8 +196,8 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider3"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_2"
-        android:layout_marginTop="@dimen/dp_14"
+        android:layout_height="2dp"
+        android:layout_marginTop="14dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/goToAutobid" />
 
@@ -223,8 +223,8 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/goToKeyword"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         app:icon_color_light_enable="@color/Unify_G600"
         app:icon_name="EDIT"
         app:layout_constraintEnd_toEndOf="@id/guide_margin_end"
@@ -233,8 +233,8 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider4"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_2"
-        android:layout_marginTop="@dimen/dp_14"
+        android:layout_height="2dp"
+        android:layout_marginTop="14dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/goToKeyword" />
 
@@ -261,8 +261,8 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/goToBudget"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         app:icon_color_light_enable="@color/Unify_G600"
         app:icon_name="EDIT"
         app:layout_constraintEnd_toEndOf="@id/guide_margin_end"
@@ -271,22 +271,22 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider5"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_2"
-        android:layout_marginTop="@dimen/dp_14"
+        android:layout_height="2dp"
+        android:layout_marginTop="14dp"
         app:layout_constraintTop_toBottomOf="@id/goToBudget" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider6"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_2"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_height="2dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@id/btn_submit" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_submit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginBottom="8dp"
         android:text="@string/topads_create_submit_button"
         app:layout_constraintBottom_toTopOf="@id/info_text"
         app:layout_constraintEnd_toEndOf="@id/guide_margin_end"
@@ -298,7 +298,7 @@
         android:id="@+id/info_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginBottom="8dp"
         android:gravity="center_horizontal|top"
         android:text="@string/info_text_summary"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -308,8 +308,8 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loading"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_gravity="center"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

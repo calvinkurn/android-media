@@ -32,7 +32,7 @@ class InitialSearchActivityViewModel @Inject constructor(
         get() = _searchKeyword
 
 
-    private val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
+    val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
 
     init {
         getSearchKeyword()

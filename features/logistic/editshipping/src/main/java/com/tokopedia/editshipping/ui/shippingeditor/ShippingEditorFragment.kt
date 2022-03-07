@@ -378,7 +378,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         }
     }
 
-    private fun convertFeatureIdToString(featureId: List<Int>?): String? {
+    private fun convertFeatureIdToString(featureId: List<Long>?): String? {
         return featureId?.joinToString(separator = ",")
     }
 

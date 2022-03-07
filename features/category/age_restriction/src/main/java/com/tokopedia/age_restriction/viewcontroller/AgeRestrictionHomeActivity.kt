@@ -2,6 +2,7 @@ package com.tokopedia.age_restriction.viewcontroller
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.lifecycle.Observer
@@ -26,6 +27,12 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
     private var notFilledDob = 33
     private var notLogin = 44
     private var selection = 0
+    private var isLoggedIn = false
+
+    companion object {
+        private const val EXTRA_IS_LOGIN = "is_login"
+
+    }
 
     @Inject
     lateinit var viewModelProvider:  ViewModelProvider.Factory
@@ -179,10 +186,18 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
         })
 
         arHomeViewModel.userAdult.observe(this, Observer {
-            setResult(Activity.RESULT_OK)
+            val intent = Intent()
+            val bundle = Bundle()
+            if (isLoggedIn) {
+                bundle.putBoolean(EXTRA_IS_LOGIN, true)
+            }
+
+            intent.putExtras(bundle)
+            setResult(Activity.RESULT_OK, intent)
             finish()
         })
     }
+
 
     override fun onStart() {
         super.onStart()
@@ -227,8 +242,17 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            LOGIN_REQUEST -> if (resultCode == Activity.RESULT_OK) {
-                arHomeViewModel.fetchUserDOB()
+            LOGIN_REQUEST -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    isLoggedIn = true
+                    arHomeViewModel.fetchUserDOB()
+                } else {
+                    selection = notLogin
+                    showDialogFragment(getString(R.string.ar_text_adult_content),
+                        getString(R.string.ar_text_login_first),
+                        getString(com.tokopedia.design.R.string.label_login_button),
+                        getString(R.string.ar_label_back))
+                }
             }
             VERIFICATION_REQUEST -> if (resultCode == RESULT_IS_ADULT) {
                 setResult(RESULT_IS_ADULT, Intent().putExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS, getString(R.string.ar_text_verification_success)))

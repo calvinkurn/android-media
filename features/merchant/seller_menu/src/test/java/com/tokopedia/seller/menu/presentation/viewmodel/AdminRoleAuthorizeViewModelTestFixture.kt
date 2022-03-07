@@ -32,6 +32,9 @@ open class AdminRoleAuthorizeViewModelTestFixture {
     @RelaxedMockK
     lateinit var isRoleAuthorizedObserver: Observer<in Result<Boolean>>
 
+    @RelaxedMockK
+    lateinit var isLoadingLiveDataObserver: Observer<in Boolean>
+
     protected lateinit var viewModel: AdminRoleAuthorizeViewModel
 
     @Before
@@ -44,11 +47,13 @@ open class AdminRoleAuthorizeViewModelTestFixture {
                 CoroutineTestDispatchersProvider
         )
         viewModel.isRoleAuthorizedLiveData.observeForever(isRoleAuthorizedObserver)
+        viewModel.isLoadingLiveData.observeForever(isLoadingLiveDataObserver)
     }
 
     @After
     fun cleanup() {
         viewModel.isRoleAuthorizedLiveData.removeObserver(isRoleAuthorizedObserver)
+        viewModel.isLoadingLiveData.removeObserver(isLoadingLiveDataObserver)
     }
 
     protected fun onGetUserSessionIsShopOwner_thenReturn(isShopOwner: Boolean) {

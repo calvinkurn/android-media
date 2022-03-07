@@ -5,18 +5,18 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.Recommendation
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
-import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId
-import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addCategoryGrid
-import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addChooseAddress
-import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addEmptyStateNoHistory
-import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addEmptyStateNoResult
-import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addEmptyStateOoc
-import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addLoading
-import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addServerErrorState
-import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addSortFilter
-import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.setDateFilter
-import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.setSortFilter
-import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
+import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addCategoryGrid
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addChooseAddress
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addEmptyStateNoHistory
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addEmptyStateNoResult
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addEmptyStateOoc
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addLoading
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addServerErrorState
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addSortFilter
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.setDateFilter
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.setSortFilter
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 
 fun createRepurchaseLoadingLayout(): List<Visitable<*>> {
     val layoutList: MutableList<Visitable<*>> = mutableListOf()
@@ -30,7 +30,7 @@ fun createChooseAddressLayout(): List<Visitable<*>> {
     return layoutList
 }
 
-fun createCategoryGridLayout(): List<Visitable<*>> {
+fun createCategoryGridLayout(warehouseId: String): List<Visitable<*>> {
     val layoutList: MutableList<Visitable<*>> = mutableListOf()
     layoutList.addCategoryGrid(listOf(
             CategoryResponse(
@@ -42,7 +42,8 @@ fun createCategoryGridLayout(): List<Visitable<*>> {
                 parentId = "5",
                 childList = listOf()
             )
-        )
+        ),
+        warehouseId = warehouseId
     )
     return layoutList
 }
@@ -81,7 +82,7 @@ fun createProductRecomLayout(pageName: String, carouselData: RecommendationCarou
     return layoutList
 }
 
-fun createEmptyStateLayout(id: String): List<Visitable<*>> {
+fun createEmptyStateLayout(id: String, serviceType: String = ""): List<Visitable<*>> {
     val layoutList: MutableList<Visitable<*>> = mutableListOf()
     when(id) {
         RepurchaseStaticLayoutId.EMPTY_STATE_NO_HISTORY_SEARCH -> {
@@ -95,13 +96,13 @@ fun createEmptyStateLayout(id: String): List<Visitable<*>> {
             layoutList.addEmptyStateNoHistory(title, description)
         }
         RepurchaseStaticLayoutId.EMPTY_STATE_OOC -> {
-            layoutList.addEmptyStateOoc()
+            layoutList.addEmptyStateOoc(serviceType)
         }
         RepurchaseStaticLayoutId.ERROR_STATE_FAILED_TO_FETCH_DATA -> {
             layoutList.addServerErrorState()
         }
         else -> {
-            layoutList.addEmptyStateNoResult()
+            layoutList.addEmptyStateNoResult(serviceType)
         }
     }
     return layoutList

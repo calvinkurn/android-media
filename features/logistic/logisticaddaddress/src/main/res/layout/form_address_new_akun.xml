@@ -31,9 +31,9 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/btn_info"
-            android:layout_width="@dimen/dp_14"
-            android:layout_height="@dimen/dp_14"
-            android:layout_marginStart="@dimen/dp_5"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_marginStart="5dp"
             app:icon_name="INFORMATION"
             android:layout_gravity="center"/>
 

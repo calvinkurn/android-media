@@ -13,7 +13,7 @@ class GraphqlEmbraceInterceptor : Interceptor {
         val request = chain.request()
         val newRequestBuilder = request.newBuilder()
 
-        val gqlQueryName: String = request.headers().get("x-tkpd-clc")?.split("-")?.get(0) ?: ""
+        val gqlQueryName: String = request.headers.get("x-tkpd-clc")?.split("-")?.get(0) ?: ""
         if (gqlQueryName.isNotEmpty()) {
             val embracePath = "/$gqlQueryName"
             newRequestBuilder.header("x-emb-path", embracePath)

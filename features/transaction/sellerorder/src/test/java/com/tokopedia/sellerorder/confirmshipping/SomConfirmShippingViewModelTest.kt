@@ -8,12 +8,13 @@ import com.tokopedia.sellerorder.confirmshipping.domain.SomChangeCourierUseCase
 import com.tokopedia.sellerorder.confirmshipping.domain.SomGetConfirmShippingResultUseCase
 import com.tokopedia.sellerorder.confirmshipping.domain.SomGetCourierListUseCase
 import com.tokopedia.sellerorder.confirmshipping.presentation.viewmodel.SomConfirmShippingViewModel
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -23,13 +24,16 @@ import org.junit.runners.JUnit4
 /**
  * Created by fwidjaja on 2020-05-08.
  */
+@ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
 class SomConfirmShippingViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = CoroutineTestDispatchersProvider
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
+
     private lateinit var somConfirmShippingViewModel: SomConfirmShippingViewModel
     private var listMsg = listOf<String>()
     private var listCourier = listOf<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>()
@@ -46,8 +50,12 @@ class SomConfirmShippingViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        somConfirmShippingViewModel = SomConfirmShippingViewModel(dispatcher,
-                somGetConfirmShippingResultUseCase, somGetCourierListUseCase, somChangeCourierUseCase)
+        somConfirmShippingViewModel = SomConfirmShippingViewModel(
+            coroutineTestRule.dispatchers,
+            somGetConfirmShippingResultUseCase,
+            somGetCourierListUseCase,
+            somChangeCourierUseCase
+        )
 
         listMsg = listOf("Ok1", "Ok2", "Ok3")
 
@@ -59,11 +67,11 @@ class SomConfirmShippingViewModelTest {
 
     // confirm_shipping_result
     @Test
-    fun getConfirmShippingData_shouldReturnSuccess() {
+    fun getConfirmShippingData_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
             somGetConfirmShippingResultUseCase.execute(any())
-        } returns Success(SomConfirmShipping.Data.MpLogisticConfirmShipping(listMsg))
+        } returns SomConfirmShipping.Data.MpLogisticConfirmShipping(listMsg)
 
         //when
         somConfirmShippingViewModel.confirmShipping("")
@@ -74,11 +82,11 @@ class SomConfirmShippingViewModelTest {
     }
 
     @Test
-    fun getConfirmShippingData_shouldReturnFail() {
+    fun getConfirmShippingData_shouldReturnFail() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
             somGetConfirmShippingResultUseCase.execute(any())
-        } returns Fail(Throwable())
+        } throws Throwable()
 
         //when
         somConfirmShippingViewModel.confirmShipping("")
@@ -88,11 +96,11 @@ class SomConfirmShippingViewModelTest {
     }
 
     @Test
-    fun getConfirmShippingData_shouldNotReturnEmpty() {
+    fun getConfirmShippingData_shouldNotReturnEmpty() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
             somGetConfirmShippingResultUseCase.execute(any())
-        } returns Success(SomConfirmShipping.Data.MpLogisticConfirmShipping(listMsg))
+        } returns SomConfirmShipping.Data.MpLogisticConfirmShipping(listMsg)
 
         //when
         somConfirmShippingViewModel.confirmShipping("")
@@ -104,11 +112,11 @@ class SomConfirmShippingViewModelTest {
 
     // courier_list
     @Test
-    fun getCourierListData_shouldReturnSuccess() {
+    fun getCourierListData_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
             somGetCourierListUseCase.execute(any())
-        } returns Success(SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment(listCourier).listShipment.toMutableList())
+        } returns SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment(listCourier).listShipment.toMutableList()
 
         //when
         somConfirmShippingViewModel.getCourierList("")
@@ -119,11 +127,11 @@ class SomConfirmShippingViewModelTest {
     }
 
     @Test
-    fun getCourierListData_shouldReturnFail() {
+    fun getCourierListData_shouldReturnFail() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
             somGetCourierListUseCase.execute(any())
-        } returns Fail(Throwable())
+        } throws Throwable()
 
         //when
         somConfirmShippingViewModel.getCourierList("")
@@ -133,11 +141,11 @@ class SomConfirmShippingViewModelTest {
     }
 
     @Test
-    fun getCourierListData_shouldNotReturnEmpty() {
+    fun getCourierListData_shouldNotReturnEmpty() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
             somGetCourierListUseCase.execute(any())
-        } returns Success(SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment(listCourier).listShipment.toMutableList())
+        } returns SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment(listCourier).listShipment.toMutableList()
 
         //when
         somConfirmShippingViewModel.getCourierList("")
@@ -149,11 +157,11 @@ class SomConfirmShippingViewModelTest {
 
     // change_courier
     @Test
-    fun getChangeCourierData_shouldReturnSuccess() {
+    fun getChangeCourierData_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
             somChangeCourierUseCase.execute(any())
-        } returns Success(SomChangeCourier.Data(SomChangeCourier.Data.MpLogisticChangeCourier(listMsg)))
+        } returns SomChangeCourier.Data(SomChangeCourier.Data.MpLogisticChangeCourier(listMsg))
 
         //when
         somConfirmShippingViewModel.changeCourier("")
@@ -164,11 +172,11 @@ class SomConfirmShippingViewModelTest {
     }
 
     @Test
-    fun getChangeCourierData_shouldReturnFail() {
+    fun getChangeCourierData_shouldReturnFail() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
             somChangeCourierUseCase.execute(any())
-        } returns Fail(Throwable())
+        } throws Throwable()
 
         //when
         somConfirmShippingViewModel.changeCourier("")
@@ -178,11 +186,11 @@ class SomConfirmShippingViewModelTest {
     }
 
     @Test
-    fun getChangeCourierData_shouldNotReturnEmpty() {
+    fun getChangeCourierData_shouldNotReturnEmpty() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
             somChangeCourierUseCase.execute(any())
-        } returns Success(SomChangeCourier.Data(SomChangeCourier.Data.MpLogisticChangeCourier(listMsg)))
+        } returns SomChangeCourier.Data(SomChangeCourier.Data.MpLogisticChangeCourier(listMsg))
 
         //when
         somConfirmShippingViewModel.changeCourier("")

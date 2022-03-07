@@ -46,5 +46,6 @@
     <string name="chatbot_your_picture_has_been_deleted">Gambarmu sudah dihapus.</string>
     <string name="chatbot_text_for_no_transaction_found">Transaksi yang berkendala tidak ada di daftar pilihan.</string>
     <string name="chatbot_action_text_for_no_transaction_found">transaction_not_listed</string>
+    <string name="chatbot_float_invoice_input_length_zero">"Ketik pesan dulu sebelum kirim chat, ya."</string>
 
 </resources>

@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.detail.domain
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LANG_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.VAR_PARAM_LANG
@@ -10,7 +11,6 @@ import com.tokopedia.sellerorder.detail.data.model.GetSomDetailResponse
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.data.model.SomDynamicPriceRequest
 import com.tokopedia.sellerorder.detail.data.model.SomDynamicPriceResponse
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -21,24 +21,22 @@ import javax.inject.Inject
  * Created by fwidjaja on 10/05/20.
  */
 class SomGetOrderDetailUseCase @Inject constructor(
-        private val graphQlRepository: GraphqlRepository
+    private val graphQlRepository: GraphqlRepository
 ) {
+    private fun createParamDynamicPrice(orderId: String): Map<String, SomDynamicPriceRequest> {
+        return mapOf(SomConsts.PARAM_INPUT to SomDynamicPriceRequest(order_id = orderId.toLongOrZero()))
+    }
 
-    private var params: RequestParams = RequestParams.EMPTY
-
-    fun setParamDynamicPrice(param: SomDynamicPriceRequest) {
-        params = RequestParams.create().apply {
-            putObject(SomConsts.PARAM_INPUT, param)
-        }
+    private fun createParamGetOrderDetail(orderId: String): Map<String, String> {
+        return mapOf(VAR_PARAM_ORDERID to orderId, VAR_PARAM_LANG to PARAM_LANG_ID)
     }
 
     suspend fun execute(orderId: String): Result<GetSomDetailResponse> {
-
         val getSomDetailResponse = GetSomDetailResponse()
-        val dynamicPriceParam = params.getObject(SomConsts.PARAM_INPUT) as SomDynamicPriceRequest
-        val somDynamicPriceParams = mapOf(SomConsts.PARAM_INPUT to dynamicPriceParam)
+        val somDynamicPriceParams = createParamDynamicPrice(orderId)
+        val somDetailRequestParam = createParamGetOrderDetail(orderId)
 
-        val somDetailRequest = GraphqlRequest(QUERY_SOM_DETAIL, SomDetailOrder.Data::class.java, generateParam(orderId))
+        val somDetailRequest = GraphqlRequest(QUERY_SOM_DETAIL, SomDetailOrder.Data::class.java, somDetailRequestParam)
         val somDynamicPriceRequest = GraphqlRequest(QUERY_DYNAMIC_PRICE, SomDynamicPriceResponse::class.java, somDynamicPriceParams)
 
         val multipleRequest = mutableListOf(somDetailRequest, somDynamicPriceRequest)
@@ -54,14 +52,10 @@ class SomGetOrderDetailUseCase @Inject constructor(
         }
     }
 
-    private fun generateParam(orderId: String): HashMap<String, Any> {
-        return hashMapOf(VAR_PARAM_ORDERID to orderId, VAR_PARAM_LANG to PARAM_LANG_ID)
-    }
-
     companion object {
         val QUERY_SOM_DETAIL = """
-            query GetSOMDetail(${'$'}orderID: String!, ${'$'}lang: String!){
-              get_som_detail(orderID: ${'$'}orderID, lang: ${'$'}lang){
+            query GetSOMDetail(${'$'}orderID: String!, ${'$'}lang: String!) {
+              get_som_detail(orderID: ${'$'}orderID, lang: ${'$'}lang) {
                 order_id
                 status
                 status_text
@@ -72,38 +66,26 @@ class SomGetOrderDetailUseCase @Inject constructor(
                 checkout_date
                 payment_date
                 notes
-                products{
+                products {
                   id
                   order_detail_id
                   name
-                  product_url
-                  snapshot_url
-                  currency_type
-                  currency_rate
                   thumbnail
-                  price
                   price_text
-                  weight
-                  weight_text
                   quantity
                   note
-                  free_return
-                  free_return_message
-                  purchase_protection_fee
-                  purchase_protection_fee_text
-                  purchase_protection_quantity
                 }
-                customer{
+                customer {
                   id
                   name
                   image
                   phone
                 }
-                dropshipper{
+                dropshipper {
                   phone
                   name
                 }
-                shipment{
+                shipment {
                   id
                   name
                   product_id
@@ -114,7 +96,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   awb_text_color
                   awb_upload_url
                 }
-                shipment_change{
+                shipment_change {
                   id
                   name
                   product_id
@@ -122,15 +104,15 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   is_same_day
                   awb
                 }
-                booking_info{
-                  driver{
+                booking_info {
+                  driver {
                     name
                     phone
                     photo
                     license_number
                     tracking_url
                   }
-                  pickup_point{
+                  pickup_point {
                     store_code
                     district_id
                     address
@@ -138,7 +120,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
                     store_name
                     pickup_code
                   }
-                  online_booking{
+                  online_booking {
                     booking_code
                     state
                     message
@@ -146,7 +128,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
                     barcode_type
                   }
                 }
-                receiver{
+                receiver {
                   name
                   phone
                   street
@@ -155,20 +137,20 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   city
                   province
                 }
-                deadline{
+                deadline {
                   text
                   color
                 }
-                insurance{
+                insurance {
                   type
                   name
                   note
                 }
-                warehouse{
+                warehouse {
                   warehouse_id
                   fulfill_by
                 }
-                exclusive_promo{
+                exclusive_promo {
                   amount
                   note
                 }
@@ -178,41 +160,41 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   reason
                   status
                 }
-                flag_order_type{
+                flag_order_type {
                   is_order_cod
                   is_order_now
                   is_order_kelontong
                   is_order_sampai
                   is_order_trade_in
                 }
-                flag_order_meta{
-                    is_free_shipping_campaign
-                    is_topads
-                    is_tokocabang
-                    is_shipping_printed
-                    is_broadcast_chat
+                flag_order_meta {
+                  is_free_shipping_campaign
+                  is_topads
+                  is_tokocabang
+                  is_shipping_printed
+                  is_broadcast_chat
                 }
-                label_info{
+                label_info {
                   flag_name
                   flag_color
                   flag_background
                 }
-                logistic_info{
-                  all{
+                logistic_info {
+                  all {
                     id
                     priority
                     description
                     info_text_short
                     info_text_long
                   }
-                   priority{
+                  priority {
                     id
                     priority
                     description
                     info_text_short
                     info_text_long
                   }
-                   others{
+                  others {
                     id
                     priority
                     description
@@ -261,6 +243,33 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   action_key
                   action_url
                 }
+                have_product_bundle
+                bundle_detail {
+                  bundle {
+                    bundle_id
+                    bundle_name
+                    bundle_price
+                    bundle_subtotal_price
+                    order_detail {
+                      order_detail_id
+                      id
+                      name
+                      quantity
+                      price_text
+                      note
+                      thumbnail
+                    }
+                  }
+                  non_bundle {
+                    order_detail_id
+                    id
+                    name
+                    quantity
+                    price_text
+                    note
+                    thumbnail
+                  }
+                }
               }
             }
         """.trimIndent()
@@ -275,12 +284,15 @@ class SomGetOrderDetailUseCase @Inject constructor(
                 payment_data {
                   label
                   value
-                  text_color
                 }
                 pricing_data{
                   label
                   value
-                  text_color
+                }
+                promo_shipping {
+                  label
+                  value
+                  value_detail
                 }
             }
         }

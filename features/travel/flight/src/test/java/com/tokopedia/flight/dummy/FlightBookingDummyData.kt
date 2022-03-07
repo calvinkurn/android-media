@@ -42,6 +42,7 @@ val DUMMY_BOOKING_PASSENGER = arrayListOf<FlightBookingPassengerModel>(
             flightBookingMealMetaViewModels = arrayListOf()
             headerTitle = ""
             passengerBirthdate = "1995-11-11"
+            identificationNumber = "1111111111111111"
             passengerFirstName = "My Name"
             passengerLastName = "Hi"
         }
@@ -66,6 +67,7 @@ val DUMMY_BOOKING_MODEL = FlightBookingModel("dummyDeparture",
         "dummyDepartureTerm",
         "dummyReturnTerm",
         "",
+        true,
         true,
         true,
         FlightPriceModel(
@@ -136,6 +138,7 @@ val DUMMY_BOOKING_INTERNATIONAL_MODEL = FlightBookingModel("dummyDeparture",
         "",
         false,
         true,
+        false,
         FlightPriceModel(
                 FlightFareModel(
                         "Rp100.000",

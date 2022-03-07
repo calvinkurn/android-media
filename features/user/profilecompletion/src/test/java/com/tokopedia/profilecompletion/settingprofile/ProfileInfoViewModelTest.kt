@@ -4,28 +4,27 @@ import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.profilecompletion.data.UploadProfileImageModel
-import com.tokopedia.profilecompletion.settingprofile.data.ProfileCompletionData
-import com.tokopedia.profilecompletion.settingprofile.data.SubmitProfilePictureData
-import com.tokopedia.profilecompletion.settingprofile.data.UploadProfilePictureResult
-import com.tokopedia.profilecompletion.settingprofile.data.UserProfileInfoData
-import com.tokopedia.profilecompletion.settingprofile.domain.UploadProfilePictureUseCase
+import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.profilecompletion.settingprofile.data.*
+import com.tokopedia.profilecompletion.settingprofile.domain.SaveProfilePictureUseCase
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileInfoViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.CoreMatchers
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import rx.Subscriber
+import java.io.File
 
 /**
  * Created by Yoris Prayogo on 29/06/20.
@@ -37,37 +36,37 @@ class ProfileInfoViewModelTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     val userProfileInfoUseCase = mockk<GraphqlUseCase<UserProfileInfoData>>(relaxed = true)
-    val uploadProfilePictureUseCase = mockk<UploadProfilePictureUseCase>(relaxed = true)
-    val submitProfilePictureUseCase = mockk<GraphqlUseCase<SubmitProfilePictureData>>(relaxed = true)
+    val uploader = mockk<UploaderUseCase>(relaxed = true)
+    val saveProfilePictureUseCase = mockk<SaveProfilePictureUseCase>(relaxed = true)
     private var userSessionInterface = mockk<UserSessionInterface>(relaxed = true)
 
     val context = mockk<Context>(relaxed = true)
-
-    private val testDispatcher = TestCoroutineDispatcher()
+    val mockFile = mockk<File>(relaxed = true)
 
     private var userProfileObserver = mockk<Observer<Result<ProfileCompletionData>>>(relaxed = true)
     private var uploadProfileObserver = mockk<Observer<Result<UploadProfilePictureResult>>>(relaxed = true)
+    private var saveImageProfileObserver = mockk<Observer<Result<String>>>(relaxed = true)
 
     lateinit var viewModel: ProfileInfoViewModel
 
     private var userProfileInfoData = UserProfileInfoData()
-    private var profilePict = "http://tokopedia.com/test.jpg"
     private var mockThrowable = mockk<Throwable>(relaxed = true)
-    val uploadProfileImageModel = UploadProfileImageModel()
-    val submitProfilePictureData = SubmitProfilePictureData()
-    val pictObj = "aabbcc"
+    private var mockException = mockk<Exception>(relaxed = true)
 
+    private var profilePict = "https://tokopedia.com/test-profile-info.jpg"
+    private var uploadId = "abc123"
     @Before
     fun setUp() {
         viewModel = ProfileInfoViewModel(
                 userProfileInfoUseCase,
-                uploadProfilePictureUseCase,
-                submitProfilePictureUseCase,
+                uploader,
+                saveProfilePictureUseCase,
                 userSessionInterface,
-                testDispatcher
+                CoroutineTestDispatchersProvider
         )
         viewModel.userProfileInfo.observeForever(userProfileObserver)
         viewModel.uploadProfilePictureResponse.observeForever(uploadProfileObserver)
+        viewModel.saveImageProfileResponse.observeForever(saveImageProfileObserver)
     }
 
     @Test
@@ -77,7 +76,7 @@ class ProfileInfoViewModelTest {
 
         /* Then */
         verify {
-            userProfileInfoUseCase.setGraphqlQuery(any())
+            userProfileInfoUseCase.setGraphqlQuery(any<String>())
             userProfileInfoUseCase.execute(any(), any())
         }
     }
@@ -113,121 +112,91 @@ class ProfileInfoViewModelTest {
     }
 
     @Test
-    fun `on uploadProfilePicture executed`() {
+    fun `on upload success` () {
+        val mockUploadSuccess = mockk<UploadResult.Success>()
+        val innerData = SaveProfilePictureInnerData(imageUrl = profilePict, isSuccess = 1)
+        val mockSaveSuccess = SaveProfilePictureResponse(
+            data = SaveProfilePictureData(
+                status = "OK",
+                innerData = innerData
+            )
+        )
 
-        viewModel.uploadProfilePicture(context, profilePict)
+        every { mockUploadSuccess.uploadId } returns "abc123"
+        coEvery { saveProfilePictureUseCase(any()) } returns mockSaveSuccess
+        coEvery { uploader(any()) } returns mockUploadSuccess
 
-        /* Then */
+        viewModel.uploadPicture(mockFile)
+
         verify {
-            uploadProfilePictureUseCase.execute(any(), any())
+            saveImageProfileObserver.onChanged(Success(profilePict))
         }
     }
 
     @Test
-    fun `on uploadProfilePicture Success`() {
+    fun `on upload failed` () {
+        val errMsg = "errors"
+        val mockUploadError = mockk<UploadResult.Error>()
 
-        uploadProfileImageModel.data.picObj = "aabbcc"
+        every { mockUploadError.message } returns errMsg
+        coEvery { uploader(any()) } returns mockUploadError
 
-        every { uploadProfilePictureUseCase.execute(any(), any()) } answers {
-            (secondArg() as Subscriber<UploadProfileImageModel>).onNext(uploadProfileImageModel)
-        }
+        viewModel.uploadPicture(mockFile)
 
-        viewModel.uploadProfilePicture(context, profilePict)
-
-        /* Then */
         verify {
-            submitProfilePictureUseCase.setTypeClass(SubmitProfilePictureData::class.java)
-            submitProfilePictureUseCase.setRequestParams(any())
-            submitProfilePictureUseCase.setGraphqlQuery(any())
-            submitProfilePictureUseCase.execute(any(), any())
+            saveImageProfileObserver.onChanged(any<Fail>())
         }
     }
 
     @Test
-    fun `on uploadProfilePicture Error`() {
+    fun `on save profile picture success`() {
+        val innerData = SaveProfilePictureInnerData(imageUrl = profilePict, isSuccess = 1)
+        val mockSaveSuccess = SaveProfilePictureResponse(
+            data = SaveProfilePictureData(
+                status = "OK",
+                innerData = innerData
+            )
+        )
 
-        uploadProfileImageModel.data.picObj = ""
+        coEvery { saveProfilePictureUseCase(any()) } returns mockSaveSuccess
 
-        every { uploadProfilePictureUseCase.execute(any(), any()) } answers {
-            (secondArg() as Subscriber<UploadProfileImageModel>).onError(mockThrowable)
+        viewModel.saveProfilePicture(uploadId)
+
+        verify {
+            saveImageProfileObserver.onChanged(Success(profilePict))
         }
-
-        viewModel.uploadProfilePicture(context, profilePict)
-
-        /* Then */
-        verify(atLeast = 1){ uploadProfileObserver.onChanged(any()) }
-        Assert.assertThat(viewModel.uploadProfilePictureResponse.value, CoreMatchers.instanceOf(Fail::class.java))
-        Assert.assertThat((viewModel.uploadProfilePictureResponse.value as Fail).throwable, CoreMatchers.instanceOf(Throwable::class.java))
     }
 
     @Test
-    fun `on Change Picture success`() {
-        submitProfilePictureData.changePictureData.isSuccess = 1
-        uploadProfileImageModel.data.picObj = pictObj
+    fun `on save profile picture throw error`() {
 
-        every { uploadProfilePictureUseCase.execute(any(), any()) } answers {
-            (secondArg() as Subscriber<UploadProfileImageModel>).onNext(uploadProfileImageModel)
+        coEvery { saveProfilePictureUseCase(any()) } throws mockException
+        viewModel.saveProfilePicture(uploadId)
+
+        verify {
+            saveImageProfileObserver.onChanged(Fail(mockException))
         }
-
-        every { submitProfilePictureUseCase.execute(any(), any()) } answers {
-            firstArg<(SubmitProfilePictureData) -> Unit>().invoke(submitProfilePictureData)
-        }
-
-        viewModel.uploadProfilePicture(context, profilePict)
-
-        /* Then */
-        verify { uploadProfileObserver.onChanged(any()) }
-        Assert.assertThat(viewModel.uploadProfilePictureResponse.value, CoreMatchers.instanceOf(Success::class.java))
-        Assert.assertThat((viewModel.uploadProfilePictureResponse.value as Success<UploadProfilePictureResult>).data, CoreMatchers.instanceOf(UploadProfilePictureResult::class.java))
-        assertEquals(pictObj, (viewModel.uploadProfilePictureResponse.value as Success<UploadProfilePictureResult>).data.uploadProfileImageModel.data.picObj)
     }
 
     @Test
-    fun `on Change Picture Error message not empty`() {
-        val error = "Error"
-        submitProfilePictureData.changePictureData.isSuccess = 0
-        submitProfilePictureData.changePictureData.error = error
+    fun `on save profile picture errors is not empty`() {
+        val innerData = SaveProfilePictureInnerData(imageUrl = profilePict, isSuccess = 1)
+        val mockSaveSuccess = SaveProfilePictureResponse(
+            data = SaveProfilePictureData(
+                status = "OK",
+                innerData = innerData,
+                errorMessage = listOf("Errors")
+            )
+        )
 
-        uploadProfileImageModel.data.picObj = pictObj
+        coEvery { saveProfilePictureUseCase(any()) } returns mockSaveSuccess
 
-        every { uploadProfilePictureUseCase.execute(any(), any()) } answers {
-            (secondArg() as Subscriber<UploadProfileImageModel>).onNext(uploadProfileImageModel)
+        viewModel.saveProfilePicture(uploadId)
+
+        verify {
+            saveImageProfileObserver.onChanged(any<Fail>())
         }
-
-        every { submitProfilePictureUseCase.execute(any(), any()) } answers {
-            firstArg<(SubmitProfilePictureData) -> Unit>().invoke(submitProfilePictureData)
-        }
-
-        viewModel.uploadProfilePicture(context, profilePict)
-
-        /* Then */
-        verify { uploadProfileObserver.onChanged(any()) }
-        Assert.assertThat(viewModel.uploadProfilePictureResponse.value, CoreMatchers.instanceOf(Fail::class.java))
-        Assert.assertThat((viewModel.uploadProfilePictureResponse.value as Fail).throwable, CoreMatchers.instanceOf(com.tokopedia.abstraction.common.network.exception.MessageErrorException::class.java))
-        assertEquals(error, (viewModel.uploadProfilePictureResponse.value as Fail).throwable.message)
-    }
-
-    @Test
-    fun `on another error Change Picture`() {
-        submitProfilePictureData.changePictureData.isSuccess = 0
-        submitProfilePictureData.changePictureData.error = ""
-
-        uploadProfileImageModel.data.picObj = pictObj
-
-        every { uploadProfilePictureUseCase.execute(any(), any()) } answers {
-            (secondArg() as Subscriber<UploadProfileImageModel>).onNext(uploadProfileImageModel)
-        }
-
-        every { submitProfilePictureUseCase.execute(any(), any()) } answers {
-            firstArg<(SubmitProfilePictureData) -> Unit>().invoke(submitProfilePictureData)
-        }
-
-        viewModel.uploadProfilePicture(context, profilePict)
-
-        /* Then */
-        verify { uploadProfileObserver.onChanged(any()) }
-        Assert.assertThat(viewModel.uploadProfilePictureResponse.value, CoreMatchers.instanceOf(Fail::class.java))
-        Assert.assertThat((viewModel.uploadProfilePictureResponse.value as Fail).throwable, CoreMatchers.instanceOf(RuntimeException::class.java))
+        assertEquals(mockSaveSuccess.data.errorMessage[0], (viewModel.saveImageProfileResponse.value as Fail).throwable.message)
     }
 
 }

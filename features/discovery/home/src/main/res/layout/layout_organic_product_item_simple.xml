@@ -21,64 +21,68 @@
         app:layout_constraintDimensionRatio="1:1"
         tools:src="@color/Unify_G600" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/channel_price_1"
         style="@style/TextView.Micro.Orange.Bold"
         android:fontFamily="sans-serif-medium"
-        android:lineSpacingExtra="@dimen/sp_4"
+        android:lineSpacingExtra="4sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/channel_before_disc_price_1"
         tools:text="Rp 1.399.500" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/channel_before_disc_price_1"
         style="@style/TextView.Micro.BlackDisabled"
-        android:lineSpacingExtra="@dimen/sp_4"
+        android:lineSpacingExtra="4sp"
+        app:typographyType="body_3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/product_name"
         tools:text="Rp 2.799.000" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginTop="5dp"
         android:ellipsize="end"
-        android:lineSpacingExtra="@dimen/sp_4"
+        android:lineSpacingExtra="4sp"
         android:lines="2"
         android:maxLines="2"
         android:textColor="@color/Unify_N700_68"
-        android:textSize="@dimen/sp_12"
+        android:textSize="12sp"
+        app:typographyType="body_3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/channel_image_1"
         tools:text="Headset Gaming Power Bass" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/channel_discount_1"
         style="@style/TextView.Nano.Red.Bold"
-        android:layout_marginTop="@dimen/dp_5"
-        android:layout_marginRight="@dimen/dp_5"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
         android:background="@drawable/home_channel_discount_text_background_enable"
         android:paddingLeft="@dimen/label_padding_left_right"
         android:paddingTop="@dimen/label_padding_top_bottom"
         android:paddingRight="@dimen/label_padding_left_right"
         android:paddingBottom="@dimen/label_padding_top_bottom"
-        android:textSize="@dimen/dp_10"
+        android:textSize="10dp"
+        app:typographyType="small"
         app:layout_constraintRight_toRightOf="@+id/channel_image_1"
         app:layout_constraintTop_toTopOf="@+id/channel_image_1"
         tools:text="50% OFF" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/channel_cashback"
         style="@style/TextView.Nano.Green.Bold"
-        android:layout_marginLeft="@dimen/dp_5"
-        android:layout_marginBottom="@dimen/dp_5"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="5dp"
         android:background="@drawable/home_channel_cashback_enable"
         android:paddingLeft="@dimen/label_padding_left_right"
         android:paddingTop="@dimen/label_padding_top_bottom"
         android:paddingRight="@dimen/label_padding_left_right"
         android:paddingBottom="@dimen/label_padding_top_bottom"
-        android:textSize="@dimen/dp_10"
+        android:textSize="10dp"
+        app:typographyType="small"
         app:layout_constraintBottom_toBottomOf="@+id/channel_image_1"
         app:layout_constraintLeft_toLeftOf="@+id/channel_image_1"
         tools:text="Cashback 5%" />

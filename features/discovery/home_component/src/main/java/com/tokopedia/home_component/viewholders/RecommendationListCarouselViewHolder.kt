@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
+import com.tokopedia.home_component.databinding.HomeComponentRecommendationListCarouselBinding
 import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home_component.listener.RecommendationListCarouselListener
 import com.tokopedia.home_component.model.ChannelGrid
@@ -28,9 +29,7 @@ import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.home_component_recommendation_list_carousel.view.*
-import kotlinx.android.synthetic.main.home_component_recommendation_list_carousel.view.home_component_divider_footer
-import kotlinx.android.synthetic.main.home_component_recommendation_list_carousel.view.home_component_divider_header
+import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -38,7 +37,7 @@ import kotlinx.coroutines.SupervisorJob
 class RecommendationListCarouselViewHolder(itemView: View,
                                            private val listCarouselListener: RecommendationListCarouselListener?,
                                            private val parentRecycledViewPool: RecyclerView.RecycledViewPool?): AbstractViewHolder<RecommendationListCarouselDataModel>(itemView), CoroutineScope {
-
+    private var binding: HomeComponentRecommendationListCarouselBinding? by viewBinding()
     private val masterJob = SupervisorJob()
 
     private var isCacheData = false
@@ -65,7 +64,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
         setViewportImpression(element)
         setChannelDivider(element)
 
-        itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
+        binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
                 listCarouselListener?.onRecommendationSeeMoreClick(element.channelModel, link)
             }
@@ -157,8 +156,8 @@ class RecommendationListCarouselViewHolder(itemView: View,
     private fun setChannelDivider(element: RecommendationListCarouselDataModel) {
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channelModel,
-            dividerTop = itemView.home_component_divider_header,
-            dividerBottom = itemView.home_component_divider_footer
+            dividerTop = binding?.homeComponentDividerHeader,
+            dividerBottom = binding?.homeComponentDividerFooter
         )
     }
 

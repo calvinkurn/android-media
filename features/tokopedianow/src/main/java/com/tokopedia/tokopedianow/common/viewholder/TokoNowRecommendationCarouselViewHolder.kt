@@ -2,21 +2,25 @@ package com.tokopedia.tokopedianow.common.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetListener
+import com.tokopedia.recommendation_widget_common.widget.carousel.*
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecomCarouselBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowRecommendationCarouselViewHolder(
-        itemView: View,
-        private val recommendationCarouselListener: TokoNowRecommendationCarouselListener? = null,
-): AbstractViewHolder<TokoNowRecommendationCarouselUiModel>(itemView),
-        RecommendationCarouselWidgetListener {
+    itemView: View,
+    private val recommendationCarouselListener: TokoNowRecommendationCarouselListener? = null,
+    private val recommendationCarouselWidgetBindPageNameListener: TokonowRecomBindPageNameListener? = null
+) : AbstractViewHolder<TokoNowRecommendationCarouselUiModel>(itemView),
+    RecomCarouselWidgetBasicListener, RecommendationCarouselTokonowListener,
+    RecommendationCarouselTokonowPageNameListener {
 
     companion object {
         @LayoutRes
@@ -32,14 +36,37 @@ class TokoNowRecommendationCarouselViewHolder(
         uiModel = element ?: return
         val scrollToPosition =
             recommendationCarouselListener?.onGetCarouselScrollPosition(adapterPosition)
-
-        binding?.tokoNowSearchCategoryRecomCarousel?.bind(
-            carouselData = element.carouselData,
-            adapterPosition = adapterPosition,
-            widgetListener = this,
-            scrollToPosition = scrollToPosition.orZero(),
-        )
-        recommendationCarouselListener?.onBindRecommendationCarousel(element, adapterPosition)
+        if (element.isBindWithPageName) {
+            binding?.tokoNowSearchCategoryRecomCarousel?.let {
+                recommendationCarouselWidgetBindPageNameListener?.setViewToLifecycleOwner(it)
+                it.bind(
+                    pageName = element.pageName,
+                    tokonowPageNameListener = this,
+                    basicListener = this,
+                    adapterPosition = adapterPosition,
+                    scrollToPosition = scrollToPosition.orZero(),
+                    isForceRefresh = element.isFirstLoad,
+                    isTokonow = true,
+                    categoryIds = element.categoryId,
+                    keyword = element.keywords
+                )
+                element.isFirstLoad = false
+            }
+        } else {
+            if(element.carouselData.recommendationData.recommendationItemList.isNotEmpty()) {
+                binding?.tokoNowSearchCategoryRecomCarousel?.bind(
+                    carouselData = element.carouselData,
+                    adapterPosition = adapterPosition,
+                    basicListener = this,
+                    tokonowListener = this,
+                    scrollToPosition = scrollToPosition.orZero()
+                )
+            }
+            recommendationCarouselListener?.onBindRecommendationCarousel(
+                element,
+                adapterPosition
+            )
+        }
     }
 
     override fun onRecomProductCardImpressed(
@@ -65,19 +92,53 @@ class TokoNowRecommendationCarouselViewHolder(
             adapterPosition: Int,
     ) {
         recommendationCarouselListener?.onClickRecommendationCarouselItem(
-                model = uiModel,
-                data = data,
-                recomItem = recomItem,
-                itemPosition = itemPosition,
-                adapterPosition = adapterPosition,
+            model = uiModel,
+            data = data,
+            recomItem = recomItem,
+            itemPosition = itemPosition,
+            adapterPosition = adapterPosition,
         )
     }
 
+    override fun onMiniCartUpdatedFromRecomWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        recommendationCarouselWidgetBindPageNameListener?.onMiniCartUpdatedFromRecomWidget(
+            miniCartSimplifiedData
+        )
+    }
+
+    override fun onRecomTokonowAtcSuccess(message: String) {
+        recommendationCarouselWidgetBindPageNameListener?.onRecomTokonowAtcSuccess(message)
+    }
+
+    override fun onRecomTokonowAtcFailed(throwable: Throwable) {
+        recommendationCarouselWidgetBindPageNameListener?.onRecomTokonowAtcFailed(throwable)
+    }
+
+    override fun onRecomTokonowAtcNeedToSendTracker(
+        recommendationItem: RecommendationItem
+    ) {
+        recommendationCarouselWidgetBindPageNameListener?.onRecomTokonowAtcNeedToSendTracker(
+            recommendationItem
+        )
+    }
+
+    override fun onRecomTokonowDeleteNeedToSendTracker(
+        recommendationItem: RecommendationItem
+    ) {
+        recommendationCarouselWidgetBindPageNameListener?.onRecomTokonowDeleteNeedToSendTracker(
+            recommendationItem
+        )
+    }
+
+    override fun onClickItemNonLoginState() {
+        recommendationCarouselWidgetBindPageNameListener?.onClickItemNonLoginState()
+    }
+
     override fun onRecomProductCardAddToCartNonVariant(
-            data: RecommendationCarouselData,
-            recomItem: RecommendationItem,
-            adapterPosition: Int,
-            quantity: Int,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        adapterPosition: Int,
+        quantity: Int,
     ) {
         saveCarouselScrollPosition()
 
@@ -133,12 +194,23 @@ class TokoNowRecommendationCarouselViewHolder(
 
     }
 
-    override fun onRecomBannerClicked(data: RecommendationCarouselData, applink: String, adapterPosition: Int) {
+    override fun onRecomBannerClicked(
+        data: RecommendationCarouselData,
+        applink: String,
+        adapterPosition: Int
+    ) {
 
     }
 
     override fun onChannelWidgetEmpty() {
+        binding?.tokoNowSearchCategoryRecomCarousel?.gone()
+    }
 
+    override fun onWidgetFail(pageName: String, e: Throwable) {
+        binding?.tokoNowSearchCategoryRecomCarousel?.gone()
+    }
+
+    override fun onShowError(pageName: String, e: Throwable) {
     }
 
     override fun onViewRecycled() {
@@ -191,5 +263,29 @@ class TokoNowRecommendationCarouselViewHolder(
             data: RecommendationCarouselData,
             applink: String,
         )
+
     }
+
+    interface TokonowRecomBindPageNameListener {
+
+        fun onMiniCartUpdatedFromRecomWidget(miniCartSimplifiedData: MiniCartSimplifiedData)
+
+        fun onRecomTokonowAtcSuccess(message: String)
+
+        fun onRecomTokonowAtcFailed(throwable: Throwable)
+
+        fun onRecomTokonowAtcNeedToSendTracker(
+            recommendationItem: RecommendationItem
+        )
+
+        fun onRecomTokonowDeleteNeedToSendTracker(
+            recommendationItem: RecommendationItem
+        )
+
+        fun onClickItemNonLoginState()
+
+        //lifecycle owner
+        fun setViewToLifecycleOwner(observer: LifecycleObserver)
+    }
+
 }

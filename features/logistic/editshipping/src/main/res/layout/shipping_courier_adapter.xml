@@ -4,9 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:padding="@dimen/dp_10"
+    android:padding="10dp"
     android:background="@drawable/cards_ui_2"
-    android:layout_marginBottom="@dimen/dp_10"
+    android:layout_marginBottom="10dp"
     android:layout_height="match_parent">
     <LinearLayout
         android:id="@+id/courier_name_placeholder"
@@ -19,21 +19,20 @@
             android:layout_height="@dimen/dp_35"
             app:srcCompat="@drawable/ic_14_google"
             android:layout_weight="0.1"
-            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginLeft="5dp"
             android:layout_gravity="left"
             android:contentDescription="null"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_N700"
-            android:textSize="@dimen/sp_14"
-            android:textStyle="bold"
+            android:textSize="14sp"
             android:gravity="center_vertical"
             android:layout_gravity="center_vertical"
             android:layout_weight="0.9"
-            android:layout_marginLeft="@dimen/dp_5"/>
+            android:layout_marginLeft="5dp" />
 
     </LinearLayout>
     <LinearLayout
@@ -46,23 +45,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/courier_unavailable_warning"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/info_shipping_unavailable"
-            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginLeft="5dp"
             android:visibility="gone"
+            app:typographyType="body_2"
             tools:visibility="visible"/>
 
         <LinearLayout
             android:id="@+id/shipping_settings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginLeft="5dp"
             android:orientation="horizontal"
             android:background="@drawable/shipping_additonal_setting_selector"
-            android:layout_marginTop="@dimen/dp_10">
+            android:layout_marginTop="10dp">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="0dp"
@@ -70,14 +70,13 @@
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/ic_settings_24dp"
                 android:contentDescription="@string/title_edit"/>
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="@dimen/dp_3"
                 android:text="@string/shop_shipping_additional_option"
-                android:textSize="@dimen/dp_16"
-                android:textStyle="bold"
+                android:textSize="16dp"
                 android:textColor="@color/Unify_G700"/>
         </LinearLayout>
     </LinearLayout>

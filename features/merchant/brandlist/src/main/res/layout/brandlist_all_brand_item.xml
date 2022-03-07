@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingBottom="8dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -10,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
         app:cardBackgroundColor="@color/Unify_N0"
-        app:cardCornerRadius="@dimen/dp_4"
-        app:cardElevation="@dimen/dp_2"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="2dp"
         app:cardUseCompatPadding="true"
         app:layout_constraintDimensionRatio="3:4"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -26,9 +27,9 @@
                 android:id="@+id/iv_brand_logo"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl0"
-                android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_10"
-                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="12dp"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
                 app:layout_constraintDimensionRatio="2:1"
@@ -41,8 +42,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_rounded_corner_pink"
-                android:paddingLeft="@dimen/dp_6"
-                android:paddingRight="@dimen/dp_6"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
                 android:text="@string/brandlist_new_label"
                 android:textColor="@color/Unify_N0"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -54,10 +55,10 @@
             <ImageView
                 android:id="@+id/iv_brand_image"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_0"
-                android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_10"
-                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_height="0dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="12dp"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -69,15 +70,14 @@
     </androidx.cardview.widget.CardView>
 
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_brand_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_2"
         android:gravity="center"
-        android:lineSpacingExtra="@dimen/sp_6"
         android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/sp_12"
+        app:typographyType="body_3"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/brand_layout" />

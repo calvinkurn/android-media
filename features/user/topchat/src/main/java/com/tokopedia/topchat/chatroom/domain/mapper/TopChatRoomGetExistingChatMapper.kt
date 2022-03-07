@@ -9,11 +9,13 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_REVIEW_REMINDER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
-import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
-import com.tokopedia.chat_common.data.MessageViewModel
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel
+import com.tokopedia.chat_common.data.BaseChatUiModel
+import com.tokopedia.chat_common.data.ImageAnnouncementUiModel
+import com.tokopedia.chat_common.data.MessageUiModel
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.ChatRepliesItem
+import com.tokopedia.chat_common.domain.pojo.Contact
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
@@ -53,6 +55,11 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                     val chatDateTime = chatItemPojoByDate.replies[replyIndex]
                     val nextItem = chatItemPojoByDate.replies.getOrNull(replyIndex + 1)
                     when {
+                        chatDateTime.status == BaseChatUiModel.STATUS_DELETED -> {
+                            val textMessage = convertToMessageViewModel(chatDateTime)
+                            listChat.add(textMessage)
+                            replyIndex++
+                        }
                         // Merge broadcast bubble
                         chatDateTime.isBroadCast() &&
                                 chatDateTime.isAlsoTheSameBroadcast(nextItem) -> {
@@ -98,9 +105,12 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     override fun convertToMessageViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        return MessageViewModel.Builder()
+        val msg = MessageUiModel.Builder()
             .withResponseFromGQL(chatItemPojoByDateByTime)
-            .build()
+        if (chatItemPojoByDateByTime.status == BaseChatUiModel.STATUS_DELETED) {
+            msg.withMarkAsDeleted()
+        }
+        return msg.build()
     }
 
     private fun createBroadCastUiModel(
@@ -188,7 +198,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         }
         if (isBroadCast) {
             products.sortBy {
-                return@sortBy (it as ProductAttachmentViewModel).hasEmptyStock()
+                return@sortBy (it as ProductAttachmentUiModel).hasEmptyStock()
             }
         }
         return products
@@ -210,7 +220,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         val attachment = gson.fromJson(
             reply.attachment.attributes, HeaderCtaButtonAttachment::class.java
         )
-        return MessageViewModel.Builder()
+        return MessageUiModel.Builder()
             .withResponseFromGQL(reply)
             .withAttachment(attachment)
             .build()
@@ -220,7 +230,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         val pojoAttribute = gson.fromJson(
             item.attachment.attributes, ImageAnnouncementPojo::class.java
         )
-        return ImageAnnouncementViewModel(item, pojoAttribute)
+        return ImageAnnouncementUiModel(item, pojoAttribute)
     }
 
     private fun convertToVoucher(item: Reply): Visitable<*> {
@@ -254,6 +264,8 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             .withResponseFromGQL(item)
             .withVoucherModel(voucherModel)
             .withIsPublic(voucher.isPublic)
+            .withIsLockToProduct(voucher.isLockToProduct?: 0)
+            .withApplink(voucher.applink?: "")
             .build()
     }
 
@@ -335,6 +347,27 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             role = sender.role,
             thumbnail = sender.thumbnail
         )
-        return RoomMetaData(messageId, interlocutorMetaData, senderMetaData)
+        val userIdMap = mapUserId(chat.chatReplies.contacts)
+        return RoomMetaData(
+            _msgId = messageId,
+            sender = senderMetaData,
+            receiver = interlocutorMetaData,
+            userIdMap = userIdMap
+        )
+    }
+
+    private fun mapUserId(contacts: List<Contact>): Map<String, User> {
+        return contacts.associateBy(
+            { it.userId.toString() },
+            {
+                User(
+                    name = it.name,
+                    uid = it.userId.toString(),
+                    uname = it.name,
+                    role = it.role,
+                    thumbnail = it.thumbnail
+                )
+            }
+        )
     }
 }

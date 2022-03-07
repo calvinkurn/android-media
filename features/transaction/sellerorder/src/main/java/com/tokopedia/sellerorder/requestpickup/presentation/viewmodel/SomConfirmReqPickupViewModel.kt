@@ -13,6 +13,7 @@ import com.tokopedia.sellerorder.requestpickup.domain.SomConfirmReqPickupUseCase
 import com.tokopedia.sellerorder.requestpickup.domain.SomProcessReqPickupUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -31,7 +32,7 @@ class SomConfirmReqPickupViewModel @Inject constructor(dispatcher: CoroutineDisp
 
     fun loadConfirmRequestPickup(query: String, reqPickupParam: SomConfirmReqPickupParam) {
         launchCatchError(block = {
-            _confirmReqPickupResult.postValue(somConfirmReqPickupUseCase.execute(query, reqPickupParam))
+            _confirmReqPickupResult.postValue(Success(somConfirmReqPickupUseCase.execute(query, reqPickupParam)))
         }, onError = {
             _confirmReqPickupResult.postValue(Fail(it))
         })
@@ -39,7 +40,7 @@ class SomConfirmReqPickupViewModel @Inject constructor(dispatcher: CoroutineDisp
 
     fun processRequestPickup(reqPickupQuery: String, processReqPickupParam: SomProcessReqPickupParam) {
         launchCatchError(block = {
-            _processReqPickupResult.postValue(somProcessReqPickupUseCase.execute(reqPickupQuery, processReqPickupParam))
+            _processReqPickupResult.postValue(Success(somProcessReqPickupUseCase.execute(reqPickupQuery, processReqPickupParam)))
         }, onError = {
             _processReqPickupResult.postValue(Fail(it))
         })

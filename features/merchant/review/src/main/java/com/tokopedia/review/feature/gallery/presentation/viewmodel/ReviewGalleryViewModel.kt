@@ -73,14 +73,13 @@ class ReviewGalleryViewModel @Inject constructor(
 
     private fun getReviewImages(page: Int) {
         launchCatchError(block = {
-            getReviewImagesUseCase.setParams(
-                productId.value ?: "",
-                page
-            )
-            val data = getReviewImagesUseCase.executeOnBackground()
-            _reviewImages.postValue(Success(data.productrevGetReviewImage))
-            allReviewDetail.add(data.productrevGetReviewImage.detail)
-            shopId = data.productrevGetReviewImage.detail.reviewDetail.firstOrNull()?.shopId ?: ""
+            productId.value?.let {
+                getReviewImagesUseCase.setParams(it, page)
+                val data = getReviewImagesUseCase.executeOnBackground()
+                _reviewImages.postValue(Success(data.productrevGetReviewImage))
+                allReviewDetail.add(data.productrevGetReviewImage.detail)
+                shopId = data.productrevGetReviewImage.detail.reviewDetail.firstOrNull()?.shopId ?: ""
+            }
         }) {
             _reviewImages.postValue(Fail(it))
         }

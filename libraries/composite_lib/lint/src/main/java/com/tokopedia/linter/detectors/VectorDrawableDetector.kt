@@ -13,6 +13,7 @@ import com.android.SdkConstants.RES_FOLDER
 import com.android.SdkConstants.TAG_ANIMATED_VECTOR
 import com.android.SdkConstants.TAG_VECTOR
 import com.android.tools.lint.detector.api.Category
+import com.android.tools.lint.detector.api.Context
 import com.android.tools.lint.detector.api.Detector
 import com.android.tools.lint.detector.api.Implementation
 import com.android.tools.lint.detector.api.Issue
@@ -52,6 +53,19 @@ class VectorDrawableDetector : Detector(), XmlScanner {
 
     private val vectorResources = Sets.newHashSet<String>()
 
+    override fun beforeCheckRootProject(context: Context) {
+        val libFolders = context.project.directLibraries.filter { it.dir.isDirectory }
+        val resourceFolders = context.project.resourceFolders
+        val fileNames = resourceFolders.findFileNames()
+
+        libFolders.forEach { project ->
+            val libFileNames = project.resourceFolders.findFileNames()
+            vectorResources.addAll(libFileNames)
+        }
+
+        vectorResources.addAll(fileNames)
+    }
+
     override fun getApplicableAttributes(): Collection<String>? {
         return listOf(
             ATTR_BACKGROUND,
@@ -65,17 +79,6 @@ class VectorDrawableDetector : Detector(), XmlScanner {
     }
 
     override fun visitAttribute(context: XmlContext, attribute: Attr) {
-        val libFolders = context.project.directLibraries.filter { it.dir.isDirectory }
-        val resourceFolders = context.project.resourceFolders
-        val fileNames = resourceFolders.findFileNames()
-
-        libFolders.forEach { project ->
-            val libFileNames = project.resourceFolders.findFileNames()
-            vectorResources.addAll(libFileNames)
-        }
-
-        vectorResources.addAll(fileNames)
-
         if (attribute.hasVector()) {
             when (attribute.name) {
                 ATTR_ANDROID_DRAWABLE_LEFT,
@@ -91,7 +94,7 @@ class VectorDrawableDetector : Detector(), XmlScanner {
 
     private fun reportDrawableError(context: XmlContext, attribute: Attr) {
         val attrName = attribute.name
-        val message = "Unsafe vector as $attrName. " +
+        val message = "Unsafe vector usage in $attrName. " +
             "Consider using setCompoundDrawablesWithIntrinsicBounds() programmatically."
 
         val lintFix = LintFix.create()
@@ -104,7 +107,7 @@ class VectorDrawableDetector : Detector(), XmlScanner {
 
     private fun reportBackgroundError(context: XmlContext, attribute: Attr) {
         val attrName = attribute.name
-        val message = "Unsafe vector as $attrName. " +
+        val message = "Unsafe vector usage in $attrName. " +
             "Consider using setBackgroundResource() programmatically."
 
         val lintFix = LintFix.create()
@@ -124,7 +127,7 @@ class VectorDrawableDetector : Detector(), XmlScanner {
         context.report(
             ISSUE,
             attribute,
-            context.getLocation(attribute),
+            context.getValueLocation(attribute),
             message,
             quickFix
         )

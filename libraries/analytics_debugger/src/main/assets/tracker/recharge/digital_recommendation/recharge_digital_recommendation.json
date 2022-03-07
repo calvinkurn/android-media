@@ -1,0 +1,50 @@
+{
+  "readme": "Digital Recommendation Widget",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "view_item_list",
+      "eventCategory": "my purchase list detail - .*",
+      "eventAction": "impression on widget recommendation",
+      "eventLabel": ".* - .* - .* - .* - .* - .* - .* - .*",
+      "currentSite": "tokopediadigital",
+      "businessUnit": "recharge",
+      "sessionIris": ".*",
+      "clientId": ".*",
+      "userId": ".*",
+      "items": [
+        {
+          "index": "\\d*.\\d*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".* - .*",
+          "price": ".*"
+        }
+      ]
+    },
+    {
+      "event": "select_content",
+      "eventCategory": "my purchase list detail - .*",
+      "eventAction": "click on widget recommendation",
+      "eventLabel": ".* - .* - .* - .* - .* - .* - .* - .*",
+      "currentSite": "tokopediadigital",
+      "businessUnit": "recharge",
+      "sessionIris": ".*",
+      "clientId": ".*",
+      "userId": ".*",
+      "items": [
+        {
+          "index": "\\d*.\\d*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".* - .*",
+          "price": ".*"
+        }
+      ]
+    }
+  ]
+}

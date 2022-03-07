@@ -16,7 +16,7 @@ data class RegisterPushNotifPojo(
 data class RegisterPushNotifData(
         @SerializedName("success")
         @Expose
-        var success: Boolean = false,
+        var isSuccess: Boolean = false,
         @SerializedName("errorMessage")
         @Expose
         var errorMessage: String = "",

@@ -5,9 +5,27 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.common.EmptyLayoutException
 import com.tokopedia.sellerhomecommon.common.WidgetType
+import com.tokopedia.sellerhomecommon.common.const.WidgetGridSize
 import com.tokopedia.sellerhomecommon.domain.model.GetLayoutResponse
 import com.tokopedia.sellerhomecommon.domain.model.WidgetModel
-import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
 import javax.inject.Inject
 
 /**
@@ -51,6 +69,7 @@ class LayoutMapper @Inject constructor(
                             WidgetType.ANNOUNCEMENT -> mapToAnnouncementWidget(it, isFromCache)
                             WidgetType.RECOMMENDATION -> mapToRecommendationWidget(it, isFromCache)
                             WidgetType.MILESTONE -> mapToMilestoneWidget(it, isFromCache)
+                            WidgetType.CALENDAR -> mapToCalendarWidget(it, isFromCache)
                             else -> mapToSectionWidget(it, isFromCache)
                         }
                     )
@@ -71,6 +90,7 @@ class LayoutMapper @Inject constructor(
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
+            gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_1),
             isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             isLoaded = false,
@@ -94,6 +114,7 @@ class LayoutMapper @Inject constructor(
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
+            gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_4),
             isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             isLoaded = false,
@@ -117,6 +138,7 @@ class LayoutMapper @Inject constructor(
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
+            gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_4),
             isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             isLoaded = false,
@@ -140,6 +162,7 @@ class LayoutMapper @Inject constructor(
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
+            gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_4),
             isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             isLoaded = false,
@@ -160,6 +183,7 @@ class LayoutMapper @Inject constructor(
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
+            gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_4),
             maxData = widget.maxData.orZero(),
             maxDisplay = widget.maxDisplay.orZero(),
             isShowEmpty = widget.isShowEmpty.orFalse(),
@@ -192,6 +216,7 @@ class LayoutMapper @Inject constructor(
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
+            gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_4),
             isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             isLoaded = false,
@@ -214,6 +239,7 @@ class LayoutMapper @Inject constructor(
             ctaText = widget.ctaText.orEmpty(),
             maxData = widget.maxData.orZero(),
             maxDisplay = widget.maxDisplay.orZero(),
+            gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_4),
             isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             isLoaded = false,
@@ -241,6 +267,7 @@ class LayoutMapper @Inject constructor(
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
+            gridSize = WidgetGridSize.GRID_SIZE_4,
             isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             isLoaded = false,
@@ -264,6 +291,7 @@ class LayoutMapper @Inject constructor(
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
+            gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_2),
             isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             isLoaded = false,
@@ -287,6 +315,7 @@ class LayoutMapper @Inject constructor(
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
+            gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_4),
             isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             isLoaded = false,
@@ -310,6 +339,7 @@ class LayoutMapper @Inject constructor(
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
+            gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_2),
             isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             isLoaded = false,
@@ -334,6 +364,7 @@ class LayoutMapper @Inject constructor(
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
+            gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_4),
             isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             isLoaded = false,
@@ -357,6 +388,7 @@ class LayoutMapper @Inject constructor(
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
+            gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_4),
             isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             isLoaded = false,
@@ -380,6 +412,7 @@ class LayoutMapper @Inject constructor(
             appLink = widget.appLink.orEmpty(),
             dataKey = widget.dataKey.orEmpty(),
             ctaText = widget.ctaText.orEmpty(),
+            gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_4),
             isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             isLoaded = false,
@@ -387,5 +420,37 @@ class LayoutMapper @Inject constructor(
             isFromCache = isFromCache,
             emptyState = widget.emptyStateModel.mapToUiModel()
         )
+    }
+
+    private fun mapToCalendarWidget(
+        widget: WidgetModel,
+        fromCache: Boolean
+    ): CalendarWidgetUiModel {
+        return CalendarWidgetUiModel(
+            id = (widget.id.orZero()).toString(),
+            widgetType = widget.widgetType.orEmpty(),
+            title = widget.title.orEmpty(),
+            subtitle = widget.subtitle.orEmpty(),
+            tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+            tag = widget.tag.orEmpty(),
+            appLink = widget.appLink.orEmpty(),
+            dataKey = widget.dataKey.orEmpty(),
+            ctaText = widget.ctaText.orEmpty(),
+            gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_4),
+            isShowEmpty = widget.isShowEmpty.orFalse(),
+            data = null,
+            isLoaded = false,
+            isLoading = false,
+            isFromCache = fromCache,
+            emptyState = widget.emptyStateModel.mapToUiModel()
+        )
+    }
+
+    private fun getGridSize(gridSize: Int, defaultGridSize: Int): Int {
+        return if (gridSize == WidgetGridSize.GRID_SIZE_0) {
+            defaultGridSize
+        } else {
+            gridSize
+        }
     }
 }

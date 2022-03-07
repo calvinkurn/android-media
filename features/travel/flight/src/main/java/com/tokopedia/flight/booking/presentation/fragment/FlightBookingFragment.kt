@@ -585,6 +585,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                         bookingViewModel.getLuggageViewModels(),
                         bookingViewModel.getMealViewModels(),
                         bookingViewModel.getMandatoryDOB(),
+                        bookingViewModel.getMandatoryIdentificationNumber(),
                         departureDate,
                         requestId,
                         bookingViewModel.flightIsDomestic(),

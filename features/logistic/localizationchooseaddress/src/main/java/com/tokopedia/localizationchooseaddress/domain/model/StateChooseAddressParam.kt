@@ -2,12 +2,12 @@ package com.tokopedia.localizationchooseaddress.domain.model
 
 data class StateChooseAddressParam(
         val status: Int,
-        val addressId: Int?,
+        val addressId: Long?,
         val receiverName: String,
         val addressName: String,
         val latitude: String,
         val longitude: String,
-        val districtId: Int,
+        val districtId: Long,
         val postalCode: String,
         val isTokonow: Boolean
 ) {

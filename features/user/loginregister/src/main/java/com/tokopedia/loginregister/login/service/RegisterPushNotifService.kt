@@ -8,14 +8,10 @@ import android.security.keystore.KeyProperties
 import android.util.Base64
 import androidx.annotation.RequiresApi
 import androidx.core.app.JobIntentService
-import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 import com.tokopedia.loginregister.login.data.SignResult
 import com.tokopedia.loginregister.login.di.LoginComponentBuilder
-import com.tokopedia.loginregister.login.domain.RegisterPushNotifParamsModel
-import com.tokopedia.loginregister.login.domain.RegisterPushNotifUseCase
+import com.tokopedia.loginregister.login.domain.RegisterPushNotificationParamsModel
+import com.tokopedia.loginregister.login.domain.RegisterPushNotificationUseCase
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
@@ -31,6 +27,7 @@ import kotlin.coroutines.CoroutineContext
  * Created by Ade Fulki on 28/09/20.
  */
 
+@Deprecated("move into workmanager")
 class RegisterPushNotifService : JobIntentService(), CoroutineScope {
 
     @field:Named(SessionModule.SESSION_MODULE)
@@ -38,14 +35,13 @@ class RegisterPushNotifService : JobIntentService(), CoroutineScope {
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var registerPushNotifUseCase: RegisterPushNotifUseCase
+    lateinit var registerPushNotifUseCase: RegisterPushNotificationUseCase
 
     private val job = SupervisorJob()
-
-    private lateinit var keyPair: KeyPair
-
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
+
+    private lateinit var keyPair: KeyPair
 
     override fun onCreate() {
         super.onCreate()
@@ -58,12 +54,17 @@ class RegisterPushNotifService : JobIntentService(), CoroutineScope {
                 generateKey()
                 if (::keyPair.isInitialized) {
                     signData(userSession.userId, userSession.deviceId).let {
-                        doRegisterPushNotif(it)
+                        launch {
+                            registerPushNotifUseCase(RegisterPushNotificationParamsModel(
+                                publicKey = it.publicKey,
+                                signature = it.signature,
+                                datetime = it.datetime
+                            ))
+                        }
                     }
                 }
             }
         } catch (e: Exception) {
-            recordLog(ON_HANDLE_WORK, "", e)
             e.printStackTrace()
         }
     }
@@ -74,27 +75,12 @@ class RegisterPushNotifService : JobIntentService(), CoroutineScope {
         }
     }
 
-    private fun doRegisterPushNotif(signResult: SignResult) {
-        launchCatchError(coroutineContext, {
-            registerPushNotifUseCase(RegisterPushNotifParamsModel(
-                publicKey = signResult.publicKey,
-                signature = signResult.signature,
-                datetime = signResult.datetime
-            ))
-        }, {
-            recordLog(DO_REGISTER_PUSH_NOTIF, "", it)
-        })
-    }
-
     @RequiresApi(Build.VERSION_CODES.M)
     private fun generateKey() {
-        val keyPairGenerator: KeyPairGenerator = KeyPairGenerator.getInstance(
-            KeyProperties.KEY_ALGORITHM_RSA,
-            ANDROID_KEY_STORE
-        )
+        val keyPairGenerator: KeyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, ANDROID_KEY_STORE)
 
         val parameterSpec: KeyGenParameterSpec = KeyGenParameterSpec.Builder(PUSH_NOTIF_ALIAS,
-            KeyProperties.PURPOSE_SIGN or KeyProperties.PURPOSE_VERIFY).run {
+                KeyProperties.PURPOSE_SIGN or KeyProperties.PURPOSE_VERIFY).run {
             setDigests(KeyProperties.DIGEST_SHA256)
             setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
             build()
@@ -133,7 +119,6 @@ class RegisterPushNotifService : JobIntentService(), CoroutineScope {
             }
 
         } catch (e: Exception) {
-            recordLog(SIGN_DATA, "", e)
             e.printStackTrace()
         }
 
@@ -152,43 +137,11 @@ class RegisterPushNotifService : JobIntentService(), CoroutineScope {
         private const val PUBLIC_KEY_PREFIX = "-----BEGIN PUBLIC KEY-----\n"
         private const val PUBLIC_KEY_SUFFIX = "\n-----END PUBLIC KEY-----"
 
-        private val ERROR_HEADER = "${RegisterPushNotifService::class.java.name} error on "
-        private const val TAG_SCALYR = "CRASH_REGISTER_PUSHNOTIF"
-        private const val MAX_LENGTH_ERROR = 1000
-        private const val ON_HANDLE_WORK = "onHandlerWork()"
-        private const val START_SERVICE = "startServices()"
-        private const val SIGN_DATA = "signData()"
-        private const val DO_REGISTER_PUSH_NOTIF = "doRegisterPushNotif()"
-
         fun startService(context: Context, jobId: Int) {
             try {
                 val intent = Intent(context, RegisterPushNotifService::class.java)
                 enqueueWork(context, RegisterPushNotifService::class.java, jobId, intent)
             } catch (e: Exception) {
-                recordLog(START_SERVICE, "JOB_ID = $jobId", e)
-                e.printStackTrace()
-            }
-        }
-
-        fun recordLog(type: String, message: String, throwable: Throwable) {
-            val logMessage = if (message.isEmpty()) type else "$type | $message"
-            sendLogToCrashlytics(logMessage, throwable)
-            ServerLogger.log(Priority.P2, TAG_SCALYR, mapOf(
-                "type" to type,
-                "err" to throwable.toString().take(MAX_LENGTH_ERROR))
-            )
-        }
-
-        private fun sendLogToCrashlytics(message: String, throwable: Throwable) {
-            try {
-                val messageException = "$ERROR_HEADER $message : ${throwable.localizedMessage}"
-                FirebaseCrashlytics.getInstance().recordException(
-                    RuntimeException(
-                        messageException,
-                        throwable
-                    )
-                )
-            } catch (e: IllegalStateException) {
                 e.printStackTrace()
             }
         }

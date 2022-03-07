@@ -30,19 +30,20 @@
             app:elevation="0dp">
 
             <include
+                android:id="@+id/layout_partial_shop_page_header"
                 layout="@layout/new_partial_new_shop_page_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="bottom"
                 app:layout_scrollFlags="scroll"
-                android:layout_marginBottom="@dimen/dp_12"
+                android:layout_marginBottom="12dp"
                 tools:visibility="gone" />
 
             <View
                 android:id="@+id/view_one_tab_separator"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
-                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginTop="4dp"
                 app:layout_scrollFlags="scroll"
                 android:background="@color/Unify_N75"
                 />

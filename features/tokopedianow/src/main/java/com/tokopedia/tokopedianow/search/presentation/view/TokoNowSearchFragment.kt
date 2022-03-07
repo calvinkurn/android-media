@@ -25,6 +25,7 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_S
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_SRP_RECOM_OOC
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_SRP_PRODUCT_TOKONOW
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_SRP_RECOM_OOC
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_DASH_SEARCH_PAGE
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_EMPTY_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKOOW_SEARCH_RESULT_PAGE
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.RECOM_LIST_PAGE
@@ -43,17 +44,19 @@ import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFact
 import com.tokopedia.tokopedianow.search.presentation.viewmodel.TokoNowSearchViewModel
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
 import javax.inject.Inject
 
-class TokoNowSearchFragment:
-        BaseSearchCategoryFragment(),
-        SuggestionListener,
-        CategoryJumperListener,
-        CTATokoNowHomeListener,
-        BroadMatchListener {
+class TokoNowSearchFragment :
+    BaseSearchCategoryFragment(),
+    SuggestionListener,
+    CategoryJumperListener,
+    CTATokoNowHomeListener,
+    BroadMatchListener,
+    SwitcherWidgetListener{
 
     companion object {
         @JvmStatic
@@ -133,19 +136,21 @@ class TokoNowSearchFragment:
     }
 
     override fun createTypeFactory() = SearchTypeFactoryImpl(
+            tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(TOKONOW_DASH_SEARCH_PAGE),
             chooseAddressListener = this,
             titleListener = this,
             bannerListener = this,
             quickFilterListener = this,
             categoryFilterListener = this,
             productItemListener = this,
+            switcherWidgetListener = this,
             tokoNowEmptyStateNoResultListener = this,
             suggestionListener = this,
-            outOfCoverageListener = this,
             categoryJumperListener = this,
             ctaTokoNowHomeListener = this,
             recommendationCarouselListener = this,
             broadMatchListener = this,
+            recomWidgetBindPageNameListener = this
     )
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
@@ -252,7 +257,7 @@ class TokoNowSearchFragment:
         return TOKONOW_SEARCH_PRODUCT_ATC_VARIANT
     }
 
-    override fun onBannerClick(channelModel: ChannelModel, applink: String) {
+    override fun onBannerClick(channelModel: ChannelModel, applink: String, param: String) {
         val queryParam = getQueryParamWithoutExcludes()
         val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
 
@@ -263,7 +268,7 @@ class TokoNowSearchFragment:
                 sortFilterParams,
         )
 
-        super.onBannerClick(channelModel, applink)
+        super.onBannerClick(channelModel, applink, param)
     }
 
     override fun onBannerImpressed(channelModel: ChannelModel, position: Int) {
@@ -413,5 +418,9 @@ class TokoNowSearchFragment:
         SearchTracking.sendRecommendationSeeAllClickEvent(getViewModel().query)
 
         RouteManager.route(context, applink)
+    }
+
+    override fun sendOOCOpenScreenTracking(isTracked: Boolean) {
+        SearchTracking.sendOOCOpenScreenTracking(userSession.isLoggedIn)
     }
 }

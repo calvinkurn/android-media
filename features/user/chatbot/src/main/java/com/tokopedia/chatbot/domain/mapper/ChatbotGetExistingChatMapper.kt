@@ -6,13 +6,16 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_BALLOON
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICES_SELECTION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_SEND
+import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.Reply
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
+import com.tokopedia.chatbot.data.imageupload.ChatbotImageUploadAttributes
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
@@ -62,6 +65,7 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             TYPE_CSAT_OPTIONS-> convertToCsatOptionsViewModel(chatItemPojoByDateByTime)
             TYPE_STICKY_BUTTON-> convertToStickyButtonActionsViewModel(chatItemPojoByDateByTime)
             TYPE_CSAT_VIEW-> convertToMessageViewModel(chatItemPojoByDateByTime)
+            TYPE_SECURE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
             else -> super.mapAttachment(chatItemPojoByDateByTime)
         }
     }
@@ -250,6 +254,18 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                 stickyActionButtonPojo.stickedButtonActions,
                 chatItemPojoByDateByTime.source
         )
+    }
+
+    private fun convertToImageUpload(chatItemPojoByDateByTime: Reply):
+            ImageUploadUiModel {
+        val pojoAttribute = gson.fromJson<ChatbotImageUploadAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
+                ChatbotImageUploadAttributes::class.java)
+
+        return ImageUploadUiModel.Builder()
+                .withResponseFromGQL(chatItemPojoByDateByTime)
+                .withImageUrl(pojoAttribute.imageUrlSecure)
+                .withImageUrlThumbnail(pojoAttribute.thumbnail)
+                .build()
     }
 
 }

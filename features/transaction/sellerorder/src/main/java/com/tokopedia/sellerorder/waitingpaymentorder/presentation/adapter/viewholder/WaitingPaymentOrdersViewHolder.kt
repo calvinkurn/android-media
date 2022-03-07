@@ -4,9 +4,9 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
@@ -25,9 +25,12 @@ class WaitingPaymentOrdersViewHolder(
 ) : AbstractViewHolder<WaitingPaymentOrderUiModel>(itemView) {
 
     companion object {
+        private const val MAX_ORDER_WHEN_COLLAPSED = 1
+        private const val RECYCLER_VIEW_ANIMATION_DURATION = 300L
+        private const val EXPANDED_DROPDOWN_ICON_ROTATION = -180f
+        private const val COLLAPSED_DROPDOWN_ICON_ROTATION = 0f
+
         val LAYOUT = R.layout.item_waiting_payment_orders
-        const val MAX_ORDER_WHEN_COLLAPSED = 5
-        const val RECYCLER_VIEW_ANIMATION_DURATION = 300L
     }
 
     private val adapter: WaitingPaymentOrderProductsAdapter by lazy {
@@ -66,6 +69,7 @@ class WaitingPaymentOrdersViewHolder(
     override fun bind(element: WaitingPaymentOrderUiModel?) {
         element?.let { element ->
             binding?.run {
+                animatorSet.end()
                 tvValuePaymentDeadline.text = element.paymentDeadline
                 tvValueBuyerNameAndPlace.text = element.buyerNameAndPlace
                 tvToggleCollapseMoreProducts.apply {
@@ -75,43 +79,73 @@ class WaitingPaymentOrdersViewHolder(
                 }
                 icLoadMoreDropDown.apply {
                     iconDropdownAnimator?.end()
-                    rotation = if (element.isExpanded) -180f else Float.ZERO
+                    rotation = if (element.isExpanded) EXPANDED_DROPDOWN_ICON_ROTATION
+                    else COLLAPSED_DROPDOWN_ICON_ROTATION
                     showWithCondition(element.productUiModels.size > MAX_ORDER_WHEN_COLLAPSED)
                 }
                 rvWaitingPaymentOrderProducts.apply {
-                    recyclerViewAnimator?.end()
                     if (adapter == null) {
                         isNestedScrollingEnabled = false
                         adapter = this@WaitingPaymentOrdersViewHolder.adapter
                     }
-                    val layoutParams = layoutParams
-                    layoutParams.height = getRecyclerViewHeight(element.isExpanded, element.productUiModels.size)
-                    this.layoutParams = layoutParams
-                    this@WaitingPaymentOrdersViewHolder.adapter.updateProducts(element.productUiModels)
-                    setHasFixedSize(true)
+                    val layoutParams = binding?.rvWaitingPaymentOrderProducts?.layoutParams
+                    layoutParams?.let {
+                        it.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                        binding?.rvWaitingPaymentOrderProducts?.layoutParams = it
+                    }
+                    updateProducts(element)
                 }
             }
         }
     }
 
-    private fun getRecyclerViewHeight(isExpanded: Boolean, productUiModelsSize: Int): Int {
-        return binding?.root?.run {
-            val productCount = if (!isExpanded) productUiModelsSize.coerceAtMost(MAX_ORDER_WHEN_COLLAPSED) else productUiModelsSize
-            productCount * (getDimens(R.dimen.waiting_order_product_height))
-        }.orZero()
+    private fun updateProducts(element: WaitingPaymentOrderUiModel) {
+        this@WaitingPaymentOrdersViewHolder.adapter.updateProducts(element.productUiModels.take(if (element.isExpanded) element.productUiModels.size else MAX_ORDER_WHEN_COLLAPSED))
     }
 
     private fun setLoadUnloadMoreClickListener(element: WaitingPaymentOrderUiModel) {
-        binding?.root?.setOnClickListener {
-            animatorSet.end()
-            element.isExpanded = !element.isExpanded
-            setupRecyclerViewSizeAnimator(
-                    binding?.rvWaitingPaymentOrderProducts?.height.orZero(),
-                    getRecyclerViewHeight(element.isExpanded, element.productUiModels.size))
-            setupDropdownIconAnimator(element.isExpanded)
-            updateToggleCollapseText(element.isExpanded)
-            animatorSet.playTogether(recyclerViewAnimator, iconDropdownAnimator)
-            animatorSet.start()
+        binding?.run {
+            root.setOnClickListener {
+                animatorSet.end()
+                element.isExpanded = !element.isExpanded
+                rvWaitingPaymentOrderProducts.layoutParams.height = rvWaitingPaymentOrderProducts.height
+                updateProducts(element)
+                scheduleAnimation(element)
+            }
+        }
+    }
+
+    private fun scheduleAnimation(element: WaitingPaymentOrderUiModel) {
+        binding?.rvWaitingPaymentOrderProducts?.run {
+            post {
+                val initialHeight = height.orZero()
+                val targetHeight = getRecyclerViewHeight(element)
+                if (initialHeight == targetHeight) {
+                    scheduleAnimation(element)
+                } else {
+                    if (element.isExpanded) element.expandedHeight = targetHeight
+                    else element.collapsedHeight = targetHeight
+                    setupRecyclerViewSizeAnimator(initialHeight, targetHeight)
+                    setupDropdownIconAnimator(element.isExpanded)
+                    updateToggleCollapseText(element.isExpanded)
+                    animatorSet.playTogether(recyclerViewAnimator, iconDropdownAnimator)
+                    animatorSet.start()
+                }
+            }
+        }
+    }
+
+    private fun getRecyclerViewHeight(element: WaitingPaymentOrderUiModel): Int {
+        return when {
+            element.isExpanded && element.expandedHeight != Int.ZERO -> element.expandedHeight
+            !element.isExpanded && element.collapsedHeight != Int.ZERO -> element.collapsedHeight
+            else -> {
+                binding?.run {
+                    rvWaitingPaymentOrderProducts.measure(View.MeasureSpec.makeMeasureSpec(
+                        root.measuredWidth, View.MeasureSpec.EXACTLY), View.MeasureSpec.UNSPECIFIED)
+                    rvWaitingPaymentOrderProducts.measuredHeight
+                }.orZero()
+            }
         }
     }
 
@@ -121,17 +155,17 @@ class WaitingPaymentOrdersViewHolder(
         recyclerViewAnimator?.addUpdateListener { animation ->
             val layoutParams = binding?.rvWaitingPaymentOrderProducts?.layoutParams
             layoutParams?.let {
-                layoutParams.height = animation.animatedValue as Int
-                binding?.rvWaitingPaymentOrderProducts?.layoutParams = layoutParams
+                it.height = animation.animatedValue as Int
+                binding?.rvWaitingPaymentOrderProducts?.layoutParams = it
             }
         }
     }
 
     private fun setupDropdownIconAnimator(isExpanded: Boolean) {
         if (isExpanded) {
-            setupDropdownIconAnimator(Float.ZERO, -180f)
+            setupDropdownIconAnimator(COLLAPSED_DROPDOWN_ICON_ROTATION, EXPANDED_DROPDOWN_ICON_ROTATION)
         } else {
-            setupDropdownIconAnimator(-180f, Float.ZERO)
+            setupDropdownIconAnimator(EXPANDED_DROPDOWN_ICON_ROTATION, COLLAPSED_DROPDOWN_ICON_ROTATION)
         }
     }
 

@@ -10,6 +10,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.search.analytics.EventCategoryPageTracking
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import kotlinx.android.synthetic.main.ent_search_event_grid_item.view.*
 
@@ -48,8 +50,21 @@ class EventGridAdapter(val listener: EventGridListener) : RecyclerView.Adapter<R
                 if (event.harga_start.startsWith("Rp")) { //Saat diskon beri stroke
                     txt_start_title.paintFlags = txt_start_title.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 }
-                txt_start_title.text = event.harga_start
-                txt_price.text = event.harga_now
+                txt_start_title.apply {
+                    if (event.isFree){
+                        gone()
+                    } else {
+                        show()
+                        text = event.harga_start
+                    }
+                }
+                txt_price.apply {
+                    if (event.isFree){
+                        text = resources.getString(R.string.ent_free_price)
+                    } else {
+                        text = event.harga_now
+                    }
+                }
 
                 addOnImpressionListener(event, {
                     listener.impressionCategory(event, listEvent, position)
@@ -76,7 +91,8 @@ class EventGridAdapter(val listener: EventGridListener) : RecyclerView.Adapter<R
             val harga_start: String,
             val harga_now: String,
             val app_url: String,
-            val category_id: String = ""
+            val category_id: String = "",
+            val isFree: Boolean = false
     ) : ImpressHolder()
 
     interface EventGridListener{

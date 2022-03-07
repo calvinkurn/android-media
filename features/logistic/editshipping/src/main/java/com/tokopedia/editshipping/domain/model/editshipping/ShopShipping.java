@@ -1,6 +1,7 @@
 package com.tokopedia.editshipping.domain.model.editshipping;
 
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -11,9 +12,11 @@ import com.google.gson.annotations.SerializedName;
  * Created by Kris on 3/2/2016.
  */
 public class ShopShipping implements Parcelable{
+    @SuppressLint("Invalid Data Type")
     @SerializedName("city_id")
     @Expose
-    public Integer cityId = 0;
+    public Long cityId = 0L;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("shipping_id")
     @Expose
     public Object shippingId;
@@ -29,15 +32,17 @@ public class ShopShipping implements Parcelable{
     @SerializedName("district_name")
     @Expose
     public String districtName;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("province_id")
     @Expose
-    public Integer provinceId = 0;
+    public Long provinceId = 0L;
     @SerializedName("postal_code")
     @Expose
     public String postalCode;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("district_id")
     @Expose
-    public Integer districtId = 0;
+    public Long districtId = 0L;
     @SerializedName("origin")
     @Expose
     public Integer origin;
@@ -76,15 +81,15 @@ public class ShopShipping implements Parcelable{
         this.districtName = districtName;
     }
 
-    public void setShopProvinceId(int provinceId){
+    public void setShopProvinceId(Long provinceId){
         this.provinceId = provinceId;
     }
 
-    public void setShopCityId(int cityId){
+    public void setShopCityId(Long cityId){
         this.cityId = cityId;
     }
 
-    public void setShopDistrictId(int districtId){
+    public void setShopDistrictId(Long districtId){
         this.districtId = districtId;
     }
 
@@ -105,15 +110,15 @@ public class ShopShipping implements Parcelable{
     }
 
     protected ShopShipping(Parcel in) {
-        cityId = in.readByte() == 0x00 ? null : in.readInt();
+        cityId = in.readByte() == 0x00 ? null : in.readLong();
         shippingId = (Object) in.readValue(Object.class.getClassLoader());
         cityName = in.readString();
         addrStreet = in.readString();
         provinceName = in.readString();
         districtName = in.readString();
-        provinceId = in.readByte() == 0x00 ? null : in.readInt();
+        provinceId = in.readByte() == 0x00 ? null : in.readLong();
         postalCode = in.readString();
-        districtId = in.readByte() == 0x00 ? null : in.readInt();
+        districtId = in.readByte() == 0x00 ? null : in.readLong();
         origin = in.readByte() == 0x00 ? null : in.readInt();
         longitude = in.readString();
         latitude = in.readString();
@@ -130,7 +135,7 @@ public class ShopShipping implements Parcelable{
             dest.writeByte((byte) (0x00));
         } else {
             dest.writeByte((byte) (0x01));
-            dest.writeInt(cityId);
+            dest.writeLong(cityId);
         }
         dest.writeValue(shippingId);
         dest.writeString(cityName);
@@ -141,14 +146,14 @@ public class ShopShipping implements Parcelable{
             dest.writeByte((byte) (0x00));
         } else {
             dest.writeByte((byte) (0x01));
-            dest.writeInt(provinceId);
+            dest.writeLong(provinceId);
         }
         dest.writeString(postalCode);
         if (districtId == null) {
             dest.writeByte((byte) (0x00));
         } else {
             dest.writeByte((byte) (0x01));
-            dest.writeInt(districtId);
+            dest.writeLong(districtId);
         }
         if (origin == null) {
             dest.writeByte((byte) (0x00));

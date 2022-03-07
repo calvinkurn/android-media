@@ -41,7 +41,7 @@ import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomDetailModel
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
-import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
+import com.tokopedia.imagepreviewslider.presentation.view.ImagePreviewViewer
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
@@ -81,6 +81,8 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
     lateinit var progressDialog: ProgressDialog
 
     private var roomIndex = 0
+
+    private var imagePreviewViewer: ImagePreviewViewer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -211,7 +213,6 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         if (hotelRoom.roomInfo.roomImages.isNotEmpty()) {
             val roomImageUrls300 = hotelRoom.roomInfo.roomImages.map { it.url300 }
             val roomImageUrls = hotelRoom.roomInfo.roomImages.map { it.urlOriginal }
-            val roomImageUrlsSquare = hotelRoom.roomInfo.roomImages.map { it.url300 }
 
             if (roomImageUrls300.size >= 5) binding?.roomDetailImages?.setImages(roomImageUrls300.subList(0, 5))
             else binding?.roomDetailImages?.setImages(roomImageUrls300)
@@ -220,7 +221,8 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                 override fun onImageClicked(position: Int) {
                     trackingHotelUtil.hotelClickRoomDetailsPhoto(context, hotelRoom.additionalPropertyInfo.propertyId,
                             hotelRoom.roomId, hotelRoom.roomPrice.priceAmount.roundToLong().toString(), ROOM_DETAIL_SCREEN_NAME)
-                    ImagePreviewSlider.instance.start(context, hotelRoom.roomInfo.name, roomImageUrls, roomImageUrlsSquare, position, image_banner)
+                    if (imagePreviewViewer == null) imagePreviewViewer = ImagePreviewViewer()
+                    imagePreviewViewer?.startImagePreviewViewer(hotelRoom.roomInfo.name, image_banner, roomImageUrls, requireContext(), position)
                 }
             }
         }
@@ -437,6 +439,11 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         dialog.setCancelable(false)
         dialog.setOverlayClose(false)
         dialog.show()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        imagePreviewViewer = null
     }
 
     companion object {

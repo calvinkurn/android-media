@@ -27,5 +27,5 @@
         android:layout_weight="4"
         android:gravity="center"
         android:textColor="@color/Unify_N700_68"
-        tools:text="masuk dengan facebook" />
+        tools:text="masuk dengan google" />
 </LinearLayout>

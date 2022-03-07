@@ -2,6 +2,7 @@ package com.tokopedia.shop.score.performance.presentation.adapter
 
 import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
 import com.tokopedia.shop.score.performance.presentation.model.*
+import com.tokopedia.shop.score.performance.presentation.model.tablet.ItemHeaderParameterDetailUiModel
 
 interface ShopPerformanceTypeFactory {
     fun type(headerShopPerformanceUiModel: HeaderShopPerformanceUiModel): Int
@@ -19,4 +20,7 @@ interface ShopPerformanceTypeFactory {
     fun type(sectionPMPotentialPMProUiModel: SectionPMPotentialPMProUiModel): Int
     fun type(itemStatusPMProUiModel: ItemStatusPMProUiModel): Int
     fun type(protectedParameterSectionUiModel: ProtectedParameterSectionUiModel): Int
+    fun type(itemReactivatedComebackUiModel: ItemReactivatedComebackUiModel): Int
+    fun type(tickerReactivatedUiModel: TickerReactivatedUiModel): Int
+    fun type(itemHeaderParameterDetailUiModel: ItemHeaderParameterDetailUiModel): Int
 }

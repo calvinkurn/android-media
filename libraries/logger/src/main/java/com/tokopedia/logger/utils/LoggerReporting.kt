@@ -28,8 +28,9 @@ class LoggerReporting {
                             userId: String): Logger? {
         val timeStamp = System.currentTimeMillis()
         val priorityText = when (priority) {
-            Priority.P1 -> "P1"
-            Priority.P2 -> "P2"
+            Priority.P1 -> P1
+            Priority.P2 -> P2
+            Priority.SF -> SF
         }
         val tagMapKey = StringBuilder(priorityText).append(DELIMITER_TAG_MAPS).append(tag).toString()
 
@@ -68,27 +69,39 @@ class LoggerReporting {
         val p = when (priority) {
             P1 -> Constants.SEVERITY_HIGH
             P2 -> Constants.SEVERITY_MEDIUM
+            SF -> Constants.SEVERITY_SF
             else -> -1
         }
+
         with(mapMessage) {
-            put("log_tag", tag)
-            put("log_timestamp", timeStamp.toString())
-            put("log_time", getReadableTimeStamp(timeStamp))
-            put("log_did", partDeviceId)
-            put("log_uid", userId)
-            put("log_vernm", versionName)
-            put("log_vercd", versionCode.toString())
-            put("log_os", Build.VERSION.RELEASE)
-            put("log_device", Build.MODEL)
-            put("log_packageName", packageName.toString())
-            put("log_installer", installer.toString())
-            put("log_debug", debug.toString())
-            put("log_priority", p.toString())
-            for (item in message) {
-                if (item.value.length > Constants.MAX_LENGTH_PER_ITEM) {
-                    put(item.key, item.value.substring(0, Constants.MAX_LENGTH_PER_ITEM))
-                } else {
-                    put(item.key, item.value)
+            put(Constants.PRIORITY_LOG, p.toString())
+            put(Constants.TAG_LOG, tag)
+            if (priority == SF) {
+                for (item in message) {
+                    if (item.value.length > Constants.MAX_LENGTH_PER_ITEM) {
+                        put(item.key, item.value.substring(0, Constants.MAX_LENGTH_PER_ITEM))
+                    } else {
+                        put(item.key, item.value)
+                    }
+                }
+            } else {
+                put("log_timestamp", timeStamp.toString())
+                put("log_time", getReadableTimeStamp(timeStamp))
+                put("log_did", partDeviceId)
+                put("log_uid", userId)
+                put("log_vernm", versionName)
+                put("log_vercd", versionCode.toString())
+                put("log_os", Build.VERSION.RELEASE)
+                put("log_device", Build.MODEL)
+                put("log_packageName", packageName.toString())
+                put("log_installer", installer.toString())
+                put("log_debug", debug.toString())
+                for (item in message) {
+                    if (item.value.length > Constants.MAX_LENGTH_PER_ITEM) {
+                        put(item.key, item.value.substring(0, Constants.MAX_LENGTH_PER_ITEM))
+                    } else {
+                        put(item.key, item.value)
+                    }
                 }
             }
         }
@@ -190,6 +203,7 @@ class LoggerReporting {
         const val PREFIX = "P"
         const val P1 = "P1"
         const val P2 = "P2"
+        const val SF = "SF"
 
         const val TAG_OFFLINE = "offline"
         const val TAG_ONLINE = "online"

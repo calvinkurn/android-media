@@ -12,24 +12,21 @@ import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.mediauploader.di.MediaUploaderModule
-import com.tokopedia.mediauploader.di.MediaUploaderNetworkModule
-import com.tokopedia.mediauploader.di.NetworkModule
+import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory
 import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
-import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.imageserver.ChatImageServerResponse
-import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
-import com.tokopedia.topchat.chatroom.domain.usecase.GetTemplateChatRoomUseCase
 import com.tokopedia.topchat.common.Constant.NET_CONNECT_TIMEOUT
 import com.tokopedia.topchat.common.Constant.NET_READ_TIMEOUT
 import com.tokopedia.topchat.common.Constant.NET_RETRY
@@ -39,9 +36,10 @@ import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.network.TopchatCacheManagerImpl
+import com.tokopedia.topchat.common.websocket.*
+import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket.Companion.PAGE_CHATROOM
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.websocket.RxWebSocketUtil
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
@@ -60,8 +58,6 @@ import javax.inject.Named
         includes = arrayOf(
                 ChatNetworkModule::class,
                 MediaUploaderModule::class,
-                MediaUploaderNetworkModule::class,
-                NetworkModule::class
         )
 )
 class ChatModule {
@@ -96,12 +92,6 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    fun provideGetTemplateChatUseCase(api: ChatRoomApi, mapper: GetTemplateChatRoomMapper): GetTemplateChatRoomUseCase {
-        return GetTemplateChatRoomUseCase(api, mapper)
-    }
-
-    @ChatScope
-    @Provides
     fun provideResponseInterceptor(): ErrorResponseInterceptor {
         return HeaderErrorResponseInterceptor(HeaderErrorListResponse::class.java)
     }
@@ -127,16 +117,6 @@ class ChatModule {
                                    userSessionInterface: UserSessionInterface):
             TkpdAuthInterceptor {
         return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
-    }
-
-    @ChatScope
-    @Provides
-    fun provideRxWebSocketUtil(
-            tkpdAuthInterceptor: TkpdAuthInterceptor,
-            fingerprintInterceptor: FingerprintInterceptor
-    ): RxWebSocketUtil {
-        val interceptors = listOf(tkpdAuthInterceptor, fingerprintInterceptor)
-        return RxWebSocketUtil.getInstance(interceptors)
     }
 
     @ChatScope
@@ -201,13 +181,6 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    fun provideChatRoomSettingUseCase(graphqlRepository: GraphqlRepository)
-            : com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<RoomSettingResponse> {
-        return com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository)
-    }
-
-    @ChatScope
-    @Provides
     internal fun provideAddWishListUseCase(@TopchatContext context: Context): AddWishListUseCase {
         return AddWishListUseCase(context)
     }
@@ -249,5 +222,51 @@ class ChatModule {
     @Provides
     fun provideRemoteConfig(@TopchatContext context: Context) : RemoteConfig {
         return FirebaseRemoteConfigImpl(context)
+    }
+
+    @ChatScope
+    @Provides
+    fun provideAbTestPlatform() : AbTestPlatform {
+        return RemoteConfigInstance.getInstance().abTestPlatform
+    }
+
+    @ChatScope
+    @Provides
+    fun provideWebSocketStateHandler(): WebSocketStateHandler {
+        return DefaultWebSocketStateHandler()
+    }
+
+    @ChatScope
+    @Provides
+    fun provideTopChatWebSocket(
+        userSession: UserSessionInterface,
+        client: OkHttpClient
+    ): TopchatWebSocket {
+        val webSocketUrl = ChatUrl.CHAT_WEBSOCKET_DOMAIN
+            .plus(ChatUrl.CONNECT_WEBSOCKET)
+            .plus("?os_type=1")
+            .plus("&device_id=%s")
+            .plus("&user_id=%s")
+            .format(
+                userSession.deviceId,
+                userSession.userId
+            )
+        return DefaultTopChatWebSocket(
+            client, webSocketUrl, userSession.accessToken, PAGE_CHATROOM
+        )
+    }
+
+    @ChatScope
+    @Provides
+    fun provideWebSocketParser(): WebSocketParser {
+        return DefaultWebSocketParser()
+    }
+
+    @ChatScope
+    @Provides
+    fun provideWebsocketPayloadGenerator(
+        userSession: UserSessionInterface
+    ): WebsocketPayloadGenerator {
+        return DefaultWebsocketPayloadGenerator(userSession)
     }
 }

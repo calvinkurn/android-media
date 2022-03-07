@@ -48,6 +48,7 @@ object DeepLinkUrlConstant {
     const val DEALS_LINK_URL = "https://www.tokopedia.com/deals/"
     const val AKTIVASI_POWER_MERCHANT_LINK_URL = "https://www.tokopedia.com/terms/aktivasi-powermerchant"
     const val SHOP_LINK_URL = "https://www.tokopedia.com/nicestuff88"
+    const val SHOP_MVC_LOCKED_TO_PRODUCT_LINK_URL = "https://www.tokopedia.com/nicestuff88/voucher/456"
     const val PRODUCT_LINK_URL = "https://www.tokopedia.com/nicestuff88/magic-tas-kantong-belanja-shopping-bag-roll-up-berkualitas"
     const val CAMPAIGN_LINK_URL = "https://www.tokopedia.com/dettol/campaign/123"
     const val LOGIN_BY_QR_LINK_URL = "https://www.tokopedia.com/qrcode-login"
@@ -151,5 +152,12 @@ object DeepLinkUrlConstant {
         const val PBB_KAB_LEBAK = "https://www.tokopedia.com/pajak/pbb/kab-lebak/"
         const val PBB_KAB_BEKASI = "https://www.tokopedia.com/pajak/pbb/kab-bekasi/"
         const val PBB_SUBANG = "https://www.tokopedia.com/pajak/pbb/kab-subang/"
+    }
+
+    object CONTENT {
+        const val PLAY_CHANNEL_ID = "13114"
+        const val PLAY_FROM_HOME = "https://www.tokopedia.com/play/channel/13114?source_type=HOME"
+        const val PLAY_FROM_FEED = "https://www.tokopedia.com/play/channel/13114?source_type=FEED"
+        const val PLAY_WITH_START_TIME = "https://www.tokopedia.com/play/channel/13114?start_time=60000"
     }
 }

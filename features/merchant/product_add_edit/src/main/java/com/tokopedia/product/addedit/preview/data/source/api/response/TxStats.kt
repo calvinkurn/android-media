@@ -4,9 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class TxStats(
         @SerializedName("itemSold")
-        val itemSold: Int = 0,
-        @SerializedName("txSuccess")
-        val txSuccess: Int = 0,
-        @SerializedName("txReject")
-        val txReject: Int = 0
+        val itemSold: Int = 0
 )

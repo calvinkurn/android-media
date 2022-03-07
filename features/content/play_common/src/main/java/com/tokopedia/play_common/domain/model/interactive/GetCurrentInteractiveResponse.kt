@@ -39,4 +39,7 @@ data class ChannelInteractive(
 
         @SerializedName("countdown_end_delay")
         val countdownEndDelay: Int = 0,
+
+        @SerializedName("waiting_duration")
+        val waitingDuration: Int = 0,
 )

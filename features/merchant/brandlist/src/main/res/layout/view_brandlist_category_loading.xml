@@ -9,20 +9,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_10"
-        android:paddingBottom="@dimen/dp_5"
-        android:layout_marginLeft="@dimen/dp_5"
+        android:layout_marginTop="10dp"
+        android:paddingBottom="5dp"
+        android:layout_marginLeft="5dp"
         android:orientation="vertical">
         <com.elyeproj.loaderviewlibrary.LoaderImageView
             android:layout_gravity="center"
             app:corners="10"
             android:layout_marginTop="@dimen/spacing_lvl2"
-            android:layout_marginBottom="@dimen/dp_5"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40" />
+            android:layout_marginBottom="5dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_margin="@dimen/spacing_lvl2"
-            android:layout_width="@dimen/dp_72"
+            android:layout_width="72dp"
             app:corners="10"
             android:ellipsize="end"
             android:textColor="@color/Unify_N700_96"
@@ -32,19 +32,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_10"
-        android:paddingBottom="@dimen/dp_5"
+        android:layout_marginTop="10dp"
+        android:paddingBottom="5dp"
         android:orientation="vertical">
         <com.elyeproj.loaderviewlibrary.LoaderImageView
             android:layout_gravity="center"
             app:corners="10"
             android:layout_marginTop="@dimen/spacing_lvl2"
-            android:layout_marginBottom="@dimen/dp_5"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40" />
+            android:layout_marginBottom="5dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_margin="@dimen/spacing_lvl2"
-            android:layout_width="@dimen/dp_72"
+            android:layout_width="72dp"
             app:corners="10"
             android:ellipsize="end"
             android:textColor="@color/Unify_N700_96"
@@ -54,19 +54,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_10"
-        android:paddingBottom="@dimen/dp_5"
+        android:layout_marginTop="10dp"
+        android:paddingBottom="5dp"
         android:orientation="vertical">
         <com.elyeproj.loaderviewlibrary.LoaderImageView
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/spacing_lvl2"
-            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginBottom="5dp"
             app:corners="10"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40" />
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_margin="@dimen/spacing_lvl2"
-            android:layout_width="@dimen/dp_72"
+            android:layout_width="72dp"
             app:corners="10"
             android:ellipsize="end"
             android:textColor="@color/Unify_N700_96"
@@ -76,19 +76,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_10"
-        android:paddingBottom="@dimen/dp_5"
+        android:layout_marginTop="10dp"
+        android:paddingBottom="5dp"
         android:orientation="vertical">
         <com.elyeproj.loaderviewlibrary.LoaderImageView
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/spacing_lvl2"
-            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginBottom="5dp"
             app:corners="10"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40" />
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_margin="@dimen/spacing_lvl2"
-            android:layout_width="@dimen/dp_72"
+            android:layout_width="72dp"
             app:corners="10"
             android:ellipsize="end"
             android:textColor="@color/Unify_N700_96"
@@ -98,19 +98,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_10"
-        android:paddingBottom="@dimen/dp_5"
+        android:layout_marginTop="10dp"
+        android:paddingBottom="5dp"
         android:orientation="vertical">
         <com.elyeproj.loaderviewlibrary.LoaderImageView
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/spacing_lvl2"
-            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginBottom="5dp"
             app:corners="10"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40" />
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_margin="@dimen/spacing_lvl2"
-            android:layout_width="@dimen/dp_72"
+            android:layout_width="72dp"
             app:corners="10"
             android:ellipsize="end"
             android:textColor="@color/Unify_N700_96"

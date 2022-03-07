@@ -36,17 +36,18 @@ import com.tokopedia.review.feature.inbox.history.presentation.util.SearchListen
 import com.tokopedia.review.feature.inbox.history.presentation.util.SearchTextWatcher
 import com.tokopedia.review.feature.inbox.history.presentation.viewmodel.ReviewHistoryViewModel
 import com.tokopedia.review.inbox.R
+import com.tokopedia.review.inbox.databinding.FragmentReviewHistoryBinding
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_review_history.*
-import kotlinx.android.synthetic.main.partial_review_connection_error.*
-import kotlinx.android.synthetic.main.partial_review_empty.view.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHistoryAdapterTypeFactory>(),
-        HasComponent<ReviewHistoryComponent>, ReviewAttachedImagesClickListener, SearchListener, ReviewHistoryItemListener {
+class ReviewHistoryFragment :
+    BaseListFragment<ReviewHistoryUiModel, ReviewHistoryAdapterTypeFactory>(),
+    HasComponent<ReviewHistoryComponent>, ReviewAttachedImagesClickListener, SearchListener,
+    ReviewHistoryItemListener {
 
     companion object {
-        fun createNewInstance() : ReviewHistoryFragment {
+        fun createNewInstance(): ReviewHistoryFragment {
             return ReviewHistoryFragment()
         }
     }
@@ -54,23 +55,30 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
     @Inject
     lateinit var viewModel: ReviewHistoryViewModel
 
+    private var binding by autoClearedNullable<FragmentReviewHistoryBinding>()
+
     override fun getComponent(): ReviewHistoryComponent? {
         return activity?.run {
             DaggerReviewHistoryComponent
-                    .builder()
-                    .reviewInboxComponent(ReviewInboxInstance.getComponent(application))
-                    .build()
+                .builder()
+                .reviewInboxComponent(ReviewInboxInstance.getComponent(application))
+                .build()
         }
     }
 
-    override fun getRecyclerView(view: View?): RecyclerView {
-        return reviewHistoryRecyclerView.apply {
+    override fun getRecyclerView(view: View?): RecyclerView? {
+        return binding?.reviewHistoryRecyclerView?.apply {
             itemAnimator = null
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_review_history, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentReviewHistoryBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -95,7 +103,11 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
     override fun onItemClicked(t: ReviewHistoryUiModel?) {
         t?.let {
             with(it.productrevFeedbackHistory) {
-                ReviewHistoryTracking.eventClickReviewCard(viewModel.getUserId(), product.productId, review.feedbackId)
+                ReviewHistoryTracking.eventClickReviewCard(
+                    viewModel.getUserId(),
+                    product.productId,
+                    review.feedbackId
+                )
             }
             goToReviewDetails(it.productrevFeedbackHistory.review.feedbackId)
         }
@@ -122,15 +134,19 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
-        return reviewHistorySwipeRefresh
+        return binding?.reviewHistorySwipeRefresh
     }
 
-    override fun onAttachedImagesClicked(productName: String, attachedImages: List<String>, position: Int) {
+    override fun onAttachedImagesClicked(
+        productName: String,
+        attachedImages: List<String>,
+        position: Int
+    ) {
         goToImagePreview(productName, attachedImages, position)
     }
 
     override fun onSearchTextChanged(text: String) {
-        if(text.isNotEmpty()) {
+        if (text.isNotEmpty()) {
             ReviewHistoryTracking.eventSearch(viewModel.getUserId(), text)
         }
         clearAllData()
@@ -138,16 +154,25 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
     }
 
     override fun trackAttachedImageClicked(productId: String?, feedbackId: String?) {
-        if(productId != null && feedbackId != null) {
-            ReviewHistoryTracking.eventClickImageGallery(viewModel.getUserId(), productId, feedbackId)
+        if (productId != null && feedbackId != null) {
+            ReviewHistoryTracking.eventClickImageGallery(
+                viewModel.getUserId(),
+                productId,
+                feedbackId
+            )
         }
     }
 
     private fun initSearchBar() {
-        reviewHistorySearchBar.searchBarTextField.apply {
-            addTextChangedListener(SearchTextWatcher(searchTextView = this, searchListener = this@ReviewHistoryFragment))
-            setOnFocusChangeListener { v, hasFocus ->
-                if(hasFocus) {
+        binding?.reviewHistorySearchBar?.searchBarTextField?.apply {
+            addTextChangedListener(
+                SearchTextWatcher(
+                    searchTextView = this,
+                    searchListener = this@ReviewHistoryFragment
+                )
+            )
+            setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
                     ReviewHistoryTracking.eventClickSearchBar(viewModel.getUserId())
                 }
             }
@@ -155,25 +180,36 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
     }
 
     private fun showErrorToaster(errorMessage: String, ctaText: String, action: () -> Unit) {
-        view?.let { Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, View.OnClickListener { action() }).show() }
+        view?.let {
+            Toaster.build(
+                it,
+                errorMessage,
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                ctaText
+            ) { action() }.show()
+        }
     }
 
     private fun observeReviewList() {
         viewModel.reviewList.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
                     hideLoading()
                     hidePageLoading()
                     hideError()
-                    if(it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE && it.data.list.isEmpty() && it.search.isNotBlank()) {
+                    if (it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE && it.data.list.isEmpty() && it.search.isNotBlank()) {
                         showEmptySearchResult()
                         return@Observer
                     }
-                    if(it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE && it.data.list.isEmpty()) {
+                    if (it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE && it.data.list.isEmpty()) {
                         showNoProductEmpty()
                         return@Observer
                     }
-                    renderReviewData(it.data.list.map { history -> ReviewHistoryUiModel(history) }, it.data.hasNext)
+                    renderReviewData(
+                        it.data.list.map { history -> ReviewHistoryUiModel(history) },
+                        it.data.hasNext
+                    )
                 }
                 is LoadingView -> {
                     showPageLoading()
@@ -182,13 +218,16 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
                     hideError()
                 }
                 is Fail -> {
-                    if(it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
+                    if (it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
                         hidePageLoading()
                         hideEmptyState()
                         hideList()
                         showError()
                     } else {
-                        showErrorToaster(getString(R.string.review_toaster_page_error), getString(R.string.review_refresh)) {}
+                        showErrorToaster(
+                            getString(R.string.review_toaster_page_error),
+                            getString(R.string.review_refresh)
+                        ) {}
                     }
                 }
             }
@@ -196,39 +235,49 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
     }
 
     private fun goToReviewDetails(feedbackId: String) {
-        RouteManager.route(context,
-                Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.REVIEW_DETAIL, feedbackId)).buildUpon().toString()
+        RouteManager.route(
+            context,
+            Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.REVIEW_DETAIL, feedbackId))
+                .buildUpon().toString()
         )
     }
 
     private fun goToImagePreview(productName: String, attachedImages: List<String>, position: Int) {
-        startActivity(context?.let { ImagePreviewSliderActivity.getCallingIntent(it, productName, attachedImages, attachedImages, position) })
+        startActivity(context?.let {
+            ImagePreviewSliderActivity.getCallingIntent(
+                it,
+                productName,
+                attachedImages,
+                attachedImages,
+                position
+            )
+        })
     }
 
     private fun showError() {
-        reviewHistoryConnectionError.show()
+        binding?.reviewHistoryConnectionError?.root?.show()
     }
 
     private fun hideError() {
-        reviewHistoryConnectionError.hide()
+        binding?.reviewHistoryConnectionError?.root?.hide()
     }
 
     private fun showPageLoading() {
-        reviewHistoryLoading.show()
+        binding?.reviewHistoryLoading?.root?.show()
     }
 
     private fun hidePageLoading() {
-        reviewHistoryLoading.hide()
+        binding?.reviewHistoryLoading?.root?.hide()
     }
 
     private fun showList() {
-        reviewHistorySearchBar.show()
-        reviewHistorySwipeRefresh.show()
+        binding?.reviewHistorySearchBar?.show()
+        binding?.reviewHistorySwipeRefresh?.show()
     }
 
     private fun hideList() {
-        reviewHistorySearchBar.hide()
-        reviewHistorySwipeRefresh.hide()
+        binding?.reviewHistorySearchBar?.hide()
+        binding?.reviewHistorySwipeRefresh?.hide()
     }
 
     private fun renderReviewData(reviewData: List<ReviewHistoryUiModel>, hasNextPage: Boolean) {
@@ -237,35 +286,36 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
     }
 
     private fun showEmptySearchResult() {
-        reviewHistorySearchBar.show()
-        reviewHistoryEmpty.apply {
+        binding?.reviewHistorySearchBar?.show()
+        binding?.reviewHistoryEmpty?.apply {
             reviewEmptyImage.loadImage(ReviewInboxConstants.REVIEW_INBOX_NO_PRODUCTS_SEARCH_IMAGE)
-            reviewEmptyTitle.text = getString(R.string.review_history_no_product_search_result_title)
+            reviewEmptyTitle.text =
+                getString(R.string.review_history_no_product_search_result_title)
             reviewEmptySubtitle.text = getString(R.string.review_history_no_product_search_content)
             reviewEmptyButton.hide()
-            show()
+            root.show()
         }
-        reviewHistorySwipeRefresh.hide()
+        binding?.reviewHistorySwipeRefresh?.hide()
     }
 
     private fun showNoProductEmpty() {
-        reviewHistoryEmpty.apply {
+        binding?.reviewHistoryEmpty?.apply {
             reviewEmptyImage.loadImage(ReviewInboxConstants.REVIEW_INBOX_NO_PRODUCTS_BOUGHT_IMAGE)
             reviewEmptyTitle.text = getString(R.string.review_history_no_review_history_title)
             reviewEmptySubtitle.text = getString(R.string.review_history_no_review_history_content)
             reviewEmptyButton.hide()
-            show()
+            root.show()
         }
-        reviewHistorySearchBar.hide()
-        reviewHistorySwipeRefresh.hide()
+        binding?.reviewHistorySearchBar?.hide()
+        binding?.reviewHistorySwipeRefresh?.hide()
     }
 
     private fun hideEmptyState() {
-        reviewHistoryEmpty.hide()
+        binding?.reviewHistoryEmpty?.root?.hide()
     }
 
     private fun setupErrorPage() {
-        reviewConnectionErrorRetryButton.setOnClickListener {
+        binding?.reviewHistoryConnectionError?.reviewConnectionErrorRetryButton?.setOnClickListener {
             loadInitialData()
         }
     }

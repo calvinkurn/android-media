@@ -25,7 +25,7 @@
                     android:id="@+id/top_section"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_24"
+                    android:layout_marginTop="24dp"
                     android:gravity="center"
                     android:orientation="vertical"
                     app:layout_constraintTop_toTopOf="parent">
@@ -39,7 +39,7 @@
                         android:id="@+id/tx_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_16"
+                        android:layout_marginTop="16dp"
                         android:gravity="center_horizontal"
                         android:textColor="@color/oqr_amount_color_black"
                         android:textSize="@dimen/sp_16"
@@ -48,17 +48,17 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_8"
+                        android:layout_marginTop="8dp"
                         android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/rp_string_id"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dp_8"
+                            android:layout_marginTop="8dp"
                             android:text="@string/oqr_rp_string"
                             android:textColor="@color/oqr_amount_color_black"
-                            android:textSize="@dimen/sp_14"
+                            android:textSize="14sp"
                             android:textStyle="bold"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -66,10 +66,10 @@
                             android:id="@+id/transaction_amount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/dp_4"
-                            android:layout_marginLeft="@dimen/dp_4"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginLeft="4dp"
                             android:textColor="@color/oqr_amount_color_black"
-                            android:textSize="@dimen/sp_34"
+                            android:textSize="34sp"
                             app:layout_constraintLeft_toRightOf="@+id/rp_string_id"
                             tools:text="@string/oqr_fake_number" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -78,9 +78,9 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_24"
-                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginRight="16dp"
                     android:orientation="vertical"
                     app:layout_constraintTop_toBottomOf="@+id/top_section">
 
@@ -94,8 +94,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:layout_marginBottom="@dimen/dp_16"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
                         android:orientation="horizontal">
 
                         <ImageView
@@ -106,15 +106,15 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/dp_20"
-                            android:layout_marginLeft="@dimen/dp_20"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginLeft="20dp"
                             android:orientation="vertical">
 
                             <TextView
                                 android:id="@+id/merchant_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginBottom="@dimen/dp_4"
+                                android:layout_marginBottom="4dp"
                                 android:textColor="@color/light_primary"
                                 android:textSize="@dimen/sp_18"
                                 tools:text="@string/oqr_default_shop_name" />
@@ -123,9 +123,9 @@
                                 android:id="@+id/merchant_description"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/dp_2"
+                                android:layout_marginTop="2dp"
                                 android:textColor="@color/light_primary"
-                                android:textSize="@dimen/sp_14"
+                                android:textSize="14sp"
                                 tools:text="@string/oqr_default_shop_description" />
                         </LinearLayout>
                     </LinearLayout>
@@ -135,7 +135,7 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/grey_round_solid"
                         android:orientation="vertical"
-                        android:padding="@dimen/dp_16">
+                        android:padding="16dp">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -147,7 +147,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dp_8"
+                            android:layout_marginTop="8dp"
                             android:orientation="horizontal">
 
                             <TextView
@@ -162,10 +162,10 @@
                                 android:id="@+id/paste_top_clipboard"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/dp_24"
-                                android:layout_marginLeft="@dimen/dp_24"
-                                android:paddingLeft="@dimen/dp_8"
-                                android:paddingRight="@dimen/dp_8"
+                                android:layout_marginStart="24dp"
+                                android:layout_marginLeft="24dp"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
                                 app:srcCompat="@drawable/ic_icon_ic_copy" />
                         </LinearLayout>
                     </LinearLayout>
@@ -175,15 +175,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginTop="@dimen/dp_24"
+                        android:layout_marginTop="24dp"
                         android:layout_marginBottom="@dimen/dp_64"
                         android:background="@drawable/rounded_hollow_btn_bg"
                         android:gravity="center_horizontal"
-                        android:paddingTop="@dimen/dp_16"
-                        android:paddingBottom="@dimen/dp_16"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="16dp"
                         android:text="@string/oqr_go_to_tokopedia"
                         android:textColor="@color/oqr_aqua_color"
-                        android:textSize="@dimen/sp_14" />
+                        android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>

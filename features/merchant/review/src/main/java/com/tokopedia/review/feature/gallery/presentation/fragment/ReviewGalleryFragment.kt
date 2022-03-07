@@ -78,6 +78,9 @@ class ReviewGalleryFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+        }
         getProductIdFromArguments()
         ReviewGalleryTracking.trackOpenScreen(viewModel.getProductId())
     }
@@ -128,7 +131,7 @@ class ReviewGalleryFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_review_gallery, container, false)
+        return inflater.inflate(com.tokopedia.review.R.layout.fragment_review_gallery, container, false)
     }
 
     override fun getComponent(): ReviewGalleryComponent? {
@@ -320,7 +323,12 @@ class ReviewGalleryFragment :
                 totalLiked = this.totalLike,
                 review = this.review,
                 reviewTime = this.createTimestamp,
-                isReportable = this.isReportable
+                isReportable = this.isReportable,
+                userStats = this.userStats,
+                isAnonymous = this.isAnonymous,
+                userId = this.user.userId,
+                userImage = this.user.image,
+                badRatingReason = this.badRatingReasonFmt
             )
         }
         detail.reviewGalleryImages.firstOrNull { it.attachmentId == attachmentId }?.apply {

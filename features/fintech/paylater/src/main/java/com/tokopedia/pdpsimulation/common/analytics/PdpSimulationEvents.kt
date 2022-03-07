@@ -43,6 +43,15 @@ sealed class PdpSimulationEvent {
 
         data class TenureListImpression(val tenure: String) : PdpSimulationEvent()
 
+        data class GopayBottomSheetImpression(val productId: String,val tenure: String,val partnerName: String,val emiAmount: String) : PdpSimulationEvent()
+
+        data class GopayBottomSheetButtonClick(
+            val productId: String,
+            val tenure: String,
+            val partnerName: String,
+            val emiAmount: String,
+            val url: String
+        ) : PdpSimulationEvent()
     }
 
     sealed class CreditCard {

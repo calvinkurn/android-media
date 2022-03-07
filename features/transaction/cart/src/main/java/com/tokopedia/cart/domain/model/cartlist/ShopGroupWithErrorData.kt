@@ -1,10 +1,8 @@
 package com.tokopedia.cart.domain.model.cartlist
 
-import android.os.Parcelable
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopTypeInfo
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
-import kotlinx.parcelize.Parcelize
 
-@Parcelize
 data class ShopGroupWithErrorData(
         var cartItemHolderDataList: List<CartItemHolderData> = emptyList(),
         var isError: Boolean = false,
@@ -12,7 +10,7 @@ data class ShopGroupWithErrorData(
         var similarProductUrl: String? = null,
         var shopName: String = "",
         var shopId: String = "",
-        var shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
+        var shopTypeInfoData: ShopTypeInfo = ShopTypeInfo(),
         var cityName: String = "",
         var isFulfillment: Boolean = false,
         var fulfillmentName: String = "",
@@ -23,4 +21,4 @@ data class ShopGroupWithErrorData(
         var warningTitle: String? = null,
         var warningDescription: String? = null,
         var isTokoNow: Boolean = false
-) : Parcelable
+)

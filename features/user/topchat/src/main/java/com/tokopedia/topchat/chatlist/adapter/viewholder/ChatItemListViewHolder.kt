@@ -14,12 +14,12 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
@@ -123,7 +123,7 @@ class ChatItemListViewHolder constructor(
     }
 
     private fun bindProfilePicture(chat: ItemChatListPojo) {
-        ImageHandler.loadImageCircle2(itemView.context, thumbnail, chat.thumbnail)
+        thumbnail.loadImageCircle(chat.thumbnail)
     }
 
     private fun bindPin(chat: ItemChatListPojo) {
@@ -302,7 +302,7 @@ class ChatItemListViewHolder constructor(
             )
         } else {
             itemView.setBackgroundColor(
-                MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background)
             )
         }
     }

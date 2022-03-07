@@ -13,17 +13,24 @@ class DialogController(private val presenter: GratificationPresenter) {
     var job: Job? = null
 
     fun showGratifDialog(weakReference: WeakReference<Activity>,
-                         paymentId: Long,
+                         paymentIdStr: String,
                          gratifPopupCallback: GratificationPresenter.GratifPopupCallback,
                          screenName: String
     ): Job? {
-        job = presenter.showGratificationInApp(weakActivity = weakReference,
-                paymentID = paymentId,
+        return try {
+            val paymentID = paymentIdStr.toLong()
+            job = presenter.showGratificationInApp(
+                weakActivity = weakReference,
+                paymentID = paymentID,
                 gratifPopupCallback = gratifPopupCallback,
                 notificationEntryType = NotificationEntryType.ORGANIC,
                 screenName = screenName,
-                timeout = GRATIF_TIMEOUT, closeCurrentActivity = true)
-        return job
+                timeout = GRATIF_TIMEOUT, closeCurrentActivity = true
+            )
+            job
+        } catch (e: Exception) {
+            null
+        }
     }
 
     fun cancelJob() {

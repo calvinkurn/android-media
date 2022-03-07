@@ -3,9 +3,18 @@ package com.tokopedia.tokopedianow.home.domain.query
 internal object GetHomeLayoutData {
 
     val QUERY = """
-       query getDynamicHomeChannel(${'$'}channelId: String, ${'$'}location: String) {
+       query getDynamicHomeChannel(
+         ${'$'}token: String, 
+         ${'$'}numOfChannel: Int, 
+         ${'$'}location: String
+       ) {
          dynamicHomeChannel {
-           channels(type:"tokonow", channelIDs:${'$'}channelId, location: ${'$'}location) {
+           channels(
+             type:"tokonow", 
+             token:${'$'}token, 
+             numOfChannel:${'$'}numOfChannel, 
+             location: ${'$'}location
+           ) {
              id
              group_id
              galaxy_attribution
@@ -77,6 +86,7 @@ internal object GetHomeLayoutData {
                  position
                  type
                }
+               param
              }
              banner {
                id
@@ -96,6 +106,7 @@ internal object GetHomeLayoutData {
                attribution
                gradient_color
              }
+             token
            }
          }
        }

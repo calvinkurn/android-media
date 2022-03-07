@@ -1,14 +1,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDraftProduct"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_16"
+        android:padding="16dp"
         android:background="@color/Unify_Y200"
         android:clickable="true"
         android:focusable="true"
@@ -16,9 +17,12 @@
         tools:visibility="visible"
         android:textSize="@dimen/fontvs"
         android:foreground="?attr/selectableItemBackground"
+        app:typographyType="body_3"
         tools:text="@string/product_manage_you_have_x_unfinished_product"
         tools:targetApi="m" />
 
-    <include layout="@layout/fragment_product_manage" />
+    <include
+        android:id="@+id/layout_fragment_product_manage"
+        layout="@layout/fragment_product_manage" />
 </LinearLayout>
 

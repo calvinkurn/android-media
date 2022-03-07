@@ -19,6 +19,11 @@ object KycUploadErrorCodeUtil {
     private const val KYC_UPLOAD_MESSAGE_ERROR = -10
     private const val KYC_UPLOAD_IO_EXCEPTION = -11
     private const val KYC_UPLOAD_ERROR_CODE_DEFAULT = -12
+    const val KYC_UPLOAD_ERROR_ENCRYPT_DECRYPT = -13
+
+    const val FAILED_ENCRYPTION = "Encryption gagal"
+    const val FILE_PATH_KTP_EMPTY = "file ktp tidak ditemukan"
+    const val FILE_PATH_FACE_EMPTY = "file selfie/liveness tidak ditemukan"
 
     fun getErrorCode(e: Throwable): Int {
         if (e is UnknownHostException) {
@@ -43,7 +48,11 @@ object KycUploadErrorCodeUtil {
         } else if (e is MessageErrorException && e.message?.isNotEmpty() == true) {
             return KYC_UPLOAD_MESSAGE_ERROR
         } else if (e is IOException) {
-            return KYC_UPLOAD_IO_EXCEPTION
+            return if(e.message?.contains("AEADBadTagException", ignoreCase = true) == true) {
+                KYC_UPLOAD_ERROR_ENCRYPT_DECRYPT
+            } else {
+                KYC_UPLOAD_IO_EXCEPTION
+            }
         }
         return KYC_UPLOAD_ERROR_CODE_DEFAULT
     }

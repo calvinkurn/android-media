@@ -18,7 +18,7 @@ class DefaultErrorException(throwable: Throwable) : Throwable() {
         }
     }
 
-    override val message: String?
+    override val message: String
         get() = errorMessage
 
     override fun getLocalizedMessage(): String {

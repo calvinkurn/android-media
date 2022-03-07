@@ -15,8 +15,10 @@
     <string name="applink_choose_account_fingerprint">/choose-account-fingerprint</string>
     <string name="applink_account_setting_fingerprint">/biometric-setting</string>
     <string name="applink_account_verify_fingerprint">/verify-fingerprint</string>
+    <string name="applink_account_register_fingerprint">/register-fingerprint</string>
     <string name="applink_link_account">/link-account</string>
     <string name="applink_link_account_webview">/link-account-webview</string>
+    <string name="applink_account_link_acc_reminder">/link-acc-reminder</string>
 
     <string name="title_applink_chatbot">Chat Sekarang</string>
     <string name="title_applink_campaign_shake_landing">Promo</string>

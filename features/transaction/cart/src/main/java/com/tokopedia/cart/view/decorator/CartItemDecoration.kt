@@ -38,7 +38,18 @@ class CartItemDecoration @Inject constructor() : RecyclerView.ItemDecoration() {
                 }
             }
             is CartTickerErrorViewHolder -> outRect.top = context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)?.toInt() ?: 0
-            is CartShopViewHolder -> outRect.top = context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)?.toInt() ?: 0
+            is CartShopViewHolder -> {
+                try {
+                    if (parent.adapter?.getItemViewType(viewHolder.getAdapterPosition() - 1) == DisabledReasonViewHolder.LAYOUT) {
+                        outRect.top = verticalSpaceHeight
+                    } else {
+                        outRect.top = context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)?.toInt() ?: 0
+                    }
+                    outRect.bottom = verticalSpaceHeight
+                } catch (e: Exception) {
+                    // No-op
+                }
+            }
             is CartSectionHeaderViewHolder -> outRect.top = context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)?.toInt() ?: 0
             is ShipmentSellerCashbackViewHolder -> outRect.top = context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)?.toInt() ?: 0
             is DisabledReasonViewHolder -> {

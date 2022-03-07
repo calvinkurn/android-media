@@ -3,9 +3,9 @@ package com.tokopedia.checkout.journey.simple
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.checkout.ShipmentActivity
 import com.tokopedia.checkout.robot.checkoutPage
 import com.tokopedia.checkout.test.R
-import com.tokopedia.checkout.view.ShipmentActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
@@ -28,7 +28,7 @@ class CheckoutTokoNowTest {
 
     private val gtmLogDBSource = GtmLogDBSource(context)
 
-    private fun setup(safResponse: Int = R.raw.saf_tokonow_default_response, ratesResponse: Int = R.raw.ratesv3_tokonow_default_response) {
+    private fun setup(safResponse: Int = R.raw.saf_bundle_tokonow_default_response, ratesResponse: Int = R.raw.ratesv3_tokonow_default_response) {
         gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse {
             addMockResponse(SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, safResponse), MockModelConfig.FIND_BY_CONTAINS)
@@ -52,7 +52,7 @@ class CheckoutTokoNowTest {
             // Wait for Validate Use
             waitForData()
             assertHasSingleShipmentSelected(activityRule,
-                    title = "Same Day (Rp0)",
+                    title = "Bebas Ongkir (Rp0)",
                     eta = "Estimasi tiba hari ini")
             clickChoosePaymentButton(activityRule)
         } validateAnalytics {
@@ -64,7 +64,7 @@ class CheckoutTokoNowTest {
 
     @Test
     fun tokoNowWithFailedDefaultDuration_PassedAnalyticsAndPaymentIntent() {
-        setup(safResponse = R.raw.saf_tokonow_with_failed_default_duration_response)
+        setup(safResponse = R.raw.saf_bundle_tokonow_with_failed_default_duration_response)
         activityRule.launchActivity(null)
 
         checkoutPage {
@@ -75,7 +75,7 @@ class CheckoutTokoNowTest {
             // Wait for Validate Use
             waitForData()
             assertHasSingleShipmentSelected(activityRule,
-                    title = "Same Day (Rp0)",
+                    title = "Bebas Ongkir (Rp0)",
                     eta = "Estimasi tiba hari ini")
             clickChoosePaymentButton(activityRule)
         } validateAnalytics {
@@ -98,8 +98,8 @@ class CheckoutTokoNowTest {
             // Wait for Validate Use
             waitForData()
             assertHasSingleShipmentSelected(activityRule,
-                    title = "Same Day (",
-                    originalPrice = "Rp13.000",
+                    title = "Bebas Ongkir (Rp13.000 Rp8.000)",
+                    originalPrice = "(Rp13.000 ",
                     discountedPrice = " Rp8.000)",
                     eta = "Estimasi tiba hari ini",
                     message = "Pengiriman melebihi limit bebas ongkir, kamu cukup bayar Rp8.000")
@@ -122,7 +122,7 @@ class CheckoutTokoNowTest {
             // Wait for Rates
             waitForData()
             assertHasSingleShipmentSelected(activityRule,
-                    title = "Same Day (Rp13.000)",
+                    title = "Gojek (Rp13.000)",
                     eta = "Estimasi tiba hari ini",
                     message = "Kuota Bebas Ongkirmu habis")
             clickChoosePaymentButton(activityRule)
@@ -140,7 +140,7 @@ class CheckoutTokoNowTest {
     }
 
     companion object {
-        private const val SHIPMENT_ADDRESS_FORM_KEY = "shipment_address_form"
+        private const val SHIPMENT_ADDRESS_FORM_KEY = "shipment_address_form_v3"
         private const val SAVE_SHIPMENT_KEY = "save_shipment"
         private const val RATES_V3_KEY = "ratesV3"
         private const val VALIDATE_USE_KEY = "validate_use_promo_revamp"

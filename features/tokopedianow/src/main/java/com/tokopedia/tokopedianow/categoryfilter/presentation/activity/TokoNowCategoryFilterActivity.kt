@@ -3,7 +3,7 @@ package com.tokopedia.tokopedianow.categoryfilter.presentation.activity
 import androidx.fragment.app.Fragment
 import com.tokopedia.tokopedianow.categoryfilter.presentation.fragment.TokoNowCategoryFilterFragment
 import com.tokopedia.tokopedianow.common.base.activity.BaseTokoNowActivity
-import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 
 class TokoNowCategoryFilterActivity: BaseTokoNowActivity() {
 

@@ -10,7 +10,6 @@ import com.tokopedia.checkout.domain.mapper.CheckoutMapper
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase.Companion.CHANGE_SHIPPING_ADDRESS_MUTATION
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase.Companion.CHECKOUT_MUTATION
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormGqlUseCase.Companion.SHIPMENT_ADDRESS_FORM_QUERY
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase.Companion.SAVE_SHIPMENT_STATE_MUTATION
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.ShipmentContract
@@ -18,20 +17,19 @@ import com.tokopedia.checkout.view.ShipmentFragment
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.domain.executor.MainScheduler
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.feature.editaddress.di.PeopleAddressNetworkModule
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
@@ -41,13 +39,8 @@ import dagger.Provides
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Named
 
-/**
- * Created by Irfan Khoirul on 2019-08-26.
- */
-
 @Module(includes = [
     PeopleAddressNetworkModule::class,
-    PromoCheckoutModule::class,
     PurchasePlatformNetworkModule::class,
     PurchasePlatformBaseModule::class
 ])
@@ -71,13 +64,6 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
 
     @Provides
     @CheckoutScope
-    @Named(SubmitHelpTicketUseCase.QUERY_NAME)
-    fun provideSubmitHelpTicketUseCaseQuery(context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.purchase_platform.common.R.raw.submit_help_ticket)
-    }
-
-    @Provides
-    @CheckoutScope
     fun provideScheduler(): SchedulerProvider {
         return MainScheduler()
     }
@@ -90,34 +76,34 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @CheckoutScope
     fun provideShipmentPresenter(compositeSubscription: CompositeSubscription,
                                  checkoutGqlUseCase: CheckoutGqlUseCase,
-                                 getShipmentAddressFormGqlUseCase: GetShipmentAddressFormGqlUseCase,
+                                 getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase,
                                  editAddressUseCase: EditAddressUseCase,
                                  changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase,
                                  saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase,
                                  ratesUseCase: GetRatesUseCase,
                                  ratesApiUseCase: GetRatesApiUseCase,
                                  stateConverter: RatesResponseStateConverter,
-                                 clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
-                                 submitHelpTicketUseCase: SubmitHelpTicketUseCase,
+                                 clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase,
                                  shippingCourierConverter: ShippingCourierConverter,
                                  userSessionInterface: UserSessionInterface,
                                  analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection,
                                  checkoutAnalytics: CheckoutAnalyticsCourierSelection,
                                  shipmentDataConverter: ShipmentDataConverter,
                                  releaseBookingUseCase: ReleaseBookingUseCase,
-                                 validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
+                                 validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
                                  gson: Gson,
-                                 executorSchedulers: ExecutorSchedulers): ShipmentContract.Presenter {
+                                 executorSchedulers: ExecutorSchedulers,
+                                 eligibleForAddressUseCase: EligibleForAddressUseCase): ShipmentContract.Presenter {
         return ShipmentPresenter(compositeSubscription,
-                checkoutGqlUseCase, getShipmentAddressFormGqlUseCase,
+                checkoutGqlUseCase, getShipmentAddressFormV3UseCase,
                 editAddressUseCase, changeShippingAddressGqlUseCase,
                 saveShipmentStateGqlUseCase,
                 ratesUseCase, ratesApiUseCase,
-                clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
+                clearCacheAutoApplyStackUseCase,
                 stateConverter, shippingCourierConverter, shipmentFragment, userSessionInterface,
                 analyticsPurchaseProtection, checkoutAnalytics,
                 shipmentDataConverter, releaseBookingUseCase, validateUsePromoRevampUseCase, gson,
-                executorSchedulers)
+                executorSchedulers, eligibleForAddressUseCase)
     }
 
     @Provides
@@ -130,13 +116,6 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @CheckoutScope
     fun provideSellerCashbackListener(): SellerCashbackListener {
         return shipmentFragment
-    }
-
-    @Provides
-    @CheckoutScope
-    @Named(SHIPMENT_ADDRESS_FORM_QUERY)
-    fun provideGetShipmentAddressFormQuery(context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.shipment_address_form_query)
     }
 
     @Provides

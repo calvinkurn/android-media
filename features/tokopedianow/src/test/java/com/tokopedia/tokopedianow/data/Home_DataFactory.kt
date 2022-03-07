@@ -1,11 +1,12 @@
 package com.tokopedia.tokopedianow.data
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.model.ChannelStyle
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.response.Tokonow
@@ -18,10 +19,10 @@ import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.model.*
-import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.model.*
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
+import com.tokopedia.tokopedianow.repurchase.presentation.fragment.TokoNowRepurchaseFragment
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
 import com.tokopedia.unifycomponents.ticker.TickerData
 
@@ -54,38 +55,48 @@ fun createHomeLayoutList(): List<HomeLayoutResponse> {
     )
 }
 
-fun createHomeLayoutItemUiModelList(): List<HomeLayoutItemUiModel> {
+fun createDynamicChannelLayoutList(): List<HomeLayoutResponse> {
     return listOf(
-            HomeLayoutItemUiModel(
-                    BannerDataModel(
-                            channelModel= ChannelModel(
-                                    id="2222",
-                                    groupId="",
-                                    style= ChannelStyle.ChannelHome,
-                                    channelHeader= ChannelHeader(name="Banner Tokonow"),
-                                    channelConfig= ChannelConfig(layout="banner_carousel_v2") ,
-                                    layout="banner_carousel_v2")
-                    ),
-                    HomeLayoutItemState.LOADED
+        HomeLayoutResponse(
+            id = "34923",
+            layout = "lego_3_image",
+            header = Header(
+                name = "Lego Banner",
+                serverTimeUnix = 0
             ),
-            HomeLayoutItemUiModel(
-                    BannerDataModel(
-                            channelModel= ChannelModel(
-                                    id="2222",
-                                    groupId="",
-                                    style= ChannelStyle.ChannelHome,
-                                    channelHeader= ChannelHeader(name="Banner Tokonow"),
-                                    channelConfig= ChannelConfig(layout="banner_carousel_v2") ,
-                                    layout="banner_carousel_v2")
-                    ),
-                    HomeLayoutItemState.LOADING
-            ),
-            HomeLayoutItemUiModel(
-                    TokoNowChooseAddressWidgetUiModel(
-                            id = HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID,
-                    ),
-                    HomeLayoutItemState.NOT_LOADED
+        ),
+        HomeLayoutResponse(
+            id = "11111",
+            layout = "6_image",
+            header = Header(
+                name = "Lego 6",
+                serverTimeUnix = 0
             )
+        ),
+        HomeLayoutResponse(
+            id = "2222",
+            layout = "banner_carousel_v2",
+            header = Header(
+                name = "Banner Tokonow",
+                serverTimeUnix = 0
+            )
+        ),
+        HomeLayoutResponse(
+            id = "2322",
+            layout = "top_carousel_tokonow",
+            header = Header(
+                name = "Product Recommendation",
+                serverTimeUnix = 0
+            )
+        ),
+        HomeLayoutResponse(
+            id = "2122",
+            layout = "left_carousel",
+            header = Header(
+                name = "Mix Left Carousel",
+                serverTimeUnix = 0
+            )
+        )
     )
 }
 
@@ -97,8 +108,59 @@ fun createHomeLayoutListForBannerOnly(): List<HomeLayoutResponse> {
                     header = Header(
                             name = "Banner Tokonow",
                             serverTimeUnix = 0
-                    )
+                    ),
+                    token = "==aff1ed" // Dummy token
             )
+    )
+}
+
+fun createHomeLayoutListForQuestOnly(): List<HomeLayoutResponse> {
+    return listOf(
+        HomeLayoutResponse(
+            id = "55678",
+            layout = "tokonow_main_quest",
+            header = Header(
+                name = "Main Quest",
+                serverTimeUnix = 0
+            ),
+            token = "==aff1ed" // Dummy token
+        )
+    )
+}
+
+fun createQuestWidgetListEmpty(code: String, reason: String = ""): GetQuestListResponse {
+    return GetQuestListResponse(
+        questWidgetList = QuestListResponse(
+            questWidgetList = listOf(),
+            resultStatus = ResultStatus(
+                code = code,
+                reason = reason
+            )
+        )
+    )
+}
+
+fun createQuestWidgetList(code: String, reason: String = ""): GetQuestListResponse {
+    return GetQuestListResponse(
+        questWidgetList = QuestListResponse(
+            questWidgetList = listOf(
+                QuestList(
+                    id = "1233",
+                    title = "dummy title",
+                    description = "dummy desc",
+                    config = "{}",
+                    questUser = QuestUser(
+                        id = "1111",
+                        status = "Idle"
+                    ),
+                    task = listOf()
+                )
+            ),
+            resultStatus = ResultStatus(
+                code = code,
+                reason = reason
+            )
+        )
     )
 }
 
@@ -109,27 +171,27 @@ fun createHomeLayoutData(): HomeLayoutResponse {
             header = Header(
                     name = "Banner Tokonow",
                     serverTimeUnix = 0
-            )
+            ),
+            token = "==aff1ed" // Dummy token
     )
 }
 
 fun createLoadingState(): HomeLayoutListUiModel {
-    val mutableList = mutableListOf<HomeLayoutItemUiModel>()
+    val mutableList = mutableListOf<Visitable<*>>()
     val loadingStateUiModel = HomeLoadingStateUiModel(id = HomeStaticLayoutId.LOADING_STATE)
-    mutableList.add(HomeLayoutItemUiModel(loadingStateUiModel, HomeLayoutItemState.LOADED))
+    mutableList.add(loadingStateUiModel)
     return HomeLayoutListUiModel(
             items = mutableList,
-            state = TokoNowLayoutState.LOADING,
-            isInitialLoad = true
+            state = TokoNowLayoutState.LOADING
     )
 }
 
-fun createEmptyState(id: String): HomeLayoutListUiModel {
-    val mutableList = mutableListOf<HomeLayoutItemUiModel>()
+fun createEmptyState(id: String, serviceType: String): HomeLayoutListUiModel {
+    val mutableList = mutableListOf<Visitable<*>>()
     val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID)
-    val emptyStateUiModel = TokoNowEmptyStateOocUiModel(id = id, eventCategory = "tokonow - homepage")
-    mutableList.add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
-    mutableList.add(HomeLayoutItemUiModel(emptyStateUiModel, HomeLayoutItemState.LOADED))
+    val emptyStateUiModel = TokoNowEmptyStateOocUiModel(id = id, hostSource = TokoNowRepurchaseFragment.SOURCE, serviceType = serviceType)
+    mutableList.add(chooseAddressUiModel)
+    mutableList.add(emptyStateUiModel)
     return HomeLayoutListUiModel(
             mutableList,
             state = TokoNowLayoutState.HIDE
@@ -231,14 +293,15 @@ fun createDynamicLegoBannerDataModel(
     id: String,
     groupId: String,
     headerName: String,
-    headerServerTimeUnix: Long = 0
+    headerServerTimeUnix: Long = 0,
+    layout: String = "lego_3_image"
 ): DynamicLegoBannerDataModel {
     val channelHeader = ChannelHeader(name = headerName, serverTimeUnix = headerServerTimeUnix)
-    val channelConfig = ChannelConfig(layout = "lego_3_image")
+    val channelConfig = ChannelConfig(layout = layout)
     val channelModel = ChannelModel(
         id = id,
         groupId = groupId,
-        layout = "lego_3_image",
+        layout = layout,
         channelHeader = channelHeader,
         channelConfig = channelConfig
     )
@@ -263,10 +326,29 @@ fun createSliderBannerDataModel(
     return BannerDataModel(channelModel = channelModel)
 }
 
+fun createMixLeftDataModel(
+    id: String,
+    groupId: String,
+    headerName: String,
+    headerServerTimeUnix: Long = 0,
+    layout: String = "lego_3_image"
+): MixLeftDataModel {
+    val channelHeader = ChannelHeader(name = headerName, serverTimeUnix = headerServerTimeUnix)
+    val channelConfig = ChannelConfig(layout = layout)
+    val channelModel = ChannelModel(
+        id = id,
+        groupId = groupId,
+        layout = layout,
+        channelHeader = channelHeader,
+        channelConfig = channelConfig
+    )
+    return MixLeftDataModel(channelModel = channelModel)
+}
+
 fun createCategoryGridDataModel(
     id: String,
     title: String,
-    categoryList: List<TokoNowCategoryItemUiModel>,
+    categoryList: List<TokoNowCategoryItemUiModel>?,
     @TokoNowLayoutState state: Int
 ): TokoNowCategoryGridUiModel {
     return TokoNowCategoryGridUiModel(id = id, title =  title, categoryList = categoryList, state = state)
@@ -290,7 +372,7 @@ fun createHomeProductCardUiModel(
     quantity: Int = 0,
     parentId: String = "",
     product: ProductCardModel = ProductCardModel(),
-    @TokoNowLayoutType type: String = TokoNowLayoutType.RECENT_PURCHASE
+    @TokoNowLayoutType type: String = TokoNowLayoutType.REPURCHASE_PRODUCT
 ): TokoNowProductCardUiModel {
     return TokoNowProductCardUiModel(productId, shopId, quantity, parentId, product, type)
 }

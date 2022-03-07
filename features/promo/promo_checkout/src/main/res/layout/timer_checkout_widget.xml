@@ -23,8 +23,8 @@
 
     <TextView
         android:id="@+id/textTimer"
-        android:paddingRight="@dimen/dp_8"
-        android:paddingLeft="@dimen/dp_8"
+        android:paddingRight="8dp"
+        android:paddingLeft="8dp"
         android:paddingTop="@dimen/dp_3"
         android:paddingBottom="@dimen/dp_3"
         android:layout_width="wrap_content"

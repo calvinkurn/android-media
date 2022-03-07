@@ -19,6 +19,9 @@ data class GetTopadsDashboardGroups(
 
 data class GroupListDataItem(
 
+        @field:SerializedName("group_type")
+        val type: String = "",
+
         @field:SerializedName("total_item")
         val totalItem: Int = 0,
 

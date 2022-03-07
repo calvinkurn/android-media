@@ -62,7 +62,7 @@ class CategoryListView : LinearLayout {
                 imageCategory.show()
             }
 
-            setOnClickListener {
+            root.setOnClickListener {
                 analytics.onClickLevelTwoCategory(categoryLevel1.id, categoryL2.id)
                 RouteManager.route(context, categoryL2.appLink)
                 listener.onClickCategoryItem()
@@ -79,7 +79,7 @@ class CategoryListView : LinearLayout {
             textTitle.setWeight(categoryL2.textWeight)
             textTitle.setTextColor(ContextCompat.getColor(context, categoryL2.textColorId))
 
-            setOnClickListener {
+            root.setOnClickListener {
                 analytics.onClickLihatSemuaCategory(categoryLevel1.id)
                 RouteManager.route(context, categoryL2.appLink)
                 listener.onClickCategoryItem()

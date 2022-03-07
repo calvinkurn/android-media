@@ -16,8 +16,6 @@ public interface IAppNotificationReceiver {
 
     void onNotificationReceived(String from, Bundle bundle);
 
-    void onMoengageNotificationReceived(RemoteMessage message);
-
     void onCampaignManagementNotificationReceived(RemoteMessage message);
 
     boolean isFromCMNotificationPlatform(Map<String ,String > extra);

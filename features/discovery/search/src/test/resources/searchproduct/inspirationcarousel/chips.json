@@ -964,12 +964,14 @@
         "position": 4,
         "layout": "chips",
         "type": "price_range_chips",
+        "tracking_option": "3",
         "options": [
           {
             "title": "Di bawah Rp3,1 jt",
             "url": "https://www.tokopedia.com/search?pmax=1700000&amp;pmin=920001&amp;q=samsung&amp;source=search&amp;st=product",
             "applink": "tokopedia://search?pmax=1700000&pmin=920001&q=samsung&source=search&st=product",
             "identifier": "",
+            "component_id": "03.02.01.00",
             "product": [
               {
                 "id": 219723699,
@@ -990,7 +992,8 @@
                 "free_ongkir": {
                   "is_active": false,
                   "img_url": ""
-                }
+                },
+                "component_id": "03.02.01.01"
               },
               {
                 "id": 219723600,
@@ -1011,7 +1014,8 @@
                 "free_ongkir": {
                   "is_active": false,
                   "img_url": ""
-                }
+                },
+                "component_id": "03.02.01.02"
               },
               {
                 "id": 219723612,
@@ -1032,7 +1036,8 @@
                 "free_ongkir": {
                   "is_active": false,
                   "img_url": ""
-                }
+                },
+                "component_id": "03.02.01.03"
               },
               {
                 "id": 219723633,
@@ -1053,7 +1058,8 @@
                 "free_ongkir": {
                   "is_active": false,
                   "img_url": ""
-                }
+                },
+                "component_id": "03.02.01.04"
               },
               {
                 "id": 219723611,
@@ -1074,7 +1080,8 @@
                 "free_ongkir": {
                   "is_active": false,
                   "img_url": ""
-                }
+                },
+                "component_id": "03.02.01.05"
               }
             ]
           },
@@ -1083,6 +1090,7 @@
             "url": "https://www.tokopedia.com/search?pmax=1700000&amp;pmin=920001&amp;q=samsung&amp;source=search&amp;st=product",
             "applink": "tokopedia://search?pmax=1700000&pmin=920001&q=samsung&source=search&st=product",
             "identifier": "option-2",
+            "component_id": "03.02.01.02",
             "product": []
           },
           {
@@ -1090,6 +1098,7 @@
             "url": "https://www.tokopedia.com/search?pmax=1700000&amp;pmin=920001&amp;q=samsung&amp;source=search&amp;st=product",
             "applink": "tokopedia://search?pmax=1700000&pmin=920001&q=samsung&source=search&st=product",
             "identifier": "option-3",
+            "component_id": "03.02.01.03",
             "product": []
           }
         ]
@@ -1099,6 +1108,7 @@
         "type": "price_range_chips",
         "position": 6,
         "layout": "chips",
+        "tracking_option": "3",
         "options": [
           {
             "title": "Rp1,5 jt - Rp2,4 jt",
@@ -1108,6 +1118,7 @@
             "banner_link_url": "",
             "banner_applink_url": "",
             "identifier": "aWMkOjI6aHAgc2Ftc3VuZzpwcmljZV9yYW5nZV9jaGlwczoy",
+            "component_id": "03.02.01.00",
             "product": []
           }
         ]
@@ -1117,6 +1128,7 @@
         "position": 8,
         "layout": "chips",
         "type": "annotation_product_color_chips",
+        "tracking_option": "3",
         "options": [
           {
             "title": "Hijau",
@@ -1124,6 +1136,7 @@
             "applink": "tokopedia://search?pmax=1700000&pmin=920001&q=samsung&source=search&st=product",
             "identifier": "",
             "meta": "#112233",
+            "component_id": "03.02.01.00",
             "product": [
               {
                 "id": 219723699,
@@ -1238,6 +1251,7 @@
             "applink": "tokopedia://search?pmax=1700000&pmin=920001&q=samsung&source=search&st=product",
             "identifier": "option-2",
             "meta": "#112234",
+            "component_id": "03.02.01.00",
             "product": []
           },
           {
@@ -1246,6 +1260,7 @@
             "applink": "tokopedia://search?pmax=1700000&pmin=920001&q=samsung&source=search&st=product",
             "identifier": "option-3",
             "meta": "#122234",
+            "component_id": "03.02.01.00",
             "product": []
           }
         ]
@@ -1255,6 +1270,7 @@
         "position": 10,
         "layout": "chips",
         "type": "image_type",
+        "tracking_option": "3",
         "options": [
           {
             "title": "Hijau",
@@ -1262,6 +1278,7 @@
             "applink": "tokopedia://search?pmax=1700000&pmin=920001&q=samsung&source=search&st=product",
             "identifier": "",
             "meta": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2018/9/25/219723699/219723699_0fe60597-35d9-409f-a7ef-a2731de072a4_1560_1560.jpg",
+            "component_id": "03.02.01.00",
             "product": [
               {
                 "id": 219723699,
@@ -1376,6 +1393,7 @@
             "applink": "tokopedia://search?pmax=1700000&pmin=920001&q=samsung&source=search&st=product",
             "identifier": "option-2",
             "meta": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2018/9/25/219723699/219723699_0fe60597-35d9-409f-a7ef-a2731de072a4_1560_1560.jpg",
+            "component_id": "03.02.01.00",
             "product": []
           },
           {
@@ -1384,6 +1402,7 @@
             "applink": "tokopedia://search?pmax=1700000&pmin=920001&q=samsung&source=search&st=product",
             "identifier": "option-3",
             "meta": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2018/9/25/219723699/219723699_0fe60597-35d9-409f-a7ef-a2731de072a4_1560_1560.jpg",
+            "component_id": "03.02.01.00",
             "product": []
           }
         ]

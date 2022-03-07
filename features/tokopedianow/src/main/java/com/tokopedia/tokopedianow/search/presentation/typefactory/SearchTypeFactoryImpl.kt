@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
 import com.tokopedia.tokopedianow.search.presentation.listener.BroadMatchListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CTATokoNowHomeListener
@@ -24,34 +25,38 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAdd
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.OutOfCoverageListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactoryImpl
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BaseChooseAddressViewHolder
 
 class SearchTypeFactoryImpl(
-        chooseAddressListener: ChooseAddressListener,
-        titleListener: TitleListener,
-        bannerListener: BannerComponentListener,
-        quickFilterListener: QuickFilterListener,
-        categoryFilterListener: CategoryFilterListener,
-        productItemListener: ProductItemListener,
-        tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
-        private val suggestionListener: SuggestionListener,
-        outOfCoverageListener: OutOfCoverageListener,
-        private val categoryJumperListener: CategoryJumperListener,
-        private val ctaTokoNowHomeListener: CTATokoNowHomeListener,
-        recommendationCarouselListener: TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
-        private val broadMatchListener: BroadMatchListener,
+    tokoNowEmptyStateOocListener: TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener,
+    chooseAddressListener: ChooseAddressListener,
+    titleListener: TitleListener,
+    bannerListener: BannerComponentListener,
+    quickFilterListener: QuickFilterListener,
+    categoryFilterListener: CategoryFilterListener,
+    productItemListener: ProductItemListener,
+    switcherWidgetListener: SwitcherWidgetListener,
+    tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
+    private val suggestionListener: SuggestionListener,
+    private val categoryJumperListener: CategoryJumperListener,
+    private val ctaTokoNowHomeListener: CTATokoNowHomeListener,
+    recommendationCarouselListener: TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
+    private val recomWidgetBindPageNameListener: TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener?,
+    private val broadMatchListener: BroadMatchListener,
 ): BaseSearchCategoryTypeFactoryImpl(
-        chooseAddressListener,
-        titleListener,
-        bannerListener,
-        quickFilterListener,
-        categoryFilterListener,
-        productItemListener,
-        tokoNowEmptyStateNoResultListener,
-        outOfCoverageListener,
-        recommendationCarouselListener,
+    tokoNowEmptyStateOocListener,
+    chooseAddressListener,
+    titleListener,
+    bannerListener,
+    quickFilterListener,
+    categoryFilterListener,
+    productItemListener,
+    switcherWidgetListener,
+    tokoNowEmptyStateNoResultListener,
+    recommendationCarouselListener,
+    recomWidgetBindPageNameListener,
 ), SearchTypeFactory {
 
     override fun type(suggestionDataView: SuggestionDataView): Int {

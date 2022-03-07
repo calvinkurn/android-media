@@ -5,71 +5,86 @@
     android:id="@+id/hotelCancellationScrollView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <include layout="@layout/layout_hotel_cancellation_summary"
-            android:id="@+id/layoutHotelCancellationSummary"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing_lvl1"
-            android:background="@drawable/bg_dash_stroke_hotel" />
-
-        <com.tokopedia.hotel.common.presentation.widget.RoomDurationView
-            android:id="@+id/hotel_cancellation_room_duration_view"
+        <LinearLayout
+            android:id="@+id/hotelCancellationContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N0" />
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/hotel_6dp"
-            android:background="@color/Unify_N50" />
+            <include
+                android:id="@+id/layoutHotelCancellationSummary"
+                layout="@layout/layout_hotel_cancellation_summary" />
 
-        <com.tokopedia.hotel.cancellation.presentation.widget.HotelCancellationPolicyWidget
-            android:id="@+id/hotel_cancellation_policy_widget"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacing_lvl1"
+                android:background="@drawable/bg_dash_stroke_hotel" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/hotel_6dp"
-            android:background="@color/Unify_N50" />
+            <com.tokopedia.hotel.common.presentation.widget.RoomDurationView
+                android:id="@+id/hotel_cancellation_room_duration_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/Unify_N0" />
 
-        <include layout="@layout/layout_hotel_cancellation_refund_detail"
-            android:id="@+id/layoutHotelCancellationRefundDetail"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hotel_6dp"
+                android:background="@color/Unify_N50" />
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/hotel_cancellation_button_next"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/layout_lvl2"
-            android:text="@string/hotel_cancellation_button_next"
-            app:unifyButtonSize="large"
-            app:unifyButtonType="main"
-            tools:text="Lanjutkan" />
+            <com.tokopedia.hotel.cancellation.presentation.widget.HotelCancellationPolicyWidget
+                android:id="@+id/hotel_cancellation_policy_widget"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/hotel_cancellation_page_footer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/layout_lvl2"
-            android:layout_marginRight="@dimen/layout_lvl2"
-            android:layout_marginBottom="@dimen/layout_lvl2"
-            android:gravity="center"
-            android:textColor="@color/Unify_N700_68"
-            app:typographyType="body_3"
-            tools:text="alawlkndjanfjenfjrbhfbrhgbhgb" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hotel_6dp"
+                android:background="@color/Unify_N50" />
+
+            <include
+                android:id="@+id/layoutHotelCancellationRefundDetail"
+                layout="@layout/layout_hotel_cancellation_refund_detail" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/hotel_cancellation_button_next"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/layout_lvl2"
+                android:text="@string/hotel_cancellation_button_next"
+                app:unifyButtonSize="large"
+                app:unifyButtonType="main"
+                tools:text="Lanjutkan" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/hotel_cancellation_page_footer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/layout_lvl2"
+                android:layout_marginRight="@dimen/layout_lvl2"
+                android:layout_marginBottom="@dimen/layout_lvl2"
+                android:gravity="center"
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="body_3"
+                tools:text="alawlkndjanfjenfjrbhfbrhgbhgb" />
+        </LinearLayout>
 
         <include
             android:id="@+id/container_error"
             layout="@layout/item_network_error_view"
             android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible" />
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </ScrollView>

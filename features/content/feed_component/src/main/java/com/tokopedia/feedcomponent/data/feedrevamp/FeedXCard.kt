@@ -3,6 +3,8 @@ package com.tokopedia.feedcomponent.data.feedrevamp
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.Product
 
 data class FeedXCard(
     @SerializedName("__typename")
@@ -39,6 +41,8 @@ data class FeedXCard(
     var products: List<FeedXProduct> = emptyList(),
     @SerializedName("subTitle")
     var subTitle: String = "",
+    @SerializedName("totalProducts")
+    var totalProducts: Int = 0,
     @SerializedName("text")
     var text: String = "",
     @SerializedName("title")
@@ -71,15 +75,39 @@ data class FeedXCard(
     var hashtagAppLinkFmt: String = "",
     @SerializedName("hashtagWebLinkFmt")
     var hashtagWebLinkFmt: String = "",
-    val impressHolder: ImpressHolder = ImpressHolder()
+    val impressHolder: ImpressHolder = ImpressHolder(),
+    //Active carousel index
+    var lastCarouselIndex : Int = 0,
+    //Topads
+    val isTopAds: Boolean = false,
+    val shopId: String = "",
+    val adId: String = "",
+    val adClickUrl:String="",
+    val adViewUrl:String="",
+    val cpmData: CpmData = CpmData(),
+    val listProduct: List<Product> = listOf(),
+
+   //FeedXCardPlay data type
+    @SerializedName("playChannelID")
+    var playChannelID: String = "",
+    @SerializedName("mediaRatio")
+    var mediaRatio: FeedXMediaRatio = FeedXMediaRatio(),
+    @SerializedName("views")
+    var views: FeedXViews = FeedXViews(),
+
+
 
 ) : ImpressHolder() {
     fun copyPostData(): FeedXCard {
         return FeedXCard(
             typename = typename,
             id = id,
+            type = type,
+            playChannelID = playChannelID,
+            mediaRatio = mediaRatio,
             author = author,
             title = title,
+            totalProducts = totalProducts,
             products = products,
             subTitle = subTitle,
             text = text,
@@ -93,13 +121,19 @@ data class FeedXCard(
             tags = tags,
             hashtagAppLinkFmt = hashtagAppLinkFmt,
             hashtagWebLinkFmt = hashtagWebLinkFmt,
+            views = views,
             like = like,
             comments = comments,
             share = share,
             followers = followers,
             publishedAt = publishedAt,
             mods = mods,
-            impressHolder = impressHolder
+            impressHolder = impressHolder,
+            isTopAds = isTopAds,
+            adViewUrl = adViewUrl,
+            adClickUrl = adClickUrl,
+            cpmData = cpmData,
+            listProduct = listProduct
         )
     }
 }

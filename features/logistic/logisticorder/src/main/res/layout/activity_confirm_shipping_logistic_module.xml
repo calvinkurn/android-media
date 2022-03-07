@@ -4,7 +4,7 @@
     android:id="@+id/main_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <LinearLayout
         android:id="@+id/courier_layout"
@@ -22,7 +22,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginTop="10dp"
                 android:text="@string/title_courier_logistic_module"
                 app:typographyType="body_2" />
 
@@ -31,7 +31,7 @@
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginTop="10dp"
                 android:gravity="end"
                 android:text="@string/title_choose_logistic_module"
                 android:textColor="@color/Unify_G400"
@@ -43,7 +43,7 @@
         android:id="@+id/divider"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="10dp"
         android:background="@color/Unify_N100"
         app:layout_constraintEnd_toStartOf="@id/padding_right"
         app:layout_constraintLeft_toRightOf="@id/padding_left"
@@ -55,7 +55,7 @@
         android:id="@+id/barcode_lbl"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="10dp"
         android:text="@string/label_awb_number_logistic_module"
         app:layout_constraintLeft_toRightOf="@id/padding_left"
         app:layout_constraintStart_toEndOf="@id/padding_left"
@@ -97,7 +97,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginBottom="10dp"
         android:gravity="center_horizontal"
         android:text="@string/confirm_shipping_confirm_description"
         app:layout_constraintBottom_toTopOf="@id/confirm_button"
@@ -127,21 +127,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="@dimen/dp_10" />
+        app:layout_constraintGuide_begin="10dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/padding_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="@dimen/dp_10" />
+        app:layout_constraintGuide_begin="10dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/padding_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="@dimen/dp_10" />
+        app:layout_constraintGuide_end="10dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

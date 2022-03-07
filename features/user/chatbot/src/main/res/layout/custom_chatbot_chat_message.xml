@@ -31,8 +31,8 @@
 
         <ImageView
             android:id="@+id/ivCheckMark"
-            android:layout_width="@dimen/dp_14"
-            android:layout_height="@dimen/dp_14"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/spacing_lvl1"
             android:layout_marginRight="@dimen/spacing_lvl1"

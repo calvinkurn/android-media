@@ -2,8 +2,8 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="@dimen/dp_8"
-    app:cardElevation="@dimen/dp_4"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
     app:cardBackgroundColor="@color/discovery_common_dms_card_background"
@@ -11,8 +11,12 @@
     android:layout_height="wrap_content"
     android:id="@+id/bigGridCardViewInspirationCard">
 
-    <include layout="@layout/search_result_product_big_grid_curated_inspiration_card_layout"/>
+    <include
+        android:id="@+id/bigGridCuratedInspirationCardLayout"
+        layout="@layout/search_result_product_big_grid_curated_inspiration_card_layout"/>
 
-    <include layout="@layout/search_result_product_inspiration_card_layout"/>
+    <include
+        android:id="@+id/bigGridInspirationCardLayout"
+        layout="@layout/search_result_product_inspiration_card_layout"/>
 
 </androidx.cardview.widget.CardView>

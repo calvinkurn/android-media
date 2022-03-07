@@ -2,9 +2,7 @@ package com.tokopedia.play.broadcaster.pusher.bitrate
 
 import android.content.Context
 import com.wmspanel.libstream.Streamer
-import kotlin.math.roundToInt
 import kotlin.math.roundToLong
-
 
 /**
  * Created by mzennis on 17/06/21.

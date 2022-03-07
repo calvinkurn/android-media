@@ -5,23 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingStart="@dimen/dp_24"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingEnd="@dimen/dp_24">
+    android:paddingStart="24dp"
+    android:paddingTop="16dp"
+    android:paddingEnd="24dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/keywordName"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:textColor="@color/topads_heading_color"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@id/img"
@@ -34,7 +34,7 @@
         android:id="@+id/txtPotential"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         android:text="@string/topads_dash_insight_key_item_tampil_potensi"
         android:textColor="@color/topads_light_shadow"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,7 +45,7 @@
         android:id="@+id/txtSavings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="4dp"
         android:text="@string/topads_dash_insight_key_item_hemat_potensi"
         android:textColor="@color/topads_light_shadow"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,7 +55,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/dp_14"
+        android:layout_marginTop="14dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtSavings" />
 

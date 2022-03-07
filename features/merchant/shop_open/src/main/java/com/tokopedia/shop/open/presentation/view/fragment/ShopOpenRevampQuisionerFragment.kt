@@ -378,7 +378,7 @@ class ShopOpenRevampQuisionerFragment :
                     var _latitudeString: String = ""
                     var _longitudeString: String = ""
                     var _postalCode: String = ""
-                    var _districtId: Int = 0
+                    var _districtId: Long = 0
                     var _formattedAddress: String = ""
 
                     saveAddressDataModel?.let {
@@ -395,7 +395,7 @@ class ShopOpenRevampQuisionerFragment :
                             _postalCode.isNotEmpty() &&
                             _latitudeString.isNotEmpty() &&
                             _longitudeString.isNotEmpty() &&
-                            _districtId != 0 &&
+                            _districtId != 0L &&
                             _formattedAddress.isNotEmpty()) {
 
                         shopId = _shopId

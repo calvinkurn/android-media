@@ -7,26 +7,28 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.common.util.ReviewAttachedImagesClickListener
 import com.tokopedia.review.feature.inbox.history.presentation.util.ReviewHistoryItemListener
-import kotlinx.android.synthetic.main.item_review_attached_image.view.*
+import com.tokopedia.review.inbox.databinding.ItemReviewAttachedImageBinding
 
 class ReviewAttachedProductViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
+    private val binding = ItemReviewAttachedImageBinding.bind(view)
 
     fun bind(attachedImageUrl: String, reviewAttachedImagesClickListener: ReviewAttachedImagesClickListener,
              attachedImages: List<String>, productName: String, reviewHistoryItemListener: ReviewHistoryItemListener? = null,
              productId: String? = null,
              feedbackId: String? = null) {
         if(attachedImageUrl.isEmpty()) {
-            itemView.apply {
+            binding.apply {
                 reviewHistoryAttachedImageBlankSpace.show()
                 reviewHistoryAttachedImage.hide()
             }
             return
         }
-        itemView.apply {
+        binding.apply {
             reviewHistoryAttachedImageBlankSpace.hide()
             reviewHistoryAttachedImage.show()
             reviewHistoryAttachedImage.loadImage(attachedImageUrl)
-            setOnClickListener {
+            root.setOnClickListener {
                 reviewHistoryItemListener?.trackAttachedImageClicked(productId, feedbackId)
                 reviewAttachedImagesClickListener.onAttachedImagesClicked(productName, attachedImages, adapterPosition - 1)
             }

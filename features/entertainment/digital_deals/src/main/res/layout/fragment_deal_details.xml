@@ -18,8 +18,8 @@
             android:background="@color/Unify_N0"
             app:contentScrim="@color/Unify_N0"
             app:expandedTitleGravity="left|bottom"
-            app:expandedTitleMarginBottom="@dimen/dp_8"
-            app:expandedTitleMarginStart="@dimen/dp_16"
+            app:expandedTitleMarginBottom="8dp"
+            app:expandedTitleMarginStart="16dp"
             app:expandedTitleTextAppearance="@style/ToolbarExpandedTitle2"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
@@ -42,8 +42,8 @@
                     android:id="@+id/pager_indicator"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_16"
-                    android:padding="@dimen/dp_2"
+                    android:layout_marginBottom="16dp"
+                    android:padding="2dp"
                     app:centered="false"
                     app:fillColor="@color/Unify_G400"
                     app:layout_constraintBottom_toBottomOf="@+id/deals_images"
@@ -52,6 +52,15 @@
                     app:layout_constraintWidth_default="wrap"
                     app:pageColor="@color/Unify_N150"
                     app:strokeColor="@color/Unify_N150" />
+
+                <ImageView
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_lvl7"
+                    android:background="@drawable/background_blur_deal"
+                    />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -62,9 +71,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:minHeight="?attr/actionBarSize"
-                app:contentInsetLeft="@dimen/dp_0"
-                app:contentInsetStart="@dimen/dp_0"
-                app:contentInsetStartWithNavigation="@dimen/dp_0"
+                app:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp"
+                app:contentInsetStartWithNavigation="0dp"
                 app:layout_collapseMode="pin" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -97,7 +106,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/dp_14"
+            android:layout_margin="14dp"
             android:background="@drawable/button_buy_now_background"
             android:gravity="center"
             android:text="@string/buy_now" />

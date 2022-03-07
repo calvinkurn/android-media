@@ -5,8 +5,8 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.analyticsdebugger.AnalyticsSource;
-import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
+import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
+import com.tokopedia.analyticsdebugger.cassava.GtmLogger;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
@@ -17,6 +17,8 @@ import com.tokopedia.linker.model.UserData;
 import com.tokopedia.linker.validation.BranchHelperValidation;
 import com.tokopedia.track.TrackApp;
 
+
+import org.json.JSONArray;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -48,15 +50,14 @@ public class BranchHelper {
 
     public static void setCommonLinkProperties(LinkProperties linkProperties, LinkerData data) {
         linkProperties.setCampaign(data.getCampaignName());
-        if(!TextUtils.isEmpty(data.getChannel())){
+        if (!TextUtils.isEmpty(data.getChannel())) {
             linkProperties.setChannel(data.getChannel());
-        }
-        else {
+        } else {
             linkProperties.setChannel(LinkerData.ARG_UTM_SOURCE);
         }
-        if(!TextUtils.isEmpty(data.getFeature())){
+        if (!TextUtils.isEmpty(data.getFeature())) {
             linkProperties.setFeature(data.getFeature());
-        }else{
+        } else {
             linkProperties.setFeature(LinkerData.ARG_UTM_MEDIUM);
         }
         linkProperties.addControlParameter(LinkerConstants.KEY_OG_URL, data.getOgUrl());
@@ -95,7 +96,12 @@ public class BranchHelper {
             }
             double shippingPrice = LinkerUtils.convertToDouble(branchIOPayment.getShipping(), "Shipping-PURCHASE");
 
-            BranchEvent branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE)
+            BranchEvent branchEvent;
+            if (branchIOPayment.paymentEventName.isEmpty())
+                branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE);
+            else branchEvent = new BranchEvent(branchIOPayment.paymentEventName);
+
+            branchEvent
                     .setTransactionID(branchIOPayment.getOrderId())
                     .setCurrency(CurrencyType.IDR)
                     .setShipping(shippingPrice)
@@ -251,15 +257,17 @@ public class BranchHelper {
         saveBranchEvent(branchEvent);
     }
 
-    public static void sendSearchEvent(Context context, ArrayList<String> searchItems){
-        BranchEvent branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.SEARCH)
-                .addCustomDataProperty(LinkerConstants.KEY_GOOGLE_BUSINESS_VERTICAL, LinkerConstants.LABEL_RETAIL)
-                .addCustomDataProperty(LinkerConstants.KEY_ITEM_ID, String.valueOf(searchItems));
-        branchEvent.logEvent(context);
-        saveBranchEvent(branchEvent);
+    public static void sendSearchEvent(Context context, ArrayList<String> searchItems) {
+        if(context != null && searchItems != null && searchItems.size() > 0) {
+            BranchEvent branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.SEARCH)
+                    .addCustomDataProperty(LinkerConstants.KEY_GOOGLE_BUSINESS_VERTICAL, LinkerConstants.LABEL_RETAIL)
+                    .addCustomDataProperty(LinkerConstants.KEY_ITEM_ID, new JSONArray(searchItems).toString());
+            branchEvent.logEvent(context);
+            saveBranchEvent(branchEvent);
+        }
     }
 
-    public static void sendFirebaseFirstTransactionEvent(Context context, PaymentData branchIOPayment, String userId, double revenuePrice, double shippingPrice){
+    public static void sendFirebaseFirstTransactionEvent(Context context, PaymentData branchIOPayment, String userId, double revenuePrice, double shippingPrice) {
         Map<String, Object> eventDataMap = new HashMap<>();
         eventDataMap.put(LinkerConstants.KEY_ORDERID, branchIOPayment.getOrderId());
         eventDataMap.put(LinkerConstants.KEY_CURRENCY, CurrencyType.IDR);
@@ -274,7 +282,7 @@ public class BranchHelper {
         TrackApp.getInstance().getGTM().sendGeneralEvent(eventDataMap);
     }
 
-    public static void sendFireBaseNewBuyerEvent(PaymentData branchIOPayment){
+    public static void sendFireBaseNewBuyerEvent(PaymentData branchIOPayment) {
         Map<String, Object> eventDataMap = new HashMap<>();
         eventDataMap.put(LinkerConstants.KEY_NEW_CUSTOMER, String.valueOf(branchIOPayment.isNewBuyer()));
         eventDataMap.put(LinkerConstants.KEY_EVENT, LinkerConstants.EVENT_FIREBASE_NEW_CUSTOMER);
@@ -287,8 +295,7 @@ public class BranchHelper {
         }
         try {
             HashMap<String, Object> map = gson.fromJson(gson.toJson(branchEvent), type);
-            String eventName = (String) map.get("eventName");
-            GtmLogger.getInstance(LinkerManager.getInstance().getContext()).save(eventName, map, AnalyticsSource.BRANCH_IO);
+            GtmLogger.getInstance(LinkerManager.getInstance().getContext()).save(map, null, AnalyticsSource.BRANCH_IO);
         } catch (Throwable throwable) {
             Timber.d(throwable);
         }

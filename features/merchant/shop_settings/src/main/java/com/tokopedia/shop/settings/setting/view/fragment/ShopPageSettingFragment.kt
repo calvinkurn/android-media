@@ -17,6 +17,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.kotlin.extensions.view.gone
@@ -25,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
@@ -142,7 +144,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        updateShopActiveStatus()
         // setup views
         errorView = binding?.errorView
         dashboardView = binding?.dashboardLayout
@@ -173,6 +175,10 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
 
         // get shop info
         getShopInfo()
+    }
+
+    private fun updateShopActiveStatus() {
+        context?.let { UpdateShopActiveService.startService(it) }
     }
 
     fun onBackPressed() {
@@ -237,7 +243,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         if (GlobalConfig.isSellerApp()) {
             RouteManager.route(activity, ApplinkConst.SellerApp.SELLER_APP_HOME)
         } else {
-            RouteManager.route(activity, ApplinkConst.HOME_ACCOUNT_SELLER)
+            RouteManager.route(activity, ApplinkConstInternalSellerapp.SELLER_MENU)
         }
     }
 
@@ -283,7 +289,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     override fun onEditShopScheduleClicked() {
         ShopPageTrackingShopPageSetting.clickSetOpenShopTime(customDimensionShopPage)
         whenRoleAuthorized(shopSettingAccess.isInfoAccessAuthorized) {
-            RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
+            RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS)
         }
     }
 

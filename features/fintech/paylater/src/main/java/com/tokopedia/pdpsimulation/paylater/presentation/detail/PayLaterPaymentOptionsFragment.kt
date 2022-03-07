@@ -13,16 +13,19 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
+import com.tokopedia.pdpsimulation.common.utils.Utils
 import com.tokopedia.pdpsimulation.paylater.domain.model.Benefit
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.GatewayDetail
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterOfferDescriptionAdapter
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterActionStepsBottomSheet
+import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterAdditionalFeeInfo
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterFaqBottomSheet
+import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterTokopediaGopayBottomsheet
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -35,12 +38,17 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         arguments?.getParcelable<Detail>(PAY_LATER_PARTNER_DATA)
     }
 
+    private val position by lazy {
+        arguments?.getInt(PAYLATER_PARTNER_POSITION, 0)
+    }
+
 
     private var buttonStatus: RedirectionType? = null
     private var gatewayType: GatewayStatusType? = null
     private var urlToRedirect: String = ""
     private var partnerName: String? = ""
     private var tenure: Int? = 0
+    private var montlyInstallment: Double? = 0.0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,6 +63,10 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         initListener()
         setData()
     }
+
+
+
+
 
     private fun updateHighLightList() {
         rvPaymentDesciption.apply {
@@ -77,22 +89,47 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     }
 
     private fun initListener() {
+        additionalFeeDetail.setOnClickListener {
+            openAdditionalPaymentBottomSheet()
+        }
         btnHowToUse.setOnClickListener {
             buttonStatus?.let {
                 when (it) {
-                    RedirectionType.HowToDetail -> {
+                    RedirectionType.HowToDetail ->
                         openActionBottomSheet()
-                    }
+
                     RedirectionType.RedirectionWebView -> {
-                        if (!urlToRedirect.isNullOrEmpty())
+                        if (!urlToRedirect.isNullOrEmpty()) {
+                            (parentFragment as PayLaterOffersFragment).pdpSimulationCallback?.let { pdpCallBack ->
+                                pdpCallBack.setViewModelData(
+                                    Utils.UpdateViewModelVariable.RefreshType,
+                                    true
+                                )
+                                pdpCallBack.setViewModelData(
+                                    Utils.UpdateViewModelVariable.PartnerPosition,
+                                    position ?: 0
+                                )
+                            }
+
                             RouteManager.route(
                                 activity,
                                 ApplinkConstInternalGlobal.WEBVIEW,
                                 urlToRedirect
                             )
+                        }
+
+                    }
+
+                    RedirectionType.RedirectionApp -> {
+                        if (urlToRedirect.isNotEmpty()) {
+                            RouteManager.route(activity, urlToRedirect)
+                        }
                     }
                     RedirectionType.NonClickable -> {
                         btnHowToUse.isClickable = false
+                    }
+                    RedirectionType.GopayBottomSheet -> {
+                        openGopayBottomSheet()
                     }
                 }
 
@@ -104,6 +141,27 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             openFaqBottomSheet()
         }
     }
+
+    private fun openAdditionalPaymentBottomSheet() {
+        val bundle = Bundle()
+        (parentFragment as PayLaterOffersFragment).pdpSimulationCallback?.let {
+            it.openBottomSheet(bundle, PayLaterAdditionalFeeInfo::class.java)
+        }
+    }
+
+    private fun openGopayBottomSheet() {
+        val bundle = Bundle()
+        bundle.putParcelable(
+            PayLaterTokopediaGopayBottomsheet.GOPAY_BOTTOMSHEET_DETAIL,
+            responseData?.cta
+        )
+        bundle.putInt(PAYLATER_PARTNER_POSITION, position ?: 0)
+        (parentFragment as PayLaterOffersFragment).pdpSimulationCallback?.let {
+            it.openBottomSheet(bundle, PayLaterTokopediaGopayBottomsheet::class.java)
+        }
+
+    }
+
 
     private fun openActionBottomSheet() {
         val bundle = Bundle()
@@ -117,6 +175,9 @@ class PayLaterPaymentOptionsFragment : Fragment() {
                     responseData?.cta?.android_url ?: ""
                 )
             )
+            bundle.putString(PARTER_NAME, partnerName)
+            bundle.putInt(TENURE, tenure ?: 0)
+            bundle.putDouble(EMI_AMOUNT, montlyInstallment ?: 0.0)
             it.openBottomSheet(
                 bundle, PayLaterActionStepsBottomSheet::class.java
             )
@@ -169,6 +230,9 @@ class PayLaterPaymentOptionsFragment : Fragment() {
      */
     @SuppressLint("SetTextI18n")
     private fun updateAdditionalPartnerDetail(data: Detail) {
+        data.installationDescription?.let {
+            instructionDetail.text = it.parseAsHtml()
+        }
         whyText.text =
             resources.getString(R.string.pay_later_partner_why_gateway) + " ${data.gateway_detail?.name ?: ""}?"
         if (data.is_recommended == true) {
@@ -211,6 +275,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             }
         data.installment_per_month_ceil?.let { montlyInstallment ->
             if (data.tenure != PAY_LATER_BASE_TENURE) {
+                this.montlyInstallment = montlyInstallment
                 totalAmount.text = "${
                     CurrencyFormatUtil.convertPriceValueToIdrFormat(
                         montlyInstallment, false
@@ -244,7 +309,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
         updateSubHeader(gatewayType, data.gateway_detail?.subheader ?: "")
         tvSubTitlePaylaterPartner.text = data.gateway_detail?.subheader ?: ""
-        if (!data.gateway_detail?.smallSubHeader.isNullOrEmpty()) {
+        if (!data.serviceFeeInfo.isNullOrEmpty()) {
             serviceFeeInfoText.visible()
             serviceFeeInfoText.text = data.serviceFeeInfo
         } else {
@@ -277,9 +342,20 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
         data.cta?.cta_type?.let {
             buttonStatus = when {
-                buttonRedirectionWeb.contains(it) -> RedirectionType.RedirectionWebView
-                buttonRedirectionBottomSheet.contains(it) -> RedirectionType.HowToDetail
-                else -> RedirectionType.NonClickable
+                buttonRedirectionWeb.contains(it) && data.cta.bottomSheet?.isShow == true ->
+                    RedirectionType.GopayBottomSheet
+
+                buttonRedirectionWeb.contains(it) && data.cta.bottomSheet?.isShow == false ->
+                    RedirectionType.RedirectionWebView
+
+                buttonRedirectApp.contains(it) ->
+                    RedirectionType.RedirectionApp
+
+                buttonRedirectionBottomSheet.contains(it) ->
+                    RedirectionType.HowToDetail
+
+                else ->
+                    RedirectionType.NonClickable
             }
         }
         if (!data.cta?.name.isNullOrEmpty())
@@ -355,18 +431,23 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         else data.img_light_url
 
         if (!imageUrl.isNullOrEmpty())
-            ivPaylaterPartner.loadImage(imageUrl)
+            ivPaylaterPartner.setImageUrl(imageUrl)
     }
 
 
     companion object {
         const val PAY_LATER_PARTNER_DATA = "payLaterPartnerData"
+        const val PAYLATER_PARTNER_POSITION = "partnerPosition"
         const val PAY_LATER_BASE_TENURE = 1
-        const val PAY_LATER_APPLICATION_DATA = "payLaterApplicationData"
+        const val PARTER_NAME = "partnerName"
+        const val TENURE = " tenure"
+        const val EMI_AMOUNT = "emiAmount"
         val rejectionList = listOf(2, 10, 9)
         val processiongList = listOf(1)
-        val buttonRedirectionWeb = listOf(1, 2)
+        val buttonRedirectionWeb = listOf(2)
+        val buttonRedirectApp = listOf(1)
         val buttonRedirectionBottomSheet = listOf(3, 4)
+
 
         fun newInstance(bundle: Bundle): PayLaterPaymentOptionsFragment {
             return PayLaterPaymentOptionsFragment().apply {
@@ -377,7 +458,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 }
 
 enum class RedirectionType {
-    HowToDetail, RedirectionWebView, NonClickable
+    HowToDetail, GopayBottomSheet, RedirectionWebView, NonClickable, RedirectionApp
 }
 
 enum class GatewayStatusType {

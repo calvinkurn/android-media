@@ -6,20 +6,20 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_height="10dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         app:corners="8"
         app:width_weight="0.6" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_marginBottom="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_height="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         app:corners="8"
         app:width_weight="0.3" />
 

@@ -6,20 +6,20 @@
     android:layout_height="wrap_content"
     android:background="@drawable/chip_normal_small"
     android:orientation="vertical"
-    android:layout_marginRight="@dimen/dp_8">
+    android:layout_marginRight="8dp">
 
     <TextView
         android:id="@+id/chip_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginRight="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_6"
-        android:layout_marginBottom="@dimen/dp_6"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
         android:background="@drawable/unify_chips_bg_img_rounded_corner"
         android:textAlignment="center"
         android:text="Test chips"
         android:textColor="@color/Unify_N200"
-        android:textSize="@dimen/sp_14" />
+        android:textSize="14sp" />
 
 </LinearLayout>

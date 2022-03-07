@@ -5,18 +5,27 @@
     android:id="@+id/top_frame"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <com.yalantis.ucrop.view.UCropView
         android:id="@+id/ucrop"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <ProgressBar
+    <View
+        android:id="@+id/bg_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_NN900"
+        android:alpha="0.7"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/progressbar"
         style="?android:attr/indeterminate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
         android:layout_gravity="center"
         android:indeterminate="true"
         android:visibility="gone"
@@ -31,27 +40,27 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_undo"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         app:srcCompat="@drawable/ic_undo_active"
         android:scaleType="centerInside"
         android:background="@drawable/circle_trans_grey"
         android:layout_gravity="bottom|start"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="16dp"
         android:visibility="gone"
         tools:visibility="visible"/>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_redo"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         app:srcCompat="@drawable/ic_redo_active"
         android:scaleType="centerInside"
         android:background="@drawable/circle_trans_grey"
         android:layout_gravity="bottom|end"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
         android:visibility="gone"
         tools:visibility="visible"/>
 

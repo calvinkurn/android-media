@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="searchTextHiglight">
-        <item name="android:textColor">@color/Unify_N700_96</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-</resources>

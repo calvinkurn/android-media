@@ -4,7 +4,7 @@ import androidx.annotation.Keep
 import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER_ATTACHMENT
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
 import com.tokopedia.chat_common.data.attachment.AttachmentId
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
@@ -12,14 +12,14 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.merchantvoucher.common.gql.data.*
+import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.AttachmentPreviewFactory
-import okhttp3.Interceptor
 
 class SendableVoucherPreview(
         private val voucherPreview: VoucherPreview
 ) : SendablePreview {
 
-    val voucher = MerchantVoucherModel(
+    private val voucher = MerchantVoucherModel(
             voucherPreview.voucherId,
             voucherPreview.voucherName,
             voucherPreview.voucherCode,
@@ -33,19 +33,32 @@ class SendableVoucherPreview(
             MerchantVoucherStatus()
     )
 
+    val merchantVoucherViewModel = MerchantVoucherViewModel(voucher).apply {
+        this.isPublic = isPublic()
+        this.isLockToProduct = isLockToProduct()
+    }
+
+    private fun isPublic(): Boolean {
+        return voucherPreview.isPublic == 1
+    }
+
+    private fun isLockToProduct(): Boolean {
+        return voucherPreview.isLockToProduct == 1
+    }
+
     override fun type(attachmentPreviewFactory: AttachmentPreviewFactory): Int {
         return attachmentPreviewFactory.type(this)
     }
 
     override fun generateMsgObj(
-        messageId: String,
-        opponentId: String,
+        roomMetaData: RoomMetaData,
         message: String,
-        listInterceptor: List<Interceptor>,
         userLocationInfo: LocalCacheModel,
         localId: String
     ): Any {
-        val voucherPayload = generatePayload(messageId, opponentId, localId)
+        val msgId = roomMetaData.msgId
+        val toUid = roomMetaData.receiver.uid
+        val voucherPayload = generatePayload(msgId, toUid, localId)
         return CommonUtil.toJson(voucherPayload)
     }
 
@@ -54,7 +67,7 @@ class SendableVoucherPreview(
         opponentId: String,
         localId: String
     ): WebsocketAttachmentContract {
-        val startTime = SendableViewModel.generateStartTime()
+        val startTime = SendableUiModel.generateStartTime()
         val payload = WebsocketVoucherPayload(
                 voucherPreview.voucherId,
                 voucherPreview.tnc,
@@ -68,7 +81,10 @@ class SendableVoucherPreview(
                 voucherPreview.amountType,
                 voucherPreview.identifier,
                 voucherPreview.voucherType,
-                voucherPreview.isPublic
+                voucherPreview.isPublic,
+                voucherPreview.isLockToProduct,
+                voucherPreview.applink,
+                voucherPreview.weblink
         )
         val data = WebsocketAttachmentData(
             message_id = messageId.toLongOrZero(),
@@ -98,13 +114,14 @@ class SendableVoucherPreview(
     override fun generatePreviewMessage(
         roomMetaData: RoomMetaData,
         message: String
-    ): SendableViewModel {
+    ): SendableUiModel {
         return TopChatVoucherUiModel.Builder()
             .withRoomMetaData(roomMetaData)
             .withAttachmentId(AttachmentId.NOT_YET_GENERATED)
             .withAttachmentType(AttachmentType.Companion.TYPE_VOUCHER)
             .withVoucherModel(voucher)
             .withIsPublic(voucherPreview.isPublic)
+            .withIsLockToProduct(voucherPreview.isLockToProduct)
             .build()
     }
 
@@ -122,6 +139,9 @@ class SendableVoucherPreview(
             val amount_type: Int,
             val identifier: String,
             val voucher_type: Int,
-            val is_public: Int
+            val is_public: Int,
+            val is_lock_to_product: Int,
+            val applink: String,
+            val weblink: String
     )
 }

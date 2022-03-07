@@ -23,12 +23,15 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.getNumberFormatted
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_PRODUCT_NAME
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
+import com.tokopedia.product.manage.databinding.FragmentStockReminderBinding
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_RESULT_STATUS
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_THRESHOLD
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.CreateStockReminderResponse
@@ -41,7 +44,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_stock_reminder.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class StockReminderFragment: BaseDaggerFragment() {
@@ -84,6 +87,8 @@ class StockReminderFragment: BaseDaggerFragment() {
 
     private val viewModel by lazy { viewModelProvider.get(StockReminderViewModel::class.java) }
 
+    private var binding by autoClearedNullable<FragmentStockReminderBinding>()
+
     override fun getScreenName(): String = javaClass.simpleName
 
     override fun initInjector() {
@@ -105,7 +110,8 @@ class StockReminderFragment: BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_stock_reminder, container, false)
+        binding = FragmentStockReminderBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -132,15 +138,15 @@ class StockReminderFragment: BaseDaggerFragment() {
         getStockReminder()
 
         when(stock) {
-            0 -> qeStock.maxValue = 1
-            else -> qeStock.maxValue = stock
+            0 -> binding?.qeStock?.maxValue = 1
+            else -> binding?.qeStock?.maxValue = stock
         }
 
-        qeStock.apply {
+        binding?.qeStock?.run {
             editText.setOnEditorActionListener { _, actionId, _ ->
                 if(actionId == EditorInfo.IME_ACTION_DONE) {
-                    qeStock.clearFocus()
-                    KeyboardHandler.DropKeyboard(activity, qeStock)
+                    clearFocus()
+                    KeyboardHandler.DropKeyboard(activity, this)
                 }
                 true
             }
@@ -150,14 +156,10 @@ class StockReminderFragment: BaseDaggerFragment() {
         setAddButtonClickListener()
         setSubtractButtonClickListener()
 
-        swStockReminder.setOnCheckedChangeListener { _, isChecked ->
+        binding?.swStockReminder?.setOnCheckedChangeListener { _, isChecked ->
             toggleStateChecked = isChecked
             toggleStateChecked?.let { state ->
-                if(state) {
-                    containerStockReminder.visibility = View.VISIBLE
-                } else {
-                    containerStockReminder.visibility = View.GONE
-                }
+                binding?.containerStockReminder?.showWithCondition(state)
             }
 
             if(firstStateChecked) {
@@ -170,14 +172,14 @@ class StockReminderFragment: BaseDaggerFragment() {
             firstStateChecked = true
         }
 
-        btnSaveReminder.setOnClickListener {
-            qeStock.clearFocus()
-            if (swStockReminder.isChecked) {
+        binding?.btnSaveReminder?.setOnClickListener {
+            binding?.qeStock?.clearFocus()
+            if (binding?.swStockReminder?.isChecked == true) {
                 if (threshold == 0) {
-                    threshold = qeStock.getValue()
+                    threshold = binding?.qeStock?.getValue()
                     createStockReminder()
                 } else {
-                    threshold = qeStock.getValue()
+                    threshold = binding?.qeStock?.getValue()
                     updateStockReminder()
                 }
             } else {
@@ -196,17 +198,22 @@ class StockReminderFragment: BaseDaggerFragment() {
     }
 
     private fun showLoading() {
-        ImageHandler.loadGif(ivLoadingStockReminder,
+        binding?.ivLoadingStockReminder?.let { iv ->
+            ImageHandler.loadGif(
+                iv,
                 com.tokopedia.resources.common.R.drawable.ic_loading_indeterminate,
                 com.tokopedia.resources.common.R.drawable.ic_loading_indeterminate)
-        loadingStockReminder.visibility = View.VISIBLE
-        cardSaveBtn.visibility = View.GONE
+        }
+        binding?.loadingStockReminder?.visibility = View.VISIBLE
+        binding?.cardSaveBtn?.visibility = View.GONE
     }
 
     private fun hideLoading() {
-        ImageHandler.clearImage(ivLoadingStockReminder)
-        loadingStockReminder.visibility = View.GONE
-        cardSaveBtn.visibility = View.VISIBLE
+        binding?.ivLoadingStockReminder?.let { iv ->
+            ImageHandler.clearImage(iv)
+        }
+        binding?.loadingStockReminder?.visibility = View.GONE
+        binding?.cardSaveBtn?.visibility = View.VISIBLE
     }
 
     private fun doResultIntent() {
@@ -257,20 +264,31 @@ class StockReminderFragment: BaseDaggerFragment() {
                 warehouseId = stockReminderData.data.getByProductIds.data.getOrNull(0)?.productsWareHouse?.getOrNull(0)?.wareHouseId
                 threshold = stockReminderData.data.getByProductIds.data.getOrNull(0)?.productsWareHouse?.getOrNull(0)?.threshold
 
-                threshold?.let { qeStock.setValue(it) }
-                swStockReminder.isChecked = threshold != 0
-                if(!swStockReminder.isChecked) firstStateChecked = true
+                threshold?.let {
+                    binding?.qeStock?.setValue(it)
+                }
+                binding?.swStockReminder?.isChecked = threshold != 0
+                if(binding?.swStockReminder?.isChecked == false) {
+                    firstStateChecked = true
+                }
             }
             is Fail -> {
-                cardSaveBtn.visibility = View.GONE
-                globalErrorStockReminder.visibility = View.VISIBLE
-                geStockReminder.setType(GlobalError.SERVER_ERROR)
-                geStockReminder.setActionClickListener {
-                    globalErrorStockReminder.visibility = View.GONE
-                    cardSaveBtn.visibility = View.VISIBLE
+                binding?.cardSaveBtn?.visibility = View.GONE
+                binding?.globalErrorStockReminder?.visibility = View.VISIBLE
+                binding?.geStockReminder?.setType(GlobalError.SERVER_ERROR)
+                binding?.geStockReminder?.setActionClickListener {
+                    binding?.globalErrorStockReminder?.visibility = View.GONE
+                    binding?.cardSaveBtn?.visibility = View.VISIBLE
                     getStockReminder()
                 }
                 ProductManageListErrorHandler.logExceptionToCrashlytics(stockReminderData.throwable)
+                ProductManageListErrorHandler.logExceptionToServer(
+                    errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                    throwable = stockReminderData.throwable,
+                    errorType =
+                    ProductManageListErrorHandler.ProductManageMessage.GET_STOCK_REMINDER_ERROR,
+                    deviceId = userSession.deviceId.orEmpty()
+                )
             }
         }
     }
@@ -280,10 +298,26 @@ class StockReminderFragment: BaseDaggerFragment() {
         when(stockReminderData) {
             is Success -> { doResultIntent() }
             is Fail -> {
-                Toaster.build(layout, getString(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc),
-                        Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.product_stock_reminder_toaster_action_text)).show()
-                Toaster.onCTAClick = View.OnClickListener { createStockReminder() }
+                binding?.layout?.let { layout ->
+                    Toaster.build(
+                        layout,
+                        getString(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc),
+                        Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_ERROR,
+                        getString(R.string.product_stock_reminder_toaster_action_text),
+                        clickListener = {
+                            createStockReminder()
+                        }
+                    ).show()
+                }
                 ProductManageListErrorHandler.logExceptionToCrashlytics(stockReminderData.throwable)
+                ProductManageListErrorHandler.logExceptionToServer(
+                    errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                    throwable = stockReminderData.throwable,
+                    errorType =
+                    ProductManageListErrorHandler.ProductManageMessage.CREATE_STOCK_REMINDER_ERROR,
+                    deviceId = userSession.deviceId.orEmpty()
+                )
             }
         }
     }
@@ -293,16 +327,32 @@ class StockReminderFragment: BaseDaggerFragment() {
         when(stockReminderData) {
             is Success -> { doResultIntent() }
             is Fail -> {
-                Toaster.build(layout, getString(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc),
-                        Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.product_stock_reminder_toaster_action_text)).show()
-                Toaster.onCTAClick = View.OnClickListener { updateStockReminder() }
-                ProductManageListErrorHandler.logExceptionToCrashlytics(stockReminderData.throwable)
+                binding?.layout?.let { layout ->
+                    Toaster.build(
+                        layout,
+                        getString(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc),
+                        Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_ERROR,
+                        getString(R.string.product_stock_reminder_toaster_action_text),
+                        clickListener = {
+                            updateStockReminder()
+                        }
+                    ).show()
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(stockReminderData.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = stockReminderData.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.UPDATE_STOCK_REMINDER_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
+                }
             }
         }
     }
 
     private fun addStockEditorTextChangedListener() {
-        qeStock.apply {
+        binding?.qeStock?.run {
             editText.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(editor: Editable?) {
                     val input = editor.toString()
@@ -324,7 +374,7 @@ class StockReminderFragment: BaseDaggerFragment() {
     }
 
     private fun setAddButtonClickListener() {
-        qeStock.apply {
+        binding?.qeStock?.run {
             addButton.setOnClickListener {
                 val input = editText.text.toString()
 
@@ -336,7 +386,7 @@ class StockReminderFragment: BaseDaggerFragment() {
 
                 stock++
 
-                if(stock <= qeStock.maxValue) {
+                if(stock <= binding?.qeStock?.maxValue.orZero()) {
                     editText.setText(stock.getNumberFormatted())
                 }
             }
@@ -344,7 +394,7 @@ class StockReminderFragment: BaseDaggerFragment() {
     }
 
     private fun setSubtractButtonClickListener() {
-        qeStock.apply {
+        binding?.qeStock?.run {
             subtractButton.setOnClickListener {
                 val input = editText.text.toString()
 
@@ -364,10 +414,10 @@ class StockReminderFragment: BaseDaggerFragment() {
     }
 
     private fun toggleQuantityEditorBtn(stock: Int) {
-        val enableAddBtn = stock < qeStock.maxValue
+        val enableAddBtn = stock < binding?.qeStock?.maxValue.orZero()
         val enableSubtractBtn = stock > MINIMUM_STOCK
 
-        qeStock.apply {
+        binding?.qeStock?.run {
             addButton.isEnabled = enableAddBtn
             subtractButton.isEnabled = enableSubtractBtn
         }

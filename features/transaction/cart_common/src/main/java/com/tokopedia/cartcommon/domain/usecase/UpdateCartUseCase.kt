@@ -17,7 +17,7 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
                                             private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<UpdateCartV2Data>() {
 
     private var params: Map<String, Any?>? = null
-    private var isFromMiniCartWidgetCheckout: Boolean = false
+    private var consumeErrorResponse: Boolean = false
 
     fun setParams(updateCartRequestList: List<UpdateCartRequest>, source: String = "") {
         params = mapOf(
@@ -27,7 +27,7 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
                 KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
         )
 
-        isFromMiniCartWidgetCheckout = source.isBlank()
+        consumeErrorResponse = source.isBlank()
     }
 
     override suspend fun executeOnBackground(): UpdateCartV2Data {
@@ -39,7 +39,7 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
         val response = graphqlRepository.response(listOf(request)).getSuccessData<UpdateCartGqlResponse>()
 
         return if (response.updateCartData.status == "OK") {
-            if (isFromMiniCartWidgetCheckout) {
+            if (consumeErrorResponse) {
                 response.updateCartData
             } else {
                 if (response.updateCartData.data.status) {

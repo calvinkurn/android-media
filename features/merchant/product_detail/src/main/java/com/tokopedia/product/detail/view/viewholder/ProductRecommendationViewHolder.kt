@@ -3,13 +3,19 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -21,6 +27,7 @@ import com.tokopedia.product.detail.view.util.AnnotationFilterDiffUtil
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.unifyprinciples.Typography
 
 class ProductRecommendationViewHolder(
       private val view: View,
@@ -36,6 +43,9 @@ class ProductRecommendationViewHolder(
     private var annotationChipAdapter: AnnotationChipFilterAdapter? = null
 
     override fun bind(element: ProductRecommendationDataModel) {
+        val tvSubtitleRecom: Typography? = itemView.findViewById(R.id.subtitleRecom)
+        val recomHeaderContainer: ConstraintLayout? = itemView.findViewById(R.id.pdp_recom_header_container)
+
         if (element.recomWidgetData == null || element.recomWidgetData?.recommendationItemList?.isEmpty() == true) {
             binding.rvProductRecom.gone()
             view.visible()
@@ -75,6 +85,11 @@ class ProductRecommendationViewHolder(
                 initAdapter(element, this, element.cardModel, getComponentTrackData(element))
 
                 binding.titleRecom.text = title
+                handleSubtitlePosition(
+                    recomSubtitle = subtitle,
+                    channelTitleContainer = recomHeaderContainer,
+                    tvSubtitleRecom = tvSubtitleRecom
+                )
                 if (seeMoreAppLink.isNotEmpty()) {
                     binding.seeMoreRecom.show()
                 } else {
@@ -88,6 +103,7 @@ class ProductRecommendationViewHolder(
                     }
                 }
             }
+            binding.baseRecom.show()
         }
     }
 
@@ -197,6 +213,30 @@ class ProductRecommendationViewHolder(
 
     private fun getComponentTrackData(element: ProductRecommendationDataModel?) = ComponentTrackDataModel(element?.type
             ?: "", element?.name ?: "", adapterPosition + 1)
+
+    private fun handleSubtitlePosition(recomSubtitle: String?, channelTitleContainer: ConstraintLayout?, tvSubtitleRecom: Typography?) {
+        if (recomSubtitle?.isNotEmpty() == true) {
+            tvSubtitleRecom?.text = recomSubtitle
+            tvSubtitleRecom?.visible()
+        } else {
+            tvSubtitleRecom?.text = ""
+            tvSubtitleRecom?.gone()
+        }
+
+        if (recomSubtitle?.isEmpty() == true) {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(channelTitleContainer)
+            constraintSet.connect(R.id.seeMoreRecom, ConstraintSet.TOP, R.id.titleRecom, ConstraintSet.TOP, 0)
+            constraintSet.connect(R.id.seeMoreRecom, ConstraintSet.BOTTOM, R.id.titleRecom, ConstraintSet.BOTTOM, 0)
+            constraintSet.applyTo(channelTitleContainer)
+        } else {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(channelTitleContainer)
+            constraintSet.connect(R.id.seeMoreRecom, ConstraintSet.TOP, R.id.subtitleRecom, ConstraintSet.TOP, 0)
+            constraintSet.connect(R.id.seeMoreRecom, ConstraintSet.BOTTOM, R.id.subtitleRecom, ConstraintSet.BOTTOM, 0)
+            constraintSet.applyTo(channelTitleContainer)
+        }
+    }
 
     override fun onViewRecycled() {
         listener.getRecommendationCarouselSavedState().put(adapterPosition, binding.rvProductRecom.getCurrentPosition())

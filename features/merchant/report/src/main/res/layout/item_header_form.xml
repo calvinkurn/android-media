@@ -5,11 +5,11 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingStart="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingEnd="@dimen/dp_16">
+    android:paddingTop="16dp"
+    android:paddingLeft="16dp"
+    android:paddingStart="16dp"
+    android:paddingRight="16dp"
+    android:paddingEnd="16dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_N700_96"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="4dp"
         app:typographyWeight="reguler"
         app:typographyType="body_2"
         tools:text="Untuk melaporkan pelanggaran merk dagang dan produk MLM"/>

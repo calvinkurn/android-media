@@ -10,6 +10,7 @@ class InteractiveDataStoreImpl @Inject constructor() : InteractiveDataStore {
 
     private var interactiveId: String = ""
     private var mTitle = DEFAULT_INTERACTIVE_TITLE
+    private var mActiveInteractiveTitle = mTitle
     private var mDurationInMs = DEFAULT_INTERACTIVE_DURATION
     private var mRemainingLiveDuration = 0L
 
@@ -19,16 +20,24 @@ class InteractiveDataStoreImpl @Inject constructor() : InteractiveDataStore {
         return interactiveId
     }
 
-    override fun getInteractiveTitle(): String {
+    override fun getSetupInteractiveTitle(): String {
         return mTitle
+    }
+
+    override fun getActiveInteractiveTitle(): String {
+        return mActiveInteractiveTitle
     }
 
     override fun getSelectedInteractiveDuration(): Long {
         return if (mAvailableDurations.contains(mDurationInMs)) mDurationInMs else mAvailableDurations.first()
     }
 
-    override fun setInteractiveTitle(title: String) {
+    override fun setSetupInteractiveTitle(title: String) {
         this.mTitle = title
+    }
+
+    override fun setActiveInteractiveTitle(title: String) {
+        this.mActiveInteractiveTitle = title
     }
 
     override fun setSelectedInteractiveDuration(durationInMs: Long) {

@@ -28,6 +28,8 @@ class SettingViewHolder(itemView: View, val listener: HomeAccountUserListener) :
 
     var adapter: HomeAccountUserCommonAdapter? = null
 
+    fun getTitle() = binding?.homeAccountExpandableLayoutTitle?.text.toString()
+
     fun bind(setting: SettingDataView) {
         if (setting.title.isNotEmpty()) {
             binding?.homeAccountExpandableLayoutTitle?.visibility = View.VISIBLE

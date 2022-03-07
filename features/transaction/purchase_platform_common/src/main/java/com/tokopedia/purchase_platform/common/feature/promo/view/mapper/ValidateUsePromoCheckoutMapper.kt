@@ -10,127 +10,95 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 class ValidateUsePromoCheckoutMapper {
 
     companion object {
-        fun mapToValidateUseRevampPromoUiModel(validateUsePromoRevamp: ValidateUsePromoRevamp?): ValidateUsePromoRevampUiModel {
-            var status = ""
-            validateUsePromoRevamp?.status?.let { status = it }
-
-            val listMessage = ArrayList<String>()
-            validateUsePromoRevamp?.message?.forEach {
-                listMessage.add(it)
-            }
-
+        fun mapToValidateUseRevampPromoUiModel(validateUsePromoRevamp: ValidateUsePromoRevamp): ValidateUsePromoRevampUiModel {
             return ValidateUsePromoRevampUiModel(
-                    status = status,
-                    message = listMessage,
-                    promoUiModel = mapToPromoUiModel(validateUsePromoRevamp?.promo)
+                    status = validateUsePromoRevamp.status,
+                    message = validateUsePromoRevamp.message,
+                    promoUiModel = mapToPromoUiModel(validateUsePromoRevamp.promo)
             )
         }
 
-        private fun mapToPromoUiModel(promo: PromoValidateUseResponse?): PromoUiModel {
+        private fun mapToPromoUiModel(promo: PromoValidateUseResponse): PromoUiModel {
             return PromoUiModel(
-                    codes = mapCodes(promo?.codes),
-                    messageUiModel = mapMessageUiModel(promo?.message),
-                    additionalInfoUiModel = mapToAdditionalInfoUiModel(promo?.additionalInfo),
-                    benefitSummaryInfoUiModel = mapToBenefitSummaryInfoUiModel(promo?.benefitSummaryInfo),
-                    voucherOrderUiModels = mapListVoucherOrders(promo?.voucherOrders),
-                    tickerInfoUiModel = mapTickerInfoUiModel(promo?.tickerInfo),
-                    trackingDetailUiModels = mapTrackingDetails(promo?.trackingDetails)
+                    globalSuccess = promo.globalSuccess,
+                    success = promo.success,
+                    codes = mapCodes(promo.codes),
+                    messageUiModel = mapMessageUiModel(promo.message),
+                    additionalInfoUiModel = mapToAdditionalInfoUiModel(promo.additionalInfo),
+                    benefitSummaryInfoUiModel = mapToBenefitSummaryInfoUiModel(promo.benefitSummaryInfo),
+                    voucherOrderUiModels = mapListVoucherOrders(promo.voucherOrders),
+                    tickerInfoUiModel = mapTickerInfoUiModel(promo.tickerInfo),
+                    trackingDetailUiModels = mapTrackingDetails(promo.trackingDetails)
             )
         }
 
-        private fun mapTrackingDetails(trackingDetails: List<TrackingDetailsItem>?): List<TrackingDetailsItemUiModel> {
-            val trackingDetailUiModels = ArrayList<TrackingDetailsItemUiModel>()
-            trackingDetails?.forEach {
-                val trackingDetailsItemUiModel = TrackingDetailsItemUiModel().apply {
+        private fun mapTrackingDetails(trackingDetails: List<TrackingDetailsItem>): List<TrackingDetailsItemUiModel> {
+            return trackingDetails.map {
+                TrackingDetailsItemUiModel().apply {
                     promoDetailsTracking = it.promoDetailsTracking
                     productId = it.productId
                     promoCodesTracking = it.promoCodesTracking
                 }
-                trackingDetailUiModels.add(trackingDetailsItemUiModel)
             }
-
-            return trackingDetailUiModels
         }
 
-        private fun mapTickerInfoUiModel(tickerInfo: TickerInfo?): TickerInfoUiModel {
+        private fun mapTickerInfoUiModel(tickerInfo: TickerInfo): TickerInfoUiModel {
             val tickerInfoUiModel = TickerInfoUiModel()
             tickerInfoUiModel.let {
-                it.uniqueId = tickerInfo?.uniqueId
-                it.statusCode = tickerInfo?.statusCode
-                it.message = tickerInfo?.message ?: ""
+                it.uniqueId = tickerInfo.uniqueId
+                it.statusCode = tickerInfo.statusCode
+                it.message = tickerInfo.message
             }
 
             return tickerInfoUiModel
         }
 
-        private fun mapCodes(codes: List<String?>?): ArrayList<String> {
-            val listNewCodes = arrayListOf<String>()
-            codes?.forEach {
-                it?.let {
-                    listNewCodes.add(it)
-                }
-            }
-            return listNewCodes
+        private fun mapCodes(codes: List<String>): ArrayList<String> {
+            return ArrayList(codes)
         }
 
-        private fun mapMessageUiModel(messageData: Message?): MessageUiModel {
-            var color = ""
-            messageData?.color?.let { color = it }
-
-            var state = ""
-            messageData?.state?.let { state = it }
-
-            var text = ""
-            messageData?.text?.let { text = it }
+        private fun mapMessageUiModel(messageData: Message): MessageUiModel {
             return MessageUiModel(
-                    color = color,
-                    state = state,
-                    text = text)
+                    color = messageData.color,
+                    state = messageData.state,
+                    text = messageData.text)
         }
 
-        private fun mapListVoucherOrders(voucherOrders: List<VoucherOrdersItem?>?): List<PromoCheckoutVoucherOrdersItemUiModel> {
-            val listVoucherOrders = arrayListOf<PromoCheckoutVoucherOrdersItemUiModel>()
-            voucherOrders?.let {
-                it.forEach { voucherOrderItem ->
-                    listVoucherOrders.add(mapToVoucherOrdersItemUiModel(voucherOrderItem))
-                }
-            }
-            return listVoucherOrders
+        private fun mapListVoucherOrders(voucherOrders: List<VoucherOrdersItem>): List<PromoCheckoutVoucherOrdersItemUiModel> {
+            return voucherOrders.map { mapToVoucherOrdersItemUiModel(it) }
         }
 
-        private fun mapToVoucherOrdersItemUiModel(voucherOrdersItem: VoucherOrdersItem?): PromoCheckoutVoucherOrdersItemUiModel {
-            var code = ""
-            voucherOrdersItem?.code?.let { code = it }
+        private fun mapToVoucherOrdersItemUiModel(voucherOrdersItem: VoucherOrdersItem): PromoCheckoutVoucherOrdersItemUiModel {
             return PromoCheckoutVoucherOrdersItemUiModel(
-                    success = voucherOrdersItem?.success ?: false,
-                    code = code,
-                    type = voucherOrdersItem?.type ?: "",
-                    uniqueId = voucherOrdersItem?.uniqueId ?: "",
-                    messageUiModel = mapMessageUiModel(voucherOrdersItem?.message)
+                    success = voucherOrdersItem.success,
+                    code = voucherOrdersItem.code,
+                    type = voucherOrdersItem.type,
+                    uniqueId = voucherOrdersItem.uniqueId,
+                    messageUiModel = mapMessageUiModel(voucherOrdersItem.message)
             )
         }
 
-        private fun mapToAdditionalInfoUiModel(additionalInfo: AdditionalInfo?): AdditionalInfoUiModel {
+        private fun mapToAdditionalInfoUiModel(additionalInfo: AdditionalInfo): AdditionalInfoUiModel {
             val additionalInfoUiModel = AdditionalInfoUiModel()
-            additionalInfo?.messageInfo?.let {
+            additionalInfo.messageInfo.let {
                 additionalInfoUiModel.messageInfoUiModel.message = it.message
                 additionalInfoUiModel.messageInfoUiModel.detail = it.detail
             }
-            additionalInfo?.errorDetail?.let {
+            additionalInfo.errorDetail.let {
                 additionalInfoUiModel.errorDetailUiModel.message = it.message
             }
-            additionalInfo?.emptyCartInfo?.let {
+            additionalInfo.emptyCartInfo.let {
                 additionalInfoUiModel.emptyCartInfoUiModel.detail = it.detail
                 additionalInfoUiModel.emptyCartInfoUiModel.imgUrl = it.imageUrl
                 additionalInfoUiModel.emptyCartInfoUiModel.message = it.message
             }
             val listUsageSummariesUiModel = arrayListOf<UsageSummariesUiModel>()
-            additionalInfo?.usageSummaries?.forEach {
+            additionalInfo.usageSummaries.forEach {
                 listUsageSummariesUiModel.add(mapToUsageSummariesUiModel(it))
             }
             additionalInfoUiModel.usageSummariesUiModel = listUsageSummariesUiModel
             val promoSpIdUiModels = arrayListOf<PromoSpIdUiModel>()
-            additionalInfo?.promoSpIds?.forEach {
+            additionalInfo.promoSpIds.forEach {
                 promoSpIdUiModels.add(mapPromoSpId(it))
             }
             additionalInfoUiModel.promoSpIds = promoSpIdUiModels
@@ -162,62 +130,37 @@ class ValidateUsePromoCheckoutMapper {
                     currencyDetailStr = usageSummaries.currencyDetailsStr)
         }
 
-        private fun mapToBenefitSummaryInfoUiModel(benefitSummaryInfo: BenefitSummaryInfo?): BenefitSummaryInfoUiModel {
-            val benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel()
-            benefitSummaryInfo?.let { benefit ->
-                benefitSummaryInfoUiModel.finalBenefitText = benefit.finalBenefitText
-                benefitSummaryInfoUiModel.finalBenefitAmountStr = benefit.finalBenefitAmountStr
-                benefitSummaryInfoUiModel.finalBenefitAmount = benefit.finalBenefitAmount
-                benefitSummaryInfoUiModel.summaries = mapToListSummaryInfoUiModel(benefit.summaries)
+        private fun mapToBenefitSummaryInfoUiModel(benefit: BenefitSummaryInfo): BenefitSummaryInfoUiModel {
+            val benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel().apply {
+                finalBenefitText = benefit.finalBenefitText
+                finalBenefitAmountStr = benefit.finalBenefitAmountStr
+                finalBenefitAmount = benefit.finalBenefitAmount
+                summaries = mapToListSummaryInfoUiModel(benefit.summaries)
             }
             return benefitSummaryInfoUiModel
         }
 
-        private fun mapToListSummaryInfoUiModel(listSummariesItem: List<SummariesItem?>): List<SummariesItemUiModel> {
-            val listSummaryInfoUiModel = arrayListOf<SummariesItemUiModel>()
-            listSummariesItem.forEach { summary ->
-                var desc = ""
-                summary?.description?.let { desc = it }
-
-                var type = ""
-                summary?.type?.let { type = it }
-
-                var amountStr = ""
-                summary?.amountStr?.let { amountStr = it }
-
-                val summaryItemUiModel = SummariesItemUiModel(
-                        description = desc,
-                        type = type,
-                        amount = summary?.amount ?: 0,
-                        amountStr = amountStr,
-                        details = mapToDetailSummaryUiModel(summary?.details)
+        private fun mapToListSummaryInfoUiModel(listSummariesItem: List<SummariesItem>): List<SummariesItemUiModel> {
+            return listSummariesItem.map { summary ->
+                SummariesItemUiModel(
+                        description = summary.description,
+                        type = summary.type,
+                        amount = summary.amount,
+                        amountStr = summary.amountStr,
+                        details = mapToDetailSummaryUiModel(summary.details)
                 )
-                listSummaryInfoUiModel.add(summaryItemUiModel)
             }
-            return listSummaryInfoUiModel
         }
 
-        private fun mapToDetailSummaryUiModel(listDetailsItem: List<DetailsItem?>?): List<DetailsItemUiModel> {
-            val listDetailsItemUiModel = arrayListOf<DetailsItemUiModel>()
-            listDetailsItem?.forEach { details ->
-                var desc = ""
-                details?.description?.let { desc = it }
-
-                var amountStr = ""
-                details?.amountStr?.let { amountStr = it }
-
-                var type = ""
-                details?.type?.let { type = it }
-
-                val detailItemUiModel = DetailsItemUiModel(
-                        description = desc,
-                        amountStr = amountStr,
-                        amount = details?.amount ?: 0,
-                        type = type
+        private fun mapToDetailSummaryUiModel(listDetailsItem: List<DetailsItem>): List<DetailsItemUiModel> {
+            return listDetailsItem.map { details ->
+                DetailsItemUiModel(
+                        description = details.description,
+                        amountStr = details.amountStr,
+                        amount = details.amount,
+                        type = details.type
                 )
-                listDetailsItemUiModel.add(detailItemUiModel)
             }
-            return listDetailsItemUiModel
         }
     }
 }

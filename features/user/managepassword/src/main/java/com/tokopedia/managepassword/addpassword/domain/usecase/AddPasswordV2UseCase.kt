@@ -1,37 +1,42 @@
 package com.tokopedia.managepassword.addpassword.domain.usecase
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.managepassword.addpassword.domain.AddPasswordQueries
+import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GqlParam
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.managepassword.addpassword.domain.data.AddPasswordV2Response
-import com.tokopedia.managepassword.common.ManagePasswordConstant
+import javax.inject.Inject
 
-class AddPasswordV2UseCase constructor(
-        private val graphqlUseCase: GraphqlUseCase<AddPasswordV2Response>
-) {
-    lateinit var params: Map<String, Any>
+class AddPasswordV2UseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers
+) : CoroutineUseCase<AddPasswordV2Params, AddPasswordV2Response>(dispatchers.io) {
 
-    fun setParams(password: String, confirmationPassword: String, hash: String) {
-        params = mapOf(
-                ManagePasswordConstant.PARAM_PASSWORD to password,
-                ManagePasswordConstant.PARAM_PASSWORD_CONFIRMATION to confirmationPassword,
-                ManagePasswordConstant.PARAM_HASH to hash
-        )
+    override suspend fun execute(params: AddPasswordV2Params): AddPasswordV2Response {
+        return repository.request(graphqlQuery(), params)
     }
 
-    fun submit(onSuccess: (AddPasswordV2Response) -> Unit, onError: (Throwable) -> Unit) {
-        graphqlUseCase.apply {
-            setTypeClass(AddPasswordV2Response::class.java)
-            setGraphqlQuery(AddPasswordQueries.addPasswordV2)
-            setRequestParams(params)
-            execute(onSuccess = {
-                onSuccess(it)
-            }, onError = {
-                onError(it)
-            })
-        }
-    }
-
-    fun cancelJobs() {
-        graphqlUseCase.cancelJobs()
+    override fun graphqlQuery(): String {
+        return """
+        mutation addPassword(${'$'}password: String!, ${'$'}password_confirm: String!, ${'$'}h: String!) {
+          addPasswordV2(password: ${'$'}password, password_confirm: ${'$'}password_confirm, h: ${'$'}h) {
+            is_success
+            error_code
+            error_message
+          }
+        }    
+        """.trimIndent()
     }
 }
+
+data class AddPasswordV2Params(
+    @SerializedName("password")
+    var password: String? = "",
+    @SerializedName("password_confirm")
+    var passwordConfirmation: String? = "",
+    @SerializedName("h")
+    var hash: String? = ""
+) : GqlParam

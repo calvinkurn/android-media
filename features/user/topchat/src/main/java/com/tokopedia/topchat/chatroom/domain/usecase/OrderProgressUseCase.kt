@@ -1,43 +1,20 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import javax.inject.Inject
 
 open class OrderProgressUseCase @Inject constructor(
-        private val gqlUseCase: GraphqlUseCase<OrderProgressResponse>
-) {
+    private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
+): CoroutineUseCase<String, OrderProgressResponse>(dispatcher.io) {
 
-    private val paramMsgId = "msgID"
-
-    fun getOrderProgress(
-            msgId: String,
-            onSuccess: (OrderProgressResponse) -> Unit,
-            onError: (Throwable) -> Unit
-    ) {
-        val params = generateParams(msgId)
-        gqlUseCase.apply {
-            setTypeClass(OrderProgressResponse::class.java)
-            setRequestParams(params)
-            setGraphqlQuery(query)
-            execute({ result ->
-                onSuccess(result)
-            }, { error ->
-                error.printStackTrace()
-                onError(error)
-            })
-        }
-    }
-
-    private fun generateParams(msgId: String): Map<String, Any> {
-        return mapOf(
-                paramMsgId to msgId
-        )
-    }
-
-    private val query = """
-        query chatOrderProgress($$paramMsgId: String!){
-          chatOrderProgress(msgID:$$paramMsgId) {
+    override fun graphqlQuery(): String = """
+        query chatOrderProgress($$PARAM_MSG_ID: String!){
+          chatOrderProgress(msgID:$$PARAM_MSG_ID) {
             enable
             state
             orderId
@@ -65,4 +42,13 @@ open class OrderProgressUseCase @Inject constructor(
           }
         }
     """.trimIndent()
+
+    override suspend fun execute(params: String): OrderProgressResponse {
+        return repository.request(graphqlQuery(), mapOf(PARAM_MSG_ID to params))
+    }
+
+    companion object {
+        private const val PARAM_MSG_ID = "msgId"
+    }
+
 }

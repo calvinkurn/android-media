@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class TokopointsStatusFiltered (
-    @SerializedName("statusFilteredData")
+    @SerializedName("status")
     @Expose
     val statusFilteredData: StatusFilteredData = StatusFilteredData()
 )

@@ -2,7 +2,6 @@ package com.tokopedia.play.viewmodel.follow
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.play.domain.repository.PlayViewerPartnerRepository
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayPartnerInfoModelBuilder
@@ -67,6 +66,7 @@ class PlayFollowOthersShopTest {
     fun `given user is logged in and has not followed shop, when click follow, the shop should be followed`() {
         val mockPartnerRepo: PlayViewerRepository = mockk(relaxed = true)
         coEvery { mockPartnerRepo.getIsFollowingPartner(any()) } returns false
+        coEvery { mockPartnerRepo.postFollowStatus(any(), any()) } returns true
 
         givenPlayViewModelRobot(
                 repo = mockPartnerRepo,
@@ -80,7 +80,7 @@ class PlayFollowOthersShopTest {
             submitAction(ClickFollowAction)
         } thenVerify {
             withState {
-                partner.followStatus.isEqualTo(
+                partner.status.isEqualTo(
                     PlayPartnerFollowStatus.Followable(isFollowing = true)
                 )
             }
@@ -91,6 +91,7 @@ class PlayFollowOthersShopTest {
     fun `given user is logged in and has followed shop, when click follow, the shop should be unfollowed`() {
         val mockPartnerRepo: PlayViewerRepository = mockk(relaxed = true)
         coEvery { mockPartnerRepo.getIsFollowingPartner(any()) } returns true
+        coEvery { mockPartnerRepo.postFollowStatus(any(), any()) } returns false
 
         givenPlayViewModelRobot(
                 repo = mockPartnerRepo,
@@ -104,7 +105,7 @@ class PlayFollowOthersShopTest {
             submitAction(ClickFollowAction)
         } thenVerify {
             withState {
-                partner.followStatus.isEqualTo(
+                partner.status.isEqualTo(
                         PlayPartnerFollowStatus.Followable(isFollowing = false)
                 )
             }
@@ -128,7 +129,7 @@ class PlayFollowOthersShopTest {
             submitAction(ClickFollowAction)
         } thenVerify { event ->
             withState {
-                partner.followStatus.isEqualTo(
+                partner.status.isEqualTo(
                         PlayPartnerFollowStatus.Followable(isFollowing = false)
                 )
             }

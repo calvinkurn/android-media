@@ -8,9 +8,10 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.search.R
+import com.tokopedia.search.databinding.SearchInspirationCarouselOptionInfoBinding
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
-import kotlinx.android.synthetic.main.search_inspiration_carousel_option_info.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class InspirationCarouselOptionInfoViewHolder(
         itemView: View,
@@ -20,6 +21,7 @@ class InspirationCarouselOptionInfoViewHolder(
     companion object {
         val LAYOUT = R.layout.search_inspiration_carousel_option_info
     }
+    private var binding: SearchInspirationCarouselOptionInfoBinding? by viewBinding()
 
     override fun bind(item: InspirationCarouselDataView.Option) {
         val productOption = item.product.getOrNull(0) ?: return
@@ -35,13 +37,14 @@ class InspirationCarouselOptionInfoViewHolder(
     }
 
     private fun bindProductImage(imgUrl: String) {
-        itemView.optionInfoImage?.shouldShowWithAction(imgUrl.isNotEmpty()) {
-            itemView.optionInfoImage.loadImage(imgUrl)
+        val binding = binding ?: return
+        binding.optionInfoImage.shouldShowWithAction(imgUrl.isNotEmpty()) {
+            binding.optionInfoImage.loadImage(imgUrl)
         }
     }
 
     private fun bindImpressionListener(product: InspirationCarouselDataView.Option.Product) {
-        itemView.optionInfoImage?.addOnImpressionListener(product, createViewHintListener(product))
+        binding?.optionInfoImage?.addOnImpressionListener(product, createViewHintListener(product))
     }
 
     private fun createViewHintListener(product: InspirationCarouselDataView.Option.Product): ViewHintListener {
@@ -53,26 +56,29 @@ class InspirationCarouselOptionInfoViewHolder(
     }
 
     private fun bindOptionTitle(title: String) {
-        itemView.optionInfoTitle?.shouldShowWithAction(title.isNotEmpty()) {
-            itemView.optionInfoTitle?.text = MethodChecker.fromHtml(title)
+        val binding = binding ?: return
+        binding.optionInfoTitle.shouldShowWithAction(title.isNotEmpty()) {
+            binding.optionInfoTitle.text = MethodChecker.fromHtml(title)
         }
     }
 
     private fun bindProductName(name: String) {
-        itemView.optionInfoName?.shouldShowWithAction(name.isNotEmpty()) {
-            itemView.optionInfoName?.text = MethodChecker.fromHtml(name)
+        val binding = binding ?: return
+        binding.optionInfoName.shouldShowWithAction(name.isNotEmpty()) {
+            binding.optionInfoName.text = MethodChecker.fromHtml(name)
         }
     }
 
     private fun bindProductDesc(descriptions: List<String>) {
-        itemView.optionInfoDesc?.shouldShowWithAction(descriptions.isNotEmpty()) {
+        val binding = binding ?: return
+        binding.optionInfoDesc.shouldShowWithAction(descriptions.isNotEmpty()) {
             val desc = descriptions.joinToString(separator = "\n")
-            itemView.optionInfoDesc?.text = desc
+            binding.optionInfoDesc.text = desc
         }
     }
 
     private fun bindOnClickListener(item: InspirationCarouselDataView.Option) {
-        itemView.optionInfoCardView?.setOnClickListener { _ ->
+        binding?.optionInfoCardView?.setOnClickListener { _ ->
             val product = item.product.getOrNull(0) ?: return@setOnClickListener
             inspirationCarouselListener.onInspirationCarouselInfoProductClicked(product)
         }

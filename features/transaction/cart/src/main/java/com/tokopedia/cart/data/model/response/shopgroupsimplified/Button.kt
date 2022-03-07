@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Button(
         @SerializedName("id")
-        val id: Int = 0,
+        val id: String = "",
         @SerializedName("code")
         val code: String = "",
         @SerializedName("message")

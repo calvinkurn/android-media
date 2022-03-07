@@ -70,7 +70,7 @@ class PlayEtalasePickerViewModelTest {
             getEtalaseResult()
         }.thenVerify {
             it.assertWhenSuccess { _, data ->
-                data.isEqualTo(mappedResponse)
+                data.assertEqualTo(mappedResponse)
             }
         }
     }
@@ -154,7 +154,7 @@ class PlayEtalasePickerViewModelTest {
         }.andWhen {
             getMaxProductDesc()
         }.thenVerify {
-            it.isEqualTo(maxDesc)
+            it.assertEqualTo(maxDesc)
         }
     }
 
@@ -261,7 +261,7 @@ class PlayEtalasePickerViewModelTest {
             it.assertWhenSuccess { _, data ->
                 data.productMap.assertCount(1)
                 data.productMap.values.flatten().map(ProductContentUiModel::id)
-                        .isEqualTo(
+                        .assertEqualTo(
                                 mockIdNameProductList.map { (id, _) -> id }
                         )
             }
@@ -274,7 +274,7 @@ class PlayEtalasePickerViewModelTest {
         }.thenVerify {
             it.assertWhenSuccess { _, data ->
                 data.productMap.assertCount(2)
-                data.productMap.values.flatten().map(ProductContentUiModel::id).isEqualTo(
+                data.productMap.values.flatten().map(ProductContentUiModel::id).assertEqualTo(
                         (mockIdNameProductList + otherMockIdNameProductList).map { (id, _) -> id }
                 )
             }

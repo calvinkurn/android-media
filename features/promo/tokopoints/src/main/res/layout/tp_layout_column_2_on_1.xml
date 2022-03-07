@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_col_1"
@@ -25,9 +25,9 @@
         android:id="@+id/text_title_banner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="8dp"
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="@color/Unify_N0"
@@ -43,7 +43,7 @@
         android:id="@+id/text_sub_title_banner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginTop="2dp"
         android:textColor="@color/Unify_N0"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
@@ -59,7 +59,7 @@
         android:id="@+id/text_title_bottom_1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         android:ellipsize="end"
         android:singleLine="true"
         android:textColor="@color/Unify_N700_96"
@@ -76,7 +76,7 @@
         android:id="@+id/text_sub_title_bottom_1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginTop="2dp"
         android:ellipsize="end"
         android:lines="2"
         android:maxLines="2"

@@ -6,14 +6,14 @@ import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
-import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest;
-import com.tokopedia.checkout.data.model.request.checkout.DropshipDataCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.old.DropshipDataCheckoutRequest;
 import com.tokopedia.checkout.data.model.request.common.OntimeDeliveryGuarantee;
-import com.tokopedia.checkout.data.model.request.checkout.ProductDataCheckoutRequest;
-import com.tokopedia.checkout.data.model.request.checkout.PromoRequest;
+import com.tokopedia.checkout.data.model.request.checkout.old.ProductDataCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.old.PromoRequest;
 import com.tokopedia.checkout.data.model.request.common.RatesFeature;
-import com.tokopedia.checkout.data.model.request.checkout.ShippingInfoCheckoutRequest;
-import com.tokopedia.checkout.data.model.request.checkout.ShopProductCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.old.ShippingInfoCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.old.ShopProductCheckoutRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -183,6 +183,9 @@ public class ShipmentDataRequestConverter {
 
         ProductDataCheckoutRequest productDataCheckoutRequest = new ProductDataCheckoutRequest();
         productDataCheckoutRequest.setProductId(cartItem.getProductId());
+        productDataCheckoutRequest.setBundleId(cartItem.getBundleId());
+        productDataCheckoutRequest.setBundleGroupId(cartItem.getBundleGroupId());
+        productDataCheckoutRequest.setBundleType(cartItem.getBundleType());
         productDataCheckoutRequest.setPurchaseProtection(cartItem.isProtectionOptIn());
         productDataCheckoutRequest.setProductName(cartItem.getAnalyticsProductCheckoutData().getProductName());
         productDataCheckoutRequest.setProductPrice(cartItem.getAnalyticsProductCheckoutData().getProductPrice());

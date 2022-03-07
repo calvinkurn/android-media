@@ -7,47 +7,44 @@
     android:layout_height="wrap_content"
     android:visibility="gone"
     tools:visibility="visible"
-    android:paddingTop="@dimen/dp_8"
-    android:paddingBottom="@dimen/dp_8"
     tools:ignore="RtlSymmetry">
 
-    <View
-        android:id="@+id/best_seller_separator"
-        android:layout_width="wrap_content"
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/home_component_divider_header"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_G100"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        tools:layout_height="8dp"
+        android:visibility="visible"
+        tools:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/best_seller_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="9dp"
         android:text="@string/best_seller_title_other_product"
         android:visibility="gone"
         tools:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/best_seller_subtitle"
         app:layout_constraintEnd_toStartOf="@+id/best_seller_see_more"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/home_component_divider_header"
         app:typographyType="heading_4" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/best_seller_subtitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:text="@string/best_seller_title_other_product"
         android:visibility="gone"
         tools:visibility="visible"
@@ -62,14 +59,14 @@
         android:id="@+id/best_seller_see_more"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginEnd="16dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
         android:focusable="true"
-        android:lineSpacingExtra="@dimen/sp_6"
+        android:lineSpacingExtra="6sp"
         android:text="@string/best_seller_see_more"
         android:textColor="@color/Unify_G500"
-        android:textSize="@dimen/sp_14"
+        android:textSize="14sp"
         android:textStyle="bold"
         android:visibility="gone"
         tools:visibility="visible"
@@ -82,8 +79,8 @@
         android:id="@+id/best_seller_chip_filter_recyclerview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="12dp"
         android:orientation="horizontal"
         android:visibility="gone"
         tools:visibility="visible"
@@ -92,23 +89,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/best_seller_subtitle" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/best_seller_recommendation_recycler_view"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/best_seller_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:descendantFocusability="blocksDescendants"
-        android:scrollbars="none"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/dp_8"
-        android:paddingBottom="@dimen/dp_8"
-        android:visibility="gone"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:layout_marginTop="8dp"
+        android:paddingBottom="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/best_seller_chip_filter_recyclerview"
-        tools:listitem="@layout/recommendation_carousel_item_view_holder"
-        tools:visibility="visible" />
+        >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/best_seller_recommendation_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:descendantFocusability="blocksDescendants"
+            android:scrollbars="none"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/recommendation_carousel_item_view_holder"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
         android:id="@+id/best_seller_loading_recommendation"
@@ -116,11 +124,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/best_seller_chip_filter_recyclerview"
         tools:visibility="visible" />
 
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/home_component_divider_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="gone"
+        tools:background="@color/Unify_B500"
+        app:layout_constraintTop_toBottomOf="@id/best_seller_loading_recommendation"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

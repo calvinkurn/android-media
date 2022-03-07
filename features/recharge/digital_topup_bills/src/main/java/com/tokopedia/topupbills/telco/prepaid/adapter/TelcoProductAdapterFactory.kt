@@ -10,14 +10,17 @@ import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductMcc
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductTitleViewHolder
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
 
-class TelcoProductAdapterFactory(val productType: Int, val listener: TelcoProductViewHolder.ActionListener,
-                                 val mccmListener: TelcoProductMccmListViewHolder.OnClickListener?)
-    : BaseAdapterTypeFactory() {
+class TelcoProductAdapterFactory(
+    val productType: Int,
+    val listener: TelcoProductViewHolder.ActionListener,
+    val mccmListener: TelcoProductMccmListViewHolder.OnClickListener?,
+    val isSingleMCCM: Boolean = false
+) : BaseAdapterTypeFactory() {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             TelcoProductTitleViewHolder.LAYOUT -> TelcoProductTitleViewHolder(parent)
-            TelcoProductViewHolder.LAYOUT -> TelcoProductViewHolder(parent, productType, listener)
+            TelcoProductViewHolder.LAYOUT -> TelcoProductViewHolder(parent, productType, isSingleMCCM, listener)
             TelcoProductMccmListViewHolder.LAYOUT -> TelcoProductMccmListViewHolder(parent, mccmListener)
             else -> super.createViewHolder(parent, type)
         }

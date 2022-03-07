@@ -1,9 +1,11 @@
 package com.tokopedia.product.detail.usecase
 
-import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.*
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.GraphqlError
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
@@ -86,12 +88,6 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
         val isWishlistedRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_WISHLIST_STATUS],
                 WishlistStatus::class.java, isWishlistedParams)
 
-        val affilateParams = mapOf(ProductDetailCommonConstant.PRODUCT_ID_PARAM to listOf(productId.toLongOrZero()),
-                ProductDetailCommonConstant.SHOP_ID_PARAM to shopId,
-                ProductDetailCommonConstant.INCLUDE_UI_PARAM to true)
-        val affiliateRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_AFFILIATE],
-                TopAdsPdpAffiliateResponse::class.java, affilateParams)
-
         val topAdsManageParams = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId,
                 ProductDetailCommonConstant.PARAM_SHOP_ID to shopId.toString(),
                 ProductDetailCommonConstant.PARAM_TEASER_SOURCE to "pdp")
@@ -110,9 +106,13 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
                 ProductShopFollowResponse::class.java, shopFollowParams)
 
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-        val requests = mutableListOf(isWishlistedRequest, affiliateRequest)
+        val requests = mutableListOf(isWishlistedRequest)
 
-        if (isShopOwner) requests.addAll(listOf(topAdsShopRequest, topAdsManageRequest)) else requests.addAll(listOf(shopFollowRequest))
+        if (isShopOwner) {
+            requests.addAll(listOf(topAdsShopRequest, topAdsManageRequest))
+        } else {
+            requests.addAll(listOf(shopFollowRequest))
+        }
 
         try {
             val gqlResponse = graphqlRepository.response(requests, cacheStrategy)
@@ -123,12 +123,6 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
             } else {
                 p2Login.isWishlisted = true
                 logError(gqlResponse, WishlistStatus::class.java)
-            }
-
-            if (gqlResponse.getError(TopAdsPdpAffiliateResponse::class.java)?.isNotEmpty() != true) {
-                p2Login.pdpAffiliate = gqlResponse
-                        .getData<TopAdsPdpAffiliateResponse>(TopAdsPdpAffiliateResponse::class.java)
-                        .topAdsPDPAffiliate.data.affiliate.firstOrNull()
             }
 
             if (gqlResponse.getError(TopAdsGetProductManageResponse::class.java)?.isNotEmpty() != true) {

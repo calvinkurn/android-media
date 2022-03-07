@@ -8,38 +8,60 @@
     android:orientation="vertical"
     android:visibility="gone"
     tools:ignore="RtlSymmetry"
-    android:paddingBottom="@dimen/dp_16"
+    android:paddingBottom="16dp"
     tools:visibility="visible">
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/recom_separator"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
-        android:background="@color/Unify_N50" />
+        android:layout_height="8dp"/>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/pdp_recom_header_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/dp_16"
-        android:paddingStart="@dimen/dp_16"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingEnd="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16">
+        android:paddingTop="16dp"
+        android:paddingStart="16dp"
+        android:paddingLeft="16dp"
+        android:paddingEnd="16dp"
+        android:paddingRight="16dp">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/titleRecom"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="@string/title_other_product"
             app:typographyType="heading_4"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/seeMoreRecom"
+            />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/subtitleRecom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textSize="@dimen/sp_12"
+            android:lines="1"
+            android:ellipsize="end"
+            tools:text="Berakhir dalam"
+            android:textIsSelectable="false"
+            android:layout_marginTop="@dimen/dp_1"
+            app:layout_constraintTop_toBottomOf="@id/titleRecom"
+            app:layout_constraintStart_toStartOf="@id/titleRecom"
+            app:typographyType="body_3"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/titleRecom"
+            app:layout_constraintBottom_toBottomOf="@id/titleRecom"
             android:id="@+id/seeMoreRecom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_14"
+            android:textSize="14sp"
             android:textStyle="bold"
             android:clickable="true"
             android:focusable="true"
@@ -48,8 +70,9 @@
             android:textColor="@color/Unify_G500"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:visibility="gone"
+            tools:visibility="visible"
             app:typographyType="heading_5"/>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chip_filter_recyclerview"

@@ -1,2 +1,4 @@
 // Sort alphabetically by name
+includeIfEnabled("testing:joint:dg_transaction")
+includeIfEnabled("testing:joint:inactivephone_otp")
 includeIfEnabled("testing:joint:pdp_checkout")

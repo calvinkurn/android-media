@@ -33,11 +33,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_next_short"
-                android:paddingTop="@dimen/dp_8"
-                android:paddingBottom="@dimen/dp_8"
-                android:paddingLeft="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_8"
-                android:layout_marginEnd="@dimen/dp_16"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:layout_marginEnd="16dp"
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"/>
@@ -95,8 +95,8 @@
                     <com.tokopedia.unifycomponents.LoaderUnify
                         android:id="@+id/crop_progressbar"
                         style="?android:attr/indeterminate"
-                        android:layout_width="@dimen/dp_48"
-                        android:layout_height="@dimen/dp_48"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:layout_gravity="center"
                         android:indeterminate="true"
                         android:visibility="gone"
@@ -176,8 +176,8 @@
                             android:id="@+id/layout_crop"
                             android:layout_height="@dimen/image_editor_control_height"
                             android:layout_width="match_parent"
-                            android:layout_marginLeft="@dimen/dp_16"
-                            android:layout_marginRight="@dimen/dp_16"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="16dp"
                             android:visibility="gone"
                             tools:visibility="visible"
                             layout="@layout/layout_crop"/>
@@ -186,8 +186,8 @@
                             android:id="@+id/layout_rotate"
                             android:layout_height="@dimen/image_editor_control_height"
                             android:layout_width="match_parent"
-                            android:layout_marginLeft="@dimen/dp_16"
-                            android:layout_marginRight="@dimen/dp_16"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="16dp"
                             android:visibility="gone"
                             tools:visibility="visible"
                             layout="@layout/layout_rotate"/>
@@ -196,8 +196,8 @@
                             android:id="@+id/layout_brightness"
                             android:layout_height="@dimen/image_editor_control_height"
                             android:layout_width="match_parent"
-                            android:layout_marginLeft="@dimen/dp_16"
-                            android:layout_marginRight="@dimen/dp_16"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="16dp"
                             android:visibility="gone"
                             tools:visibility="visible"
                             layout="@layout/layout_brightness"/>
@@ -206,8 +206,8 @@
                             android:id="@+id/layout_contrast"
                             android:layout_height="@dimen/image_editor_control_height"
                             android:layout_width="match_parent"
-                            android:layout_marginLeft="@dimen/dp_16"
-                            android:layout_marginRight="@dimen/dp_16"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="16dp"
                             android:visibility="gone"
                             tools:visibility="visible"
                             layout="@layout/layout_contrast"/>
@@ -216,11 +216,21 @@
                             android:id="@+id/layout_watermark"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dp_16"
-                            android:layout_marginRight="@dimen/dp_16"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="16dp"
                             android:visibility="gone"
                             tools:visibility="visible"
                             layout="@layout/layout_watermark"/>
+
+                        <include
+                            android:id="@+id/layout_remove_background"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="16dp"
+                            android:visibility="gone"
+                            tools:visibility="visible"
+                            layout="@layout/layout_remove_background"/>
 
                         <View
                             android:layout_width="match_parent"
@@ -241,10 +251,10 @@
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:gravity="center_horizontal"
-                            android:paddingRight="@dimen/dp_16"
-                            android:paddingLeft="@dimen/dp_16"
-                            android:paddingTop="@dimen/dp_20"
-                            android:paddingBottom="@dimen/dp_20"
+                            android:paddingRight="16dp"
+                            android:paddingLeft="16dp"
+                            android:paddingTop="20dp"
+                            android:paddingBottom="20dp"
                             android:text="@string/image_picker_label_cancel"/>
 
                         <com.tokopedia.unifyprinciples.Typography
@@ -253,10 +263,10 @@
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:paddingRight="@dimen/dp_16"
-                            android:paddingLeft="@dimen/dp_16"
-                            android:paddingTop="@dimen/dp_20"
-                            android:paddingBottom="@dimen/dp_20"
+                            android:paddingRight="16dp"
+                            android:paddingLeft="16dp"
+                            android:paddingTop="20dp"
+                            android:paddingBottom="20dp"
                             android:gravity="center_horizontal"
                             android:text="@string/save"
                             android:background="?attr/selectableItemBackground"/>
@@ -280,8 +290,8 @@
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/progressbar"
                 style="?android:attr/indeterminate"
-                android:layout_width="@dimen/dp_48"
-                android:layout_height="@dimen/dp_48"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_gravity="center"
                 android:indeterminate="true"
                 android:visibility="gone"
@@ -290,7 +300,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 app:typographyType="body_2"
                 android:text="@string/downloading_images"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/Unify_N700"/>

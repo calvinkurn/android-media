@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -13,6 +12,7 @@ import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.di.DaggerShopLocationComponent
 import com.tokopedia.manageaddress.di.ShopLocationComponent
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationOldUiModel
+import com.tokopedia.unifyprinciples.Typography
 
 class ShopSettingAddressAddEditActivity: BaseSimpleActivity(), HasComponent<ShopLocationComponent> {
     override fun getComponent() = DaggerShopLocationComponent.builder().baseAppComponent(
@@ -21,8 +21,8 @@ class ShopSettingAddressAddEditActivity: BaseSimpleActivity(), HasComponent<Shop
     private var shopLocationOldUiModel: ShopLocationOldUiModel? = null
     private var isAddNew = true
 
-    private val saveTextView: TextView? by lazy {
-        toolbar?.findViewById<TextView>(R.id.tvSave)
+    private val saveTextView: Typography? by lazy {
+        toolbar?.findViewById<Typography>(R.id.tvSave)
     }
 
     companion object {

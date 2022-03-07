@@ -85,7 +85,7 @@
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:visibility="gone"
             app:labelTitle="@string/play_interactive_winner"
-            app:labelType="general_light_green"
+            app:labelType="highlight_light_green"
             app:layout_constraintStart_toEndOf="@id/tv_winner_name"
             app:layout_constraintTop_toTopOf="@id/img_winner"
             app:layout_constraintBottom_toBottomOf="@id/img_winner"

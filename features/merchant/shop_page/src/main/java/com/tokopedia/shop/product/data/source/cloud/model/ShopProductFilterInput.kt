@@ -36,6 +36,10 @@ data class ShopProductFilterInput(
         @Expose
         var pmin: Int = 0,
 
+        @SerializedName("fcategory")
+        @Expose
+        var fcategory: Int? = null,
+
         @SerializedName("user_districtId")
         @Expose
         var userDistrictId: String = "",

@@ -6,9 +6,9 @@
     <solid
         android:color="@color/Unify_N700_96" />
     <corners
-        android:bottomLeftRadius="@dimen/dp_6"
-        android:bottomRightRadius="@dimen/dp_6"
-        android:topLeftRadius="@dimen/dp_6"
-        android:topRightRadius="@dimen/dp_6" />
+        android:bottomLeftRadius="6dp"
+        android:bottomRightRadius="6dp"
+        android:topLeftRadius="6dp"
+        android:topRightRadius="6dp" />
 
 </shape>

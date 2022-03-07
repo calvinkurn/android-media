@@ -98,7 +98,6 @@ open class LoginTokenUseCase @Inject constructor(val resources: Resources,
         private val TYPE_OTP:String = "otp"
         private val TYPE_LPN:String = "lpn"
 
-        val SOCIAL_TYPE_FACEBOOK:String = "1"
         val SOCIAL_TYPE_GOOGLE:String = "7"
         val SOCIAL_TYPE_SEAMLESS:String = "12"
 

@@ -10,12 +10,12 @@
         android:id="@+id/layout_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
         app:search_bar_show_icon="false" />
 
     <View
@@ -29,8 +29,8 @@
         android:id="@+id/tv_desc_input_district"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
         android:textSize="@dimen/sp_12"
         android:visibility="gone" />
 
@@ -38,7 +38,7 @@
         android:id="@+id/ll_list_district"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginStart="16dp"
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true"
         android:orientation="vertical">
@@ -55,7 +55,7 @@
         android:id="@+id/ll_popular_city"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginStart="16dp"
         android:orientation="vertical">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -70,7 +70,7 @@
             android:id="@+id/rv_chips"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_12" />
+            android:layout_marginTop="12dp" />
 
     </LinearLayout>
 

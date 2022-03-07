@@ -30,26 +30,28 @@ class MessageOnTouchListener(
             val line = layout.getLineForVertical(y)
             val buffer = Spannable.Factory.getInstance().newSpannable(textView.text)
             val off = layout.getOffsetForHorizontal(line, x.toFloat())
-            val link = buffer.getSpans(off, off, URLSpan::class.java)
-            if (link.isNotEmpty()) {
-                if (action == MotionEvent.ACTION_UP) {
-                    val clickedUrl = link[0].url
-                    when {
-                        viewListener.shouldHandleUrlManually(clickedUrl) -> {
-                            viewListener.onGoToWebView(clickedUrl, clickedUrl)
-                            return true
-                        }
-                        viewListener.isBranchIOLink(clickedUrl) -> {
-                            viewListener.handleBranchIOLinkClick(clickedUrl)
-                            return true
-                        }
-                        else -> {
-                            link[0].onClick(textView)
-                            return true
+            if (buffer.length >= off) {
+                val link = buffer.getSpans(off, off, URLSpan::class.java)
+                if (link.isNotEmpty()) {
+                    if (action == MotionEvent.ACTION_UP) {
+                        val clickedUrl = link[0].url
+                        when {
+                            viewListener.shouldHandleUrlManually(clickedUrl) -> {
+                                viewListener.onGoToWebView(clickedUrl, clickedUrl)
+                                return true
+                            }
+                            viewListener.isBranchIOLink(clickedUrl) -> {
+                                viewListener.handleBranchIOLinkClick(clickedUrl)
+                                return true
+                            }
+                            else -> {
+                                link[0].onClick(textView)
+                                return true
+                            }
                         }
                     }
+                    return true
                 }
-                return true
             }
         }
         return false

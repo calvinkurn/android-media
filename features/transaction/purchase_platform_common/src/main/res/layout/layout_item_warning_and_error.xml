@@ -5,18 +5,18 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical"
-    android:paddingTop="@dimen/dp_16">
+    android:paddingTop="16dp">
 
     <LinearLayout
         android:id="@+id/layout_error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:orientation="vertical"
         android:visibility="visible"
         tools:ignore="UselessParent"
-        tools:visbility="visible">
+        tools:visibility="gone">
 
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/ticker_error"
@@ -29,8 +29,8 @@
         android:id="@+id/layout_warning"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:orientation="vertical"
         android:visibility="visible"
         tools:ignore="UselessParent"

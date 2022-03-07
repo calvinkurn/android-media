@@ -15,6 +15,9 @@ class CreateReviewProgressBar : BaseCustomView {
 
     companion object {
         private const val COMPLETE_PROGRESS = 100
+        private const val HALF_PROGRESS = 50
+        private const val THREE_QUARTERS_PROGRESS = 75
+        private const val QUARTER_PROGRESS = 25
         private const val PARTIALLY_COMPLETE_PROGRESS = 66
         private const val EMPTY_PROGRESS = 33
     }
@@ -35,7 +38,7 @@ class CreateReviewProgressBar : BaseCustomView {
     }
 
     private fun init() {
-        View.inflate(context, R.layout.widget_create_review_progress_bar, this)
+        View.inflate(context,  com.tokopedia.review.R.layout.widget_create_review_progress_bar, this)
         progressBar = findViewById(R.id.review_form_progress_bar)
         progressBarText = findViewById(R.id.review_form_progress_bar_description)
         progressBar?.progressBarHeight = ProgressBarUnify.SIZE_SMALL
@@ -51,7 +54,62 @@ class CreateReviewProgressBar : BaseCustomView {
                 }
                 setBadRatingCompleteText()
             }
-            progress.isNeedPhoto() -> {
+            progress.isNeedPhotoOnly() -> {
+                if (progress.isGoodRating) {
+                    setGoodRatingNeedPhotoText()
+                    setPartiallyCompleteProgress()
+                    return
+                }
+                setBadRatingFlowNeedPhotoText()
+                setThreeQuartersProgress()
+                return
+            }
+            progress.isNeedReviewOnly() -> {
+                if (progress.isGoodRating) {
+                    setGoodRatingNeedReviewText()
+                    setPartiallyCompleteProgress()
+                    return
+                }
+                setNeedReviewOnlyText()
+                setThreeQuartersProgress()
+                return
+            }
+            progress.isNeedBadRatingReasonOnly() -> {
+                if (progress.isTextAreaFilled && progress.isPhotosFilled) {
+                    setThreeQuartersProgress()
+                } else {
+                    setHalfProgress()
+                }
+                setNeedBadRatingReasonText()
+                return
+            }
+            progress.isBadRatingReasonSelected && !progress.isGoodRating -> {
+                setHalfProgress()
+                setNeedReviewOnlyText()
+            }
+            else -> {
+                if (progress.isGoodRating) {
+                    setEmptyProgress()
+                    setGoodRatingEmptyText()
+                    return
+                }
+                setQuarterProgress()
+                setBadRatingEmptyText()
+            }
+        }
+    }
+
+    fun setProgressBarValueForOldFlow(progress: CreateReviewProgressBarState) {
+        when {
+            progress.isCompleteOldFlow() -> {
+                setCompleteProgress()
+                if (progress.isGoodRating) {
+                    setGoodRatingCompleteText()
+                    return
+                }
+                setBadRatingCompleteText()
+            }
+            progress.isNeedPhotoOldFlow() -> {
                 setPartiallyCompleteProgress()
                 if (progress.isGoodRating) {
                     setGoodRatingNeedPhotoText()
@@ -59,7 +117,7 @@ class CreateReviewProgressBar : BaseCustomView {
                 }
                 setBadRatingNeedPhotoText()
             }
-            progress.isNeedReview() -> {
+            progress.isNeedReviewOldFlow() -> {
                 setPartiallyCompleteProgress()
                 if (progress.isGoodRating) {
                     setGoodRatingNeedReviewText()
@@ -73,7 +131,7 @@ class CreateReviewProgressBar : BaseCustomView {
                     setGoodRatingEmptyText()
                     return
                 }
-                setBadRatingEmptyText()
+                setBadRatingOldFlowEmptyText()
             }
         }
     }
@@ -96,6 +154,27 @@ class CreateReviewProgressBar : BaseCustomView {
         progressBar?.apply {
             setValue(COMPLETE_PROGRESS)
             progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G400), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G400))
+        }
+    }
+
+    private fun setQuarterProgress() {
+        progressBar?.apply {
+            setValue(QUARTER_PROGRESS)
+            progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y400), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y400))
+        }
+    }
+
+    private fun setHalfProgress() {
+        progressBar?.apply {
+            setValue(HALF_PROGRESS)
+            progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y300), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y300))
+        }
+    }
+
+    private fun setThreeQuartersProgress() {
+        progressBar?.apply {
+            setValue(THREE_QUARTERS_PROGRESS)
+            progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y300), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y300))
         }
     }
 
@@ -127,7 +206,23 @@ class CreateReviewProgressBar : BaseCustomView {
         progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_need_text)
     }
 
+    private fun setBadRatingFlowNeedPhotoText() {
+        progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_need_photo)
+    }
+
+    private fun setBadRatingOldFlowEmptyText() {
+        progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_empty_old)
+    }
+
     private fun setBadRatingEmptyText() {
-        progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_empty)
+        progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_need_bad_rating_reason)
+    }
+
+    private fun setNeedReviewOnlyText() {
+        progressBarText?.text = context.getString(R.string.review_form_progress_bar_new_flow_need_review_only)
+    }
+
+    private fun setNeedBadRatingReasonText() {
+        progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_need_reason)
     }
 }

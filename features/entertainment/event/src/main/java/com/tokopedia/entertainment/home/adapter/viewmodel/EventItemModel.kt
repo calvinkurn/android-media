@@ -11,5 +11,6 @@ data class EventItemModel(var produkId: Int,
                           var date: String,
                           var isLiked: Boolean,
                           var appUrl: String,
-                          var seoURL: String
+                          var seoURL: String,
+                          var isFree: Boolean
 ): ImpressHolder()

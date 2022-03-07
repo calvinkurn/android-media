@@ -1,6 +1,7 @@
 package com.tokopedia.editshipping.ui.shopeditaddress
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -39,6 +40,7 @@ import com.tokopedia.editshipping.util.ShopEditAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
+import com.tokopedia.logisticCommon.util.LogisticUserConsentHelper
 import com.tokopedia.logisticCommon.util.getLatLng
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
@@ -80,6 +82,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private var btnSave: UnifyButton? = null
     private var helperShopDetail: Typography? = null
     private var txtShopLocationWatcher: Typography? = null
+    private var tvUserConsent: Typography? = null
 
     private var mapView: MapView? = null
     private var btnOpenMap: UnifyButton? = null
@@ -211,6 +214,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         btnSave = view?.findViewById(R.id.btn_save_warehouse)
         helperShopDetail = view?.findViewById(R.id.tv_detail_alamat_helper)
         txtShopLocationWatcher = view?.findViewById(R.id.tv_nama_lokasi_watcher)
+        tvUserConsent = view?.findViewById(R.id.tv_user_consent)
 
         mapView = view?.findViewById(R.id.map_view_detail)
         btnOpenMap = view?.findViewById(R.id.btn_open_map)
@@ -375,6 +379,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         btnOpenMap?.setOnClickListener {
             goToPinpointActivity(currentLat, currentLong, warehouseModel)
         }
+
+        LogisticUserConsentHelper.displayUserConsent(activity as Context, userSession.userId, tvUserConsent, getString(R.string.save_changes))
 
         btnSave?.setOnClickListener {
             warehouseModel?.let { it ->

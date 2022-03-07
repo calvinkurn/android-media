@@ -4,6 +4,8 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.checkout.domain.model.checkout.Prompt;
+import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
@@ -26,9 +28,8 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest;
-import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest;
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
+import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
@@ -69,7 +70,7 @@ public interface ShipmentContract {
 
         void renderCheckoutPage(boolean isInitialRender, boolean isReloadAfterPriceChangeHigher, boolean isOneClickShipment);
 
-        void renderCheckoutPageNoAddress(CartShipmentAddressFormData cartShipmentAddressFormData);
+        void renderCheckoutPageNoAddress(CartShipmentAddressFormData cartShipmentAddressFormData, boolean isEligibleForRevampAna);
 
         void renderCheckoutPageNoMatchedAddress(CartShipmentAddressFormData cartShipmentAddressFormData, int addressState);
 
@@ -79,11 +80,9 @@ public interface ShipmentContract {
 
         void renderCheckoutCartError(String message);
 
-        void renderCheckoutCartErrorReporter(CheckoutData checkoutData);
-
         void renderCheckoutPriceUpdated(PriceValidationData priceValidationData);
 
-        void renderSubmitHelpTicketSuccess(SubmitTicketResult submitTicketResult);
+        void renderPrompt(Prompt prompt);
 
         void renderPromoCheckoutFromCourierSuccess(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel, int itemPosition, boolean noToast);
 
@@ -115,6 +114,8 @@ public interface ShipmentContract {
         void setCourierPromoApplied(int itemPosition);
 
         void stopTrace();
+
+        void stopEmbraceTrace();
 
         void onSuccessClearPromoLogistic(int position, boolean isLastAppliedPromo);
 
@@ -162,6 +163,7 @@ public interface ShipmentContract {
         void logOnErrorLoadCourier(Throwable throwable, int itemPosition);
 
         void logOnErrorCheckout(Throwable throwable, String request);
+
     }
 
     interface AnalyticsActionListener {
@@ -173,6 +175,10 @@ public interface ShipmentContract {
                                                     String eventCategory,
                                                     String eventAction,
                                                     String eventLabel);
+
+        void sendEnhancedEcommerceAnalyticsCrossSellClickPilihPembayaran(String eventLabel,
+                                                                         String userId,
+                                                                         List<Object> listProducts);
 
         void sendAnalyticsOnClickChooseOtherAddressShipment();
 
@@ -296,6 +302,10 @@ public interface ShipmentContract {
 
         ShipmentDonationModel getShipmentDonationModel();
 
+        void setListShipmentCrossSellModel(ArrayList<ShipmentCrossSellModel> listShipmentCrossSellModel);
+
+        ArrayList<ShipmentCrossSellModel> getListShipmentCrossSellModel();
+
         void setShipmentButtonPaymentModel(ShipmentButtonPaymentModel shipmentButtonPaymentModel);
 
         ShipmentButtonPaymentModel getShipmentButtonPaymentModel();
@@ -330,9 +340,7 @@ public interface ShipmentContract {
 
         boolean isIneligiblePromoDialogEnabled();
 
-        void processSubmitHelpTicket(CheckoutData checkoutData);
-
-        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, int isDonation, String leasingId);
+        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, int isDonation, ArrayList<ShipmentCrossSellModel> crossSellModelArrayList, String leasingId);
 
         ShipmentDataConverter getShipmentDataConverter();
 

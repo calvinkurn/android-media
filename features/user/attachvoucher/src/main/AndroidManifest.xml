@@ -6,7 +6,8 @@
         <activity
             android:name=".view.activity.AttachVoucherActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AttachCommon">
+            android:theme="@style/Theme.AttachCommon"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -20,5 +21,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

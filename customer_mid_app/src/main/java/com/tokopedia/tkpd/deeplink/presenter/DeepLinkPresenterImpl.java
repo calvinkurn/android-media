@@ -32,7 +32,6 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.customer_mid_app.R;
@@ -160,10 +159,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_HOME_HOTLIST;
                     openHomepageHot(defaultBundle);
                     break;
-                case DeepLinkChecker.FIND:
-                    screenName = AppScreen.SCREEN_FIND;
-                    DeepLinkChecker.openFind(uriData.toString(), context);
-                    break;
                 case DeepLinkChecker.CATALOG:
                     openCatalogDetail(linkSegment);
                     screenName = AppScreen.SCREEN_CATALOG;
@@ -273,6 +268,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openNativeThankYouPage(linkSegment, defaultBundle);
                     screenName = "";
                     break;
+                case DeepLinkChecker.SALDO_DEPOSIT:
+                    openSaldoDeposit();
+                    screenName = "";
+                    break;
                 case DeepLinkChecker.LOGIN_BY_QR:
                     openLoginByQr(uriData);
                     screenName = "";
@@ -291,6 +290,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 context.finish();
             }
         }
+    }
+
+    private void openSaldoDeposit() {
+        RouteManager.route(context, ApplinkConst.SALDO);
     }
 
     private void openLoginByQr(Uri uriData) {
@@ -576,6 +579,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                                     bundle,
                                     ApplinkConst.SHOP_FEED,
                                     shopId);
+                        } else  if(isShopMvcLockedToProduct(linkSegment)) {
+                          String voucherId = linkSegment.get(2);
+                          RouteManager.route(context,
+                                  bundle,
+                                  ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT,
+                                  shopId,
+                                  voucherId);
                         } else {
                             Intent intent = RouteManager.getIntent(context, ApplinkConst.SHOP,
                                     shopId);
@@ -634,6 +644,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private boolean isShopFeed(List<String> linkSegment) {
         String lastSegment = linkSegment.get(linkSegment.size() - 1);
         return lastSegment.equalsIgnoreCase("feed");
+    }
+
+    private boolean isShopMvcLockedToProduct(List<String> linkSegment) {
+        String segment = linkSegment.get(1);
+        return segment.equalsIgnoreCase("voucher");
     }
 
     private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData, Bundle bundle) {

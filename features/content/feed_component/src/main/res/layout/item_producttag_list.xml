@@ -5,38 +5,38 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="@dimen/dp_12"
-    android:layout_marginRight="@dimen/dp_12"
-    android:layout_marginBottom="@dimen/dp_4"
-    android:background="@color/Unify_N0"
+    android:layout_marginEnd="12dp"
+    android:layout_marginRight="12dp"
+    android:layout_marginBottom="4dp"
+    android:background="@color/Unify_Background"
     android:clickable="true"
     android:focusable="true"
-    app:cardCornerRadius="@dimen/dp_8">
+    app:cardCornerRadius="8dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:foreground="?android:attr/selectableItemBackground"
         android:orientation="horizontal"
-        android:layout_margin="@dimen/dp_4"
+        android:layout_margin="4dp"
         tools:ignore="UnusedAttribute">
 
         <FrameLayout
             android:id="@+id/productLayout"
             android:layout_width="@dimen/dp_85"
             android:layout_height="@dimen/dp_85"
-            android:layout_marginLeft="@dimen/dp_2"
-            android:layout_marginRight="@dimen/dp_2"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
             android:background="@drawable/bg_frame_rounded">
 
             <ImageView
                 android:id="@+id/productImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_12"
-                android:layout_marginRight="@dimen/dp_12"
-                android:layout_marginBottom="@dimen/dp_12"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginBottom="12dp"
                 android:adjustViewBounds="true"
                 android:background="@color/Unify_N0"
                 android:scaleType="centerCrop"
@@ -49,8 +49,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -69,11 +69,11 @@
                 android:id="@+id/productTag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_4"
-                android:paddingLeft="@dimen/dp_6"
-                android:paddingTop="@dimen/dp_2"
-                android:paddingRight="@dimen/dp_6"
-                android:paddingBottom="@dimen/dp_2"
+                android:layout_marginTop="4dp"
+                android:paddingLeft="6dp"
+                android:paddingTop="2dp"
+                android:paddingRight="6dp"
+                android:paddingBottom="2dp"
                 app:typographyType="small"
                 tools:background="@color/Unify_R400"
                 tools:text="Cashback 10%"
@@ -83,7 +83,7 @@
                 android:id="@+id/productPrice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginTop="4dp"
                 android:ellipsize="end"
                 android:gravity="bottom"
                 android:maxLines="1"
@@ -98,7 +98,7 @@
                 android:id="@+id/widgetRating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_4" />
+                android:layout_marginTop="4dp" />
         </LinearLayout>
 
         <FrameLayout
@@ -106,19 +106,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            android:layout_marginEnd="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginEnd="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/bg_btn_transaction"
             android:clickable="true"
             android:enabled="true"
             android:focusable="true"
-            android:paddingStart="@dimen/dp_16"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_8"
-            android:paddingEnd="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingBottom="@dimen/dp_8">
+            android:paddingStart="16dp"
+            android:paddingLeft="16dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="16dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="8dp">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/textBtnProductBuy"

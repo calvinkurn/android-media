@@ -21,4 +21,6 @@ interface HeaderMenuListener {
 
     fun unBlockChat()
 
+    fun onGoToChatSetting()
+
 }

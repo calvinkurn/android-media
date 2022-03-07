@@ -107,7 +107,9 @@ class InstrumentationHomeRevampTestActivity : AppCompatActivity(),
         pageLoadTimePerformanceInterface?.startPreparePagePerformanceMonitoring()
     }
 
-    override fun isNavigationRevamp(): Boolean {
-        return true
+    override fun isOsExperiment(): Boolean {
+        return false
     }
+
+    override fun currentVisibleFragment(): String = ""
 }

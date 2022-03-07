@@ -13,13 +13,14 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.util.TextHtmlUtils
+import com.tokopedia.shop.databinding.FragmentShopNoteDetailBinding
 import com.tokopedia.shop.note.NoteUtil
 import com.tokopedia.shop.note.di.component.DaggerShopNoteComponent
 import com.tokopedia.shop.note.di.module.ShopNoteModule
@@ -27,6 +28,7 @@ import com.tokopedia.shop.note.view.presenter.ShopNoteDetailViewModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class ShopNoteDetailFragment: BaseDaggerFragment() {
@@ -41,6 +43,7 @@ class ShopNoteDetailFragment: BaseDaggerFragment() {
     private var viewLoadingState: View? = null
     private var textViewDate: Typography? = null
     private var textViewDesc: Typography? = null
+    private val viewBinding: FragmentShopNoteDetailBinding? by viewBinding()
 
     companion object {
         private const val VIEW_CONTENT = 1
@@ -73,11 +76,11 @@ class ShopNoteDetailFragment: BaseDaggerFragment() {
     }
 
     private fun initView() {
-        viewErrorState = view?.findViewById(R.id.view_error_state)
-        mainContainer = view?.findViewById(R.id.main_container)
-        viewLoadingState = view?.findViewById(R.id.view_loading_state)
-        textViewDate = view?.findViewById(R.id.textViewDate)
-        textViewDesc = view?.findViewById(R.id.textViewDesc)
+        viewErrorState = viewBinding?.viewErrorState
+        mainContainer = viewBinding?.mainContainer
+        viewLoadingState = viewBinding?.viewLoadingState?.root
+        textViewDate = viewBinding?.textViewDate
+        textViewDesc = viewBinding?.textViewDesc
     }
 
     private fun observeLiveData() {
@@ -148,6 +151,7 @@ class ShopNoteDetailFragment: BaseDaggerFragment() {
         }
     }
 
+    //    we can't use viewbinding for the code below, since the layout from abstraction hasn't implement viewbinding
     private fun onErrorGetShopNoteList(e: Throwable?) {
         setViewState(VIEW_ERROR)
         val textRetryError = viewErrorState?.findViewById<TextView>(com.tokopedia.abstraction.R.id.message_retry)
@@ -160,7 +164,7 @@ class ShopNoteDetailFragment: BaseDaggerFragment() {
         setViewState(VIEW_CONTENT)
         shopNoteDetail?.run {
             (activity as AppCompatActivity).supportActionBar?.title = shopNoteDetail.title
-            val latestUpdate  = shopNoteDetail.updateTimeUtc.toIntOrZero()
+            val latestUpdate  = shopNoteDetail.updateTimeUtc.toLongOrZero()
             textViewDate?.text = getString(
                     R.string.shop_note_detail_date_format,
                     NoteUtil.convertUnixToFormattedDate(latestUpdate),

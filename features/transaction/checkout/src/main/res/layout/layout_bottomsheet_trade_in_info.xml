@@ -8,7 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dp_16">
+        android:paddingBottom="16dp">
 
         <com.tokopedia.unifycomponents.TabsUnify
             android:id="@+id/tab_trade_in_info"
@@ -21,7 +21,7 @@
             android:id="@+id/img_trade_in_info"
             android:layout_width="210dp"
             android:layout_height="160dp"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tab_trade_in_info"
@@ -31,9 +31,9 @@
             android:id="@+id/text_trade_in_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/img_trade_in_info"
             app:typographyType="body_2"

@@ -2,8 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginTop="@dimen/dp_8"
-    android:layout_marginBottom="@dimen/dp_8"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -13,9 +13,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@id/empty_tracking_notes"
-        android:layout_width="@dimen/dp_8"
-        android:layout_height="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_marginTop="8dp"
         android:src="@drawable/circle_green_logistic" />
 
 
@@ -23,8 +23,8 @@
         android:id="@+id/empty_tracking_notes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         app:layout_constraintLeft_toRightOf="@id/circle_green_logistic"
         app:layout_constraintStart_toEndOf="@id/circle_green_logistic"
         app:layout_constraintTop_toTopOf="@id/circle_green_logistic"

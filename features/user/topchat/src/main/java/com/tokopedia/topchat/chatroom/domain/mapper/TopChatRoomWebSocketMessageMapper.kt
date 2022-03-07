@@ -8,8 +8,8 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CTA_HEADER_M
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
-import com.tokopedia.chat_common.data.BaseChatViewModel.Builder.Companion.generateCurrentReplyTime
-import com.tokopedia.chat_common.data.MessageViewModel
+import com.tokopedia.chat_common.data.BaseChatUiModel.Builder.Companion.generateCurrentReplyTime
+import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.util.IdentifierUtil
@@ -35,7 +35,9 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
     private val gson = GsonBuilder().create()
 
     override fun convertToMessageViewModel(pojo: ChatSocketPojo): Visitable<*> {
-        return MessageViewModel.Builder().withResponseFromWs(pojo).build()
+        return MessageUiModel.Builder()
+            .withResponseFromWs(pojo)
+            .build()
     }
 
     override fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
@@ -55,7 +57,7 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
         val attachment = gson.fromJson(
             jsonAttributes, HeaderCtaButtonAttachment::class.java
         )
-        return MessageViewModel.Builder()
+        return MessageUiModel.Builder()
             .withResponseFromWs(pojo)
             .withAttachment(attachment)
             .build()
@@ -99,6 +101,8 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
             .withResponseFromWs(item)
             .withVoucherModel(voucherModel)
             .withIsPublic(voucher.isPublic)
+            .withIsLockToProduct(voucher.isLockToProduct?: 0)
+            .withApplink(voucher.applink?: "")
             .build()
     }
 
@@ -126,7 +130,7 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
             messageText: String
     ): Visitable<*> {
         val localId = IdentifierUtil.generateLocalId()
-        return MessageViewModel.Builder()
+        return MessageUiModel.Builder()
             .withMsgId(messageId)
             .withFromUid(userId)
             .withFrom(name)

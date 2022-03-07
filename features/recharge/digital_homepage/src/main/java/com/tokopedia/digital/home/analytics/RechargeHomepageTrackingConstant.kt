@@ -2,6 +2,8 @@ package com.tokopedia.digital.home.analytics
 
 object RechargeHomepageTrackingCategoryConstant {
     const val DIGITAL_HOMEPAGE_CATEGORY = "digital - subhomepage"
+    const val DIGITAL_HOMEPAGE_CATEGORY_TNB = "digital - subhomepage tnb"
+
 }
 
 object RechargeHomepageTrackingActionConstant {
@@ -23,6 +25,8 @@ object RechargeHomepageTrackingEventNameConstant {
     const val VIEW_ITEM = "view_item"
     const val SELECT_CONTENT = "select_content"
     const val CLICK_TOPUP_BILLS = "clickTopupTagihan"
+    const val VIEW_DIGITAL_IRIS = "viewDigitalIris"
+    const val CLICK_DIGITAL_EVENT = "clickDigitalEvent"
 }
 
 object RechargeHomepageTrackingEEConstant {

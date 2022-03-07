@@ -105,6 +105,18 @@
                     app:text_field_message=""
                     app:text_field_placeholder="@string/flight_booking_passenger_birthdate_secondary_hint"
                     tools:layout_height="@dimen/layout_lvl2" />
+
+                <com.tokopedia.unifycomponents.TextFieldUnify
+                    android:id="@+id/til_identification_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl5"
+                    app:text_field_label="@string/flight_booking_passenger_identification_number_hint"
+                    app:text_field_label_static="true"
+                    app:text_field_message="@string/flight_booking_passenger_identification_number_message"
+                    app:text_field_placeholder="@string/flight_booking_passenger_identification_number_hint"
+                    app:text_field_input_type="number"
+                    tools:layout_height="@dimen/layout_lvl2" />
             </LinearLayout>
 
             <LinearLayout

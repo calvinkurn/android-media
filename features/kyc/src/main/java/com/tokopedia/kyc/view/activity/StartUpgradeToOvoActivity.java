@@ -2,12 +2,7 @@ package com.tokopedia.kyc.view.activity;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -128,7 +123,7 @@ public class StartUpgradeToOvoActivity extends BaseSimpleActivity implements
     public void showProgressDialog() {
         if (loading == null) loading = new ProgressDialog(this);
         loading.setCancelable(false);
-        loading.setMessage(getString(R.string.title_loading));
+        loading.setMessage(getString(R.string.kyc_title_loading));
         loading.show();
     }
 

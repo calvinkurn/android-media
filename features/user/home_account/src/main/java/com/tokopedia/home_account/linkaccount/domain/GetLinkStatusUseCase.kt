@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
 import com.tokopedia.usecase.RequestParams
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
@@ -13,8 +14,9 @@ import javax.inject.Inject
  * Created by Yoris on 05/08/21.
  */
 
-class GetLinkStatusUseCase @Inject constructor (@ApplicationContext private val repository: GraphqlRepository)
-    : CoroutineUseCase<String, LinkStatusResponse>(Dispatchers.IO) {
+class GetLinkStatusUseCase @Inject constructor (@ApplicationContext private val repository: GraphqlRepository,
+                                                dispatcher: CoroutineDispatcher)
+    : CoroutineUseCase<String, LinkStatusResponse>(dispatcher) {
 
     override suspend fun execute(params: String): LinkStatusResponse {
         return repository.request(graphqlQuery(), createParams(params))

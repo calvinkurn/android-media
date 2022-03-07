@@ -4,7 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.hoteldetail.data.entity.FacilityItem
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.media.loader.loadIcon
 import kotlinx.android.synthetic.main.item_hotel_detail_main_facility.view.*
 
 /**
@@ -14,7 +14,7 @@ class HotelDetailMainFacilityViewHolder(val view: View) : RecyclerView.ViewHolde
 
     fun bind(element: FacilityItem) {
         with(itemView) {
-            iv_main_facility_icon.loadImage(element.iconUrl)
+            iv_main_facility_icon.loadIcon(element.iconUrl)
             tv_main_facility_description.text = element.name
         }
     }

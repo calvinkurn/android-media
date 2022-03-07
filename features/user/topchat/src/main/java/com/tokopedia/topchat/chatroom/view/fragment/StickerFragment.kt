@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topchat.R
@@ -14,6 +13,8 @@ import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.StickerRecyclerView
 import com.tokopedia.topchat.chatroom.view.viewmodel.StickerViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class StickerFragment : BaseDaggerFragment() {
@@ -64,9 +65,12 @@ class StickerFragment : BaseDaggerFragment() {
     }
 
     private fun initObserver() {
-        viewModel.stickers.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                stickerList?.updateSticker(it)
+        viewModel.stickers.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> stickerList?.updateSticker(it.data)
+                is Fail -> {
+                    //Do nothing
+                }
             }
         })
     }
@@ -88,11 +92,6 @@ class StickerFragment : BaseDaggerFragment() {
     private fun initArguments() {
         stickerGroupUID = arguments?.getString(keyStickerGroupUID) ?: ""
         stickerNeedUpdate = arguments?.getBoolean(keyStickerNeedUpdate) ?: false
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.cancelAllJobs()
     }
 
     fun requestNewStickerList() {

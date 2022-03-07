@@ -35,12 +35,11 @@ class ShopPageSettingViewModel @Inject constructor(
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
 
-    private val adminAccessList by lazy {
-        listOf(
+    private val adminAccessList = listOf(
                 AccessId.SHOP_SETTING_ADDRESS, AccessId.SHOP_SETTING_ETALASE, AccessId.SHOP_SETTING_NOTES,
                 AccessId.SHOP_SETTING_INFO, AccessId.SHOP_SETTING_SHIPMENT, AccessId.PRODUCT_LIST
         )
-    }
+
 
     fun getShop(shopId: String? = null, shopDomain: String? = null, isRefresh: Boolean = false) {
         val id = shopId?.toIntOrNull() ?: 0

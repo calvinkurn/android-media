@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder.Companion.PAYLOAD_PLAY_VIDEO
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder.Companion.PAYLOAD_PLAY_VOD
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
@@ -19,6 +20,7 @@ import com.tokopedia.feedcomponent.view.widget.PostDynamicViewNew
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.user.session.UserSessionInterface
+import java.lang.Exception
 
 private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
 private const val BROADCAST_FEED = "BROADCAST_FEED"
@@ -58,12 +60,14 @@ open class DynamicPostNewViewHolder(
             PAYLOAD_ANIMATE_LIKE -> postDynamicView.bindLike(element.feedXCard)
             PAYLOAD_ANIMATE_FOLLOW -> postDynamicView.bindFollow(element.feedXCard)
             PAYLOAD_PLAY_VIDEO -> postDynamicView.playVideo(element.feedXCard)
+            PAYLOAD_PLAY_VOD -> postDynamicView.playVOD(element.feedXCard)
             PAYLOAD_COMMENT -> postDynamicView.setCommentCount(element.feedXCard.comments)
             PAYLOAD_FRAGMENT_VISIBLE -> postDynamicView.setVideo(true)
             PAYLOAD_FRAGMENT_GONE -> postDynamicView.setVideo(false)
             PAYLOAD_POST_VISIBLE -> postDynamicView.bindImage(
-                element.feedXCard.tags,
-                element.feedXCard.media[0]
+                    element.feedXCard.tags,
+                    element.feedXCard.media[element.feedXCard.lastCarouselIndex],
+                    element.feedXCard
             )
         }
     }
@@ -107,10 +111,13 @@ open class DynamicPostNewViewHolder(
                 .getInstance(context.applicationContext)
                 .unregisterReceiver(receiver)
         }
-        postDynamicView?.detach(false, visitable as DynamicPostUiModel)
+        try {
+            postDynamicView?.detach(false, visitable as DynamicPostUiModel)
+        } catch (e: Exception) {
+        }
     }
 
-    fun onItemAttach(context: Context?) {
+    fun onItemAttach(context: Context?, visitable: Visitable<*>) {
         val intentFilter = IntentFilter()
         intentFilter.addAction(BROADCAST_VISIBLITY)
         intentFilter.addAction(BROADCAST_FEED)
@@ -118,6 +125,10 @@ open class DynamicPostNewViewHolder(
             LocalBroadcastManager
                 .getInstance(context.applicationContext)
                 .registerReceiver(receiver,intentFilter)
+        }
+        try {
+            postDynamicView?.attach( visitable as DynamicPostUiModel)
+        } catch (e: Exception) {
         }
     }
 }

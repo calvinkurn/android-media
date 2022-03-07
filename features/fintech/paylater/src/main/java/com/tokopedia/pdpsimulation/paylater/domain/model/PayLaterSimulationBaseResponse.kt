@@ -22,7 +22,7 @@ data class PayLaterGetSimulation(
 data class PayLaterAllData(
     @SerializedName("tenure") val tenure: Int?,
     @SerializedName("text") val text: String?,
-    @SerializedName("detail") val detail: List<Detail>?
+    @SerializedName("detail") val detail: List<Detail?>
 ) : Parcelable
 
 @Parcelize
@@ -40,13 +40,25 @@ data class Cta(
     @SerializedName("android_url") val android_url: String?,
     @SerializedName("cta_type") val cta_type: Int?,
     @SerializedName("is_redirect_url") val is_redirect_url: Int?,
-    @SerializedName("button_color") val button_color: String?
+    @SerializedName("button_color") val button_color: String?,
+    @SerializedName("bottom_sheet") val bottomSheet: BottomSheetDetail?
+) : Parcelable
+
+@Parcelize
+data class BottomSheetDetail(
+
+    @SerializedName("show") val isShow: Boolean?,
+    @SerializedName("image") val imageUrl: String?,
+    @SerializedName("title") val bottomSheetTitle: String?,
+    @SerializedName("description") val bottomSheetDescription: String?,
+    @SerializedName("button_text") val bottomSheetButtonText: String?,
 ) : Parcelable
 
 @Parcelize
 data class Detail(
 
     @SerializedName("gateway_id") val gateway_id: Int?,
+    @SerializedName("installment_description") val installationDescription: String?,
     @SerializedName("installment_per_month") val installment_per_month: Int?,
     @SerializedName("installment_per_month_ceil") val installment_per_month_ceil: Double?,
     @SerializedName("total_fee") val total_fee: Int?,

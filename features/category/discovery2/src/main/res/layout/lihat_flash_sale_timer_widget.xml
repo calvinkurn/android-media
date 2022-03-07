@@ -5,8 +5,8 @@
     android:id="@+id/parent_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16">
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         style="@style/MatchParent"
@@ -25,7 +25,7 @@
             app:layout_constraintEnd_toStartOf="@id/hours_layout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginEnd="4dp"
             app:typographyType="heading_3"
             tools:text="Flash Sale Timer" />
 
@@ -42,7 +42,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/hours_separator_text_view"
             style="@style/TimerSeparatorStyle"
-            android:layout_height="@dimen/dp_0"
+            android:layout_height="0dp"
             android:textColor="@color/Unify_Y500"
             app:layout_constraintBottom_toBottomOf="@id/hours_layout"
             app:layout_constraintRight_toLeftOf="@id/minutes_layout"
@@ -62,7 +62,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/minutes_separator_text_view"
             style="@style/TimerSeparatorStyle"
-            android:layout_height="@dimen/dp_0"
+            android:layout_height="0dp"
             android:textColor="@color/Unify_Y500"
             app:layout_constraintBottom_toBottomOf="@id/minutes_layout"
             app:layout_constraintEnd_toStartOf="@id/seconds_layout"

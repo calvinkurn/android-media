@@ -5,13 +5,12 @@
     android:id="@+id/tokoNowSearchCategoryAisleContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_16">
+    android:paddingBottom="16dp">
 
     <View
         android:id="@+id/tokoNowSearchCategoryAisleDivider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
+        android:layout_height="8dp"
         android:background="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,10 +20,9 @@
         android:id="@+id/tokoNowSearchCategoryAisleHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:text="@string/tokopedianow_category_aisle_header"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintTop_toBottomOf="@id/tokoNowSearchCategoryAisleDivider"
         app:typographyType="heading_4" />
 
@@ -42,11 +40,11 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/tokoNowSearchCategoryAisleImageLeft"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_0"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_4"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginStart="16dp"
         app:layout_constraintDimensionRatio="4:3"
         app:layout_constraintEnd_toStartOf="@id/tokoNowSearchCategoryAisleImageRight"
         app:layout_constraintStart_toStartOf="parent"
@@ -56,11 +54,11 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/tokoNowSearchCategoryAisleImageRight"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_0"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintDimensionRatio="4:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tokoNowSearchCategoryAisleImageLeft"
@@ -71,7 +69,7 @@
         android:id="@+id/tokoNowSearchCategoryAisleNameLeft"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_8"
+        android:padding="8dp"
         android:gravity="center"
         app:layout_constraintEnd_toEndOf="@id/tokoNowSearchCategoryAisleImageLeft"
         app:layout_constraintStart_toStartOf="@id/tokoNowSearchCategoryAisleImageLeft"
@@ -84,7 +82,7 @@
         android:id="@+id/tokoNowSearchCategoryAisleNameRight"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_8"
+        android:padding="8dp"
         android:gravity="center"
         app:layout_constraintEnd_toEndOf="@id/tokoNowSearchCategoryAisleImageRight"
         app:layout_constraintStart_toStartOf="@id/tokoNowSearchCategoryAisleImageRight"

@@ -3,10 +3,10 @@
     android:id="@+id/fmParent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingStart="@dimen/dp_24"
-    android:paddingLeft="@dimen/dp_24"
-    android:paddingEnd="@dimen/dp_24"
-    android:paddingRight="@dimen/dp_24">
+    android:paddingStart="24dp"
+    android:paddingLeft="24dp"
+    android:paddingEnd="24dp"
+    android:paddingRight="24dp">
 
     <FrameLayout
         android:id="@+id/container_gami_gift_result"

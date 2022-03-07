@@ -7,7 +7,7 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
  * Created By @ilhamsuaib on 20/05/20
  */
 
-class PostListWidgetUiModel(
+data class PostListWidgetUiModel(
     override val id: String,
     override val widgetType: String,
     override val title: String,
@@ -17,6 +17,7 @@ class PostListWidgetUiModel(
     override val appLink: String,
     override val dataKey: String,
     override val ctaText: String,
+    override val gridSize: Int,
     override val isShowEmpty: Boolean,
     override var data: PostListDataUiModel?,
     override var impressHolder: ImpressHolder = ImpressHolder(),
@@ -34,29 +35,8 @@ class PostListWidgetUiModel(
         return typeFactory.type(this)
     }
 
-    override fun copy(): BaseWidgetUiModel<PostListDataUiModel> {
-        return PostListWidgetUiModel(
-            id,
-            widgetType,
-            title,
-            subtitle,
-            tooltip,
-            tag,
-            appLink,
-            dataKey,
-            ctaText,
-            isShowEmpty,
-            data,
-            impressHolder,
-            isLoaded,
-            isLoading,
-            isFromCache,
-            isNeedToBeRemoved,
-            emptyState,
-            postFilter,
-            maxData,
-            maxDisplay
-        )
+    override fun copyWidget(): BaseWidgetUiModel<PostListDataUiModel> {
+        return this.copy()
     }
 
     override fun needToRefreshData(other: BaseWidgetUiModel<PostListDataUiModel>): Boolean {

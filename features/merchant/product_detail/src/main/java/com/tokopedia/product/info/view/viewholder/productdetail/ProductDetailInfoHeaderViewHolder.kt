@@ -27,13 +27,15 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
 
     companion object {
         val LAYOUT = R.layout.bs_item_product_detail_header
+
+        private const val HEADER_IMAGE_ROUND_SIZE = 8f
     }
 
     private val binding = BsItemProductDetailHeaderBinding.bind(view)
 
     override fun bind(element: ProductDetailInfoHeaderDataModel) {
         binding.pdpHeaderProductTitle.text = element.productTitle
-        binding.pdpHeaderImg.loadImageRounded(element.img, 8f)
+        binding.pdpHeaderImg.loadImageRounded(element.img, HEADER_IMAGE_ROUND_SIZE)
         setupItemList(element.listOfInfo)
         setupSpecification(element.listOfAnnotation, element.needToShowSpecification())
     }

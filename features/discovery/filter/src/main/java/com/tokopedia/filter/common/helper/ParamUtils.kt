@@ -3,6 +3,7 @@ package com.tokopedia.filter.common.helper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import timber.log.Timber
 
 fun String.toMapParam(): Map<String, String> {
     if (this.isEmpty()) return mapOf()
@@ -23,19 +24,24 @@ private const val NON_FILTER_SRP_PREFIX = "srp_"
 private const val NON_FILTER_USER_PREFIX = "user_"
 private const val NON_FILTER_EXCLUDE_PREFIX = OptionHelper.EXCLUDE_PREFIX
 val nonFilterParameterKeyList = setOf(
-        SearchApiConst.Q,
-        SearchApiConst.RF,
-        SearchApiConst.ACTIVE_TAB,
-        SearchApiConst.SOURCE,
-        SearchApiConst.LANDING_PAGE,
-        SearchApiConst.PREVIOUS_KEYWORD,
-        SearchApiConst.ORIGIN_FILTER,
-        SearchApiConst.SKIP_REWRITE,
-        SearchApiConst.NAVSOURCE,
-        SearchApiConst.SKIP_BROADMATCH,
-        SearchApiConst.HINT,
-        SearchApiConst.FIRST_INSTALL,
-        SearchApiConst.SEARCH_REF
+    SearchApiConst.Q,
+    SearchApiConst.RF,
+    SearchApiConst.ACTIVE_TAB,
+    SearchApiConst.SOURCE,
+    SearchApiConst.LANDING_PAGE,
+    SearchApiConst.PREVIOUS_KEYWORD,
+    SearchApiConst.ORIGIN_FILTER,
+    SearchApiConst.SKIP_REWRITE,
+    SearchApiConst.NAVSOURCE,
+    SearchApiConst.SKIP_BROADMATCH,
+    SearchApiConst.HINT,
+    SearchApiConst.FIRST_INSTALL,
+    SearchApiConst.SEARCH_REF,
+    SearchApiConst.UNIQUE_ID,
+    SearchApiConst.START,
+    SearchApiConst.USER_ID,
+    SearchApiConst.TYPO,
+    SearchApiConst.PAGE,
 )
 
 fun getSortFilterCount(mapParameter: Map<String, Any>): Int {
@@ -63,10 +69,21 @@ private fun MutableMap<String, Any>.createAndCountSortFilterParameter(count: (In
             continue
         }
 
-        count(entry.value.toString().split(OptionHelper.OPTION_SEPARATOR).size)
+        count(getOptionCount(entry))
     }
 
     return this
+}
+
+private fun getOptionCount(mapEntry: Map.Entry<String, Any>): Int {
+    return try {
+        val optionValue = mapEntry.value.toString()
+        val optionList = optionValue.split(OptionHelper.OPTION_SEPARATOR)
+        optionList.size
+    } catch (throwable: Throwable) {
+        Timber.e(throwable)
+        0
+    }
 }
 
 private fun Map.Entry<String, Any>.isNotSortAndFilterEntry(): Boolean {
@@ -124,9 +141,8 @@ private fun <T> Map<String?, T?>.removeWithNonFilterPrefix(): Map<String?, T?> =
         filter { !it.key.matchesWithNonFilterPrefix() }
 
 @Suppress("UNCHECKED_CAST")
-fun getFilterParams(mapParameter: Map<String?, String?>): Map<String, String> {
+fun getFilterParams(mapParameter: Map<String?, String?>): Map<String?, String?> {
     return mapParameter
             .removeWithNonFilterPrefix()
             .minus(nonFilterParameterKeyList + listOf(SearchApiConst.OB))
-            as Map<String, String>
 }

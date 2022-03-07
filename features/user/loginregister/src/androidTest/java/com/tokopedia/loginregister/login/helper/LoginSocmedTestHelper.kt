@@ -23,13 +23,5 @@ class LoginSocmedTestHelper {
                     .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                     .perform(ViewActions.click())
         }
-
-        fun clickFacebookLogin(){
-            Espresso.onView(ViewMatchers.withText("Facebook"))
-                    .inRoot(RootMatchers.isDialog())
-                    .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-                    .perform(ViewActions.click())
-        }
-
     }
 }

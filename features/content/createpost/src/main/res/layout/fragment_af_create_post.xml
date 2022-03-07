@@ -16,11 +16,11 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingStart="@dimen/dp_16"
-            android:paddingEnd="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingBottom="@dimen/dp_16">
+            android:paddingLeft="16dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="16dp">
 
             <com.tokopedia.affiliatecommon.view.widget.ClearFocusEditText
                 android:id="@+id/caption"
@@ -35,9 +35,9 @@
                 android:scrollbars="vertical"
                 android:textColor="@color/black_54"
                 android:textCursorDrawable="@color/black"
-                android:textSize="@dimen/sp_14"
-                android:layout_marginTop="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_16"
+                android:textSize="14sp"
+                android:layout_marginTop="16dp"
+                android:paddingBottom="16dp"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 app:layout_constraintTop_toTopOf="parent"
@@ -73,13 +73,13 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/label_title_product_attachment"
-                android:layout_width="@dimen/dp_0"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/cp_title_header_product_attachment"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginTop="12dp"
                 android:visibility="gone"
                 tools:visibility="visible"
-                app:layout_goneMarginTop="@dimen/dp_4"
+                app:layout_goneMarginTop="4dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -90,7 +90,7 @@
                 android:id="@+id/product_attachment"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dp_86"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="8dp"
                 android:visibility="gone"
                 tools:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@+id/label_title_product_attachment"
@@ -107,12 +107,12 @@
     <LinearLayout android:id="@+id/layout_default_caption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/dp_12"
-        android:paddingBottom="@dimen/dp_12"
-        android:paddingStart="@dimen/dp_16"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingEnd="@dimen/dp_16"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:paddingStart="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingEnd="16dp"
         android:background="@drawable/card_shadow_top"
         android:visibility="gone"
         tools:visibility="visible">
@@ -129,8 +129,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_af_product_suggestion"
-        android:paddingTop="@dimen/dp_12"
-        android:paddingBottom="@dimen/dp_12"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
         android:orientation="vertical"
         android:visibility="gone"
         tools:visibility="visible">
@@ -139,9 +139,9 @@
             android:id="@+id/title_product_suggestion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="10dp"
             android:ellipsize="end"
             android:lines="1"
             android:text="@string/cp_product_suggestion_title"
@@ -155,10 +155,10 @@
             android:layout_height="wrap_content"
             android:clipToPadding="false"
             android:orientation="horizontal"
-            android:paddingStart="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingEnd="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8"
+            android:paddingStart="8dp"
+            android:paddingLeft="8dp"
+            android:paddingEnd="8dp"
+            android:paddingRight="8dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     </LinearLayout>
@@ -168,7 +168,7 @@
         layout="@layout/partial_shimmering_grid_list_horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginBottom="16dp"
         android:visibility="gone" />
 
     <LinearLayout android:id="@+id/action_bottom"
@@ -176,10 +176,10 @@
         android:layout_height="@dimen/dp_56"
         android:orientation="horizontal"
         android:background="@drawable/card_shadow_top"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingStart="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingEnd="@dimen/dp_16"
+        android:paddingLeft="16dp"
+        android:paddingStart="16dp"
+        android:paddingRight="16dp"
+        android:paddingEnd="16dp"
         android:gravity="center_vertical">
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -192,8 +192,8 @@
             android:id="@+id/label_add_product"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
             android:layout_weight="1"
             android:textColor="@color/ae000000"
             app:typographyType="heading_5"
@@ -204,24 +204,24 @@
             android:id="@+id/video_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             app:srcCompat="@drawable/ic_af_pick_video"/>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/image_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             app:srcCompat="@drawable/ic_af_pick_media"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/add_sticker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             app:typographyType="heading_4"
             android:text="@string/cp_label_add_sticker"
             android:textColor="@color/c45000000"
@@ -233,8 +233,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_af_add_voucher"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:visibility="gone"
             tools:visibility="visible" />
 

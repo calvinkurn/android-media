@@ -1,8 +1,8 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
-import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.mediauploader.data.state.UploadResult
-import com.tokopedia.mediauploader.domain.UploaderUseCase
+import com.tokopedia.chat_common.data.ImageUploadUiModel
+import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.CoroutineScope
@@ -22,15 +22,15 @@ open class TopchatUploadImageUseCase @Inject constructor(
     var isUploading: Boolean = false
         private set
 
-    private var onSuccess: ((String, ImageUploadViewModel) -> Unit)? = null
-    private var onError: ((Throwable, ImageUploadViewModel) -> Unit)? = null
+    private var onSuccess: ((String, ImageUploadUiModel) -> Unit)? = null
+    private var onError: ((Throwable, ImageUploadUiModel) -> Unit)? = null
 
     override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
     open fun upload(
-            image: ImageUploadViewModel,
-            onSuccess: (String, ImageUploadViewModel) -> Unit,
-            onError: (Throwable, ImageUploadViewModel) -> Unit
+        image: ImageUploadUiModel,
+        onSuccess: (String, ImageUploadUiModel) -> Unit,
+        onError: (Throwable, ImageUploadUiModel) -> Unit
     ) {
         setUploading(true)
         assignCallback(onSuccess, onError)
@@ -44,14 +44,14 @@ open class TopchatUploadImageUseCase @Inject constructor(
     }
 
     private fun assignCallback(
-            onSuccess: (String, ImageUploadViewModel) -> Unit,
-            onError: (Throwable, ImageUploadViewModel) -> Unit
+        onSuccess: (String, ImageUploadUiModel) -> Unit,
+        onError: (Throwable, ImageUploadUiModel) -> Unit
     ) {
         this.onSuccess = onSuccess
         this.onError = onError
     }
 
-    private fun uploadImageWithSourceId(sourceId: String, image: ImageUploadViewModel) {
+    private fun uploadImageWithSourceId(sourceId: String, image: ImageUploadUiModel) {
         launch(dispatchers.io) {
             val requestParams = uploadImageUseCase.createParams(sourceId, File(image.imageUrl))
             val result = uploadImageUseCase(requestParams)
@@ -65,7 +65,7 @@ open class TopchatUploadImageUseCase @Inject constructor(
         }
     }
 
-    private fun onErrorUploadImage(result: UploadResult.Error, image: ImageUploadViewModel) {
+    private fun onErrorUploadImage(result: UploadResult.Error, image: ImageUploadUiModel) {
         val error = MessageErrorException(result.message)
         onError?.invoke(error, image)
     }

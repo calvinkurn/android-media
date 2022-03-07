@@ -73,10 +73,8 @@ class PltStatisticActivityTest {
     @Test
     fun testPltPerformance() {
         login()
-        Espresso.onIdle() // wait for login to complete
         val statisticIntent = Intent(InstrumentationRegistry.getInstrumentation().targetContext, StatisticActivity::class.java)
         activityRule.launchActivity(statisticIntent)
-        Espresso.onIdle() // wait for seller home render process to complete
         savePLTPerformanceResultData()
         activityRule.activity.finishAndRemoveTask()
     }

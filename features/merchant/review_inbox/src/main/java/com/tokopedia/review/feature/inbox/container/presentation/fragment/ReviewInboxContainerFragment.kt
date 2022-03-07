@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -35,8 +34,9 @@ import com.tokopedia.review.feature.inbox.container.presentation.adapter.ReviewI
 import com.tokopedia.review.feature.inbox.container.presentation.listener.ReviewInboxListener
 import com.tokopedia.review.feature.inbox.container.presentation.viewmodel.ReviewInboxContainerViewModel
 import com.tokopedia.review.inbox.R
+import com.tokopedia.review.inbox.databinding.FragmentReviewInboxContainerBinding
 import com.tokopedia.unifycomponents.setCounter
-import kotlinx.android.synthetic.main.fragment_review_inbox_container.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewInboxContainerComponent>, OnBackPressedListener, ReviewPerformanceMonitoringContract, ReviewInboxListener, InboxFragment {
@@ -69,6 +69,8 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     private var buyerReviewFragment: InboxReputationFragment? = null
     private var containerListener: InboxFragmentContainer? = null
     private var shouldCommitBuyerReviewFragment: Boolean = false
+
+    private var binding by autoClearedNullable<FragmentReviewInboxContainerBinding>()
 
     override fun getScreenName(): String {
         return ""
@@ -122,15 +124,15 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        super.onCreateView(inflater, container, savedInstanceState)
-        return inflater.inflate(R.layout.fragment_review_inbox_container, container, false)
+        binding = FragmentReviewInboxContainerBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         stopPreparePerfomancePageMonitoring()
         startNetworkRequestPerformanceMonitoring()
         super.onViewCreated(view, savedInstanceState)
-        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifycomponents.R.color.Unify_N0))
+        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifycomponents.R.color.Unify_Background))
         initToolbar()
         observeReviewTabs()
         getCounterData()
@@ -186,17 +188,17 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     }
 
     private fun setupBuyerAdapter() {
-        reviewInboxViewPager.adapter = viewModel.reviewTabs.value?.let { ReviewInboxContainerAdapter(it, this, this, getSourceBundle()) }
+        binding?.reviewInboxViewPager?.adapter = viewModel.reviewTabs.value?.let { ReviewInboxContainerAdapter(it, this, this, getSourceBundle()) }
     }
 
     private fun setupViewPager(tabTitles: List<String>) {
-        reviewInboxTabs.tabLayout.removeAllTabs()
+        binding?.reviewInboxTabs?.tabLayout?.removeAllTabs()
         tabTitles.forEach {
-            reviewInboxTabs.addNewTab(it)
+            binding?.reviewInboxTabs?.addNewTab(it)
         }
-        reviewInboxViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding?.reviewInboxViewPager?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                reviewInboxTabs.getUnifyTabLayout().getTabAt(position)?.select()
+                binding?.reviewInboxTabs?.getUnifyTabLayout()?.getTabAt(position)?.select()
             }
         })
     }
@@ -204,61 +206,63 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     private fun selectTab() {
         when(tab) {
             ReviewInboxConstants.PENDING_TAB -> {
-                reviewInboxViewPager.currentItem = PENDING_TAB_INDEX
+                binding?.reviewInboxViewPager?.currentItem = PENDING_TAB_INDEX
             }
             ReviewInboxConstants.HISTORY_TAB -> {
-                reviewInboxViewPager.currentItem = HISTORY_TAB_INDEX
+                binding?.reviewInboxViewPager?.currentItem = HISTORY_TAB_INDEX
             }
             ReviewInboxConstants.SELLER_TAB -> {
-                reviewInboxViewPager.currentItem = SELLER_TAB_INDEX
+                binding?.reviewInboxViewPager?.currentItem = SELLER_TAB_INDEX
             }
             else ->  {
-                reviewInboxViewPager.currentItem = PENDING_TAB_INDEX
+                binding?.reviewInboxViewPager?.currentItem = PENDING_TAB_INDEX
             }
         }
     }
 
     private fun setupTabLayout() {
-        reviewInboxTabs.customTabGravity = TabLayout.GRAVITY_FILL
-        reviewInboxTabs.customTabMode = TabLayout.MODE_SCROLLABLE
-        reviewInboxTabs.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(tab: TabLayout.Tab) {
-                // No Op
-            }
+        binding?.reviewInboxTabs?.apply {
+            customTabGravity = TabLayout.GRAVITY_FILL
+            customTabMode = TabLayout.MODE_SCROLLABLE
+            tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabReselected(tab: TabLayout.Tab) {
+                    // No Op
+                }
 
-            override fun onTabUnselected(tab: TabLayout.Tab) {
-                // No Op
-            }
+                override fun onTabUnselected(tab: TabLayout.Tab) {
+                    // No Op
+                }
 
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                reviewInboxViewPager.setCurrentItem(tab.position, true)
-                if (!GlobalConfig.isSellerApp()) {
-                    when (tab.position) {
-                        PENDING_TAB_INDEX -> {
-                            when (previouslySelectedTab) {
-                                PENDING_TAB_INDEX -> {
-                                    ReviewInboxContainerTracking.eventOnClickReviewPendingTabFromReviewPendingTab(viewModel.getUserId())
-                                }
-                                HISTORY_TAB_INDEX -> {
-                                    ReviewInboxContainerTracking.eventOnClickReviewPendingTabFromReviewHistoryTab(viewModel.getUserId())
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    binding?.reviewInboxViewPager?.setCurrentItem(tab.position, true)
+                    if (!GlobalConfig.isSellerApp()) {
+                        when (tab.position) {
+                            PENDING_TAB_INDEX -> {
+                                when (previouslySelectedTab) {
+                                    PENDING_TAB_INDEX -> {
+                                        ReviewInboxContainerTracking.eventOnClickReviewPendingTabFromReviewPendingTab(viewModel.getUserId())
+                                    }
+                                    HISTORY_TAB_INDEX -> {
+                                        ReviewInboxContainerTracking.eventOnClickReviewPendingTabFromReviewHistoryTab(viewModel.getUserId())
+                                    }
                                 }
                             }
+                            HISTORY_TAB_INDEX -> {
+                                ReviewInboxContainerTracking.eventOnClickReviewHistoryTabFromReviewPendingTab(viewModel.getUserId())
+                            }
+                            else -> {
+                                ReviewInboxContainerTracking.eventOnClickReviewSellerTab(viewModel.getUserId())
+                            }
                         }
-                        HISTORY_TAB_INDEX -> {
-                            ReviewInboxContainerTracking.eventOnClickReviewHistoryTabFromReviewPendingTab(viewModel.getUserId())
-                        }
-                        else -> {
-                            ReviewInboxContainerTracking.eventOnClickReviewSellerTab(viewModel.getUserId())
-                        }
+                        previouslySelectedTab = tab.position
                     }
-                    previouslySelectedTab = tab.position
                 }
-            }
-        })
+            })
+        }
     }
 
     private fun observeReviewTabs() {
-        viewModel.reviewTabs.observe(viewLifecycleOwner, Observer { tabs ->
+        viewModel.reviewTabs.observe(viewLifecycleOwner, { tabs ->
             updateInboxUnifiedBuyerView(getTabTitles(tabs))
             updateCounter(counter)
         })
@@ -268,7 +272,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         if(InboxUnifiedRemoteConfig.isInboxUnified()) {
             return
         }
-        reviewInboxTabs.tabLayout.getTabAt(PENDING_TAB_INDEX)?.setCounter(counter)
+        binding?.reviewInboxTabs?.tabLayout?.getTabAt(PENDING_TAB_INDEX)?.setCounter(counter)
     }
 
     private fun getDataFromArguments() {
@@ -285,14 +289,14 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
 
     private fun initToolbar() {
         if(InboxUnifiedRemoteConfig.isInboxUnified()) {
-            headerReviewInboxContainer?.hide()
+            binding?.headerReviewInboxContainer?.hide()
             return
         }
         activity?.run {
             (this as? AppCompatActivity)?.run {
                 supportActionBar?.hide()
-                setSupportActionBar(headerReviewInboxContainer)
-                headerReviewInboxContainer?.apply {
+                setSupportActionBar(binding?.headerReviewInboxContainer)
+                binding?.headerReviewInboxContainer?.apply {
                     title = getString(R.string.title_activity_reputation_review)
                     show()
                 }
@@ -301,15 +305,15 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     }
 
     private fun updateInboxUnifiedSellerView() {
-        reviewInboxTabs?.hide()
-        reviewSellerInboxFragment?.show()
-        reviewInboxViewPager?.hide()
+        binding?.reviewInboxTabs?.hide()
+        binding?.reviewSellerInboxFragment?.show()
+        binding?.reviewInboxViewPager?.hide()
     }
 
     private fun updateInboxUnifiedBuyerView() {
-        reviewInboxTabs?.show()
-        reviewSellerInboxFragment?.hide()
-        reviewInboxViewPager?.show()
+        binding?.reviewInboxTabs?.show()
+        binding?.reviewSellerInboxFragment?.hide()
+        binding?.reviewInboxViewPager?.show()
     }
 
     private fun updateInboxUnifiedBuyerView(tabTitles: List<String>) {

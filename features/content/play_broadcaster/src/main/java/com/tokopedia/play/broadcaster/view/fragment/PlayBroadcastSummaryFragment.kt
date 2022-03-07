@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
@@ -64,8 +65,8 @@ class PlayBroadcastSummaryFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastSummaryViewModel::class.java)
-        parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastSummaryViewModel::class.java)
+        parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -170,15 +171,16 @@ class PlayBroadcastSummaryFragment @Inject constructor(
      * Observe
      */
     private fun observeChannelInfo() {
-        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer{
+        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner) {
             when (it) {
                 is NetworkResult.Success -> setChannelInfo(it.data)
+                else -> {}
             }
-        })
+        }
     }
 
     private fun observeLiveTrafficMetrics() {
-        viewModel.observableLiveSummary.observe(viewLifecycleOwner, Observer{
+        viewModel.observableLiveSummary.observe(viewLifecycleOwner) {
             when(it) {
                 is NetworkResult.Loading -> {
                     loaderView.visible()
@@ -199,7 +201,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                     )
                 }
             }
-        })
+        }
     }
 
     private fun observeLiveDuration() {
@@ -207,7 +209,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     }
 
     private fun observeSaveVideo() {
-        viewModel.observableSaveVideo.observe(viewLifecycleOwner, Observer{
+        viewModel.observableSaveVideo.observe(viewLifecycleOwner) {
             when (it) {
                 is NetworkResult.Loading -> btnSaveVideo.isLoading = true
                 is NetworkResult.Success -> {
@@ -220,15 +222,15 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                         customErrMessage = it.error.localizedMessage
                             ?: getString(R.string.play_broadcaster_default_error),
                         actionLabel = getString(R.string.play_broadcast_try_again),
-                        actionListener = View.OnClickListener { view -> it.onRetry() }
+                        actionListener = { _ -> it.onRetry() }
                     )
                 }
             }
-        })
+        }
     }
 
     private fun observeDeleteVideo() {
-        viewModel.observableDeleteVideo.observe(viewLifecycleOwner, Observer{
+        viewModel.observableDeleteVideo.observe(viewLifecycleOwner) {
             when (it) {
                 is NetworkResult.Loading -> btnDeleteVideo.isLoading = true
                 is NetworkResult.Success -> {
@@ -241,15 +243,15 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                         customErrMessage = it.error.localizedMessage
                             ?: getString(R.string.play_broadcaster_default_error),
                         actionLabel = getString(R.string.play_broadcast_try_again),
-                        actionListener = View.OnClickListener { view -> it.onRetry() }
+                        actionListener = { _ -> it.onRetry() }
                     )
                 }
             }
-        })
+        }
     }
 
     private fun observeInteractiveLeaderboardInfo() {
-        parentViewModel.observableLeaderboardInfo.observe(viewLifecycleOwner, Observer {
+        parentViewModel.observableLeaderboardInfo.observe(viewLifecycleOwner) {
             summaryInfoView.addTrafficMetric(
                 TrafficMetricUiModel(
                     type = TrafficMetricType.GameParticipants,
@@ -257,7 +259,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                 ),
                 FIRST_PLACE
             )
-        })
+        }
     }
 
     private fun openShopPageWithBroadcastStatus(isSaved: Boolean) {

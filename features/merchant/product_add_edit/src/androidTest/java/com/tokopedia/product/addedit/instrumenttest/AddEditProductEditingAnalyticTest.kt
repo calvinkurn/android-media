@@ -99,7 +99,7 @@ class AddEditProductEditingAnalyticTest {
         testEditDetail()
         testEditDescription()
         testEditShipment()
-        performClick(R.id.tv_done)
+        performClick(com.tokopedia.header.R.id.actionTextID)
 
         //stepper
         doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_DETAIL)
@@ -176,6 +176,7 @@ class AddEditProductEditingAnalyticTest {
         performScrollAndClick(R.id.tv_start_add_edit_product_variant)
         performPressBack()
         performDialogSecondaryClick()
+        Thread.sleep(500)
     }
 
     private fun testEditPromotion() {

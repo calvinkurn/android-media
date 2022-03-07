@@ -2,112 +2,111 @@ package com.tokopedia.review.common.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
-import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
 import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.databinding.WidgetReviewDetailScoreBinding
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.widget_review_detail_score.view.*
 
 class ReviewScoreWidget : BaseCustomView {
 
-    constructor(context: Context) : super(context) {
-        init()
-    }
-
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init()
-    }
-
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init()
-    }
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     private var currentScore = 0
 
+    private val binding = WidgetReviewDetailScoreBinding.inflate(LayoutInflater.from(context), this, true)
+
     fun setEditableScore(score: Int) {
-        currentScore = score
-        when (score) {
-            ReviewConstants.REPUTATION_SCORE_BAD -> {
-                this.reviewEditableBadSmiley.apply {
-                    showActiveBad()
+        binding.apply {
+            currentScore = score
+            when (score) {
+                ReviewConstants.REPUTATION_SCORE_BAD -> {
+                    reviewEditableBadSmiley.apply {
+                        showActiveBad()
+                    }
+                    setDeadline()
                 }
-                setDeadline()
-            }
-            ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
-                this.reviewEditableMediocreSmiley.apply {
-                    showActiveMediocre()
+                ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
+                    reviewEditableMediocreSmiley.apply {
+                        showActiveMediocre()
+                    }
+                    setDeadline()
                 }
-                setDeadline()
-            }
-            ReviewConstants.REPUTATION_SCORE_EXCELLENT -> {
-                this.reviewEditableExcellentSmiley.apply {
-                    showActiveExcellent()
+                ReviewConstants.REPUTATION_SCORE_EXCELLENT -> {
+                    reviewEditableExcellentSmiley.apply {
+                        showActiveExcellent()
+                    }
+                    setDeadline()
                 }
-                setDeadline()
+                else -> {
+                    setEmptyScore()
+                }
             }
-            else -> {
-                setEmptyScore()
-            }
+            reviewEditableBadSmiley.show()
+            reviewEditableMediocreSmiley.show()
+            reviewEditableExcellentSmiley.show()
         }
-        this.reviewEditableBadSmiley.show()
-        this.reviewEditableMediocreSmiley.show()
-        this.reviewEditableExcellentSmiley.show()
     }
 
     fun setReviewScoreClickListener(reviewScoreClickListener: ReviewScoreClickListener) {
-        this.reviewEditableBadSmiley.setSmileyClickListener(reviewScoreClickListener)
-        this.reviewEditableMediocreSmiley.setSmileyClickListener(reviewScoreClickListener)
-        this.reviewEditableExcellentSmiley.setSmileyClickListener(reviewScoreClickListener)
+        binding.apply {
+            reviewEditableBadSmiley.setSmileyClickListener(reviewScoreClickListener)
+            reviewEditableMediocreSmiley.setSmileyClickListener(reviewScoreClickListener)
+            reviewEditableExcellentSmiley.setSmileyClickListener(reviewScoreClickListener)
+        }
     }
 
     fun setShopName(shopName: String) {
-        this.reviewDetailScoreShopName.apply {
+        binding.reviewDetailScoreShopName.apply {
             text = MethodChecker.fromHtml(shopName)
             show()
         }
     }
 
     fun setExpired() {
-        this.reviewDetailScoreTitle.text = context.getString(R.string.review_detail_score_expired)
+        binding.reviewDetailScoreTitle.text = context.getString(R.string.review_detail_score_expired)
     }
 
     fun setFinalScore(score: Int) {
-        when (score) {
-            ReviewConstants.REPUTATION_SCORE_BAD -> {
-                this.reviewDetailScoreSmiley.loadImageDrawable(R.drawable.ic_smiley_bad_active)
-                this.reviewDetailScoreText.apply {
-                    text = context.getString(R.string.review_detail_score_bad)
-                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y500))
+        binding.apply {
+            when (score) {
+                ReviewConstants.REPUTATION_SCORE_BAD -> {
+                    reviewDetailScoreSmiley.loadImage(R.drawable.ic_smiley_bad_active)
+                    reviewDetailScoreText.apply {
+                        text = context.getString(R.string.review_detail_score_bad)
+                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y500))
+                    }
+                }
+                ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
+                    reviewDetailScoreSmiley.loadImage(R.drawable.ic_smiley_neutral_active)
+                    reviewDetailScoreText.apply {
+                        text = context.getString(R.string.review_detail_score_mediocre)
+                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y300))
+                    }
+                }
+                // ReviewConstants.REPUTATION_SCORE_EXCELLENT
+                else -> {
+                    reviewDetailScoreSmiley.loadImage(R.drawable.ic_smiley_great_active)
+                    reviewDetailScoreText.apply {
+                        text = context.getString(R.string.review_detail_score_excellent)
+                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                    }
                 }
             }
-            ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
-                this.reviewDetailScoreSmiley.loadImageDrawable(R.drawable.ic_smiley_neutral_active)
-                this.reviewDetailScoreText.apply {
-                    text = context.getString(R.string.review_detail_score_mediocre)
-                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y300))
-                }
-            }
-            // ReviewConstants.REPUTATION_SCORE_EXCELLENT
-            else -> {
-                this.reviewDetailScoreSmiley.loadImageDrawable(R.drawable.ic_smiley_great_active)
-                this.reviewDetailScoreText.apply {
-                    text = context.getString(R.string.review_detail_score_excellent)
-                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
-                }
-            }
+            reviewDetailScoreSmiley.show()
+            reviewDetailScoreText.show()
+            reviewEditableBadSmiley.hide()
+            reviewEditableMediocreSmiley.hide()
+            reviewEditableExcellentSmiley.hide()
         }
-        reviewDetailScoreSmiley.show()
-        reviewDetailScoreText.show()
-        reviewEditableBadSmiley.hide()
-        reviewEditableMediocreSmiley.hide()
-        reviewEditableExcellentSmiley.hide()
     }
 
     fun getScore(): Int {
@@ -123,60 +122,62 @@ class ReviewScoreWidget : BaseCustomView {
         }
         when (score) {
             ReviewConstants.REPUTATION_SCORE_BAD -> {
-                this.reviewEditableMediocreSmiley.deactivateMediocre(hideText)
-                this.reviewEditableExcellentSmiley.deactivateExcellent(hideText)
+                binding.reviewEditableMediocreSmiley.deactivateMediocre(hideText)
+                binding.reviewEditableExcellentSmiley.deactivateExcellent(hideText)
                 if(hideText) {
-                    this.reviewEditableBadSmiley.hideSmileyText(true)
+                    binding.reviewEditableBadSmiley.hideSmileyText(true)
                 }
             }
             ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
-                this.reviewEditableBadSmiley.deactivateBad(hideText)
-                this.reviewEditableExcellentSmiley.deactivateExcellent(hideText)
+                binding.reviewEditableBadSmiley.deactivateBad(hideText)
+                binding.reviewEditableExcellentSmiley.deactivateExcellent(hideText)
                 if(hideText) {
-                    this.reviewEditableMediocreSmiley.hideSmileyText(true)
+                    binding.reviewEditableMediocreSmiley.hideSmileyText(true)
                 }
             }
             // ReviewConstants.REPUTATION_SCORE_EXCELLENT
             else -> {
-                this.reviewEditableBadSmiley.deactivateBad(hideText)
-                this.reviewEditableMediocreSmiley.deactivateMediocre(hideText)
+                binding.reviewEditableBadSmiley.deactivateBad(hideText)
+                binding.reviewEditableMediocreSmiley.deactivateMediocre(hideText)
                 if(hideText) {
-                    this.reviewEditableExcellentSmiley.hideSmileyText(true)
+                    binding.reviewEditableExcellentSmiley.hideSmileyText(true)
                 }
             }
         }
     }
 
     fun showLoading() {
-        reviewScoreLoadingSmiley.show()
-        reviewScoreLoadingText.show()
-        reviewScoreDeadlineLabel.hide()
-        reviewEditableExcellentSmiley.hide()
-        reviewEditableMediocreSmiley.hide()
-        reviewEditableBadSmiley.hide()
+        binding.apply {
+            reviewScoreLoadingSmiley.show()
+            reviewScoreLoadingText.show()
+            reviewScoreDeadlineLabel.hide()
+            reviewEditableExcellentSmiley.hide()
+            reviewEditableMediocreSmiley.hide()
+            reviewEditableBadSmiley.hide()
+        }
     }
 
     fun hideLoading() {
-        reviewScoreLoadingSmiley.hide()
-        reviewScoreLoadingText.hide()
+        binding.apply {
+            reviewScoreLoadingSmiley.hide()
+            reviewScoreLoadingText.hide()
+        }
     }
 
     fun resetState() {
-        this.reviewEditableBadSmiley.deactivateBad(true)
-        this.reviewEditableMediocreSmiley.deactivateMediocre(true)
-        this.reviewEditableExcellentSmiley.deactivateExcellent(true)
+        binding.apply {
+            reviewEditableBadSmiley.deactivateBad(true)
+            reviewEditableMediocreSmiley.deactivateMediocre(true)
+            reviewEditableExcellentSmiley.deactivateExcellent(true)
+        }
     }
 
     private fun setDeadline() {
-        this.reviewScoreDeadlineLabel.show()
+        binding.reviewScoreDeadlineLabel.show()
     }
 
     private fun setEmptyScore() {
-        this.reviewDetailScoreTitle.text = context.getString(R.string.review_history_details_score_empty)
-    }
-
-    private fun init() {
-        View.inflate(context, R.layout.widget_review_detail_score, this)
+        binding.reviewDetailScoreTitle.text = context.getString(R.string.review_history_details_score_empty)
     }
 
 }

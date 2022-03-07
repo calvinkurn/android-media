@@ -8,7 +8,7 @@ data class RoomSettingResponse(
         val chatRoomSettings: ChatRoomSettings = ChatRoomSettings()
 ) {
     val showFraudAlert get() = chatRoomSettings.fraudAlert.enable
-    val showBanner get() = chatRoomSettings.banner.enable
+    val showBanner get() = chatRoomSettings.bannerUiModel.enable
     val fraudAlert get() = chatRoomSettings.fraudAlert
-    val roomBanner get() = chatRoomSettings.banner
+    val roomBanner get() = chatRoomSettings.bannerUiModel
 }

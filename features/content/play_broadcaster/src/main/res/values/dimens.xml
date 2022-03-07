@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="play_dp_1">1dp</dimen>
-    <dimen name="play_dp_2">1dp</dimen>
+    <dimen name="play_dp_2">2dp</dimen>
     <dimen name="play_dp_6">6dp</dimen>
     <dimen name="play_dp_10">10dp</dimen>
     <dimen name="play_dp_12">12dp</dimen>
@@ -71,7 +71,7 @@
 
     <dimen name="play_bottom_action_view_height">56dp</dimen>
 
-    <dimen name="play_timer_count_size">64sp</dimen>
+    <dimen name="play_timer_count_size">80sp</dimen>
     <dimen name="play_timer_count_width">210dp</dimen>
     <dimen name="play_timer_count_height">200dp</dimen>
 
@@ -96,4 +96,8 @@
     <dimen name="play_interactive_gift_width">27dp</dimen>
     <dimen name="play_interactive_gift_height">29dp</dimen>
     <dimen name="play_interactive_setup_top_margin">100dp</dimen>
+
+    <!--Pinned Message-->
+    <dimen name="play_bro_pinned_msg_empty_radius">8dp</dimen>
+    <dimen name="play_bro_pinned_msg_loading_size">52dp</dimen>
 </resources>

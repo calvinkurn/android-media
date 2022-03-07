@@ -8,8 +8,8 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/txt_pdp_shimmer_shipment_1"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_16"
+        android:layout_width="0dp"
+        android:layout_height="16dp"
         app:corners="@integer/corner_radius_shimmering"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -18,8 +18,8 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/txt_pdp_shimmer_shipment_2"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_16"
+        android:layout_width="0dp"
+        android:layout_height="16dp"
         android:layout_marginTop="8dp"
         app:corners="@integer/corner_radius_shimmering"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,8 +29,8 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/txt_pdp_shimmer_shipment_3"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_16"
+        android:layout_width="0dp"
+        android:layout_height="16dp"
         android:layout_marginTop="8dp"
         app:corners="@integer/corner_radius_shimmering"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,7 +41,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/label_pdp_shimmer_shipment_1"
         android:layout_width="120dp"
-        android:layout_height="@dimen/dp_16"
+        android:layout_height="16dp"
         android:layout_marginTop="12dp"
         app:corners="@integer/corner_radius_shimmering"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +50,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/label_pdp_shimmer_shipment_2"
         android:layout_width="60dp"
-        android:layout_height="@dimen/dp_16"
+        android:layout_height="16dp"
         android:layout_marginStart="4dp"
         app:corners="@integer/corner_radius_shimmering"
         app:layout_constraintBottom_toBottomOf="@+id/label_pdp_shimmer_shipment_1"
@@ -60,7 +60,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/label_pdp_shimmer_shipment_3"
         android:layout_width="60dp"
-        android:layout_height="@dimen/dp_16"
+        android:layout_height="16dp"
         android:layout_marginStart="4dp"
         app:corners="@integer/corner_radius_shimmering"
         app:layout_constraintBottom_toBottomOf="@+id/label_pdp_shimmer_shipment_2"
@@ -70,7 +70,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/label_pdp_shimmer_shipment_4"
         android:layout_width="60dp"
-        android:layout_height="@dimen/dp_16"
+        android:layout_height="16dp"
         android:layout_marginStart="4dp"
         app:corners="@integer/corner_radius_shimmering"
         app:layout_constraintBottom_toBottomOf="@+id/label_pdp_shimmer_shipment_3"

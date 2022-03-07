@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.view.model
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel.Header
 
@@ -15,6 +16,7 @@ data class ShopHomeShowcaseListSliderUiModel(
         override val header: Header = Header(),
         val showcaseListItem: List<ShopHomeShowcaseListItemUiModel> = listOf()
 ) : BaseShopHomeWidgetUiModel() {
+    val impressHolder = ImpressHolder()
 
     override fun type(typeFactory: ShopHomeAdapterTypeFactory): Int {
         return typeFactory.type(this)

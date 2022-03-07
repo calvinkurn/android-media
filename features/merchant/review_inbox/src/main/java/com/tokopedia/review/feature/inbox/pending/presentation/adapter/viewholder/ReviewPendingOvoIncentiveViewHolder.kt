@@ -10,8 +10,8 @@ import com.tokopedia.review.common.analytics.ReviewTracking
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingOvoIncentiveUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
 import com.tokopedia.review.inbox.R
+import com.tokopedia.review.inbox.databinding.ItemOvoIncentiveTickerBinding
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import kotlinx.android.synthetic.main.item_ovo_incentive_ticker.view.*
 
 class ReviewPendingOvoIncentiveViewHolder(view: View, private val reviewPendingItemListener: ReviewPendingItemListener) : AbstractViewHolder<ReviewPendingOvoIncentiveUiModel>(view) {
 
@@ -19,10 +19,12 @@ class ReviewPendingOvoIncentiveViewHolder(view: View, private val reviewPendingI
         val LAYOUT = R.layout.item_ovo_incentive_ticker
     }
 
+    private val binding = ItemOvoIncentiveTickerBinding.bind(view)
+
     override fun bind(element: ReviewPendingOvoIncentiveUiModel) {
         with(element.productRevIncentiveOvoDomain) {
             productrevIncentiveOvo?.ticker?.let {
-                itemView.ovoPointsTicker.apply {
+                binding.ovoPointsTicker.apply {
                     setHtmlDescription(it.subtitle)
                     setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
@@ -35,7 +37,7 @@ class ReviewPendingOvoIncentiveViewHolder(view: View, private val reviewPendingI
                     })
                     show()
                 }
-                itemView.addOnImpressionListener(ImpressHolder()) {
+                binding.root.addOnImpressionListener(ImpressHolder()) {
                     ReviewTracking.onSuccessGetIncentiveOvoTracker(it.subtitle, ReviewInboxTrackingConstants.PENDING_TAB)
                 }
             }

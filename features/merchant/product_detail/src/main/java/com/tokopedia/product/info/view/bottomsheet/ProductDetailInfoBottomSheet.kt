@@ -32,7 +32,11 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.util.getIntentImagePreviewWithoutDownloadButton
-import com.tokopedia.product.info.model.productdetail.uidata.*
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableDataModel
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableImageDataModel
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableListDataModel
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoLoadingDataModel
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoVisitable
 import com.tokopedia.product.info.util.ProductDetailBottomSheetBuilder
 import com.tokopedia.product.info.view.BsProductDetailInfoViewModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
@@ -121,7 +125,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
                 binding?.bsProductInfoContainer?.setPadding(0, 0, 0, 6.dpToPx(displayMetrics))
                 binding?.bsProductInfoContainer?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
-        } catch (e: Throwable) {
+        } catch (_: Throwable) {
         }
     }
 

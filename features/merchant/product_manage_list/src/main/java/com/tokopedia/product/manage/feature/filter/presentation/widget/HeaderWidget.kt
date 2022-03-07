@@ -2,10 +2,12 @@ package com.tokopedia.product.manage.feature.filter.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
+import com.tokopedia.product.manage.databinding.WidgetHeaderBinding
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterUiModel
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.widget_header.view.*
+import com.tokopedia.unifycomponents.UnifyImageButton
+import com.tokopedia.unifyprinciples.Typography
 
 class HeaderWidget : BaseCustomView {
 
@@ -21,12 +23,23 @@ class HeaderWidget : BaseCustomView {
         init()
     }
 
+    private var binding: WidgetHeaderBinding? = null
+
+    val title: Typography?
+        get() = binding?.title
+    val arrow: UnifyImageButton?
+        get() = binding?.arrow
+
     private fun init() {
-        View.inflate(context, com.tokopedia.product.manage.R.layout.widget_header, this)
+        binding = WidgetHeaderBinding.inflate(
+            LayoutInflater.from(context),
+            this,
+            true
+        )
     }
 
     fun bind(headerText: String) {
-        title.text = headerText
+        title?.text = headerText
     }
 }
 

@@ -6,7 +6,10 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEducationalInfor
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 
 object EducationalInformationMapper {
-    fun mapEducationalInformationUiModel(response: HomeLayoutResponse, state: HomeLayoutItemState): HomeLayoutItemUiModel {
-        return HomeLayoutItemUiModel(HomeEducationalInformationWidgetUiModel(id = response.id), state)
+    fun mapEducationalInformationUiModel(response: HomeLayoutResponse, state: HomeLayoutItemState, serviceType: String): HomeLayoutItemUiModel {
+        return HomeLayoutItemUiModel(
+            HomeEducationalInformationWidgetUiModel(id = response.id, state = state, serviceType = serviceType),
+            state
+        )
     }
 }

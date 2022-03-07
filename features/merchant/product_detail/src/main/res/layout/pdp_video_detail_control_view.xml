@@ -6,12 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:padding="@dimen/dp_16">
+    android:padding="16dp">
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/pdp_video_detail_close"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:icon_color_light_enable="@color/Unify_Static_White"
@@ -27,16 +27,16 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@id/exo_play"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             app:icon_color_light_enable="@color/Unify_Static_White"
             app:icon_name="PLAY"
             tools:icon_color_light_enable="@color/Unify_Static_Black" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@id/exo_pause"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             app:icon_color_light_enable="@color/Unify_Static_White"
             app:icon_name="PAUSE"
             tools:icon_color_light_enable="@color/Unify_Static_Black" />
@@ -47,8 +47,8 @@
         android:id="@id/exo_progress"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/exo_duration_wrapper"
         app:layout_constraintStart_toEndOf="@+id/pdp_video_detail_control"
@@ -60,9 +60,9 @@
         android:id="@+id/exo_duration_wrapper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginEnd="12dp"
         android:orientation="horizontal"
-        android:padding="@dimen/dp_5"
+        android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="@+id/pdp_volume_control"
         app:layout_constraintEnd_toStartOf="@+id/pdp_volume_control"
         app:layout_constraintTop_toTopOf="@+id/pdp_volume_control">
@@ -99,9 +99,9 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/pdp_volume_control"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="12dp"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_name="VOLUME_UP"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -110,8 +110,8 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/pdp_mainimize_control"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_name="SCREEN_NORMAL"
         app:layout_constraintBottom_toBottomOf="parent"

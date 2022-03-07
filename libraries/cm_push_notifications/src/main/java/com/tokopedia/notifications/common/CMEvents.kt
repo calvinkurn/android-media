@@ -2,7 +2,7 @@ package com.tokopedia.notifications.common
 
 import android.content.Context
 import android.text.TextUtils
-import android.util.Log
+import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
@@ -33,6 +33,7 @@ object PersistentEvent {
 
 object IrisAnalyticsEvents {
     const val PUSH_RECEIVED = "pushReceived"
+    const val DEVICE_NOTIFICATION_OFF = "device_notification_off"
     const val PUSH_CLICKED = "pushClicked"
     const val PUSH_DISMISSED = "pushDismissed"
     const val PUSH_CANCELLED = "pushCancelled"
@@ -58,8 +59,40 @@ object IrisAnalyticsEvents {
     private const val CLICKED_ELEMENT_ID = "clicked_element_id"
     private const val INAPP_TYPE = "inapp_type"
     private const val LABEL = "eventlabel"
+    private const val SHOP_ID = "shop_id"
 
     private const val AMPLIFICATION = "amplification"
+
+
+    private const val IRIS_ANALYTICS_APP_SITE_OPEN = "appSiteOpen"
+    private const val IRIS_ANALYTICS_EVENT_KEY = "event"
+
+
+    fun trackCmINAppEvent(context: Context?,  cmInApp: CMInApp?,
+                          eventName: String?,  elementId: String?){
+        cmInApp?.let {
+            context?.let { context ->
+                if(eventName!= null){
+                    if(elementId!= null) {
+                        sendInAppEvent(context.applicationContext, eventName, cmInApp, elementId)
+                    }else {
+                        sendInAppEvent(context.applicationContext, eventName, cmInApp)
+                    }
+                }
+            }
+        }
+
+    }
+
+    fun sendFirstScreenEvent(context: Context?){
+        context?.let {
+            val map: MutableMap<String, Any> = mutableMapOf(
+                    IRIS_ANALYTICS_EVENT_KEY to IRIS_ANALYTICS_APP_SITE_OPEN
+            )
+            IrisAnalytics.Companion.getInstance(context.applicationContext).saveEvent(map)
+        }
+    }
+
 
     fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel) {
         if (baseNotificationModel.isTest) return
@@ -68,24 +101,20 @@ object IrisAnalyticsEvents {
         if (baseNotificationModel.isAmplification) {
             values[LABEL] = AMPLIFICATION
         }
-
+        checkEventAndAddShopId(eventName,values,baseNotificationModel.shopId)
         trackEvent(context, irisAnalytics, values)
     }
 
     fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel, elementID: String?) {
         if (baseNotificationModel.isTest)
             return
-        val irisAnalytics = IrisAnalytics(context)
-        if (irisAnalytics != null) {
-            val values = addBaseValues(context, eventName, baseNotificationModel)
-            if (elementID != null) {
-                values[CLICKED_ELEMENT_ID] = elementID
-
-            }
-
-            trackEvent(context, irisAnalytics, values)
+        val irisAnalytics = IrisAnalytics.Companion.getInstance(context.applicationContext)
+        val values = addBaseValues(context, eventName, baseNotificationModel)
+        if (elementID != null) {
+            values[CLICKED_ELEMENT_ID] = elementID
         }
-
+        checkEventAndAddShopId(eventName,values,baseNotificationModel.shopId)
+        trackEvent(context, irisAnalytics, values)
     }
 
     private fun addBaseValues(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel): HashMap<String, Any> {
@@ -111,28 +140,23 @@ object IrisAnalyticsEvents {
     fun sendInAppEvent(context: Context, eventName: String, cmInApp: CMInApp) {
         if (cmInApp.isTest)
             return
-        val irisAnalytics = IrisAnalytics(context)
-        if (irisAnalytics != null) {
-            val values = addBaseValues(context, eventName, cmInApp)
+        val irisAnalytics = IrisAnalytics.Companion.getInstance(context.applicationContext)
+        val values = addBaseValues(context, eventName, cmInApp)
+        checkEventAndAddShopId(eventName, values, cmInApp.shopId)
+        trackEvent(context, irisAnalytics, values)
 
-            trackEvent(context, irisAnalytics, values)
-        }
     }
 
     fun sendInAppEvent(context: Context, eventName: String, cmInApp: CMInApp, elementID: String?) {
         if (cmInApp.isTest)
             return
-        val irisAnalytics = IrisAnalytics(context)
-        if (irisAnalytics != null) {
-            val values = addBaseValues(context, eventName, cmInApp)
-
-            elementID?.let {
-                values[CLICKED_ELEMENT_ID] = elementID
-            }
-
-            trackEvent(context, irisAnalytics, values)
+        val irisAnalytics = IrisAnalytics.Companion.getInstance(context.applicationContext)
+        val values = addBaseValues(context, eventName, cmInApp)
+        elementID?.let {
+            values[CLICKED_ELEMENT_ID] = elementID
         }
-
+        checkEventAndAddShopId(eventName, values, cmInApp.shopId)
+        trackEvent(context, irisAnalytics, values)
     }
 
     fun sendAmplificationInAppEvent(context: Context, eventName: String, cmInApp: CMInApp) {
@@ -143,7 +167,7 @@ object IrisAnalyticsEvents {
         })
     }
 
-    private fun trackEvent(context: Context, irisAnalytics: IrisAnalytics, values: HashMap<String, Any>) {
+    private fun trackEvent(context: Context, irisAnalytics: Iris, values: HashMap<String, Any>) {
         logTimber(values)
         if (CMNotificationUtils.isNetworkAvailable(context))
             irisAnalytics.sendEvent(values)
@@ -201,6 +225,27 @@ object IrisAnalyticsEvents {
         return values
 
     }
+
+    private fun checkEventAndAddShopId(
+        eventName: String,
+        values: HashMap<String, Any>,
+        shopId: String?
+    ) {
+
+        val allowedEvents = listOf(
+            INAPP_RECEIVED,
+            INAPP_CLICKED,
+            INAPP_DISMISSED,
+            PUSH_RECEIVED,
+            PUSH_CLICKED,
+            PUSH_DISMISSED
+        )
+
+        if (!shopId.isNullOrBlank() && (eventName in allowedEvents)) {
+            values[SHOP_ID] = shopId
+        }
+    }
+
 }
 
 object CMEvents {

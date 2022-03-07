@@ -205,7 +205,11 @@ data class FlightCart(
 
             @SerializedName("mandatoryDOB")
             @Expose
-            val mandatoryDob: Boolean = false
+            val mandatoryDob: Boolean = false,
+
+            @SerializedName("mandatoryIdentificationNumber")
+            @Expose
+            val mandatoryIdentificationNumber: Boolean = false,
     )
 
     @Parcelize

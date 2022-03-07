@@ -8,6 +8,6 @@
     <include layout="@layout/item_include_invoice_attach"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"/>
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"/>
 </RelativeLayout>

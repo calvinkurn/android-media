@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     app:cardBackgroundColor="@color/Unify_N0"
-    app:cardCornerRadius="@dimen/dp_6"
+    app:cardCornerRadius="6dp"
     app:cardElevation="0dp"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="false"
@@ -29,8 +29,8 @@
             tools:visibility="visible" />
 
         <ImageView android:id="@+id/delete"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             app:srcCompat="@drawable/ic_system_action_close_grayscale_24"
             android:clickable="true"
             android:focusable="true"
@@ -39,8 +39,8 @@
             tools:ignore="ContentDescription" />
 
         <ImageView android:id="@+id/ic_play_vid"
-            android:layout_width="@dimen/dp_72"
-            android:layout_height="@dimen/dp_72"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             android:layout_gravity="center"
             android:visibility="gone"
             app:srcCompat="@drawable/ic_play_button"

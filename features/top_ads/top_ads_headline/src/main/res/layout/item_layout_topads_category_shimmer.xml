@@ -3,6 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/topadsShimmer"
     android:layout_width="@dimen/dp_90"
-    android:layout_height="@dimen/dp_40"
-    app:loader_corner_radius="@dimen/dp_8"
+    android:layout_height="40dp"
+    app:loader_corner_radius="8dp"
     app:loader_type="rect" />

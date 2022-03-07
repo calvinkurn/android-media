@@ -19,6 +19,7 @@ data class OutOfService(
         @SerializedName("title")
         val title: String = ""
 ) : Parcelable {
+
     companion object {
         const val ID_MAINTENANCE = "1"
         const val ID_OVERLOAD = "2"

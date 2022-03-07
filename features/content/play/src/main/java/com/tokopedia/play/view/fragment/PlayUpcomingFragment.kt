@@ -9,33 +9,35 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.activity.PlayActivity
-import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
-import com.tokopedia.play.view.uimodel.state.PlayCartUiState
-import com.tokopedia.play.view.uimodel.state.PlayPartnerUiState
+import com.tokopedia.play.view.uimodel.state.PlayUpcomingInfoUiState
+import com.tokopedia.play.view.uimodel.state.PlayUpcomingPartnerUiState
+import com.tokopedia.play.view.uimodel.state.PlayUpcomingState
+import com.tokopedia.play.view.viewcomponent.ShareExperienceViewComponent
 import com.tokopedia.play.view.viewcomponent.ToolbarViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingActionButtonViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingTimerViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
-import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play_common.R as commonR
+import com.tokopedia.play.view.viewmodel.PlayUpcomingViewModel
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -45,34 +47,45 @@ import javax.inject.Inject
  */
 class PlayUpcomingFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
-    private val analytic: PlayAnalytic
+    private val dispatchers: CoroutineDispatchers,
 ): TkpdBaseV4Fragment(),
     ToolbarViewComponent.Listener,
-    UpcomingActionButtonViewComponent.Listener
+    UpcomingActionButtonViewComponent.Listener,
+    UpcomingTimerViewComponent.Listener,
+    ShareExperienceViewComponent.Listener
 {
 
     private val toolbarView by viewComponent { ToolbarViewComponent(it, R.id.view_toolbar, this) }
-    private val upcomingTimer by viewComponent { UpcomingTimerViewComponent(it, R.id.view_upcoming_timer) }
+    private val upcomingTimer by viewComponent { UpcomingTimerViewComponent(it, R.id.view_upcoming_timer, this) }
     private val actionButton by viewComponent { UpcomingActionButtonViewComponent(it, R.id.btn_action, this) }
+    private val shareExperienceView by viewComponent { ShareExperienceViewComponent(it, R.id.view_upcoming_share_experience, childFragmentManager, this, this, requireContext(), dispatchers) }
 
-    private lateinit var ivUpcomingCover: AppCompatImageView
-    private lateinit var tvUpcomingTitle: AppCompatTextView
+    private lateinit var ivUpcomingCover: ImageUnify
+    private lateinit var tvUpcomingTitle: Typography
 
-    private lateinit var playViewModel: PlayViewModel
+    private lateinit var playUpcomingViewModel: PlayUpcomingViewModel
     private lateinit var playParentViewModel: PlayParentViewModel
 
     private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
 
     override fun getScreenName(): String = "Play Upcoming"
 
+    private val channelId: String
+        get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
+        playUpcomingViewModel = ViewModelProvider(this, viewModelFactory).get(PlayUpcomingViewModel::class.java)
 
         val currentActivity = requireActivity()
         if (currentActivity is PlayActivity) {
             playParentViewModel = ViewModelProvider(currentActivity, currentActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
         }
+
+        try {
+            playUpcomingViewModel.initPage(channelId, playParentViewModel.getLatestChannelStorageData(channelId))
+        }
+        catch (e: Exception){}
     }
 
     override fun onCreateView(
@@ -87,25 +100,36 @@ class PlayUpcomingFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         sendImpression()
         initView(view)
-        setupView(view)
         setupInsets()
         setupObserver()
     }
 
     override fun onResume() {
         super.onResume()
+        playUpcomingViewModel.startSSE(channelId)
+    }
 
-        playViewModel.upcomingInfo?.let {
-            actionButton.setButtonStatus(
-                if(it.isAlreadyLive) UpcomingActionButtonViewComponent.Status.WATCH_NOW
-                else if(!it.isReminderSet) UpcomingActionButtonViewComponent.Status.REMIND_ME
-                else UpcomingActionButtonViewComponent.Status.HIDDEN
+    override fun onPause() {
+        super.onPause()
+        try {
+            playParentViewModel.setLatestChannelStorageData(
+                channelId, playUpcomingViewModel.latestChannelData
             )
         }
+        catch (e: Exception) {}
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        shareExperienceView.handleRequestPermissionResult(requestCode, grantResults)
     }
 
     private fun sendImpression() {
-        playViewModel.submitAction(ImpressUpcomingChannel)
+        playUpcomingViewModel.submitAction(ImpressUpcomingChannel)
     }
 
     private fun initView(view: View) {
@@ -113,44 +137,27 @@ class PlayUpcomingFragment @Inject constructor(
         tvUpcomingTitle = view.findViewById(R.id.tv_upcoming_title)
     }
 
-    private fun setupView(view: View) {
-        playViewModel.upcomingInfo?.let {
-            if(it.coverUrl.isNotEmpty())
-                Glide.with(view).load(it.coverUrl).into(ivUpcomingCover)
-
-            tvUpcomingTitle.text = it.title
-
-            upcomingTimer.setupTimer(it.startTime)
-        }
-    }
-
     private fun setupObserver() {
-        playViewModel.observableUpcomingInfo.observe(viewLifecycleOwner) {
-            if(it.isAlreadyLive) {
-                upcomingTimer.stopTimer()
-                actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.WATCH_NOW)
-            }
-        }
-
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            playViewModel.uiState.withCache().collectLatest { cachedState ->
+            playUpcomingViewModel.uiState.withCache().collectLatest { cachedState ->
                 val state = cachedState.value
-                renderToolbarView(state.partner, state.share.shouldShow, state.cart)
+                val prevState = cachedState.prevValue
+
+                renderToolbarView(state.partner, state.share.shouldShow)
+                renderUpcomingInfo(prevState?.upcomingInfo, state.upcomingInfo)
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            playViewModel.uiEvent.collect { event ->
+            playUpcomingViewModel.uiEvent.collect { event ->
                 when(event) {
-                    is OpenPageEvent -> openPageByApplink(applink = event.applink, params = event.params.toTypedArray(), requestCode = event.requestCode, pipMode = event.pipMode)
-                    is CopyToClipboardEvent -> copyToClipboard(event.content)
-                    is RemindMeEvent -> {
+                    is PlayUpcomingUiEvent.OpenPageEvent -> openApplink(applink = event.applink, params = event.params.toTypedArray(), requestCode = event.requestCode)
+                    is PlayUpcomingUiEvent.CopyToClipboardEvent -> copyToClipboard(event.content)
+                    is PlayUpcomingUiEvent.RemindMeEvent -> {
                         if(event.isSuccess) {
-                            actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.HIDDEN)
                             doShowToaster(message = getTextFromUiString(event.message))
                         }
                         else {
-                            actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.REMIND_ME)
                             doShowToaster(
                                 message = getTextFromUiString(event.message),
                                 toasterType = Toaster.TYPE_ERROR,
@@ -158,37 +165,35 @@ class PlayUpcomingFragment @Inject constructor(
                             ) { actionButton.onButtonClick() }
                         }
                     }
-                    is ShowInfoEvent -> {
+                    is PlayUpcomingUiEvent.ShowInfoEvent -> {
                         doShowToaster(
                             toasterType = Toaster.TYPE_NORMAL,
                             message = getTextFromUiString(event.message)
                         )
                     }
-                    is ShowErrorEvent -> {
-                        val errMessage = if (event.errMessage == null) {
-                            ErrorHandler.getErrorMessage(
-                                context, event.error, ErrorHandler.Builder()
-                                    .className(PlayViewModel::class.java.simpleName)
-                                    .build()
-                            )
-                        } else {
-                            val (_, errCode) = ErrorHandler.getErrorMessagePair(
-                                context, event.error, ErrorHandler.Builder()
-                                    .className(PlayViewModel::class.java.simpleName)
-                                    .build()
-                            )
-                            getString(
-                                commonR.string.play_custom_error_handler_msg,
-                                getTextFromUiString(event.errMessage),
-                                errCode
-                            )
-                        }
+                    is PlayUpcomingUiEvent.ShowInfoWithActionEvent -> {
                         doShowToaster(
-                            toasterType = Toaster.TYPE_ERROR,
-                            message = errMessage
+                            toasterType = Toaster.TYPE_NORMAL,
+                            message = getTextFromUiString(event.message),
+                            actionText = getString(R.string.play_action_ok)
+                        ) { event.action() }
+                    }
+                    PlayUpcomingUiEvent.RefreshChannelEvent -> playParentViewModel.refreshChannel()
+                    is PlayUpcomingUiEvent.SaveTemporarySharingImage -> shareExperienceView.saveTemporaryImage(event.imageUrl)
+                    is PlayUpcomingUiEvent.OpenSharingOptionEvent -> {
+                        shareExperienceView.showSharingOptions(event.title, event.coverUrl, event.userId, event.channelId)
+                    }
+                    is PlayUpcomingUiEvent.OpenSelectedSharingOptionEvent -> {
+                        SharingUtil.executeShareIntent(event.shareModel, event.linkerShareResult, activity, view, event.shareString)
+                    }
+                    PlayUpcomingUiEvent.CloseShareExperienceBottomSheet -> shareExperienceView.dismiss()
+                    PlayUpcomingUiEvent.ErrorGenerateShareLink -> {
+                        doShowToaster(
+                            toasterType = Toaster.TYPE_NORMAL,
+                            message = getString(R.string.play_sharing_error_generate_link),
+                            actionText = getString(R.string.play_sharing_refresh)
                         )
                     }
-                    else -> { }
                 }
             }
         }
@@ -198,16 +203,6 @@ class PlayUpcomingFragment @Inject constructor(
         return when (uiString) {
             is UiString.Text -> uiString.text
             is UiString.Resource -> getString(uiString.resource)
-        }
-    }
-
-    private fun openPageByApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false, pipMode: Boolean = false) {
-        if (pipMode && playViewModel.isPiPAllowed && !playViewModel.isFreezeOrBanned) {
-            playViewModel.requestPiPBrowsingPage(
-                OpenApplinkUiModel(applink = applink, params = params.toList(), requestCode, shouldFinish)
-            )
-        } else {
-            openApplink(applink, *params, requestCode = requestCode, shouldFinish = shouldFinish)
         }
     }
 
@@ -236,28 +231,52 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     private fun renderToolbarView(
-        partnerState: PlayPartnerUiState,
+        partnerState: PlayUpcomingPartnerUiState,
         isShareable: Boolean,
-        cartState: PlayCartUiState,
     ) {
         toolbarView.setFollowStatus(partnerState.followStatus)
         toolbarView.setPartnerName(partnerState.name)
 
-        toolbarView.setIsShareable(isShareable)
+        shareExperienceView.setIsShareable(isShareable)
+    }
 
-        toolbarView.showCart(cartState.shouldShow)
+    private fun renderUpcomingInfo(prevState: PlayUpcomingInfoUiState?, currState: PlayUpcomingInfoUiState) {
+        if(prevState?.generalInfo != currState.generalInfo) {
+            currState.generalInfo.let {
+                if(it.coverUrl.isNotEmpty()) ivUpcomingCover.setImageUrl(it.coverUrl)
+
+                tvUpcomingTitle.text = it.title
+
+                upcomingTimer.setupTimer(it.startTime)
+            }
+        }
+
+        when(currState.state) {
+            PlayUpcomingState.RemindMe -> {
+                actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.REMIND_ME)
+            }
+            PlayUpcomingState.WatchNow -> {
+                upcomingTimer.stopTimer()
+                actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.WATCH_NOW)
+            }
+            PlayUpcomingState.Reminded, PlayUpcomingState.Unknown, PlayUpcomingState.WaitingRefreshDuration -> {
+                actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.HIDDEN)
+            }
+            PlayUpcomingState.Refresh -> {
+                actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.REFRESH)
+            }
+            PlayUpcomingState.Loading -> {
+                actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.LOADING)
+            }
+        }
+    }
+
+    override fun onTimerFinish(view: UpcomingTimerViewComponent) {
+        playUpcomingViewModel.submitAction(UpcomingTimerFinish)
     }
 
     override fun onClickActionButton() {
-        playViewModel.observableUpcomingInfo.value?.let {
-            if(it.isAlreadyLive)  {
-                playViewModel.submitAction(ClickWatchNowUpcomingChannel)
-                playParentViewModel.refreshChannel()
-            }
-            else {
-                playViewModel.submitAction(ClickRemindMeUpcomingChannel)
-            }
-        }
+        playUpcomingViewModel.submitAction(ClickUpcomingButton)
     }
 
     override fun onBackButtonClicked(view: ToolbarViewComponent) {
@@ -267,19 +286,39 @@ class PlayUpcomingFragment @Inject constructor(
     override fun onMoreButtonClicked(view: ToolbarViewComponent) { }
 
     override fun onFollowButtonClicked(view: ToolbarViewComponent) {
-        playViewModel.submitAction(ClickFollowAction)
+        playUpcomingViewModel.submitAction(ClickFollowUpcomingAction)
     }
 
     override fun onPartnerNameClicked(view: ToolbarViewComponent) {
-        playViewModel.submitAction(ClickPartnerNameAction)
+        playUpcomingViewModel.submitAction(ClickPartnerNameUpcomingAction)
     }
 
-    override fun onCartButtonClicked(view: ToolbarViewComponent) { }
+    override fun onShareIconClick(view: ShareExperienceViewComponent) {
+        playUpcomingViewModel.submitAction(ClickShareUpcomingAction)
+    }
 
-    override fun onCopyButtonClicked(view: ToolbarViewComponent) {
-        playViewModel.submitAction(ClickShareAction)
+    override fun onShareOpenBottomSheet(view: ShareExperienceViewComponent) {
+        playUpcomingViewModel.submitAction(ShowShareExperienceUpcomingAction)
+    }
 
-        analytic.clickCopyLink()
+    override fun onShareOptionClick(view: ShareExperienceViewComponent, shareModel: ShareModel) {
+        playUpcomingViewModel.submitAction(ClickSharingOptionUpcomingAction(shareModel))
+    }
+
+    override fun onShareOptionClosed(view: ShareExperienceViewComponent) {
+        playUpcomingViewModel.submitAction(CloseSharingOptionUpcomingAction)
+    }
+
+    override fun onScreenshotTaken(view: ShareExperienceViewComponent) {
+        playUpcomingViewModel.submitAction(ScreenshotTakenUpcomingAction)
+    }
+
+    override fun onSharePermissionAction(view: ShareExperienceViewComponent, label: String) {
+        playUpcomingViewModel.submitAction(SharePermissionUpcomingAction(label))
+    }
+
+    override fun onHandleShareFallback(view: ShareExperienceViewComponent) {
+        playUpcomingViewModel.submitAction(CopyLinkUpcomingAction)
     }
 
     private fun copyToClipboard(content: String) {
@@ -304,9 +343,21 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        playViewModel.submitAction(
-            OpenPageResultAction(isSuccess = resultCode == Activity.RESULT_OK, requestCode = requestCode)
+        playUpcomingViewModel.submitAction(
+            OpenUpcomingPageResultAction(isSuccess = resultCode == Activity.RESULT_OK, requestCode = requestCode)
         )
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    fun setResultBeforeFinish() {
+        activity?.setResult(Activity.RESULT_OK, Intent().apply {
+            if (channelId.isNotEmpty()) putExtra(EXTRA_CHANNEL_ID, channelId)
+            putExtra(EXTRA_IS_REMINDER, playUpcomingViewModel.isReminderSet)
+        })
+    }
+
+    companion object {
+        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
+        private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
     }
 }

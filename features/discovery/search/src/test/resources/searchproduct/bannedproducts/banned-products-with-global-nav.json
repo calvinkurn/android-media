@@ -1,0 +1,62 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "totalData": 0,
+      "totalDataText": "",
+      "defaultView": 0,
+      "responseCode": 8,
+      "errorMessage": "Produk yang kamu cari tidak tersedia di Android. Silakan cari di desktop atau mobile web HP-mu.",
+      "additionalParams": "",
+      "keywordProcess": ""
+    },
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": "",
+        "typeId": 0
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "otherRelated": []
+      },
+      "suggestion": {
+        "suggestion": "",
+        "query": "",
+        "text": ""
+      },
+      "products": []
+    }
+  },
+  "global_search_navigation": {
+    "data": {
+      "source": "other",
+      "title": "Info Pembatasan Produk Kesehatan",
+      "keyword": "clyamax",
+      "nav_template": "pill",
+      "background": "",
+      "see_all_applink": "",
+      "see_all_url": "",
+      "show_topads": true,
+      "list": [
+        {
+          "category_name": "",
+          "name": "Info Pembatasan Produk Kesehatan",
+          "info": "",
+          "image_url": "https://images.tokopedia.net/img/cache/64-square/iEWsxH/2021/7/19/e7e0bbfc-747f-48d5-87f4-cf6f403c856a.png?ect=4g",
+          "applink": "tokopedia://webview?url=https://www.tokopedia.com/help/article/kebijakan-google-play-store-untuk-platform-android-terkait-produk-kesehatan",
+          "url": "https://www.tokopedia.com/help/article/kebijakan-google-play-store-untuk-platform-android-terkait-produk-kesehatan",
+          "subtitle": "",
+          "strikethrough": "",
+          "background_url": "",
+          "logo_url": ""
+        }
+      ]
+    }
+  }
+}

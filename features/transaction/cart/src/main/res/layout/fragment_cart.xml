@@ -74,7 +74,7 @@
                 <View
                     android:id="@+id/bottom_layout_shadow"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_4"
+                    android:layout_height="4dp"
                     android:layout_above="@+id/bottom_layout"
                     android:background="@drawable/shadow_top" />
 
@@ -90,7 +90,7 @@
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_4"
+                        android:layout_height="4dp"
                         android:background="@drawable/shadow_top" />
 
                     <com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
@@ -113,8 +113,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:layout_marginBottom="@dimen/dp_14"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="14dp"
                         android:background="@color/Unify_N0"
                         android:orientation="horizontal"
                         tools:ignore="DisableBaselineAlignment">
@@ -124,10 +124,10 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:orientation="vertical"
-                            android:paddingStart="@dimen/dp_16"
-                            android:paddingLeft="@dimen/dp_16"
-                            android:paddingEnd="@dimen/dp_16"
-                            android:paddingRight="@dimen/dp_16">
+                            android:paddingStart="16dp"
+                            android:paddingLeft="16dp"
+                            android:paddingEnd="16dp"
+                            android:paddingRight="16dp">
 
                             <com.tokopedia.unifyprinciples.Typography
                                 android:id="@+id/text_total_payment_label"
@@ -141,7 +141,7 @@
                             <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/dp_4"
+                                android:layout_marginTop="4dp"
                                 android:gravity="center_vertical">
 
                                 <com.tokopedia.unifyprinciples.Typography
@@ -156,7 +156,7 @@
                                 <com.tokopedia.unifycomponents.UnifyImageButton
                                     android:id="@+id/img_chevron_summary"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="@dimen/dp_20"
+                                    android:layout_height="20dp"
                                     android:rotation="180"
                                     app:srcCompat="@drawable/unify_chips_ic_chevron_normal"
                                     app:unifyImageButtonVariant="image" />
@@ -167,10 +167,10 @@
 
                         <FrameLayout
                             android:layout_width="@dimen/dp_150"
-                            android:layout_height="@dimen/dp_40"
+                            android:layout_height="40dp"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginStart="@dimen/dp_10"
-                            android:layout_marginEnd="@dimen/dp_16"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="16dp"
                             android:gravity="center_vertical">
 
                             <com.tokopedia.unifycomponents.UnifyButton
@@ -204,14 +204,14 @@
 
                 <include
                     android:id="@+id/top_layout"
-                    layout="@layout/item_select_all"
+                    layout="@layout/header_select_all"
                     android:visibility="gone"
                     tools:visibility="visible" />
 
                 <View
                     android:id="@+id/top_layout_shadow"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_4"
+                    android:layout_height="4dp"
                     android:layout_below="@+id/top_layout"
                     android:background="@drawable/shadow_bottom" />
 
@@ -240,8 +240,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/tmp_animated_image"
-        android:layout_width="@dimen/dp_72"
-        android:layout_height="@dimen/dp_72"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
         android:visibility="gone" />
 
 </LinearLayout>

@@ -1,19 +1,20 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.mapper
 
-import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
-import com.tokopedia.promocheckout.common.view.model.clearpromo.SuccessDataUiModel
 import com.tokopedia.promocheckoutmarketplace.data.response.*
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.*
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.SuccessDataUiModel
 import javax.inject.Inject
 
 class PromoCheckoutUiModelMapper @Inject constructor() {
 
-    fun mapFragmentUiModel(valuePageSource: Int): FragmentUiModel {
+    fun mapFragmentUiModel(valuePageSource: Int, defaultErrorMessage: String): FragmentUiModel {
         return FragmentUiModel(
                 uiData = FragmentUiModel.UiData().apply {
                     pageSource = valuePageSource
                     totalBenefit = 0
                     usedPromoCount = 0
+                    this.defaultErrorMessage = defaultErrorMessage
                 },
                 uiState = FragmentUiModel.UiState().apply {
                     isLoading = true
@@ -46,6 +47,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     promoCodes = couponListRecommendation.data.promoRecommendation.codes
                 },
                 uiState = PromoRecommendationUiModel.UiState().apply {
+                    isInitialization = true
                     isButtonSelectEnabled = true
                 }
         )
@@ -68,72 +70,74 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 uiData = PromoEligibilityHeaderUiModel.UiData().apply {
                     title = couponSectionItem.title
                     subTitle = couponSectionItem.subTitle
-                    tmpPromo = emptyList()
+                    if (!couponSectionItem.isEnabled) {
+                        tabId = couponSectionItem.subSections.firstOrNull()?.id ?: ""
+                    }
                 },
                 uiState = PromoEligibilityHeaderUiModel.UiState().apply {
                     isEnabled = couponSectionItem.isEnabled
-                    isCollapsed = couponSectionItem.isCollapsed
                 }
         )
     }
 
-    fun mapPromoListHeaderUiModel(couponSubSection: SubSection, headerIdentifierId: Int, isHeaderEnabled: Boolean): PromoListHeaderUiModel {
+    fun mapPromoListHeaderUiModel(couponSubSection: SubSection, couponSection: CouponSection, headerIdentifierId: Int, isHeaderEnabled: Boolean): PromoListHeaderUiModel {
         return PromoListHeaderUiModel(
                 uiData = PromoListHeaderUiModel.UiData().apply {
                     title = couponSubSection.title
                     subTitle = couponSubSection.subTitle
-                    iconUrl = couponSubSection.iconUrl
+                    iconUnify = couponSubSection.iconUnify
                     identifierId = headerIdentifierId
-                    tmpPromoItemList = emptyList()
+                    tabId = if (isHeaderEnabled) {
+                        couponSubSection.id
+                    } else {
+                        couponSection.id
+                    }
                 },
                 uiState = PromoListHeaderUiModel.UiState().apply {
                     isEnabled = couponSubSection.isEnabled
-                    var tmpHasSellectedPromoItem = false
+                    var tmpHasSelectedPromoItem = false
                     couponSubSection.coupons.forEach {
                         if (it.isSelected) {
-                            tmpHasSellectedPromoItem = true
+                            tmpHasSelectedPromoItem = true
                             return@forEach
                         }
                     }
-                    hasSelectedPromoItem = tmpHasSellectedPromoItem
-                    isCollapsed = couponSubSection.isCollapsed
+                    hasSelectedPromoItem = tmpHasSelectedPromoItem
                 }
         )
     }
 
-    fun mapPromoListItemUiModel(couponItem: Coupon, headerIdentifierId: Int, parentEnabled: Boolean, selectedPromo: List<String>, index: Int = 0): PromoListItemUiModel {
-        return PromoListItemUiModel(
+    fun mapPromoListItemUiModel(couponItem: Coupon,
+                                couponSubSection: SubSection,
+                                couponSection: CouponSection,
+                                headerIdentifierId: Int,
+                                selectedPromo: List<String>,
+                                index: Int = 0): PromoListItemUiModel {
+        val promoItem = PromoListItemUiModel(
                 id = index.toString(),
                 uiData = PromoListItemUiModel.UiData().apply {
+                    promoId = couponItem.promoId
                     uniqueId = couponItem.uniqueId
                     shopId = couponItem.shopId.toInt()
                     title = couponItem.title
-                    subTitle = couponItem.expiryInfo
                     benefitAmount = couponItem.benefitAmount
-                    imageResourceUrls = couponItem.tagImageUrls
                     parentIdentifierId = headerIdentifierId
                     promoCode = couponItem.code
                     couponAppLink = couponItem.couponAppLink
                     currencyDetailStr = couponItem.currencyDetailStr
-                    coachMark = PromoListItemUiModel.UiCoachmarkData(
-                            isShown = couponItem.coachMark.isShown,
-                            title = couponItem.coachMark.title,
-                            content = couponItem.coachMark.content
-                    )
-                    val clashingInfoMap = HashMap<String, String>()
-                    if (couponItem.clashingInfos.isNotEmpty()) {
-                        couponItem.clashingInfos.forEach {
-                            clashingInfoMap[it.code] = couponItem.clashingInfos[0].message
-                        }
-                    }
-                    clashingInfo = clashingInfoMap
+                    coachMark = couponItem.coachMark
+                    clashingInfos = couponItem.clashingInfos
                     val tmpCurrentClashingPromoList = ArrayList<String>()
+                    var tmpClashingIconUrl = ""
                     val tmpErrorMessage = StringBuilder()
-                    selectedPromo.forEach {
-                        if (clashingInfo.containsKey(it)) {
-                            tmpCurrentClashingPromoList.add(it)
+                    tmpClashingIconUrl = clashingInfos.firstOrNull()?.icon ?: ""
+                    selectedPromo.forEach { promoCode ->
+                        val clashingInfo = clashingInfos.firstOrNull { clashingInfo -> clashingInfo.code == promoCode }
+                        if (clashingInfo != null) {
+                            tmpCurrentClashingPromoList.add(promoCode)
                             tmpErrorMessage.clear()
-                            tmpErrorMessage.append(clashingInfo[it])
+                            tmpErrorMessage.append(clashingInfo.message)
+                            tmpClashingIconUrl = clashingInfo.icon
                         }
                     }
                     currentClashingPromo = tmpCurrentClashingPromoList
@@ -141,26 +145,49 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     if (tmpErrorMessage.isEmpty()) {
                         tmpErrorMessage.append(couponItem.message)
                     }
-                    errorMessage = if (tmpErrorMessage.isNotBlank()) tmpErrorMessage.toString() else ""
+                    errorMessage = tmpErrorMessage.toString()
+                    errorIcon = tmpClashingIconUrl
+                    promoInfos = couponItem.promoInfos
+                    remainingPromoCount = couponSubSection.couponGroups.firstOrNull {
+                        it.id == couponItem.groupId
+                    }?.count ?: 0
+                    tabId = if (couponSubSection.isEnabled) {
+                        couponSubSection.id
+                    } else {
+                        couponSection.id
+                    }
+                    promoInfos.firstOrNull { it.validationType == PromoInfo.VALIDATION_TYPE_SHIPPING }?.let {
+                        shippingOptions = it.methods.joinToString(",")
+                    }
+                    promoInfos.firstOrNull { it.validationType == PromoInfo.VALIDATION_TYPE_PAYMENT }?.let {
+                        paymentOptions = it.methods.joinToString(",")
+                    }
+                    benefitDetail = couponItem.benefitDetail.firstOrNull() ?: BenefitDetail()
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
-                    isParentEnabled = parentEnabled
+                    isParentEnabled = couponSubSection.isEnabled
                     isSelected = couponItem.isSelected
                     isAttempted = couponItem.isAttempted
                     isCausingOtherPromoClash = false
+                    isHighlighted = couponItem.isHighlighted
+                    val lastPromo = couponSubSection.coupons.lastOrNull()
+                    isLastPromoItem = lastPromo != null && (lastPromo.code == couponItem.code || lastPromo.groupId == couponItem.groupId)
                 }
         )
+        promoItem.uiState.isDisabled = !promoItem.uiState.isParentEnabled || promoItem.uiData.errorMessage.isNotBlank()
+
+        return promoItem
     }
 
     fun mapErrorState(errorPage: ErrorPage): PromoErrorStateUiModel {
         return PromoErrorStateUiModel(
-            uiData = PromoErrorStateUiModel.UiData().apply {
-                imageUrl = errorPage.img
-                title = errorPage.title
-                description = errorPage.desc
-                buttonText = errorPage.button.text
-                buttonDestination = errorPage.button.destination
-            }
+                uiData = PromoErrorStateUiModel.UiData().apply {
+                    imageUrl = errorPage.img
+                    title = errorPage.title
+                    description = errorPage.desc
+                    buttonText = errorPage.button.text
+                    buttonDestination = errorPage.button.destination
+                }
         )
     }
 
@@ -187,19 +214,31 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
         }
     }
 
-    fun mapPromoLastSeenResponse(response: GetPromoSuggestionResponse): PromoLastSeenUiModel {
-        return PromoLastSeenUiModel(
-                uiData = PromoLastSeenUiModel.UiData().apply {
-                    promoLastSeenItemUiModelList = ArrayList()
+    fun mapPromoSuggestionResponse(response: GetPromoSuggestionResponse): PromoSuggestionUiModel {
+        return PromoSuggestionUiModel(
+                uiData = PromoSuggestionUiModel.UiData().apply {
+                    promoSuggestionItemUiModelList = ArrayList()
                     response.promoSuggestion.promoHistory.forEach {
-                        val promoLastSeenItemUiModel = PromoLastSeenItemUiModel(
-                                uiData = PromoLastSeenItemUiModel.UiData().apply {
+                        val promoSuggestionItemUiModel = PromoSuggestionItemUiModel(
+                                uiData = PromoSuggestionItemUiModel.UiData().apply {
                                     promoCode = it.promoCode
                                     promoTitle = it.promoContent.promoTitle
                                 }
                         )
-                        (promoLastSeenItemUiModelList as ArrayList<PromoLastSeenItemUiModel>).add(promoLastSeenItemUiModel)
+                        (promoSuggestionItemUiModelList as ArrayList<PromoSuggestionItemUiModel>).add(promoSuggestionItemUiModel)
                     }
+                }
+        )
+    }
+
+    fun mapPromoTabsUiModel(sectionTabs: List<SectionTab>): PromoTabUiModel {
+        return PromoTabUiModel(
+                uiData = PromoTabUiModel.UiData().apply {
+                    tabs = sectionTabs
+                },
+                uiState = PromoTabUiModel.UiState().apply {
+                    isInitialization = true
+                    selectedTabPosition = 0
                 }
         )
     }

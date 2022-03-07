@@ -4,7 +4,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.interactive.PostInteractiveTapResponse
 import com.tokopedia.play.data.repository.PlayViewerInteractiveRepositoryImpl
-import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play.domain.interactive.PostInteractiveTapUseCase
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
@@ -15,14 +14,15 @@ import com.tokopedia.play.repo.PlayViewerMockRepository
 import com.tokopedia.play.robot.andThen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.thenVerify
-import com.tokopedia.play.util.isFalse
-import com.tokopedia.play.util.isTrue
+import com.tokopedia.play.util.assertFalse
+import com.tokopedia.play.util.assertTrue
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.action.InteractiveTapTapAction
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.coEvery
 import io.mockk.every
@@ -57,7 +57,7 @@ class PlayTapInteractiveTest {
                     socketResponseBuilder.buildChannelInteractiveResponse(isExist = true)
             )
     )
-    private val socket: PlayChannelWebSocket = mockk(relaxed = true)
+    private val socket: PlayWebSocket = mockk(relaxed = true)
     private val mockMapper: PlayUiModelMapper = mockk(relaxed = true)
     private val mockInteractiveStorage = object : PlayInteractiveStorage {
         private var hasJoined = false
@@ -82,7 +82,7 @@ class PlayTapInteractiveTest {
             return null
         }
 
-        override fun getActiveInteractiveId(): String? {
+        override fun getActiveInteractiveId(): String {
             return interactiveId
         }
 
@@ -127,12 +127,12 @@ class PlayTapInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             mockInteractiveStorage.hasJoined(interactiveId)
-                    .isFalse()
+                    .assertFalse()
         }.andThen {
             viewModel.submitAction(InteractiveTapTapAction)
         }.thenVerify {
             mockInteractiveStorage.hasJoined(interactiveId)
-                    .isTrue()
+                    .assertTrue()
         }
     }
 
@@ -155,12 +155,12 @@ class PlayTapInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             mockInteractiveStorage.hasJoined(interactiveId)
-                    .isFalse()
+                    .assertFalse()
         }.andThen {
             viewModel.submitAction(InteractiveTapTapAction)
         }.thenVerify {
             mockInteractiveStorage.hasJoined(interactiveId)
-                    .isFalse()
+                    .assertFalse()
         }
     }
 }

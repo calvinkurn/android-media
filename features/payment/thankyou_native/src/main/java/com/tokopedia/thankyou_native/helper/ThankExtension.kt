@@ -1,5 +1,6 @@
 package com.tokopedia.thankyou_native.helper
 
+import android.widget.LinearLayout
 
 fun String.getMaskedNumberSubStringPayment(): String {
     val LAST_NUMBERS = 4

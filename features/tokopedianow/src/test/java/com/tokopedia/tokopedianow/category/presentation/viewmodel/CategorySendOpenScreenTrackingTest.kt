@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
+import com.tokopedia.tokopedianow.category.domain.model.CategoryTrackerModel
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -23,7 +24,11 @@ class CategorySendOpenScreenTrackingTest: CategoryTestFixtures() {
     ) {
         assertThat(
             tokoNowCategoryViewModel.openScreenTrackingUrlLiveData.value!!,
-            `is`(categoryModel.categoryDetail.data.url)
+            `is`(CategoryTrackerModel(
+                id = categoryModel.categoryDetail.data.id,
+                name = categoryModel.categoryDetail.data.name,
+                url = categoryModel.categoryDetail.data.url
+            ))
         )
     }
 }

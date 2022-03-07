@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -66,6 +65,7 @@ import com.tokopedia.logisticaddaddress.di.GeolocationModule;
 import com.tokopedia.logisticaddaddress.utils.LocationCache;
 import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil;
 import com.tokopedia.unifycomponents.BottomSheetUnify;
+import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
@@ -104,7 +104,7 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     MapView mapView;
     Toolbar toolbar;
     AutoCompleteTextView autoComplete;
-    TextView textPointer;
+    Typography textPointer;
     View submitPointer;
     FloatingActionButton fab;
     @Inject
@@ -203,6 +203,12 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
             mapView.getMapAsync(this);
             this.googleApiClient.connect();
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mapView.onStart();
     }
 
     @Override
@@ -348,7 +354,7 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
                 .bearing(0)
                 .build();
 
-        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
     @Override
@@ -428,7 +434,7 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     @Override
     public void setManualDestination(String s) {
         View child = View.inflate(getContext(), R.layout.dialog_extra_google_map, null);
-        TextView destination = child.findViewById(R.id.text_address_destination);
+        Typography destination = child.findViewById(R.id.text_address_destination);
         if (destination != null) {
             destination.setText(MethodChecker.fromHtml(s).toString());
         }

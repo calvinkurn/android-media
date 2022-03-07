@@ -1,41 +1,60 @@
 package com.tokopedia.buyerorderdetail.cassava
 
+import android.app.Application
 import android.content.Context
-import androidx.test.espresso.IdlingPolicies
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.filters.LargeTest
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.buyerorderdetail.Utils
-import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActivity
+import com.tokopedia.buyerorderdetail.stub.common.di.component.BaseAppComponentStubInstance
+import com.tokopedia.buyerorderdetail.stub.common.graphql.coroutines.domain.repository.GraphqlRepositoryStub
+import com.tokopedia.buyerorderdetail.stub.detail.presentation.activity.BuyerOrderDetailActivityStub
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailCoachMarkData
 import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.config.GlobalConfig
 import org.junit.Before
 import org.junit.Rule
-import java.util.concurrent.TimeUnit
+import org.junit.runner.RunWith
 
+@LargeTest
+@RunWith(AndroidJUnit4ClassRunner::class)
 abstract class BuyerOrderDetailTrackerValidationTestFixture {
     @get:Rule
-    var activityRule: IntentsTestRule<BuyerOrderDetailActivity> = object : IntentsTestRule<BuyerOrderDetailActivity>(BuyerOrderDetailActivity::class.java, false, false) {}
+    var activityRule: IntentsTestRule<BuyerOrderDetailActivityStub> = IntentsTestRule(
+        BuyerOrderDetailActivityStub::class.java,
+        false,
+        false
+    )
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
 
-    protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
+    lateinit var graphqlRepositoryStub: GraphqlRepositoryStub
 
-    private val gtmLogDBSource = GtmLogDBSource(context)
+    protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @Before
     fun init() {
-        IdlingPolicies.setMasterPolicyTimeout(5, TimeUnit.MINUTES)
-        clearGtmLog()
         setVersionName()
-    }
-
-    private fun clearGtmLog() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
+        getGraphqlRepositoryStub()
+        preventCoachMarkFromShowing()
     }
 
     private fun setVersionName() {
         GlobalConfig.VERSION_NAME = "3.142-test"
+    }
+
+    private fun getGraphqlRepositoryStub() {
+        val applicationContext = ApplicationProvider.getApplicationContext<Application>()
+        graphqlRepositoryStub = BaseAppComponentStubInstance.getBaseAppComponentStub(
+            applicationContext
+        ).graphqlRepository() as GraphqlRepositoryStub
+        graphqlRepositoryStub.clearMocks()
+    }
+
+    private fun preventCoachMarkFromShowing() {
+        CoachMarkPreference.setShown(context, BuyerOrderDetailCoachMarkData.DRIVER_TIPPING_INFO_COACHMARK_KEY, true)
     }
 }

@@ -1,12 +1,12 @@
 package com.tokopedia.play.broadcaster.di.setup
 
-import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastComponent
+import com.tokopedia.play.broadcaster.di.ActivityRetainedComponent
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.edit.*
 import dagger.Component
 
 @Component(
-        dependencies = [PlayBroadcastComponent::class],
+        dependencies = [ActivityRetainedComponent::class],
         modules = [PlayBroadcastSetupViewModelModule::class,
             PlayBroadcastSetupBindModule::class,
             PlayBroadcastSetupModule::class,
@@ -30,7 +30,7 @@ interface PlayBroadcastSetupComponent {
     @Component.Builder
     interface Builder {
 
-        fun setBroadcastComponent(broadcastComponent: PlayBroadcastComponent): Builder
+        fun setActivityRetainedComponent(retainedComponent: ActivityRetainedComponent): Builder
         fun build(): PlayBroadcastSetupComponent
     }
 }

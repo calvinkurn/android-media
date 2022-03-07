@@ -6,16 +6,19 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.WidgetShopHomeMultipleImageColumnBinding
 import com.tokopedia.shop.home.view.adapter.PaddingItemDecorationShopPage
 import com.tokopedia.shop.home.view.adapter.ShopHomeMultipleImageColumnAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by rizqiaryansa on 2020-02-21.
@@ -37,12 +40,12 @@ class ShopHomeMultipleImageColumnViewHolder(
         private const val SPAN_SIZE_TRIPLE_DATA_SIZE = 3
 
     }
-
+    private val viewBinding: WidgetShopHomeMultipleImageColumnBinding? by viewBinding()
     private var shopHomeMultipleImageColumnAdapter: ShopHomeMultipleImageColumnAdapter? = null
-    private val rvShopHomeMultiple: RecyclerView? = itemView.findViewById(R.id.rvShopHomeMultiple)
-    private val textViewTitle: Typography? = itemView.findViewById(R.id.textViewTitle)
-
+    private val rvShopHomeMultiple: RecyclerView? = viewBinding?.rvShopHomeMultiple
+    private val textViewTitle: Typography? = viewBinding?.textViewTitle
     override fun bind(element: ShopHomeDisplayWidgetUiModel) {
+        setWidgetImpressionListener(element)
         shopHomeMultipleImageColumnAdapter = ShopHomeMultipleImageColumnAdapter(listener)
         val gridLayoutManager = GridLayoutManager(itemView.context, SPAN_SIZE_SINGLE)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -80,6 +83,12 @@ class ShopHomeMultipleImageColumnViewHolder(
         shopHomeMultipleImageColumnAdapter?.setParentPosition(adapterPosition)
         shopHomeMultipleImageColumnAdapter?.setHeightRatio(getHeightRatio(element))
         shopHomeMultipleImageColumnAdapter?.submitList(element.data)
+    }
+
+    private fun setWidgetImpressionListener(model: ShopHomeDisplayWidgetUiModel) {
+        itemView.addOnImpressionListener(model.impressHolder) {
+            listener.onDisplayWidgetImpression(model, adapterPosition)
+        }
     }
 
     private fun getIndexRatio(data: ShopHomeDisplayWidgetUiModel, index: Int): Int {

@@ -119,12 +119,12 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         list.forEach { api ->
             adapter.data.forEach { ws ->
                 when {
-                    ws is MessageViewModel && api is MessageViewModel -> {
+                    ws is MessageUiModel && api is MessageUiModel -> {
                         if ((ws.replyTime == api.replyTime) && (ws.message == api.message)) {
                             filteredList.remove(api)
                         }
                     }
-                    ws is BaseChatViewModel && api is BaseChatViewModel -> {
+                    ws is BaseChatUiModel && api is BaseChatUiModel -> {
                         if ((ws.replyTime == api.replyTime) && (ws.message == api.message)) {
                             filteredList.remove(api)
                         }
@@ -143,7 +143,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     override fun onCheckToHideQuickReply(visitable: Visitable<*>) {
-        if (visitable is BaseChatViewModel
+        if (visitable is BaseChatUiModel
                 && TextUtils.isEmpty(visitable.attachmentId)
                 && hasQuickReply()
                 && !isMyMessage(visitable.fromUid)) {
@@ -173,7 +173,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         showQuickReply(visitable.quickReplies)
     }
 
-    override fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentViewModel) {
+    override fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentUiModel) {
         removeInvoiceCarousel()
         super.onReceiveMessageEvent(generatedInvoice)
     }
@@ -217,7 +217,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         }
     }
 
-    override fun onImageUpload(it: ImageUploadViewModel) {
+    override fun onImageUpload(it: ImageUploadUiModel) {
         getAdapter().addElement(it)
         scrollDownWhenInBottom()
     }
@@ -270,7 +270,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     override fun hideEmptyMessage(visitable: Visitable<*>) {
-        if (visitable is FallbackAttachmentViewModel && visitable.message.isEmpty()) {
+        if (visitable is FallbackAttachmentUiModel && visitable.message.isEmpty()) {
             getAdapter().removeElement(visitable)
         }
     }
@@ -322,7 +322,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         }
     }
 
-    override fun showRetryUploadImages(image: ImageUploadViewModel, retry: Boolean){
+    override fun showRetryUploadImages(image: ImageUploadUiModel, retry: Boolean){
         getAdapter().showRetryFor(image, retry)
     }
 

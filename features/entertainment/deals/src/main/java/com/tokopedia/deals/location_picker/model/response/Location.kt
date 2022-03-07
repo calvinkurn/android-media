@@ -33,7 +33,7 @@ data class EventLocationSearch(
 data class Location(
         @SerializedName("id")
         @Expose
-        var id: Int = 0,
+        var id: String = "0",
 
         @SerializedName("name")
         @Expose
@@ -53,7 +53,7 @@ data class Location(
 
         @SerializedName("city_id")
         @Expose
-        var cityId: Int = 0,
+        var cityId: String = "0",
 
         @SerializedName("city_name")
         @Expose
@@ -91,7 +91,7 @@ data class Location(
 
         override fun equals(other: Any?): Boolean {
                 return if (other is Location) {
-                        this.name == other.name && this.id == other.id
+                        this.name.equals(other.name) && this.id.equals(other.id)
                 } else false
         }
 }

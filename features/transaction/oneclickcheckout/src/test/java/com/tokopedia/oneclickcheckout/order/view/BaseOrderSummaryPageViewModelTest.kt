@@ -5,6 +5,7 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiExtern
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
@@ -13,7 +14,7 @@ import com.tokopedia.oneclickcheckout.order.domain.CreditCardTenorListUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.processor.*
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
@@ -41,6 +42,9 @@ open class BaseOrderSummaryPageViewModelTest {
 
     @MockK(relaxed = true)
     lateinit var updateCartOccUseCase: UpdateCartOccUseCase
+
+    @MockK(relaxed = true)
+    lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
     private val ratesResponseStateConverter: RatesResponseStateConverter = RatesResponseStateConverter()
 
@@ -88,6 +92,6 @@ open class BaseOrderSummaryPageViewModelTest {
                 OrderSummaryPagePromoProcessor(validateUsePromoRevampUseCase, clearCacheAutoApplyStackUseCase, orderSummaryAnalytics, testDispatchers),
                 { OrderSummaryPagePaymentProcessor(creditCardTenorListUseCase, testDispatchers) },
                 OrderSummaryPageCalculator(orderSummaryAnalytics, testDispatchers),
-                userSessionInterface, orderSummaryAnalytics)
+                userSessionInterface, orderSummaryAnalytics, eligibleForAddressUseCase)
     }
 }

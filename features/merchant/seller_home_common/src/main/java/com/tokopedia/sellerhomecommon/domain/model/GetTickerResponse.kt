@@ -18,9 +18,6 @@ data class TickerModel(
 
 data class TickerItemModel(
         @Expose
-        @SerializedName("color")
-        val color: String? = "",
-        @Expose
         @SerializedName("id")
         val id: String? = "",
         @Expose
