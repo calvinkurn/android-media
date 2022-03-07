@@ -1,7 +1,7 @@
 package com.tokopedia.play.view.uimodel.recom.tagitem
 
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.play.view.type.CampaignReminderType
+import com.tokopedia.play.view.type.PlayUpcomingBellStatus
 import com.tokopedia.play.view.type.ProductSectionType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
@@ -59,7 +59,7 @@ sealed class ProductSectionUiModel {
             val endTime: String, // RFC3339
             val timerInfo: String,
             val background: BackgroundUiModel,
-            val reminder: ReminderUiModel
+            val reminder: PlayUpcomingBellStatus
         ){
             companion object{
                 val Empty: Section
@@ -68,7 +68,7 @@ sealed class ProductSectionUiModel {
                         config = ConfigUiModel(
                             type = ProductSectionType.Unknown, title = "", startTime = "", timerInfo = "", serverTime = "", background = BackgroundUiModel(
                                 gradients = emptyList(), imageUrl = ""
-                            ), endTime = "", reminder = ReminderUiModel(false, CampaignReminderType.OFF)
+                            ), endTime = "", reminder = PlayUpcomingBellStatus.Unknown
                         ),
                         id = ""
                     )
@@ -78,11 +78,6 @@ sealed class ProductSectionUiModel {
         data class BackgroundUiModel(
             val gradients: List<String>,
             val imageUrl: String
-        )
-
-        data class ReminderUiModel(
-            val hasReminder: Boolean,
-            val reminderType: CampaignReminderType
         )
 
         companion object {
@@ -100,7 +95,7 @@ sealed class ProductSectionUiModel {
                             emptyList(),
                             ""
                         ),
-                        reminder = ReminderUiModel(hasReminder = false, CampaignReminderType.OFF)
+                        reminder = PlayUpcomingBellStatus.Unknown
                     ),
                     id = "",
                 )

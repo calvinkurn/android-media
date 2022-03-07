@@ -18,7 +18,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.R
 import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.play.ui.productsheet.adapter.ProductLineAdapter
-import com.tokopedia.play.view.type.CampaignReminderType
+import com.tokopedia.play.view.type.PlayUpcomingBellStatus
 import com.tokopedia.play.view.type.ProductSectionType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
@@ -91,14 +91,18 @@ class ProductSectionViewHolder(
         tvSectionTitle.shouldShowWithAction(item.config.title.isNotEmpty()){
             tvSectionTitle.text = item.config.title
         }
-        btnReminder.shouldShowWithAction(item.config.reminder.hasReminder){
-            val color = MethodChecker.getColor(itemView.context, unifyR.color.Unify_GN500)
-            when(item.config.reminder.reminderType){
-                CampaignReminderType.ON -> btnReminder.setImage(newIconId = IconUnify.BELL_FILLED, newDarkEnable = color, newLightEnable = color)
-                CampaignReminderType.OFF -> btnReminder.setImage(newIconId = IconUnify.BELL, newDarkEnable = color, newLightEnable = color)
-                else -> btnReminder.hide()
-            }
 
+        val color = MethodChecker.getColor(itemView.context, unifyR.color.Unify_GN500)
+        when (item.config.reminder) {
+            is PlayUpcomingBellStatus.On -> {
+                btnReminder.show()
+                btnReminder.setImage(newIconId = IconUnify.BELL_FILLED, newDarkEnable = color, newLightEnable = color)
+            }
+            is PlayUpcomingBellStatus.Off ->{
+                btnReminder.show()
+                btnReminder.setImage(newIconId = IconUnify.BELL_FILLED, newDarkEnable = color, newLightEnable = color)
+            }
+            else -> btnReminder.hide()
         }
         tvTimerInfo.text = item.config.timerInfo
 

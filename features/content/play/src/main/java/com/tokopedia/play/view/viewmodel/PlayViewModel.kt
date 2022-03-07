@@ -2033,7 +2033,7 @@ class PlayViewModel @AssistedInject constructor(
                 repo.subscribeUpcomingCampaign(campaignId = productUiModel.id.toLongOrZero())
             }
             if(data)
-                updateReminderUi(productUiModel.config.reminder.reminderType.reversed()) // TODO() = should be reversed based on current state
+                updateReminderUi(productUiModel.config.reminder.reversed(productUiModel.id.toLongOrZero()))
         }){
         }
     }
@@ -2044,18 +2044,18 @@ class PlayViewModel @AssistedInject constructor(
                 repo.checkUpcomingCampaign(campaignId = productUiModel.id.toLongOrZero())
             }
             if (data)
-                updateReminderUi(productUiModel.config.reminder.reminderType.reversed()) // TODO() = should be reversed based on current state
+                updateReminderUi(productUiModel.config.reminder.reversed(productUiModel.id.toLongOrZero()))
         }){
         }
     }
 
-    private fun updateReminderUi(reminderType: CampaignReminderType){
+    private fun updateReminderUi(reminderType: PlayUpcomingBellStatus){
         _tagItems.update { tagItemUiModel ->
             tagItemUiModel.copy(
                 product = tagItemUiModel.product.copy(
                     productSectionList = tagItemUiModel.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().map {
                         it.copy(
-                            config = it.config.copy(reminder = ProductSectionUiModel.Section.ReminderUiModel(hasReminder = true, reminderType = reminderType))
+                            config = it.config.copy(reminder = reminderType)
                         )
                     }
                 )
