@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -120,25 +122,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
         calculateToolbarView(0)
 
-
-        binding.recyclerView.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        binding.recyclerView.adapter = adapter
-        while (binding.recyclerView.itemDecorationCount > 0) binding.recyclerView.removeItemDecorationAt(
-            0
-        )
-        binding.recyclerView.addItemDecoration(
-            RechargeHomeSectionDecoration(
-                SECTION_SPACING_DP.dpToPx(resources.displayMetrics)
-            )
-        )
-        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                calculateToolbarView(binding.recyclerView.computeVerticalScrollOffset())
-            }
-        })
-
+        setupRecyclerView()
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             binding.swipeRefreshLayout.isRefreshing = true
@@ -159,6 +143,37 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     private fun initSearchView() {
 
         binding.digitalHomepageSearchView.setFocusChangeListener(this)
+    }
+
+    private fun setupRecyclerView() {
+        if (platformId == RechargeHomepageViewModel.ALL_CATEGORY_PLATFORM_ID) {
+            val layoutParams =
+                binding.swipeRefreshLayout.layoutParams as ConstraintLayout.LayoutParams
+            layoutParams.topToBottom = binding.digitalHomepageToolbar.id
+        } else {
+            val layoutParams =
+                binding.swipeRefreshLayout.layoutParams as ConstraintLayout.LayoutParams
+            layoutParams.topToBottom = ConstraintSet.PARENT_ID
+        }
+        binding.swipeRefreshLayout.requestLayout()
+
+        binding.recyclerView.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        binding.recyclerView.adapter = adapter
+        while (binding.recyclerView.itemDecorationCount > 0) binding.recyclerView.removeItemDecorationAt(
+            0
+        )
+        binding.recyclerView.addItemDecoration(
+            RechargeHomeSectionDecoration(
+                SECTION_SPACING_DP.dpToPx(resources.displayMetrics)
+            )
+        )
+        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                calculateToolbarView(binding.recyclerView.computeVerticalScrollOffset())
+            }
+        })
     }
 
     private fun hideStatusBar() {
@@ -200,7 +215,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
         val searchBarContainer =
             binding.digitalHomepageSearchView.findViewById<LinearLayout>(R.id.search_input_view_container)
-        if (offsetAlpha >= OFFSET_ALPHA) {
+        if (offsetAlpha >= OFFSET_ALPHA || platformId == RechargeHomepageViewModel.ALL_CATEGORY_PLATFORM_ID) {
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             binding.digitalHomepageToolbar.toOnScrolledMode()
             context?.run {
