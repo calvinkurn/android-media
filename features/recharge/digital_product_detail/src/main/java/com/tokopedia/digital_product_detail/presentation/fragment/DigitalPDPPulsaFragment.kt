@@ -124,7 +124,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private var clientNumber = ""
 
     private var productId =  0
-    private var productIdFromDefaultPrefix = 0
     private var productIdFromApplink = 0
 
     private var menuId = 0
@@ -204,7 +203,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     )
 
                     val isOperatorChanged = operator.id != selectedOperator.operator.id
-                    productIdFromDefaultPrefix = selectedOperator.operator.attributes.defaultProductId.toIntOrZero()
+                    val productIdFromDefaultPrefix = selectedOperator.operator.attributes.defaultProductId.toIntOrZero()
 
                     //set default product id when prefix changed
                     if (isOperatorChanged && operator.id.isEmpty() && productIdFromApplink.isMoreThanZero()){
