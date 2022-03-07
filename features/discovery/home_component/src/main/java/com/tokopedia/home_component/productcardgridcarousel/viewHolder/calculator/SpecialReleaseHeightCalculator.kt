@@ -36,22 +36,24 @@ suspend fun List<CarouselSpecialReleaseDataModel>?.calculateHeight(
         var overallHeight = cardPaddingBottom + productImageHeight + shopImageHeight
 
         if (specialReleaseModel.grid.shop.shopName.isNotEmpty()) {
-            overallHeight+=shopNameHeight
+            overallHeight += shopNameHeight
         }
 
         if (specialReleaseModel.grid.benefit.value.isNotEmpty()) {
-            overallHeight+=tagHeight
+            overallHeight += tagHeight
         }
 
         if (specialReleaseModel.grid.price.isNotEmpty()) {
-            overallHeight+=priceHeight
+            overallHeight += priceHeight
         }
 
         if (specialReleaseModel.grid.expiredTime.isNotEmpty()
             || !timerCalculationIsEmpty(
                 specialReleaseModel.grid.expiredTime,
-                specialReleaseModel.channel.channelConfig.serverTimeOffset)) {
-            overallHeight+=timerHeight
+                specialReleaseModel.channel.channelConfig.serverTimeOffset
+            )
+        ) {
+            overallHeight += timerHeight
         }
         cardHeightList.add(overallHeight)
     }
@@ -60,7 +62,11 @@ suspend fun List<CarouselSpecialReleaseDataModel>?.calculateHeight(
 
 private fun timerCalculationIsEmpty(expiredTime: String, serverTimeOffset: Long): Boolean {
     val expiredTimeDate = DateHelper.getExpiredTime(expiredTime)
-    return if (expiredTime.isNotEmpty() && !DateHelper.isExpired(serverTimeOffset, expiredTimeDate)) {
+    return if (expiredTime.isNotEmpty() && !DateHelper.isExpired(
+            serverTimeOffset,
+            expiredTimeDate
+        )
+    ) {
         val timerCopy = SpecialReleaseTimerCopyGenerator.getCopy(
             expiredTimeDate = expiredTimeDate,
             currentTimeDate = Date(),

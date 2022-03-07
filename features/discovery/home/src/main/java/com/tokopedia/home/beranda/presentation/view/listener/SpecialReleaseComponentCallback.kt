@@ -50,7 +50,7 @@ class SpecialReleaseComponentCallback(
     }
 
     override fun onSpecialReleaseChannelImpressed(channelModel: ChannelModel, position: Int) {
-
+        //no-op
     }
 
 }
