@@ -24,6 +24,7 @@
             android:layout_height="@dimen/layout_lvl2"
             android:layout_gravity="center"
             android:elevation="4dp"
+            android:scaleType="centerInside"
             android:src="@drawable/placeholder_grey"
             app:layout_constraintBottom_toBottomOf="@id/client_number_widget_operator_view"
             app:layout_constraintEnd_toEndOf="@id/client_number_widget_operator_view"
