@@ -663,8 +663,7 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
             Action.ACTION_AUTO_SUBMIT_OTP,
             if (isSuccess) { "success" } else { "fail - $message" }
                     + " - ${otpData.otpType} - ${modeListData.modeText}"
-                    + " - ${modeListData.modeText}"
-                    + " evURL - $correlationId"
+                    + " - evURL - $correlationId"
         ))
     }
 

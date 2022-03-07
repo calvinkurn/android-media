@@ -163,8 +163,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
             when (it) {
                 is Success -> handleBokuResult(it.data)
                 is Fail ->  {
-                    analytics.trackAutoSubmitSilentVerification(otpData!!, modeListData!!, false, correlationId = tokenId)
-                    onValidateFailed(it.throwable)
+                    onBokuResultFailed(it.throwable)
                 }
             }
         }
@@ -359,9 +358,17 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         }
     }
 
+    private fun onBokuResultFailed(throwable: Throwable) {
+        analytics.trackAutoSubmitSilentVerification(otpData!!, modeListData!!, false, correlationId = tokenId, message = throwable.message ?: "")
+        renderValidateFailView()
+    }
+
     private fun onValidateFailed(throwable: Throwable) {
         analytics.trackAutoSubmitVerification(otpData!!, modeListData!!, false, "${throwable.message}")
+        renderValidateFailView()
+    }
 
+    private fun renderValidateFailView() {
         binding?.fragmentSilentVerifTitle?.show()
         binding?.fragmentSilentVerifSubtitle?.show()
         binding?.fragmentSilentVerifTryAgainBtn?.show()
@@ -413,15 +420,13 @@ class SilentVerificationFragment: BaseDaggerFragment() {
             if (result[KEY_ERROR_CODE] == ERROR_CODE_ZERO &&
                 result[KEY_ERROR_DESC].equals(VALUE_SUCCESS, true)
             ) {
-                analytics.trackAutoSubmitSilentVerification(otpData!!, modeListData!!, true, correlationId = tokenId)
+                analytics.trackAutoSubmitSilentVerification(otpData!!, modeListData!!, true, correlationId = tokenId, message = resultCode)
                 onSuccessBokuVerification()
             } else {
-                analytics.trackAutoSubmitSilentVerification(otpData!!, modeListData!!, false, correlationId = tokenId)
-                onValidateFailed(Throwable(resultCode))
+                onBokuResultFailed(Throwable(resultCode))
             }
         }catch (e: Exception) {
-            analytics.trackAutoSubmitSilentVerification(otpData!!, modeListData!!, false, correlationId = tokenId, message = e.message ?: "")
-            onValidateFailed(e)
+            onBokuResultFailed(e)
         }
     }
 
