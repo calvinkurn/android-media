@@ -69,7 +69,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val campaignWidgetComponentListener: CampaignWidgetComponentListener,
                          private val questWidgetCallbacks: QuestWidgetCallbacks,
                          private val cmHomeWidgetCallback: CMHomeWidgetCallback,
-                         private val merchantVoucherComponentListener: MerchantVoucherComponentListener
+                         private val merchantVoucherComponentListener: MerchantVoucherComponentListener,
                          private val homePayLaterWidgetListener: HomePayLaterWidgetListener
 ) :
         BaseAdapterTypeFactory(),
