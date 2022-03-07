@@ -35,6 +35,7 @@ import javax.inject.Inject;
 
 public class ShipmentDataConverter {
 
+    private static final int ACTIVE_ADDRESS = 1;
     private static final int PRIME_ADDRESS = 2;
     private static final String MERCHANT_VOUCHER_TYPE = "merchant";
     private static final String LOGISTIC_VOUCHER_TYPE = "logistic";
@@ -286,13 +287,13 @@ public class ShipmentDataConverter {
 
         shipmentCartItemModel.setAddOnsOrderLevelModel(groupShop.getAddOns());
         shipmentCartItemModel.setAddOnWordingModel(convertFromAddOnWordingData(addOnWording));
-        shipmentCartItemModel.setAddOnDefaultTo(username);
+        shipmentCartItemModel.setAddOnDefaultFrom(username);
 
         String receiverName = "";
-        if (userAddress.getStatus() == PRIME_ADDRESS) {
+        if (userAddress.getStatus() == ACTIVE_ADDRESS) {
             receiverName = userAddress.getReceiverName();
         }
-        shipmentCartItemModel.setAddOnDefaultFrom(receiverName);
+        shipmentCartItemModel.setAddOnDefaultTo(receiverName);
 
         List<Product> products = groupShop.getProducts();
         List<CartItemModel> cartItemModels = convertFromProductList(products, groupShop, username, receiverName);
