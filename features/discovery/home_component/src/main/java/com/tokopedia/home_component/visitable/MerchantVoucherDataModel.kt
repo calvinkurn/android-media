@@ -8,7 +8,7 @@ class MerchantVoucherDataModel (
     val channelModel: ChannelModel,
     val isCache: Boolean = false
 ): HomeComponentVisitable {
-    override fun visitableId(): String? {
+    override fun visitableId(): String {
         return channelModel.id
     }
 

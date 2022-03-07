@@ -26,7 +26,6 @@ abstract class BaseTrackerConst {
         const val CLICK_HOMEPAGE = "clickHomepage"
         const val PRODUCT_ADD_TO_CART = "addToCart"
         const val SELECT_CONTENT = "select_content"
-        const val VIEW_ITEM = "view_item"
     }
 
     protected object Category{
@@ -126,13 +125,6 @@ abstract class BaseTrackerConst {
             const val ITEM_NAME = "item_name"
         }
     }
-
-    data class PromotionV5(
-        val creativeName: String = "",
-        val creativeSlot: String = "",
-        val itemId: String = "",
-        val itemName: String = "",
-    )
 
     open class  Product(
             val name: String,

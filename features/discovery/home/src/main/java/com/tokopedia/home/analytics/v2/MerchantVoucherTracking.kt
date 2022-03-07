@@ -1,11 +1,9 @@
 package com.tokopedia.home.analytics.v2
 
 import android.os.Bundle
-import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherDetailClicked
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherImpressed
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherProductClicked
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherShopClicked
-import com.tokopedia.home_component.util.getTopadsString
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
@@ -18,14 +16,12 @@ object MerchantVoucherTracking : BaseTrackerConst() {
             const val MERCHANT_VOUCHER_MULTIPLE_FORMAT = "merchant voucher multiple - %s"
             const val CLICK_SHOP = "click shop"
             const val SHOP_DETAIL = "shop detail"
-            const val CLICK_VOUCHER_DETAIL = "click voucher detail"
             const val CLICK_PRODUCT_DETAIL = "click product detail"
             const val CLICK_VIEW_ALL = "click view all card"
             const val CREATIVE_NAME_FORMAT = "%s - %s"
             const val ITEM_ID_FORMAT = "%s_%s"
             const val MERCHANT_VOUCHER_MULTIPLE = "merchant_voucher_multiple"
             const val ITEM_NAME_FORMAT = "/ - p%s - $MERCHANT_VOUCHER_MULTIPLE - banner - %s"
-            const val CREATIVE_NAME_VOUCHER_DETAIL_FORMAT = "voucher detail - %s - %s - %s"
             const val ITEM_NAME_VOUCHER_DETAIL_FORMAT = "/ - p%s - $MERCHANT_VOUCHER_MULTIPLE - banner - %s"
             const val ITEM_LIST_PRODUCT_DETAIL_FORMAT = "/ - p%s - $MERCHANT_VOUCHER_MULTIPLE - product - %s - %s - %s - %s - %s - %s"
             const val ITEM_CATEGORY_PRODUCT_DETAIL_FORMAT = "%s / %s / %s"
