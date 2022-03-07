@@ -156,8 +156,7 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
     protected val isKycSelfie: Boolean
         get() {
             try {
-                if (kycType == KYC_TYPE_KTP_WITH_SELFIE) return true
-                if (allowedSelfie) return allowedSelfie
+                if (allowedSelfie || kycType == KYC_TYPE_KTP_WITH_SELFIE) return true
                 if (UserIdentificationFormActivity.isSupportedLiveness) {
                     return remoteConfig.getBoolean(RemoteConfigKey.KYC_USING_SELFIE)
                 }
