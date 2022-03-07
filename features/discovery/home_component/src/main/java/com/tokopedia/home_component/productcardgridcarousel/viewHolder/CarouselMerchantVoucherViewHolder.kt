@@ -55,7 +55,7 @@ class CarouselMerchantVoucherViewHolder (
         binding?.totalOtherCoupon?.text = element.totalOtherCoupon
         binding?.imageBadge?.loadImageNoRounded(element.iconBadge, com.tokopedia.home_component.R.drawable.placeholder_grey)
         binding?.imageProduct?.loadImageNoRounded(element.imageProduct, com.tokopedia.home_component.R.drawable.placeholder_grey)
-        binding?.imageBackgroundVoucher?.setOnClickListener {
+        binding?.containerShop?.setOnClickListener {
             val horizontalPosition = "${adapterPosition + 1}"
             element.merchantVoucherComponentListener.onShopClicked(
                 MerchantVoucherShopClicked(

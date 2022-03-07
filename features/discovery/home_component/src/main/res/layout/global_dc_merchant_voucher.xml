@@ -32,7 +32,7 @@
         app:layout_constraintTop_toBottomOf="@+id/home_component_header_view">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_banner"
+            android:id="@+id/home_component_mvc_rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"

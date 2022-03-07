@@ -15,6 +15,7 @@ import com.tokopedia.home_component.listener.MerchantVoucherComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMerchantVoucherDataModel
+import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselViewAllCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
@@ -52,7 +53,7 @@ class MerchantVoucherViewHolder(
 
     private fun mappingView(channel: ChannelModel) {
         val visitables: MutableList<Visitable<*>> = mappingVisitablesFromChannel(channel)
-        binding?.rvBanner?.setHasFixedSize(true)
+        binding?.homeComponentMvcRv?.setHasFixedSize(true)
         valuateRecyclerViewDecoration()
         mappingItem(channel, visitables)
     }
@@ -63,7 +64,7 @@ class MerchantVoucherViewHolder(
         setRecyclerViewAndCardHeight()
         visitables.addAll(channelMerchantVoucherData)
         if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty()) {
-            if(channel.channelViewAllCard.id != CarouselViewAllCardViewHolder.DEFAULT_VIEW_ALL_ID && channel.channelViewAllCard.contentType.isNotBlank() && channel.channelViewAllCard.contentType != CarouselViewAllCardViewHolder.CONTENT_DEFAULT) {
+            if (channel.channelViewAllCard.id != CarouselViewAllCardViewHolder.DEFAULT_VIEW_ALL_ID && channel.channelViewAllCard.contentType.isNotBlank() && channel.channelViewAllCard.contentType != CarouselViewAllCardViewHolder.CONTENT_DEFAULT) {
                 visitables.add(
                     CarouselViewAllCardDataModel(
                         channel.channelHeader.applink,
@@ -75,15 +76,24 @@ class MerchantVoucherViewHolder(
                     )
                 )
             }
+            else {
+                visitables.add(
+                    CarouselSeeMorePdpDataModel(
+                        channel.channelHeader.applink,
+                        channel.channelHeader.backImage,
+                        this
+                    )
+                )
+            }
         }
         return visitables
     }
 
     private fun mappingItem(channel: ChannelModel, visitables: MutableList<Visitable<*>>) {
-        startSnapHelper.attachToRecyclerView(binding?.rvBanner)
+        startSnapHelper.attachToRecyclerView(binding?.homeComponentMvcRv)
         val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel)
         adapter = MerchantVoucherAdapter(visitables, typeFactoryImpl)
-        binding?.rvBanner?.adapter = adapter
+        binding?.homeComponentMvcRv?.adapter = adapter
     }
 
     private fun convertDataToMerchantVoucherData(channel: ChannelModel): List<CarouselMerchantVoucherDataModel> {
@@ -129,15 +139,15 @@ class MerchantVoucherViewHolder(
     }
 
     private fun valuateRecyclerViewDecoration() {
-        if (binding?.rvBanner?.itemDecorationCount == 0) binding?.rvBanner?.addItemDecoration(
+        if (binding?.homeComponentMvcRv?.itemDecorationCount == 0) binding?.homeComponentMvcRv?.addItemDecoration(
             MerchantVoucherDecoration()
         )
-        binding?.rvBanner?.layoutManager = LinearLayoutManager(
+        binding?.homeComponentMvcRv?.layoutManager = LinearLayoutManager(
             itemView.context,
             LinearLayoutManager.HORIZONTAL,
             false
         )
-        startSnapHelper.attachToRecyclerView(binding?.rvBanner)
+        startSnapHelper.attachToRecyclerView(binding?.homeComponentMvcRv)
     }
 
     private fun setChannelDivider(element: MerchantVoucherDataModel) {
@@ -164,7 +174,7 @@ class MerchantVoucherViewHolder(
     private fun setRecyclerViewAndCardHeight() {
         launch {
             try {
-                binding?.rvBanner?.setHeightBasedMerchantVoucherCardHeight()
+                binding?.homeComponentMvcRv?.setHeightBasedMerchantVoucherCardHeight()
             }
             catch (throwable: Throwable) {
                 throwable.printStackTrace()

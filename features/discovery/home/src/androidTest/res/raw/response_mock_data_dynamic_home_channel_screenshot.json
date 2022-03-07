@@ -3631,7 +3631,7 @@
                   "contextualInfo": 0,
                   "viewAllCard": {
                     "id": 587,
-                    "contentType": "title-as-string",
+                    "contentType": "default",
                     "title": "Voucher Lainnya di Tokopedia!",
                     "description": "",
                     "imageUrl": "https://images.tokopedia.net/img/",
