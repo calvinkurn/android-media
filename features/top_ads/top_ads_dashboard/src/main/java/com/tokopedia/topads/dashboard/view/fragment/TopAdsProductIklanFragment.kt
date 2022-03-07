@@ -34,6 +34,7 @@ import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DIHAPUS
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GRUP
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TANPA_GRUP
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
@@ -74,6 +75,7 @@ private const val CLICK_COBA_AUO_ADS = "click - coba auto ads"
 private const val CLICK_DATE_PICKER = "click - date filter dashboard iklan produk"
 private const val CLICK_TANPA_GRUP = "click - tab iklan tanpa group"
 private const val CLICK_MULAI_BERIKLAN = "click - mulai beriklan iklan produk dashboard"
+private const val DEFAULT_FRAGMENT_LOAD_COUNT = 3
 class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView {
     private var adCurrentState = 0
     private var datePickerSheet: DatePickerSheet? = null
@@ -224,6 +226,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     }
     private fun renderManualViewPager() {
         view_pager_frag?.adapter = getViewPagerAdapter()
+        view_pager_frag.offscreenPageLimit = DEFAULT_FRAGMENT_LOAD_COUNT
         view_pager_frag.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {}
 
@@ -245,10 +248,13 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     private fun getViewPagerAdapter(): TopAdsDashboardBasePagerAdapter? {
         val list: ArrayList<FragmentTabItem> = arrayListOf()
         tab_layout?.getUnifyTabLayout()?.removeAllTabs()
+        tab_layout.tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
         tab_layout?.addNewTab(GRUP)
         tab_layout?.addNewTab(TANPA_GRUP)
+        tab_layout?.addNewTab(DIHAPUS)
         list.add(FragmentTabItem(GRUP, TopAdsDashGroupFragment.createInstance(prepareBundle())))
         list.add(FragmentTabItem(TANPA_GRUP, TopAdsDashWithoutGroupFragment.createInstance(prepareBundle())))
+        list.add(FragmentTabItem(DIHAPUS, TopAdsDashDeletedGroupFragment.createInstance(prepareBundle())))
         val adapter = TopAdsDashboardBasePagerAdapter(childFragmentManager, 0)
         adapter.setList(list)
         groupPagerAdapter = adapter
@@ -542,6 +548,10 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
 
     fun setNonGroupCount(size: Int) {
         tab_layout?.getUnifyTabLayout()?.getTabAt(1)?.setCounter(size)
+    }
+
+    fun setDeletedGroupCount(size: Int) {
+        tab_layout?.getUnifyTabLayout()?.getTabAt(2)?.setCounter(size)
     }
 
 

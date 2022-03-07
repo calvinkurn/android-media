@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.util.mapper
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel
@@ -8,6 +9,8 @@ import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiMode
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
+import com.tokopedia.shop.home.WidgetName.BIG_CAMPAIGN_THEMATIC
+import com.tokopedia.shop.home.WidgetName.ETALASE_THEMATIC
 import com.tokopedia.shop.home.WidgetName.FLASH_SALE_TOKO
 import com.tokopedia.shop.home.WidgetName.IS_SHOW_ETALASE_NAME
 import com.tokopedia.shop.home.WidgetName.NEW_PRODUCT_LAUNCH_CAMPAIGN
@@ -44,6 +47,10 @@ import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
+import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
+import com.tokopedia.shop_widget.common.util.ProductCardMapper.LABEL_POSITION_INTEGRITY
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
 
@@ -240,10 +247,11 @@ object ShopPageHomeMapper {
     }
 
     private fun mapToWidgetUiModel(
-        widgetResponse: ShopLayoutWidget.Widget,
-        isMyOwnProduct: Boolean,
-        isLoggedIn: Boolean
-    ): BaseShopHomeWidgetUiModel? {
+            widgetResponse: ShopLayoutWidget.Widget,
+            isMyOwnProduct: Boolean,
+            isLoggedIn: Boolean,
+            isThematicWidgetShown: Boolean
+    ): Visitable<*>? {
         if (widgetResponse.name == VOUCHER_STATIC) {
             return mapToVoucherUiModel(widgetResponse)
         }
@@ -255,13 +263,25 @@ object ShopPageHomeMapper {
                 mapToProductWidgetUiModel(widgetResponse, isMyOwnProduct)
             }
             CAMPAIGN.toLowerCase() -> {
-                when (widgetResponse.name) {
-                    FLASH_SALE_TOKO -> mapToFlashSaleUiModel(widgetResponse)
-                    NEW_PRODUCT_LAUNCH_CAMPAIGN -> mapToNewProductLaunchCampaignUiModel(
-                        widgetResponse,
-                        isLoggedIn
-                    )
-                    else -> null
+                if (isThematicWidgetShown) {
+                    when(widgetResponse.name) {
+                        ETALASE_THEMATIC -> mapToThematicWidget(widgetResponse)
+                        BIG_CAMPAIGN_THEMATIC -> mapToThematicWidget(widgetResponse)
+                        FLASH_SALE_TOKO -> mapToFlashSaleUiModel(widgetResponse)
+                        NEW_PRODUCT_LAUNCH_CAMPAIGN -> mapToNewProductLaunchCampaignUiModel(
+                            widgetResponse,
+                            isLoggedIn
+                        )
+                        else -> null
+                    }
+                } else {
+                    when(widgetResponse.name) {
+                        FLASH_SALE_TOKO -> mapToFlashSaleUiModel(widgetResponse)
+                        NEW_PRODUCT_LAUNCH_CAMPAIGN -> mapToNewProductLaunchCampaignUiModel(
+                            widgetResponse, isLoggedIn
+                        )
+                        else -> null
+                    }
                 }
             }
             DYNAMIC.toLowerCase(Locale.getDefault()) -> mapCarouselPlayWidget(widgetResponse)
@@ -543,6 +563,50 @@ object ShopPageHomeMapper {
         )
     }
 
+    private fun mapToThematicWidget(widgetResponse: ShopLayoutWidget.Widget): ThematicWidgetUiModel {
+        return ThematicWidgetUiModel(
+            widgetId = widgetResponse.widgetID,
+            layoutOrder = widgetResponse.layoutOrder,
+            name = widgetResponse.name,
+            type = widgetResponse.type,
+            header = DynamicHeaderUiModel(
+                title = widgetResponse.data.firstOrNull()?.name.orEmpty(),
+                subTitle = widgetResponse.data.firstOrNull()?.timeDescription.orEmpty(),
+                ctaText = widgetResponse.header.ctaText,
+                ctaTextLink = widgetResponse.header.ctaLink,
+                statusCampaign = widgetResponse.data.firstOrNull()?.statusCampaign.orEmpty().lowercase(Locale.getDefault()),
+                timerCounter = widgetResponse.data.firstOrNull()?.timeCounter.orEmpty()
+            ),
+            widgetMasterId = widgetResponse.widgetMasterID,
+            productList = widgetResponse.data.firstOrNull()?.listProduct?.map {
+                    val labelGroups = it.labelGroups.filter { labelGroup ->  labelGroup.position == LABEL_POSITION_INTEGRITY }
+                    ProductCardUiModel(
+                     id = it.id,
+                     name = it.name,
+                     displayedPrice = it.discountedPrice,
+                     originalPrice = it.displayedPrice,
+                     discountPercentage = it.discountPercentage,
+                     imageUrl = it.imageUrl,
+                     imageUrl300 = "",
+                     productUrl = it.urlApps,
+                     hideGimmick = it.hideGimmick,
+                     labelGroupList = labelGroups.map { labelGroup ->
+                         com.tokopedia.shop_widget.thematicwidget.uimodel.LabelGroupUiModel(
+                             position = labelGroup.position,
+                             title = labelGroup.title,
+                             url = labelGroup.url,
+                             type = labelGroup.type
+                         )
+                     }
+                 )
+            } ?: listOf(),
+            imageBanner = widgetResponse.data.firstOrNull()?.listBanner?.firstOrNull()?.imageUrl.orEmpty(),
+            firstBackgroundColor = widgetResponse.data.firstOrNull()?.backgroundGradientColor?.firstColor.orEmpty(),
+            secondBackgroundColor = widgetResponse.data.firstOrNull()?.backgroundGradientColor?.secondColor.orEmpty(),
+            campaignId = widgetResponse.data.firstOrNull()?.campaignId.orEmpty()
+        )
+    }
+
     private fun mapToListDisplayWidgetItem(
         data: List<ShopLayoutWidget.Widget.Data>
     ): List<ShopHomeDisplayWidgetUiModel.DisplayWidgetItem>? {
@@ -697,21 +761,26 @@ object ShopPageHomeMapper {
     )
 
     fun mapToListShopHomeWidget(
-        responseWidgetData: List<ShopLayoutWidget.Widget>,
-        myShop: Boolean,
-        isLoggedIn: Boolean
-    ): List<BaseShopHomeWidgetUiModel> {
-        return mutableListOf<BaseShopHomeWidgetUiModel>().apply {
-            responseWidgetData.filter {
-                it.data.isNotEmpty() || it.type.equals(
-                    DYNAMIC,
-                    ignoreCase = true
-                ) || it.name == VOUCHER_STATIC || it.type.equals(CARD, ignoreCase = true)
-            }.onEach {
-                val widgetUiModel = mapToWidgetUiModel(it, myShop, isLoggedIn)
-                widgetUiModel?.let { model ->
-                    model.widgetMasterId = it.widgetMasterID
-                    add(model)
+            responseWidgetData: List<ShopLayoutWidget.Widget>,
+            myShop: Boolean,
+            isLoggedIn: Boolean,
+            isThematicWidgetShown: Boolean
+    ): List<Visitable<*>> {
+        return mutableListOf<Visitable<*>>().apply {
+            responseWidgetData.filter { it.data.isNotEmpty() || it.type.equals(DYNAMIC, ignoreCase = true) || it.name == VOUCHER_STATIC || it.type.equals(CARD, ignoreCase = true)}.onEach {
+                when (val widgetUiModel = mapToWidgetUiModel(it, myShop, isLoggedIn, isThematicWidgetShown)) {
+                    is BaseShopHomeWidgetUiModel -> {
+                        widgetUiModel.let { model ->
+                            model.widgetMasterId = it.widgetMasterID
+                            add(model)
+                        }
+                    }
+                    is ThematicWidgetUiModel -> {
+                        widgetUiModel.let { model ->
+                            model.widgetMasterId = it.widgetMasterID
+                            add(model)
+                        }
+                    }
                 }
             }
         }
@@ -733,21 +802,30 @@ object ShopPageHomeMapper {
     }
 
     fun mapShopHomeWidgetLayoutToListShopHomeWidget(
-        listWidgetLayout: List<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>,
-        myShop: Boolean,
-        isLoggedIn: Boolean
-    ): List<BaseShopHomeWidgetUiModel> {
-        return mutableListOf<BaseShopHomeWidgetUiModel>().apply {
+            listWidgetLayout: List<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>,
+            myShop: Boolean,
+            isLoggedIn: Boolean,
+            isThematicWidgetShown: Boolean
+    ): List<Visitable<*>> {
+        return mutableListOf<Visitable<*>>().apply {
             listWidgetLayout.onEach {
                 mapToWidgetUiModel(
-                    ShopLayoutWidget.Widget(
-                        widgetID = it.widgetId,
-                        type = it.widgetType,
-                        name = it.widgetName
-                    ), myShop, isLoggedIn
-                )?.let { resModel ->
-                    resModel.widgetMasterId = it.widgetMasterId
-                    add(resModel)
+                        ShopLayoutWidget.Widget(
+                                widgetID = it.widgetId,
+                                type = it.widgetType,
+                                name = it.widgetName,
+                        ), myShop, isLoggedIn, isThematicWidgetShown
+                )?.let{ resModel ->
+                    when (resModel) {
+                        is BaseShopHomeWidgetUiModel -> {
+                            resModel.widgetMasterId = it.widgetMasterId
+                            add(resModel)
+                        }
+                        is ThematicWidgetUiModel -> {
+                            resModel.widgetMasterId = it.widgetMasterId
+                            add(resModel)
+                        }
+                    }
                 }
             }
         }

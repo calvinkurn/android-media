@@ -57,6 +57,7 @@ object ProductDetailConstant {
     const val TRADE_IN = "tradein"
     const val INFO = "info"
     const val SHIPMENT = "shipment"
+    const val SHIPMENT_V2 = "shipment_v2"
     const val PRODUCT_LIST = "product_list"
     const val NOTIFY_ME = "teaser"
     const val TICKER_INFO = "ticker_info"

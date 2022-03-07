@@ -103,6 +103,7 @@ ext {
             ovoPayWithQr                    : ":features:fintech:ovo_pay_with_qr",
             layanan                         : ":features:fintech:layanan_finansial",
             paylater                        : ":features:fintech:paylater",
+            fintechHomeWidget                : ":features:fintech:fintech_home_widget",
 
             dynamicBanner                   : ":features:home:dynamicbanner",
             navigation                      : ":features:home:navigation",
