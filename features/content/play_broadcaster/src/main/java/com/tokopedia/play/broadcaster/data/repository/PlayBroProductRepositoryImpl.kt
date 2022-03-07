@@ -27,7 +27,6 @@ class PlayBroProductRepositoryImpl @Inject constructor(
     private val getCampaignListUseCase: GetCampaignListUseCase,
     private val getProductsInCampaignUseCase: GetProductsInCampaignUseCase,
     private val getSelfEtalaseListUseCase: GetSelfEtalaseListUseCase,
-//    private val getShopProductsUseCase: GetShopProductsUseCase,
     private val getProductsInEtalaseUseCase: GetProductsInEtalaseUseCase,
     private val addProductTagUseCase: AddProductTagUseCase,
     private val getProductTagSummarySectionUseCase: GetProductTagSummarySectionUseCase,
@@ -58,19 +57,6 @@ class PlayBroProductRepositoryImpl @Inject constructor(
         sort: SortUiModel,
     ): PagedDataUiModel<ProductUiModel> = withContext(dispatchers.io) {
         if (userSession.shopId.isBlank()) error("User does not has shop")
-
-//        val response = getShopProductsUseCase.apply {
-//            setRequestParams(
-//                GetShopProductsUseCase.createParams(
-//                    shopId = userSession.shopId,
-//                    page = page,
-//                    perPage = PRODUCTS_IN_ETALASE_PER_PAGE,
-//                    etalaseId = etalaseId,
-//                    keyword = keyword,
-//                    sort = sort,
-//                )
-//            )
-//        }.executeOnBackground()
 
         val response = getProductsInEtalaseUseCase.apply {
             params = GetProductsInEtalaseUseCase.createParams(
