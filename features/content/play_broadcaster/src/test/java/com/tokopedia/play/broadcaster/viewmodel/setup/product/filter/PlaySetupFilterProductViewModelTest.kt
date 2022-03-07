@@ -31,7 +31,7 @@ internal class PlaySetupFilterProductViewModelTest {
 
     @Test
     fun `when user set sorting, it will emit uiState with new loadParam`() {
-        val mockSort = SortUiModel(1, "Terbaru")
+        val mockSort = SortUiModel.supportedSortList.first()
 
         val robot = PlayBroProductSetupViewModelRobot(
             dispatchers = testDispatcher,
