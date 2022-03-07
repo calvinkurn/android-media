@@ -3,19 +3,38 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/play_dms_N700_68">
+    android:background="@color/Unify_Static_White">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_bro_summary_back"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        app:icon_name="CLOSE"
+        android:layout_margin="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_page_title"
-        android:layout_width="match_parent"
+        android:id="@+id/tv_bro_summary_page_title"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:gravity="center"
         android:text="@string/play_summary_title"
-        android:textColor="@color/Unify_Static_White"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_4" />
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        app:layout_constraintTop_toTopOf="@id/ic_bro_summary_back"
+        app:layout_constraintBottom_toBottomOf="@id/ic_bro_summary_back"
+        app:layout_constraintStart_toEndOf="@id/ic_bro_summary_back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="heading_3" />
+
+    <View
+        android:id="@+id/view_bro_summary_divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/Unify_NN200"
+        app:layout_constraintTop_toBottomOf="@id/tv_bro_summary_page_title"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/layout_summary_info"
@@ -27,7 +46,7 @@
         app:layout_constraintBottom_toTopOf="@+id/ll_button_sticky"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_page_title">
+        app:layout_constraintTop_toBottomOf="@+id/view_bro_summary_divider">
 
         <include layout="@layout/layout_play_summary_info"/>
 
