@@ -1,5 +1,7 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignListResponse
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignProductResponse
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetProductTagSummarySectionResponse
@@ -16,6 +18,9 @@ import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import java.math.BigDecimal
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import java.util.*
 import javax.inject.Inject
 
@@ -23,6 +28,11 @@ import javax.inject.Inject
  * Created by kenny.hadisaputra on 26/01/22
  */
 class PlayBroProductUiMapper @Inject constructor() {
+
+    private val priceFormatSymbol = DecimalFormatSymbols().apply {
+        groupingSeparator = '.'
+    }
+    private val priceFormat = DecimalFormat("Rp ###,###", priceFormatSymbol)
 
     fun mapCampaignList(response: GetCampaignListResponse): List<CampaignUiModel> {
         return response.getSellerCampaignList.campaigns.map {
@@ -78,6 +88,27 @@ class PlayBroProductUiMapper @Inject constructor() {
                 )
             },
             hasNextPage = response.response.links.next.isNotBlank(),
+        )
+    }
+
+    fun mapProductsInEtalase(
+        response: GetProductsByEtalaseResponse.GetProductListData,
+        perPage: Int,
+    ): PagedDataUiModel<ProductUiModel> {
+        return PagedDataUiModel(
+            dataList = response.data.map { data ->
+                ProductUiModel(
+                    id = data.id,
+                    name = data.name,
+                    imageUrl = data.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
+                    stock = data.stock,
+                    price = OriginalPrice(
+                        priceFormat.format(BigDecimal(data.price.min.orZero())),
+                        data.price.min.orZero()
+                    ), //No discounted price because it is not supported in the current gql
+                )
+            },
+            hasNextPage = response.data.size >= perPage,
         )
     }
 
