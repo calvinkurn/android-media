@@ -59,7 +59,7 @@
             app:layout_constraintStart_toStartOf="@+id/mediaAnchorProduct"
             app:layout_constraintEnd_toEndOf="@+id/mediaAnchorProduct"/>
 
-        <com.tokopedia.productcard.ProductCardVideoView
+        <com.tokopedia.video_widget.VideoWidgetView
             android:id="@+id/videoProduct"
             android:layout_width="@dimen/product_card_list_image_size"
             android:layout_height="@dimen/product_card_list_image_size"

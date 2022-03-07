@@ -1,4 +1,4 @@
-package com.tokopedia.productcard
+package com.tokopedia.video_widget
 
 import android.content.Context
 import android.graphics.Matrix
@@ -14,7 +14,7 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.video.VideoListener
 
-class ProductCardVideoView(
+class VideoWidgetView(
     context: Context,
     attrs: AttributeSet?,
     defStyleAttr: Int
@@ -91,11 +91,11 @@ class ProductCardVideoView(
         defStyleAttr: Int
     ) {
         context.theme
-            .obtainStyledAttributes(attrs, R.styleable.ProductVideoView, defStyleAttr, 0)
+            .obtainStyledAttributes(attrs, R.styleable.ProductCardVideoView, defStyleAttr, 0)
             .apply {
                 try {
                     scaleType = getInteger(
-                        R.styleable.ProductVideoView_scaleType,
+                        R.styleable.ProductCardVideoView_scaleType,
                         ScaleType.TYPE_CENTER_CROP
                     )
                 } finally {

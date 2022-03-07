@@ -62,7 +62,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardLifecycleObserver
-import com.tokopedia.productcard.video.ProductVideoAutoplay
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -131,6 +130,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
+import com.tokopedia.video_widget.VideoWidgetAutoplay
 import org.json.JSONArray
 import timber.log.Timber
 import javax.inject.Inject
@@ -220,8 +220,8 @@ class ProductListFragment: BaseDaggerFragment(),
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
         private set
 
-    private val productVideoAutoplay : ProductVideoAutoplay by lazy {
-        ProductVideoAutoplay(remoteConfig)
+    private val productVideoAutoplay : VideoWidgetAutoplay by lazy {
+        VideoWidgetAutoplay(remoteConfig)
     }
 
     //region onCreate Fragments

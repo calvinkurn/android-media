@@ -20,9 +20,9 @@ import com.tokopedia.productcard.utils.renderLabelBestSellerCategorySide
 import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
 import com.tokopedia.productcard.utils.shouldShowWithAction
-import com.tokopedia.productcard.video.ProductCardVideo
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.video_widget.VideoWidgetVideoPlayer
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_footer_layout.view.*
 import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
@@ -30,8 +30,8 @@ import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 class ProductCardGridView: BaseCustomView, IProductCardView {
 
     private val cartExtension = ProductCardCartExtension(this)
-    private val video: ProductCardVideo by lazy{
-        ProductCardVideo(this)
+    private val video: VideoWidgetVideoPlayer by lazy{
+        VideoWidgetVideoPlayer(this, R.id.videoProduct, R.id.imageProduct)
     }
 
     constructor(context: Context): super(context) {
@@ -108,7 +108,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         }
 
         cartExtension.setProductModel(productCardModel)
-        video.setProductModel(productCardModel)
+        video.setVideoURL(productCardModel.customVideoURL)
     }
 
     fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {
@@ -184,7 +184,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         return imageProduct
     }
 
-    override fun getProductCardVideo(): ProductCardVideo {
+    override fun getVideoWidgetVideoPlayer(): VideoWidgetVideoPlayer {
         return video
     }
 }

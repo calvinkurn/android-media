@@ -1,4 +1,4 @@
-package com.tokopedia.productcard.video
+package com.tokopedia.video_widget
 
 import android.content.Context
 import android.net.Uri
@@ -22,13 +22,12 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.device.info.DeviceConnectionInfo
-import com.tokopedia.productcard.ProductCardVideoView
-import com.tokopedia.productcard.utils.DimensionUtils
+import com.tokopedia.video_widget.util.DimensionUtils
 import java.lang.ref.WeakReference
 
-class ProductCardViewHelper(
+class VideoWidgetViewHelper(
     context: Context,
-    private val exoPlayerView: ProductCardVideoView
+    private val exoPlayerView: VideoWidgetView
 ) : ExoPlayerControl {
     companion object {
         private const val MINIMUM_DENSITY_MATRIX = 1.5f
@@ -41,7 +40,7 @@ class ProductCardViewHelper(
     private val context: Context?
         get() = contextReference.get()
 
-    var isAutoPlay = true
+    var isAutoplay = true
     var shouldCache = true
 
     private var videoPlayer: ExoPlayer? = null
@@ -167,7 +166,7 @@ class ProductCardViewHelper(
     private fun canResume() : Boolean {
         return videoUri != null
                 && !videoUri?.toString().isNullOrEmpty()
-                && isAutoPlay
+                && isAutoplay
     }
 
     private fun playUri(uri: Uri, autoPlay: Boolean = true) {
@@ -218,7 +217,7 @@ class ProductCardViewHelper(
             Util.getUserAgent(context, "Tokopedia Android")
         )
         return if(shouldCache) {
-            CacheDataSourceFactory(ProductVideoCache.getInstance(context), defaultDataSourceFactory)
+            CacheDataSourceFactory(VideoWidgetCache.getInstance(context), defaultDataSourceFactory)
         } else {
             defaultDataSourceFactory
         }
@@ -270,10 +269,10 @@ class ProductCardViewHelper(
         return DimensionUtils.getDensityMatrix(context) >= MINIMUM_DENSITY_MATRIX
     }
 
-    class Builder(context: Context, productCardVideoView: ProductCardVideoView) {
-        private val mExoPlayerHelper: ProductCardViewHelper = ProductCardViewHelper(
+    class Builder(context: Context, videoWidgetView: VideoWidgetView) {
+        private val mExoPlayerHelper: VideoWidgetViewHelper = VideoWidgetViewHelper(
             context,
-            productCardVideoView
+            videoWidgetView
         )
 
         fun setExoPlayerEventsListener(exoPlayerListener: ExoPlayerListener): Builder {
@@ -281,7 +280,7 @@ class ProductCardViewHelper(
             return this
         }
 
-        fun create(): ProductCardViewHelper {
+        fun create(): VideoWidgetViewHelper {
             mExoPlayerHelper.init()
             return mExoPlayerHelper
         }

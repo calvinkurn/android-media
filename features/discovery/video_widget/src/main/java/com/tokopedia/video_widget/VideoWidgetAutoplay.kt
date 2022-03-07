@@ -1,4 +1,4 @@
-package com.tokopedia.productcard.video
+package com.tokopedia.video_widget
 
 import android.view.ViewTreeObserver
 import androidx.lifecycle.Lifecycle
@@ -6,9 +6,9 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.productcard.utils.LayoutManagerUtil
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.video_widget.util.LayoutManagerUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -20,14 +20,14 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
-class ProductVideoAutoplay(
+class VideoWidgetAutoplay(
     private val remoteConfig: RemoteConfig,
 ) : CoroutineScope, LifecycleObserver {
     private var productVideoAutoPlayJob: Job? = null
-    private var productVideoPlayer: ProductVideoPlayer? = null
+    private var videoWidgetPlayer: VideoWidgetPlayer? = null
 
-    private var visibleVideoPlayers: List<ProductVideoPlayer> = emptyList()
-    private var videoPlayerIterator: Iterator<ProductVideoPlayer>? = null
+    private var visibleVideoWidgetPlayers: List<VideoWidgetPlayer> = emptyList()
+    private var videoWidgetPlayerIterator: Iterator<VideoWidgetPlayer>? = null
     private var isPaused = false
 
     private var firstVisibleItemIndex: Int = -1
@@ -101,10 +101,10 @@ class ProductVideoAutoplay(
     private fun startVideoAutoplay() {
         productVideoAutoPlayJob?.cancel()
         val currentlyVisibleVideoPlayers = filterVisibleProductVideoPlayer()
-        if (currentlyVisibleVideoPlayers != visibleVideoPlayers) {
-            visibleVideoPlayers = currentlyVisibleVideoPlayers
+        if (currentlyVisibleVideoPlayers != visibleVideoWidgetPlayers) {
+            visibleVideoWidgetPlayers = currentlyVisibleVideoPlayers
             val visibleItemIterable = currentlyVisibleVideoPlayers.iterator()
-            videoPlayerIterator = visibleItemIterable
+            videoWidgetPlayerIterator = visibleItemIterable
             productVideoAutoPlayJob = launch {
                 isPaused = false
                 playNextVideo(visibleItemIterable)
@@ -112,30 +112,30 @@ class ProductVideoAutoplay(
         }
     }
 
-    private fun filterVisibleProductVideoPlayer(): List<ProductVideoPlayer> {
+    private fun filterVisibleProductVideoPlayer(): List<VideoWidgetPlayer> {
         if(isAdapterEmpty) return emptyList()
         firstVisibleItemIndex = LayoutManagerUtil.getFirstVisibleItemIndex(layoutManager, false)
         lastVisibleItemIndex = LayoutManagerUtil.getLastVisibleItemIndex(layoutManager)
         return if (hasVisibleViewHolders) getVisibleViewHolderList() else emptyList()
     }
 
-    private fun getVisibleViewHolderList(): List<ProductVideoPlayer> {
-        val visibleVideoPlayerProviders = mutableListOf<ProductVideoPlayerProvider>()
+    private fun getVisibleViewHolderList(): List<VideoWidgetPlayer> {
+        val visibleVideoPlayerProviders = mutableListOf<VideoWidgetPlayerProvider>()
         for (index in firstVisibleItemIndex..lastVisibleItemIndex) {
             val viewHolder = recyclerView?.findViewHolderForAdapterPosition(index) ?: continue
-            if (viewHolder is ProductVideoPlayerProvider) {
+            if (viewHolder is VideoWidgetPlayerProvider) {
                 visibleVideoPlayerProviders.add(viewHolder)
             }
         }
         return visibleVideoPlayerProviders
-            .mapNotNull { it.productVideoPlayer }
-            .filter { it.hasProductVideo }
+            .mapNotNull { it.videoWidgetPlayer }
+            .filter { it.hasVideo }
     }
 
-    private suspend fun playNextVideo(visibleItemIterator: Iterator<ProductVideoPlayer>) {
+    private suspend fun playNextVideo(visibleItemIterator: Iterator<VideoWidgetPlayer>) {
         if (canPlayNextVideo(visibleItemIterator)) {
             val visibleItem = visibleItemIterator.next()
-            productVideoPlayer = visibleItem
+            videoWidgetPlayer = visibleItem
             playVideo(visibleItem, visibleItemIterator)
         } else if (!visibleItemIterator.hasNext()) {
             clearQueue()
@@ -143,14 +143,14 @@ class ProductVideoAutoplay(
     }
 
     private fun canPlayNextVideo(
-        visibleItemIterator: Iterator<ProductVideoPlayer>
+        visibleItemIterator: Iterator<VideoWidgetPlayer>
     ) : Boolean {
         return isActive && !isPaused && visibleItemIterator.hasNext()
     }
 
     private suspend fun playVideo(
-        visibleItem : ProductVideoPlayer,
-        visibleItemIterator: Iterator<ProductVideoPlayer>
+        visibleItem : VideoWidgetPlayer,
+        visibleItemIterator: Iterator<VideoWidgetPlayer>
     ) {
         visibleItem.playVideo()
             .filter { state ->
@@ -163,7 +163,7 @@ class ProductVideoAutoplay(
                 VideoPlayerState.Error(t.message ?: "Unknown Error")
             }
             .collect {
-                productVideoPlayer = null
+                videoWidgetPlayer = null
                 playNextVideo(visibleItemIterator)
             }
     }
@@ -175,7 +175,7 @@ class ProductVideoAutoplay(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun resumeVideoAutoplay() {
-        val visibleItemIterator = videoPlayerIterator ?: return
+        val visibleItemIterator = videoWidgetPlayerIterator ?: return
         if (isPaused && visibleItemIterator.hasNext()) {
             productVideoAutoPlayJob = launch {
                 isPaused = false
@@ -188,7 +188,7 @@ class ProductVideoAutoplay(
     fun pauseVideoAutoplay() {
         if (!isPaused) {
             isPaused = true
-            productVideoPlayer?.stopVideo()
+            videoWidgetPlayer?.stopVideo()
             productVideoAutoPlayJob?.cancel()
         }
     }
@@ -213,14 +213,14 @@ class ProductVideoAutoplay(
 
     fun stopVideoAutoplay() {
         if(!isAutoplayProductVideoEnabled) return
-        productVideoPlayer?.stopVideo()
-        productVideoPlayer = null
+        videoWidgetPlayer?.stopVideo()
+        videoWidgetPlayer = null
         productVideoAutoPlayJob?.cancel()
         clearQueue()
     }
 
     private fun clearQueue() {
-        visibleVideoPlayers = emptyList()
-        videoPlayerIterator = null
+        visibleVideoWidgetPlayers = emptyList()
+        videoWidgetPlayerIterator = null
     }
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.productcard.utils
+package com.tokopedia.video_widget.util
 
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager

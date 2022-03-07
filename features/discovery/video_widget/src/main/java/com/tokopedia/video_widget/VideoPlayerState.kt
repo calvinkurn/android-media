@@ -1,4 +1,4 @@
-package com.tokopedia.productcard.video
+package com.tokopedia.video_widget
 
 sealed interface VideoPlayerState {
     object NoVideo: VideoPlayerState

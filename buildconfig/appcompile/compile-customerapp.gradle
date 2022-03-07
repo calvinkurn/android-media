@@ -91,6 +91,7 @@ includeIfEnabled("features:discovery:wishlist_common")
 includeIfEnabled("features:discovery:search")
 includeIfEnabled("features:discovery:shopwidget")
 includeIfEnabled("features:discovery:global_nav_widget")
+includeIfEnabled("features:discovery:video_widget")
 
 includeIfEnabled("features:fintech:home_credit")
 includeIfEnabled("features:fintech:ovo_pay_with_qr")

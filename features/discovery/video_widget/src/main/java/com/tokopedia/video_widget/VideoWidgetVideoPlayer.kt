@@ -1,37 +1,37 @@
-package com.tokopedia.productcard.video
+package com.tokopedia.video_widget
 
 import android.view.View
 import android.widget.ImageView
+import androidx.annotation.IdRes
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.ProductCardVideoView
-import com.tokopedia.productcard.R
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 
-class ProductCardVideo(
-    private val productCardView: View,
-) : ExoPlayerListener, ProductVideoPlayer {
-    private val videoProduct by lazy(LazyThreadSafetyMode.NONE) {
-        productCardView.findViewById<ProductCardVideoView>(R.id.videoProduct)
+class VideoWidgetVideoPlayer(
+    private val rootView: View,
+    @IdRes private val videoViewId: Int,
+    @IdRes private val imageViewId: Int,
+) : ExoPlayerListener, VideoWidgetPlayer {
+    private val videoView by lazy(LazyThreadSafetyMode.NONE) {
+        rootView.findViewById<VideoWidgetView>(videoViewId)
     }
 
-    private val imageProduct by lazy(LazyThreadSafetyMode.NONE) {
-        productCardView.findViewById<ImageView>(R.id.imageProduct)
+    private val imageView by lazy(LazyThreadSafetyMode.NONE) {
+        rootView.findViewById<ImageView>(imageViewId)
     }
 
     private var videoURL = ""
     private var videoPlayerStateFlow : MutableStateFlow<VideoPlayerState>? = null
-    private val helper: ProductCardViewHelper by lazy(LazyThreadSafetyMode.NONE) {
-        ProductCardViewHelper.Builder(productCardView.context, videoProduct)
+    private val helper: VideoWidgetViewHelper by lazy(LazyThreadSafetyMode.NONE) {
+        VideoWidgetViewHelper.Builder(rootView.context, videoView)
             .setExoPlayerEventsListener(this)
             .create()
     }
 
-    fun setProductModel(productCardModel: ProductCardModel) {
-        videoURL = productCardModel.customVideoURL
+    fun setVideoURL(videoURL: String) {
+        this.videoURL = videoURL
     }
 
     fun clear() {
@@ -39,8 +39,8 @@ class ProductCardVideo(
     }
 
     override fun onPlayerIdle() {
-        imageProduct?.show()
-        videoProduct?.hide()
+        imageView?.show()
+        videoView?.hide()
     }
 
     override fun onPlayerBuffering() {
@@ -48,20 +48,20 @@ class ProductCardVideo(
     }
 
     override fun onPlayerPlaying() {
-        imageProduct?.hide()
-        videoProduct?.show()
+        imageView?.hide()
+        videoView?.show()
         videoPlayerStateFlow?.tryEmit(VideoPlayerState.Playing)
     }
 
     override fun onPlayerPaused() {
-        imageProduct?.show()
-        videoProduct?.hide()
+        imageView?.show()
+        videoView?.hide()
         videoPlayerStateFlow?.tryEmit(VideoPlayerState.Paused)
     }
 
     override fun onPlayerEnded() {
-        imageProduct?.show()
-        videoProduct?.hide()
+        imageView?.show()
+        videoView?.hide()
         videoPlayerStateFlow?.tryEmit(VideoPlayerState.Ended)
     }
 
@@ -69,11 +69,11 @@ class ProductCardVideo(
         videoPlayerStateFlow?.tryEmit(VideoPlayerState.Error(errorString ?: ""))
     }
 
-    override val hasProductVideo: Boolean
+    override val hasVideo: Boolean
         get() = videoURL.isNotBlank()
 
     override fun playVideo(): Flow<VideoPlayerState> {
-        if(!hasProductVideo) return flowOf(VideoPlayerState.NoVideo)
+        if(!hasVideo) return flowOf(VideoPlayerState.NoVideo)
         videoPlayerStateFlow = MutableStateFlow(VideoPlayerState.Starting)
         helper.play(videoURL)
         return videoPlayerStateFlow as Flow<VideoPlayerState>
