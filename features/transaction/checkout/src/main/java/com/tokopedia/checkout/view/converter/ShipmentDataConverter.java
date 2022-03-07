@@ -179,7 +179,7 @@ public class ShipmentDataConverter {
     }
 
     public List<ShipmentCartItemModel> getShipmentItems(CartShipmentAddressFormData cartShipmentAddressFormData,
-                                                        boolean hasTradeInDropOffAddress) {
+                                                        boolean hasTradeInDropOffAddress, String username) {
         List<ShipmentCartItemModel> shipmentCartItemModels = new ArrayList<>();
 
         if (cartShipmentAddressFormData.getGroupAddress().isEmpty() || cartShipmentAddressFormData.getGroupAddress().get(0) == null) {
@@ -205,7 +205,8 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setFulfillmentId(groupShop.getFulfillmentId());
             shipmentCartItemModel.setFulfillmentBadgeUrl(groupShop.getFulfillmentBadgeUrl());
             getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
-                    String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), hasTradeInDropOffAddress, orderIndex, cartShipmentAddressFormData.getAddOnWording());
+                    String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), hasTradeInDropOffAddress, orderIndex,
+                    cartShipmentAddressFormData.getAddOnWording(), username);
             if (groupShop.isFulfillment()) {
                 shipmentCartItemModel.setShopLocation(groupShop.getFulfillmentName());
             }
@@ -235,7 +236,8 @@ public class ShipmentDataConverter {
     private void getShipmentItem(ShipmentCartItemModel shipmentCartItemModel,
                                  UserAddress userAddress, GroupShop groupShop,
                                  String keroToken, String keroUnixTime,
-                                 boolean hasTradeInDropOffAddress, int orderIndex, AddOnWordingData addOnWording) {
+                                 boolean hasTradeInDropOffAddress, int orderIndex,
+                                 AddOnWordingData addOnWording, String username) {
         shipmentCartItemModel.setShopShipmentList(groupShop.getShopShipments());
         shipmentCartItemModel.setError(groupShop.isError());
         if (shipmentCartItemModel.isError()) {
@@ -284,9 +286,16 @@ public class ShipmentDataConverter {
 
         shipmentCartItemModel.setAddOnsOrderLevelModel(groupShop.getAddOns());
         shipmentCartItemModel.setAddOnWordingModel(convertFromAddOnWordingData(addOnWording));
+        shipmentCartItemModel.setAddOnDefaultTo(username);
+
+        String receiverName = "";
+        if (userAddress.getStatus() == PRIME_ADDRESS) {
+            receiverName = userAddress.getReceiverName();
+        }
+        shipmentCartItemModel.setAddOnDefaultFrom(receiverName);
 
         List<Product> products = groupShop.getProducts();
-        List<CartItemModel> cartItemModels = convertFromProductList(products, groupShop);
+        List<CartItemModel> cartItemModels = convertFromProductList(products, groupShop, username, receiverName);
 
         // This is something that not well planned
         Fobject fobject = levelUpParametersFromProductToCartSeller(cartItemModels);
@@ -298,17 +307,17 @@ public class ShipmentDataConverter {
                 .getShipmentCartData(userAddress, groupShop, shipmentCartItemModel, keroToken, keroUnixTime));
     }
 
-    private List<CartItemModel> convertFromProductList(List<Product> products, GroupShop groupShop) {
+    private List<CartItemModel> convertFromProductList(List<Product> products, GroupShop groupShop, String username, String receiverName) {
         List<CartItemModel> cartItemModels = new ArrayList<>();
 
         for (Product product : products) {
-            cartItemModels.add(convertFromProduct(product, groupShop));
+            cartItemModels.add(convertFromProduct(product, groupShop, username, receiverName));
         }
 
         return cartItemModels;
     }
 
-    private CartItemModel convertFromProduct(Product product, GroupShop groupShop) {
+    private CartItemModel convertFromProduct(Product product, GroupShop groupShop, String username, String receiverName) {
         CartItemModel cartItemModel = new CartItemModel();
 
         cartItemModel.setCartId(product.getCartId());
@@ -387,6 +396,8 @@ public class ShipmentDataConverter {
         cartItemModel.setAnalyticsProductCheckoutData(product.getAnalyticsProductCheckoutData());
 
         cartItemModel.setAddOnProductLevelModel(product.getAddOnProduct());
+        cartItemModel.setAddOnDefaultFrom(username);
+        cartItemModel.setAddOnDefaultTo(receiverName);
         cartItemModel.setCartString(groupShop.getCartString());
         cartItemModel.setWarehouseId(String.valueOf(groupShop.getFulfillmentId()));
         cartItemModel.setTokoCabang(groupShop.isFulfillment());

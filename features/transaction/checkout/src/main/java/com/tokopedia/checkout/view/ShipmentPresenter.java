@@ -700,7 +700,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         setLastApplyData(cartShipmentAddressFormData.getLastApplyData());
 
         setShipmentCartItemModelList(shipmentDataConverter.getShipmentItems(
-                cartShipmentAddressFormData, newAddress != null && newAddress.getLocationDataModel() != null)
+                cartShipmentAddressFormData, newAddress != null && newAddress.getLocationDataModel() != null,
+                userSessionInterface.getName())
         );
 
         this.codData = cartShipmentAddressFormData.getCod();
