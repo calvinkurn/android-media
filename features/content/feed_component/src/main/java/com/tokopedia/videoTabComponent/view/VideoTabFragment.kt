@@ -8,6 +8,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -31,13 +32,11 @@ import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker
 import com.tokopedia.videoTabComponent.callback.PlaySlotTabCallback
 import com.tokopedia.videoTabComponent.di.DaggerVideoTabComponent
 import com.tokopedia.videoTabComponent.domain.mapper.FeedPlayVideoTabMapper
-import com.tokopedia.videoTabComponent.domain.model.data.PlayGetContentSlotResponse
-import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotTabMenuUiModel
-import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetFeedReminderInfoData
-import com.tokopedia.videoTabComponent.domain.model.data.VideoPageParams
+import com.tokopedia.videoTabComponent.domain.model.data.*
 import com.tokopedia.videoTabComponent.util.PlayFeedSharedPrefsUtil.clearTabMenuPosition
 import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVideoTab
 import com.tokopedia.videoTabComponent.view.custom.FeedPlayStickyHeaderRecyclerView
+import com.tokopedia.videoTabComponent.view.viewholder.PlayFeedWidgetViewHolder
 import com.tokopedia.videoTabComponent.viewmodel.PlayFeedVideoTabViewModel
 import com.tokopedia.videoTabComponent.viewmodel.VideoTabAdapter
 import timber.log.Timber
@@ -223,7 +222,8 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                         shopId = userSession.shopId
                 )
         )
-    }private fun onSuccessPlayTabData(playDataResponse: PlayGetContentSlotResponse) {
+    }
+    private fun onSuccessPlayTabData(playDataResponse: PlayGetContentSlotResponse) {
 
         swipeToRefresh?.isEnabled = true
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
@@ -343,6 +343,23 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE){
+
+                    val f = (layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                    val l = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                    if(rvWidget?.getViewHolderAtPosition(l)!=null && rvWidget?.getViewHolderAtPosition(l) is PlayFeedWidgetViewHolder.Large) {
+                        val vh = rvWidget?.getViewHolderAtPosition(l) as PlayFeedWidgetViewHolder.Large
+                        val recyclerView = vh.itemView.findViewById<RecyclerView>(R.id.play_widget_recycler_view)
+                        recyclerView?.let { playWidgetCoordinator.configureAutoplayForLargeAndJumboWidget(it)}
+
+                    }
+                    if (rvWidget?.getViewHolderAtPosition(l) != null && rvWidget?.getViewHolderAtPosition(l) is PlayFeedWidgetViewHolder.Large) {
+                        val vh = rvWidget?.getViewHolderAtPosition(l) as PlayFeedWidgetViewHolder.Large
+                        val recyclerView = vh.itemView.findViewById<RecyclerView>(R.id.play_widget_recycler_view)
+                        recyclerView?.let { playWidgetCoordinator.configureAutoplayForLargeAndJumboWidget(it) }
+
+                    }
+                }
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && isScrollingUp)
                     rvWidget?.setShouldShowStickyHeaderValue(true, TIME_DELAY_TO_SHOW_STICKY_HEADER_TAB_VIEW)
             }

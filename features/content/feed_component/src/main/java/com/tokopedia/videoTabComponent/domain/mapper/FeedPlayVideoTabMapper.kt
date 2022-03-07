@@ -108,7 +108,7 @@ object FeedPlayVideoTabMapper {
 
         val autoRefresh = false
         val autoRefreshTimer: Long = 0
-        val autoPlayAmount: Int = 0
+        val autoPlayAmount: Int = 8
         val maxAutoPlayWifiDuration: Int = 30
         val businessWidgetPosition: Int = 30
         //till here
@@ -121,7 +121,7 @@ object FeedPlayVideoTabMapper {
             actionAppLink = actionLink,
             isActionVisible = playSlot.lihat_semua.show,
             config = PlayWidgetConfigUiModel(
-                autoRefresh, autoRefreshTimer, meta.is_autoplay, autoPlayAmount,
+                autoRefresh, autoRefreshTimer, true, autoPlayAmount,
                 meta.max_autoplay_in_cell, maxAutoPlayWifiDuration, businessWidgetPosition
             ),
             background = PlayWidgetBackgroundUiModel(
