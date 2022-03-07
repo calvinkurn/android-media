@@ -135,6 +135,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val shipmentData: ProductShipmentDataModel?
         get() = mapOfData[ProductDetailConstant.SHIPMENT] as? ProductShipmentDataModel
 
+    val shipmentV2Data: ProductShipmentDataModel?
+        get() = mapOfData[ProductDetailConstant.SHIPMENT_V2] as? ProductShipmentDataModel
+
     val mvcSummaryData: ProductMerchantVoucherSummaryDataModel?
         get() = mapOfData[ProductDetailConstant.MVC] as? ProductMerchantVoucherSummaryDataModel
 
@@ -243,6 +246,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
             updateData(ProductDetailConstant.SHIPMENT, loadInitialData) {
                 shipmentData?.isTokoNow = it.basic.isTokoNow
+            }
+
+            updateData(ProductDetailConstant.SHIPMENT_V2, loadInitialData) {
+                shipmentV2Data?.isTokoNow = it.basic.isTokoNow
             }
 
             val productId = it.basic.productID
@@ -836,6 +843,20 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             shipmentData?.tokoCabangIconUrl = freeOngkirData.tokoCabangImageURL
             shipmentData?.localDestination = if (userLocationLocalData.address_id == "" || userLocationLocalData.address_id == "0") "" else userLocationLocalData.label
         }
+
+        updateData(ProductDetailConstant.SHIPMENT_V2) {
+            shipmentV2Data?.apply {
+                this.rates = data ?: P2RatesEstimateData()
+                this.isFullfillment = isFullfillment
+                this.isCod = isCod
+                this.shouldShowShipmentError = data == null
+                this.freeOngkirType = freeOngkirData.boType
+                this.freeOngkirUrl = freeOngkirData.imageURL
+                this.tokoCabangIconUrl = freeOngkirData.tokoCabangImageURL
+                this.localDestination = if (userLocationLocalData.address_id == "" || userLocationLocalData.address_id == "0") "" else userLocationLocalData.label
+            }
+        }
+
     }
 
     fun updateProductBundlingData(p2Data: ProductInfoP2UiData?, productId: String?) {
