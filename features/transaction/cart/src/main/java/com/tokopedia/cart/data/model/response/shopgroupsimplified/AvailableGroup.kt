@@ -2,6 +2,7 @@ package com.tokopedia.cart.data.model.response.shopgroupsimplified
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 
 data class AvailableGroup(
         @SuppressLint("Invalid Data Type")
@@ -32,5 +33,7 @@ data class AvailableGroup(
         @SerializedName("checkbox_state")
         val checkboxState: Boolean = false,
         @SerializedName("promo_codes")
-        val promoCodes: List<String> = emptyList()
+        val promoCodes: List<String> = emptyList(),
+        @SerializedName("bo_metadata")
+        val boMetadata: BoMetadata = BoMetadata()
 )
