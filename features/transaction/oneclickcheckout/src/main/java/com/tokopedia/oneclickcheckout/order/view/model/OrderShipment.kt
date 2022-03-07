@@ -30,6 +30,7 @@ data class OrderShipment(
         val isApplyLogisticPromo: Boolean = false,
         val shippingRecommendationData: ShippingRecommendationData? = null,
         val insurance: OrderInsurance = OrderInsurance(),
+        val isHideChangeCourierCard : Boolean = false,
 
         // Analytics
         var hasTriggerViewMessageTracking: Boolean = false

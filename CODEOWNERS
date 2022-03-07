@@ -233,6 +233,7 @@
 /features/operational/csat_rating        				@tokopedia/android-minionsolo-dev
 
 /features/fintech/common_wallet         				@tokopedia/android-minionyoda-dev
+/features/fintech/fintech_home_widget         			@tokopedia/android-minionyoda-dev
 /features/fintech/instant_loan          				@tokopedia/android-minionyoda-dev
 /features/fintech/layanan_finansial                     @tokopedia/android-minionyoda-dev
 /features/fintech/paylater                              @tokopedia/android-minionyoda-dev

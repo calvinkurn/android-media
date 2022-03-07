@@ -9,7 +9,6 @@ import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -114,10 +113,16 @@ class DigitalUnifyCardViewHolder(
             )
         }
 
-        val fullText = TextUtils.concat(leftProductInfoText, " ", rightProductInfoText)
+        val fullText = if (leftProductInfoText.isNotEmpty() && rightProductInfoText.isNotEmpty())
+            TextUtils.concat(leftProductInfoText, " ", rightProductInfoText)
+        else if (leftProductInfoText.isNotEmpty())
+            leftProductInfoText
+        else if (rightProductInfoText.isNotEmpty())
+            rightProductInfoText
+        else ""
 
         with(binding.dguProductInfo) {
-            if (leftProductInfoText.isNotEmpty() || rightProductInfoText.isNotEmpty()) {
+            if (fullText.isNotEmpty()) {
                 text = fullText
 
                 ellipsize = TextUtils.TruncateAt.END

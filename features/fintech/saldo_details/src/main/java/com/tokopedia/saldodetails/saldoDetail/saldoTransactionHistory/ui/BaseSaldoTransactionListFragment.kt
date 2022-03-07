@@ -27,7 +27,7 @@ import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.saldo_fragment_transaction_list.*
 import javax.inject.Inject
 
-class SaldoTransactionListFragment : BaseDaggerFragment() {
+open class BaseSaldoTransactionListFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -35,7 +35,7 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
     @Inject
     lateinit var saldoDetailsAnalytics: SaldoDetailsAnalytics
 
-    private val transactionHistoryViewModel: TransactionHistoryViewModel? by lazy(
+    protected val transactionHistoryViewModel: TransactionHistoryViewModel? by lazy(
         LazyThreadSafetyMode.NONE
     ) {
         parentFragment?.let {
@@ -48,7 +48,7 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
 
     override fun getScreenName(): String? = null
 
-    private lateinit var transactionType: TransactionType
+    protected lateinit var transactionType: TransactionType
 
     private val adapter: SaldoTransactionAdapter by lazy {
         SaldoTransactionAdapter(getAdapterTypeFactory())
@@ -73,7 +73,7 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(
-            R.layout.saldo_fragment_transaction_list,
+            R.layout.base_saldo_fragment_transaction_list,
             container, false
         )
     }
@@ -182,12 +182,11 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
         transactionHistoryViewModel?.retryAllTabLoading()
     }
 
-
     companion object {
         const val PARAM_TRANSACTION_TYPE = "PARAM_TRANSACTION_TYPE"
 
-        fun getInstance(transactionTitleStr: String): SaldoTransactionListFragment {
-            return SaldoTransactionListFragment().apply {
+        fun getInstance(transactionTitleStr: String): BaseSaldoTransactionListFragment {
+            return BaseSaldoTransactionListFragment().apply {
                 val bundle = Bundle()
                 bundle.putString(PARAM_TRANSACTION_TYPE, transactionTitleStr)
                 arguments = bundle
