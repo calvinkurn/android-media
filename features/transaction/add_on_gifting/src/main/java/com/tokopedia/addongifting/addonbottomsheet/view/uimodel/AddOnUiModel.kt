@@ -13,7 +13,7 @@ data class AddOnUiModel(
         var addOnName: String = "",
         var addOnQty: Int = 0,
         var addOnPrice: Long = 0,
-        var addOnSquareImageUrl: String = "",
+        var addOnImageUrl: String = "",
         var addOnAllImageUrls: List<String> = emptyList(),
         var isAddOnSelected: Boolean = false,
         var initialAddOnNoteTo: String = "",
