@@ -20,5 +20,5 @@ interface PlayViewerTagItemRepository {
 
     suspend fun checkUpcomingCampaign(campaignId: Long): Boolean
 
-    suspend fun subscribeUpcomingCampaign(campaignId: Long): Boolean
+    suspend fun subscribeUpcomingCampaign(campaignId: Long): Pair<Boolean, String>
 }

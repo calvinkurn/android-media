@@ -119,12 +119,12 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun subscribeUpcomingCampaign(campaignId: Long): Boolean = withContext(dispatchers.io)  {
+    override suspend fun subscribeUpcomingCampaign(campaignId: Long): Pair<Boolean, String> = withContext(dispatchers.io)  {
         try {
             val response = postUpcomingCampaignReminderUseCase.apply {
                 setRequestParams(PostUpcomingCampaignReminderUseCase.createParam(campaignId).parameters)
             }.executeOnBackground()
-            return@withContext response.response.success //TODO = return message / error message - set ! for testing
+            return@withContext Pair(response.response.success, if(response.response.errorMessage.isNotEmpty()) response.response.message else response.response.message)
         } catch (e: Exception){
             throw e
         }

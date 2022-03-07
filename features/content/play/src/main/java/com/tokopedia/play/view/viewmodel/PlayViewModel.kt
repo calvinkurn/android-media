@@ -2032,9 +2032,15 @@ class PlayViewModel @AssistedInject constructor(
             val data = withContext(dispatchers.io) {
                 repo.subscribeUpcomingCampaign(campaignId = productUiModel.id.toLongOrZero())
             }
-            if(data)
+            if(data.first) {
                 updateReminderUi(productUiModel.config.reminder.reversed(productUiModel.id.toLongOrZero()))
+                _uiEvent.emit(ShowInfoEvent(message = UiString.Text(data.second)))
+            }
+            else {
+                throw Exception(data.second)
+            }
         }){
+            _uiEvent.emit(ShowErrorEvent(it))
         }
     }
 

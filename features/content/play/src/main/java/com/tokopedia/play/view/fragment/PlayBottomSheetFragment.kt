@@ -41,6 +41,9 @@ import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
 import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
+import com.tokopedia.play.view.uimodel.event.ShowErrorEvent
+import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
+import com.tokopedia.play.view.uimodel.event.UiString
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.viewcomponent.*
@@ -58,6 +61,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toDate
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.net.ConnectException
 import java.net.UnknownHostException
@@ -393,6 +397,7 @@ class PlayBottomSheetFragment @Inject constructor(
         observeUserReportSubmission()
 
         observeUiState()
+        observeUiEvent()
     }
 
     private fun initAnalytic() {
@@ -740,6 +745,36 @@ class PlayBottomSheetFragment @Inject constructor(
 
                 renderVoucherSheet(state.tagItems)
             }
+        }
+    }
+
+    private fun observeUiEvent(){
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                playViewModel.uiEvent.collect { event ->
+                    when (event) {
+                        is ShowInfoEvent -> {
+                            doShowToaster(
+                                bottomSheetType = BottomInsetsType.ProductSheet,
+                                toasterType = Toaster.TYPE_NORMAL,
+                                message = getTextFromUiString(event.message)
+                            )
+                        }
+                        is ShowErrorEvent -> {
+                            doShowToaster(
+                                bottomSheetType = BottomInsetsType.ProductSheet,
+                                toasterType = Toaster.TYPE_ERROR,
+                                message = ErrorHandler.getErrorMessage(requireContext(), event.error)
+                            )
+                        }
+                    }
+                }
+            }
+    }
+
+    private fun getTextFromUiString(uiString: UiString): String {
+        return when (uiString) {
+            is UiString.Text -> uiString.text
+            is UiString.Resource -> getString(uiString.resource)
         }
     }
 
