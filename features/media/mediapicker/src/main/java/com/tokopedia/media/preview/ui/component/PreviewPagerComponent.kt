@@ -59,9 +59,11 @@ class PreviewPagerComponent(
                 currentItem.mVideoPlayer?.start()
             }
 
-            val previousItem = medias[previousViewPagerIndex]
-            if (previousItem.data.isVideo()) {
-                previousItem.mVideoPlayer?.stop()
+            if(adapter.count > previousViewPagerIndex){
+                val previousItem = medias[previousViewPagerIndex]
+                if (previousItem.data.isVideo()) {
+                    previousItem.mVideoPlayer?.stop()
+                }
             }
 
             previousViewPagerIndex = position
