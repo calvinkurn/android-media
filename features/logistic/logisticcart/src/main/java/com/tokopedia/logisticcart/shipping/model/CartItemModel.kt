@@ -70,6 +70,8 @@ data class CartItemModel(
         var bundleQuantity: Int = 0,
         var bundleIconUrl: String = "",
         var addOnProductLevelModel: AddOnsDataModel = AddOnsDataModel(),
+        var addOnDefaultFrom: String = "",
+        var addOnDefaultTo: String = "",
         var isTokoCabang: Boolean = false,
         var cartString: String = "",
         var warehouseId: String = ""
