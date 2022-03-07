@@ -11,6 +11,7 @@ import com.tokopedia.digital_product_detail.data.model.data.PersoRecommendationD
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.presentation.util.JsonToString
 import com.tokopedia.recharge_component.model.denom.DenomData
+import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 
@@ -120,6 +121,14 @@ class PulsaDataFactory {
         return SelectedProduct(
             denomData = getInvalidIdDenomData(),
             position = 0
+        )
+    }
+
+    fun getSelectedData(data: DenomData): SelectedProduct {
+        return SelectedProduct(
+            denomData = data,
+            DenomWidgetEnum.GRID_TYPE,
+            0
         )
     }
 

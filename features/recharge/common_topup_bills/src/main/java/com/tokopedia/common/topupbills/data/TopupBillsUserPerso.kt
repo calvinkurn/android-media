@@ -12,5 +12,8 @@ class TopupBillsUserPerso(
     val loyaltyStatus: String = "",
     @SerializedName("client_name")
     @Expose
-    val clientName: String = ""
+    val clientName: String = "",
+    @SerializedName("prefill_operator_id")
+    @Expose
+    val prefillOperatorId: String = ""
 )

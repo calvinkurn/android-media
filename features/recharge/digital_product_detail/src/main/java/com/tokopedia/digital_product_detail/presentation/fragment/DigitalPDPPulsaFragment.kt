@@ -60,7 +60,9 @@ import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPul
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
@@ -121,7 +123,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private var operator = TelcoOperator()
     private var loyaltyStatus = ""
     private var clientNumber = ""
+
     private var productId =  0
+    private var productIdFromApplink = 0
+
     private var menuId = 0
     private var categoryId = TelcoCategoryType.CATEGORY_PULSA
     private var inputNumberActionType = InputNumberActionType.MANUAL
@@ -158,7 +163,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         initClientNumberWidget()
         setAnimationAppBarLayout()
         observeData()
-
         getCatalogMenuDetail()
     }
 
@@ -198,7 +202,17 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                         selectedOperator.operator.attributes.name
                     )
 
-                    if (operator.id != selectedOperator.operator.id || rechargePdpPulsaClientNumberWidget.getInputNumber()
+                    val isOperatorChanged = operator.id != selectedOperator.operator.id
+                    val productIdFromDefaultPrefix = selectedOperator.operator.attributes.defaultProductId.toIntOrZero()
+
+                    //set default product id when prefix changed
+                    if (isOperatorChanged && operator.id.isEmpty() && productIdFromApplink.isMoreThanZero()){
+                        productId = productIdFromApplink
+                    } else if (isOperatorChanged && productIdFromDefaultPrefix.isMoreThanZero()){
+                        productId = productIdFromDefaultPrefix
+                    }
+
+                    if (isOperatorChanged || rechargePdpPulsaClientNumberWidget.getInputNumber()
                             .length in MINIMUM_VALID_NUMBER_LENGTH .. MAXIMUM_VALID_NUMBER_LENGTH
                     ) {
                         operator = selectedOperator.operator
@@ -206,6 +220,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                             showOperatorIcon(selectedOperator.operator.attributes.imageUrl)
                         }
                         hideEmptyState()
+                        onHideBuyWidget()
                         getRecommendations()
                         getCatalogProductInput(selectedOperator.key)
                     } else {
@@ -274,6 +289,11 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         viewModel.observableDenomMCCMData.observe(viewLifecycleOwner, { denomData ->
             when (denomData) {
                 is RechargeNetworkResult.Success -> {
+
+                    if (productId >= 0) {
+                        viewModel.setAutoSelectedDenom(denomData.data.denomWidgetModel.listDenomData, productId.toString())
+                    }
+
                     val selectedPositionDenom = viewModel.getSelectedPositionId(denomData.data.denomWidgetModel.listDenomData)
                     val selectedPositionMCCM = viewModel.getSelectedPositionId(denomData.data.mccmFlashSaleModel.listDenomData)
 
@@ -385,8 +405,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
-            setContactName(data.clientName)
-            setInputNumber(data.prefill, true)
+            if (clientNumber.isNotEmpty()){
+                setInputNumber(clientNumber, true)
+            } else {
+                setContactName(data.clientName)
+                setInputNumber(data.prefill, true)
+            }
         }
     }
 
@@ -925,7 +949,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM)
                     ?: TopupBillsExtraParam()
                 clientNumber = digitalTelcoExtraParam.clientNumber
-                productId = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
+                productIdFromApplink = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
                 if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
                     categoryId = digitalTelcoExtraParam.categoryId.toInt()
                 }

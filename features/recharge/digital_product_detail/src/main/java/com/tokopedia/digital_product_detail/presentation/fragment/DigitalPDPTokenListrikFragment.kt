@@ -55,6 +55,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
@@ -237,6 +238,10 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         viewModel.observableDenomData.observe(viewLifecycleOwner, { denomData ->
             when (denomData) {
                 is RechargeNetworkResult.Success -> {
+                    if (productId >= 0) {
+                        viewModel.setAutoSelectedDenom(denomData.data.listDenomData, productId.toString())
+                    }
+
                     val selectedPositionDenom = viewModel.getSelectedPositionId(denomData.data.listDenomData)
                     onSuccessDenomGrid(denomData.data, selectedPositionDenom)
 
@@ -395,8 +400,12 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
         binding?.rechargePdpTokenListrikClientNumberWidget?.run {
-            setContactName(data.clientName)
-            setInputNumber(data.prefill, true)
+            if (clientNumber.isNotEmpty()){
+                setInputNumber(clientNumber, true)
+            } else {
+                setContactName(data.clientName)
+                setInputNumber(data.prefill, true)
+            }
         }
     }
 
@@ -563,6 +572,10 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                     DigitalPDPCategoryUtil.getCategoryName(categoryId),
                     viewModel.operatorData.attributes.name
                 )
+
+                if (productId <= 0) {
+                    productId = viewModel.operatorData.attributes.defaultProductId.toIntOrZero()
+                }
 
                 getRecommendations()
                 getCatalogInputMultiTab(operatorId)

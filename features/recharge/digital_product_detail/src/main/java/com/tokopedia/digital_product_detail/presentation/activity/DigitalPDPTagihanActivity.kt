@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
+import com.tokopedia.digital_product_detail.data.model.param.GeneralExtraParam
 import com.tokopedia.digital_product_detail.di.DaggerDigitalPDPComponent
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.fragment.DigitalPDPTagihanFragment
@@ -40,12 +41,14 @@ class DigitalPDPTagihanActivity: BaseSimpleActivity(), HasComponent<DigitalPDPCo
     }
 
     override fun getNewFragment(): Fragment? {
-        val digitalTelcoExtraParam = TopupBillsExtraParam()
+        val digitalTelcoExtraParam = GeneralExtraParam()
         val bundle = intent.extras
         digitalTelcoExtraParam.menuId = bundle?.getString(DigitalPDPConstant.PARAM_MENU_ID) ?: DigitalPDPCategoryUtil.DEFAULT_MENU_ID_TELCO
         digitalTelcoExtraParam.categoryId = bundle?.getString(DigitalPDPConstant.PARAM_CATEGORY_ID) ?: ""
         digitalTelcoExtraParam.productId = bundle?.getString(DigitalPDPConstant.PARAM_PRODUCT_ID) ?: ""
         digitalTelcoExtraParam.clientNumber = bundle?.getString(DigitalPDPConstant.PARAM_CLIENT_NUMBER) ?: ""
+        digitalTelcoExtraParam.operatorId = bundle?.getString(DigitalPDPConstant.PARAM_OPERATOR_ID) ?: ""
+
         return DigitalPDPTagihanFragment.newInstance(digitalTelcoExtraParam)
     }
 

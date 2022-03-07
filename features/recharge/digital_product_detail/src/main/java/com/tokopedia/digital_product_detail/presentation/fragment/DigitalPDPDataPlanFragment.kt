@@ -61,8 +61,10 @@ import com.tokopedia.digital_product_detail.presentation.utils.toggle
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
@@ -129,7 +131,10 @@ class DigitalPDPDataPlanFragment :
     private var operator = TelcoOperator()
     private var loyaltyStatus = ""
     private var clientNumber = ""
+
     private var productId =  0
+    private var productIdFromApplink = 0
+
     private var menuId = 0
     private var categoryId = TelcoCategoryType.CATEGORY_PAKET_DATA
     private var inputNumberActionType = InputNumberActionType.MANUAL
@@ -166,7 +171,6 @@ class DigitalPDPDataPlanFragment :
         initClientNumberWidget()
         setAnimationAppBarLayout()
         observeData()
-
         getCatalogMenuDetail()
     }
 
@@ -189,7 +193,7 @@ class DigitalPDPDataPlanFragment :
             val digitalTelcoExtraParam = this.getParcelable(DigitalPDPConstant.EXTRA_PARAM)
                 ?: TopupBillsExtraParam()
             clientNumber = digitalTelcoExtraParam.clientNumber
-            productId = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
+            productIdFromApplink = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
             if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
                 categoryId = digitalTelcoExtraParam.categoryId.toInt()
             }
@@ -236,7 +240,17 @@ class DigitalPDPDataPlanFragment :
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
                         selectedOperator.operator.attributes.name
                     )
+
                     val isOperatorChanged = operator.id != selectedOperator.operator.id
+                    val productIdFromDefaultPrefix = selectedOperator.operator.attributes.defaultProductId.toIntOrZero()
+
+                    //set default product id when prefix changed
+                    if (isOperatorChanged && operator.id.isEmpty() && productIdFromApplink.isMoreThanZero()){
+                        productId = productIdFromApplink
+                    } else if (isOperatorChanged && productIdFromDefaultPrefix.isMoreThanZero()){
+                        productId = productIdFromDefaultPrefix
+                    }
+
                     if (isOperatorChanged || selectedClientNumber
                             .length in MINIMUM_VALID_NUMBER_LENGTH..MAXIMUM_VALID_NUMBER_LENGTH
                     ) {
@@ -245,6 +259,7 @@ class DigitalPDPDataPlanFragment :
                             showOperatorIcon(selectedOperator.operator.attributes.imageUrl)
                         }
                         hideEmptyState()
+                        onHideBuyWidget()
                         getRecommendations()
                         getCatalogProductInputMultiTab(selectedOperator.key, isOperatorChanged,
                             selectedClientNumber)
@@ -315,6 +330,11 @@ class DigitalPDPDataPlanFragment :
         viewModel.observableDenomMCCMData.observe(viewLifecycleOwner, { denomData ->
             when (denomData) {
                 is RechargeNetworkResult.Success -> {
+
+                    if (productId >= 0) {
+                        viewModel.setAutoSelectedDenom(denomData.data.denomFull.listDenomData, productId.toString())
+                    }
+
                     val selectedPositionDenom = viewModel.getSelectedPositionId(denomData.data.denomFull.listDenomData)
                     val selectedPositionMCCM = viewModel.getSelectedPositionId(denomData.data.denomMCCMFull.listDenomData)
 
@@ -660,8 +680,12 @@ class DigitalPDPDataPlanFragment :
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
-            setContactName(data.clientName)
-            setInputNumber(data.prefill, true)
+            if (clientNumber.isNotEmpty()){
+                setInputNumber(clientNumber, true)
+            } else {
+                setContactName(data.clientName)
+                setInputNumber(data.prefill, true)
+            }
         }
     }
 

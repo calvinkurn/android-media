@@ -218,6 +218,14 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
+    protected fun verifySelectedProductSuccess(expectedResponse: SelectedProduct){
+        Assert.assertEquals(expectedResponse, viewModel.selectedGridProduct)
+    }
+
+    protected fun verifySelectedProductNull(){
+        Assert.assertEquals(viewModel.selectedGridProduct.denomData.id, "")
+    }
+
     protected fun verifyGetPrefixOperatorFail() {
         val actualResponse = viewModel.catalogPrefixSelect.value
         Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)

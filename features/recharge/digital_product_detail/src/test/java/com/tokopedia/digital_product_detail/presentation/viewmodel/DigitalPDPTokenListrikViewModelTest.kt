@@ -515,6 +515,33 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
         verifyListInfoEmpty(actualListInfo)
     }
 
+    @Test
+    fun  `when given list denom and productId should run and successfully get selected denom`() {
+        val response = dataFactory.getCatalogInputMultiTabData()
+        val mappedResponse = mapperFactory.mapTokenListrikDenom(response)
+        val selectedDenom = dataFactory.getSelectedData(mappedResponse.listDenomData.get(0))
+        val idDenom = "182"
+
+        onGetCatalogInputMultitab_thenReturn(mappedResponse)
+
+        viewModel.setAutoSelectedDenom(mappedResponse.listDenomData, idDenom)
+
+        verifySelectedProductSuccess(selectedDenom)
+    }
+
+    @Test
+    fun  `when given list denom and productId should failed and failed get selected denom`() {
+        val response = dataFactory.getCatalogInputMultiTabData()
+        val mappedResponse = mapperFactory.mapTokenListrikDenom(response)
+        val idDenom = "181"
+
+        onGetCatalogInputMultitab_thenReturn(mappedResponse)
+
+        viewModel.setAutoSelectedDenom(mappedResponse.listDenomData, idDenom)
+
+        verifySelectedProductNull()
+    }
+
     companion object {
         const val MENU_ID = 291
     }

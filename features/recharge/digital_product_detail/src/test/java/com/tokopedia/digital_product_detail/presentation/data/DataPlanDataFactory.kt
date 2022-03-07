@@ -180,6 +180,14 @@ class DataPlanDataFactory {
         )
     }
 
+    fun getSelectedData(data: DenomData): SelectedProduct {
+        return SelectedProduct(
+            denomData = data,
+            DenomWidgetEnum.FULL_TYPE,
+            0
+        )
+    }
+
     companion object {
         const val GET_FAVORITE_NUMBER = "common_telco/get_favorite_number_mock.json"
         const val GET_RECOMMENDATION = "common_telco/get_recommendation_mock.json"

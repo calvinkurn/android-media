@@ -353,6 +353,14 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         Assert.assertTrue(viewModel.catalogProductJob?.isCancelled == true)
     }
 
+    protected fun verifySelectedProductSuccess(expectedResponse: SelectedProduct){
+        Assert.assertEquals(expectedResponse, viewModel.selectedFullProduct)
+    }
+
+    protected fun verifySelectedProductNull(){
+        Assert.assertEquals(viewModel.selectedFullProduct.denomData.id, "")
+    }
+
     protected fun verifyRecommendationJobIsNull() {
         Assert.assertNull(viewModel.recommendationJob)
     }

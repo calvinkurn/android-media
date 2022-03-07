@@ -260,6 +260,17 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         }
     }
 
+    fun setAutoSelectedDenom(listDenomData: List<DenomData>, productId: String){
+        var denomData: DenomData? = null
+        listDenomData.forEachIndexed{ index, activeDenomData ->
+            if (productId.equals(activeDenomData.id)) denomData = activeDenomData
+        }
+
+        denomData?.let {
+            selectedFullProduct = SelectedProduct(it, DenomWidgetEnum.FULL_TYPE, 0)
+        }
+    }
+
     fun getSelectedPositionId(listDenomData: List<DenomData>): Int? {
         var selectedProductPositionId: Int? = null
         listDenomData.forEachIndexed { index, denomData ->

@@ -544,6 +544,36 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
         verifyRecomCheckoutUrlUpdated(expectedResult.appUrl)
     }
 
+    @Test
+    fun  `when given list denom and productId should run and successfully get selected denom`() {
+        val response = dataFactory.getCatalogInputMultiTabData()
+        val isRefreshedFilter = true
+        val mappedResponse = mapperFactory.mapMultiTabFullDenom(response, isRefreshedFilter)
+        val selectedDenom = dataFactory.getSelectedData(mappedResponse.denomFull.listDenomData.get(0))
+        val idDenom = "10930"
+
+        onGetCatalogInputMultitab_thenReturn(mappedResponse)
+
+        viewModel.setAutoSelectedDenom(mappedResponse.denomFull.listDenomData, idDenom)
+
+        verifySelectedProductSuccess(selectedDenom)
+
+    }
+
+    @Test
+    fun  `when given list denom and productId should failed and failed get selected denom`() {
+        val response = dataFactory.getCatalogInputMultiTabData()
+        val isRefreshedFilter = true
+        val mappedResponse = mapperFactory.mapMultiTabFullDenom(response, isRefreshedFilter)
+        val idDenom = "1"
+
+        onGetCatalogInputMultitab_thenReturn(mappedResponse)
+
+        viewModel.setAutoSelectedDenom(mappedResponse.denomFull.listDenomData, idDenom)
+
+        verifySelectedProductNull()
+    }
+
     companion object {
         const val MENU_ID = 290
     }
