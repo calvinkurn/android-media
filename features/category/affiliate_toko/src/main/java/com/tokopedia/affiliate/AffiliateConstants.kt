@@ -38,6 +38,8 @@ const val AFFILIATE_TRX_ENABLED = "aff_trx_history"
 
 const val AFFILIATE_WITHDRAWAL = "Aff_withdrawal"
 
+const val AFFILIATE_TRAFFIC_DISB = "traffic_att_disb"
+
 const val DEFAULT_VALUE = false
 
 const val PROJECT_ID = 20

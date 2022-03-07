@@ -79,7 +79,7 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
     }
 
     private fun initList(listItem: Any?) {
-        if(type == TYPE_HOME){
+        if(type == TYPE_HOME && viewModel?.isFeatureWhiteListed() == true){
             (listItem as? List<AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics.Tooltip.SubMetrics?>)?.forEach {
                 viewModel?.itemList?.add(AffiliateTrafficAttributionModel(it))
             }
