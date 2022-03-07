@@ -57,6 +57,7 @@
         android:layout_height="wrap_content"
         android:elevation="@dimen/layout_lvl3"
         android:padding="@dimen/spacing_lvl4"
+        android:background="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
