@@ -49,7 +49,7 @@ class VideoWidgetView(
         updateResizeModeBasedOnScaleType(scaleType)
 
         surfaceView = TextureView(context)
-        surfaceView?.id = R.id.product_video_texture
+        surfaceView?.id = R.id.video_widget_view_texture
         val params = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT

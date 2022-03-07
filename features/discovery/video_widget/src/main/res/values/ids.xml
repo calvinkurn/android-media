@@ -2,5 +2,5 @@
 <resources>
     <item name="thumbImg" type="id"/>
     <item name="exoProgressBar" type="id"/>
-    <item name="product_video_texture" type="id"/>
+    <item name="video_widget_view_texture" type="id"/>
 </resources>
