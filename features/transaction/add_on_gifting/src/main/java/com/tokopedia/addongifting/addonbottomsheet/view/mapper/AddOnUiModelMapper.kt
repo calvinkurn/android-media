@@ -76,13 +76,16 @@ object AddOnUiModelMapper {
                 addOnNote = initialAddOnNote
             }
             if (addOnNote.isBlank()) {
-                addOnNote = addOn?.basicInfo?.metadata?.notesTemplate ?: ""
+                initialAddOnNote = addOn?.basicInfo?.metadata?.notesTemplate ?: ""
+                addOnNote = initialAddOnNote
             }
             if (addOnNoteFrom.isBlank()) {
-                addOnNoteFrom = addOnProductData.availableBottomSheetData.defaultFrom
+                initialAddOnNoteFrom = addOnProductData.availableBottomSheetData.defaultFrom
+                addOnNoteFrom = initialAddOnNoteFrom
             }
             if (addOnNoteTo.isBlank()) {
-                addOnNoteTo = addOnProductData.availableBottomSheetData.defaultTo
+                initialAddOnNoteTo = addOnProductData.availableBottomSheetData.defaultTo
+                addOnNoteTo = initialAddOnNoteTo
             }
             isCustomNote = addOn?.basicInfo?.rules?.customNote ?: false
             onlyGreetingCardInfo = addOnProductData.availableBottomSheetData.addOnInfoWording.onlyGreetingCard
