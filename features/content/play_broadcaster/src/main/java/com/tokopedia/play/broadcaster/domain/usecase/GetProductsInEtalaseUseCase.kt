@@ -98,7 +98,7 @@ class GetProductsInEtalaseUseCase @Inject constructor(
             },
             PARAMS_SORT to mapOf(
                 PARAMS_ID to sort.key,
-                PARAMS_VALUE to sort.value.value
+                PARAMS_VALUE to sort.direction.value
             )
         )
 

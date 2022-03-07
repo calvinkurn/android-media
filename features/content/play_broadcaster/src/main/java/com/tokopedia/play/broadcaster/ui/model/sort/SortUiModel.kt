@@ -10,24 +10,24 @@ import kotlinx.android.parcel.Parcelize
 data class SortUiModel(
     val key: String,
     val text: String,
-    val value: SortValue,
+    val direction: SortDirection,
 ) : Parcelable {
     companion object {
         val supportedSortList: List<SortUiModel> = listOf(
             SortUiModel(
                 key = "UPDATE_TIME",
                 text = "Terbaru",
-                value = SortValue.Descending,
+                direction = SortDirection.Descending,
             ),
             SortUiModel(
                 key = "PRICE",
                 text = "Harga Terendah",
-                value = SortValue.Ascending,
+                direction = SortDirection.Ascending,
             ),
             SortUiModel(
                 key = "PRICE",
                 text = "Harga Tertinggi",
-                value = SortValue.Descending,
+                direction = SortDirection.Descending,
             ),
         )
 
@@ -36,7 +36,7 @@ data class SortUiModel(
     }
 }
 
-enum class SortValue(val value: String) {
+enum class SortDirection(val value: String) {
     Ascending("ASC"),
     Descending("DESC"),
 }
