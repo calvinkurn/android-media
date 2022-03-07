@@ -215,6 +215,8 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setCourierSelectionErrorTitle(groupShop.getCourierSelectionErrorData().getTitle());
             shipmentCartItemModel.setCourierSelectionErrorDescription(groupShop.getCourierSelectionErrorData().getDescription());
             shipmentCartItemModel.setTokoNow(groupShop.getShop().isTokoNow());
+            shipmentCartItemModel.setShopTickerTitle(groupShop.getShop().getShopTickerTitle());
+            shipmentCartItemModel.setShopTicker(groupShop.getShop().getShopTicker());
             shipmentCartItemModels.add(shipmentCartItemModel);
         }
 

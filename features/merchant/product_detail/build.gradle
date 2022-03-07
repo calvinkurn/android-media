@@ -134,9 +134,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.promoMvcWidget)
     implementation project(rootProject.ext.features.playWidget)
 
-    // Embrace
-    implementation rootProject.ext.miscDependencies.embraceSdk
-
     //video player
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi

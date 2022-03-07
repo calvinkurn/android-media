@@ -15,6 +15,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.model.StepperModel
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -22,6 +23,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.R
+import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
+import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.util.KycCleanupStorageWorker
 import com.tokopedia.kyc_centralized.view.customview.fragment.NotFoundFragment
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormFaceFragment
@@ -31,13 +34,16 @@ import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_2
 import com.tokopedia.user_identification_common.KYCConstant
+import com.tokopedia.user_identification_common.KYCConstant.Companion.LIVENESS_TAG
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.utils.file.FileUtil
+import timber.log.Timber
 
 /**
  * @author by alvinatin on 02/11/18.
  */
-class UserIdentificationFormActivity : BaseStepperActivity() {
+class UserIdentificationFormActivity : BaseStepperActivity(),
+    HasComponent<UserIdentificationCommonComponent> {
     private var fragmentList: ArrayList<Fragment> = arrayListOf()
     private var snackbar: SnackbarRetry? = null
     private var projectId = -1
@@ -188,6 +194,10 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
         }
     }
 
+    override fun getComponent(): UserIdentificationCommonComponent {
+        return ActivityComponentFactory.instance.createActivityComponent(this)
+    }
+
     fun setTextViewWithBullet(text: String, context: Context, layout: LinearLayout) {
         val tv = Typography(context)
         val span = SpannableString(text)
@@ -232,7 +242,8 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
     override fun onDestroy() {
         super.onDestroy()
         //Delete KYC folder immediately, if onDestroy is not called, we rely on worker
-        if(isFinishing) {
+        if (isFinishing) {
+            Timber.d("$LIVENESS_TAG: onDestroy Delete")
             FileUtil.deleteFolder(externalCacheDir?.absolutePath + FILE_NAME_KYC)
         }
     }

@@ -15,8 +15,11 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.localizationchooseaddress.R
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.ui.preference.CoachMarkStateSharePref
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.DEFAULT_LCA_VERSION
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.LCA_VERSION
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
@@ -28,19 +31,23 @@ object ChooseAddressUtils {
     private const val locationRequestInterval = 10 * 1000L
     private const val locationRequestFastestInterval = 2 * 1000L
 
-    fun getLocalizingAddressData(context: Context): LocalCacheModel? {
+    fun getLocalizingAddressData(context: Context): LocalCacheModel {
         return if (hasLocalizingAddressOnCache(context)) {
             val chooseAddressPref = ChooseAddressSharePref(context)
+            val localCache = chooseAddressPref.getLocalCacheData()
             LocalCacheModel(
-                chooseAddressPref.getLocalCacheData()?.address_id.checkIfNumber("address_id"),
-                chooseAddressPref.getLocalCacheData()?.city_id ?: "",
-                chooseAddressPref.getLocalCacheData()?.district_id.checkIfNumber("district_id"),
-                chooseAddressPref.getLocalCacheData()?.lat ?: "",
-                chooseAddressPref.getLocalCacheData()?.long ?: "",
-                chooseAddressPref.getLocalCacheData()?.postal_code ?: "",
-                chooseAddressPref.getLocalCacheData()?.label ?: "",
-                chooseAddressPref.getLocalCacheData()?.shop_id ?: "",
-                chooseAddressPref.getLocalCacheData()?.warehouse_id ?: ""
+                localCache?.address_id.checkIfNumber("address_id"),
+                localCache?.city_id ?: "",
+                localCache?.district_id.checkIfNumber("district_id"),
+                localCache?.lat ?: "",
+                localCache?.long ?: "",
+                localCache?.postal_code ?: "",
+                localCache?.label ?: "",
+                localCache?.shop_id ?: "",
+                localCache?.warehouse_id ?: "",
+                localCache?.warehouses ?: listOf(),
+                localCache?.service_type ?: "",
+                localCache?.version ?: DEFAULT_LCA_VERSION
             )
         } else {
             if (isLoginUser(context)) {
@@ -91,12 +98,15 @@ object ChooseAddressUtils {
             if (latestChooseAddressData.postal_code != localizingAddressStateData.postal_code) validate = true
             if (latestChooseAddressData.shop_id != localizingAddressStateData.shop_id) validate = true
             if (latestChooseAddressData.warehouse_id != localizingAddressStateData.warehouse_id) validate = true
+            if (latestChooseAddressData.warehouses != localizingAddressStateData.warehouses) validate = true
+            if (latestChooseAddressData.service_type != localizingAddressStateData.service_type) validate = true
+            if (latestChooseAddressData.version != localizingAddressStateData.version) validate = true
         }
         return validate
     }
 
     fun setLocalizingAddressData(addressId: String, cityId: String, districtId: String, lat: String, long: String, label: String,
-                                 postalCode: String, shopId: String, warehouseId: String): LocalCacheModel {
+                                 postalCode: String, shopId: String, warehouseId: String, warehouses: List<LocalWarehouseModel>, serviceType: String): LocalCacheModel {
         return LocalCacheModel(
                 address_id = addressId,
                 city_id = cityId,
@@ -106,15 +116,24 @@ object ChooseAddressUtils {
                 label = label,
                 postal_code = postalCode,
                 shop_id = shopId,
-                warehouse_id = warehouseId
+                warehouse_id = warehouseId,
+                warehouses = warehouses,
+                service_type = serviceType,
+                version = LCA_VERSION
         )
     }
 
     fun updateLocalizingAddressDataFromOther(context: Context, addressId: String, cityId: String, districtId: String, lat: String, long: String, label: String,
-                                             postalCode: String, shopId: String, warehouseId: String) {
+                                             postalCode: String, shopId: String, warehouseId: String, warehouses: List<LocalWarehouseModel>, serviceType: String) {
         val chooseAddressPref = ChooseAddressSharePref(context)
-        val localData = setLocalizingAddressData(addressId, cityId, districtId, lat, long, label, postalCode, shopId, warehouseId)
+        val localData = setLocalizingAddressData(addressId = addressId, cityId = cityId, districtId = districtId, lat = lat, long = long, label = label, postalCode = postalCode, shopId = shopId, warehouseId = warehouseId, warehouses = warehouses, serviceType = serviceType)
         chooseAddressPref.setLocalCache(localData)
+    }
+
+    fun updateTokoNowData(context: Context, warehouseId: String, shopId: String, warehouses: List<LocalWarehouseModel>, serviceType: String) {
+        val chooseAddressPref = ChooseAddressSharePref(context)
+        val newData = getLocalizingAddressData(context).copy(warehouse_id = warehouseId, shop_id = shopId, warehouses = warehouses, service_type = serviceType, version = LCA_VERSION)
+        chooseAddressPref.setLocalCache(newData)
     }
 
     /**

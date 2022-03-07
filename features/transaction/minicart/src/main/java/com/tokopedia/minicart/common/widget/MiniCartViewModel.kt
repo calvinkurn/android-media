@@ -24,6 +24,7 @@ import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerErrorUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerWarningUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableHeaderUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableReasonUiModel
 import com.tokopedia.minicart.chatlist.MiniCartChatListUiModelMapper
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
@@ -322,6 +323,18 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     private fun onSuccessBulkDeleteUnavailableCartItems(removeFromCartData: RemoveFromCartData, isLastItem: Boolean) {
+        if (isLastItem) {
+            // manual delete items when delete last item to directly update widget
+            val visitables = getVisitables()
+            val tmpVisitables = mutableListOf<Visitable<*>>()
+            tmpVisitables.addAll(visitables)
+            tmpVisitables.removeAll {
+                it is MiniCartUnavailableHeaderUiModel || it is MiniCartUnavailableReasonUiModel ||
+                        it is MiniCartProductUiModel
+            }
+            updateVisitables(tmpVisitables)
+            tmpHiddenUnavailableItems.clear()
+        }
         _globalEvent.value = GlobalEvent(
                 state = GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM,
                 data = RemoveFromCartDomainModel(removeFromCartData = removeFromCartData, isLastItem = isLastItem, isBulkDelete = true)

@@ -35,6 +35,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
@@ -44,14 +45,15 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.cart.view.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromo
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.LocalizationChooseAddress
+import com.tokopedia.cart.databinding.FragmentCartBinding
 import com.tokopedia.cart.domain.model.cartlist.*
+import com.tokopedia.cart.view.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_AFTER_CHOOSE_ADDRESS
 import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_DEFAULT
 import com.tokopedia.cart.view.adapter.cart.CartAdapter
@@ -67,7 +69,6 @@ import com.tokopedia.cart.view.di.DaggerCartComponent
 import com.tokopedia.cart.view.mapper.*
 import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
-import com.tokopedia.cart.databinding.FragmentCartBinding
 import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_HOMEPAGE
 import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_RETRY
 import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_START_SHOPPING
@@ -79,6 +80,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.navigation_common.listener.CartNotifyListener
 import com.tokopedia.network.exception.MessageErrorException
@@ -270,6 +272,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             if (savedInstanceState != null) {
                 loadCachedData()
             } else {
+                EmbraceMonitoring.startMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_LOAD_CART)
                 cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE)
                 cartAllPerformanceMonitoring = PerformanceMonitoring.start(CART_ALL_TRACE)
             }
@@ -1654,7 +1657,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (isAdded) {
             binding?.vDisabledGoToCourierPageButton?.gone()
             binding?.goToCourierPageButton?.isEnabled = true
-            binding?.goToCourierPageButton?.setOnClickListener { checkGoToShipment("") }
+            binding?.goToCourierPageButton?.setOnClickListener {
+                EmbraceMonitoring.startMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_ACT_BUY)
+                checkGoToShipment("")
+            }
         }
     }
 
@@ -1982,13 +1988,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun validateLocalCacheAddress(activity: FragmentActivity, localizationChooseAddress: LocalizationChooseAddress) {
-        var snippetMode = false
-        ChooseAddressUtils.getLocalizingAddressData(activity)?.let {
-            if (it.address_id.toLongOrZero() == 0L && it.district_id.toLongOrZero() != 0L) {
-                snippetMode = true
-            }
-        }
+        val localCacheData = ChooseAddressUtils.getLocalizingAddressData(activity)
+        val snippetMode = localCacheData.address_id.toLongOrZero() == 0L && localCacheData.district_id.toLongOrZero() != 0L
 
+        val newTokoNowData = localizationChooseAddress.tokoNow
+        val shouldReplaceTokoNowData = newTokoNowData.isModified
         if (!snippetMode && localizationChooseAddress.state == LocalizationChooseAddress.STATE_ADDRESS_ID_NOT_MATCH) {
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                     context = activity,
@@ -1999,8 +2003,17 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     long = localizationChooseAddress.longitude,
                     label = String.format("%s %s", localizationChooseAddress.addressName, localizationChooseAddress.receiverName),
                     postalCode = localizationChooseAddress.postalCode,
-                    shopId = localizationChooseAddress.tokoNow.shopId,
-                    warehouseId = localizationChooseAddress.tokoNow.warehouseId)
+                    shopId = if (shouldReplaceTokoNowData) newTokoNowData.shopId else localCacheData.shop_id,
+                    warehouseId = if (shouldReplaceTokoNowData) newTokoNowData.warehouseId else localCacheData.warehouse_id,
+                    warehouses = if (shouldReplaceTokoNowData) TokonowWarehouseMapper.mapWarehousesResponseToLocal(newTokoNowData.warehouses) else localCacheData.warehouses,
+                    serviceType = if (shouldReplaceTokoNowData) newTokoNowData.serviceType else localCacheData.service_type)
+        } else if (shouldReplaceTokoNowData) {
+            ChooseAddressUtils.updateTokoNowData(
+                context = activity,
+                shopId = newTokoNowData.shopId,
+                warehouseId = newTokoNowData.warehouseId,
+                warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(newTokoNowData.warehouses),
+                serviceType = newTokoNowData.serviceType)
         }
     }
 
@@ -2323,6 +2336,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun stopCartPerformanceTrace() {
         if (!isTraceCartStopped) {
+            EmbraceMonitoring.stopMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_LOAD_CART)
             cartPerformanceMonitoring?.stopTrace()
             isTraceCartStopped = true
         }

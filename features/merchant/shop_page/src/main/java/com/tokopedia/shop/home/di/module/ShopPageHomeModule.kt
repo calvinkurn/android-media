@@ -1,7 +1,9 @@
 package com.tokopedia.shop.home.di.module
 
 import android.content.Context
+import com.tokopedia.atc_common.domain.mapper.AddToCartBundleDataMapper
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
@@ -42,6 +44,20 @@ class ShopPageHomeModule {
                                         addToCartDataMapper: AddToCartDataMapper,
                                         chosenAddressRequestHelper: ChosenAddressRequestHelper): AddToCartOccMultiUseCase {
         return AddToCartOccMultiUseCase(graphqlRepository, addToCartDataMapper, chosenAddressRequestHelper)
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    fun provideAddToCartBundleUseCase(
+            graphqlRepository: GraphqlRepository,
+            addToCartBundleDataMapper: AddToCartBundleDataMapper,
+            chosenAddressRequestHelper: ChosenAddressRequestHelper
+    ): AddToCartBundleUseCase {
+        return AddToCartBundleUseCase(
+                graphqlRepository,
+                addToCartBundleDataMapper,
+                chosenAddressRequestHelper
+        )
     }
 
     @ShopPageHomeScope

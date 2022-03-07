@@ -124,6 +124,9 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.supportV13
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.biometric
+    implementation platform(rootProject.ext.firebase.bom)
+    implementation rootProject.ext.firebase.core
+    implementation rootProject.ext.firebase.analytics
     implementation rootProject.ext.firebase.fireStore
     implementation rootProject.ext.networkDependencies.converterGson
     implementation rootProject.ext.networkDependencies.adapterRxJava
@@ -253,7 +256,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.playServicesDependencies.measurementApi
-    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    
 
 
     // lint checks

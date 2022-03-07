@@ -28,6 +28,7 @@ import com.tokopedia.kyc_centralized.KycUrl
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationAnalytics
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationAnalytics.Companion.createInstance
+import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationInfoActivity
 import com.tokopedia.kyc_centralized.view.customview.KycOnBoardingViewInflater
@@ -98,10 +99,9 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        val daggerUserIdentificationComponent = DaggerUserIdentificationCommonComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .build()
-        daggerUserIdentificationComponent.inject(this)
+        ActivityComponentFactory.instance
+            .createActivityComponent(activity as Activity)
+            .inject(this)
     }
 
     private fun initView(parentView: View) {
