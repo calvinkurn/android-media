@@ -328,7 +328,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val model = TokoNowCategoryGridUiModel(
                 id="11111",
                 title="Category Tokonow",
-                categoryList = emptyList(),
+                categoryListUi = emptyList(),
                 state= TokoNowLayoutState.SHOW
         )
 
@@ -338,7 +338,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val expectedResponse = TokoNowCategoryGridUiModel(
             id = "11111",
             title = "Category Tokonow",
-            categoryList = listOf(
+            categoryListUi = listOf(
                 TokoNowCategoryItemUiModel(
                     id="",
                     title="",
@@ -381,7 +381,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val model = TokoNowCategoryGridUiModel(
                 id="11111",
                 title="Category Tokonow",
-                categoryList = emptyList(),
+                categoryListUi = emptyList(),
                 state= TokoNowLayoutState.SHOW
         )
 
@@ -391,7 +391,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val expectedResponse = TokoNowCategoryGridUiModel(
             id = "11111",
             title = "Category Tokonow",
-            categoryList = null,
+            categoryListUi = null,
             state = TokoNowLayoutState.HIDE
         )
 
@@ -603,7 +603,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 TokoNowCategoryGridUiModel(
                     id = "11111",
                     title = "Category Tokonow",
-                    categoryList = null,
+                    categoryListUi = null,
                     state = TokoNowLayoutState.HIDE
                 ),
                 createSliderBannerDataModel(
