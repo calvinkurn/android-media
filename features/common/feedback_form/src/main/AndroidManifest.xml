@@ -5,7 +5,7 @@
     <application>
         <activity
             android:name=".feedbackpage.ui.feedbackpage.FeedbackPageActivity"
-            android:label="@string/create_report_title"
+            android:label="Create Report"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:exported="false">
@@ -31,7 +31,7 @@
         <activity
             android:name=".drawonpicture.presentation.activity.DrawOnPictureActivity"
             android:hardwareAccelerated="true"
-            android:label="@string/draw_on_picture_label"
+            android:label="Edit Images"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
     </application>
