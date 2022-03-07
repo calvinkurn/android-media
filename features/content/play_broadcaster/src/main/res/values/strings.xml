@@ -111,7 +111,7 @@
     <string name="play_live_broadcast_network_loss">Yaah, koneksimu putus</string>
 
     <string name="play_summary_title">Laporan Live</string>
-    <string name="play_summary_button_save_video">Simpan Video di Halaman Toko</string>
+    <string name="play_summary_button_post_video">Posting Video</string>
     <string name="play_summary_button_delete_video">Hapus Video</string>
     <string name="play_summary_total_game_participant"><![CDATA[Peserta Game <font color=#03AC0E>Lihat Pemenang</font></b>]]></string>
     <string name="play_summary_total_view">Penonton</string>

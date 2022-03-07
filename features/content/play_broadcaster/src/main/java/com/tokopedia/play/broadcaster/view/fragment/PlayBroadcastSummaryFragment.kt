@@ -54,8 +54,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     private lateinit var viewModel: PlayBroadcastSummaryViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
-    private lateinit var btnSaveVideo: UnifyButton
-    private lateinit var btnDeleteVideo: UnifyButton
+    private lateinit var btnPostVideo: UnifyButton
     private lateinit var loaderView: LoaderUnify
     private lateinit var deleteVideoDialog: DialogUnify
 
@@ -76,7 +75,6 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         observeLiveDuration()
         observeLiveTrafficMetrics()
         observeSaveVideo()
-        observeDeleteVideo()
         observeInteractiveLeaderboardInfo()
 
         return view
@@ -93,26 +91,21 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     override fun onStart() {
         super.onStart()
         requireView().requestApplyInsetsWhenAttached()
-        btnDeleteVideo.requestApplyInsetsWhenAttached()
+        btnPostVideo.requestApplyInsetsWhenAttached()
     }
 
     private fun initView(view: View) {
         with(view) {
-            btnSaveVideo = findViewById(R.id.btn_save_video)
-            btnDeleteVideo = findViewById(R.id.btn_delete_video)
+            btnPostVideo = findViewById(R.id.btn_post_video)
             loaderView = findViewById(R.id.loader_summary)
         }
     }
 
     private fun setupView(view: View) {
         summaryInfoView.entranceAnimation(view as ViewGroup)
-        btnSaveVideo.setOnClickListener {
+        btnPostVideo.setOnClickListener {
             analytic.clickSaveVodOnReportPage(parentViewModel.channelId)
             viewModel.saveVideo()
-        }
-        btnDeleteVideo.setOnClickListener {
-            analytic.clickDeleteVodOnReportPage(parentViewModel.channelId)
-            showConfirmDeleteVideoDialog()
         }
     }
 
@@ -121,7 +114,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
             v.updatePadding(top = padding.top + insets.systemWindowInsetTop)
         }
 
-        btnDeleteVideo.doOnApplyWindowInsets { v, insets, _, margin ->
+        btnPostVideo.doOnApplyWindowInsets { v, insets, _, margin ->
             val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
             val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
             if (marginLayoutParams.bottomMargin != newBottomMargin) {
@@ -211,33 +204,12 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     private fun observeSaveVideo() {
         viewModel.observableSaveVideo.observe(viewLifecycleOwner) {
             when (it) {
-                is NetworkResult.Loading -> btnSaveVideo.isLoading = true
+                is NetworkResult.Loading -> btnPostVideo.isLoading = true
                 is NetworkResult.Success -> {
                     openShopPageWithBroadcastStatus(true)
                 }
                 is NetworkResult.Fail -> {
-                    btnSaveVideo.isLoading = false
-                    view?.showErrorToaster(
-                        err = it.error,
-                        customErrMessage = it.error.localizedMessage
-                            ?: getString(R.string.play_broadcaster_default_error),
-                        actionLabel = getString(R.string.play_broadcast_try_again),
-                        actionListener = { _ -> it.onRetry() }
-                    )
-                }
-            }
-        }
-    }
-
-    private fun observeDeleteVideo() {
-        viewModel.observableDeleteVideo.observe(viewLifecycleOwner) {
-            when (it) {
-                is NetworkResult.Loading -> btnDeleteVideo.isLoading = true
-                is NetworkResult.Success -> {
-                    openShopPageWithBroadcastStatus(false)
-                }
-                is NetworkResult.Fail -> {
-                    btnDeleteVideo.isLoading = false
+                    btnPostVideo.isLoading = false
                     view?.showErrorToaster(
                         err = it.error,
                         customErrMessage = it.error.localizedMessage

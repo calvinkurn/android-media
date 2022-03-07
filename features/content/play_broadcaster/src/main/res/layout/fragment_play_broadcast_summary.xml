@@ -40,10 +40,9 @@
         android:id="@+id/layout_summary_info"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginTop="@dimen/spacing_lvl3"
         android:fillViewport="true"
         android:overScrollMode="never"
-        app:layout_constraintBottom_toTopOf="@+id/ll_button_sticky"
+        app:layout_constraintBottom_toTopOf="@+id/fl_button_sticky"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view_bro_summary_divider">
@@ -52,34 +51,23 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <LinearLayout
-        android:id="@+id/ll_button_sticky"
+    <FrameLayout
+        android:id="@+id/fl_button_sticky"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/play_dms_broadcast_summary_info_bg"
-        android:orientation="vertical"
+        android:elevation="@dimen/layout_lvl3"
         android:padding="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_save_video"
+            android:id="@+id/btn_post_video"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/play_summary_button_save_video"
+            android:text="@string/play_summary_button_post_video"
             app:unifyButtonSize="medium" />
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_delete_video"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:text="@string/play_summary_button_delete_video"
-            app:unifyButtonInvers="true"
-            app:unifyButtonSize="medium"
-            app:unifyButtonVariant="ghost" />
-
-    </LinearLayout>
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
