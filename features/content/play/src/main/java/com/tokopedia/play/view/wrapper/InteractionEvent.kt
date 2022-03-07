@@ -28,6 +28,6 @@ sealed class InteractionEvent {
         override val needLogin: Boolean = true
     }
     data class SendUpcomingReminder(val sectionInfo: ProductSectionUiModel.Section) : InteractionEvent() {
-        override val needLogin: Boolean = false
+        override val needLogin: Boolean = true
     }
 }
