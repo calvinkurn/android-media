@@ -89,15 +89,15 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         val customUrl = detail.cta.android_url +
                 "?productID=${payLaterArgsDescriptor.productId}" +
                 "&tenure=${detail.tenure}" +
+                "&gatewayCode=${detail.gatewayDetail?.gatewayCode}" +
+                "&gatewayID=${detail.gatewayDetail?.gateway_id}" +
                 "&productURL=tokopedia://fintech/paylater${
                     setAdditionalParam(
                         detail.tenure,
                         detail.gatewayDetail?.gatewayCode,
                         detail.gatewayDetail?.gateway_id
                     )
-                }" +
-                "&gatewayCode=${detail.gatewayDetail?.gatewayCode}" +
-                "&gatewayID=${detail.gatewayDetail?.gateway_id}"
+                }"
 
         PayLaterHelper.handleClickNavigation(context, detail, customUrl,
             openHowToUse = {
