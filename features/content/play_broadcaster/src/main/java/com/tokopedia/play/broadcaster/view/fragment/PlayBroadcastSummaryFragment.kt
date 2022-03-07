@@ -115,8 +115,9 @@ class PlayBroadcastSummaryFragment @Inject constructor(
             requireActivity().onBackPressed()
         }
         btnPostVideo.setOnClickListener {
-            analytic.clickSaveVodOnReportPage(parentViewModel.channelId)
-            viewModel.saveVideo()
+            broadcastCoordinator.navigateToFragment(PlayBroadcastPostVideoFragment::class.java)
+//            analytic.clickSaveVodOnReportPage(parentViewModel.channelId)
+//            viewModel.saveVideo()
         }
     }
 

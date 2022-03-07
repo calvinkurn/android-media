@@ -54,4 +54,9 @@ abstract class PlayBroadcastFragmentModule {
     @IntoMap
     @FragmentKey(PlayInteractiveLeaderBoardBottomSheet::class)
     abstract fun getInteractiveLeaderBoardBottomSheet(fragment: PlayInteractiveLeaderBoardBottomSheet): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayBroadcastPostVideoFragment::class)
+    abstract fun getPlayBroadcastPostVideoFragment(fragment: PlayBroadcastPostVideoFragment): Fragment
 }
