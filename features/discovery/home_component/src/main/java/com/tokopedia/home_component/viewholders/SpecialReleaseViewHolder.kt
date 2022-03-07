@@ -127,16 +127,6 @@ class SpecialReleaseViewHolder(
             CarouselSpecialReleaseDataModel(it, adapterPosition, this, channel)
         }.toMutableList()
 
-//        launch {
-//            try {
-//                binding?.homeComponentSpecialReleaseRv?.
-//                setHeightBasedOnProductCardMaxHeight(carouselDataModelList)
-//            }
-//            catch (throwable: Throwable) {
-//                throwable.printStackTrace()
-//            }
-//        }
-
         val visitableList: MutableList<Visitable<*>> = carouselDataModelList.map { it }.toMutableList()
         if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty()) {
             if(channel.channelViewAllCard.id != CarouselViewAllCardViewHolder.DEFAULT_VIEW_ALL_ID && channel.channelViewAllCard.contentType.isNotBlank() && channel.channelViewAllCard.contentType != CarouselViewAllCardViewHolder.CONTENT_DEFAULT) {

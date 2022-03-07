@@ -70,7 +70,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val questWidgetCallbacks: QuestWidgetCallbacks,
                          private val cmHomeWidgetCallback: CMHomeWidgetCallback,
                          private val homePayLaterWidgetListener: HomePayLaterWidgetListener,
-                         private val specialReleaseComponentListener: SpecialReleaseComponentListener,
+                         private val specialReleaseComponentListener: SpecialReleaseComponentListener
                          ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,

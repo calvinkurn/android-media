@@ -23,7 +23,6 @@ import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselEmptyCardViewHolder
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetMixLeftViewHolder
-import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import org.hamcrest.BaseMatcher
