@@ -1,10 +1,8 @@
 package com.tokopedia.play.broadcaster.view.partial
 
-import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,8 +31,7 @@ class SummaryInfoViewComponent(
     val animationDuration = container.resources.getInteger(R.integer.play_summary_layout_animation_duration_ms).toLong()
 
     private val flInfo = findViewById<FrameLayout>(R.id.fl_info)
-    private val llMeta = findViewById<ConstraintLayout>(R.id.cl_bro_summary_meta)
-    private val overflow = findViewById<View>(R.id.overflow)
+    private val clMeta = findViewById<ConstraintLayout>(R.id.cl_bro_summary_meta)
     private val tvTitle = findViewById<Typography>(R.id.tv_bro_summary_live_title)
     private val ivCover = findViewById<ImageUnify>(R.id.iv_bro_summary_cover)
     private val tvDuration = findViewById<Typography>(R.id.tv_bro_summary_duration)
@@ -61,11 +58,9 @@ class SummaryInfoViewComponent(
                 container.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
                 flInfo.translationY = animationOffset
-                overflow.translationY = animationOffset
-                llMeta.translationY = -animationOffset
+                clMeta.translationY = -animationOffset
                 flInfo.animate().translationYBy(-animationOffset).duration = animationDuration
-                llMeta.animate().translationYBy(animationOffset).duration = animationDuration
-                overflow.animate().translationYBy(-animationOffset).duration = animationDuration
+                clMeta.animate().translationYBy(animationOffset).duration = animationDuration
             }
         })
     }

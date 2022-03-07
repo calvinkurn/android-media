@@ -87,27 +87,16 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <View
-        android:id="@+id/overflow"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/play_dms_broadcast_summary_info_bg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cl_bro_summary_meta" />
-
     <FrameLayout
         android:id="@+id/fl_info"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
-        android:background="@color/play_dms_broadcast_summary_info_bg"
         android:paddingStart="@dimen/spacing_lvl4"
-        android:paddingTop="@dimen/play_dp_12"
         android:paddingEnd="@dimen/spacing_lvl4"
         android:paddingBottom="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/overflow">
+        app:layout_constraintTop_toBottomOf="@+id/cl_bro_summary_meta">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_info"
@@ -122,7 +111,7 @@
             android:layout_height="@dimen/layout_lvl6"
             android:layout_gravity="center"
             android:visibility="gone"
-            app:loader_type="circular_white"
+            app:loader_type="circular"
             tools:visibility="visible" />
 
         <include

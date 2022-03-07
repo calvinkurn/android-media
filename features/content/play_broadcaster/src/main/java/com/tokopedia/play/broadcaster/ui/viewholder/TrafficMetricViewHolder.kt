@@ -15,12 +15,10 @@ import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 
 class TrafficMetricViewHolder(view: View, val listener: Listener) : BaseViewHolder(view) {
 
-    private val playSummaryInfoIcon = itemView.findViewById<ImageView>(R.id.iv_item_play_summary_info_icon)
     private val playSummaryInfoDescription = itemView.findViewById<TextView>(R.id.tv_item_play_summary_description)
     private val playSummaryInfoCount = itemView.findViewById<TextView>(R.id.tv_item_play_summary_count_info)
 
     fun bind(metric: TrafficMetricUiModel) {
-        playSummaryInfoIcon.setImageResource(metric.type.icon)
         playSummaryInfoDescription.text = MethodChecker.fromHtml(getString(metric.type.label))
         playSummaryInfoCount.text = metric.count
 
