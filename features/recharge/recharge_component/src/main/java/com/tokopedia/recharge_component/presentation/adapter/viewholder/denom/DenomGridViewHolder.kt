@@ -63,9 +63,23 @@ class DenomGridViewHolder (
                     setStatusOutOfStockColor(resources.getString(com.tokopedia.recharge_component.R.string.out_of_stock_label_denom_digital))
 
                     val labelParams = this.layoutParams as ConstraintLayout.LayoutParams
+                    labelParams.bottomToBottom = ConstraintLayout.LayoutParams.UNSET
+                    labelParams.topToTop = ConstraintLayout.LayoutParams.UNSET
                     labelParams.topToBottom = tgDenomGridPrice.id
-                    labelParams.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
+                    labelParams.bottomToTop = pgDenomGridFlashSale.id
                     layoutParams = labelParams
+
+                    tgDenomGridPrice.run {
+                        val labelParams2 = this.layoutParams as ConstraintLayout.LayoutParams
+                        labelParams2.bottomToTop = labelDenomGridDiscount.id
+                        this.layoutParams = labelParams2
+                    }
+
+                    pgDenomGridFlashSale.run {
+                        val labelParams3 = this.layoutParams as ConstraintLayout.LayoutParams
+                        labelParams3.topToBottom = labelDenomGridDiscount.id
+                        this.layoutParams = labelParams3
+                    }
 
                     setMargin(
                         resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
@@ -79,7 +93,39 @@ class DenomGridViewHolder (
 
                 } else if (!denomGrid.discountLabel.isNullOrEmpty()){
                     show()
+
+                    val labelParams = this.layoutParams as ConstraintLayout.LayoutParams
+                    labelParams.topToBottom = ConstraintLayout.LayoutParams.UNSET
+                    labelParams.bottomToTop = ConstraintLayout.LayoutParams.UNSET
+                    labelParams.bottomToBottom = tgDenomGridSlashPrice.id
+                    labelParams.topToTop = tgDenomGridSlashPrice.id
+                    layoutParams = labelParams
+
+                    tgDenomGridPrice.run {
+                        val labelParams2 = this.layoutParams as ConstraintLayout.LayoutParams
+                        labelParams2.bottomToTop = tgDenomGridSlashPrice.id
+                        this.layoutParams = labelParams2
+                    }
+
+                    pgDenomGridFlashSale.run {
+                        val labelParams3 = this.layoutParams as ConstraintLayout.LayoutParams
+                        labelParams3.topToBottom = tgDenomGridSlashPrice.id
+                        this.layoutParams = labelParams3
+                    }
+
+                    setMargin(
+                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            .toInt(),
+                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            .toInt(),
+                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            .toInt(),
+                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            .toInt())
+
                     setStatusNormal(denomGrid.discountLabel)
+
+
                 } else hide()
             }
 
