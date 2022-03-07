@@ -38,6 +38,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.model.response.AffiliateKycDetailsData
+import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTransactionHistoryItemModel
 import com.tokopedia.applink.RouteManager
@@ -78,6 +79,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         affiliateIncomeViewModel = ViewModelProviders.of(this)[AffiliateIncomeViewModel::class.java]
+        if(savedInstanceState == null) affiliateIncomeViewModel.isUserBlackListed = (activity as? AffiliateActivity)?.getBlackListedStatus() ?: false
         setObservers()
     }
 
@@ -316,12 +318,19 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     }
 
     private fun initUi() {
+        setTarikSaldoButtonUI()
         when (RemoteConfigInstance.getInstance().abTestPlatform.getString(
             AFFILIATE_WITHDRAWAL,
             ""
         )) {
             AFFILIATE_WITHDRAWAL -> view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.show()
             else -> view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.invisible()
+        }
+    }
+
+    private fun setTarikSaldoButtonUI() {
+        view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.apply {
+            isEnabled = !affiliateIncomeViewModel.isUserBlackListed
         }
     }
 

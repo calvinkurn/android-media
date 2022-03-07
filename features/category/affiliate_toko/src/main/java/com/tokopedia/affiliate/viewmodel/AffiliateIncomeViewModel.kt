@@ -28,6 +28,7 @@ class AffiliateIncomeViewModel : BaseViewModel(){
     private var errorMessage = MutableLiveData<Throwable>()
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var rangeChanged = MutableLiveData<Boolean>()
+    var isUserBlackListed : Boolean = false
     var hasNext = true
 
      val affiliateBalanceDataUseCase = AffiliateBalanceDataUseCase(AffiliateRepository())
