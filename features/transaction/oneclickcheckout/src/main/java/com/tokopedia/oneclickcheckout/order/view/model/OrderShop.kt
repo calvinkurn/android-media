@@ -44,6 +44,16 @@ data class OrderShop(
     val isError: Boolean
         get() = errors.isNotEmpty()
 
+    // Get String Merchant Type For Payment Param
+    val merchantType: String
+        get() = when (shopTier) {
+            0 -> MERCHANT_TYPE_REGULAR_MERCHANT
+            1 -> MERCHANT_TYPE_POWER_MERCHANT
+            2 -> MERCHANT_TYPE_OFFICIAL_STORE
+            3 -> MERCHANT_TYPE_POWER_MERCHANT_PRO
+            else -> ""
+        }
+
     fun shouldValidateWeight(): Boolean {
         return maximumWeight > 0 && maximumWeightWording.isNotBlank()
     }
@@ -51,5 +61,11 @@ data class OrderShop(
     companion object {
         const val MAXIMUM_WEIGHT_WORDING_REPLACE_KEY = "{{weight}}"
         const val WEIGHT_KG_DIVIDER = 1000.0
+
+        //0 = RM, 1 = PM, 2 = OS, 3 = PMPRO
+        private const val MERCHANT_TYPE_REGULAR_MERCHANT = "RM"
+        private const val MERCHANT_TYPE_POWER_MERCHANT = "PM"
+        private const val MERCHANT_TYPE_OFFICIAL_STORE = "OS"
+        private const val MERCHANT_TYPE_POWER_MERCHANT_PRO = "PMPRO"
     }
 }
