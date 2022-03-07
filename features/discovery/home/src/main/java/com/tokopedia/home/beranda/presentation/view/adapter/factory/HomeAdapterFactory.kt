@@ -21,6 +21,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
+import com.tokopedia.home.beranda.presentation.view.listener.HomePayLaterWidgetListener
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home_component.HomeComponentTypeFactory
@@ -69,6 +70,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val questWidgetCallbacks: QuestWidgetCallbacks,
                          private val cmHomeWidgetCallback: CMHomeWidgetCallback,
                          private val merchantVoucherComponentListener: MerchantVoucherComponentListener
+                         private val homePayLaterWidgetListener: HomePayLaterWidgetListener
 ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
@@ -290,6 +292,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return CMHomeWidgetViewHolder.LAYOUT
     }
 
+    override fun type(homePayLaterWidgetDataModel: HomePayLaterWidgetDataModel): Int {
+        return HomePayLaterWidgetViewHolder.LAYOUT
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -466,6 +472,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                 view,
                 cmHomeWidgetCallback
             )
+            HomePayLaterWidgetViewHolder.LAYOUT -> viewHolder = HomePayLaterWidgetViewHolder(
+                view, homePayLaterWidgetListener)
             else -> viewHolder = super.createViewHolder(view, type)
 
         }

@@ -191,7 +191,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         PlayWidgetListener,
         RecommendationWidgetListener,
         QuestWidgetCallbacks,
-        CMHomeWidgetCallback {
+        CMHomeWidgetCallback,
+        HomePayLaterWidgetListener{
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
@@ -1638,7 +1639,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             CampaignWidgetComponentCallback(context, this),
             this,
             this,
-            MerchantVoucherComponentCallback(this)
+            MerchantVoucherComponentCallback(this),
+                    this
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -2908,5 +2910,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun getCMHomeWidget() {
         getHomeViewModel().getCMHomeWidgetData()
+    }
+
+    override fun getPayLaterWidgetData() {
+        getHomeViewModel().getPayLaterWidgetData()
+    }
+
+    override fun deletePayLaterWidget() {
+        getHomeViewModel().deletePayLaterWidget()
     }
 }
