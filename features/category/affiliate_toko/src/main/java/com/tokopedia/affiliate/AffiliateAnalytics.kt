@@ -183,7 +183,8 @@ object AffiliateAnalytics {
             const val IMPRESSION_PROMOSIKAN_SRP_B_S = "impression - promosikan srp - bottom sheet"
             const val IMPRESSION_HOME_PORTAL = "impression - home portal"
             const val IMPRESSION_HOME_PORTAL_B_S = "impression - home portal - bottom sheet"
-            const val CLICK_SEARCH = "click - search box"
+            const val CLICK_SEARCH = "click - search"
+            const val CLICK_SEARCH_BOX = "click - search box"
             const val HOME_NAV_BAR_CLICK = "click - home nav"
             const val PROMOSIKAN_NAV_BAR_CLICK = "click - promosikan nav"
             const val BANUTAN_NAV_BAR_CLICK = "click - bantuan nav"
@@ -258,6 +259,11 @@ object AffiliateAnalytics {
             const val INACTIVE = "inactive"
             const val SUCCESS = "success"
             const val FAIL = "fail"
+            const val NOT_URL = "not URL"
+            const val PRDOUCT_URL_NOT_FOUND = "product URL not found"
+            const val NON_WHITELISTED_CATEGORIES = "non whitelisted categories"
+            const val NON_PM_OS_SHOP = "non PM or OS shop"
+
         }
     }
 

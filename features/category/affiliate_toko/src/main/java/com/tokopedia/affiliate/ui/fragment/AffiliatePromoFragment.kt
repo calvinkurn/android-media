@@ -205,29 +205,21 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
                                 Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                     }
                     showDefaultState()
-                    AffiliateAnalytics.sendEvent(
-                            AffiliateAnalytics.EventKeys.EVENT_VALUE_VIEW,
-                            AffiliateAnalytics.ActionKeys.IMPRESSION_NOT_LINK_ERROR,
-                            AffiliateAnalytics.CategoryKeys.PROMOSIKAN_SRP,
-                            "", userSessionInterface.userId)
+                    sendSearchEvent(AffiliateAnalytics.LabelKeys.NOT_URL)
                 } else {
                     affiliateSearchData.searchAffiliate?.data?.error?.let {
                         adapter.addElement(AffiliatePromotionErrorCardModel(it))
                     }
-                    var errorAction = AffiliateAnalytics.ActionKeys.IMPRESSION_NOT_FOUND_ERROR
+                    var errorLabel = AffiliateAnalytics.LabelKeys.PRDOUCT_URL_NOT_FOUND
                     when (affiliateSearchData.searchAffiliate?.data?.error?.errorStatus) {
                         AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_FOUND ->
-                            errorAction = AffiliateAnalytics.ActionKeys.IMPRESSION_NOT_FOUND_ERROR
+                            errorLabel = AffiliateAnalytics.LabelKeys.PRDOUCT_URL_NOT_FOUND
                         AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_ELIGIBLE ->
-                            errorAction = AffiliateAnalytics.ActionKeys.IMPRESSION_NOT_ELIGIBLE
+                            errorLabel = AffiliateAnalytics.LabelKeys.NON_WHITELISTED_CATEGORIES
                         AffiliatePromotionErrorCardItemVH.ERROR_NON_PM_OS ->
-                            errorAction = AffiliateAnalytics.ActionKeys.IMPRESSION_NOT_OS_PM_ERROR
+                            errorLabel = AffiliateAnalytics.LabelKeys.NON_PM_OS_SHOP
                     }
-                    AffiliateAnalytics.sendEvent(
-                            AffiliateAnalytics.EventKeys.EVENT_VALUE_VIEW,
-                            errorAction,
-                            AffiliateAnalytics.CategoryKeys.PROMOSIKAN_SRP,
-                            "", userSessionInterface.userId)
+                    sendSearchEvent(errorLabel)
                 }
             } else {
                 affiliateSearchData.searchAffiliate?.data?.cards?.firstOrNull()?.items?.let { items ->
@@ -249,6 +241,14 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
                 }
             }
         })
+    }
+
+    private fun sendSearchEvent(eventLabel: String){
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.CLICK_PG,
+            AffiliateAnalytics.ActionKeys.CLICK_SEARCH,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
+            eventLabel, userSessionInterface.userId)
     }
 
     private fun showData(isErrorData: Boolean) {
@@ -310,7 +310,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
     override fun onEditState(state: Boolean) {
         AffiliateAnalytics.sendEvent(
                 AffiliateAnalytics.EventKeys.CLICK_PG,
-                AffiliateAnalytics.ActionKeys.CLICK_SEARCH,
+                AffiliateAnalytics.ActionKeys.CLICK_SEARCH_BOX,
                 AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
                 "", userSessionInterface.userId)
     }
