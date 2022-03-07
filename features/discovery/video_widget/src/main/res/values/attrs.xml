@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="ProductCardVideoView">
+    <declare-styleable name="VideoWidgetView">
         <attr name="scaleType" format="enum">
             <enum name="centerCrop" value="0" />
             <enum name="fitCenter" value="1" />

@@ -21,7 +21,7 @@ class VideoWidgetView(
 ) : FrameLayout(context, attrs, defStyleAttr)  {
     companion object{
         @LayoutRes
-        private val playerLayoutId = R.layout.product_card_video_view
+        private val playerLayoutId = R.layout.video_widget_view
 
         private const val PIVOT_MULTIPLIER_CENTER_CROP = 0.5f
         private const val PIVOT_MULTIPLIER_FIT_CENTER = 0.5f
@@ -91,11 +91,11 @@ class VideoWidgetView(
         defStyleAttr: Int
     ) {
         context.theme
-            .obtainStyledAttributes(attrs, R.styleable.ProductCardVideoView, defStyleAttr, 0)
+            .obtainStyledAttributes(attrs, R.styleable.VideoWidgetView, defStyleAttr, 0)
             .apply {
                 try {
                     scaleType = getInteger(
-                        R.styleable.ProductCardVideoView_scaleType,
+                        R.styleable.VideoWidgetView_scaleType,
                         ScaleType.TYPE_CENTER_CROP
                     )
                 } finally {
