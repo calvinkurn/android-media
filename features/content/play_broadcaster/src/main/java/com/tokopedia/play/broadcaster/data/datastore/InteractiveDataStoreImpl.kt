@@ -12,7 +12,6 @@ class InteractiveDataStoreImpl @Inject constructor() : InteractiveDataStore {
     private var mTitle = DEFAULT_INTERACTIVE_TITLE
     private var mActiveInteractiveTitle = mTitle
     private var mDurationInMs = DEFAULT_INTERACTIVE_DURATION
-    private var mRemainingLiveDuration = 0L
 
     private val mAvailableDurations = mutableListOf<Long>()
 
@@ -44,17 +43,13 @@ class InteractiveDataStoreImpl @Inject constructor() : InteractiveDataStore {
         this.mDurationInMs = durationInMs
     }
 
-    override fun setRemainingLiveDuration(durationInMs: Long) {
-        this.mRemainingLiveDuration = durationInMs
-    }
-
     override fun setInteractiveDurations(durations: List<Long>) {
         mAvailableDurations.clear()
         mAvailableDurations.addAll(durations)
     }
 
     override fun getInteractiveDurations(): List<Long> {
-        return mAvailableDurations.filter { it < mRemainingLiveDuration }
+        return mAvailableDurations
     }
 
     override fun setInteractiveId(id: String) {

@@ -15,23 +15,23 @@ import com.tokopedia.broadcaster.revamp.util.log.DefaultBroadcasterLogger
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterStatisticManager
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.wmspanel.libstream.*
-import com.wmspanel.libstream.Streamer.*
+import com.wmspanel.libstream.Streamer.VERSION_NAME
 import org.json.JSONObject
 import java.util.*
 
 /**
  * Created by meyta.taliti on 01/03/22.
  */
-class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Listener, BroadcasterStatisticManager.Listener {
+class BroadcasterManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitrate.Listener, BroadcasterStatisticManager.Listener {
 
     private var mStreamer: Streamer? = null
     private var mStreamerGL: StreamerGL? = null
 
     private var mConnectionId: Pair<Int, ConnectionConfig>? = null
-    private var mConnectionState: CONNECTION_STATE? = null
+    private var mConnectionState: Streamer.CONNECTION_STATE? = null
 
-    private var mVideoCaptureState: CAPTURE_STATE? = CAPTURE_STATE.FAILED
-    private var mAudioCaptureState: CAPTURE_STATE? = CAPTURE_STATE.FAILED
+    private var mVideoCaptureState: Streamer.CAPTURE_STATE? = Streamer.CAPTURE_STATE.FAILED
+    private var mAudioCaptureState: Streamer.CAPTURE_STATE? = Streamer.CAPTURE_STATE.FAILED
 
     private var mCameraManager: BroadcasterCameraManager? = null
 
@@ -41,12 +41,13 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
     private var mStatisticTimer: Timer? = null
 
     private var mCallback: Broadcaster.Callback? = null
+
     private var mLogger: BroadcasterLogger = DefaultBroadcasterLogger()
 
     private var mBroadcastOn = false
 
     private val mAudioCallback =
-        AudioCallback { audioFormat, data, audioInputLength, channelCount, sampleRate, samplesPerFrame ->
+        Streamer.AudioCallback { audioFormat, data, audioInputLength, channelCount, sampleRate, samplesPerFrame ->
 
             /**
              * @param audioFormat [android.media.AudioFormat.ENCODING_PCM_16BIT]
@@ -143,7 +144,7 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
         // To get vertical video just swap width and height
         // do not modify videoSize itself because Android camera is always landscape
         // noinspection SuspiciousNameCombination
-        videoConfig.videoSize = Size(videoSize.height, videoSize.width)
+        videoConfig.videoSize = Streamer.Size(videoSize.height, videoSize.width)
 
         // verify video resolution support by encoder
         val supportedSize = BroadcasterUtil.verifyResolution(videoConfig.type, videoConfig.videoSize)
@@ -166,7 +167,7 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
 
         builder.setSurface(holder.surface)
         // builder.setSurfaceSize(Streamer.Size(binding.surfaceView.getWidth(), binding.surfaceView.getHeight()))
-        builder.setSurfaceSize(Size(surfaceSize.width, surfaceSize.height))
+        builder.setSurfaceSize(Streamer.Size(surfaceSize.width, surfaceSize.height))
 
         // orientation will be later changed to actual device orientation when user press "Broadcast" button
         // or will be updated dynamically from onConfigurationChanged listener if Live rotation is on
@@ -232,11 +233,6 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
         // call startAudioCapture, wait for onAudioCaptureStateChanged callback
         startAudioCapture()
 
-        // Deal with preview's aspect ratio
-        mStreamerGL?.activeCameraVideoSize?.let {
-            mCallback?.updateAspectFrameSize(Broadcaster.Size(it.width, it.height))
-        }
-
         mAdaptiveBitrate = BroadcasterAdaptiveBitrateImpl(
             BroadcasterAdaptiveBitrate.Builder(
                 BroadcasterAdaptiveBitrate.Mode.LadderAscend
@@ -249,7 +245,7 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
     }
 
     override fun updateSurfaceSize(surfaceSize: Broadcaster.Size) {
-        mStreamerGL?.setSurfaceSize(Size(surfaceSize.width, surfaceSize.height))
+        mStreamerGL?.setSurfaceSize(Streamer.Size(surfaceSize.width, surfaceSize.height))
     }
 
     override fun start(rtmpUrl: String) {
@@ -330,11 +326,6 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
         mAdaptiveBitrate?.pause()
         mStreamerGL?.flip()
 
-        // camera is changed, so update aspect ratio to actual value
-        mStreamerGL?.activeCameraVideoSize?.let {
-            mCallback?.updateAspectFrameSize(Broadcaster.Size(it.width, it.height))
-        }
-
         updateFpsRanges()
         if (mBroadcastOn) mAdaptiveBitrate?.resume()
     }
@@ -348,14 +339,19 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
         TODO("Not yet implemented")
     }
 
+    override val activeCameraVideoSize: Broadcaster.Size?
+        get() = mStreamerGL?.activeCameraVideoSize?.let {
+            Broadcaster.Size(it.width, it.height)
+        }
+
     override fun getHandler(): Handler? {
         return mCallback?.getHandler()
     }
 
     override fun onConnectionStateChanged(
         connectionId: Int,
-        state: CONNECTION_STATE?,
-        status: STATUS?,
+        state: Streamer.CONNECTION_STATE?,
+        status: Streamer.STATUS?,
         info: JSONObject?,
     ) {
         if (mStreamer == null) return
@@ -364,13 +360,13 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
         mConnectionState = state
 
         when (state) {
-            CONNECTION_STATE.INITIALIZED,
-            CONNECTION_STATE.SETUP,
-            CONNECTION_STATE.RECORD,
+            Streamer.CONNECTION_STATE.INITIALIZED,
+            Streamer.CONNECTION_STATE.SETUP,
+            Streamer.CONNECTION_STATE.RECORD,
             -> {
             }
-            CONNECTION_STATE.CONNECTED -> mStatisticManager?.start(connectionId)
-            CONNECTION_STATE.IDLE -> {
+            Streamer.CONNECTION_STATE.CONNECTED -> mStatisticManager?.start(connectionId)
+            Streamer.CONNECTION_STATE.IDLE -> {
                 // connection established successfully, but no data is flowing
                 // Larix app expect data always flowing, so this is error for us
                 // but in some special cases app can pause capture and keep connection alive
@@ -379,42 +375,42 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
                 // camera will be closed in onPause, but app keeps connection alive to keep
                 // ongoing stream recording on server; so idle state is expected and ignored
             }
-            CONNECTION_STATE.DISCONNECTED, null -> {
+            Streamer.CONNECTION_STATE.DISCONNECTED, null -> {
                 // todo: log & show error to user: error message including connection name
             }
         }
     }
 
-    override fun onVideoCaptureStateChanged(state: CAPTURE_STATE?) {
+    override fun onVideoCaptureStateChanged(state: Streamer.CAPTURE_STATE?) {
         mVideoCaptureState = state
 
         when (state) {
-            CAPTURE_STATE.STARTED -> {
+            Streamer.CAPTURE_STATE.STARTED -> {
                 // can start broadcasting video
                 // mVideoCaptureState will be checked in createConnections()
             }
-            CAPTURE_STATE.STOPPED -> {
+            Streamer.CAPTURE_STATE.STOPPED -> {
                 // stop confirmation
             }
-            CAPTURE_STATE.ENCODER_FAIL, CAPTURE_STATE.FAILED, null -> {
+            Streamer.CAPTURE_STATE.ENCODER_FAIL, Streamer.CAPTURE_STATE.FAILED, null -> {
                 mStreamer?.stopVideoCapture()
                 mLogger.e("Video CAPTURE_STATE.ENCODER_FAIL, CAPTURE_STATE.FAILED or null")
             }
         }
     }
 
-    override fun onAudioCaptureStateChanged(state: CAPTURE_STATE?) {
+    override fun onAudioCaptureStateChanged(state: Streamer.CAPTURE_STATE?) {
         mAudioCaptureState = state
 
         when (state) {
-            CAPTURE_STATE.STARTED -> {
+            Streamer.CAPTURE_STATE.STARTED -> {
                 // can start broadcasting audio
                 // mAudioCaptureState will be checked in createConnection()
             }
-            CAPTURE_STATE.STOPPED -> {
+            Streamer.CAPTURE_STATE.STOPPED -> {
                 // stop confirmation
             }
-            CAPTURE_STATE.ENCODER_FAIL, CAPTURE_STATE.FAILED, null -> {
+            Streamer.CAPTURE_STATE.ENCODER_FAIL, Streamer.CAPTURE_STATE.FAILED, null -> {
                 mStreamer?.stopAudioCapture()
                 mLogger.e("Audio CAPTURE_STATE.ENCODER_FAIL, CAPTURE_STATE.FAILED or null")
             }
@@ -422,23 +418,23 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
     }
 
     override fun onRecordStateChanged(
-        state: RECORD_STATE?,
+        state: Streamer.RECORD_STATE?,
         uri: Uri?,
-        method: SAVE_METHOD?,
+        method: Streamer.SAVE_METHOD?,
     ) {
         // unused, can be ignored at least for now
     }
 
     override fun onSnapshotStateChanged(
-        state: RECORD_STATE?,
+        state: Streamer.RECORD_STATE?,
         uri: Uri?,
-        method: SAVE_METHOD?,
+        method: Streamer.SAVE_METHOD?,
     ) {
         // todo: Not yet implemented
     }
 
     override fun isEligibleQuery(): Boolean {
-        return mConnectionState == CONNECTION_STATE.RECORD
+        return mConnectionState == Streamer.CONNECTION_STATE.RECORD
     }
 
     override fun fps(): Double? {
@@ -465,7 +461,7 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
         mStreamer?.changeBitRate(bitrate)
     }
 
-    override fun changeFpsRange(fpsRange: FpsRange) {
+    override fun changeFpsRange(fpsRange: Streamer.FpsRange) {
         mStreamer?.changeFpsRange(fpsRange)
     }
 
@@ -479,11 +475,11 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
     }
 
     private fun isAudioCaptureStarted(): Boolean {
-        return mAudioCaptureState == CAPTURE_STATE.STARTED
+        return mAudioCaptureState == Streamer.CAPTURE_STATE.STARTED
     }
 
     private fun isVideoCaptureStarted(): Boolean {
-        return mVideoCaptureState == CAPTURE_STATE.STARTED
+        return mVideoCaptureState == Streamer.CAPTURE_STATE.STARTED
     }
 
     private fun updateFpsRanges() {
@@ -503,7 +499,7 @@ class BroadcasterManager : Broadcaster, Listener, BroadcasterAdaptiveBitrate.Lis
         mStatisticTimer?.schedule(object : TimerTask() {
             override fun run() {
                 val connectionState = mConnectionState ?: return
-                if (connectionState != CONNECTION_STATE.RECORD) return
+                if (connectionState != Streamer.CONNECTION_STATE.RECORD) return
 
                 val statisticManager = mStatisticManager ?: return
                 statisticManager.update(connectionId)

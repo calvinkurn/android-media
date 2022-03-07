@@ -134,7 +134,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     val selectedInteractiveDuration: Long
         get() = getCurrentSetupDataStore().getSelectedInteractiveDuration()
     val interactiveDurations: List<Long>
-        get() = findSuitableInteractiveDurations()
+        get() = getCurrentSetupDataStore().getInteractiveDurations()
 //    val observableLivePusherStatistic: LiveData<LivePusherStatistic>
 //        get() = _observableLivePusherStats
 //    val observableLivePusherInfo: LiveData<PlayLiveLogState>
@@ -344,14 +344,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 setDurationConfig(configUiModel.durationConfig)
                 setScheduleConfig(configUiModel.scheduleConfig)
             }
-
-            // configure live streaming duration
-//            livePusherMediator.setLiveStreamingDuration(
-//                if (configUiModel.channelType == ChannelType.Pause) configUiModel.durationConfig.duration - configUiModel.remainingTime
-//                else 0,
-//                configUiModel.durationConfig.duration
-//            )
-//            livePusherMediator.setLiveStreamingPauseDuration(configUiModel.durationConfig.pauseDuration)
 
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { this.getConfiguration() }
@@ -577,15 +569,15 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.launch { onInteractiveFinished() }
     }
 
-    fun createInteractiveSession(title: String, durationInMs: Long) {
+    fun createInteractiveSession(title: String, duration: Long, remainLiveDuration: Long) {
         _observableCreateInteractiveSession.value = NetworkResult.Loading
-        if (!isCreateSessionAllowed(durationInMs)) {
+        if (!isCreateSessionAllowed(duration, remainLiveDuration)) {
             _observableCreateInteractiveSession.value = NetworkResult.Fail(Throwable("not allowed to create session"))
             return
         }
 
         viewModelScope.launchCatchError(block = {
-            val interactiveUiModel = repo.createInteractiveSession(channelId, title, durationInMs)
+            val interactiveUiModel = repo.createInteractiveSession(channelId, title, duration)
             setInteractiveId(interactiveUiModel.id)
             setActiveInteractiveTitle(interactiveUiModel.title)
             handleActiveInteractive()
@@ -596,18 +588,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun isCreateSessionAllowed(durationInMs: Long): Boolean {
-//        val remainingLiveDuration = livePusherMediator.remainingDurationInMillis
-//        val delayGqlDuration = INTERACTIVE_GQL_CREATE_DELAY
-//        return remainingLiveDuration > durationInMs + delayGqlDuration
-        return false
+    private fun isCreateSessionAllowed(duration: Long, remainLiveDuration: Long): Boolean {
+        val delayGqlDuration = INTERACTIVE_GQL_CREATE_DELAY
+        return remainLiveDuration > duration + delayGqlDuration
     }
 
     fun getLeaderboardData() {
         viewModelScope.launch { getLeaderboardInfo() }
     }
 
-    fun getInteractiveConfig() {
+    private fun getInteractiveConfig() {
         viewModelScope.launchCatchError(block = {
             val interactiveConfig = repo.getInteractiveConfig()
             _observableInteractiveConfig.value = interactiveConfig
@@ -696,11 +686,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun getNoPreviousInitInteractiveState(): BroadcastInteractiveState {
         return BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.NoPrevious(sharedPref.isFirstInteractive()))
-    }
-
-    private fun findSuitableInteractiveDurations(): List<Long> {
-        updateRemainingLiveDuration()
-        return getCurrentSetupDataStore().getInteractiveDurations()
     }
 
 //    private fun sendLivePusherStats(stats: LivePusherStatistic) {
@@ -850,7 +835,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun restartLiveDuration(duration: LiveDuration) {
         viewModelScope.launchCatchError(block = {
-            _configInfo.value?.durationConfig?.duration?.let {
+            _configInfo.value?.durationConfig?.maxDuration?.let {
                 val durationInMillis = TimeUnit.SECONDS.toMillis(duration.duration)
 //                livePusherMediator.restartLiveTimer(durationInMillis, it)
             }
@@ -859,10 +844,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun setInteractiveDurations(durations: List<Long>) {
         getCurrentSetupDataStore().setInteractiveDurations(durations)
-    }
-
-    private fun updateRemainingLiveDuration() {
-//        getCurrentSetupDataStore().setRemainingLiveDuration(livePusherMediator.remainingDurationInMillis)
     }
 
     private fun resetSetupInteractive() {

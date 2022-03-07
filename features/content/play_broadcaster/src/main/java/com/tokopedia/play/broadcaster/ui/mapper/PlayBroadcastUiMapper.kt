@@ -5,7 +5,6 @@ import android.net.Uri
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.broadcaster.mediator.LivePusherConfig
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.play.broadcaster.data.model.ProductData
@@ -29,7 +28,6 @@ import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
-import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -161,23 +159,21 @@ class PlayBroadcastUiMapper(
                 config.completeDraft
         )
 
-        val maxDuration = TimeUnit.SECONDS.toMillis(config.maxDuration)
-        val remainingTime = when(channelStatus.second) {
-            ChannelType.Active -> TimeUnit.SECONDS.toMillis(config.activeChannelRemainingDuration)
-            ChannelType.Pause -> TimeUnit.SECONDS.toMillis(config.pausedChannelRemainingDuration)
-            else -> maxDuration
+        val remainingDuration = when(channelStatus.second) {
+            ChannelType.Active -> config.maxDuration - config.activeChannelRemainingDuration
+            ChannelType.Pause -> config.maxDuration - config.pausedChannelRemainingDuration
+            else -> 0
         }
 
         return ConfigurationUiModel(
             streamAllowed = config.streamAllowed,
             channelId = channelStatus.first,
             channelType = channelStatus.second,
-            remainingTime = remainingTime,
             durationConfig = DurationConfigUiModel(
-                duration = maxDuration,
+                remainingDuration = TimeUnit.SECONDS.toMillis(remainingDuration),
+                maxDuration = TimeUnit.SECONDS.toMillis(config.maxDuration),
                 maxDurationDesc = config.maxDurationDesc,
                 pauseDuration = TimeUnit.SECONDS.toMillis(config.maxPauseDuration),
-                errorMessage = config.maxDurationDesc
             ),
             productTagConfig = ProductTagConfigUiModel(
                 maxProduct = config.maxTaggedProduct,

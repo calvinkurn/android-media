@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.view.activity
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
@@ -30,6 +29,7 @@ import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
 import com.tokopedia.play.broadcaster.pusher.revamp.PlayBroadcaster
 import com.tokopedia.play.broadcaster.ui.model.ChannelType
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
+import com.tokopedia.play.broadcaster.ui.model.DurationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
 import com.tokopedia.play.broadcaster.util.extension.channelNotFound
@@ -58,7 +58,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 19/05/20.
  */
-class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcasterContract, Broadcaster.Callback {
+class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcasterContract {
 
     private val retainedComponent by retainedComponent {
         DaggerActivityRetainedComponent.builder()
@@ -77,6 +77,9 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
 
     @Inject
     lateinit var dispatcher: CoroutineDispatchers
+
+    @Inject
+    lateinit var broadcasterFactory: PlayBroadcaster.Factory
 
     private lateinit var viewModel: PlayBroadcastViewModel
 
@@ -105,11 +108,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
 
     private lateinit var pauseLiveDialog: DialogUnify
 
-    private val playBroadcaster = PlayBroadcaster.newInstance(this)
-    private var mHandler: Handler? = null
-
     private var surfaceHolder: SurfaceHolder? = null
-    private var surfaceHolderCallback: SurfaceHolder.Callback = object : SurfaceHolder.Callback {
+    private val surfaceHolderCallback: SurfaceHolder.Callback = object : SurfaceHolder.Callback {
         override fun surfaceCreated(holder: SurfaceHolder) {
             if (surfaceHolder != null) {
                 return
@@ -128,6 +128,17 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
             releaseStreamer()
         }
     }
+    private val playBroadcasterCallback = object : PlayBroadcaster.Callback {
+        override fun updateAspectRatio(aspectRatio: Double) {
+            aspectFrameLayout.setAspectRatio(aspectRatio)
+        }
+    }
+    private var mHandler: Handler? = null
+    private val playBroadcaster = broadcasterFactory.create(
+        activityContext = this,
+        handler = mHandler,
+        callback = playBroadcasterCallback
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -335,6 +346,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
                 if (isRequiredPermissionGranted()) configureChannelType(channelType)
                 else requestPermission()
             }
+            setupBroadcastDuration(config.durationConfig)
         } else {
             globalErrorView.channelNotFound { this.finish() }
             globalErrorView.show()
@@ -602,6 +614,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
     }
 
+    private fun setupBroadcastDuration(durationConfig: DurationConfigUiModel) {
+        playBroadcaster.setupDuration(durationConfig)
+    }
+
     // todo: showDialogWhenUnSupportedDevices()
     private fun createStreamer() {
         val holder = surfaceHolder ?: return
@@ -610,18 +626,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
 
     private fun releaseStreamer() {
         playBroadcaster.release()
-    }
-
-    override fun getHandler(): Handler? {
-        return mHandler
-    }
-
-    override fun getActivityContext(): Context {
-        return this
-    }
-
-    override fun updateAspectFrameSize(size: Broadcaster.Size) {
-        aspectFrameLayout.setAspectRatio(size.height.toDouble() / size.width.toDouble())
     }
 
     override fun getBroadcaster(): PlayBroadcaster {

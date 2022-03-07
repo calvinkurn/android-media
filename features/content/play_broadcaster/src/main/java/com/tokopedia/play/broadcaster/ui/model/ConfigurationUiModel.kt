@@ -10,7 +10,6 @@ data class ConfigurationUiModel(
         val streamAllowed: Boolean,
         val channelId: String,
         val channelType: ChannelType,
-        val remainingTime: Long, // millis
         val durationConfig: DurationConfigUiModel,
         val productTagConfig: ProductTagConfigUiModel,
         val coverConfig: CoverConfigUiModel,
@@ -20,10 +19,10 @@ data class ConfigurationUiModel(
 )
 
 data class DurationConfigUiModel(
-        val duration: Long, // millis
+        val remainingDuration: Long, // millis
+        val maxDuration: Long, // millis
         val pauseDuration: Long, // millis
         val maxDurationDesc: String,
-        val errorMessage: String
 )
 
 data class ProductTagConfigUiModel(

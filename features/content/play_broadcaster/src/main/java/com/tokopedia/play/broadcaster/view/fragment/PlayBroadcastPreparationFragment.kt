@@ -332,7 +332,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             onSuccess = {
                 showLoading(false)
                 openBroadcastLivePage()
-                // todo: start timer
+                broadcaster.startCountUp()
             },
             onError = {
                 showLoading(false)

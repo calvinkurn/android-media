@@ -4,7 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.broadcaster.LiveBroadcasterManager
+import com.tokopedia.broadcaster.revamp.Broadcaster
+import com.tokopedia.broadcaster.revamp.BroadcasterManager
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
@@ -15,12 +16,6 @@ import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalyt
 import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
 import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
-import com.tokopedia.play.broadcaster.pusher.PlayLivePusherImpl
-import com.tokopedia.play.broadcaster.pusher.mediator.LiveBroadcasterMediator
-import com.tokopedia.play.broadcaster.pusher.mediator.PlayLivePusherMediator
-import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
-import com.tokopedia.play.broadcaster.pusher.mediator.rollence.AbTestBroadcaster
-import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherTimer
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.util.cover.ImageTransformer
@@ -52,13 +47,19 @@ class PlayBroadcastModule {
         return UpdateChannelUseCase(graphqlRepository)
     }
 
+//    @Provides
+//    fun providePlayLivePusherMediator(localCacheHandler: LocalCacheHandler, playLivePusherTimer: PlayLivePusherTimer): PusherMediator {
+//        return if (AbTestBroadcaster.isUseBroadcasterSdk()) {
+//            LiveBroadcasterMediator(LiveBroadcasterManager(), localCacheHandler, playLivePusherTimer)
+//        } else {
+//            PlayLivePusherMediator(PlayLivePusherImpl(), localCacheHandler, playLivePusherTimer)
+//        }
+//    }
+
+    @ActivityRetainedScope
     @Provides
-    fun providePlayLivePusherMediator(localCacheHandler: LocalCacheHandler, playLivePusherTimer: PlayLivePusherTimer): PusherMediator {
-        return if (AbTestBroadcaster.isUseBroadcasterSdk()) {
-            LiveBroadcasterMediator(LiveBroadcasterManager(), localCacheHandler, playLivePusherTimer)
-        } else {
-            PlayLivePusherMediator(PlayLivePusherImpl(), localCacheHandler, playLivePusherTimer)
-        }
+    fun provideBroadcaster(): Broadcaster {
+        return BroadcasterManager()
     }
 
     @Provides

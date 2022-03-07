@@ -24,7 +24,5 @@ interface InteractiveDataStore {
 
     fun setSelectedInteractiveDuration(durationInMs: Long)
 
-    fun setRemainingLiveDuration(durationInMs: Long)
-
     fun setInteractiveDurations(durations: List<Long>)
 }

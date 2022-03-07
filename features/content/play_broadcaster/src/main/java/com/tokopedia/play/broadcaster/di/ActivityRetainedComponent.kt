@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.broadcaster.revamp.Broadcaster
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
@@ -70,7 +71,7 @@ abstract class ActivityRetainedComponent : ViewModel() {
      */
     abstract fun navBarDialogCustomizer(): PlayBroadcastDialogCustomizer
 
-    abstract fun pusherMediator(): PusherMediator
+    abstract fun broadcaster(): Broadcaster
 
     abstract fun playWebSocket(): PlayWebSocket
 

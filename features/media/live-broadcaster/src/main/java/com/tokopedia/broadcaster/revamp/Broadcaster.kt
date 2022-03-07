@@ -28,13 +28,16 @@ interface Broadcaster {
 
     fun snapShot()
 
+    /**
+     * please update aspect ratio to actual value, after create() & flip()
+     */
+    val activeCameraVideoSize: Size?
+
     interface Callback {
 
         fun getHandler(): Handler?
 
         fun getActivityContext(): Context
-
-        fun updateAspectFrameSize(size: Size)
     }
 
     data class Size(

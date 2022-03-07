@@ -147,12 +147,11 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             streamAllowed = true,
             channelType = ChannelType.Draft,
             channelId = "10008", // 10008 prod, 10012 stag (status: draft)
-            remainingTime = (30 * 60 * 1000),
             durationConfig = DurationConfigUiModel(
-                duration = (30 * 60 * 1000),
+                remainingDuration = (30 * 60 * 1000),
+                maxDuration = (30 * 60 * 1000),
                 maxDurationDesc = "Siaran 30 menit",
                 pauseDuration = (1 * 60 * 1000),
-                errorMessage = "Maks. siaran 30 menit"
             ),
             productTagConfig = ProductTagConfigUiModel(
                 maxProduct = 15,
