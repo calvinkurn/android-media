@@ -78,6 +78,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
     private val editPhotoListener = object: View.OnClickListener {
 	override fun onClick(v: View?) {
 	    val ctx = v?.context ?: return
+		tracker.trackOnChangeProfilePictureClick()
 	    val builder = ImagePickerBuilder.getSquareImageBuilder(ctx).apply { maxFileSizeInKB = MAX_FILE_SIZE }
 	    val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_PICKER)
 	    intent.putImagePickerBuilder(builder)
@@ -180,6 +181,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 	    ProfileInfoTitleUiModel(ProfileInfoConstants.PROFILE_INFO_SECTION, getString(R.string.profile_info_title)),
 	    ProfileInfoItemUiModel(ProfileInfoConstants.NAME, title = getString(R.string.title_item_name), itemValue = data.profileInfoData.fullName) {
 	    	if (!data.profileRoleData.isAllowedChangeName) {
+	    		tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRYPOINT_NAME)
 				val intent = RouteManager.getIntent(
 					context,
 					ApplinkConstInternalGlobal.CHANGE_NAME,
@@ -211,7 +213,8 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 	    ProfileInfoItemUiModel(ProfileInfoConstants.EMAIL, title = "E-mail", itemValue = data.profileInfoData.email,
 			placeholder = getString(R.string.placeholder_email)
 		) {
-		if (data.profileInfoData.email.isEmpty() || !data.profileInfoData.isEmailDone) {
+			tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_EMAIL)
+			if (data.profileInfoData.email.isEmpty() || !data.profileInfoData.isEmailDone) {
 		    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_EMAIL)
 		    startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_EMAIL)
 		} else {
@@ -227,7 +230,8 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 	    ProfileInfoItemUiModel(ProfileInfoConstants.PHONE, title = "Nomor HP", itemValue = data.profileInfoData.msisdn,
 			placeholder = getString(R.string.placeholder_phone)
 		) {
-		if (data.profileInfoData.msisdn.isEmpty()) {
+			tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_PHONE)
+			if (data.profileInfoData.msisdn.isEmpty()) {
 		    goToAddPhone()
 		} else {
 		    if (data.profileInfoData.isMsisdnVerified) {
@@ -244,6 +248,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 			placeholder = getString(R.string.placeholder_gender)
 		){
 			if (data.profileRoleData.isAllowedChangeGender) {
+				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_GENDER)
 				val intent =
 					RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_GENDER)
 				startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_GENDER)
@@ -253,7 +258,8 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 			itemValue = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD, DateFormatUtils.FORMAT_DD_MMMM_YYYY, data.profileInfoData.birthDay),
 			placeholder = getString(R.string.placeholder_dob)
 		) {
-		if(data.profileInfoData.birthDay.isEmpty()) {
+			tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_DOB)
+			if(data.profileInfoData.birthDay.isEmpty()) {
 		    goToAddDob()
 		} else {
 			if (data.profileRoleData.isAllowedChangeDob) {
@@ -344,9 +350,11 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
     override fun onSectionIconClicked(id: String?) {
 	when(id) {
 	    ProfileInfoConstants.PROFILE_INFO_SECTION -> {
+			tracker.trackOnInfoProfileClick("click info profile")
 	 		openBottomSheetProfileInfo()
 	    }
 	    ProfileInfoConstants.PROFILE_PERSONAL_INFO_SECTION -> {
+			tracker.trackOnInfoProfileClick("click personal info")
 	  		openBottomSheetPersonalInfo()
 	    }
 	}
@@ -390,6 +398,12 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 	}
 
 	private fun goToEditProfileInfo(page: String) {
+		when (page) {
+			ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_USERNAME ->
+				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRYPOINT_USERNAME)
+			ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_BIO ->
+				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRYPOINT_BIO)
+		}
 		val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.EDIT_PROFILE_INFO)
 		intent.putExtra(ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PARAM, page)
 		startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_CHANGE_USERNAME_BIO)

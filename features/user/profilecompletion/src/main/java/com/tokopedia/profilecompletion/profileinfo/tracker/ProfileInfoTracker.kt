@@ -6,7 +6,7 @@ import com.tokopedia.track.TrackAppUtils
 class ProfileInfoTracker {
     private val tracker = TrackApp.getInstance().gtm
 
-    // tracker ID: 28680
+    // tracker ID: 28680 - done
     fun trackOnInfoProfileClick(label: String) {
 	track(
 	    TrackAppUtils.gtmData(
@@ -28,7 +28,7 @@ class ProfileInfoTracker {
 	)
     }
 
-    // tracker ID: 28682
+    // tracker ID: 28682 - done
     fun trackOnChangeProfilePictureClick() {
 	track(
 	    TrackAppUtils.gtmData(
@@ -39,7 +39,7 @@ class ProfileInfoTracker {
 	)
     }
 
-    // tracker ID: 28683 - Click
+    // tracker ID: 28683 - Click - done
     fun trackOnEntryPointListClick(label: String) {
 	track(
 	    TrackAppUtils.gtmData(
@@ -404,7 +404,15 @@ class ProfileInfoTracker {
 	const val LABEL_CLICK = "click"
 	const val LABEL_SUCCESS = "success"
 	const val LABEL_FAILED = "failed"
-	const val LABEL_CHANGE_PROFILE_PAGE = "change profile page"
+	const val LABEL_CHANGE_PROFILE_PAGE = " - change profile page"
+		const val LABEL_ENTRYPOINT_NAME = " - name"
+		const val LABEL_ENTRYPOINT_USERNAME = " - username"
+		const val LABEL_ENTRYPOINT_BIO = " - bio"
+		const val LABEL_ENTRY_POINT_USER_ID = " - userid"
+		const val LABEL_ENTRY_POINT_EMAIL = " - email"
+		const val LABEL_ENTRY_POINT_PHONE = " - phone"
+		const val LABEL_ENTRY_POINT_GENDER = " - gender"
+		const val LABEL_ENTRY_POINT_DOB = " - dob"
 
 	const val BUSSINESS_UNIT = "user platform"
 	const val CURRENT_SITE = "tokopediamarketplace"
