@@ -6,6 +6,7 @@ import com.tokopedia.home_component.listener.MerchantVoucherComponentListener
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherImpressed
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherProductClicked
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherShopClicked
+import com.tokopedia.track.TrackApp
 
 /**
  * Created by dhaba
@@ -20,19 +21,19 @@ class MerchantVoucherComponentCallback(val homeCategoryListener: HomeCategoryLis
 
     override fun onProductClicked(merchantVoucherProductClicked: MerchantVoucherProductClicked) {
         val tracking = MerchantVoucherTracking.getClickProduct(merchantVoucherProductClicked)
-        homeCategoryListener.sendTrackingBundle(tracking.first, tracking.second)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(tracking.first, tracking.second)
         homeCategoryListener.onDynamicChannelClicked(merchantVoucherProductClicked.productAppLink)
     }
 
     override fun onViewAllClicked(headerName: String, seeMoreAppLink: String, userId: String) {
         val tracking = MerchantVoucherTracking.getClickViewAll(headerName, userId)
-        homeCategoryListener.sendTrackingBundle(tracking.first, tracking.second)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(tracking.first, tracking.second)
         homeCategoryListener.onDynamicChannelClicked(seeMoreAppLink)
     }
 
     override fun onShopClicked(merchantVoucherShopClicked: MerchantVoucherShopClicked) {
         val tracking = MerchantVoucherTracking.getShopClicked(merchantVoucherShopClicked)
-        homeCategoryListener.sendTrackingBundle(tracking.first, tracking.second)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(tracking.first, tracking.second)
         homeCategoryListener.onDynamicChannelClicked(merchantVoucherShopClicked.shopAppLink)
     }
 

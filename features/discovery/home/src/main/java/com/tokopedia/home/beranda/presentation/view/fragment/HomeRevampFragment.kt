@@ -2896,10 +2896,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         this.questWidgetPosition = position
     }
 
-    override fun sendTrackingBundle(eventName: String, bundle: Bundle) {
-         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventName, bundle)
-    }
-
     override fun onCMHomeWidgetDismissClick() {
         getHomeViewModel().deleteCMHomeWidget()
     }

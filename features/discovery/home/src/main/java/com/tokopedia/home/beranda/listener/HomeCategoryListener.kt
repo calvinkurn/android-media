@@ -136,6 +136,4 @@ interface HomeCategoryListener {
     fun onTokonowViewCaptured(view: View?, parentPosition: Int)
 
     fun dismissTokonowCoachmark(parentPosition: Int)
-
-    fun sendTrackingBundle(eventName: String, bundle: Bundle)
 }
