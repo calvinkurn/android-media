@@ -18,8 +18,10 @@ import com.tokopedia.topads.dashboard.data.model.ListArticle
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class TopadsEducationRvAdapter(private val list: ListArticle) :
+class TopadsEducationRvAdapter :
     RecyclerView.Adapter<TopadsEducationRvAdapter.ViewHolder>() {
+
+    private var list: ListArticle = ListArticle()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
@@ -36,6 +38,12 @@ class TopadsEducationRvAdapter(private val list: ListArticle) :
 
     override fun getItemCount(): Int {
         return list.size
+    }
+
+    fun addItems(listArticle: ListArticle) {
+        list.clear()
+        this.list = listArticle
+        notifyDataSetChanged()
     }
 
     var itemClick: ((ListArticle.ListArticleItem) -> Unit)? = null

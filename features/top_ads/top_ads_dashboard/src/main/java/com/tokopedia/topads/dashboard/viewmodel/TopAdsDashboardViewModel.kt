@@ -17,6 +17,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.Dispatchers
+import timber.log.Timber
 import javax.inject.Inject
 
 class TopAdsDashboardViewModel @Inject constructor(
@@ -35,6 +36,10 @@ class TopAdsDashboardViewModel @Inject constructor(
 
     private val _shopDeposit = MutableLiveData<Result<DepositAmount>>()
     val shopDepositLiveData: LiveData<Result<DepositAmount>> = _shopDeposit
+
+    private val _latestReadingLiveData =
+        MutableLiveData<Result<List<TopAdsLatestReading.TopAdsLatestReadingItem.Article>>>()
+    val latestReadingLiveData: LiveData<Result<List<TopAdsLatestReading.TopAdsLatestReadingItem.Article>>> get() = _latestReadingLiveData
 
     fun fetchShopDeposit() {
         topAdsGetShopDepositUseCase.execute({
@@ -72,8 +77,18 @@ class TopAdsDashboardViewModel @Inject constructor(
         })
     }
 
-    fun getLatestReadings(): List<TopAdsLatestReading.TopAdsLatestReadingItem.Article> {
-        val data = Gson().fromJson(topAdsHomepageLatestReadingJson, TopAdsLatestReading::class.java)
-        return data[0].articles
+    fun getLatestReadings() {
+        launchCatchError(block =  {
+            val data =
+                Gson().fromJson(topAdsHomepageLatestReadingJson, TopAdsLatestReading::class.java)
+            _latestReadingLiveData.value = if (data.isNotEmpty()) {
+                Success(data[0].articles)
+            } else {
+                Fail(Throwable())
+            }
+        }, onError =  {
+            _latestReadingLiveData.value = Fail(it)
+            Timber.d(it)
+        })
     }
 }

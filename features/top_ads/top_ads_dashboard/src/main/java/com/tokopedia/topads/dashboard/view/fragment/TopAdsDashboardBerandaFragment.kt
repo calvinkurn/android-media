@@ -183,7 +183,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
         binding.layoutRecommendasi.apply {
             ivRecommendasiInfo.setOnClickListener {
-                recommendationInfoBottomSheet.show(childFragmentManager,"")
+                recommendationInfoBottomSheet.show(childFragmentManager, "")
             }
             layoutkataKunci.button.setOnClickListener {
                 (activity as? TopAdsDashboardActivity)?.switchTab(3)
@@ -207,7 +207,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         binding.layoutRecommendasi.layoutkataKunci.recyclerView.adapter = kataKunciChipsRvAdapter
         binding.layoutRecommendasi.layoutkataKunci.rvVertical.adapter =
             kataKunciChipsDetailRvAdapter
-        latestReadingRvAdapter.addItems(topAdsDashboardViewModel.getLatestReadings())
+        topAdsDashboardViewModel.getLatestReadings()
     }
 
     private fun showInformationBottomSheet() {
@@ -307,6 +307,13 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                     setRecommendationKataKunci(it.data.keywordRecommendationStats)
                 }
                 is Fail -> {}
+            }
+        }
+
+        topAdsDashboardViewModel.latestReadingLiveData.observe(viewLifecycleOwner) { data ->
+            when (data) {
+                is Success -> latestReadingRvAdapter.addItems(data.data)
+                else -> { binding.layoutLatestReading.root.hide() }
             }
         }
     }

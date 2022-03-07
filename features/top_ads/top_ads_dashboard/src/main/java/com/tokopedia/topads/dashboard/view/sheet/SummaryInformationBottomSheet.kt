@@ -16,7 +16,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 class SummaryInformationBottomSheet() : BottomSheetUnify() {
 
     private lateinit var recyclerView: RecyclerView
-    private val adapter by lazy { InformationRvAdapter(getInformationList()) }
+    private val adapter by lazy(LazyThreadSafetyMode.NONE) { InformationRvAdapter(getInformationList()) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,

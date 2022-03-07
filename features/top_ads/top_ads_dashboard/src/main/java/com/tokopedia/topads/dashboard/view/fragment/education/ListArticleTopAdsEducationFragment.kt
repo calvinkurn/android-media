@@ -22,13 +22,12 @@ import kotlin.coroutines.CoroutineContext
 const val READ_MORE_URL =
     "https://seller.tokopedia.com/edu/topic/fitur-kembangkan-toko-promosi/topads/"
 
-class ListArticleTopAdsEducationFragment : TkpdBaseV4Fragment(), CoroutineScope {
+class ListArticleTopAdsEducationFragment : TkpdBaseV4Fragment() {
 
-    private val job = SupervisorJob()
     private lateinit var txtDescription: Typography
     private lateinit var recyclerView: RecyclerView
     private lateinit var btnReadMore: UnifyButton
-    private val adapter by lazy { ListArticleRvAdapter() }
+    private val adapter = ListArticleRvAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
@@ -42,9 +41,6 @@ class ListArticleTopAdsEducationFragment : TkpdBaseV4Fragment(), CoroutineScope 
         return view
     }
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -56,11 +52,6 @@ class ListArticleTopAdsEducationFragment : TkpdBaseV4Fragment(), CoroutineScope 
     private fun loadArticles() {
         val data = arguments?.getParcelable<ListArticle.ListArticleItem>(ARTICLES)
         data?.let { initView(it) }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        job.cancel()
     }
 
     private fun initClicks() = context?.run {
