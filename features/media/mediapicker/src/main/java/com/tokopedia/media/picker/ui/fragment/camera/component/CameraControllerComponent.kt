@@ -19,7 +19,7 @@ import com.tokopedia.media.common.PickerParam
 import com.tokopedia.media.picker.ui.fragment.camera.recyclers.adapter.CameraSliderAdapter
 import com.tokopedia.media.picker.ui.fragment.camera.recyclers.managers.SliderLayoutManager
 import com.tokopedia.media.common.uimodel.MediaUiModel
-import com.tokopedia.media.picker.ui.uimodel.CameraSelectionMode
+import com.tokopedia.media.picker.ui.uimodel.CameraSelectionUiModel
 import com.tokopedia.media.picker.ui.widget.thumbnail.MediaThumbnailWidget
 import com.tokopedia.media.picker.utils.anim.CameraButton.animStartRecording
 import com.tokopedia.media.picker.utils.anim.CameraButton.animStopRecording
@@ -36,7 +36,7 @@ class CameraControllerComponent(
     , CameraSliderAdapter.Listener {
 
     private val adapter by lazy {
-        CameraSliderAdapter(CameraSelectionMode.create(), this)
+        CameraSliderAdapter(CameraSelectionUiModel.create(), this)
     }
 
     // camera mode slider

@@ -174,6 +174,131 @@ open class PickerActivity : BaseActivity()
         startActivityForResult(intent, REQUEST_PREVIEW_PAGE)
     }
 
+    private fun setupQueryAndUIConfigBuilder() {
+        val data = intent?.data ?: return
+
+        PickerUiConfig.setupQueryPage(data)
+        PickerUiConfig.setupQueryMode(data)
+        PickerUiConfig.setupQuerySelectionType(data)
+    }
+
+    private fun restoreDataState(savedInstanceState: Bundle?) {
+        cleanUpInternalStorageIfNeeded(this, ImageProcessingUtil.DEFAULT_DIRECTORY)
+
+        savedInstanceState?.let {
+            // restore the last media selection to the drawer
+            it.getParcelableArrayList<MediaUiModel>(LAST_MEDIA_SELECTION)
+                ?.let { elements ->
+                    stateOnChangePublished(elements)
+                }
+        }
+    }
+
+    private fun initView() {
+        if (hasPermissionGranted) {
+            navigateByPageType()
+        } else {
+            navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
+            navigator?.start(PickerFragmentType.PERMISSION)
+        }
+    }
+
+    private fun initObservable() {
+        lifecycleScope.launchWhenResumed {
+            viewModel.uiEvent.observe(
+                onChanged = {
+                    medias.clear()
+                    medias.addAll(it)
+                },
+                onRemoved = {
+                    if (medias.containByName(it)) {
+                        medias.safeRemove(it)
+                    }
+                },
+                onAdded = {
+                    if (PickerUiConfig.isSingleSelectionType()) {
+                        medias.clear()
+                    }
+
+                    if (!medias.containByName(it)) {
+                        medias.add(it)
+                    }
+                }
+            ) {
+                navToolbar.showContinueButtonAs(
+                    medias.isNotEmpty()
+                )
+            }
+        }
+    }
+
+    private fun navigateByPageType() {
+        when (PickerUiConfig.paramPage) {
+            PickerPageType.CAMERA -> {
+                navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
+                navigator?.start(PickerFragmentType.CAMERA)
+            }
+            PickerPageType.GALLERY -> {
+                navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
+                navigator?.start(PickerFragmentType.GALLERY)
+            }
+            else -> {
+                navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
+
+                // show camera as initial page
+                navigator?.start(PickerFragmentType.CAMERA)
+
+                // display the tab navigation
+                setupTabView()
+            }
+        }
+    }
+
+    private fun setupTabView() {
+        binding?.tabContainer?.show()
+
+        // setup as transparent tab layout background
+        binding?.tabPage?.tabLayout?.setBackgroundColor(Color.TRANSPARENT)
+
+        binding?.tabPage?.addNewTab(getString(R.string.picker_title_camera))
+        binding?.tabPage?.addNewTab(getString(R.string.picker_title_gallery))
+
+        binding?.tabPage?.tabLayout?.addOnTabSelected { position ->
+            if (position == PAGE_CAMERA_INDEX) {
+                onCameraTabSelected()
+            } else if (position == PAGE_GALLERY_INDEX) {
+                onGalleryTabSelected()
+            }
+        }
+    }
+
+    private fun onCameraTabSelected() {
+        navigator?.onPageSelected(PickerFragmentType.CAMERA)
+        navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
+        binding?.container?.setMargin(0, 0, 0, 0)
+    }
+
+    private fun onGalleryTabSelected() {
+        val marginBottom = dimensionPixelOffsetOf(R.dimen.picker_page_margin_bottom)
+
+        navigator?.onPageSelected(PickerFragmentType.GALLERY)
+        navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
+
+        binding?.container?.setMargin(0, 0, 0, marginBottom)
+    }
+
+    protected open fun createFragmentFactory(): PickerFragmentFactory {
+        return PickerFragmentFactoryImpl()
+    }
+
+    protected open fun initInjector() {
+        DaggerPickerComponent.builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .pickerModule(PickerModule())
+            .build()
+            .inject(this)
+    }
+
     override fun tabVisibility(isShown: Boolean) {
         if (!param.isCommonPageType()) return
         binding?.tabContainer?.showWithCondition(isShown)
@@ -280,141 +405,6 @@ open class PickerActivity : BaseActivity()
 
     override fun onShowImageMaxFileSizeToast() {
         // TODO
-    }
-
-    private fun setupQueryAndUIConfigBuilder() {
-        val data = intent?.data ?: return
-
-        PickerUiConfig.setupQueryPage(data)
-        PickerUiConfig.setupQueryMode(data)
-        PickerUiConfig.setupQuerySelectionType(data)
-    }
-
-    private fun restoreDataState(savedInstanceState: Bundle?) {
-        cleanUpInternalStorageIfNeeded(this, ImageProcessingUtil.DEFAULT_DIRECTORY)
-
-        savedInstanceState?.let {
-            // restore the last media selection to the drawer
-            it.getParcelableArrayList<MediaUiModel>(LAST_MEDIA_SELECTION)
-                ?.let { elements ->
-                    stateOnChangePublished(elements)
-                }
-        }
-    }
-
-    private fun initView() {
-        if (hasPermissionGranted) {
-            permissionGrantedState()
-            navigateByPageType()
-        } else {
-            permissionDeniedState()
-            navigator?.start(PickerFragmentType.PERMISSION)
-        }
-    }
-
-    private fun initObservable() {
-        lifecycleScope.launchWhenResumed {
-            viewModel.uiEvent.observe(
-                onChanged = {
-                    medias.clear()
-                    medias.addAll(it)
-                },
-                onRemoved = {
-                    if (medias.containByName(it)) {
-                        medias.safeRemove(it)
-                    }
-                },
-                onAdded = {
-                    if (PickerUiConfig.isSingleSelectionType()) {
-                        medias.clear()
-                    }
-
-                    if (!medias.containByName(it)) {
-                        medias.add(it)
-                    }
-                }
-            ) {
-                navToolbar.showContinueButtonAs(
-                    medias.isNotEmpty()
-                )
-            }
-        }
-    }
-
-    private fun permissionGrantedState() {
-        binding?.toolbarContainer?.show()
-    }
-
-    private fun permissionDeniedState() {
-        binding?.toolbarContainer?.hide()
-    }
-
-    private fun navigateByPageType() {
-        when (PickerUiConfig.paramPage) {
-            PickerPageType.CAMERA -> {
-                navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
-                navigator?.start(PickerFragmentType.CAMERA)
-            }
-            PickerPageType.GALLERY -> {
-                navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
-                navigator?.start(PickerFragmentType.GALLERY)
-            }
-            else -> {
-                // show camera as initial page
-                navigator?.start(PickerFragmentType.CAMERA)
-
-                // display the tab navigation
-                setupTabView()
-            }
-        }
-    }
-
-    private fun setupTabView() {
-        binding?.tabContainer?.show()
-
-        // setup as transparent tab layout background
-        binding?.tabPage?.tabLayout?.setBackgroundColor(Color.TRANSPARENT)
-
-        // set transparent of nav toolbar
-        navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
-
-        binding?.tabPage?.addNewTab(getString(R.string.picker_title_camera))
-        binding?.tabPage?.addNewTab(getString(R.string.picker_title_gallery))
-
-        binding?.tabPage?.tabLayout?.addOnTabSelected { position ->
-            if (position == PAGE_CAMERA_INDEX) {
-                onCameraTabSelected()
-            } else if (position == PAGE_GALLERY_INDEX) {
-                onGalleryTabSelected()
-            }
-        }
-    }
-
-    private fun onCameraTabSelected() {
-        navigator?.onPageSelected(PickerFragmentType.CAMERA)
-        navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
-        binding?.container?.setMargin(0, 0, 0, 0)
-    }
-
-    private fun onGalleryTabSelected() {
-        val marginBottom = dimensionPixelOffsetOf(R.dimen.picker_page_margin_bottom)
-
-        navigator?.onPageSelected(PickerFragmentType.GALLERY)
-        navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
-
-        binding?.container?.setMargin(0, 0, 0, marginBottom)
-    }
-
-    protected open fun createFragmentFactory(): PickerFragmentFactory {
-        return PickerFragmentFactoryImpl()
-    }
-
-    protected open fun initInjector() {
-        DaggerPickerComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .pickerModule(PickerModule())
-            .build()
-            .inject(this)
     }
 
     companion object {

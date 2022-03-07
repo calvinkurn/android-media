@@ -18,12 +18,17 @@
     <string name="picker_button_retake_common">Pilih Ulang</string>
     <string name="picker_button_retake_video">Rekam Video Ulang</string>
     <string name="picker_button_retake_image">Ambil Gambar Ulang</string>
+    <string name="picker_button_activation">Aktifkan</string>
 
     <string name="picker_button_delete_confirm">Ya, Hapus</string>
 
 <!--    menus-->
     <string name="picker_camera_picture_mode">PHOTO</string>
     <string name="picker_camera_video_mode">VIDEO</string>
+
+    <string name="picker_permission_camera">Aktifkan akses kamera</string>
+    <string name="picker_permission_microphone">Aktifkan akses mikrofon</string>
+    <string name="picker_permission_gallery">Aktifkan akses gallery</string>
 
 <!--    message-->
     <string name="picker_deletion_message">Kalau dihapus, media yang kamu ambil akan hilang karena belum disimpan di hp-mu.</string>

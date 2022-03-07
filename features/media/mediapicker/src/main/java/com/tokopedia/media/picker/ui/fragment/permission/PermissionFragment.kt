@@ -6,11 +6,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.media.R
-import com.tokopedia.media.databinding.FragmentPermissionBinding
 import com.tokopedia.media.common.types.PickerPageType
+import com.tokopedia.media.databinding.FragmentPermissionBinding
 import com.tokopedia.media.picker.ui.PickerUiConfig
+import com.tokopedia.media.picker.ui.fragment.permission.recyclers.adapter.PermissionAdapter
+import com.tokopedia.media.picker.ui.fragment.permission.recyclers.utils.ItemDividerDecoration
+import com.tokopedia.media.picker.ui.uimodel.PermissionUiModel
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -19,7 +23,7 @@ open class PermissionFragment : BaseDaggerFragment() {
     private val binding by viewBinding<FragmentPermissionBinding>()
     private val permissionHelper by lazy { PermissionCheckerHelper() }
 
-    private val _permissions = mutableListOf<String>()
+    private val _permissions = mutableListOf<PermissionUiModel>()
     private var listener: Listener? = null
 
     override fun onCreateView(
@@ -40,65 +44,75 @@ open class PermissionFragment : BaseDaggerFragment() {
     }
 
     private fun setupView() {
-        binding?.btnAction?.setOnClickListener {
-            setPermission()
-        }
+        initPermission()
+        setupPermissionList()
     }
 
-    private fun setPermission() {
+    private fun initPermission() {
         _permissions.clear()
 
         when (PickerUiConfig.paramPage) {
             PickerPageType.COMMON -> {
                 _permissions.addAll(listOf(
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.RECORD_AUDIO,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
+                    PermissionUiModel.storage(),
+                    PermissionUiModel.camera(),
+                    PermissionUiModel.microphone(),
                 ))
             }
             PickerPageType.CAMERA -> {
                 _permissions.addAll(listOf(
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.RECORD_AUDIO
+                    PermissionUiModel.camera(),
+                    PermissionUiModel.microphone(),
                 ))
             }
             PickerPageType.GALLERY -> {
                 _permissions.add(
-                    Manifest.permission.READ_EXTERNAL_STORAGE
+                    PermissionUiModel.storage(),
                 )
             }
         }
-
-        permissionHelper.checkPermissions(
-            this,
-            _permissions.toTypedArray(),
-            object : PermissionCheckerHelper.PermissionCheckListener {
-                override fun onPermissionDenied(permissionText: String) {
-                    permissionHelper.onPermissionDenied(requireContext(), permissionText)
-                }
-
-                override fun onNeverAskAgain(permissionText: String) {
-                    permissionHelper.onNeverAskAgain(requireContext(), permissionText)
-                }
-
-                override fun onPermissionGranted() {
-                    listener?.onPermissionGranted()
-                }
-        })
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        permissionHelper.onRequestPermissionsResult(
-            requireContext(),
-            requestCode,
-            permissions,
-            grantResults
-        )
+    private fun setupPermissionList() {
+        binding?.lstPermission?.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = PermissionAdapter(_permissions)
+
+            addItemDecoration(ItemDividerDecoration(requireContext()))
+        }
     }
+
+    private fun setPermission() {
+//        permissionHelper.checkPermissions(
+//            this,
+//            _permissions.toTypedArray(),
+//            object : PermissionCheckerHelper.PermissionCheckListener {
+//                override fun onPermissionDenied(permissionText: String) {
+//                    permissionHelper.onPermissionDenied(requireContext(), permissionText)
+//                }
+//
+//                override fun onNeverAskAgain(permissionText: String) {
+//                    permissionHelper.onNeverAskAgain(requireContext(), permissionText)
+//                }
+//
+//                override fun onPermissionGranted() {
+//                    listener?.onPermissionGranted()
+//                }
+//        })
+    }
+
+//    override fun onRequestPermissionsResult(
+//        requestCode: Int,
+//        permissions: Array<String>,
+//        grantResults: IntArray
+//    ) {
+//        permissionHelper.onRequestPermissionsResult(
+//            requireContext(),
+//            requestCode,
+//            permissions,
+//            grantResults
+//        )
+//    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
