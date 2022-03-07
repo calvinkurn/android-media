@@ -398,7 +398,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         loyaltyStatus = data.userPerso.loyaltyStatus
         getFavoriteNumber()
         initEmptyState(data.banners)
-
         renderPrefill(data.userPerso)
         renderTicker(data.tickers)
     }
@@ -675,7 +674,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun initEmptyState(banners: List<TopupBillsBanner>) {
-        binding?.rechargePdpPulsaEmptyStateWidget?.imageUrl = banners[0].imageUrl
+        binding?.rechargePdpPulsaEmptyStateWidget?.imageUrl = banners.firstOrNull()?.imageUrl ?: ""
     }
 
     private fun onSuccessDenomGrid(denomData: DenomWidgetModel, selectedPosition: Int?) {

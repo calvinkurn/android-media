@@ -72,6 +72,7 @@ class GetRechargeCatalogInputMultiTabUseCase @Inject constructor(
                   products {
                     id
                     attributes {
+                      status  
                       product_labels
                       desc
                       detail

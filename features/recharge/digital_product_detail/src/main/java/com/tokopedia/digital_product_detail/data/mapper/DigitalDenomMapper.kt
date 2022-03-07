@@ -109,6 +109,7 @@ class DigitalDenomMapper @Inject constructor() {
         return rechargeProduct?.let {
             DenomData(
                 id = it.id,
+                status = it.attributes.status,
                 promoStatus = if (it.attributes.productPromo != null) PROMO_STATUS_TRUE else PROMO_STATUS_FALSE,
                 categoryId = it.attributes.categoryId,
                 operatorId = it.attributes.operatorId,
@@ -130,6 +131,7 @@ class DigitalDenomMapper @Inject constructor() {
         return rechargeProduct.let {
             DenomData(
                 id = it.id,
+                status = it.attributes.status,
                 promoStatus = if (it.attributes.productPromo != null) PROMO_STATUS_TRUE else PROMO_STATUS_FALSE,
                 categoryId = it.attributes.categoryId,
                 operatorId = it.attributes.operatorId,

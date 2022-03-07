@@ -458,7 +458,6 @@ class DigitalPDPDataPlanFragment :
         loyaltyStatus = data.userPerso.loyaltyStatus
         getFavoriteNumber()
         initEmptyState(data.banners)
-
         renderPrefill(data.userPerso)
         renderTicker(data.tickers)
     }
@@ -754,7 +753,7 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun initEmptyState(banners: List<TopupBillsBanner>) {
-        binding?.rechargePdpPaketDataEmptyStateWidget?.imageUrl = banners[0].imageUrl
+        binding?.rechargePdpPaketDataEmptyStateWidget?.imageUrl = banners.firstOrNull()?.imageUrl ?: ""
     }
 
     private fun showEmptyState() {

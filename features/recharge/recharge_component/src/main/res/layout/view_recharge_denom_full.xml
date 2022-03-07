@@ -51,7 +51,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_denom_full_quota"
-            android:layout_width="@dimen/unify_space_0"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lines="1"
             android:ellipsize="end"
@@ -81,7 +81,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_denom_full_expired"
-            android:layout_width="@dimen/unify_space_0"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="@+id/view_separator_type_denom_full"
             app:layout_constraintLeft_toRightOf="@+id/view_separator_type_denom_full"
