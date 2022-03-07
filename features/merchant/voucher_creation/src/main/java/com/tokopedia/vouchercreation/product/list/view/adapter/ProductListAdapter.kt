@@ -111,13 +111,23 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
     }
 
     override fun onRemoveProductButtonClicked(adapterPosition: Int, dataSetPosition: Int) {
-        productUiModelList.removeAt(dataSetPosition)
-        notifyItemRemoved(adapterPosition)
+        try {
+            productUiModelList.removeAt(dataSetPosition)
+            notifyDataSetChanged()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun onProductVariantCheckBoxClicked(isSelected: Boolean, dataSetPosition: Int, variantIndex: Int): Int {
-        productUiModelList[dataSetPosition].variants[variantIndex].isSelected = isSelected
-        return productUiModelList[dataSetPosition].getSelectedVariants().size
+        var selectedVariantSize = 0
+        try {
+            productUiModelList[dataSetPosition].variants[variantIndex].isSelected = isSelected
+            selectedVariantSize = productUiModelList[dataSetPosition].getSelectedVariants().size
+        }  catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return selectedVariantSize
     }
 
     override fun onProductVariantHeaderClicked(isExpanded: Boolean, dataSetPosition: Int) {
