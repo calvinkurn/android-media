@@ -2034,10 +2034,10 @@ class PlayViewModel @AssistedInject constructor(
             }
             if(data.first) {
                 updateReminderUi(productUiModel.config.reminder.reversed(productUiModel.id.toLongOrZero()))
-                _uiEvent.emit(ShowInfoEvent(message = UiString.Text(data.second)))
+                _uiEvent.emit(ShowInfoEvent(message = if(data.second.isNotEmpty()) UiString.Text(data.second) else UiString.Resource(R.string.play_product_upcoming_reminder_success)))
             }
             else {
-                throw Exception(data.second)
+                throw Exception(message = if(data.second.isNotEmpty()) data.second else "Pengingat telah dihapus.")
             }
         }){
             _uiEvent.emit(ShowErrorEvent(it))
