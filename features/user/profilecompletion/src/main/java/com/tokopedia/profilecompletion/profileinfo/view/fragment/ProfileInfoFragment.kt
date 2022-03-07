@@ -96,6 +96,11 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 
     override fun getScreenName(): String = "New Profile Info"
 
+	override fun onFragmentBackPressed(): Boolean {
+		tracker.trackOnClickBackBtn()
+		return super.onFragmentBackPressed()
+	}
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         inflater.inflate(R.layout.fragment_profile_info, container, false)
 
@@ -181,7 +186,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 	    ProfileInfoTitleUiModel(ProfileInfoConstants.PROFILE_INFO_SECTION, getString(R.string.profile_info_title)),
 	    ProfileInfoItemUiModel(ProfileInfoConstants.NAME, title = getString(R.string.title_item_name), itemValue = data.profileInfoData.fullName) {
 	    	if (!data.profileRoleData.isAllowedChangeName) {
-	    		tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRYPOINT_NAME)
+	    		tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRYPOINT_NAME + ProfileInfoTracker.LABEL_PAGE)
 				val intent = RouteManager.getIntent(
 					context,
 					ApplinkConstInternalGlobal.CHANGE_NAME,
@@ -190,6 +195,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 				)
 				startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_CHANGE_NAME)
 			} else {
+				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRYPOINT_NAME + ProfileInfoTracker.LABEL_BOTTOMSHEET)
 				openBottomSheetWarning(data.profileRoleData.changeNameMessageInfoTitle, data.profileRoleData.changeNameMessageInfo)
 			}
 		},
@@ -213,24 +219,27 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 	    ProfileInfoItemUiModel(ProfileInfoConstants.EMAIL, title = "E-mail", itemValue = data.profileInfoData.email,
 			placeholder = getString(R.string.placeholder_email)
 		) {
-			tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_EMAIL)
 			if (data.profileInfoData.email.isEmpty() || !data.profileInfoData.isEmailDone) {
-		    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_EMAIL)
+				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_EMAIL + ProfileInfoTracker.LABEL_PAGE)
+				val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_EMAIL)
 		    startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_EMAIL)
 		} else {
-		    if (data.profileInfoData.msisdn.isNotEmpty() && data.profileInfoData.isMsisdnVerified) {
-			goToChangeEmail()
+				if (data.profileInfoData.msisdn.isNotEmpty() && data.profileInfoData.isMsisdnVerified) {
+					tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_EMAIL + ProfileInfoTracker.LABEL_PAGE)
+					goToChangeEmail()
 		    } else if (data.profileInfoData.msisdn.isNotEmpty() && !data.profileInfoData.isMsisdnVerified) {
-			showVerifyEmailDialog()
+					tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_EMAIL + ProfileInfoTracker.LABEL_POP_UP)
+					showVerifyEmailDialog()
 		    } else {
-			showChangeEmailDialog()
+					tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_EMAIL + ProfileInfoTracker.LABEL_POP_UP)
+					showChangeEmailDialog()
 		    }
 		}
 	    } ,
 	    ProfileInfoItemUiModel(ProfileInfoConstants.PHONE, title = "Nomor HP", itemValue = data.profileInfoData.msisdn,
 			placeholder = getString(R.string.placeholder_phone)
 		) {
-			tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_PHONE)
+			tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_PHONE + ProfileInfoTracker.LABEL_PAGE)
 			if (data.profileInfoData.msisdn.isEmpty()) {
 		    goToAddPhone()
 		} else {
@@ -248,7 +257,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 			placeholder = getString(R.string.placeholder_gender)
 		){
 			if (data.profileRoleData.isAllowedChangeGender) {
-				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_GENDER)
+				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_GENDER + ProfileInfoTracker.LABEL_PAGE)
 				val intent =
 					RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_GENDER)
 				startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_GENDER)
@@ -258,13 +267,15 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 			itemValue = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD, DateFormatUtils.FORMAT_DD_MMMM_YYYY, data.profileInfoData.birthDay),
 			placeholder = getString(R.string.placeholder_dob)
 		) {
-			tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_DOB)
 			if(data.profileInfoData.birthDay.isEmpty()) {
-		    goToAddDob()
+				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_DOB + ProfileInfoTracker.LABEL_PAGE)
+				goToAddDob()
 		} else {
 			if (data.profileRoleData.isAllowedChangeDob) {
+				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_DOB + ProfileInfoTracker.LABEL_PAGE)
 				goToChangeDob(data.profileInfoData.birthDay)
 			} else {
+				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_DOB + ProfileInfoTracker.LABEL_BOTTOMSHEET)
 				openBottomSheetWarning(data.profileRoleData.changeDobMessageInfoTitle, data.profileRoleData.changeDobMessageInfo)
 			}
 		}

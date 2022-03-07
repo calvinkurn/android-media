@@ -30,10 +30,14 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileFeedData
+import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.unifycomponents.Toaster
 
 
 class ChangeBioUsernameFragment : BaseDaggerFragment() {
+
+    @Inject
+    lateinit var tracker: ProfileInfoTracker
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -66,6 +70,18 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         initAction()
         initObserver()
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        when (page) {
+            ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_USERNAME -> {
+                tracker.trackClickOnBtnBackUsername()
+            }
+            ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_BIO -> {
+                tracker.trackClickOnBtnBackChangeBio()
+            }
+        }
+        return super.onFragmentBackPressed()
     }
 
     private fun initAction() {
@@ -107,6 +123,7 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
         viewModel.resultSubmitUsername.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    tracker.trackOnBtnSimpanUsernameSuccess(binding?.stubField?.etUsername?.editText?.text.toString())
                     val resultIntent = Intent()
                     resultIntent.putExtra(RESULT_KEY_MESSAGE_SUCCESS_USERNAME_BIO, getString(
                                             R.string.change_username_success))
@@ -114,6 +131,7 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
                     activity?.finish()
                 }
                 is Fail -> {
+                    tracker.trackOnBtnSimpanUsernameFailed(binding?.stubField?.etUsername?.editText?.text.toString(), it.throwable.localizedMessage ?: "")
                     hideLoading()
                     view?.let { view ->
                         Toaster.make(view, ErrorHandler.getErrorMessage(context, it.throwable),
@@ -126,6 +144,7 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
         viewModel.resultSubmitBio.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    tracker.trackOnBtnLanjutChangeBioSuccess()
                     hideLoading()
                     val resultIntent = Intent()
                     resultIntent.putExtra(RESULT_KEY_MESSAGE_SUCCESS_USERNAME_BIO, getString(R.string.change_biography_success))
@@ -136,18 +155,26 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
                     hideLoading()
                     if (it.throwable is SubmitProfileError) {
                         try {
-                            submitBioError((it.throwable as SubmitProfileError).data
-                                .getErrorMessage(getString(R.string.key_error_biography)))
+                            val errorMsg = (it.throwable as SubmitProfileError).data
+                                .getErrorMessage(getString(R.string.key_error_biography))
+                            submitBioError(errorMsg)
+                            tracker.trackOnBtnLanjutChangeBioFailed(errorMsg)
+
                         } catch (e: MessageErrorException) {
+                            val errorMsg = ErrorHandler.getErrorMessage(context, e)
                             view?.let { view ->
-                                Toaster.make(view, ErrorHandler.getErrorMessage(context, e),
+                                Toaster.make(view, errorMsg,
                                     Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
                             }
+                            tracker.trackOnBtnLanjutChangeBioFailed(errorMsg)
                         }
                     } else {
                         view?.let { view ->
-                            Toaster.make(view, ErrorHandler.getErrorMessage(context, it.throwable),
+                            val errorMsg = ErrorHandler.getErrorMessage(context, it.throwable)
+                            Toaster.make(view, errorMsg,
                                 Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                            tracker.trackOnBtnLanjutChangeBioFailed(errorMsg)
+
                         }
                     }
                 }
@@ -223,6 +250,7 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
 
     private fun setEditTextUsernameListener() {
         binding?.btnSubmit?.setOnClickListener {
+            tracker.trackOnBtnSimpanUsernameClick(binding?.stubField?.etUsername?.editText?.text?.toString() ?: "")
             showLoading()
             viewModel.submitUsername(binding?.stubField?.etUsername?.editText?.text.toString())
         }
@@ -244,6 +272,7 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
 
     private fun setEditTextBioListener() {
         binding?.btnSubmit?.setOnClickListener {
+            tracker.trackOnBtnLanjutChangeBioClick()
             showLoading()
             viewModel.submitBio(binding?.stubField?.etBio?.editText?.text.toString())
         }

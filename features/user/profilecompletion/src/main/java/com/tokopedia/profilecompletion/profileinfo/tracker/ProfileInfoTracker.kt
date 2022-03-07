@@ -17,7 +17,7 @@ class ProfileInfoTracker {
 	)
     }
 
-    // tracker ID: 28681
+    // tracker ID: 28681 - done
     fun trackOnClickBackBtn() {
 	track(
 	    TrackAppUtils.gtmData(
@@ -62,35 +62,35 @@ class ProfileInfoTracker {
     }
 
     // tracker ID: 28684 - Click
-    fun trackOnClickBtnSimpanClick() {
+    fun trackOnClickBtnSimpanChangeNameClick() {
 	track(
 	    TrackAppUtils.gtmData(
 		EVENT_CLICK_ACCOUNT,
-		CATEGORY_CHANGE_PROFILE,
+		CATEGORY_CHANGE_NAME,
 		ACTION_CLICK_BTN_SIMPAN,
 		LABEL_CLICK)
 	)
     }
 
     // tracker ID: 28684 - Success
-    fun trackOnClickBtnSimpanSuccess(label: String) {
+    fun trackOnClickBtnSimpanChangeNameSuccess() {
 	track(
 	    TrackAppUtils.gtmData(
 		EVENT_CLICK_ACCOUNT,
-		CATEGORY_CHANGE_PROFILE,
+		CATEGORY_CHANGE_NAME,
 		ACTION_CLICK_BTN_SIMPAN,
-		LABEL_CLICK)
+		LABEL_SUCCESS)
 	)
     }
 
     // tracker ID: 28684 - Failed
-    fun trackOnClickBtnSimpanFailed(errorMsg: String) {
+    fun trackOnClickBtnSimpanChangeNameFailed(errorMsg: String) {
 	track(
 	    TrackAppUtils.gtmData(
 		EVENT_CLICK_ACCOUNT,
-		CATEGORY_CHANGE_PROFILE,
+		CATEGORY_CHANGE_NAME,
 		ACTION_CLICK_BTN_SIMPAN,
-		"$LABEL_SUCCESS - $errorMsg")
+		"$LABEL_FAILED - $errorMsg")
 	)
     }
 
@@ -238,7 +238,7 @@ class ProfileInfoTracker {
 	)
     }
 
-    // tracker ID: 28698 - Click
+    // tracker ID: 28698 - Click - done
     fun trackOnBtnSimpanUsernameClick(username: String) {
 	track(
 	    TrackAppUtils.gtmData(
@@ -249,7 +249,7 @@ class ProfileInfoTracker {
 	)
     }
 
-    // tracker ID: 28698 - Success
+    // tracker ID: 28698 - Success - done
     fun trackOnBtnSimpanUsernameSuccess(username: String) {
 	track(
 	    TrackAppUtils.gtmData(
@@ -260,18 +260,18 @@ class ProfileInfoTracker {
 	)
     }
 
-    // tracker ID: 28698 - Failed
-    fun trackOnBtnSimpanUsernameFailed(username: String) {
+    // tracker ID: 28698 - Failed - done
+    fun trackOnBtnSimpanUsernameFailed(username: String, errorMsg: String) {
 	track(
 	    TrackAppUtils.gtmData(
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_INFO_PROFILE,
 		ACTION_CLICK_BTN_SIMPAN,
-		"$LABEL_FAILED - $username")
+		"$LABEL_FAILED - $username - $errorMsg")
 	)
     }
 
-    // tracker ID: 28699
+    // tracker ID: 28699 - done
     fun trackClickOnBtnBackUsername() {
 	track(
 	    TrackAppUtils.gtmData(
@@ -282,7 +282,7 @@ class ProfileInfoTracker {
 	)
     }
 
-    // tracker ID: 28700 - Click
+    // tracker ID: 28700 - Click - done
     fun trackOnBtnLanjutChangeBioClick() {
 	track(
 	    TrackAppUtils.gtmData(
@@ -293,7 +293,7 @@ class ProfileInfoTracker {
 	)
     }
 
-    // tracker ID: 28700 - Success
+    // tracker ID: 28700 - Success - done
     fun trackOnBtnLanjutChangeBioSuccess() {
 	track(
 	    TrackAppUtils.gtmData(
@@ -304,7 +304,7 @@ class ProfileInfoTracker {
 	)
     }
 
-    // tracker ID: 28700 - Failed
+    // tracker ID: 28700 - Failed - done
     fun trackOnBtnLanjutChangeBioFailed(errorMsg: String) {
 	track(
 	    TrackAppUtils.gtmData(
@@ -315,7 +315,7 @@ class ProfileInfoTracker {
 	)
     }
 
-    // tracker ID: 28701
+    // tracker ID: 28701 - done
     fun trackClickOnBtnBackChangeBio() {
 	track(
 	    TrackAppUtils.gtmData(
@@ -413,6 +413,9 @@ class ProfileInfoTracker {
 		const val LABEL_ENTRY_POINT_PHONE = " - phone"
 		const val LABEL_ENTRY_POINT_GENDER = " - gender"
 		const val LABEL_ENTRY_POINT_DOB = " - dob"
+		const val LABEL_PAGE = "- page"
+		const val LABEL_BOTTOMSHEET = " - bottomsheet"
+		const val LABEL_POP_UP = "- pop up"
 
 	const val BUSSINESS_UNIT = "user platform"
 	const val CURRENT_SITE = "tokopediamarketplace"
