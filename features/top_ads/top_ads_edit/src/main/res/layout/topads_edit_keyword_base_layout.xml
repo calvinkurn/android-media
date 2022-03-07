@@ -5,92 +5,79 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/autobid_layout"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtEditKeywordTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:text="@string/topads_edit_keyword_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/cvBidLayoutEditKeyword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="@dimen/dp_22"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        android:layout_marginHorizontal="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_constraintTop_toBottomOf="@id/txtEditKeywordTitle">
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/autobid_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/ic_autobid_setting_icon" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl6">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/autobid_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/autobid_list_step"
-            app:typographyType="heading_5"
-            app:typographyWeight="bold"
-            app:layout_constraintStart_toEndOf="@+id/autobid_icon"
-            app:layout_constraintTop_toTopOf="parent"/>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/txtBidTitleEditKeyword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:text="@string/autobid_otomatis_title"
+                android:textAllCaps="true"
+                android:textColor="@color/Unify_N700_68"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/ivBidInfoEditKeyword"
+                android:layout_width="@dimen/layout_lvl3"
+                android:layout_height="@dimen/layout_lvl3"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:src="@drawable/iconunify_information"
+                android:tint="@color/Unify_NN900"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/txtBidTitleEditKeyword"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/autobid_selection"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/autobid_manual"
-            android:textColor="@color/Unify_G500"
-            app:typographyType="heading_5"
-            app:typographyWeight="bold"
-            app:layout_constraintEnd_toStartOf="@+id/autobid_arrow"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/autobid_arrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/topads_ic_arrow" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+                android:id="@+id/switchBidEditKeyword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/unify_space_12"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.tokopedia.unifycomponents.CardUnify>
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/autobid_ticker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tickerType="announcement"
-        app:tickerShapeType="loose"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginHorizontal="@dimen/unify_space_12"
         app:closeButtonVisibility="gone"
-        android:visibility="gone"
-        app:titleText="@string/autobid_otomatis_ticker_title"
-        app:descriptionText="@string/autobid_otomatis_ticker_desc"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/autobid_layout"/>
+        app:descriptionText="@string/topads_edit_auto_bid_ticker_title"
+        app:layout_constraintTop_toBottomOf="@+id/cvBidLayoutEditKeyword"
+        app:tickerShapeType="loose"
+        app:tickerType="announcement" />
 
     <LinearLayout
         android:id="@+id/keyword_grp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginHorizontal="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/autobid_ticker">
@@ -100,8 +87,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
-            app:chipSize="medium"
             app:centerText="true"
+            app:chipSize="medium"
             app:chipText="@string/topads_edit_kata_kunci"
             app:chipType="normal" />
 
@@ -111,11 +98,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="8dp"
-            app:chipSize="medium"
             app:centerText="true"
+            app:chipSize="medium"
             app:chipText="@string/topads_edit_kata_kunci_neg"
             app:chipType="normal" />
-
     </LinearLayout>
 
     <com.tokopedia.topads.common.CustomViewPager
@@ -126,5 +112,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/keyword_grp" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

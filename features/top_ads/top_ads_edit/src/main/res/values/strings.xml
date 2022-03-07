@@ -70,6 +70,7 @@
         <item>Harga Tertinggi</item>
         <item>Harga Terendah</item>
     </string-array>
-
+    <string name="topads_edit_keyword_title">Biaya Iklan dan Kata Kunci</string>
+    <string name="topads_edit_auto_bid_ticker_title">Biaya iklan dan kata kunci pada grup iklan ini akan diatur oleh TopAds untuk memaksimalkan penjualanmu. Pelajari Selengkapnya</string>
 
 </resources>

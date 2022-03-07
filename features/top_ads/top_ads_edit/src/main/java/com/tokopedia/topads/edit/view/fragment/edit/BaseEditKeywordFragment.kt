@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.topads.common.CustomViewPager
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.GetKeywordResponse
@@ -34,18 +36,32 @@ import com.tokopedia.topads.edit.utils.Constants.STRATEGIES
 import com.tokopedia.topads.edit.view.activity.SaveButtonStateCallBack
 import com.tokopedia.topads.edit.view.sheet.AutoBidSelectionSheet
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.topads_edit_keyword_base_layout.*
 
 private const val CLICK_KATA_KUNCI_POSITIF = "click - kata kunci positif"
 private const val CLICK_KATA_KUNCI_NEGATIF = "click - kata kunci negatif"
 private const val CLICK_BID_TYPE_EDIT = "click - edit ubah metode"
+private const val AUTO_BID_STATE = "auto"
 
 class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.ButtonAction {
+
+    private var switchBidEditKeyword : SwitchUnify ?= null
+    private var txtBidTitleEditKeyword : Typography ?= null
+    private var ivBidInfoEditKeyword : ImageUnify ?= null
+    private var keywordGroup : LinearLayout ?= null
+    private var autoBidTicker : Ticker ?= null
+    private var chipKeyword : ChipsUnify ?= null
+    private var chipNegativeKeyword : ChipsUnify ?= null
+    private var viewPager : CustomViewPager ?= null
 
     private var buttonStateCallback: SaveButtonStateCallBack? = null
     private var btnState = true
     private var bidStrategy: String = ""
-    private var autoBidSelectionSheet: AutoBidSelectionSheet? = null
+    private var autoBidSelectionSheet: AutoBidSelectionSheet? = null    //remove if no use
     var positivekeywordsAll: ArrayList<KeySharedModel>? = arrayListOf()
     var negativekeywordsAll: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
     private val sharedViewModel by lazy {
@@ -65,47 +81,65 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(
+        val view =  inflater.inflate(
             resources.getLayout(R.layout.topads_edit_keyword_base_layout),
             container,
             false
         )
+        initView(view)
+        return view
+    }
+
+    private fun initView(view: View) {
+        switchBidEditKeyword = view.findViewById(R.id.switchBidEditKeyword)
+        txtBidTitleEditKeyword = view.findViewById(R.id.txtBidTitleEditKeyword)
+        ivBidInfoEditKeyword = view.findViewById(R.id.ivBidInfoEditKeyword)
+        keywordGroup = view.findViewById(R.id.keyword_grp)
+        autoBidTicker = view.findViewById(R.id.autobid_ticker)
+        chipKeyword = view.findViewById(R.id.keyword)
+        chipNegativeKeyword = view.findViewById(R.id.neg_keyword)
+        viewPager = view.findViewById(R.id.view_pager)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        initListeners()
         renderViewPager()
-        keyword.chipType = ChipsUnify.TYPE_SELECTED
-        keyword.setOnClickListener {
+        chipKeyword?.chipType = ChipsUnify.TYPE_SELECTED
+        chipKeyword?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(
                 CLICK_KATA_KUNCI_POSITIF,
                 ""
             )
-            keyword.chipType = ChipsUnify.TYPE_SELECTED
-            neg_keyword.chipType = ChipsUnify.TYPE_NORMAL
-            view_pager.currentItem = POSITION0
+            chipKeyword?.chipType = ChipsUnify.TYPE_SELECTED
+            chipNegativeKeyword?.chipType = ChipsUnify.TYPE_NORMAL
+            viewPager?.currentItem = POSITION0
         }
-        neg_keyword.setOnClickListener {
+        chipNegativeKeyword?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(
                 CLICK_KATA_KUNCI_NEGATIF,
                 ""
             )
-            neg_keyword.chipType = ChipsUnify.TYPE_SELECTED
-            keyword.chipType = ChipsUnify.TYPE_NORMAL
-            view_pager.currentItem = POSITION1
+            chipNegativeKeyword?.chipType = ChipsUnify.TYPE_SELECTED
+            chipKeyword?.chipType = ChipsUnify.TYPE_NORMAL
+            viewPager?.currentItem = POSITION1
         }
-        autobid_layout.setOnClickListener {
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(CLICK_BID_TYPE_EDIT, "")
-            autoBidSelectionSheet = AutoBidSelectionSheet.newInstance()
-            autoBidSelectionSheet?.setChecked(autobid_selection.text.toString())
-            autoBidSelectionSheet?.show(childFragmentManager, "")
-            autoBidSelectionSheet?.onItemClick = { autoBidState ->
-                handleAutoBidState(autoBidState)
-            }
-        }
-        sharedViewModel.setIsWhiteListedUser(arguments?.getBoolean(ParamObject.ISWHITELISTEDUSER)?:false)
-        arguments?.getString(GROUP_STRATEGY, "")?.let { handleAutoBidState(it) }
 
+        sharedViewModel.setIsWhiteListedUser(arguments?.getBoolean(ParamObject.ISWHITELISTEDUSER)?:false)
+        arguments?.getString(GROUP_STRATEGY, "")?.let { handleInitialAutoBidState(it) }
+
+    }
+
+    private fun initListeners() {
+        switchBidEditKeyword?.setOnCheckedChangeListener { _, isChecked ->
+            handleAutoBidState(if(isChecked) "" else AUTO_BID_STATE)
+        }
+    }
+
+    private fun handleInitialAutoBidState(it: String) {
+        handleAutoBidState(it)
+        switchBidEditKeyword?.isChecked = it.isEmpty()
     }
 
     private fun handleAutoBidState(autoBidState: String) {
@@ -113,21 +147,21 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         bidStrategy = autoBidState
         if (autoBidState.isNotEmpty()) {
             buttonDisable(true)
-            autobid_selection.text = "Otomatis"
-            keyword_grp.visibility = View.GONE
-            autobid_ticker.visibility = View.VISIBLE
-            view_pager.visibility = View.GONE
+            txtBidTitleEditKeyword?.text = resources.getString(R.string.autobid_otomatis_title)
+            keywordGroup?.visibility = View.GONE
+            autoBidTicker?.visibility = View.VISIBLE
+            viewPager?.visibility = View.GONE
         } else {
-            keyword_grp.visibility = View.VISIBLE
-            autobid_selection.text = "Manual"
-            autobid_ticker.visibility = View.GONE
-            view_pager.visibility = View.VISIBLE
+            keywordGroup?.visibility = View.VISIBLE
+            txtBidTitleEditKeyword?.text = resources.getString(R.string.autobid_manual_title)
+            autoBidTicker?.visibility = View.GONE
+            viewPager?.visibility = View.VISIBLE
         }
     }
 
     private fun renderViewPager() {
-        view_pager.adapter = getViewPagerAdapter()
-        view_pager.disableScroll(true)
+        viewPager?.adapter = getViewPagerAdapter()
+        viewPager?.disableScroll(true)
     }
 
     private fun getViewPagerAdapter(): KeywordEditPagerAdapter {
@@ -170,7 +204,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
 
     fun sendData(): HashMap<String, Any?> {
         val dataMap = HashMap<String, Any?>()
-        val fragments = (view_pager?.adapter as KeywordEditPagerAdapter?)?.list
+        val fragments = (viewPager?.adapter as KeywordEditPagerAdapter?)?.list
         var dataNegativeAdded: ArrayList<KeySharedModel>? = arrayListOf()
         var dataNegativeDeleted: ArrayList<KeySharedModel>? = arrayListOf()
         var deletedKeywordsPos: ArrayList<KeySharedModel>? = arrayListOf()
@@ -201,7 +235,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             }
         }
         strategies.clear()
-        if (autobid_selection?.text == "Otomatis") {
+        if (switchBidEditKeyword?.isChecked == false) {
             strategies.add("auto_bid")
         }
         dataMap[POSITIVE_CREATE] = addedKeywordsPos
@@ -217,7 +251,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
     }
 
     fun getKeywordNameItems(): MutableList<Map<String, Any>> {
-        val fragments = (view_pager?.adapter as KeywordEditPagerAdapter?)?.list
+        val fragments = (viewPager?.adapter as KeywordEditPagerAdapter?)?.list
         val items: MutableList<Map<String, Any>> = mutableListOf()
         if (fragments?.get(0) is EditKeywordsFragment) {
             positivekeywordsAll?.forEachIndexed { index, it ->
