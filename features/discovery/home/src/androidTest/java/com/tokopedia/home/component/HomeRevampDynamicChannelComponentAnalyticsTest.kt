@@ -381,7 +381,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = MerchantVoucherDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                actionOnMerchantVoucherWidget(viewHolder, i)
+                actionOnMerchantVoucherWidget(viewHolder)
             }
         } validateAnalytics {
             addDebugEnd()
