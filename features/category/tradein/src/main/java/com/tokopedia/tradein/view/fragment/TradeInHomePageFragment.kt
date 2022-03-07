@@ -37,6 +37,7 @@ import com.tokopedia.tradein.di.TradeInComponent
 import com.tokopedia.tradein.model.Laku6DeviceModel
 import com.tokopedia.tradein.model.TradeInDetailModel
 import com.tokopedia.tradein.view.activity.TradeInPromoActivity
+import com.tokopedia.tradein.view.bottomsheet.TradeInDiagnosticReviewBS
 import com.tokopedia.tradein.view.bottomsheet.TradeInExchangeMethodBS
 import com.tokopedia.tradein.view.bottomsheet.TradeInImeiBS
 import com.tokopedia.tradein.view.bottomsheet.TradeInOutsideCoverageBottomSheet
@@ -393,6 +394,10 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
         showTimer: Boolean = false
     ) {
         view?.apply {
+            findViewById<IconUnify>(R.id.iv_info).setOnClickListener {
+                val bottomSheet = TradeInDiagnosticReviewBS.newInstance(logistic.diagnosticReview)
+                bottomSheet.show(childFragmentManager, "")
+            }
             findViewById<Typography>(R.id.discounted_price).text = logistic.finalPriceFmt
             findViewById<Typography>(R.id.estimated_total).text = logistic.finalPriceFmt
             findViewById<Typography>(R.id.exchange_text).text = logistic.title

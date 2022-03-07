@@ -9,18 +9,19 @@ import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.utils.view.DoubleTextView
 import com.tokopedia.tradein.R
+import com.tokopedia.tradein.model.TradeInDetailModel.GetTradeInDetail.LogisticOption.DiagnosticReview
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class TradeInFinalPriceDetailsBottomSheet: BottomSheetUnify() {
+class TradeInDiagnosticReviewBS: BottomSheetUnify() {
     private var contentView: View? = null
 
     companion object {
         private const val DEVICE_REVIEW = "DEVICE_REVIEW"
 
-        fun newInstance(deviceReview : ArrayList<String>): TradeInFinalPriceDetailsBottomSheet {
-            return TradeInFinalPriceDetailsBottomSheet().apply {
+        fun newInstance(deviceReview : ArrayList<DiagnosticReview>): TradeInDiagnosticReviewBS {
+            return TradeInDiagnosticReviewBS().apply {
                 arguments = Bundle().apply {
-                    putStringArrayList(DEVICE_REVIEW, deviceReview)
+                    putParcelableArrayList(DEVICE_REVIEW, deviceReview)
                 }
             }
         }
@@ -32,24 +33,24 @@ class TradeInFinalPriceDetailsBottomSheet: BottomSheetUnify() {
     }
 
     private fun init() {
-        showCloseIcon = false
-        showKnob = true
-        setTitle("")
+        showCloseIcon = true
+        showKnob = false
+        setTitle(getString(R.string.tradein_rincian_hp_kamu))
         contentView = View.inflate(context,
-                R.layout.tradein_final_price_detail_bottom_sheet, null)
+                R.layout.tradein_diagnostic_review_bs, null)
         contentView?.findViewById<LinearLayout>(R.id.linear_layout)?.removeAllViews()
-        arguments?.getStringArrayList(DEVICE_REVIEW)?.let {
+        arguments?.getParcelableArrayList<DiagnosticReview>(DEVICE_REVIEW)?.let {
             val textSize = 14.0f
             for(review in it){
                 val doubleTextView = DoubleTextView(activity, LinearLayout.HORIZONTAL)
                 doubleTextView.apply {
-                    setTopText(review.substringBefore(":"))
+                    setTopText(review.field)
                     setTopTextSize(textSize)
                     setTopTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                     setBottomTextSize(textSize)
                     setBottomTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                     setBottomTextStyle("bold")
-                    setBottomText(review.substringAfter(":"))
+                    setBottomText(review.value)
                     setBottomGravity(Gravity.END)
                 }
                 contentView?.findViewById<LinearLayout>(R.id.linear_layout)?.addView(doubleTextView)

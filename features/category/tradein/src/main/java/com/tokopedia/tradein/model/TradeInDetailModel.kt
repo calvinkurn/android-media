@@ -59,7 +59,7 @@ data class TradeInDetailModel(
             @SerializedName("DiagnosticPriceFmt")
             var diagnosticPriceFmt: String,
             @SerializedName("DiagnosticReview")
-            var diagnosticReview: List<DiagnosticReview>,
+            var diagnosticReview: ArrayList<DiagnosticReview>,
             @SerializedName("DiscountPercentageFmt")
             var discountPercentageFmt: String,
             @SerializedName("EstimatedPriceFmt")
