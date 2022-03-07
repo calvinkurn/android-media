@@ -18,7 +18,6 @@ import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupConfig
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
@@ -179,6 +178,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             )
             is ProductSetupAction.SearchProduct -> handleSearchProduct(action.keyword)
             ProductSetupAction.SaveProducts -> handleSaveProducts()
+            ProductSetupAction.RetryFetchProducts -> handleRetryFetchProducts()
             is ProductSetupAction.DeleteSelectedProduct -> handleDeleteProduct(action.product)
         }
     }
@@ -293,7 +293,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                         } else "",
                         page = page,
                         keyword = param.keyword,
-                        sort = param.sort?.id ?: SortUiModel.supportedSortList.first().id,
+                        sort = param.sort ?: SortUiModel.supportedSortList.first(),
                     )
 
                     _focusedProductList.update {
@@ -344,6 +344,10 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                 }
             }
         }
+    }
+
+    private fun handleRetryFetchProducts() {
+        handleLoadProductList(_loadParam.value, resetList = true)
     }
 
     /** Product Summary */
