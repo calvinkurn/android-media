@@ -54,6 +54,7 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
     private val tvAuthor: TextView
     private val tvTotalView: TextView
     private val ivGiveaway: ImageView
+    private val ivPromoLabel: IconUnify
 
     private var mPlayer: PlayVideoPlayer? = null
     private var mListener: Listener? = null
@@ -78,6 +79,7 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
         tvAuthor = view.findViewById(R.id.play_widget_channel_name)
         tvTotalView = view.findViewById(R.id.viewer)
         ivGiveaway = view.findViewById(R.id.iv_giveaway)
+        ivPromoLabel = llPromoDetail.findViewById(R.id.promo_image)
 
         compositeTouchDelegate = PlayWidgetCompositeTouchDelegate(view)
         view.touchDelegate = compositeTouchDelegate
@@ -163,18 +165,25 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
                 tvOnlyLive.gone()
             }
             is PlayWidgetPromoType.Default -> {
+                setPromoLabelIcon(promoType.isRilisanSpesial)
                 tvOnlyLive.gone()
                 llPromoDetail.visible()
 
                 tvPromoDetail.text = promoType.promoText
             }
             is PlayWidgetPromoType.LiveOnly -> {
+                setPromoLabelIcon(promoType.isRilisanSpesial)
                 tvOnlyLive.visible()
                 llPromoDetail.visible()
 
                 tvPromoDetail.text = promoType.promoText
             }
         }.exhaustive
+    }
+
+    private fun setPromoLabelIcon(isRilisanSpesial: Boolean){
+        if(isRilisanSpesial) ivPromoLabel.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_rilisan_spesial))
+        else ivPromoLabel.setImage(newIconId = IconUnify.PROMO, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
     }
 
     override fun setPlayer(player: PlayVideoPlayer?) {
