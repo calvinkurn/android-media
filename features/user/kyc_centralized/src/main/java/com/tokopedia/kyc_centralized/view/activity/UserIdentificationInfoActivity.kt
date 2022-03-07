@@ -15,6 +15,7 @@ class UserIdentificationInfoActivity : BaseSimpleActivity() {
     var isSourceSeller = false
     private var projectId = -1
     private var redirectUrl: String? = null
+    private var callback: String? = null
     private var kycType = ""
 
     interface Listener {
@@ -41,8 +42,14 @@ class UserIdentificationInfoActivity : BaseSimpleActivity() {
         intent?.data?.let {
             projectId = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID)?.toInt() ?: KYCConstant.STATUS_DEFAULT
             kycType = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
+            callback = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_CALL_BACK).orEmpty()
             redirectUrl = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL).orEmpty()
         }
-        return UserIdentificationInfoFragment.createInstance(isSourceSeller, projectId, kycType, redirectUrl)
+        return UserIdentificationInfoFragment.createInstance(
+                isSourceSeller,
+                projectId,
+                kycType,
+                if (callback.isNullOrEmpty()) redirectUrl else callback
+        )
     }
 }
