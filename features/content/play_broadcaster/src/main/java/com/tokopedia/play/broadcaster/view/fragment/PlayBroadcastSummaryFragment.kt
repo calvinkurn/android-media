@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.view.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -92,10 +93,13 @@ class PlayBroadcastSummaryFragment @Inject constructor(
 
     override fun onStart() {
         super.onStart()
-        activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        if(!isDarkMode()) activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
         requireView().requestApplyInsetsWhenAttached()
         btnPostVideo.requestApplyInsetsWhenAttached()
     }
+
+    private fun isDarkMode() = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 
     private fun initView(view: View) {
         with(view) {
