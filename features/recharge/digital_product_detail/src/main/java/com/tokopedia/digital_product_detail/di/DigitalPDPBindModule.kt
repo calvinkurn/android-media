@@ -10,6 +10,7 @@ import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogOpera
 import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogPrefixSelectRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.RechargeFavoriteNumberRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.RechargeInquiryRepositoryImpl
+import com.tokopedia.digital_product_detail.data.repository.RechargeRecommendationRepositoryImpl
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTagihanListrikRepository
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTokenListrikRepository
@@ -20,6 +21,7 @@ import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogPre
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogProductInputMultiTabRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeFavoriteNumberRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeInquiryRepository
+import com.tokopedia.digital_product_detail.domain.repository.RechargeRecommendationRepository
 import dagger.Binds
 import dagger.Module
 
@@ -56,6 +58,10 @@ abstract class DigitalPDPBindModule {
     @Binds
     @DigitalPDPScope
     abstract fun bindRechargeInquiryRepository(repo: RechargeInquiryRepositoryImpl): RechargeInquiryRepository
+
+    @Binds
+    @DigitalPDPScope
+    abstract fun bindRechargeRecommendationRepository(repo: RechargeRecommendationRepositoryImpl): RechargeRecommendationRepository
 
     @Binds
     @DigitalPDPScope

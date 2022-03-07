@@ -83,13 +83,12 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_price_recharge_recommendation_card_big"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lines="1"
             android:ellipsize="end"
             app:layout_constraintTop_toBottomOf="@+id/tg_product_type_recharge_recommendation_card_big"
             app:layout_constraintLeft_toRightOf="@+id/img_recharge_recommendation_card_big"
-            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
             android:layout_marginTop="@dimen/spacing_lvl2"
@@ -101,6 +100,31 @@
             android:textColor="@color/Unify_N700_96"
             />
 
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_discount_recharge_recommendation_card_big"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:labelType="general_light_red"
+            app:layout_constraintLeft_toRightOf="@+id/tg_price_recharge_recommendation_card_big"
+            app:layout_constraintTop_toTopOf="@+id/tg_price_recharge_recommendation_card_big"
+            app:layout_constraintBottom_toBottomOf="@+id/tg_price_recharge_recommendation_card_big"
+            android:layout_marginLeft="@dimen/spacing_lvl2"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_slash_price_recharge_recommendation_card_big"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_lvl2"
+            android:textColor="@color/Neutral_N400"
+            android:visibility="gone"
+            app:layout_constraintLeft_toRightOf="@+id/label_discount_recharge_recommendation_card_big"
+            app:layout_constraintTop_toTopOf="@+id/tg_price_recharge_recommendation_card_big"
+            app:layout_constraintBottom_toBottomOf="@+id/tg_price_recharge_recommendation_card_big"
+            app:typographyType="small"
+            tools:text="Rp16.000"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

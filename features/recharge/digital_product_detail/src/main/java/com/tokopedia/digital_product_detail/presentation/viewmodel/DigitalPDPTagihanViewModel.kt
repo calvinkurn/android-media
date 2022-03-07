@@ -24,7 +24,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -100,7 +99,7 @@ class DigitalPDPTagihanViewModel @Inject constructor(
 
     fun getFavoriteNumber(categoryIds: List<Int>, operatorIds: List<Int>) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
-            val favoriteNumber = repo.getFavoriteNumber(categoryIds, operatorIds)
+            val favoriteNumber = repo.getFavoriteNumberChips(categoryIds, operatorIds)
             _favoriteNumberData.value = RechargeNetworkResult.Success(
                 favoriteNumber.persoFavoriteNumber.items
             )

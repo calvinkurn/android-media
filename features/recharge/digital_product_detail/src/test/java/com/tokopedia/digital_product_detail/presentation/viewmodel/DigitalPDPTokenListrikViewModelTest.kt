@@ -49,6 +49,36 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
     }
 
     @Test
+    fun `given recommendationData loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setRecommendationLoading()
+        verifyGetRecommendationLoading(loadingResponse)
+    }
+
+    @Test
+    fun `when getting recommendation should run and give success result`() = testCoroutineRule.runBlockingTest {
+        val response = dataFactory.getRecommendationData()
+        val mappedResponse = mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, true)
+        onGetRecommendation_thenReturn(mappedResponse)
+
+        viewModel.getRecommendations(listOf(), listOf())
+        skipRecommendationDelay()
+        verifyGetRecommendationsRepoGetCalled()
+        verifyGetRecommendationSuccess(mappedResponse)
+    }
+
+    @Test
+    fun `when getting recommendation should run and give fail result`() = testCoroutineRule.runBlockingTest {
+        onGetRecommendation_thenReturn(NullPointerException())
+
+        viewModel.getRecommendations(listOf(), listOf())
+        skipRecommendationDelay()
+        verifyGetRecommendationsRepoGetCalled()
+        verifyGetRecommendationFail()
+    }
+
+    @Test
     fun `given favoriteNumber loading state then should get loading state`() {
         val loadingResponse = RechargeNetworkResult.Loading
 
@@ -432,6 +462,31 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
     }
 
     @Test
+    fun `when cancelRecommendationJob called the job should be cancelled and live data should not emit`() {
+        val response = dataFactory.getRecommendationData()
+        val mappedResponse = mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, true)
+        onGetRecommendation_thenReturn(mappedResponse)
+
+        viewModel.getRecommendations(listOf(), listOf())
+        viewModel.cancelRecommendationJob()
+        verifyRecommendationJobIsCancelled()
+        verifyGetRecommendationsRepoWasNotCalled()
+        verifyGetRecommendationErrorCancellation()
+    }
+
+    @Test
+    fun `given recommendationJob null when cancelRecommendationJob called should do nothing`() {
+        viewModel.cancelRecommendationJob()
+        verifyRecommendationJobIsNull()
+    }
+
+    @Test
+    fun `given recommendationJob null when implicit setRecommendationJob called should update recommendationJob to non-null`() {
+        viewModel.recommendationJob = Job()
+        verifyRecommendationJobIsNotNull()
+    }
+
+    @Test
     fun `when calling implicit setRecomCheckoutUrl should update its value`() {
         val expectedResult = dataFactory.getRecomCardWidgetModelData()
 
@@ -458,6 +513,33 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
     fun `when getting listInfo should run and give empty result`() {
         val actualListInfo = viewModel.getListInfo()
         verifyListInfoEmpty(actualListInfo)
+    }
+
+    @Test
+    fun  `when given list denom and productId should run and successfully get selected denom`() {
+        val response = dataFactory.getCatalogInputMultiTabData()
+        val mappedResponse = mapperFactory.mapTokenListrikDenom(response)
+        val selectedDenom = dataFactory.getSelectedData(mappedResponse.listDenomData.get(0))
+        val idDenom = "182"
+
+        onGetCatalogInputMultitab_thenReturn(mappedResponse)
+
+        viewModel.setAutoSelectedDenom(mappedResponse.listDenomData, idDenom)
+
+        verifySelectedProductSuccess(selectedDenom)
+    }
+
+    @Test
+    fun  `when given list denom and productId should failed and failed get selected denom`() {
+        val response = dataFactory.getCatalogInputMultiTabData()
+        val mappedResponse = mapperFactory.mapTokenListrikDenom(response)
+        val idDenom = "181"
+
+        onGetCatalogInputMultitab_thenReturn(mappedResponse)
+
+        viewModel.setAutoSelectedDenom(mappedResponse.listDenomData, idDenom)
+
+        verifySelectedProductNull()
     }
 
     companion object {

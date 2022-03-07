@@ -139,7 +139,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         val sortFilter = arrayListOf<SortFilterItem>()
 
         // create each chip
-        for (number in favnum.take(SORT_FILTER_LIMIT)) {
+        for (number in favnum) {
             if (number.subtitle.isEmpty()) {
                 mFilterChipListener?.onShowFilterChip(false)
             } else {
@@ -162,32 +162,27 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         }
 
         // create extra chip for navigation
-        val isMoreThanLimit = favnum.size > SORT_FILTER_LIMIT
-        if (isMoreThanLimit) {
-            val sortFilterItem = SortFilterItem(
-                "",
-                type = ChipsUnify.TYPE_ALTERNATE
-            )
-            sortFilterItem.listener = {
-                mFilterChipListener?.onClickIcon(true)
-            }
-            sortFilter.add(sortFilterItem)
+        val sortFilterItem = SortFilterItem(
+            "",
+            type = ChipsUnify.TYPE_ALTERNATE
+        )
+        sortFilterItem.listener = {
+            mFilterChipListener?.onClickIcon(true)
         }
+        sortFilter.add(sortFilterItem)
 
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetSortFilter.addItem(sortFilter)
 
         // init navigation chip's icon & color
-        if (isMoreThanLimit) {
-            val chevronRight = IconUnify(
-                context, IconUnify.VIEW_LIST,
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
-            chevronRight.layoutParams = ViewGroup.LayoutParams(
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3),
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
-            )
-            binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetSortFilter.chipItems?.
-                last()?.refChipUnify?.addCustomView(chevronRight)
-        }
+        val chevronRight = IconUnify(
+            context, IconUnify.VIEW_LIST,
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+        chevronRight.layoutParams = ViewGroup.LayoutParams(
+            resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3),
+            resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+        )
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetSortFilter.chipItems?.
+            last()?.refChipUnify?.addCustomView(chevronRight)
     }
 
     private fun onClickClearIcon(){

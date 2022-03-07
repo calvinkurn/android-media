@@ -51,6 +51,36 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
     }
 
     @Test
+    fun `given recommendationData loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setRecommendationLoading()
+        verifyGetRecommendationLoading(loadingResponse)
+    }
+
+    @Test
+    fun `when getting recommendation should run and give success result`() = testCoroutineRule.runBlockingTest {
+        val response = dataFactory.getRecommendationData()
+        val mappedResponse = mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, true)
+        onGetRecommendation_thenReturn(mappedResponse)
+
+        viewModel.getRecommendations(listOf(), listOf())
+        skipRecommendationDelay()
+        verifyGetRecommendationsRepoGetCalled()
+        verifyGetRecommendationSuccess(mappedResponse)
+    }
+
+    @Test
+    fun `when getting recommendation should run and give fail result`() = testCoroutineRule.runBlockingTest {
+        onGetRecommendation_thenReturn(NullPointerException())
+
+        viewModel.getRecommendations(listOf(), listOf())
+        skipRecommendationDelay()
+        verifyGetRecommendationsRepoGetCalled()
+        verifyGetRecommendationFail()
+    }
+
+    @Test
     fun `given favoriteNumber loading state then should get loading state`() {
         val loadingResponse = RechargeNetworkResult.Loading
 
@@ -461,6 +491,31 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
     }
 
     @Test
+    fun `when cancelRecommendationJob called the job should be cancelled and live data should not emit`() {
+        val response = dataFactory.getRecommendationData()
+        val mappedResponse = mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, true)
+        onGetRecommendation_thenReturn(mappedResponse)
+
+        viewModel.getRecommendations(listOf(), listOf())
+        viewModel.cancelRecommendationJob()
+        verifyRecommendationJobIsCancelled()
+        verifyGetRecommendationRepoWasNotCalled()
+        verifyGetRecommendationErrorCancellation()
+    }
+
+    @Test
+    fun `given recommendationJob null when cancelRecommendationJob called should do nothing`() {
+        viewModel.cancelRecommendationJob()
+        verifyRecommendationJobIsNull()
+    }
+
+    @Test
+    fun `given recommendationJob null when implicit setRecommendationJob called should update recommendationJob to non-null`() {
+        viewModel.recommendationJob = Job()
+        verifyRecommendationJobIsNotNull()
+    }
+
+    @Test
     fun `given filterData with some isSelected and should updated filterDataParams` () {
         val initialFilter = dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents
         viewModel.updateFilterData(initialFilter)
@@ -487,6 +542,36 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
 
         viewModel.recomCheckoutUrl = expectedResult.appUrl
         verifyRecomCheckoutUrlUpdated(expectedResult.appUrl)
+    }
+
+    @Test
+    fun  `when given list denom and productId should run and successfully get selected denom`() {
+        val response = dataFactory.getCatalogInputMultiTabData()
+        val isRefreshedFilter = true
+        val mappedResponse = mapperFactory.mapMultiTabFullDenom(response, isRefreshedFilter)
+        val selectedDenom = dataFactory.getSelectedData(mappedResponse.denomFull.listDenomData.get(0))
+        val idDenom = "10930"
+
+        onGetCatalogInputMultitab_thenReturn(mappedResponse)
+
+        viewModel.setAutoSelectedDenom(mappedResponse.denomFull.listDenomData, idDenom)
+
+        verifySelectedProductSuccess(selectedDenom)
+
+    }
+
+    @Test
+    fun  `when given list denom and productId should failed and failed get selected denom`() {
+        val response = dataFactory.getCatalogInputMultiTabData()
+        val isRefreshedFilter = true
+        val mappedResponse = mapperFactory.mapMultiTabFullDenom(response, isRefreshedFilter)
+        val idDenom = "1"
+
+        onGetCatalogInputMultitab_thenReturn(mappedResponse)
+
+        viewModel.setAutoSelectedDenom(mappedResponse.denomFull.listDenomData, idDenom)
+
+        verifySelectedProductNull()
     }
 
     companion object {

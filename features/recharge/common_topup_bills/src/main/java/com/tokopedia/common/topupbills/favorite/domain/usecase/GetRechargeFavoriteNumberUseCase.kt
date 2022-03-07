@@ -1,7 +1,7 @@
 package com.tokopedia.common.topupbills.favorite.domain.usecase
 
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberData
-import com.tokopedia.common.topupbills.data.requests.FavoriteNumberParam
+import com.tokopedia.common.topupbills.data.requests.DigiPersoRequestParam
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -32,11 +32,15 @@ class GetRechargeFavoriteNumberUseCase @Inject constructor(
         }
     }
 
-    fun setRequestParams(categoryIds: List<Int>, operatorIds: List<Int> = listOf()){
+    fun setRequestParams(
+        categoryIds: List<Int>,
+        operatorIds: List<Int> = listOf(),
+        channelName: String
+    ){
         params = RequestParams.create().apply {
             putObject(
-                FAVORITE_NUMBER_PARAM_INPUT, FavoriteNumberParam(
-                    channelName = CHANNEL_NAME,
+                FAVORITE_NUMBER_PARAM_INPUT, DigiPersoRequestParam(
+                    channelName = channelName,
                     clientNumbers = listOf(),
                     dgCategoryIDs = categoryIds,
                     pgCategoryIDs = listOf(),
@@ -47,7 +51,6 @@ class GetRechargeFavoriteNumberUseCase @Inject constructor(
     }
 
     companion object {
-        const val CHANNEL_NAME = "favorite_number_list"
         const val FAVORITE_NUMBER_PARAM_INPUT = "input"
     }
 }

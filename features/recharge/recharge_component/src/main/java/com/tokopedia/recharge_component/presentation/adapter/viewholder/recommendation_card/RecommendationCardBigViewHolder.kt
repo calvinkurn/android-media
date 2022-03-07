@@ -3,14 +3,18 @@ package com.tokopedia.recharge_component.presentation.adapter.viewholder.recomme
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.listener.RechargeRecommendationListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_component.databinding.ViewRechargeRecommendationCardBigBinding
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 
 class RecommendationCardBigViewHolder(
+    private val recommendationTitle: String,
     private val recommendationListener: RechargeRecommendationCardListener,
-    private val binding: ViewRechargeRecommendationCardBigBinding) :
+    private val binding: ViewRechargeRecommendationCardBigBinding
+) :
     RecyclerView.ViewHolder(binding.root) {
 
         fun bind(recommendation: RecommendationCardWidgetModel, position: Int){
@@ -21,13 +25,34 @@ class RecommendationCardBigViewHolder(
                 tgExpiredRechargeRecommendationCardBig.text = recommendation.productExpired
                 tgPriceRechargeRecommendationCardBig.text = recommendation.price
 
-                root.setOnClickListener {
-                    recommendationListener.onProductRecommendationCardClicked(recommendation, position)
+                tgSlashPriceRechargeRecommendationCardBig.run {
+                    if (recommendation.slashPrice.isNotEmpty()) {
+                        show()
+                        text = recommendation.slashPrice
+                    } else hide()
                 }
 
-                root.addOnImpressionListener(recommendation, {
-                    recommendationListener.onProductRecommendationCardImpression(recommendation, position)
-                })
+                labelDiscountRechargeRecommendationCardBig.run {
+                    if (recommendation.discount.isNotEmpty()) {
+                        show()
+                        text = recommendation.discount
+                    } else hide()
+                }
+
+                root.setOnClickListener {
+                    recommendationListener.onProductRecommendationCardClicked(
+                        recommendationTitle,
+                        recommendation,
+                        position
+                    )
+                }
+
+                root.addOnImpressionListener(recommendation) {
+                    recommendationListener.onProductRecommendationCardImpression(
+                        recommendation,
+                        position
+                    )
+                }
             }
         }
 }

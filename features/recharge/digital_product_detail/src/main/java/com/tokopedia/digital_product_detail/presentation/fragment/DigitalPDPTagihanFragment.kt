@@ -18,6 +18,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
 import com.tokopedia.common.topupbills.data.constant.GeneralCategoryType
@@ -35,6 +36,7 @@ import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
+import com.tokopedia.digital_product_detail.data.model.param.GeneralExtraParam
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpTagihanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.MoreInfoPDPBottomsheet
@@ -91,7 +93,8 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
 
     private var clientNumber = ""
     private var loyaltyStatus = ""
-    private var productId =  0
+    private var operatorId = ""
+    private var productId = 0
     private var menuId = 0
     private var categoryId = GeneralCategoryType.CATEGORY_LISTRIK_PLN
     private var inputNumberActionType = InputNumberActionType.MANUAL
@@ -123,7 +126,6 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
         getDataFromBundle()
         setupKeyboardWatcher()
         initClientNumberWidget()
-        initEmptyState()
         observeData()
         getCatalogMenuDetail()
     }
@@ -196,7 +198,6 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                         categoryId.toString(),
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
                         viewModel.operatorData.attributes.name,
-                        loyaltyStatus,
                         userSession.userId,
                         it.data.cartId,
                         viewModel.digitalCheckoutPassData.productId.toString(),
@@ -263,7 +264,11 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                     }
 
                     override fun onClickNavigationIcon() {
-                        // TODO: [Misael] analytics navigation icon (mgkn QR)
+                        digitalPDPTelcoAnalytics.clickScanBarcode(
+                            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                            loyaltyStatus,
+                            userSession.userId
+                        )
 
                         val intent = RouteManager.getIntent(context,
                             ApplinkConstInternalMarketplace.QR_SCANNEER,
@@ -377,7 +382,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     private fun getDataFromBundle() {
         arguments?.run {
             val digitalTelcoExtraParam = this.getParcelable(DigitalPDPConstant.EXTRA_PARAM)
-                ?: TopupBillsExtraParam()
+                ?: GeneralExtraParam()
             clientNumber = digitalTelcoExtraParam.clientNumber
             productId = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
             if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
@@ -386,12 +391,24 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
             if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
                 menuId = digitalTelcoExtraParam.menuId.toIntOrNull() ?: 0
             }
+            operatorId = digitalTelcoExtraParam.operatorId
         }
         if (!clientNumber.isNullOrEmpty()) {
             binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
                 setInputNumber(clientNumber, true)
             }
         }
+
+        digitalPDPTelcoAnalytics.openScreenPDPPage(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            userSession.userId,
+            userSession.isLoggedIn
+        )
+
+        digitalPDPTelcoAnalytics.viewPDPPage(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            userSession.userId
+        )
     }
 
     private fun onSuccessGetOperatorSelectGroup(operatorGroup: DigitalCatalogOperatorSelectGroup) {
@@ -442,6 +459,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
+        initEmptyState(data.banners)
 
         renderPrefill(data.userPerso)
         renderTicker(data.tickers)
@@ -512,9 +530,17 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     }
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
+        if (operatorId.isEmpty()){
+            operatorId = data.prefillOperatorId
+        }
+
         binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
-            setContactName(data.clientName)
-            setInputNumber(data.prefill, true)
+            if (clientNumber.isNotEmpty()){
+                setInputNumber(clientNumber, true)
+            } else {
+                setContactName(data.clientName)
+                setInputNumber(data.prefill, true)
+            }
         }
     }
 
@@ -535,11 +561,8 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun initEmptyState() {
-        // [Misael] replace with catalogMenuDetail.banners
-        binding?.rechargePdpTagihanListrikEmptyStateWidget?.setImageUrl(
-            "https://images.tokopedia.net/img/ULHhFV/2022/1/7/8324919c-fa15-46d9-84f7-426adb6994e0.jpg"
-        )
+    private fun initEmptyState(banners: List<TopupBillsBanner>) {
+        binding?.rechargePdpTagihanListrikEmptyStateWidget?.imageUrl = banners[0].imageUrl
     }
 
     private fun renderTicker(tickers: List<TopupBillsTicker>) {
@@ -590,6 +613,10 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
             }
             setTitleGeneral(catalogOperators.response.text)
         }
+
+        if (operatorId.isNotEmpty()){
+            renderOperatorChipsByAutoSelect(operatorId)
+        }
     }
 
     private fun renderOperatorChipsByAutoSelect(operatorId: String) {
@@ -616,6 +643,10 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
                     viewModel.operatorData.attributes.name
                 )
 
+                if (productId <= 0) {
+                    productId = viewModel.operatorData.attributes.defaultProductId.toIntOrZero()
+                }
+
                 hideEmptyState()
             } else {
                 viewModel.isEligibleToBuy = false
@@ -628,7 +659,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
         binding?.run {
             if (!rechargePdpTagihanListrikEmptyStateWidget.isVisible) {
                 digitalPDPTelcoAnalytics.impressionBannerEmptyState(
-                    "TODO Creative Link",
+                    rechargePdpTagihanListrikEmptyStateWidget.imageUrl,
                     categoryId.toString(),
                     DigitalPDPCategoryUtil.getCategoryName(categoryId),
                     loyaltyStatus,
@@ -840,9 +871,9 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     }
 
     companion object {
-        fun newInstance(telcoExtraParam: TopupBillsExtraParam) = DigitalPDPTagihanFragment().also {
+        fun newInstance(generalExtraParam: GeneralExtraParam) = DigitalPDPTagihanFragment().also {
             val bundle = Bundle()
-            bundle.putParcelable(DigitalPDPConstant.EXTRA_PARAM, telcoExtraParam)
+            bundle.putParcelable(DigitalPDPConstant.EXTRA_PARAM, generalExtraParam)
             it.arguments = bundle
         }
     }

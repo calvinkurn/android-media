@@ -7,6 +7,7 @@ import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogOpe
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogPrefixSelectRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogProductInputMultiTabRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeFavoriteNumberRepository
+import com.tokopedia.digital_product_detail.domain.repository.RechargeRecommendationRepository
 import javax.inject.Inject
 
 class DigitalPDPTokenListrikRepositoryImpl @Inject constructor(
@@ -15,11 +16,13 @@ class DigitalPDPTokenListrikRepositoryImpl @Inject constructor(
     private val rechargeCatalogMenuDetailRepo: RechargeCatalogMenuDetailRepository,
     private val rechargeAddToCardRepo: RechargeAddToCartRepository,
     private val rechargeSelectGroup: RechargeCatalogOperatorSelectGroupRepository,
-    private val rechargeCatalogProductInputMultiTabRepository: RechargeCatalogProductInputMultiTabRepository
+    private val rechargeCatalogProductInputMultiTabRepository: RechargeCatalogProductInputMultiTabRepository,
+    private val rechargeRecommendationRepo: RechargeRecommendationRepository
 ): DigitalPDPTokenListrikRepository,
     RechargeFavoriteNumberRepository by rechargeFavoriteNumberRepo,
     RechargeCatalogPrefixSelectRepository by rechargeCatalogPrefixSelectRepo,
     RechargeCatalogMenuDetailRepository by rechargeCatalogMenuDetailRepo,
     RechargeAddToCartRepository by rechargeAddToCardRepo,
     RechargeCatalogOperatorSelectGroupRepository by rechargeSelectGroup,
-    RechargeCatalogProductInputMultiTabRepository by rechargeCatalogProductInputMultiTabRepository
+    RechargeCatalogProductInputMultiTabRepository by rechargeCatalogProductInputMultiTabRepository,
+    RechargeRecommendationRepository by rechargeRecommendationRepo

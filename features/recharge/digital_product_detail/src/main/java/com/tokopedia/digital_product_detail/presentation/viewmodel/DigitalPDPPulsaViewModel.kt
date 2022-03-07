@@ -27,6 +27,7 @@ import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
+import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.*
 import java.util.regex.Pattern
@@ -39,7 +40,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
 
     var validatorJob: Job? = null
     var catalogProductJob: Job? = null
-
+    var recommendationJob: Job? = null
     var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
     var isEligibleToBuy = false
     var selectedGridProduct = SelectedProduct()
@@ -78,6 +79,10 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     val clientNumberValidatorMsg: LiveData<String>
         get() = _clientNumberValidatorMsg
 
+    private val _recommendationData = MutableLiveData<RechargeNetworkResult<RecommendationWidgetModel>>()
+    val recommendationData: LiveData<RechargeNetworkResult<RecommendationWidgetModel>>
+        get() = _recommendationData
+
     fun setMenuDetailLoading(){
         _menuDetailData.value = RechargeNetworkResult.Loading
     }
@@ -112,7 +117,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
 
     fun getFavoriteNumber(categoryIds: List<Int>) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
-            val favoriteNumber = repo.getFavoriteNumber(categoryIds)
+            val favoriteNumber = repo.getFavoriteNumberChips(categoryIds)
             _favoriteNumberData.value = RechargeNetworkResult.Success(
                 favoriteNumber.persoFavoriteNumber.items)
         }) {
@@ -138,6 +143,10 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         catalogProductJob?.cancel()
     }
 
+    fun cancelRecommendationJob() {
+        recommendationJob?.cancel()
+    }
+
     fun cancelValidatorJob() {
         validatorJob?.cancel()
     }
@@ -159,6 +168,20 @@ class DigitalPDPPulsaViewModel @Inject constructor(
             } else {
                 _addToCartResult.value = RechargeNetworkResult.Fail(it)
             }
+        }
+    }
+
+    fun setRecommendationLoading() {
+        _recommendationData.value = RechargeNetworkResult.Loading
+    }
+
+    fun getRecommendations(clientNumbers: List<String>, dgCategoryIds: List<Int>) {
+        recommendationJob = viewModelScope.launchCatchError(dispatchers.main, block = {
+            delay(DELAY_MULTI_TAB)
+            val recommendations = repo.getRecommendations(clientNumbers, dgCategoryIds)
+            _recommendationData.value = RechargeNetworkResult.Success(recommendations)
+        }) {
+            _recommendationData.value = RechargeNetworkResult.Fail(it)
         }
     }
 
@@ -205,6 +228,17 @@ class DigitalPDPPulsaViewModel @Inject constructor(
             isEligibleToBuy = errorMessage.isEmpty()
             delay(VALIDATOR_DELAY_TIME)
             _clientNumberValidatorMsg.value = errorMessage
+        }
+    }
+
+    fun setAutoSelectedDenom(listDenomData: List<DenomData>, productId: String){
+        var denomData: DenomData? = null
+        listDenomData.forEachIndexed{ index, activeDenomData ->
+            if (productId.equals(activeDenomData.id)) denomData = activeDenomData
+        }
+
+        denomData?.let {
+            selectedGridProduct = SelectedProduct(it, DenomWidgetEnum.GRID_TYPE, 0)
         }
     }
 

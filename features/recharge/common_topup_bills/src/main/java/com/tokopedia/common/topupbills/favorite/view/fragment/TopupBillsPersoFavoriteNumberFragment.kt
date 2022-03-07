@@ -691,7 +691,6 @@ class TopupBillsPersoFavoriteNumberFragment :
         return localCacheHandler.getBoolean(key, false)
     }
 
-
     private fun getOperatorNameById(operatorId: Int): String {
         return operatorList[operatorId.toString()]?.name ?: ""
     }

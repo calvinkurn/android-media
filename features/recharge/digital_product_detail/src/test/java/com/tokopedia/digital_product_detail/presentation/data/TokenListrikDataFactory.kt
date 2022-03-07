@@ -7,9 +7,12 @@ import com.tokopedia.common_digital.atc.data.response.ResponseCartData
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogProductInputMultiTab
+import com.tokopedia.digital_product_detail.data.model.data.DigitalDigiPersoGetPersonalizedItem
+import com.tokopedia.digital_product_detail.data.model.data.PersoRecommendationData
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.presentation.util.JsonToString
 import com.tokopedia.recharge_component.model.denom.DenomData
+import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 
@@ -27,6 +30,13 @@ class TokenListrikDataFactory {
         return gson.fromJson(
             gson.JsonToString(GET_MENU_DETAIL),
             MenuDetailModel::class.java
+        )
+    }
+
+    fun getRecommendationData(): DigitalDigiPersoGetPersonalizedItem {
+        return gson.fromJson(
+            gson.JsonToString(GET_RECOMMENDATION),
+            DigitalDigiPersoGetPersonalizedItem::class.java
         )
     }
 
@@ -128,9 +138,19 @@ class TokenListrikDataFactory {
         )
     }
 
+
+    fun getSelectedData(data: DenomData): SelectedProduct {
+        return SelectedProduct(
+            denomData = data,
+            DenomWidgetEnum.GRID_TYPE,
+            0
+        )
+    }
+
     companion object {
         const val GET_FAVORITE_NUMBER = "common_telco/get_favorite_number_mock.json"
         const val GET_ADD_TO_CART = "common_telco/get_add_to_cart_mock.json"
+        const val GET_RECOMMENDATION = "token_listrik/get_recommendation_mock.json"
         const val GET_MENU_DETAIL = "token_listrik/get_menu_detail_mock.json"
         const val GET_CATALOG_INPUT_MULTITAB = "token_listrik/get_catalog_input_multitab_mock.json"
         const val GET_OPERATOR_SELECT_GROUP = "token_listrik/get_operator_select_group_mock.json"
