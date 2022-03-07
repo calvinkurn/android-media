@@ -262,8 +262,8 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private fun setContentView() {
         loadingLayout?.visibility = View.GONE
         uploadKycFiles(
-                isKtpFileUsingEncryption = false,
-                isFaceFileUsingEncryption = false
+                isKtpFileUsingEncryption = true,
+                isFaceFileUsingEncryption = true
         )
         if (activity is UserIdentificationFormActivity) {
             (activity as UserIdentificationFormActivity)
