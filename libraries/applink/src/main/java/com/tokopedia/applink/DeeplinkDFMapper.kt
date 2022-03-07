@@ -52,10 +52,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_NAME_REGIST
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_NAME_REGISTER_CLEAN_VIEW
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PIN
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PIN_COMPLETE
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_TALK
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.BIOMETRIC_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_GENDER
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_NAME
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PHONE_NUMBER
@@ -80,7 +77,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_PROFILE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO_SIMPLE
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.VERIFY_BIOMETRIC
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V1
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V3
@@ -148,8 +144,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.CREATE_VOUCH
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.CREATE_VOUCHER_PRODUCT
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MENU
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_DETAIL
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_PRODUCT_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_LIST
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_PRODUCT_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.WELCOME
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
@@ -502,9 +498,9 @@ object DeeplinkDFMapper : CoroutineScope {
                         || it.startsWith(ADD_NAME_REGISTER)
                         || it.startsWith(ADD_NAME_REGISTER_CLEAN_VIEW)
                         || it.startsWith(CHANGE_PIN)
-                        || it.startsWith(ADD_PIN_ONBOARDING)
+                        || it.startsWith(ApplinkConstInternalUserPlatform.ADD_PIN_ONBOARDING)
                         || it.startsWith(ADD_PIN)
-                        || it.startsWith(ADD_PIN_COMPLETE)
+                        || it.startsWith(ApplinkConstInternalUserPlatform.ADD_PIN_COMPLETE)
                         )
             }, DF_USER_SETTINGS, R.string.applink_profile_completion_title, { DFWebviewFallbackUrl.USER_PROFILE_SETTINGS }))
             add(DFP({ it.startsWith(ApplinkConstInternalGlobal.PROFILE_COMPLETION) }, DF_USER_SETTINGS, R.string.applink_profile_completion_title))
@@ -532,8 +528,8 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(ADD_FINGERPRINT_ONBOARDING) }, DF_BASE, R.string.fingerprint_onboarding))
             add(DFP({ it.startsWith(LIVENESS_DETECTION) }, DF_USER_LIVENESS, R.string.applink_liveness_detection))
             add(DFP({
-                    it.startsWith(VERIFY_BIOMETRIC) ||
-                    it.startsWith(BIOMETRIC_SETTING)
+                    it.startsWith(ApplinkConstInternalUserPlatform.VERIFY_BIOMETRIC) ||
+                    it.startsWith(ApplinkConstInternalUserPlatform.BIOMETRIC_SETTING)
                     }, DF_BASE, R.string.applink_fingerprint))
 
             add(DFP({ it.startsWith(NOTIFICATION) }, DF_BASE, R.string.title_notification_center))
