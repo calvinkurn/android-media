@@ -70,15 +70,15 @@ class DenomGridViewHolder (
                     layoutParams = labelParams
 
                     tgDenomGridPrice.run {
-                        val labelParams2 = this.layoutParams as ConstraintLayout.LayoutParams
-                        labelParams2.bottomToTop = labelDenomGridDiscount.id
-                        this.layoutParams = labelParams2
+                        val priceLabelParam = this.layoutParams as ConstraintLayout.LayoutParams
+                        priceLabelParam.bottomToTop = labelDenomGridDiscount.id
+                        this.layoutParams = priceLabelParam
                     }
 
                     pgDenomGridFlashSale.run {
-                        val labelParams3 = this.layoutParams as ConstraintLayout.LayoutParams
-                        labelParams3.topToBottom = labelDenomGridDiscount.id
-                        this.layoutParams = labelParams3
+                        val flashSaleLabelParam = this.layoutParams as ConstraintLayout.LayoutParams
+                        flashSaleLabelParam.topToBottom = labelDenomGridDiscount.id
+                        this.layoutParams = flashSaleLabelParam
                     }
 
                     setMargin(
@@ -102,15 +102,15 @@ class DenomGridViewHolder (
                     layoutParams = labelParams
 
                     tgDenomGridPrice.run {
-                        val labelParams2 = this.layoutParams as ConstraintLayout.LayoutParams
-                        labelParams2.bottomToTop = tgDenomGridSlashPrice.id
-                        this.layoutParams = labelParams2
+                        val priceLabelParam = this.layoutParams as ConstraintLayout.LayoutParams
+                        priceLabelParam.bottomToTop = tgDenomGridSlashPrice.id
+                        this.layoutParams = priceLabelParam
                     }
 
                     pgDenomGridFlashSale.run {
-                        val labelParams3 = this.layoutParams as ConstraintLayout.LayoutParams
-                        labelParams3.topToBottom = tgDenomGridSlashPrice.id
-                        this.layoutParams = labelParams3
+                        val flashSaleLabelParam = this.layoutParams as ConstraintLayout.LayoutParams
+                        flashSaleLabelParam.topToBottom = tgDenomGridSlashPrice.id
+                        this.layoutParams = flashSaleLabelParam
                     }
 
                     setMargin(
@@ -124,8 +124,6 @@ class DenomGridViewHolder (
                             .toInt())
 
                     setStatusNormal(denomGrid.discountLabel)
-
-
                 } else hide()
             }
 
