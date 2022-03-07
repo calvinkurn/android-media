@@ -191,6 +191,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_CM_HOME_TO_DO -> {
                     createHomeToDoWidget(channel)
                 }
+                DynamicHomeChannel.Channels.LAYOUT_PAYLATER_CICIL -> {
+                    createPayLaterHomeToDoWidget(channel)
+                }
             }
         }
         if (addLoadingMore) {
@@ -648,5 +651,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
 
     private fun createHomeToDoWidget(channel: DynamicHomeChannel.Channels) {
         if (!isCache) visitableList.add(CMHomeWidgetDataModel(null, channel))
+    }
+
+    private fun createPayLaterHomeToDoWidget(channel: DynamicHomeChannel.Channels) {
+        if (!isCache) visitableList.add(HomePayLaterWidgetDataModel(null, channel))
     }
 }
