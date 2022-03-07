@@ -15,9 +15,11 @@ import com.tokopedia.play.broadcaster.ui.model.TrafficMetricType
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.TrafficMetricViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.TrafficMetricReportAdapter
+import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.date.DateUtil
 
 
 /**
@@ -35,6 +37,7 @@ class SummaryInfoViewComponent(
     private val clMeta = findViewById<ConstraintLayout>(R.id.cl_bro_summary_meta)
     private val tvTitle = findViewById<Typography>(R.id.tv_bro_summary_live_title)
     private val ivCover = findViewById<ImageUnify>(R.id.iv_bro_summary_cover)
+    private val tvDate = findViewById<Typography>(R.id.tv_bro_summary_date)
     private val tvDuration = findViewById<Typography>(R.id.tv_bro_summary_duration)
     private val recyclerView = findViewById<RecyclerView>(R.id.rv_info)
     private val layoutError = findViewById<ConstraintLayout>(R.id.layout_summary_error)
@@ -77,6 +80,10 @@ class SummaryInfoViewComponent(
 
     fun setLiveDuration(data: LiveDurationUiModel) {
         tvDuration.text = data.duration
+    }
+
+    fun setDate() {
+        tvDate.text = PlayDateTimeFormatter.getTodayDateTime(PlayDateTimeFormatter.dMMMMyyyy)
     }
 
     fun addTrafficMetric(metric: TrafficMetricUiModel, position: Int) {

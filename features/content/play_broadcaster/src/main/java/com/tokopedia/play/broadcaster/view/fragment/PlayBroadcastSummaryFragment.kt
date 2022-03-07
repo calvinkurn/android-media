@@ -135,6 +135,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
 
     private fun setLiveDuration(model: LiveDurationUiModel) {
         summaryInfoView.setLiveDuration(model)
+        summaryInfoView.setDate()
     }
 
     private fun showConfirmDeleteVideoDialog() {
