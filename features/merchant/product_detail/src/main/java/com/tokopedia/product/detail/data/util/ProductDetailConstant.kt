@@ -95,6 +95,8 @@ object ProductDetailConstant {
     const val PRODUCT_BUNDLING = "product_bundling"
     const val CONTENT_WIDGET = "content_widget"
     const val PLAY_CAROUSEL = "play_carousel"
+    const val FINTECH_WIDGET_TYPE = "chips_carousel"
+    const val FINTECH_WIDGET_NAME = "paylater_cicilan"
 
     //Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
@@ -107,7 +109,7 @@ object ProductDetailConstant {
     const val ARG_AFFILIATE_STRING = "ARG_AFFILIATE_STRING"
     const val ARG_AFFILIATE_UNIQUE_ID = "ARG_AFFILIATE_UNIQUE_ID"
     const val ARG_DEEPLINK_URL = "ARG_DEEPLINK_URL"
-    const val ARG_LAYOUT_ID= "ARG_LAYOUT_ID"
+    const val ARG_LAYOUT_ID = "ARG_LAYOUT_ID"
     const val ARG_EXT_PARAM = "ARG_EXT_PARAM"
     const val REVIEW_PRD_NM = "x_prd_nm"
     const val ARG_QUERY_PARAMS = "ARG_QUERY_PARAMS"

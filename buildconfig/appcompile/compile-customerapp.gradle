@@ -98,6 +98,7 @@ includeIfEnabled("features:fintech:saldo_details")
 includeIfEnabled("features:fintech:common_wallet")
 includeIfEnabled("features:fintech:wallet")
 includeIfEnabled("features:fintech:paylater")
+includeIfEnabled("features:fintech:pdp_fintech_widget")
 includeIfEnabled("features:fintech:fintech_home_widget")
 
 
