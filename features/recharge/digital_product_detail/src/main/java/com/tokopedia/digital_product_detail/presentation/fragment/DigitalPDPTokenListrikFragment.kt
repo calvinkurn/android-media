@@ -306,11 +306,10 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
-        getFavoriteNumber()
-        initEmptyState(data.banners)
-
         renderPrefill(data.userPerso)
         renderTicker(data.tickers)
+        getFavoriteNumber()
+        initEmptyState(data.banners)
     }
 
     private fun onHideGreenBox(){
