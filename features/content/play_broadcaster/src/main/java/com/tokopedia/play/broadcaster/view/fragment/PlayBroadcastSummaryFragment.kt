@@ -92,6 +92,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
 
     override fun onStart() {
         super.onStart()
+        activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         requireView().requestApplyInsetsWhenAttached()
         btnPostVideo.requestApplyInsetsWhenAttached()
     }
