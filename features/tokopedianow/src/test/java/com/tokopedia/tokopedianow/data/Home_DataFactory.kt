@@ -348,7 +348,7 @@ fun createMixLeftDataModel(
 fun createCategoryGridDataModel(
     id: String,
     title: String,
-    categoryList: TokoNowCategoryListUiModel,
+    categoryList: TokoNowCategoryListUiModel?,
     @TokoNowLayoutState state: Int
 ): TokoNowCategoryGridUiModel {
     return TokoNowCategoryGridUiModel(id = id, title =  title, categoryListUiModel = categoryList, state = state)

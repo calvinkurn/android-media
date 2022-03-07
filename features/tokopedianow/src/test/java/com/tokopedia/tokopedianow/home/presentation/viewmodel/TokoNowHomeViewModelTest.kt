@@ -328,7 +328,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val model = TokoNowCategoryGridUiModel(
                 id="11111",
                 title="Category Tokonow",
-                categoryListUi = emptyList(),
+                categoryListUiModel = null,
                 state= TokoNowLayoutState.SHOW
         )
 
@@ -338,19 +338,14 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val expectedResponse = TokoNowCategoryGridUiModel(
             id = "11111",
             title = "Category Tokonow",
-            categoryListUi = listOf(
-                TokoNowCategoryItemUiModel(
-                    id="",
-                    title="",
-                    imageUrl=null,
-                    appLink="tokopedia-android-internal://now/category-list?warehouse_id={warehouse_id}",
-                    warehouseId="1"
-                ),
-                TokoNowCategoryItemUiModel(
-                    id = "1",
-                    title = "Category 1",
-                    imageUrl = "tokopedia://",
-                    appLink = "tokoepdia://"
+            categoryListUiModel = TokoNowCategoryListUiModel(
+                categoryList = listOf(
+                    TokoNowCategoryItemUiModel(
+                        id = "1",
+                        title = "Category 1",
+                        imageUrl = "tokopedia://",
+                        appLink = "tokoepdia://"
+                    )
                 )
             ),
             state = TokoNowLayoutState.SHOW
@@ -381,7 +376,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val model = TokoNowCategoryGridUiModel(
                 id="11111",
                 title="Category Tokonow",
-                categoryListUi = emptyList(),
+                categoryListUiModel = null,
                 state= TokoNowLayoutState.SHOW
         )
 
@@ -391,7 +386,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val expectedResponse = TokoNowCategoryGridUiModel(
             id = "11111",
             title = "Category Tokonow",
-            categoryListUi = null,
+            categoryListUiModel = null,
             state = TokoNowLayoutState.HIDE
         )
 
@@ -603,7 +598,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 TokoNowCategoryGridUiModel(
                     id = "11111",
                     title = "Category Tokonow",
-                    categoryListUi = null,
+                    categoryListUiModel = null,
                     state = TokoNowLayoutState.HIDE
                 ),
                 createSliderBannerDataModel(
