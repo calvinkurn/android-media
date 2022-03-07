@@ -16,8 +16,12 @@ data class TradeInDetailModel(
         var bannerURL: String,
         @SerializedName("DeviceAttribute")
         var deviceAttribute: DeviceAttribute,
+        @SerializedName("ErrCode")
+        var errCode: Int,
         @SerializedName("ErrMessage")
         var errMessage: String,
+        @SerializedName("IsFraud")
+        var isFraud: Boolean,
         @SerializedName("LogisticMessage")
         var logisticMessage: String,
         @SerializedName("LogisticOptions")
@@ -55,7 +59,7 @@ data class TradeInDetailModel(
             @SerializedName("DiagnosticPriceFmt")
             var diagnosticPriceFmt: String,
             @SerializedName("DiagnosticReview")
-            var diagnosticReview: List<String>,
+            var diagnosticReview: List<DiagnosticReview>,
             @SerializedName("DiscountPercentageFmt")
             var discountPercentageFmt: String,
             @SerializedName("EstimatedPriceFmt")
@@ -79,7 +83,7 @@ data class TradeInDetailModel(
         ) : Parcelable {
             constructor(parcel: Parcel) : this(
                 parcel.readString() ?: "",
-                parcel.createStringArrayList() ?: arrayListOf(),
+                parcel.createTypedArrayList(DiagnosticReview) ?: arrayListOf(),
                 parcel.readString() ?: "",
                 parcel.readString() ?: "",
                 parcel.readString() ?: "",
@@ -93,9 +97,41 @@ data class TradeInDetailModel(
             ) {
             }
 
+            data class DiagnosticReview(
+                @SerializedName("Field")
+                var `field`: String,
+                @SerializedName("Value")
+                var value: String
+            ) : Parcelable {
+                constructor(parcel: Parcel) : this(
+                    parcel.readString() ?: "",
+                    parcel.readString() ?: ""
+                ) {
+                }
+
+                override fun writeToParcel(parcel: Parcel, flags: Int) {
+                    parcel.writeString(field)
+                    parcel.writeString(value)
+                }
+
+                override fun describeContents(): Int {
+                    return 0
+                }
+
+                companion object CREATOR : Parcelable.Creator<DiagnosticReview> {
+                    override fun createFromParcel(parcel: Parcel): DiagnosticReview {
+                        return DiagnosticReview(parcel)
+                    }
+
+                    override fun newArray(size: Int): Array<DiagnosticReview?> {
+                        return arrayOfNulls(size)
+                    }
+                }
+            }
+
             override fun writeToParcel(parcel: Parcel, flags: Int) {
                 parcel.writeString(diagnosticPriceFmt)
-                parcel.writeStringList(diagnosticReview)
+                parcel.writeTypedList(diagnosticReview)
                 parcel.writeString(discountPercentageFmt)
                 parcel.writeString(estimatedPriceFmt)
                 parcel.writeString(expiryTime)

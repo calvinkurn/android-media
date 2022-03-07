@@ -23,7 +23,7 @@ data class Laku6DeviceModel(
     @SerializedName("os_version")
     var osVersion: String,
     @SerializedName("raw_ram")
-    var rawRam: Int,
+    var rawRam: Long,
     @SerializedName("raw_storage")
     var rawStorage: String,
     @SerializedName("root_detected")
@@ -48,7 +48,7 @@ data class Laku6DeviceModel(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
-        parcel.readInt(),
+        parcel.readLong(),
         parcel.readString() ?: "",
         parcel.readByte() != 0.toByte(),
         parcel.readString() ?: "",
@@ -68,7 +68,7 @@ data class Laku6DeviceModel(
         parcel.writeString(model)
         parcel.writeString(osName)
         parcel.writeString(osVersion)
-        parcel.writeInt(rawRam)
+        parcel.writeLong(rawRam)
         parcel.writeString(rawStorage)
         parcel.writeByte(if (rootDetected) 1 else 0)
         parcel.writeString(serial)
