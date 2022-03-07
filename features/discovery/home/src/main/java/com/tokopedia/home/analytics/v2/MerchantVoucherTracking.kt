@@ -93,6 +93,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
         item.putString(Items.PRICE, merchantVoucherProductClicked.productPrice)
 
         bundle.putParcelableArrayList(Items.KEY, arrayListOf(item))
+        bundle.putString(UserId.KEY, merchantVoucherProductClicked.userId)
 
         return Pair(Ecommerce.PRODUCT_CLICK, bundle)
     }
