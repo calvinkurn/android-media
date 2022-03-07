@@ -28,7 +28,7 @@ class AffiliateIncomeViewModel : BaseViewModel(){
     private var errorMessage = MutableLiveData<Throwable>()
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var rangeChanged = MutableLiveData<Boolean>()
-    var isUserBlackListed : Boolean = false
+    private var isUserBlackListed : Boolean = false
     var hasNext = true
 
      val affiliateBalanceDataUseCase = AffiliateBalanceDataUseCase(AffiliateRepository())
@@ -100,6 +100,12 @@ class AffiliateIncomeViewModel : BaseViewModel(){
             selectedDateValue = range.value
             rangeChanged.value = true
         }
+    }
+    fun setBlacklisted(isBlackListed: Boolean){
+        isUserBlackListed = isBlackListed
+    }
+    fun getIsBlackListed(): Boolean{
+        return isUserBlackListed
     }
     fun getAffiliateBalanceData(): LiveData<AffiliateBalance.AffiliateBalance.Data> = affiliateBalanceData
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility

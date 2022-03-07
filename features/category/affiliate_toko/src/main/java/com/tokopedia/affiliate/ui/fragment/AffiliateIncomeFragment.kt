@@ -79,7 +79,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         affiliateIncomeViewModel = ViewModelProviders.of(this)[AffiliateIncomeViewModel::class.java]
-        if(savedInstanceState == null) affiliateIncomeViewModel.isUserBlackListed = (activity as? AffiliateActivity)?.getBlackListedStatus() ?: false
+        if(savedInstanceState == null) affiliateIncomeViewModel.setBlacklisted((activity as? AffiliateActivity)?.getBlackListedStatus() ?: false)
         setObservers()
     }
 
@@ -330,7 +330,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
 
     private fun setTarikSaldoButtonUI() {
         view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.apply {
-            isEnabled = !affiliateIncomeViewModel.isUserBlackListed
+            isEnabled = !affiliateIncomeViewModel.getIsBlackListed()
         }
     }
 

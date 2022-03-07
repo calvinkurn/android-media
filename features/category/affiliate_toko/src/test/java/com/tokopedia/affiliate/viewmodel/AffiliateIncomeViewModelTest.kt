@@ -125,8 +125,8 @@ class AffiliateIncomeViewModelTest{
     /**************************** testAffiliateUserBlackListed() *******************************************/
     @Test
     fun testAffiliateUserBlackListed() {
-        affiliateIncomeViewModel.isUserBlackListed = false
-        assertEquals(affiliateIncomeViewModel.isUserBlackListed, false)
+        affiliateIncomeViewModel.setBlacklisted(false)
+        assertEquals(affiliateIncomeViewModel.getIsBlackListed(), false)
 
     }
 }
