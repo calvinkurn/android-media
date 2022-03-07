@@ -7,7 +7,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.*
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.*
-import com.tokopedia.user.session.UserSessionInterface
 
 object AddOnMapper {
 
@@ -24,13 +23,9 @@ object AddOnMapper {
             orderProduct.productId.toString()
         }
 
-        var defaultTo: String = ""
-        var defaultFrom: String = ""
-        if (orderProfileAddress.isMainAddress) {
-            defaultTo = userName
-        } else {
-            defaultTo = userName
-            defaultFrom = orderProfileAddress.receiverName
+        var defaultReceiver = ""
+        if (orderProfileAddress.isAddressActive) {
+            defaultReceiver = orderProfileAddress.receiverName
         }
 
         return AddOnProductData(
@@ -38,8 +33,8 @@ object AddOnMapper {
                 bottomSheetTitle = addOn.addOnsBottomSheetModel.headerTitle,
                 source = AddOnProductData.SOURCE_ONE_CLICK_CHECKOUT,
                 availableBottomSheetData = AvailableBottomSheetData(
-                        defaultTo = defaultTo,
-                        defaultFrom = defaultFrom,
+                        defaultTo = defaultReceiver,
+                        defaultFrom = userName,
                         products = listOf(Product(
                                 cartId = orderProduct.cartId,
                                 productId = productId,
@@ -93,7 +88,7 @@ object AddOnMapper {
 
     private fun mapAddOnMetadata(addOnMetadata: AddOnMetadata): AddOnMetadataItemModel {
         return AddOnMetadataItemModel(
-            addOnNoteItemModel = mapAddOnNoteItem(addOnMetadata.addOnNote)
+                addOnNoteItemModel = mapAddOnNoteItem(addOnMetadata.addOnNote)
         )
     }
 
