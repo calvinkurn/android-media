@@ -60,7 +60,20 @@ sealed class ProductSectionUiModel {
             val timerInfo: String,
             val background: BackgroundUiModel,
             val reminder: ReminderUiModel
-        )
+        ){
+            companion object{
+                val Empty: Section
+                    get() = Section(
+                        productList = emptyList(),
+                        config = ConfigUiModel(
+                            type = ProductSectionType.Unknown, title = "", startTime = "", timerInfo = "", serverTime = "", background = BackgroundUiModel(
+                                gradients = emptyList(), imageUrl = ""
+                            ), endTime = "", reminder = ReminderUiModel(false, CampaignReminderType.OFF)
+                        ),
+                        id = ""
+                    )
+            }
+        }
 
         data class BackgroundUiModel(
             val gradients: List<String>,
