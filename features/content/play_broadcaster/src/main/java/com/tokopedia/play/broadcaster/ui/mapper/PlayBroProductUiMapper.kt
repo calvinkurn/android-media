@@ -101,19 +101,10 @@ class PlayBroProductUiMapper @Inject constructor() {
                     name = data.name,
                     imageUrl = data.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
                     stock = data.stock,
-//                    price = if (data.campaign.discountedPercentage == "0") {
-//                        OriginalPrice(data.price.textIdr, 0.0)
-//                    } else DiscountedPrice(
-//                        originalPrice = data.campaign.originalPriceFmt,
-//                        originalPriceNumber = 0.0,
-//                        discountPercent = data.campaign.discountedPercentage.toInt(),
-//                        discountedPrice = data.campaign.discountedPriceFmt,
-//                        discountedPriceNumber = 0.0,
-//                    ),
                     price = OriginalPrice(
                         priceFormat.format(BigDecimal(data.price.min)),
                         data.price.min
-                    ),
+                    ), //No discounted price because it is not supported in the current gql
                 )
             },
             hasNextPage = response.data.size >= perPage,
