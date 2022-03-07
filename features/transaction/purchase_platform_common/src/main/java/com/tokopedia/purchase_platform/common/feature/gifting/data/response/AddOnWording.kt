@@ -7,6 +7,6 @@ data class AddOnWording(
         val packagingAndGreetingCard: String = "",
         @SerializedName("only_greeting_card")
         val onlyGreetingCard: String = "",
-        @SerializedName("invoice_not_send_to_recipient")
+        @SerializedName("invoice_not_sent_to_recipient")
         val invoiceNotSendToRecipient: String = ""
 )

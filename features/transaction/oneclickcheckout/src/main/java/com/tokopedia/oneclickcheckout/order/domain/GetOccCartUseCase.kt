@@ -648,6 +648,18 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
           color
         }
       }
+      pop_up {
+        title
+        description
+        button {
+          text
+        }
+      }
+      add_on_wording {
+        packaging_and_greeting_card
+        only_greeting_card
+        invoice_not_sent_to_recipient
+      }
       total_product_price
     }
   }

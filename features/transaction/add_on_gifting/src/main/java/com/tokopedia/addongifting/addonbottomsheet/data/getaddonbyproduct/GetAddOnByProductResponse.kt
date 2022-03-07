@@ -56,7 +56,7 @@ data class BasicInfoResponse(
         val rules: RulesResponse = RulesResponse(),
         @SerializedName("Metadata")
         val metadata: MetadataResponse = MetadataResponse(),
-        @SerializedName("ProductAddOnType")
+        @SerializedName("AddOnType")
         val productAddOnType: String = "",
         @SerializedName("Status")
         val status: String = ""
