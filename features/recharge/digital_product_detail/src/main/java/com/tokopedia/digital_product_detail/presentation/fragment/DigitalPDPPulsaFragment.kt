@@ -396,10 +396,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
-        renderPrefill(data.userPerso)
-        renderTicker(data.tickers)
         getFavoriteNumber()
         initEmptyState(data.banners)
+        renderPrefill(data.userPerso)
+        renderTicker(data.tickers)
     }
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
@@ -674,7 +674,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun initEmptyState(banners: List<TopupBillsBanner>) {
-        binding?.rechargePdpPulsaEmptyStateWidget?.imageUrl = banners[0].imageUrl
+        binding?.rechargePdpPulsaEmptyStateWidget?.imageUrl = banners.firstOrNull()?.imageUrl ?: ""
     }
 
     private fun onSuccessDenomGrid(denomData: DenomWidgetModel, selectedPosition: Int?) {

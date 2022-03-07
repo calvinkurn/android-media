@@ -196,7 +196,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     }
 
     private fun initEmptyState(banners: List<TopupBillsBanner>) {
-        binding?.rechargePdpTokenListrikEmptyStateWidget?.imageUrl = banners[0].imageUrl
+        binding?.rechargePdpTokenListrikEmptyStateWidget?.imageUrl = banners.firstOrNull()?.imageUrl ?: ""
     }
 
     private fun observeData() {
@@ -306,10 +306,10 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
-        renderPrefill(data.userPerso)
-        renderTicker(data.tickers)
         getFavoriteNumber()
         initEmptyState(data.banners)
+        renderPrefill(data.userPerso)
+        renderTicker(data.tickers)
     }
 
     private fun onHideGreenBox(){

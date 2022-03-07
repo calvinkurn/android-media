@@ -460,7 +460,6 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
         initEmptyState(data.banners)
-
         renderPrefill(data.userPerso)
         renderTicker(data.tickers)
         onShowBuyWidget()
@@ -562,7 +561,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(),
     }
 
     private fun initEmptyState(banners: List<TopupBillsBanner>) {
-        binding?.rechargePdpTagihanListrikEmptyStateWidget?.imageUrl = banners[0].imageUrl
+        binding?.rechargePdpTagihanListrikEmptyStateWidget?.imageUrl = banners.firstOrNull()?.imageUrl ?: ""
     }
 
     private fun renderTicker(tickers: List<TopupBillsTicker>) {

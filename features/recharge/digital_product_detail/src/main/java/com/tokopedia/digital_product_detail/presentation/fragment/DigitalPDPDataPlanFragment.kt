@@ -456,10 +456,10 @@ class DigitalPDPDataPlanFragment :
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
-        renderPrefill(data.userPerso)
-        renderTicker(data.tickers)
         getFavoriteNumber()
         initEmptyState(data.banners)
+        renderPrefill(data.userPerso)
+        renderTicker(data.tickers)
     }
 
     private fun onFailedGetMenuDetail(throwable: Throwable) {
@@ -753,7 +753,7 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun initEmptyState(banners: List<TopupBillsBanner>) {
-        binding?.rechargePdpPaketDataEmptyStateWidget?.imageUrl = banners[0].imageUrl
+        binding?.rechargePdpPaketDataEmptyStateWidget?.imageUrl = banners.firstOrNull()?.imageUrl ?: ""
     }
 
     private fun showEmptyState() {
