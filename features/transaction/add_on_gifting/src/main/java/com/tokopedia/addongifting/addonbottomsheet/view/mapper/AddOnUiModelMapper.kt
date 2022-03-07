@@ -78,6 +78,12 @@ object AddOnUiModelMapper {
             if (addOnNote.isBlank()) {
                 addOnNote = addOn?.basicInfo?.metadata?.notesTemplate ?: ""
             }
+            if (addOnNoteFrom.isBlank()) {
+                addOnNoteFrom = addOnProductData.availableBottomSheetData.defaultFrom
+            }
+            if (addOnNoteTo.isBlank()) {
+                addOnNoteTo = addOnProductData.availableBottomSheetData.defaultTo
+            }
             isCustomNote = addOn?.basicInfo?.rules?.customNote ?: false
             onlyGreetingCardInfo = addOnProductData.availableBottomSheetData.addOnInfoWording.onlyGreetingCard
             packagingAndGreetingCardInfo = addOnProductData.availableBottomSheetData.addOnInfoWording.packagingAndGreetingCard
