@@ -91,9 +91,6 @@
         android:id="@+id/fl_info"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
-        android:paddingStart="@dimen/spacing_lvl4"
-        android:paddingEnd="@dimen/spacing_lvl4"
-        android:paddingBottom="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cl_bro_summary_meta">

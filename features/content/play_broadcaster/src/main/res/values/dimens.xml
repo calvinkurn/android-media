@@ -100,4 +100,7 @@
     <!--Pinned Message-->
     <dimen name="play_bro_pinned_msg_empty_radius">8dp</dimen>
     <dimen name="play_bro_pinned_msg_loading_size">52dp</dimen>
+
+    <!-- Summary Report -->
+    <dimen name="play_bro_summary_metric_divider_height">1dp</dimen>
 </resources>

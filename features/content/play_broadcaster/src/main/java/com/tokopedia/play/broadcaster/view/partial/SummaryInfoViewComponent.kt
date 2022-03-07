@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.ui.itemdecoration.MetricReportItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.LiveDurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricType
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
@@ -48,6 +49,7 @@ class SummaryInfoViewComponent(
     init {
         recyclerView.apply {
             layoutManager = LinearLayoutManager(container.context, RecyclerView.VERTICAL, false)
+            addItemDecoration(MetricReportItemDecoration(context))
             adapter = trafficMetricReportAdapter
         }
     }
