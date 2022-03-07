@@ -1,10 +1,12 @@
 package com.tokopedia.videoTabComponent.view.coordinator
 
 import android.content.Context
+import android.graphics.Rect
 import android.view.View
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
 import com.tokopedia.play.widget.ui.autoplay.AutoPlayModel
@@ -136,8 +138,18 @@ class PlayFeedWidgetAutoPlayCoordinator(
 
             val allVisibleViews = (firstCompleteVisiblePosition..lastCompleteVisiblePosition).mapNotNull {
                 val view = layoutManager.findViewByPosition(it)
-                if (view == null) null
-                else AutoPlayModel(view, it)
+                if (view == null)
+                    null
+                else {
+                    val actualPosition = Rect()
+                    view!!.getGlobalVisibleRect(actualPosition)
+                    val screen = Rect(0, 0, getScreenWidth(), getScreenHeight())
+                    if (!view!!.isShown || !actualPosition.intersect(screen)) {
+                        null
+                    } else
+                        AutoPlayModel(view, it)
+                }
+
             }
 
             allVisibleViews
