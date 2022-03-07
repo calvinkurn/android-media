@@ -179,6 +179,14 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
         Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
     }
 
+    protected fun verifySelectedProductSuccess(expectedResponse: SelectedProduct){
+        Assert.assertEquals(expectedResponse, viewModel.selectedGridProduct)
+    }
+
+    protected fun verifySelectedProductNull(){
+        Assert.assertEquals(viewModel.selectedGridProduct.denomData.id, "")
+    }
+
     protected fun verifyGetMenuDetailFail() {
         val actualResponse = viewModel.menuDetailData.value
         Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)

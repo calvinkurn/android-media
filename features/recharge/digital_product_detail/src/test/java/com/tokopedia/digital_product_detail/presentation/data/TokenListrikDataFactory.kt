@@ -12,6 +12,7 @@ import com.tokopedia.digital_product_detail.data.model.data.PersoRecommendationD
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.presentation.util.JsonToString
 import com.tokopedia.recharge_component.model.denom.DenomData
+import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 
@@ -134,6 +135,15 @@ class TokenListrikDataFactory {
         return gson.fromJson(
             gson.JsonToString(GET_EMPTY_VALIDATOR),
             DigitalCatalogOperatorSelectGroup::class.java
+        )
+    }
+
+
+    fun getSelectedData(data: DenomData): SelectedProduct {
+        return SelectedProduct(
+            denomData = data,
+            DenomWidgetEnum.GRID_TYPE,
+            0
         )
     }
 
