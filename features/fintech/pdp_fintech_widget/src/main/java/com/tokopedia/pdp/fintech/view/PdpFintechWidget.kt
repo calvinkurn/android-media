@@ -133,7 +133,6 @@ class PdpFintechWidget @JvmOverloads constructor(
             override fun clickedWidget(
                 fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass
             ) {
-                fintechRedirectionWidgetDataClass.productUrl = idToPriceUrlMap[productID]?.url
                 customRouter(
                     fintechRedirectionWidgetDataClass
                 )
@@ -149,7 +148,7 @@ class PdpFintechWidget @JvmOverloads constructor(
             val rediretionLink = fintechRedirectionWidgetDataClass.redirectionUrl +
                     "?productID=${this.productID}" +
                     "&tenure=${fintechRedirectionWidgetDataClass.tenure}" +
-                    "&productURL=${fintechRedirectionWidgetDataClass.productUrl}" +
+                    "&productURL=tokopedia://product/${this.productID}" +
                     "&gatewayCode=${fintechRedirectionWidgetDataClass.gatewayCode}" +
                     "&gatewayID=${fintechRedirectionWidgetDataClass.gatewayId}"
 
@@ -273,6 +272,5 @@ class PdpFintechWidget @JvmOverloads constructor(
 }
 
 data class FintechPriceUrlDataModel(
-    var url: String? = null,
     var price: String? = null
 )

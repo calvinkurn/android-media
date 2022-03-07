@@ -15,7 +15,6 @@ import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PayLaterAnalyticsBase
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_TENURE
-import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_URL
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.paylater.PdpSimulationCallback
@@ -60,9 +59,10 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         PayLaterArgsDescriptor(
             arguments?.getString(PARAM_PRODUCT_ID) ?: "",
             (arguments?.getString(PARAM_PRODUCT_TENURE) ?: "0").toInt(),
-            arguments?.getString(PARAM_PRODUCT_URL) ?: "",
+
         )
     }
+
 
     private val simulationAdapter: PayLaterSimulationAdapter by lazy(LazyThreadSafetyMode.NONE) {
         PayLaterSimulationAdapter(getAdapterTypeFactory())
@@ -89,7 +89,13 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         val customUrl = detail.cta.android_url +
                 "?productID=${payLaterArgsDescriptor.productId}" +
                 "&tenure=${detail.tenure}" +
-                "&productURL=${payLaterArgsDescriptor.productUrl}" +
+                "&productURL=tokopedia://fintech/paylater${
+                    setAdditionalParam(
+                        detail.tenure,
+                        detail.gatewayDetail?.gatewayCode,
+                        detail.gatewayDetail?.gateway_id
+                    )
+                }" +
                 "&gatewayCode=${detail.gatewayDetail?.gatewayCode}" +
                 "&gatewayID=${detail.gatewayDetail?.gateway_id}"
 
@@ -107,6 +113,13 @@ class PdpSimulationFragment : BaseDaggerFragment() {
                 )
             }
         )
+    }
+
+    private fun setAdditionalParam(tenure: Int?, gatewayCode: String?, gatewayId: String?): String {
+        return "?productID=${payLaterArgsDescriptor.productId}" +
+                "&tenure=$tenure" +
+                "&gatewayCode=$gatewayCode" +
+                "&gatewayID=$gatewayId"
     }
 
     private fun openInstallmentBottomSheet(detail: Detail) {
