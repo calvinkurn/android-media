@@ -93,7 +93,7 @@ class OrderPriceSummaryBottomSheet {
             binding.tvTotalPaymentFeePriceValue.gone()
         }
 
-        if (orderCost.addOnPrice > 0.0) {
+        if (orderCost.hasAddOn) {
             binding.tvAddOnPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.addOnPrice, false).removeDecimalSuffix()
             binding.tvAddOnPriceLabel.visible()
             binding.tvAddOnPriceValue.visible()

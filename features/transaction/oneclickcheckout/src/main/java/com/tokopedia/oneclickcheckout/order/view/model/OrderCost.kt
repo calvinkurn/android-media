@@ -10,5 +10,6 @@ data class OrderCost(
         val productDiscountAmount: Int = 0,
         val purchaseProtectionPrice: Int = 0,
         val addOnPrice: Double = 0.0,
+        val hasAddOn: Boolean = false,
         val cashbacks: List<OrderCostCashbackData> = emptyList()
 )

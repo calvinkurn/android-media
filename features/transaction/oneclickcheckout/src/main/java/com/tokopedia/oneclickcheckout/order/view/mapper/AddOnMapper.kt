@@ -51,7 +51,7 @@ object AddOnMapper {
                         addOnInfoWording = orderCart.addOnWordingData,
                         addOnSavedStates = addOn.addOnsDataItemModelList.map {
                             AddOnData(
-                                    addOnId = it.addOnId.toString(),
+                                    addOnId = it.addOnId,
                                     addOnPrice = it.addOnPrice,
                                     addOnQty = it.addOnQty.toInt(),
                                     addOnMetadata = AddOnMetadata(

@@ -180,7 +180,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             subtotal += fee
             subtotal -= cost.productDiscountAmount
             subtotal -= cost.shippingDiscountAmount
-            val orderCost = OrderCost(subtotal, cost.totalItemPrice, cost.shippingFee, cost.insuranceFee, fee, cost.shippingDiscountAmount, cost.productDiscountAmount, cost.purchaseProtectionPrice, cost.addOnPrice, cost.cashbacks)
+            val orderCost = OrderCost(subtotal, cost.totalItemPrice, cost.shippingFee, cost.insuranceFee, fee, cost.shippingDiscountAmount, cost.productDiscountAmount, cost.purchaseProtectionPrice, cost.addOnPrice, cost.hasAddOn, cost.cashbacks)
             return@withContext orderCost to payment
         }
         OccIdlingResource.decrement()
@@ -196,8 +196,14 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             val updatedProductIndex = arrayListOf<Int>()
             var totalPurchaseProtectionPrice = 0
             var totalAddOnPrice = 0.0
+            var hasAddOn = false
             // This is for add on shop level
-            totalAddOnPrice += (orderCart.shop.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice?.toDouble() ?: 0.0)
+            val addOnShopLevel = orderCart.shop.addOn.addOnsDataItemModelList.firstOrNull()
+            if (addOnShopLevel != null) {
+                totalAddOnPrice += addOnShopLevel.addOnPrice.toDouble()
+                hasAddOn = true
+            }
+
             for (productIndex in orderCart.products.indices) {
                 val product = orderCart.products[productIndex]
                 if (!product.isError) {
@@ -237,7 +243,11 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                     }
                     totalPurchaseProtectionPrice += if (product.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED) purchaseProtectionPriceMultiplier * product.purchaseProtectionPlanData.protectionPricePerProduct else 0
                     // This is for add on product level
-                    totalAddOnPrice += (product.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice?.toDouble() ?: 0.0)
+                    val addOnProductLevel = product.addOn.addOnsDataItemModelList.firstOrNull()
+                    if (addOnProductLevel != null) {
+                        totalAddOnPrice += addOnProductLevel.addOnPrice.toDouble()
+                        hasAddOn = true
+                    }
                 }
             }
             totalProductPrice += totalProductWholesalePrice
@@ -245,7 +255,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             val insurancePrice = shipping.getRealInsurancePrice().toDouble()
             val (productDiscount, shippingDiscount, cashbacks) = calculatePromo(validateUsePromoRevampUiModel)
             val subtotal = totalProductPrice + totalPurchaseProtectionPrice + totalShippingPrice + insurancePrice + totalAddOnPrice - productDiscount - shippingDiscount
-            val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, 0.0, shippingDiscount, productDiscount, totalPurchaseProtectionPrice, totalAddOnPrice, cashbacks)
+            val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, 0.0, shippingDiscount, productDiscount, totalPurchaseProtectionPrice, totalAddOnPrice, hasAddOn, cashbacks)
             return@withContext orderCost to updatedProductIndex
         }
         OccIdlingResource.decrement()

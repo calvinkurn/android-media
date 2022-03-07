@@ -801,9 +801,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 orderShop.addOn = AddOnMapper.mapAddOnBottomSheetResult(addOnResult)
                 this.orderShop.value = orderShop
                 orderProducts.value = listOf(orderProduct)
+                orderCart.shop = this.orderShop.value
 
                 orderTotal.value = orderTotal.value.copy(
                         orderCost = orderTotal.value.orderCost.copy(
+                                hasAddOn = true,
                                 addOnPrice = addOnResult.addOnData.firstOrNull()?.addOnPrice?.toDouble()
                                         ?: 0.0
                         )
@@ -815,6 +817,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
                 orderTotal.value = orderTotal.value.copy(
                         orderCost = orderTotal.value.orderCost.copy(
+                                hasAddOn = true,
                                 addOnPrice = addOnResult.addOnData.firstOrNull()?.addOnPrice?.toDouble()
                                         ?: 0.0
                         )
@@ -839,6 +842,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 orderProducts.value = listOf(it)
             }
         }
+        orderTotal.value = orderTotal.value.copy(
+                orderCost = orderTotal.value.orderCost.copy(
+                        hasAddOn = false
+                )
+        )
     }
 
     override fun onCleared() {
