@@ -44,6 +44,7 @@ class PreviewPagerAdapter constructor(
 
         if (position > -1 && position < elements.size) {
             elements.removeAt(position)
+            element?.mVideoPlayer?.stop()
             notifyDataSetChanged()
         }
     }
