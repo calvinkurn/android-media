@@ -19,4 +19,6 @@ interface PlayInteractiveAnalytic {
     fun clickTapTap(channelId: String, channelType: PlayChannelType, interactiveId: String)
 
     fun clickUpcomingReminder(sectionInfo: ProductSectionUiModel.Section, channelId: String, channelType: PlayChannelType)
+
+    fun impressUpcomingReminder(sectionInfo: ProductSectionUiModel.Section, channelId: String, channelType: PlayChannelType)
 }
