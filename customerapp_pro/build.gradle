@@ -451,6 +451,8 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.empty_state
     implementation rootProject.ext.unifyDependencies.accordion
+
+    debugImplementation rootProject.ext.testDependencies.fragmentTest
 }
 
 apply plugin: 'com.google.gms.google-services'
