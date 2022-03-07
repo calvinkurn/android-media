@@ -22,6 +22,7 @@ import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.affiliate.AffiliateUIIDRequest
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
@@ -185,6 +186,15 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.CONTENT_WIDGET -> {
                     listOfComponent.add(
                         ContentWidgetDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
+                }
+
+                ProductDetailConstant.FINTECH_WIDGET_TYPE -> {
+                    listOfComponent.add(
+                        FintechWidgetDataModel(
                             type = component.type,
                             name = component.componentName
                         )
