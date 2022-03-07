@@ -70,7 +70,7 @@ class ProductSortBottomSheet @Inject constructor() : BottomSheetUnify() {
     }
 
     private fun setupView() {
-        mSelectedSort = requireArguments().getParcelable<SortUiModel>(ARGS_SELECTED_SORT)
+        mSelectedSort = arguments?.getParcelable(ARGS_SELECTED_SORT)
         setTitle(getString(R.string.play_bro_etalase_sort))
         setAction(getString(R.string.play_label_save)) {
             val selectedSort = mSelectedSort
