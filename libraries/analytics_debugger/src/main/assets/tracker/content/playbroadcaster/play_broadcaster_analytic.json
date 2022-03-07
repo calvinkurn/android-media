@@ -3,7 +3,7 @@
   "mode": "exact",
   "query": [
     {
-      "event": "clickPG",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - simpan",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
@@ -13,7 +13,7 @@
       "userId": ".*"
     },
     {
-      "event": "clickPG",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - edit title",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
@@ -23,7 +23,7 @@
       "userId": ".*"
     },
     {
-      "event": "clickPG",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - add cover on preparation page",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
@@ -33,7 +33,7 @@
       "userId": ".*"
     },
     {
-      "event": "clickPG",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - add product tag",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
@@ -43,7 +43,7 @@
       "userId": ".*"
     },
     {
-      "event": "clickPG",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - camera switch on preparation page",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
@@ -53,7 +53,7 @@
       "userId": ".*"
     },
     {
-      "event": "clickPG",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - x on preparation page",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
@@ -63,7 +63,7 @@
       "userId": ".*"
     },
     {
-      "event": "clickPG",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - batalkan livestream",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - \\d+ - .*",
@@ -73,7 +73,7 @@
       "userId": ".*"
     },
     {
-      "event": "clickPG",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - mulai live streaming",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - \\d+",
@@ -83,7 +83,7 @@
       "userId": ".*"
     },
     {
-      "event": "clickPG",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - cover thumbnail to add cover",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
@@ -93,7 +93,7 @@
       "userId": ".*"
     },
     {
-      "event": "clickPG",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - edit cover",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
@@ -103,7 +103,7 @@
       "userId": ".*"
     },
     {
-      "event": "clickPG",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - search bar",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - .*",
@@ -113,7 +113,7 @@
       "userId": ".*"
     },
     {
-      "event": "clickPG",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - save product card",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
@@ -123,7 +123,7 @@
       "userId": ".*"
     },
     {
-      "event": "clickPG",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - add product card",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - .*",
@@ -133,7 +133,7 @@
       "userId": ".*"
     },
     {
-      "event": "clickPG",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - product card",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - .*",
@@ -143,7 +143,7 @@
       "userId": ".*"
     },
     {
-      "event": "clickPG",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - delete a product tagged",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - .*",
@@ -153,7 +153,7 @@
       "userId": ".*"
     },
     {
-      "event": "clickPG",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - save product tag",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
@@ -163,7 +163,7 @@
       "userId": ".*"
     },
     {
-      "event": "clickPG",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - campaign & etalase filter",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
@@ -173,7 +173,7 @@
       "userId": ".*"
     },
     {
-      "event": "clickPG",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - product sort",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
@@ -183,7 +183,7 @@
       "userId": ".*"
     },
     {
-      "event": "clickPG",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - sort type",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - .*",
@@ -193,7 +193,7 @@
       "userId": ".*"
     },
     {
-      "event": "clickPG",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - etalase card",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
@@ -203,7 +203,7 @@
       "userId": ".*"
     },
     {
-      "event": "clickPG",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - campaign card",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
@@ -213,7 +213,7 @@
       "userId": ".*"
     },
     {
-      "event": "clickPG",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - close button on product bottom sheet",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - (select product section|selected product list section)",
@@ -223,7 +223,7 @@
       "userId": ".*"
     },
     {
-      "event": "clickPG",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - confirm close on add product page",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
@@ -233,7 +233,7 @@
       "userId": ".*"
     },
     {
-      "event": "clickPG",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - cancel close on add product page",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
@@ -242,8 +242,6 @@
       "sessionIris": ".*",
       "userId": ".*"
     },
-
-
     {
       "eventAction": "view widget broadcast",
       "event": "clickShopPage",

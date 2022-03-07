@@ -42,8 +42,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.miscDependencies.dagger
-    implementation 'androidx.appcompat:appcompat:1.4.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation rootProject.ext.supportLibDependencies.supportV4
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -55,6 +55,22 @@ dependencies {
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.networkDependencies.okHttp
+    implementation projectOrAar(rootProject.ext.features.searchbar)
+    implementation projectOrAar(rootProject.ext.features.productDetailCommon)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.baseList)
+    implementation projectOrAar(rootProject.ext.features.productCard)
+    implementation rootProject.ext.networkDependencies.glide
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.unifyDependencies.global_error
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     //unit test
     testImplementation rootProject.ext.testDependencies.mockk

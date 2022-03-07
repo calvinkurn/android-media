@@ -40,8 +40,7 @@ class BannerComponentCallback(
                     onRedirectPage(channelGrid)
                 }
             )
-
-            analytics.onClickBannerPromo(position, userSession.userId, channelModel, channelGrid)
+            analytics.onClickBannerPromo(position, channelModel, channelGrid)
         }
     }
 
@@ -49,12 +48,7 @@ class BannerComponentCallback(
         context?.let {
             val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
             val warehouseId = localCacheModel.warehouse_id.toLongOrZero().toString()
-
-            analytics.onImpressBannerPromo(
-                userSession.userId,
-                channelModel,
-                warehouseId
-            )
+            analytics.onImpressBannerPromo(channelModel, warehouseId)
         }
     }
 

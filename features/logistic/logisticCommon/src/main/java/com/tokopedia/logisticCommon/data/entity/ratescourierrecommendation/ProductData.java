@@ -102,7 +102,9 @@ public class ProductData implements Parcelable {
         insurance = in.readParcelable(InsuranceData.class.getClassLoader());
         texts = in.readParcelable(ProductTextData.class.getClassLoader());
         error = in.readParcelable(ErrorProductData.class.getClassLoader());
+        codProductData = in.readParcelable(CodProductData.class.getClassLoader());
         features = in.readParcelable(ProductFeatures.class.getClassLoader());
+        estimatedTimeArrival = in.readParcelable(EstimatedTimeArrival.class.getClassLoader());
     }
 
     @Override
@@ -119,13 +121,15 @@ public class ProductData implements Parcelable {
         dest.writeString(checkSum);
         dest.writeString(unixTime);
         dest.writeString(promoCode);
-        dest.writeByte((byte) (recommend ? 1 : 0));
+        dest.writeByte((byte) (uiRatesHidden ? 1 : 0));
         dest.writeParcelable(price, flags);
         dest.writeParcelable(etd, flags);
         dest.writeParcelable(insurance, flags);
         dest.writeParcelable(texts, flags);
         dest.writeParcelable(error, flags);
+        dest.writeParcelable(codProductData, flags);
         dest.writeParcelable(features, flags);
+        dest.writeParcelable(estimatedTimeArrival, flags);
     }
 
     @Override
