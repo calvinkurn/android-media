@@ -19,7 +19,7 @@ class GetProductsInEtalaseUseCase @Inject constructor(
 
     private val query = """
             query GetShopProductList(${'$'}shopId: String!, ${'$'}filter: [GoodsFilterInput], ${'$'}sort: GoodsSortInput) {
-                ProductList(shopID: ${'$'}shopId, filter: ${'$'}filter, sort: ${'$'}sort) {
+                ProductList(shopID: ${'$'}shopId, filter: ${'$'}filter, sort: ${'$'}sort, extraInfo: ["topads", "rbac"]) {
                     header {
                         messages
                         reason

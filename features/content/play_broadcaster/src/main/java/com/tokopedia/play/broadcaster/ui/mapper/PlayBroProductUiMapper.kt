@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignListResponse
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignProductResponse
@@ -102,8 +103,8 @@ class PlayBroProductUiMapper @Inject constructor() {
                     imageUrl = data.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
                     stock = data.stock,
                     price = OriginalPrice(
-                        priceFormat.format(BigDecimal(data.price.min)),
-                        data.price.min
+                        priceFormat.format(BigDecimal(data.price.min.orZero())),
+                        data.price.min.orZero()
                     ), //No discounted price because it is not supported in the current gql
                 )
             },

@@ -60,10 +60,10 @@ data class GetProductsByEtalaseResponse(
 
         data class Price(
                 @SerializedName("min")
-                val min: Double = 0.0,
+                val min: Double? = 0.0,
 
                 @SerializedName("max")
-                val max: Double = 0.0,
+                val max: Double? = 0.0,
         )
 
         data class Meta(
