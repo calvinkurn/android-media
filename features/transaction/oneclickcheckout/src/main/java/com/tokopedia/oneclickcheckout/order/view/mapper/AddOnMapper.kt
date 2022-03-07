@@ -3,16 +3,20 @@ package com.tokopedia.oneclickcheckout.order.view.mapper
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.*
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.*
+import com.tokopedia.user.session.UserSessionInterface
 
 object AddOnMapper {
 
     fun mapAddOnBottomSheetParam(addOn: AddOnsDataModel,
                                  orderProduct: OrderProduct,
                                  orderShop: OrderShop,
-                                 orderCart: OrderCart): AddOnProductData {
+                                 orderCart: OrderCart,
+                                 orderProfileAddress: OrderProfileAddress,
+                                 userName: String): AddOnProductData {
 
         val productId = if (orderProduct.parentId.isNotEmpty() && orderProduct.parentId.toLongOrZero() > 0) {
             orderProduct.parentId
@@ -20,11 +24,22 @@ object AddOnMapper {
             orderProduct.productId.toString()
         }
 
+        var defaultTo: String = ""
+        var defaultFrom: String = ""
+        if (orderProfileAddress.isMainAddress) {
+            defaultTo = userName
+        } else {
+            defaultTo = userName
+            defaultFrom = orderProfileAddress.receiverName
+        }
+
         return AddOnProductData(
                 bottomSheetType = AddOnProductData.ADD_ON_BOTTOM_SHEET,
                 bottomSheetTitle = addOn.addOnsBottomSheetModel.headerTitle,
                 source = AddOnProductData.SOURCE_ONE_CLICK_CHECKOUT,
                 availableBottomSheetData = AvailableBottomSheetData(
+                        defaultTo = defaultTo,
+                        defaultFrom = defaultFrom,
                         products = listOf(Product(
                                 cartId = orderProduct.cartId,
                                 productId = productId,
