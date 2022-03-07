@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,6 +13,8 @@
         android:id="@+id/tp_srw_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:textColor="@color/Unify_N700_96"
@@ -22,10 +24,24 @@
     <com.tokopedia.iconunify.IconUnify
         android:layout_width="@dimen/unify_space_24"
         android:layout_height="@dimen/unify_space_24"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         android:layout_gravity="center_vertical"
         android:layout_marginEnd="@dimen/unify_space_8"
         android:padding="@dimen/unify_space_4"
         app:icon_color_light_enable="@color/Unify_N700_96"
         app:icon_name="SEND_TEXT" />
 
-</LinearLayout>
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/label_new"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:labelType="general_dark_red"
+        app:layout_constraintLeft_toRightOf="@id/tp_srw_title"
+        app:layout_constraintTop_toTopOf="@id/tp_srw_title"
+        android:layout_marginStart="4dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:text="BARU"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

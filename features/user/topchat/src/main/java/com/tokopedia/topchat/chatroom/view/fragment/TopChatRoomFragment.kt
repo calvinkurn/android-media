@@ -7,6 +7,7 @@ import android.content.ClipData
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -45,6 +46,7 @@ import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.*
 import com.tokopedia.chat_common.util.IdentifierUtil
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel
@@ -68,7 +70,6 @@ import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCo
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.UpdateCampaignVariantResult
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -149,6 +150,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
+import com.tokopedia.topchat.chatroom.view.uimodel.ProductBundlingUiModel
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 
 
@@ -167,7 +169,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     TopchatProductAttachmentListener, UploadImageBroadcastListener,
     SrwQuestionViewHolder.Listener, ReplyBoxTextListener, SrwBubbleViewHolder.Listener,
     FlexBoxChatLayout.Listener, ReplyBubbleAreaMessage.Listener,
-    ReminderTickerViewHolder.Listener {
+    ReminderTickerViewHolder.Listener, ProductBundlingListener {
 
     @Inject
     lateinit var topChatRoomDialog: TopChatRoomDialog
@@ -698,6 +700,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         setupPostFirstPage()
         fpm.stopTrace()
         setupDummyData()
+        setupTestBundling()
     }
 
     private fun setupPostFirstPage() {
@@ -969,7 +972,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             this, this, this, this,
             this, this, this, this,
             this, this, this, this,
-            this, this
+            this, this, this
         )
     }
 
@@ -2916,5 +2919,28 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 arguments = bundle
             }
         }
+    }
+
+    override fun onClickCtaProductBundling(element: ProductBundlingUiModel) {
+        Log.d("PRODBUNDLING", element.toString())
+    }
+
+    override fun onSeenProductBundling(isMultiProduct: Boolean) {
+
+    }
+
+    private fun setupTestBundling() {
+        val bundling = ProductBundlingUiModel.Builder()
+            .withBundlingId("1")
+            .withApplink("tokopedia://topchat")
+            .withDiscountAmount("Rp1000")
+            .withDiscountPrice("Rp9000")
+            .withDiscountText("Hemat")
+            .withProductPrice("Rp10.000")
+            .withImageUrl("https://images.tokopedia.net/img/cache/300/default_picture_user/default_toped-17.jpg")
+            .withLabelDesc("Ada 3 barang")
+            .withProductName("Barang langka Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at enim rhoncus, faucibus dui et, venenatis ante. Interdum et malesuada.")
+            .build()
+        adapter.addElement(bundling)
     }
 }

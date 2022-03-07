@@ -50,4 +50,5 @@ interface TopChatTypeFactory {
     fun type(srwBubbleUiModel: SrwBubbleUiModel): Int
     fun type(getReminderTickerUiModel: ReminderTickerUiModel): Int
 
+    fun type(productBundlingUiModel: ProductBundlingUiModel): Int
 }
