@@ -85,6 +85,7 @@ class DenomFullViewHolder(
 
             labelDenomFullDiscount.run {
                 if (denomFull.status == DenomConst.DENOM_STATUS_OUT_OF_STOCK) {
+
                     show()
                     setStatusOutOfStockColor(resources.getString(com.tokopedia.recharge_component.R.string.out_of_stock_label_denom_digital))
 
@@ -104,12 +105,16 @@ class DenomFullViewHolder(
                             .toInt(),
                         resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
                             .toInt())
+
                 } else if (!denomFull.discountLabel.isNullOrEmpty()){
+
                     show()
                     val labelParams = this.layoutParams as ConstraintLayout.LayoutParams
                     labelParams.topToTop = tgDenomFullPrice.id
+                    labelParams.topToBottom = ConstraintLayout.LayoutParams.UNSET
                     labelParams.bottomToBottom = tgDenomFullPrice.id
                     labelParams.leftToRight = tgDenomFullPrice.id
+                    labelParams.leftToLeft = ConstraintLayout.LayoutParams.UNSET
                     layoutParams = labelParams
 
                     setMargin(
@@ -121,7 +126,9 @@ class DenomFullViewHolder(
                             .toInt(),
                         resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
                             .toInt())
+
                     setStatusNormal(denomFull.discountLabel)
+
                 } else hide()
             }
 
