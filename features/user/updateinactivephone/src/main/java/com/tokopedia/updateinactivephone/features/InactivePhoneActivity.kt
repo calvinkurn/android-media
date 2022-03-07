@@ -64,7 +64,8 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
 
         intent?.let {
             when {
-                it.data != null -> {
+                it.data != null &&
+                        (it.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PHONE)?.isNotEmpty() == true || it.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_EMAIL)?.isNotEmpty() == true) -> {
                     inactivePhoneUserDataModel = InactivePhoneUserDataModel(
                             oldPhoneNumber = it.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PHONE)?.reformatPhoneNumber().orEmpty(),
                             email = it.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_EMAIL).orEmpty()
