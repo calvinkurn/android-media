@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
@@ -54,6 +55,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     private lateinit var viewModel: PlayBroadcastSummaryViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
+    private lateinit var icClose: IconUnify
     private lateinit var btnPostVideo: UnifyButton
     private lateinit var loaderView: LoaderUnify
     private lateinit var deleteVideoDialog: DialogUnify
@@ -96,6 +98,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
 
     private fun initView(view: View) {
         with(view) {
+            icClose = findViewById(R.id.ic_bro_summary_back)
             btnPostVideo = findViewById(R.id.btn_post_video)
             loaderView = findViewById(R.id.loader_summary)
         }
@@ -103,6 +106,9 @@ class PlayBroadcastSummaryFragment @Inject constructor(
 
     private fun setupView(view: View) {
         summaryInfoView.entranceAnimation(view as ViewGroup)
+        icClose.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
         btnPostVideo.setOnClickListener {
             analytic.clickSaveVodOnReportPage(parentViewModel.channelId)
             viewModel.saveVideo()
