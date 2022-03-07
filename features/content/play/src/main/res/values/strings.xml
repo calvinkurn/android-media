@@ -23,6 +23,7 @@
     <string name="play_link_copied">Link berhasil disalin</string>
     <string name="play_product_atc">Keranjang</string>
     <string name="play_product_upcoming_reminder_success">Oke, kami akan ingatkan!</string>
+    <string name="play_product_upcoming_reminder_error">Pengingat telah dihapus.</string>
 
     <!--Floating Window / PiP-->
     <string name="play_pip_permission_rationale_title">Mau perkecil layar Live?</string>

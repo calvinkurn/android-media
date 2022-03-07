@@ -2038,7 +2038,7 @@ class PlayViewModel @AssistedInject constructor(
                 _uiEvent.emit(ShowInfoEvent(message = if(data.second.isNotEmpty()) UiString.Text(data.second) else UiString.Resource(R.string.play_product_upcoming_reminder_success)))
             }
             else {
-                throw Exception(if(data.second.isNotEmpty()) data.second else "Pengingat telah dihapus.")
+                _uiEvent.emit(ShowInfoEvent(message = if(data.second.isNotEmpty()) UiString.Text(data.second) else UiString.Resource(R.string.play_product_upcoming_reminder_error)))
             }
         }){
             _uiEvent.emit(ShowErrorEvent(it))
