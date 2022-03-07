@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +20,6 @@ import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
-import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
 import com.tokopedia.play.broadcaster.view.custom.actionbar.ActionBarView
@@ -27,6 +27,7 @@ import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
 import com.tokopedia.play.broadcaster.view.custom.preparation.PreparationMenuView
 import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.viewmodel.*
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -78,6 +79,14 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val toaster by viewLifecycleBound(
         creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
     )
+
+    private val loadingDialogFragment: LoadingDialogFragment by lazy(LazyThreadSafetyMode.NONE) {
+        val setupClass = LoadingDialogFragment::class.java
+        val fragmentFactory = childFragmentManager.fragmentFactory
+        val fragment = fragmentFactory.instantiate(requireActivity().classLoader, setupClass.name) as LoadingDialogFragment
+        fragment.setLoaderType(LoadingDialogFragment.LoaderType.CIRCULAR)
+        fragment
+    }
 
     /** Lifecycle */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -211,7 +220,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             formCover.setListener(this@PlayBroadcastPreparationFragment)
 
             flBroStartLivestream.setOnClickListener {
-                analytic.clickStartStreaming(parentViewModel.channelId)
+//                analytic.clickStartStreaming(parentViewModel.channelId)
 
                 /** TODO: comment this first because we havent revamped the schedule functionality yet */
 //                val schedule = scheduleViewModel.schedule
@@ -237,7 +246,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
             icBroPreparationSwitchCamera.setOnClickListener {
                 analytic.clickSwitchCameraOnPreparation()
-                (activity as? PlayBroadcastActivity)?.flipCamera()
+                broadcaster.flip()
             }
         }
     }
@@ -292,19 +301,44 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun observeCreateLiveStream() {
         viewModel.observableCreateLiveStream.observe(viewLifecycleOwner) {
             when (it) {
-                is NetworkResult.Success -> {
-//                    parentViewModel.startLiveStream(withTimer = false)
-                }
+                is NetworkResult.Success -> startLive(it.data.ingestUrl)
                 is NetworkResult.Fail -> {
-                    showCountdown(false)
+                    showLoading(false)
                     toaster.showError(
                         err = it.error,
                         customErrMessage = it.error.message
                     )
                     analytic.viewErrorOnFinalSetupPage(getProperErrorMessage(it.error))
                 }
+                NetworkResult.Loading -> showLoading(true)
             }
         }
+    }
+
+    private fun startLive(ingestUrl: String) {
+        broadcaster.start(ingestUrl,
+            onSuccess = {
+                updateChannelStatus()
+            },
+            onError = {
+                showLoading(false)
+                // todo: show error message and retry maybe?
+            }
+        )
+    }
+
+    private fun updateChannelStatus() {
+        parentViewModel.updateChannelStatusToLive(
+            onSuccess = {
+                showLoading(false)
+                openBroadcastLivePage()
+                // todo: start timer
+            },
+            onError = {
+                showLoading(false)
+                // todo: show error message and retry maybe?
+            }
+        )
     }
 
 //    private fun observeLiveStreamState(){
@@ -483,6 +517,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             override fun onTick(milisUntilFinished: Long) {}
 
             override fun onFinish() {
+                showCountdown(false)
                 viewModel.createLiveStream()
             }
 
@@ -515,6 +550,19 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun openBroadcastLivePage() {
         broadcastCoordinator.navigateToFragment(PlayBroadcastUserInteractionFragment::class.java)
         analytic.openBroadcastScreen(parentViewModel.channelId)
+    }
+
+    private fun showLoading(isShow: Boolean) {
+        if(isShow) {
+            if(!isLoadingDialogVisible())
+                loadingDialogFragment.show(childFragmentManager)
+        } else if(loadingDialogFragment.isAdded) {
+            loadingDialogFragment.dismiss()
+        }
+    }
+
+    private fun isLoadingDialogVisible(): Boolean {
+        return loadingDialogFragment.isVisible
     }
 
     companion object {

@@ -23,7 +23,6 @@ import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import java.util.*
 import kotlin.random.Random
@@ -104,9 +103,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
 
     override fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia): LiveStreamInfoUiModel {
         return LiveStreamInfoUiModel(
-                "1234",
                 ingestUrl = LOCAL_RTMP_URL,
-                streamUrl = "rtmp://test"
         )
     }
 
@@ -186,7 +183,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                 description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
                 coverUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
                 ingestUrl = LOCAL_RTMP_URL,
-                status = PlayChannelStatusType.Draft
+                status = ChannelType.Draft
         )
     }
 

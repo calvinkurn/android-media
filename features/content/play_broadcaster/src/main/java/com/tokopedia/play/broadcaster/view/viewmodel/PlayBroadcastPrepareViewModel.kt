@@ -1,26 +1,22 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
 import androidx.lifecycle.*
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.usecase.CreateLiveStreamChannelUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.GetLiveFollowersDataUseCase
+import com.tokopedia.play.broadcaster.error.ClientException
+import com.tokopedia.play.broadcaster.error.PlayErrorCode
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
-import com.tokopedia.play.broadcaster.ui.model.FollowerDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
+import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.map
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
-import com.tokopedia.play.broadcaster.error.ClientException
-import com.tokopedia.play.broadcaster.error.PlayErrorCode
-import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play_common.util.event.Event
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -34,7 +30,6 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
     private val channelConfigStore: ChannelConfigStore,
     private val dispatcher: CoroutineDispatchers,
     private val createLiveStreamChannelUseCase: CreateLiveStreamChannelUseCase,
-    private val userSession: UserSessionInterface,
     private val playBroadcastMapper: PlayBroadcastMapper
 ) : ViewModel() {
 

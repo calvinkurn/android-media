@@ -358,8 +358,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    suspend fun getChannelDetail() = getChannelById(channelId)
-
     private suspend fun createChannel() {
         val channelId = repo.createChannel()
         setChannelId(channelId)
@@ -392,13 +390,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             setChannelId(channelInfo.channelId)
             setChannelTitle(channelInfo.title)
             setChannelInfo(channelInfo)
+
             setAddedTags(tags.recommendedTags.tags.toSet())
 
             setSelectedCover(playBroadcastMapper.mapCover(getCurrentSetupDataStore().getSelectedCover(), channel.basic.coverUrl))
             setBroadcastSchedule(playBroadcastMapper.mapChannelSchedule(channel.basic.timestamp))
 
             generateShareLink(playBroadcastMapper.mapShareInfo(channel))
-
             null
         } catch (err: Throwable) {
             _observableChannelInfo.value = NetworkResult.Fail(err)
@@ -406,7 +404,61 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun updateChannelStatus(status: PlayChannelStatusType) {
+    // todo: try to move this function to uiState?
+    fun updateChannelStatusToLive(
+        onSuccess: () -> Unit,
+        onError: (throwable: Throwable) -> Unit,
+    ) {
+        viewModelScope.launchCatchError(block = {
+            updateChannelStatus(PlayChannelStatusType.Live)
+            getChannelById(channelId)
+            onSuccess() // move to ui state
+            startWebSocket()
+            getPinnedMessage()
+            getInteractiveConfig()
+        }) {
+            onError(it)
+        }
+    }
+
+    fun updateChannelStatusToPause() {
+        viewModelScope.launchCatchError(block = {
+            updateChannelStatus(PlayChannelStatusType.Pause)
+        }) {
+        }
+    }
+
+    fun updateChannelStatusToStop() {
+        viewModelScope.launchCatchError(block = {
+            closeWebSocket()
+            updateChannelStatus(PlayChannelStatusType.Stop)
+        }) {
+        }
+    }
+
+    fun getChannelDetail(
+        onLoad: () -> Unit,
+        onSuccess: (channelInfo: ChannelInfoUiModel) -> Unit,
+        onError: (throwable: Throwable) -> Unit,
+    ) {
+        onLoad()
+        viewModelScope.launchCatchError(block = {
+            val err = getChannelById(channelId)
+            if (err != null) onError(err)
+            else {
+                val channelInfo = (_observableChannelInfo.value as? NetworkResult.Success)?.data
+                if (channelInfo == null) {
+                    onError(Throwable("this error not supposed to happen"))
+                } else {
+                    onSuccess(channelInfo)
+                }
+            }
+        }) {
+            onError(it)
+        }
+    }
+
+    private suspend fun updateChannelStatus(status: PlayChannelStatusType) = withContext(dispatcher.io) {
         repo.updateChannelStatus(channelId, status)
     }
 
@@ -426,10 +478,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 //    fun stopPreview() {
 //        livePusherMediator.onCameraDestroyed()
 //    }
-
-    fun setFirstTimeLiveStreaming() {
-        sharedPref.setNotFirstStreaming()
-    }
 
 //    fun startLiveStream(withTimer: Boolean = true) {
 //        livePusherMediator.startLiveStreaming(ingestUrl, withTimer)
@@ -559,7 +607,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.launch { getLeaderboardInfo() }
     }
 
-    private fun getInteractiveConfig() {
+    fun getInteractiveConfig() {
         viewModelScope.launchCatchError(block = {
             val interactiveConfig = repo.getInteractiveConfig()
             _observableInteractiveConfig.value = interactiveConfig
@@ -727,22 +775,20 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is Chat -> retrieveNewChat(playBroadcastMapper.mapIncomingChat(result))
             is Freeze -> {
 //                if (_observableLiveTimerState.value !is PlayLiveTimerState.Finish) {
-//                    val eventUiModel = playBroadcastMapper.mapFreezeEvent(result, _observableEvent.value)
-//                    if (eventUiModel.freeze) {
-//                        logger.logSocketType(result)
-//                        stopLiveStream()
-//                        _observableEvent.value = eventUiModel
-//                    }
+                    val eventUiModel = playBroadcastMapper.mapFreezeEvent(result, _observableEvent.value)
+                    if (eventUiModel.freeze) {
+                        _observableEvent.value = eventUiModel // pindahin ke uiState
+                        logger.logSocketType(result)
+                    }
 //                }
             }
             is Banned -> {
 //                if (_observableLiveTimerState.value !is PlayLiveTimerState.Finish) {
-//                    val eventUiModel = playBroadcastMapper.mapBannedEvent(result, _observableEvent.value)
-//                    if (eventUiModel.banned) {
-//                        logger.logSocketType(result)
-//                        stopLiveStream()
-//                        _observableEvent.value = eventUiModel
-//                    }
+                    val eventUiModel = playBroadcastMapper.mapBannedEvent(result, _observableEvent.value)
+                    if (eventUiModel.banned) {
+                        _observableEvent.value = eventUiModel // pindahin ke uiState
+                        logger.logSocketType(result)
+                    }
 //                }
             }
             is ChannelInteractive -> {

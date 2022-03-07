@@ -5,7 +5,7 @@ import android.util.Log
 /**
  * Created by meyta.taliti on 03/03/22.
  */
-class DefaultBroadcasterLogger : BroadcasterLogger {
+open class DefaultBroadcasterLogger : BroadcasterLogger {
 
     override fun v(msg: String) {
         Log.v(BroadcasterLogger.TAG, msg)

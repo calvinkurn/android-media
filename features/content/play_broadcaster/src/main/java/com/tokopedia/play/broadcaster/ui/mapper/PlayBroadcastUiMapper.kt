@@ -102,9 +102,8 @@ class PlayBroadcastUiMapper(
 
     override fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia) =
             LiveStreamInfoUiModel(
-                    channelId = channelId,
                     ingestUrl = media.ingestUrl,
-                    streamUrl = media.streamUrl)
+            )
 
     override fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel> = mutableListOf(
                 TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannelFmt),
@@ -207,7 +206,7 @@ class PlayBroadcastUiMapper(
             description = channel.basic.description,
             ingestUrl = channel.medias.firstOrNull { it.id == channel.basic.activeMediaID }?.ingestUrl.orEmpty(),
             coverUrl = channel.basic.coverUrl,
-            status = PlayChannelStatusType.getByValue(channel.basic.status.id)
+            status = ChannelType.getByValue(channel.basic.status.id)
     )
 
     override fun mapChannelProductTags(productTags: List<GetChannelResponse.ProductTag>) = productTags.map {

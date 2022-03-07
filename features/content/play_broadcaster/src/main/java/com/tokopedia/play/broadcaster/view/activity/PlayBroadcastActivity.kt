@@ -39,6 +39,7 @@ import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
 import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
 import com.tokopedia.play.broadcaster.view.contract.PlayBaseCoordinator
+import com.tokopedia.play.broadcaster.view.contract.PlayBroadcasterContract
 import com.tokopedia.play.broadcaster.view.custom.PlayTermsAndConditionView
 import com.tokopedia.play.broadcaster.view.fragment.*
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
@@ -57,7 +58,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 19/05/20.
  */
-class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, Broadcaster.Callback {
+class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcasterContract, Broadcaster.Callback {
 
     private val retainedComponent by retainedComponent {
         DaggerActivityRetainedComponent.builder()
@@ -303,7 +304,11 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, Broadcaster.C
                 is NetworkResult.Success -> {
                     showLoading(false)
                     if (!isRecreated) handleChannelConfiguration(result.data)
-                    else if(result.data.channelType == ChannelType.Pause) showDialogContinueLiveStreaming()
+
+                    /**
+                     * todo: revamp!
+                     */
+                    else if (result.data.channelType == ChannelType.Pause) showDialogContinueLiveStreaming()
                     stopPageMonitoring()
                 }
                 is NetworkResult.Fail -> {
@@ -339,10 +344,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, Broadcaster.C
     private fun configureChannelType(channelType: ChannelType) {
         if (isRecreated) return
         when (channelType) {
-            ChannelType.Pause -> {
-                openBroadcastActivePage()
-                showDialogContinueLiveStreaming()
-            }
+            ChannelType.Pause -> openBroadcastActivePage()
             else -> openBroadcastSetupPage()
         }
     }
@@ -458,6 +460,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, Broadcaster.C
         }
     }
 
+    // todo: revamp this dialog!
     fun showDialogContinueLiveStreaming() {
         if (!::pauseLiveDialog.isInitialized) {
             pauseLiveDialog = getDialog(
@@ -621,8 +624,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, Broadcaster.C
         aspectFrameLayout.setAspectRatio(size.height.toDouble() / size.width.toDouble())
     }
 
-    fun flipCamera() {
-        playBroadcaster.flip()
+    override fun getBroadcaster(): PlayBroadcaster {
+        return playBroadcaster
     }
 
     companion object {
