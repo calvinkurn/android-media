@@ -2172,37 +2172,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `given load more error when scroll tokomart home should set result fail`() {
-        val homeLayoutResponse = listOf(
-            HomeLayoutResponse(
-                id = "12345",
-                layout = "tokonow_share",
-                header = Header(
-                    name = "Education",
-                    serverTimeUnix = 0
-                ),
-                token = "==abcd" // dummy token
-            )
-        )
-
-        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
-
-        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
-
-        val loadMoreError = NullPointerException()
-
-        onGetHomeLayoutData_thenReturn(loadMoreError)
-
-        viewModel.onScrollTokoMartHome(0, LocalCacheModel(), listOf())
-
-        verifyGetHomeLayoutDataUseCaseCalled(times = 2)
-
-        viewModel.homeLayoutList
-            .verifyErrorEquals(Fail(loadMoreError))
-    }
-
-    @Test
     fun `given home contains progress bar when onScrollTokoMartHome should call use case once`() {
         val homeLayoutResponse = listOf(
             HomeLayoutResponse(
