@@ -54,15 +54,15 @@ class PreviewPagerComponent(
         override fun onPageScrollStateChanged(state: Int) {}
         override fun onPageScrolled(position: Int, posOffset: Float, posOffsetPixels: Int) {}
         override fun onPageSelected(position: Int) {
-//            val currentItem = medias[position]
-//            if (currentItem.data.isVideo() && viewPager.currentItem == position) {
-//                // getVideoPlayerActive()?.start()
-//            }
-//
-//            val previousItem = medias[previousViewPagerIndex]
-//            if (previousItem.data.isVideo()) {
-//                // getVideoPlayerActive()?.stop()
-//            }
+            val currentItem = medias[position]
+            if (currentItem.data.isVideo()) {
+                currentItem.mVideoPlayer?.start()
+            }
+
+            val previousItem = medias[previousViewPagerIndex]
+            if (previousItem.data.isVideo()) {
+                previousItem.mVideoPlayer?.stop()
+            }
 
             previousViewPagerIndex = position
         }
