@@ -44,7 +44,9 @@ data class AttributesDigitalData(
 
         var fintechProduct: List<FintechProduct> = listOf(),
 
-        var adminFee: Double = 0.0
+        var adminFee: Double = 0.0,
+
+        var isAdminFeeIncluded: Boolean = false
 ) : Parcelable {
 
     @Parcelize

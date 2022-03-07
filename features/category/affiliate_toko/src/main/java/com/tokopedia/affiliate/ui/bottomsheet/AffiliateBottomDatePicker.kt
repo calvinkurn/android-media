@@ -17,18 +17,20 @@ import com.tokopedia.affiliate.interfaces.AffiliateDatePickerInterface
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerRangeChangeInterface
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateRangePickerModel
+import com.tokopedia.affiliate.utils.DateUtils
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import java.text.SimpleDateFormat
 import java.util.*
 
 class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterface {
     private var contentView: View? = null
 
     private var rangeSelected = TODAY
-    private lateinit var rangeChangeInterface: AffiliateDatePickerRangeChangeInterface
+    private var rangeChangeInterface: AffiliateDatePickerRangeChangeInterface? = null
     private var identifier = IDENTIFIER_HOME
 
 
@@ -43,17 +45,26 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
         const val THIRTY_DAYS = "30 Hari Terakhir"
         const val IDENTIFIER_HOME = "home_fragment"
         const val IDENTIFIER_WITHDRAWAL = "income_fragment"
-        fun newInstance(selected: String,onRangeChangeInterface: AffiliateDatePickerRangeChangeInterface,identify: String = IDENTIFIER_WITHDRAWAL,): AffiliateBottomDatePicker {
+        const val IDENTIFIER = "indentifier"
+        const val ZERO = "0"
+        const val ONE = "1"
+        const val SEVEN = "7"
+        const val THIRTY = "30"
+        fun newInstance(selected: String,onRangeChangeInterface: AffiliateDatePickerRangeChangeInterface,identify: String = IDENTIFIER_WITHDRAWAL): AffiliateBottomDatePicker {
             return AffiliateBottomDatePicker().apply {
+                arguments = Bundle().apply {
+                    putString(IDENTIFIER,identify)
+                }
                 rangeSelected = selected
                 rangeChangeInterface = onRangeChangeInterface
-                identifier = identify
             }
         }
     }
     private var dateRV: RecyclerView? = null
     private var tickerCv: CardView? = null
     private fun init() {
+        setBundleData()
+        rangeChangeInterface = (parentFragment as? AffiliateDatePickerRangeChangeInterface)
         showCloseIcon = true
         showKnob = false
         contentView = View.inflate(context,
@@ -65,6 +76,12 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
         setData()
         initClickListener(contentView)
         setChild(contentView)
+    }
+
+    private fun setBundleData() {
+        arguments?.let {
+            identifier = it.getString(IDENTIFIER, IDENTIFIER_WITHDRAWAL)
+        }
     }
 
     private fun setTicker() {
@@ -81,7 +98,7 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
         contentView?.findViewById<UnifyButton>(R.id.cnf_btn)?.setOnClickListener {
             itemList.forEach { visitable ->
                 if((visitable as AffiliateDateRangePickerModel).dateRange.isSelected){
-                    rangeChangeInterface.rangeChanged((visitable as AffiliateDateRangePickerModel).dateRange)
+                    rangeChangeInterface?.rangeChanged((visitable as AffiliateDateRangePickerModel).dateRange)
                     dismiss()
                 }
             }
@@ -102,10 +119,10 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
     }
     private val itemList: ArrayList<Visitable<AffiliateDateRangeTypeFactory>> = ArrayList()
     private fun getData() {
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(TODAY,rangeSelected == TODAY,"0")))
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(YESTERDAY, rangeSelected == YESTERDAY,"1")))
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(SEVEN_DAYS,rangeSelected == SEVEN_DAYS,"7")))
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(THIRTY_DAYS,rangeSelected == THIRTY_DAYS,"30")))
+        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(TODAY,rangeSelected == TODAY,ZERO,DateUtils().getMessage(TODAY,context),identifier == IDENTIFIER_HOME)))
+        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(YESTERDAY, rangeSelected == YESTERDAY,ONE,DateUtils().getMessage(YESTERDAY,context),identifier == IDENTIFIER_HOME)))
+        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(SEVEN_DAYS,rangeSelected == SEVEN_DAYS,SEVEN,DateUtils().getMessage(SEVEN_DAYS,context),identifier == IDENTIFIER_HOME)))
+        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(THIRTY_DAYS,rangeSelected == THIRTY_DAYS,THIRTY,DateUtils().getMessage(THIRTY_DAYS,context),identifier == IDENTIFIER_HOME)))
     }
 
     override fun onDateRangeClicked(position: Int) {

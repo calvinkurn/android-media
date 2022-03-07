@@ -24,10 +24,13 @@
     <string name="path_menu_setting" translatable="false">/menu-setting</string>
     <string name="path_seller_seamless_choose_acc" translatable="false">/login-seamless-choose-account</string>
     <string name="path_create_voucher" translatable="false">/create-voucher</string>
+    <string name="path_create_voucher_product" translatable="false">/create-voucher-product/.*\\/</string>
     <string name="path_voucher_list" translatable="false">/voucher-list</string>
     <string name="path_voucher_list_active" translatable="false">/voucher-list/active</string>
     <string name="path_voucher_list_history" translatable="false">/voucher-list/history</string>
     <string name="path_voucher_detail" translatable="false">/voucher-detail</string>
+    <string name="path_voucher_product_detail" translatable="false">/voucher-product-detail/.*\\/</string>
+    <string name="path_voucher_product_list" translatable="false">/voucher-product-list/.*\\/</string>
     <string name="path_campaign_list" translatable="false">/campaign-list</string>
     <string name="path_seller_menu" translatable="false">/seller-menu</string>
     <string name="path_seller_settings" translatable="false">/seller-settings</string>

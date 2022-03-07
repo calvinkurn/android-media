@@ -13,6 +13,7 @@ import com.tokopedia.imageuploader.data.StringResponseConverter
 import com.tokopedia.imageuploader.data.entity.ImageUploaderResponseError
 import com.tokopedia.kyc_centralized.KycUrl
 import com.tokopedia.kyc_centralized.data.network.KycUploadApi
+import com.tokopedia.logger.ServerLogger
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
@@ -126,6 +127,12 @@ open class KycUploadImageModule {
                 .setPrettyPrinting()
                 .serializeNulls()
                 .create()
+    }
+
+    @ActivityScope
+    @Provides
+    fun provideServerLogger(): ServerLogger {
+        return ServerLogger
     }
 
 }

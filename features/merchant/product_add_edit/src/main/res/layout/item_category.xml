@@ -25,11 +25,11 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_weight="0"
+            android:layout_marginEnd="9dp"
             app:srcCompat="@drawable/product_add_edit_ic_chevron_down" />
 
         <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
             android:id="@+id/rbCategory"
-            android:layout_marginEnd="-9dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
