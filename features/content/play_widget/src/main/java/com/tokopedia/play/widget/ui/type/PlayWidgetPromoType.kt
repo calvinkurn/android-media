@@ -33,6 +33,8 @@ sealed class PlayWidgetPromoType {
 
         fun getByType(type: String, promoText: String): PlayWidgetPromoType {
             return when (type.toUpperCase(Locale.getDefault())) {
+                "RILISAN_SPESIAL_LIVE" -> LiveOnly(promoText)
+                "RILISAN_SPESIAL" -> Default(promoText)
                 "DEFAULT" -> Default(promoText)
                 "ONLY_LIVE" -> LiveOnly(promoText)
                 "" -> NoPromo
