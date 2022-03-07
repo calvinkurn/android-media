@@ -39,7 +39,6 @@ object ShipmentAddOnMapper {
                 product.productImageUrl = cartItemModel.imageUrl
                 product.productParentId = cartItemModel.variantParentId
                 listProduct.add(product)
-                break
         }
 
         val addOnDataList = arrayListOf<AddOnData>()
