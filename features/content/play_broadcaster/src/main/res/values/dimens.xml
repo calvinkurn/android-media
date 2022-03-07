@@ -39,8 +39,8 @@
     <dimen name="play_stats_info_height">20dp</dimen>
     <dimen name="play_stats_info_counter_height">26dp</dimen>
 
-    <dimen name="play_summary_cover_width">90dp</dimen>
-    <dimen name="play_summary_cover_height">160dp</dimen>
+    <dimen name="play_summary_cover_width">63dp</dimen>
+    <dimen name="play_summary_cover_height">112dp</dimen>
     <dimen name="play_summary_margin">11dp</dimen>
 
     <dimen name="play_prepare_broadcast_promo_image_width">240dp</dimen>
