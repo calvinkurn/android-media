@@ -57,7 +57,7 @@
     <!-- Background -->
     <item>
         <shape>
-            <solid android:color="#ffffff" />
+            <solid android:color="@color/Unify_N0" />
             <corners android:radius="8dp" />
         </shape>
     </item>
