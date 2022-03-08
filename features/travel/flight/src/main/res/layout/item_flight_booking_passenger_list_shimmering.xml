@@ -14,36 +14,38 @@
         android:background="@color/Unify_N50"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_tv_1"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="10dp"
         android:layout_marginTop="@dimen/flight_dp_28"
-        app:corners="20"
-        app:layout_constraintEnd_toStartOf="@+id/loader_tv_2"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shimmering_seperator_1"
-        app:width_weight="0.6" />
+        app:layout_constraintWidth_percent="0.6" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_tv_2"
         android:layout_width="@dimen/layout_lvl5"
         android:layout_height="@dimen/flight_dp_10"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:layout_marginRight="@dimen/spacing_lvl3"
-        app:corners="20"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         app:layout_constraintEnd_toStartOf="@+id/loader_iv_1"
         app:layout_constraintRight_toLeftOf="@+id/loader_iv_1"
         app:layout_constraintTop_toTopOf="@+id/loader_tv_1"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_iv_1"
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
-        app:corners="20"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="@+id/loader_tv_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
