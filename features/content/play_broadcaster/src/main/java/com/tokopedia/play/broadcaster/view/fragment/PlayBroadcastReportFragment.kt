@@ -85,7 +85,6 @@ class PlayBroadcastReportFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
-        setupContent()
     }
 
     private fun initView(view: View) {
@@ -106,10 +105,6 @@ class PlayBroadcastReportFragment @Inject constructor(
 //            analytic.clickSaveVodOnReportPage(parentViewModel.channelId)
 //            viewModel.saveVideo()
         }
-    }
-
-    private fun setupContent() {
-        viewModel.fetchLiveTraffic()
     }
 
     private fun setChannelInfo(channelInfo: ChannelInfoUiModel) {

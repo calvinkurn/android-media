@@ -79,6 +79,7 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     }
 
     init {
+        fetchLiveTraffic()
         getTags()
     }
 
@@ -87,7 +88,8 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             val reportChannelSummary = withContext(dispatcher.io) {
                 delay(LIVE_STATISTICS_DELAY)
-                getLiveStatisticsUseCase.params = GetLiveStatisticsUseCase.createParams(channelId)
+                /** TODO("change hardcoded value") */
+                getLiveStatisticsUseCase.params = GetLiveStatisticsUseCase.createParams("334714")
                 return@withContext getLiveStatisticsUseCase.executeOnBackground()
             }
             _observableReportDuration.value = playBroadcastMapper.mapLiveDuration(reportChannelSummary.duration)
