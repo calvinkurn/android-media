@@ -16,9 +16,7 @@ object Const {
     const val DAYS_91 = 91
     const val DAYS_365 = 365
 
-    const val FORMAT_DD_MM_YYYY = "dd MMM yyyy"
-
-    const val WHITE_LIST_KEY_OPERATIONAL_STATISTIC = "statistic-operational"
+    const val WHITE_LIST_KEY_TRAFFIC_INSIGHT = "Traffic_stat_on_App"
 
     const val SHOW_PRODUCT_INSIGHT_COACH_MARK_KEY = "product_insight_coach_mark_key"
     const val HAS_SHOWN_OPERATIONAL_INSIGHT_COACH_MARK_KEY = "operational_insight_coach_mark_key"
