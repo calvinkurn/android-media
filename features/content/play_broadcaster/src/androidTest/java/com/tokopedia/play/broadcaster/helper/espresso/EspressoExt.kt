@@ -20,6 +20,6 @@ internal fun waitFor(delay: Long): ViewAction {
     }
 }
 
-internal fun delay(delayInMilis: Long = 500) {
-    Espresso.onView(ViewMatchers.isRoot()).perform(waitFor(delayInMilis))
+internal fun delay(delayInMillis: Long = 500) {
+    Espresso.onView(ViewMatchers.isRoot()).perform(waitFor(delayInMillis))
 }
