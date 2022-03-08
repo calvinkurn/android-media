@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.helper
 
 import android.view.View
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers
@@ -17,4 +18,8 @@ internal fun waitFor(delay: Long): ViewAction {
             uiController.loopMainThreadForAtLeast(delay)
         }
     }
+}
+
+internal fun delay(delayInMilis: Long = 500) {
+    Espresso.onView(ViewMatchers.isRoot()).perform(waitFor(delayInMilis))
 }

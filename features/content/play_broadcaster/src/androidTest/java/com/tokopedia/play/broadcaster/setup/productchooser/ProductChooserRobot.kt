@@ -5,10 +5,7 @@ import androidx.fragment.app.testing.launchFragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.SavedStateHandle
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions
@@ -22,6 +19,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalyticImpl
 import com.tokopedia.play.broadcaster.helper.analyticUserSession
+import com.tokopedia.play.broadcaster.helper.delay
 import com.tokopedia.play.broadcaster.helper.waitFor
 import com.tokopedia.play.broadcaster.setup.ProductSetupContainer
 import com.tokopedia.play.broadcaster.setup.product.analytic.ProductChooserAnalyticManager
@@ -30,12 +28,9 @@ import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSort
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.ProductListViewHolder
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
-import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.every
-import com.tokopedia.unifycomponents.R as unifyR
-import com.tokopedia.dialog.R as unifyDialogR
 import io.mockk.mockk
-import org.hamcrest.Matchers.not
+import com.tokopedia.dialog.R as unifyDialogR
+import com.tokopedia.unifycomponents.R as unifyR
 
 /**
  * Created by kenny.hadisaputra on 02/03/22
@@ -162,9 +157,5 @@ class ProductChooserRobot(
             if (isShown) ViewAssertions.matches(isDisplayed())
             else doesNotExist()
         )
-    }
-
-    fun delay(delayInMilis: Long = 500) {
-        onView(isRoot()).perform(waitFor(delayInMilis))
     }
 }

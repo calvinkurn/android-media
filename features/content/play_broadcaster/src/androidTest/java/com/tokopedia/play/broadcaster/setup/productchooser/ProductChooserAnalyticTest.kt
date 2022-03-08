@@ -5,6 +5,7 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.helper.contains
+import com.tokopedia.play.broadcaster.helper.delay
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
@@ -55,17 +56,18 @@ class ProductChooserAnalyticTest {
         )
     }
 
+    private fun createRobot() = ProductChooserRobot {
+        productSetupViewModel(
+            productSectionList = mockProductSections,
+            repo = mockRepo,
+        )
+    }
+
     @Test
     fun testAnalytic_closeBottomSheet() {
-        val robot = ProductChooserRobot {
-            productSetupViewModel(
-                productSectionList = emptyList(),
-                repo = mockRepo,
-            )
-        }
+        val robot = createRobot()
 
         robot.close()
-
 
         assertThat(
             cassavaTestRule.validate(analyticFile),
@@ -77,12 +79,7 @@ class ProductChooserAnalyticTest {
 
     @Test
     fun testAnalytic_closeBottomSheet_confirm() {
-        val robot = ProductChooserRobot {
-            productSetupViewModel(
-                productSectionList = mockProductSections,
-                repo = mockRepo,
-            )
-        }
+        val robot = createRobot()
 
         with(robot) {
             selectProduct()
@@ -100,12 +97,7 @@ class ProductChooserAnalyticTest {
 
     @Test
     fun testAnalytic_closeBottomSheet_cancel() {
-        val robot = ProductChooserRobot {
-            productSetupViewModel(
-                productSectionList = mockProductSections,
-                repo = mockRepo,
-            )
-        }
+        val robot = createRobot()
 
         with(robot) {
             selectProduct()
@@ -123,12 +115,7 @@ class ProductChooserAnalyticTest {
 
     @Test
     fun testAnalytic_saveProduct() {
-        val robot = ProductChooserRobot {
-            productSetupViewModel(
-                productSectionList = mockProductSections,
-                repo = mockRepo,
-            )
-        }
+        val robot = createRobot()
 
         robot.saveProducts()
 
@@ -142,12 +129,7 @@ class ProductChooserAnalyticTest {
 
     @Test
     fun testAnalytic_selectProduct() {
-        val robot = ProductChooserRobot {
-            productSetupViewModel(
-                productSectionList = mockProductSections,
-                repo = mockRepo,
-            )
-        }
+        val robot = createRobot()
 
         robot.selectProduct()
 
@@ -161,12 +143,7 @@ class ProductChooserAnalyticTest {
 
     @Test
     fun testAnalytic_clickSortChips() {
-        val robot = ProductChooserRobot {
-            productSetupViewModel(
-                productSectionList = mockProductSections,
-                repo = mockRepo,
-            )
-        }
+        val robot = createRobot()
 
         robot.clickSortChips()
 
@@ -180,12 +157,7 @@ class ProductChooserAnalyticTest {
 
     @Test
     fun testAnalytic_clickEtalaseCampaignChips() {
-        val robot = ProductChooserRobot {
-            productSetupViewModel(
-                productSectionList = mockProductSections,
-                repo = mockRepo,
-            )
-        }
+        val robot = createRobot()
 
         robot.clickEtalaseCampaignChips()
 
@@ -199,12 +171,7 @@ class ProductChooserAnalyticTest {
 
     @Test
     fun testAnalytic_searchKeyword() {
-        val robot = ProductChooserRobot {
-            productSetupViewModel(
-                productSectionList = mockProductSections,
-                repo = mockRepo,
-            )
-        }
+        val robot = createRobot()
 
         with(robot) {
             searchKeyword("abc")
@@ -221,12 +188,7 @@ class ProductChooserAnalyticTest {
 
     @Test
     fun testAnalytic_selectSort() {
-        val robot = ProductChooserRobot {
-            productSetupViewModel(
-                productSectionList = mockProductSections,
-                repo = mockRepo,
-            )
-        }
+        val robot = createRobot()
 
         with(robot) {
             clickSortChips()
