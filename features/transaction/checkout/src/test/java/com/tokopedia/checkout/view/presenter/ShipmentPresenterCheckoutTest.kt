@@ -29,6 +29,9 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
@@ -688,6 +691,66 @@ class ShipmentPresenterCheckoutTest {
             view.setHasRunningApiCall(false)
             view.hideLoading()
             view.renderPrompt(prompt)
+        }
+    }
+
+    @Test
+    fun `WHEN update addOn product level data bottomsheet`() {
+        // Given
+        val shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>()
+        shipmentCartItemModelList.add(
+                ShipmentCartItemModel().apply {
+                    cartItemModels = arrayListOf(
+                            CartItemModel().apply {
+                                cartId = 88
+                                cartString = "239594-0-301643"
+                            }
+                    )
+                }
+        )
+
+        val addOnResultList = ArrayList<AddOnResult>()
+        addOnResultList.add(
+                AddOnResult().apply {
+                    addOnKey = "239594-0-301643-88"
+                }
+        )
+        presenter.shipmentCartItemModelList = shipmentCartItemModelList
+
+        // When
+        presenter.updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
+
+        // Then
+        verify {
+            view.updateAddOnsData(AddOnsDataModel(), 0)
+        }
+    }
+
+    @Test
+    fun `WHEN update addOn order level data bottomsheet`() {
+        // Given
+        val shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>()
+        shipmentCartItemModelList.add(
+                ShipmentCartItemModel().apply {
+                    cartString = "239594-0-301643"
+                    addOnsOrderLevelModel = AddOnsDataModel()
+                }
+        )
+
+        val addOnResultList = ArrayList<AddOnResult>()
+        addOnResultList.add(
+                AddOnResult().apply {
+                    addOnKey = "239594-0-301643-0"
+                }
+        )
+        presenter.shipmentCartItemModelList = shipmentCartItemModelList
+
+        // When
+        presenter.updateAddOnOrderLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
+
+        // Then
+        verify {
+            view.updateAddOnsData(AddOnsDataModel(), 1)
         }
     }
 

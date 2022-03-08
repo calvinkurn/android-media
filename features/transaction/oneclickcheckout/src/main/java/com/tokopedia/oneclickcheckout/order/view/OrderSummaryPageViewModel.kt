@@ -794,30 +794,59 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     fun updateAddOn(saveAddOnStateResult: SaveAddOnStateResult?) {
         // Add on currently only support single product on OCC
         val orderProduct = orderProducts.value.firstOrNull()
+        val orderShop = orderShop.value
         val addOnResult = saveAddOnStateResult?.addOns?.firstOrNull()
-        if (orderProduct != null) {
-            if (addOnResult != null) {
-                if ((addOnResult.addOnLevel == AddOnConstant.ADD_ON_LEVEL_ORDER && addOnResult.addOnKey == "${orderCart.cartString}-0") ||
-                        (addOnResult.addOnLevel == AddOnConstant.ADD_ON_LEVEL_PRODUCT && addOnResult.addOnKey == "${orderCart.cartString}-${orderProduct.cartId}")) {
-                    orderProduct.addOn = AddOnMapper.mapAddOnBottomSheetResult(addOnResult)
-                    orderProducts.value = listOf(orderProduct)
-
-                    orderTotal.value = orderTotal.value.copy(
-                            orderCost = orderTotal.value.orderCost.copy(
-                                    addOnPrice = addOnResult.addOnData.firstOrNull()?.addOnPrice?.toDouble()
-                                            ?: 0.0
-                            )
-                    )
-                } else {
-                    orderProduct.addOn = AddOnsDataModel()
-                    orderProducts.value = listOf(orderProduct)
-                }
-            } else {
-                orderProduct.addOn = AddOnsDataModel()
+        if (addOnResult != null && orderProduct != null) {
+            if (addOnResult.addOnLevel == AddOnConstant.ADD_ON_LEVEL_ORDER && addOnResult.addOnKey == "${orderCart.cartString}-0") {
+                orderShop.addOn = AddOnMapper.mapAddOnBottomSheetResult(addOnResult)
+                this.orderShop.value = orderShop
                 orderProducts.value = listOf(orderProduct)
+                orderCart.shop = this.orderShop.value
+
+                orderTotal.value = orderTotal.value.copy(
+                        orderCost = orderTotal.value.orderCost.copy(
+                                hasAddOn = true,
+                                addOnPrice = addOnResult.addOnData.firstOrNull()?.addOnPrice?.toDouble()
+                                        ?: 0.0
+                        )
+                )
+
+            } else if (addOnResult.addOnLevel == AddOnConstant.ADD_ON_LEVEL_PRODUCT && addOnResult.addOnKey == "${orderCart.cartString}-${orderProduct.cartId}") {
+                orderProduct.addOn = AddOnMapper.mapAddOnBottomSheetResult(addOnResult)
+                orderProducts.value = listOf(orderProduct)
+
+                orderTotal.value = orderTotal.value.copy(
+                        orderCost = orderTotal.value.orderCost.copy(
+                                hasAddOn = true,
+                                addOnPrice = addOnResult.addOnData.firstOrNull()?.addOnPrice?.toDouble()
+                                        ?: 0.0
+                        )
+                )
+            } else {
+                setDefaultAddOnState(orderShop, orderProduct)
+            }
+        } else {
+            setDefaultAddOnState(orderShop, orderProduct)
+        }
+
+        calculateTotal()
+    }
+
+    private fun setDefaultAddOnState(orderShop: OrderShop, orderProduct: OrderProduct?) {
+        if (orderShop.isFulfillment) {
+            orderShop.addOn = AddOnsDataModel()
+            this.orderShop.value = orderShop
+        } else {
+            orderProduct?.let {
+                it.addOn = AddOnsDataModel()
+                orderProducts.value = listOf(it)
             }
         }
-        calculateTotal()
+        orderTotal.value = orderTotal.value.copy(
+                orderCost = orderTotal.value.orderCost.copy(
+                        hasAddOn = false
+                )
+        )
     }
 
     override fun onCleared() {

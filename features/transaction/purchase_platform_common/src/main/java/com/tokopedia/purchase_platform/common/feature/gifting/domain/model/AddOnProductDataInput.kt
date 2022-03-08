@@ -42,7 +42,9 @@ data class AvailableBottomSheetData(
         var products: List<Product> = emptyList(),
         var cartString: String = "",
         var warehouseId: String = "",
-        var shopName: String = ""
+        var shopName: String = "",
+        var defaultTo: String = "",
+        var defaultFrom: String = ""
 ) : Parcelable
 
 @Parcelize

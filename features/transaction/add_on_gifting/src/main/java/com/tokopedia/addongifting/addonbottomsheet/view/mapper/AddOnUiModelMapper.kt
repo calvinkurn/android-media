@@ -44,7 +44,7 @@ object AddOnUiModelMapper {
             addOnName = addOn?.basicInfo?.name ?: ""
             addOnPrice = addOn?.inventory?.price?.roundToLong() ?: 0
             addOnQty = 1
-            addOnSquareImageUrl = addOn?.basicInfo?.metadata?.pictures?.firstOrNull()?.url ?: ""
+            addOnImageUrl = addOn?.basicInfo?.metadata?.pictures?.firstOrNull()?.url ?: ""
             val imageUrls = mutableListOf<String>()
             addOn?.basicInfo?.metadata?.pictures?.forEach {
                 imageUrls.add(it.url)
@@ -76,7 +76,16 @@ object AddOnUiModelMapper {
                 addOnNote = initialAddOnNote
             }
             if (addOnNote.isBlank()) {
-                addOnNote = addOn?.basicInfo?.metadata?.notesTemplate ?: ""
+                initialAddOnNote = addOn?.basicInfo?.metadata?.notesTemplate ?: ""
+                addOnNote = initialAddOnNote
+            }
+            if (addOnNoteFrom.isBlank()) {
+                initialAddOnNoteFrom = addOnProductData.availableBottomSheetData.defaultFrom
+                addOnNoteFrom = initialAddOnNoteFrom
+            }
+            if (addOnNoteTo.isBlank()) {
+                initialAddOnNoteTo = addOnProductData.availableBottomSheetData.defaultTo
+                addOnNoteTo = initialAddOnNoteTo
             }
             isCustomNote = addOn?.basicInfo?.rules?.customNote ?: false
             onlyGreetingCardInfo = addOnProductData.availableBottomSheetData.addOnInfoWording.onlyGreetingCard

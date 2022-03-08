@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.order.view.mapper
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.*
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.*
@@ -12,7 +13,9 @@ object AddOnMapper {
     fun mapAddOnBottomSheetParam(addOn: AddOnsDataModel,
                                  orderProduct: OrderProduct,
                                  orderShop: OrderShop,
-                                 orderCart: OrderCart): AddOnProductData {
+                                 orderCart: OrderCart,
+                                 orderProfileAddress: OrderProfileAddress,
+                                 userName: String): AddOnProductData {
 
         val productId = if (orderProduct.parentId.isNotEmpty() && orderProduct.parentId.toLongOrZero() > 0) {
             orderProduct.parentId
@@ -20,11 +23,18 @@ object AddOnMapper {
             orderProduct.productId.toString()
         }
 
+        var defaultReceiver = ""
+        if (orderProfileAddress.isAddressActive) {
+            defaultReceiver = orderProfileAddress.receiverName
+        }
+
         return AddOnProductData(
                 bottomSheetType = AddOnProductData.ADD_ON_BOTTOM_SHEET,
                 bottomSheetTitle = addOn.addOnsBottomSheetModel.headerTitle,
                 source = AddOnProductData.SOURCE_ONE_CLICK_CHECKOUT,
                 availableBottomSheetData = AvailableBottomSheetData(
+                        defaultTo = defaultReceiver,
+                        defaultFrom = userName,
                         products = listOf(Product(
                                 cartId = orderProduct.cartId,
                                 productId = productId,
@@ -41,7 +51,7 @@ object AddOnMapper {
                         addOnInfoWording = orderCart.addOnWordingData,
                         addOnSavedStates = addOn.addOnsDataItemModelList.map {
                             AddOnData(
-                                    addOnId = it.addOnId.toString(),
+                                    addOnId = it.addOnId,
                                     addOnPrice = it.addOnPrice,
                                     addOnQty = it.addOnQty.toInt(),
                                     addOnMetadata = AddOnMetadata(
@@ -78,7 +88,7 @@ object AddOnMapper {
 
     private fun mapAddOnMetadata(addOnMetadata: AddOnMetadata): AddOnMetadataItemModel {
         return AddOnMetadataItemModel(
-            addOnNoteItemModel = mapAddOnNoteItem(addOnMetadata.addOnNote)
+                addOnNoteItemModel = mapAddOnNoteItem(addOnMetadata.addOnNote)
         )
     }
 

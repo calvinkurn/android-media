@@ -48,7 +48,7 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
             } else {
                 labelAddOnHeader.text = itemView.context.getString(R.string.add_on_label_header)
             }
-            imageAddOn.setImageUrl(element.addOnSquareImageUrl)
+            imageAddOn.setImageUrl(element.addOnImageUrl)
             imageAddOn.setOnClickListener {
                 listener.onAddOnImageClicked(element)
             }
@@ -205,15 +205,13 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
     private fun renderAddOnFooterMessages(viewBinding: ItemAddOnBinding, element: AddOnUiModel) {
         with(viewBinding) {
             val informationMessages = mutableListOf<String>()
-            if (element.isTokoCabang) {
-                informationMessages.add(element.invoiceNotSentToRecipientInfo)
-            } else {
+            informationMessages.add(element.invoiceNotSentToRecipientInfo)
+            if (!element.isTokoCabang && element.mainProductQuantity > 1) {
                 if (element.addOnType == BasicInfoResponse.ADD_ON_TYPE_GREETING_CARD) {
                     informationMessages.add(element.onlyGreetingCardInfo)
                 } else if (element.addOnType == BasicInfoResponse.ADD_ON_TYPE_GREETING_CARD_AND_PACKAGING) {
                     informationMessages.add(element.packagingAndGreetingCardInfo)
                 }
-                informationMessages.add(element.invoiceNotSentToRecipientInfo)
             }
             containerFooterMessages.removeAllViews()
             informationMessages.forEach {

@@ -56,11 +56,7 @@ class GetAddOnByProductUseCase @Inject constructor(@ApplicationContext private v
                       }
                       Metadata {
                         Pictures {
-                          FilePath
-                          FileName
                           URL
-                          URL100
-                          URL200
                         }
                         NotesTemplate
                       }

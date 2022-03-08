@@ -82,16 +82,8 @@ data class MetadataResponse(
 )
 
 data class PictureResponse(
-        @SerializedName("FilePath")
-        val filePath: String = "",
-        @SerializedName("FileName")
-        val fileName: String = "",
         @SerializedName("URL")
-        val url: String = "",
-        @SerializedName("URL100")
-        val url100: String = "",
-        @SerializedName("URL200")
-        val url200: String = ""
+        val url: String = ""
 )
 
 data class InventoryResponse(

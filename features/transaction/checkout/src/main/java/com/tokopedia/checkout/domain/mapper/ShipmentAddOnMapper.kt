@@ -39,7 +39,6 @@ object ShipmentAddOnMapper {
                 product.productImageUrl = cartItemModel.imageUrl
                 product.productParentId = cartItemModel.variantParentId
                 listProduct.add(product)
-                break
         }
 
         val addOnDataList = arrayListOf<AddOnData>()
@@ -69,7 +68,9 @@ object ShipmentAddOnMapper {
                 addOnSavedStates = addOnDataList,
                 cartString = shipmentCartItemModel.cartString ?: "",
                 isTokoCabang = shipmentCartItemModel.isFulfillment,
-                warehouseId = shipmentCartItemModel.fulfillmentId.toString()
+                warehouseId = shipmentCartItemModel.fulfillmentId.toString(),
+                defaultFrom = shipmentCartItemModel.addOnDefaultFrom ?: "",
+                defaultTo = shipmentCartItemModel.addOnDefaultTo ?: ""
         )
     }
 
@@ -154,7 +155,9 @@ object ShipmentAddOnMapper {
                 addOnSavedStates = addOnDataList,
                 cartString = cartItemModel.cartString,
                 isTokoCabang = cartItemModel.isTokoCabang,
-                warehouseId = cartItemModel.warehouseId
+                warehouseId = cartItemModel.warehouseId,
+                defaultFrom = cartItemModel.addOnDefaultFrom,
+                defaultTo = cartItemModel.addOnDefaultTo
         )
     }
 

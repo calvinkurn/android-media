@@ -93,15 +93,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     private fun handleOnSuccessGetAddOnByProduct(getAddOnByProductResponse: GetAddOnByProductResponse,
                                                  addOnProductData: AddOnProductData) {
         if (getAddOnByProductResponse.dataResponse.error.errorCode.isBlank()) {
-            if (addOnProductData.source == AddOnProductData.SOURCE_ONE_CLICK_CHECKOUT) {
-                if (addOnProductData.availableBottomSheetData.addOnSavedStates.isNotEmpty()) {
-                    loadSavedStateData(addOnProductData, getAddOnByProductResponse)
-                } else {
-                    prepareAddOnData(addOnProductData, getAddOnByProductResponse)
-                }
-            } else {
-                loadSavedStateData(addOnProductData, getAddOnByProductResponse)
-            }
+            loadSavedStateData(addOnProductData, getAddOnByProductResponse)
         } else {
             throw ResponseErrorException(getAddOnByProductResponse.dataResponse.error.message)
         }
@@ -148,7 +140,6 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     private fun handleOnSuccessGetAddOnSavedState(getAddOnSavedStateResponse: GetAddOnSavedStateResponse,
                                                   addOnProductData: AddOnProductData,
                                                   addOnByProductResponse: GetAddOnByProductResponse) {
-        // Todo : adjust error validation, should be based on error code not error message
         if (getAddOnSavedStateResponse.getAddOns.errorMessage.firstOrNull()?.isNotBlank() == true) {
             throw ResponseErrorException(getAddOnSavedStateResponse.getAddOns.errorMessage.joinToString(". "))
         } else {
@@ -197,7 +188,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
                     handleOnSuccessSaveAddOnState(it)
                 },
                 onError = {
-                    handleOnErrorSaveAddOnState()
+                    handleOnErrorSaveAddOnState(it)
                 }
         )
     }
@@ -254,9 +245,8 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     }
 
     private fun handleOnSuccessSaveAddOnState(saveAddOnStateResponse: SaveAddOnStateResponse) {
-        // Todo : adjust error validation, should be based on error code not error message
         if (saveAddOnStateResponse.saveAddOns.errorMessage.firstOrNull()?.isNotBlank() == true) {
-            throw ResponseErrorException(saveAddOnStateResponse.saveAddOns.errorMessage.joinToString(". "))
+            throw ResponseErrorException(saveAddOnStateResponse.saveAddOns.errorMessage.firstOrNull() ?: "")
         } else {
             launch {
                 _uiEvent.emit(
@@ -269,11 +259,12 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
         }
     }
 
-    private fun handleOnErrorSaveAddOnState() {
+    private fun handleOnErrorSaveAddOnState(throwable: Throwable) {
         launch {
             _uiEvent.emit(
                     UiEvent().apply {
                         state = UiEvent.STATE_FAILED_SAVE_ADD_ON
+                        this.throwable = throwable
                     }
             )
         }

@@ -42,13 +42,14 @@ import com.tokopedia.applink.internal.*
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.cart.view.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromo
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.LocalizationChooseAddress
+import com.tokopedia.cart.databinding.FragmentCartBinding
+import com.tokopedia.cart.view.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_AFTER_CHOOSE_ADDRESS
 import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_DEFAULT
 import com.tokopedia.cart.view.adapter.cart.CartAdapter
@@ -64,7 +65,6 @@ import com.tokopedia.cart.view.di.DaggerCartComponent
 import com.tokopedia.cart.view.mapper.*
 import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
-import com.tokopedia.cart.databinding.FragmentCartBinding
 import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_HOMEPAGE
 import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_RETRY
 import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_START_SHOPPING
@@ -519,86 +519,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             imgChevronSummary.setOnClickListener { onClickChevronSummaryTransaction() }
             textTotalPaymentLabel.setOnClickListener { onClickChevronSummaryTransaction() }
             tvTotalPrices.setOnClickListener { onClickChevronSummaryTransaction() }
-        }
-    }
-
-    // Todo : remove this before merge to release
-    private fun tempInitializeAddOnNavigation() {
-        binding?.goToCourierPageButton?.setOnClickListener {
-            val addOnProductData = AddOnProductData().apply {
-                bottomSheetType = AddOnProductData.ADD_ON_BOTTOM_SHEET
-                bottomSheetTitle = "Judul Bottom Sheet"
-                source = AddOnProductData.SOURCE_NORMAL_CHECKOUT
-
-                unavailableBottomSheetData = UnavailableBottomSheetData().apply {
-                    description = "This is description for unavailable add on bottom sheet"
-                    tickerMessage = "This is ticker message for unavailable add on bottom sheet"
-                    unavailableProducts = listOf(
-                            Product().apply {
-                                productName = "Product 2"
-                                productImageUrl = "https://urip.files.wordpress.com/2010/09/book-open1.jpg"
-                            },
-                            Product().apply {
-                                productName = "Product 3"
-                                productImageUrl = "https://cdns.klimg.com/merdeka.com/i/w/news/2015/08/11/579503/540x270/ini-3-alasan-buku-tetap-lebih-unggul-daripada-e-book.jpg"
-                            }
-                    )
-                }
-
-                availableBottomSheetData = AvailableBottomSheetData().apply {
-                    val product1 = Product().apply {
-                        cartId = "123"
-                        productId = "10001"
-                        productName = "Product 1"
-                        productImageUrl = "https://st.depositphotos.com/1741875/1237/i/600/depositphotos_12376816-stock-photo-stack-of-old-books.jpg"
-                        productPrice = 10000
-                        productQuantity = 11
-                        productParentId = "11001"
-                    }
-                    val product2 = Product().apply {
-                        cartId = "456"
-                        productId = "10002"
-                        productName = "Product 2"
-                        productImageUrl = "https://urip.files.wordpress.com/2010/09/book-open1.jpg"
-                        productPrice = 20000
-                        productQuantity = 22
-                        productParentId = "11002"
-                    }
-                    val product3 = Product().apply {
-                        cartId = "789"
-                        productId = "10003"
-                        productName = "Product 3"
-                        productImageUrl = "https://cdns.klimg.com/merdeka.com/i/w/news/2015/08/11/579503/540x270/ini-3-alasan-buku-tetap-lebih-unggul-daripada-e-book.jpg"
-                        productPrice = 30000
-                        productQuantity = 33
-                        productParentId = "11003"
-                    }
-                    products = listOf(product1, product2, product3)
-                    isTokoCabang = false
-                    cartString = "123-456-789"
-                    warehouseId = "111222"
-                    shopName = "Tokoku"
-                    addOnInfoWording = AddOnWordingData().apply {
-                        onlyGreetingCard = "{{qty}} barang hanya dapat 1 kartu ucapan"
-                        packagingAndGreetingCard = "{{qty}} barang akan dibungkus dalam 1 kemasan dan hanya dapat 1 kartu ucapan"
-                        invoiceNotSendToRecipient = "Invoice tidak dikirim ke penerima pesanan"
-                    }
-                    addOnSavedStates = listOf(AddOnData().apply {
-                        addOnId = "898"
-                        addOnMetadata = AddOnMetadata().apply {
-                            addOnNote = AddOnNote().apply {
-                                isCustomNote = true
-                                to = "Irfan"
-                                from = "Khoirul"
-                                notes = "Selamat Hari Raya Idul Fitri"
-                            }
-                        }
-                    })
-                }
-            }
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
-            intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, addOnProductData)
-            startActivityForResult(intent, 1999)
         }
     }
 
@@ -1746,7 +1666,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             binding?.goToCourierPageButton?.isEnabled = true
             binding?.goToCourierPageButton?.setOnClickListener { checkGoToShipment("") }
         }
-//        tempInitializeAddOnNavigation()
     }
 
     override fun onCartDataDisableToCheckout() {
