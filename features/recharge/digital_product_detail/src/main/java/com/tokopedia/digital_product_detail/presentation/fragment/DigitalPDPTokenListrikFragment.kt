@@ -441,10 +441,10 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                     TickerData(
                         item.name, item.content,
                         when (item.type) {
-                            "warning" -> Ticker.TYPE_WARNING
-                            "info" -> Ticker.TYPE_INFORMATION
-                            "success" -> Ticker.TYPE_ANNOUNCEMENT
-                            "error" -> Ticker.TYPE_ERROR
+                            TopupBillsTicker.TYPE_WARNING -> Ticker.TYPE_WARNING
+                            TopupBillsTicker.TYPE_INFO -> Ticker.TYPE_INFORMATION
+                            TopupBillsTicker.TYPE_SUCCESS -> Ticker.TYPE_ANNOUNCEMENT
+                            TopupBillsTicker.TYPE_ERROR -> Ticker.TYPE_ERROR
                             else -> Ticker.TYPE_INFORMATION
                         }
                     )
