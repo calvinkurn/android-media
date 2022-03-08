@@ -1,5 +1,6 @@
 package com.tokopedia.media.preview.ui.component
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.media.R
@@ -33,9 +34,7 @@ class PreviewPagerComponent(
     fun setupView(medias: List<MediaUiModel>) {
         setData(medias)
         viewPager.adapter = adapter
-        viewPager.post {
-            adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.start()
-        }
+        viewPager.addOnAttachStateChangeListener(attachStateListener())
     }
 
     fun removeData(media: MediaUiModel) {
@@ -88,6 +87,18 @@ class PreviewPagerComponent(
         = medias.firstOrNull {
             it.data == media
         }
+
+    private fun attachStateListener() = object: View.OnAttachStateChangeListener{
+        override fun onViewAttachedToWindow(v: View?) {
+            v?.post {
+                adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.start()
+            }
+        }
+
+        override fun onViewDetachedFromWindow(v: View?) {
+            adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.stop()
+        }
+    }
 
     interface Listener {
 
