@@ -67,6 +67,7 @@ import kotlin.math.abs
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.clearImage
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 
 class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterCallback,
@@ -521,7 +522,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         btnAction = view?.findViewById<UnifyButton>(R.id.btn_action_follow)
         appBarLayout = view?.findViewById(R.id.app_bar_layout)
 
-        textBio?.text = data.profileHeader.profile.biography
+        textBio?.text = context?.let { HtmlLinkHelper(it, data.profileHeader.profile.biography).spannedString }
 
         if (data.profileHeader.profile.username.isNotBlank()) {
             textUserName?.text = "@" + data.profileHeader.profile.username
