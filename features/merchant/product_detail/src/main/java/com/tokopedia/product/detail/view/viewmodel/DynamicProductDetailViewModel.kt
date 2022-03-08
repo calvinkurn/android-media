@@ -34,7 +34,6 @@ import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
-import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
@@ -268,7 +267,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     var videoTrackerData: Pair<Long, Long>? = null
 
-    var notifyMeAction: String = ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
     var tradeInParams: TradeInParams = TradeInParams()
     var variantData: ProductVariant? = null
@@ -748,7 +746,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         })
     }
 
-    fun loadRecommendation(pageName: String) {
+    fun loadRecommendation(pageName: String,
+                           productId: String,
+                           isTokoNow: Boolean,
+                           miniCart: MutableMap<String, MiniCartItem>?) {
         if (GlobalConfig.isSellerApp()) {
             return
         }
@@ -760,13 +761,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
 
         launchCatchError(dispatcher.main, block = {
-            val basicInfo = getDynamicProductInfoP1?.basic ?: BasicInfo()
             val response = getProductRecommendationUseCase.get().executeOnBackground(
                     GetProductRecommendationUseCase.createParams(
-                            productId = basicInfo.productID,
+                            productId = productId,
                             pageName = pageName,
-                            isTokoNow = basicInfo.isTokoNow,
-                            miniCartData = p2Data.value?.miniCart
+                            isTokoNow = isTokoNow,
+                            miniCartData = miniCart
                     )
             )
 
@@ -777,14 +777,15 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun recommendationChipClicked(recommendationDataModel: ProductRecommendationDataModel,
-                                  annotationChip: AnnotationChip, filterPosition: Int) {
+                                  annotationChip: AnnotationChip,
+                                  productId: String) {
         launchCatchError(dispatcher.io, block = {
             if (!GlobalConfig.isSellerApp()) {
                 val requestParams = GetRecommendationRequestParam(
                         pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
                         pageName = recommendationDataModel.recomWidgetData?.pageName ?: "",
                         queryParam = if (annotationChip.recommendationFilterChip.isActivated) annotationChip.recommendationFilterChip.value else "",
-                        productIds = arrayListOf(getDynamicProductInfoP1?.basic?.productID ?: "")
+                        productIds = arrayListOf(productId)
                 )
                 val recommendationResponse = getRecommendationUseCase.get().getData(requestParams)
                 val updatedData = if (recommendationResponse.isNotEmpty()

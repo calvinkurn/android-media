@@ -9,6 +9,7 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -755,125 +756,188 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
      * RecommendationWidget
      */
     @Test
-    fun onSuccessLoadRecommendationWithEmptyFilter() {
-        val recomWidget = RecommendationWidget(tid = "1", recommendationItemList = listOf(RecommendationItem()))
-        val listOfRecom = arrayListOf(recomWidget)
-        val listOfFilter = listOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
+    fun `success load recommendation withno filter`() {
+        val mockRecomm = RecommendationWidget(
+                tid = "1",
+                recommendationItemList = listOf(RecommendationItem())
+        )
         val pageName = "pdp3"
 
         coEvery {
-            getRecommendationUseCase.createObservable(any()).toBlocking().first()
-        } returns listOfRecom
+            getProductRecommendationUseCase.executeOnBackground(any())
+        } returns mockRecomm
 
-        coEvery {
-            getRecommendationFilterChips.executeOnBackground().filterChip
-        } returns listOfFilter
-
-        (1..2).forEach { _ ->
-            viewModel.loadRecommendation(pageName)
-        }
-
-        coVerify(exactly = 1) {
-            getRecommendationUseCase.createObservable(any())
-        }
-
-        Assert.assertTrue((viewModel.loadTopAdsProduct.value as Success).data.tid == recomWidget.tid)
-    }
-
-    @Test
-    fun onSuccessLoadRecommendationWithNonEmptyFilter() {
-        val recomWidget = RecommendationWidget(tid = "1", recommendationItemList = listOf(RecommendationItem()))
-        val listOfRecom = arrayListOf(recomWidget)
-        val listOfFilter = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip())
-        val pageName = "pdp3"
-        coEvery {
-            getRecommendationUseCase.createObservable(any()).toBlocking().first()
-        } returns listOfRecom
-
-        coEvery {
-            getRecommendationFilterChips.executeOnBackground().filterChip
-        } returns listOfFilter
-
-        viewModel.loadRecommendation(pageName)
+        viewModel.loadRecommendation(pageName, "", false, mutableMapOf())
 
         coVerify {
-            getRecommendationUseCase.createObservable(any())
+            getProductRecommendationUseCase.executeOnBackground(any())
         }
 
-        Assert.assertEquals((viewModel.loadTopAdsProduct.value as Success).data.tid, recomWidget.tid)
+        Assert.assertTrue((viewModel.loadTopAdsProduct.value as Success).data.tid == "1")
     }
 
     @Test
-    fun onErrorLoadRecommendation() {
+    fun `success load recommendation with filter`() {
+        val mockFilter = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip())
+        val mockRecomm = RecommendationWidget(tid = "1",
+                recommendationItemList = listOf(RecommendationItem()),
+                recommendationFilterChips = mockFilter
+        )
+        val pageName = "pdp3"
+
+        coEvery {
+            getProductRecommendationUseCase.executeOnBackground(any())
+        } returns mockRecomm
+
+        viewModel.loadRecommendation(pageName, "", false, mutableMapOf())
+
+        coVerify {
+            getProductRecommendationUseCase.executeOnBackground(any())
+        }
+
+        Assert.assertEquals((viewModel.loadTopAdsProduct.value as Success).data.tid, "1")
+        Assert.assertEquals(
+                (viewModel.loadTopAdsProduct.value as Success)
+                        .data
+                        .recommendationFilterChips
+                        .isNotEmpty(), true)
+    }
+
+    @Test
+    fun `error load recommendation`() {
         val pageName = "pdp3"
         coEvery {
-            getRecommendationUseCase.createObservable(any()).toBlocking()
+            getProductRecommendationUseCase.executeOnBackground(any())
         } throws Throwable()
 
-        coEvery {
-            getRecommendationFilterChips.executeOnBackground().filterChip
-        } returns listOf()
-
-        viewModel.loadRecommendation(pageName)
+        viewModel.loadRecommendation(pageName, "", false, mutableMapOf())
 
         coVerify {
-            getRecommendationUseCase.createObservable(any())
+            getProductRecommendationUseCase.executeOnBackground(any())
         }
         Assert.assertTrue(viewModel.loadTopAdsProduct.value is Fail)
+        Assert.assertTrue((viewModel.loadTopAdsProduct.value as Fail).throwable.message == pageName)
     }
 
     @Test
-    fun `success get recommendation with exist list`() {
-        val recomWidget = RecommendationWidget(tid = "1", recommendationItemList = listOf(RecommendationItem()))
-        val listOfRecom = arrayListOf(recomWidget)
-        val recomDataModel = ProductRecommendationDataModel(filterData = listOf(AnnotationChip(
-                RecommendationFilterChipsEntity.RecommendationFilterChip(isActivated = true)
-        )))
+    fun `success load recommendation chip clicked`() {
+        val mockResponse = RecommendationWidget(
+                tid = "1",
+                recommendationItemList = listOf(RecommendationItem())
+        )
 
         coEvery {
-            getRecommendationUseCase.createObservable(any()).toBlocking().first()
-        } returns listOfRecom
+            getRecommendationUseCase.getData(any())
+        } returns arrayListOf(mockResponse)
 
-        viewModel.recommendationChipClicked(recomDataModel, AnnotationChip(), 1)
+        val initialAnnotationChip = AnnotationChip(
+                RecommendationFilterChipsEntity.RecommendationFilterChip(
+                        name = "katun chip",
+                        isActivated = true
+                )
+        )
+
+        val recomFilterData = listOf(AnnotationChip(
+                RecommendationFilterChipsEntity.RecommendationFilterChip(
+                        name = "katun chip",
+                        isActivated = false
+                )),
+                AnnotationChip(
+                        RecommendationFilterChipsEntity.RecommendationFilterChip(
+                                name = "kulit chip",
+                                isActivated = false
+                        ))
+        )
+
+        val recomDataModel = ProductRecommendationDataModel(filterData = recomFilterData)
+
+        viewModel.recommendationChipClicked(recomDataModel, initialAnnotationChip, "")
 
         coVerify {
-            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+            getRecommendationUseCase.getData(any())
         }
 
-        Assert.assertTrue(viewModel.filterTopAdsProduct.value?.isRecomenDataEmpty == false)
-        Assert.assertTrue((viewModel.statusFilterTopAdsProduct.value as Success).data)
+        val filterData = viewModel.filterTopAdsProduct.value
+        Assert.assertNotNull(filterData)
+
+        Assert.assertEquals(filterData!!.isRecomenDataEmpty, false)
+        Assert.assertEquals(filterData.filterData!!.isNotEmpty(), true)
+
+        val selectedChip = filterData.filterData!!.first {
+            it.recommendationFilterChip.isActivated
+        }.recommendationFilterChip.name
+
+        val otherChipUnselected = filterData.filterData!!.any {
+            it.recommendationFilterChip.name == "kulit chip" && !it.recommendationFilterChip.isActivated
+        }
+
+        Assert.assertEquals(selectedChip, "katun chip")
+        Assert.assertEquals(otherChipUnselected, true)
+        Assert.assertNull(viewModel.statusFilterTopAdsProduct.value)
     }
 
     @Test
-    fun `success get recommendation with empty list`() {
+    fun `success load recommendation chip clicked return empty list`() {
         coEvery {
-            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+            getRecommendationUseCase.getData(any())
         } returns emptyList()
 
-        viewModel.recommendationChipClicked(ProductRecommendationDataModel(), AnnotationChip(), 1)
+        viewModel.recommendationChipClicked(ProductRecommendationDataModel(), AnnotationChip(), "")
 
         coVerify {
-            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+            getRecommendationUseCase.getData(any())
         }
 
         Assert.assertNull(viewModel.filterTopAdsProduct.value?.recomWidgetData)
-        Assert.assertFalse((viewModel.statusFilterTopAdsProduct.value as Success).data)
+        Assert.assertNull(viewModel.statusFilterTopAdsProduct.value)
     }
 
     @Test
-    fun `error get recommendation`() {
+    fun `error load recommendation chip clicked`() {
         coEvery {
-            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+            getRecommendationUseCase.getData(any())
         } throws Throwable()
 
-        viewModel.recommendationChipClicked(ProductRecommendationDataModel(), AnnotationChip(), 1)
+        viewModel.recommendationChipClicked(ProductRecommendationDataModel(), AnnotationChip(), "")
 
         coVerify {
-            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+            getRecommendationUseCase.getData(any())
         }
 
         Assert.assertNull(viewModel.filterTopAdsProduct.value?.recomWidgetData)
         Assert.assertTrue(viewModel.statusFilterTopAdsProduct.value is Fail)
+    }
+
+    @Test
+    fun `load recommendation already hitted`() {
+        val recomWidget = RecommendationWidget(tid = "1", recommendationItemList = listOf(RecommendationItem()))
+
+        coEvery {
+            getProductRecommendationUseCase.executeOnBackground(any())
+        } returns recomWidget
+
+        viewModel.loadRecommendation("pdp_1", "", false, mutableMapOf())
+        Thread.sleep(500)
+        //hit again with same page name
+        viewModel.loadRecommendation("pdp_1", "", false, mutableMapOf())
+
+        //make sure it will only called once
+        coVerify(exactly = 1) {
+            getProductRecommendationUseCase.executeOnBackground(any())
+        }
+    }
+
+    @Test
+    fun `load recommendation sellerapp`() {
+        every {
+            GlobalConfig.isSellerApp()
+        } returns true
+
+        viewModel.loadRecommendation("pdp_1", "", false, mutableMapOf())
+
+        coVerify(inverse = true) {
+            getProductRecommendationUseCase.executeOnBackground(any())
+        }
     }
     //endregion
 
@@ -1467,8 +1531,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             getTopadsIsAdsUseCase.executeOnBackground()
         } throws Throwable("error")
 
-        coEvery { remoteConfigInstance.getLong(any(), any())
-        }  returns 5000
+        coEvery {
+            remoteConfigInstance.getLong(any(), any())
+        } returns 5000
 
         viewModel.getProductTopadsStatus(productId, paramsTest)
         coVerify { getTopadsIsAdsUseCase.executeOnBackground() }
@@ -1502,8 +1567,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val errorCode = slot<Int>()
         val isTopAds = slot<Boolean>()
 
-        coEvery { remoteConfigInstance.getLong(any(), any())
-        }  returns 5000
+        coEvery {
+            remoteConfigInstance.getLong(any(), any())
+        } returns 5000
 
         coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns expectedResponse
 
@@ -1950,10 +2016,6 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         verify {
             getTopadsIsAdsUseCase.cancelJobs()
-        }
-
-        verify {
-            getRecommendationUseCase.unsubscribe()
         }
 
         verify {

@@ -77,7 +77,6 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
-import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
@@ -1059,7 +1058,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     override fun onChipFilterClicked(recommendationDataModel: ProductRecommendationDataModel, annotationChip: AnnotationChip, position: Int, filterPosition: Int) {
         DynamicProductDetailTracking.Click.eventClickSeeFilterAnnotation(annotationChip.recommendationFilterChip.value)
-        viewModel.recommendationChipClicked(recommendationDataModel, annotationChip, filterPosition)
+        val pid = viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
+        viewModel.recommendationChipClicked(recommendationDataModel, annotationChip, pid)
     }
 
     override fun onSeeAllRecomClicked(recommendationWidget: RecommendationWidget, pageName: String, applink: String, componentTrackDataModel: ComponentTrackDataModel) {
@@ -1096,7 +1096,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun loadTopads(pageName: String) {
-        viewModel.loadRecommendation(pageName)
+        val p1 = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
+        viewModel.loadRecommendation(pageName = pageName,
+                productId = p1.basic.productID,
+                isTokoNow = p1.basic.isTokoNow,
+                miniCart = viewModel.p2Data.value?.miniCart)
     }
 
     override fun loadPlayWidget() {
