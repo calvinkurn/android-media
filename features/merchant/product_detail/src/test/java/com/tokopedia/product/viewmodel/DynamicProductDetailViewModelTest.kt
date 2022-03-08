@@ -1666,13 +1666,13 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             playWidgetTools.getWidgetFromNetwork(
-                widgetType = widgetType
+                    widgetType = widgetType
             )
         } returns expectedResponse
 
         coEvery {
             playWidgetTools.mapWidgetToModel(
-                expectedResponse
+                    expectedResponse
             )
         } returns expectedState
 
@@ -1751,7 +1751,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             playWidgetTools.updateActionReminder(
-                fakeState, fakeChannelId, fakeReminderType
+                    fakeState, fakeChannelId, fakeReminderType
             )
         } returns fakeState
 
@@ -1764,12 +1764,12 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         } returns expectedMapReminder
 
         viewModel.updatePlayWidgetToggleReminder(
-            fakeState,
-            fakeChannelId,
-            fakeReminderType
+                fakeState,
+                fakeChannelId,
+                fakeReminderType
         )
 
-        viewModel.playWidgetModel.verifySuccessEquals(Success(fakeState))
+        viewModel.playWidgetModel.verifySuccessEquals(Success(fakeUiModel))
         viewModel.playWidgetReminderSwitch.verifySuccessEquals(Success(fakeReminderType))
     }
 
@@ -1804,7 +1804,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             playWidgetTools.updateActionReminder(
-                fakeState, fakeChannelId, fakeReminderType
+                    fakeState, fakeChannelId, fakeReminderType
             )
         } returns fakeState
 
@@ -1818,14 +1818,14 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             playWidgetTools.updateActionReminder(
-                fakeState, fakeChannelId, fakeReminderType.switch()
+                    fakeState, fakeChannelId, fakeReminderType.switch()
             )
         } returns fakeState
 
         viewModel.updatePlayWidgetToggleReminder(
-            fakeState,
-            fakeChannelId,
-            fakeReminderType
+                fakeState,
+                fakeChannelId,
+                fakeReminderType
         )
 
         viewModel.playWidgetModel.verifySuccessEquals(Success(fakeState))
@@ -1862,7 +1862,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             playWidgetTools.updateActionReminder(
-                fakeState, fakeChannelId, fakeReminderType
+                    fakeState, fakeChannelId, fakeReminderType
             )
         } returns fakeState
 
@@ -1872,14 +1872,14 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             playWidgetTools.updateActionReminder(
-                fakeState, fakeChannelId, fakeReminderType.switch()
+                    fakeState, fakeChannelId, fakeReminderType.switch()
             )
         } returns fakeState
 
         viewModel.updatePlayWidgetToggleReminder(
-            fakeState,
-            fakeChannelId,
-            fakeReminderType
+                fakeState,
+                fakeChannelId,
+                fakeReminderType
         )
 
         viewModel.playWidgetModel.verifySuccessEquals(Success(fakeState))

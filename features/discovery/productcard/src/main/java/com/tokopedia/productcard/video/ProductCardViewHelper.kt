@@ -118,23 +118,6 @@ class ProductCardViewHelper(
         videoPlayer.repeatMode = Player.REPEAT_MODE_OFF
     }
 
-    class Builder(context: Context, productCardVideoView: ProductCardVideoView) {
-        private val mExoPlayerHelper: ProductCardViewHelper = ProductCardViewHelper(
-            context,
-            productCardVideoView
-        )
-
-        fun setExoPlayerEventsListener(exoPlayerListener: ExoPlayerListener): Builder {
-            mExoPlayerHelper.setExoPlayerEventsListener(exoPlayerListener)
-            return this
-        }
-
-        fun create(): ProductCardViewHelper {
-            mExoPlayerHelper.init()
-            return mExoPlayerHelper
-        }
-    }
-
     override fun init() {
         val context = context?: return
         initVideoPlayer(context)
@@ -286,4 +269,22 @@ class ProductCardViewHelper(
         val context = context ?: return false
         return DimensionUtils.getDensityMatrix(context) >= MINIMUM_DENSITY_MATRIX
     }
+
+    class Builder(context: Context, productCardVideoView: ProductCardVideoView) {
+        private val mExoPlayerHelper: ProductCardViewHelper = ProductCardViewHelper(
+            context,
+            productCardVideoView
+        )
+
+        fun setExoPlayerEventsListener(exoPlayerListener: ExoPlayerListener): Builder {
+            mExoPlayerHelper.setExoPlayerEventsListener(exoPlayerListener)
+            return this
+        }
+
+        fun create(): ProductCardViewHelper {
+            mExoPlayerHelper.init()
+            return mExoPlayerHelper
+        }
+    }
+
 }
