@@ -51,7 +51,6 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
 
     private lateinit var viewModel: PlayBroadcastSummaryViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
-    private lateinit var tagViewModel: PlayTitleAndTagsSetupViewModel
 
     override fun getScreenName(): String = "Play Post Video Page"
 
@@ -61,9 +60,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
             PlayBroadcastSummaryViewModel::class.java)
         parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(
             PlayBroadcastViewModel::class.java)
-        tagViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(
-            PlayTitleAndTagsSetupViewModel::class.java
-        )
+
         setupTransition()
     }
 
@@ -120,7 +117,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     }
 
     private fun observeTags() {
-        tagViewModel.observableRecommendedTagsModel.observe(viewLifecycleOwner) {
+        viewModel.observableRecommendedTagsModel.observe(viewLifecycleOwner) {
             tagListView.setTags(it.toList())
         }
     }
@@ -172,8 +169,8 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
      * Listener
      */
     override fun onTagClicked(view: TagListViewComponent, tag: PlayTagUiModel) {
-        tagViewModel.toggleTag(tag.tag)
-        analytic.selectRecommendedTag(tagViewModel.channelId, tag.tag, tag.isChosen)
+        viewModel.toggleTag(tag.tag)
+        analytic.selectRecommendedTag(parentViewModel.channelId, tag.tag, tag.isChosen)
     }
 
     /**
