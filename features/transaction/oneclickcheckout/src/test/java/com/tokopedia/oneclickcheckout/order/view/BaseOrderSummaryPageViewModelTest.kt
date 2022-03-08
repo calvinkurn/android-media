@@ -13,8 +13,14 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.domain.CheckoutOccUseCase
 import com.tokopedia.oneclickcheckout.order.domain.CreditCardTenorListUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
+import com.tokopedia.oneclickcheckout.order.domain.GoCicilInstallmentOptionUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
-import com.tokopedia.oneclickcheckout.order.view.processor.*
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCalculator
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCartProcessor
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCheckoutProcessor
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageLogisticProcessor
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePaymentProcessor
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -65,6 +71,9 @@ open class BaseOrderSummaryPageViewModelTest {
     lateinit var creditCardTenorListUseCase: CreditCardTenorListUseCase
 
     @MockK(relaxed = true)
+    lateinit var goCicilInstallmentOptionUseCase: GoCicilInstallmentOptionUseCase
+
+    @MockK(relaxed = true)
     lateinit var clearCacheAutoApplyStackUseCase: Lazy<ClearCacheAutoApplyStackUseCase>
 
     @MockK(relaxed = true)
@@ -94,7 +103,7 @@ open class BaseOrderSummaryPageViewModelTest {
                 OrderSummaryPageLogisticProcessor(ratesUseCase, ratesResponseStateConverter, chooseAddressRepository, chooseAddressMapper, editAddressUseCase, orderSummaryAnalytics, testDispatchers),
                 OrderSummaryPageCheckoutProcessor(checkoutOccUseCase, orderSummaryAnalytics, testDispatchers, gson),
                 OrderSummaryPagePromoProcessor(validateUsePromoRevampUseCase, clearCacheAutoApplyStackUseCase, orderSummaryAnalytics, testDispatchers),
-                { OrderSummaryPagePaymentProcessor(creditCardTenorListUseCase, testDispatchers) },
+                { OrderSummaryPagePaymentProcessor(creditCardTenorListUseCase, goCicilInstallmentOptionUseCase, testDispatchers) },
                 OrderSummaryPageCalculator(orderSummaryAnalytics, testDispatchers),
                 userSessionInterface, orderSummaryAnalytics, eligibleForAddressUseCase)
     }

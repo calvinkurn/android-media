@@ -53,7 +53,6 @@ class ProductBundleActivity : BaseSimpleActivity() {
         viewModel.parentProductID.let {
             viewModel.getBundleInfo(it)
             entryPointFragment.setProductId(it.toString())
-            entryPointFragment.setPageSource(source)
         }
 
         setupToolbarActions()

@@ -3607,6 +3607,113 @@
                             "#FFFFFF"
                         ]
                     }
+                },
+                {
+                    "id": 38120,
+                    "dividerType": 0,
+                    "group_id": 120,
+                    "galaxy_attribution": "PG",
+                    "persona": "",
+                    "brand_id": "",
+                    "category_persona": "",
+                    "name": "GopayLater Cicil 1",
+                    "layout": "gpl_cicil",
+                    "type": "inspiration",
+                    "pageName": "",
+                    "showPromoBadge": false,
+                    "categoryID": "{}",
+                    "perso_type": 1,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "isAutoRefreshAfterExpired": true,
+                    "token": "",
+                    "widgetParam": "",
+                    "contextualInfo": 0,
+                    "viewAllCard": {
+                        "id": 0,
+                        "contentType": "",
+                        "title": "",
+                        "description": "",
+                        "imageUrl": "",
+                        "gradientColor": []
+                    },
+                    "header": {
+                        "id": 12261,
+                        "name": "GopayLater Cicil Header 1",
+                        "subtitle": "",
+                        "url": "",
+                        "applink": "",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "textColor": "#31353b"
+                    },
+                    "grids": [
+                        {
+                            "campaignCode": "",
+                            "id": 26254,
+                            "back_color": "",
+                            "name": "",
+                            "url": "",
+                            "applink": "",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        }
+                    ],
+                    "banner": {
+                        "id": 0,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "back_color": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "",
+                        "image_url": "",
+                        "attribution": "",
+                        "gradient_color": [
+                            "#FFFFFF"
+                        ]
+                    }
                 }
             ]
         }

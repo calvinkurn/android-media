@@ -176,9 +176,6 @@
     <string name="review_detail_score_expired">Batas waktu penilaian toko sudah habis</string>
     <string name="review_history_detail_toaster_edit_success">Ulasan berhasil diubah</string>
     <string name="review_reputation_deadline">Kamu masih bisa ubah penilaianmu tentang toko ini.</string>
-    <string name="review_history_details_ticker_editable_title">Info ubah ulasan</string>
-    <string name="review_history_details_ticker_editable_subtitle">Kamu bisa ubah ulasan ini maks. 1 kali dalam 30 hari sejak ulasan dikirim.</string>
-    <string name="review_history_details_ticker_uneditable_subtitle">Ulasan tidak bisa diubah karena kamu pernah mengubah sebelumnya atau lebih dari 30 hari sejak ulasan dikirim.</string>
 
     <string name="review_edit_dialog_title">Yakin keluar halaman ini?</string>
     <string name="review_edit_dialog_subtitle">Ulasan yang kamu ubah tidak akan tersimpan jika keluar dari halaman ini.</string>

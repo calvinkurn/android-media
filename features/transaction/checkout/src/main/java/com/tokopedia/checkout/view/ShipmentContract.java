@@ -118,6 +118,8 @@ public interface ShipmentContract {
 
         void stopTrace();
 
+        void stopEmbraceTrace();
+
         void onSuccessClearPromoLogistic(int position, boolean isLastAppliedPromo);
 
         void resetCourier(int position);

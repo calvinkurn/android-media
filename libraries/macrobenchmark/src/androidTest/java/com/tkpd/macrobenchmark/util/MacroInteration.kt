@@ -11,8 +11,7 @@ object MacroInteration {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val device = UiDevice.getInstance(instrumentation)
 
-        waitUntilRecyclerViewExist(packageName, rvResourceId)
-        waitForRecyclerViewContent(packageName, rvResourceId)
+        device.wait(Until.hasObject(By.res(packageName, rvResourceId)), DEFAULT_TIMEOUT)
         val recycler = device.findObject(By.res(packageName, rvResourceId))
 
         // Set gesture margin to avoid triggering gesture navigation
@@ -27,7 +26,7 @@ object MacroInteration {
     fun waitUntilRecyclerViewExist(packageName: String, rvResourceId: String) {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val device = UiDevice.getInstance(instrumentation)
-        device.wait(Until.findObject(By.res(packageName, rvResourceId)), DEFAULT_TIMEOUT)
+        device.wait(Until.hasObject(By.res(packageName, rvResourceId)), DEFAULT_TIMEOUT)
         device.waitForIdle(IDLE_DURATION)
     }
 
@@ -35,7 +34,10 @@ object MacroInteration {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val device = UiDevice.getInstance(instrumentation)
 
-        val recycler = device.findObject(By.res(packageName, rvResourceId))
+        device.wait(Until.hasObject(By.res(packageName, rvResourceId)), DEFAULT_TIMEOUT)
+
+        val recycler = device
+            .findObject(By.res(packageName, rvResourceId))
 
         recycler.wait(Until.scrollable(true), DEFAULT_TIMEOUT)
         device.waitForIdle(IDLE_DURATION)

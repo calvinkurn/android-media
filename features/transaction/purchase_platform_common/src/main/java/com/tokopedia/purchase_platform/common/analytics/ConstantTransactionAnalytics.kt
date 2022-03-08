@@ -65,8 +65,8 @@ object ConstantTransactionAnalytics {
         const val VIEW_ORDER_IRIS = "viewOrderIris"
         const val CLICK_ORDER = "clickOrder"
         const val VIEW_ITEM = "view_item"
-        const val VIEW_PP_IRIS = "viewPPIris"
         const val CLICK_PP = "clickPP"
+        const val VIEW_PP_IRIS = "viewPPIris"
     }
 
     object EventCategory {
@@ -320,6 +320,9 @@ object ConstantTransactionAnalytics {
         const val VIEW_ERROR_TOASTER_MESSAGE = "view error toaster message"
         const val VIEW_TOP_UP_GOPAY_BUTTON = "view top up gopay button"
         const val CLICK_TOP_UP_GOPAY_BUTTON = "click top up gopay button"
+        const val VIEW_PAYMENT_METHOD = "view payment method"
+        const val VIEW_TENURE_OPTION = "view tenure option"
+        const val CLICK_TENURE_OPTIONS_BOTTOMSHEET = "click tenure options bottomsheet"
 
         // OCC PP
         const val PP_IMPRESSION_ON_INSURANCE_SECTION = "pp - ins section impression"
@@ -367,6 +370,10 @@ object ConstantTransactionAnalytics {
         const val CLICK_LIHAT_BARANG_SERUPA_FOR_UNAVAILABLE_BUNDLE_PACKAGE = "click lihat barang serupa for Unavailable Bundle Package"
         const val CLICK_UBAH_IN_PRODUCT_BUNDLING_PACKAGE_PRODUCT_CARD = "click ubah in product bundling package product card"
 
+        // Cart Bo Affordability
+        const val CLICK_ARROW_IN_BO_TICKER_TO_REACH_SHOP_PAGE = "click arrow in BO Ticker to reach shop page"
+        const val VIEW_BO_TICKER_WORDING = "view BO Ticker wording"
+
         // Gifting
         const val VIEW_ADD_ONS_WIDGET = "view add ons widget"
         const val CLICK_ADD_ONS_WIDGET = "click add ons widget"
@@ -410,6 +417,10 @@ object ConstantTransactionAnalytics {
         const val ELIGIBLE_PROMO = "eligible promo"
         const val BLACKLIST_ERROR = "blacklist error"
         const val PHONE_VERIFICATION_MESSAGE = "phone verification message"
+
+        // Cart Bo Affordability
+        const val BO_FULFILL = "fulfill"
+        const val BO_UNFULFILL = "unfulfill"
 
         // Gifting
         const val ADD_ON_CHECKED = "add on checked"

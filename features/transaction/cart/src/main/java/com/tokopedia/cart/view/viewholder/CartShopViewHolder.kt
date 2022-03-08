@@ -7,22 +7,28 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemShopBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.adapter.collapsedproduct.CartCollapsedProductAdapter
 import com.tokopedia.cart.view.decorator.CartHorizontalItemDecoration
+import com.tokopedia.cart.view.uimodel.CartShopBoAffordabilityState
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_LOOSE
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
-import java.lang.Math.*
 import java.text.NumberFormat
 import java.util.*
 import kotlin.math.min
@@ -39,6 +45,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     fun bindUpdatedWeight(cartShopHolderData: CartShopHolderData) {
         renderMaximumWeight(cartShopHolderData)
         cartShopHolderData.isNeedToRefreshWeight = false
+        renderBoAfford(cartShopHolderData)
     }
 
     fun bindData(cartShopHolderData: CartShopHolderData) {
@@ -54,6 +61,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         renderFreeShipping(cartShopHolderData)
         renderEstimatedTimeArrival(cartShopHolderData)
         renderMaximumWeight(cartShopHolderData)
+        renderBoAfford(cartShopHolderData)
         renderGiftingAddOn(cartShopHolderData)
     }
 
@@ -153,7 +161,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         if (itemDecorationCount > 0) {
             binding.rvCartItem.removeItemDecorationAt(0)
         }
-        val paddingLeft = itemView.context?.resources?.getDimension(R.dimen.dp_48)?.toInt() ?: 0
+        val paddingLeft = ITEM_DECORATION_PADDING_LEFT.dpToPx(itemView.resources.displayMetrics)
         val paddingRight = itemView.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0
         binding.rvCartItem.addItemDecoration(CartHorizontalItemDecoration(paddingLeft, paddingRight))
     }
@@ -219,7 +227,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
 
     private fun renderCheckBox(cartShopHolderData: CartShopHolderData) {
         with(binding) {
-            val padding10 = itemView.resources.getDimensionPixelSize(R.dimen.dp_10)
+            val padding10 = SHOP_HEADER_PADDING_10.dpToPx(itemView.resources.displayMetrics)
             val padding16 = itemView.resources.getDimensionPixelSize(R.dimen.dp_16)
             if (!cartShopHolderData.isError) {
                 cbSelectShop.show()
@@ -424,9 +432,77 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         val child: View? = binding.rvCartItem.getChildAt(0)
         val productHeight = child?.height ?: 0
         val offset = productIndex * productHeight
-        val paddingOffset = itemView.context?.resources?.getDimensionPixelSize(R.dimen.dp_12)
-                ?: 0
+        val paddingOffset = SCROLL_PADDING_OFFSET.dpToPx(itemView.resources.displayMetrics)
         return offset + paddingOffset + tickerHeight
+    }
+
+    private fun renderBoAfford(cartShopHolderData: CartShopHolderData) {
+        if (cartShopHolderData.hasSelectedProduct && !cartShopHolderData.isError
+                && cartShopHolderData.boAffordability.enable && !cartShopHolderData.isOverweight) {
+            binding.apply {
+                val boAffordability = cartShopHolderData.boAffordability
+                when (boAffordability.state) {
+                    CartShopBoAffordabilityState.LOADING -> {
+                        textBoAffordability.gone()
+                        arrowBoAffordability.gone()
+                        largeLoaderBoAffordability.show()
+                        smallLoaderBoAffordability.show()
+                        layoutBoAffordability.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
+                        layoutBoAffordability.setOnClickListener(null)
+                        layoutBoAffordability.show()
+                    }
+                    CartShopBoAffordabilityState.SUCCESS_NOT_AFFORD -> {
+                        largeLoaderBoAffordability.gone()
+                        smallLoaderBoAffordability.gone()
+                        textBoAffordability.text = MethodChecker.fromHtml(boAffordability.tickerText)
+                        textBoAffordability.show()
+                        arrowBoAffordability.setImage(IconUnify.CHEVRON_RIGHT)
+                        arrowBoAffordability.show()
+                        layoutBoAffordability.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
+                        layoutBoAffordability.setOnClickListener {
+                            actionListener.onCartBoAffordabilityClicked(cartShopHolderData)
+                        }
+                        if (!cartShopHolderData.boAffordability.hasSeenTicker) {
+                            actionListener.onViewCartBoAffordabilityTicker(cartShopHolderData)
+                            cartShopHolderData.boAffordability.hasSeenTicker = true
+                        }
+                        layoutBoAffordability.show()
+                    }
+                    CartShopBoAffordabilityState.SUCCESS_AFFORD -> {
+                        largeLoaderBoAffordability.gone()
+                        smallLoaderBoAffordability.gone()
+                        arrowBoAffordability.gone()
+                        textBoAffordability.text = MethodChecker.fromHtml(boAffordability.tickerText)
+                        textBoAffordability.show()
+                        layoutBoAffordability.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
+                        layoutBoAffordability.setOnClickListener(null)
+                        if (!cartShopHolderData.boAffordability.hasSeenTicker) {
+                            actionListener.onViewCartBoAffordabilityTicker(cartShopHolderData)
+                            cartShopHolderData.boAffordability.hasSeenTicker = true
+                        }
+                        layoutBoAffordability.show()
+                    }
+                    CartShopBoAffordabilityState.FAILED -> {
+                        largeLoaderBoAffordability.gone()
+                        smallLoaderBoAffordability.gone()
+                        textBoAffordability.text = MethodChecker.fromHtml(boAffordability.errorText)
+                        textBoAffordability.show()
+                        arrowBoAffordability.setImage(IconUnify.RELOAD)
+                        arrowBoAffordability.show()
+                        layoutBoAffordability.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN50))
+                        layoutBoAffordability.setOnClickListener {
+                            actionListener.onCartBoAffordabilityRefreshClicked(adapterPosition, cartShopHolderData)
+                        }
+                        layoutBoAffordability.show()
+                    }
+                    CartShopBoAffordabilityState.EMPTY -> {
+                        layoutBoAffordability.gone()
+                    }
+                }
+            }
+        } else {
+            binding.layoutBoAffordability.gone()
+        }
     }
 
     companion object {
@@ -437,6 +513,10 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         const val CHECKBOX_WATCHER_DEBOUNCE_TIME = 500L
         const val KEY_ONBOARDING_ICON_PIN = "KEY_ONBOARDING_ICON_PIN"
         const val KEY_HAS_SHOWN_ICON_PIN_ONBOARDING = "KEY_HAS_SHOWN_ICON_PIN_ONBOARDING"
+
+        private const val ITEM_DECORATION_PADDING_LEFT = 48
+        private const val SHOP_HEADER_PADDING_10 = 10
+        private const val SCROLL_PADDING_OFFSET = 12
     }
 
 }

@@ -21,12 +21,17 @@ import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCase
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialTopAdsHeadlineDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationWithTopAdsHeadline
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
+import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
+import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -79,6 +84,9 @@ class OfficialStoreHomeViewModelTest {
     lateinit var getDisplayHeadlineAds: GetDisplayHeadlineAds
 
     @RelaxedMockK
+    lateinit var getTopAdsHeadlineUseCase: GetTopAdsHeadlineUseCase
+
+    @RelaxedMockK
     lateinit var getRecommendationUseCaseCoroutine: com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 
     @RelaxedMockK
@@ -93,21 +101,22 @@ class OfficialStoreHomeViewModelTest {
     }
 
     private val viewModel by lazy {
-        OfficialStoreHomeViewModel(
-                getOfficialStoreBannersUseCase,
-                getOfficialStoreBenefitUseCase,
-                getOfficialStoreFeaturedShopUseCase,
-                getOfficialStoreDynamicChannelUseCase,
-                getRecommendationUseCase,
-                userSessionInterface,
-                addWishListUseCase,
-                topAdsWishlishedUseCase,
-                removeWishListUseCase,
-                getDisplayHeadlineAds,
-                getRecommendationUseCaseCoroutine,
-                bestSellerMapper,
-                CoroutineTestDispatchersProvider
-        )
+        spyk(OfficialStoreHomeViewModel(
+            getOfficialStoreBannersUseCase,
+            getOfficialStoreBenefitUseCase,
+            getOfficialStoreFeaturedShopUseCase,
+            getOfficialStoreDynamicChannelUseCase,
+            getRecommendationUseCase,
+            userSessionInterface,
+            addWishListUseCase,
+            topAdsWishlishedUseCase,
+            removeWishListUseCase,
+            getDisplayHeadlineAds,
+            getRecommendationUseCaseCoroutine,
+            bestSellerMapper,
+            getTopAdsHeadlineUseCase,
+            CoroutineTestDispatchersProvider
+        ))
     }
 
     @Test
@@ -168,6 +177,7 @@ class OfficialStoreHomeViewModelTest {
         val page = 1
         val categoryId = "0"     // "65, 20, 60, 288, 297, 578, 2099
         val listOfRecom = mutableListOf(RecommendationWidget())
+        val productRecommendationWithTopAdsHeadline = ProductRecommendationWithTopAdsHeadline(listOfRecom.first(), null)
 
         coEvery {
             getRecommendationUseCase.createObservable(any()).toBlocking().first()
@@ -179,7 +189,138 @@ class OfficialStoreHomeViewModelTest {
             getRecommendationUseCase.createObservable(any())
         }
         print(viewModel.productRecommendation.value)
-        Assert.assertEquals((viewModel.productRecommendation.value as Success).data, listOfRecom[0])
+        Assert.assertEquals((viewModel.productRecommendation.value as Success).data, productRecommendationWithTopAdsHeadline)
+    }
+
+    @Test
+    fun given_get_data_success__when_load_more__should_set_value_with_first_product_recommendation_with_topads_headline_ads() {
+        val page = 1
+        val categoryId = "0"     // "65, 20, 60, 288, 297, 578, 2099
+        val listOfRecom = mutableListOf(RecommendationWidget())
+        val topAdsHeadlineAd = OfficialTopAdsHeadlineDataModel()
+        val productRecommendationWithTopAdsHeadline = ProductRecommendationWithTopAdsHeadline(listOfRecom.first(), topAdsHeadlineAd)
+
+        coEvery {
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+        } returns listOfRecom
+
+        coEvery { viewModel.isFeaturedShopAllowed } returns true
+
+        coEvery {
+            viewModel.getTopAdsHeadlineData(any())
+        } returns topAdsHeadlineAd
+
+        viewModel.loadMoreProducts(categoryId, page)
+
+        coVerify {
+            getRecommendationUseCase.createObservable(any())
+        }
+        print(viewModel.productRecommendation.value)
+        Assert.assertEquals((viewModel.productRecommendation.value as Success).data, productRecommendationWithTopAdsHeadline)
+    }
+
+    @Test
+    fun given_get_data_success__topads_headline_ads() {
+        runBlocking {
+            val page = 1
+            val topAdsHeadlineAdResponse = TopAdsHeadlineResponse(CpmModel())
+            val topAdsHeadlineAd = OfficialTopAdsHeadlineDataModel(topAdsHeadlineAdResponse)
+            every { userSessionInterface.userId } returns "userId"
+            every {
+                getTopAdsHeadlineUseCase.createParams(
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                )
+            } returns "parmas"
+
+            every { getTopAdsHeadlineUseCase.setParams(any()) } just Runs
+            coEvery { getTopAdsHeadlineUseCase.executeOnBackground() } returns topAdsHeadlineAdResponse
+
+            val topAdsData = viewModel.getTopAdsHeadlineData(page)
+
+
+            Assert.assertEquals(topAdsData, topAdsHeadlineAd)
+        }
+
+    }
+
+    @Test
+    fun test_null_topads_headline_ads() {
+        runBlocking {
+            val page = 1
+            val topAdsHeadlineAdResponse = TopAdsHeadlineResponse(CpmModel())
+            val topAdsHeadlineAd = OfficialTopAdsHeadlineDataModel(topAdsHeadlineAdResponse)
+            every { userSessionInterface.userId } returns "userId"
+            every {
+                getTopAdsHeadlineUseCase.createParams(
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                )
+            } returns "parmas"
+
+            every { getTopAdsHeadlineUseCase.setParams(any()) } just Runs
+            coEvery { getTopAdsHeadlineUseCase.executeOnBackground() } throws Throwable("error")
+
+            val topAdsData = viewModel.getTopAdsHeadlineData(page)
+
+            Assert.assertEquals(topAdsData, null)
+        }
+
+    }
+
+
+    @Test
+    fun test_record_shop_widget_impression_when_map_is_empty() {
+        val channelId = "1"
+        val shopId = "2"
+
+        viewModel.recordShopWidgetImpression(channelId, shopId)
+
+        val expected = viewModel.impressedShop[channelId]?.size
+        Assert.assertEquals(expected, 1)
+    }
+
+    @Test
+    fun test_record_shop_widget_impression_when_map_is_not_empty() {
+        val channelId = "1"
+        val shopId = "2"
+        viewModel.impressedShop[channelId] = mutableSetOf("3")
+
+        viewModel.recordShopWidgetImpression(channelId, shopId)
+
+        val expected = viewModel.impressedShop[channelId]?.size
+        Assert.assertEquals(expected, 2)
+    }
+
+    @Test
+    fun test_reset_shop_widget_impression_count() {
+        val channelId = "1"
+        val shopId = "2"
+        viewModel.impressedShop[channelId] = mutableSetOf(shopId)
+
+        viewModel.resetShopWidgetImpressionCount()
+        Assert.assertTrue(viewModel.impressedShop.isEmpty())
+    }
+
+    @Test
+    fun test_reset_is_feature_shop_allowed() {
+
+        viewModel.resetIsFeatureShopAllowed()
+        Assert.assertFalse(viewModel.isFeaturedShopAllowed)
     }
 
     @Test

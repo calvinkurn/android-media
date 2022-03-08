@@ -41,12 +41,12 @@ includeIfEnabled("features:fintech:home_credit")
 includeIfEnabled("features:fintech:saldo_details")
 includeIfEnabled("features:fintech:common_wallet")
 includeIfEnabled("features:fintech:layanan_finansial")
+includeIfEnabled("features:fintech:pdp_fintech_widget")
 
 includeIfEnabled("features:user:fcm_common")
 
 includeIfEnabled("features:im:common_promo")
 includeIfEnabled("features:im:referral")
-
 includeIfEnabled("features:logistic:logisticaddaddress")
 includeIfEnabled("features:logistic:logisticCommon")
 includeIfEnabled("features:logistic:logisticorder")
