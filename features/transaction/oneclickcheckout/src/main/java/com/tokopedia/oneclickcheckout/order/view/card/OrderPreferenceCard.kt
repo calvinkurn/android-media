@@ -10,7 +10,12 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.CourierConstant
 import com.tokopedia.logisticcart.shipping.model.DividerModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
@@ -579,7 +584,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 tvPaymentErrorMessage.gone()
                 tvPaymentOvoErrorAction.gone()
                 setPaymentActiveAlpha()
-                setupPaymentInstallment(payment.creditCard)
+                setupPaymentInstallment(payment)
             } else {
                 if (payment.errorData != null) {
                     // general & cc error
@@ -600,10 +605,12 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                                 }
                             }
                         }
+                        btnChangePayment.invisible()
+                    } else {
+                        btnChangePayment.visible()
                     }
                     tvPaymentErrorMessage.text = span
                     tvPaymentErrorMessage.visible()
-                    btnChangePayment.invisible()
                     tvPaymentOvoErrorAction.gone()
                     setPaymentErrorAlpha()
                 } else if (payment.walletErrorData != null) {
@@ -694,7 +701,9 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 }
                 tvInstallmentType.gone()
                 tvInstallmentDetail.gone()
+                tvInstallmentDetailWrap.gone()
                 btnChangeInstallment.gone()
+                btnChangeInstallmentWrap.gone()
                 tvInstallmentErrorMessage.gone()
                 tvInstallmentErrorAction.gone()
             }
@@ -702,13 +711,16 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setupPaymentInstallment(creditCard: OrderPaymentCreditCard) {
+    private fun setupPaymentInstallment(payment: OrderPayment) {
+        val creditCard = payment.creditCard
         val selectedTerm = creditCard.selectedTerm
         binding.apply {
             if (!creditCard.isDebit && selectedTerm != null) {
                 tvInstallmentType.visible()
                 tvInstallmentDetail.visible()
                 btnChangeInstallment.visible()
+                tvInstallmentDetailWrap.gone()
+                btnChangeInstallmentWrap.gone()
                 if (selectedTerm.term > 0) {
                     tvInstallmentDetail.text = "${selectedTerm.term} Bulan x ${CurrencyFormatUtil.convertPriceValueToIdrFormat(selectedTerm.monthlyAmount, false).removeDecimalSuffix()}"
                 } else {
@@ -719,7 +731,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     if (profile.enable) {
                         val selectedCreditCard = payment.creditCard
                         if (selectedCreditCard.availableTerms.isNotEmpty()) {
-                            listener.onInstallmentDetailClicked(selectedCreditCard)
+                            listener.onCreditCardInstallmentDetailClicked(selectedCreditCard)
                         }
                     }
                 }
@@ -729,18 +741,50 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 btnChangeInstallment.visible()
                 tvInstallmentDetail.text = binding.root.context.getString(R.string.lbl_installment_afpb_default)
                 tvInstallmentDetail.alpha = ENABLE_ALPHA
+                tvInstallmentDetailWrap.gone()
+                btnChangeInstallmentWrap.gone()
                 tvInstallmentErrorMessage.gone()
                 tvInstallmentErrorAction.gone()
                 setMultiViewsOnClickListener(tvInstallmentType, tvInstallmentDetail, btnChangeInstallment) {
                     if (profile.enable) {
                         val selectedCreditCard = payment.creditCard
-                        listener.onInstallmentDetailClicked(selectedCreditCard)
+                        listener.onCreditCardInstallmentDetailClicked(selectedCreditCard)
+                    }
+                }
+            } else if (payment.walletData.isGoCicil) {
+                val goCicilData = payment.walletData.goCicilData
+                if (goCicilData.hasInvalidTerm) {
+                    tvInstallmentDetailWrap.setText(R.string.occ_gocicil_default_installment)
+                    tvInstallmentDetailWrap.visible()
+                    tvInstallmentErrorMessage.text = goCicilData.errorMessageInvalidTenure
+                    tvInstallmentErrorMessage.visible()
+                } else if (goCicilData.selectedTerm == null || goCicilData.availableTerms.isEmpty()) {
+                    tvInstallmentDetailWrap.setText(R.string.occ_gocicil_default_installment)
+                    tvInstallmentDetailWrap.visible()
+                    tvInstallmentErrorMessage.gone()
+                } else {
+                    tvInstallmentDetailWrap.text = tvInstallmentDetailWrap.context.getString(R.string.occ_lbl_gocicil_installment_detail,
+                        goCicilData.selectedTerm.installmentTerm,
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(goCicilData.selectedTerm.installmentAmountPerPeriod, false).removeDecimalSuffix())
+                    tvInstallmentDetailWrap.visible()
+                    tvInstallmentErrorMessage.gone()
+                }
+                tvInstallmentType.visible()
+                tvInstallmentDetail.gone()
+                btnChangeInstallment.gone()
+                btnChangeInstallmentWrap.visible()
+                tvInstallmentErrorAction.gone()
+                setMultiViewsOnClickListener(tvInstallmentType, tvInstallmentDetailWrap, btnChangeInstallmentWrap) {
+                    if (profile.enable) {
+                        listener.onGopayInstallmentDetailClicked()
                     }
                 }
             } else {
                 tvInstallmentType.gone()
                 tvInstallmentDetail.gone()
+                tvInstallmentDetailWrap.gone()
                 btnChangeInstallment.gone()
+                btnChangeInstallmentWrap.gone()
                 tvInstallmentErrorMessage.gone()
                 tvInstallmentErrorAction.gone()
             }
@@ -757,7 +801,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     if (profile.enable) {
                         val creditCard = payment.creditCard
                         if (creditCard.availableTerms.isNotEmpty()) {
-                            listener.onInstallmentDetailClicked(creditCard)
+                            listener.onCreditCardInstallmentDetailClicked(creditCard)
                         }
                     }
                 }
@@ -898,8 +942,6 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
         private const val ENABLE_ALPHA = 1.0f
         private const val DISABLE_ALPHA = 0.5f
-        private const val FLOAT_12 = 12F
-        private const val PROPOTION_10 = 10
 
         private const val MAIN_ADDRESS_LEFT_MARGIN = 8
         private const val NOT_MAIN_ADDRESS_LEFT_MARGIN = 16
@@ -924,7 +966,9 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
         fun choosePayment(profile: OrderProfile, payment: OrderPayment)
 
-        fun onInstallmentDetailClicked(creditCard: OrderPaymentCreditCard)
+        fun onCreditCardInstallmentDetailClicked(creditCard: OrderPaymentCreditCard)
+
+        fun onGopayInstallmentDetailClicked()
 
         fun onChangeCreditCardClicked(additionalData: OrderPaymentCreditCardAdditionalData)
 

@@ -34,14 +34,17 @@ class GetShopPageP1DataUseCase @Inject constructor(
     companion object {
         private const val PARAM_SHOP_ID = "shopId"
         private const val PARAM_SHOP_DOMAIN = "shopDomain"
+        private const val PARAM_EXT_PARAM = "extParam"
 
         @JvmStatic
         fun createParams(
                 shopId: String,
-                shopDomain: String
+                shopDomain: String,
+                extParam: String
         ): RequestParams = RequestParams.create().apply {
             putObject(PARAM_SHOP_ID, shopId)
             putObject(PARAM_SHOP_DOMAIN, shopDomain)
+            putObject(PARAM_EXT_PARAM, extParam)
         }
     }
 
@@ -51,11 +54,12 @@ class GetShopPageP1DataUseCase @Inject constructor(
     override suspend fun executeOnBackground(): ShopPageHeaderP1 {
         val shopId: String = params.getString(PARAM_SHOP_ID, "")
         val shopDomain: String = params.getString(PARAM_SHOP_DOMAIN, "")
+        val extParam: String = params.getString(PARAM_EXT_PARAM, "")
         val listRequest = mutableListOf<GraphqlRequest>().apply {
             add(getIsShopOfficialRequest(shopId))
             add(getIsShopPowerMerchantRequest(shopId))
             add(getShopInfoTopContentDataRequest(shopId, shopDomain))
-            add(getShopInfoHomeTypeDataRequest(shopId))
+            add(getShopInfoHomeTypeDataRequest(shopId, extParam))
             add(getShopInfoCoreAndAssetsDataRequest(shopId, shopDomain))
             add(getFeedWhitelistRequest(shopId))
         }
@@ -112,8 +116,8 @@ class GetShopPageP1DataUseCase @Inject constructor(
         )
     }
 
-    private fun getShopInfoHomeTypeDataRequest(shopId: String): GraphqlRequest {
-        val params = GqlShopPageGetHomeType.createParams(shopId.toIntOrZero())
+    private fun getShopInfoHomeTypeDataRequest(shopId: String, extParam: String): GraphqlRequest {
+        val params = GqlShopPageGetHomeType.createParams(shopId.toIntOrZero(), extParam)
         return createGraphqlRequest<ShopPageGetHomeType.Response>(
                 GqlShopPageGetHomeType.QUERY,
                 params.parameters

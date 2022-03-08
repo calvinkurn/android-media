@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.otp.common.idling_resource.TkpdIdlingResource
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
@@ -273,6 +275,7 @@ open class VerificationViewModel @Inject constructor(
             //if user interrupted login / register otp flow (not done), delete the token
             if(!done && isLoginRegisterFlow) {
                 userSession.setToken(null, null, null)
+                ServerLogger.log(Priority.P2, "BUYER_FLOW_LOGIN", mapOf("type" to "token_cleared_during_verification"))
             }
         }
         super.onCleared()
