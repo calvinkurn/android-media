@@ -791,12 +791,12 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         )
     }
 
-    fun updateAddOn(saveAddOnStateResult: SaveAddOnStateResult?) {
+    fun updateAddOn(saveAddOnStateResult: SaveAddOnStateResult) {
         // Add on currently only support single product on OCC
-        val orderProduct = orderProducts.value.firstOrNull()
+        val orderProduct = orderProducts.value.first()
         val orderShop = orderShop.value
-        val addOnResult = saveAddOnStateResult?.addOns?.firstOrNull()
-        if (addOnResult != null && orderProduct != null) {
+        val addOnResult = saveAddOnStateResult.addOns.firstOrNull()
+        if (addOnResult != null) {
             if (addOnResult.addOnLevel == AddOnConstant.ADD_ON_LEVEL_ORDER && addOnResult.addOnKey == "${orderCart.cartString}-0") {
                 orderShop.addOn = AddOnMapper.mapAddOnBottomSheetResult(addOnResult)
                 this.orderShop.value = orderShop
@@ -821,8 +821,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                         ?: 0.0
                         )
                 )
-            } else {
-                setDefaultAddOnState(orderShop, orderProduct)
             }
         } else {
             setDefaultAddOnState(orderShop, orderProduct)
