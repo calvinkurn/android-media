@@ -69,6 +69,12 @@ open class VerificationActivity : BaseOtpActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if(savedInstanceState != null && savedInstanceState.containsKey(OtpConstant.OTP_DATA_EXTRA)) {
+            val oldOtpData = savedInstanceState.getParcelable<OtpData>(OtpConstant.OTP_DATA_EXTRA)
+            if(oldOtpData != null) {
+                otpData = oldOtpData
+            }
+        }
         KeyboardHandler.hideSoftKeyboard(this)
     }
 
@@ -219,6 +225,11 @@ open class VerificationActivity : BaseOtpActivity() {
         }
         val fragment = VerificationMethodFragment.createInstance(bundle)
         doFragmentTransaction(fragment, TAG_OTP_VALIDATOR, false)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(OtpConstant.OTP_DATA_EXTRA, otpData)
     }
 
     companion object {

@@ -8,10 +8,26 @@ import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECommerce
-import com.tokopedia.oneclickcheckout.order.data.checkout.*
+import com.tokopedia.oneclickcheckout.order.data.checkout.CheckoutOccRequest
+import com.tokopedia.oneclickcheckout.order.data.checkout.ParamCart
+import com.tokopedia.oneclickcheckout.order.data.checkout.ParamData
+import com.tokopedia.oneclickcheckout.order.data.checkout.ProductData
+import com.tokopedia.oneclickcheckout.order.data.checkout.Profile
+import com.tokopedia.oneclickcheckout.order.data.checkout.PromoRequest
+import com.tokopedia.oneclickcheckout.order.data.checkout.ShippingInfo
+import com.tokopedia.oneclickcheckout.order.data.checkout.ShopProduct
 import com.tokopedia.oneclickcheckout.order.domain.CheckoutOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccData
+import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccResult
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
+import com.tokopedia.oneclickcheckout.order.view.model.PriceChangeMessage
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -54,6 +70,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                            shop: OrderShop,
                            profile: OrderProfile,
                            orderShipment: OrderShipment,
+                           orderPayment: OrderPayment,
                            orderTotal: OrderTotal,
                            userId: String,
                            orderSummaryPageEnhanceECommerce: OrderSummaryPageEnhanceECommerce): Pair<CheckoutOccResult?, OccGlobalEvent?> {
@@ -126,6 +143,13 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                         if (paymentType.isBlank()) {
                             paymentType = OrderSummaryPageEnhanceECommerce.DEFAULT_EMPTY_VALUE
                         }
+                        val tenureType: String = if (orderPayment.walletData.isGoCicil && orderPayment.walletData.goCicilData.selectedTerm != null) {
+                            orderPayment.walletData.goCicilData.selectedTerm.installmentTerm.toString()
+                        } else if (orderPayment.creditCard.selectedTerm != null) {
+                            orderPayment.creditCard.selectedTerm.term.toString()
+                        } else {
+                            ""
+                        }
                         products.forEach {
                             if (!it.isError && it.purchaseProtectionPlanData.isProtectionAvailable) {
                                 orderSummaryAnalytics.eventPPClickBayar(userId,
@@ -143,6 +167,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                                 userId,
                                 transactionId,
                                 paymentType,
+                                tenureType,
                                 orderSummaryPageEnhanceECommerce.apply {
                                     dataList.forEach {
                                         setPromoCode(allPromoCodes, it)

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/imgCoupon"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/img_mvc_cashback_khusus" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgCouponName"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/mvc_dimen_12dp"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/light_N700_96"
+        android:textSize="@dimen/fontSize_lvl2"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/imgCoupon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/imgCoupon"
+        app:layout_constraintTop_toTopOf="@+id/imgCoupon"
+        tools:text="Hura Hura Hujan Rejeki" />
+
+    <View
+        android:id="@+id/vMvcVerLine0"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/mvc_dimen_1dp"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:background="@color/light_N75"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgCoupon" />
+
+    <ImageView
+        android:id="@+id/imgTips"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        app:layout_constraintBottom_toBottomOf="@+id/tpgTips"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tpgTips"
+        app:srcCompat="@drawable/ic_mvc_tips_yellow" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgTips"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/mvc_dimen_10dp"
+        android:layout_marginTop="@dimen/mvc_dimen_12dp"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:text="@string/update_quota_rule"
+        android:textColor="@color/light_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgTips"
+        app:layout_constraintTop_toBottomOf="@+id/vMvcVerLine0"
+        app:typographyType="body_3" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/mvc_dimen_1dp"
+        android:layout_marginTop="@dimen/mvc_dimen_12dp"
+        android:background="@color/light_N75"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tpgTips" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/textFieldQuota"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/mvc_dimen_20dp"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
+        app:text_field_input_type="number"
+        app:text_field_label="@string/coupon_quota" />
+
+    <RelativeLayout
+        android:id="@+id/layoutExpenseEstimation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_24"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:background="@drawable/mvc_rectangle_grey_f8fafc_radius_4dp"
+        android:padding="@dimen/unify_space_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textFieldQuota">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/typography20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/maximum_expense_estimation"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="heading_6" />
+
+        <ImageView
+            android:id="@+id/imgExpenseEstimationDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_4"
+            android:layout_toEndOf="@id/typography20"
+            android:contentDescription="@string/maximum_expense_estimation"
+            android:src="@drawable/ic_info_outline" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/typography30"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/typography20"
+            android:layout_marginTop="@dimen/unify_space_2"
+            android:text="@string/expense_description"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpg_expense_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/typography20"
+            android:layout_alignTop="@id/typography20"
+            android:layout_alignBottom="@id/typography30"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/unify_space_2"
+            android:gravity="center"
+            android:text="@string/hyphen"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="heading_5"
+            tools:text="Rp 20.000" />
+
+    </RelativeLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgRetry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:text="@string/retry_label"
+        android:textColor="@color/Unify_G500"
+        app:layout_constraintBottom_toBottomOf="@+id/btnSave"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnSave" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnSave"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/mvc_dimen_20dp"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:text="@string/mvc_save_changes"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tpgRetry"
+        app:layout_constraintTop_toBottomOf="@+id/layoutExpenseEstimation"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupTicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:constraint_referenced_ids="imgTips,tpgTips,divider" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

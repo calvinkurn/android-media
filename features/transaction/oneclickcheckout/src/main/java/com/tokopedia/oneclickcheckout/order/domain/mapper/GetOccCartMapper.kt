@@ -18,9 +18,7 @@ import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import com.tokopedia.purchase_platform.common.utils.Utils
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.math.min
 
 class GetOccCartMapper @Inject constructor() {
@@ -47,7 +45,6 @@ class GetOccCartMapper @Inject constructor() {
                 prompt = mapPrompt(data.prompt),
                 errorCode = data.errorCode,
                 popUpMessage = data.popUpMessage,
-                maxQty = data.maxQty,
                 totalProductPrice = data.totalProductPrice,
                 profileCode = data.paymentAdditionalData.profileCode,
                 popUp = mapPopUp(data.popUp)
@@ -242,8 +239,13 @@ class GetOccCartMapper @Inject constructor() {
                 state = address.state,
                 stateDetail = address.stateDetail,
                 status = address.status,
-                tokoNowShopId = address.tokoNow.shopId,
-                tokoNowWarehouseId = address.tokoNow.warehouseId
+                tokoNow = OrderProfileAddressTokoNow(
+                    isModified = address.tokoNow.isModified,
+                    shopId = address.tokoNow.shopId,
+                    warehouseId = address.tokoNow.warehouseId,
+                    warehouses = address.tokoNow.warehouses,
+                    serviceType = address.tokoNow.serviceType
+                )
         )
     }
 
@@ -288,7 +290,6 @@ class GetOccCartMapper @Inject constructor() {
                 creditCard = mapPaymentCreditCard(payment, data),
                 errorMessage = mapPaymentErrorMessage(payment.errorMessage),
                 revampErrorMessage = mapPaymentRevampErrorMessage(payment.occRevampErrorMessage),
-                errorTickerMessage = data.errorTicker,
                 isDisablePayButton = payment.isDisablePayButton,
                 isOvoOnlyCampaign = payment.isOvoOnlyCampaign,
                 ovoData = mapPaymentOvoData(payment.ovoAdditionalData, data),
@@ -374,7 +375,8 @@ class GetOccCartMapper @Inject constructor() {
                 callbackUrl = callbackUrl,
                 activation = mapPaymentWalletActionData(walletAdditionalData.activation),
                 topUp = mapPaymentWalletActionData(walletAdditionalData.topUp),
-                phoneNumber = mapPaymentWalletActionData(walletAdditionalData.phoneNumberRegistered)
+                phoneNumber = mapPaymentWalletActionData(walletAdditionalData.phoneNumberRegistered),
+                goCicilData = mapPaymentGoCicilData(walletAdditionalData.goCicilData),
         )
     }
 
@@ -398,6 +400,16 @@ class GetOccCartMapper @Inject constructor() {
                 isHideDigital = walletData.isHideDigital,
                 headerTitle = walletData.headerTitle,
                 urlLink = walletData.urlLink
+        )
+    }
+
+    private fun mapPaymentGoCicilData(goCicilData: GoCicilData): OrderPaymentGoCicilData {
+        return OrderPaymentGoCicilData(
+                errorMessageInvalidTenure = goCicilData.errorMessageInvalidTenure,
+                errorMessageBottomLimit = goCicilData.errorMessageBottomLimit,
+                errorMessageTopLimit = goCicilData.errorMessageTopLimit,
+                errorMessageUnavailableTenures = goCicilData.errorMessageUnavailableTenures,
+                selectedTenure = goCicilData.selectedTenure,
         )
     }
 
@@ -436,9 +448,9 @@ class GetOccCartMapper @Inject constructor() {
     }
 
     private fun mapPrompt(promptResponse: OccPromptResponse): OccPrompt {
-        return OccPrompt(promptResponse.type.toLowerCase(Locale.ROOT), promptResponse.title,
+        return OccPrompt(promptResponse.type.lowercase(), promptResponse.title,
                 promptResponse.description, promptResponse.imageUrl, promptResponse.buttons.map {
-            OccPromptButton(it.text, it.link, it.action.toLowerCase(Locale.ROOT), it.color.toLowerCase(Locale.ROOT))
+            OccPromptButton(it.text, it.link, it.action.lowercase(), it.color.lowercase())
         })
     }
 

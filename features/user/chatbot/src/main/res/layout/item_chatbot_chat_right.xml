@@ -23,7 +23,7 @@
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/chatbot_color_date"
             android:paddingTop="@dimen/spacing_lvl1"
             android:paddingBottom="@dimen/spacing_lvl1"
             android:paddingLeft="@dimen/unify_space_12"

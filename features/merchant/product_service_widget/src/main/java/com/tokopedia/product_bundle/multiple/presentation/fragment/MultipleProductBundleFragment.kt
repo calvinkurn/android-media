@@ -292,12 +292,8 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         geBundlePage?.apply {
             errorIllustration.loadImageWithoutPlaceholder(ProductBundleConstants.BUNDLE_EMPTY_IMAGE_URL)
             errorTitle.text = getString(R.string.single_bundle_error_bundle)
-            errorDescription.text = getString(R.string.single_bundle_error_bundle_desc)
-            errorAction.text = if (viewModel.pageSource == PAGE_SOURCE_CART) {
-                getString(R.string.action_back_to_cart)
-            } else {
-                getString(R.string.action_back_to_pdp)
-            }
+            errorDescription.text = getString(R.string.error_bundle_desc)
+            errorAction.text = getString(R.string.action_back_to_recent_page)
             errorAction.setOnClickListener {
                 activity?.finish()
             }

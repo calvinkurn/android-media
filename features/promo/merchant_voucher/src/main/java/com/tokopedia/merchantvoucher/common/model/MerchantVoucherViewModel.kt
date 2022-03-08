@@ -38,7 +38,9 @@ class MerchantVoucherViewModel(var voucherId: Int = 0,
                                var ownerId: Int? = MerchantVoucherOwnerTypeDef.TYPE_MERCHANT,
                                var enableButtonUse: Boolean = false,
                                var restrictedForLiquidProduct: Boolean = false,
-                               var isPublic: Boolean = true) : Visitable<MerchantVoucherAdapterTypeFactory>, Parcelable, ImpressHolder() {
+                               var isPublic: Boolean = true,
+                               var isLockToProduct: Boolean = false
+) : Visitable<MerchantVoucherAdapterTypeFactory>, Parcelable, ImpressHolder() {
 
     fun isAvailable() = status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE
 

@@ -15,6 +15,8 @@ import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.model.*
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.REPURCHASE_EMPTY_RESOURCE_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeRes
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.SORT_FILTER
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseProductMapper.mapToProductListUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.factory.RepurchaseSortFilterFactory
@@ -97,8 +99,8 @@ object RepurchaseLayoutMapper {
         add(TokoNowChooseAddressWidgetUiModel())
     }
 
-    fun MutableList<Visitable<*>>.addEmptyStateOoc() {
-        add(TokoNowEmptyStateOocUiModel(hostSource = SOURCE))
+    fun MutableList<Visitable<*>>.addEmptyStateOoc(serviceType: String) {
+        add(TokoNowEmptyStateOocUiModel(hostSource = SOURCE, serviceType = serviceType))
     }
 
     fun MutableList<Visitable<*>>.addRecomWidget(pageName: String) {
@@ -111,11 +113,14 @@ object RepurchaseLayoutMapper {
         )
     }
 
-    fun MutableList<Visitable<*>>.addEmptyStateNoResult() {
+    fun MutableList<Visitable<*>>.addEmptyStateNoResult(serviceType: String) {
         add(
             TokoNowEmptyStateNoResultUiModel(
                 defaultTitleResId = R.string.tokopedianow_repurchase_no_result_title,
-                defaultDescriptionResId = R.string.tokopedianow_repurchase_no_result_description,
+                defaultDescriptionResId = getServiceTypeRes(
+                    key = REPURCHASE_EMPTY_RESOURCE_ID,
+                    serviceType = serviceType
+                ),
                 globalSearchBtnTextResId = R.string.tokopedianow_back_to_tokopedia
             )
         )

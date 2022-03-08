@@ -189,7 +189,7 @@ class NewShopPageFragment :
         private const val FRAGMENT_SHOWCASE_KEY_SHOP_ATTRIBUTION = "SHOP_ATTRIBUTION"
         private const val FRAGMENT_SHOWCASE_KEY_IS_OS = "IS_OS"
         private const val FRAGMENT_SHOWCASE_KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
-
+        private const val QUERY_PARAM_EXT_PARAM = "extParam"
         const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
         const val EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION"
         const val TAB_POSITION_HOME = 0
@@ -284,6 +284,7 @@ class NewShopPageFragment :
     private val intentData: Intent = Intent()
     private var shouldOverrideTabToHome: Boolean = false
     private var isRefresh: Boolean = false
+    private var extParam: String = ""
     private var shouldOverrideTabToProduct: Boolean = false
     private var shouldOverrideTabToFeed: Boolean = false
     private var shouldOpenShopNoteBottomSheet: Boolean = false
@@ -342,6 +343,11 @@ class NewShopPageFragment :
 
     override fun initInjector() {
         component?.inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        setDataFromAppLinkQueryParam()
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -649,12 +655,7 @@ class NewShopPageFragment :
 
         shopViewModel?.shopPageTickerData?.observe(owner, Observer { result ->
             if (result is Success) {
-                shopPageHeaderDataModel?.let {
-                    it.statusTitle = result.data.statusTitle
-                    it.statusMessage = result.data.statusMessage
-                    it.shopStatus = result.data.shopStatus
-                    shopPageFragmentHeaderViewHolder?.updateShopTicker(it, isMyShop)
-                }
+                shopPageFragmentHeaderViewHolder?.updateShopTicker(result.data, isMyShop)
             }
         })
 
@@ -795,13 +796,13 @@ class NewShopPageFragment :
     }
 
     private fun getShopPageP2Data() {
-        getShopInfoData()
+        getShopShareAndOperationalHourStatusData()
         getFollowStatus()
         getSellerPlayWidget()
     }
 
-    private fun getShopInfoData() {
-        shopViewModel?.getShopInfoData(shopId, shopDomain ?: "", isRefresh)
+    private fun getShopShareAndOperationalHourStatusData() {
+        shopViewModel?.getShopShareAndOperationalHourStatusData(shopId, shopDomain ?: "", isRefresh)
     }
 
     private fun getSellerPlayWidget() {
@@ -1002,8 +1003,19 @@ class NewShopPageFragment :
                 "",
                 "",
                 isRefresh,
-                localCacheModel ?: LocalCacheModel()
+                localCacheModel ?: LocalCacheModel(),
+                extParam
         )
+    }
+
+    private fun setDataFromAppLinkQueryParam() {
+        activity?.intent?.data?.run {
+            val uri = toString()
+            val params = UriUtil.uriQueryParamsToMap(uri)
+            if (params.isNotEmpty()) {
+                extParam = params[QUERY_PARAM_EXT_PARAM].orEmpty().encodeToUtf8()
+            }
+        }
     }
 
     private fun initToolbar() {

@@ -1,7 +1,8 @@
 package com.tokopedia.cart.view.uimodel
 
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopTypeInfo
-import java.util.*
+import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 
 data class CartShopHolderData(
         var cartString: String = "",
@@ -31,6 +32,14 @@ data class CartShopHolderData(
         var isNeedToRefreshWeight: Boolean = false,
         var isError: Boolean = false,
         var promoCodes: List<String> = emptyList(),
+        var shopShipments: List<ShopShipment> = emptyList(),
+        var districtId: String = "",
+        var postalCode: String = "",
+        var latitude: String = "",
+        var longitude: String = "",
+        var boMetadata: BoMetadata = BoMetadata(),
+        var boAffordability: CartShopBoAffordabilityData = CartShopBoAffordabilityData()
+        var promoCodes: List<String> = emptyList(),
         var addOnText: String = "",
         var addOnImgUrl: String = "",
         var addOnId: String = ""
@@ -38,39 +47,67 @@ data class CartShopHolderData(
     val shouldValidateWeight: Boolean
         get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()
 
+    val isOverweight: Boolean
+        get() = shouldValidateWeight && totalWeight > maximumShippingWeight
+
+    val hasSelectedProduct: Boolean
+        get() = isAllSelected || isPartialSelected
+
     fun deepCopy(): CartShopHolderData {
         return CartShopHolderData(
-                cartString = this.cartString,
-                shopId = this.shopId,
-                shopName = this.shopName,
-                shopTypeInfo = this.shopTypeInfo,
-                isFulfillment = this.isFulfillment,
-                fulfillmentName = this.fulfillmentName,
-                fulfillmentBadgeUrl = this.fulfillmentBadgeUrl,
-                estimatedTimeArrival = this.estimatedTimeArrival,
-                productUiModelList = this.productUiModelList.toMutableList(),
-                isShowPin = this.isShowPin,
-                pinCoachmarkMessage = this.pinCoachmarkMessage,
-                isTokoNow = this.isTokoNow,
-                preOrderInfo = this.preOrderInfo,
-                incidentInfo = this.incidentInfo,
-                isFreeShippingExtra = this.isFreeShippingExtra,
-                freeShippingBadgeUrl = this.freeShippingBadgeUrl,
-                maximumWeightWording = this.maximumWeightWording,
-                maximumShippingWeight = this.maximumShippingWeight,
-                totalWeight = this.totalWeight,
-                isAllSelected = this.isAllSelected,
-                isPartialSelected = this.isPartialSelected,
-                isCollapsible = this.isCollapsible,
-                isCollapsed = this.isCollapsed,
-                clickedCollapsedProductIndex = this.clickedCollapsedProductIndex,
-                isNeedToRefreshWeight = this.isNeedToRefreshWeight,
-                isError = this.isError,
-                promoCodes = this.promoCodes.toMutableList()
+            cartString = this.cartString,
+            shopId = this.shopId,
+            shopName = this.shopName,
+            shopTypeInfo = this.shopTypeInfo,
+            isFulfillment = this.isFulfillment,
+            fulfillmentName = this.fulfillmentName,
+            fulfillmentBadgeUrl = this.fulfillmentBadgeUrl,
+            estimatedTimeArrival = this.estimatedTimeArrival,
+            productUiModelList = this.productUiModelList.toMutableList(),
+            isShowPin = this.isShowPin,
+            pinCoachmarkMessage = this.pinCoachmarkMessage,
+            isTokoNow = this.isTokoNow,
+            preOrderInfo = this.preOrderInfo,
+            incidentInfo = this.incidentInfo,
+            isFreeShippingExtra = this.isFreeShippingExtra,
+            freeShippingBadgeUrl = this.freeShippingBadgeUrl,
+            maximumWeightWording = this.maximumWeightWording,
+            maximumShippingWeight = this.maximumShippingWeight,
+            totalWeight = this.totalWeight,
+            isAllSelected = this.isAllSelected,
+            isPartialSelected = this.isPartialSelected,
+            isCollapsible = this.isCollapsible,
+            isCollapsed = this.isCollapsed,
+            clickedCollapsedProductIndex = this.clickedCollapsedProductIndex,
+            isNeedToRefreshWeight = this.isNeedToRefreshWeight,
+            isError = this.isError,
+            promoCodes = this.promoCodes.toMutableList(),
+            shopShipments = this.shopShipments.toMutableList(),
+            districtId = this.districtId,
+            postalCode = this.postalCode,
+            latitude = this.latitude,
+            longitude = this.longitude,
+            boMetadata = this.boMetadata,
+            boAffordability = this.boAffordability
         )
     }
 
     companion object {
         const val MAXIMUM_WEIGHT_WORDING_REPLACE_KEY = "{{weight}}"
     }
+}
+
+class CartShopBoAffordabilityData(
+        var enable: Boolean = true,
+        var state: CartShopBoAffordabilityState = CartShopBoAffordabilityState.LOADING,
+        var tickerText: String = "",
+        var errorText: String = "",
+
+        // list of cartIds for tracker
+        var cartIds: String = "",
+        var hasSeenTicker: Boolean = false,
+)
+
+enum class CartShopBoAffordabilityState {
+    LOADING, FAILED, SUCCESS_AFFORD, SUCCESS_NOT_AFFORD, EMPTY
 }

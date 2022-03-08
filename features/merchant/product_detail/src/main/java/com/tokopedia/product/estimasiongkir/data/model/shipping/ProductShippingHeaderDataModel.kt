@@ -1,6 +1,7 @@
 package com.tokopedia.product.estimasiongkir.data.model.shipping
 
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.BO_TOKONOW
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.BO_TOKONOW_15
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.NO_BEBAS_ONGKIR
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingFactory
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingVisitable
@@ -16,6 +17,8 @@ data class ProductShippingHeaderDataModel(
         val boType: Int = 0,
         val freeOngkirEstimation: String = "",
         val freeOngkirPrice: String = "",
+        val freeOngkirPriceOriginal: Double = 0.0,
+        val freeOngkirDesc: String = "",
         val freeOngkirImageUrl: String = "",
         val freeOngkirTokoNowText:String = "",
 
@@ -27,7 +30,7 @@ data class ProductShippingHeaderDataModel(
 ) : ProductShippingVisitable {
 
     fun shouldShowTxtTokoNow():Boolean {
-        return boType == BO_TOKONOW && freeOngkirTokoNowText.isNotEmpty()
+        return (boType == BO_TOKONOW || boType == BO_TOKONOW_15) && freeOngkirTokoNowText.isNotEmpty()
     }
 
     fun shouldShowFreeOngkir(): Boolean {
