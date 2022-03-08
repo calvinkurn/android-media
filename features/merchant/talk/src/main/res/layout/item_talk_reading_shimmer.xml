@@ -6,81 +6,97 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/reading_shimmer_inquirer_profile_picture"
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
     
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/reading_shimmer_inquirer_info"
         android:layout_width="@dimen/dp_80"
         android:layout_height="12dp"
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginLeft="@dimen/layout_lvl1"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toTopOf="@id/reading_shimmer_inquirer_profile_picture"
         app:layout_constraintBottom_toBottomOf="@id/reading_shimmer_inquirer_profile_picture"
         app:layout_constraintStart_toEndOf="@id/reading_shimmer_inquirer_profile_picture" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/reading_shimmer_question"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="12dp"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl2"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/reading_shimmer_inquirer_profile_picture" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/reading_shimmer_question_2"
         android:layout_width="@dimen/dp_204"
         android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl1"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="@id/reading_shimmer_question"
         app:layout_constraintTop_toBottomOf="@id/reading_shimmer_question" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/reading_shimmer_bar"
         android:layout_width="@dimen/spacing_lvl1"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_marginTop="@dimen/layout_lvl1"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/reading_shimmer_question_2"
         app:layout_constraintBottom_toBottomOf="@id/reading_shimmer_respondent_answer"
         app:layout_constraintStart_toStartOf="@id/reading_shimmer_inquirer_profile_picture"
         app:layout_constraintEnd_toEndOf="@id/reading_shimmer_inquirer_profile_picture"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/reading_shimmer_respondent_profile_picture"
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toTopOf="@id/reading_shimmer_bar"
         app:layout_constraintStart_toEndOf="@id/reading_shimmer_bar" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/reading_shimmer_respondent_info"
         android:layout_width="@dimen/dp_80"
         android:layout_height="12dp"
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginLeft="@dimen/layout_lvl1"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toTopOf="@id/reading_shimmer_respondent_profile_picture"
         app:layout_constraintBottom_toBottomOf="@id/reading_shimmer_respondent_profile_picture"
         app:layout_constraintStart_toEndOf="@id/reading_shimmer_respondent_profile_picture" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/reading_shimmer_respondent_answer"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="12dp"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toEndOf="@id/reading_shimmer_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/reading_shimmer_respondent_profile_picture" />

@@ -22,11 +22,12 @@
             tools:layout_editor_absoluteY="0dp"
             tools:layout_editor_absoluteX="2dp"
             tools:layout_conversion_absoluteWidth="52dp" />
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/icon_shimmering"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:corners="30"/>
+            app:loader_corner_radius="30dp"
+            app:loader_type="rect"/>
     </FrameLayout>
 
     <com.tokopedia.unifyprinciples.Typography

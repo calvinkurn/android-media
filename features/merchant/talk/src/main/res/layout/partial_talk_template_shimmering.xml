@@ -6,91 +6,91 @@
     android:background="@color/Unify_Background"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/talk_template_list_loading_title"
         android:layout_width="@dimen/dp_168"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl3"
-        app:corners="8"
-        app:custom_color="@color/Unify_N50"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/talk_template_list_loading_subtitle"
         android:layout_width="@dimen/dp_234"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
-        app:corners="8"
-        app:custom_color="@color/Unify_N50"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/talk_template_list_loading_title"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/talk_template_list_loading_description"
         android:layout_width="@dimen/layout_lvl8"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
-        app:corners="8"
-        app:custom_color="@color/Unify_N50"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/talk_template_list_loading_subtitle"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/talk_template_list_loading_template"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl5"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
-        app:corners="8"
-        app:custom_color="@color/Unify_N50"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/talk_template_list_loading_description" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/talk_template_list_loading_template_1"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl5"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
-        app:corners="8"
-        app:custom_color="@color/Unify_N50"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/talk_template_list_loading_template" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/talk_template_list_loading_template_2"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl5"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
-        app:corners="8"
-        app:custom_color="@color/Unify_N50"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/talk_template_list_loading_template_1" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/talk_template_list_loading_template_3"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl5"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
-        app:corners="8"
-        app:custom_color="@color/Unify_N50"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/talk_template_list_loading_template_2" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/talk_template_list_loading_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl5"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
-        app:corners="8"
-        app:custom_color="@color/Unify_N50"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,30 +10,34 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="92dp"
         android:layout_height="32dp"
-        app:corners="20" />
+        app:loader_corner_radius="20dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="92dp"
         android:layout_height="32dp"
         android:layout_marginLeft="4dp"
         android:layout_marginStart="4dp"
-        app:corners="20" />
+        app:loader_corner_radius="20dp"
+        app:loader_type="rect" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="92dp"
         android:layout_height="32dp"
         android:layout_marginLeft="4dp"
         android:layout_marginStart="4dp"
-        app:corners="20" />
+        app:loader_corner_radius="20dp"
+        app:loader_type="rect" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="92dp"
         android:layout_height="32dp"
         android:layout_marginLeft="4dp"
         android:layout_marginStart="4dp"
-        app:corners="20" />
+        app:loader_corner_radius="20dp"
+        app:loader_type="rect" />
 
 </LinearLayout>

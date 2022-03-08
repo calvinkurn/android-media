@@ -6,13 +6,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderTextView"
         android:layout_width="@dimen/home_account_dp_160"
         android:layout_height="@dimen/unify_space_12"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        app:corners="8" />
+        app:loader_corner_radius="6dp"
+        app:loader_type="rect" />
 
     <include layout="@layout/funds_and_investment_item_shimmer" />
 

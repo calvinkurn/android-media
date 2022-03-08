@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:orientation="vertical"
+<LinearLayout android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/home_account_shimmer_text_title_common_width"
-        android:layout_height="@dimen/home_account_shimmer_text_title_height" />
+        android:layout_height="@dimen/home_account_shimmer_text_title_height"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"/>
 
     <include layout="@layout/home_account_item_common_shimmer"/>
     <include layout="@layout/home_account_item_common_shimmer"/>

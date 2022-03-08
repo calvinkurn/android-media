@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/telco_loading_shimmering"
@@ -10,6 +10,7 @@
     tools:visibility="visible">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardTelcoShimmering"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
@@ -18,68 +19,92 @@
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:cardBackgroundColor="@color/Unify_N0"
         app:cardCornerRadius="@dimen/layout_lvl1"
         app:cardElevation="@dimen/telco_space_1"
         app:cardPreventCornerOverlap="false">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="match_parent"
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/loaderUnify1"
+                android:layout_width="0dp"
                 android:layout_height="@dimen/layout_lvl1"
                 android:layout_marginStart="@dimen/layout_lvl1"
                 android:layout_marginLeft="@dimen/layout_lvl2"
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:layout_marginBottom="@dimen/layout_lvl1"
-                app:corners="4"
-                app:width_weight="0.4" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.4"
+                app:loader_corner_radius="2dp"
+                app:loader_type="rect" />
 
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="match_parent"
+                android:id="@+id/loaderUnify2"
+                android:layout_width="0dp"
                 android:layout_height="@dimen/layout_lvl1"
                 android:layout_marginStart="@dimen/layout_lvl1"
                 android:layout_marginLeft="@dimen/layout_lvl2"
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:layout_marginBottom="@dimen/layout_lvl4"
-                app:corners="4"
-                app:width_weight="0.9"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/loaderUnify1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:loader_corner_radius="2dp"
+                app:loader_type="rect"
+                app:layout_constraintWidth_percent="0.9" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:layout_width="match_parent"
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/textViewTelcoShimmering"
+        android:layout_width="0dp"
         android:layout_height="@dimen/layout_lvl1"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl1"
-        app:corners="4"
-        app:width_weight="0.6" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardTelcoShimmering"
+        app:layout_constraintWidth_percent="0.6"
+        app:loader_corner_radius="2dp"
+        app:loader_type="rect" />
 
     <include
+        android:id="@+id/item_telco_shimmering_product_list_1"
         layout="@layout/item_telco_shimmering_product_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewTelcoShimmering"
         android:layout_marginHorizontal="@dimen/unify_space_12"
         android:layout_marginTop="@dimen/spacing_lvl3" />
 
     <include
+        android:id="@+id/item_telco_shimmering_product_list_2"
         layout="@layout/item_telco_shimmering_product_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_telco_shimmering_product_list_1"
         android:layout_marginHorizontal="@dimen/unify_space_12" />
 
     <include
         layout="@layout/item_telco_shimmering_product_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_telco_shimmering_product_list_2"
         android:layout_marginHorizontal="@dimen/unify_space_12" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

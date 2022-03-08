@@ -9,57 +9,63 @@
     android:visibility="gone"
     tools:visibility="visible">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmering_card_title"
         android:layout_width="@dimen/shc_dimen_156dp"
         android:layout_height="@dimen/layout_lvl2"
-        app:corners="10"
+        app:loader_corner_radius="5dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmering_score"
         android:layout_width="@dimen/layout_lvl5"
         android:layout_height="@dimen/layout_lvl2"
-        app:corners="10"
+        app:loader_corner_radius="5dp"
+        app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="@id/shimmering_shop_score_widget"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/shimmering_shop_score_widget" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmering_shop_score_widget"
         android:layout_width="@dimen/shc_dimen_50dp"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
-        app:corners="10"
+        app:loader_corner_radius="5dp"
+        app:loader_type="rect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shimmering_card_title" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmering_first_line_description"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl4"
-        app:corners="10"
+        app:loader_corner_radius="5dp"
+        app:loader_type="rect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shimmering_shop_score_widget" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmering_second_line_description"
         android:layout_width="@dimen/shc_dimen_136dp"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
-        app:corners="10"
+        app:loader_corner_radius="5dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shimmering_first_line_description" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmering_see_details"
         android:layout_width="@dimen/shc_dimen_136dp"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/shc_dimen_12dp"
-        app:corners="10"
+        app:loader_corner_radius="5dp"
+        app:loader_type="rect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shimmering_second_line_description" />
 

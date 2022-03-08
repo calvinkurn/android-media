@@ -64,4 +64,8 @@
     <dimen name="ovo_default_text_size">12sp</dimen>
     <dimen name="home_tokopoints_header">10sp</dimen>
     <dimen name="home_balance_default_text_size">10sp</dimen>
+
+    <!--Loader Unify -->
+    <dimen name="corner_radius_shimmering_small">6dp</dimen>
+    <dimen name="corner_radius_shimmering">20dp</dimen>
 </resources>

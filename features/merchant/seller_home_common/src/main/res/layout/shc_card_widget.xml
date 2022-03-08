@@ -118,24 +118,26 @@
             app:typographyWeight="reguler"
             tools:text="Potensi +Rp10 jt" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/shimmerCardTitle"
             android:layout_width="@dimen/layout_lvl8"
             android:layout_height="@dimen/layout_lvl2"
             android:layout_marginTop="12dp"
             android:visibility="gone"
-            app:corners="10"
+            app:loader_corner_radius="5dp"
+            app:loader_type="rect"
             app:layout_constraintStart_toStartOf="@+id/glShcCardStart"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/shimmerCardValue"
             android:layout_width="@dimen/layout_lvl6"
             android:layout_height="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/layout_lvl1"
             android:layout_marginBottom="16dp"
             android:visibility="gone"
-            app:corners="10"
+            app:loader_corner_radius="5dp"
+            app:loader_type="rect"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/glShcCardStart"
             app:layout_constraintTop_toBottomOf="@+id/shimmerCardTitle"

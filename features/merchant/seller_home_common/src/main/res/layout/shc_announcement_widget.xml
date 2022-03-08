@@ -70,33 +70,36 @@
         android:layout_height="wrap_content"
         android:visibility="gone">
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/shcAnnouncementShimmerImg"
             android:layout_width="@dimen/layout_lvl6"
             android:layout_height="@dimen/layout_lvl6"
             android:layout_margin="@dimen/layout_lvl2"
-            app:corners="10"
+            app:loader_corner_radius="5dp"
+            app:loader_type="rect"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/shcAnnouncementShimmerTitle"
             android:layout_width="@dimen/shc_dimen_190dp"
             android:layout_height="@dimen/layout_lvl2"
             android:layout_marginStart="@dimen/layout_lvl2"
-            app:corners="10"
+            app:loader_corner_radius="5dp"
+            app:loader_type="rect"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/shcAnnouncementShimmerImg"
             app:layout_constraintTop_toTopOf="@+id/shcAnnouncementShimmerImg" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/shcAnnouncementShimmerSubTitle"
             android:layout_width="@dimen/shc_dimen_120dp"
             android:layout_height="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/spacing_lvl2"
-            app:corners="10"
+            app:loader_corner_radius="5dp"
+            app:loader_type="rect"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/shcAnnouncementShimmerTitle"

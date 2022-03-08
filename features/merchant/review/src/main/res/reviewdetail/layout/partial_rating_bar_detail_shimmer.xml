@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/rectangleCheckbox"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
@@ -12,17 +12,19 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
-        app:corners="8"
+        app:loader_corner_radius="3dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/rectangleProgressbar"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/rectangleProgressbar"
         android:layout_width="@dimen/dp_290"
         android:layout_height="@dimen/dp_10"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:corners="6"
+        app:loader_corner_radius="3dp"
+        app:loader_type="rect"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"

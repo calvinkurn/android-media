@@ -13,7 +13,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.elyeproj.loaderviewlibrary.LoaderTextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.iconunify.IconUnify
@@ -28,6 +27,7 @@ import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topupbills.R
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import org.jetbrains.annotations.NotNull
@@ -43,7 +43,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     protected val inputNumberField: TextFieldUnify2
     protected val layoutInputNumber: ConstraintLayout
     protected val sortFilterChip: SortFilter
-    protected val sortFilterChipShimmer: LoaderTextView
+    protected val sortFilterChipShimmer: LoaderUnify
 
     private val inputNumberResult: TextView
     private val imgOperatorResult: ImageView
