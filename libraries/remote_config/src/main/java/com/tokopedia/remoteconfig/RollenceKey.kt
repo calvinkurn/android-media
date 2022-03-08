@@ -62,4 +62,7 @@ object RollenceKey {
     // advanced search negative keywords
     const val SEARCH_ADVANCED_KEYWORD_ADV_NEG = "keyword_adv_neg"
     const val SEARCH_ADVANCED_NEGATIVE_NO_ADS = "negative_no_ads"
+
+    // Fulfillment Rebranding
+    const val FULFILLMENT_REBRANDING = "fulfill_rebranding"
 }

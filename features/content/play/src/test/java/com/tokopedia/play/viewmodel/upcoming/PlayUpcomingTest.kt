@@ -13,7 +13,6 @@ import com.tokopedia.play.fake.FakePlayShareExperience
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayPartnerInfoModelBuilder
 import com.tokopedia.play.model.PlayUpcomingInfoModelBuilder
-import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.robot.upcoming.createPlayUpcomingViewModelRobot
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
@@ -163,7 +162,7 @@ class PlayUpcomingTest {
             /** Verify */
             verify { mockPlayNewAnalytic.clickRemindMe(any()) }
 
-            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.Reminded)
+            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.Reminded)
             events.last().isEqualToIgnoringFields(mockEvent, PlayUpcomingUiEvent.RemindMeEvent::message)
         }
     }
@@ -207,7 +206,7 @@ class PlayUpcomingTest {
             /** Verify */
             verify { mockPlayNewAnalytic.clickRemindMe(any()) }
 
-            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.RemindMe)
+            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.RemindMe)
             events.last().isEqualToIgnoringFields(mockEvent, PlayUpcomingUiEvent.RemindMeEvent::message)
         }
     }
@@ -238,7 +237,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify */
-            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.Loading)
+            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.Loading)
             events.last().isEqualToIgnoringFields(mockEvent, PlayUpcomingUiEvent.OpenPageEvent::requestCode)
         }
     }
@@ -275,7 +274,7 @@ class PlayUpcomingTest {
             verify { mockPlayNewAnalytic.clickWatchNow(mockChannelData.id) }
 
             events.assertNotEmpty()
-            events.last().isEqualTo(PlayUpcomingUiEvent.RefreshChannelEvent)
+            events.last().assertEqualTo(PlayUpcomingUiEvent.RefreshChannelEvent)
         }
     }
 
@@ -312,7 +311,7 @@ class PlayUpcomingTest {
             verify { mockPlayNewAnalytic.clickShop(any(), any(), any()) }
 
             events.assertNotEmpty()
-            events.last().isEqualTo(mockEvent)
+            events.last().assertEqualTo(mockEvent)
         }
     }
 
@@ -342,7 +341,7 @@ class PlayUpcomingTest {
 
             /** Verify **/
             events.assertNotEmpty()
-            events.last().isEqualTo(mockEvent)
+            events.last().assertEqualTo(mockEvent)
         }
     }
 
@@ -386,9 +385,8 @@ class PlayUpcomingTest {
     fun `given a upcoming channel, when user click follow and user is logged in and partner is not followed yet, then it should follow the user`() {
         /** Mock */
         every { mockUserSession.isLoggedIn } returns true
-        coEvery { mockRepo.getProfileHeader(any()) } returns "99abhsb"
-        coEvery { mockRepo.getFollowingKOL(any()) } returns false
-        coEvery { mockRepo.postFollowKol(any(), PartnerFollowAction.Follow) } returns true
+        coEvery { mockRepo.getIsFollowingPartner(any()) } returns false
+        coEvery { mockRepo.postFollowStatus(any(), any()) } returns true
 
         /** Prepare */
         val robot = createPlayUpcomingViewModelRobot(
@@ -398,7 +396,7 @@ class PlayUpcomingTest {
             playChannelSSE = fakePlayChannelSSE,
             repo = mockRepo
         ) {
-            viewModel.initPage(mockChannelDataWithBuyerPartner.id, mockChannelDataWithBuyerPartner)
+            viewModel.initPage(mockChannelData.id, mockChannelData)
         }
 
         robot.use {

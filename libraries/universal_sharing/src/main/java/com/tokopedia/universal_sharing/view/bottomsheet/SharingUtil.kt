@@ -224,6 +224,18 @@ class SharingUtil {
                            ClipboardHandler().copyToClipboard((activity as Activity), shareString)
                        })
                    }
+                   is ShareModel.Telegram -> {
+                       activity?.startActivity(shareModel.appIntent?.apply {
+                           if(shareImageFileUri != null) {
+                               putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
+                           }
+                           type = UniversalShareBottomSheet.MimeType.ALL.type
+                           if(shareModel.shareOnlyLink){
+                               shareString = linkerShareData?.url ?: ""
+                           }
+                           putExtra(Intent.EXTRA_TEXT, shareString)
+                       })
+                   }
                    else -> {
                        activity?.startActivity(shareModel.appIntent?.apply {
                            if(shareImageFileUri != null) {
