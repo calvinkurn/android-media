@@ -326,6 +326,10 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         }
     }
 
+    fun isSimplifiedLayoutShown(): Boolean {
+        return binding.includeLayout.clientNumberWidgetSimplifiedLayout.isVisible
+    }
+
     fun setCustomInputNumberFormatter(func: (String) -> String) {
         this.customInputNumberFormatter = func
     }
