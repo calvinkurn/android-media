@@ -47,7 +47,7 @@
                 app:loader_type="rect" />
 
 
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/loaderUnify2"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/layout_lvl1"

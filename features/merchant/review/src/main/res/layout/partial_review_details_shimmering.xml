@@ -18,19 +18,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             
-            <com.elyeproj.loaderviewlibrary.LoaderImageView
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/review_detail_shimmer_product_image"
                 android:layout_width="@dimen/dp_56"
                 android:layout_height="@dimen/dp_56"
                 android:layout_marginTop="12dp"
                 android:layout_marginStart="12dp"
                 android:layout_marginLeft="12dp"
-                app:corners="8"
+                app:loader_corner_radius="4dp"
+                app:loader_type="rect"
                 app:custom_color="@color/Unify_N50"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/review_detail_shimmer_product_name"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="12dp"
@@ -39,20 +40,22 @@
                 android:layout_marginRight="@dimen/layout_lvl2"
                 android:layout_marginStart="12dp"
                 android:layout_marginLeft="12dp"
-                app:corners="8"
+                app:loader_corner_radius="4dp"
+                app:loader_type="rect"
                 app:custom_color="@color/Unify_N50"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@id/review_detail_shimmer_product_image"
                 app:layout_constraintEnd_toEndOf="parent" />
 
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/review_detail_shimmer_product_variant"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="12dp"
                 android:layout_marginTop="@dimen/layout_lvl1"
                 android:layout_marginEnd="@dimen/layout_lvl6"
                 android:layout_marginRight="@dimen/layout_lvl6"
-                app:corners="8"
+                app:loader_corner_radius="4dp"
+                app:loader_type="rect"
                 app:custom_color="@color/Unify_N50"
                 app:layout_constraintTop_toBottomOf="@id/review_detail_shimmer_product_name"
                 app:layout_constraintStart_toStartOf="@id/review_detail_shimmer_product_name"
@@ -62,48 +65,52 @@
         
     </com.tokopedia.unifycomponents.CardUnify>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/review_detail_shimmer_rating"
         android:layout_width="@dimen/layout_lvl9"
         android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_detail_shimmer_card"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/review_detail_shimmer_name"
         android:layout_width="match_parent"
         android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_detail_shimmer_rating" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/review_detail_shimmer_content"
         android:layout_width="match_parent"
         android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_detail_shimmer_name" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/review_detail_shimmer_content_2"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl7"
         android:layout_marginRight="@dimen/layout_lvl7"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_detail_shimmer_content"
         app:layout_constraintStart_toStartOf="@id/review_detail_shimmer_rating"
@@ -118,37 +125,40 @@
         app:layout_constraintTop_toTopOf="@id/review_detail_shimmer_responder_name"
         app:layout_constraintBottom_toBottomOf="@id/review_detail_shimmer_response_2"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/review_detail_shimmer_responder_name"
         android:layout_width="@dimen/layout_lvl9"
         android:layout_height="12dp"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl3"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_detail_shimmer_content_2"
         app:layout_constraintStart_toEndOf="@id/review_detail_shimmer_response_tab" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/review_detail_shimmer_response"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl1"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_detail_shimmer_responder_name"
         app:layout_constraintStart_toStartOf="@id/review_detail_shimmer_responder_name"
         app:layout_constraintEnd_toEndOf="@id/review_detail_shimmer_content" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/review_detail_shimmer_response_2"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl9"
         android:layout_marginRight="@dimen/layout_lvl9"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_detail_shimmer_response"
         app:layout_constraintStart_toStartOf="@id/review_detail_shimmer_responder_name"
