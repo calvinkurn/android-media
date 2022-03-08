@@ -77,8 +77,7 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
             }
             it.tipsReschedulePickup.description = builder
 
-            // todo icon is not done
-            com.tokopedia.iconunify.R.drawable.iconunify_chevron_down.let { icon ->
+            R.drawable.ic_chevron_down.let { icon ->
                 it.etDay.setFirstIcon(icon)
                 it.etTime.setFirstIcon(icon)
                 it.etReason.setFirstIcon(icon)
@@ -258,6 +257,19 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
             wrapper.isErrorEnabled = true
             wrapper.error = s
         }
+    }
+
+    private fun setLoader(show: Boolean) {
+        if (show) {
+            binding?.loaderRescheduleDetail?.visibility = View.VISIBLE
+        } else {
+            binding?.loaderRescheduleDetail?.visibility = View.GONE
+        }
+    }
+
+    private fun setRescheduleDetailSummary(summary: String) {
+        binding?.layoutRescheduleDetail?.visibility = View.VISIBLE
+        binding?.rescheduleDetail?.text = summary
     }
 
     private fun validateInput() {
