@@ -45,6 +45,7 @@ class RechargeHomepageLastItemViewHolder(
             val layoutParams = cardViewRechargeHomepageLastItem.layoutParams
             layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
             cardViewRechargeHomepageLastItem.layoutParams = layoutParams
+            cardViewRechargeHomepageLastItem.requestLayout()
         }
     }
 
