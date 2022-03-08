@@ -1,4 +1,4 @@
-package com.tokopedia.logisticorder.view.reschedule_pickup
+package com.tokopedia.sellerorder.reschedule_pickup.presentation.fragment
 
 import android.content.Context
 import android.graphics.Typeface
@@ -22,12 +22,13 @@ import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.logisticorder.R
-import com.tokopedia.logisticorder.databinding.FragmentReschedulePickupBinding
-import com.tokopedia.logisticorder.di.DaggerReschedulePickupComponent
-import com.tokopedia.logisticorder.di.ReschedulePickupComponent
-import com.tokopedia.logisticorder.utils.OrderedListSpan
-import com.tokopedia.logisticorder.view.bottomsheet.RescheduleOptionBottomSheet
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.util.OrderedListSpan
+import com.tokopedia.sellerorder.databinding.FragmentReschedulePickupBinding
+import com.tokopedia.sellerorder.reschedule_pickup.di.DaggerReschedulePickupComponent
+import com.tokopedia.sellerorder.reschedule_pickup.di.ReschedulePickupComponent
+import com.tokopedia.sellerorder.reschedule_pickup.presentation.bottomsheet.RescheduleOptionBottomSheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -186,21 +187,22 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
         }
     }
 
-    companion object {
-        private const val OTHER_REASON_RESCHEDULE = "Lainnya (Isi Sendiri)"
-        private const val OTHER_REASON_MIN_CHAR = 15
-        private const val OTHER_REASON_MAX_CHAR = 160
-        private const val ARGUMENTS_COURIER_NAME = "ARGUMENTS_COURIER_NAME"
-        private const val ARGUMENTS_INVOICE = "ARGUMENTS_INVOICE"
-        fun newInstance(bundle: Bundle): ReschedulePickupFragment {
-            return ReschedulePickupFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARGUMENTS_COURIER_NAME, bundle.getString(ARGUMENTS_COURIER_NAME))
-                    putString(ARGUMENTS_INVOICE, bundle.getString(ARGUMENTS_INVOICE))
-                }
+    private fun showDialogFragment(titleText: String?, bodyText: String?, positiveButton: String?, negativeButton: String?) {
+        val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(titleText ?: "")
+            setDescription(bodyText ?: "")
+            setPrimaryCTAText(positiveButton ?: "")
+            setPrimaryCTAClickListener {
+                this.dismiss()
             }
+            setSecondaryCTAClickListener {
+                dismiss()
+            }
+            setSecondaryCTAText(negativeButton ?: "")
         }
+        dialog.show()
     }
+
 
     private fun setDayBottomSheetListener(): RescheduleOptionBottomSheet.ChooseOptionListener {
         return object : RescheduleOptionBottomSheet.ChooseOptionListener {
@@ -315,6 +317,22 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
                     Toaster.LENGTH_SHORT,
                     Toaster.TYPE_ERROR,
                 ).show()
+            }
+        }
+    }
+
+    companion object {
+        private const val OTHER_REASON_RESCHEDULE = "Lainnya (Isi Sendiri)"
+        private const val OTHER_REASON_MIN_CHAR = 15
+        private const val OTHER_REASON_MAX_CHAR = 160
+        private const val ARGUMENTS_COURIER_NAME = "ARGUMENTS_COURIER_NAME"
+        private const val ARGUMENTS_INVOICE = "ARGUMENTS_INVOICE"
+        fun newInstance(bundle: Bundle): ReschedulePickupFragment {
+            return ReschedulePickupFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARGUMENTS_COURIER_NAME, bundle.getString(ARGUMENTS_COURIER_NAME))
+                    putString(ARGUMENTS_INVOICE, bundle.getString(ARGUMENTS_INVOICE))
+                }
             }
         }
     }

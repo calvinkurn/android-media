@@ -1,4 +1,4 @@
-package com.tokopedia.logisticorder.utils
+package com.tokopedia.sellerorder.common.util
 
 import android.graphics.Canvas
 import android.graphics.Paint

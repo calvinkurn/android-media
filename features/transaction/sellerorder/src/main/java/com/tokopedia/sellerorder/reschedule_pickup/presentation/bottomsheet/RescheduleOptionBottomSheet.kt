@@ -1,11 +1,11 @@
-package com.tokopedia.logisticorder.view.bottomsheet
+package com.tokopedia.sellerorder.reschedule_pickup.presentation.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.logisticorder.databinding.BottomsheetRescheduleOptionBinding
+import com.tokopedia.sellerorder.databinding.BottomsheetRescheduleOptionBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.utils.lifecycle.autoCleared

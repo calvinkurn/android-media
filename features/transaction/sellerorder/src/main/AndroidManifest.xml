@@ -137,5 +137,11 @@
             android:configChanges="uiMode"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+        <activity
+            android:name="com.tokopedia.sellerorder.reschedule_pickup.presentation.activity.ReschedulePickupActivity"
+            android:exported="false"
+            android:label="@string/label_reschedule_pickup_activity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify" />
     </application>
 </manifest>

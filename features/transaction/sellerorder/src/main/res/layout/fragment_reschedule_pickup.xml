@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Unify_Background"
-    tools:context=".view.reschedule_pickup.ReschedulePickupFragment">
+    tools:context="com.tokopedia.sellerorder.reschedule_pickup.presentation.fragment.ReschedulePickupFragment">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/layout_form_reschedule_pickup"

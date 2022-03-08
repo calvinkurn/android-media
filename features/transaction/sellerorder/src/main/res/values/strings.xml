@@ -351,4 +351,22 @@
     <string name="som_request_cancellation_desc_continue_send_order_dialog">Untuk menghindari komplain, pastikan pengiriman pesanan sudah dapat persetujuan dari pembeli.</string>
     <string name="som_request_cancellation_btn_primary_continue_send_order_dialog">Lanjut Kirim</string>
     <string name="som_request_cancellation_desc_confirm_cancellation_order_dialog">Pastikan pesanan belum diserahkan ke kurir sebelum membatalkan. Skor Performa Toko tidak dikurangi.</string>
+
+
+    <!--    Reschedule Pickup-->
+    <string name="label_reschedule_pickup_activity">Ubah Jadwal Pick-up</string>
+    <string name="title_button_reschedule_pickup">Atur Ulang Jadwal Pick-up</string>
+    <string name="label_detail_reason_reschedule_pickup">Detail Alasan Lainnya</string>
+    <string name="label_reason_reschedule_pickup">Alasan Perubahan Jadwal</string>
+    <string name="placeholder_time_reschedule_pick_up">Pilih Waktu Pencarian Pick-up Baru</string>
+    <string name="label_time_reschedule_pick_up">Waktu Pencarian Pick-up Baru</string>
+    <string name="placeholder_day_reschedule_pick_up">Pilih Hari</string>
+    <string name="label_day_reschedule_pick_up">Hari</string>
+    <string name="title_tips_reschedule_pick_up">Info Penting</string>
+    <string name="label_title_reschedule_pick_up">Detail penjadwalan ulang</string>
+    <string name="label_title_invoice_reschedule_pick_up">No. Invoice</string>
+    <string name="label_title_courier_reschedule_pick_up">Kurir</string>
+    <string name="label_title_order_detail_reschedule_pick_up">Detail Pesanan</string>
+    <string name="label_title_reschedule_detail">Estimasi pickup:</string>
+    <string name="label_subtitle_reschedule_pick_up"><![CDATA[Cek info detail pengaturan ulang jadwal pick-up di sini.]]></string>
 </resources>

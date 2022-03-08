@@ -1,8 +1,9 @@
-package com.tokopedia.logisticorder.view.reschedule_pickup
+package com.tokopedia.sellerorder.reschedule_pickup.presentation.activity
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.sellerorder.reschedule_pickup.presentation.fragment.ReschedulePickupFragment
 
 class ReschedulePickupActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment? {
