@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
+import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
@@ -18,6 +19,7 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common_tradein.utils.TradeInPDPHelper
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -186,10 +188,17 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             }
         })
         viewModel.tradeInDetailLiveData.observe(viewLifecycleOwner, Observer {
-            onTradeInDetailSuccess(it)
-        })
-        viewModel.getWarningMessage().observe(viewLifecycleOwner, Observer {
-            showToast(it, "", {})
+            if(it.getTradeInDetail.errMessage.isNotEmpty()){
+                if(it.getTradeInDetail.isFraud){
+                    setErrorTokopedia(Throwable(it.getTradeInDetail.errMessage), true, it.getTradeInDetail.errTitle)
+                } else {
+                    showToast(it.getTradeInDetail.errMessage, getString(R.string.tradein_ok), {
+                        activity?.finish()
+                    })
+                }
+            } else {
+                onTradeInDetailSuccess(it)
+            }
         })
         tradeInHomePageVM.getWarningMessage().observe(viewLifecycleOwner, Observer {
             setErrorTokopedia(Throwable(it))
@@ -213,9 +222,15 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             //LAKU6 errors
             setType(GlobalError.SERVER_ERROR)
             errorIllustration.hide()
+            errorTitle.text = getString(com.tokopedia.tradein.R.string.tradein_cant_continue)
             errorDescription.text = it?.message
+            setButtonFull(true)
+            errorSecondaryAction.gone()
             view?.findViewById<View>(R.id.tradein_error_layout)?.show()
-            view?.findViewById<View>(R.id.error_image_view)?.show()
+            view?.findViewById<DeferredImageView>(R.id.error_image_view)?.let {
+                it.show()
+                it.mCompleteUrl = LAKU6_ERROR_IMAGE
+            }
             setActionClickListener {
                 view?.findViewById<View>(R.id.tradein_error_layout)?.hide()
                 refreshPage()
@@ -223,7 +238,8 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
         }
     }
 
-    private fun setErrorTokopedia(it: Throwable?) {
+    private fun setErrorTokopedia(it: Throwable?, isFraud : Boolean = false,
+                                  errTitle : String = getString(com.tokopedia.tradein.R.string.tradein_cant_continue)) {
         view?.findViewById<GlobalError>(R.id.home_global_error)?.run {
             //Tokopedia Backend errors
             when (it) {
@@ -236,9 +252,19 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                 else -> {
                     setType(GlobalError.SERVER_ERROR)
                     errorDescription.text = it?.message
+                    errorTitle.text = errTitle
                 }
             }
-            view?.findViewById<View>(R.id.error_image_view)?.hide()
+            if(isFraud){
+                errorIllustration.hide()
+                view?.findViewById<DeferredImageView>(R.id.error_image_view)?.let {
+                    it.show()
+                    it.mCompleteUrl = FRAUD_ERROR_IMAGE
+                }
+            } else {
+                errorIllustration.show()
+                view?.findViewById<View>(R.id.error_image_view)?.hide()
+            }
             view?.findViewById<View>(R.id.tradein_error_layout)?.show()
             setActionClickListener {
                 view?.findViewById<View>(R.id.tradein_error_layout)?.hide()
@@ -492,6 +518,9 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
 
     companion object {
         const val CACHE_ID = "Trade in cache id"
+        const val LAKU6_ERROR_IMAGE = "https://images.tokopedia.net/img/android/res/singleDpi/tradein_sdk_error.png"
+        const val FRAUD_ERROR_IMAGE = "https://images.tokopedia.net/img/android/res/singleDpi/tradein_fraud.png"
+
         fun getFragmentInstance(cacheId: String): Fragment {
             val bundle = Bundle().apply {
                 putString(CACHE_ID, cacheId)

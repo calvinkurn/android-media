@@ -34,8 +34,6 @@ class TradeInHomePageFragmentVM @Inject constructor(val tradeInDetailUseCase: Tr
         launchCatchError(block = {
             val tradeInDetail = tradeInDetailUseCase.getTradeInDetail(laku6DeviceModel, productPrice, userAddressData)
             logisticData = tradeInDetail.getTradeInDetail.logisticOptions
-            if(tradeInDetail.getTradeInDetail.errMessage.isNotEmpty())
-                warningMessage.value = tradeInDetail.getTradeInDetail.errMessage
             tradeInDetailLiveData.value = tradeInDetail
             progBarVisibility.value = false
         }, onError = {

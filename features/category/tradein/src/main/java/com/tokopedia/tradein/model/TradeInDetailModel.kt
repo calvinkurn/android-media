@@ -20,6 +20,8 @@ data class TradeInDetailModel(
         var errCode: Int,
         @SerializedName("ErrMessage")
         var errMessage: String,
+        @SerializedName("ErrTitle")
+        var errTitle: String,
         @SerializedName("IsFraud")
         var isFraud: Boolean,
         @SerializedName("LogisticMessage")

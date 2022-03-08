@@ -5,6 +5,7 @@ const val GQL_TRADE_IN_DETAIL: String = """query getTradeInDetail(${'$'}params: 
         IsFraud
         ErrCode
         ErrMessage
+        ErrTitle
         BannerURL
         OriginalPriceFmt
         ActivePromo {
