@@ -1,8 +1,8 @@
 package com.tokopedia.play.broadcaster.helper
 
-import com.tokopedia.analyticsdebugger.cassava.validator.core.Status
-import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator
-import com.tokopedia.analyticsdebugger.cassava.validator.core.containsPairOf
+import com.tokopedia.analyticsdebugger.cassava.core.Status
+import com.tokopedia.analyticsdebugger.cassava.core.Validator
+import com.tokopedia.analyticsdebugger.cassava.core.containsPairOf
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
@@ -13,7 +13,7 @@ import org.hamcrest.TypeSafeMatcher
 /**
  * Created by kenny.hadisaputra on 04/03/22
  */
-fun containsPairOf(pair: Pair<String, String>): Matcher<List<Validator>> {
+fun contains(pair: Pair<String, String>): Matcher<List<Validator>> {
     return object : TypeSafeMatcher<List<Validator>>(ArrayList::class.java) {
         override fun describeTo(description: Description?) {
             description?.appendText("last hit contains pair of $pair")
