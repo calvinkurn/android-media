@@ -36,9 +36,12 @@ class ProductCardViewHolder(
         binding?.productCardGridView?.setOnClickListener {
             listener?.onProductCardClickListener(element)
         }
+
+        listener?.onProductCardImpressListener(element)
     }
 
     interface ProductCardListener {
         fun onProductCardClickListener(product: ProductCardUiModel)
+        fun onProductCardImpressListener(product: ProductCardUiModel)
     }
 }
