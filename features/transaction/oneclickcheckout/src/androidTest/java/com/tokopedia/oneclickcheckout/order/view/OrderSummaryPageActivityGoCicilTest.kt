@@ -9,6 +9,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_GOCICIL_LIMITED_WALLET_AMOUNT_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_GOCICIL_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.GOCICIL_INSTALLMENT_OPTION_ALL_INACTIVE_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.GOCICIL_INSTALLMENT_OPTION_SOME_INACTIVE_RESPONSE_PATH
@@ -182,8 +183,8 @@ class OrderSummaryPageActivityGoCicilTest {
     }
 
     @Test
-    fun errorFlow_maximumAmount() {
-        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_GOCICIL_RESPONSE_PATH
+    fun errorFlow_aboveLimit() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_GOCICIL_LIMITED_WALLET_AMOUNT_RESPONSE_PATH
 
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
@@ -198,6 +199,39 @@ class OrderSummaryPageActivityGoCicilTest {
             assertProfilePaymentErrorRevamp(
                     message = "Oops, limit nggak cukup. Coba metode bayar lain, ya.",
                     buttonText = null
+            )
+
+            assertPayment("Rp6.016.500", "Ganti Metode Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp6.000.000",
+                        shippingPrice = "Rp15.000",
+                        insurancePrice = "Rp0",
+                        paymentFee = "Rp1.500",
+                        totalPrice = "Rp6.016.500"
+                )
+            }
+        }
+    }
+
+    @Test
+    fun errorFlow_maximumAmount() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_GOCICIL_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertPayment("Rp2.016.500", "Bayar")
+
+            assertGoCicilInstallment("3 bulan x Rp673.867")
+
+            clickAddProductQuantity(times = 2)
+
+            assertProfilePaymentErrorRevamp(
+                    message = "Belanjaanmu melebihi limit transaksi GoPayLaterCicil.",
+                    buttonText = "Ubah"
             )
 
             assertPayment("Rp6.016.500", "Ganti Metode Bayar")
