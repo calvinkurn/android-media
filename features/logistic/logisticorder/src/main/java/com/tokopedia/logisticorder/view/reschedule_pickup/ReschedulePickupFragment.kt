@@ -36,6 +36,8 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
     @Inject
     lateinit var userSession: UserSessionInterface
     private var binding by autoClearedNullable<FragmentReschedulePickupBinding>()
+    private var courierName: String = ""
+    private var invoice: String = ""
 
     override fun getScreenName(): String = ""
 
@@ -44,6 +46,14 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
             .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
             .build()
         component.inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            courierName = it.getString(ARGUMENTS_COURIER_NAME, "")
+            invoice = it.getString(ARGUMENTS_INVOICE, "")
+        }
     }
 
     override fun onCreateView(
@@ -62,6 +72,8 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
 
     private fun initViews() {
         binding?.let {
+            it.courierOrderDetail.text = courierName
+            it.invoiceOrderDetail.text = invoice
             val items = listOf(
                 "Pastikan jadwal pick-up baru sesuai dengan kesepakatan pengiriman dengan pembeli",
                 "Ubah jadwal pick-up hanya bisa dilakukan 1 (satu) kali",
@@ -70,7 +82,7 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
             val builder = SpannableStringBuilder()
             items.forEachIndexed { index, item ->
                 builder.append(
-                    if (index == items.size -1 ) item else item + "\n",
+                    if (index == items.size - 1) item else item + "\n",
                     OrderedListSpan("${index + 1}."),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
@@ -83,7 +95,7 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
                 it.etReason.setFirstIcon(icon)
             }
 
-            showSubtitle(requireContext(),it.subtitleReschedulePickup)
+            showSubtitle(requireContext(), it.subtitleReschedulePickup)
             it.etDay.editText.run {
                 inputType = InputType.TYPE_NULL
                 setOnFocusChangeListener { _, hasFocus ->
@@ -134,7 +146,9 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
 
     private fun openReasonSelectionBottomSheet() {
         val dummy = listOf<String>("Toko Tutup", "Pembeli Tidak Ditempat", "Lainnya (Isi Sendiri)")
-        RescheduleOptionBottomSheet(dummy, setReasonBottomSheetListener()).show(parentFragmentManager)
+        RescheduleOptionBottomSheet(dummy, setReasonBottomSheetListener()).show(
+            parentFragmentManager
+        )
     }
 
     private fun showSubtitle(context: Context, textView: TextView?) {
@@ -160,7 +174,7 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
         val lastIndex = firstIndex.plus(clickableText.length)
 
         val subtitleText = SpannableString(subtitle).apply {
-            setSpan(onSubtitleClicked, firstIndex,  lastIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(onSubtitleClicked, firstIndex, lastIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             setSpan(boldSpan, firstIndex, lastIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
 
@@ -177,17 +191,17 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
         private const val OTHER_REASON_MAX_CHAR = 160
         private const val ARGUMENTS_COURIER_NAME = "ARGUMENTS_COURIER_NAME"
         private const val ARGUMENTS_INVOICE = "ARGUMENTS_INVOICE"
-        fun newInstance(courierName: String, invoice: String): ReschedulePickupFragment {
+        fun newInstance(bundle: Bundle): ReschedulePickupFragment {
             return ReschedulePickupFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARGUMENTS_COURIER_NAME, courierName)
-                    putString(ARGUMENTS_INVOICE, invoice)
+                    putString(ARGUMENTS_COURIER_NAME, bundle.getString(ARGUMENTS_COURIER_NAME))
+                    putString(ARGUMENTS_INVOICE, bundle.getString(ARGUMENTS_INVOICE))
                 }
             }
         }
     }
 
-    private fun setDayBottomSheetListener() : RescheduleOptionBottomSheet.ChooseOptionListener {
+    private fun setDayBottomSheetListener(): RescheduleOptionBottomSheet.ChooseOptionListener {
         return object : RescheduleOptionBottomSheet.ChooseOptionListener {
             override fun onOptionChosen(option: String) {
                 binding?.etDay?.editText?.setText(option)
@@ -196,7 +210,7 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setTimeBottomSheetListener() : RescheduleOptionBottomSheet.ChooseOptionListener {
+    private fun setTimeBottomSheetListener(): RescheduleOptionBottomSheet.ChooseOptionListener {
         return object : RescheduleOptionBottomSheet.ChooseOptionListener {
             override fun onOptionChosen(option: String) {
                 binding?.etTime?.editText?.setText(option)
@@ -205,7 +219,7 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setReasonBottomSheetListener() : RescheduleOptionBottomSheet.ChooseOptionListener {
+    private fun setReasonBottomSheetListener(): RescheduleOptionBottomSheet.ChooseOptionListener {
         return object : RescheduleOptionBottomSheet.ChooseOptionListener {
             override fun onOptionChosen(option: String) {
                 binding?.etReason?.editText?.setText(option)
