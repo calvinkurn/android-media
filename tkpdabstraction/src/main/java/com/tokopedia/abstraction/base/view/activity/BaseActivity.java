@@ -23,7 +23,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
-import com.tokopedia.abstraction.base.view.appupdate.FirebaseRemoteAppUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.FirebaseRemoteAppForceUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.listener.DebugVolumeListener;
@@ -36,6 +36,8 @@ import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import timber.log.Timber;
 
 
 /**
@@ -51,7 +53,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
     public static final String INAPP_UPDATE = "inappupdate";
     private static final long DISMISS_TIME = 10000;
 
-    private ApplicationUpdate appUpdate;
     private ErrorNetworkReceiver logoutNetworkReceiver;
     private BroadcastReceiver inappReceiver;
     private boolean pauseFlag;
@@ -68,6 +69,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
                 AppUpdateManagerWrapper.showSnackBarComplete(BaseActivity.this);
             }
         };
+        checkAppUpdateAndInApp();
     }
 
     @Override
@@ -268,7 +270,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     private void checkAppUpdateRemoteConfig() {
-        appUpdate = new FirebaseRemoteAppUpdate(this);
+        ApplicationUpdate appUpdate = new FirebaseRemoteAppForceUpdate(this);
         appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
             @Override
             public void onNeedUpdate(DetailUpdate detail) {
@@ -296,14 +298,12 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
             @Override
             public void onError(Exception e) {
-                e.printStackTrace();
+                Timber.d(e);
             }
 
             @Override
             public void onNotNeedUpdate() {
-//                if (!isFinishing()) {
-//                    checkIsNeedUpdateIfComeFromUnsupportedApplink(MainParentActivity.this.getIntent());
-//                }
+                /* no op */
             }
         });
     }

@@ -9,7 +9,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 
-class FirebaseRemoteAppUpdate(context: Context) : ApplicationUpdate {
+class FirebaseRemoteAppForceUpdate(context: Context) : ApplicationUpdate {
 
     private val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context)
 
@@ -45,10 +45,6 @@ class FirebaseRemoteAppUpdate(context: Context) : ApplicationUpdate {
             detailUpdate.latestVersionCode = dataUpdateApp.latestVersionForceUpdate.toLong()
             detailUpdate.isNeedUpdate = true
             detailUpdate.isForceUpdate = true
-        } else if (dataUpdateApp.isIsOptionalEnabled && GlobalConfig.VERSION_CODE < dataUpdateApp.latestVersionOptionalUpdate) {
-            detailUpdate.latestVersionCode = dataUpdateApp.latestVersionOptionalUpdate.toLong()
-            detailUpdate.isNeedUpdate = true
-            detailUpdate.isForceUpdate = false
         } else {
             detailUpdate.isNeedUpdate = false
         }
