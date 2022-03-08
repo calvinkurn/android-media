@@ -47,7 +47,7 @@ import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.MoreInfoPDPBottomsheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
-import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPTokenListrikViewModel
@@ -84,11 +84,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
+class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     RechargeDenomGridListener,
     RechargeBuyWidgetListener,
     RechargeRecommendationCardListener,
-    DigitalHistoryIconListener
+    DigitalHistoryIconListener,
+    ClientNumberInputFieldListener,
+    ClientNumberFilterChipListener,
+    ClientNumberAutoCompleteListener
 {
 
     @Inject
@@ -102,7 +105,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var digitalPDPTelcoAnalytics: DigitalPDPTelcoAnalytics
+    lateinit var digitalPDPAnalytics: DigitalPDPAnalytics
 
     private val keyboardWatcher = DigitalKeyboardWatcher()
 
@@ -110,7 +113,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
 
     private var loyaltyStatus = ""
     private var clientNumber = ""
-    private var productId =  0
+    private var productId = 0
     private var operatorId = ""
     private var menuId = 0
     private var categoryId = GeneralCategoryType.CATEGORY_LISTRIK_PLN
@@ -128,7 +131,8 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         super.onCreate(savedInstanceState)
         val viewModelProvider = ViewModelProvider(this, viewModelFactory)
         viewModel = viewModelProvider.get(DigitalPDPTokenListrikViewModel::class.java)
-        localCacheHandler = LocalCacheHandler(context, DigitalPDPConstant.TOKEN_LISTRIK_PREFERENCES_NAME)
+        localCacheHandler =
+            LocalCacheHandler(context, DigitalPDPConstant.TOKEN_LISTRIK_PREFERENCES_NAME)
     }
 
     override fun onCreateView(
@@ -163,7 +167,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun getDataFromBundle(){
+    private fun getDataFromBundle() {
         arguments?.run {
             val digitalTelcoExtraParam = this.getParcelable(DigitalPDPConstant.EXTRA_PARAM)
                 ?: GeneralExtraParam()
@@ -172,7 +176,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
                 categoryId = digitalTelcoExtraParam.categoryId.toInt()
             }
-            if (digitalTelcoExtraParam.menuId.isNotEmpty()){
+            if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
                 menuId = digitalTelcoExtraParam.menuId.toIntOrNull() ?: 0
             }
             operatorId = digitalTelcoExtraParam.operatorId
@@ -183,20 +187,21 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             }
         }
 
-        digitalPDPTelcoAnalytics.openScreenPDPPage(
+        digitalPDPAnalytics.openScreenPDPPage(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             userSession.userId,
             userSession.isLoggedIn
         )
 
-        digitalPDPTelcoAnalytics.viewPDPPage(
+        digitalPDPAnalytics.viewPDPPage(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             userSession.userId
         )
     }
 
     private fun initEmptyState(banners: List<TopupBillsBanner>) {
-        binding?.rechargePdpTokenListrikEmptyStateWidget?.imageUrl = banners.firstOrNull()?.imageUrl ?: ""
+        binding?.rechargePdpTokenListrikEmptyStateWidget?.imageUrl =
+            banners.firstOrNull()?.imageUrl ?: ""
     }
 
     private fun observeData() {
@@ -239,10 +244,14 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             when (denomData) {
                 is RechargeNetworkResult.Success -> {
                     if (productId >= 0) {
-                        viewModel.setAutoSelectedDenom(denomData.data.listDenomData, productId.toString())
+                        viewModel.setAutoSelectedDenom(
+                            denomData.data.listDenomData,
+                            productId.toString()
+                        )
                     }
 
-                    val selectedPositionDenom = viewModel.getSelectedPositionId(denomData.data.listDenomData)
+                    val selectedPositionDenom =
+                        viewModel.getSelectedPositionId(denomData.data.listDenomData)
                     onSuccessDenomGrid(denomData.data, selectedPositionDenom)
 
                     if (selectedPositionDenom == null) {
@@ -260,11 +269,11 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             }
         })
 
-        viewModel.addToCartResult.observe(viewLifecycleOwner,{ atcData ->
-            when(atcData) {
+        viewModel.addToCartResult.observe(viewLifecycleOwner, { atcData ->
+            when (atcData) {
                 is RechargeNetworkResult.Success -> {
                     onLoadingBuyWidget(false)
-                    digitalPDPTelcoAnalytics.addToCart(
+                    digitalPDPAnalytics.addToCart(
                         categoryId.toString(),
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
                         viewModel.operatorData.attributes.name,
@@ -312,11 +321,11 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         renderTicker(data.tickers)
     }
 
-    private fun onHideGreenBox(){
+    private fun onHideGreenBox() {
         binding?.rechargePdpTickerWidgetProductDesc?.hide()
     }
 
-    private fun onShowGreenBox(listInfo: List<String>){
+    private fun onShowGreenBox(listInfo: List<String>) {
         binding?.let {
             val mainInfo = listInfo.first()
             val title = getString(R.string.bottom_sheet_more_info)
@@ -324,7 +333,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                 show()
                 setText(mainInfo)
                 setOnClickListener {
-                    digitalPDPTelcoAnalytics.clickTransactionDetailInfo(
+                    digitalPDPAnalytics.clickTransactionDetailInfo(
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
                         viewModel.operatorData.attributes.name,
                         loyaltyStatus,
@@ -369,7 +378,8 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     }
 
     private fun getRecommendations() {
-        val clientNumbers = listOf(binding?.rechargePdpTokenListrikClientNumberWidget?.getInputNumber() ?: "")
+        val clientNumbers =
+            listOf(binding?.rechargePdpTokenListrikClientNumberWidget?.getInputNumber() ?: "")
         viewModel.setRecommendationLoading()
         viewModel.cancelRecommendationJob()
         viewModel.getRecommendations(clientNumbers, listOf(categoryId))
@@ -399,7 +409,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
         binding?.rechargePdpTokenListrikClientNumberWidget?.run {
-            if (clientNumber.isNotEmpty()){
+            if (clientNumber.isNotEmpty()) {
                 setInputNumber(clientNumber, true)
             } else {
                 setContactName(data.clientName)
@@ -408,7 +418,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun onFailedRecommendation(){
+    private fun onFailedRecommendation() {
         binding?.rechargePdpTokenListrikRecommendationWidget?.renderFailRecommendation()
     }
 
@@ -431,10 +441,10 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                     TickerData(
                         item.name, item.content,
                         when (item.type) {
-                            "warning" -> Ticker.TYPE_WARNING
-                            "info" -> Ticker.TYPE_INFORMATION
-                            "success" -> Ticker.TYPE_ANNOUNCEMENT
-                            "error" -> Ticker.TYPE_ERROR
+                            TopupBillsTicker.TYPE_WARNING -> Ticker.TYPE_WARNING
+                            TopupBillsTicker.TYPE_INFO -> Ticker.TYPE_INFORMATION
+                            TopupBillsTicker.TYPE_SUCCESS -> Ticker.TYPE_ANNOUNCEMENT
+                            TopupBillsTicker.TYPE_ERROR -> Ticker.TYPE_ERROR
                             else -> Ticker.TYPE_INFORMATION
                         }
                     )
@@ -443,7 +453,9 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             binding?.rechargePdpTokenListrikTicker?.run {
                 addPagerView(
                     TickerPagerAdapter(
-                    this@DigitalPDPTokenListrikFragment.requireContext(), messages), messages)
+                        this@DigitalPDPTokenListrikFragment.requireContext(), messages
+                    ), messages
+                )
                 show()
             }
         } else {
@@ -451,7 +463,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun onShimmeringRecommendation(){
+    private fun onShimmeringRecommendation() {
         binding?.let {
             it.rechargePdpTokenListrikRecommendationWidget.show()
             it.rechargePdpTokenListrikRecommendationWidget.renderShimmering()
@@ -461,12 +473,16 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     private fun onSuccessDenomGrid(denomData: DenomWidgetModel, selectedPosition: Int?) {
         binding?.let {
             var selectedInitialPosition = selectedPosition
-            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.GRID_TYPE)){
+            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.GRID_TYPE)) {
                 onShowBuyWidget(viewModel.selectedGridProduct.denomData)
             } else {
                 selectedInitialPosition = null
             }
-            it.rechargePdpTokenListrikDenomGridWidget.renderDenomGridLayout(this, denomData, selectedInitialPosition)
+            it.rechargePdpTokenListrikDenomGridWidget.renderDenomGridLayout(
+                this,
+                denomData,
+                selectedInitialPosition
+            )
             it.rechargePdpTokenListrikDenomGridWidget.show()
         }
     }
@@ -486,19 +502,19 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun onShowBuyWidget(denomGrid: DenomData){
+    private fun onShowBuyWidget(denomGrid: DenomData) {
         binding?.let {
             it.rechargePdpTokenListrikBuyWidget.showBuyWidget(denomGrid, this)
         }
     }
 
-    private fun onHideBuyWidget(){
+    private fun onHideBuyWidget() {
         binding?.let {
             it.rechargePdpTokenListrikBuyWidget.hideBuyWidget()
         }
     }
 
-    private fun onLoadingBuyWidget(isLoading: Boolean){
+    private fun onLoadingBuyWidget(isLoading: Boolean) {
         binding?.let {
             it.rechargePdpTokenListrikBuyWidget.isLoadingButton(isLoading)
         }
@@ -507,7 +523,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     private fun onSuccessGetFavoriteNumber(favoriteNumber: List<TopupBillsPersoFavNumberItem>) {
         binding?.rechargePdpTokenListrikClientNumberWidget?.run {
             setFilterChipShimmer(false, favoriteNumber.isEmpty())
-            if (favoriteNumber.isNotEmpty()){
+            if (favoriteNumber.isNotEmpty()) {
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
                 setAutoCompleteList(favoriteNumber)
@@ -525,9 +541,9 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         renderProduct()
     }
 
-    private fun renderGreenBox(){
+    private fun renderGreenBox() {
         val listInfo = viewModel.getListInfo()
-        if (!listInfo.isNullOrEmpty()){
+        if (!listInfo.isNullOrEmpty()) {
             onShowGreenBox(listInfo)
         } else {
             onHideGreenBox()
@@ -598,27 +614,28 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             delay(DigitalPDPConstant.INPUT_ACTION_TRACKING_DELAY)
             when (inputNumberActionType) {
                 InputNumberActionType.MANUAL -> {
-                    digitalPDPTelcoAnalytics.eventInputNumberManual(
+                    digitalPDPAnalytics.eventInputNumberManual(
                         categoryName,
                         operatorName,
                         userSession.userId
                     )
                 }
                 InputNumberActionType.CONTACT -> {
-                    digitalPDPTelcoAnalytics.eventInputNumberContact(
+                    digitalPDPAnalytics.eventInputNumberContact(
                         categoryName,
                         operatorName,
                         userSession.userId
                     )
                 }
                 InputNumberActionType.FAVORITE -> {
-                    digitalPDPTelcoAnalytics.eventInputNumberFavorite(
+                    digitalPDPAnalytics.eventInputNumberFavorite(
                         categoryName,
                         operatorName,
                         userSession.userId
                     )
                 }
-                else -> {}
+                else -> {
+                }
             }
         }
     }
@@ -637,15 +654,17 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         viewModel.run {
             cancelCatalogProductJob()
             setRechargeCatalogInputMultiTabLoading()
-            getRechargeCatalogInputMultiTab(menuId, selectedOperatorKey,
-                binding?.rechargePdpTokenListrikClientNumberWidget?.getInputNumber() ?: "")
+            getRechargeCatalogInputMultiTab(
+                menuId, selectedOperatorKey,
+                binding?.rechargePdpTokenListrikClientNumberWidget?.getInputNumber() ?: ""
+            )
         }
     }
 
     private fun showEmptyState() {
         binding?.run {
             if (!rechargePdpTokenListrikEmptyStateWidget.isVisible) {
-                digitalPDPTelcoAnalytics.impressionBannerEmptyState(
+                digitalPDPAnalytics.impressionBannerEmptyState(
                     rechargePdpTokenListrikEmptyStateWidget.imageUrl,
                     categoryId.toString(),
                     DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -662,19 +681,25 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
 
     private fun navigateToCart(categoryId: String) {
         context?.let { context ->
-            val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.CHECKOUT_DIGITAL)
+            val intent =
+                RouteManager.getIntent(context, ApplinkConsInternalDigital.CHECKOUT_DIGITAL)
             viewModel.updateCategoryCheckoutPassData(categoryId)
-            intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, viewModel.digitalCheckoutPassData)
+            intent.putExtra(
+                DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA,
+                viewModel.digitalCheckoutPassData
+            )
             startActivityForResult(intent, BaseTopupBillsFragment.REQUEST_CODE_CART_DIGITAL)
         }
     }
 
-    private fun addToCart(){
+    private fun addToCart() {
         viewModel.run {
             setAddToCartLoading()
-            addToCart(DeviceUtil.getDigitalIdentifierParam(requireActivity()),
+            addToCart(
+                DeviceUtil.getDigitalIdentifierParam(requireActivity()),
                 DigitalSubscriptionParams(),
-                userSession.userId)
+                userSession.userId
+            )
         }
     }
 
@@ -690,8 +715,6 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     private fun handleCallbackSavedNumber(
         clientName: String,
         clientNumber: String,
-        productId: String,
-        categoryId: String,
         inputNumberActionTypeIndex: Int
     ) {
         if (!inputNumberActionTypeIndex.isLessThanZero()) {
@@ -717,123 +740,9 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             )
             setInputFieldType(InputFieldType.Listrik)
             setListener(
-                inputFieldListener = object : ClientNumberInputFieldListener {
-                    override fun onRenderOperator(isDelayed: Boolean) {
-                        viewModel.operatorData.id.isEmpty().let {
-                            if (it) {
-                                getOperatorSelectGroup()
-                            } else {
-                                renderProduct()
-                            }
-                        }
-                    }
-
-                    override fun onClearInput() {
-                        showEmptyState()
-                        digitalPDPTelcoAnalytics.eventClearInputNumber(
-                            DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                            userSession.userId
-                        )
-                        onHideBuyWidget()
-                    }
-
-                    override fun onClickNavigationIcon() {
-                        digitalPDPTelcoAnalytics.clickScanBarcode(
-                            DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                            loyaltyStatus,
-                            userSession.userId
-                        )
-
-                        val intent = RouteManager.getIntent(context,
-                            ApplinkConstInternalMarketplace.QR_SCANNEER, PARAM_NEED_RESULT)
-                        intent.putExtra(EXTRA_UPDATED_TITLE,
-                            getString(com.tokopedia.digital_product_detail.R.string.qr_scanner_title_scan_barcode))
-                        startActivityForResult(intent, RESULT_CODE_QR_SCAN)
-                    }
-
-                    override fun isKeyboardShown(): Boolean {
-                        context?.let {
-                            val inputMethodManager = it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                            return inputMethodManager.isAcceptingText
-                        }
-                        return false
-                    }
-                },
-                autoCompleteListener = object :
-                    ClientNumberAutoCompleteListener {
-                    override fun onClickAutoComplete(isFavoriteContact: Boolean) {
-                        inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
-                        if (isFavoriteContact) {
-                            digitalPDPTelcoAnalytics.clickFavoriteContactAutoComplete(
-                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                                DigitalPDPCategoryUtil.getOperatorName(operatorId),
-                                loyaltyStatus,
-                                userSession.userId
-                            )
-                        } else {
-                            digitalPDPTelcoAnalytics.clickFavoriteNumberAutoComplete(
-                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                                DigitalPDPCategoryUtil.getOperatorName(operatorId),
-                                loyaltyStatus,
-                                userSession.userId
-                            )
-                        }
-                    }
-                },
-                filterChipListener = object : ClientNumberFilterChipListener {
-                    override fun onShowFilterChip(isLabeled: Boolean) {
-                        if (isLabeled) {
-                            digitalPDPTelcoAnalytics.impressionFavoriteContactChips(
-                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                                loyaltyStatus,
-                                userSession.userId
-                            )
-                        } else {
-                            digitalPDPTelcoAnalytics.impressionFavoriteNumberChips(
-                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                                loyaltyStatus,
-                                userSession.userId
-                            )
-                        }
-                    }
-
-                    override fun onClickFilterChip(isLabeled: Boolean, operatorId: String) {
-                        inputNumberActionType = InputNumberActionType.CHIP
-                        if (isLabeled) {
-                            onHideBuyWidget()
-                            digitalPDPTelcoAnalytics.clickFavoriteContactChips(
-                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                                DigitalPDPCategoryUtil.getOperatorName(operatorId),
-                                loyaltyStatus,
-                                userSession.userId,
-                            )
-                        } else {
-                            digitalPDPTelcoAnalytics.clickFavoriteNumberChips(
-                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                                DigitalPDPCategoryUtil.getOperatorName(operatorId),
-                                loyaltyStatus,
-                                userSession.userId
-                            )
-                        }
-                    }
-
-                    override fun onClickIcon(isSwitchChecked: Boolean) {
-                        binding?.run {
-                            digitalPDPTelcoAnalytics.clickListFavoriteNumber(
-                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                                DigitalPDPCategoryUtil.getOperatorName(operatorId),
-                                userSession.userId
-                            )
-                            val clientNumber = rechargePdpTokenListrikClientNumberWidget.getInputNumber()
-                            val dgCategoryIds = arrayListOf(categoryId.toString())
-                            val dgOperatorIds: ArrayList<String> = ArrayList(viewModel.operatorList.map { it.id })
-                            navigateToContact(
-                                clientNumber, dgCategoryIds, dgOperatorIds,
-                                DigitalPDPCategoryUtil.getCategoryName(categoryId)
-                            )
-                        }
-                    }
-                }
+                this@DigitalPDPTokenListrikFragment,
+                this@DigitalPDPTokenListrikFragment,
+                this@DigitalPDPTokenListrikFragment
             )
         }
     }
@@ -854,8 +763,8 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun showMoreInfoBottomSheet(listInfo: List<String>, title: String){
-        digitalPDPTelcoAnalytics.impressionGreenBox(
+    private fun showMoreInfoBottomSheet(listInfo: List<String>, title: String) {
+        digitalPDPAnalytics.impressionGreenBox(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             viewModel.operatorData.attributes.name,
             loyaltyStatus,
@@ -867,14 +776,147 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         }
     }
 
-    /**
-     * RechargeDenomGridListener
-     */
-    override fun onDenomGridClicked(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int,
-                                    productListTitle: String,
-                                    isShowBuyWidget: Boolean) {
-        if (layoutType == DenomWidgetEnum.GRID_TYPE){
-            digitalPDPTelcoAnalytics.clickProductCluster(
+    /** Start Input Field Listener */
+
+    override fun onRenderOperator(isDelayed: Boolean) {
+        viewModel.operatorData.id.isEmpty().let {
+            if (it) {
+                getOperatorSelectGroup()
+            } else {
+                renderProduct()
+            }
+        }
+    }
+
+    override fun onClearInput() {
+        showEmptyState()
+        digitalPDPAnalytics.eventClearInputNumber(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            userSession.userId
+        )
+        onHideBuyWidget()
+    }
+
+    override fun onClickNavigationIcon() {
+        digitalPDPAnalytics.clickScanBarcode(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            loyaltyStatus,
+            userSession.userId
+        )
+
+        val intent = RouteManager.getIntent(
+            context,
+            ApplinkConstInternalMarketplace.QR_SCANNEER, PARAM_NEED_RESULT
+        )
+        intent.putExtra(
+            EXTRA_UPDATED_TITLE,
+            getString(com.tokopedia.digital_product_detail.R.string.qr_scanner_title_scan_barcode)
+        )
+        startActivityForResult(intent, RESULT_CODE_QR_SCAN)
+    }
+
+    override fun isKeyboardShown(): Boolean {
+        context?.let {
+            val inputMethodManager =
+                it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            return inputMethodManager.isAcceptingText
+        }
+        return false
+    }
+
+    /** End Input Field Listener */
+
+    /** Start Filter Chip Listener */
+
+    override fun onShowFilterChip(isLabeled: Boolean) {
+        if (isLabeled) {
+            digitalPDPAnalytics.impressionFavoriteContactChips(
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                loyaltyStatus,
+                userSession.userId
+            )
+        } else {
+            digitalPDPAnalytics.impressionFavoriteNumberChips(
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                loyaltyStatus,
+                userSession.userId
+            )
+        }
+    }
+
+    override fun onClickFilterChip(isLabeled: Boolean, operatorId: String) {
+        inputNumberActionType = InputNumberActionType.CHIP
+        if (isLabeled) {
+            onHideBuyWidget()
+            digitalPDPAnalytics.clickFavoriteContactChips(
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                DigitalPDPCategoryUtil.getOperatorName(operatorId),
+                loyaltyStatus,
+                userSession.userId,
+            )
+        } else {
+            digitalPDPAnalytics.clickFavoriteNumberChips(
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                DigitalPDPCategoryUtil.getOperatorName(operatorId),
+                loyaltyStatus,
+                userSession.userId
+            )
+        }
+    }
+
+    override fun onClickIcon(isSwitchChecked: Boolean) {
+        binding?.run {
+            digitalPDPAnalytics.clickListFavoriteNumber(
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                DigitalPDPCategoryUtil.getOperatorName(operatorId),
+                userSession.userId
+            )
+            val clientNumber =
+                rechargePdpTokenListrikClientNumberWidget.getInputNumber()
+            val dgCategoryIds = arrayListOf(categoryId.toString())
+            val dgOperatorIds: ArrayList<String> =
+                ArrayList(viewModel.operatorList.map { it.id })
+            navigateToContact(
+                clientNumber, dgCategoryIds, dgOperatorIds,
+                DigitalPDPCategoryUtil.getCategoryName(categoryId)
+            )
+        }
+    }
+
+    /** End Filter Chip Listener */
+
+    /** Start Auto Complete Listener */
+
+    override fun onClickAutoComplete(isFavoriteContact: Boolean) {
+        inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
+        if (isFavoriteContact) {
+            digitalPDPAnalytics.clickFavoriteContactAutoComplete(
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                DigitalPDPCategoryUtil.getOperatorName(operatorId),
+                loyaltyStatus,
+                userSession.userId
+            )
+        } else {
+            digitalPDPAnalytics.clickFavoriteNumberAutoComplete(
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                DigitalPDPCategoryUtil.getOperatorName(operatorId),
+                loyaltyStatus,
+                userSession.userId
+            )
+        }
+    }
+
+    /** End Auto Complete Listener */
+
+    /** Start RechargeDenomGridListener */
+
+    override fun onDenomGridClicked(
+        denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int,
+        productListTitle: String,
+        isShowBuyWidget: Boolean
+    ) {
+        if (layoutType == DenomWidgetEnum.GRID_TYPE) {
+            digitalPDPAnalytics.clickProductCluster(
                 productListTitle,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 DigitalPDPCategoryUtil.getOperatorName(operatorId),
@@ -895,9 +937,13 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         }
     }
 
-    override fun onDenomGridImpression(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int) {
-        if (layoutType == DenomWidgetEnum.GRID_TYPE){
-            digitalPDPTelcoAnalytics.impressionProductCluster(
+    override fun onDenomGridImpression(
+        denomGrid: DenomData,
+        layoutType: DenomWidgetEnum,
+        position: Int
+    ) {
+        if (layoutType == DenomWidgetEnum.GRID_TYPE) {
+            digitalPDPAnalytics.impressionProductCluster(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 DigitalPDPCategoryUtil.getOperatorName(operatorId),
                 loyaltyStatus,
@@ -908,16 +954,17 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         }
     }
 
-    /**
-     * RechargeBuyWidgetListener
-     */
+    /** End RechargeDenomGridListener */
+
+    /** Start RechargeBuyWidgetListener */
+
     override fun onClickedButtonLanjutkan(denom: DenomData) {
         viewModel.updateCheckoutPassData(
             denom, userSession.userId.generateRechargeCheckoutToken(),
-            binding?.rechargePdpTokenListrikClientNumberWidget?.getInputNumber() ?:"",
+            binding?.rechargePdpTokenListrikClientNumberWidget?.getInputNumber() ?: "",
             operatorId
         )
-        if (userSession.isLoggedIn){
+        if (userSession.isLoggedIn) {
             addToCart()
         } else {
             navigateToLoginPage()
@@ -925,7 +972,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     }
 
     override fun onClickedChevron(denom: DenomData) {
-        digitalPDPTelcoAnalytics.clickChevronBuyWidget(
+        digitalPDPAnalytics.clickChevronBuyWidget(
             DigitalPDPCategoryUtil.getCategoryName(denom.categoryId.toInt()),
             DigitalPDPCategoryUtil.getOperatorName(operatorId),
             denom.price,
@@ -937,12 +984,16 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         }
     }
 
-    /**
-     * RechargeRecommendationCardListener
-     */
+    /** End RechargeBuyWidgetListener */
 
-    override fun onProductRecommendationCardClicked(title: String, recommendation: RecommendationCardWidgetModel, position: Int) {
-        digitalPDPTelcoAnalytics.clickLastTransactionIcon(
+    /** Start RechargeRecommendationCardListener */
+
+    override fun onProductRecommendationCardClicked(
+        title: String,
+        recommendation: RecommendationCardWidgetModel,
+        position: Int
+    ) {
+        digitalPDPAnalytics.clickLastTransactionIcon(
             title,
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             DigitalPDPCategoryUtil.getOperatorName(operatorId),
@@ -959,8 +1010,11 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         }
     }
 
-    override fun onProductRecommendationCardImpression(recommendation: RecommendationCardWidgetModel, position: Int) {
-        digitalPDPTelcoAnalytics.impressionLastTransactionIcon(
+    override fun onProductRecommendationCardImpression(
+        recommendation: RecommendationCardWidgetModel,
+        position: Int
+    ) {
+        digitalPDPAnalytics.impressionLastTransactionIcon(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             DigitalPDPCategoryUtil.getOperatorName(operatorId),
             loyaltyStatus,
@@ -970,16 +1024,19 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         )
     }
 
-    /** DigitalHistoryIconListener */
+    /** End RechargeRecommendationCardListener */
+
+    /** Start DigitalHistoryIconListener */
 
     override fun onClickDigitalIconHistory() {
-        digitalPDPTelcoAnalytics.clickTransactionHistoryIcon(
+        digitalPDPAnalytics.clickTransactionHistoryIcon(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             loyaltyStatus,
             userSession.userId
         )
     }
 
+    /** End DigitalHistoryIconListener */
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -1015,8 +1072,6 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                     handleCallbackSavedNumber(
                         orderClientNumber.clientName,
                         orderClientNumber.clientNumber,
-                        orderClientNumber.productId,
-                        orderClientNumber.categoryId,
                         orderClientNumber.inputNumberActionTypeIndex
                     )
                 } else {
@@ -1028,7 +1083,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             } else if (requestCode == REQUEST_CODE_LOGIN_ALT) {
                 addToCartFromUrl()
             } else if (requestCode == RESULT_CODE_QR_SCAN) {
-                if (data != null){
+                if (data != null) {
                     val scanResult = data.getStringExtra(EXTRA_QR_PARAM)
                     if (!scanResult.isNullOrEmpty()) {
                         binding?.rechargePdpTokenListrikClientNumberWidget?.run {
@@ -1041,10 +1096,11 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     }
 
     companion object {
-        fun newInstance(generalExtraParam: GeneralExtraParam) = DigitalPDPTokenListrikFragment().also {
-            val bundle = Bundle()
-            bundle.putParcelable(DigitalPDPConstant.EXTRA_PARAM, generalExtraParam)
-            it.arguments = bundle
-        }
+        fun newInstance(generalExtraParam: GeneralExtraParam) =
+            DigitalPDPTokenListrikFragment().also {
+                val bundle = Bundle()
+                bundle.putParcelable(DigitalPDPConstant.EXTRA_PARAM, generalExtraParam)
+                it.arguments = bundle
+            }
     }
 }

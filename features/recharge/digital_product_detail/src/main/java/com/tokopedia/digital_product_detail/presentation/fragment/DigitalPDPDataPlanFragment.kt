@@ -53,7 +53,7 @@ import com.tokopedia.digital_product_detail.presentation.bottomsheet.FilterPDPBo
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.ProductDescBottomSheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
-import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicAppBar
@@ -120,7 +120,7 @@ class DigitalPDPDataPlanFragment :
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var digitalPDPTelcoAnalytics: DigitalPDPTelcoAnalytics
+    lateinit var digitalPDPAnalytics: DigitalPDPAnalytics
 
     private val keyboardWatcher = DigitalKeyboardWatcher()
 
@@ -204,13 +204,13 @@ class DigitalPDPDataPlanFragment :
             }
         }
 
-        digitalPDPTelcoAnalytics.openScreenPDPPage(
+        digitalPDPAnalytics.openScreenPDPPage(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             userSession.userId,
             userSession.isLoggedIn
         )
 
-        digitalPDPTelcoAnalytics.viewPDPPage(
+        digitalPDPAnalytics.viewPDPPage(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             userSession.userId
         )
@@ -338,7 +338,7 @@ class DigitalPDPDataPlanFragment :
                         viewModel.getSelectedPositionId(denomData.data.denomMCCMFull.listDenomData)
 
                     if (denomData.data.isFilterRefreshed) {
-                        digitalPDPTelcoAnalytics.impressionFilterChip(
+                        digitalPDPAnalytics.impressionFilterChip(
                             DigitalPDPCategoryUtil.getCategoryName(categoryId),
                             operator.attributes.name,
                             userSession.userId,
@@ -369,7 +369,7 @@ class DigitalPDPDataPlanFragment :
             when (atcData) {
                 is RechargeNetworkResult.Success -> {
                     onLoadingBuyWidget(false)
-                    digitalPDPTelcoAnalytics.addToCart(
+                    digitalPDPAnalytics.addToCart(
                         categoryId.toString(),
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
                         operator.attributes.name,
@@ -553,7 +553,7 @@ class DigitalPDPDataPlanFragment :
                         sortFilterItem.listener = {
                             sortFilterItem.toggle()
                             if (!chipItems.get(index).isSelected) {
-                                digitalPDPTelcoAnalytics.clickFilterChip(
+                                digitalPDPAnalytics.clickFilterChip(
                                     DigitalPDPCategoryUtil.getCategoryName(categoryId),
                                     operator.attributes.name,
                                     sortFilterItem.title.toString(),
@@ -576,7 +576,7 @@ class DigitalPDPDataPlanFragment :
                     addItem(filterItems)
                     val filterData = viewModel.filterData
                     sortFilterPrefix.setOnClickListener {
-                        digitalPDPTelcoAnalytics.clickFilterChip(
+                        digitalPDPAnalytics.clickFilterChip(
                             DigitalPDPCategoryUtil.getCategoryName(categoryId),
                             operator.attributes.name,
                             getString(R.string.bottom_sheet_filter_title),
@@ -781,7 +781,7 @@ class DigitalPDPDataPlanFragment :
     private fun showEmptyState() {
         binding?.run {
             if (!rechargePdpPaketDataEmptyStateWidget.isVisible) {
-                digitalPDPTelcoAnalytics.impressionBannerEmptyState(
+                digitalPDPAnalytics.impressionBannerEmptyState(
                     rechargePdpPaketDataEmptyStateWidget.imageUrl,
                     categoryId.toString(),
                     DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -812,21 +812,21 @@ class DigitalPDPDataPlanFragment :
             delay(INPUT_ACTION_TRACKING_DELAY)
             when (inputNumberActionType) {
                 InputNumberActionType.MANUAL -> {
-                    digitalPDPTelcoAnalytics.eventInputNumberManual(
+                    digitalPDPAnalytics.eventInputNumberManual(
                         categoryName,
                         operatorName,
                         userSession.userId
                     )
                 }
                 InputNumberActionType.CONTACT -> {
-                    digitalPDPTelcoAnalytics.eventInputNumberContact(
+                    digitalPDPAnalytics.eventInputNumberContact(
                         categoryName,
                         operatorName,
                         userSession.userId
                     )
                 }
                 InputNumberActionType.FAVORITE -> {
-                    digitalPDPTelcoAnalytics.eventInputNumberFavorite(
+                    digitalPDPAnalytics.eventInputNumberFavorite(
                         categoryName,
                         operatorName,
                         userSession.userId
@@ -1024,7 +1024,7 @@ class DigitalPDPDataPlanFragment :
     override fun onClearInput() {
         operator = TelcoOperator()
         showEmptyState()
-        digitalPDPTelcoAnalytics.eventClearInputNumber(
+        digitalPDPAnalytics.eventClearInputNumber(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             userSession.userId
         )
@@ -1044,7 +1044,7 @@ class DigitalPDPDataPlanFragment :
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 false
             )
-            digitalPDPTelcoAnalytics.clickOnContactIcon(
+            digitalPDPAnalytics.clickOnContactIcon(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 userSession.userId
             )
@@ -1065,13 +1065,13 @@ class DigitalPDPDataPlanFragment :
 
     override fun onShowFilterChip(isLabeled: Boolean) {
         if (isLabeled) {
-            digitalPDPTelcoAnalytics.impressionFavoriteContactChips(
+            digitalPDPAnalytics.impressionFavoriteContactChips(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 loyaltyStatus,
                 userSession.userId
             )
         } else {
-            digitalPDPTelcoAnalytics.impressionFavoriteNumberChips(
+            digitalPDPAnalytics.impressionFavoriteNumberChips(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 loyaltyStatus,
                 userSession.userId
@@ -1083,14 +1083,14 @@ class DigitalPDPDataPlanFragment :
         inputNumberActionType = InputNumberActionType.CHIP
         if (isLabeled) {
             onHideBuyWidget()
-            digitalPDPTelcoAnalytics.clickFavoriteContactChips(
+            digitalPDPAnalytics.clickFavoriteContactChips(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
             )
         } else {
-            digitalPDPTelcoAnalytics.clickFavoriteNumberChips(
+            digitalPDPAnalytics.clickFavoriteNumberChips(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
@@ -1101,7 +1101,7 @@ class DigitalPDPDataPlanFragment :
 
     override fun onClickIcon(isSwitchChecked: Boolean) {
         binding?.run {
-            digitalPDPTelcoAnalytics.clickListFavoriteNumber(
+            digitalPDPAnalytics.clickListFavoriteNumber(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 userSession.userId
@@ -1127,14 +1127,14 @@ class DigitalPDPDataPlanFragment :
     override fun onClickAutoComplete(isFavoriteContact: Boolean) {
         inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
         if (isFavoriteContact) {
-            digitalPDPTelcoAnalytics.clickFavoriteContactAutoComplete(
+            digitalPDPAnalytics.clickFavoriteContactAutoComplete(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId
             )
         } else {
-            digitalPDPTelcoAnalytics.clickFavoriteNumberAutoComplete(
+            digitalPDPAnalytics.clickFavoriteNumberAutoComplete(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
@@ -1161,7 +1161,7 @@ class DigitalPDPDataPlanFragment :
     }
 
     override fun onClickedChevron(denom: DenomData) {
-        digitalPDPTelcoAnalytics.clickChevronBuyWidget(
+        digitalPDPAnalytics.clickChevronBuyWidget(
             DigitalPDPCategoryUtil.getCategoryName(denom.categoryId.toInt()),
             operator.attributes.name,
             denom.price,
@@ -1182,7 +1182,7 @@ class DigitalPDPDataPlanFragment :
         recommendation: RecommendationCardWidgetModel,
         position: Int
     ) {
-        digitalPDPTelcoAnalytics.clickLastTransactionIcon(
+        digitalPDPAnalytics.clickLastTransactionIcon(
             title,
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             operator.attributes.name,
@@ -1203,7 +1203,7 @@ class DigitalPDPDataPlanFragment :
         recommendation: RecommendationCardWidgetModel,
         position: Int
     ) {
-        digitalPDPTelcoAnalytics.impressionLastTransactionIcon(
+        digitalPDPAnalytics.impressionLastTransactionIcon(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             operator.attributes.name,
             loyaltyStatus,
@@ -1224,7 +1224,7 @@ class DigitalPDPDataPlanFragment :
     ) {
         if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE) {
             onClearSelectedDenomFull()
-            digitalPDPTelcoAnalytics.clickMCCMProduct(
+            digitalPDPAnalytics.clickMCCMProduct(
                 productListTitle,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
@@ -1235,7 +1235,7 @@ class DigitalPDPDataPlanFragment :
                 position
             )
         } else if (layoutType == DenomWidgetEnum.FULL_TYPE) {
-            digitalPDPTelcoAnalytics.clickProductCluster(
+            digitalPDPAnalytics.clickProductCluster(
                 productListTitle,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
@@ -1263,7 +1263,7 @@ class DigitalPDPDataPlanFragment :
         position: Int
     ) {
         if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE) {
-            digitalPDPTelcoAnalytics.impressionProductMCCM(
+            digitalPDPAnalytics.impressionProductMCCM(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
@@ -1273,7 +1273,7 @@ class DigitalPDPDataPlanFragment :
                 position
             )
         } else if (layoutType == DenomWidgetEnum.FULL_TYPE) {
-            digitalPDPTelcoAnalytics.impressionProductCluster(
+            digitalPDPAnalytics.impressionProductCluster(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
@@ -1293,14 +1293,14 @@ class DigitalPDPDataPlanFragment :
             ProductDescBottomSheet(denomFull, this).show(it, "")
         }
         if (layoutType == DenomWidgetEnum.FULL_TYPE) {
-            digitalPDPTelcoAnalytics.clickFullDenomChevron(
+            digitalPDPAnalytics.clickFullDenomChevron(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
             )
         } else {
-            digitalPDPTelcoAnalytics.clickPromoFullDenomChevron(
+            digitalPDPAnalytics.clickPromoFullDenomChevron(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
@@ -1332,7 +1332,7 @@ class DigitalPDPDataPlanFragment :
     }
 
     override fun onChipClicked(chipName: String) {
-        digitalPDPTelcoAnalytics.clickFilterChip(
+        digitalPDPAnalytics.clickFilterChip(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             operator.attributes.name,
             chipName,
@@ -1345,7 +1345,7 @@ class DigitalPDPDataPlanFragment :
     /** Start DigitalHistoryIconListener */
 
     override fun onClickDigitalIconHistory() {
-        digitalPDPTelcoAnalytics.clickTransactionHistoryIcon(
+        digitalPDPAnalytics.clickTransactionHistoryIcon(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             loyaltyStatus,
             userSession.userId

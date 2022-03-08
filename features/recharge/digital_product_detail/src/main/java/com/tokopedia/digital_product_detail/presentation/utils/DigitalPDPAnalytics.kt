@@ -46,7 +46,7 @@ import com.tokopedia.recharge_component.model.recommendation_card.Recommendation
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
-class DigitalPDPTelcoAnalytics {
+class DigitalPDPAnalytics {
 
     fun eventInputNumberManual(categoryName: String, operatorName: String, userId: String) {
         val data = DataLayer.mapOf(

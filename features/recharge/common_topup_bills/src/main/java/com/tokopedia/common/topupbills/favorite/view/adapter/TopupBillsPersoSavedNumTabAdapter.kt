@@ -2,7 +2,6 @@ package com.tokopedia.common.topupbills.favorite.view.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.favorite.view.fragment.TopupBillsPersoContactListFragment
 import com.tokopedia.common.topupbills.favorite.view.fragment.TopupBillsPersoFavoriteNumberFragment
 import java.util.ArrayList

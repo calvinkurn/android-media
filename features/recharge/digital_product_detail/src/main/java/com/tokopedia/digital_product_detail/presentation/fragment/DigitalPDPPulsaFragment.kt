@@ -53,7 +53,7 @@ import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
-import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicAppBar
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
@@ -99,7 +99,11 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     RechargeDenomGridListener,
     RechargeBuyWidgetListener,
     RechargeRecommendationCardListener,
-    DigitalHistoryIconListener {
+    DigitalHistoryIconListener,
+    ClientNumberInputFieldListener,
+    ClientNumberFilterChipListener,
+    ClientNumberAutoCompleteListener
+{
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -112,7 +116,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var digitalPDPTelcoAnalytics: DigitalPDPTelcoAnalytics
+    lateinit var digitalPDPAnalytics: DigitalPDPAnalytics
 
     private val keyboardWatcher = DigitalKeyboardWatcher()
 
@@ -319,7 +323,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             when (atcData) {
                 is RechargeNetworkResult.Success -> {
                     onLoadingBuyWidget(false)
-                    digitalPDPTelcoAnalytics.addToCart(
+                    digitalPDPAnalytics.addToCart(
                         categoryId.toString(),
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
                         operator.attributes.name,
@@ -490,134 +494,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             )
             setInputFieldType(InputFieldType.Telco)
             setListener(
-                inputFieldListener = object : ClientNumberInputFieldListener {
-                    override fun onRenderOperator(isDelayed: Boolean) {
-                        viewModel.operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty().let {
-                            if (it) {
-                                getPrefixOperatorData()
-                            } else {
-                                renderProduct()
-                            }
-                        }
-                    }
-
-                    override fun onClearInput() {
-                        operator = TelcoOperator()
-                        showEmptyState()
-                        digitalPDPTelcoAnalytics.eventClearInputNumber(
-                            DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                            userSession.userId
-                        )
-                        onHideBuyWidget()
-                    }
-
-                    override fun onClickNavigationIcon() {
-                        binding?.run {
-                            val clientNumber = rechargePdpPulsaClientNumberWidget.getInputNumber()
-                            val dgCategoryIds = arrayListOf(
-                                TelcoCategoryType.CATEGORY_PULSA.toString(),
-                                TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
-                                TelcoCategoryType.CATEGORY_ROAMING.toString()
-                            )
-                            navigateToContact(
-                                clientNumber, dgCategoryIds,
-                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                                false
-                            )
-                            digitalPDPTelcoAnalytics.clickOnContactIcon(
-                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                                userSession.userId
-                            )
-                        }
-                    }
-
-                    override fun isKeyboardShown(): Boolean {
-                        context?.let {
-                            val inputMethodManager =
-                                it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                            return inputMethodManager.isAcceptingText
-                        }
-                        return false
-                    }
-                },
-                autoCompleteListener = object : ClientNumberAutoCompleteListener {
-                    override fun onClickAutoComplete(isFavoriteContact: Boolean) {
-                        inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
-                        if (isFavoriteContact) {
-                            digitalPDPTelcoAnalytics.clickFavoriteContactAutoComplete(
-                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                                operator.attributes.name,
-                                loyaltyStatus,
-                                userSession.userId
-                            )
-                        } else {
-                            digitalPDPTelcoAnalytics.clickFavoriteNumberAutoComplete(
-                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                                operator.attributes.name,
-                                loyaltyStatus,
-                                userSession.userId
-                            )
-                        }
-                    }
-                },
-                filterChipListener = object : ClientNumberFilterChipListener {
-                    override fun onShowFilterChip(isLabeled: Boolean) {
-                        if (isLabeled) {
-                            digitalPDPTelcoAnalytics.impressionFavoriteContactChips(
-                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                                loyaltyStatus,
-                                userSession.userId
-                            )
-                        } else {
-                            digitalPDPTelcoAnalytics.impressionFavoriteNumberChips(
-                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                                loyaltyStatus,
-                                userSession.userId
-                            )
-                        }
-                    }
-
-                    override fun onClickFilterChip(isLabeled: Boolean, operatorId: String) {
-                        inputNumberActionType = InputNumberActionType.CHIP
-                        if (isLabeled) {
-                            onHideBuyWidget()
-                            digitalPDPTelcoAnalytics.clickFavoriteContactChips(
-                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                                operator.attributes.name,
-                                loyaltyStatus,
-                                userSession.userId,
-                            )
-                        } else {
-                            digitalPDPTelcoAnalytics.clickFavoriteNumberChips(
-                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                                operator.attributes.name,
-                                loyaltyStatus,
-                                userSession.userId
-                            )
-                        }
-                    }
-
-                    override fun onClickIcon(isSwitchChecked: Boolean) {
-                        binding?.run {
-                            digitalPDPTelcoAnalytics.clickListFavoriteNumber(
-                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                                operator.attributes.name,
-                                userSession.userId
-                            )
-                            val clientNumber = rechargePdpPulsaClientNumberWidget.getInputNumber()
-                            val dgCategoryIds = arrayListOf(
-                                TelcoCategoryType.CATEGORY_PULSA.toString(),
-                                TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
-                                TelcoCategoryType.CATEGORY_ROAMING.toString()
-                            )
-                            navigateToContact(
-                                clientNumber, dgCategoryIds,
-                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                                isSwitchChecked
-                            )
-                        }
-                    }
-                }
+                this@DigitalPDPPulsaFragment,
+                this@DigitalPDPPulsaFragment,
+                this@DigitalPDPPulsaFragment
             )
         }
     }
@@ -826,7 +705,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private fun showEmptyState() {
         binding?.run {
             if (!rechargePdpPulsaEmptyStateWidget.isVisible) {
-                digitalPDPTelcoAnalytics.impressionBannerEmptyState(
+                digitalPDPAnalytics.impressionBannerEmptyState(
                     rechargePdpPulsaEmptyStateWidget.imageUrl,
                     categoryId.toString(),
                     DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -856,21 +735,21 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             delay(INPUT_ACTION_TRACKING_DELAY)
             when (inputNumberActionType) {
                 InputNumberActionType.MANUAL -> {
-                    digitalPDPTelcoAnalytics.eventInputNumberManual(
+                    digitalPDPAnalytics.eventInputNumberManual(
                         categoryName,
                         operatorName,
                         userSession.userId
                     )
                 }
                 InputNumberActionType.CONTACT -> {
-                    digitalPDPTelcoAnalytics.eventInputNumberContact(
+                    digitalPDPAnalytics.eventInputNumberContact(
                         categoryName,
                         operatorName,
                         userSession.userId
                     )
                 }
                 InputNumberActionType.FAVORITE -> {
-                    digitalPDPTelcoAnalytics.eventInputNumberFavorite(
+                    digitalPDPAnalytics.eventInputNumberFavorite(
                         categoryName,
                         operatorName,
                         userSession.userId
@@ -988,13 +867,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             }
         }
 
-        digitalPDPTelcoAnalytics.openScreenPDPPage(
+        digitalPDPAnalytics.openScreenPDPPage(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             userSession.userId,
             userSession.isLoggedIn
         )
 
-        digitalPDPTelcoAnalytics.viewPDPPage(
+        digitalPDPAnalytics.viewPDPPage(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             userSession.userId
         )
@@ -1018,6 +897,143 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         startActivityForResult(intent, requestCode)
     }
 
+    /** Start Input Field Listener */
+
+    override fun onRenderOperator(isDelayed: Boolean) {
+        viewModel.operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty().let {
+            if (it) {
+                getPrefixOperatorData()
+            } else {
+                renderProduct()
+            }
+        }
+    }
+
+    override fun onClearInput() {
+        operator = TelcoOperator()
+        showEmptyState()
+        digitalPDPAnalytics.eventClearInputNumber(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            userSession.userId
+        )
+        onHideBuyWidget()
+    }
+
+    override fun onClickNavigationIcon() {
+        binding?.run {
+            val clientNumber = rechargePdpPulsaClientNumberWidget.getInputNumber()
+            val dgCategoryIds = arrayListOf(
+                TelcoCategoryType.CATEGORY_PULSA.toString(),
+                TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
+                TelcoCategoryType.CATEGORY_ROAMING.toString()
+            )
+            navigateToContact(
+                clientNumber, dgCategoryIds,
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                false
+            )
+            digitalPDPAnalytics.clickOnContactIcon(
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                userSession.userId
+            )
+        }
+    }
+
+    override fun isKeyboardShown(): Boolean {
+        context?.let {
+            val inputMethodManager =
+                it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            return inputMethodManager.isAcceptingText
+        }
+        return false
+    }
+
+    /** End Input Field Listener */
+
+    /** Start Filter Chip Listener */
+
+    override fun onShowFilterChip(isLabeled: Boolean) {
+        if (isLabeled) {
+            digitalPDPAnalytics.impressionFavoriteContactChips(
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                loyaltyStatus,
+                userSession.userId
+            )
+        } else {
+            digitalPDPAnalytics.impressionFavoriteNumberChips(
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                loyaltyStatus,
+                userSession.userId
+            )
+        }
+    }
+
+    override fun onClickFilterChip(isLabeled: Boolean, operatorId: String) {
+        inputNumberActionType = InputNumberActionType.CHIP
+        if (isLabeled) {
+            onHideBuyWidget()
+            digitalPDPAnalytics.clickFavoriteContactChips(
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                operator.attributes.name,
+                loyaltyStatus,
+                userSession.userId,
+            )
+        } else {
+            digitalPDPAnalytics.clickFavoriteNumberChips(
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                operator.attributes.name,
+                loyaltyStatus,
+                userSession.userId
+            )
+        }
+    }
+
+    override fun onClickIcon(isSwitchChecked: Boolean) {
+        binding?.run {
+            digitalPDPAnalytics.clickListFavoriteNumber(
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                operator.attributes.name,
+                userSession.userId
+            )
+            val clientNumber = rechargePdpPulsaClientNumberWidget.getInputNumber()
+            val dgCategoryIds = arrayListOf(
+                TelcoCategoryType.CATEGORY_PULSA.toString(),
+                TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
+                TelcoCategoryType.CATEGORY_ROAMING.toString()
+            )
+            navigateToContact(
+                clientNumber, dgCategoryIds,
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                isSwitchChecked
+            )
+        }
+    }
+
+    /** End Filter Chip Listener */
+
+    /** Start Auto Complete Listener */
+
+    override fun onClickAutoComplete(isFavoriteContact: Boolean) {
+        inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
+        if (isFavoriteContact) {
+            digitalPDPAnalytics.clickFavoriteContactAutoComplete(
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                operator.attributes.name,
+                loyaltyStatus,
+                userSession.userId
+            )
+        } else {
+            digitalPDPAnalytics.clickFavoriteNumberAutoComplete(
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                operator.attributes.name,
+                loyaltyStatus,
+                userSession.userId
+            )
+        }
+    }
+
+    /** End Auto Complete Listener */
+
     /** Start RechargeDenomGridListener */
 
     override fun onDenomGridClicked(
@@ -1027,7 +1043,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     ) {
         if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE) {
             onClearSelectedDenomGrid()
-            digitalPDPTelcoAnalytics.clickMCCMProduct(
+            digitalPDPAnalytics.clickMCCMProduct(
                 productListTitle,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
@@ -1038,7 +1054,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 position
             )
         } else if (layoutType == DenomWidgetEnum.GRID_TYPE) {
-            digitalPDPTelcoAnalytics.clickProductCluster(
+            digitalPDPAnalytics.clickProductCluster(
                 productListTitle,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
@@ -1066,7 +1082,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         position: Int
     ) {
         if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE) {
-            digitalPDPTelcoAnalytics.impressionProductMCCM(
+            digitalPDPAnalytics.impressionProductMCCM(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
@@ -1076,7 +1092,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 position
             )
         } else if (layoutType == DenomWidgetEnum.GRID_TYPE) {
-            digitalPDPTelcoAnalytics.impressionProductCluster(
+            digitalPDPAnalytics.impressionProductCluster(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
@@ -1105,7 +1121,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     override fun onClickedChevron(denom: DenomData) {
-        digitalPDPTelcoAnalytics.clickChevronBuyWidget(
+        digitalPDPAnalytics.clickChevronBuyWidget(
             DigitalPDPCategoryUtil.getCategoryName(denom.categoryId.toInt()),
             operator.attributes.name,
             denom.price,
@@ -1126,7 +1142,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         recommendation: RecommendationCardWidgetModel,
         position: Int
     ) {
-        digitalPDPTelcoAnalytics.clickLastTransactionIcon(
+        digitalPDPAnalytics.clickLastTransactionIcon(
             title,
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             operator.attributes.name,
@@ -1147,7 +1163,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         recommendation: RecommendationCardWidgetModel,
         position: Int
     ) {
-        digitalPDPTelcoAnalytics.impressionLastTransactionIcon(
+        digitalPDPAnalytics.impressionLastTransactionIcon(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             operator.attributes.name,
             loyaltyStatus,
@@ -1162,7 +1178,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     /** Start DigitalHistoryIconListener */
 
     override fun onClickDigitalIconHistory() {
-        digitalPDPTelcoAnalytics.clickTransactionHistoryIcon(
+        digitalPDPAnalytics.clickTransactionHistoryIcon(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             loyaltyStatus,
             userSession.userId
