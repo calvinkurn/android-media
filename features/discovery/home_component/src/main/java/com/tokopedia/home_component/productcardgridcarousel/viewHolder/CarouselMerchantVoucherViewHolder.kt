@@ -5,7 +5,6 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeBannerItemMerchantVoucherBinding
-import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherShopClicked
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMerchantVoucherDataModel
 import com.tokopedia.home_component.util.loadImageNoRounded
 import com.tokopedia.home_component.util.loadImageNormal
@@ -53,19 +52,7 @@ class CarouselMerchantVoucherViewHolder (
         binding?.imageBadge?.loadImageNoRounded(element.iconBadge, com.tokopedia.home_component.R.drawable.placeholder_grey)
         binding?.imageProduct?.loadImageNoRounded(element.imageProduct, com.tokopedia.home_component.R.drawable.placeholder_grey)
         binding?.containerShop?.setOnClickListener {
-            val horizontalPosition = "${adapterPosition + 1}"
-            element.merchantVoucherComponentListener.onShopClicked(
-                MerchantVoucherShopClicked(
-                    shopAppLink = element.shopAppLink,
-                    shopId = element.shopId,
-                    shopName = element.shopName,
-                    horizontalCardPosition = horizontalPosition,
-                    bannerId = element.bannerId,
-                    positionWidget = element.positionWidget,
-                    headerName = element.headerName,
-                    userId = element.userId
-                )
-            )
+            element.merchantVoucherComponentListener.onShopClicked(element, adapterPosition)
         }
         binding?.containerProduct?.setOnClickListener {
             element.merchantVoucherComponentListener.onProductClicked(element, adapterPosition)

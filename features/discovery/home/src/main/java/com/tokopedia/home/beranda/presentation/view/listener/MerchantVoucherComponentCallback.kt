@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.presentation.view.listener
 import com.tokopedia.home.analytics.v2.MerchantVoucherTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.listener.MerchantVoucherComponentListener
-import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherShopClicked
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMerchantVoucherDataModel
 import com.tokopedia.track.TrackApp
 
@@ -30,10 +29,10 @@ class MerchantVoucherComponentCallback(val homeCategoryListener: HomeCategoryLis
         homeCategoryListener.onDynamicChannelClicked(seeMoreAppLink)
     }
 
-    override fun onShopClicked(merchantVoucherShopClicked: MerchantVoucherShopClicked) {
-        val tracking = MerchantVoucherTracking.getShopClicked(merchantVoucherShopClicked)
+    override fun onShopClicked(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int) {
+        val tracking = MerchantVoucherTracking.getShopClicked(element, horizontalPosition)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(tracking.first, tracking.second)
-        homeCategoryListener.onDynamicChannelClicked(merchantVoucherShopClicked.shopAppLink)
+        homeCategoryListener.onDynamicChannelClicked(element.shopAppLink)
     }
 
     override fun getUserId(): String {
