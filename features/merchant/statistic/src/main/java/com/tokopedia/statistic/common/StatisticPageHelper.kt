@@ -2,12 +2,12 @@ package com.tokopedia.statistic.common
 
 import android.content.Context
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.common.utils.StatisticDateUtil
 import com.tokopedia.statistic.common.utils.StatisticRemoteConfig
 import com.tokopedia.statistic.view.model.ActionMenuUiModel
-import com.tokopedia.statistic.view.model.DateFilterItem
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*

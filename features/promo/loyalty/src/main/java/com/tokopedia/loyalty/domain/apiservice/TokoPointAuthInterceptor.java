@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
-import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.loyalty.domain.entity.response.TokoPointErrorResponse;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
 import com.tokopedia.network.NetworkRouter;

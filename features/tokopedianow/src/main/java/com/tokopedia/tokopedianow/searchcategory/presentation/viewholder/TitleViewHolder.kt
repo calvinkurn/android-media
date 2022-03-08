@@ -5,6 +5,8 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.SEARCH_CATEGORY_SUBTITLE_RESOURCE_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeFormattedCopy
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategoryTitleBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.AllProductTitle
@@ -28,12 +30,33 @@ class TitleViewHolder(
     override fun bind(element: TitleDataView?) {
         element ?: return
 
+        setTitle(element)
+        setSeeAllCategory(element)
+        setSubtitle(element)
+    }
+
+    private fun setTitle(element: TitleDataView) {
+        binding?.tokoNowSearchCategoryTitle?.text = getTitle(element)
+    }
+
+    private fun setSeeAllCategory(element: TitleDataView) {
         binding?.apply {
-            tokoNowSearchCategoryTitle.text = getTitle(element)
             tokoNowSearchCategorySeeAllCategory.shouldShowWithAction(element.hasSeeAllCategoryButton) {
                 tokoNowSearchCategorySeeAllCategory.setOnClickListener {
                     titleListener.onSeeAllCategoryClicked()
                 }
+            }
+        }
+    }
+
+    private fun setSubtitle(element: TitleDataView) {
+        binding?.apply {
+            tokoNowSearchCategorySubtitle.shouldShowWithAction(element.is15mAvailable) {
+                tokoNowSearchCategorySubtitle.text = getServiceTypeFormattedCopy(
+                    context = root.context,
+                    key = SEARCH_CATEGORY_SUBTITLE_RESOURCE_ID,
+                    serviceType = element.serviceType
+                )
             }
         }
     }

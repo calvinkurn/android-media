@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="shc_description_desc">#ae31353b</color>
-    <color name="shc_max_progress">#5131353b</color>
-    <color name="shc_description">#ae31353b</color>
 
-    <color name="shc_icon_color">#525A67</color>
     <color name="shc_static_n50_dms">#F3F4F5</color>
     <color name="shc_static_n75_dms">#E5E7E9</color>
     <color name="shc_static_n700_68_dms">#AD31353B</color>

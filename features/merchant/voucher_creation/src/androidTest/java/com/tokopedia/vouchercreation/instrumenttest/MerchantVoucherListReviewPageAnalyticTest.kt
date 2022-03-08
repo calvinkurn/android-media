@@ -1,23 +1,20 @@
 package com.tokopedia.vouchercreation.instrumenttest
 
 import android.content.Intent
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.mock.MerchantVoucherListReviewMockModelConfig
-import com.tokopedia.vouchercreation.voucherlist.view.activity.VoucherListActivity
+import com.tokopedia.vouchercreation.shop.voucherlist.view.activity.VoucherListActivity
 import org.hamcrest.MatcherAssert
 import org.junit.After
 import org.junit.Before
