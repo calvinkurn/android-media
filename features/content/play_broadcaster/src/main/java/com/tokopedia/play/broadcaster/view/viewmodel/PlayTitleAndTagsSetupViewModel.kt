@@ -90,6 +90,7 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
     }
 
     fun saveTitleAndTags(title: String) {
+        setupDataStore.setTitle(title)
         setupDataStore.setTags(addedTags)
     }
 
@@ -141,6 +142,7 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
 
     private suspend fun getRecommendedTags(): List<String> = withContext(dispatcher.io) {
         val recommendedTags = getRecommendedChannelTagsUseCase.apply {
+            /** TODO("remove hardcoded channelID") */
             setChannelId("328076")
         }.executeOnBackground()
 

@@ -13,6 +13,7 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPostVideoBinding
 import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
+import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.TagListViewComponent
@@ -83,14 +84,20 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         binding.icBroSummaryBack.setOnClickListener {
             mListener?.onClickBackButton()
         }
+
         binding.clCoverPreview.setOnClickListener {
             openCoverSetupFragment()
+        }
+
+        binding.btnPostVideo.setOnClickListener {
+            viewModel.saveVideo()
         }
     }
 
     private fun setupObservable() {
         observeChannelInfo()
         observeTags()
+        observeSaveVideo()
     }
 
     private fun observeChannelInfo() {
@@ -111,6 +118,28 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     private fun observeTags() {
         tagViewModel.observableRecommendedTagsModel.observe(viewLifecycleOwner) {
             tagListView.setTags(it.toList())
+        }
+    }
+
+    private fun observeSaveVideo() {
+        viewModel.observableSaveVideo.observe(viewLifecycleOwner) {
+            when (it) {
+                is NetworkResult.Loading -> binding.btnPostVideo.isLoading = true
+                is NetworkResult.Success -> {
+                    /** TODO("goto feed page") */
+//                    openShopPageWithBroadcastStatus(true)
+                }
+                is NetworkResult.Fail -> {
+                    binding.btnPostVideo.isLoading = false
+                    view?.showErrorToaster(
+                        err = it.error,
+                        customErrMessage = it.error.localizedMessage
+                            ?: getString(R.string.play_broadcaster_default_error),
+                        actionLabel = getString(R.string.play_broadcast_try_again),
+                        actionListener = { _ -> it.onRetry() }
+                    )
+                }
+            }
         }
     }
 

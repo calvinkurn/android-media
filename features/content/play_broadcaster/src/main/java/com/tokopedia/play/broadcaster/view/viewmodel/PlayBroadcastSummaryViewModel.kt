@@ -59,6 +59,7 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
         scope.launchCatchError(block = {
             val reportChannelSummary = withContext(dispatcher.io) {
                 delay(LIVE_STATISTICS_DELAY)
+                /** TODO("remove hardcoded id") */
                 getLiveStatisticsUseCase.params = GetLiveStatisticsUseCase.createParams("328076")
                 return@withContext getLiveStatisticsUseCase.executeOnBackground()
             }
@@ -70,6 +71,8 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     }
 
     fun saveVideo() {
+        /** TODO("Save tags as well") */
+
         _observableSaveVideo.value = NetworkResult.Loading
         scope.launchCatchError(block = {
             withContext(dispatcher.io) {
