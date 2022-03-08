@@ -264,7 +264,8 @@ object IrisAnalyticsEvents {
             INAPP_DISMISSED,
             PUSH_RECEIVED,
             PUSH_CLICKED,
-            PUSH_DISMISSED
+            PUSH_DISMISSED,
+            DEVICE_NOTIFICATION_OFF
         )
 
         if (eventName in allowedEvents) {
