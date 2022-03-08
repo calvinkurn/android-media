@@ -106,7 +106,7 @@ class OrderSummaryPageViewModelTestHelper {
                     addOnKey = "123-0",
                     addOnLevel = AddOnConstant.ADD_ON_LEVEL_ORDER,
                     addOnData = listOf(AddOnData(
-                            addOnPrice = 1000
+                            addOnPrice = 2000
                     ))
             ))
     )

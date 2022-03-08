@@ -1103,7 +1103,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
 
         // Then
-        assertEquals(1000L, orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
+        assertEquals(2000L, orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
                 ?: 0)
     }
 
@@ -1132,7 +1132,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val saveAddOnStateResult = helper.saveAddOnStateEmptyResult
         orderSummaryPageViewModel.orderCart = OrderCart(
                 shop = OrderShop(addOn = AddOnsDataModel(
-                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000L))
+                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000L))
                 ), isFulfillment = true),
                 products = mutableListOf(OrderProduct(cartId = "456", orderQuantity = 1)), cartString = "123")
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
@@ -1144,6 +1144,46 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(0L, orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
+                ?: 0)
+    }
+
+    @Test
+    fun `WHEN previously has add on selected on product level and then update add on but got wrong add on key THEN add on price should not be updated`() {
+        // Given
+        val saveAddOnStateResult = helper.saveAddOnStateProductLevelResult
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(
+                cartId = "123", orderQuantity = 1, addOn = AddOnsDataModel(
+                addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000L))
+        ))), shop = OrderShop(isFulfillment = false), cartString = "456")
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProducts.value = orderSummaryPageViewModel.orderCart.products
+
+        // When
+        orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
+
+        // Then
+        assertEquals(1000L, orderSummaryPageViewModel.orderProducts.value.firstOrNull()?.addOn?.addOnsDataItemModelList?.firstOrNull()?.addOnPrice
+                ?: 0)
+    }
+
+    @Test
+    fun `WHEN previously has add on selected on shop level and then update add on but got wrong add on key THEN add on price should not be updated`() {
+        // Given
+        val saveAddOnStateResult = helper.saveAddOnStateProductLevelResult
+        orderSummaryPageViewModel.orderCart = OrderCart(
+                shop = OrderShop(addOn = AddOnsDataModel(
+                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000L))
+                ), isFulfillment = true),
+                products = mutableListOf(OrderProduct(cartId = "123", orderQuantity = 1)), cartString = "456")
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProducts.value = orderSummaryPageViewModel.orderCart.products
+        orderSummaryPageViewModel.orderShop.value = orderSummaryPageViewModel.orderCart.shop
+
+        // When
+        orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
+
+        // Then
+        assertEquals(2000L, orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
                 ?: 0)
     }
 
