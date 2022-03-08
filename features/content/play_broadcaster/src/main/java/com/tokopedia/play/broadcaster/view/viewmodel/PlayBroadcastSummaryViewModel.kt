@@ -8,6 +8,7 @@ import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.SetChannelTagsUseCase
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.LiveDurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
@@ -31,15 +32,12 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
         private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
         private val userSession: UserSessionInterface,
         private val playBroadcastMapper: PlayBroadcastMapper,
-        private val setupDataStore: PlayBroadcastSetupDataStore,
         private val getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase,
+        private val setChannelTagsUseCase: SetChannelTagsUseCase,
 ) : ViewModel() {
 
     private val channelId: String
         get() = channelConfigStore.getChannelId()
-
-    private val job: Job = SupervisorJob()
-    private val scope = CoroutineScope(job + dispatcher.main)
 
     val observableLiveSummary: LiveData<NetworkResult<List<TrafficMetricUiModel>>>
         get() = _observableLiveSummary
@@ -49,21 +47,17 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
         get() = _observableSaveVideo
     private val _observableSaveVideo = MutableLiveData<NetworkResult<Boolean>>()
 
-    val observableDeleteVideo: LiveData<NetworkResult<Boolean>>
-        get() = _observableDeleteVideo
-    private val _observableDeleteVideo = MutableLiveData<NetworkResult<Boolean>>()
-
     val observableReportDuration: LiveData<LiveDurationUiModel>
         get() = _observableReportDuration
     private val _observableReportDuration = MutableLiveData<LiveDurationUiModel>()
 
-    val addedTags: Set<String>
+    private val addedTags: Set<String>
         get() = _observableAddedTags.value.orEmpty()
+    private val _observableAddedTags = MutableLiveData<Set<String>>(mutableSetOf())
 
     val observableRecommendedTagsModel: LiveData<List<PlayTagUiModel>>
         get() = _observableRecommendedTagsModel
 
-    private val _observableAddedTags = MutableLiveData(setupDataStore.getTags())
     private val _observableRecommendedTags = MutableLiveData<Set<String>>()
     private val _observableRecommendedTagsModel = MediatorLiveData<List<PlayTagUiModel>>().apply {
         addSource(_observableAddedTags) { addedTags ->
@@ -90,11 +84,10 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
 
     fun fetchLiveTraffic() {
         _observableLiveSummary.value = NetworkResult.Loading
-        scope.launchCatchError(block = {
+        viewModelScope.launchCatchError(block = {
             val reportChannelSummary = withContext(dispatcher.io) {
                 delay(LIVE_STATISTICS_DELAY)
-                /** TODO("remove hardcoded id") */
-                getLiveStatisticsUseCase.params = GetLiveStatisticsUseCase.createParams("328076")
+                getLiveStatisticsUseCase.params = GetLiveStatisticsUseCase.createParams(channelId)
                 return@withContext getLiveStatisticsUseCase.executeOnBackground()
             }
             _observableReportDuration.value = playBroadcastMapper.mapLiveDuration(reportChannelSummary.duration)
@@ -114,8 +107,7 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
 
     private suspend fun getRecommendedTags(): List<String> = withContext(dispatcher.io) {
         val recommendedTags = getRecommendedChannelTagsUseCase.apply {
-            /** TODO("remove hardcoded channelID") */
-            setChannelId("328076")
+            setChannelId(channelId)
         }.executeOnBackground()
 
         return@withContext recommendedTags.recommendedTags.tags
@@ -124,21 +116,16 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     fun toggleTag(tag: String) {
         val oldAddedTags = addedTags
         val newAddedTags = if (!oldAddedTags.contains(tag)) oldAddedTags + tag
-        else oldAddedTags - tag
+                            else oldAddedTags - tag
 
         _observableAddedTags.value = newAddedTags
     }
 
     fun saveVideo() {
         _observableSaveVideo.value = NetworkResult.Loading
-        scope.launchCatchError(block = {
+        viewModelScope.launchCatchError(block = {
             withContext(dispatcher.io) {
-                /** TODO("remove delay") */
-                delay(2000)
-
                 saveTag()
-
-                /** TODO("uncomment usecase") */
                 updateChannelStatus()
             }
             _observableSaveVideo.value = NetworkResult.Success(true)
@@ -148,13 +135,11 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     }
 
     private suspend fun saveTag() {
-        setupDataStore.setTags(addedTags)
-        uploadTags()
-    }
+        val isSuccess = setChannelTagsUseCase.apply {
+            setParams(channelId, addedTags.toSet())
+        }.executeOnBackground().recommendedTags.success
 
-    private suspend fun uploadTags() {
-        val isSuccess = setupDataStore.uploadTags(channelConfigStore.getChannelId())
-        if (!isSuccess) throw DefaultErrorThrowable("${DefaultErrorThrowable.DEFAULT_MESSAGE}: Error Tag")
+        if(!isSuccess) throw DefaultErrorThrowable("${DefaultErrorThrowable.DEFAULT_MESSAGE}: Error Tag")
     }
 
     private suspend fun updateChannelStatus() {
@@ -167,11 +152,6 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
                 )
             )
         }.executeOnBackground()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        scope.cancel()
     }
 
     companion object {
