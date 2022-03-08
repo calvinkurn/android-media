@@ -218,62 +218,51 @@ class DigitalPDPDataPlanFragment :
 
     private fun renderProduct() {
         binding?.run {
+            val selectedClientNumber = rechargePdpPaketDataClientNumberWidget.getInputNumber()
             try {
-                val selectedClientNumber = rechargePdpPaketDataClientNumberWidget.getInputNumber()
-                if (selectedClientNumber.length >= MINIMUM_OPERATOR_PREFIX) {
-
-                    /* operator check */
-                    val selectedOperator =
-                        viewModel.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
-                            selectedClientNumber.startsWith(it.value)
-                        }
-
-                    /* validate client number */
-                    viewModel.run {
-                        cancelValidatorJob()
-                        validateClientNumber(selectedClientNumber)
+                /* operator check */
+                val selectedOperator =
+                    viewModel.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
+                        selectedClientNumber.startsWith(it.value)
                     }
-                    hitTrackingForInputNumber(
-                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                        selectedOperator.operator.attributes.name
-                    )
 
-                    val isOperatorChanged = operator.id != selectedOperator.operator.id
-                    val productIdFromDefaultPrefix =
+                /* validate client number */
+                viewModel.run {
+                    cancelValidatorJob()
+                    validateClientNumber(selectedClientNumber)
+                }
+                hitTrackingForInputNumber(
+                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                    selectedOperator.operator.attributes.name
+                )
+
+                val isOperatorChanged = operator.id != selectedOperator.operator.id
+                val productIdFromDefaultPrefix =
                         selectedOperator.operator.attributes.defaultProductId.toIntOrZero()
 
-                    /* set default product id when prefix changed */
-                    if (isOperatorChanged && operator.id.isEmpty() && productIdFromApplink.isMoreThanZero()) {
-                        productId = productIdFromApplink
-                    } else if (isOperatorChanged && productIdFromDefaultPrefix.isMoreThanZero()) {
-                        productId = productIdFromDefaultPrefix
-                    }
+                /* set default product id when prefix changed */
+                if (isOperatorChanged && operator.id.isEmpty() && productIdFromApplink.isMoreThanZero()) {
+                    productId = productIdFromApplink
+                } else if (isOperatorChanged && productIdFromDefaultPrefix.isMoreThanZero()) {
+                    productId = productIdFromDefaultPrefix
+                }
 
-                    if (isOperatorChanged || selectedClientNumber
-                            .length in MINIMUM_VALID_NUMBER_LENGTH..MAXIMUM_VALID_NUMBER_LENGTH
-                    ) {
-                        operator = selectedOperator.operator
-                        rechargePdpPaketDataClientNumberWidget.run {
-                            showOperatorIcon(selectedOperator.operator.attributes.imageUrl)
-                        }
-                        hideEmptyState()
-                        onHideBuyWidget()
-                        getRecommendations()
-                        getCatalogProductInputMultiTab(
+                if (isOperatorChanged || selectedClientNumber
+                        .length in MINIMUM_VALID_NUMBER_LENGTH..MAXIMUM_VALID_NUMBER_LENGTH
+                ) {
+                    operator = selectedOperator.operator
+                    rechargePdpPaketDataClientNumberWidget.run {
+                        showOperatorIcon(selectedOperator.operator.attributes.imageUrl)
+                    }
+                    hideEmptyState()
+                    onHideBuyWidget()
+                    getRecommendations()
+                    getCatalogProductInputMultiTab(
                             selectedOperator.key, isOperatorChanged,
-                            selectedClientNumber
+                        selectedClientNumber
                         )
-                    } else {
-                        onHideBuyWidget()
-                    }
-
                 } else {
-                    operator = TelcoOperator()
-                    viewModel.run {
-                        cancelRecommendationJob()
-                        cancelCatalogProductJob()
-                    }
-                    showEmptyState()
+                    onHideBuyWidget()
                 }
             } catch (exception: NoSuchElementException) {
                 operator = TelcoOperator()
@@ -281,11 +270,16 @@ class DigitalPDPDataPlanFragment :
                     cancelRecommendationJob()
                     cancelCatalogProductJob()
                 }
-                binding?.rechargePdpPaketDataClientNumberWidget?.setLoading(false)
-                rechargePdpPaketDataClientNumberWidget.setErrorInputField(
-                    getString(com.tokopedia.recharge_component.R.string.client_number_prefix_error),
-                    true
-                )
+                rechargePdpPaketDataClientNumberWidget.run {
+                    setLoading(false)
+                    if (selectedClientNumber.length >= MINIMUM_OPERATOR_PREFIX) {
+                        setErrorInputField(
+                            getString(com.tokopedia.recharge_component.R.string.client_number_prefix_error),
+                            true
+                        )
+                    }
+                }
+                showEmptyState()
             }
         }
     }

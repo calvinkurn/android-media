@@ -179,59 +179,49 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private fun renderProduct() {
         binding?.run {
+            val selectedClientNumber = rechargePdpPulsaClientNumberWidget.getInputNumber()
             try {
-                if (rechargePdpPulsaClientNumberWidget.getInputNumber().length >= MINIMUM_OPERATOR_PREFIX) {
-
-                    /* operator check */
-                    val selectedOperator =
-                        viewModel.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
-                            rechargePdpPulsaClientNumberWidget.getInputNumber().startsWith(it.value)
-                        }
-
-                    /* validate client number */
-                    viewModel.run {
-                        cancelValidatorJob()
-                        validateClientNumber(rechargePdpPulsaClientNumberWidget.getInputNumber())
+                /* operator check */
+                val selectedOperator =
+                    viewModel.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
+                        selectedClientNumber.startsWith(it.value)
                     }
 
-                    hitTrackingForInputNumber(
-                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                        selectedOperator.operator.attributes.name
-                    )
+                /* validate client number */
+                viewModel.run {
+                    cancelValidatorJob()
+                    validateClientNumber(selectedClientNumber)
+                }
 
-                    val isOperatorChanged = operator.id != selectedOperator.operator.id
-                    val productIdFromDefaultPrefix =
+                hitTrackingForInputNumber(
+                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                    selectedOperator.operator.attributes.name
+                )
+
+                val isOperatorChanged = operator.id != selectedOperator.operator.id
+                val productIdFromDefaultPrefix =
                         selectedOperator.operator.attributes.defaultProductId.toIntOrZero()
 
-                    /* set default product id when prefix changed */
-                    if (isOperatorChanged && operator.id.isEmpty() && productIdFromApplink.isMoreThanZero()) {
-                        productId = productIdFromApplink
-                    } else if (isOperatorChanged && productIdFromDefaultPrefix.isMoreThanZero()) {
-                        productId = productIdFromDefaultPrefix
-                    }
+                /* set default product id when prefix changed */
+                if (isOperatorChanged && operator.id.isEmpty() && productIdFromApplink.isMoreThanZero()) {
+                    productId = productIdFromApplink
+                } else if (isOperatorChanged && productIdFromDefaultPrefix.isMoreThanZero()) {
+                    productId = productIdFromDefaultPrefix
+                }
 
-                    if (isOperatorChanged || rechargePdpPulsaClientNumberWidget.getInputNumber()
-                            .length in MINIMUM_VALID_NUMBER_LENGTH..MAXIMUM_VALID_NUMBER_LENGTH
-                    ) {
-                        operator = selectedOperator.operator
-                        rechargePdpPulsaClientNumberWidget.run {
-                            showOperatorIcon(selectedOperator.operator.attributes.imageUrl)
-                        }
-                        hideEmptyState()
-                        onHideBuyWidget()
-                        getRecommendations()
-                        getCatalogProductInput(selectedOperator.key)
-                    } else {
-                        onHideBuyWidget()
+                if (isOperatorChanged || selectedClientNumber
+                        .length in MINIMUM_VALID_NUMBER_LENGTH..MAXIMUM_VALID_NUMBER_LENGTH
+                ) {
+                    operator = selectedOperator.operator
+                    rechargePdpPulsaClientNumberWidget.run {
+                        showOperatorIcon(selectedOperator.operator.attributes.imageUrl)
                     }
-
+                    hideEmptyState()
+                    onHideBuyWidget()
+                    getRecommendations()
+                    getCatalogProductInput(selectedOperator.key)
                 } else {
-                    operator = TelcoOperator()
-                    viewModel.run {
-                        cancelRecommendationJob()
-                        cancelCatalogProductJob()
-                    }
-                    showEmptyState()
+                    onHideBuyWidget()
                 }
             } catch (exception: NoSuchElementException) {
                 operator = TelcoOperator()
@@ -239,11 +229,16 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     cancelRecommendationJob()
                     cancelCatalogProductJob()
                 }
-                binding?.rechargePdpPulsaClientNumberWidget?.setLoading(false)
-                rechargePdpPulsaClientNumberWidget.setErrorInputField(
-                    getString(com.tokopedia.recharge_component.R.string.client_number_prefix_error),
-                    true
-                )
+                rechargePdpPulsaClientNumberWidget.run {
+                    setLoading(false)
+                    if (selectedClientNumber.length >= MINIMUM_OPERATOR_PREFIX) {
+                        setErrorInputField(
+                            getString(com.tokopedia.recharge_component.R.string.client_number_prefix_error),
+                            true
+                        )
+                    }
+                }
+                showEmptyState()
             }
         }
     }
