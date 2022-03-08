@@ -121,7 +121,7 @@ object FeedPlayVideoTabMapper {
             actionAppLink = actionLink,
             isActionVisible = playSlot.lihat_semua.show,
             config = PlayWidgetConfigUiModel(
-                autoRefresh, autoRefreshTimer, true, autoPlayAmount,
+                autoRefresh, autoRefreshTimer, meta.is_autoplay, autoPlayAmount,
                 meta.max_autoplay_in_cell, maxAutoPlayWifiDuration, businessWidgetPosition
             ),
             background = PlayWidgetBackgroundUiModel(

@@ -293,7 +293,7 @@ class PlayAnalyticsTracker @Inject constructor(
 
     //20
     fun visitVideoTabPageOnFeed(position: Int) {
-        createAnalyticsData(
+        createAnalyticsForOpenScreen(
             EventName.OPEN_SCREEN,
             "", "", "", isLoggedInStatus = userSession.isLoggedIn,
             screenName = EventLabel.getScreenName(position)
@@ -428,9 +428,7 @@ class PlayAnalyticsTracker @Inject constructor(
         eventAction: String = "",
         eventCategory: String = "",
         eventLabel: String = "",
-        promotions: Map<String, Any>? = null,
-        isLoggedInStatus: Boolean? = null,
-        screenName: String = ""
+
     ) {
         val generalData = DataLayer.mapOf(
             TrackAppUtils.EVENT, eventName,
@@ -441,53 +439,42 @@ class PlayAnalyticsTracker @Inject constructor(
             PlayTrackerConst.CURRENT_SITE, PlayTrackerConst.TOKOPEDIA_MARKET_PLACE,
             PlayTrackerConst.SESSION_IRIS, irisSession.getSessionId(),
             PlayTrackerConst.USER_ID, userSession.userId,
-            PlayTrackerConst.IS_LOGGED_IN, isLoggedInStatus,
-            PlayTrackerConst.SCREEN_NAME, screenName
+
         )
-        if (promotions == null)
+
             TrackApp.getInstance().gtm.sendGeneralEvent(generalData)
 
     }
-    /**
-     * Track ecommerce event
-     */
-    private fun trackEnhancedEcommerceEventNew(
+
+    private fun createAnalyticsForOpenScreen(
             eventName: String,
-            eventCategory: String,
-            eventAction: String,
-            eventLabel: String,
-            eCommerceData: Map<String, Any>,
+            eventAction: String = "",
+            eventCategory: String = "",
+            eventLabel: String = "",
+            isLoggedInStatus: Boolean? = null,
+            screenName: String = ""
     ) {
-        trackingQueue.putEETracking(
-                getGeneralDataNew(eventName, eventCategory, eventAction, eventLabel)
-                        .plus(getEcommerceData(eCommerceData)) as HashMap<String, Any>
+        val generalData = DataLayer.mapOf(
+                TrackAppUtils.EVENT, eventName,
+                TrackAppUtils.EVENT_ACTION, eventAction,
+                TrackAppUtils.EVENT_CATEGORY, eventCategory,
+                TrackAppUtils.EVENT_LABEL, eventLabel,
+                PlayTrackerConst.BUSINESS_UNIT, PlayTrackerConst.CONTENT,
+                PlayTrackerConst.CURRENT_SITE, PlayTrackerConst.TOKOPEDIA_MARKET_PLACE,
+                PlayTrackerConst.SESSION_IRIS, irisSession.getSessionId(),
+                PlayTrackerConst.USER_ID, userSession.userId,
+                PlayTrackerConst.IS_LOGGED_IN, isLoggedInStatus,
+                PlayTrackerConst.SCREEN_NAME, screenName
         )
+        TrackApp.getInstance().gtm.sendGeneralEvent(generalData)
 
     }
 
-    /**
-     * Data Generator
-     */
-    private fun getGeneralDataNew(
-            eventName: String,
-            eventCategory: String,
-            eventAction: String,
-            eventLabel: String,
-    ): Map<String, Any> = DataLayer.mapOf(
-            TrackAppUtils.EVENT, eventName,
-            TrackAppUtils.EVENT_CATEGORY, eventCategory,
-            TrackAppUtils.EVENT_ACTION, eventAction,
-            TrackAppUtils.EVENT_LABEL, eventLabel,
-            PlayTrackerConst.BUSINESS_UNIT, PlayTrackerConst.CONTENT,
-            PlayTrackerConst.CURRENT_SITE, PlayTrackerConst.TOKOPEDIA_MARKET_PLACE,
-            PlayTrackerConst.SESSION_IRIS, irisSession.getSessionId(),
-            PlayTrackerConst.USER_ID, userSession.userId)
+
 
     private fun sendEnhanceEcommerceEvent(eventName: String, bundle: Bundle) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventName, bundle)
     }
-
-
 
     /**
      * Data Generator as Bundle
@@ -539,69 +526,9 @@ class PlayAnalyticsTracker @Inject constructor(
         return if (this.isBlank()) "none/other" else this
     }
 
-
-    private fun getEcommerceData(data: Any): Map<String, Any> = DataLayer.mapOf(ECOMMERCE, data)
-
-    private fun getPromoViewData(data: Any): Map<String, Any> =
-            DataLayer.mapOf(PROMO_VIEW, data)
-
     private fun getPromoViewDataBundle(data: Bundle): Bundle =
            Bundle().apply { putBundle(PROMO_VIEW, data) }
 
-    private fun getEcommerceDataBundle(data: Bundle): Bundle =
-        Bundle().apply { putBundle(ECOMMERCE, data) }
-
-    private fun getPromotionsData(
-            promotionDataList: List<Any>,
-    ): Map<String, Any> = DataLayer.mapOf(PROMOTIONS, promotionDataList)
-
-    private fun getPromoClickData(data: Any): Map<String, Any> =
-            DataLayer.mapOf(PROMO_CLICK, data)
-
-    private fun getPromotionsViewData(
-        channelId: String, name: String, position: Int, creative: List<String>
-    ): Map<String, Any> {
-        val listPromo : MutableList<Map<String, Any>> = mutableListOf()
-        creative.forEach {
-            listPromo.add(
-                    DataLayer.mapOf(
-                            Promotions.CREATIVE, it,
-                            Promotions.ID, channelId,
-                            Promotions.NAME, name,
-                            Promotions.POSITION, (position + 1).toString()
-                    )
-            )
-        }
-        return getPromoViewData(
-                getPromotionsData(
-                        listPromo
-                )
-        )
-
-    }
-
-    private fun getPromotionsClickData(
-            channelId: String, name: String, position: Int, creative: List<String>
-    ): Map<String, Any> {
-        val listPromo: MutableList<Map<String, Any>> = mutableListOf()
-        creative.forEach {
-            listPromo.add(
-                    DataLayer.mapOf(
-                            Promotions.CREATIVE, it,
-                            Promotions.ID, channelId,
-                            Promotions.NAME, name,
-                            Promotions.POSITION, (position + 1).toString()
-                    )
-            )
-        }
-
-        return getPromoClickData(
-                getPromotionsData(
-                        listPromo
-                )
-        )
-
-    }
 
     private object PlayTrackerConst {
         const val SCREEN_NAME = "screenName"

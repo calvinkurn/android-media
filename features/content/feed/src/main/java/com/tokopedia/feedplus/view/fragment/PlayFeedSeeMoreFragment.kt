@@ -1,6 +1,6 @@
 package com.tokopedia.feedplus.view.fragment
 
-import android.content.Intent
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -29,7 +29,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.videoTabComponent.analytics.PlayWidgetAnalyticsListenerImp
 import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker
 import com.tokopedia.videoTabComponent.domain.mapper.FeedPlayVideoTabMapper
 import com.tokopedia.videoTabComponent.domain.model.data.*
@@ -141,10 +140,19 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sendAnalyticsForLehatSemua()
         setupView(view)
         setUpShopDataHeader()
         playFeedVideoTabViewModel.getLivePlayData(widgetType, sourceId, sourceType)
     }
+
+    private fun sendAnalyticsForLehatSemua() {
+        if (widgetType == WIDGET_LIVE)
+            analyticListener.clickOnSeeAllOnLagiLiveCarousel()
+        else
+            analyticListener.clickOnSeeAllOnUpcomingCarousel(if(filterCategory.isNotEmpty()) filterCategory else DEFAULT_FILTER_CATEGORY)
+    }
+
     private fun setupView(view: View) {
         adapter = PlaySeeMoreAdapter(
                 coordinator = playWidgetCoordinator
@@ -180,12 +188,6 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
         }
     }
 
-    override fun onAttachFragment(childFragment: Fragment) {
-        super.onAttachFragment(childFragment)
-        if (widgetType == WIDGET_LIVE)
-        analyticListener.clickOnSeeAllOnLagiLiveCarousel()
-        else
-        analyticListener.clickOnSeeAllOnUpcomingCarousel(filterCategory)
 
     }
 
@@ -194,6 +196,7 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
         const val WIDGET_UPCOMING ="upcoming"
         const val ENTRY_POINT_WIDGET_LIVE = "lagi live"
         const val ENTRY_POINT_WIDGET_UPCOMING = "upcoming"
+        const val DEFAULT_FILTER_CATEGORY = "Untukmu"
 
 
         fun createInstance(bundle: Bundle) : Fragment {

@@ -161,15 +161,7 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
         isRemindMe: Boolean
     ) {
         super.onClickToggleReminderChannel(view, item, channelPositionInList, isRemindMe)
-        if (isRemindMe) {
-            tracker.clickOnRemindMeButtonOnPlayCardsWithinChip(
-                item.channelId, shopId, item.channelType.toString().lowercase(), filterCategory
-            )
-        } else {
-            tracker.clickOnUnRemindMeButtonOnPlayCardsWithinChip(
-                item.channelId, shopId, item.channelType.toString().lowercase(), filterCategory
-            )
-        }
+
 
         if (item.channelType == PlayWidgetChannelType.Upcoming) {
             if (isRemindMe) {
@@ -181,6 +173,19 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
                     item.channelId, shopId, item.channelType.toString().lowercase(), filterCategory
                 )
             }
+        }
+    }
+
+    override fun onClickToggleReminderChannel(view: PlayWidgetLargeView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isRemindMe: Boolean) {
+        super.onClickToggleReminderChannel(view, item, channelPositionInList, isRemindMe)
+        if (isRemindMe) {
+            tracker.clickOnRemindMeButtonOnPlayCardsWithinChip(
+                    item.channelId, shopId, item.channelType.toString().lowercase(), filterCategory
+            )
+        } else {
+            tracker.clickOnUnRemindMeButtonOnPlayCardsWithinChip(
+                    item.channelId, shopId, item.channelType.toString().lowercase(), filterCategory
+            )
         }
     }
 

@@ -3,7 +3,7 @@ package com.tokopedia.videoTabComponent.domain.delegate
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.play.widget.R
+import com.tokopedia.feedcomponent.R
 import com.tokopedia.videoTabComponent.view.viewholder.PlayFeedWidgetViewHolder
 import com.tokopedia.videoTabComponent.domain.model.data.PlayFeedUiModel
 import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetJumboUiModel

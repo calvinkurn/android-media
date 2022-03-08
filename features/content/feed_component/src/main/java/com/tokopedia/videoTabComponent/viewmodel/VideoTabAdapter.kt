@@ -90,21 +90,21 @@ class VideoTabAdapter(
 
     fun getPositionInList(channelId: String, positionOfItem: Int): Int {
         itemList.forEachIndexed { index, playFeedUiModel ->
-            if (playFeedUiModel is PlayWidgetMediumUiModel) {
+            if (playFeedUiModel is PlayWidgetMediumUiModel && playFeedUiModel.model.items.size > positionOfItem) {
                 val item = playFeedUiModel.model.items[positionOfItem]
                 if (item is PlayWidgetChannelUiModel) {
                     if (channelId == item.channelId)
                         return index
                 }
             }
-            if (playFeedUiModel is PlayWidgetJumboUiModel) {
+            if (playFeedUiModel is PlayWidgetJumboUiModel && playFeedUiModel.model.items.size > positionOfItem) {
                 val item = playFeedUiModel.model.items[positionOfItem]
                 if (item is PlayWidgetChannelUiModel) {
                     if (channelId == item.channelId)
                         return index
                 }
             }
-            if (playFeedUiModel is PlayWidgetLargeUiModel) {
+            if (playFeedUiModel is PlayWidgetLargeUiModel && playFeedUiModel.model.items.size > positionOfItem) {
                 val item = playFeedUiModel.model.items[positionOfItem]
                 if (item is PlayWidgetChannelUiModel) {
                     if (channelId == item.channelId)
