@@ -2,8 +2,8 @@ package com.tokopedia.home.analytics.v2
 
 import android.os.Bundle
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherImpressed
-import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherProductClicked
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherShopClicked
+import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMerchantVoucherDataModel
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
@@ -55,7 +55,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
         return Pair(Ecommerce.PROMO_CLICK, bundle)
     }
 
-    fun getClickProduct(merchantVoucherProductClicked: MerchantVoucherProductClicked): Pair<String, Bundle> {
+    fun getClickProduct(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int): Pair<String, Bundle> {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
         bundle.putString(
@@ -63,37 +63,42 @@ object MerchantVoucherTracking : BaseTrackerConst() {
             CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.CLICK_PRODUCT_DETAIL)
         )
         bundle.putString(Category.KEY, Category.HOMEPAGE)
-        bundle.putString(Label.KEY, CustomAction.CREATIVE_NAME_FORMAT.format(merchantVoucherProductClicked.productId, merchantVoucherProductClicked.shopId))
+        bundle.putString(
+            Label.KEY,
+            CustomAction.CREATIVE_NAME_FORMAT.format(element.productId, element.shopId)
+        )
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
         bundle.putString(
             ItemList.KEY,
-            CustomAction.ITEM_LIST_PRODUCT_DETAIL_FORMAT.format(merchantVoucherProductClicked.positionWidget,
-            merchantVoucherProductClicked.topAds,
-            merchantVoucherProductClicked.carousel,
-            merchantVoucherProductClicked.recommendationType,
-            merchantVoucherProductClicked.recomPageName,
-            merchantVoucherProductClicked.buType,
-            merchantVoucherProductClicked.headerName)
+            CustomAction.ITEM_LIST_PRODUCT_DETAIL_FORMAT.format(
+                element.positionWidget,
+                element.topAds,
+                element.carousel,
+                element.recommendationType,
+                element.recomPageName,
+                element.buType,
+                element.headerName
+            )
         )
 
         val item = Bundle()
         item.putString(Items.DIMENSION_83, Items.DIMENSION_83_DEFAULT)
-        item.putString(Items.INDEX, merchantVoucherProductClicked.horizontalCardPosition)
-        item.putString(Items.ITEM_BRAND, merchantVoucherProductClicked.productBrand)
+        item.putString(Items.INDEX, (horizontalPosition + 1).toString())
+        item.putString(Items.ITEM_BRAND, element.productBrand)
         val itemCategory = CustomAction.ITEM_CATEGORY_PRODUCT_DETAIL_FORMAT.format(
-            merchantVoucherProductClicked.catNameLevel1,
-            merchantVoucherProductClicked.catNameLevel2,
-            merchantVoucherProductClicked.catNameLevel3
+            element.catNameLevel1,
+            element.catNameLevel2,
+            element.catNameLevel3
         )
         item.putString(Items.ITEM_CATEGORY, itemCategory)
-        item.putString(Items.ITEM_ID, merchantVoucherProductClicked.productId)
-        item.putString(Items.ITEM_NAME, merchantVoucherProductClicked.productName)
-        item.putString(Items.ITEM_VARIANT, merchantVoucherProductClicked.productVariant)
-        item.putString(Items.PRICE, merchantVoucherProductClicked.productPrice)
+        item.putString(Items.ITEM_ID, element.productId)
+        item.putString(Items.ITEM_NAME, element.productName)
+        item.putString(Items.ITEM_VARIANT, element.productVariant)
+        item.putString(Items.PRICE, element.productPrice)
 
         bundle.putParcelableArrayList(Items.KEY, arrayListOf(item))
-        bundle.putString(UserId.KEY, merchantVoucherProductClicked.userId)
+        bundle.putString(UserId.KEY, element.userId)
 
         return Pair(Ecommerce.PRODUCT_CLICK, bundle)
     }
