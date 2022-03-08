@@ -120,4 +120,102 @@ class ProductChooserAnalyticTest {
             )
         )
     }
+
+    @Test
+    fun testAnalytic_saveProduct() {
+        val robot = ProductChooserRobot {
+            productSetupViewModel(
+                productSectionList = mockProductSections,
+                repo = mockRepo,
+            )
+        }
+
+        robot.save()
+
+        assertThat(
+            cassavaTestRule.validate(analyticFile),
+            contains(
+                "eventAction" to "click - save product card"
+            )
+        )
+    }
+
+    @Test
+    fun testAnalytic_selectProduct() {
+        val robot = ProductChooserRobot {
+            productSetupViewModel(
+                productSectionList = mockProductSections,
+                repo = mockRepo,
+            )
+        }
+
+        robot.selectProduct()
+
+        assertThat(
+            cassavaTestRule.validate(analyticFile),
+            contains(
+                "eventAction" to "click - product card"
+            )
+        )
+    }
+
+    @Test
+    fun testAnalytic_clickSortChips() {
+        val robot = ProductChooserRobot {
+            productSetupViewModel(
+                productSectionList = mockProductSections,
+                repo = mockRepo,
+            )
+        }
+
+        robot.clickSortChips()
+
+        assertThat(
+            cassavaTestRule.validate(analyticFile),
+            contains(
+                "eventAction" to "click - product sort"
+            )
+        )
+    }
+
+    @Test
+    fun testAnalytic_clickEtalaseCampaignChips() {
+        val robot = ProductChooserRobot {
+            productSetupViewModel(
+                productSectionList = mockProductSections,
+                repo = mockRepo,
+            )
+        }
+
+        robot.clickEtalaseCampaignChips()
+
+        assertThat(
+            cassavaTestRule.validate(analyticFile),
+            contains(
+                "eventAction" to "click - campaign & etalase filter"
+            )
+        )
+    }
+
+    @Test
+    fun testAnalytic_searchKeyword() {
+        val robot = ProductChooserRobot {
+            productSetupViewModel(
+                productSectionList = mockProductSections,
+                repo = mockRepo,
+            )
+        }
+
+        with(robot) {
+            searchKeyword("abc")
+            delay()
+        }
+
+        assertThat(
+            cassavaTestRule.validate(analyticFile),
+            contains(
+                "eventAction" to "click - search bar"
+            )
+        )
+    }
 }

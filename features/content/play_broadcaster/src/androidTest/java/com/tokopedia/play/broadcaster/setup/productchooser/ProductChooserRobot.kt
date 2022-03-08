@@ -9,6 +9,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -24,6 +25,7 @@ import com.tokopedia.play.broadcaster.helper.waitFor
 import com.tokopedia.play.broadcaster.setup.ProductSetupContainer
 import com.tokopedia.play.broadcaster.setup.product.analytic.ProductChooserAnalyticManager
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
+import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSortBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.ProductListViewHolder
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
@@ -54,16 +56,23 @@ class ProductChooserRobot(
 
     val scenario = launchFragment(themeResId = R.style.AppTheme) {
         ProductSetupContainer(viewModel, onAttach) {
-            ProductChooserBottomSheet(
-                CoroutineDispatchersProvider,
-                mockk(relaxed = true),
-                analyticManager = ProductChooserAnalyticManager(
-                    analytic = PlayBroSetupProductAnalyticImpl(
-                        userSession = analyticUserSession,
-                    ),
-                    CoroutineDispatchersProvider,
-                )
-            )
+            when (it) {
+                ProductSortBottomSheet::class.java.name -> {
+                    ProductSortBottomSheet()
+                }
+                else -> {
+                    ProductChooserBottomSheet(
+                        CoroutineDispatchersProvider,
+                        mockk(relaxed = true),
+                        analyticManager = ProductChooserAnalyticManager(
+                            analytic = PlayBroSetupProductAnalyticImpl(
+                                userSession = analyticUserSession,
+                            ),
+                            CoroutineDispatchersProvider,
+                        )
+                    )
+                }
+            }
         }
     }
 
@@ -96,6 +105,30 @@ class ProductChooserRobot(
         ).perform(RecyclerViewActions.actionOnItemAtPosition<ProductListViewHolder.Product>(
             position, click())
         )
+    }
+
+    fun save() {
+        onView(
+            ViewMatchers.withId(R.id.btn_next)
+        ).perform(click())
+    }
+
+    fun clickSortChips() {
+        onView(
+            ViewMatchers.withId(R.id.chips_sort)
+        ).perform(click())
+    }
+
+    fun clickEtalaseCampaignChips() {
+        onView(
+            ViewMatchers.withId(R.id.chips_etalase)
+        ).perform(click())
+    }
+
+    fun searchKeyword(keyword: String) {
+        onView(
+            ViewMatchers.withId(R.id.et_search)
+        ).perform(typeText(keyword))
     }
 
     fun assertBottomSheet(isOpened: Boolean) {

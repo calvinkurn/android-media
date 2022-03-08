@@ -10,14 +10,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
  * Created by kenny.hadisaputra on 02/03/22
  */
 open class BottomSheetContainer(
-    private val creator: () -> BottomSheetDialogFragment,
+    private val creator: (className: String) -> BottomSheetDialogFragment,
 ) : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         childFragmentManager.fragmentFactory = object : FragmentFactory() {
             override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
-                return creator()
+                return creator(className)
             }
         }
 
