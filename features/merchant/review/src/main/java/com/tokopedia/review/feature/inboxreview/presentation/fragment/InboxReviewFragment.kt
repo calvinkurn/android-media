@@ -22,6 +22,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -87,7 +88,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         private const val positionUnAnswered = 1
         private const val positionAnswered = 2
         private const val allSelected = 5
-        private const val PAGE_ONE = 1
+        private const val ONE = 1
     }
 
     @Inject
@@ -417,7 +418,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             hideLoading()
             when (it) {
                 is Success -> {
-                    if (countStatusIsZero() && it.data.page == PAGE_ONE) {
+                    if (countStatusIsZero() && it.data.page == ONE) {
                         onSuccessGetFeedbackInboxReview(it.data)
                     } else {
                         onSuccessGetFeedbackInboxReviewNext(it.data)
@@ -488,10 +489,10 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 endlessRecyclerViewScrollListener?.loadMoreNextPage()
             }
         } else {
-            if (data.feedbackInboxList.isEmpty() && isFilter && data.page == 1) {
+            if (data.feedbackInboxList.isEmpty() && isFilter && data.page == ONE) {
                 binding?.sortFilterInboxReview?.show()
                 inboxReviewAdapter.addInboxFeedbackEmpty(true)
-            } else if (data.feedbackInboxList.isEmpty() && !isFilter && data.page == 1) {
+            } else if (data.feedbackInboxList.isEmpty() && !isFilter && data.page == ONE) {
                 binding?.sortFilterInboxReview?.show()
                 inboxReviewAdapter.clearAllElements()
                 inboxReviewAdapter.addInboxFeedbackEmpty(false)
@@ -658,12 +659,12 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 refChipUnify.chip_image_icon.hide()
             }
         } else {
-            if (countSelected == 0) {
+            if (countSelected == Int.ZERO) {
                 itemSortFilterList[positionRating].apply {
                     title = ALL_RATINGS
                     refChipUnify.chip_image_icon.hide()
                 }
-            } else if (countSelected == 1) {
+            } else if (countSelected == ONE) {
                 itemSortFilterList[positionRating].apply {
                     title = ratingOneSelected
                     refChipUnify.chip_image_icon.show()
