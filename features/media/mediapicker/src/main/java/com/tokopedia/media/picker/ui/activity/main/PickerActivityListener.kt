@@ -5,15 +5,15 @@ import com.tokopedia.media.common.uimodel.MediaUiModel
 interface PickerActivityListener {
     fun tabVisibility(isShown: Boolean)
 
-    fun mediaSelected(): List<MediaUiModel> // get selected items
-    fun hasVideoLimitReached(): Boolean // it the video has reached a limited of media
-    fun hasMediaLimitReached(): Boolean // it has reached a limited of media
-    fun isMinVideoDuration(model: MediaUiModel): Boolean // is the video under min limit duration
-    fun isMaxVideoDuration(model: MediaUiModel): Boolean // is the video above max limit duration
-    fun isMaxVideoSize(model: MediaUiModel): Boolean // check the max video size
-    fun isMinImageResolution(model: MediaUiModel): Boolean // is the image under min image resolution
-    fun isMaxImageResolution(model: MediaUiModel): Boolean // is the image above max image resolution
-    fun isMaxImageSize(model: MediaUiModel): Boolean // check the max image size
+    fun mediaSelected(): List<MediaUiModel>
+    fun hasVideoLimitReached(): Boolean
+    fun hasMediaLimitReached(): Boolean
+    fun isMinVideoDuration(model: MediaUiModel): Boolean
+    fun isMaxVideoDuration(model: MediaUiModel): Boolean
+    fun isMaxVideoSize(model: MediaUiModel): Boolean
+    fun isMinImageResolution(model: MediaUiModel): Boolean
+    fun isMaxImageResolution(model: MediaUiModel): Boolean
+    fun isMaxImageSize(model: MediaUiModel): Boolean
 
     fun onShowMediaLimitReachedToast()
     fun onShowVideoLimitReachedToast()
