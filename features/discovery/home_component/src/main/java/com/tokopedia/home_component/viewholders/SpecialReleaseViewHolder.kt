@@ -84,14 +84,26 @@ class SpecialReleaseViewHolder(
     }
 
     private fun setBackground(element: SpecialReleaseDataModel) {
+        val specialReleaseRvPadding = itemView.resources.getDimensionPixelSize(R.dimen.special_release_rv_padding)
         val bannerItem = element.channelModel.channelBanner
         if (bannerItem.gradientColor.isEmpty() || getGradientBackgroundViewAllWhite(
                 bannerItem.gradientColor,
                 itemView.context
             )
         ) {
+            binding?.homeComponentSpecialReleaseRv?.setPadding(
+                0,
+                0,
+                0,
+                specialReleaseRvPadding
+            )
             binding?.background?.gone()
         } else {
+            binding?.homeComponentSpecialReleaseRv?.setPadding(
+                0,
+                specialReleaseRvPadding,
+                0,
+                specialReleaseRvPadding)
             binding?.background?.visible()
             binding?.background?.setGradientBackground(bannerItem.gradientColor)
         }
