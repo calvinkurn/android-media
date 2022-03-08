@@ -183,6 +183,8 @@ class TopupBillsFavoriteNumberActivityTest {
 
     fun validate_modify_bottom_sheet_favorite_number() {
         favoriteNumberItem_clickMenu(0)
+        Thread.sleep(1000)
+
         onView(withId(R.id.common_topupbills_favorite_number_change_name)).perform(click())
 
         Thread.sleep(1000)
@@ -233,6 +235,7 @@ class TopupBillsFavoriteNumberActivityTest {
     }
 
     fun validate_empty_state() {
+        Thread.sleep(1000)
         onView(withId(R.id.common_topupbills_not_found_state_title)).check(matches(isDisplayed()))
         onView(withId(R.id.common_topupbills_not_found_state_button)).perform(click())
     }
@@ -278,11 +281,13 @@ class TopupBillsFavoriteNumberActivityTest {
     }
 
     private fun modifyBottomSheet_validateTextFields() {
+        Thread.sleep(1000)
         onView(withId(R.id.common_topupbills_favorite_number_name_field)).check(matches(isDisplayed()))
         onView(withId(R.id.common_topupbills_favorite_number_phone_field)).check(matches(isDisplayed()))
     }
 
     private fun menuBottomSheet_clickDelete() {
+        Thread.sleep(1000)
         onView(withId(R.id.common_topup_bills_favorite_number_delete)).perform(click())
     }
 
@@ -309,21 +314,25 @@ class TopupBillsFavoriteNumberActivityTest {
     }
 
     private fun favoriteNumberMenu_validateContents() {
+        Thread.sleep(1000)
         onView(withId(R.id.common_topupbills_favorite_number_change_name)).check(matches(isDisplayed()))
         onView(withId(R.id.common_topup_bills_favorite_number_delete)).check(matches(isDisplayed()))
     }
 
     private fun coachMark_clickButtonWithText(text: String) {
+        Thread.sleep(1000)
         onView(withText(text))
             .inRoot(RootMatchers.isPlatformPopup())
             .perform(click());
     }
 
     private fun deleteConfirmationDialog_clickCancel() {
+        Thread.sleep(1000)
         onView(withId(R.id.dialog_btn_secondary)).perform(click())
     }
 
     private fun deleteConfirmationDialog_clickConfirm() {
+        Thread.sleep(1000)
         onView(withId(R.id.dialog_btn_primary)).perform(click())
     }
 
