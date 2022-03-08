@@ -9,42 +9,42 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="136dp"
         android:layout_height="136dp"
-        app:loader_corner_radius="20dp"
+        app:loader_corner_radius="10dp"
         app:loader_type="rect"/>
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="136dp"
         android:layout_height="18dp"
         android:layout_marginTop="8dp"
-        app:loader_corner_radius="20dp"
+        app:loader_corner_radius="10dp"
         app:loader_type="rect"/>
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="128dp"
         android:layout_height="18dp"
         android:layout_marginTop="4dp"
-        app:loader_corner_radius="20dp"
+        app:loader_corner_radius="10dp"
         app:loader_type="rect"/>
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="128dp"
         android:layout_height="18dp"
         android:layout_marginTop="4dp"
-        app:loader_corner_radius="20dp"
+        app:loader_corner_radius="10dp"
         app:loader_type="rect"/>
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="128dp"
         android:layout_height="18dp"
         android:layout_marginTop="4dp"
-        app:loader_corner_radius="20dp"
+        app:loader_corner_radius="10dp"
         app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="128dp"
         android:layout_height="18dp"
         android:layout_marginTop="4dp"
-        app:loader_corner_radius="20dp"
+        app:loader_corner_radius="10dp"
         app:loader_type="rect" />
 
 </LinearLayout>
