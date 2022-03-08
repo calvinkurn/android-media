@@ -150,29 +150,6 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         summaryInfoView.setDate()
     }
 
-    private fun showConfirmDeleteVideoDialog() {
-        if (!::deleteVideoDialog.isInitialized) {
-            deleteVideoDialog = requireContext().getDialog(
-                    actionType = DialogUnify.HORIZONTAL_ACTION,
-                    title = getString(R.string.play_summary_delete_dialog_title),
-                    desc = getString(R.string.play_summary_delete_dialog_message),
-                    primaryCta = getString(R.string.play_summary_delete_dialog_action_delete),
-                    primaryListener = { dialog ->
-                        dialog.dismiss()
-                        analytic.clickDeleteOnPopupOnReportPage(parentViewModel.channelId)
-                        viewModel.deleteVideo()
-                    },
-                    secondaryCta = getString(R.string.play_summary_delete_dialog_action_back),
-                    secondaryListener = { dialog -> dialog.dismiss() },
-                    cancelable = true
-            )
-        }
-        if (!deleteVideoDialog.isShowing) {
-            analytic.viewConfirmDeleteOnReportPage(parentViewModel.channelId)
-            deleteVideoDialog.show()
-        }
-    }
-
     /**
      * Observe
      */
