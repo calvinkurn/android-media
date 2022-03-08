@@ -20,7 +20,7 @@ open class MediaUiModel(
     * this data come from camera tab,
     * the media file is deletable.
     * */
-    val isFromPickerCamera: Boolean = false,
+    var isFromPickerCamera: Boolean = false,
 ) : Parcelable {
 
     fun isVideo() = isVideoFormat(path)
@@ -74,9 +74,12 @@ open class MediaUiModel(
             id = System.currentTimeMillis(),
             name = name,
             path = path,
-            uri = Uri.parse(path),
-            isFromPickerCamera = true,
+            uri = Uri.parse(path)
         )
+
+        fun File.cameraToUiModel() = toUiModel().also {
+            it.isFromPickerCamera = true
+        }
     }
 
 }

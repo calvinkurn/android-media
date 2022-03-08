@@ -20,6 +20,8 @@ data class PickerParam(
     private var isOnlyVideo: Boolean = false,
     private var isIncludeAnimation: Boolean = false,
     private var isMultipleSelection: Boolean = true,
+    private var withEditor: Boolean = false,
+    private var includeMedias: List<File> = emptyList(),
     private var excludedMedias: List<File> = emptyList(),
     private var pageType: Int = PickerPageType.COMMON,
     private var cameraRatio: CameraRatio = CameraRatio.Full
@@ -39,6 +41,8 @@ data class PickerParam(
 
     fun excludeMedias() = excludedMedias
 
+    fun includeMedias() = includeMedias
+
     fun maxMediaAmount() = maxMediaSize + maxVideo
 
     fun maxVideoCount() = maxVideo
@@ -54,6 +58,8 @@ data class PickerParam(
     fun minImageResolution() = minImageResolution
 
     fun maxImageSize() = maxImageSize
+
+    fun withEditor() = withEditor
 
 }
 

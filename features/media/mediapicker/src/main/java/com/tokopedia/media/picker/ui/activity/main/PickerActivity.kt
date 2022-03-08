@@ -30,6 +30,7 @@ import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.media.picker.ui.uimodel.containByName
 import com.tokopedia.media.picker.ui.uimodel.safeRemove
 import com.tokopedia.media.common.observer.EventFlowFactory
+import com.tokopedia.media.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnChangePublished
 import com.tokopedia.media.picker.ui.uimodel.hasVideoBy
@@ -180,6 +181,10 @@ open class PickerActivity : BaseActivity()
         PickerUiConfig.setupQueryPage(data)
         PickerUiConfig.setupQueryMode(data)
         PickerUiConfig.setupQuerySelectionType(data)
+
+        // TODO for PickerParam parser
+        val preSelectedMedias = param.includeMedias().map { it.toUiModel() }
+        stateOnChangePublished(preSelectedMedias)
     }
 
     private fun restoreDataState(savedInstanceState: Bundle?) {

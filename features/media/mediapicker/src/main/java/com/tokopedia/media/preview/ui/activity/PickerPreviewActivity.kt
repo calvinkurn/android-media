@@ -25,6 +25,7 @@ class PickerPreviewActivity : BaseActivity()
     , DrawerSelectionWidget.Listener {
 
     private val binding: ActivityPreviewBinding? by viewBinding()
+    private val param by lazy { PickerUiConfig.pickerParam() }
     private val uiModel = arrayListOf<MediaUiModel>()
 
     private val navToolbar by uiComponent {

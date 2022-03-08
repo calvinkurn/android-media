@@ -20,7 +20,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
 import com.tokopedia.media.common.basecomponent.uiComponent
 import com.tokopedia.media.common.uimodel.MediaUiModel
-import com.tokopedia.media.common.uimodel.MediaUiModel.Companion.toUiModel
+import com.tokopedia.media.common.uimodel.MediaUiModel.Companion.cameraToUiModel
 import com.tokopedia.media.common.utils.FileGenerator
 import com.tokopedia.media.databinding.FragmentCameraBinding
 import com.tokopedia.media.picker.di.DaggerPickerComponent
@@ -192,7 +192,7 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     override fun onVideoTaken(result: VideoResult) {
-        val fileToModel = result.file.toUiModel()
+        val fileToModel = result.file.cameraToUiModel()
         if (isMinVideoDuration(fileToModel)) return
 
         onShowMediaThumbnail(fileToModel)
@@ -201,7 +201,7 @@ open class CameraFragment : BaseDaggerFragment()
     override fun onPictureTaken(result: PictureResult) {
         FileGenerator.createFileCameraCapture(preview.pictureSize(), result.data) {
             if (it == null) return@createFileCameraCapture
-            val fileToModel = it.toUiModel()
+            val fileToModel = it.cameraToUiModel()
 
             onShowMediaThumbnail(fileToModel)
         }
