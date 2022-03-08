@@ -182,6 +182,7 @@ class ProductSectionViewHolder(
     private fun resetBackground(){
         ivBg.setImageDrawable(null)
         itemView.background = null
+        btnReminder.setImageDrawable(null)
     }
 
     companion object {
