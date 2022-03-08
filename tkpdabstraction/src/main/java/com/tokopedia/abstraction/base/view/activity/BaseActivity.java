@@ -21,6 +21,10 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
+import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
+import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.FirebaseRemoteAppUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.listener.DebugVolumeListener;
 import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
@@ -47,6 +51,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     public static final String INAPP_UPDATE = "inappupdate";
     private static final long DISMISS_TIME = 10000;
 
+    private ApplicationUpdate appUpdate;
     private ErrorNetworkReceiver logoutNetworkReceiver;
     private BroadcastReceiver inappReceiver;
     private boolean pauseFlag;
@@ -251,5 +256,55 @@ public abstract class BaseActivity extends AppCompatActivity implements
             }
         }
         super.onBackPressed();
+    }
+
+    public void checkAppUpdateAndInApp() {
+        AppUpdateManagerWrapper.checkUpdateInFlexibleProgressOrCompleted(this, isOnProgress -> {
+            if (!isOnProgress) {
+                checkAppUpdateRemoteConfig();
+            }
+            return null;
+        });
+    }
+
+    private void checkAppUpdateRemoteConfig() {
+        appUpdate = new FirebaseRemoteAppUpdate(this);
+        appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
+            @Override
+            public void onNeedUpdate(DetailUpdate detail) {
+                if (!isFinishing()) {
+                    AppUpdateDialogBuilder appUpdateDialogBuilder =
+                            new AppUpdateDialogBuilder(
+                                    BaseActivity.this,
+                                    detail,
+                                    new AppUpdateDialogBuilder.Listener() {
+                                        @Override
+                                        public void onPositiveButtonClicked(DetailUpdate detail) {
+//                                            globalNavAnalytics.get().eventClickAppUpdate(detail.isForceUpdate());
+                                        }
+
+                                        @Override
+                                        public void onNegativeButtonClicked(DetailUpdate detail) {
+//                                            globalNavAnalytics.get().eventClickCancelAppUpdate(detail.isForceUpdate());
+                                        }
+                                    }
+                            );
+                    appUpdateDialogBuilder.getAlertDialog().show();
+//                    globalNavAnalytics.get().eventImpressionAppUpdate(detail.isForceUpdate());
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNotNeedUpdate() {
+//                if (!isFinishing()) {
+//                    checkIsNeedUpdateIfComeFromUnsupportedApplink(MainParentActivity.this.getIntent());
+//                }
+            }
+        });
     }
 }
