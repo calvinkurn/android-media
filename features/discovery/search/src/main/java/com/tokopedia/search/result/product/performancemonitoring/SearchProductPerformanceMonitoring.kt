@@ -65,13 +65,14 @@ internal fun stopPerformanceMonitoring(
     )
 }
 
-internal fun <T> PageLoadTimePerformanceInterface?.customMetric(
+internal fun <T> runCustomMetric(
+    performanceMonitoring: PageLoadTimePerformanceInterface?,
     tag: String,
     action: () -> T,
 ): T {
-    this?.startCustomMetric(tag)
+    performanceMonitoring?.startCustomMetric(tag)
     val returnValue = action()
-    this?.stopCustomMetric(tag)
+    performanceMonitoring?.stopCustomMetric(tag)
 
     return returnValue
 }

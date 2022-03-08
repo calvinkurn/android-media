@@ -93,7 +93,7 @@ import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_P
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_MAP_PRODUCT_DATA_VIEW
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_SHOW_PRODUCT_LIST
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_TDN
-import com.tokopedia.search.result.product.performancemonitoring.customMetric
+import com.tokopedia.search.result.product.performancemonitoring.runCustomMetric
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.UrlParamUtils
@@ -692,7 +692,7 @@ class ProductListPresenter @Inject constructor(
     ) {
         performanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
         performanceMonitoring?.startRenderPerformanceMonitoring()
-        performanceMonitoring.customMetric(SEARCH_RESULT_PLT_RENDER_LOGIC) {
+        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC) {
             getViewToProcessSearchProductModel(searchParameter, searchProductModel)
         }
     }
@@ -729,11 +729,7 @@ class ProductListPresenter @Inject constructor(
     ) {
         updateValueEnableGlobalNavWidget()
 
-        val productDataView = performanceMonitoring.customMetric(
-            SEARCH_RESULT_PLT_RENDER_LOGIC_MAP_PRODUCT_DATA_VIEW
-        ) {
-            createFirstProductDataView(searchProductModel)
-        }
+        val productDataView = createFirstProductDataView(searchProductModel)
 
         responseCode = productDataView.responseCode ?: ""
         suggestionDataView = productDataView.suggestionModel
@@ -759,12 +755,12 @@ class ProductListPresenter @Inject constructor(
         } else {
             fulfillmentFilter.resetCount()
 
-            performanceMonitoring.customMetric(SEARCH_RESULT_PLT_RENDER_LOGIC_SHOW_PRODUCT_LIST) {
+            runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_SHOW_PRODUCT_LIST) {
                 getViewToShowProductList(searchParameter, searchProductModel, productDataView)
             }
         }
 
-        performanceMonitoring.customMetric(SEARCH_RESULT_PLT_RENDER_LOGIC_PROCESS_FILTER) {
+        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_PROCESS_FILTER) {
             processFilters(searchProductModel)
         }
 
@@ -780,9 +776,14 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun createFirstProductDataView(searchProductModel: SearchProductModel): ProductDataView {
-        view.clearLastProductItemPositionFromCache()
+        return runCustomMetric(
+            performanceMonitoring,
+            SEARCH_RESULT_PLT_RENDER_LOGIC_MAP_PRODUCT_DATA_VIEW,
+        ) {
+            view.clearLastProductItemPositionFromCache()
 
-        return createProductDataView(searchProductModel)
+            createProductDataView(searchProductModel)
+        }
     }
 
     private fun getViewToHandleEmptyProductList(
@@ -1093,18 +1094,18 @@ class ProductListPresenter @Inject constructor(
         productList = createProductItemVisitableList(productDataView, searchParameter).toMutableList()
         list.addAll(productList)
 
-        performanceMonitoring.customMetric(SEARCH_RESULT_PLT_RENDER_LOGIC_HEADLINE_ADS) {
+        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_HEADLINE_ADS) {
             processHeadlineAdsFirstPage(searchProductModel, list)
         }
 
         additionalParams = productDataView.additionalParams
 
-        performanceMonitoring.customMetric(SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_CAROUSEL) {
+        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_CAROUSEL) {
             inspirationCarouselDataView = productDataView.inspirationCarouselDataView.toMutableList()
             processInspirationCarouselPosition(searchParameter, list)
         }
 
-        performanceMonitoring.customMetric(SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_WIDGET) {
+        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_WIDGET) {
             inspirationWidgetVisitable = productDataView.inspirationWidgetDataView.toMutableList()
             processInspirationWidgetPosition(searchParameter, list)
         }
@@ -1112,11 +1113,11 @@ class ProductListPresenter @Inject constructor(
         processBannerAndBroadmatchInSamePosition(searchProduct, list)
         processBanner(searchProduct, list)
 
-        performanceMonitoring.customMetric(SEARCH_RESULT_PLT_RENDER_LOGIC_BROADMATCH) {
+        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_BROADMATCH) {
             processBroadMatch(searchProduct, list)
         }
 
-        performanceMonitoring.customMetric(SEARCH_RESULT_PLT_RENDER_LOGIC_TDN) {
+        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_TDN) {
             topAdsImageViewModelList =
                 searchProductModel.getTopAdsImageViewModelList().toMutableList()
 
