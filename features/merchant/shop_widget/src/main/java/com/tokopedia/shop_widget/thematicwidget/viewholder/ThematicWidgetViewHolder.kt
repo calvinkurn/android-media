@@ -209,11 +209,8 @@ class ThematicWidgetViewHolder (
         }
 
         override fun onProductCardImpressListener(product: ProductCardUiModel) {
-            val hasAddedProduct = trackerProductsModel.any { it.id == product.id }
-            if (!hasAddedProduct) {
-                trackerProductsModel.add(product)
-                listener.onProductCardThematicWidgetImpressListener(trackerProductsModel, adapterPosition, uiModel?.campaignId.orEmpty(), uiModel?.name.orEmpty())
-            }
+            trackerProductsModel.add(product)
+            listener.onProductCardThematicWidgetImpressListener(trackerProductsModel, adapterPosition, uiModel?.campaignId.orEmpty(), uiModel?.name.orEmpty())
         }
     }
 

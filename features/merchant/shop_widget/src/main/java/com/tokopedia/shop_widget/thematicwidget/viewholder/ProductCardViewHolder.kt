@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.shop_widget.R
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.common.util.ProductCardMapper.mapToProductCardCampaignModel
@@ -31,13 +32,16 @@ class ProductCardViewHolder(
                 hasThreeDots = false,
                 productCardUiModel = element
             ))
+            setImageProductViewHintListener(element, object : ViewHintListener{
+                override fun onViewHint() {
+                    listener?.onProductCardImpressListener(element)
+                }
+            })
         }
 
         binding?.productCardGridView?.setOnClickListener {
             listener?.onProductCardClickListener(element)
         }
-
-        listener?.onProductCardImpressListener(element)
     }
 
     interface ProductCardListener {
