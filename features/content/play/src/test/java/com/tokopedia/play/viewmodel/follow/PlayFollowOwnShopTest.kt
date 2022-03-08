@@ -8,7 +8,7 @@ import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.withState
 import com.tokopedia.play.robot.thenVerify
-import com.tokopedia.play.util.isEqualTo
+import com.tokopedia.play.util.assertEqualTo
 import com.tokopedia.play.view.uimodel.action.ClickFollowAction
 import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
@@ -78,7 +78,7 @@ class PlayFollowOwnShopTest {
             submitAction(ClickFollowAction)
         } thenVerify {
             withState {
-                partner.status.isEqualTo(
+                partner.status.assertEqualTo(
                         PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed)
                 )
             }
@@ -103,7 +103,7 @@ class PlayFollowOwnShopTest {
             submitAction(ClickFollowAction)
         } thenVerify {
             withState {
-                partner.status.isEqualTo(
+                partner.status.assertEqualTo(
                         PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed)
                 )
             }
@@ -135,7 +135,7 @@ class PlayFollowOwnShopTest {
             submitAction(ClickFollowAction)
         } thenVerify {
             withState {
-                partner.status.isEqualTo(
+                partner.status.assertEqualTo(
                         PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed)
                 )
             }

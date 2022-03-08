@@ -8,7 +8,7 @@ import com.tokopedia.play.model.PlayPartnerInfoModelBuilder
 import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.*
 import com.tokopedia.play.robot.thenVerify
-import com.tokopedia.play.util.isEqualTo
+import com.tokopedia.play.util.assertEqualTo
 import com.tokopedia.play.util.isEqualToIgnoringFields
 import com.tokopedia.play.view.uimodel.action.ClickFollowAction
 import com.tokopedia.play.view.uimodel.event.OpenPageEvent
@@ -81,7 +81,7 @@ class PlayFollowOthersShopTest {
             submitAction(ClickFollowAction)
         } thenVerify {
             withState {
-                partner.status.isEqualTo(
+                partner.status.assertEqualTo(
                     PlayPartnerFollowStatus.Followable(followStatus = PartnerFollowableStatus.Followed)
                 )
             }
@@ -106,7 +106,7 @@ class PlayFollowOthersShopTest {
             submitAction(ClickFollowAction)
         } thenVerify {
             withState {
-                partner.status.isEqualTo(
+                partner.status.assertEqualTo(
                         PlayPartnerFollowStatus.Followable(followStatus = PartnerFollowableStatus.NotFollowed)
                 )
             }
@@ -130,7 +130,7 @@ class PlayFollowOthersShopTest {
             submitAction(ClickFollowAction)
         } thenVerify { event ->
             withState {
-                partner.status.isEqualTo(
+                partner.status.assertEqualTo(
                         PlayPartnerFollowStatus.Followable(followStatus = PartnerFollowableStatus.NotFollowed)
                 )
             }

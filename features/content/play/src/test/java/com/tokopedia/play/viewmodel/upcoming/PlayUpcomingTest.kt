@@ -14,7 +14,6 @@ import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayPartnerInfoModelBuilder
 import com.tokopedia.play.model.PlayUpcomingInfoModelBuilder
 import com.tokopedia.play.robot.upcoming.createPlayUpcomingViewModelRobot
-import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.*
 import com.tokopedia.play.util.share.PlayShareExperience
@@ -547,7 +546,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.Refresh)
+            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.Refresh)
 
             events.assertNotEmpty()
             events.last().isEqualToIgnoringFields(
@@ -581,7 +580,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.WatchNow)
+            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.WatchNow)
             fakePlayChannelSSE.isConnectionOpen().assertFalse()
         }
     }
@@ -606,7 +605,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.WatchNow)
+            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.WatchNow)
             fakePlayChannelSSE.isConnectionOpen().assertFalse()
         }
     }
@@ -631,7 +630,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.RemindMe)
+            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.RemindMe)
             fakePlayChannelSSE.isConnectionOpen().assertTrue()
         }
     }
@@ -656,7 +655,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.RemindMe)
+            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.RemindMe)
             fakePlayChannelSSE.isConnectionOpen().assertTrue()
         }
     }
@@ -689,7 +688,7 @@ class PlayUpcomingTest {
             /** Verify */
             verify { mockPlayNewAnalytic.clickShareButton(channelId, partnerId, channelType) }
 
-            event.last().isEqualTo(mockEvent)
+            event.last().assertEqualTo(mockEvent)
         }
     }
 
@@ -719,7 +718,7 @@ class PlayUpcomingTest {
                 submitAction(CopyLinkUpcomingAction)
             }
 
-            event[0].isEqualTo(mockCopyEvent)
+            event[0].assertEqualTo(mockCopyEvent)
             event[1].isEqualToIgnoringFields(mockShowInfoEvent, ShowInfoEvent::message)
         }
     }
@@ -754,7 +753,7 @@ class PlayUpcomingTest {
             /** Verify */
             verify { mockPlayNewAnalytic.impressShareBottomSheet(channelId, partnerId, channelType) }
 
-            event.last().isEqualTo(mockEvent)
+            event.last().assertEqualTo(mockEvent)
         }
     }
 
@@ -785,7 +784,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify */
-            event[0].isEqualTo(mockCopyEvent)
+            event[0].assertEqualTo(mockCopyEvent)
             event[1].isEqualToIgnoringFields(mockShowInfoEvent, ShowInfoEvent::message)
         }
     }
@@ -847,7 +846,7 @@ class PlayUpcomingTest {
             verify { mockPlayNewAnalytic.takeScreenshotForSharing(channelId, partnerId, channelType) }
             verify { mockPlayNewAnalytic.impressShareBottomSheet(channelId, partnerId, channelType) }
 
-            event.last().isEqualTo(mockEvent)
+            event.last().assertEqualTo(mockEvent)
         }
     }
 
@@ -884,8 +883,8 @@ class PlayUpcomingTest {
             /** Verify */
             verify { mockPlayNewAnalytic.clickSharingOption(channelId, partnerId, channelType, shareModel.socialMediaName, false) }
 
-            event[0].isEqualTo(mockCloseBottomSheet)
-            event[1].isEqualTo(mockEvent)
+            event[0].assertEqualTo(mockCloseBottomSheet)
+            event[1].assertEqualTo(mockEvent)
         }
     }
 
@@ -919,8 +918,8 @@ class PlayUpcomingTest {
             /** Verify */
             verify { mockPlayNewAnalytic.clickSharingOption(channelId, partnerId, channelType, shareModel.socialMediaName, false) }
 
-            event[0].isEqualTo(mockCloseBottomSheet)
-            event[1].isEqualTo(mockErrorGenerateLink)
+            event[0].assertEqualTo(mockCloseBottomSheet)
+            event[1].assertEqualTo(mockErrorGenerateLink)
         }
     }
 
