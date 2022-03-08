@@ -23,7 +23,8 @@ class ProductSectionAdapter(
         oldItem: ProductSectionUiModel,
         newItem: ProductSectionUiModel
     ): Boolean {
-        return oldItem == newItem
+        return if (oldItem is ProductSectionUiModel.Section && newItem is ProductSectionUiModel.Section) oldItem.id == newItem.id
+        else oldItem == newItem
     }
 
     override fun areContentsTheSame(
