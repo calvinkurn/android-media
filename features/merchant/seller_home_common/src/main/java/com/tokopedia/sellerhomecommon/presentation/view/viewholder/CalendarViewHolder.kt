@@ -60,9 +60,6 @@ class CalendarViewHolder(
         observeState(element)
         setShadowBackground()
         showTag(element)
-        binding.root.addOnImpressionListener(element.impressHolder) {
-            listener.sendCalendarImpressionEvent(element)
-        }
     }
 
     private fun showTag(element: CalendarWidgetUiModel) {
@@ -107,6 +104,10 @@ class CalendarViewHolder(
             val isEmpty = element.data?.eventGroups.isNullOrEmpty()
             if (isEmpty) {
                 showEmptyState()
+            }
+
+            root.addOnImpressionListener(element.impressHolder) {
+                listener.sendCalendarImpressionEvent(element)
             }
         }
     }
