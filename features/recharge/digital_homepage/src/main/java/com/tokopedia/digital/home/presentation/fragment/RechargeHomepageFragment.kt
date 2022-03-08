@@ -150,10 +150,12 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             val layoutParams =
                 binding.swipeRefreshLayout.layoutParams as ConstraintLayout.LayoutParams
             layoutParams.topToBottom = binding.digitalHomepageToolbar.id
+            binding.swipeRefreshLayout.layoutParams = layoutParams
         } else {
             val layoutParams =
                 binding.swipeRefreshLayout.layoutParams as ConstraintLayout.LayoutParams
             layoutParams.topToBottom = ConstraintSet.PARENT_ID
+            binding.swipeRefreshLayout.layoutParams = layoutParams
         }
         binding.swipeRefreshLayout.requestLayout()
 
