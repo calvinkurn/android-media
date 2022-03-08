@@ -2,4 +2,5 @@
 
 
     <string name="pdp_fintech_quick_buy_with_paylater">Beli langsung pakai PayLater</string>
+    <string name="pdp_fintech_app_link">tokopedia://product/</string>
 </resources>

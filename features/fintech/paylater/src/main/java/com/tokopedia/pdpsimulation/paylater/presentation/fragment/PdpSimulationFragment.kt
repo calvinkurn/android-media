@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
@@ -91,7 +92,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
                 "&tenure=${detail.tenure}" +
                 "&gatewayCode=${detail.gatewayDetail?.gatewayCode}" +
                 "&gatewayID=${detail.gatewayDetail?.gateway_id}" +
-                "&productURL=tokopedia://fintech/paylater${
+                "&productURL=${
                     setAdditionalParam(
                         detail.tenure,
                         detail.gatewayDetail?.gatewayCode,
@@ -116,10 +117,10 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun setAdditionalParam(tenure: Int?, gatewayCode: String?, gatewayId: String?): String {
-        return "?productID=${payLaterArgsDescriptor.productId}" +
+        return (getString(com.tokopedia.pdpsimulation.R.string.paylater_simulation_constant) + "?productID=${payLaterArgsDescriptor.productId}" +
                 "&tenure=$tenure" +
                 "&gatewayCode=$gatewayCode" +
-                "&gatewayID=$gatewayId"
+                "&gatewayID=$gatewayId").encodeToUtf8()
     }
 
     private fun openInstallmentBottomSheet(detail: Detail) {

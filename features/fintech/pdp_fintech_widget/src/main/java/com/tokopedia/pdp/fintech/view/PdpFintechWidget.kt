@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter
 import com.tokopedia.pdp.fintech.analytics.FintechWidgetAnalyticsEvent
 import com.tokopedia.pdp.fintech.analytics.PdpFintechWidgetAnalytics
@@ -147,9 +148,9 @@ class PdpFintechWidget @JvmOverloads constructor(
             val rediretionLink = fintechRedirectionWidgetDataClass.redirectionUrl +
                     "?productID=${this.productID}" +
                     "&tenure=${fintechRedirectionWidgetDataClass.tenure}" +
-                    "&productURL=tokopedia://product/${this.productID}" +
                     "&gatewayCode=${fintechRedirectionWidgetDataClass.gatewayCode}" +
                     "&gatewayID=${fintechRedirectionWidgetDataClass.gatewayId}"
+            "&productURL=${setProductUrl()}"
 
             if (fintechRedirectionWidgetDataClass.cta == ACTIVATION_LINKINING_FLOW &&
                 fintechRedirectionWidgetDataClass.widgetBottomSheet?.show == false
@@ -164,10 +165,15 @@ class PdpFintechWidget @JvmOverloads constructor(
                 startActivity(context, intent, null)
             } else {
 
-                RouteManager.getIntent(context, rediretionLink)
+                RouteManager.route(context, rediretionLink)
 
             }
         }
+    }
+
+
+    private fun setProductUrl(): String {
+        return (resources.getString(com.tokopedia.pdp_fintech.R.string.pdp_fintech_app_link) + this.productID).encodeToUtf8()
     }
 
 
