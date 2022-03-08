@@ -11,13 +11,13 @@ import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupVariantDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
-import com.tokopedia.video_widget.VideoWidgetPlayer
-import com.tokopedia.video_widget.VideoWidgetPlayerProvider
+import com.tokopedia.video_widget.VideoPlayer
+import com.tokopedia.video_widget.VideoPlayerProvider
 
 abstract class ProductItemViewHolder(
         itemView: View,
         protected val productListener: ProductListener,
-) : AbstractViewHolder<ProductItemDataView>(itemView), VideoWidgetPlayerProvider {
+) : AbstractViewHolder<ProductItemDataView>(itemView), VideoPlayerProvider {
 
     abstract val productCardView: IProductCardView?
 
@@ -90,6 +90,6 @@ abstract class ProductItemViewHolder(
         productListener.productCardLifecycleObserver?.unregister(productCardView)
     }
 
-    override val videoWidgetPlayer: VideoWidgetPlayer?
-        get() = productCardView?.getVideoWidgetVideoPlayer()
+    override val videoPlayer: VideoPlayer?
+        get() = productCardView?.getVideoPlayerController()
 }

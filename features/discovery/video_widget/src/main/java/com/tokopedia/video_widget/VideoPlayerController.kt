@@ -9,13 +9,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 
-class VideoWidgetVideoPlayer(
+class VideoPlayerController(
     private val rootView: View,
     @IdRes private val videoViewId: Int,
     @IdRes private val imageViewId: Int,
-) : ExoPlayerListener, VideoWidgetPlayer {
+) : ExoPlayerListener, VideoPlayer {
     private val videoView by lazy(LazyThreadSafetyMode.NONE) {
-        rootView.findViewById<VideoWidgetView>(videoViewId)
+        rootView.findViewById<VideoPlayerView>(videoViewId)
     }
 
     private val imageView by lazy(LazyThreadSafetyMode.NONE) {
@@ -24,8 +24,8 @@ class VideoWidgetVideoPlayer(
 
     private var videoURL = ""
     private var videoPlayerStateFlow : MutableStateFlow<VideoPlayerState>? = null
-    private val helper: VideoWidgetViewHelper by lazy(LazyThreadSafetyMode.NONE) {
-        VideoWidgetViewHelper.Builder(rootView.context, videoView)
+    private val helper: VideoPlayerViewHelper by lazy(LazyThreadSafetyMode.NONE) {
+        VideoPlayerViewHelper.Builder(rootView.context, videoView)
             .setExoPlayerEventsListener(this)
             .create()
     }

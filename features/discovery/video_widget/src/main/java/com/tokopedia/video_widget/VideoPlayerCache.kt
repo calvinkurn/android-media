@@ -7,13 +7,13 @@ import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvicto
 import com.google.android.exoplayer2.upstream.cache.SimpleCache
 import java.io.File
 
-internal object VideoWidgetCache {
+internal object VideoPlayerCache {
     private var INSTANCE: Cache? = null
 
     private const val BYTES_IN_MB = 1024 * 1024
     private const val CACHE_SIZE_IN_MB = 25L
 
-    private const val CACHE_FOLDER_NAME = "video_widget"
+    private const val CACHE_FOLDER_NAME = "product_video"
 
     fun getInstance(context: Context): Cache = synchronized(this) {
         if (INSTANCE == null) {

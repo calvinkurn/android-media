@@ -14,14 +14,14 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.video.VideoListener
 
-class VideoWidgetView(
+class VideoPlayerView(
     context: Context,
     attrs: AttributeSet?,
     defStyleAttr: Int
 ) : FrameLayout(context, attrs, defStyleAttr)  {
     companion object{
         @LayoutRes
-        private val playerLayoutId = R.layout.video_widget_view
+        private val playerLayoutId = R.layout.video_player_view
 
         private const val PIVOT_MULTIPLIER_CENTER_CROP = 0.5f
         private const val PIVOT_MULTIPLIER_FIT_CENTER = 0.5f

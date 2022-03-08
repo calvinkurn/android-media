@@ -25,9 +25,9 @@ import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.video_widget.util.DimensionUtils
 import java.lang.ref.WeakReference
 
-class VideoWidgetViewHelper(
+class VideoPlayerViewHelper(
     context: Context,
-    private val exoPlayerView: VideoWidgetView
+    private val exoPlayerView: VideoPlayerView
 ) : ExoPlayerControl {
     companion object {
         private const val MINIMUM_DENSITY_MATRIX = 1.5f
@@ -217,7 +217,7 @@ class VideoWidgetViewHelper(
             Util.getUserAgent(context, "Tokopedia Android")
         )
         return if(shouldCache) {
-            CacheDataSourceFactory(VideoWidgetCache.getInstance(context), defaultDataSourceFactory)
+            CacheDataSourceFactory(VideoPlayerCache.getInstance(context), defaultDataSourceFactory)
         } else {
             defaultDataSourceFactory
         }
@@ -269,10 +269,10 @@ class VideoWidgetViewHelper(
         return DimensionUtils.getDensityMatrix(context) >= MINIMUM_DENSITY_MATRIX
     }
 
-    class Builder(context: Context, videoWidgetView: VideoWidgetView) {
-        private val mExoPlayerHelper: VideoWidgetViewHelper = VideoWidgetViewHelper(
+    class Builder(context: Context, videoPlayerView: VideoPlayerView) {
+        private val mExoPlayerHelper: VideoPlayerViewHelper = VideoPlayerViewHelper(
             context,
-            videoWidgetView
+            videoPlayerView
         )
 
         fun setExoPlayerEventsListener(exoPlayerListener: ExoPlayerListener): Builder {
@@ -280,7 +280,7 @@ class VideoWidgetViewHelper(
             return this
         }
 
-        fun create(): VideoWidgetViewHelper {
+        fun create(): VideoPlayerViewHelper {
             mExoPlayerHelper.init()
             return mExoPlayerHelper
         }

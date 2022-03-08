@@ -21,7 +21,7 @@ import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.video_widget.VideoWidgetVideoPlayer
+import com.tokopedia.video_widget.VideoPlayerController
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_footer_layout.view.*
 import kotlinx.android.synthetic.main.product_card_list_layout.view.*
@@ -29,8 +29,8 @@ import kotlinx.android.synthetic.main.product_card_list_layout.view.*
 class ProductCardListView: BaseCustomView, IProductCardView {
 
     private val cartExtension = ProductCardCartExtension(this)
-    private val video: VideoWidgetVideoPlayer by lazy{
-        VideoWidgetVideoPlayer(this, R.id.videoProduct, R.id.imageProduct)
+    private val video: VideoPlayerController by lazy{
+        VideoPlayerController(this, R.id.videoProduct, R.id.imageProduct)
     }
 
     constructor(context: Context): super(context) {
@@ -196,7 +196,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         return imageProduct
     }
 
-    override fun getVideoWidgetVideoPlayer(): VideoWidgetVideoPlayer {
+    override fun getVideoPlayerController(): VideoPlayerController {
         return video
     }
 
