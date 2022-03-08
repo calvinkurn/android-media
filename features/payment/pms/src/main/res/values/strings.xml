@@ -58,7 +58,7 @@
     <string name="pms_htp_pending">Penting!</string>
     <string name="pms_manual_transfer_instruction"><![CDATA[<ul>
     <li>Transfer dengan jumlah yang tepat hingga 3 digit terakhir.</li>
-    <li>Demi keamanan transaksi, jangan berikan bukti transfer pada siapapun.</li>
+    <li>Demi keamanan transaksi, <b>jangan berikan bukti transfer</b> pada siapapun.</li>
     </ul>]]></string>
 
     <string name="pms_hwp_pay_other_store_info">Kamu juga bisa bayar di gerai lainnya dengan biaya layanan yang bervariasi.</string>
