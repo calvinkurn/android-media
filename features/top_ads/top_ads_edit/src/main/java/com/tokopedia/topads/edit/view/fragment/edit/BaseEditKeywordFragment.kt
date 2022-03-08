@@ -35,6 +35,7 @@ import com.tokopedia.topads.edit.utils.Constants.POSITIVE_KEYWORD_ALL
 import com.tokopedia.topads.edit.utils.Constants.STRATEGIES
 import com.tokopedia.topads.edit.utils.showEditSwitchToggledDialog
 import com.tokopedia.topads.edit.view.activity.SaveButtonStateCallBack
+import com.tokopedia.topads.edit.view.sheet.BidInfoBottomSheet
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
@@ -108,6 +109,13 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         initListeners()
         renderViewPager()
         chipKeyword?.chipType = ChipsUnify.TYPE_SELECTED
+
+        sharedViewModel.setIsWhiteListedUser(arguments?.getBoolean(ParamObject.ISWHITELISTEDUSER)
+            ?: false)
+        arguments?.getString(GROUP_STRATEGY, "")?.let { handleInitialAutoBidState(it) }
+    }
+
+    private fun initListeners() {
         chipKeyword?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(
                 CLICK_KATA_KUNCI_POSITIF,
@@ -117,6 +125,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             chipNegativeKeyword?.chipType = ChipsUnify.TYPE_NORMAL
             viewPager?.currentItem = POSITION0
         }
+
         chipNegativeKeyword?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(
                 CLICK_KATA_KUNCI_NEGATIF,
@@ -127,24 +136,24 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             viewPager?.currentItem = POSITION1
         }
 
-        sharedViewModel.setIsWhiteListedUser(arguments?.getBoolean(ParamObject.ISWHITELISTEDUSER)
-            ?: false)
-        arguments?.getString(GROUP_STRATEGY, "")?.let { handleInitialAutoBidState(it) }
-    }
-
-    private fun initListeners() {
         switchBidEditKeyword?.setOnClickListener {
             context?.let {
-                showEditSwitchToggledDialog(it, switchBidEditKeyword!!.isChecked,
+                showEditSwitchToggledDialog(it, isManual(),
                     positiveClick = {
-                        handleAutoBidState(if (switchBidEditKeyword!!.isChecked) "" else AUTO_BID_STATE)
+                        handleAutoBidState(if (isManual()) "" else AUTO_BID_STATE)
                     }, cancel = {
                         switchBidEditKeyword?.isChecked = !switchBidEditKeyword!!.isChecked
                     }
                 )
             }
         }
+
+        ivBidInfoEditKeyword?.setOnClickListener {
+            BidInfoBottomSheet(!isManual()).show(childFragmentManager, "")
+        }
     }
+
+    private fun isManual() = switchBidEditKeyword?.isChecked ?: false
 
     private fun handleInitialAutoBidState(it: String) {
         handleAutoBidState(it)
@@ -250,7 +259,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             }
         }
         strategies.clear()
-        if (switchBidEditKeyword?.isChecked == false) {
+        if (!isManual()) {
             strategies.add("auto_bid")
         }
         dataMap[POSITIVE_CREATE] = addedKeywordsPos

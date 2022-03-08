@@ -15,8 +15,8 @@ fun showEditSwitchToggledDialog(
             setTitle(context.resources.getString(R.string.topads_edit_automatic_dialog_title))
             setDescription(context.resources.getString(R.string.topads_edit_automatic_dialog_description))
         }
-        setPrimaryCTAText(context.resources.getString(R.string.topads_edit_batal))
-        setSecondaryCTAText(context.resources.getString(R.string.topads_edit_dialog_cta_text))
+        setPrimaryCTAText(context.resources.getString(R.string.topads_edit_dialog_cta_text))
+        setSecondaryCTAText(context.resources.getString(R.string.topads_edit_batal))
         setSecondaryCTAClickListener {
             cancel()
             dismiss()
