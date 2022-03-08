@@ -664,6 +664,36 @@
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
       "userId": ".*"
+    },
+    {
+      "event": "viewTopAdsIris",
+      "eventAction": "impression - remind me in upcoming section",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickTopAds",
+      "eventAction": "click - remind me in upcoming section",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickTopAds",
+      "eventAction": "click - remove remind me in upcoming section",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
     }
   ]
 }
