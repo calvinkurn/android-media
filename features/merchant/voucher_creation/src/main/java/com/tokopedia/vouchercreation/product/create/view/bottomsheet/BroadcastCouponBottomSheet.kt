@@ -121,7 +121,7 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeBroadcastMetaDataResult()
-        observeGenerateImage()
+        observeShopAndTopProducts()
         observeCouponDetail()
         viewModel.getCouponDetail(couponId)
         viewModel.getBroadcastMetaData()
@@ -137,6 +137,7 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
                 ShareComponentConstant.ENTRY_POINT_COUPON_CREATION_SUCCESS,
                 couponId.toString()
             )
+            viewModel.getShopAndTopProducts(viewModel.getCoupon() ?: return@setOnClickListener)
         }
     }
 
@@ -172,7 +173,6 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
                     viewModel.setCoupon(result.data)
                     displayCouponPeriod(result.data)
                     handleShareToSocialMediaCardVisibility(result.data)
-                    viewModel.getShopAndTopProducts(viewModel.getCoupon() ?: return@observe)
                 }
                 is Fail -> {
                     showError(result.throwable)
@@ -182,7 +182,7 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
         })
     }
 
-    private fun observeGenerateImage() {
+    private fun observeShopAndTopProducts() {
         viewModel.shopWithTopProducts.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
