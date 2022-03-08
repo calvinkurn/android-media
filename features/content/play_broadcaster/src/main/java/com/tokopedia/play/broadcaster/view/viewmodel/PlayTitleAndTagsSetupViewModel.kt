@@ -89,12 +89,12 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
         refreshAddedTags(newAddedTags)
     }
 
-    fun saveTags(title: String) {
+    fun saveTitleAndTags(title: String) {
         setupDataStore.setTags(addedTags)
     }
 
     fun finishSetup(title: String) {
-        saveTags(title)
+        saveTitleAndTags(title)
 
         _observableUploadEvent.value = Event(NetworkResult.Loading)
 
