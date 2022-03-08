@@ -473,7 +473,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     }
 
     private fun addProfileClickListener(appLink: String, userId: String) = View.OnClickListener {
-        //TODO navigate to edit profile page
+        RouteManager.route(activity, appLink)
     }
 
     private fun addDoFollowClickListener(userIdEnc: String, isFollowed: Boolean) =
@@ -583,7 +583,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
             btnAction?.setOnClickListener(
                 addProfileClickListener(
-                    "applink",
+                    "tokopedia://setting/profile",
                     followProfile.profileHeader.items[0].userID
                 )
             )
