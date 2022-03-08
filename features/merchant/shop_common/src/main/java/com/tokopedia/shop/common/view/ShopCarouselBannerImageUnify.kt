@@ -1,4 +1,4 @@
-package com.tokopedia.shop.home
+package com.tokopedia.shop.common.view
 
 import android.content.Context
 import android.graphics.*

@@ -3,12 +3,12 @@ package com.tokopedia.feed_shop.shop.view.adapter.holder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feed_shop.R
-import com.tokopedia.feed_shop.shop.view.ShopCarouselBannerImageUnify
-import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.feed_shop.shop.view.contract.FeedShopContract
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopSellerMigrationUiModel
+import com.tokopedia.kotlin.extensions.view.isValidGlideContext
+import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 

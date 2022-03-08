@@ -7,12 +7,12 @@ import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.WidgetShopPageTabFeedNoPostSellerMigrationBinding
-import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopSellerMigrationUiModel
-import com.tokopedia.shop.home.ShopCarouselBannerImageUnify
+import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 class EmptyFeedShopSellerMigrationViewHolder(view: View,
                                              private val mainView: FeedShopContract.View): AbstractViewHolder<EmptyFeedShopSellerMigrationUiModel>(view) {
