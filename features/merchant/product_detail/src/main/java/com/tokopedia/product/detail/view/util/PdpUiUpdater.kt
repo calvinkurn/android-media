@@ -347,6 +347,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     fun updateFintechDataWithProductId(selectedProductId: String, loggedIn: Boolean) {
         updateData(ProductDetailConstant.FINTECH_WIDGET_NAME)
         {
+            Log.d("Hii", "Insidede updateData")
             fintechWidgetMap?.run {
                 productId = selectedProductId
                 isLoggedIn = loggedIn
