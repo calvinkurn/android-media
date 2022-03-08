@@ -105,7 +105,7 @@ class CarouselViewAllCardViewHolder(
             }
         } else {
             if (isGradientWhite || getGradientBackgroundViewAllWhite(element.gradientColor, itemView.context)) {
-                card.mode = MODE_INVERT
+                card.mode = MODE_NORMAL
                 card.backgroundView.setImageResource(R.drawable.ic_graphic_element_green)
             } else {
                 card.mode = MODE_COLOR
