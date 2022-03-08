@@ -1,7 +1,6 @@
 package com.tokopedia.home_component.productcardgridcarousel.viewHolder
 
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
