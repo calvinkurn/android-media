@@ -50,6 +50,7 @@ import com.tokopedia.product.util.ProductDetailTestUtil.generateNotifyMeMock
 import com.tokopedia.product.util.ProductDetailTestUtil.getMockP2Data
 import com.tokopedia.product.util.getOrAwaitValue
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -756,7 +757,57 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
      * RecommendationWidget
      */
     @Test
-    fun `success load recommendation withno filter`() {
+    fun `assert request params tokonow`() {
+        coEvery {
+            getProductRecommendationUseCase.executeOnBackground(any())
+        } returns RecommendationWidget()
+
+        viewModel.loadRecommendation("pdp_10",
+                "123",
+                true,
+                mutableMapOf("123" to MiniCartItem())
+        )
+
+        val requestParamsSlot = slot<RequestParams>()
+        coVerify {
+            getProductRecommendationUseCase.executeOnBackground(capture(requestParamsSlot))
+        }
+
+        val requestParams = requestParamsSlot.captured
+        Assert.assertEquals(requestParams.getString("productID", ""), "123")
+        Assert.assertEquals(requestParams.getString("pageName", ""), "pdp_10")
+        Assert.assertEquals(requestParams.getBoolean("tokonow", false), true)
+        val miniCart = requestParams.getObject("minicart") as MutableMap<String, MiniCartItem>?
+        Assert.assertEquals(miniCart!!.isNotEmpty(), true)
+    }
+
+    @Test
+    fun `assert request params non tokonow`() {
+        coEvery {
+            getProductRecommendationUseCase.executeOnBackground(any())
+        } returns RecommendationWidget()
+
+        viewModel.loadRecommendation("pdp_10",
+                "123",
+                false,
+                null
+        )
+
+        val requestParamsSlot = slot<RequestParams>()
+        coVerify {
+            getProductRecommendationUseCase.executeOnBackground(capture(requestParamsSlot))
+        }
+
+        val requestParams = requestParamsSlot.captured
+        Assert.assertEquals(requestParams.getString("productID", ""), "123")
+        Assert.assertEquals(requestParams.getString("pageName", ""), "pdp_10")
+        Assert.assertEquals(requestParams.getBoolean("tokonow", false), false)
+        val miniCart = requestParams.getObject("minicart") as MutableMap<String, MiniCartItem>?
+        Assert.assertNull(miniCart)
+    }
+
+    @Test
+    fun `success load recommendation without filter`() {
         val mockRecomm = RecommendationWidget(
                 tid = "1",
                 recommendationItemList = listOf(RecommendationItem())
@@ -767,7 +818,11 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             getProductRecommendationUseCase.executeOnBackground(any())
         } returns mockRecomm
 
-        viewModel.loadRecommendation(pageName, "", false, mutableMapOf())
+        viewModel.loadRecommendation(pageName,
+                "123",
+                false,
+                mutableMapOf()
+        )
 
         coVerify {
             getProductRecommendationUseCase.executeOnBackground(any())
@@ -830,14 +885,15 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             getRecommendationUseCase.getData(any())
         } returns arrayListOf(mockResponse)
 
-        val initialAnnotationChip = AnnotationChip(
+        val mockSelectedChip = AnnotationChip(
                 RecommendationFilterChipsEntity.RecommendationFilterChip(
                         name = "katun chip",
-                        isActivated = true
+                        isActivated = true,
+                        value = "queryparambro"
                 )
         )
 
-        val recomFilterData = listOf(AnnotationChip(
+        val initialAnnotationChip = listOf(AnnotationChip(
                 RecommendationFilterChipsEntity.RecommendationFilterChip(
                         name = "katun chip",
                         isActivated = false
@@ -849,13 +905,25 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
                         ))
         )
 
-        val recomDataModel = ProductRecommendationDataModel(filterData = recomFilterData)
+        val recomDataModel = ProductRecommendationDataModel(
+                filterData = initialAnnotationChip,
+                recomWidgetData = RecommendationWidget(
+                        pageName = "pdp_11"
+                ))
 
-        viewModel.recommendationChipClicked(recomDataModel, initialAnnotationChip, "")
+        viewModel.recommendationChipClicked(recomDataModel, mockSelectedChip, "123")
 
+        val slotRequestParams = slot<GetRecommendationRequestParam>()
         coVerify {
-            getRecommendationUseCase.getData(any())
+            getRecommendationUseCase.getData(capture(slotRequestParams))
         }
+
+        //assert request params
+        val reqParams = slotRequestParams.captured
+        Assert.assertEquals(reqParams.pageNumber, 1)
+        Assert.assertEquals(reqParams.pageName, "pdp_11")
+        Assert.assertEquals(reqParams.queryParam, "queryparambro")
+        Assert.assertEquals(reqParams.productIds, listOf("123"))
 
         val filterData = viewModel.filterTopAdsProduct.value
         Assert.assertNotNull(filterData)
@@ -1989,43 +2057,6 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     //======================================END OF PDP SECTION=======================================//
     //==============================================================================================//
-
-    @Test
-    fun flush() {
-        viewModel.flush()
-
-        verify {
-            getPdpLayoutUseCase.cancelJobs()
-        }
-
-        verify {
-            getProductInfoP2LoginUseCase.cancelJobs()
-        }
-
-        verify {
-            getProductInfoP2OtherUseCase.cancelJobs()
-        }
-
-        verify {
-            toggleFavoriteUseCase.cancelJobs()
-        }
-
-        verify {
-            trackAffiliateUseCase.cancelJobs()
-        }
-
-        verify {
-            getTopadsIsAdsUseCase.cancelJobs()
-        }
-
-        verify {
-            removeWishlistUseCase.unsubscribe()
-        }
-        verify {
-            deleteCartUseCase.cancelJobs()
-        }
-    }
-
     private fun getUserLocationCache(): LocalCacheModel {
         return LocalCacheModel("123", "123", "123", "123")
     }
