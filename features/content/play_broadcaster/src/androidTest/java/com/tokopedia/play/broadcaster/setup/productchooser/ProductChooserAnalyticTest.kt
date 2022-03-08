@@ -130,7 +130,7 @@ class ProductChooserAnalyticTest {
             )
         }
 
-        robot.save()
+        robot.saveProducts()
 
         assertThat(
             cassavaTestRule.validate(analyticFile),
@@ -215,6 +215,29 @@ class ProductChooserAnalyticTest {
             cassavaTestRule.validate(analyticFile),
             contains(
                 "eventAction" to "click - search bar"
+            )
+        )
+    }
+
+    @Test
+    fun testAnalytic_selectSort() {
+        val robot = ProductChooserRobot {
+            productSetupViewModel(
+                productSectionList = mockProductSections,
+                repo = mockRepo,
+            )
+        }
+
+        with(robot) {
+            clickSortChips()
+            selectSort(0)
+            saveSort()
+        }
+
+        assertThat(
+            cassavaTestRule.validate(analyticFile),
+            contains(
+                "eventAction" to "click - sort type"
             )
         )
     }

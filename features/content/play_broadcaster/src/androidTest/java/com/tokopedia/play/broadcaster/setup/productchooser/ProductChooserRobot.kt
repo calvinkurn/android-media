@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.testing.launchFragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.SavedStateHandle
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewAction
@@ -107,7 +108,7 @@ class ProductChooserRobot(
         )
     }
 
-    fun save() {
+    fun saveProducts() {
         onView(
             ViewMatchers.withId(R.id.btn_next)
         ).perform(click())
@@ -129,6 +130,20 @@ class ProductChooserRobot(
         onView(
             ViewMatchers.withId(R.id.et_search)
         ).perform(typeText(keyword))
+    }
+
+    fun selectSort(position: Int) {
+        onView(
+            ViewMatchers.withId(R.id.rv_sort)
+        ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+            position, click())
+        )
+    }
+
+    fun saveSort() {
+        onView(
+            ViewMatchers.withId(unifyR.id.bottom_sheet_action)
+        ).perform(click())
     }
 
     fun assertBottomSheet(isOpened: Boolean) {
