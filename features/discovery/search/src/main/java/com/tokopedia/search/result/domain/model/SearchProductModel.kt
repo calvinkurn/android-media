@@ -7,12 +7,10 @@ import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCard.T
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.LastFilterModel.LastFilter
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
-import java.util.ArrayList
 
 data class SearchProductModel(
         @SerializedName("ace_search_product_v4")
@@ -55,12 +53,6 @@ data class SearchProductModel(
     }
 
     fun getTopAdsImageViewModelList(): List<TopAdsImageViewModel> = topAdsImageViewModelList
-
-    fun isAdvancedNegativeKeywordSearch(): Boolean {
-        val keywordProcessed = searchProduct.header.keywordProcess
-        if (keywordProcessed.isEmpty()) return false
-        return keywordProcessed.toIntOrZero() in 16..31
-    }
 
     data class SearchProduct (
             @SerializedName("header")
@@ -451,7 +443,11 @@ data class SearchProductModel(
 
             @SerializedName("applink")
             @Expose
-            val applink: String = ""
+            val applink: String = "",
+
+            @SerializedName("customVideoURL")
+            @Expose
+            val customVideoURL: String = "",
     ) {
 
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()

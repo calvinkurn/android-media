@@ -62,6 +62,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
 
     implementation projectOrAar(rootProject.ext.features.mediauploader)
     implementation projectOrAar(rootProject.ext.features.medialoader)

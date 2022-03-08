@@ -141,7 +141,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
         if (cpmData?.cpm?.layout != LAYOUT_6 && cpmData?.cpm?.layout != LAYOUT_5 ) {
             if (isEligible(cpmData)) {
-                if (cpmData != null && cpmData.cpm.layout == LAYOUT_2) {
+                if (cpmData != null && (cpmData.cpm.layout == LAYOUT_2)) {
                     list?.gone()
                     shopDetail?.gone()
                     topAdsCarousel.hide()

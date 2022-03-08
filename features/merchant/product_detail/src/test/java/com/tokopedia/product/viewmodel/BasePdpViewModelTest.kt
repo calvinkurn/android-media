@@ -11,9 +11,16 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
-import com.tokopedia.product.detail.usecase.*
+import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
+import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
+import com.tokopedia.product.detail.usecase.GetP2DataAndMiniCartUseCase
+import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
+import com.tokopedia.product.detail.usecase.GetProductInfoP2LoginUseCase
+import com.tokopedia.product.detail.usecase.GetProductInfoP2OtherUseCase
+import com.tokopedia.product.detail.usecase.ToggleNotifyMeUseCase
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -23,8 +30,11 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import io.mockk.spyk
+import io.mockk.unmockkAll
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 
@@ -99,6 +109,9 @@ abstract class BasePdpViewModelTest {
     @RelaxedMockK
     lateinit var playWidgetTools: PlayWidgetTools
 
+    @RelaxedMockK
+    lateinit var remoteConfigInstance: FirebaseRemoteConfigImpl
+
     lateinit var spykViewModel: DynamicProductDetailViewModel
 
     @get:Rule
@@ -108,7 +121,14 @@ abstract class BasePdpViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         mockkStatic(RemoteConfigInstance::class)
+        mockkObject(ProductDetailServerLogger)
+
         spykViewModel = spyk(viewModel)
+    }
+
+    @After
+    fun after() {
+        unmockkAll()
     }
 
     val viewModel by lazy {
@@ -139,6 +159,8 @@ abstract class BasePdpViewModelTest {
                 { deleteCartUseCase },
                 { getTopadsIsAdsUseCase },
                 playWidgetTools,
-                userSessionInterface)
+                remoteConfigInstance,
+                userSessionInterface
+        )
     }
 }

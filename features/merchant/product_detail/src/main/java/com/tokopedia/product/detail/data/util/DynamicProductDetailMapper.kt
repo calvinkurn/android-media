@@ -14,6 +14,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.pdplayout.OneLinersContent
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.Wholesale
+import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
@@ -21,6 +22,7 @@ import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.affiliate.AffiliateUIIDRequest
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
@@ -150,6 +152,12 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.SHIPMENT -> {
                     listOfComponent.add(ProductShipmentDataModel(type = component.type, name = component.componentName))
                 }
+                /**
+                 * shipment_v2 use the same data model with shipment
+                 */
+                ProductDetailConstant.SHIPMENT_V2 -> {
+                    listOfComponent.add(ProductShipmentDataModel(type = component.type, name = component.componentName))
+                }
                 ProductDetailConstant.MVC -> {
                     listOfComponent.add(ProductMerchantVoucherSummaryDataModel(type = component.type, name = component.componentName))
                 }
@@ -178,6 +186,15 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.CONTENT_WIDGET -> {
                     listOfComponent.add(
                         ContentWidgetDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
+                }
+
+                ProductDetailConstant.FINTECH_WIDGET_TYPE -> {
+                    listOfComponent.add(
+                        FintechWidgetDataModel(
                             type = component.type,
                             name = component.componentName
                         )
@@ -346,6 +363,14 @@ object DynamicProductDetailMapper {
                 localData.address_id.checkIfNumber("address_id"),
                 localData.postal_code.checkIfNumber("postal_code"),
                 latlong)
+    }
+
+    fun generateTokoNowRequest(localData: LocalCacheModel): TokoNowParam {
+        return TokoNowParam(
+            shopId = localData.shop_id,
+            warehouseId = localData.warehouse_id,
+            serviceType = localData.service_type
+        )
     }
 
     fun generateUserLocationRequestRates(localData: LocalCacheModel): String {

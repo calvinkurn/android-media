@@ -13,6 +13,7 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,8 +23,11 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.google.firebase.FirebaseApp;
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.newrelic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
+import com.tokopedia.analytics.mapper.model.EmbraceConfig;
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
@@ -299,6 +303,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         createCustomSoundNotificationChannel();
 
         initLogManager();
+        initEmbraceConfig();
         DevMonitoring devMonitoring = new DevMonitoring(ConsumerMainApplication.this);
         devMonitoring.initCrashMonitoring();
         devMonitoring.initANRWatcher();
@@ -411,6 +416,16 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return remoteConfig.getString(REMOTE_CONFIG_EMBRACE_KEY_LOG);
             }
         });
+    }
+
+    private void initEmbraceConfig() {
+        String logEmbraceConfigString = remoteConfig.getString(RemoteConfigKey.ANDROID_EMBRACE_CONFIG);
+        if (!TextUtils.isEmpty(logEmbraceConfigString)) {
+            EmbraceConfig dataLogConfigEmbrace = new Gson().fromJson(logEmbraceConfigString, EmbraceConfig.class);
+
+            EmbraceMonitoring.INSTANCE.getALLOW_EMBRACE_MOMENTS().clear();
+            EmbraceMonitoring.INSTANCE.getALLOW_EMBRACE_MOMENTS().addAll(dataLogConfigEmbrace.getAllowedMoments());
+        }
     }
 
     private void openShakeDetectCampaignPage(boolean isLongShake) {
