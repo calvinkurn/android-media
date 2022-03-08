@@ -7,6 +7,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
+import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
@@ -1456,6 +1457,37 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     //getProductTopadsStatus
     @Test
+    fun `when get topads status then verify error response`() = runBlockingTest {
+        val productId = "12345"
+        val paramsTest = "txsc=asdf"
+
+        val isSuccess = slot<Boolean>()
+        val errorMessage = slot<String>()
+
+        coEvery {
+            getTopadsIsAdsUseCase.executeOnBackground()
+        } throws Throwable("error")
+
+        coEvery { remoteConfigInstance.getLong(any(), any())
+        }  returns 5000
+
+        viewModel.getProductTopadsStatus(productId, paramsTest)
+        coVerify { getTopadsIsAdsUseCase.executeOnBackground() }
+        verify(exactly = 1) {
+            ProductDetailServerLogger.logBreadCrumbTopAdsIsAds(
+                isSuccess = capture(isSuccess),
+                errorMessage = capture(errorMessage))
+        }
+
+        Assert.assertTrue(viewModel.topAdsRecomChargeData.value is Fail)
+        Assert.assertEquals(isSuccess.captured, false)
+        Assert.assertEquals(errorMessage.captured, "error")
+
+        Assert.assertEquals((viewModel.topAdsRecomChargeData.value as Fail).throwable.message,
+            "error")
+    }
+
+    @Test
     fun `when get topads status then verify success response and enable to charge`() = runBlockingTest {
         val productId = "12345"
         val paramsTest = "txsc=asdf"
@@ -1467,12 +1499,28 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
                                 message = "OK"
                         )
                 ))
+        val isSuccess = slot<Boolean>()
+        val errorCode = slot<Int>()
+        val isTopAds = slot<Boolean>()
+
+        coEvery { remoteConfigInstance.getLong(any(), any())
+        }  returns 5000
+
         coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns expectedResponse
 
         viewModel.getProductTopadsStatus(productId, paramsTest)
         coVerify { getTopadsIsAdsUseCase.executeOnBackground() }
+        coVerify(exactly = 1) {
+            ProductDetailServerLogger.logBreadCrumbTopAdsIsAds(
+                isSuccess = capture(isSuccess),
+                errorCode = capture(errorCode),
+                isTopAds = capture(isTopAds))
+        }
 
         Assert.assertTrue(expectedResponse.data.status.error_code in 200..300 && expectedResponse.data.productList[0].isCharge)
+        Assert.assertEquals(isSuccess.captured, true)
+        Assert.assertEquals(errorCode.captured, 200)
+        Assert.assertEquals(isTopAds.captured, true)
     }
 
 
@@ -1769,7 +1817,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
                 fakeReminderType
         )
 
-        viewModel.playWidgetModel.verifySuccessEquals(Success(fakeUiModel))
+        viewModel.playWidgetModel.verifySuccessEquals(Success(fakeState))
         viewModel.playWidgetReminderSwitch.verifySuccessEquals(Success(fakeReminderType))
     }
 

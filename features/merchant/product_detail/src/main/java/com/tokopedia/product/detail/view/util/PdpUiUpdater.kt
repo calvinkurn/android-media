@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.play.widget.ui.PlayWidgetState
-import com.tokopedia.pdp.fintech.view.FintechPriceUrlDataModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
