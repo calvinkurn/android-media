@@ -1,32 +1,35 @@
-package com.tokopedia.search.result.product.fulfillment
+package com.tokopedia.search.result.product.postprocessing
 
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_ROWS
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.IS_FULFILLMENT
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.START
+import com.tokopedia.filter.common.helper.isPostProcessingFilter
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
-class FulfillmentFilter {
+class PostProcessingFilter {
     private var consecutiveEmptyProductCount = 0
 
     fun resetCount() {
         consecutiveEmptyProductCount = 0
     }
 
-    fun checkFulfillmentFilter(
+    fun checkPostProcessingFilter(
         searchParameter: Map<String, Any>,
         totalData: Int,
         callbackLoadData: (Map<String, Any>) -> Unit,
         handleEmptyState: () -> Unit,
     ) {
-        val isFulfillment = searchParameter[IS_FULFILLMENT].toString().toBoolean()
-
-        if (isFulfillment)
-            handleFulfillmentFilter(searchParameter, totalData, callbackLoadData, handleEmptyState)
+        if (isPostProcessingFilter(searchParameter))
+            handlePostProcessingFilter(
+                searchParameter,
+                totalData,
+                callbackLoadData,
+                handleEmptyState,
+            )
         else
             handleEmptyState()
     }
 
-    private fun handleFulfillmentFilter(
+    private fun handlePostProcessingFilter(
         searchParameter: Map<String, Any>,
         totalData: Int,
         callbackLoad: (Map<String, Any>) -> Unit,

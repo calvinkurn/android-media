@@ -9,7 +9,7 @@ import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
-import com.tokopedia.search.result.product.fulfillment.FulfillmentFilter.Companion.LOAD_EMPTY_PRODUCT_THRESHOLD
+import com.tokopedia.search.result.product.postprocessing.PostProcessingFilter.Companion.LOAD_EMPTY_PRODUCT_THRESHOLD
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.just
@@ -22,10 +22,10 @@ import org.junit.Test
 import rx.Subscriber
 
 private const val searchProductNotEmptyJSON = "searchproduct/with-topads.json"
-private const val emptyTotalDataZeroJSON = "searchproduct/fulfillmentfilter/empty-total-data-0.json"
-private const val emptyTotalDataNotZeroJSON = "searchproduct/fulfillmentfilter/empty-total-data-not-0.json"
+private const val emptyTotalDataZeroJSON = "searchproduct/postprocessingfilter/empty-total-data-0.json"
+private const val emptyTotalDataNotZeroJSON = "searchproduct/postprocessingfilter/empty-total-data-not-0.json"
 
-internal class SearchProductFulfillmentFilter: ProductListPresenterTestFixtures() {
+internal class SearchProductPostProcessingFilter: ProductListPresenterTestFixtures() {
 
     private val emptyProductTotalDataNotZero =
         emptyTotalDataNotZeroJSON.jsonToObject<SearchProductModel>()
