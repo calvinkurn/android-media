@@ -77,7 +77,8 @@ class DealsOMPViewHolder(private val setEventDetails: ItemsAdapter.SetEventDetai
                                 voucerCodeLayout?.addView(bookingCodeView)
                             }
                         }
-                    } else if (actionButton.control.equals(KEY_REDIRECT)){
+                    } else if (actionButton.control.equals(KEY_REDIRECT) || actionButton.control.equals(
+                            KEY_REDIRECT_EXTERNAL)){
                         val redeemVoucherView = RedeemVoucherView(context, i, actionButton, item,
                                 actionButton.body, presenter, positionHolder, setTapActionDeals,
                                 setEventDetails, true)

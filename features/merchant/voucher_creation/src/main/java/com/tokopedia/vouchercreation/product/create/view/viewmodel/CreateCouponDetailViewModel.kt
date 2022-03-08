@@ -41,9 +41,11 @@ class CreateCouponDetailViewModel @Inject constructor(
     val couponTargetList: LiveData<List<CouponTargetUiModel>>
         get() = mCouponTargetList
 
-    private val mSelectedCouponTarget = NonNullLiveData(CouponTargetEnum.PUBLIC)
+    private val mSelectedCouponTarget = NonNullLiveData(CouponTargetEnum.NOT_SELECTED)
     val selectedCouponTarget: LiveData<CouponTargetEnum>
         get() = mSelectedCouponTarget
+    val selectedCouponTargetValue: CouponTargetEnum
+        get() = mSelectedCouponTarget.value
 
     private val mStartDateCalendarLiveData = NonNullLiveData<Calendar>(GregorianCalendar())
     val startDateCalendarLiveData: LiveData<Calendar>

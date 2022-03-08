@@ -169,6 +169,18 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         verifyGetHomeLayoutResponseSuccess(expectedResponse)
     }
 
+    @Test
+    fun `when getEmptyState error should set live data value FAIL`() {
+        val serviceType = "2h"
+        val idEmptyState = EMPTY_STATE_OUT_OF_COVERAGE
+
+        onGetHomeLayoutItemList_returnNull()
+
+        viewModel.getEmptyState(idEmptyState, serviceType)
+
+        viewModel.homeLayoutList
+            .verifyErrorEquals(Fail(NullPointerException()))
+    }
 
     @Test
     fun `when getting keywordSearch should run and give the success result`() {
