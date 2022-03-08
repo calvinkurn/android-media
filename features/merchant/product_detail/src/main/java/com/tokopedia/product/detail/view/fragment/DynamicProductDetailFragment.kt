@@ -31,12 +31,7 @@ import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalCategory
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.atc_common.AtcFromExternalSource
@@ -54,22 +49,12 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.permission.ImeiPermissionAsker
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.manager.AdultManager
-import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_REQUEST_CODE
-import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
-import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
-import com.tokopedia.discovery.common.manager.showProductCardOptions
+import com.tokopedia.discovery.common.manager.*
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.iris.util.IrisSession
-import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
-import com.tokopedia.kotlin.extensions.view.hasValue
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
@@ -77,7 +62,6 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
-import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
@@ -88,17 +72,10 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.AtcVariantHelper
-import com.tokopedia.product.detail.common.AtcVariantMapper
-import com.tokopedia.product.detail.common.ProductCartHelper
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.*
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_AVAILABLE_VARIANT
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_IS_VARIANT_SELECTED
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_SHOP_ID
-import com.tokopedia.product.detail.common.ProductTrackingConstant
-import com.tokopedia.product.detail.common.SingleClick
-import com.tokopedia.product.detail.common.VariantConstant
-import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.bottomsheet.OvoFlashDealsBottomSheet
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
@@ -114,51 +91,28 @@ import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
-import com.tokopedia.product.detail.common.showToasterError
-import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
 import com.tokopedia.product.detail.common.view.ProductDetailRestrictionHelper
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
-import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasicData
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
-import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
+import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
 import com.tokopedia.product.detail.data.model.upcoming.NotifyMeUiData
-import com.tokopedia.product.detail.data.util.DynamicProductDetailAlreadyHit
-import com.tokopedia.product.detail.data.util.DynamicProductDetailAlreadySwipe
-import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
+import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateAffiliateShareData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateProductShareData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequestRates
-import com.tokopedia.product.detail.data.util.DynamicProductDetailSwipeTrackingState
-import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToReplyDiscussion
-import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteDiscussion
-import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
-import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_DIRECTED_FROM_MANAGE_OR_PDP
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING
-import com.tokopedia.product.detail.data.util.VariantMapper
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
-import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
-import com.tokopedia.product.detail.tracking.ContentWidgetTracker
-import com.tokopedia.product.detail.tracking.ContentWidgetTracking
-import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
-import com.tokopedia.product.detail.tracking.ProductTopAdsLogger
+import com.tokopedia.product.detail.tracking.*
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_HIT_ADS_TRACKER
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_IS_NOT_ADS
-import com.tokopedia.product.detail.tracking.ShopCredibilityTracker
-import com.tokopedia.product.detail.tracking.ShopCredibilityTracking
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.diffutil.ProductDetailDiffUtilCallback
@@ -169,13 +123,7 @@ import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActio
 import com.tokopedia.product.detail.view.fragment.partialview.TokoNowButtonData
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.listener.PartialButtonActionListener
-import com.tokopedia.product.detail.view.util.PdpUiUpdater
-import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
-import com.tokopedia.product.detail.view.util.ProductDetailErrorHelper
-import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
-import com.tokopedia.product.detail.view.util.createProductCardOptionsModel
-import com.tokopedia.product.detail.view.util.doSuccessOrFail
-import com.tokopedia.product.detail.view.util.getIntentImagePreviewWithoutDownloadButton
+import com.tokopedia.product.detail.view.util.*
 import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
@@ -225,8 +173,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import rx.subscriptions.CompositeSubscription
-import java.util.Locale
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -502,6 +449,17 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         reloadCartCounter()
         reloadUserLocationChanged()
         reloadMiniCart()
+        reloadFintechWidget()
+    }
+
+    private fun reloadFintechWidget() {
+        productId?.let {
+            pdpUiUpdater?.updateFintechDataWithProductId(
+                it,
+                viewModel.userSessionInterface.isLoggedIn
+            )
+        }
+
     }
 
     override fun onDestroy() {
@@ -1676,7 +1634,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
         pdpUiUpdater?.updateVariantData(variantProcessedData)
         productId?.let { productId ->
-            pdpUiUpdater?.updateFintechDataWithProductId(productId)
+            pdpUiUpdater?.updateFintechDataWithProductId(
+                productId,
+                viewModel.userSessionInterface.isLoggedIn
+            )
         }
         pdpUiUpdater?.updateDataP1(context, updatedDynamicProductInfo, enableVideo())
         pdpUiUpdater?.updateNotifyMeAndContent(selectedChild?.productId.toString(), viewModel.p2Data.value?.upcomingCampaigns, boeData.imageURL)
@@ -2095,7 +2056,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             updateProductId()
 
             productId?.let {
-                pdpUiUpdater?.updateFintechData(it,viewModel.variantData,productInfo)
+                pdpUiUpdater?.updateFintechData(
+                    it,
+                    viewModel.variantData,
+                    productInfo,
+                    viewModel.userSessionInterface.isLoggedIn
+                )
             }
             renderVariant(viewModel.variantData, pdpUiUpdater?.productSingleVariant != null)
             val hint = if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) {

@@ -276,14 +276,19 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     tradeinResponse.widgetString
                 } else {
                     context?.getString(com.tokopedia.common_tradein.R.string.trade_in_exchange)
-                            ?: ""
+                        ?: ""
                 }
             }
         }
     }
 
-    fun updateFintechData(selectedProductId: String, variantData: ProductVariant?, productInfo: DynamicProductInfoP1?) {
-        productInfo?.let{ productDetail->
+    fun updateFintechData(
+        selectedProductId: String,
+        variantData: ProductVariant?,
+        productInfo: DynamicProductInfoP1?,
+        loggedIn: Boolean
+    ) {
+        productInfo?.let { productDetail ->
             val productIdToPriceURLMap = HashMap<String, FintechPriceUrlDataModel>()
             val productCategoryId: String = productDetail.basic.category.id
             if (variantData == null) {
@@ -305,17 +310,18 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     productId = selectedProductId
                     categoryId = productCategoryId
                     idToPriceUrlMap = productIdToPriceURLMap
+                    isLoggedIn = loggedIn
                 }
             }
         }
     }
 
-    fun updateFintechDataWithProductId(selectedProductId: String)
-    {
+    fun updateFintechDataWithProductId(selectedProductId: String, loggedIn: Boolean) {
         updateData(ProductDetailConstant.FINTECH_WIDGET_NAME)
         {
             fintechWidgetMap?.run {
                 productId = selectedProductId
+                isLoggedIn = loggedIn
             }
         }
     }

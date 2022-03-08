@@ -63,7 +63,6 @@ class PdpFintechWidget @JvmOverloads constructor(
     private  var instanceProductUpdateListner: ProductUpdateListner? = null
     private lateinit var fintechWidgetViewModel: FintechWidgetViewModel
 
-    private var counter = 0
 
 
     init {
@@ -165,7 +164,7 @@ class PdpFintechWidget @JvmOverloads constructor(
                 startActivity(context, intent, null)
             } else {
 
-                RouteManager.route(context, rediretionLink)
+                RouteManager.getIntent(context, rediretionLink)
 
             }
         }
@@ -198,23 +197,12 @@ class PdpFintechWidget @JvmOverloads constructor(
         try {
             this.productID = productID
             this.instanceProductUpdateListner = fintechWidgetViewHolder
-            if (counter == 0) {
-                counter++
                 categoryId?.let {
                     fintechWidgetViewModel.getWidgetData(
                         it,
                         idToPriceUrlMap
                     )
                 }
-            } else {
-                if (priceToChip.size != 0)
-                    getChipDataAndUpdate(idToPriceUrlMap[productID]?.price)
-                else
-                    categoryId?.let {
-                        fintechWidgetViewModel.getWidgetData(it, idToPriceUrlMap)
-                    }
-            }
-
         } catch (e: Exception) {
             instanceProductUpdateListner?.removeWidget()
         }
