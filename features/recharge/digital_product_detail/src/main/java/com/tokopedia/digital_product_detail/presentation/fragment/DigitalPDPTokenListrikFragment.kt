@@ -732,6 +732,51 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         binding?.rechargePdpTokenListrikClientNumberWidget?.clearFocusAutoComplete()
     }
 
+    private fun initClientNumberWidget() {
+        binding?.rechargePdpTokenListrikClientNumberWidget?.run {
+            setInputFieldStaticLabel(
+                getString(
+                    com.tokopedia.recharge_component.R.string.label_recharge_client_number_token_listrik
+                )
+            )
+            setInputFieldType(InputFieldType.Listrik)
+            setListener(
+                this@DigitalPDPTokenListrikFragment,
+                this@DigitalPDPTokenListrikFragment,
+                this@DigitalPDPTokenListrikFragment
+            )
+        }
+    }
+
+    private fun navigateToContact(
+        clientNumber: String,
+        dgCategoryIds: ArrayList<String>,
+        dgOperatorIds: ArrayList<String>,
+        categoryName: String
+    ) {
+        context?.let {
+            val intent = TopupBillsPersoFavoriteNumberActivity.createInstance(
+                it, clientNumber, dgCategoryIds, dgOperatorIds, categoryName, loyaltyStatus
+            )
+
+            val requestCode = DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
+            startActivityForResult(intent, requestCode)
+        }
+    }
+
+    private fun showMoreInfoBottomSheet(listInfo: List<String>, title: String) {
+        digitalPDPAnalytics.impressionGreenBox(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            viewModel.operatorData.attributes.name,
+            loyaltyStatus,
+            userSession.userId,
+            title
+        )
+        fragmentManager?.let {
+            MoreInfoPDPBottomsheet(listInfo, title).show(it, "")
+        }
+    }
+
     /** Start Input Field Listener */
 
     override fun onRenderOperator(isDelayed: Boolean) {
@@ -863,50 +908,6 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     }
 
     /** End Auto Complete Listener */
-    private fun initClientNumberWidget() {
-        binding?.rechargePdpTokenListrikClientNumberWidget?.run {
-            setInputFieldStaticLabel(
-                getString(
-                    com.tokopedia.recharge_component.R.string.label_recharge_client_number_token_listrik
-                )
-            )
-            setInputFieldType(InputFieldType.Listrik)
-            setListener(
-                this@DigitalPDPTokenListrikFragment,
-                this@DigitalPDPTokenListrikFragment,
-                this@DigitalPDPTokenListrikFragment
-            )
-        }
-    }
-
-    private fun navigateToContact(
-        clientNumber: String,
-        dgCategoryIds: ArrayList<String>,
-        dgOperatorIds: ArrayList<String>,
-        categoryName: String
-    ) {
-        context?.let {
-            val intent = TopupBillsPersoFavoriteNumberActivity.createInstance(
-                it, clientNumber, dgCategoryIds, dgOperatorIds, categoryName, loyaltyStatus
-            )
-
-            val requestCode = DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
-            startActivityForResult(intent, requestCode)
-        }
-    }
-
-    private fun showMoreInfoBottomSheet(listInfo: List<String>, title: String) {
-        digitalPDPAnalytics.impressionGreenBox(
-            DigitalPDPCategoryUtil.getCategoryName(categoryId),
-            viewModel.operatorData.attributes.name,
-            loyaltyStatus,
-            userSession.userId,
-            title
-        )
-        fragmentManager?.let {
-            MoreInfoPDPBottomsheet(listInfo, title).show(it, "")
-        }
-    }
 
     /**
      * RechargeDenomGridListener
