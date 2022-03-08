@@ -96,6 +96,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     private var globalError: GlobalError? = null
     private var globalErrorPost: GlobalError? = null
     private var isSwipeRefresh: Boolean? = null
+    private var isNewlyCreated: Boolean? = false
 
     private val mPresenter: UserProfileViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(UserProfileViewModel::class.java)
@@ -145,6 +146,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         }
 
         //Get landing page, profile header page
+        isNewlyCreated = true;
         landedUserName = requireArguments().getString(EXTRA_USERNAME)
         refreshLandingPageData(true)
         container?.displayedChild = 2
@@ -522,8 +524,6 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         btnAction = view?.findViewById<UnifyButton>(R.id.btn_action_follow)
         appBarLayout = view?.findViewById(R.id.app_bar_layout)
 
-        textBio?.text = context?.let { HtmlLinkHelper(it, data.profileHeader.profile.biography).spannedString }
-
         if (data.profileHeader.profile.username.isNotBlank()) {
             textUserName?.text = "@" + data.profileHeader.profile.username
         }
@@ -544,7 +544,9 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         profileUserId = data.profileHeader.profile.userID
         userWebLink = data.profileHeader.profile.sharelink.weblink
 
-        textBio?.post {
+        textBio?.postDelayed( {
+            textBio?.text = context?.let { HtmlLinkHelper(it, data.profileHeader.profile.biography).spannedString }
+
             if (textBio?.lineCount > 3) {
                 textBio.maxLines = 3
                 textSeeMore?.show()
@@ -552,7 +554,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 textSeeMore?.hide()
             }
 
-        }
+        }, 50)
 
         if (userSession?.isLoggedIn == false) {
             updateToUnFollowUi()
@@ -686,8 +688,12 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     }
 
     override fun onResume() {
+        if(isNewlyCreated != true) {
+            refreshLandingPageData()
+            isNewlyCreated = false
+        }
+
         super.onResume()
-        refreshLandingPageData()
     }
 
     override fun initInjector() {
