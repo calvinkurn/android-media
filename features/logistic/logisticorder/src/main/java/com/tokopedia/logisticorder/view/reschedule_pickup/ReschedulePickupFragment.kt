@@ -175,10 +175,13 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
         private const val OTHER_REASON_RESCHEDULE = "Lainnya (Isi Sendiri)"
         private const val OTHER_REASON_MIN_CHAR = 15
         private const val OTHER_REASON_MAX_CHAR = 160
-        fun newInstance(): ReschedulePickupFragment {
+        private const val ARGUMENTS_COURIER_NAME = "ARGUMENTS_COURIER_NAME"
+        private const val ARGUMENTS_INVOICE = "ARGUMENTS_INVOICE"
+        fun newInstance(courierName: String, invoice: String): ReschedulePickupFragment {
             return ReschedulePickupFragment().apply {
                 arguments = Bundle().apply {
-                    // todo add data here
+                    putString(ARGUMENTS_COURIER_NAME, courierName)
+                    putString(ARGUMENTS_INVOICE, invoice)
                 }
             }
         }
