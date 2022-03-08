@@ -27,7 +27,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt.Companion.TYPE_DIALOG
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
@@ -1170,6 +1169,46 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     fun `WHEN previously has add on selected on shop level and then update add on but got wrong add on key THEN add on price should not be updated`() {
         // Given
         val saveAddOnStateResult = helper.saveAddOnStateProductLevelResult
+        orderSummaryPageViewModel.orderCart = OrderCart(
+                shop = OrderShop(addOn = AddOnsDataModel(
+                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000L))
+                ), isFulfillment = true),
+                products = mutableListOf(OrderProduct(cartId = "123", orderQuantity = 1)), cartString = "456")
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProducts.value = orderSummaryPageViewModel.orderCart.products
+        orderSummaryPageViewModel.orderShop.value = orderSummaryPageViewModel.orderCart.shop
+
+        // When
+        orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
+
+        // Then
+        assertEquals(2000L, orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
+                ?: 0)
+    }
+
+    @Test
+    fun `WHEN previously has add on selected on product level and then update add on but got wrong level THEN add on price should not be updated`() {
+        // Given
+        val saveAddOnStateResult = helper.saveAddOnStateProductLevelResultNegativeTest
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(
+                cartId = "123", orderQuantity = 1, addOn = AddOnsDataModel(
+                addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000L))
+        ))), shop = OrderShop(isFulfillment = false), cartString = "456")
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProducts.value = orderSummaryPageViewModel.orderCart.products
+
+        // When
+        orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
+
+        // Then
+        assertEquals(1000L, orderSummaryPageViewModel.orderProducts.value.firstOrNull()?.addOn?.addOnsDataItemModelList?.firstOrNull()?.addOnPrice
+                ?: 0)
+    }
+
+    @Test
+    fun `WHEN previously has add on selected on shop level and then update add on but got wrong level THEN add on price should not be updated`() {
+        // Given
+        val saveAddOnStateResult = helper.saveAddOnStateShopLevelResultNegativeTest
         orderSummaryPageViewModel.orderCart = OrderCart(
                 shop = OrderShop(addOn = AddOnsDataModel(
                         addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000L))

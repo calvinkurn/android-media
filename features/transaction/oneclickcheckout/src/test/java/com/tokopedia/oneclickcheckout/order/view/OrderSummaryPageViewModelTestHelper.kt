@@ -111,10 +111,30 @@ class OrderSummaryPageViewModelTestHelper {
             ))
     )
 
+    val saveAddOnStateShopLevelResultNegativeTest = SaveAddOnStateResult(
+            addOns = listOf(AddOnResult(
+                    addOnKey = "123-0",
+                    addOnLevel = AddOnConstant.ADD_ON_LEVEL_PRODUCT,
+                    addOnData = listOf(AddOnData(
+                            addOnPrice = 2000
+                    ))
+            ))
+    )
+
     val saveAddOnStateProductLevelResult = SaveAddOnStateResult(
             addOns = listOf(AddOnResult(
                     addOnKey = "123-456",
                     addOnLevel = AddOnConstant.ADD_ON_LEVEL_PRODUCT,
+                    addOnData = listOf(AddOnData(
+                            addOnPrice = 1000
+                    ))
+            ))
+    )
+
+    val saveAddOnStateProductLevelResultNegativeTest = SaveAddOnStateResult(
+            addOns = listOf(AddOnResult(
+                    addOnKey = "123-456",
+                    addOnLevel = AddOnConstant.ADD_ON_LEVEL_ORDER,
                     addOnData = listOf(AddOnData(
                             addOnPrice = 1000
                     ))
