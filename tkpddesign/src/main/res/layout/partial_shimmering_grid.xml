@@ -16,7 +16,7 @@
         app:loader_corner_radius="10dp"
         app:loader_type="rect" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/textViewShimmer1"
         android:layout_width="0dp"
         android:layout_height="8dp"
@@ -28,7 +28,7 @@
         app:loader_corner_radius="10dp"
         app:loader_type="rect" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/textViewShimmer2"
         android:layout_width="0dp"
         android:layout_height="8dp"
