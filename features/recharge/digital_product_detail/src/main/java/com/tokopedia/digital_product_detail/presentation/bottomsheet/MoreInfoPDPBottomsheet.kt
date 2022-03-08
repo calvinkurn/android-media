@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.databinding.BottomSheetMoreInfoBinding
 import com.tokopedia.digital_product_detail.presentation.adapter.DigitalMoreInfoAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify

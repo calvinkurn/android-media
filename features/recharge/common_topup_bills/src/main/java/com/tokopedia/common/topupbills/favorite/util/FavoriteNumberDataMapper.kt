@@ -1,7 +1,6 @@
 package com.tokopedia.common.topupbills.favorite.util
 
 import com.tokopedia.common.topupbills.data.TopupBillsContact
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsPersoFavNumberDataView
 import com.tokopedia.common.topupbills.favoritecommon.view.model.contact.TopupBillsContactDataView
