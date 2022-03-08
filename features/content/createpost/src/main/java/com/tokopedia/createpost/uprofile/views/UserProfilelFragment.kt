@@ -543,6 +543,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         profileImage = data.profileHeader.profile.imageCover
         profileUserId = data.profileHeader.profile.userID
         userWebLink = data.profileHeader.profile.sharelink.weblink
+        textBio?.maxLines = 20
 
         textBio?.postDelayed( {
             textBio?.text = context?.let { HtmlLinkHelper(it, data.profileHeader.profile.biography).spannedString }
@@ -688,12 +689,13 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     }
 
     override fun onResume() {
-        if(isNewlyCreated != true) {
-            refreshLandingPageData()
-            isNewlyCreated = false
-        }
-
         super.onResume()
+
+        if(isNewlyCreated == true) {
+            isNewlyCreated = false
+        } else {
+            refreshLandingPageData()
+        }
     }
 
     override fun initInjector() {
@@ -726,7 +728,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             R.id.text_see_more -> {
                 val textBio = view?.findViewById<TextView>(R.id.text_bio)
                 val btnSeeAll = view?.findViewById<TextView>(R.id.text_see_more)
-                textBio?.maxLines = 10
+                textBio?.maxLines = 20
                 btnSeeAll?.hide()
             }
         }

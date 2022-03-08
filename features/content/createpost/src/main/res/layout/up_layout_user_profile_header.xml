@@ -38,7 +38,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_48"
-                android:animateLayoutChanges="true"
                 android:background="@color/Unify_Background"
                 android:measureAllChildren="false"
                 android:paddingStart="@dimen/unify_space_16"
