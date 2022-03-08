@@ -194,9 +194,10 @@ class DenomGridViewHolder (
 
                 setBackgroundColor(ContextCompat.getColor(rootView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
 
-                cardType = if(denomGrid.status == DENOM_STATUS_OUT_OF_STOCK) CardUnify.TYPE_BORDER_DISABLED else if (isSelectedItem) CardUnify.TYPE_BORDER_ACTIVE else
-                    if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE) CardUnify.TYPE_SHADOW
-                    else CardUnify.TYPE_BORDER
+                cardType = if(denomGrid.status == DENOM_STATUS_OUT_OF_STOCK) CardUnify.TYPE_BORDER_DISABLED
+                        else if (isSelectedItem) CardUnify.TYPE_BORDER_ACTIVE
+                        else if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE) CardUnify.TYPE_SHADOW
+                        else CardUnify.TYPE_BORDER
             }
 
             root.setOnClickListener {

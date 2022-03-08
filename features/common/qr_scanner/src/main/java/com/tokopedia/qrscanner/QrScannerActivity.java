@@ -62,7 +62,6 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     private ProgressBar progressBar;
     private PermissionCheckerHelper permissionCheckerHelper;
     private boolean mNeedResult = false;
-    private boolean isFromTokenListrik = false;
 
     @Override
     protected Fragment getNewFragment() {
