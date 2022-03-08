@@ -73,4 +73,9 @@
     <string name="topads_edit_keyword_title">Biaya Iklan dan Kata Kunci</string>
     <string name="topads_edit_auto_bid_ticker_title">Biaya iklan dan kata kunci pada grup iklan ini akan diatur oleh TopAds untuk memaksimalkan penjualanmu. Pelajari Selengkapnya</string>
 
+    <string name="topads_edit_dialog_cta_text">Ya, Ubah</string>
+    <string name="topads_edit_automatic_dialog_title">Mau ubah ke Atur Otomatis?</string>
+    <string name="topads_edit_automatic_dialog_description">Biaya iklan dan kata kunci akan diatur oleh TopAds untuk memaksimalkan penjualanmu.</string>
+    <string name="topads_edit_manual_dialog_title">Mau ubah ke Atur Manual?</string>
+    <string name="topads_edit_manual_dialog_description">Dengan Atur Manual, kamu bisa atur sendiri biaya iklan dan kata kunci sesuai strategi beriklanmu.</string>
 </resources>
