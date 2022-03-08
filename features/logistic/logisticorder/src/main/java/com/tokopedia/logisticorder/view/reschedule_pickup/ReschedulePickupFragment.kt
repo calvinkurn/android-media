@@ -28,6 +28,7 @@ import com.tokopedia.logisticorder.di.DaggerReschedulePickupComponent
 import com.tokopedia.logisticorder.di.ReschedulePickupComponent
 import com.tokopedia.logisticorder.utils.OrderedListSpan
 import com.tokopedia.logisticorder.view.bottomsheet.RescheduleOptionBottomSheet
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -300,5 +301,21 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
 
         binding?.btnReschedulePickup?.isEnabled =
             (chosenDay.isNotEmpty()) && (chosenTime.isNotEmpty()) && (chosenReason.isNotEmpty()) && (isReasonValid)
+    }
+
+    private fun showErrorToaster(
+        view: View?,
+        message: String?,
+    ) {
+        message?.run {
+            view?.let {
+                Toaster.build(
+                    it,
+                    message,
+                    Toaster.LENGTH_SHORT,
+                    Toaster.TYPE_ERROR,
+                ).show()
+            }
+        }
     }
 }
