@@ -18,6 +18,7 @@ import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.flight.R
+import com.tokopedia.flight.airport.presentation.adapter.viewholder.FlightCountryViewHolder
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
@@ -159,8 +160,10 @@ class FlightHomepageActivityTest {
 
         // click on flight departure airport to open bottom sheet to select airport
         onView(withId(R.id.tvFlightOriginAirport)).perform(click())
+        Thread.sleep(2000)
 
         // click on Padang, to set Padang as Departure Airport
+        onView(withId(R.id.rvFlightAirport)).check(matches(isDisplayed()))
         onView(withText("Padang, Indonesia")).perform(click())
         Thread.sleep(1000)
     }
@@ -170,9 +173,11 @@ class FlightHomepageActivityTest {
 
         // click on flight arrival airport to open bottom sheet to select airport
         onView(withId(R.id.tvFlightDestinationAirport)).perform(click())
-
+        Thread.sleep(2000)
         // click on Palembang, to set Palembang as Arrival Airport
+        onView(withId(R.id.rvFlightAirport)).check(matches(isDisplayed()))
         onView(withText("Palembang, Indonesia")).perform(click())
+
         Thread.sleep(1000)
     }
 
@@ -224,6 +229,7 @@ class FlightHomepageActivityTest {
 
         // click on flight class to open bottom sheet to set passengers class
         onView(withId(R.id.tvFlightClass)).perform(click())
+        Thread.sleep(1000)
 
         // set class, Bisnis
         onView(withId(R.id.radioBisnisClass)).perform(click())

@@ -146,7 +146,8 @@ class NewShopPageViewModel @Inject constructor(
             keyword: String,
             etalaseId: String,
             isRefresh: Boolean,
-            widgetUserAddressLocalData: LocalCacheModel
+            widgetUserAddressLocalData: LocalCacheModel,
+            extParam: String
     ) {
         launchCatchError(block = {
             val shopP1DataAsync = asyncCatchError(
@@ -155,7 +156,8 @@ class NewShopPageViewModel @Inject constructor(
                         getShopP1Data(
                                 shopId,
                                 shopDomain,
-                                isRefresh
+                                isRefresh,
+                                extParam
                         )
                     },
                     onError = {
@@ -255,11 +257,12 @@ class NewShopPageViewModel @Inject constructor(
     private suspend fun getShopP1Data(
             shopId: String,
             shopDomain: String,
-            isRefresh: Boolean
+            isRefresh: Boolean,
+            extParam: String
     ): ShopPageHeaderP1 {
         val useCase = getShopPageP1DataUseCase.get()
         useCase.isFromCacheFirst = !isRefresh
-        useCase.params = GetShopPageP1DataUseCase.createParams(shopId, shopDomain)
+        useCase.params = GetShopPageP1DataUseCase.createParams(shopId, shopDomain, extParam)
         return useCase.executeOnBackground()
     }
 

@@ -35,8 +35,8 @@
   <string name="text_exit_cta_primary">Keluar</string>
   <string name="text_exit_cta_secondary">Lanjut Ubah Nomor</string>
   <string name="text_success_title">Perubahan sudah diajukan</string>
-  <string name="text_success_description_single_account"><![CDATA[Datamu akan diproses maks. 1x24 jam ke depan. Informasi seputar pengajuan ini akan dikirim lewat e-mail ke alamat <b>%s</b> dan SMS ke nomor <b>%s</b>.]]></string>
-  <string name="text_success_description_has_no_email"><![CDATA[Datamu akan diproses maks. 1x24 jam ke depan. Informasi seputar pengajuan ini akan dikirim lewat SMS ke nomor <b>%s</b>.]]></string>
+  <string name="text_success_description_single_account"><![CDATA[Datamu akan diproses maks. 1x12 jam ke depan. Informasi seputar pengajuan ini akan dikirim lewat e-mail ke alamat <b>%s</b> dan SMS ke nomor <b>%s</b>.]]></string>
+  <string name="text_success_description_has_no_email"><![CDATA[Datamu akan diproses maks. 1x12 jam ke depan. Informasi seputar pengajuan ini akan dikirim lewat SMS ke nomor <b>%s</b>.]]></string>
   <string name="text_success_button">Ke Home</string>
   <string name="text_success_ticker">Jangan pakai nomor HP ini di akun Tokopedia lainnya, biar nomor HP-mu berhasil diubah.</string>
   <string name="text_account_list_title">Mau ubah nomor HP di akun yang mana?</string>

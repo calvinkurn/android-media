@@ -38,7 +38,7 @@ class AffiliatePromotionCardItemVH(itemView: View, private val promotionClickInt
                         element?.promotionItem?.image?.androidURL ?:"",
                         element?.promotionItem?.cardUrl ?: "",
                         "",
-                         adapterPosition
+                         adapterPosition,""
                 )
             }
             if(element?.promotionItem?.status?.isLinkGenerationAllowed == false){

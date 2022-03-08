@@ -234,9 +234,11 @@
 /features/operational/csat_rating        				@tokopedia/android-minionsolo-dev
 
 /features/fintech/common_wallet         				@tokopedia/android-minionyoda-dev
+/features/fintech/fintech_home_widget         			@tokopedia/android-minionyoda-dev
 /features/fintech/instant_loan          				@tokopedia/android-minionyoda-dev
 /features/fintech/layanan_finansial                     @tokopedia/android-minionyoda-dev
 /features/fintech/paylater                              @tokopedia/android-minionyoda-dev
+/features/fintech/pdp_fintech_widget                    @tokopedia/android-minionyoda-dev
 /features/fintech/ovo_pay_with_qr       				@tokopedia/android-minionyoda-dev
 /features/fintech/saldo_details         				@tokopedia/android-minionyoda-dev
 /features/fintech/home_credit           				@tokopedia/android-minionyoda-dev
@@ -353,6 +355,7 @@
 /libraries/screenshot_observer                          @tokopedia/android-core-dev
 /libraries/tokopatch                                    @tokopedia/android-core-dev
 /libraries/macrobenchmark/								@tokopedia/android-core-dev
+/libraries/universal_sharing/							@tokopedia/android-gatekeeperloadtime-dev
 
 /buildconfig/                                           @tokopedia/android-core-dev
 /dynamic-features/                                      @tokopedia/android-core-dev

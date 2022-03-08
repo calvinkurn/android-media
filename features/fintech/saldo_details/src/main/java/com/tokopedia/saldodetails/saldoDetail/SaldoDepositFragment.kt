@@ -477,6 +477,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         }
 
         drawButton!!.setOnClickListener {
+            saldoDetailsAnalytics.sendClickPaymentEvents(SaldoDetailsConstants.Action.SALDO_WITHDRAWAL_CLICK)
             try {
                 if (!userSession.isMsisdnVerified) {
                     showMustVerify()
@@ -745,6 +746,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         )
         holdBalanceTicker?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                saldoDetailsAnalytics.sendClickPaymentEvents(SaldoDetailsConstants.Action.SALDO_HOLD_STATUS_CLICK)
                 val intent = Intent(context, SaldoHoldInfoActivity::class.java)
                 startActivity(intent)
             }

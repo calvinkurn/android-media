@@ -1,9 +1,9 @@
 package com.tokopedia.affiliate
 
 import android.os.Bundle
-import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.EVENT_PROMO_CLICK
+import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.ITEMS
+import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.ITEM_LIST
 import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.KEY_PROMOTIONS
-import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.PROMO_CLICK
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 
@@ -46,33 +46,33 @@ object AffiliateAnalytics {
         action: String,
         category: String,
         userId: String,
-        productId: String,
-        shopId : String,
-        productImage: String,
+        productId: String?,
         position: Int,
-        itemName: String
+        itemName: String?,
+        label: String?,
+        itemList: String = ""
     ){
-        val list = ArrayList<Map<String, Any>>()
-        val productMap = HashMap<String, Any>()
-        productMap[EventKeys.KEY_ITEM_ID] = productId
-        productMap[EventKeys.KEY_CREATIVE_NAME] = productImage
-        productMap[EventKeys.KEY_CREATIVE_SLOT] = (position + 1).toString()
-        productMap[EventKeys.KEY_ITEM_NAME] = itemName
-        list.add(productMap)
-        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
-                EVENT_PROMO_CLICK to mapOf(
-                        KEY_PROMOTIONS to list))
-        val map = HashMap<String,Any>()
-        map[EventKeys.KEY_EVENT] = PROMO_CLICK
-        map[EventKeys.KEY_EVENT_CATEGORY] = category
-        map[EventKeys.KEY_EVENT_ACTION] = action
-        map[EventKeys.KEY_EVENT_LABEL] = "$shopId - $productId"
-        map[EventKeys.KEY_BUSINESS_UNIT] = EventKeys.BUSINESS_UNIT_VALUE
-        map[EventKeys.KEY_CURRENT_SITE] = EventKeys.CURRENT_SITE_VALUE
-        map[EventKeys.KEY_ECOMMERCE] = eCommerce
-        map[EventKeys.KEY_USER_ID] = userId
+        val listBundle = Bundle().apply {
+            putString(EventKeys.KEY_ITEM_ID,productId)
+            putString(EventKeys.INDEX, (position).toString())
+            putString(EventKeys.KEY_ITEM_NAME,itemName)
+        }
+        val bundle = Bundle().apply {
+            putString(EventKeys.KEY_EVENT, event)
+            putString(EventKeys.KEY_EVENT_CATEGORY,category)
+            putString(EventKeys.KEY_EVENT_ACTION,action)
+            putString(EventKeys.KEY_EVENT_LABEL, label)
+            putString(EventKeys.KEY_BUSINESS_UNIT,EventKeys.BUSINESS_UNIT_VALUE)
+            putString(EventKeys.KEY_CURRENT_SITE,EventKeys.CURRENT_SITE_VALUE)
+            putParcelableArrayList(ITEMS,arrayListOf(listBundle))
+            putString(EventKeys.KEY_USER_ID,userId)
+            if(itemList.isNotEmpty()){
+                putString(ITEM_LIST,itemList)
+            }
+        }
 
-        getTracker().sendEnhanceEcommerceEvent(map)
+
+        getTracker().sendEnhanceEcommerceEvent(event,bundle)
     }
 
     fun sendIcomeTracker(
@@ -126,6 +126,7 @@ object AffiliateAnalytics {
             const val KEY_CREATIVE_SLOT = "creative_slot"
             const val KEY_ITEM_ID = "item_id"
             const val KEY_ITEM_NAME = "item_name"
+            const val ITEMS = "items"
 
             const val KEY_PROMOTIONS = "promotions"
             const val SELECT_CONTENT = "select_content"
@@ -137,6 +138,9 @@ object AffiliateAnalytics {
             const val CLICK_REGISTER = "clickRegister"
             const val CLICK_PG = "clickPG"
             const val VIEW_ITEM = "view_item"
+            const val VIEW_ITEM_LIST = "view_item_list"
+            const val ITEM_LIST = "item_list"
+            const val INDEX = "index"
         }
     }
 
@@ -154,11 +158,14 @@ object AffiliateAnalytics {
             const val AFFILIATE_REGISTRATION_PAGE_PROMOTION_CHANNEL= "affiliate registration page - promotion channel input"
             const val AFFILIATE_REG_T_ANC_C = "affiliate registration page - terms and condition"
             const val AFFILIATE_HOME_PAGE = "affiliate home page"
+            const val AFFILIATE_HOME_PAGE_LINK_HISTORY = "affiliate home page - generated link history"
+            const val AFFILIATE_HOME_PAGE_GENERATED_LINK_HIST = "affiliate home page - generated link history"
             const val AFFILIATE_HOME_PAGE_FILTER = "affiliate home page - filter date"
             const val AFFILIATE_HOME_PAGE_BOTTOM_SHEET = "affiliate home page - bottom sheet"
             const val AFFILIATE_PROMOSIKAN_PAGE = "affiliate promosikan page"
             const val AFFILIATE_PENDAPATAN_PAGE = "affiliate pendapatan page"
             const val AFFILIATE_PENDAPATAN_PAGE_FILTER = "affiliate pendapatan page - filter date"
+            const val AFFILIATE_PROMOSIKAN_BOTTOM_SHEET = "affiliate promosikan page - bottom sheet"
         }
     }
 
@@ -203,6 +210,15 @@ object AffiliateAnalytics {
             const val CLICK_PERNAH_DIBELI_TAB = "click - pernah dibeli tab"
             const val CLICK_PERNAH_DILIHAT_TAB = "click - pernah dilihat tab"
             const val IMPRESSION_TRANSACTION_CARD = "impression - transaction card"
+            const val IMPRESSION_PRODUK_YANG_DIPROMOSIKAN = "impression - product - produk yang dipromosikan"
+            const val CLICK_PRODUCT_PRODUL_YANG_DIPROMOSIKAN = "click - product - produk yang dipromosikan"
+            const val IMPRESSION_DAFTAR_LINK_PRODUK = "impression - product - daftar link produk"
+            const val CLICK_SALIN_LINK_DAFTAR_LINK_PRODUK = "click - salin link - daftar link produk"
+            const val CLICK_PRODUCT_DAFTAR_LINK_PRODUK = "click - product - daftar link produk"
+            const val IMPRESSION_PRODUCT_PERNAH_DIBELI = "impression - product - pernah dibeli"
+            const val IMPRESSION_PRODUCT_PERNAH_DILIHAT = "impression - product - pernah dilihat"
+            const val PROMISIKAN_PERNAH_DIBELI = "click - promosikan - pernah dibeli"
+            const val PROMOSIKAN_PERNAH_DILIHAT = "click - promosikan - pernah dilihat"
         }
     }
 
@@ -223,6 +239,10 @@ object AffiliateAnalytics {
             const val AFFILIATE_PERNAH_DIBEL = "/affiliate - promosikan pernah dibeli"
             const val AFFILIATE_PERNAH_DILIHAT = "/affiliate - promosikan pernah dilihat"
             const val AFFILIATE_TRANSACTION_PAGE = "/affiliate pendapatan page - transaction history"
+            const val AFFILAITE_HOME_SELECT_CONTENT = "/affiliate home page - produk yang dipromosikan"
+            const val AFFILIATE_DAFTAR_LINK_PRODUK = "/affiliate home page - daftar link produk"
+            const val AFFILIATE_PROMOSIKAN_PERNAH_DIBEL = "/affiliate promosikan page - pernah dibeli"
+            const val AFFILIATE_PROMOSIKAN_PERNAH_DILIHAT = "/affiliate promosikan page - pernah dilihat"
         }
     }
 
@@ -234,6 +254,10 @@ object AffiliateAnalytics {
             const val NON_LOGIN = "non login"
             const val DEPOSIT = "deposit"
             const val WITHDRAWAL = "withdrawal"
+            const val ACTIVE = "active"
+            const val INACTIVE = "inactive"
+            const val SUCCESS = "success"
+            const val FAIL = "fail"
         }
     }
 

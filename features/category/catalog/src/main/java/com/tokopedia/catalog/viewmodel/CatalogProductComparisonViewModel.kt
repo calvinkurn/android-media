@@ -55,16 +55,20 @@ class CatalogProductComparisonViewModel @Inject constructor(
             }
 
             is Fail -> {
-                hasMoreItems.value = false
+                handleFail()
             }
         }
+    }
+
+    private fun handleFail() {
+        hasMoreItems.value = false
     }
 
     private fun addToMasterList(recommendedCatalogId : String, it: CatalogComparisonProductsResponse.CatalogComparisonList?) {
         it?.catalogComparisonList?.let { items ->
             for (product in items){
                 product?.let {
-                    if(product.id == recommendedCatalogId){ product.isActive = false }
+                    product.isActive = (product.id != recommendedCatalogId)
                     masterDataList.add(CatalogStaggeredProductModel(CatalogConstant.COMPARISON_PRODUCT,
                         CatalogConstant.COMPARISON_PRODUCT,product))
                 }
