@@ -2070,6 +2070,10 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
+    fun sendUpcomingReminderImpression(sectionUiModel: ProductSectionUiModel.Section){
+        playAnalytic.impressUpcomingReminder(sectionUiModel, channelId, channelType)
+    }
+
     companion object {
         private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
         private const val FIREBASE_REMOTE_CONFIG_KEY_INTERACTIVE = "android_main_app_enable_play_interactive"

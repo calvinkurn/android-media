@@ -223,6 +223,13 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.showCouponSheet(variantSheetMaxHeight)
     }
 
+    override fun onReminderImpressed(
+        view: ProductSheetViewComponent,
+        section: ProductSectionUiModel.Section
+    ) {
+        playViewModel.sendUpcomingReminderImpression(section)
+    }
+
     /**
      * VariantSheet View Component Listener
      */

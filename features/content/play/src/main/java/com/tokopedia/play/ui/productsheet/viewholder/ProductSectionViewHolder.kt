@@ -10,10 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.R
 import com.tokopedia.unifyprinciples.R as unifyR
@@ -51,7 +48,9 @@ class ProductSectionViewHolder(
     private fun setupOnScrollListener(sectionInfo: ProductSectionUiModel.Section){
         itemView.viewTreeObserver.addOnScrollChangedListener (object : ViewTreeObserver.OnScrollChangedListener {
             override fun onScrollChanged() {
-                itemView.isVisibleOnTheScreen(onViewVisible = { listener.onProductImpressed(getVisibleProducts(layoutManagerProductList(sectionInfo)), sectionInfo)} ,
+                itemView.isVisibleOnTheScreen(onViewVisible = {
+                    listener.onProductImpressed(getVisibleProducts(layoutManagerProductList(sectionInfo)), sectionInfo)
+                    if(btnReminder.isVisible) listener.onReminderImpressed(sectionInfo) } ,
                     onViewNotVisible = {
                         itemView.viewTreeObserver.removeOnScrollChangedListener(this)
                     })
@@ -63,6 +62,7 @@ class ProductSectionViewHolder(
         override fun onLayoutCompleted(state: RecyclerView.State?) {
             super.onLayoutCompleted(state)
             listener.onProductImpressed(getVisibleProducts(this), sectionInfo)
+            if(btnReminder.isVisible) listener.onReminderImpressed(sectionInfo)
         }
     }
 
@@ -196,7 +196,8 @@ class ProductSectionViewHolder(
         fun onClickProductCard(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, position: Int)
         fun onProductImpressed(product: List<Pair<PlayProductUiModel.Product, Int>>, sectionInfo: ProductSectionUiModel.Section)
         fun onProductChanged()
-        fun onReminderClicked(product: ProductSectionUiModel.Section)
+        fun onReminderClicked(section: ProductSectionUiModel.Section)
+        fun onReminderImpressed(section: ProductSectionUiModel.Section)
     }
 }
 
