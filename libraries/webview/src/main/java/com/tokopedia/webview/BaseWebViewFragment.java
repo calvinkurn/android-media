@@ -125,6 +125,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @NonNull
     protected String url = "";
     public static final String TOKOPEDIA_STRING = "tokopedia";
+    public static final String ZOOM_US_STRING = "zoom.us";
     protected boolean isTokopediaUrl;
     boolean allowOverride = true;
     boolean pullToRefresh = false;
@@ -180,7 +181,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         allowOverride = args.getBoolean(KEY_ALLOW_OVERRIDE, true);
         pullToRefresh = args.getBoolean(KEY_PULL_TO_REFRESH, false);
         String host = Uri.parse(url).getHost();
-        isTokopediaUrl = host != null && host.contains(TOKOPEDIA_STRING);
+        isTokopediaUrl = host != null && host.contains(TOKOPEDIA_STRING) && !host.contains(ZOOM_US_STRING);
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
@@ -689,6 +690,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             if (swipeRefreshLayout != null) {
                 swipeRefreshLayout.setVisibility(View.GONE);
             }
+        } else if (errorCode == WebViewClient.ERROR_UNSUPPORTED_SCHEME) {
+            routeToNativeBrowser(webUrl);
+            getActivity().finish();
         }
     }
 
