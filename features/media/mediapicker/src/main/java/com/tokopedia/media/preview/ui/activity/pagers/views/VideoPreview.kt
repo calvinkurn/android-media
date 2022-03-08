@@ -40,9 +40,6 @@ class VideoPreview(
                     videoControl.showWithCondition(!isPlaying)
                 }
             }
-
-            videoPlayer.start()
         }
     }
-
 }

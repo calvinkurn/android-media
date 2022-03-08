@@ -26,6 +26,7 @@ class PreviewPagerAdapter constructor(
             .setupView(item)
             .also {
                 container.addView(it)
+                if(position == 0 && item.data.isVideo()) item.mVideoPlayer?.start()
             }
     }
 
