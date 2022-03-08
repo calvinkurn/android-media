@@ -12,6 +12,7 @@ import com.tokopedia.play.util.isEqualTo
 import com.tokopedia.play.util.isEqualToIgnoringFields
 import com.tokopedia.play.view.uimodel.action.ClickFollowAction
 import com.tokopedia.play.view.uimodel.event.OpenPageEvent
+import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
@@ -81,7 +82,7 @@ class PlayFollowOthersShopTest {
         } thenVerify {
             withState {
                 partner.status.isEqualTo(
-                    PlayPartnerFollowStatus.Followable(isFollowing = true)
+                    PlayPartnerFollowStatus.Followable(followStatus = PartnerFollowableStatus.Followed)
                 )
             }
         }
@@ -106,7 +107,7 @@ class PlayFollowOthersShopTest {
         } thenVerify {
             withState {
                 partner.status.isEqualTo(
-                        PlayPartnerFollowStatus.Followable(isFollowing = false)
+                        PlayPartnerFollowStatus.Followable(followStatus = PartnerFollowableStatus.NotFollowed)
                 )
             }
         }
@@ -130,7 +131,7 @@ class PlayFollowOthersShopTest {
         } thenVerify { event ->
             withState {
                 partner.status.isEqualTo(
-                        PlayPartnerFollowStatus.Followable(isFollowing = false)
+                        PlayPartnerFollowStatus.Followable(followStatus = PartnerFollowableStatus.NotFollowed)
                 )
             }
 

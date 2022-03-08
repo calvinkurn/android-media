@@ -188,7 +188,7 @@ class PlayUpcomingViewModel @Inject constructor(
     }
 
     private fun updatePartnerInfo(partnerInfo: PlayPartnerInfo) {
-        if (partnerInfo.status is PlayPartnerFollowStatus.Followable) {
+        if (partnerInfo.status !is PlayPartnerFollowStatus.NotFollowable && (partnerInfo.id.toString() != userSession.shopId || partnerInfo.id.toString() != userSession.userId)) {
             viewModelScope.launchCatchError(block = {
                 val isFollowing = getFollowingStatus(partnerInfo)
                 val result = if(isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
@@ -324,7 +324,7 @@ class PlayUpcomingViewModel @Inject constructor(
     }
 
     private fun handleClickFollow(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_FOLLOW) {
-        if (_partnerInfo.value.status is PlayPartnerFollowStatus.Followable) {
+        if (_partnerInfo.value.status !is PlayPartnerFollowStatus.NotFollowable) {
             val action = doFollowUnfollow(shouldForceFollow = isFromLogin) ?: return@needLogin
             val shopId = _partnerInfo.value.id
             if (_partnerInfo.value.type == PartnerType.Shop) playAnalytic.clickFollowShop(
@@ -359,18 +359,19 @@ class PlayUpcomingViewModel @Inject constructor(
         val shouldFollow = if (shouldForceFollow) true else followStatus.followStatus == PartnerFollowableStatus.NotFollowed
         val followAction = if (shouldFollow) PartnerFollowAction.Follow else PartnerFollowAction.UnFollow
 
-        val result = if(shouldFollow) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
-
-        _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(result)) }
-
         viewModelScope.launchCatchError(block = {
-            if(channelData.partnerInfo.type == PartnerType.Shop){
+            val isFollowing: Boolean = if(channelData.partnerInfo.type == PartnerType.Shop){
                 repo.postFollowStatus(
                     shopId = shopId.toString(),
                     followAction = followAction,
                 )
             } else {
-                repo.postFollowKol(followedKol = _observableKolId.value.toString(), followAction = followAction)
+                val data = repo.postFollowKol(followedKol = _observableKolId.value.toString(), followAction = followAction)
+                if(data) followAction == PartnerFollowAction.Follow else false
+            }
+            _partnerInfo.setValue {
+                val result = if(isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
+                copy(isLoadingFollow = false, status = PlayPartnerFollowStatus.Followable(result))
             }
         }) {}
 

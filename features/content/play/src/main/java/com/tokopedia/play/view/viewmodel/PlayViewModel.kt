@@ -1182,7 +1182,7 @@ class PlayViewModel @AssistedInject constructor(
      */
 
     private fun updatePartnerInfo(partnerInfo: PlayPartnerInfo) {
-        if (partnerInfo.status is PlayPartnerFollowStatus.Followable) {
+        if (partnerInfo.status !is PlayPartnerFollowStatus.NotFollowable && (partnerInfo.id.toString() != userSession.shopId || partnerInfo.id.toString() != userSession.userId)) {
             viewModelScope.launchCatchError(block = {
                 val isFollowing = getFollowingStatus(partnerInfo)
 
@@ -1564,7 +1564,8 @@ class PlayViewModel @AssistedInject constructor(
                     followAction = followAction,
                 )
             } else {
-                repo.postFollowKol(followedKol = _observableKolId.value.toString(), followAction = followAction)
+                val data = repo.postFollowKol(followedKol = _observableKolId.value.toString(), followAction = followAction)
+                if(data) followAction == PartnerFollowAction.Follow else false
             }
             _partnerInfo.setValue {
                 val result = if(isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
@@ -1698,7 +1699,7 @@ class PlayViewModel @AssistedInject constructor(
      * if false, it depends on the current state
      */
     private fun handleClickFollow(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_FOLLOW) {
-        if (_partnerInfo.value.status is PlayPartnerFollowStatus.Followable){
+        if (_partnerInfo.value.status !is PlayPartnerFollowStatus.NotFollowable){
             val action = doFollowUnfollow(shouldForceFollow = isFromLogin) ?: return@needLogin
             val shopId = _partnerInfo.value.id
 
@@ -1710,7 +1711,7 @@ class PlayViewModel @AssistedInject constructor(
      * [PartnerFollowAction] from interactive will definitely [PartnerFollowAction.Follow]
      */
     private fun handleClickFollowInteractive() = needLogin(REQUEST_CODE_LOGIN_FOLLOW) {
-        if (_partnerInfo.value.status is PlayPartnerFollowStatus.Followable) {
+        if (_partnerInfo.value.status !is PlayPartnerFollowStatus.NotFollowable) {
             doFollowUnfollow(shouldForceFollow = true) ?: return@needLogin
 
             viewModelScope.launch {

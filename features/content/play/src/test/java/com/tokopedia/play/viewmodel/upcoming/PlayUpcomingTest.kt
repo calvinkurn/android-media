@@ -15,12 +15,14 @@ import com.tokopedia.play.model.PlayPartnerInfoModelBuilder
 import com.tokopedia.play.model.PlayUpcomingInfoModelBuilder
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.robot.upcoming.createPlayUpcomingViewModelRobot
+import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.*
 import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
+import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.uimodel.state.PlayUpcomingState
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -384,8 +386,9 @@ class PlayUpcomingTest {
     fun `given a upcoming channel, when user click follow and user is logged in and partner is not followed yet, then it should follow the user`() {
         /** Mock */
         every { mockUserSession.isLoggedIn } returns true
-        coEvery { mockRepo.getIsFollowingPartner(any()) } returns false
-        coEvery { mockRepo.postFollowStatus(any(), any()) } returns true
+        coEvery { mockRepo.getProfileHeader(any()) } returns "99abhsb"
+        coEvery { mockRepo.getFollowingKOL(any()) } returns false
+        coEvery { mockRepo.postFollowKol(any(), PartnerFollowAction.Follow) } returns true
 
         /** Prepare */
         val robot = createPlayUpcomingViewModelRobot(
@@ -395,7 +398,7 @@ class PlayUpcomingTest {
             playChannelSSE = fakePlayChannelSSE,
             repo = mockRepo
         ) {
-            viewModel.initPage(mockChannelData.id, mockChannelData)
+            viewModel.initPage(mockChannelDataWithBuyerPartner.id, mockChannelDataWithBuyerPartner)
         }
 
         robot.use {
@@ -405,12 +408,12 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.partner.followStatus.isEqualTo(PlayPartnerFollowStatus.Followable(true))
+            state.partner.followStatus.isEqualTo(PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.Followed))
         }
     }
 
     @Test
-    fun `given a upcoming channel, when partner is not shop, then the partner state should be not followable`() {
+    fun `given a upcoming channel, when partner is buyer, then the partner state should be followable`() {
         /** Prepare */
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
@@ -427,7 +430,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.partner.followStatus.isEqualTo(PlayPartnerFollowStatus.NotFollowable)
+            state.partner.followStatus.assertEqualTo(PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed))
         }
     }
 
