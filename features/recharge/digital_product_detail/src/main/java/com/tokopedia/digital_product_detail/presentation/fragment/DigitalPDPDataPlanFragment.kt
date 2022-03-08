@@ -108,8 +108,7 @@ class DigitalPDPDataPlanFragment :
     ClientNumberFilterChipListener,
     ClientNumberAutoCompleteListener,
     FilterPDPBottomsheet.FilterBottomSheetListener,
-    DigitalHistoryIconListener
-{
+    DigitalHistoryIconListener {
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
@@ -131,16 +130,14 @@ class DigitalPDPDataPlanFragment :
     private var operator = TelcoOperator()
     private var loyaltyStatus = ""
     private var clientNumber = ""
-
-    private var productId =  0
+    private var productId = 0
     private var productIdFromApplink = 0
-
     private var menuId = 0
     private var categoryId = TelcoCategoryType.CATEGORY_PAKET_DATA
     private var inputNumberActionType = InputNumberActionType.MANUAL
+    private var actionTypeTrackingJob: Job? = null
 
     private lateinit var localCacheHandler: LocalCacheHandler
-    private var actionTypeTrackingJob: Job? = null
 
     override fun getScreenName(): String = ""
 
@@ -240,12 +237,13 @@ class DigitalPDPDataPlanFragment :
                 )
 
                 val isOperatorChanged = operator.id != selectedOperator.operator.id
-                val productIdFromDefaultPrefix = selectedOperator.operator.attributes.defaultProductId.toIntOrZero()
+                val productIdFromDefaultPrefix =
+                        selectedOperator.operator.attributes.defaultProductId.toIntOrZero()
 
-                //set default product id when prefix changed
-                if (isOperatorChanged && operator.id.isEmpty() && productIdFromApplink.isMoreThanZero()){
+                /* set default product id when prefix changed */
+                if (isOperatorChanged && operator.id.isEmpty() && productIdFromApplink.isMoreThanZero()) {
                     productId = productIdFromApplink
-                } else if (isOperatorChanged && productIdFromDefaultPrefix.isMoreThanZero()){
+                } else if (isOperatorChanged && productIdFromDefaultPrefix.isMoreThanZero()) {
                     productId = productIdFromDefaultPrefix
                 }
 
@@ -259,8 +257,10 @@ class DigitalPDPDataPlanFragment :
                     hideEmptyState()
                     onHideBuyWidget()
                     getRecommendations()
-                    getCatalogProductInputMultiTab(selectedOperator.key, isOperatorChanged,
-                        selectedClientNumber)
+                    getCatalogProductInputMultiTab(
+                            selectedOperator.key, isOperatorChanged,
+                        selectedClientNumber
+                        )
                 } else {
                     onHideBuyWidget()
                 }
@@ -326,11 +326,16 @@ class DigitalPDPDataPlanFragment :
                 is RechargeNetworkResult.Success -> {
 
                     if (productId >= 0) {
-                        viewModel.setAutoSelectedDenom(denomData.data.denomFull.listDenomData, productId.toString())
+                        viewModel.setAutoSelectedDenom(
+                            denomData.data.denomFull.listDenomData,
+                            productId.toString()
+                        )
                     }
 
-                    val selectedPositionDenom = viewModel.getSelectedPositionId(denomData.data.denomFull.listDenomData)
-                    val selectedPositionMCCM = viewModel.getSelectedPositionId(denomData.data.denomMCCMFull.listDenomData)
+                    val selectedPositionDenom =
+                        viewModel.getSelectedPositionId(denomData.data.denomFull.listDenomData)
+                    val selectedPositionMCCM =
+                        viewModel.getSelectedPositionId(denomData.data.denomMCCMFull.listDenomData)
 
                     if (denomData.data.isFilterRefreshed) {
                         digitalPDPTelcoAnalytics.impressionFilterChip(
@@ -360,8 +365,8 @@ class DigitalPDPDataPlanFragment :
             }
         })
 
-        viewModel.addToCartResult.observe(viewLifecycleOwner,{ atcData ->
-            when(atcData) {
+        viewModel.addToCartResult.observe(viewLifecycleOwner, { atcData ->
+            when (atcData) {
                 is RechargeNetworkResult.Success -> {
                     onLoadingBuyWidget(false)
                     digitalPDPTelcoAnalytics.addToCart(
@@ -411,7 +416,12 @@ class DigitalPDPDataPlanFragment :
         viewModel.run {
             cancelCatalogProductJob()
             setRechargeCatalogInputMultiTabLoading()
-            getRechargeCatalogInputMultiTab(menuId, selectedOperatorKey, clientNumber, isOperatorChanged)
+            getRechargeCatalogInputMultiTab(
+                menuId,
+                selectedOperatorKey,
+                clientNumber,
+                isOperatorChanged
+            )
         }
     }
 
@@ -439,11 +449,13 @@ class DigitalPDPDataPlanFragment :
     private fun getFavoriteNumber() {
         viewModel.run {
             setFavoriteNumberLoading()
-            getFavoriteNumber(listOf(
-                TelcoCategoryType.CATEGORY_PULSA,
-                TelcoCategoryType.CATEGORY_PAKET_DATA,
-                TelcoCategoryType.CATEGORY_ROAMING
-            ))
+            getFavoriteNumber(
+                listOf(
+                    TelcoCategoryType.CATEGORY_PULSA,
+                    TelcoCategoryType.CATEGORY_PAKET_DATA,
+                    TelcoCategoryType.CATEGORY_ROAMING
+                )
+            )
         }
     }
 
@@ -519,9 +531,9 @@ class DigitalPDPDataPlanFragment :
         binding?.rechargePdpPaketDataRecommendationWidget?.renderFailRecommendation()
     }
 
-    private fun onSuccessSortFilter(initialSelectedCounter: Int = 0){
+    private fun onSuccessSortFilter(initialSelectedCounter: Int = 0) {
         binding?.let {
-            if (!viewModel.filterData.isNullOrEmpty()){
+            if (!viewModel.filterData.isNullOrEmpty()) {
                 it.sortFilterPaketData.run {
                     show()
                     val filterItems = arrayListOf<SortFilterItem>()
@@ -533,7 +545,7 @@ class DigitalPDPDataPlanFragment :
 
                     var selectedChipsCounter = initialSelectedCounter
 
-                    filterItems.forEachIndexed{ index, sortFilterItem ->
+                    filterItems.forEachIndexed { index, sortFilterItem ->
                         if (chipItems.get(index).isSelected) {
                             sortFilterItem.type = ChipsUnify.TYPE_SELECTED
                         }
@@ -548,7 +560,7 @@ class DigitalPDPDataPlanFragment :
                                     userSession.userId,
                                 )
                             }
-                            if (filterItems[index].type == ChipsUnify.TYPE_SELECTED){
+                            if (filterItems[index].type == ChipsUnify.TYPE_SELECTED) {
                                 chipItems.get(index).isSelected = true
                                 selectedChipsCounter++
                             } else {
@@ -571,10 +583,11 @@ class DigitalPDPDataPlanFragment :
                             userSession.userId,
                         )
                         fragmentManager?.let {
-                            FilterPDPBottomsheet(getString(R.string.bottom_sheet_filter_title),
+                            FilterPDPBottomsheet(
+                                getString(R.string.bottom_sheet_filter_title),
                                 getString(R.string.bottom_sheet_filter_reset),
-                                filterData, this@DigitalPDPDataPlanFragment)
-                                .show(it, "")
+                                filterData, this@DigitalPDPDataPlanFragment
+                            ).show(it, "")
                         }
                     }
 
@@ -584,24 +597,33 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    private fun onChipClicked(){
+    private fun onChipClicked() {
         viewModel.run {
             updateFilterData()
             cancelCatalogProductJob()
             setRechargeCatalogInputMultiTabLoading()
-            getRechargeCatalogInputMultiTab(menuId, operator.id, binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "", false)
+            getRechargeCatalogInputMultiTab(
+                menuId,
+                operator.id,
+                binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "",
+                false
+            )
         }
     }
 
     private fun onSuccessDenomFull(denomData: DenomWidgetModel, selectedPosition: Int?) {
         binding?.let {
             var selectedInitialPosition = selectedPosition
-            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.FULL_TYPE)){
+            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.FULL_TYPE)) {
                 onShowBuyWidget(viewModel.selectedFullProduct.denomData)
             } else {
                 selectedInitialPosition = null
             }
-            it.rechargePdpPaketDataDenomFullWidget.renderDenomFullLayout(this, denomData, selectedInitialPosition)
+            it.rechargePdpPaketDataDenomFullWidget.renderDenomFullLayout(
+                this,
+                denomData,
+                selectedInitialPosition
+            )
             it.rechargePdpPaketDataDenomFullWidget.show()
         }
     }
@@ -622,7 +644,7 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    private fun onClearSelectedDenomFull(){
+    private fun onClearSelectedDenomFull() {
         binding?.let {
             it.rechargePdpPaketDataDenomFullWidget.clearSelectedProduct()
         }
@@ -631,24 +653,26 @@ class DigitalPDPDataPlanFragment :
     private fun onSuccessMCCM(denomFull: DenomWidgetModel, selectedPosition: Int?) {
         binding?.let {
             var selectedInitialPosition = selectedPosition
-            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.MCCM_FULL_TYPE)){
+            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.MCCM_FULL_TYPE)) {
                 onShowBuyWidget(viewModel.selectedFullProduct.denomData)
             } else {
                 selectedInitialPosition = null
             }
             it.rechargePdpPaketDataPromoWidget.show()
-            it.rechargePdpPaketDataPromoWidget.renderMCCMFull(this, denomFull,
-                getString(com.tokopedia.unifyprinciples.R.color.Unify_N0), selectedInitialPosition)
+            it.rechargePdpPaketDataPromoWidget.renderMCCMFull(
+                this, denomFull,
+                getString(com.tokopedia.unifyprinciples.R.color.Unify_N0), selectedInitialPosition
+            )
         }
     }
 
-    private fun onLoadingAndFailMCCM(){
+    private fun onLoadingAndFailMCCM() {
         binding?.let {
             it.rechargePdpPaketDataPromoWidget.renderFailMCCMFull()
         }
     }
 
-    private fun onClearSelectedMCCM(){
+    private fun onClearSelectedMCCM() {
         binding?.let {
             it.rechargePdpPaketDataPromoWidget.clearSelectedProduct()
         }
@@ -657,7 +681,8 @@ class DigitalPDPDataPlanFragment :
     private fun initClientNumberWidget() {
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
             setCustomInputNumberFormatter { inputNumber ->
-                CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber) }
+                CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber)
+            }
             setInputFieldStaticLabel(
                 getString(
                     com.tokopedia.recharge_component.R.string.label_recharge_client_number_telco
@@ -667,13 +692,14 @@ class DigitalPDPDataPlanFragment :
             setListener(
                 this@DigitalPDPDataPlanFragment,
                 this@DigitalPDPDataPlanFragment,
-                this@DigitalPDPDataPlanFragment)
+                this@DigitalPDPDataPlanFragment
+            )
         }
     }
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
-            if (clientNumber.isNotEmpty()){
+            if (clientNumber.isNotEmpty()) {
                 setInputNumber(clientNumber, true)
             } else {
                 setContactName(data.clientName)
@@ -690,10 +716,10 @@ class DigitalPDPDataPlanFragment :
                     TickerData(
                         item.name, item.content,
                         when (item.type) {
-                            "warning" -> Ticker.TYPE_WARNING
-                            "info" -> Ticker.TYPE_INFORMATION
-                            "success" -> Ticker.TYPE_ANNOUNCEMENT
-                            "error" -> Ticker.TYPE_ERROR
+                            TopupBillsTicker.TYPE_WARNING -> Ticker.TYPE_WARNING
+                            TopupBillsTicker.TYPE_INFO -> Ticker.TYPE_INFORMATION
+                            TopupBillsTicker.TYPE_SUCCESS -> Ticker.TYPE_ANNOUNCEMENT
+                            TopupBillsTicker.TYPE_ERROR -> Ticker.TYPE_ERROR
                             else -> Ticker.TYPE_INFORMATION
                         }
                     )
@@ -702,7 +728,9 @@ class DigitalPDPDataPlanFragment :
             binding?.rechargePdpPaketDataTicker?.run {
                 addPagerView(
                     TickerPagerAdapter(
-                    this@DigitalPDPDataPlanFragment.requireContext(), messages), messages)
+                        this@DigitalPDPDataPlanFragment.requireContext(), messages
+                    ), messages
+                )
                 show()
             }
         } else {
@@ -812,8 +840,6 @@ class DigitalPDPDataPlanFragment :
     private fun handleCallbackSavedNumber(
         clientName: String,
         clientNumber: String,
-        productId: String,
-        categoryId: String,
         inputNumberActionTypeIndex: Int
     ) {
         if (!inputNumberActionTypeIndex.isLessThanZero()) {
@@ -829,6 +855,7 @@ class DigitalPDPDataPlanFragment :
     private fun handleCallbackAnySavedNumberCancel() {
         binding?.rechargePdpPaketDataClientNumberWidget?.clearFocusAutoComplete()
     }
+
     private fun setAnimationAppBarLayout() {
         binding?.run {
             rechargePdpPaketDataAppbar.setupDynamicAppBar(
@@ -868,9 +895,13 @@ class DigitalPDPDataPlanFragment :
 
     private fun navigateToCart(categoryId: String) {
         context?.let { context ->
-            val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.CHECKOUT_DIGITAL)
+            val intent =
+                RouteManager.getIntent(context, ApplinkConsInternalDigital.CHECKOUT_DIGITAL)
             viewModel.updateCategoryCheckoutPassData(categoryId)
-            intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, viewModel.digitalCheckoutPassData)
+            intent.putExtra(
+                DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA,
+                viewModel.digitalCheckoutPassData
+            )
             startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
         }
     }
@@ -887,7 +918,12 @@ class DigitalPDPDataPlanFragment :
                 PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
                 object : PermissionCheckerHelper.PermissionCheckListener {
                     override fun onPermissionDenied(permissionText: String) {
-                        navigateSavedNumber(clientNumber, dgCategoryIds, categoryName, isSwitchChecked)
+                        navigateSavedNumber(
+                            clientNumber,
+                            dgCategoryIds,
+                            categoryName,
+                            isSwitchChecked
+                        )
                         localCacheHandler.run {
                             putBoolean(FAVNUM_PERMISSION_CHECKER_IS_DENIED, true)
                             applyEditor()
@@ -899,7 +935,12 @@ class DigitalPDPDataPlanFragment :
                     }
 
                     override fun onPermissionGranted() {
-                        navigateSavedNumber(clientNumber, dgCategoryIds, categoryName, isSwitchChecked)
+                        navigateSavedNumber(
+                            clientNumber,
+                            dgCategoryIds,
+                            categoryName,
+                            isSwitchChecked
+                        )
                     }
                 }
             )
@@ -948,7 +989,7 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    private fun addToCart(){
+    private fun addToCart() {
         viewModel.run {
             setAddToCartLoading()
             addToCart(
@@ -968,9 +1009,8 @@ class DigitalPDPDataPlanFragment :
         startActivityForResult(intent, requestCode)
     }
 
-    /**
-     * Input Field Listener
-     * */
+    /** Start Input Field Listener */
+
     override fun onRenderOperator(isDelayed: Boolean) {
         viewModel.operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty().let {
             if (it) {
@@ -1013,15 +1053,16 @@ class DigitalPDPDataPlanFragment :
 
     override fun isKeyboardShown(): Boolean {
         context?.let {
-            val inputMethodManager = it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val inputMethodManager =
+                it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             return inputMethodManager.isAcceptingText
         }
         return false
     }
+    /** End Input Field Listener */
 
-    /**
-     * Filter Chip Listener
-     * */
+    /** Start Filter Chip Listener */
+
     override fun onShowFilterChip(isLabeled: Boolean) {
         if (isLabeled) {
             digitalPDPTelcoAnalytics.impressionFavoriteContactChips(
@@ -1079,9 +1120,10 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    /**
-     * Auto Complete Listener
-     * */
+    /** End Filter Chip Listener */
+
+    /** Start Auto Complete Listener */
+
     override fun onClickAutoComplete(isFavoriteContact: Boolean) {
         inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
         if (isFavoriteContact) {
@@ -1101,13 +1143,14 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    /**
-     * Buy Widget Listener
-     * */
+    /** End Auto Complete Listener */
+
+    /** Start Buy Widget Listener */
+
     override fun onClickedButtonLanjutkan(denom: DenomData) {
         viewModel.updateCheckoutPassData(
             denom, userSession.userId.generateRechargeCheckoutToken(),
-            binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?:"",
+            binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "",
             operator.id
         )
         if (userSession.isLoggedIn) {
@@ -1130,11 +1173,15 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    /**
-     * Recommendation Card Listener
-     * */
+    /** End Buy Widget Listener */
 
-    override fun onProductRecommendationCardClicked(title: String, recommendation: RecommendationCardWidgetModel, position: Int) {
+    /** Start Recommendation Card Listener */
+
+    override fun onProductRecommendationCardClicked(
+        title: String,
+        recommendation: RecommendationCardWidgetModel,
+        position: Int
+    ) {
         digitalPDPTelcoAnalytics.clickLastTransactionIcon(
             title,
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -1152,7 +1199,10 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    override fun onProductRecommendationCardImpression(recommendation: RecommendationCardWidgetModel, position: Int) {
+    override fun onProductRecommendationCardImpression(
+        recommendation: RecommendationCardWidgetModel,
+        position: Int
+    ) {
         digitalPDPTelcoAnalytics.impressionLastTransactionIcon(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             operator.attributes.name,
@@ -1163,15 +1213,16 @@ class DigitalPDPDataPlanFragment :
         )
     }
 
-    /**
-     * Denom Full Listener
-     * */
+    /** End Recommendation Card Listener */
 
-    override fun onDenomFullClicked(denomFull: DenomData, layoutType: DenomWidgetEnum, position: Int,
-                                    productListTitle: String,
-                                    isShowBuyWidget: Boolean
+    /** Start Denom Full Listener */
+
+    override fun onDenomFullClicked(
+        denomFull: DenomData, layoutType: DenomWidgetEnum, position: Int,
+        productListTitle: String,
+        isShowBuyWidget: Boolean
     ) {
-        if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE){
+        if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE) {
             onClearSelectedDenomFull()
             digitalPDPTelcoAnalytics.clickMCCMProduct(
                 productListTitle,
@@ -1183,7 +1234,7 @@ class DigitalPDPDataPlanFragment :
                 layoutType,
                 position
             )
-        } else if (layoutType == DenomWidgetEnum.FULL_TYPE){
+        } else if (layoutType == DenomWidgetEnum.FULL_TYPE) {
             digitalPDPTelcoAnalytics.clickProductCluster(
                 productListTitle,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -1211,7 +1262,7 @@ class DigitalPDPDataPlanFragment :
         layoutType: DenomWidgetEnum,
         position: Int
     ) {
-        if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE){
+        if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE) {
             digitalPDPTelcoAnalytics.impressionProductMCCM(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
@@ -1221,7 +1272,7 @@ class DigitalPDPDataPlanFragment :
                 layoutType,
                 position
             )
-        } else if (layoutType == DenomWidgetEnum.FULL_TYPE){
+        } else if (layoutType == DenomWidgetEnum.FULL_TYPE) {
             digitalPDPTelcoAnalytics.impressionProductCluster(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
@@ -1233,7 +1284,11 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    override fun onChevronDenomClicked(denomFull: DenomData, position: Int, layoutType: DenomWidgetEnum) {
+    override fun onChevronDenomClicked(
+        denomFull: DenomData,
+        position: Int,
+        layoutType: DenomWidgetEnum
+    ) {
         fragmentManager?.let {
             ProductDescBottomSheet(denomFull, this).show(it, "")
         }
@@ -1254,16 +1309,25 @@ class DigitalPDPDataPlanFragment :
             )
         }
     }
+    /** End Denom Full Listener */
 
-    /** FilterBottomSheetListener */
+    /** Start FilterBottomSheetListener */
 
-    override fun onClickSaveFilter(filterTagComponents: List<TelcoFilterTagComponent>, initialSelectedCounter: Int) {
+    override fun onClickSaveFilter(
+        filterTagComponents: List<TelcoFilterTagComponent>,
+        initialSelectedCounter: Int
+    ) {
         viewModel.updateFilterData(filterTagComponents)
         onSuccessSortFilter(initialSelectedCounter)
         viewModel.run {
             cancelCatalogProductJob()
             setRechargeCatalogInputMultiTabLoading()
-            getRechargeCatalogInputMultiTab(menuId, operator.id, binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "", false)
+            getRechargeCatalogInputMultiTab(
+                menuId,
+                operator.id,
+                binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "",
+                false
+            )
         }
     }
 
@@ -1276,7 +1340,9 @@ class DigitalPDPDataPlanFragment :
         )
     }
 
-    /** DigitalHistoryIconListener */
+    /** Start FilterBottomSheetListener */
+
+    /** Start DigitalHistoryIconListener */
 
     override fun onClickDigitalIconHistory() {
         digitalPDPTelcoAnalytics.clickTransactionHistoryIcon(
@@ -1285,6 +1351,8 @@ class DigitalPDPDataPlanFragment :
             userSession.userId
         )
     }
+
+    /** End DigitalHistoryIconListener */
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -1313,15 +1381,13 @@ class DigitalPDPDataPlanFragment :
                     handleCallbackSavedNumber(
                         orderClientNumber.clientName,
                         orderClientNumber.clientNumber,
-                        orderClientNumber.productId,
-                        orderClientNumber.categoryId,
                         orderClientNumber.inputNumberActionTypeIndex
                     )
                 } else {
                     handleCallbackAnySavedNumberCancel()
                 }
                 getFavoriteNumber()
-            } else if (requestCode == REQUEST_CODE_LOGIN ) {
+            } else if (requestCode == REQUEST_CODE_LOGIN) {
                 addToCart()
             } else if (requestCode == REQUEST_CODE_LOGIN_ALT) {
                 addToCartFromUrl()

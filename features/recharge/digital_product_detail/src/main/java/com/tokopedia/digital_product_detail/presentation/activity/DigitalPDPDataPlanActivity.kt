@@ -25,6 +25,7 @@ import java.lang.ref.WeakReference
 /**
  * @author by firmanda on 04/01/22
  * access applink tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2
+ * tokopedia://digital/form?category_id=2&menu_id=290&operator_id=5&product_id=9411&client_number=087855812081&template=paketdatav2
  * access internal applink tokopedia-android-internal://digital/pdp_paket_data
  */
 

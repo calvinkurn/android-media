@@ -25,9 +25,9 @@ import java.lang.ref.WeakReference
 /**
  * @author by firmanda on 04/01/22
  * tokopedia://digital/form?category_id=1&menu_id=148&template=pulsav2
+ * tokopedia://digital/form?category_id=1&menu_id=289&operator_id=5&product_id=32&client_number=087855812081&template=pulsav2
  * access internal applink tokopedia-android-internal://digital/pdp_pulsa
  */
-
 
 class DigitalPDPPulsaActivity: BaseSimpleActivity(), HasComponent<DigitalPDPComponent> {
 
@@ -42,7 +42,7 @@ class DigitalPDPPulsaActivity: BaseSimpleActivity(), HasComponent<DigitalPDPComp
             .build()
     }
 
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         val digitalTelcoExtraParam = TopupBillsExtraParam()
         val bundle = intent.extras
         digitalTelcoExtraParam.menuId = bundle?.getString(PARAM_MENU_ID) ?: DEFAULT_MENU_ID_TELCO

@@ -1,7 +1,6 @@
 package com.tokopedia.digital_product_detail.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
 import com.tokopedia.digital_product_detail.data.mapper.DigitalMenuDetailUiMapper
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogMenuDetailRepository
 import com.tokopedia.digital_product_detail.domain.usecase.GetRechargeCatalogMenuDetailUseCase

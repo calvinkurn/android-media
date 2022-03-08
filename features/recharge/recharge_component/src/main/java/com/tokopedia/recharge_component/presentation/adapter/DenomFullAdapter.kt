@@ -14,11 +14,8 @@ class DenomFullAdapter: RecyclerView.Adapter<DenomFullViewHolder>(), RechargeDen
     private var listDenom = mutableListOf<DenomData>()
 
     var selectedProductIndex: Int? = null
-
     var denomWidgetType: DenomWidgetEnum = DenomWidgetEnum.FULL_TYPE
-
     var productTitleList: String = ""
-
     var listener: RechargeDenomFullListener? = null
 
     override fun getItemCount(): Int = listDenom.size

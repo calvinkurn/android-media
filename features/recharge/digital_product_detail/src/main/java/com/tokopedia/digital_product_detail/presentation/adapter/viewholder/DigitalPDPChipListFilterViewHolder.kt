@@ -2,7 +2,6 @@ package com.tokopedia.digital_product_detail.presentation.adapter.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
-import com.tokopedia.digital_product_detail.data.model.data.FilterTagDataCollection
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.digital_product_detail.databinding.ViewPdpFilterChipListBinding
 import com.tokopedia.digital_product_detail.presentation.adapter.DigitalChipsAdapter

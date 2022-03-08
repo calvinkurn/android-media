@@ -5,7 +5,12 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.databinding.ViewRechargeDenomGridBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
@@ -194,9 +199,10 @@ class DenomGridViewHolder (
 
                 setBackgroundColor(ContextCompat.getColor(rootView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
 
-                cardType = if(denomGrid.status == DENOM_STATUS_OUT_OF_STOCK) CardUnify.TYPE_BORDER_DISABLED else if (isSelectedItem) CardUnify.TYPE_BORDER_ACTIVE else
-                    if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE) CardUnify.TYPE_SHADOW
-                    else CardUnify.TYPE_BORDER
+                cardType = if(denomGrid.status == DENOM_STATUS_OUT_OF_STOCK) CardUnify.TYPE_BORDER_DISABLED
+                        else if (isSelectedItem) CardUnify.TYPE_BORDER_ACTIVE
+                        else if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE) CardUnify.TYPE_SHADOW
+                        else CardUnify.TYPE_BORDER
             }
 
             root.setOnClickListener {
