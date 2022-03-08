@@ -4,6 +4,8 @@ import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
@@ -21,10 +23,35 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECommerce
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
+import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_ADDRESS
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_PAYMENT
-import com.tokopedia.oneclickcheckout.order.view.model.*
-import com.tokopedia.oneclickcheckout.order.view.processor.*
+import com.tokopedia.oneclickcheckout.order.view.model.AddressState
+import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccResult
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
+import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
+import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
+import com.tokopedia.oneclickcheckout.order.view.model.OccUIMessage
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
+import com.tokopedia.oneclickcheckout.order.view.model.OrderEnableAddressFeature
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletActionData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPreference
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCalculator
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCartProcessor
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCheckoutProcessor
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageLogisticProcessor
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePaymentProcessor
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
+import com.tokopedia.oneclickcheckout.order.view.processor.ResultRates
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
@@ -81,7 +108,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private var getCartJob: Job? = null
     private var debounceJob: Job? = null
     private var finalUpdateJob: Job? = null
-    private var afpbJob: Job? = null
+    private var dynamicPaymentFeeJob: Job? = null
 
     private var hasSentViewOspEe = false
 
@@ -104,11 +131,12 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return profile.address.addressId <= 0 && addressState.errorCode != AddressState.ERROR_CODE_OPEN_ANA
     }
 
-    fun getOccCart(isFullRefresh: Boolean, source: String, uiMessage: OccUIMessage? = null) {
+    fun getOccCart(source: String, uiMessage: OccUIMessage? = null,
+                   gatewayCode: String = "", tenor: Int = 0) {
         getCartJob?.cancel()
         getCartJob = launch(executorDispatchers.immediate) {
             globalEvent.value = OccGlobalEvent.Normal
-            val result = cartProcessor.getOccCart(source)
+            val result = cartProcessor.getOccCart(source, gatewayCode, tenor)
             addressState.value = result.addressState
             orderCart = result.orderCart
             orderShop.value = orderCart.shop
@@ -121,21 +149,26 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             } else {
                 OccState.Failed(Failure(result.throwable))
             }
-            if (isFullRefresh) {
-                orderShipment.value = OrderShipment()
-            }
+            orderShipment.value = OrderShipment()
             orderPayment.value = result.orderPayment
             validateUsePromoRevampUiModel = null
             lastValidateUsePromoRequest = null
             orderPromo.value = result.orderPromo
-            if (result.globalEvent != null) {
-                globalEvent.value = result.globalEvent
-            } else if (uiMessage is OccToasterAction) {
-                globalEvent.value = OccGlobalEvent.ToasterAction(uiMessage)
+            when {
+                result.globalEvent != null -> {
+                    globalEvent.value = result.globalEvent
+                }
+                uiMessage is OccToasterAction -> {
+                    globalEvent.value = OccGlobalEvent.ToasterAction(uiMessage)
+                }
+                result.addressState.popupMessage.isNotBlank() -> {
+                    globalEvent.value = OccGlobalEvent.ToasterInfo(result.addressState.popupMessage)
+                }
             }
             if (orderCart.products.isNotEmpty() && result.orderProfile.isValidProfile) {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
                 getRatesSuspend()
+                sendPaymentTracker()
             } else {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
             }
@@ -151,6 +184,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 }
             }
             hasSentViewOspEe = true
+        }
+    }
+
+    private fun sendPaymentTracker() {
+        val payment = orderPayment.value
+        orderSummaryAnalytics.eventViewPaymentMethod(payment.gatewayName)
+        if (payment.creditCard.selectedTerm != null) {
+            orderSummaryAnalytics.eventViewTenureOption(payment.creditCard.selectedTerm.term.toString())
         }
     }
 
@@ -477,11 +518,17 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value),
                     source = SOURCE_UPDATE_OCC_ADDRESS)
             val chosenAddress = ChosenAddress(
-                    addressId = addressModel.id,
-                    districtId = addressModel.destinationDistrictId,
-                    postalCode = addressModel.postalCode,
-                    geolocation = if (addressModel.latitude.isNotBlank() && addressModel.longitude.isNotBlank()) addressModel.latitude + "," + addressModel.longitude else "",
-                    mode = ChosenAddress.MODE_ADDRESS
+                addressId = newChosenAddress.addressId.toString(),
+                districtId = newChosenAddress.districtId.toString(),
+                postalCode = newChosenAddress.postalCode,
+                geolocation = if (newChosenAddress.latitude.isNotBlank() && newChosenAddress.longitude.isNotBlank()) newChosenAddress.latitude + "," + newChosenAddress.longitude else "",
+                mode = ChosenAddress.MODE_ADDRESS,
+                tokonow = ChosenAddressTokonow(
+                    shopId = newChosenAddress.tokonowModel.shopId.toString(),
+                    warehouseId = newChosenAddress.tokonowModel.warehouseId.toString(),
+                    warehouses = TokonowWarehouseMapper.mapWarehousesModelToLocal(newChosenAddress.tokonowModel.warehouses),
+                    serviceType = newChosenAddress.tokonowModel.serviceType
+                )
             )
             param.chosenAddress = chosenAddress
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
@@ -530,11 +577,30 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     it.isError = false
                 }
                 orderPayment.value = orderPayment.value.copy(creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = installmentList))
-                calculateTotal()
+                calculateTotal(skipDynamicFee = true)
                 globalEvent.value = OccGlobalEvent.Normal
+                orderSummaryAnalytics.eventViewTenureOption(selectedInstallmentTerm.term.toString())
                 return@launch
             }
             globalEvent.value = newGlobalEvent
+        }
+    }
+
+    fun chooseInstallment(selectedInstallmentTerm: OrderPaymentGoCicilTerms, installmentList: List<OrderPaymentGoCicilTerms>, isSilent: Boolean) {
+        launch(executorDispatchers.immediate) {
+            val walletData = orderPayment.value.walletData
+            val newWalletData = walletData.copy(goCicilData = walletData.goCicilData.copy(selectedTerm = selectedInstallmentTerm, availableTerms = installmentList))
+            orderPayment.value = orderPayment.value.copy(walletData = newWalletData)
+            calculateTotal(skipDynamicFee = true)
+            if (isSilent) {
+                return@launch
+            }
+            orderSummaryAnalytics.eventViewTenureOption(selectedInstallmentTerm.installmentTerm.toString())
+            var param: UpdateCartOccRequest = cartProcessor.generateUpdateCartParam(orderCart, orderProfile.value, orderShipment.value, orderPayment.value) ?: return@launch
+            param = param.copy(skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value),
+                    source = SOURCE_UPDATE_OCC_PAYMENT)
+            // ignore result, result is important only in final update
+            cartProcessor.updatePreference(param)
         }
     }
 
@@ -551,7 +617,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
                 return@launch
             }
-            param = param.copy(profile = param.profile.copy(gatewayCode = gatewayCode, metadata = metadata),
+            param = param.copy(profile = param.profile.copy(gatewayCode = gatewayCode, metadata = metadata, tenureType = 0, optionId = ""),
                     skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value),
                     source = SOURCE_UPDATE_OCC_PAYMENT)
             globalEvent.value = OccGlobalEvent.Loading
@@ -642,12 +708,17 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         calculateTotal()
     }
 
-    fun calculateTotal() {
+    fun calculateTotal(skipDynamicFee: Boolean = false) {
         orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
-        if (orderPayment.value.creditCard.isAfpb) {
-            afpbJob?.cancel()
-            afpbJob = launch(executorDispatchers.immediate) {
-                adjustAdminFee()
+        if (orderPayment.value.creditCard.isAfpb && !skipDynamicFee) {
+            dynamicPaymentFeeJob?.cancel()
+            dynamicPaymentFeeJob = launch(executorDispatchers.immediate) {
+                adjustCCAdminFee()
+            }
+        } else if (orderPayment.value.walletData.isGoCicil && !skipDynamicFee) {
+            dynamicPaymentFeeJob?.cancel()
+            dynamicPaymentFeeJob = launch(executorDispatchers.immediate) {
+                adjustGoCicilFee()
             }
         } else {
             launch(executorDispatchers.immediate) {
@@ -733,7 +804,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private fun doCheckout(products: List<OrderProduct>, shop: OrderShop, profile: OrderProfile, onSuccessCheckout: (CheckoutOccResult) -> Unit) {
         launch(executorDispatchers.immediate) {
-            val (checkoutOccResult, globalEventResult) = checkoutProcessor.doCheckout(validateUsePromoRevampUiModel, orderCart, products, shop, profile, orderShipment.value, orderTotal.value, userSession.userId, generateOspEeBody(emptyList()))
+            val (checkoutOccResult, globalEventResult) = checkoutProcessor.doCheckout(validateUsePromoRevampUiModel, orderCart, products, shop, profile,
+                    orderShipment.value, orderPayment.value, orderTotal.value, userSession.userId, generateOspEeBody(emptyList()))
             if (checkoutOccResult != null) {
                 onSuccessCheckout(checkoutOccResult)
             } else if (globalEventResult != null) {
@@ -754,10 +826,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    private suspend fun adjustAdminFee() {
+    private suspend fun adjustCCAdminFee() {
         val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value,
                 validateUsePromoRevampUiModel, orderPayment.value)
-        val installmentTermList = paymentProcessor.get().getAdminFee(orderPayment.value.creditCard, userSession.userId,
+        val installmentTermList = paymentProcessor.get().getCreditCardAdminFee(orderPayment.value.creditCard, userSession.userId,
                 orderCost, orderCart)
         if (installmentTermList == null) {
             val newOrderPayment = orderPayment.value
@@ -786,11 +858,32 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         )
     }
 
+    private suspend fun adjustGoCicilFee() {
+        val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value,
+                validateUsePromoRevampUiModel, orderPayment.value)
+        val payment = orderPayment.value
+        if (payment.minimumAmount <= orderCost.totalPriceWithoutPaymentFees
+                && orderCost.totalPriceWithoutPaymentFees <= payment.maximumAmount
+                && orderCost.totalPriceWithoutPaymentFees <= payment.walletAmount) {
+            val result = paymentProcessor.get().getGopayAdminFee(payment, userSession.userId, orderCost, orderCart)
+            if (result != null) {
+                chooseInstallment(result.first, result.second, !result.third)
+                return
+            } else {
+                val newWalletData = orderPayment.value.walletData
+                orderPayment.value = orderPayment.value.copy(walletData = newWalletData.copy(goCicilData = newWalletData.goCicilData.copy(availableTerms = emptyList())))
+                globalEvent.value = OccGlobalEvent.AdjustAdminFeeError
+            }
+        }
+        calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
+                validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
+    }
+
     override fun onCleared() {
         debounceJob?.cancel()
         finalUpdateJob?.cancel()
         getCartJob?.cancel()
-        afpbJob?.cancel()
+        dynamicPaymentFeeJob?.cancel()
         eligibleForAddressUseCase.cancelJobs()
         super.onCleared()
     }

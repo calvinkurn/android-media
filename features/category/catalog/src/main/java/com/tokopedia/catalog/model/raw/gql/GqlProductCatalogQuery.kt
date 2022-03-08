@@ -1,7 +1,7 @@
 package com.tokopedia.catalog.model.raw.gql
 
-const val GQL_CATALOG_QUERY: String = """query catalogGetDetailModular(${'$'}catalog_id: String!,${'$'}user_id: String!, ${'$'}device: String!) {
-  catalogGetDetailModular(catalog_id: ${'$'}catalog_id,user_id: ${'$'}user_id, device: ${'$'}device) {
+const val GQL_CATALOG_QUERY: String = """query catalogGetDetailModular(${'$'}catalog_id: String!,${'$'}comparison_id: String!,${'$'}user_id: String!, ${'$'}device: String!) {
+  catalogGetDetailModular(catalog_id: ${'$'}catalog_id,comparison_id: ${'$'}comparison_id,user_id: ${'$'}user_id, device: ${'$'}device) {
     basicInfo{
       id
       departmentId
@@ -27,6 +27,37 @@ const val GQL_CATALOG_QUERY: String = """query catalogGetDetailModular(${'$'}cat
       longDescription {
         title
         description
+      }
+    }
+    comparisonInfo{
+      id
+      name
+      brand
+      url
+      catalogImage {
+        imageUrl
+        isPrimary
+      }
+      marketPrice {
+        min
+        max
+        minFmt
+        maxFmt
+        date
+        name
+      }
+      fullSpec {
+        name
+        icon
+        row {
+          key
+          value
+        }
+      }
+      topSpec {
+        key
+        value
+        icon
       }
     }
     components{

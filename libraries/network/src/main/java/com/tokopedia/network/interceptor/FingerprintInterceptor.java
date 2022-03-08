@@ -1,6 +1,6 @@
 package com.tokopedia.network.interceptor;
 
-import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.user.session.UserSessionInterface;

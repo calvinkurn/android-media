@@ -99,7 +99,7 @@ class AddEditProductEditingAnalyticTest {
         testEditDetail()
         testEditDescription()
         testEditShipment()
-        performClick(R.id.tv_done)
+        performClick(com.tokopedia.header.R.id.actionTextID)
 
         //stepper
         doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_DETAIL)

@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.test.application.environment.InstrumentationTestApp
 import com.tokopedia.test.application.environment.network.DataSource

@@ -95,12 +95,8 @@ class BrandlistPageFragment :
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (swipeRefreshLayout?.isRefreshing == false) {
                     val brandFirstLetter: String = if (stateLoadBrands == LoadAllBrandState.LOAD_BRAND_PER_ALPHABET) selectedBrandLetter else defaultBrandLetter
-                    viewModel.loadMoreAllBrands(category, brandFirstLetter)
-                    isLoadMore = true
 
-                    if (adapter?.getVisitables()?.lastOrNull() is AllBrandUiModel) {
-                        adapter?.showLoading()
-                    }
+                    viewModel.loadMoreAllBrands(brandFirstLetter)
                 }
             }
         }
@@ -294,6 +290,15 @@ class BrandlistPageFragment :
     }
 
     private fun observeAllBrands() {
+        viewModel.remindingRequestSize.observe(viewLifecycleOwner) {remindingSize ->
+            val remindingRequestSize = remindingSize.first
+            if (remindingRequestSize > 0 && adapter?.getVisitables()?.lastOrNull() is AllBrandUiModel) {
+                isLoadMore = true
+                adapter?.showLoading()
+                viewModel.loadMoreAllBrandsReminding(remindingRequestSize, category, remindingSize.second)
+             }
+        }
+
         viewModel.getAllBrandResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
