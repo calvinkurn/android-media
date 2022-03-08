@@ -30,7 +30,7 @@
             android:id="@+id/icon_shimmering"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:loader_corner_radius="30dp"
+            app:loader_corner_radius="15dp"
             app:loader_type="rect" />
     </FrameLayout>
 
