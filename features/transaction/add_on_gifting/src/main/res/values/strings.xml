@@ -7,8 +7,8 @@
     <string name="add_on_label_total_amount">Total Pelengkap Produk</string>
     <string name="add_on_label_total_amount_cta_save">Simpan</string>
     <string name="add_on_label_total_amount_cta_save_with_quantity">Simpan (%d)</string>
-    <string name="add_on_label_dialog_confirmation_title">Batal tambah pelengkap?</string>
-    <string name="add_on_label_dialog_confirmation_description">Pesan kartu ucapan nggak akan tersimpan kalau kamu keluar dari sini.</string>
+    <string name="add_on_label_dialog_confirmation_title">Batal atur pelengkap produk?</string>
+    <string name="add_on_label_dialog_confirmation_description">Perubahan pesan di kartu ucapan tidak akan tersimpan kalau kamu membatalkannya.</string>
     <string name="add_on_label_dialog_confirmation_primary_cta">Ya, Batal</string>
     <string name="add_on_label_dialog_confirmation_secondary_cta">Tetap di Sini</string>
     <string name="add_on_label_header">Bungkus barang dengan (opsional):</string>

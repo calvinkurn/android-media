@@ -341,7 +341,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData, val source: Strin
 
     private fun showCloseConfirmationDialog() {
         activity?.let {
-            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(getString(R.string.add_on_label_dialog_confirmation_title))
                 setDescription(getString(R.string.add_on_label_dialog_confirmation_description))
                 setPrimaryCTAText(getString(R.string.add_on_label_dialog_confirmation_primary_cta))
