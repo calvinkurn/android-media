@@ -1,6 +1,7 @@
 package com.tokopedia.home_component.productcardgridcarousel.viewHolder
 
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
@@ -8,7 +9,11 @@ import com.tokopedia.home_component.databinding.HomeBannerItemMerchantVoucherBin
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMerchantVoucherDataModel
 import com.tokopedia.home_component.util.loadImageNoRounded
 import com.tokopedia.home_component.util.loadImageNormal
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -49,7 +54,15 @@ class CarouselMerchantVoucherViewHolder (
         binding?.titleBenefit?.text = element.benefit
         binding?.benefitPrice?.text = element.benefitPrice
         binding?.totalOtherCoupon?.text = element.totalOtherCoupon
-        binding?.imageBadge?.loadImageNoRounded(element.iconBadge, com.tokopedia.home_component.R.drawable.placeholder_grey)
+        if (element.iconBadge.isNotBlank()) {
+            binding?.imageBadge?.loadImageNoRounded(element.iconBadge, com.tokopedia.home_component.R.drawable.placeholder_grey)
+            binding?.imageBadge?.visible()
+            binding?.shopName?.setMargin(4f.toDpInt(), 7f.toDpInt(), 0f.toDpInt(), 0f.toDpInt())
+        }
+        else {
+            binding?.imageBadge?.gone()
+            binding?.shopName?.setMargin(15f.toDpInt(), 7f.toDpInt(), 0f.toDpInt(), 0f.toDpInt())
+        }
         binding?.imageProduct?.loadImageNoRounded(element.imageProduct, com.tokopedia.home_component.R.drawable.placeholder_grey)
         binding?.containerShop?.setOnClickListener {
             element.merchantVoucherComponentListener.onShopClicked(element, adapterPosition)

@@ -48,6 +48,7 @@
             android:layout_height="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="10dp"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -56,9 +57,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            app:layout_constraintBottom_toBottomOf="@id/image_badge"
+            android:layout_marginTop="7dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/image_badge"
-            app:layout_constraintTop_toTopOf="@id/image_badge"
+            app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_6"
             tools:text="Shop Name" />
 
