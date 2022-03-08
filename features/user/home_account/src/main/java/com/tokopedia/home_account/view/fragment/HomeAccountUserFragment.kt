@@ -32,6 +32,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.config.GlobalConfig
@@ -317,7 +318,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     override fun onEditProfileClicked() {
         homeAccountAnalytic.eventClickProfile()
-        goToApplink(ApplinkConstInternalGlobal.SETTING_PROFILE)
+        goToApplink(ApplinkConstInternalUserPlatform.NEW_PROFILE_INFO)
     }
 
     override fun onMemberItemClicked(applink: String, type: Int) {

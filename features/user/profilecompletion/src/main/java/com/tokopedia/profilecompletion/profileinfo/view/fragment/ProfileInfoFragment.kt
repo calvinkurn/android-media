@@ -196,7 +196,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 				startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_CHANGE_NAME)
 			} else {
 				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRYPOINT_NAME + ProfileInfoTracker.LABEL_BOTTOMSHEET)
-				openBottomSheetWarning(data.profileRoleData.changeNameMessageInfoTitle, data.profileRoleData.changeNameMessageInfo)
+				openBottomSheetWarning(ProfileInfoConstants.NAME, data.profileRoleData.changeNameMessageInfoTitle, data.profileRoleData.changeNameMessageInfo)
 			}
 		},
 	    ProfileInfoItemUiModel(ProfileInfoConstants.USERNAME,
@@ -276,7 +276,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 				goToChangeDob(data.profileInfoData.birthDay)
 			} else {
 				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_DOB + ProfileInfoTracker.LABEL_BOTTOMSHEET)
-				openBottomSheetWarning(data.profileRoleData.changeDobMessageInfoTitle, data.profileRoleData.changeDobMessageInfo)
+				openBottomSheetWarning(ProfileInfoConstants.BIRTH_DATE, data.profileRoleData.changeDobMessageInfoTitle, data.profileRoleData.changeDobMessageInfo)
 			}
 		}
 	    },
@@ -285,9 +285,21 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 	renderWarningTickerName(data.profileInfoData)
     }
 
-	private fun openBottomSheetWarning(title: String, msg: String) {
+	private fun openBottomSheetWarning(entryPoint: String, title: String, msg: String) {
+		when (entryPoint) {
+			ProfileInfoConstants.BIRTH_DATE -> {
+				tracker.trackOnCloseBottomSheetChangeBirthday()
+			}
+			ProfileInfoConstants.NAME -> {
+				tracker.trackOnCloseBottomSheetChangeName()
+			}
+		}
 		val bottomSheetUnify = BottomSheetUnify()
 		bottomSheetUnify.setTitle(title)
+		bottomSheetUnify.setCloseClickListener {
+			bottomSheetUnify.dismiss()
+			tracker.trackOnCloseBottomSheetChangeName()
+		}
 		val view = View.inflate(context, R.layout.layout_bottomsheet_change_name, null).apply {
 			this.findViewById<Typography>(R.id.tv_body).apply {
 				this.text = msg

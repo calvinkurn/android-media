@@ -22,7 +22,9 @@ import com.tokopedia.profilecompletion.addbod.view.widget.common.LocaleUtils.get
 import com.tokopedia.profilecompletion.addbod.viewmodel.AddBodViewModel
 import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
+import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -38,6 +40,9 @@ import javax.inject.Inject
  */
 
 class AddBodFragment: BaseDaggerFragment(){
+
+    @Inject
+    lateinit var tracker: ProfileInfoTracker
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -83,6 +88,7 @@ class AddBodFragment: BaseDaggerFragment(){
         btnSave.setOnClickListener {
             if(selectedDate.isNotBlank()) {
                 showLoading()
+                tracker.trackOnBtnSimpanChangeBirthdayClick()
                 addBodViewModel.editBodUserProfile(requireContext(), selectedDate)
             }
         }
@@ -147,6 +153,7 @@ class AddBodFragment: BaseDaggerFragment(){
     }
 
     private fun onSuccessAddBodUserProfile(addBodData: AddBodData){
+        tracker.trackOnBtnSimpanChangeBirthdaySuccess()
         dismissLoading()
         activity?.run {
             val intent = Intent()
@@ -163,6 +170,7 @@ class AddBodFragment: BaseDaggerFragment(){
         dismissLoading()
         view?.run{
             val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
+            tracker.trackOnBtnSimpanChangeBirthdayFailed(errorMessage)
             Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
         }
     }

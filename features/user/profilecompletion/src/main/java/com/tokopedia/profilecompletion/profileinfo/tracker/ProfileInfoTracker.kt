@@ -105,7 +105,7 @@ class ProfileInfoTracker {
 	)
     }
 
-    // tracker ID: 28686
+    // tracker ID: 28686 - done
     fun trackOnCloseBottomSheetChangeName() {
 	track(
 	    TrackAppUtils.gtmData(
@@ -149,7 +149,7 @@ class ProfileInfoTracker {
 	)
     }
 
-    // tracker ID: 28688
+    // tracker ID: 28688 - done
     fun trackOnCloseBottomSheetChangeBirthday() {
 	track(
 	    TrackAppUtils.gtmData(
@@ -227,47 +227,36 @@ class ProfileInfoTracker {
 	)
     }
 
-    // tracker ID: 28697
-    fun trackClickOnBtnBackChangePhone() {
-	track(
-	    TrackAppUtils.gtmData(
-		EVENT_CLICK_ACCOUNT,
-		CATEGORY_CHANGE_PHONE,
-		ACTION_CLICK_BACK,
-		"")
-	)
-    }
-
     // tracker ID: 28698 - Click - done
-    fun trackOnBtnSimpanUsernameClick(username: String) {
+    fun trackOnBtnSimpanUsernameClick() {
 	track(
 	    TrackAppUtils.gtmData(
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_INFO_PROFILE,
 		ACTION_CLICK_BTN_SIMPAN,
-		"$LABEL_CLICK - $username")
+		"$LABEL_CLICK - username")
 	)
     }
 
     // tracker ID: 28698 - Success - done
-    fun trackOnBtnSimpanUsernameSuccess(username: String) {
+    fun trackOnBtnSimpanUsernameSuccess() {
 	track(
 	    TrackAppUtils.gtmData(
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_INFO_PROFILE,
 		ACTION_CLICK_BTN_SIMPAN,
-		"$LABEL_SUCCESS - $username")
+		"$LABEL_SUCCESS - username")
 	)
     }
 
     // tracker ID: 28698 - Failed - done
-    fun trackOnBtnSimpanUsernameFailed(username: String, errorMsg: String) {
+    fun trackOnBtnSimpanUsernameFailed(errorMsg: String) {
 	track(
 	    TrackAppUtils.gtmData(
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_INFO_PROFILE,
 		ACTION_CLICK_BTN_SIMPAN,
-		"$LABEL_FAILED - $username - $errorMsg")
+		"$LABEL_FAILED - username - $errorMsg")
 	)
     }
 

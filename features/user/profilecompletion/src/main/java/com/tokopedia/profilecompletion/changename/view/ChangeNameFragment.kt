@@ -25,6 +25,7 @@ import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNameResult
 import com.tokopedia.profilecompletion.changename.viewmodel.ChangeNameViewModel
 import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
+import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -35,6 +36,9 @@ import javax.inject.Inject
  * created by rival 23/10/19
  */
 class ChangeNameFragment : BaseDaggerFragment() {
+
+    @Inject
+    lateinit var infoTracker: ProfileInfoTracker
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -77,6 +81,11 @@ class ChangeNameFragment : BaseDaggerFragment() {
         initObserver()
         initListener()
         viewModel.getUserProfileRole()
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        infoTracker.trackOnClickBtnBackChangeName()
+        return super.onFragmentBackPressed()
     }
 
     private fun initListener() {
@@ -122,6 +131,7 @@ class ChangeNameFragment : BaseDaggerFragment() {
         })
 
         changeNameButtonSave?.setOnClickListener {
+            infoTracker.trackOnClickBtnSimpanChangeNameClick()
             val fullName = changeNameTextName?.editText?.text
             if (fullName != null) {
                 showLoading()
@@ -168,7 +178,7 @@ class ChangeNameFragment : BaseDaggerFragment() {
             finish()
         }
 
-        ChangeNameTracker().onSuccessChangeName()
+        infoTracker.trackOnClickBtnSimpanChangeNameSuccess()
     }
 
 
@@ -176,9 +186,9 @@ class ChangeNameFragment : BaseDaggerFragment() {
         hideLoading()
         changeNameTextName.isInputError = true
         throwable.message?.let { message ->
+            infoTracker.trackOnClickBtnSimpanChangeNameFailed(message)
             activity?.let {
                 changeNameTextName.setMessage(message)
-
             }
         }
     }

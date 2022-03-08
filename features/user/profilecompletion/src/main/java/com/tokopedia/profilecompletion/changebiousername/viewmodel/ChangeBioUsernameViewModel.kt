@@ -65,9 +65,7 @@ class ChangeBioUsernameViewModel @Inject constructor(
     }
 
     fun validateUsername(username: String) {
-        if (validationUsernameJob != null && validationUsernameJob?.isActive == true) {
-            validationUsernameJob?.cancel()
-        }
+        cancelValidation()
         validationUsernameJob = launchCatchError(block = {
             delay(2000)
             _loadingState.value = true
@@ -77,6 +75,12 @@ class ChangeBioUsernameViewModel @Inject constructor(
         }, onError = {
             _resultValidationUsername.value = Fail(it)
         })
+    }
+
+    fun cancelValidation() {
+        if (validationUsernameJob != null && validationUsernameJob?.isActive == true) {
+            validationUsernameJob?.cancel()
+        }
     }
 
     fun submitUsername(username: String) {

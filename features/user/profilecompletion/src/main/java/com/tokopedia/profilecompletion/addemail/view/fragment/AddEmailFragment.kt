@@ -22,6 +22,7 @@ import com.tokopedia.profilecompletion.addemail.data.AddEmailResult
 import com.tokopedia.profilecompletion.addemail.viewmodel.AddEmailViewModel
 import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
+import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -35,6 +36,7 @@ class AddEmailFragment : BaseDaggerFragment() {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var userSession: UserSessionInterface
+    @Inject lateinit var tracker: ProfileInfoTracker
 
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
 
@@ -64,6 +66,11 @@ class AddEmailFragment : BaseDaggerFragment() {
         setObserver()
     }
 
+    override fun onFragmentBackPressed(): Boolean {
+        tracker.trackClickOnBtnBackAddEmail()
+        return super.onFragmentBackPressed()
+    }
+
     private fun setListener() {
         et_email.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
@@ -82,6 +89,7 @@ class AddEmailFragment : BaseDaggerFragment() {
         })
 
         buttonSubmit.setOnClickListener {
+            tracker.trackOnBtnLanjutAddEmailClick()
             val email = et_email.textFieldInput.text.toString()
             if (email.isBlank()) {
                 setErrorText(getString(R.string.error_field_required))
@@ -153,16 +161,18 @@ class AddEmailFragment : BaseDaggerFragment() {
     private fun onErrorShowSnackbar(throwable: Throwable) {
         dismissLoading()
         view?.run {
+            val errorMsg = ErrorHandlerSession.getErrorMessage(throwable, context, true)
+            tracker.trackOnBtnLanjutAddEmailFailed(errorMsg)
             Toaster.showError(
                     this,
-                    ErrorHandlerSession.getErrorMessage(throwable, context, true),
+                    errorMsg,
                     Snackbar.LENGTH_LONG)
         }
     }
 
     private fun onSuccessAddEmail(result: AddEmailResult) {
         dismissLoading()
-
+        tracker.trackOnBtnLanjutAddEmailSuccess()
         // update userSession for a new email
         userSession.email = result.email
 

@@ -194,5 +194,7 @@
     <string name="placeholder_bio">Tulis bio kamu</string>
     <string name="profile_info_title">Info Profil</string>
     <string name="title_item_name">Nama</string>
+    <string name="key_error_username">Username</string>
+    <string name="error_min_char">Minimum %1$d karakter.</string>
 
 </resources>

@@ -18,6 +18,7 @@ import com.tokopedia.profilecompletion.changegender.data.ChangeGenderResult
 import com.tokopedia.profilecompletion.changegender.viewmodel.ChangeGenderViewModel
 import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
+import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -26,6 +27,9 @@ import kotlinx.android.synthetic.main.fragment_change_gender.*
 import javax.inject.Inject
 
 class ChangeGenderFragment : BaseDaggerFragment() {
+
+    @Inject
+    lateinit var tracker: ProfileInfoTracker
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -65,6 +69,7 @@ class ChangeGenderFragment : BaseDaggerFragment() {
 
         buttonSubmit.setOnClickListener {
             if (radioGroupIsSelected()) {
+                tracker.trackOnBtnSimpanChangeGenderClick()
                 showLoading()
                 val selectedGenderView = rg_gender?.findViewById<RadioButton>(rg_gender?.checkedRadioButtonId?: 0)
                 val selectedGender = rg_gender?.indexOfChild(selectedGenderView)
@@ -96,15 +101,18 @@ class ChangeGenderFragment : BaseDaggerFragment() {
     private fun onErrorChangeGender(throwable: Throwable) {
         dismissLoading()
         view?.run {
+            val errorMsg = ErrorHandlerSession.getErrorMessage(throwable, context, true)
+            tracker.trackOnBtnSimpanChangeGenderFailed(errorMsg)
             Toaster.showError(
                     this,
-                    ErrorHandlerSession.getErrorMessage(throwable, context, true),
+                    errorMsg,
                     Snackbar.LENGTH_LONG)
         }
     }
 
     private fun onSuccessChangeGender(result: ChangeGenderResult) {
         dismissLoading()
+        tracker.trackOnBtnSimpanChangeGenderSuccess()
         activity?.run {
             val intent = Intent()
             val bundle = Bundle()

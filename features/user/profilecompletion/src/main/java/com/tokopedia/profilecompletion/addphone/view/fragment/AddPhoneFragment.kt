@@ -26,6 +26,7 @@ import com.tokopedia.profilecompletion.addphone.view.activity.AddPhoneActivity
 import com.tokopedia.profilecompletion.addphone.viewmodel.AddPhoneViewModel
 import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
+import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -35,6 +36,9 @@ import javax.inject.Inject
 
 
 open class AddPhoneFragment : BaseDaggerFragment() {
+
+    @Inject
+    lateinit var tracker: ProfileInfoTracker
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -71,6 +75,11 @@ open class AddPhoneFragment : BaseDaggerFragment() {
             e.printStackTrace()
             null
         }
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        tracker.trackClickOnBtnBackAddPhone()
+        return super.onFragmentBackPressed()
     }
 
     private fun splitCompatInstall() {

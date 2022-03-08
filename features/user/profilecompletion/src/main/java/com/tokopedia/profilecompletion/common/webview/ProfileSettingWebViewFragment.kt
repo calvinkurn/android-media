@@ -4,10 +4,21 @@ import android.app.Activity
 import android.os.Bundle
 import android.webkit.WebView
 import androidx.fragment.app.Fragment
+import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
+import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.webview.BaseWebViewFragment
+import javax.inject.Inject
 
 
 class ProfileSettingWebViewFragment: BaseWebViewFragment() {
+
+    @Inject
+    lateinit var tracker: ProfileInfoTracker
+
+    override fun onFragmentBackPressed(): Boolean {
+        tracker.trackClickOnBtnBackChangeEmail()
+        return super.onFragmentBackPressed()
+    }
 
     override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
         if (isUrlAppLinkSuccessChangeEmail(url)) {
