@@ -67,5 +67,5 @@
 
     <!--Loader Unify -->
     <dimen name="corner_radius_shimmering_small">6dp</dimen>
-    <dimen name="corner_radius_shimmering">20dp</dimen>
+    <dimen name="corner_radius_shimmering">10dp</dimen>
 </resources>
