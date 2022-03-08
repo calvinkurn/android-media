@@ -153,8 +153,7 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
     private fun onSuccessSubmitUsername() {
         tracker.trackOnBtnSimpanUsernameSuccess()
         val resultIntent = Intent()
-        resultIntent.putExtra(RESULT_KEY_MESSAGE_SUCCESS_USERNAME_BIO, getString(
-            R.string.change_username_success))
+        resultIntent.putExtra(RESULT_KEY_MESSAGE_SUCCESS_USERNAME_BIO, getString(R.string.success_edit_profile_info))
         activity?.setResult(Activity.RESULT_OK, resultIntent)
         activity?.finish()
     }
@@ -190,7 +189,7 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
         tracker.trackOnBtnLanjutChangeBioSuccess()
         hideLoading()
         val resultIntent = Intent()
-        resultIntent.putExtra(RESULT_KEY_MESSAGE_SUCCESS_USERNAME_BIO, getString(R.string.change_biography_success))
+        resultIntent.putExtra(RESULT_KEY_MESSAGE_SUCCESS_USERNAME_BIO, getString(R.string.success_edit_profile_info))
         activity?.setResult(Activity.RESULT_OK, resultIntent)
         activity?.finish()
     }

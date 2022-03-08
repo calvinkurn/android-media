@@ -25,7 +25,7 @@
     <string name="change_name_visible_on_public_note">Nama akan terlihat oleh publik</string>
     <string name="change_name_visible_on_another_user">Nama dapat dilihat oleh pengguna lainnya</string>
     <string name="change_name_change_success">Nama lengkap berhasil diubah</string>
-    <string name="change_email_change_success">Email berhasil diubah</string>
+    <string name="change_name_success_v2">Yay! Nama kamu berhasil diubah.</string>
 
     <!-- PROFILE COMPLETION -->
     <string name="title_profile_completion">Lengkapi Profil</string>
@@ -64,6 +64,7 @@
     <string name="profile_completion_end_subtext">Kini akun Anda menjadi lebih aman dan nikmati promo menarik hanya untuk Verified Account</string>
     <string name="see_your_profile">Lihat Profil Anda</string>
     <string name="success_add_gender">Jenis kelamin berhasil ditambah</string>
+    <string name="success_add_gender_v2">Yay! Jenis kelamin berhasil disimpan.</string>
 
     <!-- ADD EMAIL -->
     <string name="title_add_email">Tambah Email</string>
@@ -73,7 +74,9 @@
     <string name="error_field_required">Harus diisi</string>
     <string name="wrong_email_format">Format email salah</string>
     <string name="success_add_email">Email berhasil ditambah</string>
-  
+    <string name="success_add_email_v2">Yay! E-mail kamu berhasil disimpan</string>
+    <string name="change_email_change_success">Email berhasil diubah</string>
+    <string name="change_email_change_success_v2">Yay! E-mail kamu berhasil diubah.</string>
     <string name="add_and_verify_phone">Tambah nomor HP dulu, yuk!</string>
     <string name="add_and_verify_phone_detail">Proses verifikasi buat akses akun jadi lebih gampang kalau ada nomor HP. Keamanan akunmu makin terjamin, deh!</string>
   
@@ -87,11 +90,13 @@
     <string name="tokocash_after_activation">Setelah terverifikasi, TokoCash akan aktif dan bisa digunakan sebagai salah satu metode pembayaran Anda.</string>
     <string name="phone_number_already_exist">Akun lain telah menggunakan nomor HP ini</string>
     <string name="success_add_phone">Nomor telepon berhasil ditambah</string>
+    <string name="success_add_phone_v2">Yay! Nomor HP kamu berhasil diubah.</string>
     <string name="button_next">Selanjutnya</string>
     <string name="success_verify_phone_number">Verifikasi nomor ponsel sudah berhasil.</string>
 
     <!-- CHANGE PHONE -->
     <string name="success_change_phone_number">Nomor telepon berhasil diubah</string>
+    <string name="success_change_phone_number_v2">Yay! Nomor HP kamu berhasil diubah.</string>
 
     <!-- CHANGE PIN -->
     <string name="title_change_pin">Ubah PIN Tokopedia</string>
@@ -103,7 +108,7 @@
     <!-- UPLOAD AVATAR -->
     <string name="failed_to_get_picture">Gagal mengambil gambar. Mohon coba kembali</string>
     <string name="failed_to_upload_picture">Gagal mengunggah gambar. Mohon coba kembali</string>
-    <string name="success_change_profile_picture">Foto profil berhasil diubah</string>
+    <string name="success_change_profile_picture">Foto profil berhasil diubah!</string>
     <string name="ticker_phone_verification">Jaga akun kamu tetap aman dengan &lt;font color=\'#42b549\'&gt;&lt;a href=\'tokopedia-android-internal://global/setting-profile-phone-verification\'&gt;Verifikasi Nomor HP&lt;/a&gt;&lt;/font&gt;.</string>
     <string name="error_oversize_avatar_image">Ukuran gambar maksimal 2Mb</string>
 
@@ -113,6 +118,8 @@
     <string name="page_description">Pastikan tanggal lahirmu diisi dengan benar, ya.</string>
     <string name="success_add_bod">Tanggal lahir berhasil ditambah</string>
     <string name="success_change_bod">Tanggal lahir berhasil diubah</string>
+    <string name="success_add_bod_v2">Yay! Tanggal lahirmu berhasil disimpan.</string>
+    <string name="success_change_bod_v2">Yay! Tanggal lahirmu berhasil diubah.</string>
     <string name="failed_add_bod">Tanggal lahir gagal ditambah</string>
     <string name="failed_change_bod">Tanggal lahir gagal diubah</string>
 
@@ -196,5 +203,6 @@
     <string name="title_item_name">Nama</string>
     <string name="key_error_username">Username</string>
     <string name="error_min_char">Minimum %1$d karakter.</string>
+    <string name="success_edit_profile_info">Info profil berhasil diubah.</string>
 
 </resources>

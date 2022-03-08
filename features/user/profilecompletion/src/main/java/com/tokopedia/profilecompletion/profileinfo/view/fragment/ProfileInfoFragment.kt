@@ -141,28 +141,28 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 			onSuccessGetProfilePhoto(data)
 		    }
 		    SettingProfileFragment.REQUEST_CODE_CHANGE_NAME -> {
-			showNormalToaster(getString(change_name_change_success))
+			showNormalToaster(getString(change_name_success_v2))
 		    }
 		    SettingProfileFragment.REQUEST_CODE_ADD_BOD -> {
-			showNormalToaster(getString(success_add_bod))
+			showNormalToaster(getString(success_add_bod_v2))
 		    }
 		    SettingProfileFragment.REQUEST_CODE_EDIT_BOD -> {
-			showNormalToaster(getString(success_change_bod))
+			showNormalToaster(getString(success_change_bod_v2))
 		    }
 		    SettingProfileFragment.REQUEST_CODE_EDIT_PHONE -> {
-			showNormalToaster(getString(success_change_phone_number))
+			showNormalToaster(getString(success_change_phone_number_v2))
 		    }
 		    SettingProfileFragment.REQUEST_CODE_ADD_EMAIL -> {
-			showNormalToaster(getString(success_add_email))
+			showNormalToaster(getString(success_add_email_v2))
 		    }
 		    SettingProfileFragment.REQUEST_CODE_ADD_PHONE -> {
-			showNormalToaster(getString(success_add_phone))
+			showNormalToaster(getString(success_add_phone_v2))
 		    }
 		    SettingProfileFragment.REQUEST_CODE_ADD_GENDER -> {
-			showNormalToaster(getString(success_add_gender))
+			showNormalToaster(getString(success_add_gender_v2))
 		    }
 		    SettingProfileFragment.REQUEST_CODE_CHANGE_EMAIL -> {
-			showNormalToaster(getString(change_email_change_success))
+			showNormalToaster(getString(change_email_change_success_v2))
 		    }
 			SettingProfileFragment.REQUEST_CODE_CHANGE_USERNAME_BIO -> {
 				showNormalToaster(data?.getStringExtra(
