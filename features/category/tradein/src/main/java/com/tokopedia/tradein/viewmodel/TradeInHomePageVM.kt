@@ -31,7 +31,9 @@ class TradeInHomePageVM @Inject constructor(
 
     private var laku6TradeIn: Laku6TradeIn? = null
     var imei: String = ""
-    var price: String = ""
+    var tradeInPrice: String = ""
+    var tradeInPriceInt: Int = 0
+    var finalPriceInt: Int = 0
     var tradeInUniqueCode: String = ""
 
     fun setLaku6(context: Context) {
@@ -105,15 +107,15 @@ class TradeInHomePageVM @Inject constructor(
     }
 
     fun goToCheckout() {
-        tradeInHomeStateLiveData.value = GoToCheckout(imei, laku6DeviceModel.value?.model ?: "", price)
+        tradeInHomeStateLiveData.value = GoToCheckout(imei, laku6DeviceModel.value?.model ?: "", tradeInPrice)
     }
 
     fun insertLogisticOptions(intent: Intent) {
         launchCatchError(block = {
             val diagnosticsData = getDiagnosticData(intent)
             tradeInUniqueCode = diagnosticsData.tradeInUniqueCode ?: ""
-            val data = insertLogisticPreferenceUseCase.insertLogistic()
-            data?.insertTradeInLogisticPreference?.apply {
+            val data = insertLogisticPreferenceUseCase.insertLogistic(is3PLSelected.value ?: false, finalPriceInt, tradeInPriceInt, imei)
+            data.insertTradeInLogisticPreference.apply {
                 if (isSuccess) {
                     goToCheckout()
                 } else {

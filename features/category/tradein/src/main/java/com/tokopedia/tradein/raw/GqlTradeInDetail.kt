@@ -24,6 +24,8 @@ const val GQL_TRADE_IN_DETAIL: String = """query getTradeInDetail(${'$'}params: 
             EstimatedPriceFmt
             DiagnosticPriceFmt
             FinalPriceFmt
+            DiagnosticPrice
+            FinalPrice
             Subtitle
             ExpiryTime
             DiagnosticReview{

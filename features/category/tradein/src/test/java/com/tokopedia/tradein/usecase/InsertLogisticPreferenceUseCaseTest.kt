@@ -3,6 +3,7 @@ package com.tokopedia.tradein.usecase
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.tradein.model.InsertTradeInLogisticModel
 import com.tokopedia.tradein.repository.TradeInRepository
+import com.tokopedia.user.session.UserSession
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,7 +20,8 @@ import org.junit.Test
 class InsertLogisticPreferenceUseCaseTest {
 
     val tradeInRepository: TradeInRepository = mockk(relaxed = true)
-    var insertLogisticPreferenceUseCase = spyk(InsertLogisticPreferenceUseCase(tradeInRepository))
+    val userSession: UserSession = mockk(relaxed = true)
+    var insertLogisticPreferenceUseCase = spyk(InsertLogisticPreferenceUseCase(tradeInRepository, userSession))
 
     @get:Rule
     var rule = InstantTaskExecutorRule()
@@ -44,7 +46,7 @@ class InsertLogisticPreferenceUseCaseTest {
         runBlocking {
             coEvery { tradeInRepository.getGQLData(any(), InsertTradeInLogisticModel::class.java, any())} returns insertTradeInLogisticModel
 
-            insertLogisticPreferenceUseCase.insertLogistic()
+            insertLogisticPreferenceUseCase.insertLogistic(false, 0,0,"")
 
             coVerify { tradeInRepository.getGQLData(any(), InsertTradeInLogisticModel::class.java, any()) }
         }

@@ -356,7 +356,9 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                 findViewById<Typography>(R.id.exchange_text).show()
                 for (logistic in logisticData) {
                     if (is3Pl == logistic.is3PL) {
-                        tradeInHomePageVM.price = logistic.diagnosticPriceFmt
+                        tradeInHomePageVM.tradeInPrice = logistic.diagnosticPriceFmt
+                        tradeInHomePageVM.tradeInPriceInt = logistic.diagnosticPrice
+                        tradeInHomePageVM.finalPriceInt = logistic.finalPrice
                         setUpPriceView(logistic, true)
                         if (logistic.isDiagnosed) {
                             findViewById<UnifyButton>(R.id.btn_continue).text =

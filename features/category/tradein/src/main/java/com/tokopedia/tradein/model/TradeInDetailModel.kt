@@ -60,6 +60,8 @@ data class TradeInDetailModel(
         data class LogisticOption(
             @SerializedName("DiagnosticPriceFmt")
             var diagnosticPriceFmt: String,
+            @SerializedName("DiagnosticPrice")
+            var diagnosticPrice: Int,
             @SerializedName("DiagnosticReview")
             var diagnosticReview: ArrayList<DiagnosticReview>,
             @SerializedName("DiscountPercentageFmt")
@@ -70,6 +72,8 @@ data class TradeInDetailModel(
             var expiryTime: String,
             @SerializedName("FinalPriceFmt")
             var finalPriceFmt: String,
+            @SerializedName("FinalPrice")
+            var finalPrice: Int,
             @SerializedName("Is3PL")
             var is3PL: Boolean,
             @SerializedName("IsAvailable")
@@ -85,11 +89,13 @@ data class TradeInDetailModel(
         ) : Parcelable {
             constructor(parcel: Parcel) : this(
                 parcel.readString() ?: "",
+                diagnosticPrice = parcel.readInt(),
                 parcel.createTypedArrayList(DiagnosticReview) ?: arrayListOf(),
                 parcel.readString() ?: "",
                 parcel.readString() ?: "",
                 parcel.readString() ?: "",
                 parcel.readString() ?: "",
+                finalPrice = parcel.readInt(),
                 parcel.readByte() != 0.toByte(),
                 parcel.readByte() != 0.toByte(),
                 parcel.readByte() != 0.toByte(),
@@ -133,11 +139,13 @@ data class TradeInDetailModel(
 
             override fun writeToParcel(parcel: Parcel, flags: Int) {
                 parcel.writeString(diagnosticPriceFmt)
+                parcel.writeInt(diagnosticPrice)
                 parcel.writeTypedList(diagnosticReview)
                 parcel.writeString(discountPercentageFmt)
                 parcel.writeString(estimatedPriceFmt)
                 parcel.writeString(expiryTime)
                 parcel.writeString(finalPriceFmt)
+                parcel.writeInt(finalPrice)
                 parcel.writeByte(if (is3PL) 1 else 0)
                 parcel.writeByte(if (isAvailable) 1 else 0)
                 parcel.writeByte(if (isDiagnosed) 1 else 0)
