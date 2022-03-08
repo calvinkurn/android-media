@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeBannerItemMerchantVoucherBinding
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMerchantVoucherDataModel
+import com.tokopedia.home_component.util.ImageHandler
 import com.tokopedia.home_component.util.loadImageNoRounded
 import com.tokopedia.home_component.util.loadImageNormal
 import com.tokopedia.home_component.util.toDpInt
@@ -54,13 +55,20 @@ class CarouselMerchantVoucherViewHolder (
         binding?.benefitPrice?.text = element.benefitPrice
         binding?.totalOtherCoupon?.text = element.totalOtherCoupon
         if (element.iconBadge.isNotBlank()) {
-            binding?.imageBadge?.loadImageNoRounded(element.iconBadge, com.tokopedia.home_component.R.drawable.placeholder_grey)
             binding?.imageBadge?.visible()
             binding?.shopName?.setMargin(4f.toDpInt(), 7f.toDpInt(), 0f.toDpInt(), 0f.toDpInt())
-        }
-        else {
-            binding?.imageBadge?.gone()
-            binding?.shopName?.setMargin(15f.toDpInt(), 7f.toDpInt(), 0f.toDpInt(), 0f.toDpInt())
+            binding?.imageBadge?.loadImageNoRounded(
+                element.iconBadge,
+                com.tokopedia.home_component.R.drawable.placeholder_grey,
+                listener = object : ImageHandler.ImageLoaderStateListener {
+                    override fun successLoad() {}
+
+                    override fun failedLoad() {
+                        failedLoadShopBadge()
+                    }
+                })
+        } else {
+            failedLoadShopBadge()
         }
         binding?.imageProduct?.loadImageNoRounded(element.imageProduct, com.tokopedia.home_component.R.drawable.placeholder_grey)
         binding?.containerShop?.setOnClickListener {
@@ -72,5 +80,10 @@ class CarouselMerchantVoucherViewHolder (
         itemView.addOnImpressionListener(element.impressHolder) {
             element.merchantVoucherComponentListener.onMerchantImpressed(element, adapterPosition)
         }
+    }
+
+    private fun failedLoadShopBadge() {
+        binding?.imageBadge?.gone()
+        binding?.shopName?.setMargin(15f.toDpInt(), 7f.toDpInt(), 0f.toDpInt(), 0f.toDpInt())
     }
 }
