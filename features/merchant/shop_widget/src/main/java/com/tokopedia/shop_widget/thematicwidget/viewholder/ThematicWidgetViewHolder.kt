@@ -50,7 +50,7 @@ class ThematicWidgetViewHolder (
     private var dynamicHeaderCustomView: DynamicHeaderCustomView? = null
     private var uiModel: ThematicWidgetUiModel? = null
     private var isFirstAttached: Boolean = true
-    private var products = mutableListOf<ProductCardUiModel>()
+    private var trackerProductsModel = mutableListOf<ProductCardUiModel>()
 
     private val adapter by lazy {
         ProductCardAdapter(
@@ -209,10 +209,10 @@ class ThematicWidgetViewHolder (
         }
 
         override fun onProductCardImpressListener(product: ProductCardUiModel) {
-            val hasAddedProduct = products.any { it.id == product.id }
+            val hasAddedProduct = trackerProductsModel.any { it.id == product.id }
             if (!hasAddedProduct) {
-                products.add(product)
-                listener.onProductCardThematicWidgetImpressListener(products, adapterPosition, uiModel?.campaignId.orEmpty(), uiModel?.name.orEmpty())
+                trackerProductsModel.add(product)
+                listener.onProductCardThematicWidgetImpressListener(trackerProductsModel, adapterPosition, uiModel?.campaignId.orEmpty(), uiModel?.name.orEmpty())
             }
         }
     }
