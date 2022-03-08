@@ -16,6 +16,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -63,15 +65,15 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
     @ExperimentalCoroutinesApi
     @Test
     fun `on error get recommendation`() {
-//        coEvery {
-//            getRecommendationUseCase.createObservable(any()).toBlocking().first()
-//        } throws Throwable()
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } throws Throwable()
 
         viewModel.getRecommendationProduct("123")
 
-//        coVerify {
-//            getRecommendationUseCase.createObservable(any()).toBlocking().first()
-//        }
+        coVerify {
+            getRecommendationUseCase.getData(any())
+        }
 
         Assert.assertTrue(viewModel.recommendationProduct.value is Fail)
     }
@@ -80,31 +82,31 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
     fun `on success get recommendation`() {
         val recomWidget = RecommendationWidget(tid = "1", recommendationItemList = listOf(RecommendationItem()))
         val listOfRecom = arrayListOf(recomWidget)
-//
-//        coEvery {
-//            getRecommendationUseCase.createObservable(any()).toBlocking().first()
-//        } returns listOfRecom
-//
-//        viewModel.getRecommendationProduct("123")
-//
-//        coVerify {
-//            getRecommendationUseCase.createObservable(any())
-//        }
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns listOfRecom
+
+        viewModel.getRecommendationProduct("123")
+
+        coVerify {
+            getRecommendationUseCase.getData(any())
+        }
 
         Assert.assertTrue((viewModel.recommendationProduct.value as Success).data.isNotEmpty())
     }
 
     @Test
     fun `on success get recommendation return empty list`() {
-//        coEvery {
-//            getRecommendationUseCase.createObservable(any()).toBlocking().first()
-//        } returns null
-//
-//        viewModel.getRecommendationProduct("123")
-//
-//        coVerify {
-//            getRecommendationUseCase.createObservable(any())
-//        }
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns listOf()
+
+        viewModel.getRecommendationProduct("123")
+
+        coVerify {
+            getRecommendationUseCase.getData(any())
+        }
 
         Assert.assertTrue((viewModel.recommendationProduct.value as Success).data.isEmpty())
     }
