@@ -31,6 +31,7 @@
         android:id="@+id/rvPayLaterSimulation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clipToPadding="false"
         android:layout_marginTop="@dimen/unify_space_12"
         android:orientation="horizontal"
         android:paddingStart="@dimen/pay_later_margin_dp_10"
