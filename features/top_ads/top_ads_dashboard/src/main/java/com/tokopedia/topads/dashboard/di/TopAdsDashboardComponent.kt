@@ -58,4 +58,5 @@ interface TopAdsDashboardComponent {
     fun inject(topAdsAddCreditActivity: TopAdsAddCreditActivity)
     fun inject(topAdsChooseNominalBottomSheet: TopAdsChooseNominalBottomSheet)
     fun inject(topAdsRecomGroupBottomSheet: TopAdsRecomGroupBottomSheet)
+    fun inject(topAdsDashDeletedGroupFragment: TopAdsDashDeletedGroupFragment)
 }
