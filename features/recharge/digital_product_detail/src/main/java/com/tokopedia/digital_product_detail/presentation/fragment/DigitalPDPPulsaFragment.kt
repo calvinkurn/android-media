@@ -86,10 +86,12 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.coroutineContext
 
 /**
  * @author by firmanda on 04/01/21
@@ -104,6 +106,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     ClientNumberFilterChipListener,
     ClientNumberAutoCompleteListener
 {
+    var throttleJob: Job? = null
+
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -784,8 +788,16 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             rechargePdpPulsaAppbar.setupDynamicAppBar(
                 { !viewModel.isEligibleToBuy },
                 { rechargePdpPulsaClientNumberWidget.getInputNumber().isEmpty() },
-                { onCollapseAppBar() },
-                { onExpandAppBar() }
+                {
+                    throttleFirst(300L, viewLifecycleOwner.lifecycleScope) {
+                        onCollapseAppBar()
+                    }
+                },
+                {
+                    throttleFirst(300L, viewLifecycleOwner.lifecycleScope) {
+                        onExpandAppBar()
+                    }
+                }
             )
         }
     }
@@ -805,16 +817,30 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private fun onCollapseAppBar() {
         binding?.run {
             rechargePdpPulsaClientNumberWidget.setVisibleSimplifiedLayout(true)
-            showDynamicSpacer()
+//            showDynamicSpacer()
         }
     }
 
     private fun onExpandAppBar() {
         binding?.run {
             rechargePdpPulsaClientNumberWidget.setVisibleSimplifiedLayout(false)
-            hideDynamicSpacer()
+//            hideDynamicSpacer()
         }
     }
+
+    fun throttleFirst(
+        skipMs: Long = 100L,
+        coroutineScope: CoroutineScope,
+        destinationFunction: () -> Unit
+    ) {
+        if (throttleJob?.isCompleted != false) {
+            throttleJob = coroutineScope.launch {
+                destinationFunction()
+                delay(skipMs)
+            }
+        }
+    }
+
 
     private fun navigateToCart(categoryId: String) {
         context?.let { context ->
