@@ -43,7 +43,7 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
     fun `when getting menuDetail should run and give fail result`() {
         onGetMenuDetail_thenReturn(NullPointerException())
 
-        viewModel.getMenuDetail(MENU_ID, false)
+        viewModel.getMenuDetail(MENU_ID)
         verifyGetMenuDetailRepoGetCalled()
         verifyGetMenuDetailFail()
     }
