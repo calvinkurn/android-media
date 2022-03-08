@@ -32,6 +32,7 @@ class TradeInHomePageVM @Inject constructor(
     private var laku6TradeIn: Laku6TradeIn? = null
     var imei: String = ""
     var price: String = ""
+    var tradeInUniqueCode: String = ""
 
     fun setLaku6(context: Context) {
         var campaignId = TradeinConstants.CAMPAIGN_ID_PROD
@@ -110,6 +111,7 @@ class TradeInHomePageVM @Inject constructor(
     fun insertLogisticOptions(intent: Intent) {
         launchCatchError(block = {
             val diagnosticsData = getDiagnosticData(intent)
+            tradeInUniqueCode = diagnosticsData.tradeInUniqueCode ?: ""
             val data = insertLogisticPreferenceUseCase.insertLogistic()
             data?.insertTradeInLogisticPreference?.apply {
                 if (isSuccess) {

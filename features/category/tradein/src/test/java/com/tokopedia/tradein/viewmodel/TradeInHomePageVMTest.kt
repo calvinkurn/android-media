@@ -3,6 +3,7 @@ package com.tokopedia.tradein.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.laku6.tradeinsdk.api.Laku6TradeIn
 import com.tokopedia.tradein.TradeinConstants
+import com.tokopedia.tradein.usecase.InsertLogisticPreferenceUseCase
 import com.tokopedia.user.session.UserSession
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -19,7 +20,8 @@ import org.junit.*
 @ExperimentalCoroutinesApi
 class TradeInHomePageVMTest {
     val userSession: UserSession = mockk(relaxed = true)
-    var tradeInHomePageVM = spyk(TradeInHomePageVM(userSession))
+    val insertLogisticPreferenceUseCase: InsertLogisticPreferenceUseCase = mockk(relaxed = true)
+    var tradeInHomePageVM = spyk(TradeInHomePageVM(userSession, insertLogisticPreferenceUseCase))
 
     @RelaxedMockK
     lateinit var laku6TradeIn: Laku6TradeIn

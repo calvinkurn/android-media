@@ -29,10 +29,11 @@ class TradeInHomePageFragmentVM @Inject constructor(val tradeInDetailUseCase: Tr
     fun getTradeInDetail(
         laku6DeviceModel: Laku6DeviceModel,
         productPrice: Int,
-        userAddressData: LocalCacheModel
+        userAddressData: LocalCacheModel,
+        tradeInUniqueCode : String
     ) {
         launchCatchError(block = {
-            val tradeInDetail = tradeInDetailUseCase.getTradeInDetail(laku6DeviceModel, productPrice, userAddressData)
+            val tradeInDetail = tradeInDetailUseCase.getTradeInDetail(laku6DeviceModel, productPrice, userAddressData, tradeInUniqueCode)
             logisticData = tradeInDetail.getTradeInDetail.logisticOptions
             tradeInDetailLiveData.value = tradeInDetail
             progBarVisibility.value = false

@@ -66,13 +66,12 @@ class TradeInHomePageFragmentVMTest {
         val errorMsg = "error message"
         val tradeInDetailModel: TradeInDetailModel = mockk<TradeInDetailModel>(relaxed = true)
         every { tradeInDetailModel.getTradeInDetail.errMessage } returns  errorMsg
-        coEvery { tradeInDetailUseCase.getTradeInDetail(any(), any(), any()) } returns tradeInDetailModel
+        coEvery { tradeInDetailUseCase.getTradeInDetail(any(), any(), any(), "") } returns tradeInDetailModel
 
-        tradeInHomePageFragmentVM.getTradeInDetail(mockk(), 1000, mockk())
+        tradeInHomePageFragmentVM.getTradeInDetail(mockk(), 1000, mockk(), "")
 
         assertEquals(tradeInHomePageFragmentVM.tradeInDetailLiveData.value, tradeInDetailModel)
         assertEquals(tradeInHomePageFragmentVM.logisticData, tradeInDetailModel.getTradeInDetail.logisticOptions)
-        assertEquals(tradeInHomePageFragmentVM.getWarningMessage().value, errorMsg)
         assertEquals(tradeInHomePageFragmentVM.getProgBarVisibility().value, false)
 
     }
@@ -80,9 +79,9 @@ class TradeInHomePageFragmentVMTest {
     @Test
     fun getTradeInDetailException() {
         val exception = Exception("TradeIn Detail Data Exception")
-        coEvery { tradeInDetailUseCase.getTradeInDetail(any(), any(), any()) } throws exception
+        coEvery { tradeInDetailUseCase.getTradeInDetail(any(), any(), any(), "") } throws exception
 
-        tradeInHomePageFragmentVM.getTradeInDetail(mockk(),1000, mockk())
+        tradeInHomePageFragmentVM.getTradeInDetail(mockk(),1000, mockk(), "")
 
         assertEquals(tradeInHomePageFragmentVM.getErrorMessage().value, exception)
 

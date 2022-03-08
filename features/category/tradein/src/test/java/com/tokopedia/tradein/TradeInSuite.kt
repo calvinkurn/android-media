@@ -10,6 +10,7 @@ import org.junit.runners.Suite
 @Suite.SuiteClasses(
     PromoUseCaseTest::class,
     TNCInfoUseCaseTest::class,
+    InsertLogisticPreferenceUseCaseTest::class,
     TradeInDetailUseCaseTest::class,
     TradeInValidateImeiUseCaseTest::class,
     TradeInHomePageFragmentVMTest::class,

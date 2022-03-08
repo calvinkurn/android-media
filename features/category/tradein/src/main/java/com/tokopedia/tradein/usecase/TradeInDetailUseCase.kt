@@ -20,27 +20,29 @@ class TradeInDetailUseCase @Inject constructor(
     suspend fun getTradeInDetail(
         laku6DeviceModel: Laku6DeviceModel,
         productPrice: Int,
-        userAddressData: LocalCacheModel
+        userAddressData: LocalCacheModel,
+        tradeInUniqueCode : String
     ): TradeInDetailModel {
-        return repository.getGQLData(GqlTradeInDetail.GQL_QUERY, TradeInDetailModel::class.java, createRequestParams(laku6DeviceModel, productPrice, userAddressData))
+        return repository.getGQLData(GqlTradeInDetail.GQL_QUERY, TradeInDetailModel::class.java, createRequestParams(laku6DeviceModel, productPrice, userAddressData, tradeInUniqueCode))
     }
 
     private fun createRequestParams(
         laku6DeviceModel: Laku6DeviceModel,
         productPrice: Int,
-        userAddressData: LocalCacheModel
+        userAddressData: LocalCacheModel,
+        tradeInUniqueCode : String
     ): Map<String, Any> {
         return mapOf<String,Any>(PARAM_INPUT to
                 GetTradeInDetailInput(
                     sessionId = laku6DeviceModel.sessionId,
                     appDeviceId = userSession.deviceId,
                     traceId = laku6DeviceModel.traceId,
-                    uniqueCode = "",
+                    uniqueCode = tradeInUniqueCode,
                     modelInfo = laku6DeviceModel.model,
                     originalPrice = productPrice,
                     userLocation = GetTradeInDetailInput.UserLocation(
                         districtId = userAddressData.district_id,
-                        cityId = "1"/*userAddressData.city_id*/,
+                        cityId = userAddressData.city_id,
                         latitude = userAddressData.lat,
                         longitude = userAddressData.long,
                         postalCode = userAddressData.postal_code

@@ -47,7 +47,7 @@ class TradeInDetailUseCaseTest {
         runBlocking {
             coEvery { tradeInRepository.getGQLData(any(), TradeInDetailModel::class.java, any())} returns tradeInDetailModel
 
-            tradeInDetailUseCase.getTradeInDetail(mockk(relaxed = true),100, mockk(relaxed = true))
+            tradeInDetailUseCase.getTradeInDetail(mockk(relaxed = true),100, mockk(relaxed = true), "")
 
             coVerify { tradeInRepository.getGQLData(any(), TradeInDetailModel::class.java, any()) }
         }

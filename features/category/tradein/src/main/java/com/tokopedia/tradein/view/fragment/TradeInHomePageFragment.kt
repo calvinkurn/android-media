@@ -178,7 +178,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             setUpLaku6Data(it)
             viewModel.data?.apply {
                 userAddressData?.let { address ->
-                    viewModel.getTradeInDetail(it, productPrice, address)
+                    viewModel.getTradeInDetail(it, productPrice, address, tradeInHomePageVM.tradeInUniqueCode)
                 }
             }
         })
