@@ -57,7 +57,8 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
                     DenomMCCMFlashSaleMapper.getChannelFlashSale(
                         denomData.mainTitle,
                         denomData.subTitle,
-                        textColor
+                        textColor,
+                        endTime = ""
                     ), object : HeaderListener {
                         override fun onChannelExpired(channelModel: ChannelModel) {
 

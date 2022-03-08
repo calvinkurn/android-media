@@ -42,13 +42,8 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
                         textColor
                     ), object :
                         HeaderListener {
-                        override fun onChannelExpired(channelModel: ChannelModel) {
-
-                        }
-
-                        override fun onSeeAllClick(link: String) {
-
-                        }
+                        override fun onChannelExpired(channelModel: ChannelModel) {}
+                        override fun onSeeAllClick(link: String) {}
                     })
                 renderAdapter(
                     denomFullListener,
@@ -73,16 +68,12 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
                 headerMccmFull.setChannel(DenomMCCMFlashSaleMapper.getChannelFlashSale(
                     denomData.mainTitle,
                     denomData.subTitle,
-                    textColor
+                    textColor,
+                    endTime = ""
                 ), object :
                     HeaderListener {
-                    override fun onChannelExpired(channelModel: ChannelModel) {
-
-                    }
-
-                    override fun onSeeAllClick(link: String) {
-
-                    }
+                    override fun onChannelExpired(channelModel: ChannelModel) {}
+                    override fun onSeeAllClick(link: String) {}
                 })
                 renderAdapter(
                     denomFullListener,
@@ -94,6 +85,7 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
             }
         }
     }
+
     fun renderFailMCCMFull(){
         widgetRechargeMCCMFlashSaleFullWidget.root.hide()
     }

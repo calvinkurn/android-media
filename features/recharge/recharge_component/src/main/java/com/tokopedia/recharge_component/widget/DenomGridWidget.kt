@@ -19,7 +19,6 @@ class DenomGridWidget @JvmOverloads constructor(@NotNull context: Context, attrs
     : BaseCustomView(context, attrs, defStyleAttr) {
 
     private var rechargeDenomGridViewBinding = WidgetRechargeDenomGridBinding.inflate(LayoutInflater.from(context), this, true)
-
     private val adapterDenomGrid = DenomGridAdapter()
 
     fun renderDenomGridLayout(denomGridListener: RechargeDenomGridListener,

@@ -22,7 +22,6 @@ class DenomFullWidget @JvmOverloads constructor(
 
     private var rechargeDenomFullWidgetBinding =
         WidgetRechargeDenomFullBinding.inflate(LayoutInflater.from(context), this, true)
-
     private val adapterDenomFull = DenomFullAdapter()
 
     fun renderDenomFullLayout(

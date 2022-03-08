@@ -1,7 +1,6 @@
 package com.tokopedia.recharge_component.presentation.adapter.viewholder.recommendation_card
 
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.home_component.listener.RechargeRecommendationListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show

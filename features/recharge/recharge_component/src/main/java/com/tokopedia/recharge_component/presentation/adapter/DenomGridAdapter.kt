@@ -14,11 +14,8 @@ class DenomGridAdapter: RecyclerView.Adapter<DenomGridViewHolder>(), RechargeDen
     private var listDenom = mutableListOf<DenomData>()
 
     var selectedProductIndex: Int? = null
-
     var denomWidgetType: DenomWidgetEnum = DenomWidgetEnum.GRID_TYPE
-
     var productTitleList: String = ""
-
     var listener: RechargeDenomGridListener? = null
 
     override fun getItemCount(): Int = listDenom.size
