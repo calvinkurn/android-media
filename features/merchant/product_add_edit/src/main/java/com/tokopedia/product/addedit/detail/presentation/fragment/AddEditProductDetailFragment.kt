@@ -12,16 +12,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
+import android.widget.ScrollView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
@@ -154,6 +155,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     private var isFragmentVisible = false
     private var needToSetCategoryName = false
 
+    private var scrollViewParent: ScrollView? = null
+
     // product photo
     private var addProductPhotoButton: AppCompatTextView? = null
     private var productPhotosView: RecyclerView? = null
@@ -179,9 +182,11 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     // product specification
     private var productSpecificationLayout: ViewGroup? = null
     private var productSpecificationTextView: Typography? = null
+    private var productSpecificationHeaderTextView: Typography? = null
     private var addProductSpecificationButton: Typography? = null
     private var productSpecificationReloadLayout: View? = null
     private var productSpecificationReloadButton: Typography? = null
+    private var tooltipSpecificationRequired: View? = null
 
     // product price
     private var productPriceField: TextFieldUnify? = null
@@ -293,6 +298,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         // to check whether current fragment is visible or not
         isFragmentVisible = true
 
+        scrollViewParent = view.findViewById(R.id.scrollViewParent)
+
         // add edit product photo views
         addProductPhotoButton = view.findViewById(R.id.tv_add_product_photo)
         productPhotosView = view.findViewById(R.id.rv_product_photos)
@@ -353,7 +360,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
             if (viewModel.hasVariants) {
                 showImmutableCategoryDialog()
             } else {
-                if (viewModel.specificationList.isNotEmpty()) {
+                if (viewModel.selectedSpecificationList.value.orEmpty().isNotEmpty()) {
                     showChangeCategoryDialog {
                         startCategoryActivity(REQUEST_CODE_CATEGORY)
                     }
@@ -366,9 +373,11 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         // add product specification button
         productSpecificationLayout = view.findViewById(R.id.add_edit_product_specification_layout)
         productSpecificationTextView = view.findViewById(R.id.tv_product_specification)
+        productSpecificationHeaderTextView = view.findViewById(R.id.tv_product_specification_header)
         addProductSpecificationButton = view.findViewById(R.id.tv_add_product_specification)
         productSpecificationReloadLayout = view.findViewById(R.id.reload_product_specification_layout)
         productSpecificationReloadButton = view.findViewById(R.id.tv_reload_specification_button)
+        tooltipSpecificationRequired = view.findViewById(R.id.tooltipSpecificationRequired)
 
         // add edit product price views
         productPriceField = view.findViewById(R.id.tfu_product_price)
@@ -671,8 +680,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         submitButton?.setOnClickListener {
             submitButton?.isLoading = true
             validateInput()
-            // validate product name before submit data
-            viewModel.validateProductNameInputFromNetwork(productNameField.getText())
+            validateSpecificationList()
         }
 
         setupDefaultFieldMessage()
@@ -693,8 +701,10 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         subscribeToPreOrderDurationInputStatus()
         subscribeToProductSkuInputStatus()
         subscribeToShopShowCases()
-        subscribeToSpecificationList()
+        subscribeToAnnotationCategoryData()
         subscribeToSpecificationText()
+        subscribeToHasRequiredSpecification()
+        subscribeToSelectedSpecificationList()
         subscribeToInputStatus()
         subscribeToPriceRecommendation()
         subscribeToProductNameValidationFromNetwork()
@@ -949,7 +959,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
 
                     saveInstanceCacheManager.get(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT_MODEL,
                             ProductInputModel::class.java, viewModel.productInputModel)?.apply {
-                        viewModel.updateSpecification(detailInputModel.specifications.orEmpty())
+                        viewModel.updateSelectedSpecification(detailInputModel.specifications.orEmpty())
                     }
                 }
             }
@@ -1108,7 +1118,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
             }
             wholesaleList = getWholesaleInput()
             productShowCases = viewModel.productShowCases
-            specifications = viewModel.specificationList
+            specifications = viewModel.selectedSpecificationList.value
         }
     }
 
@@ -1428,8 +1438,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         })
     }
 
-    private fun subscribeToSpecificationList() {
-        viewModel.annotationCategoryData.observe(viewLifecycleOwner, Observer { result ->
+    private fun subscribeToAnnotationCategoryData() {
+        viewModel.annotationCategoryData.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
                     productSpecificationLayout?.isVisible = result.data.isNotEmpty()
@@ -1437,6 +1447,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                     addProductSpecificationButton?.show()
                     productSpecificationReloadLayout?.hide()
                     viewModel.updateSpecificationByAnnotationCategory(result.data)
+                    viewModel.updateHasRequiredSpecification(result.data)
                 }
                 is Fail -> {
                     productSpecificationLayout?.show()
@@ -1449,14 +1460,29 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     }
 
     private fun subscribeToSpecificationText() {
-        viewModel.specificationText.observe(viewLifecycleOwner, Observer {
+        viewModel.specificationText.observe(viewLifecycleOwner, {
             productSpecificationTextView?.text = it
-            addProductSpecificationButton?.text = if (viewModel.specificationList.isEmpty()) {
+        })
+    }
+
+    private fun subscribeToHasRequiredSpecification() {
+        viewModel.hasRequiredSpecification.observe(viewLifecycleOwner, {
+            productSpecificationHeaderTextView.displayRequiredAsterisk(it)
+            val specificationList = viewModel.selectedSpecificationList.value.orEmpty()
+            tooltipSpecificationRequired?.isVisible = it && specificationList.isEmpty()
+        })
+    }
+
+    private fun subscribeToSelectedSpecificationList() {
+        viewModel.selectedSpecificationList.observe(viewLifecycleOwner) {
+            addProductSpecificationButton?.text = if (it.isEmpty()) {
                 getString(R.string.action_specification_add)
             } else {
                 getString(R.string.action_specification_change)
             }
-        })
+            val hasRequiredSpecification = viewModel.hasRequiredSpecification.value.orFalse()
+            tooltipSpecificationRequired?.isVisible = it.isEmpty() && hasRequiredSpecification
+        }
     }
 
     private fun subscribeToInputStatus() {
@@ -1466,7 +1492,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     }
 
     private fun subscribeToCategoryRecommendation() {
-        viewModel.productCategoryRecommendationLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.productCategoryRecommendationLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onGetCategoryRecommendationSuccess(it)
                 is Fail -> {
@@ -1569,6 +1595,19 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         })
     }
 
+    private fun validateSpecificationList() {
+        if (viewModel.validateSelectedSpecificationList()) {
+            viewModel.validateProductNameInputFromNetwork(productNameField.getText())
+        } else {
+            submitButton?.isLoading = false
+            scrollViewParent?.post {
+                scrollViewParent?.smoothScrollTo(Int.ZERO, productSpecificationLayout?.top.orZero())
+                productSpecificationTextView?.text = MethodChecker.fromHtml(
+                    getString(R.string.error_specification_signal_status_empty_red))
+            }
+        }
+    }
+
     private fun createAddProductPhotoButtonOnClickListener(): View.OnClickListener {
         return View.OnClickListener {
 
@@ -1617,7 +1656,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         // get annotation category, if not already obtained from the server (specifications == null)
         val specifications = viewModel.productInputModel.detailInputModel.specifications
         if (specifications != null) {
-            viewModel.updateSpecification(specifications)
+            viewModel.updateSelectedSpecification(specifications)
         } else {
             getAnnotationCategory()
         }
@@ -1674,7 +1713,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
             productInputModel.detailInputModel.apply {
                 if (productCategoryId.isNotBlank()) categoryId = productCategoryId
                 if (productCategoryName.isNotBlank()) categoryName = productCategoryName
-                specifications = viewModel.specificationList
+                specifications = viewModel.selectedSpecificationList.value
             }
 
             val cacheManager = SaveInstanceCacheManager(this, true)
@@ -1940,7 +1979,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                 }
 
                 // display confirmation if product has a specs
-                if (viewModel.specificationList.isEmpty()) {
+                if (viewModel.selectedSpecificationList.value.orEmpty().isEmpty()) {
                     selectCategoryRecommendation(items, position)
                 } else {
                     showChangeCategoryDialog {
