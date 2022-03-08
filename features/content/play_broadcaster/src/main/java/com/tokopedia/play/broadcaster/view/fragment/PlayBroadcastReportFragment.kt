@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -20,7 +19,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.model.*
-import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
@@ -42,7 +40,7 @@ import javax.inject.Inject
 /**
  * @author by jessica on 26/05/20
  */
-class PlayBroadcastSummaryFragment @Inject constructor(
+class PlayBroadcastReportFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
         private val analytic: PlayBroadcastAnalytic,
         private val userSession: UserSessionInterface
@@ -52,6 +50,8 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         private const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
         private const val FIRST_PLACE = 0
     }
+
+    private var mListener: Listener? = null
 
     private lateinit var viewModel: PlayBroadcastSummaryViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
@@ -63,7 +63,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
 
     private val summaryInfoView by viewComponent(isEagerInit = true) { SummaryInfoViewComponent(it, this) }
 
-    override fun getScreenName(): String = "Play Summary Page"
+    override fun getScreenName(): String = "Play Report Page"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,7 +72,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_play_broadcast_summary, container, false)
+        val view = inflater.inflate(R.layout.fragment_play_broadcast_report, container, false)
 
         observeChannelInfo()
         observeLiveDuration()
@@ -87,19 +87,8 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
-        setupInsets(view)
         setupContent()
     }
-
-    override fun onStart() {
-        super.onStart()
-        if(!isDarkMode()) activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-
-        requireView().requestApplyInsetsWhenAttached()
-        btnPostVideo.requestApplyInsetsWhenAttached()
-    }
-
-    private fun isDarkMode() = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 
     private fun initView(view: View) {
         with(view) {
@@ -115,24 +104,9 @@ class PlayBroadcastSummaryFragment @Inject constructor(
             requireActivity().onBackPressed()
         }
         btnPostVideo.setOnClickListener {
-            broadcastCoordinator.navigateToFragment(PlayBroadcastPostVideoFragment::class.java)
+            mListener?.onClickPostButton()
 //            analytic.clickSaveVodOnReportPage(parentViewModel.channelId)
 //            viewModel.saveVideo()
-        }
-    }
-
-    private fun setupInsets(view: View) {
-        view.doOnApplyWindowInsets { v, insets, padding, _ ->
-            v.updatePadding(top = padding.top + insets.systemWindowInsetTop)
-        }
-
-        btnPostVideo.doOnApplyWindowInsets { v, insets, _, margin ->
-            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
-            val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
-            if (marginLayoutParams.bottomMargin != newBottomMargin) {
-                marginLayoutParams.updateMargins(bottom = newBottomMargin)
-                v.parent.requestLayout()
-            }
         }
     }
 
@@ -188,7 +162,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     }
 
     private fun observeLiveDuration() {
-        viewModel.observableReportDuration.observe(viewLifecycleOwner, Observer(this@PlayBroadcastSummaryFragment::setLiveDuration))
+        viewModel.observableReportDuration.observe(viewLifecycleOwner, Observer(this@PlayBroadcastReportFragment::setLiveDuration))
     }
 
     private fun observeSaveVideo() {
@@ -249,5 +223,13 @@ class PlayBroadcastSummaryFragment @Inject constructor(
             requireContext().classLoader,
             PlayInteractiveLeaderBoardBottomSheet::class.java.name) as PlayInteractiveLeaderBoardBottomSheet
         leaderBoardBottomSheet.show(childFragmentManager)
+    }
+
+    fun setListener(listener: Listener) {
+        mListener = listener
+    }
+
+    interface Listener {
+        fun onClickPostButton()
     }
 }

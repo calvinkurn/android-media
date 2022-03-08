@@ -58,7 +58,7 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
         scope.launchCatchError(block = {
             val reportChannelSummary = withContext(dispatcher.io) {
                 delay(LIVE_STATISTICS_DELAY)
-                getLiveStatisticsUseCase.params = GetLiveStatisticsUseCase.createParams("328576")
+                getLiveStatisticsUseCase.params = GetLiveStatisticsUseCase.createParams("328076")
                 return@withContext getLiveStatisticsUseCase.executeOnBackground()
             }
             _observableReportDuration.value = playBroadcastMapper.mapLiveDuration(reportChannelSummary.duration)

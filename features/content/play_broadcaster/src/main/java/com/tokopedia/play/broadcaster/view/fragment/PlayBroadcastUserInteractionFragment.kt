@@ -44,6 +44,7 @@ import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.setup.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.partial.*
 import com.tokopedia.play.broadcaster.view.state.PlayLiveTimerState
 import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState

@@ -35,6 +35,8 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     private val userSession: UserSessionInterface
 ) : PlayBaseBroadcastFragment(), TagListViewComponent.Listener {
 
+    private var mListener: Listener? = null
+
     private var _binding: FragmentPlayBroadcastPostVideoBinding? = null
     private val binding: FragmentPlayBroadcastPostVideoBinding
         get() = _binding!!
@@ -73,28 +75,12 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
-        setupInsets()
         setupObservable()
     }
 
     private fun setupView() {
         binding.icBroSummaryBack.setOnClickListener {
-            requireActivity().onBackPressed()
-        }
-    }
-
-    private fun setupInsets() {
-        binding.root.doOnApplyWindowInsets { v, insets, padding, _ ->
-            v.updatePadding(top = padding.top + insets.systemWindowInsetTop)
-        }
-
-        binding.btnPostVideo.doOnApplyWindowInsets { v, insets, _, margin ->
-            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
-            val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
-            if (marginLayoutParams.bottomMargin != newBottomMargin) {
-                marginLayoutParams.updateMargins(bottom = newBottomMargin)
-                v.parent.requestLayout()
-            }
+            mListener?.onClickBackButton()
         }
     }
 
@@ -162,5 +148,14 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
             .addTransition(ChangeTransform())
             .addTransition(ChangeBounds())
             .setDuration(450)
+    }
+
+    fun setListener(listener: Listener) {
+        mListener = listener
+    }
+
+    interface Listener {
+        fun onClickPostButton()
+        fun onClickBackButton()
     }
 }

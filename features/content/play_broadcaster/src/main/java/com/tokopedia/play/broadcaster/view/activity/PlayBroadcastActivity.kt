@@ -41,7 +41,7 @@ import com.tokopedia.play.broadcaster.view.custom.PlayTermsAndConditionView
 import com.tokopedia.play.broadcaster.view.fragment.*
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
+import com.tokopedia.play.broadcaster.view.fragment.setup.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.extension.awaitResume
