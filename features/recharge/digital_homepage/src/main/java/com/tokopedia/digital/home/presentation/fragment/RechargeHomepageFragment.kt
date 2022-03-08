@@ -114,14 +114,14 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        hideStatusBar()
+
+        if (platformId != RechargeHomepageViewModel.ALL_CATEGORY_PLATFORM_ID)
+            hideStatusBar()
 
         binding.digitalHomepageToolbar.setNavigationOnClickListener { activity?.onBackPressed() }
 
         initSearchView()
-
         calculateToolbarView(0)
-
         setupRecyclerView()
 
         binding.swipeRefreshLayout.setOnRefreshListener {
