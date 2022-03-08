@@ -909,9 +909,8 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
 
     /** End Auto Complete Listener */
 
-    /**
-     * RechargeDenomGridListener
-     */
+    /** Start RechargeDenomGridListener */
+
     override fun onDenomGridClicked(
         denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int,
         productListTitle: String,
@@ -956,9 +955,10 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         }
     }
 
-    /**
-     * RechargeBuyWidgetListener
-     */
+    /** End RechargeDenomGridListener */
+
+    /** Start RechargeBuyWidgetListener */
+
     override fun onClickedButtonLanjutkan(denom: DenomData) {
         viewModel.updateCheckoutPassData(
             denom, userSession.userId.generateRechargeCheckoutToken(),
@@ -985,9 +985,9 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         }
     }
 
-    /**
-     * RechargeRecommendationCardListener
-     */
+    /** End RechargeBuyWidgetListener */
+
+    /** Start RechargeRecommendationCardListener */
 
     override fun onProductRecommendationCardClicked(
         title: String,
@@ -1025,7 +1025,9 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         )
     }
 
-    /** DigitalHistoryIconListener */
+    /** End RechargeRecommendationCardListener */
+
+    /** Start DigitalHistoryIconListener */
 
     override fun onClickDigitalIconHistory() {
         digitalPDPAnalytics.clickTransactionHistoryIcon(
@@ -1035,6 +1037,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         )
     }
 
+    /** End DigitalHistoryIconListener */
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
