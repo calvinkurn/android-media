@@ -74,7 +74,7 @@ class GetProductsInEtalaseUseCase @Inject constructor(
 
         private const val PARAMS_INPUT_KEYWORD = "keyword"
         private const val PARAMS_INPUT_PAGE = "page"
-        private const val PARAMS_INPUT_PER_PAGE = "perPage"
+        private const val PARAMS_INPUT_PER_PAGE = "pageSize"
         private const val PARAMS_INPUT_ETALASE_ID = "menu"
         private const val PARAMS_INPUT_STATUS = "status"
 
