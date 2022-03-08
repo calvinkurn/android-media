@@ -228,8 +228,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetOperatorSelectGroup()
                 is RechargeNetworkResult.Fail -> onFailedGetOperatorSelectGroup(it.error)
-                is RechargeNetworkResult.Loading -> {
-                }
+                is RechargeNetworkResult.Loading -> {}
             }
         })
 
