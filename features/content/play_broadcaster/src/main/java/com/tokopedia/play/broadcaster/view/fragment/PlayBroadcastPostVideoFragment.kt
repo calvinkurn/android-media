@@ -81,6 +81,11 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         setupObservable()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun setupView() {
         binding.icBroSummaryBack.setOnClickListener {
             mListener?.onClickBackButton()
@@ -91,6 +96,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         }
 
         binding.btnPostVideo.setOnClickListener {
+            analytic.clickSaveVodOnReportPage(parentViewModel.channelId)
             viewModel.saveVideo()
         }
     }

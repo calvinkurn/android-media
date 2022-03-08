@@ -97,13 +97,13 @@ class PlayBroadcastReportFragment @Inject constructor(
 
     private fun setupView(view: View) {
         summaryInfoView.entranceAnimation(view as ViewGroup)
+
         icClose.setOnClickListener {
             requireActivity().onBackPressed()
         }
+
         btnPostVideo.setOnClickListener {
             mListener?.onClickPostButton()
-//            analytic.clickSaveVodOnReportPage(parentViewModel.channelId)
-//            viewModel.saveVideo()
         }
     }
 
