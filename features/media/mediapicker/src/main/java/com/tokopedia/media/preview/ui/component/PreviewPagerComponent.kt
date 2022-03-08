@@ -33,6 +33,9 @@ class PreviewPagerComponent(
     fun setupView(medias: List<MediaUiModel>) {
         setData(medias)
         viewPager.adapter = adapter
+        viewPager.post {
+            adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.start()
+        }
     }
 
     fun removeData(media: MediaUiModel) {

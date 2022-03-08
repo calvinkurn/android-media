@@ -26,7 +26,6 @@ class PreviewPagerAdapter constructor(
             .setupView(item)
             .also {
                 container.addView(it)
-                if(position == 0 && item.data.isVideo()) item.mVideoPlayer?.start()
             }
     }
 
@@ -50,4 +49,7 @@ class PreviewPagerAdapter constructor(
         }
     }
 
+    fun getItem(position: Int) : PreviewUiModel? {
+        return if(position >= elements.count()) null else elements[position]
+    }
 }
