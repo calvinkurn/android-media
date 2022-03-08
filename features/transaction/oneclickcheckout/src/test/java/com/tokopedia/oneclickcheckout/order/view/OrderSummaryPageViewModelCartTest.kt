@@ -25,6 +25,9 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequ
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt.Companion.TYPE_DIALOG
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
@@ -1071,4 +1074,77 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(null, orderSummaryPageViewModel.orderPayment.value.creditCard.selectedTerm)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
+
+    @Test
+    fun `WHEN previously no add on selected and then select add on on product level THEN add on price should be updated`() {
+        // Given
+        val saveAddOnStateResult = helper.saveAddOnStateProductLevelResult
+        orderSummaryPageViewModel.orderCart = OrderCart(shop = OrderShop(isFulfillment = false), products = mutableListOf(OrderProduct(cartId = "456", orderQuantity = 1)), cartString = "123")
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProducts.value = orderSummaryPageViewModel.orderCart.products
+
+        // When
+        orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
+
+        // Then
+        assertEquals(1000L, orderSummaryPageViewModel.orderProducts.value.firstOrNull()?.addOn?.addOnsDataItemModelList?.firstOrNull()?.addOnPrice
+                ?: 0)
+    }
+
+    @Test
+    fun `WHEN previously no add on selected and then select add on on shop level THEN add on price should be updated`() {
+        // Given
+        val saveAddOnStateResult = helper.saveAddOnStateShopLevelResult
+        orderSummaryPageViewModel.orderCart = OrderCart(shop = OrderShop(isFulfillment = true), products = mutableListOf(OrderProduct(cartId = "456", orderQuantity = 1)), cartString = "123")
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProducts.value = orderSummaryPageViewModel.orderCart.products
+
+        // When
+        orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
+
+        // Then
+        assertEquals(1000L, orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
+                ?: 0)
+    }
+
+    @Test
+    fun `WHEN previously has add on selected on product level and then select no add on THEN add on price should be updated`() {
+        // Given
+        val saveAddOnStateResult = helper.saveAddOnStateEmptyResult
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(
+                cartId = "456", orderQuantity = 1, addOn = AddOnsDataModel(
+                addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000L))
+        ))), shop = OrderShop(isFulfillment = false), cartString = "123")
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProducts.value = orderSummaryPageViewModel.orderCart.products
+
+        // When
+        orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
+
+        // Then
+        assertEquals(0L, orderSummaryPageViewModel.orderProducts.value.firstOrNull()?.addOn?.addOnsDataItemModelList?.firstOrNull()?.addOnPrice
+                ?: 0)
+    }
+
+    @Test
+    fun `WHEN previously has add on selected on shop level and then select no add on THEN add on price should be updated`() {
+        // Given
+        val saveAddOnStateResult = helper.saveAddOnStateEmptyResult
+        orderSummaryPageViewModel.orderCart = OrderCart(
+                shop = OrderShop(addOn = AddOnsDataModel(
+                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000L))
+                ), isFulfillment = true),
+                products = mutableListOf(OrderProduct(cartId = "456", orderQuantity = 1)), cartString = "123")
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProducts.value = orderSummaryPageViewModel.orderCart.products
+        orderSummaryPageViewModel.orderShop.value = orderSummaryPageViewModel.orderCart.shop
+
+        // When
+        orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
+
+        // Then
+        assertEquals(0L, orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
+                ?: 0)
+    }
+
 }

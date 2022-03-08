@@ -810,7 +810,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                         ?: 0.0
                         )
                 )
-
             } else if (addOnResult.addOnLevel == AddOnConstant.ADD_ON_LEVEL_PRODUCT && addOnResult.addOnKey == "${orderCart.cartString}-${orderProduct.cartId}") {
                 orderProduct.addOn = AddOnMapper.mapAddOnBottomSheetResult(addOnResult)
                 orderProducts.value = listOf(orderProduct)
