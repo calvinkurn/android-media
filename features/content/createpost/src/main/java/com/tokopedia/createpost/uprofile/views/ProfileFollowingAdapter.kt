@@ -62,7 +62,7 @@ open class ProfileFollowingAdapter(
 
     override fun loadData(pageNumber: Int, vararg args: String?) {
         super.loadData(pageNumber, *args)
-        args[0]?.let { viewModel.getFollowings(it, cursor, 10) }
+        args[0]?.let { viewModel.getFollowings(it, cursor, 20) }
     }
 
     fun onSuccess(data: ProfileFollowingListBase) {
