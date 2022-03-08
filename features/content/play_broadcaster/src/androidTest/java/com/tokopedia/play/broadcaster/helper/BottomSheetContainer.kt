@@ -10,7 +10,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
  * Created by kenny.hadisaputra on 02/03/22
  */
 open class BottomSheetContainer(
-    private val creator: (className: String) -> BottomSheetDialogFragment,
+    private val creator: (className: String) -> Fragment,
 ) : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,8 +22,8 @@ open class BottomSheetContainer(
         }
 
         val bottomSheet = childFragmentManager.fragmentFactory
-            .instantiate(requireActivity().classLoader, "") as BottomSheetDialogFragment
+            .instantiate(requireActivity().classLoader, "") as Fragment
 
-        bottomSheet.show(childFragmentManager, "")
+        if (bottomSheet is BottomSheetDialogFragment) bottomSheet.show(childFragmentManager, "")
     }
 }

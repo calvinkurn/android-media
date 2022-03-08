@@ -25,6 +25,7 @@ import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetu
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import io.mockk.mockk
 import org.hamcrest.Description
+import org.hamcrest.TypeSafeMatcher
 
 /**
  * Created by kenny.hadisaputra on 08/03/22
@@ -77,9 +78,7 @@ class EtalaseListRobot(
     }
 
     private fun etalaseMatcher() =
-        object : BoundedMatcher<RecyclerView.ViewHolder, EtalaseListViewHolder.Body>(
-            EtalaseListViewHolder.Body::class.java
-        ) {
+        object : TypeSafeMatcher<EtalaseListViewHolder.Body>() {
 
             override fun describeTo(description: Description) {
                 description.appendText(
@@ -94,11 +93,7 @@ class EtalaseListRobot(
         }
 
     private fun campaignMatcher() =
-        object : BoundedMatcher<RecyclerView.ViewHolder, EtalaseListViewHolder.Body>(
-            EtalaseListViewHolder.Body::class.java
-        ) {
-            private var currentPosition = 0
-
+        object : TypeSafeMatcher<EtalaseListViewHolder.Body>() {
             override fun describeTo(description: Description) {
                 description.appendText(
                     "with condition matches campaign card"

@@ -19,7 +19,7 @@ class ProductSetupContainer(
         productSetupViewModel(handle = it)
     },
     private val onAttach: (child: Fragment) -> Unit = {},
-    creator: (className: String) -> BottomSheetDialogFragment,
+    creator: (className: String) -> Fragment,
 ) : BottomSheetContainer(creator), ViewModelFactoryProvider {
 
     override fun getFactory(): ViewModelProvider.Factory {

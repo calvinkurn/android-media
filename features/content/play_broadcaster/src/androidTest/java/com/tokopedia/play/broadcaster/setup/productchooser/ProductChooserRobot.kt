@@ -13,14 +13,12 @@ import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalyticImpl
 import com.tokopedia.play.broadcaster.helper.analyticUserSession
 import com.tokopedia.play.broadcaster.helper.delay
-import com.tokopedia.play.broadcaster.helper.waitFor
 import com.tokopedia.play.broadcaster.setup.ProductSetupContainer
 import com.tokopedia.play.broadcaster.setup.product.analytic.ProductChooserAnalyticManager
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
