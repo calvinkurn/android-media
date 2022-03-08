@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.view.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -186,9 +185,6 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
             product_detail_back_icon?.setOnClickListener { activity?.finish() }
             show()
         }
-    }
-
-
     }
 
     companion object{
