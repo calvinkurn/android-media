@@ -99,8 +99,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     RechargeDenomGridListener,
     RechargeBuyWidgetListener,
     RechargeRecommendationCardListener,
-    DigitalHistoryIconListener
-{
+    DigitalHistoryIconListener {
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -119,19 +118,17 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private var binding by autoClearedNullable<FragmentDigitalPdpPulsaBinding>()
 
+    private lateinit var localCacheHandler: LocalCacheHandler
+
     private var dynamicSpacerHeightRes = R.dimen.dynamic_banner_space
     private var operator = TelcoOperator()
     private var loyaltyStatus = ""
     private var clientNumber = ""
-
-    private var productId =  0
+    private var productId = 0
     private var productIdFromApplink = 0
-
     private var menuId = 0
     private var categoryId = TelcoCategoryType.CATEGORY_PULSA
     private var inputNumberActionType = InputNumberActionType.MANUAL
-
-    private lateinit var localCacheHandler: LocalCacheHandler
     private var actionTypeTrackingJob: Job? = null
 
     override fun initInjector() {
@@ -203,17 +200,18 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     )
 
                     val isOperatorChanged = operator.id != selectedOperator.operator.id
-                    val productIdFromDefaultPrefix = selectedOperator.operator.attributes.defaultProductId.toIntOrZero()
+                    val productIdFromDefaultPrefix =
+                        selectedOperator.operator.attributes.defaultProductId.toIntOrZero()
 
-                    //set default product id when prefix changed
-                    if (isOperatorChanged && operator.id.isEmpty() && productIdFromApplink.isMoreThanZero()){
+                    /* set default product id when prefix changed */
+                    if (isOperatorChanged && operator.id.isEmpty() && productIdFromApplink.isMoreThanZero()) {
                         productId = productIdFromApplink
-                    } else if (isOperatorChanged && productIdFromDefaultPrefix.isMoreThanZero()){
+                    } else if (isOperatorChanged && productIdFromDefaultPrefix.isMoreThanZero()) {
                         productId = productIdFromDefaultPrefix
                     }
 
                     if (isOperatorChanged || rechargePdpPulsaClientNumberWidget.getInputNumber()
-                            .length in MINIMUM_VALID_NUMBER_LENGTH .. MAXIMUM_VALID_NUMBER_LENGTH
+                            .length in MINIMUM_VALID_NUMBER_LENGTH..MAXIMUM_VALID_NUMBER_LENGTH
                     ) {
                         operator = selectedOperator.operator
                         rechargePdpPulsaClientNumberWidget.run {
@@ -291,11 +289,16 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 is RechargeNetworkResult.Success -> {
 
                     if (productId >= 0) {
-                        viewModel.setAutoSelectedDenom(denomData.data.denomWidgetModel.listDenomData, productId.toString())
+                        viewModel.setAutoSelectedDenom(
+                            denomData.data.denomWidgetModel.listDenomData,
+                            productId.toString()
+                        )
                     }
 
-                    val selectedPositionDenom = viewModel.getSelectedPositionId(denomData.data.denomWidgetModel.listDenomData)
-                    val selectedPositionMCCM = viewModel.getSelectedPositionId(denomData.data.mccmFlashSaleModel.listDenomData)
+                    val selectedPositionDenom =
+                        viewModel.getSelectedPositionId(denomData.data.denomWidgetModel.listDenomData)
+                    val selectedPositionMCCM =
+                        viewModel.getSelectedPositionId(denomData.data.mccmFlashSaleModel.listDenomData)
 
                     onSuccessDenomGrid(denomData.data.denomWidgetModel, selectedPositionDenom)
                     onSuccessMCCM(denomData.data.mccmFlashSaleModel, selectedPositionMCCM)
@@ -317,8 +320,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             }
         })
 
-        viewModel.addToCartResult.observe(viewLifecycleOwner,{ atcData ->
-            when(atcData) {
+        viewModel.addToCartResult.observe(viewLifecycleOwner, { atcData ->
+            when (atcData) {
                 is RechargeNetworkResult.Success -> {
                     onLoadingBuyWidget(false)
                     digitalPDPTelcoAnalytics.addToCart(
@@ -370,8 +373,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private fun getCatalogProductInput(selectedOperatorKey: String) {
         viewModel.setRechargeCatalogInputMultiTabLoading()
         viewModel.cancelCatalogProductJob()
-        viewModel.getRechargeCatalogInputMultiTab(menuId, selectedOperatorKey,
-            binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?: "")
+        viewModel.getRechargeCatalogInputMultiTab(
+            menuId, selectedOperatorKey,
+            binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?: ""
+        )
     }
 
     private fun getCatalogMenuDetail() {
@@ -386,11 +391,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private fun getFavoriteNumber() {
         viewModel.setFavoriteNumberLoading()
-        viewModel.getFavoriteNumber(listOf(
-            TelcoCategoryType.CATEGORY_PULSA,
-            TelcoCategoryType.CATEGORY_PAKET_DATA,
-            TelcoCategoryType.CATEGORY_ROAMING
-        ))
+        viewModel.getFavoriteNumber(
+            listOf(
+                TelcoCategoryType.CATEGORY_PULSA,
+                TelcoCategoryType.CATEGORY_PAKET_DATA,
+                TelcoCategoryType.CATEGORY_ROAMING
+            )
+        )
     }
 
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
@@ -404,7 +411,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
-            if (clientNumber.isNotEmpty()){
+            if (clientNumber.isNotEmpty()) {
                 setInputNumber(clientNumber, true)
             } else {
                 setContactName(data.clientName)
@@ -413,14 +420,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onFailedRecommendation(){
+    private fun onFailedRecommendation() {
         binding?.rechargePdpPulsaRecommendationWidget?.renderFailRecommendation()
     }
 
     private fun onSuccessGetFavoriteNumber(favoriteNumber: List<TopupBillsPersoFavNumberItem>) {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
-        setFilterChipShimmer(false, favoriteNumber.isEmpty())
-            if (favoriteNumber.isNotEmpty()){
+            setFilterChipShimmer(false, favoriteNumber.isEmpty())
+            if (favoriteNumber.isNotEmpty()) {
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
                 setAutoCompleteList(favoriteNumber)
@@ -479,7 +486,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private fun initClientNumberWidget() {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             setCustomInputNumberFormatter { inputNumber ->
-                CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber) }
+                CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber)
+            }
             setInputFieldStaticLabel(
                 getString(
                     com.tokopedia.recharge_component.R.string.label_recharge_client_number_telco
@@ -530,7 +538,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
                     override fun isKeyboardShown(): Boolean {
                         context?.let {
-                            val inputMethodManager = it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                            val inputMethodManager =
+                                it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                             return inputMethodManager.isAcceptingText
                         }
                         return false
@@ -630,7 +639,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
                 object : PermissionCheckerHelper.PermissionCheckListener {
                     override fun onPermissionDenied(permissionText: String) {
-                        navigateSavedNumber(clientNumber, dgCategoryIds, categoryName, isSwitchChecked)
+                        navigateSavedNumber(
+                            clientNumber,
+                            dgCategoryIds,
+                            categoryName,
+                            isSwitchChecked
+                        )
                         localCacheHandler.run {
                             putBoolean(FAVNUM_PERMISSION_CHECKER_IS_DENIED, true)
                             applyEditor()
@@ -642,7 +656,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     }
 
                     override fun onPermissionGranted() {
-                        navigateSavedNumber(clientNumber, dgCategoryIds, categoryName, isSwitchChecked)
+                        navigateSavedNumber(
+                            clientNumber,
+                            dgCategoryIds,
+                            categoryName,
+                            isSwitchChecked
+                        )
                     }
                 }
             )
@@ -680,12 +699,16 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private fun onSuccessDenomGrid(denomData: DenomWidgetModel, selectedPosition: Int?) {
         binding?.let {
             var selectedInitialPosition = selectedPosition
-            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.GRID_TYPE)){
+            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.GRID_TYPE)) {
                 onShowBuyWidget(viewModel.selectedGridProduct.denomData)
             } else {
                 selectedInitialPosition = null
             }
-            it.rechargePdpPulsaDenomGridWidget.renderDenomGridLayout(this, denomData, selectedInitialPosition)
+            it.rechargePdpPulsaDenomGridWidget.renderDenomGridLayout(
+                this,
+                denomData,
+                selectedInitialPosition
+            )
             it.rechargePdpPulsaDenomGridWidget.show()
         }
     }
@@ -705,7 +728,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onClearSelectedDenomGrid(){
+    private fun onClearSelectedDenomGrid() {
         binding?.let {
             it.rechargePdpPulsaDenomGridWidget.clearSelectedProduct()
         }
@@ -722,7 +745,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onShimmeringRecommendation(){
+    private fun onShimmeringRecommendation() {
         binding?.let {
             it.rechargePdpPulsaRecommendationWidget.show()
             it.rechargePdpPulsaRecommendationWidget.renderShimmering()
@@ -732,42 +755,44 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private fun onSuccessMCCM(denomGrid: DenomWidgetModel, selectedPosition: Int?) {
         binding?.let {
             var selectedInitialPosition = selectedPosition
-            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.MCCM_GRID_TYPE)){
+            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.MCCM_GRID_TYPE)) {
                 onShowBuyWidget(viewModel.selectedGridProduct.denomData)
             } else {
                 selectedInitialPosition = null
             }
             it.rechargePdpPulsaPromoWidget.show()
-            it.rechargePdpPulsaPromoWidget.renderMCCMGrid(this, denomGrid,
-                getString(com.tokopedia.unifyprinciples.R.color.Unify_N0), selectedInitialPosition)
+            it.rechargePdpPulsaPromoWidget.renderMCCMGrid(
+                this, denomGrid,
+                getString(com.tokopedia.unifyprinciples.R.color.Unify_N0), selectedInitialPosition
+            )
         }
     }
 
-    private fun onLoadingAndFailMCCM(){
+    private fun onLoadingAndFailMCCM() {
         binding?.let {
             it.rechargePdpPulsaPromoWidget.renderFailMCCMGrid()
         }
     }
 
-    private fun onClearSelectedMCCM(){
+    private fun onClearSelectedMCCM() {
         binding?.let {
             it.rechargePdpPulsaPromoWidget.clearSelectedProduct()
         }
     }
 
-    private fun onShowBuyWidget(denomGrid: DenomData){
+    private fun onShowBuyWidget(denomGrid: DenomData) {
         binding?.let {
             it.rechargePdpPulsaBuyWidget.showBuyWidget(denomGrid, this)
         }
     }
 
-    private fun onHideBuyWidget(){
+    private fun onHideBuyWidget() {
         binding?.let {
             it.rechargePdpPulsaBuyWidget.hideBuyWidget()
         }
     }
 
-    private fun onLoadingBuyWidget(isLoading: Boolean){
+    private fun onLoadingBuyWidget(isLoading: Boolean) {
         binding?.let {
             it.rechargePdpPulsaBuyWidget.isLoadingButton(isLoading)
         }
@@ -781,18 +806,21 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     TickerData(
                         item.name, item.content,
                         when (item.type) {
-                            "warning" -> Ticker.TYPE_WARNING
-                            "info" -> Ticker.TYPE_INFORMATION
-                            "success" -> Ticker.TYPE_ANNOUNCEMENT
-                            "error" -> Ticker.TYPE_ERROR
+                            TopupBillsTicker.TYPE_WARNING -> Ticker.TYPE_WARNING
+                            TopupBillsTicker.TYPE_INFO -> Ticker.TYPE_INFORMATION
+                            TopupBillsTicker.TYPE_SUCCESS -> Ticker.TYPE_ANNOUNCEMENT
+                            TopupBillsTicker.TYPE_ERROR -> Ticker.TYPE_ERROR
                             else -> Ticker.TYPE_INFORMATION
                         }
                     )
                 )
             }
             binding?.rechargePdpPulsaTicker?.run {
-                addPagerView(TickerPagerAdapter(
-                    this@DigitalPDPPulsaFragment.requireContext(), messages), messages)
+                addPagerView(
+                    TickerPagerAdapter(
+                        this@DigitalPDPPulsaFragment.requireContext(), messages
+                    ), messages
+                )
                 show()
             }
         } else {
@@ -861,8 +889,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private fun handleCallbackSavedNumber(
         clientName: String,
         clientNumber: String,
-        productId: String,
-        categoryId: String,
         inputNumberActionTypeIndex: Int
     ) {
         if (!inputNumberActionTypeIndex.isLessThanZero()) {
@@ -918,10 +944,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private fun navigateToCart(categoryId: String) {
         context?.let { context ->
-                val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.CHECKOUT_DIGITAL)
-                viewModel.updateCategoryCheckoutPassData(categoryId)
-                intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, viewModel.digitalCheckoutPassData)
-                startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
+            val intent =
+                RouteManager.getIntent(context, ApplinkConsInternalDigital.CHECKOUT_DIGITAL)
+            viewModel.updateCategoryCheckoutPassData(categoryId)
+            intent.putExtra(
+                DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA,
+                viewModel.digitalCheckoutPassData
+            )
+            startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
         }
     }
 
@@ -943,19 +973,19 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun getDataFromBundle(){
-            arguments?.run {
-                val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM)
-                    ?: TopupBillsExtraParam()
-                clientNumber = digitalTelcoExtraParam.clientNumber
-                productIdFromApplink = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
-                if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
-                    categoryId = digitalTelcoExtraParam.categoryId.toInt()
-                }
-                if (digitalTelcoExtraParam.menuId.isNotEmpty()){
-                    menuId = digitalTelcoExtraParam.menuId.toIntOrNull() ?: 0
-                }
+    private fun getDataFromBundle() {
+        arguments?.run {
+            val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM)
+                ?: TopupBillsExtraParam()
+            clientNumber = digitalTelcoExtraParam.clientNumber
+            productIdFromApplink = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
+            if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
+                categoryId = digitalTelcoExtraParam.categoryId.toInt()
             }
+            if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
+                menuId = digitalTelcoExtraParam.menuId.toIntOrNull() ?: 0
+            }
+        }
 
         if (!clientNumber.isNullOrEmpty()) {
             binding?.rechargePdpPulsaClientNumberWidget?.run {
@@ -975,9 +1005,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         )
     }
 
-    private fun addToCart(){
+    private fun addToCart() {
         viewModel.setAddToCartLoading()
-        viewModel.addToCart(DeviceUtil.getDigitalIdentifierParam(requireActivity()),
+        viewModel.addToCart(
+            DeviceUtil.getDigitalIdentifierParam(requireActivity()),
             DigitalSubscriptionParams(),
             userSession.userId
         )
@@ -992,13 +1023,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         startActivityForResult(intent, requestCode)
     }
 
-    /**
-     * RechargeDenomGridListener
-     */
-    override fun onDenomGridClicked(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int,
-                                    productListTitle: String,
-                                    isShowBuyWidget: Boolean) {
-        if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE){
+    /** Start RechargeDenomGridListener */
+
+    override fun onDenomGridClicked(
+        denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int,
+        productListTitle: String,
+        isShowBuyWidget: Boolean
+    ) {
+        if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE) {
             onClearSelectedDenomGrid()
             digitalPDPTelcoAnalytics.clickMCCMProduct(
                 productListTitle,
@@ -1010,7 +1042,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 layoutType,
                 position
             )
-        } else if (layoutType == DenomWidgetEnum.GRID_TYPE){
+        } else if (layoutType == DenomWidgetEnum.GRID_TYPE) {
             digitalPDPTelcoAnalytics.clickProductCluster(
                 productListTitle,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -1033,8 +1065,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onDenomGridImpression(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int) {
-        if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE){
+    override fun onDenomGridImpression(
+        denomGrid: DenomData,
+        layoutType: DenomWidgetEnum,
+        position: Int
+    ) {
+        if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE) {
             digitalPDPTelcoAnalytics.impressionProductMCCM(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
@@ -1044,7 +1080,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 layoutType,
                 position
             )
-        } else if (layoutType == DenomWidgetEnum.GRID_TYPE){
+        } else if (layoutType == DenomWidgetEnum.GRID_TYPE) {
             digitalPDPTelcoAnalytics.impressionProductCluster(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
@@ -1056,16 +1092,17 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    /**
-     * RechargeBuyWidgetListener
-     */
+    /** End RechargeDenomGridListener */
+
+    /** Start RechargeBuyWidgetListener */
+
     override fun onClickedButtonLanjutkan(denom: DenomData) {
         viewModel.updateCheckoutPassData(
             denom, userSession.userId.generateRechargeCheckoutToken(),
-            binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?:"",
+            binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?: "",
             operator.id
         )
-        if (userSession.isLoggedIn){
+        if (userSession.isLoggedIn) {
             addToCart()
         } else {
             navigateToLoginPage()
@@ -1085,11 +1122,15 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    /**
-     * RechargeRecommendationCardListener
-     */
+    /** End RechargeBuyWidgetListener */
 
-    override fun onProductRecommendationCardClicked(title: String, recommendation: RecommendationCardWidgetModel, position: Int) {
+    /** Start RechargeRecommendationCardListener */
+
+    override fun onProductRecommendationCardClicked(
+        title: String,
+        recommendation: RecommendationCardWidgetModel,
+        position: Int
+    ) {
         digitalPDPTelcoAnalytics.clickLastTransactionIcon(
             title,
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -1107,7 +1148,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onProductRecommendationCardImpression(recommendation: RecommendationCardWidgetModel, position: Int) {
+    override fun onProductRecommendationCardImpression(
+        recommendation: RecommendationCardWidgetModel,
+        position: Int
+    ) {
         digitalPDPTelcoAnalytics.impressionLastTransactionIcon(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             operator.attributes.name,
@@ -1118,7 +1162,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         )
     }
 
-    /** DigitalHistoryIconListener */
+    /** End RechargeRecommendationCardListener */
+
+    /** Start DigitalHistoryIconListener */
 
     override fun onClickDigitalIconHistory() {
         digitalPDPTelcoAnalytics.clickTransactionHistoryIcon(
@@ -1127,6 +1173,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             userSession.userId
         )
     }
+
+    /** End DigitalHistoryIconListener */
 
     override fun onDestroyView() {
         binding?.root?.let {
@@ -1162,15 +1210,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     handleCallbackSavedNumber(
                         orderClientNumber.clientName,
                         orderClientNumber.clientNumber,
-                        orderClientNumber.productId,
-                        orderClientNumber.categoryId,
                         orderClientNumber.inputNumberActionTypeIndex
                     )
                 } else {
                     handleCallbackAnySavedNumberCancel()
                 }
                 getFavoriteNumber()
-            } else if (requestCode == REQUEST_CODE_LOGIN ) {
+            } else if (requestCode == REQUEST_CODE_LOGIN) {
                 addToCart()
             } else if (requestCode == REQUEST_CODE_LOGIN_ALT) {
                 addToCartFromUrl()
@@ -1179,12 +1225,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     companion object {
-
-        fun newInstance(telcoExtraParam: TopupBillsExtraParam)  = DigitalPDPPulsaFragment().also {
+        fun newInstance(telcoExtraParam: TopupBillsExtraParam) = DigitalPDPPulsaFragment().also {
             val bundle = Bundle()
             bundle.putParcelable(EXTRA_PARAM, telcoExtraParam)
             it.arguments = bundle
         }
-
     }
 }
