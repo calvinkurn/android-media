@@ -10,7 +10,7 @@
         android:layout_height="@dimen/layout_lvl5"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"
-        app:loader_corner_radius="8dp"
+        app:loader_corner_radius="4dp"
         app:loader_type="rect"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
@@ -20,7 +20,7 @@
         android:layout_width="@dimen/dp_168"
         android:layout_height="12dp"
         android:layout_marginStart="@dimen/layout_lvl2"
-        app:loader_corner_radius="8dp"
+        app:loader_corner_radius="4dp"
         app:loader_type="rect"
         app:layout_constraintTop_toTopOf="@id/talk_inbox_shimmer_thumbnail"
         app:layout_constraintStart_toEndOf="@id/talk_inbox_shimmer_thumbnail"/>
@@ -30,7 +30,7 @@
         android:layout_width="@dimen/layout_lvl4"
         android:layout_height="12dp"
         android:layout_marginEnd="@dimen/layout_lvl2"
-        app:loader_corner_radius="8dp"
+        app:loader_corner_radius="4dp"
         app:loader_type="rect"
         app:layout_constraintTop_toTopOf="@id/talk_inbox_shimmer_thumbnail"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -40,7 +40,7 @@
         android:layout_width="@dimen/dp_204"
         android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl1"
-        app:loader_corner_radius="8dp"
+        app:loader_corner_radius="4dp"
         app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/talk_inbox_shimmer_title"
         app:layout_constraintStart_toStartOf="@id/talk_inbox_shimmer_title"/>
@@ -50,7 +50,7 @@
         android:layout_width="@dimen/dp_204"
         android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl1"
-        app:loader_corner_radius="8dp"
+        app:loader_corner_radius="4dp"
         app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/talk_inbox_shimmer_subtitle"
         app:layout_constraintStart_toStartOf="@id/talk_inbox_shimmer_title"/>
@@ -60,7 +60,7 @@
         android:layout_width="@dimen/dp_80"
         android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl1"
-        app:loader_corner_radius="8dp"
+        app:loader_corner_radius="4dp"
         app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/talk_inbox_body"
         app:layout_constraintStart_toStartOf="@id/talk_inbox_shimmer_title"/>

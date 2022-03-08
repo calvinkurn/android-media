@@ -20,7 +20,7 @@
             android:layout_width="@dimen/home_account_dp_118"
             android:layout_height="@dimen/layout_lvl1"
             android:layout_marginStart="@dimen/spacing_lvl4"
-            app:loader_corner_radius="8dp"
+            app:loader_corner_radius="4dp"
             app:loader_type="rect"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -29,7 +29,7 @@
             android:layout_width="@dimen/home_account_dp_200"
             android:layout_height="@dimen/layout_lvl1"
             android:layout_marginTop="@dimen/unify_space_12"
-            app:loader_corner_radius="8dp"
+            app:loader_corner_radius="4dp"
             app:loader_type="rect"
             app:layout_constraintStart_toStartOf="@+id/loaderTextView"
             app:layout_constraintTop_toBottomOf="@+id/loaderTextView" />

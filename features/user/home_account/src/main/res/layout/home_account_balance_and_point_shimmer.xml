@@ -11,7 +11,7 @@
         android:id="@+id/home_account_expandable_layout_title"
         android:layout_width="@dimen/home_account_dp_80"
         android:layout_height="@dimen/home_account_shimmer_text_title_height"
-        app:loader_corner_radius="6dp"
+        app:loader_corner_radius="4dp"
         app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
