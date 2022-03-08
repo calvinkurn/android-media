@@ -10,12 +10,10 @@ import android.view.ViewGroup
 import android.widget.RadioGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -39,6 +37,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_SHIPMENT_TRACE
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import com.tokopedia.product.addedit.common.AddEditProductFragment
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_INPUT_MODEL
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISADDING
@@ -101,7 +100,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class AddEditProductShipmentFragment:
-        BaseDaggerFragment(),
+        AddEditProductFragment(),
         AddEditProductPerformanceMonitoringListener {
 
     private var mainLayout: ViewGroup? = null
@@ -190,6 +189,9 @@ class AddEditProductShipmentFragment:
 
         // set bg color programatically, to reduce overdraw
         setFragmentToUnifyBgColor()
+
+        // set navigation highlight
+        highlightNavigationButton(PageIndicator.INDICATOR_SHIPMENT_PAGE)
 
         // to check whether current fragment is visible or not
         isFragmentVisible = true
@@ -493,6 +495,7 @@ class AddEditProductShipmentFragment:
     private fun showDialogStandardShipment() {
         DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
             setTitle(getString(R.string.title_standard_shipment))
+            setDefaultMaxWidth()
             setDescription(getString(R.string.description_standard_shipment))
             setPrimaryCTAText(getString(R.string.primary_button_standard_shipment))
             setSecondaryCTAText(getString(R.string.secondary_button_standard_shipment))
@@ -685,7 +688,7 @@ class AddEditProductShipmentFragment:
         }
         bottomSheet.setIsSavingToDraft(true)
         bottomSheet.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button_draft))
-        bottomSheet.show(childFragmentManager)
+        bottomSheet.show(childFragmentManager, context)
     }
 
     private fun showUnitWeightOption() {
