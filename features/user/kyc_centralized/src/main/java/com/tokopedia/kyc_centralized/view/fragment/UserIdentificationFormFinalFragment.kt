@@ -261,10 +261,6 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
 
     private fun setContentView() {
         loadingLayout?.visibility = View.GONE
-        uploadKycFiles(
-                isKtpFileUsingEncryption = true,
-                isFaceFileUsingEncryption = true
-        )
         if (activity is UserIdentificationFormActivity) {
             (activity as UserIdentificationFormActivity)
                     .updateToolbarTitle(getString(R.string.title_kyc_form_upload))
@@ -610,8 +606,8 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                 }
                 else -> {
                     uploadKycFiles(
-                            isKtpFileUsingEncryption = true,
-                            isFaceFileUsingEncryption = true
+                            isKtpFileUsingEncryption = false,
+                            isFaceFileUsingEncryption = false
                     )
                 }
             }
