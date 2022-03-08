@@ -201,14 +201,15 @@ class PdpFintechWidget @JvmOverloads constructor(
         fintechWidgetViewHolder: ProductUpdateListner
     ) {
         try {
+            =    instanceProductUpdateListner?.removeWidget()
             this.productID = productID
             this.instanceProductUpdateListner = fintechWidgetViewHolder
-                categoryId?.let {
-                    fintechWidgetViewModel.getWidgetData(
-                        it,
-                        idToPriceUrlMap
-                    )
-                }
+            categoryId?.let {
+                fintechWidgetViewModel.getWidgetData(
+                    it,
+                    idToPriceUrlMap
+                )
+            }
         } catch (e: Exception) {
             instanceProductUpdateListner?.removeWidget()
         }
