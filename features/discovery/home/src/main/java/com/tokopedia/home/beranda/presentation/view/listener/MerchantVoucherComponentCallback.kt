@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.presentation.view.listener
 import com.tokopedia.home.analytics.v2.MerchantVoucherTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.listener.MerchantVoucherComponentListener
-import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherImpressed
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherShopClicked
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMerchantVoucherDataModel
 import com.tokopedia.track.TrackApp
@@ -14,9 +13,9 @@ import com.tokopedia.track.TrackApp
 class MerchantVoucherComponentCallback(val homeCategoryListener: HomeCategoryListener) :
     MerchantVoucherComponentListener {
 
-    override fun onMerchantImpressed(merchantVoucherImpressed: MerchantVoucherImpressed) {
+    override fun onMerchantImpressed(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int) {
         homeCategoryListener.getTrackingQueueObj()?.putEETracking(
-                MerchantVoucherTracking.getMerchantVoucherView(merchantVoucherImpressed) as HashMap<String, Any>)
+                MerchantVoucherTracking.getMerchantVoucherView(element, horizontalPosition) as HashMap<String, Any>)
     }
 
     override fun onProductClicked(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int) {

@@ -5,7 +5,6 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeBannerItemMerchantVoucherBinding
-import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherImpressed
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherShopClicked
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMerchantVoucherDataModel
 import com.tokopedia.home_component.util.loadImageNoRounded
@@ -72,20 +71,7 @@ class CarouselMerchantVoucherViewHolder (
             element.merchantVoucherComponentListener.onProductClicked(element, adapterPosition)
         }
         itemView.addOnImpressionListener(element.impressHolder) {
-            val horizontalPosition = "${adapterPosition + 1}"
-            element.merchantVoucherComponentListener.onMerchantImpressed(
-                MerchantVoucherImpressed(
-                    couponCode = element.couponCode,
-                    couponType = element.couponType,
-                    creativeName = element.creativeName,
-                    cardPositionHorizontal = horizontalPosition,
-                    bannerId = element.bannerId,
-                    shopId = element.shopId,
-                    positionWidget = element.positionWidget,
-                    headerName = element.headerName,
-                    userId = element.userId
-                )
-            )
+            element.merchantVoucherComponentListener.onMerchantImpressed(element, adapterPosition)
         }
     }
 }

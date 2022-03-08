@@ -1,7 +1,6 @@
 package com.tokopedia.home.analytics.v2
 
 import android.os.Bundle
-import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherImpressed
 import com.tokopedia.home_component.model.merchantvoucher.MerchantVoucherShopClicked
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMerchantVoucherDataModel
 import com.tokopedia.track.builder.BaseTrackerBuilder
@@ -116,21 +115,21 @@ object MerchantVoucherTracking : BaseTrackerConst() {
         return Pair(Event.CLICK_HOMEPAGE, bundle)
     }
 
-    fun getMerchantVoucherView(merchantVoucherImpressed: MerchantVoucherImpressed) : Map<String, Any> {
+    fun getMerchantVoucherView(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int) : Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         val creativeName = CustomAction.CREATIVE_NAME_VIEW_COUPON_FORMAT.format(
-            merchantVoucherImpressed.couponCode,
-            merchantVoucherImpressed.couponType,
-            merchantVoucherImpressed.creativeName
+            element.couponCode,
+            element.couponType,
+            element.creativeName
         )
-        val creativeSlot = merchantVoucherImpressed.cardPositionHorizontal
+        val creativeSlot = (horizontalPosition + 1).toString()
         val itemId = CustomAction.ITEM_ID_FORMAT.format(
-            merchantVoucherImpressed.bannerId,
-            merchantVoucherImpressed.shopId
+            element.bannerId,
+            element.shopId
         )
         val itemName = CustomAction.ITEM_NAME_VOUCHER_DETAIL_FORMAT.format(
-            merchantVoucherImpressed.positionWidget,
-            merchantVoucherImpressed.headerName
+            element.positionWidget,
+            element.headerName
         )
         val listPromotions = arrayListOf(
             Promotion(
@@ -148,7 +147,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
                 promotions = listPromotions)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(merchantVoucherImpressed.userId)
+                .appendUserId(element.userId)
                 .build()
     }
 }
