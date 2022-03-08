@@ -97,6 +97,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     private var globalErrorPost: GlobalError? = null
     private var isSwipeRefresh: Boolean? = null
     private var isNewlyCreated: Boolean? = false
+    private var isViewMoreClickedBio: Boolean? = false
 
     private val mPresenter: UserProfileViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(UserProfileViewModel::class.java)
@@ -549,8 +550,13 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             textBio?.text = context?.let { HtmlLinkHelper(it, data.profileHeader.profile.biography).spannedString }
 
             if (textBio?.lineCount > 3) {
-                textBio.maxLines = 3
-                textSeeMore?.show()
+                if(isViewMoreClickedBio == true) {
+                    textBio.maxLines = 20
+                    textSeeMore?.hide()
+                } else {
+                    textBio.maxLines = 3
+                    textSeeMore?.show()
+                }
             } else {
                 textSeeMore?.hide()
             }
@@ -730,6 +736,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 val btnSeeAll = view?.findViewById<TextView>(R.id.text_see_more)
                 textBio?.maxLines = 20
                 btnSeeAll?.hide()
+                isViewMoreClickedBio = true;
             }
         }
     }
