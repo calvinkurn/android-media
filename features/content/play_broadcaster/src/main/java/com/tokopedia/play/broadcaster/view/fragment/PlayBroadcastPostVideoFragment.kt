@@ -13,6 +13,7 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPostVideoBinding
 import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.TagListViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
@@ -82,6 +83,9 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         binding.icBroSummaryBack.setOnClickListener {
             mListener?.onClickBackButton()
         }
+        binding.clCoverPreview.setOnClickListener {
+            openCoverSetupFragment()
+        }
     }
 
     private fun setupObservable() {
@@ -108,6 +112,13 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         tagViewModel.observableRecommendedTagsModel.observe(viewLifecycleOwner) {
             tagListView.setTags(it.toList())
         }
+    }
+
+    private fun openCoverSetupFragment() {
+        val setupClass = PlayBroadcastSetupBottomSheet::class.java
+        val fragmentFactory = childFragmentManager.fragmentFactory
+        val setupFragment = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as PlayBroadcastSetupBottomSheet
+        setupFragment.show(childFragmentManager)
     }
 
     /**

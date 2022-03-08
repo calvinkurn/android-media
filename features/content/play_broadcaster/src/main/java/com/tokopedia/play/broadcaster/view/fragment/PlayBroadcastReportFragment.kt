@@ -165,6 +165,7 @@ class PlayBroadcastReportFragment @Inject constructor(
         viewModel.observableReportDuration.observe(viewLifecycleOwner, Observer(this@PlayBroadcastReportFragment::setLiveDuration))
     }
 
+    /** TODO("should be moved to PlayBroadcastPostVideoFragment") */
     private fun observeSaveVideo() {
         viewModel.observableSaveVideo.observe(viewLifecycleOwner) {
             when (it) {

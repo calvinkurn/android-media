@@ -227,7 +227,7 @@ class PlayBroadcastSetupBottomSheet :
         flOverlay.setOnClickListener { dialog?.onBackPressed() }
 
         navigateToFragment(
-                PlayEtalasePickerFragment::class.java
+            PlayCoverSetupFragment::class.java
         )
     }
 
