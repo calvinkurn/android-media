@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/header_shop_set_operational_hours"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_title="@string/shop_settings_set_operational_hours"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_action_text="@string/label_reset" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/ops_hour_list_loader"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:loader_type="circular"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:id="@+id/ops_hour_list_content_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/header_shop_set_operational_hours"
+        app:layout_constraintBottom_toTopOf="@id/cv_save_ops_hour_container">
+
+        <com.tokopedia.accordion.AccordionUnify
+            android:id="@+id/shop_ops_hour_list_accordion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </ScrollView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_save_ops_hour_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:elevation="16dp"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="16dp"
+        app:cardBackgroundColor="@color/Unify_Background"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_ops_hour_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/label_save"
+            app:unifyButtonVariant="filled"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="main"
+            />
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

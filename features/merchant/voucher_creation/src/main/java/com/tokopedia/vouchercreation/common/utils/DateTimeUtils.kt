@@ -21,6 +21,7 @@ object DateTimeUtils {
 
     const val DASH_DATE_FORMAT = "yyyy-MM-dd"
     const val DATE_FORMAT = "dd MMM yyyy"
+    const val DATE_FORMAT_DAY_MONTH = "dd MMM"
     const val HOUR_FORMAT = "HH:mm"
 
     const val EXTRA_HOUR = 3
@@ -28,7 +29,6 @@ object DateTimeUtils {
     const val EXTRA_WEEK = 7
     const val EXTRA_DAYS = 30
     const val MINUTE_INTERVAL = 30
-
 
     private const val DISPLAYED_DATE_FORMAT = "dd MMM yyyy"
     private const val RAW_DATE_FORMAT = "yyyy-MM-dd"

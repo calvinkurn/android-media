@@ -21,7 +21,6 @@ import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSaveStateUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupConfig
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
 import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseChipsViewComponent
@@ -272,8 +271,9 @@ class ProductChooserBottomSheet @Inject constructor(
             productListView.setProductList(
                 productList = productListPaging.productList,
                 selectedList = selectedProducts,
-                showLoading = productListPaging.resultState !is PageResultState.Success ||
-                        productListPaging.resultState.hasNextPage,
+                showLoading = productListPaging.resultState == PageResultState.Loading ||
+                        (productListPaging.resultState is PageResultState.Success &&
+                        productListPaging.resultState.hasNextPage),
             )
         }
     }
@@ -282,7 +282,7 @@ class ProductChooserBottomSheet @Inject constructor(
         prevParam: ProductListPaging.Param?,
         param: ProductListPaging.Param,
     ) {
-        if (prevParam?.sort?.id != param.sort?.id) {
+        if (prevParam?.sort != param.sort) {
             sortChipsView.setText(param.sort?.text)
         }
 
@@ -365,7 +365,11 @@ class ProductChooserBottomSheet @Inject constructor(
         campaignAndEtalase: CampaignAndEtalaseUiModel,
         productList: ProductListPaging,
     ) {
-        if (isProductEmpty(productList)) {
+        if (productList.resultState is PageResultState.Fail) {
+            productErrorView.setServerError()
+            productErrorView.show()
+        }
+        else if (isProductEmpty(productList)) {
             if (isEtalaseEmpty(campaignAndEtalase)) productErrorView.setHasNoProduct()
             else productErrorView.setProductNotFound()
 
@@ -393,7 +397,7 @@ class ProductChooserBottomSheet @Inject constructor(
                 ProductSortBottomSheet.getFragment(
                     childFragmentManager,
                     requireActivity().classLoader,
-                    selectedId = viewModel.uiState.value.loadParam.sort?.id
+                    selected = viewModel.uiState.value.loadParam.sort,
                 ).show(childFragmentManager)
             }
         }
@@ -440,6 +444,9 @@ class ProductChooserBottomSheet @Inject constructor(
         when (event) {
             ProductErrorViewComponent.Event.AddProductClicked -> {
                 RouteManager.route(context, ApplinkConst.PRODUCT_ADD)
+            }
+            ProductErrorViewComponent.Event.RetryClicked -> {
+                eventBus.emit(ProductSetupAction.RetryFetchProducts)
             }
         }
     }

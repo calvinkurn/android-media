@@ -23,8 +23,6 @@ import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.fragment.ProductVideoDetailFragment
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -87,7 +85,6 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     private var extParam: String? = null
     private var userSessionInterface: UserSessionInterface? = null
     private var productDetailComponent: ProductDetailComponent? = null
-    var remoteConfig: RemoteConfig? = null
 
     //Performance Monitoring
     var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -228,7 +225,6 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
 
     override fun onCreate(savedInstanceState: Bundle?) {
         userSessionInterface = UserSession(this)
-        remoteConfig = FirebaseRemoteConfigImpl(this)
         isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
         val uri = intent.data
         val bundle = intent.extras
