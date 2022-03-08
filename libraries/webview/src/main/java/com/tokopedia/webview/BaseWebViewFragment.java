@@ -12,6 +12,7 @@ import static com.tokopedia.webview.ConstantKt.KEY_URL;
 import static com.tokopedia.webview.ConstantKt.PARAM_EXTERNAL_TRUE;
 import static com.tokopedia.webview.ConstantKt.SEAMLESS;
 import static com.tokopedia.webview.ConstantKt.STAGING;
+import static com.tokopedia.webview.ConstantKt.ZOOM_US_STRING;
 import static com.tokopedia.webview.ext.UrlEncoderExtKt.encodeOnce;
 
 import android.annotation.TargetApi;
@@ -125,7 +126,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @NonNull
     protected String url = "";
     public static final String TOKOPEDIA_STRING = "tokopedia";
-    public static final String ZOOM_US_STRING = "zoom.us";
     protected boolean isTokopediaUrl;
     boolean allowOverride = true;
     boolean pullToRefresh = false;
