@@ -5,7 +5,6 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroProductRepository
 import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetSelfEtalaseListUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.GetShopProductsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetCampaignListUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetProductsInCampaignUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetProductTagSummarySectionUseCase
@@ -62,7 +61,7 @@ class PlayBroProductRepositoryImpl @Inject constructor(
             params = GetProductsInEtalaseUseCase.createParams(
                 shopId = userSession.shopId,
                 page = page,
-                perPage = PRODUCTS_IN_ETALASE_PER_PAGE,
+                pageSize = PRODUCTS_IN_ETALASE_PER_PAGE,
                 etalaseId = etalaseId,
                 keyword = keyword,
                 sort = sort,

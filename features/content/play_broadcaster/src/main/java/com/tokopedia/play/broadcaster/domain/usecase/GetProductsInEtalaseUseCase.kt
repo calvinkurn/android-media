@@ -74,14 +74,14 @@ class GetProductsInEtalaseUseCase @Inject constructor(
 
         private const val PARAMS_INPUT_KEYWORD = "keyword"
         private const val PARAMS_INPUT_PAGE = "page"
-        private const val PARAMS_INPUT_PER_PAGE = "pageSize"
+        private const val PARAMS_INPUT_PAGE_SIZE = "pageSize"
         private const val PARAMS_INPUT_ETALASE_ID = "menu"
         private const val PARAMS_INPUT_STATUS = "status"
 
         fun createParams(
             shopId: String,
             page: Int,
-            perPage: Int,
+            pageSize: Int,
             etalaseId: String = "",
             keyword: String = "",
             sort: SortUiModel = SortUiModel.Empty,
@@ -90,7 +90,7 @@ class GetProductsInEtalaseUseCase @Inject constructor(
             PARAMS_FILTER to mutableListOf(
                 getFilterInput(PARAMS_INPUT_KEYWORD, keyword),
                 getFilterInput(PARAMS_INPUT_PAGE, page.toString()),
-                getFilterInput(PARAMS_INPUT_PER_PAGE, perPage.toString()),
+                getFilterInput(PARAMS_INPUT_PAGE_SIZE, pageSize.toString()),
                 getFilterInput(PARAMS_INPUT_STATUS, "ACTIVE")
             ).apply {
                 if (etalaseId.isNotEmpty())
