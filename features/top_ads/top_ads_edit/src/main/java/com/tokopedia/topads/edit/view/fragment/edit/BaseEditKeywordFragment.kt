@@ -51,7 +51,7 @@ private const val OTOMATIS_LAYOUT_EVENT_LABEL = "mode pengaturan atur otomatis"
 
 class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.ButtonAction {
 
-    private var switchBidEditKeyword: SwitchUnify? = null
+    private lateinit var switchBidEditKeyword: SwitchUnify
     private var txtBidTitleEditKeyword: Typography? = null
     private var ivBidInfoEditKeyword: ImageUnify? = null
     private var keywordGroup: LinearLayout? = null
@@ -80,7 +80,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(
             resources.getLayout(R.layout.topads_edit_keyword_base_layout),
@@ -92,8 +92,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
     }
 
     private fun initView(view: View) {
-        switchBidEditKeyword =
-            view.findViewById(R.id.switchBidEditKeyword)     //is checked for manual
+        switchBidEditKeyword = view.findViewById(R.id.switchBidEditKeyword) //checked for otomatis
         txtBidTitleEditKeyword = view.findViewById(R.id.txtBidTitleEditKeyword)
         ivBidInfoEditKeyword = view.findViewById(R.id.ivBidInfoEditKeyword)
         keywordGroup = view.findViewById(R.id.keyword_grp)
@@ -110,8 +109,9 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         renderViewPager()
         chipKeyword?.chipType = ChipsUnify.TYPE_SELECTED
 
-        sharedViewModel.setIsWhiteListedUser(arguments?.getBoolean(ParamObject.ISWHITELISTEDUSER)
-            ?: false)
+        sharedViewModel.setIsWhiteListedUser(
+            arguments?.getBoolean(ParamObject.ISWHITELISTEDUSER) ?: false
+        )
         arguments?.getString(GROUP_STRATEGY, "")?.let { handleInitialAutoBidState(it) }
     }
 
@@ -136,28 +136,28 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             viewPager?.currentItem = POSITION1
         }
 
-        switchBidEditKeyword?.setOnClickListener {
+        switchBidEditKeyword.setOnClickListener {
             context?.let {
-                showEditSwitchToggledDialog(it, isManual(),
+                showEditSwitchToggledDialog(it, isBidAutomatic(),
                     positiveClick = {
-                        handleAutoBidState(if (isManual()) "" else AUTO_BID_STATE)
+                        handleAutoBidState(if (isBidAutomatic()) AUTO_BID_STATE else "")
                     }, cancel = {
-                        switchBidEditKeyword?.isChecked = !switchBidEditKeyword!!.isChecked
+                        switchBidEditKeyword.isChecked = !switchBidEditKeyword.isChecked
                     }
                 )
             }
         }
 
         ivBidInfoEditKeyword?.setOnClickListener {
-            BidInfoBottomSheet(!isManual()).show(childFragmentManager, "")
+            BidInfoBottomSheet().show(childFragmentManager, "")
         }
     }
 
-    private fun isManual() = switchBidEditKeyword?.isChecked ?: false
+    private fun isBidAutomatic() = switchBidEditKeyword.isChecked
 
     private fun handleInitialAutoBidState(it: String) {
         handleAutoBidState(it)
-        switchBidEditKeyword?.isChecked = it.isEmpty()
+        switchBidEditKeyword.isChecked = it.isNotEmpty()
     }
 
     private fun handleAutoBidState(autoBidState: String) {
@@ -165,7 +165,6 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         bidStrategy = autoBidState
         if (autoBidState.isNotEmpty()) {
             buttonDisable(true)
-            txtBidTitleEditKeyword?.text = resources.getString(R.string.autobid_otomatis_title)
             keywordGroup?.visibility = View.GONE
             autoBidTicker?.visibility = View.VISIBLE
             viewPager?.visibility = View.GONE
@@ -174,7 +173,6 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             )
         } else {
             keywordGroup?.visibility = View.VISIBLE
-            txtBidTitleEditKeyword?.text = resources.getString(R.string.autobid_manual_title)
             autoBidTicker?.visibility = View.GONE
             viewPager?.visibility = View.VISIBLE
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(
@@ -259,7 +257,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             }
         }
         strategies.clear()
-        if (!isManual()) {
+        if (isBidAutomatic()) {
             strategies.add("auto_bid")
         }
         dataMap[POSITIVE_CREATE] = addedKeywordsPos

@@ -4,13 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.topads.edit.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class BidInfoBottomSheet(private val isAutomatic: Boolean) : BottomSheetUnify() {
+private const val LEARN_MORE_LINK = "https://seller.tokopedia.com/edu/iklan-manual-baru/"
 
-    private var description: Typography? = null
+class BidInfoBottomSheet : BottomSheetUnify() {
+
+    private var learnMore: Typography? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
@@ -32,20 +36,16 @@ class BidInfoBottomSheet(private val isAutomatic: Boolean) : BottomSheetUnify() 
                 resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4))
         }
 
-        description = contentView.findViewById(R.id.txtDescription)
+        learnMore = contentView.findViewById(R.id.txtLearnMore)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (isAutomatic) {
-            setTitle(resources.getString(R.string.autobid_otomatis_title))
-            description?.text =
-                resources.getString(com.tokopedia.topads.common.R.string.autobid_otomatis_desc)
-        } else {
-            setTitle(resources.getString(R.string.autobid_manual_title))
-            description?.text =
-                resources.getString(com.tokopedia.topads.common.R.string.autobid_manual_desc)
+        setTitle(resources.getString(com.tokopedia.topads.common.R.string.autobid_otomatis_title))
+
+        learnMore?.setOnClickListener {
+            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, LEARN_MORE_LINK)
         }
 
     }
