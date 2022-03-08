@@ -37,7 +37,6 @@ class GetProductRecommendationUseCase @Inject constructor(
         const val PARAM_TOKONOW = "tokonow"
         const val PARAM_MINI_CART = "minicart"
 
-
         fun createParams(productId: String,
                          pageName: String,
                          isTokoNow: Boolean,
@@ -61,7 +60,7 @@ class GetProductRecommendationUseCase @Inject constructor(
         val productIdParam = requestParams.getString(PARAM_PRODUCT_ID, "")
         val pageNameParam = requestParams.getString(PARAM_PAGE_NAME, "")
         val isTokoNowParam = requestParams.getBoolean(PARAM_TOKONOW, false)
-        val miniCartParam = requestParams.getObject("asd") as MutableMap<String, MiniCartItem>?
+        val miniCartParam = requestParams.getObject(PARAM_MINI_CART) as MutableMap<String, MiniCartItem>?
 
         val recommendationFilterResponse = getRecommendationFilter(
                 pageNameParam,
