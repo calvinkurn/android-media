@@ -89,13 +89,12 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
         refreshAddedTags(newAddedTags)
     }
 
-    fun saveTitleAndTags(title: String) {
-        setupDataStore.setTitle(title)
+    fun saveTags(title: String) {
         setupDataStore.setTags(addedTags)
     }
 
     fun finishSetup(title: String) {
-        saveTitleAndTags(title)
+        saveTags(title)
 
         _observableUploadEvent.value = Event(NetworkResult.Loading)
 
@@ -142,7 +141,7 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
 
     private suspend fun getRecommendedTags(): List<String> = withContext(dispatcher.io) {
         val recommendedTags = getRecommendedChannelTagsUseCase.apply {
-            setChannelId(hydraConfigStore.getChannelId())
+            setChannelId("328076")
         }.executeOnBackground()
 
         return@withContext recommendedTags.recommendedTags.tags
