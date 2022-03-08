@@ -58,6 +58,8 @@ class MiniCartSimplifiedViewModel @Inject constructor(private val getMiniCartLis
         getMiniCartListSimplifiedUseCase.setParams(currentShopIds, currentPromoId, currentPromoCode)
         getMiniCartListSimplifiedUseCase.execute(
             onSuccess = {
+                // hide mini cart simplified if has no available products
+                it.isShowMiniCartWidget = it.miniCartWidgetData.totalProductCount > 0
                 _miniCartSimplifiedData.value = it
                 validateUseMvc(false)
             },
