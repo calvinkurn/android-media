@@ -66,14 +66,22 @@ class DealsOMPViewHolder(private val setEventDetails: ItemsAdapter.SetEventDetai
                 for (i in 0 until item.actionButtons.size) {
                     val actionButton: ActionButton = item.actionButtons.get(i)
                     if (actionButton.control.equals(KEY_VOUCHER_CODE)) {
-                        val bookingCodeView = BookingCodeView(context, actionButton.body.body, i,
-                                actionButton.label, 0)
-                        bookingCodeView?.background = null
-                        voucerCodeLayout?.addView(bookingCodeView)
-                    } else if (actionButton.control.equals(KEY_REDIRECT)){
+                        val codes = actionButton.body.body.split(",").toTypedArray()
+                        if (codes.size > 0) {
+                            codes.forEach {
+                                val bookingCodeView = BookingCodeView(
+                                    context, it, i,
+                                    actionButton.label, 0
+                                )
+                                bookingCodeView?.background = null
+                                voucerCodeLayout?.addView(bookingCodeView)
+                            }
+                        }
+                    } else if (actionButton.control.equals(KEY_REDIRECT) || actionButton.control.equals(
+                            KEY_REDIRECT_EXTERNAL)){
                         val redeemVoucherView = RedeemVoucherView(context, i, actionButton, item,
                                 actionButton.body, presenter, positionHolder, setTapActionDeals,
-                                setEventDetails)
+                                setEventDetails, true)
                         voucerCodeLayout?.addView(redeemVoucherView)
                     } else if (actionButton.control.equals(KEY_POPUP)){
                         val actionTextButton = adapter.renderActionButtons(i, actionButton, item)

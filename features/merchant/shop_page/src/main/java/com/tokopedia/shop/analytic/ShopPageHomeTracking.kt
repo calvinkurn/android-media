@@ -124,6 +124,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_VARIANT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_DONATION_BY_SELLER
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_SHOP_DECOR_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_SHOP_DECOR_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_DONATION_BY_SELLER
@@ -149,6 +150,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_ONGOING_BANNER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_ONGOING_CAMPAIGN
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SEE_CAMPAIGN
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SHOP_DECOR
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SHOP_PAGE_THEMATIC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_STRING_ZERO
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_UPCOMING_BANNER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_UPCOMING_CAMPAIGN
@@ -2355,6 +2357,7 @@ class ShopPageHomeTracking(
             userId = userId,
             shopId = shopId
         ).apply {
+            putString(ITEM_LIST, joinDash(VALUE_SHOP_PAGE_THEMATIC, campaignId))
             putParcelableArrayList(ITEMS, arrayListOf(
                 getItemsCampaignBundle(
                         position = position,
