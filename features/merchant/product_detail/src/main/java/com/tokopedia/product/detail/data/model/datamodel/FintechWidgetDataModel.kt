@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
+import android.util.Log
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.pdp.fintech.view.FintechPriceUrlDataModel
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
@@ -22,6 +23,18 @@ data class FintechWidgetDataModel(
     override fun name() = name
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
+        Log.e(
+            "Hiii Equal with",
+            (newData is FintechWidgetDataModel && (newData.productId == this.productId && newData.idToPriceUrlMap == this.idToPriceUrlMap && newData.isLoggedIn == this.isLoggedIn)).toString()
+        )
+        Log.e(
+            "Hiii loginnew",
+            (newData as FintechWidgetDataModel).isLoggedIn.toString()
+        )
+        Log.e(
+            "Hiii loginolw",
+            this.isLoggedIn.toString()
+        )
         return newData is FintechWidgetDataModel && (newData.productId == this.productId && newData.idToPriceUrlMap == this.idToPriceUrlMap && newData.isLoggedIn == this.isLoggedIn)
     }
 
