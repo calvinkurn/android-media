@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.util
 
 import android.content.Context
+import android.util.Log
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -351,6 +352,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 isLoggedIn = loggedIn
             }
         }
+
+        Log.d("Hii", "Insidede updateFintechDataWithProductId")
+
     }
 
     fun updateVariantError() {
@@ -893,6 +897,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     private fun updateData(key: String, loadInitialData: Boolean = false, updateAction: () -> Unit) {
+
         if (!loadInitialData) {
             val data = mapOfData[key]
             data?.let {
