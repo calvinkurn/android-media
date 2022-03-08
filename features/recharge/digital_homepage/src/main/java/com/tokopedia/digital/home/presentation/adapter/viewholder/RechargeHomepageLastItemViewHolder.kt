@@ -1,7 +1,6 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
 import android.view.ViewGroup
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ContentRechargeHomepageLastItemBinding
@@ -19,12 +18,7 @@ class RechargeHomepageLastItemViewHolder(
 
     override fun bind(element: RechargeHomepageProductCardCustomLastItemModel.LastItem) {
         renderView(element)
-        itemView.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                itemView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                setCardHeightMatchParent()
-            }
-        })
+        setCardHeightMatchParent()
     }
 
     private fun renderView(element: RechargeHomepageProductCardCustomLastItemModel.LastItem) {
