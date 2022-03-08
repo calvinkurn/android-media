@@ -87,6 +87,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         private const val positionUnAnswered = 1
         private const val positionAnswered = 2
         private const val allSelected = 5
+        private const val PAGE_ONE = 1
     }
 
     @Inject
@@ -416,7 +417,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             hideLoading()
             when (it) {
                 is Success -> {
-                    if (countStatusIsZero()) {
+                    if (countStatusIsZero() && it.data.page == PAGE_ONE) {
                         onSuccessGetFeedbackInboxReview(it.data)
                     } else {
                         onSuccessGetFeedbackInboxReviewNext(it.data)
