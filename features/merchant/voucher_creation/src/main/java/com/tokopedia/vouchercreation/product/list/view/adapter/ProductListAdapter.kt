@@ -15,6 +15,7 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
 
     interface OnProductItemClickListener {
         fun onProductCheckBoxClicked(isSelected: Boolean)
+        fun onRemoveButtonClicked()
     }
 
     private var productUiModelList: MutableList<ProductUiModel> = mutableListOf()
@@ -67,7 +68,7 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
 
     fun disableAllProductSelections() {
         this.productUiModelList.forEach {
-            it.isError = true
+            it.isSelectable = false
             it.variants.forEach { variantUiModel ->
                 variantUiModel.isError = true
             }
@@ -76,7 +77,7 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
 
     fun enableAllProductSelections() {
         this.productUiModelList.forEach {
-            it.isError = false
+            it.isSelectable = true
             it.variants.forEach { variantUiModel ->
                 variantUiModel.isError = false
             }
@@ -113,6 +114,7 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
     override fun onRemoveProductButtonClicked(adapterPosition: Int, dataSetPosition: Int) {
         productUiModelList.removeAt(dataSetPosition)
         notifyItemRemoved(adapterPosition)
+        listener.onRemoveButtonClicked()
     }
 
     override fun onProductVariantCheckBoxClicked(isSelected: Boolean, dataSetPosition: Int, variantIndex: Int): Int {

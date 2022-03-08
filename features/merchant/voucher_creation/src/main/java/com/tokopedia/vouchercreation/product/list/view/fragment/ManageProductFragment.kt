@@ -311,6 +311,9 @@ class ManageProductFragment : BaseDaggerFragment(),
             val isChecked = binding?.cbuSelectAllProduct?.isChecked ?: false
             if (!isChecked) binding?.cbuSelectAllProduct?.isChecked = true
         }
+    }
+
+    override fun onRemoveButtonClicked() {
         viewModel.setSetSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
     }
 
@@ -331,5 +334,12 @@ class ManageProductFragment : BaseDaggerFragment(),
 
     fun addProducts(selectedProducts: List<ProductUiModel>) {
         adapter?.addProducts(selectedProducts)
+    }
+
+    fun updateProductCounter() {
+        val maxProductLimit = viewModel.getMaxProductLimit()
+        val totalSize = adapter?.getSelectedProducts()?.size ?: 0
+        binding?.tpgSelectedProductCounter?.text = "Jumlah Produk ($totalSize/$maxProductLimit)"
+        binding?.tpgSelectAll?.text = "$totalSize Produk dipilih"
     }
 }

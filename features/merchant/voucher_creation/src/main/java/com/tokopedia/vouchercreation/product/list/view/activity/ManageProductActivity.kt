@@ -69,6 +69,7 @@ class ManageProductActivity : BaseSimpleActivity() {
                 val selectedProducts = data?.getParcelableArrayListExtra<ProductUiModel>(CreateCouponProductActivity.BUNDLE_KEY_SELECTED_PRODUCTS)?.toList() ?: listOf()
                 val normalizedProductUiModel = fragment?.resetProductUiModelState(selectedProducts)?: listOf()
                 fragment?.addProducts(normalizedProductUiModel)
+                fragment?.updateProductCounter()
             }
         }
     }

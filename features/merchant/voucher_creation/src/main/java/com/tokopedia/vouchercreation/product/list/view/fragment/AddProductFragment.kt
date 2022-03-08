@@ -318,16 +318,32 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
     private fun observeLiveData() {
         viewModel.selectedProductListLiveData.observe(viewLifecycleOwner, { selectedProducts ->
             if (selectedProducts.isEmpty()) {
+
                 viewModel.isSelectAllMode = false
                 binding?.cbuSelectAllProduct?.isChecked = false
                 binding?.buttonAddProduct?.isEnabled = false
+
                 val isIndeterminate = binding?.cbuSelectAllProduct?.getIndeterminate() ?: false
                 if (isIndeterminate) binding?.cbuSelectAllProduct?.setIndeterminate(false)
+
                 binding?.tpgSelectAll?.gone()
                 binding?.selectionBar?.setBackgroundResource(NO_BACKGROUND)
                 binding?.buttonAddProduct?.text = getString(R.string.add_product)
                 binding?.tickerSellerLocationChange?.hide()
-                productSelectionListener?.onProductSelectionChanged(0, viewModel.getMaxProductLimit())
+
+                if (viewModel.getSelectedProductIds().isNotEmpty()) {
+                    productSelectionListener?.onProductSelectionChanged(
+                            viewModel.getSelectedProductIds().size,
+                            viewModel.getMaxProductLimit()
+                    )
+                } else {
+                    productSelectionListener?.onProductSelectionChanged(
+                            0,
+                            viewModel.getMaxProductLimit()
+                    )
+                }
+
+
             } else {
                 val size = selectedProducts.size
                 if (binding?.tickerSellerLocationChange?.isVisible == false) {
@@ -337,7 +353,8 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                 binding?.tpgSelectAll?.visible()
                 binding?.tpgSelectAll?.text = "$size Produk dipilih"
                 binding?.selectionBar?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.mvc_grey_f3f4f5))
-                productSelectionListener?.onProductSelectionChanged(size, viewModel.getMaxProductLimit())
+                val totalSize = viewModel.getSelectedProductIds().size + size
+                productSelectionListener?.onProductSelectionChanged(totalSize, viewModel.getMaxProductLimit())
             }
         })
         viewModel.productListResult.observe(viewLifecycleOwner, { result ->
@@ -383,7 +400,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                     val isIndeterminate = binding?.cbuSelectAllProduct?.getIndeterminate() ?: false
                     val isSelectAll = binding?.cbuSelectAllProduct?.isChecked ?: false && !isIndeterminate
                     val updatedProductList = viewModel.applyValidationResult(
-                            isSelectAll,
+                            false,
                             productList = productList,
                             validationResults = validationResults
                     )
@@ -488,6 +505,10 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
             if (!isChecked) binding?.cbuSelectAllProduct?.isChecked = true
         }
         viewModel.setSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
+    }
+
+    override fun onRemoveButtonClicked() {
+        // No implementation
     }
 
     override fun onApplyWarehouseLocationFilter(selectedWarehouseLocation: WarehouseLocationSelection) {
