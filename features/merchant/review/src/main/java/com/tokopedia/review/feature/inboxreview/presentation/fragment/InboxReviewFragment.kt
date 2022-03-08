@@ -418,7 +418,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             hideLoading()
             when (it) {
                 is Success -> {
-                    if (countStatusIsZero() && it.data.page == ONE) {
+                    if (countStatusIsZero()) {
                         onSuccessGetFeedbackInboxReview(it.data)
                     } else {
                         onSuccessGetFeedbackInboxReviewNext(it.data)
@@ -489,13 +489,15 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 endlessRecyclerViewScrollListener?.loadMoreNextPage()
             }
         } else {
-            if (data.feedbackInboxList.isEmpty() && isFilter && data.page == ONE) {
-                binding?.sortFilterInboxReview?.show()
-                inboxReviewAdapter.addInboxFeedbackEmpty(true)
-            } else if (data.feedbackInboxList.isEmpty() && !isFilter && data.page == ONE) {
-                binding?.sortFilterInboxReview?.show()
-                inboxReviewAdapter.clearAllElements()
-                inboxReviewAdapter.addInboxFeedbackEmpty(false)
+            if (inboxReviewAdapter.list.isEmpty() && data.feedbackInboxList.isEmpty()) {
+                if (isFilter && data.page == ONE) {
+                    binding?.sortFilterInboxReview?.show()
+                    inboxReviewAdapter.addInboxFeedbackEmpty(true)
+                } else if (!isFilter && data.page == ONE) {
+                    binding?.sortFilterInboxReview?.show()
+                    inboxReviewAdapter.clearAllElements()
+                    inboxReviewAdapter.addInboxFeedbackEmpty(false)
+                }
             } else {
                 inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
             }
