@@ -1,5 +1,7 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -8,6 +10,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.transition.*
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPostVideoBinding
@@ -126,8 +130,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
             when (it) {
                 is NetworkResult.Loading -> binding.btnPostVideo.isLoading = true
                 is NetworkResult.Success -> {
-                    /** TODO("goto feed page") */
-//                    openShopPageWithBroadcastStatus(true)
+                    openShopPageWithBroadcastStatus(true)
                 }
                 is NetworkResult.Fail -> {
                     binding.btnPostVideo.isLoading = false
@@ -140,6 +143,21 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    private fun openShopPageWithBroadcastStatus(isSaved: Boolean) {
+        if (activity?.callingActivity == null) {
+            val intent = RouteManager.getIntent(context, ApplinkConst.SHOP, userSession.shopId)
+                .putExtra(NEWLY_BROADCAST_CHANNEL_SAVED, isSaved)
+            startActivity(intent)
+            activity?.finish()
+        } else {
+            activity?.setResult(
+                Activity.RESULT_OK,
+                Intent().putExtra(NEWLY_BROADCAST_CHANNEL_SAVED, isSaved)
+            )
+            activity?.finish()
         }
     }
 
@@ -192,6 +210,10 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
 
     fun setListener(listener: Listener) {
         mListener = listener
+    }
+
+    companion object {
+        private const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
     }
 
     interface Listener {

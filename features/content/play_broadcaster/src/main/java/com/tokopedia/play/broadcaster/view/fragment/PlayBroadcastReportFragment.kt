@@ -47,7 +47,6 @@ class PlayBroadcastReportFragment @Inject constructor(
 ) : PlayBaseBroadcastFragment(), SummaryInfoViewComponent.Listener {
 
     companion object {
-        private const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
         private const val FIRST_PLACE = 0
     }
 
@@ -77,7 +76,6 @@ class PlayBroadcastReportFragment @Inject constructor(
         observeChannelInfo()
         observeLiveDuration()
         observeLiveTrafficMetrics()
-        observeSaveVideo()
         observeInteractiveLeaderboardInfo()
 
         return view
@@ -165,28 +163,6 @@ class PlayBroadcastReportFragment @Inject constructor(
         viewModel.observableReportDuration.observe(viewLifecycleOwner, Observer(this@PlayBroadcastReportFragment::setLiveDuration))
     }
 
-    /** TODO("should be moved to PlayBroadcastPostVideoFragment") */
-    private fun observeSaveVideo() {
-        viewModel.observableSaveVideo.observe(viewLifecycleOwner) {
-            when (it) {
-                is NetworkResult.Loading -> btnPostVideo.isLoading = true
-                is NetworkResult.Success -> {
-                    openShopPageWithBroadcastStatus(true)
-                }
-                is NetworkResult.Fail -> {
-                    btnPostVideo.isLoading = false
-                    view?.showErrorToaster(
-                        err = it.error,
-                        customErrMessage = it.error.localizedMessage
-                            ?: getString(R.string.play_broadcaster_default_error),
-                        actionLabel = getString(R.string.play_broadcast_try_again),
-                        actionListener = { _ -> it.onRetry() }
-                    )
-                }
-            }
-        }
-    }
-
     private fun observeInteractiveLeaderboardInfo() {
         parentViewModel.observableLeaderboardInfo.observe(viewLifecycleOwner) {
             summaryInfoView.addTrafficMetric(
@@ -196,21 +172,6 @@ class PlayBroadcastReportFragment @Inject constructor(
                 ),
                 FIRST_PLACE
             )
-        }
-    }
-
-    private fun openShopPageWithBroadcastStatus(isSaved: Boolean) {
-        if (activity?.callingActivity == null) {
-            val intent = RouteManager.getIntent(context, ApplinkConst.SHOP, userSession.shopId)
-                    .putExtra(NEWLY_BROADCAST_CHANNEL_SAVED, isSaved)
-            startActivity(intent)
-            activity?.finish()
-        } else {
-            activity?.setResult(
-                    Activity.RESULT_OK,
-                    Intent().putExtra(NEWLY_BROADCAST_CHANNEL_SAVED, isSaved)
-            )
-            activity?.finish()
         }
     }
 
