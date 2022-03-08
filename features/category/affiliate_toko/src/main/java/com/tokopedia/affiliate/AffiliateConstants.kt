@@ -85,3 +85,13 @@ const val THIRTY_THREE = 33
 const val SIX = 6
 
 const val TWENTY_NINE = 29
+
+const val AVAILABLE = 1
+
+const val ALMOST_OOS = 2
+
+const val EMPTY_STOCK = 3
+
+const val PRODUCT_INACTIVE = 4
+
+const val SHOP_INACTIVE = 5
