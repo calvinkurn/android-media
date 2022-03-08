@@ -175,7 +175,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
                 }
                 is Fail -> {
                     if (otpData != null && modeListData != null) {
-                        analytics.trackAutoSubmitVerification(otpData!!, modeListData!!, false)
+                        analytics.trackAutoSubmitSilentVerificationOtpValidate(otpData!!, modeListData!!, false, tokenId)
                     }
                     onValidateFailed(it.throwable)
                 }
@@ -314,18 +314,18 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     }
 
     private fun onValidateSuccess(data: OtpValidateData) {
-        tokenId = ""
         if(data.success) {
             if(otpData != null && modeListData != null) {
-                analytics.trackAutoSubmitVerification(otpData!!, modeListData!!, true)
+                analytics.trackAutoSubmitSilentVerificationOtpValidate(otpData!!, modeListData!!, true, tokenId)
             }
             renderSuccessPage(data)
         } else {
             if(otpData != null && modeListData != null) {
-                analytics.trackAutoSubmitVerification(otpData!!, modeListData!!, false)
+                analytics.trackAutoSubmitSilentVerificationOtpValidate(otpData!!, modeListData!!, false, tokenId)
             }
             onValidateFailed(Throwable(message = "$LABEL_SUCCESS - ${data.success}"))
         }
+        tokenId = ""
     }
 
     private fun onRequestSuccess(data: RequestSilentVerificationResult) {
@@ -333,10 +333,10 @@ class SilentVerificationFragment: BaseDaggerFragment() {
             if (data.evUrl.isNotEmpty() && data.tokenId.isNotEmpty() && data.errorCode.isEmpty()) {
                 if(isFirstTry) {
                     analytics.trackSilentVerificationRequestSuccess(otpData?.otpType
-                            ?: OTP_TYPE_SILENT_VERIF, modeListData?.modeText ?: "")
+                            ?: OTP_TYPE_SILENT_VERIF, modeListData?.modeText ?: "", data.tokenId)
                 } else {
                     analytics.trackSilentVerifTryAgainSuccess(otpData?.otpType
-                            ?: OTP_TYPE_SILENT_VERIF, modeListData?.modeText ?: "")
+                            ?: OTP_TYPE_SILENT_VERIF, modeListData?.modeText ?: "", data.tokenId)
                 }
                 tokenId = data.tokenId
                 verify(data.evUrl)
@@ -359,7 +359,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     }
 
     private fun onBokuResultFailed(throwable: Throwable) {
-        analytics.trackAutoSubmitSilentVerification(otpData!!, modeListData!!, false, correlationId = tokenId, message = throwable.message ?: "")
+        analytics.trackAutoSubmitSilentVerificationEvUrl(otpData!!, modeListData!!, false, correlationId = tokenId, message = throwable.message ?: "")
         renderValidateFailView()
     }
 
@@ -420,7 +420,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
             if (result[KEY_ERROR_CODE] == ERROR_CODE_ZERO &&
                 result[KEY_ERROR_DESC].equals(VALUE_SUCCESS, true)
             ) {
-                analytics.trackAutoSubmitSilentVerification(otpData!!, modeListData!!, true, correlationId = tokenId, message = resultCode)
+                analytics.trackAutoSubmitSilentVerificationEvUrl(otpData!!, modeListData!!, true, correlationId = tokenId, message = resultCode)
                 onSuccessBokuVerification()
             } else {
                 onBokuResultFailed(Throwable(resultCode))

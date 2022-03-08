@@ -656,7 +656,7 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
     }
 
     /* Auto Submit Silent Verif */
-    fun trackAutoSubmitSilentVerification(otpData: OtpData, modeListData: ModeListData, isSuccess: Boolean, correlationId: String, message: String = "") {
+    fun trackAutoSubmitSilentVerificationEvUrl(otpData: OtpData, modeListData: ModeListData, isSuccess: Boolean, correlationId: String, message: String = "") {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
             Event.EVENT_CLICK_OTP,
             Category.CATEGORY_OTP_PAGE,
@@ -664,6 +664,18 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
             if (isSuccess) { "success" } else { "fail - $message" }
                     + " - ${otpData.otpType} - ${modeListData.modeText}"
                     + " - evURL - $correlationId"
+        ))
+    }
+
+    /* Auto Submit Silent Verif - Otp Validate */
+    fun trackAutoSubmitSilentVerificationOtpValidate(otpData: OtpData, modeListData: ModeListData, isSuccess: Boolean, correlationId: String, message: String = "") {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+            Event.EVENT_CLICK_OTP,
+            Category.CATEGORY_OTP_PAGE,
+            Action.ACTION_AUTO_SUBMIT_OTP,
+            if (isSuccess) { "success" } else { "fail - $message" }
+                    + " - ${otpData.otpType} - ${modeListData.modeText}"
+                    + " - $correlationId"
         ))
     }
 
@@ -693,12 +705,12 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
         analytics.sendGeneralEvent(map)
     }
 
-    fun trackSilentVerificationRequestSuccess(otpType: Int, modeName: String) {
+    fun trackSilentVerificationRequestSuccess(otpType: Int, modeName: String, correlationId: String) {
         val map = TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_METHOD_OTP,
-                String.format("success - %s - %s", otpType.toString(), modeName))
+                String.format("success - %s - %s -%s", otpType.toString(), modeName, correlationId))
 
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -716,12 +728,12 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun trackSilentVerifTryAgainSuccess(otpType: Int, modeName: String) {
+    fun trackSilentVerifTryAgainSuccess(otpType: Int, modeName: String, correlationId: String) {
         val map = TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_SILENT_VERIF_OTP_PAGE,
                 Action.ACION_CLICK_TRY_AGAIN,
-                String.format("success - %s - %s", otpType.toString(), modeName))
+                String.format("success - %s - %s -%s", otpType.toString(), modeName, correlationId))
 
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
