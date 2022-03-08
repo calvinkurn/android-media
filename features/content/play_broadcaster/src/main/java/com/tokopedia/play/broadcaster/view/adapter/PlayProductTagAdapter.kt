@@ -10,10 +10,6 @@ import com.tokopedia.play.broadcaster.view.adapter.delegate.ProductCarouselAdapt
 class PlayProductTagAdapter: BaseDiffUtilAdapter<Any>() {
 
     init {
-//        delegatesManager
-//            .addDelegate(ProductTagAdapterDelegate())
-//            .addDelegate(ProductTagPlaceholderAdapterDelegate())
-
         delegatesManager
             .addDelegate(ProductCarouselAdapterDelegate.Product())
             .addDelegate(ProductCarouselAdapterDelegate.Loading())
