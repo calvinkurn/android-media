@@ -24,6 +24,7 @@ data class DiscoveryResponse(
         val creativeName: String? = null
 
 ) {
-    lateinit var componentMap: MutableMap<String, ComponentsItem>
-    var cartMap : MutableMap<String,MiniCartItem>? = null
+        lateinit var componentMap: MutableMap<String, ComponentsItem>
+        var cartMap: MutableMap<String, MiniCartItem>? = null
+        var sectionMap: MutableMap<String, Int>? = null
 }

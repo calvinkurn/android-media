@@ -54,6 +54,7 @@ import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play.view.wrapper.InteractionEvent
@@ -173,16 +174,16 @@ class PlayViewModel @AssistedInject constructor(
      * Data State
      */
     private val _channelDetail = MutableStateFlow(PlayChannelDetailUiModel())
-    private val _partnerInfo = MutableStateFlow(data.partnerInfo)
+    private val _partnerInfo = MutableStateFlow(PlayPartnerInfo())
     private val _bottomInsets = MutableStateFlow(emptyMap<BottomInsetsType, BottomInsetsState>())
-    private val _status = MutableStateFlow(data.status)
+    private val _status = MutableStateFlow(PlayStatusUiModel.Empty)
     private val _interactive = MutableStateFlow<PlayInteractiveUiState>(PlayInteractiveUiState.NoInteractive)
     private val _leaderboardInfo = MutableStateFlow<PlayLeaderboardWrapperUiModel>(PlayLeaderboardWrapperUiModel.Unknown)
     private val _leaderboardUserBadgeState = MutableStateFlow(PlayLeaderboardBadgeUiState())
     private val _likeInfo = MutableStateFlow(PlayLikeInfoUiModel())
     private val _channelReport = MutableStateFlow(PlayChannelReportUiModel())
-    private val _tagItems = MutableStateFlow(data.tagItems)
-    private val _quickReply = MutableStateFlow(data.quickReplyInfo)
+    private val _tagItems = MutableStateFlow(TagItemUiModel.Empty)
+    private val _quickReply = MutableStateFlow(PlayQuickReplyInfoUiModel.Empty)
     private val _kebabBottomSheet = MutableStateFlow(emptyMap<KebabMenuType, BottomInsetsState>())
 
     private val _interactiveUiState = combine(
@@ -677,7 +678,7 @@ class PlayViewModel @AssistedInject constructor(
                 isPreviousStateSame = insetsMap[KebabMenuType.ThreeDots]?.isHidden == true
             )
 
-        _kebabBottomSheet.value = insetsMap
+        _observableBottomInsetsState.value = insetsMap
     }
 
     fun showCouponSheet(estimatedHeight: Int) {

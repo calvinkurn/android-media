@@ -13,20 +13,15 @@ buildscript {
     }
 }
 
-android {
-    buildFeatures {
-        buildConfig true
-    }
-}
-
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation rootProject.ext.supportLibDependencies.kotlinSupport
 }
 
 project.ext {

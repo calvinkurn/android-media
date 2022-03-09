@@ -1,5 +1,7 @@
 package com.tkpd.atcvariant.usecase
 
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -7,11 +9,13 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregator
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorResponse
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
+import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -19,14 +23,17 @@ import javax.inject.Inject
 /**
  * Created by Yehezkiel on 05/05/21
  */
-class GetProductVariantAggregatorUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                             private val chosenAddressRequestHelper: ChosenAddressRequestHelper)
-    : UseCase<ProductVariantAggregatorUiData>() {
+class GetProductVariantAggregatorUseCase @Inject constructor(
+    private val graphqlRepository: GraphqlRepository,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
+    @ApplicationContext
+    private val context: Context
+) : UseCase<ProductVariantAggregatorUiData>() {
 
     companion object {
         val QUERY = """
-        query pdpGetVariantComponent(${'$'}productID : String, ${'$'}source : String, ${'$'}shopID : String, ${'$'}whID : String, ${'$'}pdpSession : String , ${'$'}userLocation: pdpUserLocation, ${'$'}isTokoNow: Boolean) {
-            pdpGetVariantComponent(productID: ${'$'}productID, source: ${'$'}source, shopID: ${'$'}shopID, whID: ${'$'}whID, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation, isTokoNow: ${'$'}isTokoNow) {
+        query pdpGetVariantComponent(${'$'}productID : String, ${'$'}source : String, ${'$'}shopID : String, ${'$'}whID : String, ${'$'}pdpSession : String , ${'$'}userLocation: pdpUserLocation, ${'$'}isTokoNow: Boolean, ${'$'}tokonow: pdpTokoNow) {
+            pdpGetVariantComponent(productID: ${'$'}productID, source: ${'$'}source, shopID: ${'$'}shopID, whID: ${'$'}whID, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation, isTokoNow: ${'$'}isTokoNow, tokonow: ${'$'}tokonow) {
                     isCashback{
                         percentage
                     }
@@ -241,8 +248,8 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                     chosenAddressRequestHelper.getChosenAddress()?.addressId ?: "",
                     chosenAddressRequestHelper.getChosenAddress()?.postalCode ?: "",
                     chosenAddressRequestHelper.getChosenAddress()?.geolocation ?: ""
-            )
-
+            ),
+            ProductDetailCommonConstant.PARAM_TOKONOW to generateTokoNow()
     )
 
     private var requestParams: Map<String, Any?> = mapOf()
@@ -286,6 +293,15 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                 uspImageUrl = data.uniqueSellingPoint.uspBoe.uspIcon,
                 cashBackPercentage = data.isCashback.percentage,
                 isCod = data.isCod
+        )
+    }
+
+    private fun generateTokoNow(): TokoNowParam{
+        val localCache = ChooseAddressUtils.getLocalizingAddressData(context)
+        return TokoNowParam(
+            localCache.shop_id,
+            localCache.warehouse_id,
+            localCache.service_type
         )
     }
 }

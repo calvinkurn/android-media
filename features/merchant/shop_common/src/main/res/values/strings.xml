@@ -27,4 +27,9 @@
     <string name="move_the_item">Move The Item</string>
     <string name="settings_of_the_item">Settings Of The Item</string>
     <string name="show_bottomsheet">Show BottomSheet</string>
+
+    <!-- product bundle -->
+    <string name="shop_page_product_bundle_atc_button_text">+ Keranjang</string>
+    <string name="shop_page_product_bundle_preorder_button_text">PreOrder</string>
+    <string name="shop_page_product_single_bundle_package_text">Paket:</string>
 </resources>

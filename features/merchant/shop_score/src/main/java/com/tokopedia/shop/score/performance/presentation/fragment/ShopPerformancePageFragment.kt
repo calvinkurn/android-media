@@ -23,6 +23,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
+import com.tokopedia.applink.shopscore.ShopScoreDeepLinkMapper
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -896,7 +897,9 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun processShowCoachMark() {
-        if (shopScorePrefManager?.getFinishCoachMark() == false && !isNewSeller) {
+        val isCoachMarkDisabled = arguments?.getString(ShopScoreDeepLinkMapper.COACH_MARK_PARAM)
+            .orEmpty() == PARAM_COACH_MARK_DISABLED
+        if (shopScorePrefManager?.getFinishCoachMark() == false && !isNewSeller && !isCoachMarkDisabled) {
             context?.let {
                 if (DeviceScreenInfo.isTablet(it)) {
                     Handler(Looper.getMainLooper()).postDelayed({
@@ -990,7 +993,7 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun splitCompatInstall() {
-        activity?.let{
+        activity?.let {
             SplitCompat.installActivity(it)
         }
     }
@@ -1011,10 +1014,15 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
         private const val TAB_PM_PARAM = "tab"
         private const val PARAM_PM = "pm"
         private const val PARAM_PM_PRO = "pm_pro"
+        private const val PARAM_COACH_MARK_DISABLED = "disabled"
 
         @JvmStatic
-        fun newInstance(): ShopPerformancePageFragment {
-            return ShopPerformancePageFragment()
+        fun newInstance(bundle: Bundle?): ShopPerformancePageFragment {
+            return if (bundle == null) {
+                ShopPerformancePageFragment()
+            } else {
+                ShopPerformancePageFragment().apply { arguments = bundle }
+            }
         }
     }
 }

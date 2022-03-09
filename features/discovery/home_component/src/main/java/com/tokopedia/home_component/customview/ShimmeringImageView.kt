@@ -17,7 +17,6 @@ import com.bumptech.glide.request.target.Target
 import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home_component.R
-import io.embrace.android.embracesdk.Embrace
 
 class ShimmeringImageView @JvmOverloads constructor(context: Context, private val attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         FrameLayout(context, attrs, defStyleAttr){
@@ -96,8 +95,6 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, private va
         val performanceMonitoring: PerformanceMonitoring? = PerformanceMonitoring.start(fpmItemLabel)
         performanceMonitoring?.putCustomAttribute(FPM_ATTRIBUTE_IMAGE_URL, truncatedUrl)
 
-        Embrace.getInstance().startEvent(fpmItemLabel, null, false)
-
         return performanceMonitoring
     }
 
@@ -106,7 +103,6 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, private va
                                  fpmItemLabel: String) {
         if (dataSource == DataSource.REMOTE) {
             performanceMonitoring?.stopTrace()
-            Embrace.getInstance().endEvent(fpmItemLabel)
         }
     }
 }

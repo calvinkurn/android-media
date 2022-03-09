@@ -143,6 +143,14 @@ query ThanksPageData($paymentIDStr : String!, $merchant: String!){
         name
         amount
     }
+    thanks_summaries {
+        key
+        description
+        message
+        is_cta
+        cta_text
+        cta_link
+    }
   }
 }
 

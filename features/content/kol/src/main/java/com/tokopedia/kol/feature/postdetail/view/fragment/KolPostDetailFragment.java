@@ -96,7 +96,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.embrace.android.embracesdk.Embrace;
 import kotlin.Unit;
 
 /**
@@ -186,7 +185,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         performanceMonitoring = PerformanceMonitoring.start(PERFORMANCE_POST_DETAIL);
-        Embrace.getInstance().startEvent(PERFORMANCE_POST_DETAIL, null, false);
     }
 
     @Nullable
@@ -489,7 +487,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void stopTrace() {
         if (performanceMonitoring != null && !isTraceStopped) {
             performanceMonitoring.stopTrace();
-            Embrace.getInstance().endEvent(PERFORMANCE_POST_DETAIL);
             isTraceStopped = true;
         }
     }

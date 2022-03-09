@@ -7,6 +7,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
+import com.tokopedia.product_bundle.common.data.model.request.Bundle
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
 import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfoResponse
@@ -464,6 +465,23 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
         assertEquals("1", atcDialogMessagesError.first)
         assertEquals("2", atcDialogMessagesError.second)
         assertEquals(AtcConstant.ATC_ERROR_GLOBAL, errorMessageServer)
+    }
 
+    @Test
+    fun `when resetBundleMap expect empty getProductBundleMasters`() = testDispatcher.runBlockingTest {
+        viewModel.resetBundleMap()
+        assert(viewModel.getProductBundleMasters().isEmpty())
+    }
+
+    @Test
+    fun `when updateProductBundleMap expect filled getProductBundleMasters`() = testDispatcher.runBlockingTest {
+        viewModel.updateProductBundleMap(ProductBundleMaster(), listOf(ProductBundleDetail()))
+        assert(viewModel.getProductBundleMasters().isNotEmpty())
+    }
+
+    @Test
+    fun `when getBundleInfo using 0 product id expect setParams with list of Bundle`() = testDispatcher.runBlockingTest {
+        viewModel.getBundleInfo(0)
+        coVerify { getBundleInfoUseCase.setParams(any(), any(), any(), any(), listOf(Bundle(ID = "0"))) }
     }
 }
