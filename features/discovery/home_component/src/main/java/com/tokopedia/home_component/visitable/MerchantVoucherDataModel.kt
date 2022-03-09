@@ -13,9 +13,7 @@ class MerchantVoucherDataModel (
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return if (b is MerchantVoucherDataModel) {
-            channelModel.channelConfig.createdTimeMillis == b.channelModel.channelConfig.createdTimeMillis
-        } else false
+        return true
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {

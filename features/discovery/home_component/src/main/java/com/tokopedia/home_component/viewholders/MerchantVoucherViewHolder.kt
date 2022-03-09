@@ -4,7 +4,6 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
@@ -21,7 +20,6 @@ import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProdu
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselViewAllCardViewHolder
 import com.tokopedia.home_component.util.ChannelWidgetUtil
-import com.tokopedia.home_component.util.MerchantVoucherSnapHelper
 import com.tokopedia.home_component.util.getTopadsString
 import com.tokopedia.home_component.viewholders.adapter.MerchantVoucherAdapter
 import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
@@ -38,7 +36,6 @@ class MerchantVoucherViewHolder(
     CoroutineScope {
     private var binding: GlobalDcMerchantVoucherBinding? by viewBinding()
     private var adapter: MerchantVoucherAdapter? = null
-    private val startSnapHelper : SnapHelper = MerchantVoucherSnapHelper(itemView.context)
 
     companion object {
         @LayoutRes
@@ -90,10 +87,6 @@ class MerchantVoucherViewHolder(
     }
 
     private fun mappingItem(channel: ChannelModel, visitables: MutableList<Visitable<*>>) {
-        //todo delete experiment
-        if(channel.id == "179394") {
-            startSnapHelper.attachToRecyclerView(binding?.homeComponentMvcRv)
-        }
         val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel)
         adapter = MerchantVoucherAdapter(visitables, typeFactoryImpl)
         binding?.homeComponentMvcRv?.adapter = adapter
@@ -152,9 +145,6 @@ class MerchantVoucherViewHolder(
             LinearLayoutManager.HORIZONTAL,
             false
         )
-        if(channel.id == "179394") {
-            startSnapHelper.attachToRecyclerView(binding?.homeComponentMvcRv)
-        }
     }
 
     private fun setChannelDivider(element: MerchantVoucherDataModel) {
