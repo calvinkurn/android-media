@@ -111,12 +111,22 @@ class KycUploadViewModel @Inject constructor(
                     else -> {
                         val result = kycUploadUseCase.uploadImages(finalKtp, finalFace, tkpdProjectId)
                         if (result.header.message.isNotEmpty() && result.header.errorCode.isNotEmpty()) {
-                            _kycResponse.postValue(Fail(Throwable(
-                                    String.format("%s (%s)",
+
+                            // set with empty throwable message so it can trigger general error
+                            _kycResponse.postValue(Fail(Throwable()))
+                            sendLoadTimeUploadLog(
+                                    isSuccess = result.data.isSuccessRegister,
+                                    uploadTime = System.currentTimeMillis() - startTimeLog,
+                                    encryptionTimeFileKtp = encryptionTimeKtp,
+                                    encryptionTimeFileFace = encryptionTimeFace,
+                                    fileKtp = finalKtp,
+                                    fileFace = finalFace,
+                                    isErrorHeader = true,
+                                    message = String.format("%s (%s)",
                                             result.header.message[0],
                                             result.header.errorCode
                                     )
-                            )))
+                            )
                         } else {
                             _kycResponse.postValue(Success(result.data))
                             sendLoadTimeUploadLog(
@@ -207,15 +217,24 @@ class KycUploadViewModel @Inject constructor(
         encryptionTimeFileKtp: Long = 0L,
         encryptionTimeFileFace: Long = 0L,
         fileKtp: String = "",
-        fileFace: String = ""
+        fileFace: String = "",
+        isErrorHeader: Boolean = false,
+        message: String = ""
     ) {
+        val type = if (isErrorHeader) {
+            "ErrorHeader"
+        } else {
+            if (isSuccess) "Success" else "Failed"
+        }
+
         serverLogger.log(Priority.P2, "KYC_UPLOAD_MONITORING", mapOf(
-            "type" to if (isSuccess) "Success" else "Failed",
+            "type" to type,
             "uploadTime" to "${uploadTime}ms",
             "encryptionTimeFileKtp" to "${encryptionTimeFileKtp}ms",
             "encryptionTimeFileFace" to "${encryptionTimeFileFace}ms",
             "ktpFileSize" to if (fileKtp.isNotEmpty()) "${FileUtil.getFileSizeInKb(fileKtp)}Kb" else "-",
-            "faceFileSize" to if (fileFace.isNotEmpty()) "${FileUtil.getFileSizeInKb(fileFace)}Kb" else "-"
+            "faceFileSize" to if (fileFace.isNotEmpty()) "${FileUtil.getFileSizeInKb(fileFace)}Kb" else "-",
+            "message" to message
         ))
     }
 
