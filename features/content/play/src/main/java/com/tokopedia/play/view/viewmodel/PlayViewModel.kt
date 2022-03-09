@@ -806,7 +806,7 @@ class PlayViewModel @AssistedInject constructor(
             ClickCloseLeaderboardSheetAction -> handleCloseLeaderboardSheet()
             ClickFollowAction -> handleClickFollow(isFromLogin = false)
             ClickFollowInteractiveAction -> handleClickFollowInteractive()
-            is ClickPartnerNameAction -> handleClickPartnerName(action.applink)
+            is ClickPartnerNameAction -> handleClickPartnerName(action.appLink)
             ClickRetryInteractiveAction -> handleClickRetryInteractive()
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
             ClickLikeAction -> handleClickLike(isFromLogin = false)

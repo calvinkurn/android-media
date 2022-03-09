@@ -29,7 +29,7 @@ import org.junit.Test
 class PlayViewerPartnerRepositoryTest {
     lateinit var partnerRepo : PlayViewerPartnerRepository
 
-    private val getPartnerInfoUseCase: GetPartnerInfoUseCase = mockk(relaxed = true)
+    private val getSellerInfoUsecase: GetSellerInfoUsecase = mockk(relaxed = true)
     private val postFollowPartnerUseCase: PostFollowPartnerUseCase = mockk(relaxed = true)
     private val getProfileInfoUseCase: GetProfileInfoUseCase = mockk(relaxed = true)
     private val getFollowingKOLUseCase: GetFollowingKOLUseCase = mockk(relaxed = true)
@@ -60,7 +60,7 @@ class PlayViewerPartnerRepositoryTest {
         )
 
         partnerRepo = PlayViewerPartnerRepositoryImpl(
-            getPartnerInfoUseCase, postFollowPartnerUseCase, getProfileInfoUseCase, getFollowingKOLUseCase, postFollowKolUseCase, postUnfollowKolUseCase, playUiModelMapper, testDispatcher
+            getSellerInfoUsecase, postFollowPartnerUseCase, getProfileInfoUseCase, getFollowingKOLUseCase, postFollowKolUseCase, postUnfollowKolUseCase, playUiModelMapper, testDispatcher
         )
     }
 
@@ -73,13 +73,13 @@ class PlayViewerPartnerRepositoryTest {
                 favoriteData = ShopInfo.FavoriteData(totalFavorite = 28, alreadyFavorited = 1)
             )
 
-            coEvery { getPartnerInfoUseCase.executeOnBackground() } returns response
+            coEvery { getSellerInfoUsecase.executeOnBackground() } returns response
 
             val result = partnerRepo.getIsFollowingPartner(
                partnerId = partnerId
             )
 
-            coVerify { getPartnerInfoUseCase.executeOnBackground() }
+            coVerify { getSellerInfoUsecase.executeOnBackground() }
 
             result.assertTrue()
         }
@@ -92,13 +92,13 @@ class PlayViewerPartnerRepositoryTest {
                 favoriteData = ShopInfo.FavoriteData(totalFavorite = 28, alreadyFavorited = 0)
             )
 
-            coEvery { getPartnerInfoUseCase.executeOnBackground() } returns response
+            coEvery { getSellerInfoUsecase.executeOnBackground() } returns response
 
             val result = partnerRepo.getIsFollowingPartner(
                 partnerId = partnerId
             )
 
-            coVerify { getPartnerInfoUseCase.executeOnBackground() }
+            coVerify { getSellerInfoUsecase.executeOnBackground() }
 
             result.assertFalse()
         }

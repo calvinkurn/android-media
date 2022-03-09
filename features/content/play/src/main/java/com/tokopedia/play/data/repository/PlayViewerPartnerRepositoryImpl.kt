@@ -12,7 +12,7 @@ import javax.inject.Inject
  * Created by jegul on 05/07/21
  */
 class PlayViewerPartnerRepositoryImpl @Inject constructor(
-    private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
+    private val getSellerInfoUsecase: GetSellerInfoUsecase,
     private val postFollowPartnerUseCase: PostFollowPartnerUseCase,
     private val getProfileInfoUseCase: GetProfileInfoUseCase,
     private val getFollowingKOLUseCase: GetFollowingKOLUseCase,
@@ -23,8 +23,8 @@ class PlayViewerPartnerRepositoryImpl @Inject constructor(
 ) : PlayViewerPartnerRepository {
 
     override suspend fun getIsFollowingPartner(partnerId: Long): Boolean = withContext(dispatchers.io) {
-        val partnerInfo = getPartnerInfoUseCase.apply {
-            params = GetPartnerInfoUseCase.createParam(partnerId)
+        val partnerInfo = getSellerInfoUsecase.apply {
+            params = GetSellerInfoUsecase.createParam(partnerId)
         }.executeOnBackground()
         return@withContext mapper.mapPartnerInfo(partnerInfo)
     }
