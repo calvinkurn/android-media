@@ -102,12 +102,12 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
         val rvFollowers = view?.findViewById<RecyclerView>(R.id.rv_followers)
         rvFollowers?.adapter = mAdapter
         mAdapter.resetAdapter()
-        mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_NAME))
+        mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_ID))
     }
 
     private fun refreshMainUi() {
         mAdapter.resetAdapter()
-        mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_NAME))
+        mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_ID))
     }
 
     private fun addListObserver() =

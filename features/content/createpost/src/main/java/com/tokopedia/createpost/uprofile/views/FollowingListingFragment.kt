@@ -97,7 +97,7 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
         val rvFollowers = view?.findViewById<RecyclerView>(R.id.rv_followers)
         rvFollowers?.adapter = mAdapter
         mAdapter.resetAdapter()
-        mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_NAME))
+        mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_ID))
     }
 
     private fun addListObserver() =
@@ -228,7 +228,7 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
 
     private fun refreshMainUi() {
         mAdapter.resetAdapter()
-        mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_NAME))
+        mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_ID))
     }
     companion object {
         fun newInstance(extras: Bundle): Fragment {

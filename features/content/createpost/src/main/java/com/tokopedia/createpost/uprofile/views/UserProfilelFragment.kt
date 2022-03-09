@@ -745,6 +745,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         val bundle = Bundle()
         bundle.putString(EXTRA_DISPLAY_NAME, displayName)
         bundle.putString(EXTRA_USER_NAME, userName)
+        bundle.putString(EXTRA_USER_ID, userId)
         bundle.putString(EXTRA_TOTAL_FOLLOWINGS, totalFollowings)
         bundle.putString(EXTRA_TOTAL_FOLLOWERS, totalFollowers)
         bundle.putBoolean(EXTRA_IS_FOLLOWERS, isFollowers)
@@ -816,6 +817,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         const val EXTRA_TOTAL_FOLLOWERS = "total_followers"
         const val EXTRA_TOTAL_FOLLOWINGS = "total_following"
         const val EXTRA_USER_NAME = "user_name"
+        const val EXTRA_USER_ID = "userid"
         const val EXTRA_IS_FOLLOWERS = "is_followers"
         const val OFFSET_USERINFO = 136F
         const val REQUEST_CODE_LOGIN = 1
