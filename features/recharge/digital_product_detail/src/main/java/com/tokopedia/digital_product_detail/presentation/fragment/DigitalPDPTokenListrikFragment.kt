@@ -668,18 +668,26 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     private fun showEmptyState() {
         binding?.run {
             if (!rechargePdpTokenListrikEmptyStateWidget.isVisible) {
-                digitalPDPAnalytics.impressionBannerEmptyState(
-                    rechargePdpTokenListrikEmptyStateWidget.imageUrl,
-                    categoryId.toString(),
-                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                    loyaltyStatus,
-                    userSession.userId
-                )
+
                 rechargePdpTokenListrikBannerSpacer.run {
                     layoutParams.height = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
                         .toInt()
                 }
-                rechargePdpTokenListrikEmptyStateWidget.show()
+
+                /** hide empty state when imageUrl is empty*/
+                if (rechargePdpTokenListrikEmptyStateWidget.imageUrl.isNotEmpty()) {
+                    digitalPDPAnalytics.impressionBannerEmptyState(
+                        rechargePdpTokenListrikEmptyStateWidget.imageUrl,
+                        categoryId.toString(),
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        loyaltyStatus,
+                        userSession.userId
+                    )
+                    rechargePdpTokenListrikEmptyStateWidget.show()
+                } else {
+                    rechargePdpTokenListrikEmptyStateWidget.hide()
+                }
+
                 rechargePdpTokenListrikRecommendationWidget.hide()
                 rechargePdpTokenListrikDenomGridWidget.hide()
                 rechargePdpTickerWidgetProductDesc.hide()

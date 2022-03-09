@@ -705,18 +705,27 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private fun showEmptyState() {
         binding?.run {
             if (!rechargePdpPulsaEmptyStateWidget.isVisible) {
-                digitalPDPAnalytics.impressionBannerEmptyState(
-                    rechargePdpPulsaEmptyStateWidget.imageUrl,
-                    categoryId.toString(),
-                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                    loyaltyStatus,
-                    userSession.userId
-                )
+
                 rechargePdpPulsaBannerSpacer.run {
                     layoutParams.height = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
                         .toInt()
                 }
-                rechargePdpPulsaEmptyStateWidget.show()
+
+                /** hide empty state when imageUrl is empty*/
+                if (rechargePdpPulsaEmptyStateWidget.imageUrl.isNotEmpty()) {
+                    rechargePdpPulsaEmptyStateWidget.show()
+                    digitalPDPAnalytics.impressionBannerEmptyState(
+                        rechargePdpPulsaEmptyStateWidget.imageUrl,
+                        categoryId.toString(),
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        loyaltyStatus,
+                        userSession.userId
+                    )
+
+                } else {
+                    rechargePdpPulsaEmptyStateWidget.hide()
+                }
+
                 rechargePdpPulsaPromoWidget.hide()
                 rechargePdpPulsaRecommendationWidget.hide()
                 rechargePdpPulsaDenomGridWidget.hide()

@@ -781,18 +781,26 @@ class DigitalPDPDataPlanFragment :
     private fun showEmptyState() {
         binding?.run {
             if (!rechargePdpPaketDataEmptyStateWidget.isVisible) {
-                digitalPDPAnalytics.impressionBannerEmptyState(
-                    rechargePdpPaketDataEmptyStateWidget.imageUrl,
-                    categoryId.toString(),
-                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                    loyaltyStatus,
-                    userSession.userId
-                )
+
                 rechargePdpPaketDataBannerSpacer.run {
                     layoutParams.height = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
                         .toInt()
                 }
-                rechargePdpPaketDataEmptyStateWidget.show()
+
+                /** hide empty state when imageUrl is empty*/
+                if (rechargePdpPaketDataEmptyStateWidget.imageUrl.isNotEmpty()) {
+                    rechargePdpPaketDataEmptyStateWidget.show()
+                    digitalPDPAnalytics.impressionBannerEmptyState(
+                        rechargePdpPaketDataEmptyStateWidget.imageUrl,
+                        categoryId.toString(),
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        loyaltyStatus,
+                        userSession.userId
+                    )
+                } else {
+                    rechargePdpPaketDataEmptyStateWidget.hide()
+                }
+
                 rechargePdpPaketDataPromoWidget.hide()
                 sortFilterPaketData.hide()
                 rechargePdpPaketDataRecommendationWidget.hide()
