@@ -2,7 +2,6 @@ package com.tokopedia.recharge_component.widget
 
 import android.content.Context
 import android.text.Editable
-import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -17,7 +16,6 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactD
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_component.R
@@ -29,7 +27,6 @@ import com.tokopedia.recharge_component.model.InputFieldType
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.unifycomponents.toPx
 import org.jetbrains.annotations.NotNull
 import kotlin.math.abs
 
