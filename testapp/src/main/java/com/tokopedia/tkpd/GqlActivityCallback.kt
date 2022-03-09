@@ -14,8 +14,15 @@ class GqlActivityCallback : Application.ActivityLifecycleCallbacks {
     companion object {
         private const val DEFAULT_MODULE_NAME = "tkpd"
     }
-    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
-    override fun onActivityStarted(activity: Activity) {}
+
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+        //no op
+    }
+
+    override fun onActivityStarted(activity: Activity) {
+        //no op
+    }
+
     override fun onActivityResumed(activity: Activity) {
         val packageName = activity.javaClass.`package`?.name
         if (packageName != null) {
@@ -31,11 +38,19 @@ class GqlActivityCallback : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityPaused(activity: Activity) {
-
+        //no op
     }
 
-    override fun onActivityStopped(activity: Activity) {}
-    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
-    override fun onActivityDestroyed(activity: Activity) {}
+    override fun onActivityStopped(activity: Activity) {
+        //no op
+    }
+
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+        //no op
+    }
+
+    override fun onActivityDestroyed(activity: Activity) {
+        //no op
+    }
 
 }
