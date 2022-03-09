@@ -412,7 +412,6 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
 
                     val hasNextPage = dataWithSelections.isNotEmpty()
                     renderList(dataWithSelections, hasNextPage)
-//                    setupSelectionBar(binding)
 
 //                    if (isSelectAll) {
 //                        viewModel.setSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
@@ -508,7 +507,6 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
     }
 
     override fun onProductCheckBoxClicked(isSelected: Boolean, uiModel: ProductUiModel) {
-//        if (viewModel.isFiltering) return
         viewModel.isSelectAllMode = false
         if (isSelected) {
             // implement selection bar ux
