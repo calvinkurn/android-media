@@ -412,18 +412,22 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     private fun getFavoriteNumber() {
         viewModel.run {
             setFavoriteNumberLoading()
-            getFavoriteNumber(listOf(categoryId))
+            getFavoriteNumber(listOf(categoryId), listOf(operatorId.toInt()))
         }
     }
 
     private fun getAutoComplete() {
         viewModel.run {
             setAutoCompleteLoading()
-            getAutoComplete(listOf(categoryId))
+            getAutoComplete(listOf(categoryId), listOf(operatorId.toInt()))
         }
     }
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
+        if (operatorId.isEmpty()) {
+            operatorId = data.prefillOperatorId
+        }
+
         binding?.rechargePdpTokenListrikClientNumberWidget?.run {
             if (clientNumber.isNotEmpty()) {
                 setInputNumber(clientNumber, true)

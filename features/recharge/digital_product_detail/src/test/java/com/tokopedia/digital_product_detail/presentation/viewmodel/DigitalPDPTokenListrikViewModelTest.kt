@@ -91,7 +91,7 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
         val response = dataFactory.getFavoriteNumberData()
         onGetFavoriteNumber_thenReturn(response)
 
-        viewModel.getFavoriteNumber(listOf())
+        viewModel.getFavoriteNumber(listOf(), listOf())
         verifyGetFavoriteNumberChipsRepoGetCalled()
         verifyGetFavoriteNumberSuccess(response.persoFavoriteNumber.items)
     }
@@ -100,7 +100,7 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
     fun `when getting favoriteNumber should run and give success fail`() {
         onGetFavoriteNumber_thenReturn(NullPointerException())
 
-        viewModel.getFavoriteNumber(listOf())
+        viewModel.getFavoriteNumber(listOf(), listOf())
         verifyGetFavoriteNumberChipsRepoGetCalled()
         verifyGetFavoriteNumberFail()
     }
@@ -118,7 +118,7 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
         val response = dataFactory.getFavoriteNumberData()
         onGetAutoComplete_thenReturn(response)
 
-        viewModel.getAutoComplete(listOf())
+        viewModel.getAutoComplete(listOf(), listOf())
         verifyGetFavoriteNumberListRepoGetCalled()
         verifyGetAutoCompleteSuccess(response.persoFavoriteNumber.items)
     }
@@ -127,7 +127,7 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
     fun `when getting autoComplete should run and give success fail`() {
         onGetAutoComplete_thenReturn(NullPointerException())
 
-        viewModel.getAutoComplete(listOf())
+        viewModel.getAutoComplete(listOf(), listOf())
         verifyGetFavoriteNumberListRepoGetCalled()
         verifyGetAutoCompleteFail()
     }

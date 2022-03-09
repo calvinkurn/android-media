@@ -72,25 +72,25 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
 
     protected fun onGetFavoriteNumber_thenReturn(response: TopupBillsPersoFavNumberData) {
         coEvery {
-            repo.getFavoriteNumberChips(any())
+            repo.getFavoriteNumberChips(any(), any())
         } returns response
     }
 
     protected fun onGetFavoriteNumber_thenReturn(error: Throwable) {
         coEvery {
-            repo.getFavoriteNumberChips(any())
+            repo.getFavoriteNumberChips(any(), any())
         } throws error
     }
 
     protected fun onGetAutoComplete_thenReturn(response: TopupBillsPersoFavNumberData) {
         coEvery {
-            repo.getFavoriteNumberList(any())
+            repo.getFavoriteNumberList(any(), any())
         } returns response
     }
 
     protected fun onGetAutoComplete_thenReturn(error: Throwable) {
         coEvery {
-            repo.getFavoriteNumberList(any())
+            repo.getFavoriteNumberList(any(), any())
         } throws error
     }
 
@@ -155,11 +155,11 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
     }
 
     protected fun verifyGetFavoriteNumberChipsRepoGetCalled() {
-        coVerify { repo.getFavoriteNumberChips(any()) }
+        coVerify { repo.getFavoriteNumberChips(any(), any()) }
     }
 
     protected fun verifyGetFavoriteNumberListRepoGetCalled() {
-        coVerify { repo.getFavoriteNumberList(any()) }
+        coVerify { repo.getFavoriteNumberList(any(), any()) }
     }
 
     protected fun verifyAddToCartRepoGetCalled() {
