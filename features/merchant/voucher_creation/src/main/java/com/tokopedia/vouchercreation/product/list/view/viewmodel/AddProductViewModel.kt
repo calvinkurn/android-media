@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -308,8 +309,15 @@ class AddProductViewModel @Inject constructor(
     }
 
     fun applyUserSelections(userSelections: List<ProductUiModel>,
-                            productData: List<ProductUiModel>) {
-
+                            productData: List<ProductUiModel>): List<ProductUiModel> {
+        val productDataWithSelections = productData.toMutableList()
+        productDataWithSelections.forEach { uiModel ->
+            val match = userSelections.firstOrNull() { selection ->
+                selection.id == uiModel.id
+            }
+            if (match != null) uiModel.isSelected = true
+        }
+        return productDataWithSelections.toList()
     }
 
     // dont confuse this with selected warehouse id
@@ -326,7 +334,22 @@ class AddProductViewModel @Inject constructor(
     }
 
     fun setSelectedProducts(productList: List<ProductUiModel>) {
-        this.selectedProductListLiveData.value = productList
+        this.selectedProductListLiveData.value = productList.toMutableList()
+    }
+
+    fun addSelectedProduct(productUiModel: ProductUiModel) {
+        val selectedProducts = this.selectedProductListLiveData.value?.toMutableList()?: mutableListOf()
+        val matched = selectedProducts.firstOrNull { it.id == productUiModel.id }
+        if (matched == null) selectedProducts.add(productUiModel)
+        this.selectedProductListLiveData.value = selectedProducts
+    }
+
+    fun removeSelectedProduct(productUiModel: ProductUiModel) {
+        val selectedProducts = this.selectedProductListLiveData.value?.toMutableList()?: mutableListOf()
+        selectedProducts.removeFirst {
+            it.id == productUiModel.id
+        }
+        this.selectedProductListLiveData.value = selectedProducts
     }
 
     fun getSelectedProducts(): List<ProductUiModel> {

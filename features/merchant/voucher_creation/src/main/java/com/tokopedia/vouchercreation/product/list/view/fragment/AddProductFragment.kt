@@ -239,7 +239,6 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
             viewModel.setSelectedShowCases(listOf())
             viewModel.setSelectedSort(listOf())
             viewModel.setSelectedCategories(listOf())
-            viewModel.setSelectedProducts(listOf())
             loadInitialData()
         }
     }
@@ -288,7 +287,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
 
     private fun setupButtonAddProduct(binding: FragmentMvcAddProductBinding?) {
         binding?.buttonAddProduct?.setOnClickListener {
-            val selectedProducts = adapter?.getSelectedProducts() ?: listOf()
+            val selectedProducts = viewModel.getSelectedProducts()
             if (viewModel.isMaxProductLimitReached(selectedProducts.size)) {
                 binding.tickerMaxProductWording.show()
                 adapter?.isProductListEnabled(false)
@@ -383,7 +382,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                             binding?.selectionBar?.hide()
                             binding?.rvProductList?.hide()
                             binding?.emptyProductsLayout?.show()
-                            binding?.buttonAddProduct?.isEnabled = false
+                            if (viewModel.getSelectedProducts().isEmpty()) binding?.buttonAddProduct?.isEnabled = false
                         }
                     }
                 }
@@ -406,14 +405,18 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                     )
 
                     // in case of filtering; apply the previous selection
+                    val dataWithSelections = viewModel.applyUserSelections(
+                            userSelections = viewModel.getSelectedProducts(),
+                            productData = updatedProductList
+                    )
 
-                    val hasNextPage = updatedProductList.isNotEmpty()
-                    renderList(updatedProductList, hasNextPage)
-                    setupSelectionBar(binding)
+                    val hasNextPage = dataWithSelections.isNotEmpty()
+                    renderList(dataWithSelections, hasNextPage)
+//                    setupSelectionBar(binding)
 
-                    if (isSelectAll) {
-                        viewModel.setSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
-                    }
+//                    if (isSelectAll) {
+//                        viewModel.setSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
+//                    }
 
                     // TODO: improvement point: maintainability : break the codes down into functions
 
@@ -504,7 +507,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         })
     }
 
-    override fun onProductCheckBoxClicked(isSelected: Boolean) {
+    override fun onProductCheckBoxClicked(isSelected: Boolean, uiModel: ProductUiModel) {
         if (viewModel.isFiltering) return
         viewModel.isSelectAllMode = false
         if (isSelected) {
@@ -513,8 +516,9 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
             if (!isIndeterminate) binding?.cbuSelectAllProduct?.setIndeterminate(true)
             val isChecked = binding?.cbuSelectAllProduct?.isChecked ?: false
             if (!isChecked) binding?.cbuSelectAllProduct?.isChecked = true
-        }
-        viewModel.setSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
+            viewModel.addSelectedProduct(uiModel)
+        } else viewModel.removeSelectedProduct(uiModel)
+//        viewModel.setSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
     }
 
     override fun onRemoveButtonClicked() {

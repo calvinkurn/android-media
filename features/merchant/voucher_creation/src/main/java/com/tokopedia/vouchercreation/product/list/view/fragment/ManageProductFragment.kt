@@ -301,7 +301,7 @@ class ManageProductFragment : BaseDaggerFragment(),
         activity?.startActivityForResult(addProductIntent, CreateCouponProductActivity.REQUEST_CODE_ADD_PRODUCT)
     }
 
-    override fun onProductCheckBoxClicked(isSelected: Boolean) {
+    override fun onProductCheckBoxClicked(isSelected: Boolean, uiModel: ProductUiModel) {
         viewModel.isSelectAllMode = false
         if (isSelected) {
             val isIndeterminate = binding?.cbuSelectAllProduct?.getIndeterminate() ?: false
@@ -317,8 +317,16 @@ class ManageProductFragment : BaseDaggerFragment(),
 
     override fun onBackPressed() {
         val selectedProducts = adapter?.getProductList() ?: listOf()
+
+        // TODO move this code inside viewModel
+        // set selected true for mapping purpose before submitted to gql
+        val mutableProducts = selectedProducts.toMutableList()
+        mutableProducts.forEach {
+            it.isSelected = true
+        }
+
         val extraSelectedProducts = ArrayList<ProductUiModel>()
-        extraSelectedProducts.addAll(selectedProducts)
+        extraSelectedProducts.addAll(mutableProducts)
         val resultIntent = Intent().apply {
             putParcelableArrayListExtra(BUNDLE_KEY_SELECTED_PRODUCTS, extraSelectedProducts)
         }

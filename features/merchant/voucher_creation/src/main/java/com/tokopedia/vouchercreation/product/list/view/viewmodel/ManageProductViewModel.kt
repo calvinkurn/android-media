@@ -118,7 +118,7 @@ class ManageProductViewModel @Inject constructor(
             ProductUiModel(
                     isViewing = isViewing,
                     isEditing = isEditing,
-                    isSelected = true,
+                    isSelected = false,
                     imageUrl = productData.pictures.first().urlThumbnail,
                     id = productData.id,
                     productName = productData.name,
@@ -291,6 +291,7 @@ class ManageProductViewModel @Inject constructor(
     fun resetProductUiModelState(selectedProducts: List<ProductUiModel>): List<ProductUiModel> {
         val mutableSelectedProducts = selectedProducts.toMutableList()
         mutableSelectedProducts.forEach {
+            it.isSelected = false
             it.isVariantHeaderExpanded = false
             it.isEditing = true
             it.isViewing = false

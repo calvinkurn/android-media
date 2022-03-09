@@ -14,7 +14,7 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
     : RecyclerView.Adapter<ProductItemViewHolder>(), OnProductItemClickListener {
 
     interface OnProductItemClickListener {
-        fun onProductCheckBoxClicked(isSelected: Boolean)
+        fun onProductCheckBoxClicked(isSelected: Boolean, uiModel: ProductUiModel)
         fun onRemoveButtonClicked()
     }
 
@@ -111,8 +111,9 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
     }
 
     override fun onProductCheckBoxClicked(isSelected: Boolean, dataSetPosition: Int) {
-        productUiModelList[dataSetPosition].isSelected = isSelected
-        listener.onProductCheckBoxClicked(isSelected)
+        val uiModel = productUiModelList[dataSetPosition]
+        uiModel.isSelected = isSelected
+        listener.onProductCheckBoxClicked(isSelected, uiModel)
     }
 
     override fun onRemoveProductButtonClicked(adapterPosition: Int, dataSetPosition: Int) {
