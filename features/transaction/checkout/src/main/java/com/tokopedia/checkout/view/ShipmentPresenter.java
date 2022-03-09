@@ -9,7 +9,7 @@ import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException;
 import com.tokopedia.analyticconstant.DataLayer;
-import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellItemRequestModel;
@@ -536,6 +536,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         getShipmentAddressFormV3UseCase.execute(
                 cartShipmentAddressFormData -> {
                     if (getView() != null) {
+                        getView().stopEmbraceTrace();
                         if (isReloadData) {
                             getView().setHasRunningApiCall(false);
                             getView().resetPromoBenefit();
@@ -552,6 +553,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 }, throwable -> {
                     Timber.d(throwable);
                     if (getView() != null) {
+                        getView().stopEmbraceTrace();
                         if (isReloadData) {
                             getView().setHasRunningApiCall(false);
                             getView().hideLoading();
@@ -1036,7 +1038,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         mTrackerPurchaseProtection.eventClickOnBuy(userSessionInterface.getUserId(), checkoutRequest.getProtectionAnalyticsData());
                     }
                     boolean isCrossSellChecked = false;
-                    for(ShipmentCrossSellModel shipmentCrossSellModel : listShipmentCrossSellModel) {
+                    for (ShipmentCrossSellModel shipmentCrossSellModel : listShipmentCrossSellModel) {
                         if (shipmentCrossSellModel.isChecked()) isCrossSellChecked = true;
                     }
                     if (isCrossSellChecked) triggerCrossSellClickPilihPembayaran();
@@ -1044,6 +1046,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 } else if (checkoutData.getPriceValidationData().isUpdated()) {
                     getView().hideLoading();
                     getView().renderCheckoutPriceUpdated(checkoutData.getPriceValidationData());
+                } else if (checkoutData.getPrompt().getEligible()) {
+                    getView().hideLoading();
+                    getView().renderPrompt(checkoutData.getPrompt());
                 } else {
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(checkoutData.getErrorMessage());
                     getView().hideLoading();
@@ -1067,7 +1072,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         String digitalProductName = "";
 
         if (!shipmentCrossSellModelList.isEmpty()) {
-            for (int i=0; i<shipmentCrossSellModelList.size(); i++) {
+            for (int i = 0; i < shipmentCrossSellModelList.size(); i++) {
                 CrossSellModel crossSellModel = shipmentCrossSellModelList.get(i).getCrossSellModel();
                 String digitalCategoryName = crossSellModel.getOrderSummary().getTitle();
                 String digitalProductId = crossSellModel.getId();
@@ -1077,7 +1082,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         List<Object> productList = new ArrayList<>();
-        for (int j=0; j<shipmentCartItemModelList.size(); j++) {
+        for (int j = 0; j < shipmentCartItemModelList.size(); j++) {
             for (CartItemModel cartItemModel : shipmentCartItemModelList.get(j).getCartItemModels()) {
                 AnalyticsProductCheckoutData dataAnalytics = cartItemModel.getAnalyticsProductCheckoutData();
                 productList.add(DataLayer.mapOf(

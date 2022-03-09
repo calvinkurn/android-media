@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -36,6 +37,7 @@ import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.silentverification.view.dialog.SilentVerificationDialogUtils
 import com.tokopedia.otp.silentverification.view.fragment.SilentVerificationFragment.Companion.RESULT_DELETE_METHOD
+import com.tokopedia.otp.verification.common.VerificationPref
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpConstant.OtpMode.SILENT_VERIFICATION
@@ -76,6 +78,9 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     @Inject
     lateinit var remoteConfig: RemoteConfig
 
+    @Inject
+    lateinit var verificationPref: VerificationPref
+
     protected lateinit var otpData: OtpData
     private lateinit var adapter: VerificationMethodAdapter
 
@@ -108,7 +113,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     }
 
     open fun goToSilentVerificationpage(modeListData: ModeListData) {
-        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.SILENT_VERIFICAITON)
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.SILENT_VERIFICAITON)
         val bundle = createBundle(modeListData)
         bundle.putParcelable(OtpConstant.OTP_DATA_EXTRA, otpData)
         intent.putExtras(bundle)
@@ -211,9 +216,17 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         }
     }
 
+    private fun isSameIdentifier(): Boolean {
+        val identifier = otpData.email.ifEmpty { otpData.msisdn }
+        return identifier.isNotEmpty() && verificationPref.userIdentifier == identifier
+    }
+
     open fun setMethodListAdapter() {
         adapter = VerificationMethodAdapter.createInstance(object : VerificationMethodAdapter.ClickListener {
             override fun onModeListClick(modeList: ModeListData, position: Int) {
+                if(!isSameIdentifier()) {
+                    verificationPref.resetByMode(modeList.modeText)
+                }
                 viewmodel.done = true
                 analytics.trackClickMethodOtpButton(otpData.otpType, modeList.modeText)
                 try {
@@ -380,7 +393,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         context?.let {
             analytics.trackClickInactivePhoneNumber(otpData.otpType.toString())
             analytics.trackClickInactivePhoneLink()
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.CHANGE_INACTIVE_PHONE)
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalUserPlatform.CHANGE_INACTIVE_PHONE)
             if (otpData.email.isEmpty() && otpData.msisdn.isEmpty()) {
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, userSession.tempPhoneNumber)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.tempEmail)

@@ -54,7 +54,7 @@ class CategoryGetCategoryGridTest: CategoryTestFixtures() {
         val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
         val categoryGridUiModel = visitableList.findIndexedCategoryGridUIModel()
 
-        assertThat(categoryGridUiModel.categoryList, shouldBe(expectedCategoryList))
+        assertThat(categoryGridUiModel.categoryListUiModel, shouldBe(expectedCategoryList))
         assertThat(categoryGridUiModel.state, shouldBe(TokoNowLayoutState.SHOW))
     }
 

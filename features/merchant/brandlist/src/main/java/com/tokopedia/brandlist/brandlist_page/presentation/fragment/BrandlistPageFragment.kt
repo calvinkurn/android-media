@@ -95,12 +95,8 @@ class BrandlistPageFragment :
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (swipeRefreshLayout?.isRefreshing == false) {
                     val brandFirstLetter: String = if (stateLoadBrands == LoadAllBrandState.LOAD_BRAND_PER_ALPHABET) selectedBrandLetter else defaultBrandLetter
-                    viewModel.loadMoreAllBrands(category, brandFirstLetter)
-                    isLoadMore = true
 
-                    if (adapter?.getVisitables()?.lastOrNull() is AllBrandUiModel) {
-                        adapter?.showLoading()
-                    }
+                    viewModel.loadMoreAllBrands(brandFirstLetter)
                 }
             }
         }
@@ -294,13 +290,22 @@ class BrandlistPageFragment :
     }
 
     private fun observeAllBrands() {
+        viewModel.remindingRequestSize.observe(viewLifecycleOwner) {remindingSize ->
+            val remindingRequestSize = remindingSize.first
+            if (remindingRequestSize > 0 && adapter?.getVisitables()?.lastOrNull() is AllBrandUiModel) {
+                isLoadMore = true
+                adapter?.showLoading()
+                viewModel.loadMoreAllBrandsReminding(remindingRequestSize, category, remindingSize.second)
+             }
+        }
+
         viewModel.getAllBrandResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     val totalBrandPerCharacter = it.data.totalBrands
                     val totalBrandsFiltered = if (stateLoadBrands == LoadAllBrandState.LOAD_ALL_BRAND ||
                             stateLoadBrands == LoadAllBrandState.LOAD_INITIAL_ALL_BRAND) totalBrandsNumber else it.data.totalBrands
-                    adapter?.hideLoading()
+                    BrandlistPageMapper.resetAllBrandData(adapter)
 
                     swipeRefreshLayout?.isRefreshing = false
                     endlessScrollListener.updateStateAfterGetData()

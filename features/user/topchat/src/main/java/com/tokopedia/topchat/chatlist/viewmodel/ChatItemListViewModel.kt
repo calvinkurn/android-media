@@ -150,7 +150,7 @@ class ChatItemListViewModel @Inject constructor(
         )
     }
 
-    private fun whenChatAdminAuthorized(tab: String, action: () -> Unit) {
+    fun whenChatAdminAuthorized(tab: String, action: () -> Unit) {
         val isTabUser = tab == PARAM_TAB_USER
         _isChatAdminEligible.value.let { result ->
             when {
@@ -337,7 +337,7 @@ class ChatItemListViewModel @Inject constructor(
         throwable.printStackTrace()
     }
 
-    fun getFilterTittles(context: Context, isTabSeller: Boolean): List<String> {
+    fun getFilterTitles(context: Context, isTabSeller: Boolean): List<String> {
         val filters = arrayListOf(
                 context.getString(R.string.filter_chat_all),
                 context.getString(R.string.filter_chat_unread),

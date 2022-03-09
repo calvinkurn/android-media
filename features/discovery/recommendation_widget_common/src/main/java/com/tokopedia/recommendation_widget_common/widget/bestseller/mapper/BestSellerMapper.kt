@@ -19,6 +19,7 @@ class BestSellerMapper (
     suspend fun mappingRecommendationWidget(recommendationWidget: RecommendationWidget): BestSellerDataModel{
         val productList = mappingProductCards(recommendationWidget.recommendationItemList)
         return BestSellerDataModel(
+            channelId = recommendationWidget.channelId,
             title = recommendationWidget.title,
             subtitle = recommendationWidget.subtitle,
             height = getMaxHeightProductCards(productList),

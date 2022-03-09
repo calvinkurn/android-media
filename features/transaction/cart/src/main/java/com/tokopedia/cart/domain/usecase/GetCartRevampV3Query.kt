@@ -37,8 +37,14 @@ fun getQueryCartRevampV3(): String {
                 state
                 state_detail
                 tokonow {
+                  is_modified
                   shop_id
                   warehouse_id
+                  warehouses {
+                    warehouse_id
+                    service_type
+                  }
+                  service_type
                 }
               }
               empty_cart {
@@ -96,6 +102,7 @@ fun getQueryCartRevampV3(): String {
                 ErrorProductAvailableStockDetail
                 ErrorProductMaxQuantity
                 ErrorProductMinQuantity
+                ErrorBOAffordability
               }
               fulfillment_message
               toko_cabang {
@@ -125,10 +132,18 @@ fun getQueryCartRevampV3(): String {
                       is_preorder
                       duration
                     }
+                    enable_bo_affordability
                   }
                   pinned {
                     is_pinned
                     coachmark_message  
+                  }
+                  bo_metadata {
+                    bo_type
+                    bo_eligibilities {
+                      key
+                      value
+                    }
                   }
                   shop {
                     shop_ticker
@@ -146,6 +161,7 @@ fun getQueryCartRevampV3(): String {
                     latitude
                     longitude
                     district_name
+                    district_id
                     origin
                     address_street
                     city_name
@@ -161,6 +177,21 @@ fun getQueryCartRevampV3(): String {
                       badge
                       badge_svg
                       title
+                    }
+                    shop_shipments {
+                      ship_id
+                      ship_name
+                      ship_code
+                      ship_logo
+                      ship_prods {
+                        ship_prod_id
+                        ship_prod_name
+                        ship_group_id
+                        ship_group_name
+                        minimum_weight
+                        additional_fee
+                      }
+                      is_dropship_enabled
                     }
                   }
                   promo_codes

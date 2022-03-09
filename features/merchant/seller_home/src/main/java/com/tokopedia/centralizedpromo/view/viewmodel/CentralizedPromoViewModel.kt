@@ -1,13 +1,17 @@
 package com.tokopedia.centralizedpromo.view.viewmodel
 
+import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.common.util.CentralizedPromoResourceProvider
+import com.tokopedia.centralizedpromo.domain.usecase.CheckNonTopAdsUserUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
+import com.tokopedia.centralizedpromo.domain.usecase.SellerHomeGetWhiteListedUserUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.VoucherCashbackEligibleUseCase
+import com.tokopedia.centralizedpromo.view.FirstVoucherDataSource
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
@@ -26,7 +30,10 @@ class CentralizedPromoViewModel @Inject constructor(
     private val getOnGoingPromotionUseCase: GetOnGoingPromotionUseCase,
     private val getChatBlastSellerMetadataUseCase: GetChatBlastSellerMetadataUseCase,
     private val voucherCashbackEligibleUseCase: VoucherCashbackEligibleUseCase,
+    private val checkNonTopAdsUserUseCase: CheckNonTopAdsUserUseCase,
+    private val sellerHomeGetWhiteListedUserUseCase: SellerHomeGetWhiteListedUserUseCase,
     private val remoteConfig: FirebaseRemoteConfigImpl,
+    private val sharedPreferences: SharedPreferences,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -84,17 +91,49 @@ class CentralizedPromoViewModel @Inject constructor(
             val isVoucherCashbackEligibleDeferred = async {
                 voucherCashbackEligibleUseCase.execute(userSession.shopId)
             }
+            val isVoucherCashbackFirstTimeDeferred = async {
+                sharedPreferences.getBoolean(FirstVoucherDataSource.IS_MVC_FIRST_TIME, true)
+            }
+            val isProductCouponFirstTimeDeferred = async {
+                sharedPreferences.getBoolean(
+                    FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME,
+                    true
+                )
+            }
+            val isProductCouponEnabledDeffered = async {
+                getIsProductCouponEnabled()
+            }
+
+            val isNonTopAdsUserDeferred = async {
+                checkNonTopAdsUserUseCase.execute(userSession.shopId)
+            }
+
+            val isNonTopAdsUser = isNonTopAdsUserDeferred.await()
+            var isTopAdsOnBoardingEnable = false
+            if (isNonTopAdsUser) {
+                val isUserWhiteListedDeferred = async {
+                    sellerHomeGetWhiteListedUserUseCase.executeQuery()
+                }
+                isTopAdsOnBoardingEnable = isUserWhiteListedDeferred.await()
+            }
 
             val (broadcastChatExtra, chatBlastSellerUrl) = broadcastChatPairDeferred.await()
             val isFreeShippingEnabled = isFreeShippingEnabledDeferred.await()
             val isVoucherCashbackEligible = isVoucherCashbackEligibleDeferred.await()
+            val isVoucherCashbackFirstTime = isVoucherCashbackFirstTimeDeferred.await()
+            val isProductCouponFirstTime = isProductCouponFirstTimeDeferred.await()
+            val isProductCouponEnabled = isProductCouponEnabledDeffered.await()
             Success(
                 PromoCreationStaticData.provideStaticData(
                     resourceProvider,
                     broadcastChatExtra,
                     chatBlastSellerUrl,
                     isFreeShippingEnabled,
-                    isVoucherCashbackEligible
+                    isVoucherCashbackEligible,
+                    isTopAdsOnBoardingEnable,
+                    isVoucherCashbackFirstTime,
+                    isProductCouponFirstTime,
+                    isProductCouponEnabled
                 )
             )
         } catch (t: Throwable) {
@@ -113,4 +152,13 @@ class CentralizedPromoViewModel @Inject constructor(
             remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
         CentralizedPromoTracking.sendClickFreeShipping(userSession, isTransitionPeriod)
     }
+
+    private fun getIsProductCouponEnabled(): Boolean {
+        return try {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
+        } catch (ex: Exception) {
+            false
+        }
+    }
+
 }

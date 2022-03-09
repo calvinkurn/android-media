@@ -1,121 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="16dp"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.TextFieldUnify
-        android:id="@+id/pdp_productid_text"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        app:text_field_input_type="text"
-        app:text_field_label=""
-        app:text_field_label_static="true"
-        app:text_field_placeholder="@string/pdp_product_id_edittext_placeholder" />
-
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/pdp_route_to_pdp_btn"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
-        android:gravity="center"
-        android:padding="@dimen/spacing_lvl3"
-        android:text="@string/pdp_route"
-        app:unifyButtonSize="medium"
-        app:unifyButtonType="main" />
-
-    <com.tokopedia.unifycomponents.TextFieldUnify
-        android:id="@+id/pdp_layout_id_edittext"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        app:text_field_input_type="text"
-        app:text_field_label="Please restart apps after click the button!"
-        app:text_field_label_static="true"
-        app:text_field_placeholder="@string/pdp_layout_id_edittext_placeholder" />
-
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/pdp_layout_id_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
-        android:gravity="center"
-        android:padding="@dimen/spacing_lvl3"
-        android:text="@string/pdp_layout_id"
-        app:unifyButtonSize="medium"
-        app:unifyButtonType="main" />
-
-
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/pdp_border_vbs"
-        android:padding="10dp"
-        android:orientation="vertical">
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:typographyWeight="bold"
-            app:typographyType="heading_3"
-            android:text="Variant Bottom Sheet Section"/>
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <com.tokopedia.unifycomponents.TextFieldUnify
-            android:id="@+id/pdp_productid_vbs"
+            android:id="@+id/pdp_productid_text"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginTop="@dimen/spacing_lvl4"
             app:text_field_input_type="text"
-            app:text_field_label="Product ID"
+            app:text_field_label=""
             app:text_field_label_static="true"
             app:text_field_placeholder="@string/pdp_product_id_edittext_placeholder" />
 
-        <com.tokopedia.unifycomponents.TextFieldUnify
-            android:id="@+id/pdp_shopid_vbs"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            app:text_field_input_type="text"
-            app:text_field_label="Shop ID"
-            app:text_field_label_static="true"
-            app:text_field_placeholder="@string/pdp_shop_id_edittext_placeholder" />
-
-        <com.tokopedia.unifycomponents.TextFieldUnify
-            android:id="@+id/pdp_pagesource_vbs"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            app:text_field_input_type="text"
-            app:text_field_label="Page Source"
-            app:text_field_label_static="true"
-            app:text_field_placeholder="@string/pdp_page_source_edittext_placeholder" />
-
-        <CheckBox
-            android:id="@+id/toggle_is_tokonow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin_small"
-            android:padding="@dimen/margin_small"
-            android:text="Tokonow" />
-
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/pdp_vbs_btn"
+            android:id="@+id/pdp_route_to_pdp_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             android:gravity="center"
             android:padding="@dimen/spacing_lvl3"
-            android:text="@string/pdp_vbs"
+            android:text="@string/pdp_route"
             app:unifyButtonSize="medium"
             app:unifyButtonType="main" />
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/pdp_layout_id_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            app:text_field_input_type="text"
+            app:text_field_label="Please restart apps after click the button!"
+            app:text_field_label_static="true"
+            app:text_field_placeholder="@string/pdp_layout_id_edittext_placeholder" />
 
-</LinearLayout>
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/pdp_layout_id_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:gravity="center"
+            android:padding="@dimen/spacing_lvl3"
+            android:text="@string/pdp_layout_id"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="main" />
+
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/pdp_border_vbs"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Variant Bottom Sheet Section"
+                app:typographyType="heading_3"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify
+                android:id="@+id/pdp_productid_vbs"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                app:text_field_input_type="text"
+                app:text_field_label="Product ID"
+                app:text_field_label_static="true"
+                app:text_field_placeholder="@string/pdp_product_id_edittext_placeholder" />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify
+                android:id="@+id/pdp_shopid_vbs"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                app:text_field_input_type="text"
+                app:text_field_label="Shop ID"
+                app:text_field_label_static="true"
+                app:text_field_placeholder="@string/pdp_shop_id_edittext_placeholder" />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify
+                android:id="@+id/pdp_dismiss_after_atc_vbs"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                app:text_field_input_type="text"
+                app:text_field_label="Dismiss After Atc ?"
+                app:text_field_label_static="true"
+                app:text_field_placeholder="@string/pdp_true_false_atc_edittext_placeholder" />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify
+                android:id="@+id/pdp_save_after_close_atc_vbs"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                app:text_field_input_type="text"
+                app:text_field_label="Save Variant Selected After Click X ?"
+                app:text_field_label_static="true"
+                app:text_field_placeholder="@string/pdp_true_false_atc_edittext_placeholder" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Page Source"/>
+
+            <Spinner
+                android:id="@+id/page_source_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="4dp"
+                android:layout_weight="2"/>
+
+            <CheckBox
+                android:id="@+id/toggle_is_tokonow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin_small"
+                android:padding="@dimen/margin_small"
+                android:text="Tokonow" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/pdp_vbs_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:layout_marginBottom="@dimen/spacing_lvl4"
+                android:gravity="center"
+                android:padding="@dimen/spacing_lvl3"
+                android:text="@string/pdp_vbs"
+                app:unifyButtonSize="medium"
+                app:unifyButtonType="main" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </LinearLayout>
+</ScrollView>

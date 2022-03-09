@@ -29,12 +29,9 @@ import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
 import com.tokopedia.home.util.ViewVisibilityIdlingResource
+import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.viewholders.*
-import com.tokopedia.home_component.visitable.BannerDataModel
-import com.tokopedia.home_component.visitable.MixLeftDataModel
-import com.tokopedia.home_component.visitable.MixTopDataModel
-import com.tokopedia.home_component.visitable.ProductHighlightDataModel
-import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
+import com.tokopedia.home_component.visitable.*
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
@@ -275,18 +272,37 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testReminderWidget(){
+    fun testReminderWidgetRecharge(){
         HomeDCCassavaTest {
             initTest()
-            doActivityTest(ReminderWidgetViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int, homeRecycleView: RecyclerView ->
-                //click salam widget
-                clickOnReminderWidget(viewHolder, i, homeRecycleView)
+            doActivityTestByModelClass(
+                dataModelClass = ReminderWidgetModel::class,
+                predicate = { it?.source == ReminderEnum.RECHARGE }
+            ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
                 //click digital widget
-                clickOnReminderWidget(viewHolder, i, homeRecycleView)
+                clickOnReminderWidget(viewHolder, i, homeRecyclerView)
             }
         } validateAnalytics {
             addDebugEnd()
             hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_RECHARGE)
+        }
+    }
+
+    @Test
+    fun testReminderWidgetSalam(){
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(
+                dataModelClass = ReminderWidgetModel::class,
+                predicate = { it?.source == ReminderEnum.SALAM }
+            ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
+                //click salam widget
+                clickOnReminderWidget(viewHolder, i, homeRecyclerView)
+            }
+        } validateAnalytics {
+            addDebugEnd()
             hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM)
         }
     }
@@ -375,12 +391,16 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         }
     }
 
-    private fun <T: Any> doActivityTestByModelClass(delayBeforeRender: Long = 2000L, dataModelClass : KClass<T>, isTypeClass: (viewHolder: RecyclerView.ViewHolder, itemClickLimit: Int)-> Unit) {
+    private fun <T: Any> doActivityTestByModelClass(
+        delayBeforeRender: Long = 2000L,
+        dataModelClass : KClass<T>,
+        predicate: (T?) -> Boolean = {true},
+        isTypeClass: (viewHolder: RecyclerView.ViewHolder, itemClickLimit: Int)-> Unit) {
         val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
         val homeRecycleAdapter = homeRecyclerView.adapter as? HomeRecycleAdapter
 
         val visitableList = homeRecycleAdapter?.currentList?: listOf()
-        val targetModel = visitableList.find { it.javaClass.simpleName == dataModelClass.simpleName }
+        val targetModel = visitableList.find { it.javaClass.simpleName == dataModelClass.simpleName && predicate.invoke(it as? T) }
         val targetModelIndex = visitableList.indexOf(targetModel)
 
         targetModelIndex.let { targetModelIndex->

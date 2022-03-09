@@ -141,8 +141,8 @@ class FlightSearchMapper {
             return FlightJourneyTable(
                     id,
                     term,
-                    hasFreeRapidTest,
-                    isSeatDistancing,
+                    label1,
+                    label2,
                     departureAirportId,
                     "",
                     "",

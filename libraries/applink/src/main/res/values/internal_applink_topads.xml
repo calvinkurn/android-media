@@ -28,6 +28,7 @@
     <string name="path_topads_headline_ads_creation" translatable="false">/headline-ad-creation</string>
     <string name="path_topads_headline_ads_edit" translatable="false">/headline-ad-edit</string>
     <string name="path_topads_headline_ads_detail" translatable="false">/headline-ad-detail</string>
+    <string name="path_topads_on_boarding" translatable="false">/topads-onboarding</string>
 
 
 </resources>

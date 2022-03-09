@@ -119,7 +119,7 @@ dari Feed.</string>
     <!--Share -->
     <string name="feed_share_weblink">https://www.tokopedia.com/content/%s</string>
     <string name="feed_vod_share_weblink">https://www.tokopedia.com/play/channel/%s</string>
-    <string name="feed_share_pdp">https://www.tokopedia.com/product_detail/%s</string>
+    <string name="feed_share_pdp">https://www.tokopedia.com/%s/%s</string>
     <string name="feed_share_asgc_weblink">https://www.tokopedia.com/feedcommunicationdetail/%s</string>
     <string name="feed_background_image">Feed background image</string>
     <string name="feed_header_mask">searchbar feed header mask</string>

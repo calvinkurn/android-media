@@ -1,5 +1,6 @@
 package com.tokopedia.shop.analytic
 
+import android.os.Bundle
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -15,6 +16,11 @@ import java.util.*
 
 open class ShopPageTracking(
         protected val trackingQueue: TrackingQueue) {
+
+    protected fun sendEnhanceEcommerceDataLayerEvent(eventName: String, bundle: Bundle) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventName, bundle)
+    }
+
     protected fun sendDataLayerEvent(eventTracking: Map<String, Any>) {
         if (eventTracking.containsKey(ShopPageTrackingConstant.ECOMMERCE)) {
             trackingQueue.putEETracking(eventTracking as HashMap<String, Any>)

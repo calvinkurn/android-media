@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="16dp">
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="8dp"/>
+
+    <com.tokopedia.vouchercreation.shop.create.view.customview.VoucherCreateTitleView
+        android:id="@+id/titleViewCouponDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="Tentukan periode kupon aktif"/>
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/tfuCouponDateStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"
+        app:text_field_append_drawable_icon_1="@drawable/iconunify_calendar"
+        app:text_field_label="Mulai"/>
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/tfuCouponDateEnd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"
+        app:text_field_append_drawable_icon_1="@drawable/iconunify_calendar"
+        app:text_field_label="Selesai"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

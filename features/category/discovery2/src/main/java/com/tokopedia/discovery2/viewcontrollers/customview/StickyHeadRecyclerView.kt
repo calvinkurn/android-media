@@ -48,7 +48,10 @@ class StickyHeadRecyclerView : ConstraintLayout {
         recyclerView.adapter = adapter
         headerItemDecoration = HeaderItemDecoration(this, isHeader = {
             adapter.isStickyHeaderView(it)
-        })
+        }, notifySection = {
+            adapter.notifySectionId(it)
+        }
+        )
         recyclerView.addItemDecoration(headerItemDecoration!!)
     }
 

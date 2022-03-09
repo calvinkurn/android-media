@@ -20,7 +20,6 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.AutoPlayController
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 
@@ -58,7 +57,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                               private val localCacheModel: LocalCacheModel?,private val isLoggedIn: Boolean) {
     fun getDiscoveryComponentListWithQueryParam(components: List<ComponentsItem>): List<ComponentsItem> {
         val targetCompId = queryParameterMap[TARGET_COMP_ID] ?: ""
-        val componentList = getDiscoveryComponentList(filterSaleTimer(components))
+        val componentList = getDiscoComponentListFromResponse(filterSaleTimer(components))
         if (componentList.isNotEmpty() && targetCompId.isNotEmpty()) {
             componentList.forEach { item ->
                 if (item.id == targetCompId) {
@@ -105,6 +104,14 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
         return listComponents
     }
 
+    private fun getDiscoComponentListFromResponse(components: List<ComponentsItem>): List<ComponentsItem> {
+        val listComponents: ArrayList<ComponentsItem> = ArrayList()
+        for (component in components) {
+            listComponents.addAll(parseComponent(component, listComponents.size))
+        }
+        return listComponents
+    }
+
     private fun parseComponent(component: ComponentsItem, position: Int): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         component.position = position
@@ -116,6 +123,10 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
             ComponentNames.ProductCardCarousel.componentName -> {
                 updateCarouselWithCart(component)
                 listComponents.add(component)
+            }
+            ComponentNames.Section.componentName ->{
+                saveSectionPosition(component.pageEndPoint, component.sectionId, component.position)
+                listComponents.addAll(parseSectionComponent(component))
             }
             ComponentNames.QuickCoupon.componentName -> {
                 if (component.isApplicable) {
@@ -176,6 +187,15 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
             else -> listComponents.add(component)
         }
         return listComponents
+    }
+
+    private fun saveSectionPosition(pageEndPoint: String, sectionId: String, position: Int) {
+        if (getSectionPositionMap(pageEndPoint) == null) {
+            setSectionPositionMap(mutableMapOf(), pageEndPoint)
+        }
+        getSectionPositionMap(pageEndPoint)?.let {
+            it.put(sectionId, position)
+        }
     }
 
     private fun addAutoPlayController(component: ComponentsItem) {
@@ -243,16 +263,18 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                             }
                             if (!targetComponentIdList.isNullOrEmpty()) {
                                 val tabsChildComponentsItemList: ArrayList<ComponentsItem> = ArrayList()
-                                targetComponentIdList.forEach { componentId ->
+                                targetComponentIdList.forEachIndexed { compIndex,componentId ->
                                     if (isDynamicTabs) {
                                         handleDynamicTabsComponents(componentId, index, component, tabData.name)?.let {
                                             tabsChildComponentsItemList.add(it)
-                                            listComponents.addAll(parseComponent(it, position))
+                                            listComponents.addAll(parseComponent(it,
+                                                position + compIndex + 1))
                                         }
                                     } else {
                                         handleAvailableComponents(componentId, component, tabData.name)?.let {
                                             tabsChildComponentsItemList.add(it)
-                                            listComponents.addAll(parseComponent(it, position))
+                                            listComponents.addAll(parseComponent(it,
+                                                position + compIndex + 1))
                                         }
                                     }
                                 }
@@ -376,7 +398,6 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
         return listComponents
     }
 
-
     private fun handleProductState(component: ComponentsItem, componentName: String, queryParameterMap: Map<String, String?>? = null): ArrayList<ComponentsItem> {
         val productState: ArrayList<ComponentsItem> = ArrayList()
         productState.add(ComponentsItem(name = componentName).apply {
@@ -432,6 +453,31 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
         }
         return false
     }
+
+    private fun parseSectionComponent(component: ComponentsItem): List<ComponentsItem> {
+        val listComponents: ArrayList<ComponentsItem> = ArrayList()
+        listComponents.add(component)
+        component.getComponentsItem()?.let {
+            listComponents.addAll(getSectionComponentList(it, component.position + 1))
+        }
+        return listComponents
+    }
+
+    private fun getSectionComponentList(
+        components: List<ComponentsItem>,
+        sectionPosition: Int
+    ): List<ComponentsItem> {
+        val listComponents: ArrayList<ComponentsItem> = ArrayList()
+        for ((position, component) in components.withIndex()) {
+            listComponents.addAll(
+                parseComponent(
+                    component,
+                    sectionPosition + position
+                )
+            )
+        }
+        return listComponents
+    }
 }
 
 fun getComponent(componentId: String, pageName: String): ComponentsItem? {
@@ -453,10 +499,24 @@ fun getCartData(pageName: String):MutableMap<String,MiniCartItem>?{
     }
     return null
 }
+
 fun setCartData(cartMap:MutableMap<String,MiniCartItem>,pageName: String){
     discoveryPageData[pageName]?.let {
         it.cartMap = cartMap
     }
+}
+
+fun setSectionPositionMap(map: MutableMap<String, Int>, pageName: String) {
+    discoveryPageData[pageName]?.let {
+        it.sectionMap = map
+    }
+}
+
+fun getSectionPositionMap(pageName: String):MutableMap<String, Int>?{
+    discoveryPageData[pageName]?.let {
+        return it.sectionMap
+    }
+    return null
 }
 
 fun updateComponentsQueryParams(categoryId: String) {

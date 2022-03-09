@@ -33,8 +33,6 @@ import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.utils.view.binding.viewBinding
-import io.embrace.android.embracesdk.Embrace
 
 /**
  * @author by yoasfs on 2020-02-18
@@ -78,7 +76,6 @@ class PopularKeywordViewHolder (val view: View,
 
     override fun bind(element: PopularKeywordListDataModel) {
         performanceMonitoring?.startTrace(performanceTraceName)
-        Embrace.getInstance().startEvent(performanceTraceName, null, false)
         homeCategoryListener.sendIrisTrackerHashMap(PopularKeywordTracking.getPopularKeywordImpressionIris(element.channel, element.popularKeywordList, adapterPosition) as HashMap<String, Any>)
 
         initStub(element)
@@ -110,7 +107,6 @@ class PopularKeywordViewHolder (val view: View,
         else recyclerView.visible()
         performanceMonitoring?.stopTrace()
         performanceMonitoring = null
-        Embrace.getInstance().endEvent(performanceTraceName)
     }
 
     private fun initStub(element: PopularKeywordListDataModel) {

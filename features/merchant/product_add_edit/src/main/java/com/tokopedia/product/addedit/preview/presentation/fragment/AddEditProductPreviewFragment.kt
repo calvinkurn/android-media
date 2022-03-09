@@ -11,18 +11,14 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -39,6 +35,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.utils.ErrorHandler
@@ -49,6 +46,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_PREVIEW_TRACE
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import com.tokopedia.product.addedit.common.AddEditProductFragment
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_OPEN_BOTTOMSHEET
@@ -150,7 +148,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class AddEditProductPreviewFragment :
-        BaseDaggerFragment(),
+        AddEditProductFragment(),
         ProductPhotoViewHolder.OnPhotoChangeListener,
         AddEditProductPerformanceMonitoringListener {
 
@@ -168,11 +166,6 @@ class AddEditProductPreviewFragment :
     private var isFragmentFirstTimeLoaded = true
     private var isAdminEligible = true
     private var isProductLimitEligible: Boolean = true
-
-    private var toolbar: Toolbar? = null
-
-    // action button
-    private var doneButton: AppCompatTextView? = null
 
     // photo
     private var addEditProductPhotoButton: Typography? = null
@@ -303,15 +296,11 @@ class AddEditProductPreviewFragment :
         // set bg color programatically, to reduce overdraw
         setFragmentToUnifyBgColor()
 
-        // activity toolbar
-        toolbar = activity?.findViewById(R.id.toolbar)
-        toolbar?.title = getString(com.tokopedia.product.addedit.R.string.label_title_add_product)
-
         // to check whether current fragment is visible or not
         isFragmentVisible = true
 
-        // action button
-        doneButton = activity?.findViewById(R.id.tv_done)
+        // setup toolbar and action button
+        setupToolbar()
 
         // photos
         productPhotosView = view.findViewById(R.id.rv_product_photos)
@@ -369,7 +358,6 @@ class AddEditProductPreviewFragment :
         productLimitationTicker = view.findViewById(R.id.ticker_add_edit_product_limitation)
 
         addEditProductPhotoButton?.setOnClickListener {
-            val ctx = context ?: return@setOnClickListener
             // tracking
             val buttonTextStart: String = getString(R.string.action_start)
             if (isEditing()) {
@@ -393,6 +381,7 @@ class AddEditProductPreviewFragment :
             val isChecked = productStatusSwitch?.isChecked ?: false
             viewModel.updateProductStatus(isChecked)
             viewModel.setIsDataChanged(true)
+
             // track switch status on click
             if (isChecked && isEditing()) {
                 ProductEditStepperTracking.trackChangeProductStatus(shopId)
@@ -414,7 +403,7 @@ class AddEditProductPreviewFragment :
             } else if (isAddingOrDuplicating && !isProductLimitEligible) {
                 productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button_draft))
                 productLimitationBottomSheet?.setIsSavingToDraft(true)
-                productLimitationBottomSheet?.show(childFragmentManager)
+                productLimitationBottomSheet?.show(childFragmentManager, context)
             } else {
                 viewModel.productInputModel.value?.detailInputModel?.productName?.let {
                     viewModel.validateProductNameInput(it)
@@ -434,12 +423,6 @@ class AddEditProductPreviewFragment :
                 ProductEditStepperTracking.trackChangeProductDetail(shopId)
             }
             val productInputModel = viewModel.productInputModel.value ?: ProductInputModel()
-            // there is 3 case where we come here
-            // 1. edit product
-            // 2. open draft (edit product or add product mode)
-            // 3. add product then press back
-            // to prevent edit tracker always fired when we came here from add product mode
-            // we need a flag isAdding which will be true only if we come to this fragment from product manage
             moveToDetailFragment(productInputModel, false)
         }
 
@@ -725,6 +708,31 @@ class AddEditProductPreviewFragment :
                 .inject(this)
     }
 
+    private fun setupToolbar() {
+        initializeToolbar()
+        highlightNavigationButton(PageIndicator.INDICATOR_MAIN_PAGE)
+        setNavigationButtonsOnClickListener { page ->
+            // restore to root of navigation component first
+            if (!isFragmentVisible) {
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
+            when (page) {
+                PageIndicator.INDICATOR_MAIN_PAGE -> {
+                }
+                PageIndicator.INDICATOR_DETAIL_PAGE -> {
+                    val productInputModel = viewModel.productInputModel.value ?: ProductInputModel()
+                    moveToDetailFragment(productInputModel, false)
+                }
+                PageIndicator.INDICATOR_DESCRIPTION_PAGE -> {
+                    moveToDescriptionFragment()
+                }
+                PageIndicator.INDICATOR_SHIPMENT_PAGE -> {
+                    moveToShipmentFragment()
+                }
+            }
+        }
+    }
+
     private fun setupBackPressed() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -742,6 +750,7 @@ class AddEditProductPreviewFragment :
                     // show dialog
                     DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                         setTitle(getString(R.string.label_title_on_dialog))
+                        setDefaultMaxWidth()
                         setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
                         setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
                         if ((isEditing() || dataBackPressedLoss()) && !isDrafting()) {
@@ -882,7 +891,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun displayEditMode() {
-        toolbar?.title = getString(R.string.label_title_edit_product)
+        toolbar?.headerTitle = getString(R.string.label_title_edit_product)
         doneButton?.show()
 
         enablePhotoEdit()
@@ -961,7 +970,8 @@ class AddEditProductPreviewFragment :
     }
 
     private fun observeIsEditingStatus() {
-        viewModel.isEditing.observe(viewLifecycleOwner, Observer {
+        viewModel.isEditing.observe(viewLifecycleOwner, {
+            setPageState(if (it || viewModel.isDuplicate) PageState.EDIT_MODE else PageState.ADD_MODE)
             if (it) {
                 displayEditMode()
             } else {
@@ -1022,22 +1032,28 @@ class AddEditProductPreviewFragment :
     }
 
     private fun observeProductInputModel() {
-        viewModel.productInputModel.observe(viewLifecycleOwner, Observer {
+        viewModel.productInputModel.observe(viewLifecycleOwner, {
             showProductPhotoPreview(it)
             showProductDetailPreview(it)
             updateProductStatusSwitch(it)
-            showEmptyVariantState(viewModel.productInputModel.value?.variantInputModel?.products?.size == 0)
-            if (viewModel.getDraftId() != 0L || it.productId != 0L || viewModel.getProductId().isNotBlank()) {
-                displayEditMode()
+            showEmptyVariantState(viewModel.productInputModel.value?.
+                                    variantInputModel?.products?.isEmpty().orFalse())
+
+            if (viewModel.getDraftId() != Int.ZERO.toLong() ||
+                it.productId != Int.ZERO.toLong() ||
+                viewModel.getProductId().isNotBlank()) {
+                    displayEditMode()
             }
-            stopRenderPerformanceMonitoring()
-            stopPerformanceMonitoring()
+
             //check whether productInputModel has value from savedInstanceState
             if (productInputModel != null) {
                 viewModel.productInputModel.value = productInputModel
                 checkEnableOrNot()
                 productInputModel = null
             }
+
+            stopRenderPerformanceMonitoring()
+            stopPerformanceMonitoring()
         })
     }
 
@@ -1176,7 +1192,6 @@ class AddEditProductPreviewFragment :
                     showGetProductErrorToast(viewModel.getProductId())
                 }
             }
-
         }
     }
 
@@ -1653,7 +1668,7 @@ class AddEditProductPreviewFragment :
     private fun showProductLimitationBottomSheet() {
         productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button))
         productLimitationBottomSheet?.setIsSavingToDraft(false)
-        productLimitationBottomSheet?.show(childFragmentManager)
+        productLimitationBottomSheet?.show(childFragmentManager, context)
     }
 
     private fun setupProductLimitationViews() {

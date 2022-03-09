@@ -199,7 +199,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         setupInsets()
         setupObserve()
 
-        if((activity as? PlayBroadcastActivity)?.isDialogContinueLiveStreamOpen() == false)
+        if((activity as? PlayBroadcastActivity)?.isDialogContinueLiveStreamOpen() == false &&
+            (activity as? PlayBroadcastActivity)?.isRequiredPermissionGranted() == true)
             parentViewModel.startLiveTimer()
 
         if (GlobalConfig.DEBUG) setupDebugView(view)
@@ -218,7 +219,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun setupView() {
-        actionBarLiveView.setTitle(parentViewModel.channelTitle)
+        observeTitle()
         actionBarLiveView.setShopIcon(parentViewModel.getShopIconUrl())
 
         ivShareLink.setOnClickListener{
@@ -231,6 +232,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
         pinnedMessageView.setOnPinnedClickedListener { _, message ->
             parentViewModel.submitAction(PlayBroadcastAction.EditPinnedMessage)
+
+            interactiveView.cancelCoachMark()
 
             if (message.isBlank()) {
                 analytic.clickAddPinChatMessage(
@@ -271,6 +274,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
         observeLiveInfo()
         observeLiveStats()
+    }
+
+    private fun observeTitle() {
+        parentViewModel.observableTitle.observe(viewLifecycleOwner) {
+            actionBarLiveView.setTitle(it.title)
+        }
     }
 
     private fun observeLiveInfo() {
@@ -426,7 +435,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     }
             )
         }
-        if (!forceStopDialog.isShowing) forceStopDialog.show()
+        if (!forceStopDialog.isShowing) {
+            analytic.viewDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
+            forceStopDialog.show()
+        }
     }
 
     private fun showDialogContinueLiveStreaming() {
@@ -583,7 +595,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             when(it)  {
                 is PlayLiveTimerState.Active -> showCounterDuration(it.remainingInMs)
                 is PlayLiveTimerState.Finish -> {
-                    analytic.viewDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
                     showDialogWhenTimeout()
                 }
             }

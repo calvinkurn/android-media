@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/createFirstAd"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_24"
+        android:text="@string/topads_ads_objective_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_1"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/adsObjSubTitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:text="Ayo pilih dulu tujuan beriklanmu. Saya ingin:"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/createFirstAd"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler" />
+
+    <View
+        android:id="@+id/productAds"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/topads_dimen_66dp"
+        android:background="@drawable/topads_onboarding_rounded_corners"
+        android:layout_marginTop="@dimen/unify_space_40"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/adsObjSubTitle"/>
+
+    <View
+        android:id="@+id/shopAds"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/topads_dimen_66dp"
+        android:background="@drawable/topads_onboarding_rounded_corners"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/productAds"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/productAdsTypeCardImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_product_ads"
+        android:layout_margin="@dimen/topads_dimen_1dp"
+        app:layout_constraintBottom_toBottomOf="@+id/productAds"
+        app:layout_constraintStart_toStartOf="@+id/productAds"
+        app:layout_constraintTop_toTopOf="@+id/productAds" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/productAdsText"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:text="Memaksimalkan penjualan \n produk"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:layout_constraintBottom_toBottomOf="@+id/productAds"
+        app:layout_constraintStart_toEndOf="@+id/productAdsTypeCardImage"
+        app:layout_constraintTop_toTopOf="@+id/productAds"
+        app:layout_constraintEnd_toStartOf="@id/iButtonProductAds"
+        app:typographyType="body_2" />
+
+    <ImageView
+        android:id="@+id/iButtonProductAds"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        android:src="@drawable/icon_i_button"
+        android:layout_marginEnd="@dimen/unify_space_24"
+        app:layout_constraintBottom_toBottomOf="@+id/productAds"
+        app:layout_constraintEnd_toEndOf="@+id/productAds"
+        app:layout_constraintTop_toTopOf="@+id/productAds" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/shopAdsTypeCardImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_shop_ads"
+        android:layout_margin="@dimen/topads_dimen_1dp"
+        app:layout_constraintBottom_toBottomOf="@+id/shopAds"
+        app:layout_constraintStart_toStartOf="@+id/shopAds"
+        app:layout_constraintTop_toTopOf="@+id/shopAds" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/shopAdsText"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:text="Toko brand saya lebih dikenali \npembeli"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:layout_constraintBottom_toBottomOf="@+id/shopAds"
+        app:layout_constraintStart_toEndOf="@+id/shopAdsTypeCardImage"
+        app:layout_constraintTop_toTopOf="@+id/shopAds"
+        app:layout_constraintEnd_toStartOf="@id/iButtonShopAds"
+        app:typographyType="body_2" />
+
+    <ImageView
+        android:id="@+id/iButtonShopAds"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        android:src="@drawable/icon_i_button"
+        android:layout_marginEnd="@dimen/unify_space_24"
+        app:layout_constraintBottom_toBottomOf="@+id/shopAds"
+        app:layout_constraintEnd_toEndOf="@+id/shopAds"
+        app:layout_constraintTop_toTopOf="@+id/shopAds" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:text="@string/topads_ads_education_center_card_title_text"
+        android:layout_marginBottom="@dimen/unify_space_8"
+        app:layout_constraintBottom_toTopOf="@+id/educationCenter"
+        app:layout_constraintStart_toStartOf="@+id/educationCenter"
+        app:typographyType="body_2" />
+
+    <View
+        android:id="@+id/educationCenter"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="58dp"
+        android:background="@drawable/topads_onboarding_rounded_corners"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/topads_dimen_60dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/educationCenterCardImage"
+        android:layout_width="@dimen/topads_dimen_48dp"
+        android:layout_height="@dimen/topads_dimen_56dp"
+        android:contentDescription="@null"
+        android:src="@drawable/icon_light_bulb"
+        android:layout_margin="@dimen/topads_dimen_1dp"
+        app:layout_constraintBottom_toBottomOf="@+id/educationCenter"
+        app:layout_constraintStart_toStartOf="@+id/educationCenter"
+        app:layout_constraintTop_toTopOf="@+id/educationCenter" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/educationCenterText"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:text="@string/topads_ads_education_center_card_text"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:layout_constraintBottom_toBottomOf="@+id/educationCenter"
+        app:layout_constraintStart_toEndOf="@+id/educationCenterCardImage"
+        app:layout_constraintTop_toTopOf="@+id/educationCenter"
+        app:typographyType="body_2" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
