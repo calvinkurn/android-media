@@ -41,16 +41,6 @@ class TradeInHomePageFragmentVMTest {
     fun tearDown() {
         Dispatchers.resetMain()
     }
-    /**************************** getPDPData() *******************************************/
-    @Test
-    fun getPDPData() {
-        val tradeInPDPData: TradeInPDPData = mockk<TradeInPDPData>(relaxed = true)
-
-        assertEquals(tradeInHomePageFragmentVM.getPDPData(tradeInPDPData), tradeInPDPData)
-
-    }
-    /**************************** getPDPData() *******************************************/
-
     /**************************** startProgressBar() *******************************************/
     @Test
     fun startProgressBar() {

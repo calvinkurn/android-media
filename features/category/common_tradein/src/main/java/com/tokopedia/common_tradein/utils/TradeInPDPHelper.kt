@@ -15,6 +15,7 @@ object TradeInPDPHelper {
     const val PARAM_PHONE_PRICE = "PHONE PRICE"
 
     fun pdpToTradeIn(context : Context?,
+                     shopID: String,
                      shopName: String,
                      shopBadge: String,
                      shopLocation: String,
@@ -22,22 +23,36 @@ object TradeInPDPHelper {
                      productPrice: Int,
                      productName: String,
                      productImage: String?,
-                     startActivityForResult: (Intent, Int) -> Unit) {
+                     minOrder: Int,
+                     selectedWarehouseId: Int,
+                     trackerAttributionPdp: String,
+                     trackerListNamePdp: String,
+                     shippingMinimumPrice: Double,
+                     getProductName: String,
+                     categoryName: String) {
         context?.let {
             val cacheManager = SaveInstanceCacheManager(it, true)
             val parcelData = TradeInPDPData(
+                shopID = shopID,
                 shopName = shopName,
                 shopBadge = shopBadge,
                 shopLocation = shopLocation,
                 productId = productId,
                 productPrice = productPrice,
                 productName = productName,
-                productImage = productImage
+                productImage = productImage,
+                minOrder = minOrder,
+                selectedWarehouseId = selectedWarehouseId,
+                trackerAttributionPdp =trackerAttributionPdp,
+                trackerListNamePdp = trackerListNamePdp,
+                shippingMinimumPrice = shippingMinimumPrice,
+                getProductName = getProductName,
+                categoryName = categoryName
             )
             cacheManager.put(TRADE_IN_PDP_PARCEL_KEY_RESPONSE, parcelData)
             val intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.TRADEIN)
             intent.putExtra(TRADE_IN_PDP_CACHE_ID, cacheManager.id)
-            startActivityForResult.invoke(intent, ApplinkConstInternalCategory.TRADEIN_HOME_REQUEST)
+            context.startActivity(intent)
         }
     }
 

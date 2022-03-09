@@ -2,6 +2,8 @@ package com.tokopedia.tradein.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.laku6.tradeinsdk.api.Laku6TradeIn
+import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
+import com.tokopedia.common_tradein.model.TradeInPDPData
 import com.tokopedia.tradein.TradeinConstants
 import com.tokopedia.tradein.usecase.InsertLogisticPreferenceUseCase
 import com.tokopedia.user.session.UserSession
@@ -21,7 +23,8 @@ import org.junit.*
 class TradeInHomePageVMTest {
     val userSession: UserSession = mockk(relaxed = true)
     val insertLogisticPreferenceUseCase: InsertLogisticPreferenceUseCase = mockk(relaxed = true)
-    var tradeInHomePageVM = spyk(TradeInHomePageVM(userSession, insertLogisticPreferenceUseCase))
+    val addToCartOcsUseCase: AddToCartOcsUseCase = mockk(relaxed = true)
+    var tradeInHomePageVM = spyk(TradeInHomePageVM(userSession, insertLogisticPreferenceUseCase, addToCartOcsUseCase))
 
     @RelaxedMockK
     lateinit var laku6TradeIn: Laku6TradeIn
@@ -41,6 +44,16 @@ class TradeInHomePageVMTest {
     fun tearDown() {
         Dispatchers.resetMain()
     }
+
+    /**************************** getPDPData() *******************************************/
+    @Test
+    fun getPDPData() {
+        val tradeInPDPData: TradeInPDPData = mockk<TradeInPDPData>(relaxed = true)
+
+        Assert.assertEquals(tradeInHomePageVM.getPDPData(tradeInPDPData), tradeInPDPData)
+
+    }
+    /**************************** getPDPData() *******************************************/
 
     /**************************** checkLogin() *******************************************/
 

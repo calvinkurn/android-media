@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
+import android.widget.FrameLayout
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -19,13 +20,15 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common_tradein.utils.TradeInPDPHelper
-import com.tokopedia.tradein.R
-import com.tokopedia.tradein.TradeInAnalytics
-import com.tokopedia.tradein.TradeInGTMConstants
-import com.tokopedia.tradein.TradeinConstants
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
+import com.tokopedia.tradein.*
 import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.view.fragment.TradeInEducationalPageFragment
 import com.tokopedia.tradein.view.fragment.TradeInHomePageFragment
@@ -34,6 +37,7 @@ import com.tokopedia.tradein.viewmodel.liveState.GoToCheckout
 import com.tokopedia.unifycomponents.Toaster
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 const val APP_SETTINGS = 9988
 const val LOGIN_REQUEST = 514
@@ -112,8 +116,19 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
         })
         viewModel.tradeInHomeStateLiveData.observe(this, Observer {
             when(it){
-                is GoToCheckout -> goToCheckout(it.imei,it.displayName,it.price)
+                is GoToCheckout -> goToCheckout(it.price)
             }
+        })
+        viewModel.addToCartLiveData.observe(this, Observer {
+                if (it.errorReporter.eligible) {
+                    showErrorToast(it.errorReporter.texts.submitTitle, getString(R.string.tradein_ok), {})
+                } else {
+                    goToCheckoutActivity(
+                        ShipmentFormRequest.BundleBuilder()
+                        .deviceId(viewModel.imei)
+                        .build()
+                        .bundle)
+                }
         })
     }
 
@@ -193,6 +208,19 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
         onBackPressed()
     }
 
+    private fun showErrorToast(
+        message: String,
+        actionText: String,
+        listener: View.OnClickListener,
+        duration: Int = Snackbar.LENGTH_LONG
+    ) {
+        Toaster.build(
+            findViewById<FrameLayout>(R.id.parent_view),
+            message,
+            duration, Toaster.TYPE_ERROR, actionText, listener
+        ).show()
+    }
+
     private fun setUpFragment() {
         intent.getStringExtra(TradeInPDPHelper.TRADE_IN_PDP_CACHE_ID)?.let {
             val newFragment = TradeInHomePageFragment.getFragmentInstance(it)
@@ -231,14 +259,35 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
         this.viewModel = viewModel as TradeInHomePageVM
     }
 
-    private fun goToCheckout(deviceId: String?, displayName:String?, price: String) {
-        val intent = Intent(TradeinConstants.ACTION_GO_TO_SHIPMENT)
-        intent.putExtra(TradeInPDPHelper.PARAM_DEVICE_ID, deviceId)
-        intent.putExtra(TradeInPDPHelper.PARAM_PHONE_TYPE, displayName)
-        intent.putExtra(TradeInPDPHelper.PARAM_PHONE_PRICE, price)
-        setResult(RESULT_OK, intent)
-        finish()
+    private fun goToCheckout(finalPrice: String) {
+        viewModel.data?.let { data->
+            val addToCartOcsRequestParams = AddToCartOcsRequestParams().apply {
+                productId = data.productId.toLongOrNull() ?: 0
+                shopId = data.shopID.toIntOrZero()
+                quantity = data.minOrder
+                notes = ""
+                customerId = viewModel.userId.toIntOrZero()
+                warehouseId = data.selectedWarehouseId
+                trackerAttribution = data.trackerAttributionPdp ?: ""
+                trackerListName = data.trackerListNamePdp ?: ""
+                isTradeIn = true
+                shippingPrice = data.shippingMinimumPrice.roundToInt()
+                productName = data.getProductName ?: ""
+                category = data.categoryName ?: ""
+                price = finalPrice
+                userId = viewModel.userId
+            }
+            viewModel.getAddToCartOcsUseCase(addToCartOcsRequestParams)
+        }
     }
+
+    private fun goToCheckoutActivity(shipmentFormRequest: Bundle) {
+        val intent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.CHECKOUT)
+        intent.putExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, true)
+        intent.putExtras(shipmentFormRequest)
+        startActivity(intent)
+    }
+
     override fun onStart() {
         super.onStart()
         val localBroadcastManager = LocalBroadcastManager.getInstance(this)

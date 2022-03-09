@@ -3382,19 +3382,27 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun goToTradeInHome() {
+        val selectedWarehouseId = viewModel.getMultiOriginByProductId().id.toIntOrZero()
+
         viewModel.getDynamicProductInfoP1?.let {
             TradeInPDPHelper.pdpToTradeIn(
                 context,
+                shopID = viewModel.getShopInfo().shopCore.shopID,
                 shopName = viewModel.getShopInfo().shopCore.name,
                 shopBadge = viewModel.getShopInfo().shopTierBadgeUrl,
                 shopLocation = viewModel.getShopInfo().location,
                 productId = it.basic.productID,
                 productName = it.data.name,
                 productImage = it.data.getProductImageUrl(),
-                productPrice = it.data.price.value.roundToIntOrZero())
-                { data, code ->
-                    startActivityForResult(data, code)
-                }
+                productPrice = it.data.price.value.roundToIntOrZero(),
+                minOrder = viewModel.getDynamicProductInfoP1?.basic?.minOrder ?: 0,
+                selectedWarehouseId = selectedWarehouseId,
+                trackerAttributionPdp = trackerAttributionPdp ?: "",
+                trackerListNamePdp = trackerListNamePdp ?: "",
+                shippingMinimumPrice = viewModel.shippingMinimumPrice,
+                getProductName = viewModel.getDynamicProductInfoP1?.getProductName ?: "",
+                categoryName = viewModel.getDynamicProductInfoP1?.basic?.category?.name ?: ""
+            )
         }
     }
 

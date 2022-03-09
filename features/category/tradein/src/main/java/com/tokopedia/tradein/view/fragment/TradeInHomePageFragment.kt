@@ -152,7 +152,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
 
     private fun setUpPdpData(id: String) {
         view?.apply {
-            viewModel.getPDPData(TradeInPDPHelper.getDataFromPDP(context, id))?.let {
+            tradeInHomePageVM.getPDPData(TradeInPDPHelper.getDataFromPDP(context, id))?.let {
                 findViewById<Typography>(R.id.slashed_price).let { price ->
                     price.text =
                         CurrencyFormatUtil.convertPriceValueToIdrFormat(it.productPrice, true)
@@ -176,7 +176,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
     private fun addObservers() {
         tradeInHomePageVM.laku6DeviceModel.observe(viewLifecycleOwner, Observer {
             setUpLaku6Data(it)
-            viewModel.data?.apply {
+            tradeInHomePageVM.data?.apply {
                 userAddressData?.let { address ->
                     viewModel.getTradeInDetail(it, productPrice, address, tradeInHomePageVM.tradeInUniqueCode)
                 }
@@ -400,7 +400,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                     tradeInAnalytics.viewCoverageAreaBottomSheet()
                     val bottomSheet = TradeInOutsideCoverageBottomSheet
                         .newInstance(
-                            viewModel.data?.productName
+                            tradeInHomePageVM.data?.productName
                                 ?: ""
                         )
                     bottomSheet.tradeInAnalytics = tradeInAnalytics
