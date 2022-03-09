@@ -82,11 +82,9 @@ import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_B
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
+import com.tokopedia.shop.common.util.*
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_GET_YOUTUBE_DATA
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
-import com.tokopedia.shop.common.util.ShopProductViewGridType
-import com.tokopedia.shop.common.util.ShopUtil
-import com.tokopedia.shop.common.util.getIndicatorCount
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
@@ -437,9 +435,26 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     }
                     is Fail -> {
                         val throwable = it.throwable
+                        if(throwable is ShopAsyncErrorException){
+                            val actionName  = when(throwable.asyncQueryType){
+                                ShopAsyncErrorException.AsyncQueryType.SHOP_PAGE_GET_LAYOUT_V2 -> {
+                                    ShopLogger.SHOP_EMBRACE_BREADCRUMB_ACTION_FAIL_GET_SHOP_PAGE_GET_LAYOUT_V2
+                                }
+                                else -> {
+                                    ""
+                                }
+                            }
+                            sendEmbraceBreadCrumbLogger(
+                                actionName,
+                                shopId,
+                                shopName,
+                                throwable.message.orEmpty(),
+                                throwable.stackTraceToString()
+                            )
+                        }
                         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-                        if (!ShopUtil.isExceptionIgnored(throwable)) {
-                            ShopUtil.logShopPageP2BuyerFlowAlerting(
+                        if (!ShopLogger.isExceptionIgnored(throwable)) {
+                            ShopLogger.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this@ShopPageHomeFragment::observeShopHomeWidgetContentData.name,
                                 liveDataName = ShopHomeViewModel::shopHomeWidgetContentData.name,
@@ -616,8 +631,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 }
                 is Fail -> {
                     val throwable = it.throwable
-                    if (!ShopUtil.isExceptionIgnored(throwable)) {
-                        ShopUtil.logShopPageP2BuyerFlowAlerting(
+                    if (!ShopLogger.isExceptionIgnored(throwable)) {
+                        ShopLogger.logShopPageP2BuyerFlowAlerting(
                             tag = SHOP_PAGE_BUYER_FLOW_TAG,
                             functionName = this::observeLiveData.name,
                             liveDataName = ShopHomeViewModel::shopHomeWidgetLayoutData.name,
@@ -650,8 +665,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 is Fail -> {
                     val throwable = it.throwable
                     val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-                    if (!ShopUtil.isExceptionIgnored(throwable)) {
-                        ShopUtil.logShopPageP2BuyerFlowAlerting(
+                    if (!ShopLogger.isExceptionIgnored(throwable)) {
+                        ShopLogger.logShopPageP2BuyerFlowAlerting(
                             tag = SHOP_PAGE_BUYER_FLOW_TAG,
                             functionName = this::observeLiveData.name,
                             liveDataName = ShopHomeViewModel::productListData.name,
@@ -785,6 +800,24 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         observePlayWidget()
         observePlayWidgetReminderEvent()
         observePlayWidgetReminder()
+    }
+
+    private fun sendEmbraceBreadCrumbLogger(
+        actionName: String,
+        shopId: String,
+        shopName: String,
+        errorMessage: String,
+        stackTraceString: String
+    ) {
+        ShopLogger.logBreadCrumbShopPageHomeTabJourney(
+            actionName,
+            ShopLogger.mapToShopPageHomeTabJourneyEmbraceBreadCrumbJsonData(
+                shopId,
+                shopName,
+                errorMessage,
+                stackTraceString
+            )
+        )
     }
 
     private fun onSuccessGetShopProductFilterCount(count: Int) {
@@ -2066,8 +2099,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             )
                         },
                         {
-                            if (!ShopUtil.isExceptionIgnored(it)) {
-                                ShopUtil.logShopPageP2BuyerFlowAlerting(
+                            if (!ShopLogger.isExceptionIgnored(it)) {
+                                ShopLogger.logShopPageP2BuyerFlowAlerting(
                                     tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                     functionName = ShopHomeViewModel::addProductToCartOcc.name,
                                     liveDataName = "",
@@ -2096,8 +2129,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             )
                         },
                         {
-                            if (!ShopUtil.isExceptionIgnored(it)) {
-                                ShopUtil.logShopPageP2BuyerFlowAlerting(
+                            if (!ShopLogger.isExceptionIgnored(it)) {
+                                ShopLogger.logShopPageP2BuyerFlowAlerting(
                                     tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                     functionName = ShopHomeViewModel::addProductToCart.name,
                                     liveDataName = "",
@@ -2141,8 +2174,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         }
                     },
                     {
-                        if (!ShopUtil.isExceptionIgnored(it)) {
-                            ShopUtil.logShopPageP2BuyerFlowAlerting(
+                        if (!ShopLogger.isExceptionIgnored(it)) {
+                            ShopLogger.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = ShopHomeViewModel::addProductToCart.name,
                                 liveDataName = "",
@@ -2393,8 +2426,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         }
                     },
                     {
-                        if (!ShopUtil.isExceptionIgnored(it)) {
-                            ShopUtil.logShopPageP2BuyerFlowAlerting(
+                        if (!ShopLogger.isExceptionIgnored(it)) {
+                            ShopLogger.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = ShopHomeViewModel::addProductToCart.name,
                                 liveDataName = "",
@@ -2586,8 +2619,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         )
                     },
                     {
-                        if (!ShopUtil.isExceptionIgnored(it)) {
-                            ShopUtil.logShopPageP2BuyerFlowAlerting(
+                        if (!ShopLogger.isExceptionIgnored(it)) {
+                            ShopLogger.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = ShopHomeViewModel::addProductToCart.name,
                                 liveDataName = "",

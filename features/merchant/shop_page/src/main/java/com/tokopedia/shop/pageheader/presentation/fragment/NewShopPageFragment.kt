@@ -86,7 +86,6 @@ import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
-import com.tokopedia.shop.common.util.ShopUtil.isExceptionIgnored
 import com.tokopedia.shop.common.view.ShopPageCountDrawable
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
@@ -107,6 +106,8 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.util.ShopAsyncErrorException
+import com.tokopedia.shop.common.util.ShopLogger
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewShareBottomSheet
 import com.tokopedia.shop.common.util.ShopUtil.joinStringWithDelimiter
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageFab
@@ -513,8 +514,31 @@ class NewShopPageFragment :
                 }
                 is Fail -> {
                     val throwable = result.throwable
-                    if (!isExceptionIgnored(throwable)) {
-                        ShopUtil.logShopPageP2BuyerFlowAlerting(
+                    if(throwable is ShopAsyncErrorException){
+                        val actionName  = when(throwable.asyncQueryType){
+                            ShopAsyncErrorException.AsyncQueryType.SHOP_PAGE_P1 -> {
+                                ShopLogger.SHOP_EMBRACE_BREADCRUMB_ACTION_FAIL_GET_P1
+                            }
+                            ShopAsyncErrorException.AsyncQueryType.SHOP_HEADER_WIDGET -> {
+                                ShopLogger.SHOP_EMBRACE_BREADCRUMB_ACTION_FAIL_GET_SHOP_HEADER_WIDGET
+                            }
+                            ShopAsyncErrorException.AsyncQueryType.SHOP_INITIAL_PRODUCT_LIST -> {
+                                ShopLogger.SHOP_EMBRACE_BREADCRUMB_ACTION_FAIL_GET_INITIAL_PRODUCT_LIST
+                            }
+                            else -> {
+                                ""
+                            }
+                        }
+                        sendEmbraceBreadCrumbLogger(
+                            actionName,
+                            shopId,
+                            shopDomain.orEmpty(),
+                            throwable.message.orEmpty(),
+                            throwable.stackTraceToString()
+                        )
+                    }
+                    if (!ShopLogger.isExceptionIgnored(throwable)) {
+                        ShopLogger.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeLiveData.name,
                                 liveDataName = NewShopPageViewModel::shopPageP1Data.name,
@@ -574,8 +598,8 @@ class NewShopPageFragment :
                 }
                 is Fail -> {
                     val throwable = result.throwable
-                    if (!isExceptionIgnored(throwable)) {
-                        ShopUtil.logShopPageP2BuyerFlowAlerting(
+                    if (!ShopLogger.isExceptionIgnored(throwable)) {
+                        ShopLogger.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeLiveData.name,
                                 liveDataName = NewShopPageViewModel::shopIdFromDomainData.name,
@@ -681,6 +705,24 @@ class NewShopPageFragment :
             }
         })
 
+    }
+
+    private fun sendEmbraceBreadCrumbLogger(
+        actionName: String,
+        shopId: String,
+        shopName: String,
+        errorMessage: String,
+        stackTraceString: String
+    ) {
+        ShopLogger.logBreadCrumbShopPageHomeTabJourney(
+            actionName,
+            ShopLogger.mapToShopPageHomeTabJourneyEmbraceBreadCrumbJsonData(
+                shopId,
+                shopName,
+                errorMessage,
+                stackTraceString
+            )
+        )
     }
 
     private fun onSuccessUpdateFollowStatus(followShop: FollowShop) {
