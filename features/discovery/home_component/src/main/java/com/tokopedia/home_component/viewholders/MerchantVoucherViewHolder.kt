@@ -54,7 +54,7 @@ class MerchantVoucherViewHolder(
     private fun mappingView(channel: ChannelModel) {
         val visitables: MutableList<Visitable<*>> = mappingVisitablesFromChannel(channel)
         binding?.homeComponentMvcRv?.setHasFixedSize(true)
-        valuateRecyclerViewDecoration()
+        valuateRecyclerViewDecoration(channel)
         mappingItem(channel, visitables)
     }
 
@@ -90,10 +90,14 @@ class MerchantVoucherViewHolder(
     }
 
     private fun mappingItem(channel: ChannelModel, visitables: MutableList<Visitable<*>>) {
-        startSnapHelper.attachToRecyclerView(binding?.homeComponentMvcRv)
+        //todo delete experiment
+        if(channel.id == "179394") {
+            startSnapHelper.attachToRecyclerView(binding?.homeComponentMvcRv)
+        }
         val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel)
         adapter = MerchantVoucherAdapter(visitables, typeFactoryImpl)
         binding?.homeComponentMvcRv?.adapter = adapter
+        binding?.homeComponentMvcRv?.scrollToPosition(0)
     }
 
     private fun convertDataToMerchantVoucherData(channel: ChannelModel): List<CarouselMerchantVoucherDataModel> {
@@ -138,7 +142,7 @@ class MerchantVoucherViewHolder(
         return list
     }
 
-    private fun valuateRecyclerViewDecoration() {
+    private fun valuateRecyclerViewDecoration(channel: ChannelModel) {
         binding?.homeComponentMvcRv?.invalidate()
         if (binding?.homeComponentMvcRv?.itemDecorationCount == 0) binding?.homeComponentMvcRv?.addItemDecoration(
             MerchantVoucherDecoration()
@@ -148,7 +152,9 @@ class MerchantVoucherViewHolder(
             LinearLayoutManager.HORIZONTAL,
             false
         )
-        startSnapHelper.attachToRecyclerView(binding?.homeComponentMvcRv)
+        if(channel.id == "179394") {
+            startSnapHelper.attachToRecyclerView(binding?.homeComponentMvcRv)
+        }
     }
 
     private fun setChannelDivider(element: MerchantVoucherDataModel) {
