@@ -27,14 +27,14 @@ data class ProductRevIncentiveOvoResponse(
     val amount: Int = 0,
     @SerializedName("illustration_list")
     @Expose
-    val illustrations: List<Illustration>?
+    val illustrations: List<Illustration>? = null
 ) {
     data class Illustration(
         @SerializedName("image_url")
         @Expose
-        val imageUrl: String?,
+        val imageUrl: String? = null,
         @SerializedName("text")
         @Expose
-        val text: String?
+        val text: String? = null
     )
 }
