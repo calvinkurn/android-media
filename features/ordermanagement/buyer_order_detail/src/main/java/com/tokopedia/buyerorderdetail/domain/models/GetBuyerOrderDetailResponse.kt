@@ -346,7 +346,7 @@ data class GetBuyerOrderDetailResponse(
             data class LogisticSectionInfo(
                 @Expose
                 @SerializedName("index")
-                val index: Int,
+                val index: Long,
                 @Expose
                 @SerializedName("id")
                 val id: String,
@@ -391,7 +391,7 @@ data class GetBuyerOrderDetailResponse(
                 val nonBundles: List<NonBundle>? = listOf(),
                 @SerializedName("total_products")
                 @Expose
-                val totalProducts: Int = 0
+                val totalProducts: Long = 0
             ) {
                 data class Bundle(
                     @SerializedName("bundle_id")
@@ -611,7 +611,7 @@ data class GetBuyerOrderDetailResponse(
                     val addons: List<Addon>? = listOf(),
                     @SerializedName("total")
                     @Expose
-                    val total: Int = 0,
+                    val total: Long = 0,
                     @SerializedName("total_price")
                     @Expose
                     val totalPrice: Double = 0.0,
@@ -660,9 +660,6 @@ data class GetBuyerOrderDetailResponse(
                             val addonNote: AddonNote = AddonNote()
                         ) {
                             data class AddonNote(
-                                @Expose
-                                @SerializedName("is_custom_note")
-                                val isCustomNote: Boolean = false,
                                 @SerializedName("notes")
                                 @Expose
                                 val notes: String = "",

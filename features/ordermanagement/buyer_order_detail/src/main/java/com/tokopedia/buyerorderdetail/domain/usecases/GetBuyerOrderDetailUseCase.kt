@@ -265,7 +265,6 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                             to
                             notes
                             short_notes
-                            is_custom_note
                           }
                         }
                         create_time
@@ -299,7 +298,6 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                           to
                           notes
                           short_notes
-                          is_custom_note
                         }
                       }
                     }

@@ -55,22 +55,9 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
         }
 
         private fun ItemBuyerOrderDetailAddonsListBinding.setupAddNoteViews(item: AddonsListUiModel.AddonItemUiModel) {
-            if (item.isCustomNote) {
-                setupToMetadata(item.toStr)
-                setupFromMetadata(item.fromStr)
-                setupMessageMetadata(item.message)
-            } else {
-                hideNoteViews()
-            }
-        }
-
-        private fun ItemBuyerOrderDetailAddonsListBinding.hideNoteViews() {
-            tvBomDetailAddonsToValue.hide()
-            tvBomDetailAddonsToLabel.hide()
-            tvBomDetailAddonsFromLabel.hide()
-            tvBomDetailAddonsFromValue.hide()
-            tvBomDetailAddonsMessageValue.hide()
-            tvBomDetailAddonsReadMoreMessage.hide()
+            setupToMetadata(item.toStr)
+            setupFromMetadata(item.fromStr)
+            setupMessageMetadata(item.message)
         }
 
         private fun ItemBuyerOrderDetailAddonsListBinding.setDataViews(item: AddonsListUiModel.AddonItemUiModel) {
