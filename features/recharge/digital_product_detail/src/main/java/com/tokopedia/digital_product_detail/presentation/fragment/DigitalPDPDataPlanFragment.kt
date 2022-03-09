@@ -364,6 +364,7 @@ class DigitalPDPDataPlanFragment :
                 }
 
                 is RechargeNetworkResult.Loading -> {
+                    hideEmptyState()
                     onShimmeringDenomFull()
                     onLoadingAndFailMCCM()
                 }

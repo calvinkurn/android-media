@@ -56,6 +56,7 @@ class DenomFullWidget @JvmOverloads constructor(
 
     fun renderDenomFullShimmering() {
         with(rechargeDenomFullWidgetBinding) {
+            root.show()
             tgDenomFullWidgetTitle.hide()
             denomFullShimmering.root.show()
             rvDenomFullCard.hide()
