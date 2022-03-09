@@ -385,7 +385,6 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.SELLER_CUSTOM_PRODUCT_LOGISTIC, ApplinkConstInternalLogistic.CUSTOM_PRODUCT_LOGISTIC),
             DLP.exact(ApplinkConst.SELLER_COD_ACTIVATION, ApplinkConstInternalMarketplace.SHOP_SETTINGS_COD),
             DLP.exact(ApplinkConst.SELLER_WAREHOUSE_DATA, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS),
-            DLP.exact(ApplinkConst.SETTING_PROFILE, ApplinkConstInternalGlobal.SETTING_PROFILE),
             DLP.exact(ApplinkConst.SETTING_ADDRESS, ApplinkConstInternalLogistic.MANAGE_ADDRESS),
             DLP.exact(ApplinkConst.SETTING_PAYMENT, ApplinkConstInternalGlobal.PAYMENT_SETTING),
             DLP.exact(ApplinkConst.SETTING_ACCOUNT, ApplinkConstInternalGlobal.ACCOUNT_SETTING),
@@ -470,8 +469,9 @@ object DeeplinkMapper {
 
             DLP.startWith(ApplinkConst.CHANGE_INACTIVE_PHONE) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink)},
             DLP.exact(ApplinkConst.ADD_PIN_ONBOARD) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink)},
-            DLP.startWith(ApplinkConst.ADD_FINGERPRINT_ONBOARDING) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink)},
-    )
+            DLP.startWith(ApplinkConst.ADD_FINGERPRINT_ONBOARDING) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) },
+            DLP.exact(ApplinkConst.SETTING_PROFILE) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) },
+        )
 
     fun getTokopediaSchemeList():List<DLP>{
         return deeplinkPatternTokopediaSchemeList

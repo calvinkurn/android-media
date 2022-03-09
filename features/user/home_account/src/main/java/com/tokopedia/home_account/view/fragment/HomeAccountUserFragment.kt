@@ -1527,7 +1527,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun gotoSettingProfile() {
         val intent =
-            RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.SETTING_PROFILE)
+            RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.SETTING_PROFILE)
         startActivityForResult(intent, REQUEST_CODE_PROFILE_SETTING)
     }
 

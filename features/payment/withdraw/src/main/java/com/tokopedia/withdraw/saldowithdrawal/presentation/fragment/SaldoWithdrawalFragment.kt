@@ -306,8 +306,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
                 setPrimaryCTAText(getString(R.string.swd_alert_not_verified_yet_positive))
                 setSecondaryCTAText(getString(R.string.swd_alert_not_verified_yet_negative))
                 setPrimaryCTAClickListener {
-                    val intent = RouteManager.getIntent(context,
-                            ApplinkConstInternalGlobal.SETTING_PROFILE)
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.SETTING_PROFILE)
                     startActivity(intent)
                     activity?.finish()
                 }

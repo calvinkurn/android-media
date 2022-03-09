@@ -172,7 +172,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
             dialog.setSecondaryCTAText(getString(R.string.payment_label_cancel_dialog_verif))
             dialog.setPrimaryCTAClickListener {
                 activity?.run {
-                    val intent = RouteManager.getIntent(applicationContext, ApplinkConstInternalGlobal.SETTING_PROFILE)
+                    val intent = RouteManager.getIntent(applicationContext, ApplinkConstInternalUserPlatform.SETTING_PROFILE)
                     this@SettingListPaymentFragment.startActivityForResult(intent, REQUEST_CODE_VERIF_PHONE)
                 }
                 dialog.dismiss()

@@ -550,7 +550,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                 setPrimaryCTAClickListener {
                     val intent = RouteManager.getIntent(
                         getContext(),
-                        ApplinkConstInternalGlobal.SETTING_PROFILE
+                        ApplinkConstInternalUserPlatform.SETTING_PROFILE
                     )
                     startActivity(intent)
                     dismiss()

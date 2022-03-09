@@ -52,4 +52,7 @@ object ApplinkConstInternalUserPlatform {
 
     const val NEW_PROFILE_INFO = "${NEW_INTERNAL_USER}/profile-info"
     const val EDIT_PROFILE_INFO = "${NEW_INTERNAL_USER}/edit-profile-info"
+
+    // SettingProfileActivity
+    const val SETTING_PROFILE = "${NEW_INTERNAL_USER}/setting-profile"
 }

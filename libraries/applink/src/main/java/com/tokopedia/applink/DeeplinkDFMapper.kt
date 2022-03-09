@@ -73,7 +73,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PUSH_NOTIFICATI
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_DEPOSIT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_INTRO
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_BANK
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_PROFILE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.SETTING_PROFILE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO_SIMPLE
