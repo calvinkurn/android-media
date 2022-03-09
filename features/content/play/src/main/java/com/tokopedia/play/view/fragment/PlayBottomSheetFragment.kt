@@ -774,9 +774,6 @@ class PlayBottomSheetFragment @Inject constructor(
                 voucherList = tagItem.voucher.voucherList,
                 title = bottomSheetTitle,
             )
-
-            //TODO() = tracker
-//            if (tagItem.product.productList != prevTagItem?.product?.productList) trackImpressedProduct()
         } else {
             productSheetView.showEmpty(partnerId)
         }
