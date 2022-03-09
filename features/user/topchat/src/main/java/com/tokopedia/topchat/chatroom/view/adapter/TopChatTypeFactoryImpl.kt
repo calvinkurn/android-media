@@ -27,6 +27,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewH
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.MultipleProductBundlingViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.SingleProductBundlingViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.BannedChatMessageViewHolder
@@ -36,6 +37,8 @@ import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.uimodel.*
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
@@ -177,6 +180,10 @@ open class TopChatTypeFactoryImpl constructor(
         return SingleProductBundlingViewHolder.LAYOUT
     }
 
+    override fun type(multiPleProductBundlingUiModel: MultipleProductBundlingUiModel): Int {
+        return MultipleProductBundlingViewHolder.LAYOUT
+    }
+
     // Check if chat bubble first, if not return default ViewHolder
     override fun createViewHolder(
         parent: ViewGroup,
@@ -231,6 +238,9 @@ open class TopChatTypeFactoryImpl constructor(
                 parent, srwBubbleListener, adapterListener
             )
             SingleProductBundlingViewHolder.LAYOUT -> SingleProductBundlingViewHolder(
+                parent, productBundlingListener, adapterListener
+            )
+            MultipleProductBundlingViewHolder.LAYOUT -> MultipleProductBundlingViewHolder(
                 parent, productBundlingListener, adapterListener
             )
             else -> createViewHolder(parent, type)

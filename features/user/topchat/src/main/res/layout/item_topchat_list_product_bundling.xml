@@ -3,7 +3,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginEnd="12dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -23,6 +22,8 @@
         app:layout_constraintRight_toRightOf="@id/iv_product_bundling_thumbnail"
         app:layout_constraintBottom_toBottomOf="parent"
         app:typographyType="body_3"
+        android:ellipsize="end"
+        android:maxLines="2"
         tools:text="iPhone XR Garansi R..."/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,29 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:id="@+id/layout_single_product_bundling"
+    android:layout_marginStart="@dimen/dp_topchat_12"
+    android:layout_marginEnd="@dimen/dp_topchat_12"
+    android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_product_bundle"
+    <com.tokopedia.topchat.chatroom.view.custom.MultipleProductBundlingAttachmentContainer
+        android:id="@+id/containerBundlingAttachment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="12dp"
-        android:layout_marginStart="12dp"
-        tools:orientation="horizontal"
-        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_product_bundling"
-        tools:itemCount="3"/>
+        tools:layout_gravity="end"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-    <include layout="@layout/partial_topchat_product_bundling"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/rv_product_bundle"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.uimodel
+package com.tokopedia.topchat.chatroom.view.uimodel.product_bundling
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.DeferredAttachment
