@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.common.robot
 
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -399,6 +400,7 @@ class OrderSummaryPageRobot {
         }))
         // Wait for bottom sheet to fully appear
         Thread.sleep(1000)
+        Log.i("qwertyuiop", "done click order detail")
         OrderPriceSummaryBottomSheetRobot().apply(func)
     }
 

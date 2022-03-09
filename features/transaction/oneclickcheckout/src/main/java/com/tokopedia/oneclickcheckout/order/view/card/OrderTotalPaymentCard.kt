@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.card
 
+import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -86,6 +87,7 @@ class OrderTotalPaymentCard(private val binding: LayoutPaymentBinding, private v
                 }
 
                 btnOrderDetail.setOnClickListener {
+                    Log.i("qwertyuiop", "click order detail")
                     if (orderTotal.orderCost.totalPrice > 0.0) {
                         listener.onOrderDetailClicked(orderTotal.orderCost)
                     }
