@@ -32,6 +32,7 @@ class CreateCouponFacadeUseCase @Inject constructor(
 
     suspend fun execute(
         scope: CoroutineScope,
+        isCreateMode: Boolean,
         sourceId: String,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
@@ -46,6 +47,7 @@ class CreateCouponFacadeUseCase @Inject constructor(
         val generateImageDeferred = scope.async {
             generateImage(
                 sourceId,
+                isCreateMode,
                 coupon.voucherCodePrefix,
                 ImageRatio.HORIZONTAL,
                 couponInformation,
@@ -58,6 +60,7 @@ class CreateCouponFacadeUseCase @Inject constructor(
         val generateSquareImageDeferred = scope.async {
             generateImage(
                 sourceId,
+                isCreateMode,
                 coupon.voucherCodePrefix,
                 ImageRatio.SQUARE,
                 couponInformation,
@@ -70,6 +73,7 @@ class CreateCouponFacadeUseCase @Inject constructor(
         val generatePortraitImage = scope.async {
             generateImage(
                 sourceId,
+                isCreateMode,
                 coupon.voucherCodePrefix,
                 ImageRatio.VERTICAL,
                 couponInformation,
@@ -122,6 +126,7 @@ class CreateCouponFacadeUseCase @Inject constructor(
 
     private suspend fun generateImage(
         sourceId: String,
+        isCreateMode: Boolean,
         couponCodePrefix: String,
         imageRatio: ImageRatio,
         couponInformation: CouponInformation,
@@ -131,7 +136,7 @@ class CreateCouponFacadeUseCase @Inject constructor(
     ): String {
         val imageParams = imageBuilder.build(imageRatio, couponInformation, couponSettings, products, shop.logo, shop.shopName)
 
-        val couponCode = if (couponInformation.target == CouponInformation.Target.PRIVATE) {
+        val couponCode = if (isCreateMode && couponInformation.target == CouponInformation.Target.PRIVATE) {
             couponCodePrefix + imageParams.voucherCode.uppercase()
         } else {
             couponInformation.code.uppercase()
