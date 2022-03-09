@@ -488,7 +488,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 getInitialData()
             }
             if (result is Fail) {
-                setShopHolidayScheduleStatusMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                setShopHolidayScheduleStatusMessage = getString(R.string.shop_operational_hour_create_holiday_schedule_fail)
                 setShopHolidayScheduleStatusType = Toaster.TYPE_ERROR
                 hideLoader()
                 showToaster(setShopHolidayScheduleStatusMessage, setShopHolidayScheduleStatusType)
