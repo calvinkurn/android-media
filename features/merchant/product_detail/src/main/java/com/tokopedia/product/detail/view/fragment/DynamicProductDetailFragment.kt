@@ -501,7 +501,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         reloadUserLocationChanged()
         reloadMiniCart()
         Log.d("Hii", "Insidede On Resume")
-        reloadFintechWidget()
+        //reloadFintechWidget()
     }
 
     private fun reloadFintechWidget() {
