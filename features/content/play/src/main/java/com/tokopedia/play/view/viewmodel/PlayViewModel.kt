@@ -87,7 +87,6 @@ class PlayViewModel @AssistedInject constructor(
     videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
     channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
     videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
-    private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
     private val getReportSummariesUseCase: GetReportSummariesUseCase,
     private val trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
     private val playSocketToModelMapper: PlaySocketToModelMapper,
@@ -1120,7 +1119,7 @@ class PlayViewModel @AssistedInject constructor(
     private suspend fun getSocketCredential(): SocketCredential = try {
         withContext(dispatchers.io) {
             require(userSession.isLoggedIn)
-            return@withContext getSocketCredentialUseCase.executeOnBackground()
+            return@withContext repo.getSocketCredential()
         }
     } catch (e: Throwable) {
         SocketCredential()
