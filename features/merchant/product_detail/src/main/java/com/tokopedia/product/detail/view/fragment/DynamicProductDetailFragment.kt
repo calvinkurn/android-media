@@ -45,7 +45,6 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.utils.TradeInPDPHelper
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
@@ -67,7 +66,6 @@ import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.hasValue
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
@@ -130,6 +128,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDa
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
+import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.NotifyMeUiData
 import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateAffiliateShareData
@@ -571,6 +570,18 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
+    private fun activityResultTradeIn(data: Intent) {
+        val deviceId = data.getStringExtra(TradeInPDPHelper.PARAM_DEVICE_ID) ?: ""
+        val phoneType = data.getStringExtra(TradeInPDPHelper.PARAM_PHONE_TYPE) ?: ""
+        val phonePrice = data.getStringExtra(TradeInPDPHelper.PARAM_PHONE_PRICE) ?: ""
+        DynamicProductDetailTracking.TradeIn.eventAddToCartFinalPrice(phoneType,
+                phonePrice,
+                deviceId,
+                viewModel.userId,
+                viewModel.getDynamicProductInfoP1)
+        buyAfterTradeinDiagnose(deviceId)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         activityResultAdultManager(requestCode, resultCode, data)
 
@@ -584,16 +595,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE,
             ApplinkConstInternalCategory.TRADEIN_HOME_REQUEST -> {
                 data?.let {
-                    val deviceId = data.getStringExtra(TradeInPDPHelper.PARAM_DEVICE_ID) ?: ""
-                    val phoneType = data.getStringExtra(TradeInPDPHelper.PARAM_PHONE_TYPE) ?: ""
-                    ?: "none/other"
-                    val phonePrice = data.getStringExtra(TradeInPDPHelper.PARAM_PHONE_PRICE) ?: ""
-                    DynamicProductDetailTracking.TradeIn.eventAddToCartFinalPrice(phoneType,
-                            phonePrice,
-                            deviceId,
-                            viewModel.userId,
-                            viewModel.getDynamicProductInfoP1)
-                    buyAfterTradeinDiagnose(deviceId, phoneType, phonePrice)
+                    activityResultTradeIn(it)
                 }
             }
             ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT -> {
@@ -939,9 +941,15 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
         if (openShipmentBottomSheetWhenError()) return
 
-        DynamicProductDetailTracking.Click.trackTradein(viewModel.tradeInParams.usedPrice.toDouble(), viewModel.getDynamicProductInfoP1, componentTrackDataModel)
+        DynamicProductDetailTracking.Click.trackTradein(getTradeinData().usedPrice.toDouble(),
+                viewModel.getDynamicProductInfoP1,
+                componentTrackDataModel)
 
         goToTradein()
+    }
+
+    private fun getTradeinData(): ValidateTradeIn {
+        return viewModel.p2Data.value?.validateTradeIn ?: ValidateTradeIn()
     }
 
     private fun getPurchaseProtectionUrl(): String {
@@ -1266,30 +1274,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun onAccept() {
-        val usedPrice = viewModel.p2Data.value?.validateTradeIn?.usedPrice.toDoubleOrZero()
-        if (usedPrice > 0) {
-            goToHargaFinal()
-        } else {
-            viewModel.clearCacheP2Data()
-            goToTradeInHome()
-        }
+        viewModel.clearCacheP2Data()
+        goToTradeInHome()
     }
 
     override fun onDecline() {}
-
-    private fun goToHargaFinal() {
-        /** need to be removed**/
-//        val intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.FINAL_PRICE)
-//        val tradeinParam = viewModel.tradeInParams
-//        viewModel.getDynamicProductInfoP1?.let {
-//            tradeinParam.setPrice(it.data.price.value.roundToIntOrZero())
-//            tradeinParam.productId = it.basic.productID
-//            tradeinParam.productName = it.data.name
-//        }
-//
-//        intent.putExtra(TradeInParams.TRADE_IN_PARAMS, tradeinParam)
-//        startActivityForResult(intent, ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE)
-    }
 
     override fun getProductFragmentManager(): FragmentManager {
         return childFragmentManager
@@ -1798,7 +1787,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
             shareProductInstance?.updateAffiliate(it.shopInfo.statusInfo.shopStatus)
 
-            trackProductView(viewModel.tradeInParams.isEligible == ProductDetailConstant.ELIGIBLE_TRADE_IN, boeData.boType)
+            trackProductView(getTradeinData().isEligible, boeData.boType)
             viewModel.getDynamicProductInfoP1?.let { p1 ->
                 DynamicProductDetailTracking.Moengage.sendMoEngageOpenProduct(p1)
                 DynamicProductDetailTracking.Moengage.eventAppsFylerOpenProduct(p1)
@@ -2644,7 +2633,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 trackerListName = trackerListNamePdp,
                 trackerAttribution = trackerAttributionPdp,
                 isTradeIn = isElligible,
-                isDiagnosed = viewModel.tradeInParams.usedPrice > 0,
+                isDiagnosed = getTradeinData().usedPrice.toDouble() > 0,
                 multiOrigin = viewModel.getMultiOriginByProductId().isFulfillment,
                 deeplinkUrl = deeplinkUrl,
                 isStockAvailable = viewModel.getDynamicProductInfoP1?.getFinalStock() ?: "0",
@@ -3083,7 +3072,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         view?.showToasterError(variantErrorMessage, ctaText = getString(R.string.label_oke_pdp))
     }
 
-    private fun buyAfterTradeinDiagnose(deviceId: String, phoneType: String, phonePrice: String) {
+    private fun buyAfterTradeinDiagnose(deviceId: String) {
         buttonActionType = ProductDetailCommonConstant.TRADEIN_AFTER_DIAGNOSE
         viewModel.tradeinDeviceId = deviceId
         hitAtc(ProductDetailCommonConstant.OCS_BUTTON)
