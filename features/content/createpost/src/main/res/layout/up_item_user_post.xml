@@ -19,7 +19,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_live"
         android:layout_width="wrap_content"
@@ -58,6 +57,19 @@
         app:typographyType="body_3"
         tools:text="500" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/unify_space_8"
+        android:textColor="@color/Unify_RN500"
+        app:layout_constraintBottom_toTopOf="@+id/text_display_name"
+        app:layout_constraintEnd_toEndOf="@+id/text_user_name"
+        app:layout_constraintLeft_toLeftOf="@+id/text_user_name"
+        app:layout_constraintRight_toRightOf="@+id/text_user_name"
+        app:layout_constraintStart_toStartOf="@+id/text_user_name"
+        app:typographyType="body_3"
+        tools:text="02 May 2022 20.59" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_display_name"
