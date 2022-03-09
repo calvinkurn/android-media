@@ -242,21 +242,10 @@ class MvcLockedToProductAdapter(
         productQuantityInCart: Int
     ): ProductCardModel {
         return if (productUiModel.isVariant) {
-            if (productQuantityInCart.isZero()) {
-                productUiModel.productCardModel.copy(
-                    hasAddToCartButton = true,
-                    nonVariant = null
-                )
-            } else {
-                productUiModel.productCardModel.copy(
-                    hasAddToCartButton = false,
-                    nonVariant = ProductCardModel.NonVariant(
-                        quantity = productQuantityInCart,
-                        minQuantity = 1,
-                        maxQuantity = productUiModel.stock
-                    )
-                )
-            }
+            productUiModel.productCardModel.copy(
+                hasAddToCartButton = true,
+                nonVariant = null
+            )
         } else {
             productUiModel.productCardModel.copy(
                 nonVariant = productUiModel.productCardModel.nonVariant?.copy(

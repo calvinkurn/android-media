@@ -639,22 +639,12 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
                 productId = uiModel.productID,
                 pageSource = VariantPageSource.SHOP_COUPON_PAGESOURCE,
                 shopId = shopId,
-                dismissAfterTransaction = true,
+                dismissAfterTransaction = false,
                 startActivitResult = this::startActivityForResult
             )
         } else {
             redirectToLoginPage()
         }
-    }
-
-    override fun onProductVariantQuantityChanged(
-        productInCart: MvcLockedToProductGridProductUiModel.ProductInCart,
-        quantity: Int
-    ) {
-        if (quantity.isZero()) {
-            adapter.resetProductVariantQuantity(productInCart.productId, quantity)
-        }
-        handleAtcFlow(productInCart.productId, quantity, shopId)
     }
 
     override fun onProductNonVariantAtcQuantityChanged(
