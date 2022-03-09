@@ -1330,6 +1330,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         long subTotalPrice = 0;
         long totalItemPrice = 0;
         int totalAddOnPrice = 0;
+        boolean hasAddOnSelected = false;
 
         if (shipmentCartItemModel.isStateDetailSubtotalViewExpanded()) {
             rlShipmentCost.setVisibility(View.VISIBLE);
@@ -1362,6 +1363,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     if (!cartItemModel.getAddOnProductLevelModel().getAddOnsDataItemModelList().isEmpty()) {
                         for (AddOnDataItemModel addOnDataItemModel : cartItemModel.getAddOnProductLevelModel().getAddOnsDataItemModelList()) {
                             totalAddOnPrice += addOnDataItemModel.getAddOnPrice();
+                            hasAddOnSelected = true;
                         }
                     }
                 }
@@ -1373,6 +1375,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 if (!shipmentCartItemModel.getAddOnsOrderLevelModel().getAddOnsDataItemModelList().isEmpty()) {
                     for (AddOnDataItemModel addOnDataItemModel : shipmentCartItemModel.getAddOnsOrderLevelModel().getAddOnsDataItemModelList()) {
                         totalAddOnPrice += addOnDataItemModel.getAddOnPrice();
+                        hasAddOnSelected = true;
                     }
                 }
             }
@@ -1438,7 +1441,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvProtectionFee.setText(getPriceFormat(tvProtectionLabel, tvProtectionFee, totalPurchaseProtectionPrice));
         tvAdditionalFeePrice.setText(getPriceFormat(tvAdditionalFee, tvAdditionalFeePrice, additionalPrice));
 
-        tvAddOnPrice.setText(getPriceFormat(tvAddOnCostLabel, tvAddOnPrice, totalAddOnPrice));
+        if (hasAddOnSelected) {
+            tvAddOnCostLabel.setVisibility(View.VISIBLE);
+            tvAddOnPrice.setVisibility(View.VISIBLE);
+            tvAddOnPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(totalAddOnPrice, false)));
+        } else {
+            tvAddOnCostLabel.setVisibility(View.GONE);
+            tvAddOnPrice.setVisibility(View.GONE);
+        }
         rlCartSubTotal.setOnClickListener(getCostDetailOptionListener(shipmentCartItemModel));
     }
 
