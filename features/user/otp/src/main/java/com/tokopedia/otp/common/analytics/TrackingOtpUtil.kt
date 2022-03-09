@@ -710,7 +710,7 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_METHOD_OTP,
-                String.format("success - %s - %s -%s", otpType.toString(), modeName, correlationId))
+                String.format("success - %s - %s - %s", otpType.toString(), modeName, correlationId))
 
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -733,7 +733,7 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_SILENT_VERIF_OTP_PAGE,
                 Action.ACION_CLICK_TRY_AGAIN,
-                String.format("success - %s - %s -%s", otpType.toString(), modeName, correlationId))
+                String.format("success - %s - %s - %s", otpType.toString(), modeName, correlationId))
 
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
