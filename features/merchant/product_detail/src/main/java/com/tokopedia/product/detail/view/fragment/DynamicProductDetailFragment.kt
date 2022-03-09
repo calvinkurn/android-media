@@ -79,6 +79,7 @@ import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
+import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
@@ -1512,8 +1513,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         })
     }
 
-    private fun handlePlayWidgetUiModel(playWidgetUiModel: PlayWidgetUiModel) {
-        pdpUiUpdater?.updatePlayWidget(playWidgetUiModel)
+    private fun handlePlayWidgetUiModel(playWidgetState: PlayWidgetState) {
+        pdpUiUpdater?.updatePlayWidget(playWidgetState)
     }
 
     private fun onSuccessUpdateAddress() {
