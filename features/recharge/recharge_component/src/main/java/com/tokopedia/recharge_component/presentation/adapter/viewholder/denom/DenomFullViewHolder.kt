@@ -88,11 +88,11 @@ class DenomFullViewHolder(
                         labelParams.bottomToBottom = viewSeparatorTypeDenomFull.id
 
                         viewSeparatorTypeDenomFull.run {
-                            val labelParams = this.layoutParams as ConstraintLayout.LayoutParams
-                            labelParams.topToTop = tgDenomFullQuota.id
-                            labelParams.leftToRight = tgDenomFullQuota.id
-                            labelParams.bottomToBottom = tgDenomFullQuota.id
-                            this.layoutParams = labelParams
+                            val viewSeparatorlabelParams = this.layoutParams as ConstraintLayout.LayoutParams
+                            viewSeparatorlabelParams.topToTop = tgDenomFullQuota.id
+                            viewSeparatorlabelParams.leftToRight = tgDenomFullQuota.id
+                            viewSeparatorlabelParams.bottomToBottom = tgDenomFullQuota.id
+                            this.layoutParams = viewSeparatorlabelParams
                         }
 
                     } else {
@@ -104,15 +104,15 @@ class DenomFullViewHolder(
                         labelParams.bottomToTop = labelDenomFullSpecial.id
 
                         labelDenomFullSpecial.run {
-                            val labelParams = this.layoutParams as ConstraintLayout.LayoutParams
-                            labelParams.topToBottom = tgDenomFullExpired.id
-                            this.layoutParams = labelParams
+                            val labelDenomSpeciallabelParams = this.layoutParams as ConstraintLayout.LayoutParams
+                            labelDenomSpeciallabelParams.topToBottom = tgDenomFullExpired.id
+                            this.layoutParams = labelDenomSpeciallabelParams
                         }
 
                         tgDenomFullDesc.run {
-                            val labelParams = this.layoutParams as ConstraintLayout.LayoutParams
-                            labelParams.bottomToTop = tgDenomFullExpired.id
-                            this.layoutParams = labelParams
+                            val tgDenomFullDesclabelParams = this.layoutParams as ConstraintLayout.LayoutParams
+                            tgDenomFullDesclabelParams.bottomToTop = tgDenomFullExpired.id
+                            this.layoutParams = tgDenomFullDesclabelParams
                         }
 
                         setMargin(
