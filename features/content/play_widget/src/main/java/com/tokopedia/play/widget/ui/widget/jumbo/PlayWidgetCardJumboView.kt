@@ -61,6 +61,9 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
 
     private val compositeTouchDelegate: PlayWidgetCompositeTouchDelegate
 
+    private val ratio: Double
+        get() = 4.0/5.0
+
     private lateinit var mModel: PlayWidgetChannelUiModel
 
     init {
@@ -85,7 +88,6 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val ratio = 4.0/5.0
         layoutParams = layoutParams.apply {
             height = (measuredWidth / ratio).roundToInt()
         }
