@@ -85,7 +85,6 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                     addonsId = it.id,
                     quantity = it.quantity,
                     addOnsThumbnailUrl = it.imageUrl,
-                    isCustomNote = addonNote?.isCustomNote.orFalse(),
                     toStr = addonNote?.to.orEmpty(),
                     fromStr = addonNote?.from.orEmpty(),
                     message = addonNote?.notes.orEmpty()
@@ -111,7 +110,6 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                         addonsId = it.id,
                         quantity = it.quantity,
                         addOnsThumbnailUrl = it.imageUrl,
-                        isCustomNote = addonNote?.isCustomNote.orFalse(),
                         toStr = addonNote?.to.orEmpty(),
                         fromStr = addonNote?.from.orEmpty(),
                         message = addonNote?.notes.orEmpty()
