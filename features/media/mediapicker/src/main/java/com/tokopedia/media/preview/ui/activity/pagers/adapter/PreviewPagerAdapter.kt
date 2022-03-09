@@ -44,8 +44,12 @@ class PreviewPagerAdapter constructor(
 
         if (position > -1 && position < elements.size) {
             elements.removeAt(position)
+            element?.mVideoPlayer?.stop()
             notifyDataSetChanged()
         }
     }
 
+    fun getItem(position: Int) : PreviewUiModel? {
+        return if(position >= elements.count()) null else elements[position]
+    }
 }

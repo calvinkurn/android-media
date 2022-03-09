@@ -30,19 +30,17 @@ class VideoPreview(
 
             videoPlayer.videoUrl = media.data.path
 
-            viewPlayer.setOnClickListener {
-                videoControl.show()
+            it.setOnClickListener {
+                if(videoPlayer.player().isPlaying){
+                    if(!videoControl.isVisible) videoControl.show() else videoControl.hide()
+                }
             }
 
             videoPlayer.listener = object : PickerVideoPlayer.Listener {
                 override fun onPlayStateChanged(isPlaying: Boolean) {
-                    viewPlayer.showWithCondition(isPlaying)
-                    videoControl.showWithCondition(!isPlaying)
+                    videoControl.showWithCondition(!videoPlayer.player().isPlaying)
                 }
             }
-
-            videoPlayer.start()
         }
     }
-
 }

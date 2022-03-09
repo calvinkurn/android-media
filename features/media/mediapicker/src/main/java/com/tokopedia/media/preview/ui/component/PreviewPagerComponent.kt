@@ -1,5 +1,6 @@
 package com.tokopedia.media.preview.ui.component
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.media.R
@@ -33,6 +34,7 @@ class PreviewPagerComponent(
     fun setupView(medias: List<MediaUiModel>) {
         setData(medias)
         viewPager.adapter = adapter
+        viewPager.addOnAttachStateChangeListener(attachStateListener())
     }
 
     fun removeData(media: MediaUiModel) {
@@ -54,15 +56,19 @@ class PreviewPagerComponent(
         override fun onPageScrollStateChanged(state: Int) {}
         override fun onPageScrolled(position: Int, posOffset: Float, posOffsetPixels: Int) {}
         override fun onPageSelected(position: Int) {
-//            val currentItem = medias[position]
-//            if (currentItem.data.isVideo() && viewPager.currentItem == position) {
-//                // getVideoPlayerActive()?.start()
-//            }
-//
-//            val previousItem = medias[previousViewPagerIndex]
-//            if (previousItem.data.isVideo()) {
-//                // getVideoPlayerActive()?.stop()
-//            }
+            val currentItem = medias[position]
+            currentItem.mVideoPlayer?.let {
+                if(!it.player().isPlaying){
+                    currentItem.mVideoPlayer?.start()
+                }
+            }
+
+            if(adapter.count > previousViewPagerIndex){
+                val previousItem = medias[previousViewPagerIndex]
+                if (previousItem.data.isVideo()) {
+                    previousItem.mVideoPlayer?.stop()
+                }
+            }
 
             previousViewPagerIndex = position
         }
@@ -81,6 +87,18 @@ class PreviewPagerComponent(
         = medias.firstOrNull {
             it.data == media
         }
+
+    private fun attachStateListener() = object: View.OnAttachStateChangeListener{
+        override fun onViewAttachedToWindow(v: View?) {
+            v?.post {
+                adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.start()
+            }
+        }
+
+        override fun onViewDetachedFromWindow(v: View?) {
+            adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.stop()
+        }
+    }
 
     interface Listener {
 
