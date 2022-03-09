@@ -88,7 +88,6 @@ class PlayViewModel @AssistedInject constructor(
     channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
     videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
     private val getReportSummariesUseCase: GetReportSummariesUseCase,
-    private val trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
     private val playSocketToModelMapper: PlaySocketToModelMapper,
     private val playUiModelMapper: PlayUiModelMapper,
     private val userSession: UserSessionInterface,
@@ -1266,8 +1265,7 @@ class PlayViewModel @AssistedInject constructor(
     private fun trackVisitChannel(channelId: String, shouldTrack: Boolean, sourceType: String) {
         if(shouldTrack) {
             viewModelScope.launchCatchError(dispatchers.io, block = {
-                trackVisitChannelBroadcasterUseCase.setRequestParams(TrackVisitChannelBroadcasterUseCase.createParams(channelId, sourceType))
-                trackVisitChannelBroadcasterUseCase.executeOnBackground()
+                repo.trackVisitChannel(channelId, PlaySource.getBySource(sourceType))
             }) { }
         }
         _channelReport.setValue { copy(shouldTrack = true) }
