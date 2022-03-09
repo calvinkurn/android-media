@@ -270,7 +270,11 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
     }
 
     override fun type(featuredBrandDataModel: FeaturedBrandDataModel): Int {
-        return 0
+        return FeaturedBrandViewHolder.LAYOUT
+    }
+
+    override fun type(shimmeringFeaturedBrandDataModel: ShimmeringFeaturedBrandDataModel): Int {
+        return ShimmeringFeaturedBrandViewHolder.LAYOUT
     }
 
     override fun type(questWidgetModel: QuestWidgetModel): Int {

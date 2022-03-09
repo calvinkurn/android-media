@@ -31,6 +31,7 @@ class OfficialHomeMapper (
     companion object {
         private const val BANNER_POSITION = 0
         const val BENEFIT_POSITION = 1
+        const val FEATURE_BRAND_POSITION = 2
         const val FEATURE_SHOP_POSITION = 2
         const val RECOM_WIDGET_POSITION = 3
         const val WIDGET_NOT_FOUND = -1

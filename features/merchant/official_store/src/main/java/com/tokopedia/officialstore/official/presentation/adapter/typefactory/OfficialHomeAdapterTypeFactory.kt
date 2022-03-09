@@ -134,6 +134,10 @@ class OfficialHomeAdapterTypeFactory(
 
     override fun type(campaignWidgetDataModel: CampaignWidgetDataModel): Int = 0
 
+    override fun type(shimmeringFeaturedBrandDataModel: ShimmeringFeaturedBrandDataModel): Int {
+        return ShimmeringFeaturedBrandViewHolder.LAYOUT
+    }
+
     override fun type(questWidgetModel: QuestWidgetModel): Int {
         return -1
     }
@@ -165,6 +169,7 @@ class OfficialHomeAdapterTypeFactory(
                     itemView = view,
                     homeComponentListener = homeComponentListener,
                     featuredBrandListener = featuredBrandListener )
+            ShimmeringFeaturedBrandViewHolder.LAYOUT -> ShimmeringFeaturedBrandViewHolder(view)
             //deprecated - exist for remote config
             DynamicChannelLegoViewHolder.LAYOUT -> DynamicChannelLegoViewHolder(view, dcEventHandler)
             else -> super.createViewHolder(view, type)

@@ -12,7 +12,7 @@ import com.tokopedia.home_component.decoration.GridSpacingItemDecoration
 import com.tokopedia.home_component.listener.FeaturedBrandListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
+import com.tokopedia.home_component.util.FeaturedBrandTabletConfiguration
 import com.tokopedia.home_component.viewholders.adapter.FeaturedBrandAdapter
 import com.tokopedia.home_component.visitable.FeaturedBrandDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -59,7 +59,7 @@ class FeaturedBrandViewHolder (itemView: View,
 
     private fun initRV() {
         recyclerView = itemView.findViewById(R.id.recycleList)
-        layoutManager = GridLayoutManager(itemView.context, DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context))
+        layoutManager = GridLayoutManager(itemView.context, 4)
         parentRecyclerViewPool?.let { recyclerView.setRecycledViewPool(parentRecyclerViewPool) }
         recyclerView.layoutManager = layoutManager
     }
@@ -70,7 +70,12 @@ class FeaturedBrandViewHolder (itemView: View,
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                GridSpacingItemDecoration(DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context), DynamicChannelTabletConfiguration.getSpacingSpaceFor2x2(itemView.context), false))
+                GridSpacingItemDecoration(
+                    FeaturedBrandTabletConfiguration.SPAN_COUNT,
+                    FeaturedBrandTabletConfiguration.getSpanSpacing(itemView.context),
+                    false
+                )
+        )
     }
 
     private fun setHeaderComponent(element: FeaturedBrandDataModel) {

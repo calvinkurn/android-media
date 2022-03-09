@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true"
+    android:id="@+id/featured_brand_layout"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="10dp">
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:contentDescription="@string/content_desc_featured_brand_image"
+            android:id="@+id/featured_brand_image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:maxHeight="@dimen/component_featured_brand_image_size"
+            app:layout_constraintDimensionRatio="1:1"
+            android:scaleType="centerCrop"
+            tools:background="@color/Unify_N200"
+            tools:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <FrameLayout
+            android:id="@+id/container_featured_brand_logo"
+            android:layout_width="@dimen/component_featured_brand_logo_size"
+            android:layout_height="@dimen/component_featured_brand_logo_size"
+            android:padding="4dp"
+            android:background="@drawable/featured_brand_border_image"
+            app:layout_constraintBottom_toBottomOf="@+id/featured_brand_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/featured_brand_image">
+
+            <ImageView
+                android:contentDescription="@string/content_desc_featured_brand_icon"
+                android:id="@+id/featured_brand_logo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="parent"
+                />
+        </FrameLayout>
+
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="body_3"
+            android:textColor="@color/Unify_N700_96"
+            android:id="@+id/featured_brand_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minLines="1"
+            android:maxLines="2"
+            android:maxLength="24"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:gravity="center"
+            android:layout_marginTop="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/container_featured_brand_logo"
+            tools:text="brand Name"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="heading_4"
+            android:textColor="@color/Unify_N700_96"
+            android:id="@+id/featured_brand_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:maxLines="1"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/featured_brand_desc"
+            tools:text="brand Name"
+            tools:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
