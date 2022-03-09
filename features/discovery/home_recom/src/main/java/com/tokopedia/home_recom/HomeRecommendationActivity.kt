@@ -112,10 +112,10 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
             else ""
 
     private fun getTokonowRecomProductId(): String {
-        var productId = ""
-        intent.data?.pathSegments?.get(URL_PATH_2)?.let {
-            if (isNumber(it)) productId = it
-        }
+        var productId = "2461506470"
+//        intent.data?.pathSegments?.get(URL_PATH_2)?.let {
+//            if (isNumber(it)) productId = it
+//        }
         return productId
     }
 
