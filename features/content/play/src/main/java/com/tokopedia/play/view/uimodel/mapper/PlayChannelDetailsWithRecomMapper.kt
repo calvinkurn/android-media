@@ -297,8 +297,9 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         title = String.format(freezeDataResponse.title, title),
     )
 
-    private fun mapEmptyBottomSheet(data: ChannelDetailsWithRecomResponse.Data) =
-        PlayEmptyBottomSheetInfoUiModel(header = data.config.emptyBottomSheet.headerText, body = data.config.emptyBottomSheet.bodyText, button = data.config.emptyBottomSheet.redirectButtonText, partnerAppLink = data.partner.appLink)
+    private fun mapEmptyBottomSheet(data: ChannelDetailsWithRecomResponse.Data) = with(data.config.emptyBottomSheet){
+        PlayEmptyBottomSheetInfoUiModel(header = headerText, body = bodyText, button = redirectButtonText, partnerAppLink = data.partner.appLink)
+    }
 
     companion object {
         private const val MS_PER_SECOND = 1000
