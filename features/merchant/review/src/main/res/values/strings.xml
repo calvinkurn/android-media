@@ -298,9 +298,6 @@
     <string name="review_create_bottom_sheet_text_area_empty_incentive">Tulis min. 40 karakter buat dapetin hadiahnya ✍️️</string>
     <string name="review_create_bottom_sheet_text_area_partial_incentive">Lengkapi sedikit lagi biar dapet hadiahnya 🙌</string>
     <string name="review_create_bottom_sheet_text_area_eligible_for_incentive">Oke siap dikirim. Pastikan kamu sertain foto juga!  📸</string>
-    <string name="review_create_bottom_sheet_text_area_empty_challenge">Tulis min. 40 karakter buat ikut Tantangan Ulasan ✍️</string>
-    <string name="review_create_bottom_sheet_text_area_partial_challenge">Lengkapi sedikit lagi biar ikut Tantangan Ulasan 🙌</string>
-    <string name="review_create_bottom_sheet_text_area_eligible_for_challenge">Oke siap dikirim. Pastikan kamu sertain foto juga!  📸</string>
 
     <!-- Review Reminder -->
     <string name="review_reminder_tab_title_1">Kirim Pesan</string>

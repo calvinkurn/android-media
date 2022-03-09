@@ -27,6 +27,7 @@ import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
@@ -1084,35 +1085,29 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         incentivesHelperText?.apply {
             incentiveHelper = when {
                 textLength >= CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD -> {
-                    if (hasIncentive()) {
+                    if (hasIncentive() || hasOngoingChallenge()) {
                         context?.getString(R.string.review_create_bottom_sheet_text_area_eligible_for_incentive) ?: ""
-                    } else if (hasOngoingChallenge()) {
-                        context?.getString(R.string.review_create_bottom_sheet_text_area_eligible_for_challenge) ?: ""
                     } else {
                         ""
                     }
                 }
                 textLength < CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD && textLength != 0 -> {
-                    if (hasIncentive()) {
+                    if (hasIncentive() || hasOngoingChallenge()) {
                         context?.getString(R.string.review_create_bottom_sheet_text_area_partial_incentive) ?: ""
-                    } else if (hasOngoingChallenge()) {
-                        context?.getString(R.string.review_create_bottom_sheet_text_area_partial_challenge) ?: ""
                     } else {
                         ""
                     }
                 }
                 else -> {
-                    if (hasIncentive()) {
+                    if (hasIncentive() || hasOngoingChallenge()) {
                         context?.getString(R.string.review_create_bottom_sheet_text_area_empty_incentive) ?: ""
-                    } else if (hasOngoingChallenge()) {
-                        context?.getString(R.string.review_create_bottom_sheet_text_area_empty_challenge) ?: ""
                     } else {
                         ""
                     }
                 }
             }
             text = incentiveHelper
-            show()
+            showWithCondition(incentiveHelper.isNotBlank())
         }
     }
 
