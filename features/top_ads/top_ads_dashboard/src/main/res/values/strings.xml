@@ -405,5 +405,7 @@
 
     <string name="sampai_dengan">Sampai dengan</string>
     <string name="topads_headline_recom_grp_bs_title">Iklankan Produk Dengan Grup</string>
+    <string name="topads_dash_deleted_group_empty_result_title">Tidak ada iklan di periode ini</string>
+    <string name="topads_deleted_empty_ads_desc">Coba ubah tanggal untuk melihat statistik iklan yg telah dihapus</string>
 </resources>
 

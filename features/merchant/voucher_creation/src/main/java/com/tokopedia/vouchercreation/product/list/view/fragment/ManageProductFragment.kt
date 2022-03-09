@@ -180,11 +180,9 @@ class ManageProductFragment : BaseDaggerFragment(),
                 val isIndeterminate = binding.cbuSelectAllProduct.getIndeterminate()
                 if (isIndeterminate && !viewModel.isSelectAllMode) return@setOnCheckedChangeListener
                 adapter?.updateAllProductSelections(isChecked)
-                viewModel.setSetSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
             } else {
                 binding.cbuSelectAllProduct.setIndeterminate(false)
                 adapter?.updateAllProductSelections(isChecked)
-                viewModel.setSetSelectedProducts(listOf())
             }
         }
     }
@@ -296,7 +294,7 @@ class ManageProductFragment : BaseDaggerFragment(),
                 putInt(UpdateCouponActivity.BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
                 putParcelable(UpdateCouponActivity.BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
                 val selectedProducts = arrayListOf<ProductUiModel>()
-                selectedProducts.addAll(adapter?.getSelectedProducts() ?: listOf())
+                selectedProducts.addAll(adapter?.getProductList() ?: listOf())
                 putParcelableArrayList(BUNDLE_KEY_SELECTED_PRODUCTS, selectedProducts)
             })
         }
@@ -314,11 +312,11 @@ class ManageProductFragment : BaseDaggerFragment(),
     }
 
     override fun onRemoveButtonClicked() {
-        viewModel.setSetSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
+        viewModel.setSetSelectedProducts(adapter?.getProductList() ?: listOf())
     }
 
     override fun onBackPressed() {
-        val selectedProducts = adapter?.getSelectedProducts() ?: listOf()
+        val selectedProducts = adapter?.getProductList() ?: listOf()
         val extraSelectedProducts = ArrayList<ProductUiModel>()
         extraSelectedProducts.addAll(selectedProducts)
         val resultIntent = Intent().apply {
@@ -338,7 +336,7 @@ class ManageProductFragment : BaseDaggerFragment(),
 
     fun updateProductCounter() {
         val maxProductLimit = viewModel.getMaxProductLimit()
-        val totalSize = adapter?.getSelectedProducts()?.size ?: 0
+        val totalSize = adapter?.getProductList()?.size ?: 0
         binding?.tpgSelectedProductCounter?.text = "Jumlah Produk ($totalSize/$maxProductLimit)"
         binding?.tpgSelectAll?.text = "$totalSize Produk dipilih"
     }

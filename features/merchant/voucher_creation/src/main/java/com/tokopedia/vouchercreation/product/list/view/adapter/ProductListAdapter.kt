@@ -33,6 +33,10 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
         return productUiModelList.size
     }
 
+    fun getProductList(): MutableList<ProductUiModel> {
+        return productUiModelList
+    }
+
     fun getSelectedProducts(): List<ProductUiModel> {
         return productUiModelList.filter {
             it.isSelected
@@ -112,14 +116,24 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
     }
 
     override fun onRemoveProductButtonClicked(adapterPosition: Int, dataSetPosition: Int) {
-        productUiModelList.removeAt(dataSetPosition)
-        notifyItemRemoved(adapterPosition)
-        listener.onRemoveButtonClicked()
+        try {
+            productUiModelList.removeAt(dataSetPosition)
+            notifyDataSetChanged()
+            listener.onRemoveButtonClicked()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun onProductVariantCheckBoxClicked(isSelected: Boolean, dataSetPosition: Int, variantIndex: Int): Int {
-        productUiModelList[dataSetPosition].variants[variantIndex].isSelected = isSelected
-        return productUiModelList[dataSetPosition].getSelectedVariants().size
+        var selectedVariantSize = 0
+        try {
+            productUiModelList[dataSetPosition].variants[variantIndex].isSelected = isSelected
+            selectedVariantSize = productUiModelList[dataSetPosition].getSelectedVariants().size
+        }  catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return selectedVariantSize
     }
 
     override fun onProductVariantHeaderClicked(isExpanded: Boolean, dataSetPosition: Int) {

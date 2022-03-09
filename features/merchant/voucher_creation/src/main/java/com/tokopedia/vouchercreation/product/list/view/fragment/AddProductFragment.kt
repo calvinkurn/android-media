@@ -64,7 +64,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                 selectedProducts: ArrayList<ProductUiModel>
         ) = AddProductFragment().apply {
             this.arguments = Bundle().apply {
-                putString(BUNDLE_KEY_SELECTED_WAREHOUSE_ID,selectedWarehouseId)
+                putString(BUNDLE_KEY_SELECTED_WAREHOUSE_ID, selectedWarehouseId)
                 putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
                 putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
                 putParcelableArrayList(BUNDLE_KEY_SELECTED_PRODUCTS, selectedProducts)
@@ -145,7 +145,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         viewModel.setCouponSettings(couponSettings)
 
         val selectedProducts = arguments?.getParcelableArrayList<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)
-        val selectedProductIds = viewModel.getSelectedProductIds(selectedProducts?: arrayListOf())
+        val selectedProductIds = viewModel.getSelectedProductIds(selectedProducts ?: arrayListOf())
         viewModel.setSelectedProductIds(selectedProductIds)
 
         val shopId = userSession.shopId
@@ -405,6 +405,8 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                             validationResults = validationResults
                     )
 
+                    // in case of filtering; apply the previous selection
+
                     val hasNextPage = updatedProductList.isNotEmpty()
                     renderList(updatedProductList, hasNextPage)
                     setupSelectionBar(binding)
@@ -413,7 +415,9 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                         viewModel.setSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
                     }
 
-                    val origin = viewModel.getBoundLocationId()?: viewModel.getSellerWarehouseId()
+                    // TODO: improvement point: maintainability : break the codes down into functions
+
+                    val origin = viewModel.getBoundLocationId() ?: viewModel.getSellerWarehouseId()
                     viewModel.isSelectionChanged = viewModel.isSelectionChanged(origin, viewModel.getWarehouseLocationId())
                     val addedProducts = viewModel.getSelectedProductIds()
                     if (addedProducts.isNotEmpty() && viewModel.isSelectionChanged) {
@@ -453,6 +457,12 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                     } else {
                         viewModel.setWarehouseLocationId(selectedWarehouseId)
                     }
+
+                    // set selected warehouse name to filter chip
+                    val selectedWarehouseData = warehouseLocations.find {
+                        it.warehouseId == viewModel.getWarehouseLocationId()
+                    }
+                    warehouseLocationFilter?.title = selectedWarehouseData?.warehouseName ?: ""
 
                     loadInitialData()
 
@@ -512,6 +522,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
     }
 
     override fun onApplyWarehouseLocationFilter(selectedWarehouseLocation: WarehouseLocationSelection) {
+        warehouseLocationFilter?.title = selectedWarehouseLocation.warehouseName
         adapter?.enableAllProductSelections()
         viewModel.setWarehouseLocationId(selectedWarehouseLocation.warehouseId)
         resetSelectionBar(binding)
@@ -527,8 +538,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         resetSelectionBar(binding)
         viewModel.isFiltering = true
         loadInitialData()
-        viewModel.setSelectedProducts(listOf())
-         VoucherCreationTracking.clickFilterEtalase(shopId = userSession.shopId, etalaseName = viewModel.getSelectedShopShowcaseNames())
+        VoucherCreationTracking.clickFilterEtalase(shopId = userSession.shopId, etalaseName = viewModel.getSelectedShopShowcaseNames())
     }
 
     override fun onApplyCategoryFilter(selectedCategories: List<CategorySelection>) {
@@ -538,7 +548,6 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         resetSelectionBar(binding)
         viewModel.isFiltering = true
         loadInitialData()
-        viewModel.setSelectedProducts(listOf())
         VoucherCreationTracking.clickFilterProductCategory(shopId = userSession.shopId, categoryName = viewModel.getSelectedCategoryNames())
     }
 
@@ -549,8 +558,8 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         resetSelectionBar(binding)
         viewModel.isFiltering = true
         loadInitialData()
-        viewModel.setSelectedProducts(listOf())
-        VoucherCreationTracking.clickSortProductLabel(shopId = userSession.shopId, productLabel = viewModel.getSelectedSortName() ?: "")
+        VoucherCreationTracking.clickSortProductLabel(shopId = userSession.shopId, productLabel = viewModel.getSelectedSortName()
+                ?: "")
     }
 
     override fun createAdapter() = ProductListAdapter(this)

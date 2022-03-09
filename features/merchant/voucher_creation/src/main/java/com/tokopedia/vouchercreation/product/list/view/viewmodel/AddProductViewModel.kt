@@ -186,10 +186,8 @@ class AddProductViewModel @Inject constructor(
                     imageUrl = productData.pictures.first().urlThumbnail,
                     id = productData.id,
                     productName = productData.name,
-//                    sku = "SKU : " + productData.sku,
-//                    price = "Rp " + productData.price.max.toString(),
                     sku = getFormattedSku(productData.sku),
-                    price = getFormattedPrice(productData.price.max),
+                    price = "Rp " + productData.price.max.toString(),
                     sold = productData.txStats.sold,
                     soldNStock = "Terjual " + productData.txStats.sold + " | " + "Stok " + productData.stock.toString(),
                     hasVariant = productData.isVariant
@@ -208,11 +206,10 @@ class AddProductViewModel @Inject constructor(
         return priceTemplate.format(formattedPrice.toString())
     }
 
-//    private fun getFormattedStatisticText(sold: Int, stock: Int): String {
-//        val formattedSold =
-//        val statisticTemplate = resourceProvider.getFormattedProductStatistic()
-//        return statisticTemplate.format()
-//    }
+    private fun getFormattedStatisticText(sold: Int, stock: Int): String {
+        val statisticTemplate = resourceProvider.getFormattedProductStatistic()
+        return statisticTemplate.format()
+    }
 
     fun mapWarehouseLocationToSelections(warehouses: List<Warehouses>,
                                          selectedWarehouseId: Int?): List<WarehouseLocationSelection> {
@@ -308,6 +305,11 @@ class AddProductViewModel @Inject constructor(
                     errorMessage = data.reason
             )
         }
+    }
+
+    fun applyUserSelections(userSelections: List<ProductUiModel>,
+                            productData: List<ProductUiModel>) {
+
     }
 
     // dont confuse this with selected warehouse id
