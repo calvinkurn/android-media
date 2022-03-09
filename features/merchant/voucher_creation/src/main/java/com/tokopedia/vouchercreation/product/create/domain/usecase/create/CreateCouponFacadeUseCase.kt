@@ -37,14 +37,16 @@ class CreateCouponFacadeUseCase @Inject constructor(
         couponSettings: CouponSettings,
         couponProducts: List<CouponProduct>,
     ): Int {
-        val initiateVoucherDeferred = scope.async { initiateVoucher(IS_UPDATE_MODE) }
+        val initiateCouponDeferred = scope.async { initiateCoupon(IS_UPDATE_MODE) }
         val shopDeferred = scope.async { getShopBasicDataUseCase.executeOnBackground() }
 
         val shop = shopDeferred.await()
+        val coupon = initiateCouponDeferred.await()
 
         val generateImageDeferred = scope.async {
             generateImage(
                 sourceId,
+                coupon.voucherCodePrefix,
                 ImageRatio.HORIZONTAL,
                 couponInformation,
                 couponSettings,
@@ -56,6 +58,7 @@ class CreateCouponFacadeUseCase @Inject constructor(
         val generateSquareImageDeferred = scope.async {
             generateImage(
                 sourceId,
+                coupon.voucherCodePrefix,
                 ImageRatio.SQUARE,
                 couponInformation,
                 couponSettings,
@@ -67,6 +70,7 @@ class CreateCouponFacadeUseCase @Inject constructor(
         val generatePortraitImage = scope.async {
             generateImage(
                 sourceId,
+                coupon.voucherCodePrefix,
                 ImageRatio.VERTICAL,
                 couponInformation,
                 couponSettings,
@@ -78,14 +82,13 @@ class CreateCouponFacadeUseCase @Inject constructor(
         val imageUrl = generateImageDeferred.await()
         val squareImageUrl = generateSquareImageDeferred.await()
         val portraitImageUrl = generatePortraitImage.await()
-        val voucher = initiateVoucherDeferred.await()
 
         val createCouponDeferred = scope.async {
             createCoupon(
                 couponInformation,
                 couponSettings,
                 couponProducts,
-                voucher.token,
+                coupon.token,
                 imageUrl,
                 squareImageUrl,
                 portraitImageUrl
@@ -119,6 +122,7 @@ class CreateCouponFacadeUseCase @Inject constructor(
 
     private suspend fun generateImage(
         sourceId: String,
+        couponCodePrefix: String,
         imageRatio: ImageRatio,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
@@ -126,6 +130,12 @@ class CreateCouponFacadeUseCase @Inject constructor(
         products : List<CouponProduct>
     ): String {
         val imageParams = imageBuilder.build(imageRatio, couponInformation, couponSettings, products, shop.logo, shop.shopName)
+
+        val couponCode = if (couponInformation.target == CouponInformation.Target.PRIVATE) {
+            couponCodePrefix + imageParams.voucherCode.uppercase()
+        } else {
+            couponInformation.code.uppercase()
+        }
 
         val requestParams = arrayListOf(
             GenerateImageParams("platform", imageParams.platform),
@@ -137,7 +147,7 @@ class CreateCouponFacadeUseCase @Inject constructor(
             GenerateImageParams("voucher_nominal_symbol", imageParams.voucherNominalSymbol),
             GenerateImageParams("shop_logo", imageParams.shopLogo),
             GenerateImageParams("shop_name", imageParams.shopName),
-            GenerateImageParams("voucher_code", imageParams.voucherCode),
+            GenerateImageParams("voucher_code", couponCode),
             GenerateImageParams("voucher_start_time", imageParams.voucherStartTime),
             GenerateImageParams("voucher_finish_time", imageParams.voucherFinishTime),
             GenerateImageParams("product_count", imageParams.productCount),
@@ -154,7 +164,7 @@ class CreateCouponFacadeUseCase @Inject constructor(
         return imageGeneratorUseCase.executeOnBackground()
     }
 
-    private suspend fun initiateVoucher(isUpdateMode: Boolean): InitiateVoucherUiModel {
+    private suspend fun initiateCoupon(isUpdateMode: Boolean): InitiateVoucherUiModel {
         initiateCouponUseCase.query = GqlQueryConstant.INITIATE_COUPON_PRODUCT_QUERY
         initiateCouponUseCase.params =
             InitiateCouponUseCase.createRequestParam(isUpdateMode, IS_COUPON_PRODUCT)
