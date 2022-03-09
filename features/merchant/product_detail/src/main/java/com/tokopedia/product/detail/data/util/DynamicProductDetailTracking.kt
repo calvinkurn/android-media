@@ -1556,7 +1556,7 @@ object DynamicProductDetailTracking {
             val productImageUrl = TrackingUtil.getProductFirstImageUrl(productInfo)
             val label = TrackingUtil.getProductViewLabel(productInfo)
 
-        val products = generateProduct(irisSessionId, trackerListName, productInfo,
+            val products = generateProduct(irisSessionId, trackerListName, productInfo,
                     trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl,
                     isStockAvailable, boType, affiliateUniqueId, uuid, ratesEstimateData, buyerDistrictId,
                     sellerDistrictId)
@@ -1771,8 +1771,8 @@ object DynamicProductDetailTracking {
         mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] = "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
         mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};elem:${"impression - modular component"};cpos:${componentTrackDataModel.adapterPosition};"
 
-            trackingQueue?.putEETracking(mapEvent as HashMap<String, Any>)
-        }
+        trackingQueue?.putEETracking(mapEvent as HashMap<String, Any>)
+    }
     }
 
     object TradeIn {
@@ -2177,8 +2177,8 @@ object DynamicProductDetailTracking {
             )
             mapEvent[ProductTrackingConstant.Tracking.KEY_ECOMMERCE] = ecommerce
 
-            trackingQueue.putEETracking(HashMap(mapEvent))
-        }
+        trackingQueue.putEETracking(HashMap(mapEvent))
+    }
 
         fun eventClickMultiBundleProduct(
                 bundleId: String,
