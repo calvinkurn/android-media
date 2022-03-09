@@ -254,6 +254,10 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                         viewModel.getSelectedPositionId(denomData.data.listDenomData)
                     onSuccessDenomGrid(denomData.data, selectedPositionDenom)
 
+                    if (denomData.data.listDenomData.isEmpty()){
+                        showEmptyState()
+                    } else hideEmptyState()
+
                     if (selectedPositionDenom == null) {
                         onHideBuyWidget()
                     }

@@ -302,6 +302,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     onSuccessDenomGrid(denomData.data.denomWidgetModel, selectedPositionDenom)
                     onSuccessMCCM(denomData.data.mccmFlashSaleModel, selectedPositionMCCM)
 
+                    if (viewModel.isEmptyDenomMCCM(denomData.data.denomWidgetModel.listDenomData, denomData.data.mccmFlashSaleModel.listDenomData)){
+                        showEmptyState()
+                    } else hideEmptyState()
+
                     if (selectedPositionDenom == null && selectedPositionMCCM == null) {
                         onHideBuyWidget()
                     }

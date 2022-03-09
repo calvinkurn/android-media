@@ -348,6 +348,11 @@ class DigitalPDPDataPlanFragment :
                     onSuccessDenomFull(denomData.data.denomFull, selectedPositionDenom)
                     onSuccessMCCM(denomData.data.denomMCCMFull, selectedPositionMCCM)
 
+                    if (viewModel.isEmptyDenomMCCM(denomData.data.denomFull.listDenomData,
+                            denomData.data.denomMCCMFull.listDenomData)){
+                        showEmptyState(true)
+                    } else hideEmptyState()
+
                     if (selectedPositionDenom == null && selectedPositionMCCM == null) {
                         onHideBuyWidget()
                     }
@@ -778,7 +783,7 @@ class DigitalPDPDataPlanFragment :
         binding?.rechargePdpPaketDataEmptyStateWidget?.imageUrl = banners.firstOrNull()?.imageUrl ?: ""
     }
 
-    private fun showEmptyState() {
+    private fun showEmptyState(isShowFilter: Boolean = false) {
         binding?.run {
             if (!rechargePdpPaketDataEmptyStateWidget.isVisible) {
 
@@ -801,8 +806,11 @@ class DigitalPDPDataPlanFragment :
                     rechargePdpPaketDataEmptyStateWidget.hide()
                 }
 
+                if (isShowFilter){
+                    sortFilterPaketData.show()
+                } else sortFilterPaketData.hide()
+
                 rechargePdpPaketDataPromoWidget.hide()
-                sortFilterPaketData.hide()
                 rechargePdpPaketDataRecommendationWidget.hide()
                 rechargePdpPaketDataDenomFullWidget.hide()
                 rechargePdpPaketDataClientNumberWidget.hideOperatorIcon()

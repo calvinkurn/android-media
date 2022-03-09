@@ -262,4 +262,8 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     fun onResetSelectedProduct(){
         selectedGridProduct = SelectedProduct()
     }
+
+    fun isEmptyDenomMCCM(listDenomData: List<DenomData>, listMCCMData: List<DenomData>): Boolean {
+        return listDenomData.isEmpty() && listMCCMData.isEmpty()
+    }
 }
