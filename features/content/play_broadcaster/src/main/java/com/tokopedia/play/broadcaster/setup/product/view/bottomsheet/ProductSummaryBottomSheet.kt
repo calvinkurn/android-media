@@ -4,26 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSummaryBinding
-import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
+import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
-import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductSummaryListViewComponent
-import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
-import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.extension.productTagSummaryEmpty
-import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
-import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
@@ -41,20 +34,12 @@ class ProductSummaryBottomSheet @Inject constructor(
 
     private var mListener: Listener? = null
 
-    private val container: ProductSetupFragment?
-        get() = parentFragment as? ProductSetupFragment
-
     private var _binding: BottomSheetPlayBroProductSummaryBinding? = null
     private val binding: BottomSheetPlayBroProductSummaryBinding
         get() = _binding!!
 
-    private val loadingDialogFragment: LoadingDialogFragment by lazy(LazyThreadSafetyMode.NONE) {
-        val setupClass = LoadingDialogFragment::class.java
-        val fragmentFactory = childFragmentManager.fragmentFactory
-        val fragment = fragmentFactory.instantiate(requireActivity().classLoader, setupClass.name) as LoadingDialogFragment
-        fragment.setLoaderType(LoadingDialogFragment.LoaderType.CIRCULAR)
-        fragment
-    }
+    private val loadingDialogFragment: LoadingDialogFragment
+        get() = LoadingDialogFragment.get(childFragmentManager, requireActivity().classLoader)
 
     private val productSummaryListView by viewComponent {
         ProductSummaryListViewComponent(binding.rvProductSummaries, this)
@@ -109,14 +94,12 @@ class ProductSummaryBottomSheet @Inject constructor(
             handleAddMoreProduct()
         }
         setCloseClickListener {
-            dismiss()
-            container?.removeFragment()
+            mListener?.onFinish(this)
         }
 
         binding.btnDone.setOnClickListener {
             analytic.clickDoneOnProductSetup()
-            dismiss()
-            container?.removeFragment()
+            mListener?.onFinish(this)
         }
     }
 
@@ -237,5 +220,7 @@ class ProductSummaryBottomSheet @Inject constructor(
         fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>)
 
         fun onShouldAddProduct(bottomSheet: ProductSummaryBottomSheet)
+
+        fun onFinish(bottomSheet: ProductSummaryBottomSheet)
     }
 }

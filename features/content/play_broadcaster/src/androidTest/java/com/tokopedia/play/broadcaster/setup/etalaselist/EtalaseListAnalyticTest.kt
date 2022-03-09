@@ -5,6 +5,7 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.helper.contains
+import com.tokopedia.play.broadcaster.helper.containsEventAction
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
@@ -73,9 +74,7 @@ class EtalaseListAnalyticTest {
 
         ViewMatchers.assertThat(
             cassavaTestRule.validate(analyticFile),
-            contains(
-                "eventAction" to "click - etalase card"
-            )
+            containsEventAction("click - etalase card")
         )
     }
 
@@ -87,9 +86,7 @@ class EtalaseListAnalyticTest {
 
         ViewMatchers.assertThat(
             cassavaTestRule.validate(analyticFile),
-            contains(
-                "eventAction" to "click - campaign card"
-            )
+            containsEventAction("click - campaign card")
         )
     }
 }

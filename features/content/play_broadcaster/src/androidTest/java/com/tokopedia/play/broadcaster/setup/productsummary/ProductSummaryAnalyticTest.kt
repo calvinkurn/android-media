@@ -4,6 +4,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.play.broadcaster.helper.contains
+import com.tokopedia.play.broadcaster.helper.containsEventAction
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
@@ -58,9 +59,7 @@ class ProductSummaryAnalyticTest {
 
         ViewMatchers.assertThat(
             cassavaTestRule.validate(analyticFile),
-            contains(
-                "eventAction" to "click - add product card"
-            )
+            containsEventAction("click - add product card")
         )
     }
 
@@ -72,9 +71,7 @@ class ProductSummaryAnalyticTest {
 
         ViewMatchers.assertThat(
             cassavaTestRule.validate(analyticFile),
-            contains(
-                "eventAction" to "click - delete a product tagged"
-            )
+            containsEventAction("click - delete a product tagged")
         )
     }
 
@@ -86,9 +83,7 @@ class ProductSummaryAnalyticTest {
 
         ViewMatchers.assertThat(
             cassavaTestRule.validate(analyticFile),
-            contains(
-                "eventAction" to "click - save product tag"
-            )
+            containsEventAction("click - save product tag")
         )
     }
 }
