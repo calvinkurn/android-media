@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.usecase
 
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -16,9 +15,9 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -62,19 +61,26 @@ class GetProductRecommendationUseCase @Inject constructor(
         val isTokoNowParam = requestParams.getBoolean(PARAM_TOKONOW, false)
         val miniCartParam = requestParams.getObject(PARAM_MINI_CART) as MutableMap<String, MiniCartItem>?
 
-        val recommendationFilterResponse = getRecommendationFilter(
-                pageNameParam,
-                productIdParam,
-                isTokoNowParam
-        )
+        val recommendationFilterResponse = try {
+            getRecommendationFilter(
+                    pageNameParam,
+                    productIdParam,
+                    isTokoNowParam
+            )
+        } catch (e: Throwable) {
+            mutableListOf()
+        }
 
-        val recommendationWidgetResponse = getRecommendationWidget(
-                pageNameParam = pageNameParam,
-                productId = productIdParam,
-                isTokoNowParam = isTokoNowParam,
-                recommendationFilterResponse = recommendationFilterResponse.await()
-                        ?: mutableListOf()
-        ).await()
+        val recommendationWidgetResponse = try {
+            getRecommendationWidget(
+                    pageNameParam = pageNameParam,
+                    productId = productIdParam,
+                    isTokoNowParam = isTokoNowParam,
+                    recommendationFilterResponse = recommendationFilterResponse ?: mutableListOf()
+            )
+        } catch (e: Throwable) {
+            null
+        }
 
         if (recommendationWidgetResponse == null ||
                 recommendationWidgetResponse.recommendationItemList.isEmpty()) {
@@ -84,12 +90,12 @@ class GetProductRecommendationUseCase @Inject constructor(
         }
     }
 
-    private fun getRecommendationWidget(pageNameParam: String,
-                                        productId: String,
-                                        isTokoNowParam: Boolean,
-                                        recommendationFilterResponse: List<RecommendationFilterChipsEntity.RecommendationFilterChip>)
-            : Deferred<RecommendationWidget?> {
-        return asyncCatchError(dispatcher.io, block = {
+    private suspend fun getRecommendationWidget(pageNameParam: String,
+                                                productId: String,
+                                                isTokoNowParam: Boolean,
+                                                recommendationFilterResponse: List<RecommendationFilterChipsEntity.RecommendationFilterChip>)
+            : RecommendationWidget {
+        return withContext(dispatcher.io, block = {
 
             val recomRequestParams = GetRecommendationRequestParam(
                     pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
@@ -107,16 +113,14 @@ class GetProductRecommendationUseCase @Inject constructor(
             } else {
                 RecommendationWidget()
             }
-        }, onError = {
-            null
         })
     }
 
-    private fun getRecommendationFilter(pageNameParam: String,
-                                        productId: String,
-                                        isTokoNowParam: Boolean)
-            : Deferred<MutableList<RecommendationFilterChipsEntity.RecommendationFilterChip>?> {
-        return asyncCatchError(dispatcher.io, block = {
+    private suspend fun getRecommendationFilter(pageNameParam: String,
+                                                productId: String,
+                                                isTokoNowParam: Boolean)
+            : MutableList<RecommendationFilterChipsEntity.RecommendationFilterChip>? {
+        return withContext(dispatcher.io, block = {
             val productIdsString = TextUtils.join(",", arrayListOf(productId)) ?: ""
 
             if (pageNameParam == ProductDetailConstant.PDP_3
@@ -128,12 +132,11 @@ class GetProductRecommendationUseCase @Inject constructor(
                         xSource = ProductDetailConstant.DEFAULT_X_SOURCE,
                         isTokonow = isTokoNowParam
                 )
-                getRecommendationFilterChips.executeOnBackground().filterChip.toMutableList()
+                val result = getRecommendationFilterChips.executeOnBackground()
+                result.filterChip.toMutableList()
             } else {
                 mutableListOf()
             }
-        }, onError = {
-            mutableListOf()
         })
     }
 
