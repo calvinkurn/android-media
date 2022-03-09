@@ -15,6 +15,7 @@ public interface ContentExloreEventTracking {
         String OPEN_SCREEN = "openScreen";
         String SCREEN_NAME = "screenName";
         String IS_LOGGED_IN = "isLoggedInStatus";
+        String USER_ID = "userId";
     }
 
     interface Category {

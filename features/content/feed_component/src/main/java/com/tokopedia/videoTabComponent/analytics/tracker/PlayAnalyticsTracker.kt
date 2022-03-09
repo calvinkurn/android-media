@@ -207,7 +207,7 @@ class PlayAnalyticsTracker @Inject constructor(
                         channelType,
                         filterCategory
                 ),
-                channelId, FEED_VIDEO_TAB_CONTENT_CARDS_LAGI_LIVE, position, promotions)
+                channelId, FEED_VIDEO_TAB_CONTENT_CARDS, position, promotions)
         )
 
     }
@@ -227,7 +227,7 @@ class PlayAnalyticsTracker @Inject constructor(
                 channelType,
                 filterCategory
             ),
-            channelId, FEED_VIDEO_TAB_CONTENT_CARDS_LAGI_LIVE, position, promotions)
+            channelId, FEED_VIDEO_TAB_CONTENT_CARDS, position, promotions)
         )
     }
 
@@ -295,7 +295,7 @@ class PlayAnalyticsTracker @Inject constructor(
     fun visitVideoTabPageOnFeed(position: Int) {
         createAnalyticsForOpenScreen(
             EventName.OPEN_SCREEN,
-            "", "", "", isLoggedInStatus = userSession.isLoggedIn,
+            isLoggedInStatus = userSession.isLoggedIn,
             screenName = EventLabel.getScreenName(position)
         )
     }
@@ -448,23 +448,17 @@ class PlayAnalyticsTracker @Inject constructor(
 
     private fun createAnalyticsForOpenScreen(
             eventName: String,
-            eventAction: String = "",
-            eventCategory: String = "",
-            eventLabel: String = "",
             isLoggedInStatus: Boolean? = null,
             screenName: String = ""
     ) {
-        val generalData = DataLayer.mapOf(
-                TrackAppUtils.EVENT, eventName,
-                TrackAppUtils.EVENT_ACTION, eventAction,
-                TrackAppUtils.EVENT_CATEGORY, eventCategory,
-                TrackAppUtils.EVENT_LABEL, eventLabel,
-                PlayTrackerConst.BUSINESS_UNIT, PlayTrackerConst.CONTENT,
-                PlayTrackerConst.CURRENT_SITE, PlayTrackerConst.TOKOPEDIA_MARKET_PLACE,
-                PlayTrackerConst.SESSION_IRIS, irisSession.getSessionId(),
-                PlayTrackerConst.USER_ID, userSession.userId,
-                PlayTrackerConst.IS_LOGGED_IN, isLoggedInStatus,
-                PlayTrackerConst.SCREEN_NAME, screenName
+        val generalData = mapOf(
+                TrackAppUtils.EVENT to eventName,
+                PlayTrackerConst.BUSINESS_UNIT to PlayTrackerConst.CONTENT,
+                PlayTrackerConst.CURRENT_SITE to PlayTrackerConst.TOKOPEDIA_MARKET_PLACE,
+                PlayTrackerConst.SESSION_IRIS to irisSession.getSessionId(),
+                PlayTrackerConst.USER_ID to userSession.userId.toString(),
+                PlayTrackerConst.IS_LOGGED_IN to isLoggedInStatus.toString(),
+                PlayTrackerConst.SCREEN_NAME to screenName
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(generalData)
 
@@ -500,7 +494,11 @@ class PlayAnalyticsTracker @Inject constructor(
             val listBundle = Bundle().apply {
                 putParcelableArrayList(PROMOTIONS, items)
             }
+            if (eventName == PROMO_VIEW)
             putBundle(ECOMMERCE, getPromoViewDataBundle(listBundle))
+            else
+            putBundle(ECOMMERCE, getPromoClickDataBundle(listBundle))
+
         }
     }
 
@@ -528,6 +526,9 @@ class PlayAnalyticsTracker @Inject constructor(
 
     private fun getPromoViewDataBundle(data: Bundle): Bundle =
            Bundle().apply { putBundle(PROMO_VIEW, data) }
+
+    private fun getPromoClickDataBundle(data: Bundle): Bundle =
+            Bundle().apply { putBundle(PROMO_CLICK, data) }
 
 
     private object PlayTrackerConst {
@@ -638,6 +639,8 @@ class PlayAnalyticsTracker @Inject constructor(
             "/feed video tab - content list page - content cards"
         private const val FEED_VIDEO_TAB_CONTENT_CARDS_LAGI_LIVE =
             "/feed video tab - content cards - lagi live"
+        private const val FEED_VIDEO_TAB_CONTENT_CARDS =
+                "/feed video tab - content cards"
         private const val FEED_VIDEO_TAB_HIGHLIGHT_CARDS = "/feed video tab - highlight cards"
     }
 }

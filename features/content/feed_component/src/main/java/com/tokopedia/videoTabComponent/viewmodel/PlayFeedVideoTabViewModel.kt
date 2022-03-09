@@ -58,10 +58,10 @@ class PlayFeedVideoTabViewModel@Inject constructor(
     val getPlayDataForSlotRsp = MutableLiveData<Result<ContentSlotResponse>>()
     private val playWidgetUIMutableLiveData: MutableLiveData<PlayWidgetState?> = MutableLiveData(PlayWidgetState(isLoading = true))
     private val _reminderObservable = MutableLiveData<Result<PlayWidgetFeedReminderInfoData>>()
+    private val _playWidgetReminderEvent = MutableLiveData<PlayWidgetFeedReminderInfoData>()
 
-
-    private var reminderData: Pair<String, PlayWidgetReminderType>? = null
-
+    val playWidgetReminderEvent: LiveData<PlayWidgetFeedReminderInfoData>
+        get() = _playWidgetReminderEvent
 
 
     private val reminderUseCase: PlayWidgetReminderUseCase
@@ -160,36 +160,38 @@ class PlayFeedVideoTabViewModel@Inject constructor(
         }
     }
 
-     fun updatePlayWidgetToggleReminder(channelId: String, reminderType: PlayWidgetReminderType, position: Int) {
-        reminderData = null
-        updateWidget {
-            playWidgetTools.updateActionReminder(it, channelId, reminderType)
-        }
-
-        launchCatchError(block = {
-            val response = updateToggleReminder(
-                    channelId,
-                    reminderType
-            )
-
-
-            when (val success = playWidgetTools.mapWidgetToggleReminder(response)) {
-                success -> {
-                    val playWidgetFeedReminderInfoData = PlayWidgetFeedReminderInfoData(channelId = channelId,reminderType = reminderType, itemPosition = position)
-                    _reminderObservable.postValue(Success(playWidgetFeedReminderInfoData))
-                }
-                else -> {
-                    updateWidget {
-                        playWidgetTools.updateActionReminder(it, channelId, reminderType.switch())
-                    }
-                    _reminderObservable.postValue(Fail(Throwable()))
-                }
-            }
-        }) { throwable ->
+    fun updatePlayWidgetToggleReminder(channelId: String, reminderType: PlayWidgetReminderType, position: Int) {
+        if (!userSession.isLoggedIn) _playWidgetReminderEvent.value = PlayWidgetFeedReminderInfoData(channelId = channelId, reminderType = reminderType, itemPosition = position)
+        else {
             updateWidget {
-                playWidgetTools.updateActionReminder(it, channelId, reminderType.switch())
+                playWidgetTools.updateActionReminder(it, channelId, reminderType)
             }
-            _reminderObservable.postValue(Fail(throwable))
+
+            launchCatchError(block = {
+                val response = updateToggleReminder(
+                        channelId,
+                        reminderType
+                )
+
+
+                when (val success = playWidgetTools.mapWidgetToggleReminder(response)) {
+                    success -> {
+                        val playWidgetFeedReminderInfoData = PlayWidgetFeedReminderInfoData(channelId = channelId, reminderType = reminderType, itemPosition = position)
+                        _reminderObservable.postValue(Success(playWidgetFeedReminderInfoData))
+                    }
+                    else -> {
+                        updateWidget {
+                            playWidgetTools.updateActionReminder(it, channelId, reminderType.switch())
+                        }
+                        _reminderObservable.postValue(Fail(Throwable()))
+                    }
+                }
+            }) { throwable ->
+                updateWidget {
+                    playWidgetTools.updateActionReminder(it, channelId, reminderType.switch())
+                }
+                _reminderObservable.postValue(Fail(throwable))
+            }
         }
     }
 

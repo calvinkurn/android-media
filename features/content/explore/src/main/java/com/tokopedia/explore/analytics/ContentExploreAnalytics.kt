@@ -28,11 +28,12 @@ class ContentExploreAnalytics @Inject constructor() {
                 )
         ))
     }
-    fun visitExplorePageOnFeed(isLoggedInStatus: String){
+    fun visitExplorePageOnFeed(isLoggedInStatus: String, userId: String){
         val map = mapOf(
                 TrackAppUtils.EVENT to ContentExloreEventTracking.Event.OPEN_SCREEN,
                 ContentExloreEventTracking.Event.IS_LOGGED_IN to isLoggedInStatus,
                 ContentExloreEventTracking.Event.SCREEN_NAME to ContentExloreEventTracking.Screen.SCREEN_NAME,
+                ContentExloreEventTracking.Event.USER_ID to userId,
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }

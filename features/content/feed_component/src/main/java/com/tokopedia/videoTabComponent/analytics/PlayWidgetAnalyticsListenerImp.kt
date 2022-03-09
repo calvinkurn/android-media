@@ -18,7 +18,6 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
 ) : PlayWidgetAnalyticListener {
 
     var filterCategory: String = ""
-    private val shopId: String = userSession.shopId
 
     override fun onClickChannelCard(
         view: PlayWidgetJumboView,
@@ -28,7 +27,7 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
     ) {
         super.onClickChannelCard(view, item, channelPositionInList, isAutoPlay)
         tracker.clickOnContentHighlightCardsInVideoTab(
-            item.channelId, shopId,
+            item.channelId, item.partner.id,
             listOf(item.video.coverUrl),
             item.channelType.toString().lowercase(), channelPositionInList
         )
@@ -42,10 +41,10 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
     ) {
         super.onImpressChannelCard(view, item, channelPositionInList, isAutoPlay)
         tracker.impressOnContentHighlightWidgetInVideoTab(
-            item.channelId, shopId, item.channelType.toString().lowercase()
+            item.channelId, item.partner.id, item.channelType.toString().lowercase()
         )
         tracker.impressOnContentHighlightCard(
-            item.channelId, shopId,
+            item.channelId, item.partner.id,
             listOf(item.video.coverUrl), item.channelType.toString().lowercase(),
             channelPositionInList
         )
@@ -65,7 +64,7 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
 //            )
 //        }
         tracker.clickOnContentCardsInVideoTabBelowTheChips(
-            item.channelId, shopId, listOf(item.video.coverUrl),
+            item.channelId, item.partner.id, listOf(item.video.coverUrl),
             item.channelType.toString().lowercase(), filterCategory, channelPositionInList
         )
     }
@@ -84,7 +83,7 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
 //            )
 //        }
         tracker.impressOnContentCardsInVideoTabBelowTheChips(
-            item.channelId, shopId, listOf(item.video.coverUrl),
+            item.channelId, item.partner.id, listOf(item.video.coverUrl),
             item.channelType.toString().lowercase(), filterCategory, channelPositionInList
         )
     }
@@ -97,12 +96,12 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
     ) {
         super.onClickChannelCard(view, item, channelPositionInList, isAutoPlay)
         tracker.clickOnLagiLiveCarouselContentCards(
-            item.channelId, shopId, listOf(item.video.coverUrl),
+            item.channelId, item.partner.id, listOf(item.video.coverUrl),
             item.channelType.toString().lowercase(), channelPositionInList
         )
         if (item.channelType == PlayWidgetChannelType.Upcoming) {
             tracker.clickOnUpcomingCarouselContentCards(
-                item.channelId, shopId, listOf(item.video.coverUrl),
+                item.channelId, item.partner.id, listOf(item.video.coverUrl),
                 item.channelType.toString().lowercase(), filterCategory, channelPositionInList
             )
         }
@@ -119,7 +118,7 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
             if (channelPositionInList == 0)
                 tracker.impressOnUpcomingContentCarouselWidget(filterCategory)
             tracker.impressOnUpcomingCarouselContentCards(
-                item.channelId, shopId, listOf(item.video.coverUrl),
+                item.channelId, item.partner.id, listOf(item.video.coverUrl),
                 item.channelType.toString().lowercase(), filterCategory, channelPositionInList
             )
         } else if (item.channelType == PlayWidgetChannelType.Live) {
@@ -127,7 +126,7 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
                 tracker.impressOnLagiLiveContentCarouselWidget()
             tracker.impressOnLagiLiveCarouselContentCards(
                 item.channelId,
-                shopId,
+                item.partner.id,
                 listOf(item.video.coverUrl),
                 item.channelType.toString().lowercase(), channelPositionInList
             )
@@ -143,12 +142,12 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
         super.onClickToggleReminderChannel(view, item, channelPositionInList, isRemindMe)
         if (isRemindMe) {
             tracker.clickOnRemindMeButtonOnPlayCardInContentHighlight(
-                item.channelId, shopId, listOf(item.video.coverUrl),
+                item.channelId, item.partner.id, listOf(item.video.coverUrl),
                 item.channelType.toString().lowercase(), filterCategory
             )
         } else {
             tracker.clickOnUnRemindMeButtonOnPlayCardInContentHighlight(
-                item.channelId, shopId, listOf(item.video.coverUrl),
+                item.channelId, item.partner.id, listOf(item.video.coverUrl),
                 item.channelType.toString().lowercase(), filterCategory
             )
         }
@@ -166,11 +165,11 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
         if (item.channelType == PlayWidgetChannelType.Upcoming) {
             if (isRemindMe) {
                 tracker.clickOnRemindMeButtonOnPlayCardInUpcomingCarousel(
-                    item.channelId, shopId, item.channelType.toString().lowercase(), filterCategory
+                    item.channelId, item.partner.id, item.channelType.toString().lowercase(), filterCategory
                 )
             } else {
                 tracker.clickOnUnRemindMeButtonOnPlayCardInUpcomingCarousel(
-                    item.channelId, shopId, item.channelType.toString().lowercase(), filterCategory
+                    item.channelId, item.partner.id, item.channelType.toString().lowercase(), filterCategory
                 )
             }
         }
@@ -180,11 +179,11 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
         super.onClickToggleReminderChannel(view, item, channelPositionInList, isRemindMe)
         if (isRemindMe) {
             tracker.clickOnRemindMeButtonOnPlayCardsWithinChip(
-                    item.channelId, shopId, item.channelType.toString().lowercase(), filterCategory
+                    item.channelId, item.partner.id, item.channelType.toString().lowercase(), filterCategory
             )
         } else {
             tracker.clickOnUnRemindMeButtonOnPlayCardsWithinChip(
-                    item.channelId, shopId, item.channelType.toString().lowercase(), filterCategory
+                    item.channelId, item.partner.id, item.channelType.toString().lowercase(), filterCategory
             )
         }
     }

@@ -122,7 +122,7 @@ class ContentExploreFragment :
         super.onViewCreated(view, savedInstanceState)
         initVar()
         initView()
-        analytics.visitExplorePageOnFeed(userSession.isLoggedIn.toString())
+        analytics.visitExplorePageOnFeed(userSession.isLoggedIn.toString(), userSession.userId)
         presenter.attachView(this)
     }
 
