@@ -1,6 +1,7 @@
 package com.tokopedia.play.widget.ui.widget.jumbo
 
 import android.content.Context
+import android.graphics.Matrix
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
@@ -84,6 +85,20 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
 
         compositeTouchDelegate = PlayWidgetCompositeTouchDelegate(view)
         view.touchDelegate = compositeTouchDelegate
+
+        thumbnail.onUrlLoaded = { isSuccess ->
+            if (isSuccess) {
+                thumbnail.post {
+                    //need to delay (e.g. with post) because ImageUnify does not give listener that can get the resource directly
+                    //without post, the drawable will be null most of the time
+                    val drawable = thumbnail.drawable ?: return@post
+                    val translateY = drawable.intrinsicHeight - thumbnail.height
+                    thumbnail.imageMatrix = Matrix().apply {
+                        preTranslate(0f, -translateY.toFloat())
+                    }
+                }
+            }
+        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
