@@ -303,24 +303,31 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     tradeinResponse.widgetString
                 } else {
                     context?.getString(com.tokopedia.common_tradein.R.string.trade_in_exchange)
-                            ?: ""
+                        ?: ""
                 }
             }
         }
     }
 
-    fun updateFintechData(selectedProductId: String, variantData: ProductVariant?, productInfo: DynamicProductInfoP1?) {
-        productInfo?.let{ productDetail->
+    fun updateFintechData(
+        selectedProductId: String,
+        variantData: ProductVariant?,
+        productInfo: DynamicProductInfoP1?,
+        loggedIn: Boolean
+    ) {
+        productInfo?.let { productDetail ->
             val productIdToPriceURLMap = HashMap<String, FintechPriceUrlDataModel>()
             val productCategoryId: String = productDetail.basic.category.id
             if (variantData == null) {
-                productIdToPriceURLMap[productDetail.basic.productID] = FintechPriceUrlDataModel(productDetail.basic.url,productDetail.data.price.value.toString())
+                productIdToPriceURLMap[productDetail.basic.productID] =
+                    FintechPriceUrlDataModel(productDetail.data.price.value.toString())
 
             } else {
                 for (i in variantData.children.indices) {
                     productIdToPriceURLMap[variantData.children[i].productId] =
-                        FintechPriceUrlDataModel( variantData.children[i].url,
-                            variantData.children[i].price.toString())
+                        FintechPriceUrlDataModel(
+                            variantData.children[i].price.toString()
+                        )
                 }
             }
 
@@ -330,17 +337,18 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     productId = selectedProductId
                     categoryId = productCategoryId
                     idToPriceUrlMap = productIdToPriceURLMap
+                    isLoggedIn = loggedIn
                 }
             }
         }
     }
 
-    fun updateFintechDataWithProductId(selectedProductId: String)
-    {
+    fun updateFintechDataWithProductId(selectedProductId: String, loggedIn: Boolean) {
         updateData(ProductDetailConstant.FINTECH_WIDGET_NAME)
         {
             fintechWidgetMap?.run {
                 productId = selectedProductId
+                isLoggedIn = loggedIn
             }
         }
     }
