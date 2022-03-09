@@ -21,23 +21,16 @@ class SmartBillsAnalytics {
 
     var userId: String = ""
 
-    fun eventOpenScreen(isSBMEmpty: Boolean, totalProduct: Int, bills: List<RechargeBills>) {
-        val trackingData = Bundle().apply {
-            putString(TrackAppUtils.EVENT, Event.VIEW_ITEM_LIST)
-            putString(TrackAppUtils.EVENT_ACTION, Action.VIEW_PAGE)
-            putString(TrackAppUtils.EVENT_CATEGORY, CATEGORY_SMART_BILLS)
-            putString(TrackAppUtils.EVENT_LABEL, "$isSBMEmpty - $totalProduct")
-            putString(Key.ITEM_LIST, LIST_VALUE)
-            putString(Key.USER_ID, userId)
-            putString(Key.PRODUCT_STATUS, "$isSBMEmpty - $totalProduct")
-            putAll(getAdditionalData(BUSINESS_UNIT_RECHARGE_VALUE))
+    fun eventOpenScreen(isSBMEmpty: Boolean, totalProduct: Int) {
+        val loginStatus = if (userId.isEmpty()) "false" else "true"
+        val mapOpenScreen = mutableMapOf(
+            Key.IS_LOGIN_STATUS to loginStatus,
+            Key.USER_ID to userId,
+            Key.PRODUCT_STATUS to "$isSBMEmpty - $totalProduct"
+        )
+        mapOpenScreen.putAll(ADDITIONAL_INFO_MAP)
 
-            putParcelableArrayList(ITEMS, ArrayList(bills.mapIndexed { index, item ->
-                buildItemBundle(index, item)
-            }))
-        }
-
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.VIEW_ITEM_LIST, trackingData)
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(SCREEN_NAME_INITAL, mapOpenScreen)
     }
 
     fun clickSubscription() {
@@ -59,10 +52,11 @@ class SmartBillsAnalytics {
 
     private fun clickTickAllBills(listBills: List<RechargeBills>) {
         val trackingData = Bundle().apply {
-            putString(TrackAppUtils.EVENT, Event.SELECT_CONTENT)
+            putString(TrackAppUtils.EVENT, Event.CLICK_SMART_BILLS)
             putString(TrackAppUtils.EVENT_ACTION, Action.CLICK_ALL_TAGIHAN)
             putString(TrackAppUtils.EVENT_CATEGORY, CATEGORY_SMART_BILLS)
             putString(TrackAppUtils.EVENT_LABEL, Label.ALL_TAGIHAN)
+            putString(Key.SCREEN_NAME, SCREEN_NAME_INITAL)
             putString(Key.ITEM_LIST, LIST_VALUE)
             putString(Key.USER_ID, userId)
             putAll(getAdditionalData(BUSINESS_UNIT_SBM_VALUE))
@@ -74,15 +68,16 @@ class SmartBillsAnalytics {
             )
         }
 
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, trackingData)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.CLICK_SMART_BILLS, trackingData)
     }
 
     private fun clickUntickAllBills(listBills: List<RechargeBills>) {
         val trackingData = Bundle().apply {
-            putString(TrackAppUtils.EVENT, Event.SELECT_CONTENT)
+            putString(TrackAppUtils.EVENT, Event.CLICK_SMART_BILLS)
             putString(TrackAppUtils.EVENT_ACTION, Action.UNCLICK_ALL_TAGIHAN)
             putString(TrackAppUtils.EVENT_CATEGORY, CATEGORY_SMART_BILLS)
             putString(TrackAppUtils.EVENT_LABEL, Label.ALL_TAGIHAN)
+            putString(Key.SCREEN_NAME, SCREEN_NAME_INITAL)
             putString(Key.ITEM_LIST, LIST_VALUE)
             putString(Key.USER_ID, userId)
             putAll(getAdditionalData(BUSINESS_UNIT_SBM_VALUE))
@@ -94,7 +89,7 @@ class SmartBillsAnalytics {
             )
         }
 
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, trackingData)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.CLICK_SMART_BILLS, trackingData)
     }
 
     fun clickTickBill(tickedBill: RechargeBills, index: Int) {
@@ -119,7 +114,7 @@ class SmartBillsAnalytics {
 
     fun clickUntickBill(untickedBill: RechargeBills, index: Int) {
         val trackingData = Bundle().apply {
-            putString(TrackAppUtils.EVENT, Event.SELECT_CONTENT)
+            putString(TrackAppUtils.EVENT, Event.CLICK_SMART_BILLS)
             putString(TrackAppUtils.EVENT_ACTION, Action.CLICK_UNTICK_BILL)
             putString(TrackAppUtils.EVENT_CATEGORY, CATEGORY_SMART_BILLS)
             putString(
@@ -191,9 +186,12 @@ class SmartBillsAnalytics {
         )
     }
 
-    fun clickPayFailed(selectedBills: List<RechargeBills>, totalBillsCount: Int, selectedBillsCount: Int) {
+    fun clickPayFailed(
+        selectedBills: List<RechargeBills>,
+        totalBillsCount: Int
+    ) {
         val trackingData = Bundle().apply {
-            putString(TrackAppUtils.EVENT, Event.VIEW_ITEM_LIST)
+            putString(TrackAppUtils.EVENT, Event.CLICK_SMART_BILLS)
             putString(TrackAppUtils.EVENT_ACTION, Action.CLICK_BAYAR_FAILED)
             putString(TrackAppUtils.EVENT_CATEGORY, CATEGORY_SMART_BILLS)
             putString(
@@ -222,7 +220,7 @@ class SmartBillsAnalytics {
 
     fun clickBillDetail(bill: RechargeBills, index: Int) {
         val trackingData = Bundle().apply {
-            putString(TrackAppUtils.EVENT, Event.SELECT_CONTENT)
+            putString(TrackAppUtils.EVENT, Event.CLICK_SMART_BILLS)
             putString(TrackAppUtils.EVENT_ACTION, Action.CLICK_DETAIL)
             putString(TrackAppUtils.EVENT_CATEGORY, CATEGORY_SMART_BILLS)
             putString(
@@ -494,7 +492,7 @@ class SmartBillsAnalytics {
 
         private const val LIST_VALUE = "/smartbill"
 
-        private const val NEW_BILL_LABEL = "new"
+        private const val NEW_BILL_LABEL = "new bill"
         private const val EXISTING_BILL_LABEL = "existing bill"
 
         private const val BUSINESS_UNIT_RECHARGE_VALUE = "recharge"

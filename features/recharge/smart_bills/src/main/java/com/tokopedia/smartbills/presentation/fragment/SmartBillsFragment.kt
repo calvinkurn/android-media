@@ -208,7 +208,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                         smart_bills_checkout_view.setVisibilityLayout(false)
                         adapter.renderEmptyState()
                     }
-                    smartBillsAnalytics.eventOpenScreen((bills?.isEmpty()) ?: true, bills?.size ?: 0, listBills)
+                    smartBillsAnalytics.eventOpenScreen((bills?.isEmpty()) ?: true, bills?.size ?: 0)
                 }
                 is Fail -> {
                     var throwable = it.throwable
@@ -234,7 +234,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
                         startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
                     } else { // Else, show error message in affected items
-                        smartBillsAnalytics.clickPayFailed(adapter.checkedDataList, listBills.size, adapter.checkedDataList.size)
+                        smartBillsAnalytics.clickPayFailed(adapter.checkedDataList, listBills.size)
 
                         checkout_loading_view.hide()
                         view?.let { v ->
@@ -259,7 +259,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                     }
                 }
                 is Fail -> {
-                    smartBillsAnalytics.clickPayFailed(adapter.checkedDataList, listBills.size, adapter.checkedDataList.size)
+                    smartBillsAnalytics.clickPayFailed(adapter.checkedDataList, listBills.size)
 
                     checkout_loading_view.hide()
                     var throwable = it.throwable
