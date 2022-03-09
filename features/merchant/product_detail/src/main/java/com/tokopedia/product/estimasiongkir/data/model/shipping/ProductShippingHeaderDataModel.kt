@@ -18,6 +18,7 @@ data class ProductShippingHeaderDataModel(
         val freeOngkirEstimation: String = "",
         val freeOngkirPrice: String = "",
         val freeOngkirPriceOriginal: Double = 0.0,
+        val isFreeOngkirQuotaEmpty: Boolean = false,
         val freeOngkirDesc: String = "",
         val freeOngkirImageUrl: String = "",
         val freeOngkirTokoNowText:String = "",

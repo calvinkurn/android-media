@@ -271,9 +271,11 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     ) {
         if (viewModel.selectedFilterType.value != selectedType) {
             viewModel.setSelectedFilterType(selectedType)
+            VoucherCreationTracking.clickFilterVoucherType(shopId = userSession.shopId, voucherType = selectedType.toString())
         }
         if (viewModel.selectedFilterTarget.value != selectedTarget) {
             viewModel.setSelectedFilterTarget(selectedTarget)
+            VoucherCreationTracking.clickFilterVoucherTarget(shopId = userSession.shopId, voucherType = selectedTarget.toString())
         }
     }
 
@@ -323,6 +325,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         viewModel.setStatusFilter(couponStatus)
         filterStatus.refChipUnify.chipText = couponName
         loadInitialData()
+        VoucherCreationTracking.clickFilterVoucherStatus(shopId = userSession.shopId, voucherStatus = couponStatus)
     }
 
     private fun onCouponIconCopyClicked(couponCode: String) {
@@ -541,7 +544,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
             is BroadCastChat -> broadCastChat(coupon)
             is ShareCoupon -> shareCoupon(coupon)
             is EditPeriodCoupon -> editPeriodCoupon(coupon)
-            is DownloadCoupon -> downloadCoupon(coupon.image, coupon.imageSquare, coupon.imagePortrait)
+            is DownloadCoupon -> downloadCoupon(coupon)
             is CancelCoupon -> cancelCoupon(coupon)
             is StopCoupon -> stopCoupon(coupon)
             is DuplicateCoupon -> duplicateCoupon(coupon)
@@ -554,10 +557,12 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
     private fun editCoupon(coupon: VoucherUiModel) {
+        VoucherCreationTracking.clickChangeOnBottomsheet(shopId = userSession.shopId, voucherStatus = coupon.status)
         onEditCouponMenuSelected(coupon.id.toLong())
     }
 
     private fun viewDetailCoupon(coupon: VoucherUiModel) {
+        VoucherCreationTracking.clickDetailOnBottomsheet(shopId = userSession.shopId, voucherStatus = coupon.status)
         onViewCouponDetailMenuSelected(coupon.id.toLong())
     }
 
@@ -585,20 +590,17 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
 
-    private fun downloadCoupon(bannerImageUrl : String, squareImageUrl : String, portraitImageUrl : String) {
+    private fun downloadCoupon(coupon: VoucherUiModel) {
         if (!isAdded) return
-        val bottomSheet = DownloadCouponImageBottomSheet.newInstance(
-            bannerImageUrl,
-            squareImageUrl,
-            portraitImageUrl,
-            userSession.userId
-        )
+        val bottomSheet = DownloadCouponImageBottomSheet.newInstance(coupon.image, coupon.imageSquare, coupon.imagePortrait, userSession.userId)
         bottomSheet.setOnDownloadClickListener { couponList -> checkDownloadPermission(couponList) }
+        VoucherCreationTracking.clickDownloadOnBottomsheet(shopId = userSession.shopId, voucherStatus = coupon.status)
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
 
     private fun cancelCoupon(coupon: VoucherUiModel) {
+        VoucherCreationTracking.clickCancelOnBottomsheet(shopId = userSession.shopId, voucherStatus = coupon.status)
         CancelVoucherDialog(
             context = context ?: return
         ).setOnPrimaryClickListener {
@@ -607,6 +609,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
     private fun stopCoupon(coupon: VoucherUiModel) {
+        VoucherCreationTracking.clickStopOnBottomsheet(shopId = userSession.shopId, voucherStatus = coupon.status)
         StopVoucherDialog(
             context = context ?: return
         ).setOnPrimaryClickListener {
@@ -615,6 +618,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
     private fun duplicateCoupon(coupon: VoucherUiModel) {
+        VoucherCreationTracking.clickDuplicateOnBottomsheet(shopId = userSession.shopId, voucherStatus = coupon.status)
         onDuplicateCouponMenuSelected(coupon.id.toLong())
     }
 

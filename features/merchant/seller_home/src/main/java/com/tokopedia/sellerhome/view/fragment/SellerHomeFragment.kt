@@ -30,7 +30,6 @@ import com.tokopedia.gm.common.utils.PMShopScoreInterruptHelper
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -367,9 +366,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun removeWidget(position: Int, widget: BaseWidgetUiModel<*>) {
-        recyclerView?.post {
-            adapter.data.remove(widget)
-            adapter.notifyItemRemoved(position)
+        notifyWidgetWithSdkChecking {
+            val tmpWidgets = adapter.data.toMutableList()
+            val isRemoved = tmpWidgets.remove(widget)
+            if (isRemoved) {
+                updateWidgets(tmpWidgets)
+            }
         }
     }
 
@@ -697,7 +699,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         )
         val perMontSelectedDate = Date(
             DateTimeUtil.getTimeInMillis(
-                element.filter.perWeek.startDate,
+                element.filter.perMonth.startDate,
                 DateTimeUtil.FORMAT_DD_MM_YYYY
             )
         )
@@ -775,6 +777,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     val calendarWidget = it.apply calendarWidget@{
                         data = null
                         filter = getAppliedDateFilter(filter, startDate, endData, dateFilter.type)
+                        impressHolder = ImpressHolder()
                     }.copyWidget()
                     calendarWidgets.add(calendarWidget)
                     return@map calendarWidget

@@ -466,7 +466,9 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     }
 
     private fun loadData() {
-        topAdsDashboardPresenter.getAutoAdsStatus(resources, ::onSuccessAdsInfo)
+        try {
+            topAdsDashboardPresenter.getAutoAdsStatus(resources, ::onSuccessAdsInfo)
+        } catch (e: IllegalStateException) {e.printStackTrace()}
     }
 
     private fun loadStatisticsData() {
