@@ -893,7 +893,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     private fun updateData(key: String, loadInitialData: Boolean = false, updateAction: () -> Unit) {
-
         if (!loadInitialData) {
             val data = mapOfData[key]
             data?.let {
