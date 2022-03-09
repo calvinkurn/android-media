@@ -226,11 +226,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
                                                     isCustomNote = it.isCustomNote
                                                     to = it.addOnNoteTo
                                                     from = it.addOnNoteFrom
-                                                    notes = if (isCustomNote) {
-                                                        it.addOnNote
-                                                    } else {
-                                                        ""
-                                                    }
+                                                    notes = it.addOnNote
                                                 }
                                             }
                                         }
@@ -246,7 +242,8 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
 
     private fun handleOnSuccessSaveAddOnState(saveAddOnStateResponse: SaveAddOnStateResponse) {
         if (saveAddOnStateResponse.saveAddOns.errorMessage.firstOrNull()?.isNotBlank() == true) {
-            throw ResponseErrorException(saveAddOnStateResponse.saveAddOns.errorMessage.firstOrNull() ?: "")
+            throw ResponseErrorException(saveAddOnStateResponse.saveAddOns.errorMessage.firstOrNull()
+                    ?: "")
         } else {
             launch {
                 _uiEvent.emit(
@@ -302,10 +299,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
 
     fun hasChangedState(): Boolean {
         _addOnUiModel.value.let {
-            return it.initialSelectedState != it.isAddOnSelected ||
-                    it.initialAddOnNote != it.addOnNote ||
-                    it.initialAddOnNoteFrom != it.addOnNoteFrom ||
-                    it.initialAddOnNoteTo != it.addOnNoteTo
+            return it.initialAddOnNote != it.addOnNote
         }
     }
 }

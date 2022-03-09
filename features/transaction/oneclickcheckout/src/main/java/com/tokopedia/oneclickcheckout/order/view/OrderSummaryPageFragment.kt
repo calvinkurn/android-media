@@ -295,7 +295,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     private fun onResultFromAddOn(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && data != null) {
             val result = data.getParcelableExtra<SaveAddOnStateResult>(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA_RESULT)
-            viewModel.updateAddOn(result)
+            result?.let {
+                viewModel.updateAddOn(it)
+            }
         }
     }
 

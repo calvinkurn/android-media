@@ -8,14 +8,7 @@ import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECommerce
-import com.tokopedia.oneclickcheckout.order.data.checkout.CheckoutOccRequest
-import com.tokopedia.oneclickcheckout.order.data.checkout.ParamCart
-import com.tokopedia.oneclickcheckout.order.data.checkout.ParamData
-import com.tokopedia.oneclickcheckout.order.data.checkout.ProductData
-import com.tokopedia.oneclickcheckout.order.data.checkout.Profile
-import com.tokopedia.oneclickcheckout.order.data.checkout.PromoRequest
-import com.tokopedia.oneclickcheckout.order.data.checkout.ShippingInfo
-import com.tokopedia.oneclickcheckout.order.data.checkout.ShopProduct
+import com.tokopedia.oneclickcheckout.order.data.checkout.*
 import com.tokopedia.oneclickcheckout.order.domain.CheckoutOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccData

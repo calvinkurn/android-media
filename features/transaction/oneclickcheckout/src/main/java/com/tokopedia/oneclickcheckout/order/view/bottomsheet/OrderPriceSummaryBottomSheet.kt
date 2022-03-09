@@ -94,12 +94,12 @@ class OrderPriceSummaryBottomSheet {
         }
 
         if (orderCost.hasAddOn) {
-            binding.tvAddOnPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.addOnPrice, false).removeDecimalSuffix()
-            binding.tvAddOnPriceLabel.visible()
-            binding.tvAddOnPriceValue.visible()
+            binding.tvTotalProductAddonsPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.addOnPrice, false).removeDecimalSuffix()
+            binding.tvTotalProductAddonsPriceLabel.visible()
+            binding.tvTotalProductAddonsPriceValue.visible()
         } else {
-            binding.tvAddOnPriceLabel.gone()
-            binding.tvAddOnPriceValue.gone()
+            binding.tvTotalProductAddonsPriceLabel.gone()
+            binding.tvTotalProductAddonsPriceValue.gone()
         }
 
         binding.tvTotalPaymentPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalPrice, false).removeDecimalSuffix()

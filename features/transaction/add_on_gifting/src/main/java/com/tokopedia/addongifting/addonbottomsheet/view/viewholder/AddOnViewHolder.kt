@@ -149,20 +149,24 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
 
     private fun renderNote(viewBinding: ItemAddOnBinding, element: AddOnUiModel) {
         with(viewBinding) {
-            if (element.isCustomNote) {
-                textFieldAddOnNote.editText.isEnabled = true
-                textFieldAddOnNote.setMessage(itemView.context.getString(R.string.add_on_label_message_custom_note))
-            } else {
-                textFieldAddOnNote.editText.isEnabled = false
-                textFieldAddOnNote.setMessage(itemView.context.getString(R.string.add_on_label_message_pre_defined_note))
-            }
-
             textFieldAddOnNote.editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
             textFieldAddOnNote.editText.imeOptions = EditorInfo.IME_ACTION_DONE
             textFieldAddOnNote.editText.setRawInputType(InputType.TYPE_CLASS_TEXT)
             textFieldAddOnNote.setCounter(NOTE_MAX_CHAR)
             textFieldAddOnNote.editText.setText(Utils.getHtmlFormat(element.addOnNote))
             textFieldAddOnNote.editText.setSelection(textFieldAddOnNote.editText.length())
+
+            if (element.isCustomNote) {
+                textFieldAddOnNote.editText.isEnabled = true
+                if (textFieldAddOnNote.editText.text.isNotEmpty()) {
+                    textFieldAddOnNote.setMessage("")
+                } else {
+                    textFieldAddOnNote.setMessage(itemView.context.getString(R.string.add_on_label_message_custom_note))
+                }
+            } else {
+                textFieldAddOnNote.editText.isEnabled = false
+                textFieldAddOnNote.setMessage(itemView.context.getString(R.string.add_on_label_message_pre_defined_note))
+            }
 
             if (textFieldAddOnNote.editText.text.isNotEmpty()) {
                 textFieldAddOnNote.setLabel(itemView.context.getString(R.string.add_on_label_note_filled))
@@ -177,6 +181,13 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     element.addOnNote = s.toString()
+                    if (element.isCustomNote) {
+                        if (textFieldAddOnNote.editText.text.isNotEmpty()) {
+                            textFieldAddOnNote.setMessage("")
+                        } else {
+                            textFieldAddOnNote.setMessage(itemView.context.getString(R.string.add_on_label_message_custom_note))
+                        }
+                    }
                     if (textFieldAddOnNote.editText.text.isNotEmpty() || textFieldAddOnNote.editText.isFocused) {
                         textFieldAddOnNote.setLabel(itemView.context.getString(R.string.add_on_label_note_filled))
                     } else {
@@ -192,7 +203,6 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
             textFieldAddOnNote.editText.setOnFocusChangeListener { view, isFocussed ->
                 if (isFocussed) {
                     textFieldAddOnNote.setLabel(itemView.context.getString(R.string.add_on_label_note_filled))
-                    Toaster.build(itemView.rootView, "Focus", Snackbar.LENGTH_SHORT).show()
                     listener.onNeedToMakeEditTextFullyVisible(textFieldAddOnNote)
                 } else {
                     textFieldAddOnNote.setLabel(itemView.context.getString(R.string.add_on_label_note_empty))

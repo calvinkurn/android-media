@@ -38,8 +38,7 @@ data class CartShopHolderData(
         var latitude: String = "",
         var longitude: String = "",
         var boMetadata: BoMetadata = BoMetadata(),
-        var boAffordability: CartShopBoAffordabilityData = CartShopBoAffordabilityData()
-        var promoCodes: List<String> = emptyList(),
+        var boAffordability: CartShopBoAffordabilityData = CartShopBoAffordabilityData(),
         var addOnText: String = "",
         var addOnImgUrl: String = "",
         var addOnId: String = ""
