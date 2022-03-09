@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
+import android.util.Log
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiExternalUseCase
@@ -13,7 +14,16 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_QTY_NOTES
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.AddressState
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
+import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
+import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPreference
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import dagger.Lazy
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -154,6 +164,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
 
     suspend fun updatePreference(param: UpdateCartOccRequest): Pair<Boolean, OccGlobalEvent> {
         OccIdlingResource.increment()
+        Log.i("asdfghjkl", "update pref inc")
         val result = withContext(executorDispatchers.io) {
             try {
                 val uiMessage = updateCartOccUseCase.executeSuspend(param)
@@ -172,6 +183,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
             }
         }
         OccIdlingResource.decrement()
+        Log.i("asdfghjkl", "update pref de")
         return result
     }
 

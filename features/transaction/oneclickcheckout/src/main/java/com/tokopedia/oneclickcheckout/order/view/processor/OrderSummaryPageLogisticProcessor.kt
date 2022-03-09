@@ -1,8 +1,8 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
+import android.util.Log
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
@@ -24,6 +24,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
@@ -130,6 +131,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
 
     suspend fun getRates(orderCart: OrderCart, orderProfile: OrderProfile, orderShipment: OrderShipment, orderCost: OrderCost, listShopShipment: List<ShopShipment>): ResultRates {
         OccIdlingResource.increment()
+        Log.i("asdfghjkl", "get rates inc")
         val result: ResultRates = withContext(executorDispatchers.io) {
             try {
                 val (param, overweight) = generateRatesParam(orderCart, orderProfile, orderCost, listShopShipment)
@@ -223,6 +225,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             }
         }
         OccIdlingResource.decrement()
+        Log.i("asdfghjkl", "get rates de")
         return result
     }
 

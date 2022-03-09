@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
+import android.util.Log
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.PAYMENT_CC_TYPE_TENOR_FULL
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
@@ -80,6 +81,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
     suspend fun getGopayAdminFee(orderPayment: OrderPayment, userId: String,
                                  orderCost: OrderCost, orderCart: OrderCart): Triple<OrderPaymentGoCicilTerms, List<OrderPaymentGoCicilTerms>, Boolean>? {
         OccIdlingResource.increment()
+        Log.i("asdfghjkl", "get gopay admin inc")
         val result = withContext(executorDispatchers.io) {
             try {
                 val installmentList = mapInstallmentOptions(
@@ -108,6 +110,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
             }
         }
         OccIdlingResource.decrement()
+        Log.i("asdfghjkl", "get gopay admin de")
         return result
     }
 
