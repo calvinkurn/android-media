@@ -41,7 +41,7 @@ class PartnerInfoViewComponent(
 
     private fun setFollowStatus(
         followStatus: PlayPartnerFollowStatus,
-        isLoading: Boolean
+        isLoading: Boolean,
     ) {
         if (followStatus is PlayPartnerFollowStatus.Followable && followStatus.followStatus == PartnerFollowableStatus.NotFollowed) {
             btnFollow.isLoading = isLoading

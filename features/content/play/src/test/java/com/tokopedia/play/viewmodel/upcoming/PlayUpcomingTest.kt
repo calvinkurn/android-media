@@ -818,7 +818,6 @@ class PlayUpcomingTest {
     fun `when user take screenshot & custom share is allowed, it should emit event to open bottom sheet`() {
         /** Prepare */
         every { mockPlayNewAnalytic.takeScreenshotForSharing(any(), any(), any()) } returns Unit
-        coEvery { mockPlayNewAnalytic.impressShareBottomSheet(any(), any(), any()) } returns Unit
         coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns true
 
         val mockEvent = PlayUpcomingUiEvent.OpenSharingOptionEvent(
@@ -844,7 +843,6 @@ class PlayUpcomingTest {
 
             /** Verify */
             verify { mockPlayNewAnalytic.takeScreenshotForSharing(channelId, partnerId, channelType) }
-            verify { mockPlayNewAnalytic.impressShareBottomSheet(channelId, partnerId, channelType) }
 
             event.last().assertEqualTo(mockEvent)
         }
