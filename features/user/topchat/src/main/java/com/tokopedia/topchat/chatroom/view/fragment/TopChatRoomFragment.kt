@@ -150,7 +150,8 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
-import com.tokopedia.topchat.chatroom.view.uimodel.ProductBundlingUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 
 
@@ -2922,11 +2923,17 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickCtaProductBundling(element: ProductBundlingUiModel) {
-        Log.d("PRODBUNDLING", element.toString())
+        Log.d("PRODBUNDLING", element.applink)
     }
 
-    override fun onSeenProductBundling(isMultiProduct: Boolean) {
+    override fun onSeenProductBundling(element: ProductBundlingUiModel) {
+    }
 
+    override fun onClickCtaMultipleProductBundling(element: MultipleProductBundlingUiModel) {
+        Log.d("MULTIPRODBUNDLING", element.applink)
+    }
+
+    override fun onSeenMultipleProductBundling(element: MultipleProductBundlingUiModel) {
     }
 
     private fun setupTestBundling() {
@@ -2942,5 +2949,22 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             .withProductName("Barang langka Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at enim rhoncus, faucibus dui et, venenatis ante. Interdum et malesuada.")
             .build()
         adapter.addElement(bundling)
+
+        val listBundling = listOf(
+            MultipleProductBundlingUiModel.Bundling("Barang langka 1", "https://images.tokopedia.net/img/cache/300/default_picture_user/default_toped-17.jpg"),
+            MultipleProductBundlingUiModel.Bundling("Barang langka 2", "https://images.tokopedia.net/img/cache/300/default_picture_user/default_toped-17.jpg"),
+            MultipleProductBundlingUiModel.Bundling("Barang langka 3 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at enim rhoncus, faucibus dui et, venenatis ante. Interdum et malesuada.",
+                "https://images.tokopedia.net/img/cache/300/default_picture_user/default_toped-17.jpg"),
+        )
+        val multiBundling = MultipleProductBundlingUiModel.Builder()
+            .withBundlingId("1")
+            .withApplink("tokopedia://topchat")
+            .withDiscountAmount("Rp1000")
+            .withDiscountPrice("Rp9000")
+            .withDiscountText("Hemat")
+            .withProductPrice("Rp10.000")
+            .withListBundling(listBundling)
+            .build()
+        adapter.addElement(multiBundling)
     }
 }
