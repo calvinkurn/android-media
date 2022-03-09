@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
+import com.tokopedia.media.common.PickerCacheManager
 import com.tokopedia.media.common.types.PickerSelectionType
 import com.tokopedia.media.common.uimodel.MediaUiModel
 import com.tokopedia.media.databinding.FragmentGalleryBinding
@@ -39,11 +40,10 @@ import javax.inject.Inject
 open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listener {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
+    @Inject lateinit var cacheManager: PickerCacheManager
 
     private val binding: FragmentGalleryBinding? by viewBinding()
     private var listener: PickerActivityListener? = null
-
-    private val param by lazy { PickerUiConfig.pickerParam() }
 
     private val adapter by lazy {
         GalleryAdapter(emptyList(), ::selectMedia)
@@ -96,7 +96,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
             binding?.albumSelector?.txtName?.text = bucketName
 
             // fetch album by bucket id
-            viewModel.fetch(bucketId, param)
+            viewModel.fetch(bucketId, cacheManager.getParam())
 
             // force and scroll to up if the bucketId is "recent medias / all media"
             if (bucketId == -1L) {
@@ -154,7 +154,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     private fun initView() {
         setupRecyclerView()
 
-        viewModel.fetch(RECENT_ALBUM_ID, param)
+        viewModel.fetch(RECENT_ALBUM_ID, cacheManager.getParam())
     }
 
     private fun hasMediaList(isShown: Boolean) {
@@ -167,7 +167,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         val isMultipleSelectionType = PickerUiConfig.selectionMode == PickerSelectionType.MULTIPLE
 
         if (isMultipleSelectionType) {
-            binding?.drawerSelector?.setMaxAdapterSize(param.maxMediaAmount())
+            binding?.drawerSelector?.setMaxAdapterSize(cacheManager.getParam().maxMediaAmount())
             binding?.drawerSelector?.showWithCondition(isShown)
         }
     }

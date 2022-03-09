@@ -36,8 +36,10 @@ class PermissionAdapter constructor(
         val permission = items.first { it.name == permissionName }
         val index = items.indexOf(permission)
 
-        items[index].isGranted = status
-        notifyItemChanged(index)
+        if (index != -1) {
+            items[index].isGranted = status
+            notifyItemChanged(index)
+        }
     }
 
     class PermissionViewHolder(view: View) : RecyclerView.ViewHolder(view) {

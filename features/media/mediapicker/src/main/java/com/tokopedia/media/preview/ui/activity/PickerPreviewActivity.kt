@@ -14,8 +14,8 @@ import com.tokopedia.media.common.types.PickerSelectionType
 import com.tokopedia.media.common.uimodel.MediaUiModel
 import com.tokopedia.media.databinding.ActivityPreviewBinding
 import com.tokopedia.media.picker.ui.PickerUiConfig
-import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerActionType
+import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
 import com.tokopedia.media.preview.ui.component.PreviewPagerComponent
 import com.tokopedia.utils.view.binding.viewBinding
 import java.io.File
@@ -25,7 +25,6 @@ class PickerPreviewActivity : BaseActivity()
     , DrawerSelectionWidget.Listener {
 
     private val binding: ActivityPreviewBinding? by viewBinding()
-    private val param by lazy { PickerUiConfig.pickerParam() }
     private val uiModel = arrayListOf<MediaUiModel>()
 
     private val navToolbar by uiComponent {
@@ -103,7 +102,7 @@ class PickerPreviewActivity : BaseActivity()
 
     private fun restoreDataState(savedInstanceState: Bundle?) {
         // get data from picker
-        PreviewIntent.extractData(intent).also { elements ->
+        PreviewIntent.result(intent).also { elements ->
             setUiModelData(elements)
         }
 

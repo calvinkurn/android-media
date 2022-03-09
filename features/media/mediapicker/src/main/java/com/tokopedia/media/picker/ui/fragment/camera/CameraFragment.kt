@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
+import com.tokopedia.media.common.PickerCacheManager
 import com.tokopedia.media.common.basecomponent.uiComponent
 import com.tokopedia.media.common.uimodel.MediaUiModel
 import com.tokopedia.media.common.uimodel.MediaUiModel.Companion.cameraToUiModel
@@ -44,11 +45,11 @@ open class CameraFragment : BaseDaggerFragment()
     , CameraPreviewComponent.Listener {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
+    @Inject lateinit var cacheManager: PickerCacheManager
 
     private val binding: FragmentCameraBinding? by viewBinding()
     private var listener: PickerActivityListener? = null
 
-    private val param by lazy { PickerUiConfig.pickerParam() }
     private val medias = mutableListOf<MediaUiModel>()
 
     private var isTakingPictureMode = true
@@ -61,8 +62,13 @@ open class CameraFragment : BaseDaggerFragment()
         )[CameraViewModel::class.java]
     }
 
-    private val preview by uiComponent { CameraPreviewComponent(param, this, it) }
-    private val controller by uiComponent { CameraControllerComponent(param, this, it) }
+    private val preview by uiComponent {
+        CameraPreviewComponent(cacheManager.getParam(), this, it)
+    }
+
+    private val controller by uiComponent {
+        CameraControllerComponent(cacheManager.getParam(), this, it)
+    }
 
     val gestureDetector by lazy {
         GestureDetector(requireContext(), FlingGestureWrapper(

@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
+import com.tokopedia.media.common.PickerCacheManager
 import com.tokopedia.media.common.basecomponent.uiComponent
 import com.tokopedia.media.common.component.NavToolbarComponent
 import com.tokopedia.media.common.component.ToolbarTheme
@@ -15,7 +16,6 @@ import com.tokopedia.media.common.uimodel.AlbumUiModel
 import com.tokopedia.media.databinding.ActivityAlbumBinding
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.di.module.PickerModule
-import com.tokopedia.media.picker.ui.PickerUiConfig
 import com.tokopedia.media.picker.ui.activity.album.adapter.AlbumAdapter
 import com.tokopedia.media.picker.ui.fragment.OnAlbumClickListener
 import com.tokopedia.utils.view.binding.viewBinding
@@ -24,9 +24,9 @@ import javax.inject.Inject
 class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
+    @Inject lateinit var cacheManager: PickerCacheManager
 
     private val binding: ActivityAlbumBinding? by viewBinding()
-    private val param by lazy { PickerUiConfig.pickerParam() }
 
     private val viewModel by lazy {
         ViewModelProvider(
@@ -79,7 +79,7 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
         navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
 
         // fetch the album list
-        viewModel.fetch(param)
+        viewModel.fetch(cacheManager.getParam())
     }
 
     private fun setupRecyclerView() {

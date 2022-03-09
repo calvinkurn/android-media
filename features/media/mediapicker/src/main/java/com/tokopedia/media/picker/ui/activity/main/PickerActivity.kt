@@ -8,10 +8,12 @@ import android.view.MotionEvent
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
+import com.tokopedia.media.common.PickerCacheManager
 import com.tokopedia.media.common.basecomponent.uiComponent
 import com.tokopedia.media.common.component.NavToolbarComponent
 import com.tokopedia.media.common.component.ToolbarTheme
@@ -31,6 +33,7 @@ import com.tokopedia.media.picker.ui.PickerUiConfig
 import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnChangePublished
+import com.tokopedia.media.picker.ui.uimodel.hasVideoBy
 import com.tokopedia.media.picker.ui.uimodel.safeRemove
 import com.tokopedia.media.picker.utils.addOnTabSelected
 import com.tokopedia.media.picker.utils.delegates.permissionGranted
@@ -81,15 +84,22 @@ import javax.inject.Inject
  * if you want to set between single or multiple selection, just add this query:
  * ...&type=single/multiple
  */
-open class PickerActivity : BasePickerActivity()
+open class PickerActivity : BaseActivity()
     , PermissionFragment.Listener
     , NavToolbarComponent.Listener
     , PickerActivityListener {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
+    @Inject lateinit var cacheManager: PickerCacheManager
 
     private val binding: ActivityPickerBinding? by viewBinding()
     private val hasPermissionGranted: Boolean by permissionGranted()
+
+    protected val medias = arrayListOf<MediaUiModel>()
+
+    private val param by lazy {
+        cacheManager.getParam()
+    }
 
     private val viewModel by lazy {
         ViewModelProvider(
@@ -177,9 +187,18 @@ open class PickerActivity : BasePickerActivity()
         PickerUiConfig.setupQueryMode(data)
         PickerUiConfig.setupQuerySelectionType(data)
 
-        // TODO for PickerParam parser
-        val preSelectedMedias = param.includeMedias().map { it.toUiModel() }
-        stateOnChangePublished(preSelectedMedias)
+        cacheManager.setParam(
+            PickerUiConfig.pageType,
+            PickerUiConfig.modeType,
+            PickerUiConfig.selectionMode,
+        )
+
+        // get pre-included media items
+        param.includeMedias()
+            .map { it.toUiModel() }
+            .also {
+                stateOnChangePublished(it)
+            }
     }
 
     private fun restoreDataState(savedInstanceState: Bundle?) {
@@ -304,7 +323,75 @@ open class PickerActivity : BasePickerActivity()
         binding?.tabContainer?.showWithCondition(isShown)
     }
 
-    override fun onShowToaster(messageId: Int, param: Number) {
+    override fun mediaSelected(): List<MediaUiModel> {
+        return medias
+    }
+
+    override fun hasVideoLimitReached(): Boolean {
+        return medias.hasVideoBy(param.maxVideoCount())
+    }
+
+    override fun hasMediaLimitReached(): Boolean {
+        return medias.size == param.maxMediaAmount()
+    }
+
+    override fun isMinVideoDuration(model: MediaUiModel): Boolean {
+        return model.getVideoDuration(applicationContext) <= param.minVideoDuration()
+    }
+
+    override fun isMaxVideoDuration(model: MediaUiModel): Boolean {
+        return model.getVideoDuration(applicationContext) > param.maxVideoDuration()
+    }
+
+    override fun isMaxVideoSize(model: MediaUiModel): Boolean {
+        return model.isMaxFileSize(param.maxVideoSize())
+    }
+
+    override fun isMinImageResolution(model: MediaUiModel): Boolean {
+        return model.isMinImageRes(param.minImageResolution())
+    }
+
+    override fun isMaxImageResolution(model: MediaUiModel): Boolean {
+        return model.isMaxImageRes(param.maxImageResolution())
+    }
+
+    override fun isMaxImageSize(model: MediaUiModel): Boolean {
+        return model.isMaxFileSize(param.maxImageSize())
+    }
+
+    override fun onShowMediaLimitReachedToast() {
+        onShowToaster(R.string.picker_selection_limit_message, param.maxMediaAmount())
+    }
+
+    override fun onShowVideoLimitReachedToast() {
+        onShowToaster(R.string.picker_selection_limit_video, param.maxVideoCount())
+    }
+
+    override fun onShowVideoMinDurationToast() {
+        onShowToaster(R.string.picker_video_duration_min_limit, param.minVideoDuration())
+    }
+
+    override fun onShowVideoMaxDurationToast() {
+        onShowToaster(R.string.picker_video_duration_max_limit, param.maxVideoDuration())
+    }
+
+    override fun onShowVideoMaxFileSizeToast() {
+        onShowToaster(R.string.picker_video_max_size, param.maxVideoSize())
+    }
+
+    override fun onShowImageMinResToast() {
+        onShowToaster(R.string.picker_image_res_min_limit, param.maxImageResolution())
+    }
+
+    override fun onShowImageMaxResToast() {
+        onShowToaster(R.string.picker_image_res_max_limit, param.minImageResolution())
+    }
+
+    override fun onShowImageMaxFileSizeToast() {
+        onShowToaster(R.string.picker_image_max_size, param.maxImageSize())
+    }
+
+    private fun onShowToaster(messageId: Int, param: Number) {
         binding?.rootView?.let {
             val content = getString(messageId, param)
             Toaster.build(it, content, Toaster.LENGTH_SHORT).show()

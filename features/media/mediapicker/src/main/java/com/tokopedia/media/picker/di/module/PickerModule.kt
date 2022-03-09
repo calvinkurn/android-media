@@ -2,6 +2,7 @@ package com.tokopedia.media.picker.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.media.common.PickerCacheManager
 import com.tokopedia.media.picker.data.repository.AlbumRepository
 import com.tokopedia.media.picker.data.repository.AlbumRepositoryImpl
 import com.tokopedia.media.picker.data.repository.MediaRepository
@@ -12,6 +13,14 @@ import dagger.Provides
 
 @Module
 class PickerModule {
+
+    @Provides
+    @PickerScope
+    fun provideCacheHandler(
+        @ApplicationContext context: Context
+    ): PickerCacheManager {
+        return PickerCacheManager(context)
+    }
 
     @Provides
     @PickerScope

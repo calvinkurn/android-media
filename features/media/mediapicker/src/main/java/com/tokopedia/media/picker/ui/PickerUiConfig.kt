@@ -24,21 +24,6 @@ object PickerUiConfig {
     var pickerParam: PickerParam? = null
         private set
 
-    fun pickerParam(): PickerParam {
-        val isOnlyVideo = modeType == PickerModeType.VIDEO_ONLY
-        val isIncludeVideo = modeType == PickerModeType.COMMON
-        val isMultipleSelection = selectionMode == PickerSelectionType.MULTIPLE
-
-        return pickerParam ?: PickerParam(
-            pageType = pageType,
-            isOnlyVideo = isOnlyVideo,
-            isIncludeVideo = isIncludeVideo,
-            isMultipleSelection = isMultipleSelection,
-        ).also {
-            pickerParam = it
-        }
-    }
-
     fun isSingleSelectionType()
         = selectionMode == PickerSelectionType.SINGLE
 
