@@ -38,7 +38,6 @@ class MerchantVoucherViewHolder(
     CoroutineScope {
     private var binding: GlobalDcMerchantVoucherBinding? by viewBinding()
     private var adapter: MerchantVoucherAdapter? = null
-//    private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START) }
     private val startSnapHelper : SnapHelper = MerchantVoucherSnapHelper(itemView.context)
 
     companion object {
@@ -140,6 +139,7 @@ class MerchantVoucherViewHolder(
     }
 
     private fun valuateRecyclerViewDecoration() {
+        binding?.homeComponentMvcRv?.invalidate()
         if (binding?.homeComponentMvcRv?.itemDecorationCount == 0) binding?.homeComponentMvcRv?.addItemDecoration(
             MerchantVoucherDecoration()
         )
@@ -217,4 +217,10 @@ class MerchantVoucherViewHolder(
     private val masterJob = SupervisorJob()
 
     override val coroutineContext = masterJob + Dispatchers.Main
+
+    private fun RecyclerView.resetLayout() {
+        val carouselLayoutParams = this.layoutParams
+        carouselLayoutParams?.height = RecyclerView.LayoutParams.WRAP_CONTENT
+        this.layoutParams = carouselLayoutParams
+    }
 }
