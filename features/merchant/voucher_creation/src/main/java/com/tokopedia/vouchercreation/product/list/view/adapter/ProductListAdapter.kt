@@ -72,18 +72,28 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
 
     fun disableAllProductSelections() {
         this.productUiModelList.forEach {
-            it.isSelectable = false
+            it.isError = true
             it.variants.forEach { variantUiModel ->
                 variantUiModel.isError = true
             }
         }
     }
 
-    fun enableAllProductSelections() {
+    fun enableAllSelectedProducts() {
         this.productUiModelList.forEach {
-            it.isSelectable = true
+            val isSelected = it.isSelected
+            if (isSelected)  {
+                it.isError = false
+            }
+        }
+    }
+
+    fun enableAllProductSelections() {
+        // todo need to be redefine
+        this.productUiModelList.forEach {
+            if (it.errorMessage.isEmpty()) it.isError = false
             it.variants.forEach { variantUiModel ->
-                variantUiModel.isError = false
+                if (variantUiModel.errorMessage.isEmpty()) variantUiModel.isError = false
             }
         }
     }

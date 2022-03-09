@@ -35,6 +35,7 @@ class ManageProductViewModel @Inject constructor(
     private var couponSettings: CouponSettings? = null
     private var selectedProductIds = ArrayList<ProductId>()
     private var productUiModels: List<ProductUiModel> = listOf()
+    private var warehouseLocationId: String = ""
 
     private val getProductListResultLiveData = MutableLiveData<Result<ProductListResponse>>()
     val getProductListResult: LiveData<Result<ProductListResponse>> get() = getProductListResultLiveData
@@ -227,6 +228,10 @@ class ManageProductViewModel @Inject constructor(
         this.selectedProductListLiveData.value = productList
     }
 
+    fun setWarehouseLocationId(warehouseLocationId: String) {
+        this.warehouseLocationId = warehouseLocationId
+    }
+
     fun getIsViewing(): Boolean {
         return isViewing
     }
@@ -249,6 +254,10 @@ class ManageProductViewModel @Inject constructor(
 
     fun getCouponSettings(): CouponSettings? {
         return couponSettings
+    }
+
+    fun getWarehouseLocationId(): String {
+        return warehouseLocationId
     }
 
     fun getBenefitType(couponSettings: CouponSettings): String {
@@ -282,10 +291,6 @@ class ManageProductViewModel @Inject constructor(
 
     fun getMinimumPurchase(couponSettings: CouponSettings): Int {
         return couponSettings.minimumPurchase
-    }
-
-    fun isMaxProductLimitReached(selectedProductsSize: Int): Boolean {
-        return selectedProductsSize > maxProductLimit
     }
 
     fun resetProductUiModelState(selectedProducts: List<ProductUiModel>): List<ProductUiModel> {

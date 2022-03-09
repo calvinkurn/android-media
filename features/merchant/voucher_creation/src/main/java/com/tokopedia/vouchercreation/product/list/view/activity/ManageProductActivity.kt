@@ -70,6 +70,8 @@ class ManageProductActivity : BaseSimpleActivity() {
                 val normalizedProductUiModel = fragment?.resetProductUiModelState(selectedProducts)?: listOf()
                 fragment?.addProducts(normalizedProductUiModel)
                 fragment?.updateProductCounter()
+                val selectedWarehouseId = data?.getStringExtra(BUNDLE_KEY_SELECTED_WAREHOUSE_ID)
+                fragment?.updateWarehouseLocationId(selectedWarehouseId ?: "")
             }
         }
     }
