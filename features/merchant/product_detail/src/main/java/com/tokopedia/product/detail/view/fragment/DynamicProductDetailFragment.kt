@@ -1512,8 +1512,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         })
     }
 
-    private fun handlePlayWidgetUiModel(playWidgetUiModel: PlayWidgetUiModel) {
-        pdpUiUpdater?.updatePlayWidget(playWidgetUiModel)
+    private fun handlePlayWidgetUiModel(playWidgetState: PlayWidgetState) {
+        pdpUiUpdater?.updatePlayWidget(playWidgetState)
     }
 
     private fun onSuccessUpdateAddress() {
