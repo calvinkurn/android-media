@@ -818,6 +818,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         double insuranceFee = 0;
         double orderPriorityFee = 0;
         int totalBookingFee = 0;
+        boolean hasAddOnSelected = false;
         double totalAddOnPrice = 0;
         for (Object shipmentData : shipmentDataList) {
             if (shipmentData instanceof ShipmentCartItemModel) {
@@ -850,6 +851,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             if (!cartItemModel.getAddOnProductLevelModel().getAddOnsDataItemModelList().isEmpty()) {
                                 for (AddOnDataItemModel addOnDataItemModel : cartItemModel.getAddOnProductLevelModel().getAddOnsDataItemModelList()) {
                                     totalAddOnPrice += addOnDataItemModel.getAddOnPrice();
+                                    hasAddOnSelected = true;
                                 }
                             }
                         }
@@ -906,6 +908,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             && !addOnsDataModel.getAddOnsDataItemModelList().isEmpty()) {
                         for (AddOnDataItemModel addOnDataItemModel : addOnsDataModel.getAddOnsDataItemModelList()) {
                             totalAddOnPrice += addOnDataItemModel.getAddOnPrice();
+                            hasAddOnSelected = true;
                         }
                     }
                 }
@@ -928,6 +931,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         shipmentCostModel.setPurchaseProtectionFee(totalPurchaseProtectionPrice);
         shipmentCostModel.setTradeInPrice(tradeInPrice);
         shipmentCostModel.setTotalAddOnPrice(totalAddOnPrice);
+        shipmentCostModel.setHasAddOn(hasAddOnSelected);
         if (shipmentDonationModel != null && shipmentDonationModel.isChecked()) {
             shipmentCostModel.setDonation(shipmentDonationModel.getDonation().getNominal());
         } else {

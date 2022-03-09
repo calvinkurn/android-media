@@ -254,13 +254,9 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData, val source: Strin
             }
             amountCtaView.show()
             amountCtaView.setOnClickListener {
-                if (viewModel.hasChangedState()) {
-                    viewBinding.totalAmount.amountCtaView.isLoading = true
-                    viewModel.saveAddOnState(addOnProductData)
-                    checkoutAnalyticsCourierSelection.eventSaveAddOnsBottomSheet(isChecked, source)
-                } else {
-                    dismiss()
-                }
+                viewBinding.totalAmount.amountCtaView.isLoading = true
+                viewModel.saveAddOnState(addOnProductData)
+                checkoutAnalyticsCourierSelection.eventSaveAddOnsBottomSheet(isChecked, source)
             }
         }
     }
