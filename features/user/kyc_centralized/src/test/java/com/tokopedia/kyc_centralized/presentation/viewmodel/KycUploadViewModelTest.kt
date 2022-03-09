@@ -188,6 +188,28 @@ class KycUploadViewModelTest {
     }
 
     @Test
+    fun `Register - Failed and get error header response`() {
+        val kycResponse = KycResponse().apply {
+            header.errorCode = "9999"
+            header.message = mutableListOf("Error message on header")
+        }
+
+        provideEveryUseCase(kycResponse)
+        provideEverySuccessEncrypt()
+        provideEverySuccessDecrypted(originalImagePath)
+
+        coEvery {
+            sharedPreference.getByteArrayCache(any())
+        } answers {
+            encryptedImagePath.encodeToByteArray()
+        }
+
+        uploadWithEncrypt()
+        val result = viewModel.kycResponseLiveData.value
+        assert(result is Fail)
+    }
+
+    @Test
     fun `API - get error response`() {
         val exceptionMock = Exception("Oops!")
 

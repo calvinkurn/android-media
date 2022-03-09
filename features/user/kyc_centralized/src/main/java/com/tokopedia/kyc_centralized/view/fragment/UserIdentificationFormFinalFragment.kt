@@ -163,13 +163,10 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                     uploadButton?.isEnabled = true
                     when (retakeActionCode) {
                         NOT_RETAKE -> {
-                            //if liveness, upload the files immediately
-                            if (!isKycSelfie) {
-                                uploadKycFiles(
-                                        isKtpFileUsingEncryption = true,
-                                        isFaceFileUsingEncryption = true
-                                )
-                            }
+                            uploadKycFiles(
+                                    isKtpFileUsingEncryption = true,
+                                    isFaceFileUsingEncryption = true
+                            )
                         }
                         RETAKE_KTP -> {
                             retakeActionCode = RETAKE_KTP_AND_FACE
