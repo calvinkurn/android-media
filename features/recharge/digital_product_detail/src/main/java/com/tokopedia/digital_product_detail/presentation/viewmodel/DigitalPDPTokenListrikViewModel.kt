@@ -93,9 +93,9 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
         _menuDetailData.value = RechargeNetworkResult.Loading
     }
 
-    fun getMenuDetail(menuId: Int, isLoadFromCloud: Boolean = false) {
+    fun getMenuDetail(menuId: Int) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
-            val menuDetail = repo.getMenuDetail(menuId, isLoadFromCloud)
+            val menuDetail = repo.getMenuDetail(menuId)
             _menuDetailData.value = RechargeNetworkResult.Success(menuDetail)
         }) {
             _menuDetailData.value = RechargeNetworkResult.Fail(it)

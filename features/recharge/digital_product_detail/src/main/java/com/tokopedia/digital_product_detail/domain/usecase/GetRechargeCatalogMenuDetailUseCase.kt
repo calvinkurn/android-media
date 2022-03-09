@@ -2,7 +2,6 @@ package com.tokopedia.digital_product_detail.domain.usecase
 
 import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
-import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -17,7 +16,6 @@ class GetRechargeCatalogMenuDetailUseCase @Inject constructor(
 ): GraphqlUseCase<TelcoCatalogMenuDetailData>(graphqlRepository) {
 
     private var params: RequestParams = RequestParams.EMPTY
-    private var isLoadFromCloud = false
 
     override suspend fun executeOnBackground(): TelcoCatalogMenuDetailData {
         val gqlRequest = GraphqlRequest(
@@ -25,9 +23,8 @@ class GetRechargeCatalogMenuDetailUseCase @Inject constructor(
             TelcoCatalogMenuDetailData::class.java,
             params.parameters
         )
-        val gqlResponse = graphqlRepository.response(listOf(gqlRequest),
-            GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
-                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * FIVE_MINS_CACHE_DURATION).build())
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
+                .Builder(CacheType.ALWAYS_CLOUD).build())
 
         val error = gqlResponse.getError(TelcoCatalogMenuDetailData::class.java)
         if (error == null || error.isEmpty()) {
@@ -43,12 +40,7 @@ class GetRechargeCatalogMenuDetailUseCase @Inject constructor(
         }
     }
 
-    fun setLoadFromCloud(bool: Boolean) {
-        isLoadFromCloud = bool
-    }
-
     companion object {
         private const val KEY_MENU_ID = "menuID"
-        const val FIVE_MINS_CACHE_DURATION = 5
     }
 }

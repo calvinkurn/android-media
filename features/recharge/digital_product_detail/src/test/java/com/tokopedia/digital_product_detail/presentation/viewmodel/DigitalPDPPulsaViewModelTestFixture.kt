@@ -47,13 +47,13 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
 
     protected fun onGetMenuDetail_thenReturn(response: MenuDetailModel) {
         coEvery {
-            repo.getMenuDetail(any(), any())
+            repo.getMenuDetail(any())
         } returns response
     }
 
     protected fun onGetMenuDetail_thenReturn(error: Throwable) {
         coEvery {
-            repo.getMenuDetail(any(), any())
+            repo.getMenuDetail(any())
         } throws error
     }
 
@@ -122,7 +122,7 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
     }
 
     protected fun verifyGetMenuDetailRepoGetCalled() {
-        coVerify { repo.getMenuDetail(any(), any()) }
+        coVerify { repo.getMenuDetail(any()) }
     }
 
     protected fun verifyGetRecommendationsRepoGetCalled() {
