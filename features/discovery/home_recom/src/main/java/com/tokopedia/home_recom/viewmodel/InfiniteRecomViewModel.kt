@@ -87,7 +87,7 @@ class InfiniteRecomViewModel @Inject constructor(
 
     fun getRecommendationFirstPage(pageName: String, productId: String, queryParam: String, forceRefresh: Boolean) {
         launchCatchError(dispatcher.getIODispatcher(), {
-            val result = getRecommendationUseCase.get().getData(getBasicRecomParams(pageName = pageName, productId = productId, queryParam = queryParam))
+            val result = getRecommendationUseCase.get().getData(getBasicRecomParams(pageName = "pdp_2_tokonow", productId = productId, queryParam = queryParam))
             if (result.isEmpty()) {
                 _errorGetRecomData.postValue(RecomErrorResponse(isEmptyFirstPage = true, isForceRefreshAndError = forceRefresh))
             } else {
