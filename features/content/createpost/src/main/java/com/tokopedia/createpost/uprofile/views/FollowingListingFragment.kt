@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.uprofile.ErrorMessage
 import com.tokopedia.createpost.uprofile.Loading
@@ -48,6 +49,7 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
     private var globalError: LocalLoad? = null
 
     private var isLoggedIn: Boolean = false
+    private var isSwipeRefresh: Boolean? = null
 
     private val mPresenter: FollowerFollowingViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(FollowerFollowingViewModel::class.java)
@@ -99,6 +101,12 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
         rvFollowers?.adapter = mAdapter
         mAdapter.resetAdapter()
         mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_ID))
+
+        view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.setOnRefreshListener {
+            isSwipeRefresh = true
+            mAdapter.cursor = ""
+            mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_ID))
+        }
     }
 
     private fun addListObserver() =
@@ -110,6 +118,14 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
                         mAdapter.notifyDataSetChanged()
                     }
                     is Success -> {
+                        if (isSwipeRefresh == true) {
+                            view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing =
+                                false
+                            isSwipeRefresh = !isSwipeRefresh!!
+                        } else {
+                            //Hide shimmer
+                        }
+
                         mAdapter.onSuccess(it.data)
                     }
                     is ErrorMessage -> {
@@ -121,6 +137,15 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
 
     private fun addFollowersErrorObserver() =
         mPresenter.followersErrorLiveData.observe(viewLifecycleOwner, Observer {
+            if (isSwipeRefresh == true) {
+                view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing =
+                    false
+                isSwipeRefresh = !isSwipeRefresh!!
+            } else {
+                //Hide shimmer
+            }
+
+
             it?.let {
                 when (it) {
                     is UnknownHostException, is SocketTimeoutException -> {
@@ -219,6 +244,7 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
 
     private fun refreshMainUi() {
         mAdapter.resetAdapter()
+        mAdapter.cursor = ""
         mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_ID))
     }
     companion object {
@@ -242,7 +268,9 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
     }
 
     override fun onStartFirstPageLoad() {
-        followersContainer?.displayedChild = 1
+        if (isSwipeRefresh != true) {
+            followersContainer?.displayedChild = 1
+        }
     }
 
     override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {

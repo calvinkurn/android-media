@@ -39,7 +39,7 @@ open class ProfileFollowersAdapter(
 ) : BaseAdapter<ProfileFollowerV2>(callback) {
 
     protected var cList: MutableList<BaseItem>? = null
-    private var cursor: String = ""
+    public var cursor: String = ""
 
     inner class ViewHolder(view: View) : BaseVH(view) {
         internal var imgProfile: ImageUnify = view.findViewById(R.id.img_profile_image)

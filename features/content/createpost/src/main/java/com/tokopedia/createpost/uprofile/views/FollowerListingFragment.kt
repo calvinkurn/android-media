@@ -20,6 +20,7 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.uprofile.*
 import com.tokopedia.createpost.uprofile.di.DaggerUserProfileComponent
@@ -53,6 +54,7 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
     private var followersContainer: ViewFlipper? = null
     private var globalError: LocalLoad? = null
     private var isLoggedIn: Boolean = false
+    private var isSwipeRefresh: Boolean? = null
 
     val userSessionInterface: UserSession by lazy {
         UserSession(context)
@@ -104,10 +106,17 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
         rvFollowers?.adapter = mAdapter
         mAdapter.resetAdapter()
         mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_ID))
+
+        view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.setOnRefreshListener {
+            isSwipeRefresh = true
+            mAdapter.cursor = ""
+            mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_ID))
+        }
     }
 
     private fun refreshMainUi() {
         mAdapter.resetAdapter()
+        mAdapter.cursor = ""
         mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_ID))
     }
 
@@ -120,6 +129,14 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
                         mAdapter.notifyDataSetChanged()
                     }
                     is Success -> {
+                        if (isSwipeRefresh == true) {
+                            view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing =
+                                false
+                            isSwipeRefresh = !isSwipeRefresh!!
+                        } else {
+                            //Hide shimmer
+                        }
+
                         mAdapter.onSuccess(it.data)
                     }
                     is ErrorMessage -> {
@@ -131,6 +148,14 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
 
     private fun addFollowersErrorObserver() =
         mPresenter.followersErrorLiveData.observe(viewLifecycleOwner, Observer {
+            if (isSwipeRefresh == true) {
+                view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing =
+                    false
+                isSwipeRefresh = !isSwipeRefresh!!
+            } else {
+                //Hide shimmer
+            }
+
             it?.let {
                 when (it) {
                     is UnknownHostException, is SocketTimeoutException -> {
@@ -138,7 +163,7 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
 
                         globalError?.refreshBtn?.setOnClickListener {
                             followersContainer?.displayedChild = 1
-                           refreshMainUi()
+                            refreshMainUi()
                         }
                     }
                     is IllegalStateException -> {
@@ -189,7 +214,7 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
     override fun onResume() {
         super.onResume()
 
-        if(isLoggedIn != userSessionInterface.isLoggedIn){
+        if (isLoggedIn != userSessionInterface.isLoggedIn) {
             refreshMainUi()
             isLoggedIn = userSessionInterface.isLoggedIn
         }
@@ -239,7 +264,9 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
     }
 
     override fun onStartFirstPageLoad() {
-        followersContainer?.displayedChild = 1
+        if (isSwipeRefresh != true) {
+            followersContainer?.displayedChild = 1
+        }
     }
 
     override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
