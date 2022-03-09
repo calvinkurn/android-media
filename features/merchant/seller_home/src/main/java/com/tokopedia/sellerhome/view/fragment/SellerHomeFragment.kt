@@ -777,6 +777,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     val calendarWidget = it.apply calendarWidget@{
                         data = null
                         filter = getAppliedDateFilter(filter, startDate, endData, dateFilter.type)
+                        impressHolder = ImpressHolder()
                     }.copyWidget()
                     calendarWidgets.add(calendarWidget)
                     return@map calendarWidget
