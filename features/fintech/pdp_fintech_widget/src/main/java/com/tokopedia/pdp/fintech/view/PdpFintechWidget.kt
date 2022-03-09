@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter
 import com.tokopedia.pdp.fintech.analytics.FintechWidgetAnalyticsEvent
@@ -173,7 +174,7 @@ class PdpFintechWidget @JvmOverloads constructor(
 
 
     private fun setProductUrl(): String {
-        return (resources.getString(com.tokopedia.pdp_fintech.R.string.pdp_fintech_app_link) + this.productID).encodeToUtf8()
+        return UriUtil.buildUri(ApplinkConst.PRODUCT_INFO, this.productID).encodeToUtf8()
     }
 
 
