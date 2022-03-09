@@ -28,7 +28,7 @@ class PostUnfollowKolUseCase @Inject constructor(
         const val USER_ID = "userIDEnc"
         const val QUERY_NAME = "PostUnfollowKolUseCaseQuery"
         const val QUERY = """
-            mutation unfollowKOL(${'$'}userIDEnc: String){
+            mutation unfollowProfile(${'$'}userIDEnc: String){
                 SocialNetworkUnfollow(userIDEnc: ${'$'}userIDEnc){
                     data{
                         is_success

@@ -28,7 +28,7 @@ class GetFollowingKOLUseCase @Inject constructor(
         const val FOLLOWED_USER_ID_PARAMS = "followingUserIDs"
         const val QUERY_NAME = "GetFollowingKOLUseCaseQuery"
         const val QUERY = """
-            query getFollowingKol(${'$'}followingUserIDs: [String!]!){
+            query getFollowingProfile(${'$'}followingUserIDs: [String!]!){
                 feedXProfileIsFollowing(followingUserIDs: ${'$'}followingUserIDs){
                     isUserFollowing {
                       userID

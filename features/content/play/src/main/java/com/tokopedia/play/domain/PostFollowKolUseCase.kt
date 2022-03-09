@@ -27,7 +27,7 @@ class PostFollowKolUseCase @Inject constructor(
     companion object {
         const val QUERY_NAME = "PostFollowKolUseCaseQuery"
         const val QUERY = """
-            mutation followKOL(${'$'}userIDEnc: String){
+            mutation followProfile(${'$'}userIDEnc: String){
                 SocialNetworkFollow(userIDEnc: ${'$'}userIDEnc){
                     error_code
                     messages
