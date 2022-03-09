@@ -221,7 +221,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
         bindFollow(feedXCard)
         bindItems(feedXCard)
         bindCaption(feedXCard)
-        bindPublishedAt(feedXCard.publishedAt, feedXCard.subTitle)
+        val isTypeNewASGC = feedXCard.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && feedXCard.mods.contains(TYPE_USE_ASGC_NEW_DESIGN)
+        val isTopadsOrAsgc = feedXCard.isTopAds || isTypeNewASGC
+        bindPublishedAt(feedXCard.publishedAt, feedXCard.subTitle, isTopadsOrAsgc)
         bindLike(feedXCard)
         bindComment(
             feedXCard.comments,
@@ -903,7 +905,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 captionText.hide()
                                 commentButton.invisible()
                                 likeButton.invisible()
-                                timestampText.hide()
                                 seeAllCommentText.hide()
                                 shopMenuIcon.hide()
                                 val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
@@ -989,6 +990,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                                         feedXCard.author.id
                                                 )
 
+                                               //show hide animations for tagging views
                                                 for (i in 0 until layout.childCount) {
                                                     var view = layout.getChildAt(i)
                                                     if (view is PostTagView) {
@@ -1013,6 +1015,22 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                             }
 
                                             override fun onDoubleTap(e: MotionEvent): Boolean {
+
+                                                var productTagBubbleShowing = false
+
+                                                for (i in 0 until layout.childCount) {
+                                                    var view = layout.getChildAt(i)
+                                                    if (view is PostTagView) {
+                                                        val item = (view as PostTagView)
+                                                        productTagBubbleShowing = item.hideExpandedViewIfShown()
+                                                    }
+                                                }
+                                                if (tagProducts.isNotEmpty()) {
+                                                    if (!productTagBubbleShowing && layoutLihatProdukParent.width.toDp() > LIHAT_PRODUK_CONTRACTED_WIDTH_INDP) {
+                                                        hideViewWithoutAnimation(layoutLihatProdukParent, context)
+                                                    }
+                                                }
+
                                                 val pulseFade: Animation =
                                                         AnimationUtils.loadAnimation(
                                                                 context,
@@ -1827,6 +1845,19 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     }
 
                                     override fun onDoubleTap(e: MotionEvent): Boolean {
+                                        var productTagBubbleShowing = false
+                                        for (i in 0 until layout.childCount) {
+                                            var view = layout.getChildAt(i)
+                                            if (view is PostTagView) {
+                                                val item = (view as PostTagView)
+                                                productTagBubbleShowing = item.hideExpandedViewIfShown()
+                                            }
+                                        }
+                                        if (tagProducts.isNotEmpty()) {
+                                             if (!productTagBubbleShowing && layoutLihatProdukParent.width.toDp() > LIHAT_PRODUK_CONTRACTED_WIDTH_INDP) {
+                                                hideViewWithoutAnimation(layoutLihatProdukParent, context)
+                                            }
+                                        }
                                         val pulseFade: Animation =
                                                 AnimationUtils.loadAnimation(
                                                         context,
@@ -2033,7 +2064,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
 
-    private fun bindPublishedAt(publishedAt: String, subTitle: String) {
+    private fun bindPublishedAt(publishedAt: String, subTitle: String, isTopadsOrAsgc: Boolean) {
         val avatarDate = TimeConverter.generateTimeNew(context, publishedAt)
         val spannableString: SpannableString =
             if (subTitle.isNotEmpty()) {
@@ -2047,7 +2078,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 SpannableString(avatarDate)
             }
         timestampText.text = spannableString
-        timestampText.show()
+        if (isTopadsOrAsgc)
+            timestampText.hide()
+        else
+            timestampText.show()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
@@ -2090,10 +2124,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 carouselView.onActiveIndexChangedListener = null
                 model?.feedXCard?.media?.firstOrNull()?.canPlay = false
                 model?.feedXCard?.media?.firstOrNull()?.isImageImpressedFirst = true
+                model?.feedXCard?.let { hideTaggingOnDetach(it) }
             } else if (model is TopadsHeadLineV2Model) {
                 carouselView.onActiveIndexChangedListener = null
                 model?.feedXCard?.media?.firstOrNull()?.canPlay = false
                 model?.feedXCard?.media?.firstOrNull()?.isImageImpressedFirst = true
+                model?.feedXCard?.let { hideTaggingOnDetach(it) }
             }
         }
         if (videoPlayer != null) {
@@ -2113,6 +2149,38 @@ class PostDynamicViewNew @JvmOverloads constructor(
             videoPlayer?.destroy()
             videoPlayer = null
             layout_video?.player = null
+        }
+    }
+    private fun hideTaggingOnDetach(feedXCard: FeedXCard) {
+        val cardProducts: List<FeedXProduct> = feedXCard.tags
+        val media = if (feedXCard.media.size > feedXCard.lastCarouselIndex) feedXCard.media[feedXCard.lastCarouselIndex] else null
+        val imageItem = media?.imageView
+        val tags = media?.tagging
+
+        imageItem?.run {
+
+            val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
+            val layoutLihatProdukParent = findViewById<TextView>(R.id.tv_lihat_product)
+
+            val tagProducts = mutableListOf<FeedXProduct>()
+
+            tags?.map {
+                if (!ifProductAlreadyPresent(cardProducts[it.tagIndex], tagProducts))
+                    tagProducts.add(cardProducts[it.tagIndex])
+            }
+            for (i in 0 until layout.childCount) {
+                val view = layout.getChildAt(i)
+                if (view is PostTagView) {
+                    val item = (view as PostTagView)
+                    item.hideExpandedViewIfShown()
+                }
+
+                if (tagProducts.isNotEmpty()) {
+                    if (layoutLihatProdukParent.width.toDp() > LIHAT_PRODUK_CONTRACTED_WIDTH_INDP) {
+                        hideViewWithoutAnimation(layoutLihatProdukParent, context)
+                    }
+                }
+            }
         }
     }
 
