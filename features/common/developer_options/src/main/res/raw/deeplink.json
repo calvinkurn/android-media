@@ -1915,6 +1915,11 @@
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO"
      }, 
      {
+          "destination_activity": "com.tokopedia.shop.settings.basicinfo.view.activity.ShopSettingsOperationalHoursActivity", 
+          "deeplink": "tokopedia-android-internal://marketplace/shop-settings-operational-hours", 
+          "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS"
+     }, 
+     {
           "destination_activity": "com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity", 
           "deeplink": "tokopedia-android-internal://marketplace/shop-settings-edit-schedule", 
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE"
@@ -1940,6 +1945,11 @@
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID"
      }, 
      {
+          "destination_activity": "com.tokopedia.shop_widget.mvc_locked_to_product.view.activity.MvcLockedToProductPageActivity", 
+          "deeplink": "tokopedia-android-internal://marketplace/shop/widget/voucher/shop_id/.*\\/.*\\/", 
+          "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_MVC_LOCKED_TO_PRODUCT"
+     }, 
+     {
           "destination_activity": "com.tokopedia.shop_widget.operationalhour.view.activity.ShopOperationalHourBottomSheetActivity", 
           "deeplink": "tokopedia-android-internal://marketplace/shop/widget/operational-hour/.*\\/", 
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET"
@@ -1950,29 +1960,44 @@
           "deeplink_variable": "ApplinkConst.SELLER_MIGRATION"
      }, 
      {
-          "destination_activity": "com.tokopedia.vouchercreation.voucherlist.view.activity.VoucherListActivity", 
+          "destination_activity": "com.tokopedia.vouchercreation.shop.voucherlist.view.activity.VoucherListActivity", 
           "deeplink": "tokopedia-android-internal://sellerapp/voucher-list", 
           "deeplink_variable": "ApplinkConstInternalSellerapp.VOUCHER_LIST"
      }, 
      {
-          "destination_activity": "com.tokopedia.vouchercreation.voucherlist.view.activity.VoucherListActivity", 
+          "destination_activity": "com.tokopedia.vouchercreation.shop.voucherlist.view.activity.VoucherListActivity", 
           "deeplink": "tokopedia-android-internal://sellerapp/voucher-list/active", 
           "deeplink_variable": "ApplinkConstInternalSellerapp.VOUCHER_ACTIVE"
      }, 
      {
-          "destination_activity": "com.tokopedia.vouchercreation.voucherlist.view.activity.VoucherListActivity", 
+          "destination_activity": "com.tokopedia.vouchercreation.shop.voucherlist.view.activity.VoucherListActivity", 
           "deeplink": "tokopedia-android-internal://sellerapp/voucher-list/history", 
           "deeplink_variable": "ApplinkConstInternalSellerapp.VOUCHER_HISTORY"
      }, 
      {
-          "destination_activity": "com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity", 
+          "destination_activity": "com.tokopedia.vouchercreation.shop.create.view.activity.CreateMerchantVoucherStepsActivity", 
           "deeplink": "tokopedia-android-internal://sellerapp/create-voucher", 
           "deeplink_variable": "ApplinkConstInternalSellerapp.CREATE_VOUCHER"
      }, 
      {
-          "destination_activity": "com.tokopedia.vouchercreation.detail.view.activity.VoucherDetailActivity", 
+          "destination_activity": "com.tokopedia.vouchercreation.shop.detail.view.activity.VoucherDetailActivity", 
           "deeplink": "tokopedia-android-internal://sellerapp/voucher-detail", 
           "deeplink_variable": "ApplinkConstInternalSellerapp.VOUCHER_DETAIL"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.vouchercreation.product.create.view.activity.CreateCouponProductActivity", 
+          "deeplink": "tokopedia-android-internal://sellerapp/create-voucher-product/.*\\/", 
+          "deeplink_variable": "ApplinkConstInternalSellerapp.CREATE_VOUCHER_PRODUCT"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.vouchercreation.product.detail.view.activity.VoucherProductDetailActivity", 
+          "deeplink": "tokopedia-android-internal://sellerapp/voucher-product-detail/.*\\/", 
+          "deeplink_variable": "ApplinkConstInternalSellerapp.VOUCHER_PRODUCT_DETAIL"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.vouchercreation.product.voucherlist.view.activity.CouponListActivity", 
+          "deeplink": "tokopedia-android-internal://sellerapp/voucher-product-list/.*\\/", 
+          "deeplink_variable": "ApplinkConstInternalSellerapp.VOUCHER_PRODUCT_LIST"
      }, 
      {
           "destination_activity": "com.tokopedia.review.feature.reviewdetail.view.activity.SellerReviewDetailActivity", 
@@ -2100,14 +2125,14 @@
           "deeplink_variable": "ApplinkConstInternalSellerapp.CENTRALIZED_PROMO"
      }, 
      {
-          "destination_activity": "com.tokopedia.centralizedpromo.view.activity.CentralizedPromoActivity", 
-          "deeplink": "tokopedia-android-internal://sellerapp/first-voucher-centralized-promo", 
-          "deeplink_variable": "ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER"
-     }, 
-     {
           "destination_activity": "com.tokopedia.sellerhome.adminrestriction.view.activity.AdminRestrictionActivity", 
           "deeplink": "tokopedia-android-internal://sellerapp/admin-restriction", 
           "deeplink_variable": "ApplinkConstInternalSellerapp.ADMIN_RESTRICTION"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.centralizedpromo.view.activity.FirstVoucherActivity", 
+          "deeplink": "tokopedia-android-internal://sellerapp/first-voucher-centralized-promo", 
+          "deeplink_variable": "ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER"
      }, 
      {
           "destination_activity": "com.tokopedia.shop_showcase.shop_showcase_add.presentation.activity.ShopShowcaseAddActivity", 
