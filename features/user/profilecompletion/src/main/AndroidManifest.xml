@@ -183,7 +183,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_add_pin_onboarding"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
@@ -238,7 +238,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_add_pin_complete"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>

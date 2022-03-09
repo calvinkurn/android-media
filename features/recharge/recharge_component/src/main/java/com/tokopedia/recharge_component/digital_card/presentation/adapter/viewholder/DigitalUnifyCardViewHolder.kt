@@ -9,7 +9,6 @@ import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -33,6 +32,9 @@ class DigitalUnifyCardViewHolder(
 ) : AbstractViewHolder<DigitalUnifyModel>(binding.root) {
 
     override fun bind(element: DigitalUnifyModel) {
+
+        listener?.onItemImpression(element, adapterPosition)
+
         renderMedia(element)
         renderCampaign(element)
         renderProductInfo(element)
@@ -114,10 +116,16 @@ class DigitalUnifyCardViewHolder(
             )
         }
 
-        val fullText = TextUtils.concat(leftProductInfoText, " ", rightProductInfoText)
+        val fullText = if (leftProductInfoText.isNotEmpty() && rightProductInfoText.isNotEmpty())
+            TextUtils.concat(leftProductInfoText, " ", rightProductInfoText)
+        else if (leftProductInfoText.isNotEmpty())
+            leftProductInfoText
+        else if (rightProductInfoText.isNotEmpty())
+            rightProductInfoText
+        else ""
 
         with(binding.dguProductInfo) {
-            if (leftProductInfoText.isNotEmpty() || rightProductInfoText.isNotEmpty()) {
+            if (fullText.isNotEmpty()) {
                 text = fullText
 
                 ellipsize = TextUtils.TruncateAt.END
@@ -133,7 +141,7 @@ class DigitalUnifyCardViewHolder(
     private fun renderTitle(element: DigitalUnifyModel) {
         with(binding.dguTitleLabel) {
             if (element.title.isNotEmpty()) {
-                text = element.title
+                text = MethodChecker.fromHtml(element.title)
                 show()
             } else {
                 hide()
@@ -192,7 +200,7 @@ class DigitalUnifyCardViewHolder(
     private fun renderSubtitle(element: DigitalUnifyModel) {
         with(binding.dguSubtitle) {
             if (element.subtitle.isNotEmpty()) {
-                text = element.subtitle
+                text = MethodChecker.fromHtml(element.subtitle)
                 show()
             } else {
                 hide()
@@ -461,6 +469,7 @@ class DigitalUnifyCardViewHolder(
 
     interface DigitalUnifyCardListener {
         fun onItemClicked(item: DigitalUnifyModel, index: Int)
+        fun onItemImpression(item: DigitalUnifyModel, index: Int)
     }
 
     companion object {

@@ -59,6 +59,7 @@
                 android:paddingTop="16dp"
                 android:paddingBottom="16dp"
                 android:singleLine="false"
+                android:inputType="textCapSentences|textMultiLine"
                 android:textColor="@color/Unify_NN950"
                 android:textCursorDrawable="@color/black"
                 android:textSize="14sp"

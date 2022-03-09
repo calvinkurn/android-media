@@ -660,7 +660,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                                     biometricTracker.trackClickOnAktivasi()
                                     val intent = RouteManager.getIntent(
                                         requireContext(),
-                                        ApplinkConstInternalGlobal.REGISTER_BIOMETRIC
+                                        ApplinkConstInternalUserPlatform.REGISTER_BIOMETRIC
                                     )
                                     startActivityForResult(intent, REQUEST_CODE_REGISTER_BIOMETRIC)
                                     biometricOfferingDialog?.dismiss()

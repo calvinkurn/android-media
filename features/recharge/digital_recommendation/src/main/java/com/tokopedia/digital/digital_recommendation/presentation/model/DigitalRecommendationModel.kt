@@ -1,6 +1,7 @@
 package com.tokopedia.digital.digital_recommendation.presentation.model
 
 import android.os.Parcelable
+import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalUnifyModel
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -10,8 +11,14 @@ import kotlinx.parcelize.Parcelize
 data class DigitalRecommendationModel(
         val userType: String,
         val title: String,
-        val items: List<DigitalRecommendationItemModel>
+        val items: List<DigitalRecommendationItemUnifyModel>
 ) : Parcelable
+
+@Parcelize
+data class DigitalRecommendationItemUnifyModel(
+        val unify: DigitalUnifyModel,
+        val tracking: DigitalRecommendationTrackingModel = DigitalRecommendationTrackingModel()
+): Parcelable
 
 @Parcelize
 data class DigitalRecommendationItemModel(

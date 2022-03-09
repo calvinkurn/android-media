@@ -19,7 +19,8 @@ import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDa
 import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
-import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
+import com.tokopedia.search.result.product.emptystate.EmptyStateFilterDataView
+import com.tokopedia.search.result.product.emptystate.EmptyStateKeywordDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
 import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeDataView
@@ -37,7 +38,8 @@ interface ProductListTypeFactory {
     fun type(recommendationItemDataView: RecommendationItemDataView): Int
     fun type(bannedProductsEmptySearchDataView: BannedProductsEmptySearchDataView): Int
     fun type(bannedProductsTickerDataView: BannedProductsTickerDataView): Int
-    fun type(emptySearchProductDataView: EmptyStateDataView): Int
+    fun type(emptySearchProductDataView: EmptyStateKeywordDataView): Int
+    fun type(emptySearchFilterDataView: EmptyStateFilterDataView): Int
     fun type(broadMatchDataView: BroadMatchDataView): Int
     fun type(inspirationCardDataView: InspirationCardDataView): Int
     fun type(searchProductTitleDataView: SearchProductTitleDataView): Int

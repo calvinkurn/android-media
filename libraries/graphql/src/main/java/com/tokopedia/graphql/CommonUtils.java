@@ -56,5 +56,9 @@ public class CommonUtils {
         }
         return new JsonArray();
     }
+
+    public static String getGraphqlUrlAppend(String opName) {
+        return "graphql/" + opName;
+    }
 }
 

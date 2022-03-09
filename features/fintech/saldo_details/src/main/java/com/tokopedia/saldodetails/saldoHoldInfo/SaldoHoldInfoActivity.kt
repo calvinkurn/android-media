@@ -13,6 +13,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.saldodetails.R
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
 import com.tokopedia.saldodetails.commom.design.SaldoHistoryTabItem
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
@@ -64,6 +65,8 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     @Inject
     lateinit var saldoInfoPresenter: SaldoHoldInfoPresenter
 
+    @Inject
+    lateinit var analytics: SaldoDetailsAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         performanceInterface.startMonitoring()
@@ -76,6 +79,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
         clearFragmentManger()
 
         btn_bantuan.setOnClickListener {
+            analytics.sendClickPaymentEvents(SaldoDetailsConstants.Action.SALDO_HELP_HOLD_CLICK)
             initBottomSheet()
         }
         performanceInterface.stopPreparePagePerformanceMonitoring()

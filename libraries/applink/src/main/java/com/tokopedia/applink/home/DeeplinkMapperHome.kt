@@ -48,9 +48,9 @@ object DeeplinkMapperHome {
         else if (deeplink.startsWith(ApplinkConst.HOME_FEED) && uri.pathSegments.size == 1)
             return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_FEED))
         else if (deeplink.startsWith(ApplinkConst.HOME_ACCOUNT_SELLER) && uri.pathSegments.size == 2)
-            return ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT
+            return ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
         else if (deeplink.startsWith(ApplinkConst.HOME_ACCOUNT) && uri.pathSegments.size == 1)
-            return ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT
+            return ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
         else if (deeplink.startsWith(ApplinkConst.HOME_RECOMMENDATION) && uri.pathSegments.size == 1)
             return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION,
                     mapOf(EXTRA_TAB_POSITION to TAB_POSITION_RECOM, EXTRA_RECOMMEND_LIST to true))
