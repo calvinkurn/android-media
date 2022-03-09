@@ -18,18 +18,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.OrderedListSpan
 import com.tokopedia.sellerorder.databinding.FragmentReschedulePickupBinding
+import com.tokopedia.sellerorder.reschedule_pickup.data.model.GetReschedulePickupResponse
+import com.tokopedia.sellerorder.reschedule_pickup.data.model.RescheduleDetailModel
 import com.tokopedia.sellerorder.reschedule_pickup.di.DaggerReschedulePickupComponent
 import com.tokopedia.sellerorder.reschedule_pickup.di.ReschedulePickupComponent
-import com.tokopedia.sellerorder.reschedule_pickup.presentation.bottomsheet.RescheduleOptionBottomSheet
+import com.tokopedia.sellerorder.reschedule_pickup.presentation.bottomsheet.RescheduleDayBottomSheet
+import com.tokopedia.sellerorder.reschedule_pickup.presentation.bottomsheet.RescheduleReasonBottomSheet
+import com.tokopedia.sellerorder.reschedule_pickup.presentation.bottomsheet.RescheduleTimeBottomSheet
+import com.tokopedia.sellerorder.reschedule_pickup.presentation.viewmodel.ReschedulePickupViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -37,9 +46,16 @@ import javax.inject.Inject
 class ReschedulePickupFragment : BaseDaggerFragment() {
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: ReschedulePickupViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(ReschedulePickupViewModel::class.java)
+    }
+
     private var binding by autoClearedNullable<FragmentReschedulePickupBinding>()
-    private var courierName: String = ""
-    private var invoice: String = ""
+    private var orderId: String = ""
 
     override fun getScreenName(): String = ""
 
@@ -53,8 +69,7 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            courierName = it.getString(ARGUMENTS_COURIER_NAME, "")
-            invoice = it.getString(ARGUMENTS_INVOICE, "")
+            orderId = it.getString(ARGUMENTS_ORDER_ID, "")
         }
     }
 
@@ -69,13 +84,38 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViews()
+        initObserver()
+        viewModel.getReschedulePickupDetail(orderId)
     }
 
-    private fun initViews() {
+    private fun initObserver() {
+        viewModel.reschedulePickupDetail.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    if (it.data.order.errorMessage.isNotEmpty()) {
+                        showErrorToaster(it.data.order.errorMessage)
+                    }
+                    initViews(it.data)
+                }
+                is Fail -> {
+                    NetworkErrorHelper.showEmptyState(activity, binding?.rootView, this::getInitialData)
+                }
+            }
+        })
+    }
+
+    private fun getInitialData() {
+        showLoading()
+        viewModel.getReschedulePickupDetail(orderId)
+    }
+
+    private fun showLoading() {
+        TODO("Not yet implemented")
+    }
+
+    private fun initViews(data: RescheduleDetailModel) {
         binding?.let {
-            it.courierOrderDetail.text = courierName
-            it.invoiceOrderDetail.text = invoice
+            it.invoiceOrderDetail.text = data.order.invoice
             val items = listOf(
                 "Pastikan jadwal pick-up baru sesuai dengan kesepakatan pengiriman dengan pembeli",
                 "Ubah jadwal pick-up hanya bisa dilakukan 1 (satu) kali",
@@ -98,57 +138,50 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
             }
 
             showSubtitle(requireContext(), it.subtitleReschedulePickup)
+
             it.etDay.editText.run {
                 inputType = InputType.TYPE_NULL
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
-                        openDaySelectionBottomSheet()
+                        openDaySelectionBottomSheet(data.order.chooseDay)
                     }
                 }
                 setOnClickListener {
-                    openDaySelectionBottomSheet()
+                    openDaySelectionBottomSheet(data.order.chooseDay)
                 }
             }
 
-            it.etTime.editText.run {
-                inputType = InputType.TYPE_NULL
-                setOnFocusChangeListener { _, hasFocus ->
-                    if (hasFocus) {
-                        openTimeSelectionBottomSheet()
-                    }
-                }
-                setOnClickListener {
-                    openTimeSelectionBottomSheet()
-                }
-            }
+            it.etTime.editText.isEnabled = false
 
             it.etReason.editText.run {
                 inputType = InputType.TYPE_NULL
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
-                        openReasonSelectionBottomSheet()
+                        openReasonSelectionBottomSheet(data.order.chooseReason)
                     }
                 }
                 setOnClickListener {
-                    openReasonSelectionBottomSheet()
+                    openReasonSelectionBottomSheet(data.order.chooseReason)
                 }
             }
         }
     }
 
-    private fun openDaySelectionBottomSheet() {
-        val dummy = listOf<String>("Kamis, 9 Desember 2021", "Jumat, 10 Desember 2021")
-        RescheduleOptionBottomSheet(dummy, setDayBottomSheetListener()).show(parentFragmentManager)
+    private fun openDaySelectionBottomSheet(daysOption: List<GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData.DayOption>) {
+        RescheduleDayBottomSheet(
+            daysOption,
+            setDayBottomSheetListener()
+        ).show(parentFragmentManager)
     }
 
-    private fun openTimeSelectionBottomSheet() {
-        val dummy = listOf<String>("08:00 WIB", "09:00 WIB", "10:00 WIB")
-        RescheduleOptionBottomSheet(dummy, setTimeBottomSheetListener()).show(parentFragmentManager)
+    private fun openTimeSelectionBottomSheet(timeOption: List<GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData.DayOption.TimeOption>) {
+        RescheduleTimeBottomSheet(timeOption, setTimeBottomSheetListener()).show(
+            parentFragmentManager
+        )
     }
 
-    private fun openReasonSelectionBottomSheet() {
-        val dummy = listOf<String>("Toko Tutup", "Pembeli Tidak Ditempat", "Lainnya (Isi Sendiri)")
-        RescheduleOptionBottomSheet(dummy, setReasonBottomSheetListener()).show(
+    private fun openReasonSelectionBottomSheet(reasonOption: List<GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData.ReasonOption>) {
+        RescheduleReasonBottomSheet(reasonOption, setReasonBottomSheetListener()).show(
             parentFragmentManager
         )
     }
@@ -187,8 +220,17 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showDialogFragment(titleText: String?, bodyText: String?, positiveButton: String?, negativeButton: String?) {
-        val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+    private fun showDialogFragment(
+        titleText: String?,
+        bodyText: String?,
+        positiveButton: String?,
+        negativeButton: String?
+    ) {
+        val dialog = DialogUnify(
+            requireContext(),
+            DialogUnify.HORIZONTAL_ACTION,
+            DialogUnify.NO_IMAGE
+        ).apply {
             setTitle(titleText ?: "")
             setDescription(bodyText ?: "")
             setPrimaryCTAText(positiveButton ?: "")
@@ -204,29 +246,46 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
     }
 
 
-    private fun setDayBottomSheetListener(): RescheduleOptionBottomSheet.ChooseOptionListener {
-        return object : RescheduleOptionBottomSheet.ChooseOptionListener {
-            override fun onOptionChosen(option: String) {
-                binding?.etDay?.editText?.setText(option)
+    private fun setDayBottomSheetListener(): RescheduleDayBottomSheet.ChooseDayListener {
+        return object : RescheduleDayBottomSheet.ChooseDayListener {
+            override fun onDayChosen(dayChosen: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData.DayOption) {
+                binding?.run {
+                    etDay.editText.setText(dayChosen.day)
+                    etTime.editText.isEnabled = true
+                    if (etTime.editText.text.toString().isNotEmpty()) {
+                        etTime.editText.setText("")
+                    }
+                    etTime.editText.run {
+                        inputType = InputType.TYPE_NULL
+                        setOnFocusChangeListener { _, hasFocus ->
+                            if (hasFocus) {
+                                openTimeSelectionBottomSheet(dayChosen.chooseTime)
+                            }
+                        }
+                        setOnClickListener {
+                            openTimeSelectionBottomSheet(dayChosen.chooseTime)
+                        }
+                    }
+                }
                 validateInput()
             }
         }
     }
 
-    private fun setTimeBottomSheetListener(): RescheduleOptionBottomSheet.ChooseOptionListener {
-        return object : RescheduleOptionBottomSheet.ChooseOptionListener {
-            override fun onOptionChosen(option: String) {
-                binding?.etTime?.editText?.setText(option)
+    private fun setTimeBottomSheetListener(): RescheduleTimeBottomSheet.ChooseTimeListener {
+        return object : RescheduleTimeBottomSheet.ChooseTimeListener {
+            override fun onTimeChosen(timeChosen: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData.DayOption.TimeOption) {
+                binding?.etTime?.editText?.setText(timeChosen.time)
                 validateInput()
             }
         }
     }
 
-    private fun setReasonBottomSheetListener(): RescheduleOptionBottomSheet.ChooseOptionListener {
-        return object : RescheduleOptionBottomSheet.ChooseOptionListener {
-            override fun onOptionChosen(option: String) {
-                binding?.etReason?.editText?.setText(option)
-                if (option == OTHER_REASON_RESCHEDULE) {
+    private fun setReasonBottomSheetListener(): RescheduleReasonBottomSheet.ChooseReasonListener {
+        return object : RescheduleReasonBottomSheet.ChooseReasonListener {
+            override fun onReasonChosen(reasonChosen: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData.ReasonOption) {
+                binding?.etReason?.editText?.setText(reasonChosen.reason)
+                if (reasonChosen.reason == OTHER_REASON_RESCHEDULE) {
                     binding?.etReasonDetail?.run {
                         visibility = View.VISIBLE
                         editText.addTextChangedListener(setWrapperWatcherOtherReason(textInputLayout))
@@ -306,7 +365,6 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
     }
 
     private fun showErrorToaster(
-        view: View?,
         message: String?,
     ) {
         message?.run {
@@ -325,13 +383,11 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
         private const val OTHER_REASON_RESCHEDULE = "Lainnya (Isi Sendiri)"
         private const val OTHER_REASON_MIN_CHAR = 15
         private const val OTHER_REASON_MAX_CHAR = 160
-        private const val ARGUMENTS_COURIER_NAME = "ARGUMENTS_COURIER_NAME"
-        private const val ARGUMENTS_INVOICE = "ARGUMENTS_INVOICE"
+        private const val ARGUMENTS_ORDER_ID = "ARGUMENTS_ORDER_ID"
         fun newInstance(bundle: Bundle): ReschedulePickupFragment {
             return ReschedulePickupFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARGUMENTS_COURIER_NAME, bundle.getString(ARGUMENTS_COURIER_NAME))
-                    putString(ARGUMENTS_INVOICE, bundle.getString(ARGUMENTS_INVOICE))
+                    putString(ARGUMENTS_ORDER_ID, bundle.getString(ARGUMENTS_ORDER_ID))
                 }
             }
         }

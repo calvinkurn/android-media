@@ -6,7 +6,10 @@ import com.tokopedia.sellerorder.reschedule_pickup.presentation.fragment.Resched
 import dagger.Component
 
 @ActivityScope
-@Component(modules = [ReschedulePickupModule::class], dependencies = [BaseAppComponent::class])
+@Component(
+    modules = [ReschedulePickupModule::class, ReschedulePickupViewModelModule::class],
+    dependencies = [BaseAppComponent::class]
+)
 interface ReschedulePickupComponent {
     fun inject(reschedulePickupFragment: ReschedulePickupFragment)
 }

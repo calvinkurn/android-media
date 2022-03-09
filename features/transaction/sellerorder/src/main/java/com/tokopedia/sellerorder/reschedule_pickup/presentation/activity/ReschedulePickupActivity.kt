@@ -14,9 +14,4 @@ class ReschedulePickupActivity : BaseSimpleActivity() {
         }
         return fragment
     }
-
-    companion object {
-        private const val EXTRA_COURIER_NAME = "courier_name"
-        private const val EXTRA_INVOICE = "invoice"
-    }
 }

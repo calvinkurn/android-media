@@ -5,20 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.sellerorder.databinding.BottomsheetRescheduleOptionBinding
+import com.tokopedia.sellerorder.databinding.BottomsheetRescheduleDayBinding
+import com.tokopedia.sellerorder.databinding.BottomsheetRescheduleReasonBinding
+import com.tokopedia.sellerorder.reschedule_pickup.data.model.GetReschedulePickupResponse
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.utils.lifecycle.autoCleared
 
-class RescheduleOptionBottomSheet(
-    private val options: List<String>,
-    private val listener: ChooseOptionListener
+class RescheduleReasonBottomSheet(
+    private val reasonOptions: List<GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData.ReasonOption>,
+    private val listener: ChooseReasonListener
 ) : BottomSheetUnify() {
 
-    private var binding by autoCleared<BottomsheetRescheduleOptionBinding>()
+    private var binding by autoCleared<BottomsheetRescheduleReasonBinding>()
 
     init {
-        // todo ini di customize
         setTitle("Pilih Waktu")
         setCloseClickListener {
             dismiss()
@@ -29,8 +30,8 @@ class RescheduleOptionBottomSheet(
         }
     }
 
-    interface ChooseOptionListener {
-        fun onOptionChosen(option: String)
+    interface ChooseReasonListener {
+        fun onReasonChosen(reasonChosen: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData.ReasonOption)
     }
 
     override fun onCreateView(
@@ -43,7 +44,7 @@ class RescheduleOptionBottomSheet(
     }
 
     private fun initChildLayout() {
-        binding = BottomsheetRescheduleOptionBinding.inflate(LayoutInflater.from(context))
+        binding = BottomsheetRescheduleReasonBinding.inflate(LayoutInflater.from(context))
         setChild(binding.root)
     }
 
@@ -54,14 +55,14 @@ class RescheduleOptionBottomSheet(
 
     private fun setupView() {
         val listWidgetData = ArrayList<ListItemUnify>().apply {
-            addAll(options.map { day -> ListItemUnify(title = day, description = "") })
+            addAll(reasonOptions.map { reason -> ListItemUnify(title = reason.reason, description = "") })
         }
 
-        binding.rvDay.run {
+        binding.rvReason.run {
             setData(listWidgetData)
             onLoadFinish {
                 setOnItemClickListener { adapterView, view, index, l ->
-                    listener.onOptionChosen(options[index])
+                    listener.onReasonChosen(reasonOptions[index])
                     dismiss()
                 }
             }
