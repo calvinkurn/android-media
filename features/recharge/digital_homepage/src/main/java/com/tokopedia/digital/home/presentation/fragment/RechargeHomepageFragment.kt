@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -145,24 +146,14 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     }
 
     private fun setupRecyclerView() {
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(binding.digitalHomepageContainer)
         if (platformId == RechargeHomepageViewModel.ALL_CATEGORY_PLATFORM_ID) {
-            constraintSet.connect(
-                R.id.swipe_refresh_layout,
-                ConstraintSet.TOP,
-                R.id.digital_homepage_toolbar,
-                ConstraintSet.BOTTOM
-            )
-        } else {
-            constraintSet.connect(
-                R.id.swipe_refresh_layout,
-                ConstraintSet.TOP,
-                ConstraintSet.PARENT_ID,
-                ConstraintSet.TOP
-            )
+            val layoutParams =
+                binding.swipeRefreshLayout.layoutParams as ConstraintLayout.LayoutParams
+            layoutParams.topToTop = ConstraintSet.UNSET
+            layoutParams.topToBottom = binding.digitalHomepageToolbar.id
+            binding.swipeRefreshLayout.layoutParams = layoutParams
+            binding.swipeRefreshLayout.requestLayout()
         }
-        constraintSet.applyTo(binding.digitalHomepageContainer)
 
         binding.recyclerView.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
