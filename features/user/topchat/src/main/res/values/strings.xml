@@ -238,4 +238,6 @@ yang ditemukan</string>
     <string name="title_topchat_click_refresh">Klik ikon di samping untuk refresh.</string>
 
     <string name="action_open_package">Lihat Paket</string>
+    <string name="coach_product_bundling_title">Perlu menanyakan terkait produk?</string>
+    <string name="coach_product_bundling_desc">Pilih pertanyaan di bawah, dapatkan jawaban otomatis yang cepat dan akurat!</string>
 </resources>

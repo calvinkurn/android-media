@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.coachmark.*
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -43,6 +44,7 @@ class SrwFrameLayout : FrameLayout {
     private var srwContentContainer: LinearLayout? = null
 
     private var bgExpanded: Drawable? = null
+    private var coachMarkOnBoarding: CoachMark2? = null
 
     /**
      * Default state would be expanded
@@ -229,9 +231,39 @@ class SrwFrameLayout : FrameLayout {
         val isPreviouslyVisible = srwContentContainer?.isVisible == true
         if (!isPreviouslyVisible) {
             listener?.trackViewSrw()
+            showOnBoardingSrw()
+        } else {
+            dismissOnBoarding()
         }
         srwContentContainer?.show()
         updateState()
+    }
+
+    private fun showOnBoardingSrw() {
+        if (!CoachMarkPreference.hasShown(context, TAG)) {
+            coachMarkOnBoarding = CoachMark2(context)
+            titleContainer?.let { anchor ->
+                coachMarkOnBoarding?.let { coachMark2 ->
+                    anchor.post {
+                        val coachMarkItems: ArrayList<CoachMark2Item> = ArrayList()
+                        coachMarkItems.add(
+                            CoachMark2Item(
+                                anchor,
+                                context.getString(R.string.coach_product_bundling_title),
+                                context.getString(R.string.coach_product_bundling_desc),
+                                CoachMark2.POSITION_TOP
+                            )
+                        )
+                        coachMark2.showCoachMark(step = coachMarkItems)
+                        CoachMarkPreference.setShown(context, TAG, true)
+                    }
+                }
+            }
+        }
+    }
+
+    fun dismissOnBoarding() {
+        coachMarkOnBoarding?.dismissCoachMark()
     }
 
     private fun hideSrwContent() {
@@ -254,6 +286,7 @@ class SrwFrameLayout : FrameLayout {
 
     companion object {
         private val LAYOUT = R.layout.partial_topchat_srw
+        private const val TAG = "SRW_COACHMARK"
     }
 }
 
