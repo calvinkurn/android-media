@@ -752,7 +752,9 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
     private fun displayCouponPreviewBottomSheet() {
         val imageUrls = viewModel.findMostSoldProductImageUrls(couponProducts)
+        val isCreateMode = viewModel.isCreateMode(pageMode)
         val bottomSheet = CouponImagePreviewBottomSheet.newInstance(
+            isCreateMode,
             couponInformation ?: return,
             couponSettings ?: return,
             couponProducts.size,

@@ -23,13 +23,12 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
 
     companion object {
         private const val EMPTY_STRING = ""
-        private const val IS_UPDATE_MODE = true
         private const val THOUSAND  = 1_000f
         private const val MILLION = 1_000_000f
-        private const val SHOULD_CREATE_NEW_COUPON = false
     }
 
     suspend fun execute(
+        isCreateMode: Boolean,
         scope: CoroutineScope,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
@@ -39,7 +38,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
         thirdProductImageUrl: String,
         imageRatio: ImageRatio
     ): ByteArray {
-        val initiateCoupon = scope.async { initiateCoupon(IS_UPDATE_MODE) }
+        val initiateCoupon = scope.async { initiateCoupon() }
 
         val shopDeferred = scope.async { getShopBasicDataUseCase.executeOnBackground() }
         val shop = shopDeferred.await()
@@ -47,6 +46,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
 
         val generateImageDeferred = scope.async {
             generateImage(
+                isCreateMode,
                 coupon.voucherCodePrefix,
                 couponInformation,
                 couponSettings,
@@ -67,6 +67,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
     }
 
     private suspend fun generateImage(
+        isCreateMode: Boolean,
         couponCodePrefix: String,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
@@ -130,7 +131,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
 
         val audienceTarget = "all-users"
 
-        val couponCode = if (couponInformation.target == CouponInformation.Target.PRIVATE) {
+        val couponCode = if (isCreateMode && couponInformation.target == CouponInformation.Target.PRIVATE) {
             couponCodePrefix + couponInformation.code.uppercase()
         } else {
             couponInformation.code.uppercase()
@@ -158,9 +159,9 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
         )
     }
 
-    private suspend fun initiateCoupon(isUpdateMode: Boolean): InitiateVoucherUiModel {
+    private suspend fun initiateCoupon(): InitiateVoucherUiModel {
         initiateCouponUseCase.query = GqlQueryConstant.INITIATE_COUPON_PRODUCT_QUERY
-        initiateCouponUseCase.params = InitiateCouponUseCase.createRequestParam(isUpdateMode, SHOULD_CREATE_NEW_COUPON)
+        initiateCouponUseCase.params = InitiateCouponUseCase.createRequestParam(isUpdate = true, isToCreateNewCoupon = false)
         return initiateCouponUseCase.executeOnBackground()
     }
 }
