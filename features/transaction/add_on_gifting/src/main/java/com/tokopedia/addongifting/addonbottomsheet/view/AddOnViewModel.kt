@@ -299,7 +299,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
 
     fun hasChangedState(): Boolean {
         _addOnUiModel.value.let {
-            return it.initialAddOnNote != it.addOnNote
+            return it.initialAddOnNote != it.addOnNote || it.initialSelectedState != it.isAddOnSelected
         }
     }
 }
