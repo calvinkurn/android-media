@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.elyeproj.loaderviewlibrary.LoaderTextView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.LoaderUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ec_txt1"
     android:layout_width="match_parent"
@@ -8,7 +8,8 @@
     android:layout_marginRight="16dp"
     android:layout_marginTop="8dp"
     android:layout_marginBottom="8dp"
-    app:corners="@integer/corner_radius_shimmering"
+    app:loader_corner_radius="10dp"
+    app:loader_type="rect"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent" />
 

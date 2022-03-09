@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.elyeproj.loaderviewlibrary.LoaderTextView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.LoaderUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/shimmer2"
     android:layout_width="304dp"
     android:layout_height="16dp"
-    app:corners="16" />
+    app:loader_corner_radius="8dp"
+    app:loader_type="rect" />

@@ -5,23 +5,25 @@
     android:layout_height="@dimen/setting_balance_height"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmeringBalanceTitle"
         android:layout_width="@dimen/layout_lvl8"
         android:layout_height="@dimen/setting_zero_dp"
         android:gravity="center_vertical"
-        app:corners="@integer/setting_shimmer_radius"
+        app:loader_corner_radius="20dp"
+        app:loader_type="rect"
         app:layout_constraintHeight_percent="0.3"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/guidelineVerticalLeft"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmeringBalanceValue"
         android:layout_width="@dimen/layout_lvl9"
         android:layout_height="@dimen/setting_zero_dp"
         android:gravity="center_vertical"
-        app:corners="@integer/setting_shimmer_radius"
+        app:loader_corner_radius="20dp"
+        app:loader_type="rect"
         app:layout_constraintHeight_percent="0.3"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

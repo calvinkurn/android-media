@@ -69,13 +69,14 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/shimmer_shc_balance"
             android:layout_width="@dimen/layout_lvl9"
             android:layout_height="@dimen/layout_lvl2"
             android:gravity="center_vertical"
             android:visibility="gone"
-            app:corners="@integer/setting_shimmer_radius"
+            app:loader_corner_radius="20dp"
+            app:loader_type="rect"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/guidelineVerticalRight"
