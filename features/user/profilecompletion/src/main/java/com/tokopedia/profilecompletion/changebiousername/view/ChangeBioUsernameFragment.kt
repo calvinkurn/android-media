@@ -297,10 +297,10 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
             }
 
             override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (text?.length ?: 0 >= minChar) {
+                if (binding?.stubField?.etUsername?.editText?.text?.length ?: 0 >= minChar) {
                     viewModel.validateUsername(text.toString())
                 } else {
-                    if (text?.length == 0) {
+                    if (binding?.stubField?.etUsername?.editText?.text?.length ?: 0 == 0) {
                         setInvalidInputUsername(getString(R.string.error_cant_empty))
                     } else {
                         setInvalidInputUsername(getString(R.string.error_min_char, minChar))
