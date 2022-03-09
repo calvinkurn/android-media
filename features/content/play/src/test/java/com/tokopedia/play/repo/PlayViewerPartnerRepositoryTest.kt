@@ -211,7 +211,7 @@ class PlayViewerPartnerRepositoryTest {
             val response = KOLFollowStatus(
                 followedKOLInfo = FollowInfo(
                     errorCode = "",
-                    message = emptyList()
+                    messages = emptyList()
                 )
             )
             coEvery { postFollowKolUseCase.executeOnBackground() } returns response

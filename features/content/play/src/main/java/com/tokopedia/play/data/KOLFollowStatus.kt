@@ -11,7 +11,7 @@ data class FollowInfo(
     val data: Data = Data(),
 
     @SerializedName("messages")
-    val message: List<String> = emptyList(),
+    val messages: List<String> = emptyList(),
 
     @SerializedName("error_code")
     val errorCode: String = "",
