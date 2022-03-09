@@ -1,13 +1,10 @@
 package com.tokopedia.home.beranda.domain.interactor.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
-import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import dagger.Lazy
 import javax.inject.Inject
@@ -29,7 +26,7 @@ class HomePlayUseCase @Inject constructor(
             channelId: String,
             reminderType: PlayWidgetReminderType
     ): PlayWidgetUiModel {
-        return playWidgetTools.updateActionReminder(playWidgetUiModel, channelId, reminderType.switch())
+        return playWidgetTools.updateActionReminder(playWidgetUiModel, channelId, reminderType)
     }
 
     fun onUpdatePlayTotalView(

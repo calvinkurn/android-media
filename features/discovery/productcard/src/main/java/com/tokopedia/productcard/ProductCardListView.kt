@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -18,6 +19,7 @@ import com.tokopedia.productcard.utils.renderLabelBestSellerCategoryBottom
 import com.tokopedia.productcard.utils.renderLabelBestSellerCategorySide
 import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
+import com.tokopedia.productcard.video.ProductCardVideo
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
@@ -27,6 +29,9 @@ import kotlinx.android.synthetic.main.product_card_list_layout.view.*
 class ProductCardListView: BaseCustomView, IProductCardView {
 
     private val cartExtension = ProductCardCartExtension(this)
+    private val video: ProductCardVideo by lazy{
+        ProductCardVideo(this)
+    }
 
     constructor(context: Context): super(context) {
         init()
@@ -85,6 +90,8 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)
 
+        imageVideoIdentifier?.showWithCondition(productCardModel.hasVideo)
+
         renderProductCardContent(productCardModel, isWideContent = true)
 
         renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
@@ -94,6 +101,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
         cartExtension.setProductModel(productCardModel)
+        video.setProductModel(productCardModel)
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
@@ -175,6 +183,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         imageProduct?.glideClear()
         imageFreeOngkirPromo?.glideClear()
         cartExtension.clear()
+        video.clear()
     }
 
     override fun getThreeDotsButton(): View? = imageThreeDots
@@ -182,6 +191,14 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     override fun getNotifyMeButton(): UnifyButton? = buttonNotify
 
     override fun getShopBadgeView(): View? = imageShopBadge
+
+    override fun getProductImageView(): ImageView? {
+        return imageProduct
+    }
+
+    override fun getProductCardVideo(): ProductCardVideo {
+        return video
+    }
 
     /**
      * Special cases for specific pages

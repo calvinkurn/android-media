@@ -119,5 +119,6 @@ class PlayBroadcastDataStoreImpl @Inject constructor(
                         state = SetupDataState.Uploaded
                 )
         )
+        mSetupDataStore.setTitle(title = data.selectedCoverData.coverTitle)
     }
 }

@@ -200,6 +200,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     }
                     wishlist
                     applink
+                    customVideoURL
                 }
                 violation {
                     headerText

@@ -1,6 +1,6 @@
 package com.tokopedia.autocompletecomponent.initialstate.domain
 
-import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.autocompletecomponent.util.DEFAULT_COUNT
 import com.tokopedia.autocompletecomponent.util.DEVICE_ID
 import com.tokopedia.autocompletecomponent.util.KEY_COUNT

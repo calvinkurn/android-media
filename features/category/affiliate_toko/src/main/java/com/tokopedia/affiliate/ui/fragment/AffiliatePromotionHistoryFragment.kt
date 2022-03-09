@@ -35,8 +35,13 @@ import android.app.Activity
 
 import android.content.Intent
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformaSharedProductCardsModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSharedProductCardsModel
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
 
 
 class AffiliatePromotionHistoryFragment : BaseViewModelFragment<AffiliatePromotionHistoryViewModel>(), ProductClickInterface{
@@ -44,6 +49,9 @@ class AffiliatePromotionHistoryFragment : BaseViewModelFragment<AffiliatePromoti
     private var totalDataItemsCount: Int = 0
     private var isSwipeRefresh = false
     private var listSize = 0
+
+    @Inject
+    lateinit var userSessionInterface : UserSessionInterface
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
 
@@ -124,11 +132,29 @@ class AffiliatePromotionHistoryFragment : BaseViewModelFragment<AffiliatePromoti
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if(totalItemsCount < totalDataItemsCount)
+                if(totalItemsCount < totalDataItemsCount) {
+                    sendImpressionEvent()
                     affiliatePromotionViewModel.getAffiliatePerformance(page - 1)
+                }
             }
         }
     }
+
+    private fun sendImpressionEvent() {
+        lastItem?.let { item ->
+            var itemID = ""
+            item.product.itemID?.let {
+                itemID = it
+            }
+            var itemName = ""
+            item.product.itemTitle?.let {
+                itemName = it
+            }
+            AffiliateAnalytics.trackEventImpression(AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,AffiliateAnalytics.ActionKeys.IMPRESSION_DAFTAR_LINK_PRODUK,AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_GENERATED_LINK_HIST,
+                userSessionInterface.userId,itemID,listSize,itemName,itemID)
+        }
+    }
+
 
     private fun setObservers() {
         affiliatePromotionViewModel.getShimmerVisibility().observe(this, { visibility ->
@@ -146,10 +172,11 @@ class AffiliatePromotionHistoryFragment : BaseViewModelFragment<AffiliatePromoti
                 isSwipeRefresh = !isSwipeRefresh
             }
             if (dataList.isNotEmpty()) {
+                setLastDataForEvent(dataList)
                 listSize += dataList.size
                 adapter.addMoreData(dataList)
                 loadMoreTriggerListener?.updateStateAfterGetData()
-            } else {
+            } else if(dataList.isNullOrEmpty() && listSize == 0){
                 showNoAffiliate()
             }
         })
@@ -174,9 +201,21 @@ class AffiliatePromotionHistoryFragment : BaseViewModelFragment<AffiliatePromoti
             }
         })
         affiliatePromotionViewModel.getAffiliateItemCount().observe(this, { itemCount ->
-            view?.findViewById<Typography>(R.id.affiliate_products_count)?.text = getString(R.string.affiliate_product_count, itemCount.toString())
-            totalDataItemsCount = itemCount
+            if(itemCount != 0) {
+                view?.findViewById<Typography>(R.id.affiliate_products_count)?.text =
+                    getString(R.string.affiliate_product_count, itemCount.toString())
+                totalDataItemsCount = itemCount
+            }
         })
+    }
+
+    private var lastItem : AffiliateSharedProductCardsModel? = null
+    private fun setLastDataForEvent(dataList: ArrayList<Visitable<AffiliateAdapterTypeFactory>>) {
+        dataList[dataList.lastIndex].let {
+            if(it is AffiliateSharedProductCardsModel){
+                lastItem = it
+            }
+        }
     }
 
     override fun getVMFactory(): ViewModelProvider.Factory {
@@ -205,7 +244,7 @@ class AffiliatePromotionHistoryFragment : BaseViewModelFragment<AffiliatePromoti
         if(status == AffiliateSharedProductCardsItemVH.PRODUCT_ACTIVE){
             AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
                     null,null,productId , productName , productImage, productUrl,productIdentifier,
-                    AffiliatePromotionBottomSheet.ORIGIN_HOME,!isUserBlackListed).show(childFragmentManager, "")
+                    AffiliatePromotionBottomSheet.ORIGIN_HOME_GENERATED,!isUserBlackListed).show(childFragmentManager, "")
         }else {
             AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_PRODUCT_INACTIVE).show(childFragmentManager, "")
         }

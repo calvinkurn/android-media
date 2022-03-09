@@ -6,11 +6,9 @@ import com.tokopedia.inbox.fake.domain.usecase.notifcenter.topads.FakeTopAdsRepo
 import com.tokopedia.notifcenter.common.network.NotifcenterCacheManager
 import com.tokopedia.notifcenter.di.scope.NotificationContext
 import com.tokopedia.notifcenter.di.scope.NotificationScope
-import com.tokopedia.recommendation_widget_common.di.RecommendationModule
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
@@ -24,7 +22,7 @@ class FakeNotificationModule {
         userSession: UserSessionInterface,
         fakeRepo: FakeTopAdsRepository
     ): TopAdsImageViewUseCase {
-        return TopAdsImageViewUseCase(userSession.userId, fakeRepo)
+        return TopAdsImageViewUseCase(userSession.userId, fakeRepo, "fakeIrisSession")
     }
 
     @Provides

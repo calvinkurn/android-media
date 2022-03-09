@@ -35,6 +35,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.mapper.AddAddressMapper
 import com.tokopedia.logisticCommon.data.response.DistrictItem
 import com.tokopedia.logisticCommon.util.LogisticUserConsentHelper
 import com.tokopedia.logisticaddaddress.R
@@ -214,6 +215,10 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 is Success -> {
                     if (it.data.isSuccess == 1) {
                         saveDataModel?.id = it.data.addrId
+                        saveDataModel?.warehouseId = it.data.tokonow.warehouseId
+                        saveDataModel?.shopId = it.data.tokonow.shopId
+                        saveDataModel?.warehouses = AddAddressMapper.mapWarehouses(it.data.tokonow.warehouses)
+                        saveDataModel?.serviceType = it.data.tokonow.serviceType
                         if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickSimpanPositive(userSession.userId, SUCCESS)
                         else AddNewAddressRevampAnalytics.onClickSimpanNegative(userSession.userId, SUCCESS)
                         onSuccessAddAddress()
@@ -514,7 +519,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     private fun showDistrictRecommendationBottomSheet(isPinpoint: Boolean) {
-        districtBottomSheet = DiscomBottomSheetRevamp()
+        districtBottomSheet = DiscomBottomSheetRevamp(isPinpoint = isPinpoint)
         districtBottomSheet?.setListener(this)
         districtBottomSheet?.show(this.childFragmentManager)
     }
@@ -882,6 +887,17 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         saveDataModel?.zipCodes = districtAddress.zipCodes
         saveDataModel?.postalCode = postalCode
         currentPostalCode = postalCode
+
+        // reset lat long
+        currentLat = 0.0
+        currentLong = 0.0
+        saveDataModel?.latitude = "0.0"
+        saveDataModel?.longitude = "0.0"
+        this.isPinpoint = false
+        binding?.run {
+            cardAddressNegative.icLocation.setImage(IconUnify.LOCATION_OFF)
+            cardAddressNegative.addressDistrict.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_not_defined)).spannedString }
+        }
 
         if (isPinpoint) goToPinpointPage()
     }

@@ -30,7 +30,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
         CMInApp.class,
         ElapsedTime.class,
         BaseNotificationModel.class
-}, version = 8)
+}, version = 9)
 
 @TypeConverters({ButtonListConverter.class,
         NotificationModeConverter.class,
@@ -104,6 +104,13 @@ public abstract class RoomNotificationDB extends RoomDatabase {
         }
     };
 
+    private static final Migration MIGRATION_8_9 = new Migration(8, 9) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `is_big_image` INTEGER NOT NULL DEFAULT 0");
+        }
+    };
+
     public static RoomNotificationDB getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (RoomNotificationDB.class) {
@@ -117,7 +124,8 @@ public abstract class RoomNotificationDB extends RoomDatabase {
                                     MIGRATION_4_5,
                                     MIGRATION_5_6,
                                     MIGRATION_6_7,
-                                    MIGRATION_7_8
+                                    MIGRATION_7_8,
+                                    MIGRATION_8_9
                             ).build();
                 }
             }

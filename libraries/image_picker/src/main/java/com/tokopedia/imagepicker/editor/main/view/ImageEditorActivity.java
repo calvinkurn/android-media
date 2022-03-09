@@ -27,7 +27,7 @@ import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
 import com.tokopedia.imagepicker.editor.analytics.ImageEditorTracking;
 import com.tokopedia.imagepicker.editor.analytics.ImageEditorTrackingConstant;
-import com.tokopedia.imagepicker.editor.config.AbTestRemoveBackground;
+import com.tokopedia.imagepicker.editor.config.RemoveBackgroundConfig;
 import com.tokopedia.imagepicker.editor.main.Constant;
 import com.tokopedia.imagepicker.editor.config.WatermarkRemoteConfig;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
@@ -319,7 +319,11 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
 
     private void abTestAndRemoteConfigSetup() {
         // remove background
-        if (!AbTestRemoveBackground.get()) {
+        if (RemoveBackgroundConfig.remoteConfig(remoteConfig)) {
+            if (!RemoveBackgroundConfig.abTest()) {
+                imageEditActionType.remove(ImageEditActionType.ACTION_REMOVE_BACKGROUND);
+            }
+        } else {
             imageEditActionType.remove(ImageEditActionType.ACTION_REMOVE_BACKGROUND);
         }
 
@@ -343,6 +347,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                 case ACTION_WATERMARK:
                     isSetWatermark = false;
                     fragment.cancelWatermark();
+                    watermarkItemSelection.clearData();
                     watermarkType = Constant.TYPE_WATERMARK_TOPED;
                     titleWatermarkStyle.setVisibility(View.GONE);
                     break;
@@ -484,6 +489,11 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         imageEditThumbnailListWidget.notifyDataSetChanged();
 
         setupEditMode(false, ImageEditActionType.ACTION_CROP_ROTATE);
+    }
+
+    @Override
+    public void onSuccessSaveWatermarkImage() {
+        watermarkItemSelection.clearData();
     }
 
     @Override

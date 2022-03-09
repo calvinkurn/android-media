@@ -2,7 +2,7 @@ package com.tokopedia.home.beranda.domain.interactor.repository
 
 import android.os.Bundle
 import android.text.TextUtils
-import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy

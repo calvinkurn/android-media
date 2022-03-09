@@ -41,7 +41,6 @@ public interface CMConstant {
     interface NotificationType {
         String GENERAL = "General";
         String GRID_NOTIFICATION = "Grid";
-        String BIG_IMAGE_BANNER = "Banner";
         String BIG_IMAGE = "Image";
         String PERSISTENT = "Persist";
         String ACTION_BUTTONS = "Action";
@@ -113,6 +112,7 @@ public interface CMConstant {
         String USER_TRANSACTION_ID = "userTransId";
         String USER_ID = "userId";
         String SHOP_ID = "shopId";
+        String IS_BIG_IMAGE = "is_big_image";
         String BLAST_ID = "notifcenterBlastId";
 
         String ADD_TO_CART = "addToCart";

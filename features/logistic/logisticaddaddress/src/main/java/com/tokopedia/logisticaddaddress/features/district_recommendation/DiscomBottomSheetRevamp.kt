@@ -32,7 +32,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class DiscomBottomSheetRevamp: BottomSheetUnify(),
+class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false): BottomSheetUnify(),
     ZipCodeChipsAdapter.ActionListener,
     PopularCityAdapter.ActionListener, DiscomContract.View, DiscomAdapterRevamp.ActionListener{
 
@@ -51,7 +51,6 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
     private lateinit var chipsLayoutManagerZipCode: ChipsLayoutManager
     private var input: String = ""
     private var mIsInitialLoading: Boolean = false
-    private var isPinpoint: Boolean = false
     private var isKodePosShown: Boolean = false
     private var postalCode: String = ""
     private var districtAddressData: Address? = null
@@ -210,6 +209,7 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
                 Toaster.build(it, getString(R.string.postal_code_field_error), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
             } else {
                 AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, SUCCESS)
+                viewBinding?.etKodepos?.textFieldInput?.text?.let { input -> this.postalCode = input.toString() }
                 districtAddressData?.let { data -> discomRevampListener?.onChooseZipcode(data, postalCode, isPinpoint) }
                 dismiss()
             }
@@ -229,7 +229,6 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
 
     override fun onZipCodeClicked(zipCode: String) {
         AddNewAddressRevampAnalytics.onClickChipsKodePosNegative(userSession.userId)
-        this.postalCode = zipCode
         viewBinding?.rvKodeposChips?.visibility = View.GONE
         viewBinding?.etKodepos?.textFieldInput?.run {
             setText(zipCode)

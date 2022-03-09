@@ -149,6 +149,8 @@ object ReviewConstants {
     const val RATING_THREE = 3
     const val RATING_FOUR = 4
     const val RATING_FIVE = 5
+
+    const val TEMP_IMAGE_EXTENSION = ".0"
 }
 
 

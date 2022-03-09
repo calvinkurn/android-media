@@ -74,8 +74,6 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     private View sampaiSeparator;
     private LoaderUnify progressBar;
 
-    private boolean isFromNewAccount = false;
-
     private LinearLayout accountSection;
 
     FirebaseRemoteConfigImpl firebaseRemoteConfig;
@@ -126,16 +124,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         getMenuToggle();
         checkFingerprintStatus();
         showSignInNotif();
-        checkForNewAccount();
-    }
-
-    private void checkForNewAccount(){
-        if(getArguments() != null){
-            if(getArguments().containsKey(ApplinkConstInternalGlobal.PARAM_NEW_HOME_ACCOUNT)) {
-                isFromNewAccount = true;
-                accountSection.setVisibility(View.GONE);
-            }
-        }
+        accountSection.setVisibility(View.GONE);
     }
 
     @Override
@@ -309,30 +298,22 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     @Override
     public void onSuccessGetConfig(AccountSettingConfig accountSettingConfig) {
-        if(isFromNewAccount){
-            kycMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
-                    .isIdentityEnabled() ? View.VISIBLE : View.GONE);
-            kycSeparator.setVisibility(accountSettingConfig.getAccountSettingConfig()
-                    .isIdentityEnabled() ? View.VISIBLE : View.GONE);
-        }
-        else {
-            personalDataMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
-                    .isPeopleDataEnabled() ? View.VISIBLE : View.GONE);
-            addressMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
-                    .isAddressEnabled() ? View.VISIBLE : View.GONE);
-            passwordMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
-                    .isPasswordEnabled() ? View.VISIBLE : View.GONE);
-            kycSeparator.setVisibility(accountSettingConfig.getAccountSettingConfig()
-                    .isIdentityEnabled() ? View.VISIBLE : View.GONE);
-            kycMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
-                    .isIdentityEnabled() ? View.VISIBLE : View.GONE);
-            sampaiMenu.setVisibility(accountSettingConfig.getAccountSettingConfig().
-                    isTokopediaCornerEnabled() ? View.VISIBLE : View.GONE);
-            sampaiSeparator.setVisibility(accountSettingConfig.getAccountSettingConfig().
-                    isTokopediaCornerEnabled() ? View.VISIBLE : View.GONE);
+        personalDataMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
+                .isPeopleDataEnabled() ? View.VISIBLE : View.GONE);
+        addressMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
+                .isAddressEnabled() ? View.VISIBLE : View.GONE);
+        passwordMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
+                .isPasswordEnabled() ? View.VISIBLE : View.GONE);
+        kycSeparator.setVisibility(accountSettingConfig.getAccountSettingConfig()
+                .isIdentityEnabled() ? View.VISIBLE : View.GONE);
+        kycMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
+                .isIdentityEnabled() ? View.VISIBLE : View.GONE);
+        sampaiMenu.setVisibility(accountSettingConfig.getAccountSettingConfig().
+                isTokopediaCornerEnabled() ? View.VISIBLE : View.GONE);
+        sampaiSeparator.setVisibility(accountSettingConfig.getAccountSettingConfig().
+                isTokopediaCornerEnabled() ? View.VISIBLE : View.GONE);
 
-            showSignInNotif();
-        }
+        showSignInNotif();
         hideLoading();
     }
 

@@ -26,8 +26,7 @@
     <string name="action_select_another_bundle">Lihat Paket Lain</string>
     <string name="action_oke">Oke</string>
     <string name="action_reload">Muat ulang</string>
-    <string name="action_back_to_pdp">Ke Halaman Produk</string>
-    <string name="action_back_to_cart">Kembali ke Keranjang</string>
+    <string name="action_back_to_recent_page">Ke Halaman Sebelumnya</string>
 
     <!-- single bundle item mapping -->
     <string name="preorder_prefix">PO %1s</string>
@@ -41,7 +40,6 @@
     <string name="single_bundle_error_variant_not_selected">Oops, pilih varian dulu, ya.</string>
     <string name="single_bundle_error_unknown">Terjadi kesalahan!</string>
     <string name="single_bundle_error_bundle">Oops, paket ini sudah habis</string>
-    <string name="single_bundle_error_bundle_desc">Kamu bisa kembali ke halaman produk untuk beli produk ini secara satuan</string>
     <string name="single_bundle_error_bundle_is_empty_long">Oops, Paketnya habis. Kembali ke halaman produk untuk beli secara satuan, ya.</string>
     <string name="single_bundle_default_price">Rp0</string>
 
@@ -60,5 +58,6 @@
     <string name="error_bundle_out_of_stock_dialog_title">Oops, Paketnya habis. Kembali ke halaman produk untuk beli secara satuan, ya.</string>
     <string name="error_bundle_out_of_stock_dialog_description">Coba pilih paket lain atau kembali ke halaman produk, ya.</string>
     <string name="error_bundle_variant_not_selected">Oops, pilih varian dulu, ya.</string>
+    <string name="error_bundle_desc">Kamu bisa kembali ke halaman sebelumnya untuk mulai cari produk lain.</string>
 
 </resources>

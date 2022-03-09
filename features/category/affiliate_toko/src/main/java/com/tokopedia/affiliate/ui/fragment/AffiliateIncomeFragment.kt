@@ -38,8 +38,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.model.response.AffiliateKycDetailsData
-import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTransactionHistoryItemModel
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -84,11 +84,26 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         afterViewCreated()
+        sendOpenScreenTracking()
+    }
+
+    private fun sendOpenScreenTracking() {
+        context?.let {
+            AffiliateAnalytics.sendOpenScreenEvent(
+                AffiliateAnalytics.EventKeys.OPEN_SCREEN,
+                AffiliateAnalytics.ScreenKeys.AFFILIATE_PENDAPATAN_PAGE,
+                UserSession(it).isLoggedIn,
+                UserSession(it).userId
+            )
+        }
+
     }
 
     override fun getScreenName(): String {
         return  ""
     }
+
+    private var lastItem : Visitable<AffiliateAdapterTypeFactory>? = null
 
     private fun setObservers() {
         affiliateIncomeViewModel.getAffiliateBalanceData().observe(this, {
@@ -104,6 +119,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
             if(it.isEmpty() && listSize == 0){
                 showGlobalErrorEmptyState()
             } else {
+                lastItem = it[it.lastIndex]
                 hideGlobalErrorEmptyState()
                 listSize += it.size
                 adapter.addMoreData(it)
@@ -201,21 +217,18 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     }
 
     private fun showGlobalErrorEmptyState() {
-        val defaultSelected = affiliateIncomeViewModel.getSelectedDate() == AffiliateBottomDatePicker.SEVEN_DAYS
-        if(defaultSelected) view?.findViewById<DeferredImageView>(R.id.affiliate_no__default_transaction_iv)?.show()
-        else view?.findViewById<DeferredImageView>(R.id.affiliate_no_transaction_iv)?.show()
+        view?.findViewById<DeferredImageView>(R.id.affiliate_no_transaction_iv)?.show()
 
         view?.findViewById<GlobalError>(R.id.withdrawal_global_error)?.apply {
             show()
             errorIllustration.hide()
-            errorTitle.text = if(!defaultSelected) getString(R.string.affiliate_empty_transaction) else getString(R.string.affiliate_default_no_transaction)
-            errorDescription.text = if(!defaultSelected) getString(R.string.affiliate_empty_transaction_description) else getString(R.string.affiliate_default_no_transaction_description)
+            errorTitle.text = getString(R.string.affiliate_empty_transaction)
+            errorDescription.text = getString(R.string.affiliate_empty_transaction_description)
             setButtonFull(true)
             errorSecondaryAction.gone()
-            errorAction.text = if(!defaultSelected) getString(R.string.affiliate_choose_date) else getString(R.string.affiliate_promote_product_cta)
+            errorAction.text = getString(R.string.affiliate_choose_date)
             setActionClickListener {
-                if (!defaultSelected) AffiliateBottomDatePicker.newInstance(affiliateIncomeViewModel.getSelectedDate(),this@AffiliateIncomeFragment).show(childFragmentManager, "")
-                else bottomNavBarClickListener?.selectItem(AffiliateActivity.PROMO_MENU,R.id.menu_promo_affiliate)
+                AffiliateBottomDatePicker.newInstance(affiliateIncomeViewModel.getSelectedDate(),this@AffiliateIncomeFragment).show(childFragmentManager, "")
             }
         }
     }
@@ -231,6 +244,18 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
                 affiliateIncomeViewModel.getAffiliateBalance()
                 affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
             }
+        }
+    }
+
+    private fun sendPendapatanEvent(eventAction: String,eventCategory:String ,eventLabel: String) {
+        context?.let {
+            AffiliateAnalytics.sendEvent(
+                AffiliateAnalytics.EventKeys.CLICK_PG,
+                eventAction,
+                eventCategory,
+                eventLabel,
+                UserSession(it).userId
+            )
         }
     }
 
@@ -258,7 +283,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
             })
         }
         view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.setOnClickListener {
-           sendTarikSaldoClickEvent()
+           sendPendapatanEvent(AffiliateAnalytics.ActionKeys.CLICK_TARIK_SALDO,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,"")
            openWithdrawalScreen()
         }
         ImageHandler.loadImageCircle2(context, view?.findViewById<ImageUnify>(R.id.withdrawal_user_image), profilePicture)
@@ -290,17 +315,6 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
         affiliateIncomeViewModel.getAffiliateBalance()
     }
 
-    private fun sendTarikSaldoClickEvent() {
-        context?.let { ctx ->
-            AffiliateAnalytics.sendEvent(
-                    AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
-                    AffiliateAnalytics.CategoryKeys.PENDAPATAN_PAGE,
-                    AffiliateAnalytics.ActionKeys.CLICK_TARIK_SALDO,
-                    "",
-                    UserSession(ctx).userId)
-        }
-    }
-
     private fun initUi() {
         when (RemoteConfigInstance.getInstance().abTestPlatform.getString(
             AFFILIATE_WITHDRAWAL,
@@ -317,6 +331,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
 
     private fun initDateRangeClickListener() {
         view?.findViewById<ConstraintLayout>(R.id.date_range)?.setOnClickListener {
+            sendPendapatanEvent(AffiliateAnalytics.ActionKeys.CLICK_FILTER_DATE,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,"")
             AffiliateBottomDatePicker.newInstance(affiliateIncomeViewModel.getSelectedDate(),this).show(childFragmentManager, "")
         }
     }
@@ -324,9 +339,30 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                sendImpressionTracker()
                 if(affiliateIncomeViewModel.hasNext)
                     affiliateIncomeViewModel.getAffiliateTransactionHistory(page - 1)
             }
+        }
+    }
+
+    private fun sendImpressionTracker() {
+        val item = (lastItem as? AffiliateTransactionHistoryItemModel)?.transaction
+        var transactionID = ""
+        var label = ""
+        item?.transactionID?.let {
+            transactionID = it
+        }
+        item?.transactionType?.let {
+            if(it == TRANSACTION_TYPE_DEPOSIT) label = AffiliateAnalytics.LabelKeys.DEPOSIT
+            else if(it == TRANSACTION_TYPE_WITHDRAWAL) label = AffiliateAnalytics.LabelKeys.WITHDRAWAL
+        }
+
+        context?.let {
+            AffiliateAnalytics.sendIcomeTracker(
+                AffiliateAnalytics.EventKeys.VIEW_ITEM,AffiliateAnalytics.ActionKeys.IMPRESSION_TRANSACTION_CARD,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,
+                label,listSize,transactionID,UserSession(it).userId
+            )
         }
     }
 
@@ -353,6 +389,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
 //    }
 
     override fun rangeChanged(range: AffiliateDatePickerData) {
+        sendPendapatanEvent(AffiliateAnalytics.ActionKeys.CLICK_SIMPAN,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE_FILTER,range.value)
         affiliateIncomeViewModel.onRangeChanged(range)
     }
 

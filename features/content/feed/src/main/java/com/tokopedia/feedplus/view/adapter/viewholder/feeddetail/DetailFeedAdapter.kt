@@ -82,7 +82,7 @@ class DetailFeedAdapter(typeFactory: FeedPlusDetailTypeFactory) : RecyclerView.A
     }
 
     val isLoading: Boolean
-        get() = list.contains(loadingModel)
+        get() = list.contains(loadingModel) || list.contains(loadingMoreModel)
 
     fun getList(): List<Visitable<*>> {
         return list

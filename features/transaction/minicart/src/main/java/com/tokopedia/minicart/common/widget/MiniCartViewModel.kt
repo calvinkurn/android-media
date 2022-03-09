@@ -19,7 +19,13 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
-import com.tokopedia.minicart.cartlist.uimodel.*
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerErrorUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerWarningUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableHeaderUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableReasonUiModel
 import com.tokopedia.minicart.chatlist.MiniCartChatListUiModelMapper
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.response.minicartlist.BeliButtonConfig
@@ -28,8 +34,8 @@ import com.tokopedia.minicart.common.domain.data.MiniCartABTestData
 import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.usecase.*
-import kotlinx.coroutines.*
+import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
@@ -290,6 +296,11 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                 unavailableItemsCartId.add(it.cartId)
             }
         }
+        tmpHiddenUnavailableItems.forEach {
+            if (it is MiniCartProductUiModel && it.isProductDisabled) {
+                unavailableItemsCartId.add(it.cartId)
+            }
+        }
 
         val tmpVisitables = getVisitables()
         var isLastItem = true
@@ -312,6 +323,18 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     private fun onSuccessBulkDeleteUnavailableCartItems(removeFromCartData: RemoveFromCartData, isLastItem: Boolean) {
+        if (isLastItem) {
+            // manual delete items when delete last item to directly update widget
+            val visitables = getVisitables()
+            val tmpVisitables = mutableListOf<Visitable<*>>()
+            tmpVisitables.addAll(visitables)
+            tmpVisitables.removeAll {
+                it is MiniCartUnavailableHeaderUiModel || it is MiniCartUnavailableReasonUiModel ||
+                        it is MiniCartProductUiModel
+            }
+            updateVisitables(tmpVisitables)
+            tmpHiddenUnavailableItems.clear()
+        }
         _globalEvent.value = GlobalEvent(
                 state = GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM,
                 data = RemoveFromCartDomainModel(removeFromCartData = removeFromCartData, isLastItem = isLastItem, isBulkDelete = true)

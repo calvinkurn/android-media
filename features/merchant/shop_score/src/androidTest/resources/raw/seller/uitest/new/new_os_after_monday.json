@@ -89,7 +89,7 @@
     }
   },
   "goldGetPMShopInfo": {
-    "is_new_seller": false,
+    "is_new_seller": true,
     "shop_age": 10,
     "is_eligible_pm": false,
     "is_eligible_pm_pro": false

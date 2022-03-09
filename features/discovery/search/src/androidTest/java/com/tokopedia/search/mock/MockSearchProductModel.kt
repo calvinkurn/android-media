@@ -13,7 +13,7 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
-import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
+import com.tokopedia.search.result.product.emptystate.EmptyStateKeywordDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetDataView
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
@@ -181,7 +181,7 @@ object MockSearchProductModel {
             suggestedQuery = "q=baju batik&rf=true",
         )
 
-    fun getEmptySearchProductViewModel(): EmptyStateDataView = EmptyStateDataView()
+    fun getEmptySearchProductViewModel(): EmptyStateKeywordDataView = EmptyStateKeywordDataView()
 
     fun getBannedProductsEmptySearchViewModel(): BannedProductsEmptySearchDataView {
         return BannedProductsEmptySearchDataView("Produk yang kamu cari tidak tersedia di Android. Silakan cari di desktop atau mobile web HP-mu.")
