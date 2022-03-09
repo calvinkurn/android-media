@@ -7,16 +7,26 @@ import android.os.Bundle
 import com.tokopedia.graphql.data.GraphqlClient
 
 /**
- * Created by Vishal Gupta on 17/10/2018
+ * Created by devarafikry on 09/03/2022
  */
 @SuppressLint("NewApi")
-class GqlActivityCallback constructor() : Application.ActivityLifecycleCallbacks {
+class GqlActivityCallback : Application.ActivityLifecycleCallbacks {
+    companion object {
+        private const val DEFAULT_MODULE_NAME = "tkpd"
+    }
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
     override fun onActivityStarted(activity: Activity) {}
     override fun onActivityResumed(activity: Activity) {
-        val packageName = activity.javaClass.`package`.name.split(".")
-        if (packageName.size >= 3) {
-            GraphqlClient.moduleName = packageName[2]
+        val packageName = activity.javaClass.`package`?.name
+        if (packageName != null) {
+            val splittedPackageName = packageName.split(".")
+            if (splittedPackageName.size >= 3) {
+                GraphqlClient.moduleName = splittedPackageName[2]
+            } else {
+                GraphqlClient.moduleName = DEFAULT_MODULE_NAME
+            }
+        } else {
+            GraphqlClient.moduleName = DEFAULT_MODULE_NAME
         }
     }
 
