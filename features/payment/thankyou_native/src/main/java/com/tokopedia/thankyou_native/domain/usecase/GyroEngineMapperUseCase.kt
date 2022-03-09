@@ -99,10 +99,14 @@ class GyroEngineMapperUseCase @Inject constructor(
             tokomemberUsecase.setGqlParams(tokomemberRequestParam.orderData)
             deferredTokomemberData = fetchTokomemberData()
             tokomemberModel = deferredTokomemberData?.await()?.let { it ->
-                TokomemberMapper.getGyroTokomemberItem(
-                    it.membershipGetShopRegistrationWidget ,
-                    tokomemberRequestParam
-                )
+                if (!it.membershipGetShopRegistrationWidget?.widgetContent.isNullOrEmpty()) {
+                    TokomemberMapper.getGyroTokomemberItem(
+                        it.membershipGetShopRegistrationWidget,
+                        tokomemberRequestParam
+                    )
+                } else {
+                    TokomemberModel()
+                }
             }
         }
     }
