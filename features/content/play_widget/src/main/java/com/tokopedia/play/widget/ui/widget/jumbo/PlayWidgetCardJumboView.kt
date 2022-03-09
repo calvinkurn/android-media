@@ -25,6 +25,7 @@ import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.play.widget.util.PlayWidgetCompositeTouchDelegate
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.unifycomponents.ImageUnify
+import kotlin.math.roundToInt
 import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
@@ -60,6 +61,9 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
 
     private val compositeTouchDelegate: PlayWidgetCompositeTouchDelegate
 
+    private val ratio: Double
+        get() = 4.0/5.0
+
     private lateinit var mModel: PlayWidgetChannelUiModel
 
     init {
@@ -85,7 +89,7 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         layoutParams = layoutParams.apply {
-            height = measuredWidth
+            height = (measuredWidth / ratio).roundToInt()
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
