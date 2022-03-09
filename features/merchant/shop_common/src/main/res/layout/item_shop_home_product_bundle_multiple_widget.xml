@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="300dp"
+    android:layout_height="225dp"
+    android:paddingTop="16dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bundle_widget_container"
+        android:layout_width="300dp"
+        android:layout_height="225dp">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_bundle_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Home Care Ramadhan"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            android:layout_marginStart="14dp"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_bundle_preorder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/tv_bundle_name"
+            app:layout_constraintBottom_toBottomOf="@id/tv_bundle_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            android:layout_marginEnd="14dp"
+            android:textColor="@color/Unify_NN600"
+            android:visibility="gone"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_multiple_bundle_products"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_bundle_name"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_bundle_display_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Rp700.000"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_multiple_bundle_products"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            android:layout_marginTop="18dp"
+            android:layout_marginStart="14dp"
+            />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_discount_bundle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:labelType="highlight_light_red"
+            app:labelTitle="20%"
+            app:layout_constraintStart_toEndOf="@id/tv_bundle_display_price"
+            app:layout_constraintBottom_toTopOf="@id/tv_bundle_display_price"
+            app:layout_constraintTop_toBottomOf="@id/tv_bundle_display_price"
+            android:layout_marginStart="4dp"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_bundle_original_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/label_discount_bundle"
+            app:layout_constraintTop_toTopOf="@id/label_discount_bundle"
+            app:layout_constraintBottom_toBottomOf="@id/label_discount_bundle"
+            android:layout_marginStart="4dp"
+            android:textColor="@color/Unify_NN600"
+            app:typographyWeight="reguler"
+            app:typographyType="body_3"
+            />
+
+        <LinearLayout
+            android:id="@+id/saving_amount_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constrainedWidth="true"
+            android:orientation="horizontal"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_bundle_display_price"
+            app:layout_constraintEnd_toStartOf="@id/btn_bundle_atc"
+            android:layout_marginEnd="14dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_product_bundle_item_promotion_footer"
+            >
+
+            <com.tokopedia.iconunify.IconUnify
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                app:layout_constraintStart_toStartOf="@id/tv_bundle_display_price"
+                app:layout_constraintTop_toBottomOf="@id/tv_bundle_display_price"
+                app:icon_name="PROMO"
+                app:icon_color_light_enable="@color/Unify_Background"
+                />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_saving_amount_price_wording"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                app:typographyType="body_3"
+                android:textColor="@color/Unify_NN0"
+                />
+
+        </LinearLayout>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_bundle_atc"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/saving_amount_container"
+            app:layout_constraintBottom_toBottomOf="@id/saving_amount_container"
+            app:layout_constraintRight_toRightOf="parent"
+            app:unifyButtonSize="small"
+            app:unifyButtonVariant="ghost"
+            app:unifyButtonType="main"
+            android:layout_marginEnd="12dp"
+            android:text="@string/shop_page_product_bundle_atc_button_text"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</com.tokopedia.unifycomponents.CardUnify>

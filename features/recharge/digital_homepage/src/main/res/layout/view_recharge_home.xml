@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/digital_homepage_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -31,12 +32,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
+        android:visibility="gone"
         app:contentInsetLeft="@dimen/layout_lvl0"
         app:contentInsetStart="@dimen/layout_lvl0"
         app:contentInsetStartWithNavigation="@dimen/layout_lvl0"
         app:elevation="@dimen/spacing_lvl2"
-        android:visibility="gone"
-        app:navigationIcon="@drawable/ic_action_back">
+        app:navigationIcon="@drawable/ic_action_back"
+        tools:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -48,10 +50,10 @@
                 android:id="@+id/digital_homepage_search_view"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginTop="@dimen/spacing_lvl3"
                 android:layout_marginRight="@dimen/spacing_lvl3"
                 android:layout_marginBottom="@dimen/spacing_lvl3"
+                android:layout_weight="1"
                 app:siv_search_hint_subhome="@string/digital_home_search_view_hint" />
 
             <ImageView
@@ -63,8 +65,8 @@
                 android:layout_marginTop="@dimen/spacing_lvl3"
                 android:layout_marginRight="@dimen/spacing_lvl4"
                 android:layout_marginBottom="@dimen/spacing_lvl3"
-                app:srcCompat="@drawable/digital_common_ic_tagihan"
-                android:contentDescription="null" />
+                android:contentDescription="null"
+                app:srcCompat="@drawable/digital_common_ic_tagihan" />
 
         </LinearLayout>
 

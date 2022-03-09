@@ -353,7 +353,7 @@ class NotificationViewModel @Inject constructor(
         )
     }
 
-    private fun addWishListTopAds(
+    fun addWishListTopAds(
         model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)
     ) {
         launchCatchError(dispatcher.io,
@@ -380,7 +380,7 @@ class NotificationViewModel @Inject constructor(
         addWishListUseCase.createObservable(productId, userSessionInterface.userId, wishListActionListener)
     }
 
-    private fun loadTopAdsBannerData() {
+    fun loadTopAdsBannerData() {
         launchCatchError(
             dispatcher.io,
             {

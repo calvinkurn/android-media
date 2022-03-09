@@ -1,0 +1,26 @@
+{
+  "data": {
+    "TokonowSetUserPreference": {
+      "header": {
+        "process_time": 0.006396165,
+        "reason": "",
+        "error_code": ""
+      },
+      "data": {
+        "warehouseID": "321",
+        "shopID": "123",
+        "serviceType": "2h",
+        "warehouses": [
+          {
+            "serviceType": "2h",
+            "warehouseID": "321"
+          },
+          {
+            "serviceType": "15m",
+            "warehouseID": "67890"
+          }
+        ]
+      }
+    }
+  }
+}

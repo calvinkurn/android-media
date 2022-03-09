@@ -24,4 +24,6 @@ interface OfficialHomeTypeFactory : OfficialTypeFactory, HomeComponentTypeFactor
 
     fun type(productRecommendationDataModel: ProductRecommendationDataModel): Int
 
+    fun type(officialTopAdsHeadlineDataModel: OfficialTopAdsHeadlineDataModel): Int
+
 }

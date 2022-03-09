@@ -104,10 +104,11 @@ class GetBundleInfoUseCase @Inject constructor(
     fun setParams(
         squad: String, usecase: String,
         requestData: RequestData,
-        productData: ProductData
+        productData: ProductData,
+        bundleIdList: List<Bundle>
     ) {
         val requestParams = RequestParams.create()
-        requestParams.putObject(PARAM_BUNDLES, emptyList<Bundle>())
+        requestParams.putObject(PARAM_BUNDLES, bundleIdList)
         requestParams.putString(PARAM_SQUAD, squad)
         requestParams.putString(PARAM_USE_CASE, usecase)
         requestParams.putObject(PARAM_REQUEST_DATA, requestData)

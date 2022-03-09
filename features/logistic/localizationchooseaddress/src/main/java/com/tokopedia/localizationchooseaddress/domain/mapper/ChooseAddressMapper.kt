@@ -3,6 +3,7 @@ package com.tokopedia.localizationchooseaddress.domain.mapper
 import com.tokopedia.localizationchooseaddress.domain.model.*
 import com.tokopedia.localizationchooseaddress.domain.response.*
 import com.tokopedia.localizationchooseaddress.domain.response.ErrorChosenAddress
+
 import javax.inject.Inject
 
 class ChooseAddressMapper @Inject constructor() {
@@ -105,7 +106,13 @@ class ChooseAddressMapper @Inject constructor() {
         return TokonowModel().apply {
             shopId = response.shopId
             warehouseId = response.warehouseId
+            warehouses = mapWarehouses(response.warehouses)
+            serviceType = response.serviceType
         }
+    }
+
+    private fun mapWarehouses(warehouses: List<Warehouse>): List<WarehouseModel> {
+        return warehouses.map { WarehouseModel(warehouseId = it.warehouseId, serviceType = it.serviceType) }
     }
 
     private fun mapErrorChosenAddress(response: ErrorChosenAddress): ErrorChosenAddressModel {

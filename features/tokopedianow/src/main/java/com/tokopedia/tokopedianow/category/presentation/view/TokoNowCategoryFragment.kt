@@ -105,6 +105,7 @@ class TokoNowCategoryFragment:
             quickFilterListener = this,
             categoryFilterListener = this,
             productItemListener = this,
+            switcherWidgetListener = this,
             tokoNowEmptyStateNoResultListener = this,
             categoryAisleListener = this,
             recommendationCarouselListener = this,
@@ -159,10 +160,10 @@ class TokoNowCategoryFragment:
         super.onBannerImpressed(channelModel, position)
     }
 
-    override fun onBannerClick(channelModel: ChannelModel, applink: String) {
+    override fun onBannerClick(channelModel: ChannelModel, applink: String, param: String) {
         CategoryTracking.sendBannerClickEvent(channelModel, getViewModel().categoryL1, getUserId())
 
-        super.onBannerClick(channelModel, applink)
+        super.onBannerClick(channelModel, applink, param)
     }
 
     override fun onSeeAllCategoryClicked() {

@@ -385,6 +385,15 @@ abstract class TopchatRoomTest {
             .perform(viewAction)
     }
 
+    protected fun clickAttachVoucherMenu() {
+        val viewAction = RecyclerViewActions
+            .actionOnItemAtPosition<AttachmentItemViewHolder>(
+                3, click()
+            )
+        onView(withId(R.id.rv_topchat_attachment_menu))
+            .perform(viewAction)
+    }
+
     protected fun clickComposeArea() {
         onView(withId(R.id.new_comment))
             .perform(click())
