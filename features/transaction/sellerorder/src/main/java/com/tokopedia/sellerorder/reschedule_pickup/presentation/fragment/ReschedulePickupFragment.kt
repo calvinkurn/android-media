@@ -85,17 +85,18 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObserver()
-        viewModel.getReschedulePickupDetail(orderId)
+        getInitialData()
     }
 
     private fun initObserver() {
         viewModel.reschedulePickupDetail.observe(viewLifecycleOwner, {
+            binding?.loaderReschedulePickup?.visibility = View.GONE
             when (it) {
                 is Success -> {
                     if (it.data.order.errorMessage.isNotEmpty()) {
                         showErrorToaster(it.data.order.errorMessage)
                     }
-                    initViews(it.data)
+                    bindDataWithView(it.data)
                 }
                 is Fail -> {
                     NetworkErrorHelper.showEmptyState(activity, binding?.rootView, this::getInitialData)
@@ -110,21 +111,22 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
     }
 
     private fun showLoading() {
-        TODO("Not yet implemented")
+        binding?.let {
+            it.loaderReschedulePickup.visibility = View.VISIBLE
+            it.etDay.editText.isEnabled = false
+            it.etTime.editText.isEnabled = false
+            it.etReason.editText.isEnabled = false
+        }
     }
 
-    private fun initViews(data: RescheduleDetailModel) {
+    private fun bindDataWithView(data: RescheduleDetailModel) {
         binding?.let {
             it.invoiceOrderDetail.text = data.order.invoice
-            val items = listOf(
-                "Pastikan jadwal pick-up baru sesuai dengan kesepakatan pengiriman dengan pembeli",
-                "Ubah jadwal pick-up hanya bisa dilakukan 1 (satu) kali",
-                "Pastikan barang sudah siap"
-            )
+            val rescheduleGuide = resources.getStringArray(R.array.reschedule_guide)
             val builder = SpannableStringBuilder()
-            items.forEachIndexed { index, item ->
+            rescheduleGuide.forEachIndexed { index, item ->
                 builder.append(
-                    if (index == items.size - 1) item else item + "\n",
+                    if (index == rescheduleGuide.size - 1) item else item + "\n",
                     OrderedListSpan("${index + 1}."),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
@@ -140,6 +142,7 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
             showSubtitle(requireContext(), it.subtitleReschedulePickup)
 
             it.etDay.editText.run {
+                isEnabled = true
                 inputType = InputType.TYPE_NULL
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
@@ -154,6 +157,7 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
             it.etTime.editText.isEnabled = false
 
             it.etReason.editText.run {
+                isEnabled = true
                 inputType = InputType.TYPE_NULL
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {

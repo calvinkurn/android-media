@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.BottomsheetRescheduleTimeBinding
 import com.tokopedia.sellerorder.reschedule_pickup.data.model.GetReschedulePickupResponse
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -19,7 +20,7 @@ class RescheduleTimeBottomSheet(
     private var binding by autoCleared<BottomsheetRescheduleTimeBinding>()
 
     init {
-        setTitle("Pilih Waktu")
+        setTitle(getString(R.string.title_reschedule_time_bottomsheet))
         setCloseClickListener {
             dismiss()
         }
@@ -54,7 +55,7 @@ class RescheduleTimeBottomSheet(
 
     private fun setupView() {
         val listWidgetData = ArrayList<ListItemUnify>().apply {
-            addAll(timeOption.map { time -> ListItemUnify(title = time.time, description = "") })
+            addAll(timeOption.map { time -> ListItemUnify(title = "", description = time.time) })
         }
 
         binding.rvTime.run {

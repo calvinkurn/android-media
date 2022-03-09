@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.BottomsheetRescheduleDayBinding
 import com.tokopedia.sellerorder.reschedule_pickup.data.model.GetReschedulePickupResponse
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -19,7 +20,7 @@ class RescheduleDayBottomSheet(
     private var binding by autoCleared<BottomsheetRescheduleDayBinding>()
 
     init {
-        setTitle("Pilih Waktu")
+        setTitle(getString(R.string.title_reschedule_day_bottomsheet))
         setCloseClickListener {
             dismiss()
         }
