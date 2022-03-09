@@ -53,8 +53,21 @@ class LoadingDialogFragment : DialogFragment() {
 
     companion object {
 
-        fun get(fragmentManager: FragmentManager): LoadingDialogFragment? {
-            return fragmentManager.findFragmentByTag(LoadingDialogFragment::class.java.simpleName) as? LoadingDialogFragment
+        fun get(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+        ): LoadingDialogFragment {
+            val oldInstance = fragmentManager.findFragmentByTag(
+                LoadingDialogFragment::class.java.simpleName
+            ) as? LoadingDialogFragment
+            return if (oldInstance != null) oldInstance
+            else {
+                val fragmentFactory = fragmentManager.fragmentFactory
+                fragmentFactory.instantiate(
+                    classLoader,
+                    LoadingDialogFragment::class.java.name
+                )
+            } as LoadingDialogFragment
         }
     }
 

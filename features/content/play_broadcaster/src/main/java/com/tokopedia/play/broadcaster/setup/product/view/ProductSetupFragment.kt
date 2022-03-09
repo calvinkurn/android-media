@@ -64,6 +64,11 @@ class ProductSetupFragment @Inject constructor(
             bottomSheet.dismiss()
             openProductChooser(ChooserSource.Summary)
         }
+
+        override fun onFinish(bottomSheet: ProductSummaryBottomSheet) {
+            bottomSheet.dismiss()
+            removeFragment()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,7 +92,7 @@ class ProductSetupFragment @Inject constructor(
         }
     }
 
-    fun removeFragment() {
+    private fun removeFragment() {
         parentFragmentManager.beginTransaction()
             .remove(this)
             .commit()
