@@ -6,8 +6,8 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
 import com.tokopedia.vouchercreation.common.consts.InitiateAction
-import com.tokopedia.vouchercreation.create.domain.model.InitiateVoucherResponse
-import com.tokopedia.vouchercreation.create.view.uimodel.initiation.InitiateVoucherUiModel
+import com.tokopedia.vouchercreation.shop.create.domain.model.InitiateVoucherResponse
+import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.InitiateVoucherUiModel
 import javax.inject.Inject
 
 class InitiateVoucherUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) : BaseGqlUseCase<InitiateVoucherUiModel>() {
@@ -35,6 +35,7 @@ class InitiateVoucherUseCase @Inject constructor(private val gqlRepository: Grap
                 "          img_banner_label_cashback_hingga\n" +
                 "          prefix_voucher_code\n" +
                 "          is_eligible\n" +
+                "          max_product\n" +
                 "        }\n" +
                 "    }\n" +
                 "}"
@@ -99,7 +100,8 @@ class InitiateVoucherUseCase @Inject constructor(private val gqlRepository: Grap
                 bannerCashbackLabelUrl = bannerCashbackLabelUrl,
                 bannerCashbackUntilLabelUrl = bannerCashbackUntilLabelUrl,
                 voucherCodePrefix = voucherCodePrefix,
-                isCreateVoucherEligible = isEligible == ELIGIBLE_VALUE
+                isCreateVoucherEligible = isEligible == ELIGIBLE_VALUE,
+                maxProducts = maxProduct
             )
         }
     }

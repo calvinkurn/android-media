@@ -9,6 +9,7 @@ import com.tokopedia.kyc_centralized.util.KycSharedPreferenceImpl
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_FACE_CACHE
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
+import com.tokopedia.logger.ServerLogger
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -49,7 +50,12 @@ class KycUploadViewModelTest {
     fun before() {
         MockKAnnotations.init(this)
         viewModel = spyk(KycUploadViewModel(
-            useCase, CoroutineTestDispatchersProvider, sharedPreference, cipherProviderImpl))
+                useCase,
+                CoroutineTestDispatchersProvider,
+                sharedPreference,
+                cipherProviderImpl,
+                ServerLogger
+        ))
     }
 
     private fun provideEveryUseCase(kycData: KycData) {

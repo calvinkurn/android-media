@@ -241,8 +241,9 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
         val product = gson.fromJson(
                 attachment.attributes, ProductAttachmentAttributes::class.java
         )
-        product.productProfile.isFulFillment = isFulFillment
-        product.productProfile.urlTokocabang = "Rp 10.000.000"
+        if (product.productProfile.isFulFillment != isFulFillment) {
+            product.productProfile.isFulFillment = isFulFillment
+        }
         attachment.attributes = gson.toJson(product)
         return this
     }

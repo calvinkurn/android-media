@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.vouchercreation.shop.create.view.customview.VoucherCreateTitleView
+        android:id="@+id/titleViewTarget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="Target Kupon"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvTarget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:itemCount="2"
+        tools:listitem="@layout/mvc_voucher_target_item"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

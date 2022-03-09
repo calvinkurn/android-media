@@ -2,8 +2,6 @@ package com.tokopedia.oneclickcheckout.order.view.bottomsheet
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.View
-import android.widget.LinearLayout
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
@@ -13,7 +11,6 @@ import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class OrderPriceSummaryBottomSheet {
@@ -40,6 +37,9 @@ class OrderPriceSummaryBottomSheet {
     @SuppressLint("SetTextI18n")
     private fun setupView(binding: BottomSheetOrderPriceSummaryBinding, orderCost: OrderCost) {
         binding.tvTotalProductPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalItemPrice, false).removeDecimalSuffix()
+
+        binding.tvTotalProductAddonsPriceLabel.gone()
+        binding.tvTotalProductAddonsPriceValue.gone()
 
         if (orderCost.purchaseProtectionPrice > 0) {
             binding.tvPurchaseProtectionPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.purchaseProtectionPrice, false).removeDecimalSuffix()
@@ -75,7 +75,7 @@ class OrderPriceSummaryBottomSheet {
             }
         }
 
-        if (orderCost.insuranceFee > 0.0) {
+        if (orderCost.insuranceFee > 0.0 || orderCost.isUseInsurance) {
             binding.tvTotalInsurancePriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.insuranceFee, false).removeDecimalSuffix()
             binding.tvTotalInsurancePriceLabel.visible()
             binding.tvTotalInsurancePriceValue.visible()
@@ -95,6 +95,12 @@ class OrderPriceSummaryBottomSheet {
 
         binding.tvTotalPaymentPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalPrice, false).removeDecimalSuffix()
 
+        renderCashbacks(orderCost, binding)
+
+        renderInstallment(binding, orderCost)
+    }
+
+    private fun renderCashbacks(orderCost: OrderCost, binding: BottomSheetOrderPriceSummaryBinding) {
         if (orderCost.cashbacks.isNotEmpty()) {
             binding.llCashback.removeAllViews()
             for (cashback in orderCost.cashbacks) {
@@ -104,11 +110,64 @@ class OrderPriceSummaryBottomSheet {
                 cashbackDetailBinding.tvTotalCashbackCurrencyInfo.text = cashback.currencyDetailStr
                 binding.llCashback.addView(cashbackDetailBinding.root)
                 binding.llCashback.visible()
-                binding.divider2.visible()
+                binding.dividerCashback.visible()
             }
         } else {
             binding.llCashback.gone()
-            binding.divider2.gone()
+            binding.dividerCashback.gone()
+        }
+    }
+
+    private fun renderInstallment(binding: BottomSheetOrderPriceSummaryBinding, orderCost: OrderCost) {
+        if (orderCost.installmentData != null) {
+            binding.tvTotalInstallmentFeePriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.installmentData.installmentFee, false).removeDecimalSuffix()
+            binding.tvTotalInstallmentFeePriceValue.visible()
+            binding.tvTotalInstallmentFeePriceLabel.visible()
+
+            binding.tvTotalInstallmentTermValue.text = binding.root.context.getString(R.string.occ_lbl_gocicil_installment_period, orderCost.installmentData.installmentTerm)
+            binding.tvTotalInstallmentTermValue.visible()
+            binding.tvTotalInstallmentTermLabel.visible()
+
+            if (orderCost.installmentData.installmentAmountPerPeriod > 0) {
+                binding.tvTotalInstallmentPerPeriodValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.installmentData.installmentAmountPerPeriod, false).removeDecimalSuffix()
+                binding.tvTotalInstallmentPerPeriodValue.visible()
+                binding.tvTotalInstallmentPerPeriodLabel.visible()
+            } else {
+                binding.tvTotalInstallmentPerPeriodValue.gone()
+                binding.tvTotalInstallmentPerPeriodLabel.gone()
+            }
+
+            if (orderCost.installmentData.installmentFirstDate.isNotBlank()) {
+                binding.tvTotalInstallmentFirstDateValue.text = orderCost.installmentData.installmentFirstDate
+                binding.tvTotalInstallmentFirstDateValue.visible()
+                binding.tvTotalInstallmentFirstDateLabel.visible()
+            } else {
+                binding.tvTotalInstallmentFirstDateValue.gone()
+                binding.tvTotalInstallmentFirstDateLabel.gone()
+            }
+
+            if (orderCost.installmentData.installmentLastDate.isNotBlank()) {
+                binding.tvTotalInstallmentLastDateValue.text = orderCost.installmentData.installmentLastDate
+                binding.tvTotalInstallmentLastDateValue.visible()
+                binding.tvTotalInstallmentLastDateLabel.visible()
+            } else {
+                binding.tvTotalInstallmentLastDateValue.gone()
+                binding.tvTotalInstallmentLastDateLabel.gone()
+            }
+
+            binding.dividerInstallment.visible()
+        } else {
+            binding.tvTotalInstallmentFeePriceValue.gone()
+            binding.tvTotalInstallmentFeePriceLabel.gone()
+            binding.tvTotalInstallmentTermValue.gone()
+            binding.tvTotalInstallmentTermLabel.gone()
+            binding.tvTotalInstallmentPerPeriodValue.gone()
+            binding.tvTotalInstallmentPerPeriodLabel.gone()
+            binding.tvTotalInstallmentFirstDateValue.gone()
+            binding.tvTotalInstallmentFirstDateLabel.gone()
+            binding.tvTotalInstallmentLastDateValue.gone()
+            binding.tvTotalInstallmentLastDateLabel.gone()
+            binding.dividerInstallment.gone()
         }
     }
 }

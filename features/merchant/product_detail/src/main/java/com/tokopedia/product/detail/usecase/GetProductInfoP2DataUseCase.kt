@@ -367,6 +367,15 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   Message
                   DevMessage       
                 }
+                shippingCtxDesc
+                originalShippingRate
+                fulfillmentData{
+                  icon
+                  prefix
+                  description
+                }
+                chipsLabel
+                hasUsedBenefit
               }
             }
             merchantVoucherSummary{
