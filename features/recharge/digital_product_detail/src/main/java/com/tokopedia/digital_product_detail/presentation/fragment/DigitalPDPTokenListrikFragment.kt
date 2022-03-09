@@ -644,6 +644,10 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         binding?.run {
             if (rechargePdpTokenListrikEmptyStateWidget.isVisible) {
                 rechargePdpTokenListrikEmptyStateWidget.hide()
+                rechargePdpTokenListrikBannerSpacer.run {
+                    layoutParams.height = resources.getDimension(com.tokopedia.digital_product_detail.R.dimen.banner_space)
+                        .toInt()
+                }
                 rechargePdpTickerWidgetProductDesc.show()
                 renderGreenBox()
             }
@@ -671,6 +675,10 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                     loyaltyStatus,
                     userSession.userId
                 )
+                rechargePdpTokenListrikBannerSpacer.run {
+                    layoutParams.height = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                        .toInt()
+                }
                 rechargePdpTokenListrikEmptyStateWidget.show()
                 rechargePdpTokenListrikRecommendationWidget.hide()
                 rechargePdpTokenListrikDenomGridWidget.hide()
