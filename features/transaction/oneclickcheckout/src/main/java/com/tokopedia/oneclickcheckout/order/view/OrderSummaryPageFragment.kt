@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -1509,7 +1508,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             override fun onOrderDetailClicked(orderCost: OrderCost) {
                 orderSummaryAnalytics.eventClickRingkasanBelanjaOSP(orderCost.totalPrice.toLong().toString())
                 OrderPriceSummaryBottomSheet().show(this@OrderSummaryPageFragment, orderCost)
-                Log.i("qwertyuiop", "show order detail")
             }
 
             override fun onPayClicked() {

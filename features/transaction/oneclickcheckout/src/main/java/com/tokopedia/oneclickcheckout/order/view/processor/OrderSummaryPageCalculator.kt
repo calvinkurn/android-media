@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
-import android.util.Log
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
@@ -49,7 +48,6 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                                validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, orderPayment: OrderPayment,
                                orderTotal: OrderTotal): Pair<OrderPayment, OrderTotal> {
         OccIdlingResource.increment()
-        Log.i("asdfghjkl", "calculate total inc")
         val result = withContext(executorDispatchers.default) {
             val isValidState = validatePaymentState(orderCart, orderProfile, shipping)
             var payment = orderPayment
@@ -210,7 +208,6 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
         }
         total.emit(result)
         OccIdlingResource.decrement()
-        Log.i("asdfghjkl", "calculate total de")
         return result
     }
 
@@ -220,7 +217,6 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
 
     private suspend fun calculateOrderCostWithPaymentFee(orderCart: OrderCart, shipping: OrderShipment, validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, orderPayment: OrderPayment): Pair<OrderCost, OrderPayment> {
         OccIdlingResource.increment()
-        Log.i("asdfghjkl", "calculate with payment fee inc")
         val result = withContext(executorDispatchers.default) {
             val (cost, _) = calculateOrderCostWithoutPaymentFee(orderCart, shipping, validateUsePromoRevampUiModel, orderPayment)
             var subtotal = cost.totalPrice
@@ -264,13 +260,11 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             return@withContext orderCost to payment
         }
         OccIdlingResource.decrement()
-        Log.i("asdfghjkl", "calculate with payment de")
         return result
     }
 
     suspend fun calculateOrderCostWithoutPaymentFee(orderCart: OrderCart, shipping: OrderShipment, validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, orderPayment: OrderPayment): Pair<OrderCost, ArrayList<Int>> {
         OccIdlingResource.increment()
-        Log.i("asdfghjkl", "calculate without payment inc")
         val result = withContext(executorDispatchers.default) {
             var totalProductPrice = 0.0
             var totalProductWholesalePrice = 0.0
@@ -345,7 +339,6 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             return@withContext orderCost to updatedProductIndex
         }
         OccIdlingResource.decrement()
-        Log.i("asdfghjkl", "calculate without payment de")
         return result
     }
 

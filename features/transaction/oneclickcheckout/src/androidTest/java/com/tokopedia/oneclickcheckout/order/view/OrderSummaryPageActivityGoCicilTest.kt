@@ -2,7 +2,6 @@ package com.tokopedia.oneclickcheckout.order.view
 
 import android.app.Activity
 import android.app.Instrumentation.ActivityResult
-import android.util.Log
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.intent.Intents.intending
@@ -140,7 +139,6 @@ class OrderSummaryPageActivityGoCicilTest {
             paymentInterceptor.customGoCicilInstallmentOptionResponsePath = GOCICIL_INSTALLMENT_OPTION_SOME_INACTIVE_RESPONSE_PATH
 
             clickAddProductQuantity()
-            Log.i("QWERTYUIOP", "done click add")
 
             assertInstallmentErrorRevamp(
                     errorMessage = "Oops periode cicilan yang kamu pilih sebelumnya tidak tersedia. Pilih periode yang lain, ya.",
@@ -199,7 +197,6 @@ class OrderSummaryPageActivityGoCicilTest {
             assertGoCicilInstallment("3 bulan x Rp673.867")
 
             clickAddProductQuantity(times = 2)
-            Log.i("QWERTYUIOP", "done click add")
 
             assertProfilePaymentErrorRevamp(
                     message = "Oops, limit nggak cukup. Coba metode bayar lain, ya.",
@@ -233,7 +230,6 @@ class OrderSummaryPageActivityGoCicilTest {
             assertGoCicilInstallment("3 bulan x Rp673.867")
 
             clickAddProductQuantity(times = 2)
-            Log.i("QWERTYUIOP", "done click add")
 
             assertProfilePaymentErrorRevamp(
                     message = "Belanjaanmu melebihi limit transaksi GoPayLaterCicil.",

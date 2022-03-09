@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.common.robot
 
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -395,13 +394,9 @@ class OrderSummaryPageRobot {
             override fun getDescription(): String = "click button order detail"
 
             override fun perform(uiController: UiController?, view: View) {
-                Log.i("qwertyuiop", "do click order detail")
                 view.findViewById<View>(R.id.btn_order_detail).performClick()
             }
         }))
-        // Wait for bottom sheet to fully appear
-        Thread.sleep(1000)
-        Log.i("qwertyuiop", "done click order detail")
         OrderPriceSummaryBottomSheetRobot().apply(func)
     }
 
