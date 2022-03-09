@@ -327,6 +327,4 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
         val errorMessage = ErrorHandler.getErrorMessage(requireActivity(), throwable)
         Toaster.build(binding.root, errorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
     }
-
-
 }
