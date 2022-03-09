@@ -18,7 +18,7 @@ data class FollowInfo(
 ){
     data class Data(
         @SerializedName("is_success")
-        val isSuccess: Boolean = false,
+        val isSuccess: Int = 0,
     )
 }
 

@@ -58,9 +58,10 @@ class PlayViewerPartnerRepositoryImpl @Inject constructor(
                 setRequestParams(createParam(followedKol))
             }.executeOnBackground().followedKOLInfo.errorCode.isEmpty()
         } else{
-            postUnfollowKolUseCase.apply {
+            val response = postUnfollowKolUseCase.apply {
                 setRequestParams(createParam(followedKol))
-            }.executeOnBackground().unFollowedKOLInfo.data.isSuccess
+            }.executeOnBackground()
+            mapper.mapUnfollowKol(response)
         }
     }
 }

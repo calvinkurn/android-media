@@ -207,7 +207,7 @@ class PlayViewerPartnerRepositoryTest {
     @Test
     fun `when user follow buyer return true`(){
         runBlockingTest {
-            //this use case returns the operation result value, if it's a success then it's true
+            //this use case returns error message, if it's empty then its true / the op is success
             val response = KOLFollowStatus(
                 followedKOLInfo = FollowInfo(
                     errorCode = "",
@@ -230,10 +230,10 @@ class PlayViewerPartnerRepositoryTest {
     @Test
     fun `when user unfollow buyer return true`(){
         runBlockingTest {
-            //this use case returns error message, if it's empty then its true / the op is success
+            //this use case returns the operation result value, if isSuccess equals to 1 then it's true
             val response = KOLUnFollowStatus(
                 unFollowedKOLInfo = FollowInfo(
-                    data = FollowInfo.Data(isSuccess = true)
+                    data = FollowInfo.Data(isSuccess = 1)
                 )
             )
             coEvery { postUnfollowKolUseCase.executeOnBackground() } returns response
