@@ -41,8 +41,6 @@ import com.tokopedia.globalerror.GlobalError.Companion.PAGE_NOT_FOUND
 import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -66,8 +64,10 @@ import javax.inject.Inject
 import kotlin.math.abs
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.clearImage
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.numberFormatted
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import java.math.RoundingMode
 
 
 class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterCallback,
@@ -530,9 +530,13 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         }
 
         textDisplayName?.text = data.profileHeader.profile.name
-        textContentCount?.text = data.profileHeader.stats.totalPostFmt
-        textFollowerCount?.text = data.profileHeader.stats.totalFollowerFmt
-        textFollowingCount?.text = data.profileHeader.stats.totalFollowingFmt
+//        textContentCount?.text = getFormattedNumber(data.profileHeader.stats.totalPost)
+//        textFollowerCount?.text = getFormattedNumber(data.profileHeader.stats.totalFollower)
+//        textFollowingCount?.text = getFormattedNumber(data.profileHeader.stats.totalFollowing)
+
+        textContentCount?.text = getFormattedNumber(123000000)
+        textFollowerCount?.text = getFormattedNumber(100000)
+        textFollowingCount?.text = getFormattedNumber(969999)
 
         setProfileImg(data.profileHeader.profile)
 
@@ -546,11 +550,16 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         userWebLink = data.profileHeader.profile.sharelink.weblink
         textBio?.maxLines = 20
 
-        textBio?.postDelayed( {
-            textBio?.text = context?.let { HtmlLinkHelper(it, data.profileHeader.profile.biography).spannedString }
+        textBio?.postDelayed({
+            textBio?.text = context?.let {
+                HtmlLinkHelper(
+                    it,
+                    data.profileHeader.profile.biography
+                ).spannedString
+            }
 
             if (textBio?.lineCount > 3) {
-                if(isViewMoreClickedBio == true) {
+                if (isViewMoreClickedBio == true) {
                     textBio.maxLines = 20
                     textSeeMore?.hide()
                 } else {
@@ -582,6 +591,14 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 headerProfile?.subtitle = ""
             }
         })
+    }
+
+    private fun getFormattedNumber(number: Long): String {
+        return if (number >= 10000) {
+            number.thousandFormatted(hasSpace = true, digit = 0, roundingMode = RoundingMode.DOWN)
+        } else {
+            number.thousandFormatted(hasSpace = true, digit = 1, roundingMode = RoundingMode.DOWN)
+        }
     }
 
     private fun setActionButton(followProfile: UserProfileIsFollow) {
@@ -658,7 +675,10 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             imgShare.clearImage()
             imgShare.setImageDrawable(getIconUnifyDrawable(context, IconUnify.SHARE_MOBILE))
             imgShare.setColorFilter(
-                ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Static_Black),
+                ContextCompat.getColor(
+                    requireContext(),
+                    com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                ),
                 android.graphics.PorterDuff.Mode.MULTIPLY
             )
 
@@ -672,7 +692,10 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             imgMenu.setImageDrawable(getIconUnifyDrawable(context, IconUnify.MENU_HAMBURGER))
 
             imgMenu.setColorFilter(
-                ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Static_Black),
+                ContextCompat.getColor(
+                    requireContext(),
+                    com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                ),
                 android.graphics.PorterDuff.Mode.MULTIPLY
             )
 
@@ -697,7 +720,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     override fun onResume() {
         super.onResume()
 
-        if(isNewlyCreated == true) {
+        if (isNewlyCreated == true) {
             isNewlyCreated = false
         } else {
             refreshLandingPageData()
@@ -832,7 +855,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     override fun onShareOptionClicked(shareModel: ShareModel) {
         var desc = userName
 
-        if(desc.isBlank()){
+        if (desc.isBlank()) {
             desc = "Lihat foto & video menarik dari Tokopedia Merchandise, yuk! \uD83D\uDE0D"
         } else {
             desc = "Lihat foto & video menarik dari Tokopedia $displayName ($userName), yuk! 😍"
@@ -848,19 +871,25 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             campaign = shareModel.campaign
             ogTitle = displayName
             ogDescription = desc
-            if(shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
+            if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
                 ogImageUrl = shareModel.ogImgUrl
             }
         })
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    context?.let{
+                    context?.let {
 //                        var shareString = "{Substitute this with the formatted share content string " +
 //                                "with the share content provided in the linkerShareData?.shareContents field. " +
 //                                "Complete string will be provided by Product Owner}"
                         var shareString = desc + " " + linkerShareData?.shareUri
-                        SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
+                        SharingUtil.executeShareIntent(
+                            shareModel,
+                            linkerShareData,
+                            activity,
+                            view,
+                            shareString
+                        )
                         // send gtm trackers if you want to
                         universalShareBottomSheet?.dismiss()
                     }
