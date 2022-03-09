@@ -27,6 +27,8 @@ class SharingComponentInstanceBuilder @Inject constructor(
         private const val DISCOUNT_TYPE_NOMINAL = "idr"
         private const val THOUSAND = 1_000f
         private const val MILLION = 1_000_000f
+        private const val PRODUCT_COUNT_2 = 2
+        private const val PRODUCT_COUNT_3 = 3
     }
 
 
@@ -51,6 +53,8 @@ class SharingComponentInstanceBuilder @Inject constructor(
             }
 
             init(listener)
+            getImageFromMedia(getImageFromMediaFlag = true)
+            setMediaPageSourceId(pageSourceId = ImageGeneratorConstants.ImageGeneratorSourceId.MVC_PRODUCT)
             setMetaData(
                 tnTitle = title,
                 tnImage = ShareComponentConstant.VOUCHER_PRODUCT_THUMBNAIL_ICON_IMAGE_URL
@@ -100,6 +104,13 @@ class SharingComponentInstanceBuilder @Inject constructor(
                 else -> coupon.discountAmt
             }
 
+            val formattedDiscountAmount : Int = when {
+                amount < THOUSAND -> amount
+                amount >= MILLION -> (amount / MILLION).toInt()
+                amount >= THOUSAND -> (amount / THOUSAND).toInt()
+                else -> amount
+            }
+
             val symbol = when {
                 amount < THOUSAND -> ImageGeneratorConstants.VoucherNominalSymbol.RB
                 amount >= MILLION -> ImageGeneratorConstants.VoucherNominalSymbol.JT
@@ -126,11 +137,11 @@ class SharingComponentInstanceBuilder @Inject constructor(
             )
             addImageGeneratorData(
                 key = ImageGeneratorConstants.ImageGeneratorKeys.VOUCHER_CASHBACK_PERCENTAGE,
-                value = amount.toString()
+                value = coupon.discountAmt.toString()
             )
             addImageGeneratorData(
                 key = ImageGeneratorConstants.ImageGeneratorKeys.VOUCHER_NOMINAL_AMOUNT,
-                value = amount.toString()
+                value = formattedDiscountAmount.toString()
             )
             addImageGeneratorData(
                 key = ImageGeneratorConstants.ImageGeneratorKeys.VOUCHER_NOMINAL_SYMBOL,
@@ -160,18 +171,24 @@ class SharingComponentInstanceBuilder @Inject constructor(
                 key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_COUNT,
                 value = productImageUrls.size.toString()
             )
-            addImageGeneratorData(
-                key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_1,
-                value = productImageUrls.getIndexAtOrEmpty(FIRST_IMAGE_URL)
-            )
-            addImageGeneratorData(
-                key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_2,
-                value = productImageUrls.getIndexAtOrEmpty(SECOND_IMAGE_URL)
-            )
-            addImageGeneratorData(
-                key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_3,
-                value = productImageUrls.getIndexAtOrEmpty(THIRD_IMAGE_URL)
-            )
+            if (productImageUrls.isNotEmpty()) {
+                addImageGeneratorData(
+                    key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_1,
+                    value = productImageUrls.getIndexAtOrEmpty(FIRST_IMAGE_URL)
+                )
+            }
+            if (productImageUrls.size >= PRODUCT_COUNT_2) {
+                addImageGeneratorData(
+                    key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_2,
+                    value = productImageUrls.getIndexAtOrEmpty(SECOND_IMAGE_URL)
+                )
+            }
+            if (productImageUrls.size >= PRODUCT_COUNT_3) {
+                addImageGeneratorData(
+                    key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_3,
+                    value = productImageUrls.getIndexAtOrEmpty(THIRD_IMAGE_URL)
+                )
+            }
             addImageGeneratorData(
                 key = ImageGeneratorConstants.ImageGeneratorKeys.AUDIENCE_TARGET,
                 value = ImageGeneratorConstants.AUDIENCE_TARGET.ALL_USERS
