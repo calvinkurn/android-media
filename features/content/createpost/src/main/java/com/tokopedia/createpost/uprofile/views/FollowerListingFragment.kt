@@ -35,6 +35,7 @@ import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.presentation.adapter.SellerFeatureFragmentAdapter
 import com.tokopedia.seller_migration_common.presentation.fragment.*
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSession
@@ -50,7 +51,7 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
     lateinit var viewModelFactory: ViewModelFactory
 
     private var followersContainer: ViewFlipper? = null
-    private var globalError: GlobalError? = null
+    private var globalError: LocalLoad? = null
     private var isLoggedIn: Boolean = false
 
     val userSessionInterface: UserSession by lazy {
@@ -134,20 +135,16 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
                 when (it) {
                     is UnknownHostException, is SocketTimeoutException -> {
                         followersContainer?.displayedChild = 2
-                        globalError?.setType(GlobalError.NO_CONNECTION)
-                        globalError?.show()
 
-                        globalError?.setActionClickListener {
+                        globalError?.refreshBtn?.setOnClickListener {
                             followersContainer?.displayedChild = 1
                            refreshMainUi()
                         }
                     }
                     is IllegalStateException -> {
                         followersContainer?.displayedChild = 2
-                        globalError?.setType(GlobalError.PAGE_FULL)
-                        globalError?.show()
 
-                        globalError?.setActionClickListener {
+                        globalError?.refreshBtn?.setOnClickListener {
                             followersContainer?.displayedChild = 1
                             refreshMainUi()
                         }
@@ -156,30 +153,21 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
                         when (it.localizedMessage?.toIntOrNull()) {
                             ReponseStatus.NOT_FOUND -> {
                                 followersContainer?.displayedChild = 2
-                                globalError?.setType(GlobalError.PAGE_NOT_FOUND)
-                                globalError?.show()
-
-                                globalError?.setActionClickListener {
+                                globalError?.refreshBtn?.setOnClickListener {
                                     followersContainer?.displayedChild = 1
                                     refreshMainUi()
                                 }
                             }
                             ReponseStatus.INTERNAL_SERVER_ERROR -> {
                                 followersContainer?.displayedChild = 2
-                                globalError?.setType(GlobalError.SERVER_ERROR)
-                                globalError?.show()
-
-                                globalError?.setActionClickListener {
+                                globalError?.refreshBtn?.setOnClickListener {
                                     followersContainer?.displayedChild = 1
                                     refreshMainUi()
                                 }
                             }
                             else -> {
                                 followersContainer?.displayedChild = 2
-                                globalError?.setType(GlobalError.SERVER_ERROR)
-                                globalError?.show()
-
-                                globalError?.setActionClickListener {
+                                globalError?.refreshBtn?.setOnClickListener {
                                     followersContainer?.displayedChild = 1
                                     refreshMainUi()
                                 }

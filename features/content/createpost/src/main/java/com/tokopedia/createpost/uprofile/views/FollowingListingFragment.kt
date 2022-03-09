@@ -28,6 +28,7 @@ import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
+import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.user.session.UserSession
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -44,7 +45,7 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
     }
 
     private var followersContainer: ViewFlipper? = null
-    private var globalError: GlobalError? = null
+    private var globalError: LocalLoad? = null
 
     private var isLoggedIn: Boolean = false
 
@@ -124,20 +125,16 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
                 when (it) {
                     is UnknownHostException, is SocketTimeoutException -> {
                         followersContainer?.displayedChild = 2
-                        globalError?.setType(GlobalError.NO_CONNECTION)
-                        globalError?.show()
 
-                        globalError?.setActionClickListener {
+                        globalError?.refreshBtn?.setOnClickListener {
                             followersContainer?.displayedChild = 1
                             refreshMainUi()
                         }
                     }
                     is IllegalStateException -> {
                         followersContainer?.displayedChild = 2
-                        globalError?.setType(GlobalError.PAGE_FULL)
-                        globalError?.show()
 
-                        globalError?.setActionClickListener {
+                        globalError?.refreshBtn?.setOnClickListener {
                             followersContainer?.displayedChild = 1
                             refreshMainUi()
                         }
@@ -146,30 +143,24 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
                         when (it.localizedMessage?.toIntOrNull()) {
                             ReponseStatus.NOT_FOUND -> {
                                 followersContainer?.displayedChild = 2
-                                globalError?.setType(GlobalError.PAGE_NOT_FOUND)
-                                globalError?.show()
 
-                                globalError?.setActionClickListener {
+                                globalError?.refreshBtn?.setOnClickListener {
                                     followersContainer?.displayedChild = 1
                                     refreshMainUi()
                                 }
                             }
                             ReponseStatus.INTERNAL_SERVER_ERROR -> {
                                 followersContainer?.displayedChild = 2
-                                globalError?.setType(GlobalError.SERVER_ERROR)
-                                globalError?.show()
 
-                                globalError?.setActionClickListener {
+                                globalError?.refreshBtn?.setOnClickListener {
                                     followersContainer?.displayedChild = 1
                                     refreshMainUi()
                                 }
                             }
                             else -> {
                                 followersContainer?.displayedChild = 2
-                                globalError?.setType(GlobalError.SERVER_ERROR)
-                                globalError?.show()
 
-                                globalError?.setActionClickListener {
+                                globalError?.refreshBtn?.setOnClickListener {
                                     followersContainer?.displayedChild = 1
                                     refreshMainUi()
                                 }
