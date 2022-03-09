@@ -12,7 +12,10 @@ import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Event
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Label
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
+import com.tokopedia.otp.verification.domain.data.ROLLANCE_KEY_MISCALL_OTP
+import com.tokopedia.otp.verification.domain.data.TAG_AUTO_READ
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics
@@ -26,6 +29,11 @@ import javax.inject.Inject
  */
 
 class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface) {
+
+    private val remoteConfig = RemoteConfigInstance.getInstance().abTestPlatform
+    private val isNewOtpMiscall by lazy {
+        remoteConfig?.getString(ROLLANCE_KEY_MISCALL_OTP)?.contains(ROLLANCE_KEY_MISCALL_OTP) == true
+    }
 
     fun trackScreen(screenName: String) {
         Timber.w("""P2screenName = $screenName | ${Build.FINGERPRINT} | ${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | ${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}""")
@@ -619,7 +627,7 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Action.ACTION_CLICK_METHOD_OTP,
                 if (isSuccess) { "success" } else { "fail - $message" }
                         + " - ${otpData.otpType} - ${modeListData.modeText}"
-                        + if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) " - autoread" else ""
+                        + if (modeListData.modeText == OtpConstant.OtpMode.MISCALL && isNewOtpMiscall) " - $TAG_AUTO_READ" else ""
         ))
     }
 
@@ -630,7 +638,7 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Action.ACTION_CLICK_RESEND_OTP,
                 if (isSuccess) { "success" } else { "fail - $message" }
                         + " - ${otpData.otpType} - ${modeListData.modeText}"
-                        + if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) " - autoread" else ""
+                        + if (modeListData.modeText == OtpConstant.OtpMode.MISCALL && isNewOtpMiscall) " - $TAG_AUTO_READ" else ""
         ))
     }
 
@@ -651,7 +659,7 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Action.ACTION_AUTO_SUBMIT_OTP,
                 if (isSuccess) { "success" } else { "fail - $message" }
                         + " - ${otpData.otpType} - ${modeListData.modeText}"
-                        + if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) " - autoread" else ""
+                        + if (modeListData.modeText == OtpConstant.OtpMode.MISCALL && isNewOtpMiscall) " - $TAG_AUTO_READ" else ""
         ))
     }
 
