@@ -23,10 +23,10 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
 
     companion object {
         private const val EMPTY_STRING = ""
-        private const val IS_UPDATE_MODE = false
+        private const val IS_UPDATE_MODE = true
         private const val THOUSAND  = 1_000f
         private const val MILLION = 1_000_000f
-        private const val IS_COUPON_PRODUCT = true
+        private const val SHOULD_CREATE_NEW_COUPON = false
     }
 
     suspend fun execute(
@@ -160,7 +160,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
 
     private suspend fun initiateCoupon(isUpdateMode: Boolean): InitiateVoucherUiModel {
         initiateCouponUseCase.query = GqlQueryConstant.INITIATE_COUPON_PRODUCT_QUERY
-        initiateCouponUseCase.params = InitiateCouponUseCase.createRequestParam(isUpdateMode, IS_COUPON_PRODUCT)
+        initiateCouponUseCase.params = InitiateCouponUseCase.createRequestParam(isUpdateMode, SHOULD_CREATE_NEW_COUPON)
         return initiateCouponUseCase.executeOnBackground()
     }
 }
