@@ -508,7 +508,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
     }
 
     override fun onProductCheckBoxClicked(isSelected: Boolean, uiModel: ProductUiModel) {
-        if (viewModel.isFiltering) return
+//        if (viewModel.isFiltering) return
         viewModel.isSelectAllMode = false
         if (isSelected) {
             // implement selection bar ux

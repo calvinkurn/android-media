@@ -270,7 +270,7 @@ class ManageProductFragment : BaseDaggerFragment(),
                     )
                     // set product variant selection
                     val selectedProductIds = viewModel.getSelectedProductIds()
-                    val finalProductList = viewModel.setVariantSelection(updatedProductList, selectedProductIds)
+                    val finalProductList = viewModel.setVariantSelection(updatedProductList, selectedProductIds, viewModel.getIsViewing())
 
                     val newAddedProducts = arguments?.getParcelableArrayList<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)?.toList()
                     finalProductList.addAll(newAddedProducts?: listOf())

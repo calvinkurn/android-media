@@ -311,11 +311,21 @@ class AddProductViewModel @Inject constructor(
     fun applyUserSelections(userSelections: List<ProductUiModel>,
                             productData: List<ProductUiModel>): List<ProductUiModel> {
         val productDataWithSelections = productData.toMutableList()
-        productDataWithSelections.forEach { uiModel ->
-            val match = userSelections.firstOrNull() { selection ->
-                selection.id == uiModel.id
+        productDataWithSelections.forEach { productUiModel ->
+            val selectedProductMatch = userSelections.firstOrNull() { selection ->
+                selection.id == productUiModel.id
             }
-            if (match != null) uiModel.isSelected = true
+            if (selectedProductMatch != null) {
+                productUiModel.isSelected = true
+                val mutableVariants = productUiModel.variants.toMutableList()
+                mutableVariants.forEach { variantUiModel ->
+                    val variantMatch = selectedProductMatch.variants.firstOrNull {
+                        variantUiModel.variantId == it.variantId
+                    }
+                    variantUiModel.isSelected = variantMatch?.isSelected ?: false
+                }
+                productUiModel.variants = mutableVariants.toList()
+            }
         }
         return productDataWithSelections.toList()
     }
