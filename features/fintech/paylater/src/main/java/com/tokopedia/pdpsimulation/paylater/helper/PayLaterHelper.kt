@@ -2,10 +2,13 @@ package com.tokopedia.pdpsimulation.paylater.helper
 
 import android.content.Context
 import android.os.Bundle
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.pdpsimulation.paylater.domain.model.BasePayLaterWidgetUiModel
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
+import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterArgsDescriptor
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
@@ -51,6 +54,30 @@ object PayLaterHelper {
     private fun routeToWebView(context: Context?, webLink: String?) {
         if (!webLink.isNullOrEmpty())
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, webLink)
+    }
+
+    private fun setAdditionalParam(productId:String,tenure: Int?, gatewayCode: String?, gatewayId: String?): String {
+        return (ApplinkConst.PAYLATER + "?productID=${productId}" +
+                "&tenure=$tenure" +
+                "&gatewayCode=$gatewayCode" +
+                "&gatewayID=$gatewayId").encodeToUtf8()
+    }
+
+     fun setCustomProductUrl(detail: Detail,payLaterArgsDescriptor:PayLaterArgsDescriptor):String
+    {
+      return detail.cta.android_url +
+                "?productID=${payLaterArgsDescriptor.productId}" +
+                "&tenure=${detail.tenure}" +
+                "&gatewayCode=${detail.gatewayDetail?.gatewayCode}" +
+                "&gatewayID=${detail.gatewayDetail?.gateway_id}" +
+                "&productURL=${
+                    setAdditionalParam(
+                        payLaterArgsDescriptor.productId,
+                        detail.tenure,
+                        detail.gatewayDetail?.gatewayCode,
+                        detail.gatewayDetail?.gateway_id
+                    )
+                }"
     }
 
     // currently will be closed from backend

@@ -26,6 +26,5 @@
     <string name="paylater_occ_quantity_overflow">Oops, stoknya tinggal</string>
     <string name="paylater_occ_min_quantity">Min. beli 1 barang</string>
     <string name="paylater_occ_change">Ganti</string>
-    <string name="paylater_simulation_constant">tokopedia://fintech/paylater</string>
 
 </resources>

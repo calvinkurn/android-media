@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
@@ -45,7 +44,6 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    //private lateinit var payLaterArgsDescriptor: PayLaterArgsDescriptor
 
     private val payLaterViewModel: PayLaterViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(requireActivity(), viewModelFactory.get())
@@ -86,21 +84,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     )
 
     private fun handleAction(detail: Detail) {
-
-        val customUrl = detail.cta.android_url +
-                "?productID=${payLaterArgsDescriptor.productId}" +
-                "&tenure=${detail.tenure}" +
-                "&gatewayCode=${detail.gatewayDetail?.gatewayCode}" +
-                "&gatewayID=${detail.gatewayDetail?.gateway_id}" +
-                "&productURL=${
-                    setAdditionalParam(
-                        detail.tenure,
-                        detail.gatewayDetail?.gatewayCode,
-                        detail.gatewayDetail?.gateway_id
-                    )
-                }"
-
-        PayLaterHelper.handleClickNavigation(context, detail, customUrl,
+        PayLaterHelper.handleClickNavigation(context, detail, PayLaterHelper.setCustomProductUrl(detail,payLaterArgsDescriptor),
             openHowToUse = {
                 bottomSheetNavigator.showBottomSheet(
                     PayLaterActionStepsBottomSheet::class.java,
@@ -116,12 +100,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun setAdditionalParam(tenure: Int?, gatewayCode: String?, gatewayId: String?): String {
-        return (getString(com.tokopedia.pdpsimulation.R.string.paylater_simulation_constant) + "?productID=${payLaterArgsDescriptor.productId}" +
-                "&tenure=$tenure" +
-                "&gatewayCode=$gatewayCode" +
-                "&gatewayID=$gatewayId").encodeToUtf8()
-    }
+
 
     private fun openInstallmentBottomSheet(detail: Detail) {
         bottomSheetNavigator.showBottomSheet(
