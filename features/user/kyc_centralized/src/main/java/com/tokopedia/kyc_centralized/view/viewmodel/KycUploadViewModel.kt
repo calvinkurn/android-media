@@ -110,12 +110,12 @@ class KycUploadViewModel @Inject constructor(
                     }
                     else -> {
                         val result = kycUploadUseCase.uploadImages(finalKtp, finalFace, tkpdProjectId)
-                        if (result.header.message.isNotEmpty() && result.header.errorCode.isNotEmpty()) {
+                        if (result.header.message.isNotEmpty() || result.header.errorCode.isNotEmpty()) {
 
                             // set with empty throwable message so it can trigger general error
                             _kycResponse.postValue(Fail(Throwable()))
                             sendLoadTimeUploadLog(
-                                    isSuccess = result.data.isSuccessRegister,
+                                    isSuccess = false,
                                     uploadTime = System.currentTimeMillis() - startTimeLog,
                                     encryptionTimeFileKtp = encryptionTimeKtp,
                                     encryptionTimeFileFace = encryptionTimeFace,
