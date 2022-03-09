@@ -105,6 +105,7 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
         view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.setOnRefreshListener {
             isSwipeRefresh = true
             mAdapter.cursor = ""
+            mAdapter.clear()
             mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_ID))
         }
     }
