@@ -50,7 +50,7 @@ class ChangeBioUsernameViewModel @Inject constructor(
     val profileFeed: LiveData<Result<ProfileFeedData>>
     get() = _profileFeed
 
-    val _loadingState = MutableLiveData<Boolean>()
+    private val _loadingState = MutableLiveData<Boolean>()
 
     val loadingState: LiveData<Boolean>
         get() = _loadingState

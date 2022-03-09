@@ -17,6 +17,8 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
@@ -71,6 +73,10 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 
     private val binding: FragmentProfileInfoBinding? by viewBinding()
 
+	private var coachmark: CoachMark2? = null
+
+	private val coachMarkItem = emptyList<CoachMark2Item>()
+
     val adapter by lazy {
 	ProfileInfoAdapter(ProfileInfoListTypeFactory(this, this))
     }
@@ -112,6 +118,9 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
     }
 
     private fun initViews() {
+		context?.let {
+			coachmark = CoachMark2(it)
+		}
 	val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 	binding?.fragmentProfileInfoRv?.layoutManager = layoutManager
 	binding?.fragmentProfileInfoRv?.adapter = adapter

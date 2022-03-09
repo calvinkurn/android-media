@@ -300,7 +300,11 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
                 if (text?.length ?: 0 >= minChar) {
                     viewModel.validateUsername(text.toString())
                 } else {
-                    setInvalidInputUsername(getString(R.string.error_min_char, minChar))
+                    if (text?.length == 0) {
+                        setInvalidInputUsername(getString(R.string.error_cant_empty))
+                    } else {
+                        setInvalidInputUsername(getString(R.string.error_min_char, minChar))
+                    }
                     viewModel.cancelValidation()
                     binding?.stubField?.etUsername?.icon1?.hide()
                 }

@@ -204,5 +204,6 @@
     <string name="key_error_username">Username</string>
     <string name="error_min_char">Minimum %1$d karakter.</string>
     <string name="success_edit_profile_info">Info profil berhasil diubah.</string>
+    <string name="error_cant_empty">Wajib diisi.</string>
 
 </resources>
