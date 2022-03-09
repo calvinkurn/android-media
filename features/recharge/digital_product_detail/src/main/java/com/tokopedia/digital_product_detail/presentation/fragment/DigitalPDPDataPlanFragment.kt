@@ -305,6 +305,14 @@ class DigitalPDPDataPlanFragment :
             }
         })
 
+        viewModel.autoCompleteData.observe(viewLifecycleOwner, {
+            when (it) {
+                is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
+                is RechargeNetworkResult.Fail -> {}
+                is RechargeNetworkResult.Loading -> {}
+            }
+        })
+
         viewModel.catalogPrefixSelect.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetPrefixOperator()
@@ -459,9 +467,23 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
+    private fun getAutoComplete() {
+        viewModel.run {
+            setAutoCompleteLoading()
+            getAutoComplete(
+                listOf(
+                    TelcoCategoryType.CATEGORY_PULSA,
+                    TelcoCategoryType.CATEGORY_PAKET_DATA,
+                    TelcoCategoryType.CATEGORY_ROAMING
+                )
+            )
+        }
+    }
+
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
+        getAutoComplete()
         getFavoriteNumber()
         initEmptyState(data.banners)
         renderPrefill(data.userPerso)
@@ -502,8 +524,15 @@ class DigitalPDPDataPlanFragment :
             if (favoriteNumber.isNotEmpty()) {
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
-                setAutoCompleteList(favoriteNumber)
                 dynamicSpacerHeightRes = R.dimen.dynamic_banner_space_extended
+            }
+        }
+    }
+
+    private fun onSuccessGetAutoComplete(autoComplete: List<TopupBillsPersoFavNumberItem>) {
+        binding?.rechargePdpPaketDataClientNumberWidget?.run {
+            if (autoComplete.isNotEmpty()) {
+                setAutoCompleteList(autoComplete)
             }
         }
     }
@@ -1386,6 +1415,7 @@ class DigitalPDPDataPlanFragment :
                 } else {
                     handleCallbackAnySavedNumberCancel()
                 }
+                getAutoComplete()
                 getFavoriteNumber()
             } else if (requestCode == REQUEST_CODE_LOGIN) {
                 addToCart()

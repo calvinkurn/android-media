@@ -2,12 +2,10 @@ package com.tokopedia.digital_product_detail.presentation.viewmodel
 
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
-import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
 import com.tokopedia.digital_product_detail.data.mapper.DigitalDenomMapper
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.presentation.data.DataPlanDataFactory
-import com.tokopedia.digital_product_detail.presentation.data.PulsaDataFactory
 import kotlinx.coroutines.CancellationException
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -94,7 +92,7 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
         onGetFavoriteNumber_thenReturn(response)
 
         viewModel.getFavoriteNumber(listOf())
-        verifyGetFavoriteNumberRepoGetCalled()
+        verifyGetFavoriteNumberChipsRepoGetCalled()
         verifyGetFavoriteNumberSuccess(response.persoFavoriteNumber.items)
     }
 
@@ -103,8 +101,35 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
         onGetFavoriteNumber_thenReturn(NullPointerException())
 
         viewModel.getFavoriteNumber(listOf())
-        verifyGetFavoriteNumberRepoGetCalled()
+        verifyGetFavoriteNumberChipsRepoGetCalled()
         verifyGetFavoriteNumberFail()
+    }
+
+    @Test
+    fun `given autoComplete loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setAutoCompleteLoading()
+        verifyGetAutoCompleteLoading(loadingResponse)
+    }
+
+    @Test
+    fun `when getting autoComplete should run and give success result`() {
+        val response = dataFactory.getFavoriteNumberData()
+        onGetAutoComplete_thenReturn(response)
+
+        viewModel.getAutoComplete(listOf())
+        verifyGetFavoriteNumberListRepoGetCalled()
+        verifyGetAutoCompleteSuccess(response.persoFavoriteNumber.items)
+    }
+
+    @Test
+    fun `when getting autoComplete should run and give success fail`() {
+        onGetAutoComplete_thenReturn(NullPointerException())
+
+        viewModel.getAutoComplete(listOf())
+        verifyGetFavoriteNumberListRepoGetCalled()
+        verifyGetAutoCompleteFail()
     }
 
     @Test

@@ -22,7 +22,18 @@ class RechargeFavoriteNumberRepositoryImpl @Inject constructor(
         }.executeOnBackground()
     }
 
+    override suspend fun getFavoriteNumberList(
+        categoryIds: List<Int>,
+        operatorIds: List<Int>
+    ): TopupBillsPersoFavNumberData = withContext(dispatchers.io) {
+
+        return@withContext getRechargeFavoriteNumberUseCase.apply {
+            setRequestParams(categoryIds, operatorIds, CHANNEL_FAVORITE_NUMBER_LIST)
+        }.executeOnBackground()
+    }
+
     companion object {
         const val CHANNEL_FAVORITE_NUMBER_CHIP = "favorite_number_chips"
+        const val CHANNEL_FAVORITE_NUMBER_LIST = "favorite_number_list"
     }
 }

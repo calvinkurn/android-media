@@ -167,6 +167,14 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             }
         })
 
+        viewModel.autoCompleteData.observe(viewLifecycleOwner, {
+            when (it) {
+                is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
+                is RechargeNetworkResult.Fail -> {}
+                is RechargeNetworkResult.Loading -> {}
+            }
+        })
+
         viewModel.catalogSelectGroup.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetOperatorSelectGroup(it.data)
@@ -296,6 +304,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                 getString(R.string.selection_null_product_error)
             )
         }
+        getAutoComplete()
         getFavoriteNumber()
         renderProduct()
         renderOperatorChipsAndTitle(operatorGroup)
@@ -348,7 +357,14 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             if (favoriteNumber.isNotEmpty()) {
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
-                setAutoCompleteList(favoriteNumber)
+            }
+        }
+    }
+
+    private fun onSuccessGetAutoComplete(autoComplete: List<TopupBillsPersoFavNumberItem>) {
+        binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
+            if (autoComplete.isNotEmpty()) {
+                setAutoCompleteList(autoComplete)
             }
         }
     }
@@ -435,6 +451,16 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         viewModel.run {
             setFavoriteNumberLoading()
             getFavoriteNumber(
+                listOf(categoryId),
+                viewModel.operatorList.map { it.id.toInt() }
+            )
+        }
+    }
+
+    private fun getAutoComplete() {
+        viewModel.run {
+            setAutoCompleteLoading()
+            getAutoComplete(
                 listOf(categoryId),
                 viewModel.operatorList.map { it.id.toInt() }
             )
@@ -858,6 +884,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                 } else {
                     handleCallbackAnySavedNumberCancel()
                 }
+                getAutoComplete()
                 getFavoriteNumber()
             } else if (requestCode == DigitalPDPConstant.REQUEST_CODE_LOGIN) {
                 addToCart()

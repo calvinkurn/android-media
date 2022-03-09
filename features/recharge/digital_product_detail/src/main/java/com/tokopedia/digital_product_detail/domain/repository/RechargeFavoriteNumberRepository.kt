@@ -7,4 +7,9 @@ interface RechargeFavoriteNumberRepository {
         categoryIds: List<Int>,
         operatorIds: List<Int> = listOf()
     ): TopupBillsPersoFavNumberData
+
+    suspend fun getFavoriteNumberList(
+        categoryIds: List<Int>,
+        operatorIds: List<Int> = listOf()
+    ): TopupBillsPersoFavNumberData
 }

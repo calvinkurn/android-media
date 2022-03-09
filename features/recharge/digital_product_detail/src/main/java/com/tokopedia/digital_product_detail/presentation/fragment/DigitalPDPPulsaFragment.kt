@@ -257,6 +257,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 }
             }
         })
+
         viewModel.favoriteNumberData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetFavoriteNumber(it.data)
@@ -264,6 +265,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 is RechargeNetworkResult.Loading -> {
                     binding?.rechargePdpPulsaClientNumberWidget?.setFilterChipShimmer(true)
                 }
+            }
+        })
+
+        viewModel.autoCompleteData.observe(viewLifecycleOwner, {
+            when (it) {
+                is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
+                is RechargeNetworkResult.Fail -> {}
+                is RechargeNetworkResult.Loading -> {}
             }
         })
 
@@ -399,9 +408,21 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         )
     }
 
+    private fun getAutoComplete() {
+        viewModel.setAutoCompleteLoading()
+        viewModel.getAutoComplete(
+            listOf(
+                TelcoCategoryType.CATEGORY_PULSA,
+                TelcoCategoryType.CATEGORY_PAKET_DATA,
+                TelcoCategoryType.CATEGORY_ROAMING
+            )
+        )
+    }
+
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
+        getAutoComplete()
         getFavoriteNumber()
         initEmptyState(data.banners)
         renderPrefill(data.userPerso)
@@ -429,8 +450,15 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             if (favoriteNumber.isNotEmpty()) {
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
-                setAutoCompleteList(favoriteNumber)
                 dynamicSpacerHeightRes = R.dimen.dynamic_banner_space_extended
+            }
+        }
+    }
+
+    private fun onSuccessGetAutoComplete(autoComplete: List<TopupBillsPersoFavNumberItem>) {
+        binding?.rechargePdpPulsaClientNumberWidget?.run {
+            if (autoComplete.isNotEmpty()) {
+                setAutoCompleteList(autoComplete)
             }
         }
     }
@@ -1226,6 +1254,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 } else {
                     handleCallbackAnySavedNumberCancel()
                 }
+                getAutoComplete()
                 getFavoriteNumber()
             } else if (requestCode == REQUEST_CODE_LOGIN) {
                 addToCart()
