@@ -5,6 +5,7 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.helper.contains
+import com.tokopedia.play.broadcaster.helper.containsEventAction
 import com.tokopedia.play.broadcaster.helper.delay
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.play.broadcaster.type.OriginalPrice
@@ -71,9 +72,7 @@ class ProductChooserAnalyticTest {
 
         assertThat(
             cassavaTestRule.validate(analyticFile),
-            contains(
-                "eventAction" to "click - close button on product bottom sheet"
-            )
+            containsEventAction("click - close button on product bottom sheet")
         )
     }
 
@@ -89,9 +88,7 @@ class ProductChooserAnalyticTest {
 
         assertThat(
             cassavaTestRule.validate(analyticFile),
-            contains(
-                "eventAction" to "click - confirm close on add product page"
-            )
+            containsEventAction("click - confirm close on add product page")
         )
     }
 
@@ -107,9 +104,7 @@ class ProductChooserAnalyticTest {
 
         assertThat(
             cassavaTestRule.validate(analyticFile),
-            contains(
-                "eventAction" to "click - cancel close on add product page"
-            )
+            containsEventAction("click - cancel close on add product page")
         )
     }
 
@@ -121,9 +116,7 @@ class ProductChooserAnalyticTest {
 
         assertThat(
             cassavaTestRule.validate(analyticFile),
-            contains(
-                "eventAction" to "click - save product card"
-            )
+            containsEventAction("click - save product card")
         )
     }
 
@@ -135,9 +128,7 @@ class ProductChooserAnalyticTest {
 
         assertThat(
             cassavaTestRule.validate(analyticFile),
-            contains(
-                "eventAction" to "click - product card"
-            )
+            containsEventAction("click - product card")
         )
     }
 
@@ -149,9 +140,7 @@ class ProductChooserAnalyticTest {
 
         assertThat(
             cassavaTestRule.validate(analyticFile),
-            contains(
-                "eventAction" to "click - product sort"
-            )
+            containsEventAction("click - product sort")
         )
     }
 
@@ -163,9 +152,7 @@ class ProductChooserAnalyticTest {
 
         assertThat(
             cassavaTestRule.validate(analyticFile),
-            contains(
-                "eventAction" to "click - campaign & etalase filter"
-            )
+            containsEventAction("click - campaign & etalase filter")
         )
     }
 
@@ -180,9 +167,7 @@ class ProductChooserAnalyticTest {
 
         assertThat(
             cassavaTestRule.validate(analyticFile),
-            contains(
-                "eventAction" to "click - search bar"
-            )
+            containsEventAction("click - search bar")
         )
     }
 
@@ -198,9 +183,7 @@ class ProductChooserAnalyticTest {
 
         assertThat(
             cassavaTestRule.validate(analyticFile),
-            contains(
-                "eventAction" to "click - sort type"
-            )
+            containsEventAction("click - sort type")
         )
     }
 }
