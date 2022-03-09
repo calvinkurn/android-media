@@ -39,7 +39,10 @@ class ProductViewHolder(private val viewBinding: ItemProductBinding, private val
 
             imageProduct.setImageUrl(element.mainProductImageUrl)
             labelProductName.text = element.mainProductName
-            val productQuantityAndPrice = "${element.mainProductQuantity} x ${CurrencyFormatUtil.convertPriceValueToIdrFormat(element.mainProductPrice, false).removeDecimalSuffix()}"
+            var productQuantityAndPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.mainProductPrice, false).removeDecimalSuffix()
+            if (element.mainProductQuantity > 1) {
+                productQuantityAndPrice = "${element.mainProductQuantity} x ${CurrencyFormatUtil.convertPriceValueToIdrFormat(element.mainProductPrice, false).removeDecimalSuffix()}"
+            }
             labelProductQuantityAndPrice.text = productQuantityAndPrice
         }
     }

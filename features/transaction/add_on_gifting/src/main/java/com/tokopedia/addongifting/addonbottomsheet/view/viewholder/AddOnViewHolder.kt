@@ -59,11 +59,11 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
             } else {
                 labelAddOnDescription.gone()
             }
-            val addOnQuantityAndPrice = "${element.addOnQty} x ${CurrencyFormatUtil.convertPriceValueToIdrFormat(element.addOnPrice, false).removeDecimalSuffix()}"
-            labelAddOnQuantityAndPrice.text = addOnQuantityAndPrice
+            val addOnQuantityAndPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.addOnPrice, false).removeDecimalSuffix()
+            labelAddOnPrice.text = addOnQuantityAndPrice
             labelAddOnName.setOnClickListener(getCheckboxClickListener())
             labelAddOnDescription.setOnClickListener(getCheckboxClickListener())
-            labelAddOnQuantityAndPrice.setOnClickListener(getCheckboxClickListener())
+            labelAddOnPrice.setOnClickListener(getCheckboxClickListener())
         }
     }
 
