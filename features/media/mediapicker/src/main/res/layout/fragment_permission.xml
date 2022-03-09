@@ -1,44 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:gravity="center">
+    android:orientation="vertical">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/typography"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Izin akses XXX kamu, ya"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:typographyType="heading_2"
-        app:typographyWeight="bold" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:gravity="center"
-        android:textColor="@color/Unify_NN600"
-        android:text="Biar saat rekam video ada suaranya, kamu perlu aktifkan akses kamera dan mikrofon di HP-mu."
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/typography"
-        app:typographyType="body_2" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/lst_permission"
+    <LinearLayout
+        android:id="@+id/permission_page"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/bg_picker_permission_border_list"
-        tools:listitem="@layout/view_item_runtime_permission"/>
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
 
-</LinearLayout>
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="heading_2"
+            app:typographyWeight="bold"
+            tools:text="Izin akses XXX kamu, ya" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="center"
+            android:textColor="@color/Unify_NN600"
+            tools:text="Biar saat rekam video ada suaranya, kamu perlu aktifkan akses kamera dan mikrofon di HP-mu."
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_title"
+            app:typographyType="body_2" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/lst_permission"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_picker_permission_border_list"
+            tools:listitem="@layout/view_item_runtime_permission"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

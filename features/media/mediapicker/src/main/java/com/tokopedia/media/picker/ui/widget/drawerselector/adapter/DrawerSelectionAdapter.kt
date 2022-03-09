@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.common.uimodel.MediaUiModel
-import com.tokopedia.media.picker.ui.uimodel.containByName
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerActionType
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
 import com.tokopedia.media.picker.ui.widget.drawerselector.viewholder.PlaceholderViewHolder
@@ -114,7 +113,7 @@ class DrawerSelectionAdapter(
 
     @SuppressLint("NotifyDataSetChanged")
     fun setData(media: MediaUiModel) {
-        if (medias.containByName(media)) return
+        if (medias.contains(media)) return
         this.medias.add(media)
 
         listener?.onDataSetChanged(

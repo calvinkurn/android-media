@@ -10,23 +10,27 @@ import com.tokopedia.media.common.types.PickerSelectionType
 object PickerUiConfig {
 
     @PickerPageType
-    var paramPage = PickerPageType.COMMON
+    var pageType = PickerPageType.COMMON
+        private set
 
     @PickerModeType
-    var paramMode = PickerModeType.COMMON
+    var modeType = PickerModeType.COMMON
+        private set
 
     @PickerSelectionType
-    var paramType = PickerSelectionType.MULTIPLE
+    var selectionMode = PickerSelectionType.MULTIPLE
+        private set
 
     var pickerParam: PickerParam? = null
+        private set
 
     fun pickerParam(): PickerParam {
-        val isOnlyVideo = paramMode == PickerModeType.VIDEO_ONLY
-        val isIncludeVideo = paramMode == PickerModeType.COMMON
-        val isMultipleSelection = paramType == PickerSelectionType.MULTIPLE
+        val isOnlyVideo = modeType == PickerModeType.VIDEO_ONLY
+        val isIncludeVideo = modeType == PickerModeType.COMMON
+        val isMultipleSelection = selectionMode == PickerSelectionType.MULTIPLE
 
         return pickerParam ?: PickerParam(
-            pageType = paramPage,
+            pageType = pageType,
             isOnlyVideo = isOnlyVideo,
             isIncludeVideo = isIncludeVideo,
             isMultipleSelection = isMultipleSelection,
@@ -36,7 +40,10 @@ object PickerUiConfig {
     }
 
     fun isSingleSelectionType()
-        = paramType == PickerSelectionType.SINGLE
+        = selectionMode == PickerSelectionType.SINGLE
+
+    fun isPhotoModeOnly()
+        = modeType == PickerModeType.IMAGE_ONLY
 
     /**
      * queryPage is to specify the desired page type.
@@ -49,7 +56,7 @@ object PickerUiConfig {
      * tokopedia://media-picker?page=...
      */
     fun setupQueryPage(data: Uri) {
-        paramPage = when(data.getQueryParameter(MediaPicker.PARAM_PAGE)) {
+        pageType = when(data.getQueryParameter(MediaPicker.PARAM_PAGE)) {
             MediaPicker.VALUE_PAGE_CAMERA -> PickerPageType.CAMERA
             MediaPicker.VALUE_PAGE_GALLERY -> PickerPageType.GALLERY
             else -> PickerPageType.COMMON
@@ -68,7 +75,7 @@ object PickerUiConfig {
      * tokopedia://media-picker?mode=...
      */
     fun setupQueryMode(data: Uri) {
-        paramMode = when(data.getQueryParameter(MediaPicker.PARAM_MODE)) {
+        modeType = when(data.getQueryParameter(MediaPicker.PARAM_MODE)) {
             MediaPicker.VALUE_MODE_IMAGE -> PickerModeType.IMAGE_ONLY
             MediaPicker.VALUE_MODE_VIDEO -> PickerModeType.VIDEO_ONLY
             else -> PickerModeType.COMMON
@@ -84,7 +91,7 @@ object PickerUiConfig {
      * tokopedia://media-picker?type=...
      */
     fun setupQuerySelectionType(data: Uri) {
-        paramType = when (data.getQueryParameter(MediaPicker.PARAM_SELECTION)) {
+        selectionMode = when (data.getQueryParameter(MediaPicker.PARAM_SELECTION)) {
             MediaPicker.VALUE_TYPE_SINGLE -> PickerSelectionType.SINGLE
             else -> PickerSelectionType.MULTIPLE // default
         }

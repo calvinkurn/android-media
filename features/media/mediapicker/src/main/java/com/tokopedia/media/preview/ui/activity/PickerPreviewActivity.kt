@@ -129,7 +129,7 @@ class PickerPreviewActivity : BaseActivity()
     }
 
     private fun setupSelectionDrawerOrActionButton() {
-        val isMultipleSelectionType = PickerUiConfig.paramType == PickerSelectionType.MULTIPLE
+        val isMultipleSelectionType = PickerUiConfig.selectionMode == PickerSelectionType.MULTIPLE
 
         if (isMultipleSelectionType) {
             binding?.drawerSelector?.setMaxAdapterSize(uiModel.size)

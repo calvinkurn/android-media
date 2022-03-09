@@ -2,14 +2,6 @@ package com.tokopedia.media.picker.ui.uimodel
 
 import com.tokopedia.media.common.uimodel.MediaUiModel
 
-// TODO: override hashCode on [MediaUiModel] instead
-
-fun List<MediaUiModel>.containByName(media: MediaUiModel): Boolean {
-    return this.any {
-        it.name == media.name
-    }
-}
-
 fun List<MediaUiModel>?.hasVideoBy(count: Int): Boolean {
     return this?.filter { it.isVideo() }?.size?: 0 >= count
 }

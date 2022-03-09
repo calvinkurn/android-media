@@ -16,10 +16,10 @@ data class PickerParam(
     private var maxImageSize: Long = 1_000_000, // 10 mb
     private var minImageResolution: Int = 300, // px
     private var maxImageResolution: Int = 20000, // px
-    private var isIncludeVideo: Boolean = true,
-    private var isOnlyVideo: Boolean = false,
+    private var isIncludeVideo: Boolean = true, // has handled by appLink
+    private var isOnlyVideo: Boolean = false, // has handled by appLink
+    private var isMultipleSelection: Boolean = true, // has handled by appLink
     private var isIncludeAnimation: Boolean = false,
-    private var isMultipleSelection: Boolean = true,
     private var withEditor: Boolean = false,
     private var includeMedias: List<File> = emptyList(),
     private var excludedMedias: List<File> = emptyList(),

@@ -164,7 +164,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     }
 
     private fun setupSelectionDrawerWidget(isShown: Boolean) {
-        val isMultipleSelectionType = PickerUiConfig.paramType == PickerSelectionType.MULTIPLE
+        val isMultipleSelectionType = PickerUiConfig.selectionMode == PickerSelectionType.MULTIPLE
 
         if (isMultipleSelectionType) {
             binding?.drawerSelector?.setMaxAdapterSize(param.maxMediaAmount())
@@ -202,7 +202,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     }
 
     private fun selectMedia(media: MediaUiModel, isSelected: Boolean): Boolean {
-        if (PickerUiConfig.paramType == PickerSelectionType.MULTIPLE) {
+        if (PickerUiConfig.selectionMode == PickerSelectionType.MULTIPLE) {
             if (!isSelected && media.isVideo()) {
                 // video validation
                 if (listener?.hasVideoLimitReached() == true) {
@@ -223,7 +223,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
                 listener?.onShowMediaLimitReachedToast()
                 return false
             }
-        } else if (PickerUiConfig.paramType == PickerSelectionType.SINGLE) {
+        } else if (PickerUiConfig.selectionMode == PickerSelectionType.SINGLE) {
             if (listener?.mediaSelected()?.isNotEmpty() == true || adapter.selectedMedias.isNotEmpty()) {
                 adapter.removeAllSelectedSingleClick()
             }

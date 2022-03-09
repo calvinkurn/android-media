@@ -8,6 +8,11 @@
     <string name="picker_toolbar_album_title">Pilih Album</string>
     <string name="picker_toolbar_preview_title">Preview</string>
 
+    <string name="picker_title_gallery_permission">Izin akses galeri kamu, ya.</string>
+    <string name="picker_title_camera_photo_permission">Izin akses kamera kamu, ya.</string>
+    <string name="picker_title_camera_video_permission">Izin akses kamera dan mikrofon kamu, ya.</string>
+    <string name="picker_title_common_permission">Izin akses galeri, kamera dan mikrofon kamu, ya.</string>
+
 <!--    dialog title-->
     <string name="picker_title_deletion">Yakin ingin hapus media?</string>
 
@@ -32,6 +37,12 @@
 
 <!--    message-->
     <string name="picker_deletion_message">Kalau dihapus, media yang kamu ambil akan hilang karena belum disimpan di hp-mu.</string>
+
+    <string name="picker_message_camera_photo_permission">Biar kamu bisa ambil foto atau rekam video, kamu perlu aktifkan akses kamera HP-mu.</string>
+    <string name="picker_message_camera_video_permission">Biar kamu bisa ambil foto atau rekam video, kamu perlu aktifkan akses kamera dan mikrofon HP-mu.</string>
+
+    <string name="picker_message_gallery_permission">Biar kamu lebih mudah untuk pilih foto atau video, kamu perlu aktifkan akses galeri HP-mu.</string>
+    <string name="picker_message_common_permission">Biar kamu lebih mudah untuk pilih foto dan ambil foto atau rekam video, kamu perlu aktifkan akses galeri dan kamera serta mikrofon HP-mu.</string>
 
     <string name="picker_selection_limit_message">Kamu hanya bisa upload %1$d media.</string>
     <string name="picker_selection_limit_video">Kamu hanya bisa upload %1$d video.</string>

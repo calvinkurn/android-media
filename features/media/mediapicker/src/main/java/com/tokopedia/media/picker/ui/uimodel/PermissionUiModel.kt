@@ -1,28 +1,45 @@
 package com.tokopedia.media.picker.ui.uimodel
 
-import android.Manifest
+import android.Manifest.permission.*
 import com.tokopedia.media.R
+import com.tokopedia.media.common.types.PickerPageType
+import com.tokopedia.media.picker.ui.PickerUiConfig
 
 data class PermissionUiModel(
     var title: Int,
-    var permission: String
+    var name: String,
+    var isGranted: Boolean = false
 ) {
 
     companion object {
-        fun storage() = PermissionUiModel(
+        private fun storage() = PermissionUiModel(
             R.string.picker_permission_gallery,
-            Manifest.permission.READ_EXTERNAL_STORAGE
+            READ_EXTERNAL_STORAGE
         )
 
-        fun camera() = PermissionUiModel(
+        private fun camera() = PermissionUiModel(
             R.string.picker_permission_camera,
-            Manifest.permission.CAMERA
+            CAMERA
         )
 
-        fun microphone() = PermissionUiModel(
+        private fun microphone() = PermissionUiModel(
             R.string.picker_permission_microphone,
-            Manifest.permission.RECORD_AUDIO
+            RECORD_AUDIO
         )
+
+        fun get(): List<PermissionUiModel> {
+            return when (PickerUiConfig.pageType) {
+                PickerPageType.CAMERA -> {
+                    if (PickerUiConfig.isPhotoModeOnly()) {
+                        listOf(camera())
+                    } else {
+                        listOf(camera(), microphone())
+                    }
+                }
+                PickerPageType.GALLERY -> listOf(storage())
+                else -> listOf(storage(), camera(), microphone())
+            }
+        }
     }
 
 }

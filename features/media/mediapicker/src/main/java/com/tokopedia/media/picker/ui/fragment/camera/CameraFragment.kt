@@ -32,7 +32,6 @@ import com.tokopedia.media.picker.ui.fragment.camera.component.CameraControllerC
 import com.tokopedia.media.picker.ui.fragment.camera.component.CameraPreviewComponent
 import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnCameraCapturePublished
-import com.tokopedia.media.picker.ui.uimodel.containByName
 import com.tokopedia.media.picker.ui.uimodel.safeRemove
 import com.tokopedia.media.picker.utils.exceptionHandler
 import com.tokopedia.media.picker.utils.wrapper.FlingGestureWrapper
@@ -211,12 +210,12 @@ open class CameraFragment : BaseDaggerFragment()
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.uiEvent.observe(
                 onRemoved = {
-                    if (medias.containByName(it)) {
+                    if (medias.contains(it)) {
                         medias.safeRemove(it)
                     }
                 },
                 onAdded = {
-                    if (!medias.containByName(it)) {
+                    if (!medias.contains(it)) {
                         medias.add(it)
                     }
                 }

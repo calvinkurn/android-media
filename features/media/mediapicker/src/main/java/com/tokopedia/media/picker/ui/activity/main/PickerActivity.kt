@@ -8,7 +8,6 @@ import android.view.MotionEvent
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -32,8 +31,6 @@ import com.tokopedia.media.picker.ui.PickerUiConfig
 import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnChangePublished
-import com.tokopedia.media.picker.ui.uimodel.containByName
-import com.tokopedia.media.picker.ui.uimodel.hasVideoBy
 import com.tokopedia.media.picker.ui.uimodel.safeRemove
 import com.tokopedia.media.picker.utils.addOnTabSelected
 import com.tokopedia.media.picker.utils.delegates.permissionGranted
@@ -145,7 +142,6 @@ open class PickerActivity : BasePickerActivity()
     override fun onDestroy() {
         super.onDestroy()
         EventFlowFactory.reset()
-        PickerUiConfig.pickerParam = null
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -215,7 +211,7 @@ open class PickerActivity : BasePickerActivity()
                     medias.addAll(it)
                 },
                 onRemoved = {
-                    if (medias.containByName(it)) {
+                    if (medias.contains(it)) {
                         medias.safeRemove(it)
                     }
                 },
@@ -224,7 +220,7 @@ open class PickerActivity : BasePickerActivity()
                         medias.clear()
                     }
 
-                    if (!medias.containByName(it)) {
+                    if (!medias.contains(it)) {
                         medias.add(it)
                     }
                 }
@@ -237,7 +233,7 @@ open class PickerActivity : BasePickerActivity()
     }
 
     private fun navigateByPageType() {
-        when (PickerUiConfig.paramPage) {
+        when (PickerUiConfig.pageType) {
             PickerPageType.CAMERA -> {
                 navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
                 navigator?.start(PickerFragmentType.CAMERA)
