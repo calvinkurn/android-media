@@ -135,4 +135,8 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
+	implementation project(rootProject.ext.features.sellerorder)
+	implementation project(rootProject.ext.features.logisticaddaddress)
+	implementation project(rootProject.ext.features.editshipping)
+	implementation project(rootProject.ext.features.logisticorder)
 }
