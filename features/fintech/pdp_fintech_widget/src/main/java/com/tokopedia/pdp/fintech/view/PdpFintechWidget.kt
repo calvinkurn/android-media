@@ -3,7 +3,6 @@ package com.tokopedia.pdp.fintech.view
 import android.content.Context
 import android.content.Intent
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import androidx.annotation.AttrRes
 import androidx.core.content.ContextCompat.startActivity
@@ -100,7 +99,6 @@ class PdpFintechWidget @JvmOverloads constructor(
     }
 
     private fun onSuccessData(it: Success<WidgetDetail>) {
-        Log.e("Hiii", "Inside onSuccessData")
         setPriceToChipMap(it.data)
         updateTestForChip(it.data)
         getChipDataAndUpdate(idToPriceUrlMap[productID]?.price)
@@ -204,7 +202,6 @@ class PdpFintechWidget @JvmOverloads constructor(
     ) {
         try {
             fintechWidgetViewHolder.removeWidget()
-            Log.e("Hiii", "Inside updateProductId")
             this.productID = productID
             this.instanceProductUpdateListner = fintechWidgetViewHolder
             categoryId?.let {

@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.view.util
 
 import android.content.Context
-import android.util.Log
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -347,15 +346,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     fun updateFintechDataWithProductId(selectedProductId: String, loggedIn: Boolean) {
         updateData(ProductDetailConstant.FINTECH_WIDGET_NAME)
         {
-            Log.d("Hii", "Insidede updateData")
             fintechWidgetMap?.run {
                 productId = selectedProductId
                 isLoggedIn = loggedIn
             }
         }
-
-        Log.d("Hii", "Insidede updateFintechDataWithProductId")
-
     }
 
     fun updateVariantError() {

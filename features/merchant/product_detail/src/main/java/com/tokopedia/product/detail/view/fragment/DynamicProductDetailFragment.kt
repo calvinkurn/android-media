@@ -500,12 +500,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         reloadCartCounter()
         reloadUserLocationChanged()
         reloadMiniCart()
-        Log.d("Hii", "Insidede On Resume")
-        //reloadFintechWidget()
+        reloadFintechWidget()
     }
 
     private fun reloadFintechWidget() {
-        Log.d("Hii", "Insidede reloadFintechWidget")
         productId?.let {
             pdpUiUpdater?.updateFintechDataWithProductId(
                 it,
