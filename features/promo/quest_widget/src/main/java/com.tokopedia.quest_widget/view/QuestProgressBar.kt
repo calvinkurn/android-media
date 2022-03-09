@@ -1,6 +1,7 @@
 package com.tokopedia.quest_widget.view
 
 import android.animation.Animator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -8,7 +9,6 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.FloatRange
-import android.animation.ValueAnimator
 import com.tokopedia.kotlin.extensions.view.hide
 import kotlin.math.min
 
@@ -96,11 +96,10 @@ class QuestProgressBar
         val animator = ValueAnimator.ofInt(5, calculateAngle(progress).toInt())
         animator.duration = 2000
         animator.addUpdateListener { animation ->  angle =
-            (animation.animatedValue as Int).toFloat()
+            animation.animatedValue as Float
             invalidate()
         }
         
-        animator.start()
         animator.addListener(object : Animator.AnimatorListener{
             override fun onAnimationStart(p0: Animator?) {
 
@@ -120,12 +119,8 @@ class QuestProgressBar
             }
 
         })
+        animator.start()
 
-    }
-
-    @JvmName("setProgressCompletionListener1")
-    fun setProgressCompletionListener(progressCompletionListener: ProgressCompletionListener){
-        this.progressCompletionListener = progressCompletionListener
     }
 }
 

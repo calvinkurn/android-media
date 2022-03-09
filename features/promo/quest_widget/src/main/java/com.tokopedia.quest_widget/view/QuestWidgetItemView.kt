@@ -7,7 +7,6 @@ import android.animation.PropertyValuesHolder
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -68,7 +67,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
         progressBar = findViewById(R.id.progressBar)
         progressBarContainer = findViewById(R.id.progressBarContainer)
         iconContainer = findViewById(R.id.iconContainer)
-        progressBar.setProgressCompletionListener(this)
+        progressBar.progressCompletionListener = this
     }
 
     override fun onAttachedToWindow() {
