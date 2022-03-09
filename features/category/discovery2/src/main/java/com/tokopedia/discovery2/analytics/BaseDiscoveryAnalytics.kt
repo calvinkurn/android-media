@@ -143,4 +143,6 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun viewAnchorTabs(componentsItems: ComponentsItem) {}
     open fun trackShopCardImpression(componentsItems: ComponentsItem) {}
     open fun trackEventClickShopCard(componentsItems: ComponentsItem) {}
+    open fun trackMixLeftBannerImpression(componentsItems: ComponentsItem) {}
+    open fun trackMixLeftBannerClick(componentsItems: ComponentsItem) {}
 }
