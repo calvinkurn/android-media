@@ -184,6 +184,12 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_QUESTWIDGET -> {
                     createQuestChannel(channel, position , questData = QuestData())
                 }
+                DynamicHomeChannel.Channels.LAYOUT_CM_HOME_TO_DO -> {
+                    createHomeToDoWidget(channel)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_PAYLATER_CICIL -> {
+                    createPayLaterHomeToDoWidget(channel)
+                }
             }
         }
         if (addLoadingMore) {
@@ -604,5 +610,13 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
         val listOfRegisteredPlayWidget = visitableList.filterIsInstance(CarouselPlayWidgetDataModel::class.java)
         if (listOfRegisteredPlayWidget.isEmpty()) visitableList.add(dataModel)
+    }
+
+    private fun createHomeToDoWidget(channel: DynamicHomeChannel.Channels) {
+        if (!isCache) visitableList.add(CMHomeWidgetDataModel(null, channel))
+    }
+
+    private fun createPayLaterHomeToDoWidget(channel: DynamicHomeChannel.Channels) {
+        if (!isCache) visitableList.add(HomePayLaterWidgetDataModel(null, channel))
     }
 }

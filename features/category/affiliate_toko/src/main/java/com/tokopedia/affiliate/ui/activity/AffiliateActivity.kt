@@ -111,8 +111,6 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun afterViewCreated() {
-        initRollence()
-        initBottomNavigationView()
         setObservers()
         if (userSessionInterface.isLoggedIn)
             affiliateVM.getAffiliateValidateUser()
@@ -137,12 +135,12 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun showAffiliatePortal() {
-        clearBackStack()
+        initRollence()
+        initBottomNavigationView()
         findViewById<ImageUnify>(R.id.affiliate_background_image)?.show()
         if(findViewById<LottieBottomNavbar>(R.id.bottom_navbar)?.visibility !=  View.VISIBLE)
             affiliateBottomNavigation?.populateBottomNavigationView()
         affiliateBottomNavigation?.showBottomNav()
-        pushOpenScreenEvent()
     }
 
     private val coachMarkItemList = ArrayList<CoachMark2Item>()
@@ -237,15 +235,6 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         return null
     }
 
-    private fun pushOpenScreenEvent() {
-        AffiliateAnalytics.sendOpenScreenEvent(
-            AffiliateAnalytics.EventKeys.OPEN_SCREEN,
-            AffiliateAnalytics.ScreenKeys.AFFILIATE_HOME_SCREEN_NAME,
-            userSessionInterface.isLoggedIn,
-            userSessionInterface.userId
-        )
-    }
-
     private fun clearBackStack() {
         for (frag in supportFragmentManager.fragments) {
             supportFragmentManager.popBackStack()
@@ -290,6 +279,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     private fun setObservers() {
         affiliateVM.getValidateUserdata().observe(this, { validateUserdata ->
             if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true) {
+                clearBackStack()
                 showAffiliatePortal()
             } else if (validateUserdata.validateAffiliateUserStatus.data?.isEligible == false &&
                 validateUserdata.validateAffiliateUserStatus.data?.isRegistered == false
@@ -348,6 +338,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun showSplashScreen() {
+        clearBackStack()
         findViewById<Typography>(R.id.splash_title).text =
             getString(R.string.affiliate_hai_ana_selamat_bergabung_di_tokopedia_affiliate).replace(
                 "{name}",
@@ -386,11 +377,12 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
             HOME_MENU -> eventAction = AffiliateAnalytics.ActionKeys.HOME_NAV_BAR_CLICK
             PROMO_MENU -> eventAction = AffiliateAnalytics.ActionKeys.PROMOSIKAN_NAV_BAR_CLICK
             HELP_MENU -> eventAction = AffiliateAnalytics.ActionKeys.BANUTAN_NAV_BAR_CLICK
+            INCOME_MENU -> eventAction = AffiliateAnalytics.ActionKeys.PENDAPATAN_NAV_BAR_CLICK
         }
         AffiliateAnalytics.sendEvent(
-            AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
+            AffiliateAnalytics.EventKeys.CLICK_PG,
             eventAction,
-            AffiliateAnalytics.CategoryKeys.HOME_PORTAL,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
             "",
             userSessionInterface.userId
         )

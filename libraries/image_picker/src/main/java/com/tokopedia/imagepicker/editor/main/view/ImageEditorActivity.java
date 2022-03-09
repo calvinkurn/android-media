@@ -347,6 +347,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                 case ACTION_WATERMARK:
                     isSetWatermark = false;
                     fragment.cancelWatermark();
+                    watermarkItemSelection.clearData();
                     watermarkType = Constant.TYPE_WATERMARK_TOPED;
                     titleWatermarkStyle.setVisibility(View.GONE);
                     break;
@@ -488,6 +489,11 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         imageEditThumbnailListWidget.notifyDataSetChanged();
 
         setupEditMode(false, ImageEditActionType.ACTION_CROP_ROTATE);
+    }
+
+    @Override
+    public void onSuccessSaveWatermarkImage() {
+        watermarkItemSelection.clearData();
     }
 
     @Override

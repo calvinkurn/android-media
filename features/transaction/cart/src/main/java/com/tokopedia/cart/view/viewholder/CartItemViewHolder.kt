@@ -83,7 +83,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
             with(binding) {
                 checkboxProduct.gone()
                 vBundlingProductSeparator.show()
-                val marginStart = itemView.context.resources.getDimension(R.dimen.dp_12).toInt()
+                val marginStart = IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
                 val marginTop = itemView.context.resources.getDimension(R.dimen.dp_4).toInt()
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProductInformation)
@@ -96,7 +96,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
                 if (data.isError) {
                     params.leftMargin = 0
                 } else {
-                    params.leftMargin = itemView.resources.getDimensionPixelSize(R.dimen.dp_32)
+                    params.leftMargin = BUNDLING_SEPARATOR_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
                 }
 
                 val textFieldNotesParams = textFieldNotes.layoutParams as ViewGroup.MarginLayoutParams
@@ -110,7 +110,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
             with(binding) {
                 vBundlingProductSeparator.gone()
                 checkboxProduct.show()
-                val marginStart = itemView.context.resources.getDimension(R.dimen.dp_12).toInt()
+                val marginStart = IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
                 val marginTop = itemView.context.resources.getDimension(R.dimen.dp_4).toInt()
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProductInformation)
@@ -597,12 +597,12 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
     private fun setProductNotesWidth(data: CartItemHolderData) {
         with(binding) {
             val paddingParent = itemView.resources.getDimensionPixelSize(R.dimen.dp_16) * 2
-            val textNotesChangeWidth = itemView.resources.getDimensionPixelSize(R.dimen.dp_32)
+            val textNotesChangeWidth = TEXT_NOTES_CHANGE_WIDTH.dpToPx(itemView.resources.displayMetrics)
             val paddingLeftTextNotesChange = itemView.resources.getDimensionPixelSize(R.dimen.dp_4)
             val screenWidth = getScreenWidth()
             var maxNotesWidth = screenWidth - paddingParent - paddingLeftTextNotesChange - textNotesChangeWidth
             if (data.isBundlingItem) {
-                val bundlingSeparatorMargin = itemView.resources.getDimensionPixelSize(R.dimen.dp_48)
+                val bundlingSeparatorMargin = BUNDLING_SEPARATOR_WIDTH.dpToPx(itemView.resources.displayMetrics)
                 maxNotesWidth -= bundlingSeparatorMargin
             }
 
@@ -726,6 +726,9 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         } else if (data.shouldValidateWeight) {
             viewHolderListener?.onNeedToRefreshWeight(data)
             viewHolderListener?.onNeedToRefreshSingleProduct(adapterPosition)
+        } else if (data.shouldCheckBoAffordability) {
+            viewHolderListener?.onNeedToRefreshBoAffordability(data)
+            viewHolderListener?.onNeedToRefreshSingleProduct(adapterPosition)
         } else {
             viewHolderListener?.onNeedToRefreshSingleProduct(adapterPosition)
         }
@@ -831,6 +834,8 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
 
         fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData)
 
+        fun onNeedToRefreshBoAffordability(cartItemHolderData: CartItemHolderData)
+
         fun onNeedToRefreshAllShop()
 
     }
@@ -847,5 +852,10 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         private const val RESET_QTY_DEBOUNCE_TIME = 1000L
         const val ALPHA_HALF = 0.5f
         const val ALPHA_FULL = 1.0f
+
+        private const val IMAGE_PRODUCT_MARGIN_START = 12
+        private const val TEXT_NOTES_CHANGE_WIDTH = 32
+        private const val BUNDLING_SEPARATOR_MARGIN_START = 32
+        private const val BUNDLING_SEPARATOR_WIDTH = 48
     }
 }

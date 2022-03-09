@@ -2,6 +2,7 @@ package com.tokopedia.product_bundle.common.util
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
@@ -30,7 +31,8 @@ object AtcVariantNavigation {
             boData = null,
             rates = null,
             restrictionData = null,
-            pageSource = AtcVariantHelper.BUNDLING_PAGESOURCE
+            pageSource = VariantPageSource.BUNDLING_PAGESOURCE,
+            saveAfterClose = false
         ) { intent, resultCode ->
             when (resultCode) {
                 AtcVariantHelper.ATC_VARIANT_RESULT_CODE -> {

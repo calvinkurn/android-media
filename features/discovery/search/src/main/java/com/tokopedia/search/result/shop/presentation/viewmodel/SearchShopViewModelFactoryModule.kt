@@ -12,6 +12,7 @@ import com.tokopedia.search.result.shop.domain.usecase.SearchShopUseCaseModule
 import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapperModule
 import com.tokopedia.search.result.shop.presentation.model.ShopCpmDataView
 import com.tokopedia.search.result.shop.presentation.model.ShopDataView
+import com.tokopedia.search.utils.ChooseAddressWrapper
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -33,29 +34,31 @@ internal class SearchShopViewModelFactoryModule(
     @Provides
     @Named(SearchConstant.SearchShop.SEARCH_SHOP_VIEW_MODEL_FACTORY)
     fun provideSearchShopViewModelFactory(
-            @Named(SearchConstant.SearchShop.SEARCH_SHOP_FIRST_PAGE_USE_CASE)
-            searchShopFirstPageUseCase: daggerLazy<UseCase<SearchShopModel>>,
-            @Named(SearchConstant.SearchShop.SEARCH_SHOP_LOAD_MORE_USE_CASE)
-            searchShopLoadMoreUseCase: daggerLazy<UseCase<SearchShopModel>>,
-            @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_SHOP_USE_CASE)
-            getDynamicFilterUseCase: daggerLazy<UseCase<DynamicFilterModel>>,
-            @Named(SearchConstant.SearchShop.GET_SHOP_COUNT_USE_CASE)
-            getShopCountUseCase: daggerLazy<UseCase<Int>>,
-            shopCpmDataViewMapper: daggerLazy<Mapper<SearchShopModel, ShopCpmDataView>>,
-            shopDataViewMapper: daggerLazy<Mapper<SearchShopModel, ShopDataView>>,
-            userSession: daggerLazy<UserSessionInterface>,
-            coroutineDispatchers: CoroutineDispatchers
+        @Named(SearchConstant.SearchShop.SEARCH_SHOP_FIRST_PAGE_USE_CASE)
+        searchShopFirstPageUseCase: daggerLazy<UseCase<SearchShopModel>>,
+        @Named(SearchConstant.SearchShop.SEARCH_SHOP_LOAD_MORE_USE_CASE)
+        searchShopLoadMoreUseCase: daggerLazy<UseCase<SearchShopModel>>,
+        @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_SHOP_USE_CASE)
+        getDynamicFilterUseCase: daggerLazy<UseCase<DynamicFilterModel>>,
+        @Named(SearchConstant.SearchShop.GET_SHOP_COUNT_USE_CASE)
+        getShopCountUseCase: daggerLazy<UseCase<Int>>,
+        shopCpmDataViewMapper: daggerLazy<Mapper<SearchShopModel, ShopCpmDataView>>,
+        shopDataViewMapper: daggerLazy<Mapper<SearchShopModel, ShopDataView>>,
+        userSession: daggerLazy<UserSessionInterface>,
+        coroutineDispatchers: CoroutineDispatchers,
+        chooseAddressWrapper: ChooseAddressWrapper
     ): ViewModelProvider.Factory {
         return SearchShopViewModelFactory(
-                coroutineDispatchers,
-                searchParameter,
-                searchShopFirstPageUseCase,
-                searchShopLoadMoreUseCase,
-                getDynamicFilterUseCase,
-                getShopCountUseCase,
-                shopCpmDataViewMapper,
-                shopDataViewMapper,
-                userSession
+            coroutineDispatchers,
+            searchParameter,
+            searchShopFirstPageUseCase,
+            searchShopLoadMoreUseCase,
+            getDynamicFilterUseCase,
+            getShopCountUseCase,
+            shopCpmDataViewMapper,
+            shopDataViewMapper,
+            userSession,
+            chooseAddressWrapper
         )
     }
 }

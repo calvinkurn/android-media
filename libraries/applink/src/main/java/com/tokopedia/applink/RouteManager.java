@@ -277,7 +277,7 @@ public class RouteManager {
             return false;
         }
 
-        String uriString = UriUtil.buildUri(applinkPattern, parameter);
+        String uriString = RouteManagerKt.trimDoubleSchemeDeeplink(UriUtil.buildUri(applinkPattern, parameter));
         if (uriString.isEmpty()) {
             return false;
         }
@@ -405,7 +405,7 @@ public class RouteManager {
      */
     public static Intent getIntent(Context context, String deeplinkPattern, String... parameter) {
         String deeplink = UriUtil.buildUri(deeplinkPattern, parameter);
-        Intent intent = getIntentNoFallback(context, deeplink);
+        Intent intent = getIntentNoFallback(context, RouteManagerKt.trimDoubleSchemeDeeplink(deeplink));
         // set fallback for implicit intent
 
         showAndCopyApplink(context, deeplink);
@@ -447,7 +447,7 @@ public class RouteManager {
         if (context == null) {
             return null;
         }
-        String deeplink = UriUtil.buildUri(deeplinkPattern, parameter);
+        String deeplink = RouteManagerKt.trimDoubleSchemeDeeplink(UriUtil.buildUri(deeplinkPattern, parameter));
 
         showAndCopyApplink(context, deeplink);
 

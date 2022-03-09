@@ -7,7 +7,6 @@ import android.animation.PropertyValuesHolder
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -97,7 +96,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
 
         var appLink = ""
 
-        tvBannerTitle.text = config.banner_title
+        tvBannerTitle.text = config.banner_description
         ivBannerIcon.loadImage(config.banner_icon_url)
         ivBannerIconSecond.loadImage(item.widgetPrizeIconURL)
         val progress = calculateProgress((item.task?.get(0)?.progress))

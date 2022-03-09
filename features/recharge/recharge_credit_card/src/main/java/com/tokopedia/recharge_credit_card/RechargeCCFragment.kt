@@ -202,6 +202,10 @@ class RechargeCCFragment : BaseDaggerFragment() {
             hideLoading()
             showErrorToaster(it)
         })
+
+        rechargeCCViewModel.rule.observe(viewLifecycleOwner){
+            cc_widget_client_number.setRules(it)
+        }
     }
 
     private fun getTickerData() {

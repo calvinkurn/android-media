@@ -67,3 +67,21 @@ const val AFFILIATE_TIKTOK_REGEX = "(?:(?:http|https):\\/\\/)?((www|vt).)?(tikto
 const val AFFILIATE_TWITTER_REGEX = "(?:(?:http|https):\\/\\/)?(www.)?(twitter.com)\\/[\\w-_@.]+"
 
 const val COACHMARK_TAG = "affiliate_coachmark_onboarding"
+
+const val TRANSACTION_TYPE_DEPOSIT = "TRANSACTION_TYPE_DEPOSIT"
+
+const val TRANSACTION_TYPE_WITHDRAWAL = "TRANSACTION_TYPE_WITHDRAWAL"
+
+const val TIME_ZONE = "Asia/Jakarta"
+
+const val PATTERN = "dd MMM yyyy"
+
+const val HOUR_PATTERN = "HH:00"
+
+const val TWO = 2
+
+const val THIRTY_THREE = 33
+
+const val SIX = 6
+
+const val TWENTY_NINE = 29

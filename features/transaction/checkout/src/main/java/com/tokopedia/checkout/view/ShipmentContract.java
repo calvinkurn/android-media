@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.checkout.domain.model.checkout.Prompt;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
@@ -81,6 +82,8 @@ public interface ShipmentContract {
 
         void renderCheckoutPriceUpdated(PriceValidationData priceValidationData);
 
+        void renderPrompt(Prompt prompt);
+
         void renderPromoCheckoutFromCourierSuccess(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel, int itemPosition, boolean noToast);
 
         void renderErrorCheckPromoShipmentData(String message);
@@ -111,6 +114,8 @@ public interface ShipmentContract {
         void setCourierPromoApplied(int itemPosition);
 
         void stopTrace();
+
+        void stopEmbraceTrace();
 
         void onSuccessClearPromoLogistic(int position, boolean isLastAppliedPromo);
 

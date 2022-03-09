@@ -26,4 +26,10 @@ object TestUtils {
             .also { it.isAccessible = true }
             .set(this, value)
     }
+
+    fun Any.mockSuperClassField(name: String, value: Any?) {
+        this::class.java.superclass.getDeclaredField(name)
+            .also { it.isAccessible = true }
+            .set(this, value)
+    }
 }

@@ -83,7 +83,9 @@ class PlayVoucherTest {
         )
 
         robot.use {
-            val state = it.recordState {}
+            val state = it.recordState {
+                createPage(repo.getChannelData("1")!!)
+            }
             state.tagItems.voucher.voucherList
                 .assertEqualTo(mockVoucherList)
         }
@@ -118,6 +120,7 @@ class PlayVoucherTest {
 
         robot.use {
             val state = it.recordState {
+                createPage(repo.getChannelData("1")!!)
                 focusPage(mockk(relaxed = true))
             }
             state.tagItems.voucher.voucherList

@@ -24,6 +24,7 @@
     <string name="pdp_product_id_edittext_placeholder">Product Id</string>
     <string name="pdp_shop_id_edittext_placeholder">Shop Id</string>
     <string name="pdp_page_source_edittext_placeholder">Page Source</string>
+    <string name="pdp_true_false_atc_edittext_placeholder">true/false</string>
 
     <string name="ab_test_rollence_start_button">List AB Test Rollence Keys</string>
     <string name="ab_test_rollence_edit_text_search_hint">Search key</string>
@@ -97,5 +98,13 @@
     <string name="view_sse_logging">View SSE Logging</string>
     <string name="list_ab_test_rollence_keys">List AB Test Rollence Keys</string>
     <string name="view_websocket_logging">View Web Socket Logging</string>
+
+    <string name="applink_list">Applink List</string>
+    <string name="tokopedia_name">Tokopedia</string>
+    <string name="search_applink_here">search applink here or input applink here</string>
+    <string name="applink_no_data">No Data</string>
+    <string name="route_to_applink">Route to Applink</string>
+    <string name="message_applink_failed">Applink is not supported, please check the value from searchbar</string>
+    <string name="view_applink_list">View Applink List</string>
 
 </resources>
