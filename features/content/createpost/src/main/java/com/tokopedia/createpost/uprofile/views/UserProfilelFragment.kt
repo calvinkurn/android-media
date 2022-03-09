@@ -530,13 +530,9 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         }
 
         textDisplayName?.text = data.profileHeader.profile.name
-//        textContentCount?.text = getFormattedNumber(data.profileHeader.stats.totalPost)
-//        textFollowerCount?.text = getFormattedNumber(data.profileHeader.stats.totalFollower)
-//        textFollowingCount?.text = getFormattedNumber(data.profileHeader.stats.totalFollowing)
-
-        textContentCount?.text = getFormattedNumber(123000000)
-        textFollowerCount?.text = getFormattedNumber(100000)
-        textFollowingCount?.text = getFormattedNumber(969999)
+        textContentCount?.text = getFormattedNumber(data.profileHeader.stats.totalPost)
+        textFollowerCount?.text = getFormattedNumber(data.profileHeader.stats.totalFollower)
+        textFollowingCount?.text = getFormattedNumber(data.profileHeader.stats.totalFollowing)
 
         setProfileImg(data.profileHeader.profile)
 
