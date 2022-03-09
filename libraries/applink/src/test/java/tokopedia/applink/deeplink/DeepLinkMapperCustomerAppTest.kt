@@ -108,7 +108,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check account old then should return new account`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://global/new-home-account/abc/def/123"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://user/new-home-account/abc/def/123"
         every {
             DeeplinkMapperAccount.usingOldAccount(any())
         } returns true
@@ -1679,12 +1679,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         assertEqualsDeepLinkMapper(ApplinkConst.ADD_PIN_ONBOARD, expectedDeepLink)
     }
 
-    @Test
-    fun `check add fingerprint onboarding appLink then should return tokopedia internal add fingerprint onboarding in customerapp`() {
-        val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://user/add-fingerprint-onboarding"
-        assertEqualsDeepLinkMapper(ApplinkConst.ADD_FINGERPRINT_ONBOARDING, expectedDeepLink)
-    }
 
     @Test
     fun `check kyc no param appLink then should return tokopedia internal kyc in customerapp`() {
