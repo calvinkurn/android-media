@@ -22,4 +22,5 @@
     <dimen name="campaign_widget_card_height">235dp</dimen>
     <dimen name="campaign_widget_card_width">@dimen/product_card_flashsale_width</dimen>
 
+    <dimen name="mvc_widget_padding_start">13dp</dimen>
 </resources>
