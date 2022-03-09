@@ -34,7 +34,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.notification.model.PopupNotification
+import com.tokopedia.tokopoints.notification.model.popupnotif.PopupNotif
 import com.tokopedia.tokopoints.view.customview.*
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.BBO
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.KUPON
@@ -91,7 +91,7 @@ class TopSectionVH(
     private val ANIMATION_DURATION = 600L
     private val TP_CONFETTI_STATUS_MATCHING = "tp_confetti_entry_point.zip"
     private var digitContainer: LinearLayout? = null
-    private var popupNotification: PopupNotification? = null
+    private var popupNotification: PopupNotif? = null
     private var topSectionData : TopSectionResponse? =null
     private var textTransaksi : Typography? = null
     private var textLagi : Typography? = null
@@ -138,8 +138,8 @@ class TopSectionVH(
                 renderStatusMatchingView(it.rewardsTickerList?.tickerList)
             }
         }
-        isNextTier = model.popupNotification?.tokoPoints?.popupNotif?.title?.isEmpty() == true
-        popupNotification = model.popupNotification?.tokoPoints?.popupNotif
+        isNextTier = model.popupNotification?.popupNotif?.title?.isEmpty() == true
+        popupNotification = model.popupNotification?.popupNotif
         topSectionData = model
     }
 
@@ -537,6 +537,7 @@ class TopSectionVH(
         val progressValues = getProgress(progressInfoList)
         val progressLast = progressValues.first ?: -1
         val progressCurrent = progressValues.second ?: -1
+        val maxProgress = 100
         progressBar?.apply {
             progressBarHeight = ProgressBarUnify.SIZE_LARGE
             progressBarColorType = ProgressBarUnify.COLOR_GREEN
@@ -545,48 +546,69 @@ class TopSectionVH(
             (progressBarIndicatorWrapper).clipChildren = false
             (progressBarWrapper.parent as ViewGroup).clipToPadding = false
             gravity = Gravity.CENTER_VERTICAL
-            if (progressLast > 0) {
-                setProgressIcon(null)
-                setValue(progressLast, false)
+            if (progressLast > 0 && progressLast > progressCurrent) {
+                setProgressIcon(itemView.resources.getDrawable(R.drawable.tp_tier_progress))
+                setValue(maxProgress, true)
             } else {
                 setProgressIcon(null)
+                setValue(progressLast, true)
             }
         }
 
         progressBar?.postDelayed(
             {
-                progressBar?.setValue(progressCurrent, true)
-                progressBar?.setProgressIcon(itemView.resources.getDrawable(R.drawable.tp_tier_progress))
-                if (container?.childCount?.minus(1) ?: 0 >= 0) {
-                    val target = container?.getChildAt(container.childCount - 1)
-                    val animationScaleX =
-                        ObjectAnimator.ofFloat(target, View.SCALE_X, 1.5f)
-                            .setDuration(ANIMATION_DURATION)
-                    val animationScaleY =
-                        ObjectAnimator.ofFloat(target, View.SCALE_Y, 1.5f)
-                            .setDuration(ANIMATION_DURATION)
-
-                    val animSet = AnimatorSet()
-                    animSet.addListener(object : Animator.AnimatorListener {
-                        override fun onAnimationStart(p0: Animator?) {
+                if (progressBar?.getValue() == maxProgress) {
+                    progressBarIconAnimation(
+                        container
+                    ) {
+                        progressBar?.setProgressIcon(null)
+                        if (!isNextTier) {
+                            topSectionData?.popupNotification = null
+                            refreshOnTierUpgrade.refreshReward(popupNotification)
                         }
-                        override fun onAnimationEnd(p0: Animator?) {
-                            progressBar?.setProgressIcon(null)
-                            if (!isNextTier) {
-                                topSectionData?.popupNotification = null
-                                refreshOnTierUpgrade.refreshReward(popupNotification)
-                            }
+                    }
+                } else {
+                    progressBar?.setValue(progressCurrent, true)
+                    progressBar?.setProgressIcon(itemView.resources.getDrawable(R.drawable.tp_tier_progress))
+                    progressBarIconAnimation(
+                        container
+                    ) {
+                        progressBar?.setProgressIcon(null)
+                        if (!isNextTier) {
+                            topSectionData?.popupNotification = null
+                            refreshOnTierUpgrade.refreshReward(popupNotification)
                         }
-                        override fun onAnimationCancel(p0: Animator?) {
-                        }
-                        override fun onAnimationRepeat(p0: Animator?) {
-                        }
-                    })
-                    animSet.playTogether(animationScaleY, animationScaleX)
-                    animSet.start()
+                    }
                 }
             }, 1000L
         )
+    }
+
+    private fun progressBarIconAnimation(container:FrameLayout? , completion: (() -> Unit)? = null){
+        if (container?.childCount?.minus(1) ?: 0 >= 0) {
+            val target = container?.getChildAt(container.childCount - 1)
+            val animationScaleX =
+                ObjectAnimator.ofFloat(target, View.SCALE_X, 1.5f)
+                    .setDuration(ANIMATION_DURATION)
+            val animationScaleY =
+                ObjectAnimator.ofFloat(target, View.SCALE_Y, 1.5f)
+                    .setDuration(ANIMATION_DURATION)
+
+            val animSet = AnimatorSet()
+            animSet.addListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(p0: Animator?) {
+                }
+                override fun onAnimationEnd(p0: Animator?) {
+                    completion?.invoke()
+                }
+                override fun onAnimationCancel(p0: Animator?) {
+                }
+                override fun onAnimationRepeat(p0: Animator?) {
+                }
+            })
+            animSet.playTogether(animationScaleY, animationScaleX)
+            animSet.start()
+        }
     }
 
     private fun hideTierComponents() {
@@ -616,7 +638,7 @@ class TopSectionVH(
     }
 
     interface RefreshOnTierUpgrade {
-        fun refreshReward(popupNotification: PopupNotification?)
+        fun refreshReward(popupNotification: PopupNotif?)
     }
 
 }

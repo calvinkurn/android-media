@@ -9,9 +9,9 @@ interface Constant {
 }
 
 const val POPUP_QUERY = """
-    query TokopointsNotification(${'$'}type: String , ${'$'}apiVersion : String) {
-  tokopoints {
-    popupNotif(type: ${'$'}type , apiVersion : ${'$'}apiVersion) {
+{
+  tokopoints{
+    popupNotif(type:"drawer",apiVersion:"2.0.0") {
       titleHeader
       title
       text
@@ -22,5 +22,4 @@ const val POPUP_QUERY = """
     }
   }
 }
-
 """

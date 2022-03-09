@@ -25,7 +25,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -34,7 +33,7 @@ import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
-import com.tokopedia.tokopoints.notification.model.PopupNotification
+import com.tokopedia.tokopoints.notification.model.popupnotif.PopupNotif
 import com.tokopedia.tokopoints.notification.view.TokopointNotifActivity
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
 import com.tokopedia.tokopoints.view.customview.TokoPointToolbar
@@ -143,7 +142,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         startNetworkRequestPerformanceMonitoring()
         initListener()
         mPresenter.getTokoPointDetail()
-        mPresenter.getPopNotifData()
         tokoPointToolbar?.setTitle(R.string.tp_title_tokopoints)
         initObserver()
     }
@@ -751,7 +749,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
     }
 
-    override fun refreshReward(popupNotification: PopupNotification?) {
+    override fun refreshReward(popupNotification: PopupNotif?) {
         requireActivity().apply {
             startActivityForResult(
                 Intent(
@@ -768,7 +766,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         super.onActivityResult(requestCode, resultCode, data)
         when(requestCode){
             REQUEST_FROM_TP_NOTIFICATION -> {
-                RouteManager.route(this.context, ApplinkConst.TOKOPEDIA_REWARD)            }
+                mPresenter.getTokoPointDetail()
+            }
         }
     }
 

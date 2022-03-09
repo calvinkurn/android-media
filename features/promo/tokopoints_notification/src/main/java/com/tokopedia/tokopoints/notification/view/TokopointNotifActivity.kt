@@ -5,16 +5,16 @@ import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.tokopoints.notification.di.DaggerTokopointNotifComponent
 import com.tokopedia.tokopoints.notification.model.BottomSheetModel
-import com.tokopedia.tokopoints.notification.model.PopupNotification
+import com.tokopedia.tokopoints.notification.model.popupnotif.PopupNotif
 import timber.log.Timber
 
 class TokopointNotifActivity : BaseActivity()  {
     private var isOnResume = false
-    private var popupNotification: PopupNotification?=null
+    private var popupNotification: PopupNotif?=null
 
     companion object {
         const val KEY_POPUP = "key_popup"
-        fun getIntent(context: Context, popupNotification: PopupNotification?): Intent {
+        fun getIntent(context: Context, popupNotification: PopupNotif?): Intent {
             val intent = Intent(context, TokopointNotifActivity::class.java)
             intent.putExtra(KEY_POPUP,popupNotification)
             return intent

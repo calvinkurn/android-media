@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokopoints.di.TokoPointScope
 import com.tokopedia.tokopoints.notification.PopupNotifUsecase
-import com.tokopedia.tokopoints.notification.model.TokoPointDetailEntity
+import com.tokopedia.tokopoints.notification.model.popupnotif.PopupNotifResponse
 import com.tokopedia.tokopoints.view.model.homeresponse.RewardsRecommendation
 import com.tokopedia.tokopoints.view.model.homeresponse.TokopointSuccess
 import com.tokopedia.tokopoints.view.model.homeresponse.TopSectionResponse
@@ -33,7 +33,7 @@ class TokoPointsHomeViewModel @Inject constructor(
 
     val tokopointDetailLiveData = MutableLiveData<Resources<TokopointSuccess>>()
     val rewardIntroData = MutableLiveData<Resources<IntroResponse>>()
-    var defferedPopUpNotifData : Deferred<TokoPointDetailEntity>? = null
+    var defferedPopUpNotifData : Deferred<PopupNotifResponse>? = null
     var deferredSavingData: Deferred<UserSavingResponse>? = null
     var defferedRecomData: Deferred<RewardsRecommendation>? = null
     var defferedRewardTickerResponse: Deferred<RewardTickerListResponse>? = null
@@ -68,7 +68,7 @@ class TokoPointsHomeViewModel @Inject constructor(
                         TopSectionResponse(
                             data.tokopediaRewardTopSection,
                             deferredSavingData?.await()?.tokopointsUserSaving, defferedRewardTickerResponse?.await(),
-                            defferedPopUpNotifData?.await()
+                            defferedPopUpNotifData?.await()?.tokopoints
                         ), dataSection.sectionContent.sectionContent, defferedRecomData?.await()
                     )
                 )
@@ -89,12 +89,12 @@ class TokoPointsHomeViewModel @Inject constructor(
         }
     }
 
-    fun getPopNotifData(): Deferred<TokoPointDetailEntity>{
-        var tokopointDetailEntity  = TokoPointDetailEntity()
+    fun getPopNotifData(): Deferred<PopupNotifResponse>{
+        var tokopointDetailEntity  = PopupNotifResponse()
         return async(Dispatchers.IO) {
             try {
                 val  response = popupNotifUsecase.getPopupNotif(TOKOPOINT_DRAWER)
-                tokopointDetailEntity= response.getData(TokoPointDetailEntity::class.java)
+                tokopointDetailEntity= response.getData(PopupNotifResponse::class.java)
             }catch (e: Exception){}
             tokopointDetailEntity
         }
