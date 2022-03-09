@@ -712,6 +712,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     loyaltyStatus,
                     userSession.userId
                 )
+                rechargePdpPulsaBannerSpacer.run {
+                    layoutParams.height = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                        .toInt()
+                }
                 rechargePdpPulsaEmptyStateWidget.show()
                 rechargePdpPulsaPromoWidget.hide()
                 rechargePdpPulsaRecommendationWidget.hide()
@@ -725,6 +729,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         binding?.run {
             if (rechargePdpPulsaEmptyStateWidget.isVisible) {
                 rechargePdpPulsaEmptyStateWidget.hide()
+                rechargePdpPulsaBannerSpacer.run {
+                    layoutParams.height = resources.getDimension(com.tokopedia.digital_product_detail.R.dimen.banner_space)
+                        .toInt()
+                }
             }
         }
     }

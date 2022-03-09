@@ -788,6 +788,10 @@ class DigitalPDPDataPlanFragment :
                     loyaltyStatus,
                     userSession.userId
                 )
+                rechargePdpPaketDataBannerSpacer.run {
+                    layoutParams.height = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                        .toInt()
+                }
                 rechargePdpPaketDataEmptyStateWidget.show()
                 rechargePdpPaketDataPromoWidget.hide()
                 sortFilterPaketData.hide()
@@ -802,6 +806,10 @@ class DigitalPDPDataPlanFragment :
         binding?.run {
             if (rechargePdpPaketDataEmptyStateWidget.isVisible) {
                 rechargePdpPaketDataEmptyStateWidget.hide()
+                rechargePdpPaketDataBannerSpacer.run {
+                    layoutParams.height = resources.getDimension(com.tokopedia.digital_product_detail.R.dimen.banner_space)
+                        .toInt()
+                }
             }
         }
     }
