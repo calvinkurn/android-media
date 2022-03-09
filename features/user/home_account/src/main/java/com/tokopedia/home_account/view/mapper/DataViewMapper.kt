@@ -9,6 +9,8 @@ import com.tokopedia.home_account.view.adapter.viewholder.MemberItemViewHolder.C
 import com.tokopedia.home_account.view.adapter.viewholder.MemberItemViewHolder.Companion.TYPE_TOKOMEMBER
 import com.tokopedia.home_account.view.adapter.viewholder.MemberItemViewHolder.Companion.TYPE_TOPQUEST
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user.session.datastore.UserSessionDataStore
+import com.tokopedia.user.session.datastore.toBlocking
 import javax.inject.Inject
 
 /**
@@ -16,7 +18,8 @@ import javax.inject.Inject
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 class DataViewMapper @Inject constructor(
-        private val userSession: UserSessionInterface
+        private val userSession: UserSessionInterface,
+        private val userSessionDataStore: UserSessionDataStore
 ) {
 
     fun mapToProfileDataView(accountDataModel: UserAccountDataModel, isEnableLinkAccount: Boolean = false): ProfileDataView {
@@ -33,8 +36,8 @@ class DataViewMapper @Inject constructor(
 
         return ProfileDataView(
             name = accountDataModel.profile.fullName,
-            phone = userSession.phoneNumber,
-            email = userSession.email,
+            phone = userSessionDataStore.getPhoneNumber().toBlocking(),
+            email = userSessionDataStore.getEmail().toBlocking(),
             avatar = accountDataModel.profile.profilePicture,
             isLinked = linkStatus,
             isShowLinkStatus = isShowLinkAccount
