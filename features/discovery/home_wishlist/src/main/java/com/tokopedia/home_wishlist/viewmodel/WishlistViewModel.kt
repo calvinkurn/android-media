@@ -631,8 +631,8 @@ open class WishlistViewModel @Inject constructor(
         val listForBulkRemoveCandidate = hashMapOf<String, WishlistItemDataModel>()
 
         if (listOfPosition.size <= wishlistData.value.size) {
-            listOfPosition.forEachIndexed { _, it ->
-                wishlistData.value[it].run {
+            for (i in listOfPosition.indices) {
+                wishlistData.value[i].run {
                     if (this is WishlistItemDataModel) {
                         listForBulkRemoveCandidate[this.productItem.id] = this
                         productRequestId.add(this.productItem.id)
