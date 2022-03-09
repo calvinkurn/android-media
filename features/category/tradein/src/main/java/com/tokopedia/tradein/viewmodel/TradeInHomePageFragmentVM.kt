@@ -21,7 +21,7 @@ class TradeInHomePageFragmentVM @Inject constructor(val tradeInDetailUseCase: Tr
 
     fun getTradeInDetail(
         laku6DeviceModel: Laku6DeviceModel,
-        productPrice: Int,
+        productPrice: Double,
         userAddressData: LocalCacheModel,
         tradeInUniqueCode : String
     ) {

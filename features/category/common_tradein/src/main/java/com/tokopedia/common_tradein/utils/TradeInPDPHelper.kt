@@ -20,7 +20,7 @@ object TradeInPDPHelper {
                      shopBadge: String,
                      shopLocation: String,
                      productId: String,
-                     productPrice: Int,
+                     productPrice: Double,
                      productName: String,
                      productImage: String?,
                      minOrder: Int,

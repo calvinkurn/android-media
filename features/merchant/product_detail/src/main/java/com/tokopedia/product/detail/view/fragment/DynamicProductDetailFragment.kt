@@ -3394,7 +3394,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 productId = it.basic.productID,
                 productName = it.data.name,
                 productImage = it.data.getProductImageUrl(),
-                productPrice = it.data.price.value.roundToIntOrZero(),
+                productPrice = it.finalPrice,
                 minOrder = viewModel.getDynamicProductInfoP1?.basic?.minOrder ?: 0,
                 selectedWarehouseId = selectedWarehouseId,
                 trackerAttributionPdp = trackerAttributionPdp ?: "",

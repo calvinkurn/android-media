@@ -19,7 +19,7 @@ class TradeInDetailUseCase @Inject constructor(
 
     suspend fun getTradeInDetail(
         laku6DeviceModel: Laku6DeviceModel,
-        productPrice: Int,
+        productPrice: Double,
         userAddressData: LocalCacheModel,
         tradeInUniqueCode : String
     ): TradeInDetailModel {
@@ -28,7 +28,7 @@ class TradeInDetailUseCase @Inject constructor(
 
     private fun createRequestParams(
         laku6DeviceModel: Laku6DeviceModel,
-        productPrice: Int,
+        productPrice: Double,
         userAddressData: LocalCacheModel,
         tradeInUniqueCode : String
     ): Map<String, Any> {

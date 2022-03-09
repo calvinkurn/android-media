@@ -9,7 +9,7 @@ data class GetTradeInDetailInput(
     @SerializedName("ModelInfo")
     var modelInfo: String,
     @SerializedName("OriginalPrice")
-    var originalPrice: Int,
+    var originalPrice: Double,
     @SerializedName("SessionId")
     var sessionId: String,
     @SerializedName("TraceId")
