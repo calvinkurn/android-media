@@ -226,11 +226,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
                                                     isCustomNote = it.isCustomNote
                                                     to = it.addOnNoteTo
                                                     from = it.addOnNoteFrom
-                                                    notes = if (isCustomNote) {
-                                                        it.addOnNote
-                                                    } else {
-                                                        ""
-                                                    }
+                                                    notes = it.addOnNote
                                                 }
                                             }
                                         }
