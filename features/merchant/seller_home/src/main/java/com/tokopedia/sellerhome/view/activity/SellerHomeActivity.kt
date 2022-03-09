@@ -32,14 +32,13 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
-import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.seller.active.common.service.UpdateShopActiveWorker
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
 import com.tokopedia.sellerhome.common.*
-import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.databinding.ActivitySahSellerHomeBinding
@@ -226,28 +225,28 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     override fun menuClicked(position: Int, id: Int): Boolean {
         when (position) {
             FragmentType.HOME -> {
-                UpdateShopActiveService.startService(this)
+                UpdateShopActiveWorker.execute(this)
                 onBottomNavSelected(PageFragment(FragmentType.HOME), TrackingConstant.CLICK_HOME)
                 showToolbarNotificationBadge()
                 checkForSellerAppReview(FragmentType.HOME)
             }
             FragmentType.PRODUCT -> {
-                UpdateShopActiveService.startService(this)
+                UpdateShopActiveWorker.execute(this)
                 onBottomNavSelected(lastProductManagePage, TrackingConstant.CLICK_PRODUCT)
             }
             FragmentType.CHAT -> {
-                UpdateShopActiveService.startService(this)
+                UpdateShopActiveWorker.execute(this)
                 onBottomNavSelected(PageFragment(FragmentType.CHAT), TrackingConstant.CLICK_CHAT)
             }
             FragmentType.ORDER -> {
                 if (navigator?.getCurrentSelectedPage() != FragmentType.ORDER) {
                     initSomListLoadTimeMonitoring()
                 }
-                UpdateShopActiveService.startService(this)
+                UpdateShopActiveWorker.execute(this)
                 onBottomNavSelected(lastSomTab, TrackingConstant.CLICK_ORDER)
             }
             FragmentType.OTHER -> {
-                UpdateShopActiveService.startService(this)
+                UpdateShopActiveWorker.execute(this)
                 showOtherSettingsFragment()
             }
         }

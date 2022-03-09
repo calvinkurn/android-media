@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.seller.active.common.service.UpdateShopActiveWorker
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
@@ -75,7 +75,7 @@ class SellerSettingsFragment: Fragment(), SettingTrackingListener {
 
     private fun startShopActiveService() {
         context?.let {
-            UpdateShopActiveService.startService(it)
+            UpdateShopActiveWorker.execute(it)
         }
     }
 
