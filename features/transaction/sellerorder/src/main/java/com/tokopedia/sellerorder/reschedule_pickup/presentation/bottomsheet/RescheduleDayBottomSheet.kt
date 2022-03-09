@@ -20,7 +20,6 @@ class RescheduleDayBottomSheet(
     private var binding by autoCleared<BottomsheetRescheduleDayBinding>()
 
     init {
-        setTitle(getString(R.string.title_reschedule_day_bottomsheet))
         setCloseClickListener {
             dismiss()
         }
@@ -54,6 +53,7 @@ class RescheduleDayBottomSheet(
     }
 
     private fun setupView() {
+        setTitle(getString(R.string.title_reschedule_day_bottomsheet))
         val listWidgetData = ArrayList<ListItemUnify>().apply {
             addAll(dayOptions.map { day -> ListItemUnify(title = day.day, description = "") })
         }

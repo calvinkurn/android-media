@@ -21,7 +21,6 @@ class RescheduleReasonBottomSheet(
     private var binding by autoCleared<BottomsheetRescheduleReasonBinding>()
 
     init {
-        setTitle(getString(R.string.title_reschedule_reason_bottomsheet))
         setCloseClickListener {
             dismiss()
         }
@@ -55,6 +54,7 @@ class RescheduleReasonBottomSheet(
     }
 
     private fun setupView() {
+        setTitle(getString(R.string.title_reschedule_reason_bottomsheet))
         val listWidgetData = ArrayList<ListItemUnify>().apply {
             addAll(reasonOptions.map { reason -> ListItemUnify(title = reason.reason, description = "") })
         }
