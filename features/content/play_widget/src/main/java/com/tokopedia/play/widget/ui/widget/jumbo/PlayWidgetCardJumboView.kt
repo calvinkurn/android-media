@@ -84,8 +84,9 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val ratio = 5/4
         layoutParams = layoutParams.apply {
-            height = measuredWidth
+            height = measuredWidth * ratio
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
