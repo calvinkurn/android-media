@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.minicart.R
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.promo.domain.data.ValidateUseMvcData
 import com.tokopedia.minicart.common.promo.widget.PromoProgressBarWidget
@@ -42,6 +43,9 @@ class MiniCartSimplifiedWidget : BaseCustomView {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var analytics: MiniCartAnalytics
+
     private var viewModel: MiniCartSimplifiedViewModel? = null
 
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
@@ -56,7 +60,8 @@ class MiniCartSimplifiedWidget : BaseCustomView {
     * Function to initialize the widget
     * */
     fun initialize(shopIds: List<String>, promoId: String, promoCode: String,
-                   fragment: Fragment, listener: MiniCartWidgetListener) {
+                   businessUnit: String, currentSite: String, fragment: Fragment,
+                   pageSource: MiniCartAnalytics.Page, listener: MiniCartWidgetListener) {
         if (viewModel == null) {
             val application = fragment.activity?.application
             initializeInjector(application)
@@ -67,6 +72,9 @@ class MiniCartSimplifiedWidget : BaseCustomView {
         viewModel?.currentShopIds = shopIds
         viewModel?.currentPromoId = promoId
         viewModel?.currentPromoCode = promoCode
+        viewModel?.currentBusinessUnit = businessUnit
+        viewModel?.currentSite = currentSite
+        viewModel?.currentPageSource = pageSource
     }
 
     private fun initializeInjector(baseAppComponent: Application?) {
@@ -87,6 +95,7 @@ class MiniCartSimplifiedWidget : BaseCustomView {
             amountCtaView.setOnClickListener {
                 setTotalAmountLoading(true)
                 viewModel?.moveToCart()
+                sendEventClickCheckCart()
             }
         }
     }
@@ -140,6 +149,7 @@ class MiniCartSimplifiedWidget : BaseCustomView {
         viewModel?.validateUseMvcData?.observe(fragment.viewLifecycleOwner) {
             renderPromoWidget(it)
             setTotalAmountLoading(false)
+            sendEventMvcProgressBarImpression(isClickCheckCart = false)
         }
     }
 
@@ -226,6 +236,35 @@ class MiniCartSimplifiedWidget : BaseCustomView {
                 }
             }
         })
+    }
+
+    private fun sendEventClickCheckCart() {
+        val miniCartSimplifiedData = viewModel?.miniCartSimplifiedData?.value ?: return
+        val validateUseMvcData = viewModel?.validateUseMvcData?.value ?: return
+        analytics.eventClickCheckCart(
+                basketSize = CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartSimplifiedData.miniCartWidgetData.totalProductPrice, false).removeDecimalSuffix(),
+                isFulfilled = validateUseMvcData.progressPercentage >= 100,
+                shopId = viewModel?.currentShopIds?.joinToString() ?: "",
+                pageSource = viewModel?.currentPageSource,
+                businessUnit = viewModel?.currentBusinessUnit ?: "",
+                currentSite = viewModel?.currentSite ?: ""
+        )
+        sendEventMvcProgressBarImpression(isClickCheckCart = true)
+    }
+
+    private fun sendEventMvcProgressBarImpression(isClickCheckCart: Boolean) {
+        if (isClickCheckCart || viewModel?.isFirstValidate == true) {
+            val miniCartSimplifiedData = viewModel?.miniCartSimplifiedData?.value ?: return
+            val validateUseMvcData = viewModel?.validateUseMvcData?.value ?: return
+            analytics.eventMvcProgressBarImpression(
+                    basketSize = CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartSimplifiedData.miniCartWidgetData.totalProductPrice, false).removeDecimalSuffix(),
+                    promoPercentage = validateUseMvcData.progressPercentage.toString(),
+                    shopId = viewModel?.currentShopIds?.joinToString() ?: "",
+                    businessUnit = viewModel?.currentBusinessUnit ?: "",
+                    currentSite = viewModel?.currentSite ?: ""
+            )
+            viewModel?.isFirstValidate = false
+        }
     }
 
     companion object {
