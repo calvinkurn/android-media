@@ -788,11 +788,6 @@ class DigitalPDPDataPlanFragment :
         binding?.run {
             if (!rechargePdpPaketDataEmptyStateWidget.isVisible) {
 
-                rechargePdpPaketDataBannerSpacer.run {
-                    layoutParams.height = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                        .toInt()
-                }
-
                 /** hide empty state when imageUrl is empty*/
                 if (rechargePdpPaketDataEmptyStateWidget.imageUrl.isNotEmpty()) {
                     rechargePdpPaketDataEmptyStateWidget.show()
@@ -809,12 +804,20 @@ class DigitalPDPDataPlanFragment :
 
                 if (isShowFilter){
                     sortFilterPaketData.show()
-                } else sortFilterPaketData.hide()
+                } else {
+                    sortFilterPaketData.hide()
+                    rechargePdpPaketDataClientNumberWidget.hideOperatorIcon()
+                }
 
                 rechargePdpPaketDataPromoWidget.hide()
                 rechargePdpPaketDataRecommendationWidget.hide()
                 rechargePdpPaketDataDenomFullWidget.hide()
-                rechargePdpPaketDataClientNumberWidget.hideOperatorIcon()
+
+                rechargePdpPaketDataBannerSpacer.run {
+                    layoutParams.height = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                        .toInt()
+                    requestLayout()
+                }
             }
         }
     }

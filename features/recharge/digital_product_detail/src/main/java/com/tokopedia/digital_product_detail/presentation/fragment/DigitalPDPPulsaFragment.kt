@@ -303,7 +303,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     onSuccessMCCM(denomData.data.mccmFlashSaleModel, selectedPositionMCCM)
 
                     if (viewModel.isEmptyDenomMCCM(denomData.data.denomWidgetModel.listDenomData, denomData.data.mccmFlashSaleModel.listDenomData)){
-                        showEmptyState()
+                        showEmptyState(false)
                     } else hideEmptyState()
 
                     if (selectedPositionDenom == null && selectedPositionMCCM == null) {
@@ -706,15 +706,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun showEmptyState() {
+    private fun showEmptyState(isHideIndicatorIcon: Boolean = true) {
         binding?.run {
             if (!rechargePdpPulsaEmptyStateWidget.isVisible) {
-
-                rechargePdpPulsaBannerSpacer.run {
-                    layoutParams.height = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                        .toInt()
-                }
-
                 /** hide empty state when imageUrl is empty*/
                 if (rechargePdpPulsaEmptyStateWidget.imageUrl.isNotEmpty()) {
                     rechargePdpPulsaEmptyStateWidget.show()
@@ -730,10 +724,17 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     rechargePdpPulsaEmptyStateWidget.hide()
                 }
 
+                if (isHideIndicatorIcon) rechargePdpPulsaClientNumberWidget.hideOperatorIcon()
+
                 rechargePdpPulsaPromoWidget.hide()
                 rechargePdpPulsaRecommendationWidget.hide()
                 rechargePdpPulsaDenomGridWidget.hide()
-                rechargePdpPulsaClientNumberWidget.hideOperatorIcon()
+
+                rechargePdpPulsaBannerSpacer.run {
+                    layoutParams.height = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                        .toInt()
+                    requestLayout()
+                }
             }
         }
     }
