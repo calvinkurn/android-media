@@ -678,7 +678,7 @@ class PlayViewModel @AssistedInject constructor(
                 isPreviousStateSame = insetsMap[KebabMenuType.ThreeDots]?.isHidden == true
             )
 
-        _observableBottomInsetsState.value = insetsMap
+        _kebabBottomSheet.value = insetsMap
     }
 
     fun showCouponSheet(estimatedHeight: Int) {
