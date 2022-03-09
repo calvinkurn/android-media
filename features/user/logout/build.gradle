@@ -57,6 +57,7 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
+    implementation 'androidx.fragment:fragment-ktx:1.2.0'
 }
 
 project.ext {

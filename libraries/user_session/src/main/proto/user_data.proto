@@ -43,4 +43,5 @@ message UserSessionProto {
     string twitterAccessTokenSecret = 37;
     bool twitterShouldPost = 38;
     string twitterAccessToken = 39;
+    string androidId = 40;
 }

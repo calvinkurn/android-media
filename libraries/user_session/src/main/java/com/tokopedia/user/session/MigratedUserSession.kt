@@ -4,10 +4,12 @@ import android.content.Context
 import android.util.Pair
 import com.tokopedia.user.session.datastore.UserSessionDataStore
 import com.tokopedia.user.session.datastore.UserSessionDataStoreClient
+import com.tokopedia.user.session.datastore.UserSessionKeyMapper
 import com.tokopedia.user.session.util.EncoderDecoder
 
 open class MigratedUserSession(var context: Context?) {
 
+    // can't use DI because it will change UserSession constructor
     private var userSessionDataStore: UserSessionDataStore? = null
     	get() = UserSessionDataStoreClient.getInstance(context!!)
 
@@ -58,6 +60,11 @@ open class MigratedUserSession(var context: Context?) {
     }
 
     protected fun setLong(prefName: String, keyName: String, value: Long) {
+	try {
+	    UserSessionKeyMapper.mapUserSessionKeyString(keyName, userSessionDataStore, value.toString())
+	} catch (e: Exception) {
+	    // Log here
+	}
 	var prefName = prefName
 	var keyName = keyName
 	val newKeys = convertToNewKey(prefName, keyName)
@@ -102,7 +109,7 @@ open class MigratedUserSession(var context: Context?) {
     protected fun setString(prefName: String?, keyName: String?, value: String?) {
 	try {
 	    if (keyName != null && value != null) {
-//		UserSessionKeyMapper.mapUserSessionKeyString(keyName, userSessionDataStore, value)
+		UserSessionKeyMapper.mapUserSessionKeyString(keyName, userSessionDataStore, value)
 	    }
 	} catch (e: Exception) {
 	    // Log here

@@ -16,6 +16,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user.session.datastore.UserSessionDataStore
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import dagger.Module
 import dagger.Provides
@@ -48,8 +49,8 @@ class HomeAccountUserModules(val context: Context) {
     }
 
     @Provides
-    fun provideDataViewMapper(userSession: UserSessionInterface): DataViewMapper {
-        return DataViewMapper(userSession)
+    fun provideDataViewMapper(userSessionDataStore: UserSessionDataStore, userSession: UserSessionInterface): DataViewMapper {
+        return DataViewMapper(userSession, userSessionDataStore)
     }
 
     @Provides

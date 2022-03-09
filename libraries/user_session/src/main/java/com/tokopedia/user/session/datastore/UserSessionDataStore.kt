@@ -106,7 +106,7 @@ interface UserSessionDataStore {
 
     suspend fun setDeviceId(deviceId: String)
 
-    suspend fun setFcmTimestamp()
+    suspend fun setFcmTimestamp(timestamp: String)
 
 
     // Getter
@@ -141,8 +141,6 @@ interface UserSessionDataStore {
     fun getPhoneNumber(): Flow<String>
 
     fun getEmail(): Flow<String>
-
-    fun getRefreshTokenIV(): Flow<String>
 
     fun isFirstTimeUser(): Flow<Boolean>
 
@@ -180,7 +178,7 @@ interface UserSessionDataStore {
 
     fun getAndroidId(): Flow<String>
 
-    fun getAdsId(): Flow<String>
+    fun getAdsId(): String
 
     fun isAffiliate(): Flow<Boolean>
 
@@ -202,4 +200,5 @@ interface UserSessionDataStore {
 
     suspend fun setIsMultiLocationShop(isMultiLocationShop: Boolean)
 
+    suspend fun setAndroidId(androidId: String)
 }

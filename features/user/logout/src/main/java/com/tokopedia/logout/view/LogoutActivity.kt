@@ -43,7 +43,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user.session.datastore.UserSessionDataStore
 import kotlinx.android.synthetic.main.activity_logout.*
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 /**
@@ -60,6 +62,9 @@ import javax.inject.Inject
 class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var userSessionDataStore: UserSessionDataStore
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -189,6 +194,11 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         tetraDebugger?.setUserId("")
         userSession.clearToken()
         userSession.logoutSession()
+
+        runBlocking {
+            userSessionDataStore.clearDataStore()
+        }
+
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
 
         if (isReturnToHome) {

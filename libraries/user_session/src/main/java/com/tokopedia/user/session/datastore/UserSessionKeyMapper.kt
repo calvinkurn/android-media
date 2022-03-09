@@ -28,7 +28,7 @@ object UserSessionKeyMapper {
 	    SHOP_AVATAR -> runBlocking { userSessionDataStore?.setShopAvatar(value) }
 	    AUTOFILL_USER_DATA -> runBlocking { userSessionDataStore?.setAutofillUserData(value) }
 	    LOGIN_METHOD -> runBlocking { userSessionDataStore?.setLoginMethod(value) }
-	    GCM_ID_TIMESTAMP -> runBlocking { userSessionDataStore?.setFcmTimestamp() }
+	    GCM_ID_TIMESTAMP -> runBlocking { userSessionDataStore?.setFcmTimestamp(value) }
 	    UUID_KEY -> runBlocking { userSessionDataStore?.setUUID(value) }
 	}
     }

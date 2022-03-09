@@ -1,12 +1,18 @@
 package com.tokopedia.user.session.datastore
 
 import android.content.Context
+import android.provider.Settings
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
+import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.user.session.UserSessionProto
+import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import okhttp3.internal.toLongOrDefault
+import java.security.MessageDigest
+import kotlin.experimental.and
 
 class UserSessionDataStoreImpl (val context: Context):
     UserSessionDataStore {
@@ -112,10 +118,6 @@ class UserSessionDataStoreImpl (val context: Context):
         return getUserSessionFlow().map { it.email }
     }
 
-    override fun getRefreshTokenIV(): Flow<String> {
-        TODO("Refresh Token IV")
-    }
-
     override fun isFirstTimeUser(): Flow<Boolean> {
         return getUserSessionFlow().map { it.firstTimeUser }
     }
@@ -155,7 +157,7 @@ class UserSessionDataStoreImpl (val context: Context):
     }
 
     override fun getTwitterAccessToken(): Flow<String> {
-        TODO("Twitter access token")
+        return getUserSessionFlow().map { it.twitterAccessToken }
     }
 
     override fun getTwitterAccessTokenSecret(): Flow<String> {
@@ -225,6 +227,7 @@ class UserSessionDataStoreImpl (val context: Context):
     }
 
     override suspend fun setTempLoginName(fullName: String) {
+        DataStoreMigrationWorker
         userSessionSetter {
             tempLoginName = fullName
         }
@@ -290,7 +293,7 @@ class UserSessionDataStoreImpl (val context: Context):
     }
 
     override suspend fun logoutSession() {
-        TODO("Not yet implemented")
+        this.clearDataStore()
     }
 
     override suspend fun setFirstTimeUserOnboarding(isFirstTime: Boolean) {
@@ -428,7 +431,7 @@ class UserSessionDataStoreImpl (val context: Context):
     }
 
     override fun isShopOfficialStore(): Flow<Boolean> {
-         TODO()
+        return getUserSessionFlow().map { it.isShopOfficialStore }
     }
 
     override suspend fun setDeviceId(deviceId: String) {
@@ -437,14 +440,14 @@ class UserSessionDataStoreImpl (val context: Context):
         }
     }
 
-    override suspend fun setFcmTimestamp() {
+    override suspend fun setFcmTimestamp(timestamp: String) {
         userSessionSetter {
-            fcmTimestamp = System.currentTimeMillis().toString()
+            fcmTimestamp = timestamp
         }
     }
 
     override fun getFcmTimestamp(): Flow<Long> {
-        return getUserSessionFlow().map { it.fcmTimestamp.toLong() }
+        return getUserSessionFlow().map { it.fcmTimestamp.toLongOrDefault(0) }
     }
 
     override fun getGTMLoginID(): Flow<String> {
@@ -452,12 +455,15 @@ class UserSessionDataStoreImpl (val context: Context):
     }
 
     override fun getAndroidId(): Flow<String> {
-        TODO("android id")
+        return getUserSessionFlow().map { it.androidId }
     }
 
-    override fun getAdsId(): Flow<String> {
-        TODO("ads Id")
+    override suspend fun setAndroidId(androidId: String) {
+        val android_id = md5(Settings.Secure.getString(context?.contentResolver, Settings.Secure.ANDROID_ID))
+        userSessionSetter { setAndroidId(android_id) }
     }
+
+    override fun getAdsId() = DeviceInfo.getAdsId(context)
 
     override fun isAffiliate(): Flow<Boolean> {
         return getUserSessionFlow().map { it.isAffiliateStatus }
@@ -512,7 +518,23 @@ class UserSessionDataStoreImpl (val context: Context):
             it.toBuilder().clear().build()
         }
     }
-    
+
+    fun md5(s: String): String {
+        return try {
+            val digest = MessageDigest.getInstance("MD5")
+            digest.update(s.toByteArray())
+            val messageDigest = digest.digest()
+            val hexString = StringBuilder()
+            for (b in messageDigest) {
+                hexString.append(String.format("%02x", b and(0xff).toByte()))
+            }
+            hexString.toString()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ""
+        }
+    }
+
     companion object {
         const val USER_PREFERENCES_NAME = "user_session"
         const val DATA_STORE_FILE_NAME = "user_session.pb"
