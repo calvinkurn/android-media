@@ -72,6 +72,7 @@ import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.videoTabComponent.view.VideoTabFragment
 import kotlinx.android.synthetic.main.fragment_feed_plus_container.*
 import kotlinx.android.synthetic.main.partial_feed_error.*
 import timber.log.Timber
@@ -508,6 +509,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                         postProgressUpdateView?.hide()
                     } else if (position == 0 && mInProgress) {
                         postProgressUpdateView?.show()
+                    }else if (position == 2){
+                        videoTabAutoPlayJumboWidget()
                     }
                 }
 
@@ -747,6 +750,17 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             //no op
         }
         updateVisibility(false)
+    }
+    fun videoTabAutoPlayJumboWidget(){
+        try {
+            val fragment = pagerAdapter.getRegisteredFragment(view_pager.currentItem)
+            if (fragment is VideoTabFragment) {
+                fragment.autoplayJumboWidget()
+            }
+        } catch (e: IllegalStateException) {
+            Timber.e(e)
+        }
+
     }
 
     override fun onRetryCLicked() {

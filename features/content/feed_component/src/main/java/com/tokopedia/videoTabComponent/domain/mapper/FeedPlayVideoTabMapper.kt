@@ -108,7 +108,7 @@ object FeedPlayVideoTabMapper {
 
         val autoRefresh = false
         val autoRefreshTimer: Long = 0
-        val autoPlayAmount: Int = 0
+        val autoPlayAmount: Int = 8
         val maxAutoPlayWifiDuration: Int = 30
         val businessWidgetPosition: Int = 30
         //till here

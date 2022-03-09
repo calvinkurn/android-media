@@ -6,9 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.util.util.scrollLayout
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.play.widget.R
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.videoTabComponent.callback.PlaySlotTabCallback
 import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotTabMenuUiModel
