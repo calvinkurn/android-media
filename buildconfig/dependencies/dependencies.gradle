@@ -248,7 +248,6 @@ ext {
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
             loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.5.0@aar",
             hansel                : "io.hansel.preprocessor:preprocessor:9.1.5",
-            robust                : "com.tokopedia.patch:robust:0.0.1@aar",
             autopatchbase         : "com.tokopedia.patch:core:1.0.0",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             ucrop                 : "com.github.yalantis:ucrop:2.2.2",
