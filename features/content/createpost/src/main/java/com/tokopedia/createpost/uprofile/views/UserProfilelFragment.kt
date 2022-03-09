@@ -49,9 +49,6 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
@@ -66,7 +63,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.extensions.view.numberFormatted
-import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.*
 import java.math.RoundingMode
 
 
@@ -94,7 +91,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     private var container: ViewFlipper? = null
     private var userPostContainer: ViewFlipper? = null
     private var globalError: GlobalError? = null
-    private var globalErrorPost: GlobalError? = null
+    private var globalErrorPost: LocalLoad? = null
     private var isSwipeRefresh: Boolean? = null
     private var isNewlyCreated: Boolean? = false
     private var isViewMoreClickedBio: Boolean? = false
@@ -384,20 +381,16 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 when (it) {
                     is UnknownHostException, is SocketTimeoutException -> {
                         userPostContainer?.displayedChild = 3
-                        globalErrorPost?.setType(NO_CONNECTION)
-                        globalErrorPost?.show()
 
-                        globalErrorPost?.setActionClickListener {
+                        globalErrorPost?.refreshBtn?.setOnClickListener {
                             userPostContainer?.displayedChild = 1
                             landedUserName?.let { it1 -> initUserPost(it1) }
                         }
                     }
                     is IllegalStateException -> {
                         userPostContainer?.displayedChild = 3
-                        globalErrorPost?.setType(PAGE_FULL)
-                        globalErrorPost?.show()
 
-                        globalErrorPost?.setActionClickListener {
+                        globalErrorPost?.refreshBtn?.setOnClickListener {
                             userPostContainer?.displayedChild = 1
                             landedUserName?.let { it1 -> initUserPost(it1) }
                         }
@@ -406,30 +399,24 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                         when (it.localizedMessage?.toIntOrNull()) {
                             ReponseStatus.NOT_FOUND -> {
                                 userPostContainer?.displayedChild = 3
-                                globalErrorPost?.setType(PAGE_NOT_FOUND)
-                                globalErrorPost?.show()
 
-                                globalErrorPost?.setActionClickListener {
+                                globalErrorPost?.refreshBtn?.setOnClickListener {
                                     userPostContainer?.displayedChild = 1
                                     landedUserName?.let { it1 -> initUserPost(it1) }
                                 }
                             }
                             ReponseStatus.INTERNAL_SERVER_ERROR -> {
                                 userPostContainer?.displayedChild = 3
-                                globalErrorPost?.setType(SERVER_ERROR)
-                                globalErrorPost?.show()
 
-                                globalErrorPost?.setActionClickListener {
+                                globalErrorPost?.refreshBtn?.setOnClickListener {
                                     userPostContainer?.displayedChild = 1
                                     landedUserName?.let { it1 -> initUserPost(it1) }
                                 }
                             }
                             else -> {
                                 userPostContainer?.displayedChild = 3
-                                globalErrorPost?.setType(SERVER_ERROR)
-                                globalErrorPost?.show()
 
-                                globalErrorPost?.setActionClickListener {
+                                globalErrorPost?.refreshBtn?.setOnClickListener {
                                     userPostContainer?.displayedChild = 1
                                     landedUserName?.let { it1 -> initUserPost(it1) }
                                 }

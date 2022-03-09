@@ -47,7 +47,7 @@ class UserProfileViewModel @Inject constructor(
 
     public fun getUPlayVideos(group: String, cursor: String, sourceType: String, sourceId: String) {
         launchCatchError(block = {
-            val data = playVodUseCase.getPlayPost(group, cursor, sourceType, sourceId)
+            val data = playVodUseCase.getPlayPost(group, cursor, sourceType, "sourceId")
             if (data != null) {
                 playPostContentLiveData.value = Success(data)
 
