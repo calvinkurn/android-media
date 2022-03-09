@@ -56,11 +56,11 @@ object PayLaterHelper {
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, webLink)
     }
 
-    private fun setAdditionalParam(productId:String,tenure: Int?, gatewayCode: String?, gatewayId: String?): String {
+    private fun setAdditionalParam(productId:String,tenure: Int, gatewayCode: String?, gatewayId: String?): String {
         return (ApplinkConst.PAYLATER + "?productID=${productId}" +
                 "&tenure=$tenure" +
-                "&gatewayCode=$gatewayCode" +
-                "&gatewayID=$gatewayId").encodeToUtf8()
+                "&gatewayCode=${gatewayCode?:""}" +
+                "&gatewayID=${gatewayId?:""}").encodeToUtf8()
     }
 
      fun setCustomProductUrl(detail: Detail,payLaterArgsDescriptor:PayLaterArgsDescriptor):String
@@ -71,12 +71,14 @@ object PayLaterHelper {
                 "&gatewayCode=${detail.gatewayDetail?.gatewayCode}" +
                 "&gatewayID=${detail.gatewayDetail?.gateway_id}" +
                 "&productURL=${
-                    setAdditionalParam(
-                        payLaterArgsDescriptor.productId,
-                        detail.tenure,
-                        detail.gatewayDetail?.gatewayCode,
-                        detail.gatewayDetail?.gateway_id
-                    )
+                    detail.tenure?.let { selectedTenure ->
+                        setAdditionalParam(
+                            payLaterArgsDescriptor.productId,
+                            selectedTenure,
+                            detail.gatewayDetail?.gatewayCode,
+                            detail.gatewayDetail?.gateway_id
+                        )
+                    }
                 }"
     }
 
