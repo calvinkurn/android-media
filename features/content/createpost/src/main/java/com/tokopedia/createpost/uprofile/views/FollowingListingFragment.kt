@@ -105,7 +105,6 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
         view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.setOnRefreshListener {
             isSwipeRefresh = true
             mAdapter.cursor = ""
-            mAdapter.clear()
             mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_ID))
         }
     }
@@ -123,11 +122,14 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
                             view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing =
                                 false
                             isSwipeRefresh = !isSwipeRefresh!!
+                            mAdapter.clear()
+                            mAdapter.items.addAll(it.data.profileFollowings.profileFollower)
+                            mAdapter.notifyDataSetChanged()
                         } else {
-                            //Hide shimmer
+                            mAdapter.onSuccess(it.data)
                         }
 
-                        mAdapter.onSuccess(it.data)
+
                     }
                     is ErrorMessage -> {
                         mAdapter.onError()
