@@ -57,6 +57,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalyti
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicAppBar
+import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicScrollListener
 import com.tokopedia.digital_product_detail.presentation.utils.toggle
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -165,13 +166,13 @@ class DigitalPDPDataPlanFragment :
         super.onViewCreated(view, savedInstanceState)
         getDataFromBundle()
         setupKeyboardWatcher()
+        setupDynamicScrollListener()
         initClientNumberWidget()
-        setAnimationAppBarLayout()
         observeData()
         getCatalogMenuDetail()
     }
 
-    fun setupKeyboardWatcher() {
+    private fun setupKeyboardWatcher() {
         binding?.root?.let {
             keyboardWatcher.listen(it, object : DigitalKeyboardWatcher.Listener {
                 override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
@@ -182,6 +183,18 @@ class DigitalPDPDataPlanFragment :
                     binding?.rechargePdpPaketDataClientNumberWidget?.setClearable()
                 }
             })
+        }
+    }
+
+
+    private fun setupDynamicScrollListener() {
+        binding?.run {
+            rechargePdpPaketDataSvContainer.setupDynamicScrollListener(
+                { !viewModel.isEligibleToBuy },
+                { rechargePdpPaketDataClientNumberWidget.getInputNumber().isEmpty() },
+                { viewModel.runThrottleJob { onCollapseAppBar() }},
+                { viewModel.runThrottleJob { onExpandAppBar() }}
+            )
         }
     }
 
@@ -856,41 +869,12 @@ class DigitalPDPDataPlanFragment :
         binding?.rechargePdpPaketDataClientNumberWidget?.clearFocusAutoComplete()
     }
 
-    private fun setAnimationAppBarLayout() {
-        binding?.run {
-            rechargePdpPaketDataAppbar.setupDynamicAppBar(
-                { !viewModel.isEligibleToBuy },
-                { rechargePdpPaketDataClientNumberWidget.getInputNumber().isEmpty() },
-                { onCollapseAppBar() },
-                { onExpandAppBar() }
-            )
-        }
-    }
-
-    private fun showDynamicSpacer() {
-        binding?.rechargePdpPaketDataDynamicBannerSpacer?.layoutParams?.height =
-            context?.resources?.getDimensionPixelSize(dynamicSpacerHeightRes)
-                ?: DigitalPDPConstant.DEFAULT_SPACE_HEIGHT
-        binding?.rechargePdpPaketDataDynamicBannerSpacer?.requestLayout()
-    }
-
-    private fun hideDynamicSpacer() {
-        binding?.rechargePdpPaketDataDynamicBannerSpacer?.layoutParams?.height = 0
-        binding?.rechargePdpPaketDataDynamicBannerSpacer?.requestLayout()
-    }
-
     private fun onCollapseAppBar() {
-        binding?.run {
-            rechargePdpPaketDataClientNumberWidget.setVisibleSimplifiedLayout(true)
-            showDynamicSpacer()
-        }
+        binding?.rechargePdpPaketDataClientNumberWidget?.setVisibleSimplifiedLayout(true)
     }
 
     private fun onExpandAppBar() {
-        binding?.run {
-            rechargePdpPaketDataClientNumberWidget.setVisibleSimplifiedLayout(false)
-            hideDynamicSpacer()
-        }
+        binding?.rechargePdpPaketDataClientNumberWidget?.setVisibleSimplifiedLayout(false)
     }
 
     private fun navigateToCart(categoryId: String) {

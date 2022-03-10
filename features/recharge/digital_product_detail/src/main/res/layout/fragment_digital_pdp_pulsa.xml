@@ -13,7 +13,7 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <include
-        android:id="@+id/recharge_pdp_background_image"
+        android:id="@+id/recharge_pdp_pulsa_background_image"
         layout="@layout/view_background_banner"
         app:layout_constraintTop_toBottomOf="@id/recharge_pdp_pulsa_action_bar_spacer"/>
 
@@ -30,14 +30,13 @@
         tools:visibility="gone"/>
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/sv_container"
+        android:id="@+id/recharge_pdp_pulsa_sv_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:paddingTop="@dimen/layout_lvl8"
         android:clipToPadding="false"
-        app:layout_constraintTop_toBottomOf="@id/recharge_pdp_background_image"
-        app:layout_constraintBottom_toTopOf="@id/recharge_pdp_pulsa_buy_widget"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_constraintTop_toBottomOf="@id/recharge_pdp_pulsa_background_image"
+        app:layout_constraintBottom_toTopOf="@id/recharge_pdp_pulsa_buy_widget">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

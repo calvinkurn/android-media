@@ -193,7 +193,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private fun setupDynamicScrollListener() {
         binding?.run {
-            svContainer.setupDynamicScrollListener(
+            rechargePdpPulsaSvContainer.setupDynamicScrollListener(
                 { !viewModel.isEligibleToBuy },
                 { rechargePdpPulsaClientNumberWidget.getInputNumber().isEmpty() },
                 { viewModel.runThrottleJob { onCollapseAppBar() }},
