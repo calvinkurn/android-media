@@ -275,10 +275,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return FeaturedBrandViewHolder.LAYOUT
     }
 
-    override fun type(shimmeringFeaturedBrandDataModel: ShimmeringFeaturedBrandDataModel): Int {
-        return ShimmeringFeaturedBrandViewHolder.LAYOUT
-    }
-
     override fun type(questWidgetModel: QuestWidgetModel): Int {
         return QuestWidgetViewHolder.LAYOUT
     }
