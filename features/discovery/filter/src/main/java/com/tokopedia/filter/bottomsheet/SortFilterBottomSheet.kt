@@ -27,7 +27,6 @@ import com.tokopedia.filter.bottomsheet.sort.SortItemViewModel
 import com.tokopedia.filter.bottomsheet.sort.SortViewListener
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.filter.common.helper.StatusBarColorHelper
 import com.tokopedia.filter.common.helper.configureBottomSheetHeight
 import com.tokopedia.filter.common.helper.isPostProcessingFilter
 import com.tokopedia.filter.common.helper.setBottomSheetActionBold
@@ -50,7 +49,6 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     private var mapParameter: Map<String, String> = mapOf()
     private var dynamicFilterModel: DynamicFilterModel? = null
     private var sortFilterCallback: Callback? = null
-    private var statusBarColorHelper: StatusBarColorHelper? = null
 
     private var sortFilterBottomSheetViewModel: SortFilterBottomSheetViewModel? = null
     private var sortFilterBottomSheetView: View? = null
@@ -250,15 +248,9 @@ class SortFilterBottomSheet: BottomSheetUnify() {
 
         if (showKnob) configureBottomSheetHeight()
         setBottomSheetActionBold()
-        setStatusBarOverlayColor()
         observeViewModel()
 
         sortFilterBottomSheetViewModel?.onViewCreated()
-    }
-
-    private fun setStatusBarOverlayColor() {
-        statusBarColorHelper = StatusBarColorHelper(requireActivity())
-        statusBarColorHelper?.setStatusBarColor()
     }
 
     private fun observeViewModel() {
@@ -382,16 +374,6 @@ class SortFilterBottomSheet: BottomSheetUnify() {
         }
 
         super.onDestroyView()
-    }
-
-    override fun onDestroy() {
-        undoStatusBarOverlayColor()
-        super.onDestroy()
-    }
-
-    private fun undoStatusBarOverlayColor() {
-        statusBarColorHelper?.undoSetStatusBarColor()
-        statusBarColorHelper = null
     }
 
     data class ApplySortFilterModel(
