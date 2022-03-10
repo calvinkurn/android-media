@@ -856,6 +856,7 @@ class DigitalPDPDataPlanFragment :
         binding?.run {
             if (rechargePdpPaketDataEmptyStateWidget.isVisible) {
                 rechargePdpPaketDataEmptyStateWidget.hide()
+                rechargePdpPaketDataRecommendationWidget.show()
                 rechargePdpPaketDataBannerSpacer.run {
                     layoutParams.height = resources.getDimension(com.tokopedia.digital_product_detail.R.dimen.banner_space)
                         .toInt()
