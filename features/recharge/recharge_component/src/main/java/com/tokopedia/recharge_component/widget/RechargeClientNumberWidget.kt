@@ -16,6 +16,7 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactD
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_component.R
@@ -288,7 +289,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                 isInputError = true
 
                 if (resetProvider) {
-                    binding.clientNumberWidgetOperatorGroup.hide()
+                    binding.clientNumberWidgetOperatorGroup.c
                 }
             }
         }
@@ -319,7 +320,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
             if (show) {
                 includeLayout.clientNumberWidgetSimplifiedLayout.show()
                 clientNumberWidgetMainLayout.clientNumberWidgetBase.root.hide()
-                clientNumberWidgetOperatorGroup.hide()
+                clientNumberWidgetOperatorGroup.invisible()
             } else {
                 includeLayout.clientNumberWidgetSimplifiedLayout.hide()
                 clientNumberWidgetMainLayout.clientNumberWidgetBase.root.show()
@@ -350,7 +351,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
 
     fun hideOperatorIcon() {
         with (binding) {
-            clientNumberWidgetOperatorGroup.hide()
+            clientNumberWidgetOperatorGroup.invisible()
         }
     }
 
