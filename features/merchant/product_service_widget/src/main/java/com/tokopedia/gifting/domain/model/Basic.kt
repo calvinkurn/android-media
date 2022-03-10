@@ -20,9 +20,9 @@ class Basic {
     @Expose
     var status: String = ""
 
-    @SerializedName("OwnerWarehouseID")
+    @SerializedName("AddOnLevel")
     @Expose
-    var ownerWarehouseID: String = ""
+    var addOnLevel: String = ""
 
     @SerializedName("Rules")
     @Expose
