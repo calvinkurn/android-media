@@ -6,8 +6,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.AlphaAnimation
+import android.view.animation.AnimationSet
+import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProvider
@@ -58,6 +63,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalyti
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicAppBar
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
@@ -170,21 +176,48 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         setAnimationAppBarLayout()
         observeData()
         getCatalogMenuDetail()
-        binding?.svContainer?.setOnScrollChangeListener(
-            NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-                if (scrollY == 0) {
-                    throttleFirst(300L, viewLifecycleOwner.lifecycleScope) {
+
+        binding?.svContainer?.setOnScrollChangeListener(object: NestedScrollView.OnScrollChangeListener {
+            var lastIsCollapsed = false
+
+            override fun onScrollChange(
+                v: NestedScrollView?,
+                scrollX: Int,
+                scrollY: Int,
+                oldScrollX: Int,
+                oldScrollY: Int
+            ) {
+                if (scrollY == 0 && lastIsCollapsed) {
+                    throttleFirst(200L, viewLifecycleOwner.lifecycleScope) {
+                        lastIsCollapsed = false
                         onExpandAppBar()
                     }
                 }
 
-                if (scrollY != 0 && scrollY > oldScrollY) {
-                    throttleFirst(300L, viewLifecycleOwner.lifecycleScope) {
+                if (scrollY != 0 && scrollY > oldScrollY && !lastIsCollapsed) {
+                    throttleFirst(200L, viewLifecycleOwner.lifecycleScope) {
+                        lastIsCollapsed = true
                         onCollapseAppBar()
                     }
                 }
             }
-        )
+        })
+
+//        binding?.svContainer?.setOnScrollChangeListener(
+//            NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+//                if (scrollY == 0) {
+//                    throttleFirst(200L, viewLifecycleOwner.lifecycleScope) {
+//                        onExpandAppBar()
+//                    }
+//                }
+//
+//                if (scrollY != 0 && scrollY > oldScrollY) {
+//                    throttleFirst(200L, viewLifecycleOwner.lifecycleScope) {
+//                        onCollapseAppBar()
+//                    }
+//                }
+//            }
+//        )
     }
 
     fun setupKeyboardWatcher() {
@@ -805,12 +838,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 { !viewModel.isEligibleToBuy },
                 { rechargePdpPulsaClientNumberWidget.getInputNumber().isEmpty() },
                 {
-//                    throttleFirst(300L, viewLifecycleOwner.lifecycleScope) {
+//                    throttleFirst(200L, viewLifecycleOwner.lifecycleScope) {
 //                        onCollapseAppBar()
 //                    }
                 },
                 {
-//                    throttleFirst(300L, viewLifecycleOwner.lifecycleScope) {
+//                    throttleFirst(200L, viewLifecycleOwner.lifecycleScope) {
 //                        onExpandAppBar()
 //                    }
                 }
@@ -832,16 +865,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private fun onCollapseAppBar() {
         binding?.run {
-            if (!rechargePdpPulsaClientNumberWidget.isSimplifiedLayoutShown())
-                rechargePdpPulsaClientNumberWidget.setVisibleSimplifiedLayout(true)
+            rechargePdpPulsaClientNumberWidget.setVisibleSimplifiedLayout(true)
 //            showDynamicSpacer()
         }
     }
 
     private fun onExpandAppBar() {
         binding?.run {
-            if (rechargePdpPulsaClientNumberWidget.isSimplifiedLayoutShown())
-                rechargePdpPulsaClientNumberWidget.setVisibleSimplifiedLayout(false)
+            rechargePdpPulsaClientNumberWidget.setVisibleSimplifiedLayout(false)
 //            hideDynamicSpacer()
         }
     }

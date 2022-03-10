@@ -43,9 +43,15 @@
             <View
                 android:id="@+id/recharge_pdp_pulsa_banner_spacer"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                app:layout_scrollFlags="scroll"/>
+                android:layout_height="@dimen/banner_space"
+                android:background="@color/Blue_B100"/>
 
+            <View
+                android:id="@+id/recharge_pdp_pulsa_dynamic_banner_spacer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@color/Yellow_Y100"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.tokopedia.recharge_component.widget.RechargeClientNumberWidget
                 android:id="@+id/recharge_pdp_pulsa_client_number_widget"
@@ -69,13 +75,6 @@
                 android:layout_height="match_parent"
                 android:paddingBottom="@dimen/layout_lvl7">
 
-                <View
-                    android:id="@+id/recharge_pdp_pulsa_dynamic_banner_spacer"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_scrollFlags="scroll" />
-
                 <com.tokopedia.recharge_component.widget.RechargeEmptyStateWidget
                     android:id="@+id/recharge_pdp_pulsa_empty_state_widget"
                     android:layout_width="match_parent"
@@ -84,7 +83,7 @@
                     android:layout_marginStart="@dimen/empty_state_margin"
                     android:layout_marginEnd="@dimen/empty_state_margin"
                     android:layout_marginTop="@dimen/spacing_lvl4"
-                    app:layout_constraintTop_toBottomOf="@id/recharge_pdp_pulsa_dynamic_banner_spacer"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -92,7 +91,7 @@
                     android:id="@+id/recharge_pdp_pulsa_recommendation_widget"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/recharge_pdp_pulsa_dynamic_banner_spacer"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
