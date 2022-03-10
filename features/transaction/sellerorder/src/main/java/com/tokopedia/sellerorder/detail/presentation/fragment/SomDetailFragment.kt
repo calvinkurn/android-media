@@ -49,6 +49,7 @@ import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.navigator.SomNavigator
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToChangeCourierPage
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToConfirmShippingPage
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToReschedulePickupPage
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
 import com.tokopedia.sellerorder.common.presenter.dialogs.SomOrderHasRequestCancellationDialog
@@ -70,6 +71,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ORDER_EXTENSION_REQUE
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_PRINT_AWB
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RESCHEDULE_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RESPOND_TO_CANCELLATION
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_SET_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_TRACK_SELLER
@@ -957,6 +959,8 @@ open class SomDetailFragment : BaseDaggerFragment(),
                         key.equals(KEY_SET_DELIVERED, true) -> bottomSheetManager?.showSomBottomSheetSetDelivered(this)
                         key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orEmpty()), true)
                         key.equals(KEY_ORDER_EXTENSION_REQUEST, true) -> setActionRequestExtension()
+                        // todo add here
+                        key.equals(KEY_RESCHEDULE_PICKUP, true) -> goToReschedulePickupPage(this, orderId)
                     }
                 }
             }
@@ -1159,6 +1163,8 @@ open class SomDetailFragment : BaseDaggerFragment(),
             handleRequestPickUpResult(resultCode, data)
         } else if (requestCode == SomNavigator.REQUEST_CONFIRM_SHIPPING || requestCode == SomNavigator.REQUEST_CHANGE_COURIER) {
             handleChangeCourierAndConfirmShippingResult(resultCode, data)
+        } else if (requestCode == SomNavigator.REQUEST_RESCHEDULE_PICKUP) {
+            handleReschedulePickupResult(resultCode, data)
         }
     }
 
@@ -1289,6 +1295,16 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     protected open fun handleChangeCourierAndConfirmShippingResult(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(RESULT_CONFIRM_SHIPPING)) {
+            val resultConfirmShippingMsg = data.getStringExtra(RESULT_CONFIRM_SHIPPING)
+            activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(RESULT_CONFIRM_SHIPPING, resultConfirmShippingMsg)
+            })
+            activity?.finish()
+        }
+    }
+
+    protected open fun handleReschedulePickupResult(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(RESULT_CONFIRM_SHIPPING)) {
             val resultConfirmShippingMsg = data.getStringExtra(RESULT_CONFIRM_SHIPPING)
             activity?.setResult(Activity.RESULT_OK, Intent().apply {

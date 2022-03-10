@@ -43,6 +43,7 @@ object SomConsts {
     const val RESULT_REJECT_ORDER = "result_reject_order"
     const val RESULT_PROCESS_REQ_PICKUP = "result_process_req_pickup"
     const val RESULT_CONFIRM_SHIPPING = "result_confirm_shipping"
+    const val RESULT_RESCHEDULE_PICKUP = "result_reschedule_pickup"
     const val RESULT_SET_DELIVERED = "result_set_delivered"
     const val RESULT_REFRESH_ORDER = "result_refresh_order"
 
@@ -57,6 +58,8 @@ object SomConsts {
     const val KEY_RESPOND_TO_CANCELLATION = "respond_to_cancellations"
     const val KEY_PRINT_AWB = "print"
     const val KEY_ORDER_EXTENSION_REQUEST = "request_extend_order"
+    // todo need to confirm key
+    const val KEY_RESCHEDULE_PICKUP = "reschedule_pickup"
 
     const val KEY_BATALKAN_PESANAN = "reject_shipping"
     const val KEY_UBAH_NO_RESI = "change_awb"

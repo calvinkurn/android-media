@@ -373,6 +373,10 @@
     <string name="title_reschedule_day_bottomsheet">Pilih Hari</string>
     <string name="title_reschedule_reason_bottomsheet">Alasan Perubahan Jadwal</string>
     <string name="title_reschedule_time_bottomsheet">Pilih Waktu</string>
+    <string name="title_reschedule_pickup_success_dialog">Berhasil ubah jadwal pick-up</string>
+    <string name="title_reschedule_pickup_button_dialog">Mengerti</string>
+    <string name="title_reschedule_pickup_loading_dialog">Perubahan jadwal pick-up sedang diproses</string>
+    <string name="description_reschedule_pickup_loading_dialog">Tunggu sebentar, ya.</string>
     <string-array name="reschedule_guide">
         <item>Pastikan jadwal pick-up baru sesuai dengan kesepakatan pengiriman dengan pembeli</item>
         <item>Ubah jadwal pick-up hanya bisa dilakukan 1 (satu) kali</item>

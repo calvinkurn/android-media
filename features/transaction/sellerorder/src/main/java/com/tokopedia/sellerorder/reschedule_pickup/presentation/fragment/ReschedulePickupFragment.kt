@@ -1,6 +1,8 @@
 package com.tokopedia.sellerorder.reschedule_pickup.presentation.fragment
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
@@ -19,14 +21,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.OrderedListSpan
+import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.databinding.FragmentReschedulePickupBinding
 import com.tokopedia.sellerorder.reschedule_pickup.data.model.GetReschedulePickupResponse
 import com.tokopedia.sellerorder.reschedule_pickup.data.model.RescheduleDetailModel
@@ -35,6 +40,7 @@ import com.tokopedia.sellerorder.reschedule_pickup.di.ReschedulePickupComponent
 import com.tokopedia.sellerorder.reschedule_pickup.presentation.bottomsheet.RescheduleDayBottomSheet
 import com.tokopedia.sellerorder.reschedule_pickup.presentation.bottomsheet.RescheduleReasonBottomSheet
 import com.tokopedia.sellerorder.reschedule_pickup.presentation.bottomsheet.RescheduleTimeBottomSheet
+import com.tokopedia.sellerorder.reschedule_pickup.presentation.dialog.ReschedulePickupLoadingDialog
 import com.tokopedia.sellerorder.reschedule_pickup.presentation.viewmodel.ReschedulePickupViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -55,6 +61,8 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
     }
 
     private var binding by autoClearedNullable<FragmentReschedulePickupBinding>()
+    private var toaster: Snackbar? = null
+    private var loadingDialog: ReschedulePickupLoadingDialog? = null
     private var orderId: String = ""
 
     override fun getScreenName(): String = ""
@@ -69,7 +77,7 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            orderId = it.getString(ARGUMENTS_ORDER_ID, "")
+            orderId = it.getString(SomConsts.PARAM_ORDER_ID, "")
         }
     }
 
@@ -99,18 +107,46 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
                     bindDataWithView(it.data)
                 }
                 is Fail -> {
-                    NetworkErrorHelper.showEmptyState(activity, binding?.rootView, this::getInitialData)
+                    NetworkErrorHelper.showEmptyState(
+                        activity,
+                        binding?.rootView,
+                        this::getInitialData
+                    )
+                }
+            }
+        })
+
+        viewModel.saveRescheduleDetail.observe(viewLifecycleOwner, {
+            loadingDialog?.dismiss()
+            when (it) {
+                is Success -> {
+                    if (it.data.status == STATUS_CODE_ALREADY_REQUEST_NEW_DRIVER) {
+                        showErrorDialog(
+                            "Yah, gagal ubah jadwal pick-up",
+                            it.data.message,
+                            "Oke",
+                            R.drawable.ic_illustration_gagal
+                        )
+                    } else {
+                        activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                            putExtra(SomConsts.RESULT_CONFIRM_SHIPPING, it.data.message)
+                        })
+                        activity?.finish()
+                    }
+                }
+                is Fail -> {
+                    showErrorToaster(ErrorHandler.getErrorMessage(context, it.throwable))
                 }
             }
         })
     }
 
     private fun getInitialData() {
-        showLoading()
+        showInitialLoading()
         viewModel.getReschedulePickupDetail(orderId)
     }
 
-    private fun showLoading() {
+    private fun showInitialLoading() {
         binding?.let {
             it.loaderReschedulePickup.visibility = View.VISIBLE
             it.etDay.editText.isEnabled = false
@@ -168,6 +204,23 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
                     openReasonSelectionBottomSheet(data.order.chooseReason)
                 }
             }
+
+            it.btnReschedulePickup.setOnClickListener {
+                saveRescheduleDetail()
+            }
+        }
+    }
+
+    private fun saveRescheduleDetail() {
+        loadingDialog = ReschedulePickupLoadingDialog(requireContext())
+        loadingDialog?.show()
+        binding?.let {
+            viewModel.saveReschedule(
+                orderId,
+                it.etDay.editText.text.toString(),
+                it.etTime.editText.text.toString(),
+                it.etReason.editText.text.toString()
+            )
         }
     }
 
@@ -224,27 +277,24 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showDialogFragment(
-        titleText: String?,
-        bodyText: String?,
-        positiveButton: String?,
-        negativeButton: String?
+    private fun showErrorDialog(
+        titleText: String,
+        bodyText: String,
+        positiveButton: String,
+        image: Int,
     ) {
         val dialog = DialogUnify(
             requireContext(),
-            DialogUnify.HORIZONTAL_ACTION,
-            DialogUnify.NO_IMAGE
+            DialogUnify.SINGLE_ACTION,
+            DialogUnify.WITH_ILLUSTRATION
         ).apply {
-            setTitle(titleText ?: "")
-            setDescription(bodyText ?: "")
-            setPrimaryCTAText(positiveButton ?: "")
+            setImageDrawable(image)
+            setTitle(titleText)
+            setDescription(bodyText)
+            setPrimaryCTAText(positiveButton)
             setPrimaryCTAClickListener {
                 this.dismiss()
             }
-            setSecondaryCTAClickListener {
-                dismiss()
-            }
-            setSecondaryCTAText(negativeButton ?: "")
         }
         dialog.show()
     }
@@ -369,17 +419,18 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
     }
 
     private fun showErrorToaster(
-        message: String?,
+        message: String,
     ) {
-        message?.run {
-            view?.let {
-                Toaster.build(
-                    it,
-                    message,
-                    Toaster.LENGTH_SHORT,
-                    Toaster.TYPE_ERROR,
-                ).show()
-            }
+        view?.let {
+            toaster = Toaster.build(
+                it,
+                message,
+                Toaster.LENGTH_SHORT,
+                Toaster.TYPE_ERROR,
+            )
+        }
+        if (toaster?.isShown == false) {
+            toaster?.show()
         }
     }
 
@@ -387,11 +438,13 @@ class ReschedulePickupFragment : BaseDaggerFragment() {
         private const val OTHER_REASON_RESCHEDULE = "Lainnya (Isi Sendiri)"
         private const val OTHER_REASON_MIN_CHAR = 15
         private const val OTHER_REASON_MAX_CHAR = 160
-        private const val ARGUMENTS_ORDER_ID = "ARGUMENTS_ORDER_ID"
+
+        // todo confirm this status code to BE
+        private const val STATUS_CODE_ALREADY_REQUEST_NEW_DRIVER = "999"
         fun newInstance(bundle: Bundle): ReschedulePickupFragment {
             return ReschedulePickupFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARGUMENTS_ORDER_ID, bundle.getString(ARGUMENTS_ORDER_ID))
+                    putString(SomConsts.PARAM_ORDER_ID, bundle.getString(SomConsts.PARAM_ORDER_ID))
                 }
             }
         }

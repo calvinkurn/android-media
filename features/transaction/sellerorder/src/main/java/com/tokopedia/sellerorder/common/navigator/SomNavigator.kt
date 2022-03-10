@@ -16,6 +16,7 @@ import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfir
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment
 import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
+import com.tokopedia.sellerorder.reschedule_pickup.presentation.activity.ReschedulePickupActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.webview.KEY_TITLE
@@ -28,6 +29,7 @@ object SomNavigator {
     const val REQUEST_CONFIRM_SHIPPING = 997
     const val REQUEST_CONFIRM_REQUEST_PICKUP = 996
     const val REQUEST_CHANGE_COURIER = 995
+    const val REQUEST_RESCHEDULE_PICKUP = 994
 
     fun goToSomOrderDetail(fragment: SomListFragment, orderId: String) {
         fragment.run {
@@ -79,6 +81,15 @@ object SomNavigator {
                 putExtra(SomConsts.PARAM_ORDER_ID, orderId)
                 putExtra(SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING, true)
                 startActivityForResult(this, REQUEST_CHANGE_COURIER)
+            }
+        }
+    }
+
+    fun goToReschedulePickupPage(fragment: Fragment, orderId: String) {
+        fragment.run {
+            Intent(activity, ReschedulePickupActivity::class.java).apply {
+                putExtra(SomConsts.PARAM_ORDER_ID, orderId)
+                startActivityForResult(this, REQUEST_RESCHEDULE_PICKUP)
             }
         }
     }
