@@ -222,7 +222,6 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     }
 
     interface Listener {
-        fun onClickPostButton()
         fun onClickBackButton()
     }
 }

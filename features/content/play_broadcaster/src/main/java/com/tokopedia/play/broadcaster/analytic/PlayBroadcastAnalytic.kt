@@ -599,13 +599,6 @@ class PlayBroadcastAnalytic(
     }
 
     /**
-     * View Report Page
-     */
-    fun openReportScreen(channelId: String) {
-        sendScreen("/$KEY_TRACK_CATEGORY - report summary - ${userSession.shopId} - $channelId")
-    }
-
-    /**
      * View Error Message on Report Page
      */
     fun viewErrorOnReportPage(channelId: String, titleChannel: String, errorMessage: String) {

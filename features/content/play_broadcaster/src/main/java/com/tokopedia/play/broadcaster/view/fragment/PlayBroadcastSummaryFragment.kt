@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.fragment.setup
+package com.tokopedia.play.broadcaster.view.fragment
 
 import android.content.res.Configuration
 import android.os.Bundle
@@ -10,8 +10,6 @@ import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastSummaryBinding
-import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPostVideoFragment
-import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastReportFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -23,9 +21,6 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on March 08, 2022
  */
 class PlayBroadcastSummaryFragment @Inject constructor(
-    private val viewModelFactory: ViewModelFactory,
-    private val analytic: PlayBroadcastAnalytic,
-    private val userSession: UserSessionInterface,
     private val fragmentFactory: FragmentFactory,
 ) : PlayBaseBroadcastFragment() {
 
@@ -42,15 +37,10 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     }
 
     private val postVideoListener = object : PlayBroadcastPostVideoFragment.Listener {
-        override fun onClickPostButton() {
-            /** TODO("handle this") */
-        }
-
         override fun onClickBackButton() {
             childFragmentManager.popBackStack()
         }
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -54,14 +54,12 @@ class PlayBroadcastSummaryAnalyticImpl @Inject constructor(
     }
 
     override fun impressReportPage(channelID: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                KEY_EVENT to KEY_TRACK_OPEN_SCREEN,
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(
+            "/seller broadcast - report summary - $shopId - $channelID",
+            mapOf<String, String>(
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                 KEY_CURRENT_SITE to currentSite,
-                KEY_IS_LOGGED_IN_STATUS to userSession.isLoggedIn.toString(),
-                KEY_SCREEN_NAME to "/seller broadcast - report summary - $shopId - $channelID",
-                KEY_USER_ID to userSession.userId,
+                KEY_IS_LOGGED_IN_STATUS to userSession.isLoggedIn.toString()
             )
         )
     }

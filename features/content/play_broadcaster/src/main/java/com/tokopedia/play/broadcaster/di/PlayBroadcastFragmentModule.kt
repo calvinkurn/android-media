@@ -7,7 +7,7 @@ import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoar
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
 import com.tokopedia.play.broadcaster.view.fragment.factory.PlayBroadcastFragmentFactory
-import com.tokopedia.play.broadcaster.view.fragment.setup.PlayBroadcastSummaryFragment
+import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastSummaryFragment
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

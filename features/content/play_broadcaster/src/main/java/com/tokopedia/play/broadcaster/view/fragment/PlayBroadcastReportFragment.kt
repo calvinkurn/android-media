@@ -44,7 +44,6 @@ import javax.inject.Inject
 class PlayBroadcastReportFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
         private val analytic: PlayBroadcastAnalytic,
-        private val userSession: UserSessionInterface
 ) : PlayBaseBroadcastFragment(), SummaryInfoViewComponent.Listener {
 
     companion object {
@@ -59,7 +58,6 @@ class PlayBroadcastReportFragment @Inject constructor(
     private lateinit var icClose: IconUnify
     private lateinit var btnPostVideo: UnifyButton
     private lateinit var loaderView: LoaderUnify
-    private lateinit var deleteVideoDialog: DialogUnify
 
     private val summaryInfoView by viewComponent(isEagerInit = true) { SummaryInfoViewComponent(it, this) }
 
@@ -86,8 +84,6 @@ class PlayBroadcastReportFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
-
-        analytic.impressReportPage(parentViewModel.channelId)
     }
 
     private fun initView(view: View) {
