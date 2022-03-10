@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifyprinciples.R.dimen as unifyRDimen
 
 /**
@@ -15,9 +14,8 @@ class PlayWidgetLargeItemDecoration(context: Context) : RecyclerView.ItemDecorat
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val position = parent.getChildAdapterPosition(view)
-        val itemCount = parent.adapter?.itemCount.orZero()
 
-        outRect.top =  if (position == 0) 0 else defaultOffset
-        if(position == itemCount - 1) outRect.bottom = 0
+        outRect.top =  if (position == 0 && position == 1) 0 else defaultOffset
+        outRect.bottom = 0
     }
 }
