@@ -568,14 +568,20 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
     private fun showEmptyState() {
         binding?.run {
             if (!rechargePdpTagihanListrikEmptyStateWidget.isVisible) {
-                digitalPDPAnalytics.impressionBannerEmptyState(
-                    rechargePdpTagihanListrikEmptyStateWidget.imageUrl,
-                    categoryId.toString(),
-                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                    loyaltyStatus,
-                    userSession.userId
-                )
-                rechargePdpTagihanListrikEmptyStateWidget.show()
+                /** hide empty state when imageUrl is empty*/
+                if (rechargePdpTagihanListrikEmptyStateWidget.imageUrl.isNotEmpty()) {
+                    digitalPDPAnalytics.impressionBannerEmptyState(
+                        rechargePdpTagihanListrikEmptyStateWidget.imageUrl,
+                        categoryId.toString(),
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        loyaltyStatus,
+                        userSession.userId
+                    )
+                    rechargePdpTagihanListrikEmptyStateWidget.show()
+                } else {
+                    rechargePdpTagihanListrikEmptyStateWidget.hide()
+                }
+
                 rechargePdpTickerWidgetProductDesc.hide()
             }
         }

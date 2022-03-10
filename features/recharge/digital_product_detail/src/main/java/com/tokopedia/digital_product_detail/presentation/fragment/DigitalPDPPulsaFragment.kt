@@ -311,6 +311,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     onSuccessDenomGrid(denomData.data.denomWidgetModel, selectedPositionDenom)
                     onSuccessMCCM(denomData.data.mccmFlashSaleModel, selectedPositionMCCM)
 
+                    if (viewModel.isEmptyDenomMCCM(denomData.data.denomWidgetModel.listDenomData, denomData.data.mccmFlashSaleModel.listDenomData)){
+                        showEmptyState(false)
+                    } else hideEmptyState()
+
                     if (selectedPositionDenom == null && selectedPositionMCCM == null) {
                         onHideBuyWidget()
                     }
@@ -730,21 +734,35 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun showEmptyState() {
+    private fun showEmptyState(isHideIndicatorIcon: Boolean = true) {
         binding?.run {
             if (!rechargePdpPulsaEmptyStateWidget.isVisible) {
-                digitalPDPAnalytics.impressionBannerEmptyState(
-                    rechargePdpPulsaEmptyStateWidget.imageUrl,
-                    categoryId.toString(),
-                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                    loyaltyStatus,
-                    userSession.userId
-                )
-                rechargePdpPulsaEmptyStateWidget.show()
+                /** hide empty state when imageUrl is empty*/
+                if (rechargePdpPulsaEmptyStateWidget.imageUrl.isNotEmpty()) {
+                    rechargePdpPulsaEmptyStateWidget.show()
+                    digitalPDPAnalytics.impressionBannerEmptyState(
+                        rechargePdpPulsaEmptyStateWidget.imageUrl,
+                        categoryId.toString(),
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        loyaltyStatus,
+                        userSession.userId
+                    )
+
+                } else {
+                    rechargePdpPulsaEmptyStateWidget.hide()
+                }
+
+                if (isHideIndicatorIcon) rechargePdpPulsaClientNumberWidget.hideOperatorIcon()
+
                 rechargePdpPulsaPromoWidget.hide()
                 rechargePdpPulsaRecommendationWidget.hide()
                 rechargePdpPulsaDenomGridWidget.hide()
-                rechargePdpPulsaClientNumberWidget.hideOperatorIcon()
+
+                rechargePdpPulsaBannerSpacer.run {
+                    layoutParams.height = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                        .toInt()
+                    requestLayout()
+                }
             }
         }
     }
@@ -753,6 +771,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         binding?.run {
             if (rechargePdpPulsaEmptyStateWidget.isVisible) {
                 rechargePdpPulsaEmptyStateWidget.hide()
+                rechargePdpPulsaBannerSpacer.run {
+                    layoutParams.height = resources.getDimension(com.tokopedia.digital_product_detail.R.dimen.banner_space)
+                        .toInt()
+                }
             }
         }
     }

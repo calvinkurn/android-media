@@ -26,12 +26,6 @@ class RechargeSimplifyBuyWidget @JvmOverloads constructor(@NotNull context: Cont
         }
     }
 
-    fun hideSimplifyBuyWidget(){
-        with(rechargeSimplifyBuyWidgetBinding){
-            root.hide()
-        }
-    }
-
     fun isLoadingButton(isLoadingActive: Boolean){
         with(rechargeSimplifyBuyWidgetBinding){
             btnSimplifyBuyWidget.run {

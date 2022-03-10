@@ -263,6 +263,10 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                         viewModel.getSelectedPositionId(denomData.data.listDenomData)
                     onSuccessDenomGrid(denomData.data, selectedPositionDenom)
 
+                    if (denomData.data.listDenomData.isEmpty()){
+                        showEmptyState()
+                    } else hideEmptyState()
+
                     if (selectedPositionDenom == null) {
                         onHideBuyWidget()
                     }
@@ -671,6 +675,10 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         binding?.run {
             if (rechargePdpTokenListrikEmptyStateWidget.isVisible) {
                 rechargePdpTokenListrikEmptyStateWidget.hide()
+                rechargePdpTokenListrikBannerSpacer.run {
+                    layoutParams.height = resources.getDimension(com.tokopedia.digital_product_detail.R.dimen.banner_space)
+                        .toInt()
+                }
                 rechargePdpTickerWidgetProductDesc.show()
                 renderGreenBox()
             }
@@ -691,14 +699,26 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     private fun showEmptyState() {
         binding?.run {
             if (!rechargePdpTokenListrikEmptyStateWidget.isVisible) {
-                digitalPDPAnalytics.impressionBannerEmptyState(
-                    rechargePdpTokenListrikEmptyStateWidget.imageUrl,
-                    categoryId.toString(),
-                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                    loyaltyStatus,
-                    userSession.userId
-                )
-                rechargePdpTokenListrikEmptyStateWidget.show()
+
+                rechargePdpTokenListrikBannerSpacer.run {
+                    layoutParams.height = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                        .toInt()
+                }
+
+                /** hide empty state when imageUrl is empty*/
+                if (rechargePdpTokenListrikEmptyStateWidget.imageUrl.isNotEmpty()) {
+                    digitalPDPAnalytics.impressionBannerEmptyState(
+                        rechargePdpTokenListrikEmptyStateWidget.imageUrl,
+                        categoryId.toString(),
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        loyaltyStatus,
+                        userSession.userId
+                    )
+                    rechargePdpTokenListrikEmptyStateWidget.show()
+                } else {
+                    rechargePdpTokenListrikEmptyStateWidget.hide()
+                }
+
                 rechargePdpTokenListrikRecommendationWidget.hide()
                 rechargePdpTokenListrikDenomGridWidget.hide()
                 rechargePdpTickerWidgetProductDesc.hide()

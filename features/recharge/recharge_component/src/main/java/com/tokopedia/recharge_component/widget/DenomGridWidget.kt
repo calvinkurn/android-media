@@ -61,6 +61,7 @@ class DenomGridWidget @JvmOverloads constructor(@NotNull context: Context, attrs
 
     fun renderDenomGridShimmering(){
         with(rechargeDenomGridViewBinding){
+            root.show()
             tgDenomGridWidgetTitle.hide()
             denomGridShimmering.root.show()
             rvDenomGridCard.hide()

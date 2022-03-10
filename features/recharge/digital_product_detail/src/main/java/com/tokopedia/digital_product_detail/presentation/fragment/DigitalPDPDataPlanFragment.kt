@@ -356,6 +356,11 @@ class DigitalPDPDataPlanFragment :
                     onSuccessDenomFull(denomData.data.denomFull, selectedPositionDenom)
                     onSuccessMCCM(denomData.data.denomMCCMFull, selectedPositionMCCM)
 
+                    if (viewModel.isEmptyDenomMCCM(denomData.data.denomFull.listDenomData,
+                            denomData.data.denomMCCMFull.listDenomData)){
+                        showEmptyState(true)
+                    } else hideEmptyState()
+
                     if (selectedPositionDenom == null && selectedPositionMCCM == null) {
                         onHideBuyWidget()
                     }
@@ -367,6 +372,7 @@ class DigitalPDPDataPlanFragment :
                 }
 
                 is RechargeNetworkResult.Loading -> {
+                    hideEmptyState()
                     onShimmeringDenomFull()
                     onLoadingAndFailMCCM()
                 }
@@ -422,6 +428,7 @@ class DigitalPDPDataPlanFragment :
         clientNumber: String
     ) {
         viewModel.run {
+            if(isOperatorChanged) resetFilter()
             cancelCatalogProductJob()
             setRechargeCatalogInputMultiTabLoading()
             getRechargeCatalogInputMultiTab(
@@ -807,22 +814,40 @@ class DigitalPDPDataPlanFragment :
         binding?.rechargePdpPaketDataEmptyStateWidget?.imageUrl = banners.firstOrNull()?.imageUrl ?: ""
     }
 
-    private fun showEmptyState() {
+    private fun showEmptyState(isShowFilter: Boolean = false) {
         binding?.run {
             if (!rechargePdpPaketDataEmptyStateWidget.isVisible) {
-                digitalPDPAnalytics.impressionBannerEmptyState(
-                    rechargePdpPaketDataEmptyStateWidget.imageUrl,
-                    categoryId.toString(),
-                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                    loyaltyStatus,
-                    userSession.userId
-                )
-                rechargePdpPaketDataEmptyStateWidget.show()
+
+                /** hide empty state when imageUrl is empty*/
+                if (rechargePdpPaketDataEmptyStateWidget.imageUrl.isNotEmpty()) {
+                    rechargePdpPaketDataEmptyStateWidget.show()
+                    digitalPDPAnalytics.impressionBannerEmptyState(
+                        rechargePdpPaketDataEmptyStateWidget.imageUrl,
+                        categoryId.toString(),
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        loyaltyStatus,
+                        userSession.userId
+                    )
+                } else {
+                    rechargePdpPaketDataEmptyStateWidget.hide()
+                }
+
+                if (isShowFilter){
+                    sortFilterPaketData.show()
+                } else {
+                    sortFilterPaketData.hide()
+                    rechargePdpPaketDataClientNumberWidget.hideOperatorIcon()
+                }
+
                 rechargePdpPaketDataPromoWidget.hide()
-                sortFilterPaketData.hide()
                 rechargePdpPaketDataRecommendationWidget.hide()
                 rechargePdpPaketDataDenomFullWidget.hide()
-                rechargePdpPaketDataClientNumberWidget.hideOperatorIcon()
+
+                rechargePdpPaketDataBannerSpacer.run {
+                    layoutParams.height = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                        .toInt()
+                    requestLayout()
+                }
             }
         }
     }
@@ -831,6 +856,11 @@ class DigitalPDPDataPlanFragment :
         binding?.run {
             if (rechargePdpPaketDataEmptyStateWidget.isVisible) {
                 rechargePdpPaketDataEmptyStateWidget.hide()
+                rechargePdpPaketDataRecommendationWidget.show()
+                rechargePdpPaketDataBannerSpacer.run {
+                    layoutParams.height = resources.getDimension(com.tokopedia.digital_product_detail.R.dimen.banner_space)
+                        .toInt()
+                }
             }
         }
     }
