@@ -7,7 +7,9 @@ package com.tokopedia.explore.analytics;
 public interface ContentExloreEventTracking {
     interface Screen {
         String SCREEN_CONTENT_STREAM = "explore page - inspiration";
-        String SCREEN_NAME = "/feed - explore tab";
+        String SCREEN_NAME_EXPLORE = "/feed - explore tab";
+        String SCREEN_NAME_UPDATE = "/feed - update tab";
+        String SCREEN_NAME_VIDEO = "/feed - video tab";
     }
 
     interface Event {

@@ -57,12 +57,7 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
         isAutoPlay: Boolean
     ) {
         super.onClickChannelCard(view, item, channelPositionInList, isAutoPlay)
-//        if (item.channelType == PlayWidgetChannelType.Live) {
-//            tracker.clickOnContentCardsInContentListPageForLagiLive(
-//                item.channelId, shopId, listOf(item.video.coverUrl),
-//                item.channelType.toString().lowercase(), filterCategory, channelPositionInList
-//            )
-//        }
+
         tracker.clickOnContentCardsInVideoTabBelowTheChips(
             item.channelId, item.partner.id, listOf(item.video.coverUrl),
             item.channelType.toString().lowercase(), filterCategory, channelPositionInList
@@ -76,12 +71,6 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
         isAutoPlay: Boolean
     ) {
         super.onImpressChannelCard(view, item, channelPositionInList, isAutoPlay)
-//        if (item.channelType == PlayWidgetChannelType.Live) {
-//            tracker.impressOnContentCardsInContentListPageForLagiLive(
-//                item.channelId, shopId, listOf(item.video.coverUrl),
-//                item.channelType.toString().lowercase(), filterCategory, channelPositionInList
-//            )
-//        }
         tracker.impressOnContentCardsInVideoTabBelowTheChips(
             item.channelId, item.partner.id, listOf(item.video.coverUrl),
             item.channelType.toString().lowercase(), filterCategory, channelPositionInList
@@ -95,10 +84,11 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
         isAutoPlay: Boolean
     ) {
         super.onClickChannelCard(view, item, channelPositionInList, isAutoPlay)
+        if (item.channelType == PlayWidgetChannelType.Live) {
         tracker.clickOnLagiLiveCarouselContentCards(
             item.channelId, item.partner.id, listOf(item.video.coverUrl),
             item.channelType.toString().lowercase(), channelPositionInList
-        )
+        )}
         if (item.channelType == PlayWidgetChannelType.Upcoming) {
             tracker.clickOnUpcomingCarouselContentCards(
                 item.channelId, item.partner.id, listOf(item.video.coverUrl),
