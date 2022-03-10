@@ -73,6 +73,11 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     val favoriteNumberData: LiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>
         get() = _favoriteNumberData
 
+    private val _autoCompleteData =
+        MutableLiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>()
+    val autoCompleteData: LiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>
+        get() = _autoCompleteData
+
     private val _catalogPrefixSelect =
         MutableLiveData<RechargeNetworkResult<TelcoCatalogPrefixSelect>>()
     val catalogPrefixSelect: LiveData<RechargeNetworkResult<TelcoCatalogPrefixSelect>>
@@ -98,9 +103,9 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         _menuDetailData.value = RechargeNetworkResult.Loading
     }
 
-    fun getMenuDetail(menuId: Int, isLoadFromCloud: Boolean = false) {
+    fun getMenuDetail(menuId: Int) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
-            val menuDetail = repo.getMenuDetail(menuId, isLoadFromCloud)
+            val menuDetail = repo.getMenuDetail(menuId)
             _menuDetailData.value = RechargeNetworkResult.Success(menuDetail)
         }) {
             _menuDetailData.value = RechargeNetworkResult.Fail(it)
@@ -143,6 +148,20 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
                 RechargeNetworkResult.Success(favoriteNumber.persoFavoriteNumber.items)
         }) {
             _favoriteNumberData.value = RechargeNetworkResult.Fail(it)
+        }
+    }
+
+    fun setAutoCompleteLoading() {
+        _autoCompleteData.value = RechargeNetworkResult.Loading
+    }
+
+    fun getAutoComplete(categoryIds: List<Int>) {
+        viewModelScope.launchCatchError(dispatchers.main, block = {
+            val favoriteNumberList = repo.getFavoriteNumberList(categoryIds)
+            _autoCompleteData.value = RechargeNetworkResult.Success(
+                favoriteNumberList.persoFavoriteNumber.items)
+        }) {
+            _autoCompleteData.value = RechargeNetworkResult.Fail(it)
         }
     }
 
@@ -301,6 +320,19 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
 
     fun updateFilterData() {
         setFilterDataParam(filterData)
+    }
+
+    fun resetFilter(){
+        filterData.forEach {
+            it.filterTagDataCollections.forEach {
+                it.isSelected = false
+            }
+        }
+        setFilterDataParam(filterData)
+    }
+
+    fun isEmptyDenomMCCM(listDenomData: List<DenomData>, listMCCMData: List<DenomData>): Boolean {
+        return listDenomData.isEmpty() && listMCCMData.isEmpty()
     }
 
     private fun setFilterDataParam(filterTagComponents: List<TelcoFilterTagComponent>) {

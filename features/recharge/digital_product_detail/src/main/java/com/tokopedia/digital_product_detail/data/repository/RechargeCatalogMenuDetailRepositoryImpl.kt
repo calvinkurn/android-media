@@ -14,13 +14,9 @@ class RechargeCatalogMenuDetailRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ): RechargeCatalogMenuDetailRepository {
 
-    override suspend fun getMenuDetail(
-        menuId: Int,
-        isLoadFromCloud: Boolean
-    ): MenuDetailModel = withContext(dispatchers.io) {
+    override suspend fun getMenuDetail(menuId: Int): MenuDetailModel = withContext(dispatchers.io) {
         val menuDetail = getRechargeCatalogMenuDetailUseCase.apply {
             setMenuDetailParams(menuId)
-            setLoadFromCloud(isLoadFromCloud)
         }.executeOnBackground()
 
         return@withContext mapper.mapMenuDetailModel(menuDetail.catalogMenuDetailData)

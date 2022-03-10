@@ -1,7 +1,6 @@
 package com.tokopedia.recharge_component.widget
 
 import android.content.Context
-import android.text.Html
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.core.text.HtmlCompat

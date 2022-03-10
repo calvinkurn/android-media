@@ -59,6 +59,11 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     val favoriteNumberData: LiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>
         get() = _favoriteNumberData
 
+    private val _autoCompleteData =
+        MutableLiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>()
+    val autoCompleteData: LiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>
+        get() = _autoCompleteData
+
     private val _catalogSelectGroup =
         MutableLiveData<RechargeNetworkResult<DigitalCatalogOperatorSelectGroup>>()
     val catalogSelectGroup: LiveData<RechargeNetworkResult<DigitalCatalogOperatorSelectGroup>>
@@ -84,9 +89,9 @@ class DigitalPDPTagihanViewModel @Inject constructor(
         _menuDetailData.value = RechargeNetworkResult.Loading
     }
 
-    fun getMenuDetail(menuId: Int, isLoadFromCloud: Boolean = false) {
+    fun getMenuDetail(menuId: Int) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
-            val menuDetail = repo.getMenuDetail(menuId, isLoadFromCloud)
+            val menuDetail = repo.getMenuDetail(menuId)
             _menuDetailData.value = RechargeNetworkResult.Success(menuDetail)
         }) {
             _menuDetailData.value = RechargeNetworkResult.Fail(it)
@@ -99,12 +104,26 @@ class DigitalPDPTagihanViewModel @Inject constructor(
 
     fun getFavoriteNumber(categoryIds: List<Int>, operatorIds: List<Int>) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
-            val favoriteNumber = repo.getFavoriteNumberChips(categoryIds, operatorIds)
+            val favoriteNumberChips = repo.getFavoriteNumberChips(categoryIds, operatorIds)
             _favoriteNumberData.value = RechargeNetworkResult.Success(
-                favoriteNumber.persoFavoriteNumber.items
+                favoriteNumberChips.persoFavoriteNumber.items
             )
         }) {
             _favoriteNumberData.value = RechargeNetworkResult.Fail(it)
+        }
+    }
+
+    fun setAutoCompleteLoading() {
+        _autoCompleteData.value = RechargeNetworkResult.Loading
+    }
+
+    fun getAutoComplete(categoryIds: List<Int>, operatorIds: List<Int>) {
+        viewModelScope.launchCatchError(dispatchers.main, block = {
+            val favoriteNumberList = repo.getFavoriteNumberList(categoryIds, operatorIds)
+            _autoCompleteData.value = RechargeNetworkResult.Success(
+                favoriteNumberList.persoFavoriteNumber.items)
+        }) {
+            _autoCompleteData.value = RechargeNetworkResult.Fail(it)
         }
     }
 

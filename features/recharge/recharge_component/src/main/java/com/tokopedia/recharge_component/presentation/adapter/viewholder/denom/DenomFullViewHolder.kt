@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.R
@@ -55,7 +56,7 @@ class DenomFullViewHolder(
             }
 
             viewSeparatorTypeDenomFull.run {
-                if (!denomFull.expiredDays.isNullOrEmpty()){
+                if (!denomFull.expiredDays.isNullOrEmpty() && !denomFull.quotaInfo.isNullOrEmpty()){
                     show()
                 } else hide()
             }
@@ -65,6 +66,67 @@ class DenomFullViewHolder(
                     show()
                     setStatusOutOfStockColor(denomFull.status, context)
                     text = denomFull.expiredDays
+
+                    val labelParams = this.layoutParams as ConstraintLayout.LayoutParams
+
+                    if(!denomFull.quotaInfo.isNullOrEmpty()){
+
+                        setMargin(
+                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+                                .toInt(),
+                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1)
+                                .toInt(),
+                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                                .toInt(),
+                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                                .toInt())
+
+                        labelParams.topToBottom = ConstraintLayout.LayoutParams.UNSET
+                        labelParams.leftToLeft = ConstraintLayout.LayoutParams.UNSET
+                        labelParams.topToTop = viewSeparatorTypeDenomFull.id
+                        labelParams.leftToRight = viewSeparatorTypeDenomFull.id
+                        labelParams.bottomToBottom = viewSeparatorTypeDenomFull.id
+
+                        viewSeparatorTypeDenomFull.run {
+                            val viewSeparatorlabelParams = this.layoutParams as ConstraintLayout.LayoutParams
+                            viewSeparatorlabelParams.topToTop = tgDenomFullQuota.id
+                            viewSeparatorlabelParams.leftToRight = tgDenomFullQuota.id
+                            viewSeparatorlabelParams.bottomToBottom = tgDenomFullQuota.id
+                            this.layoutParams = viewSeparatorlabelParams
+                        }
+
+                    } else {
+
+                        labelParams.topToTop = ConstraintLayout.LayoutParams.UNSET
+                        labelParams.leftToRight = ConstraintLayout.LayoutParams.UNSET
+                        labelParams.topToBottom = tgDenomFullDesc.id
+                        labelParams.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
+                        labelParams.bottomToTop = labelDenomFullSpecial.id
+
+                        labelDenomFullSpecial.run {
+                            val labelDenomSpeciallabelParams = this.layoutParams as ConstraintLayout.LayoutParams
+                            labelDenomSpeciallabelParams.topToBottom = tgDenomFullExpired.id
+                            this.layoutParams = labelDenomSpeciallabelParams
+                        }
+
+                        tgDenomFullDesc.run {
+                            val tgDenomFullDesclabelParams = this.layoutParams as ConstraintLayout.LayoutParams
+                            tgDenomFullDesclabelParams.bottomToTop = tgDenomFullExpired.id
+                            this.layoutParams = tgDenomFullDesclabelParams
+                        }
+
+                        setMargin(
+                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                                .toInt(),
+                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1)
+                                .toInt(),
+                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                                .toInt(),
+                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                                .toInt())
+                    }
+
+                    layoutParams = labelParams
                 } else hide()
             }
 

@@ -43,7 +43,7 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
     fun `when getting menuDetail should run and give fail result`() {
         onGetMenuDetail_thenReturn(NullPointerException())
 
-        viewModel.getMenuDetail(MENU_ID, false)
+        viewModel.getMenuDetail(MENU_ID)
         verifyGetMenuDetailRepoGetCalled()
         verifyGetMenuDetailFail()
     }
@@ -91,8 +91,8 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
         val response = dataFactory.getFavoriteNumberData()
         onGetFavoriteNumber_thenReturn(response)
 
-        viewModel.getFavoriteNumber(listOf())
-        verifyGetFavoriteNumberRepoGetCalled()
+        viewModel.getFavoriteNumber(listOf(), listOf())
+        verifyGetFavoriteNumberChipsRepoGetCalled()
         verifyGetFavoriteNumberSuccess(response.persoFavoriteNumber.items)
     }
 
@@ -100,9 +100,36 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
     fun `when getting favoriteNumber should run and give success fail`() {
         onGetFavoriteNumber_thenReturn(NullPointerException())
 
-        viewModel.getFavoriteNumber(listOf())
-        verifyGetFavoriteNumberRepoGetCalled()
+        viewModel.getFavoriteNumber(listOf(), listOf())
+        verifyGetFavoriteNumberChipsRepoGetCalled()
         verifyGetFavoriteNumberFail()
+    }
+
+    @Test
+    fun `given autoComplete loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setAutoCompleteLoading()
+        verifyGetAutoCompleteLoading(loadingResponse)
+    }
+
+    @Test
+    fun `when getting autoComplete should run and give success result`() {
+        val response = dataFactory.getFavoriteNumberData()
+        onGetAutoComplete_thenReturn(response)
+
+        viewModel.getAutoComplete(listOf(), listOf())
+        verifyGetFavoriteNumberListRepoGetCalled()
+        verifyGetAutoCompleteSuccess(response.persoFavoriteNumber.items)
+    }
+
+    @Test
+    fun `when getting autoComplete should run and give success fail`() {
+        onGetAutoComplete_thenReturn(NullPointerException())
+
+        viewModel.getAutoComplete(listOf(), listOf())
+        verifyGetFavoriteNumberListRepoGetCalled()
+        verifyGetAutoCompleteFail()
     }
 
     @Test

@@ -41,7 +41,10 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="@dimen/layout_lvl7">
+            android:paddingBottom="@dimen/layout_lvl7"
+            android:background="@null"
+            android:orientation="vertical"
+            app:elevation="0dp">
 
             <com.tokopedia.recharge_component.widget.RechargeEmptyStateWidget
                 android:id="@+id/recharge_pdp_tagihan_listrik_empty_state_widget"

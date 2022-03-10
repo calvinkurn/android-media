@@ -48,13 +48,13 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
 
     protected fun onGetMenuDetail_thenReturn(response: MenuDetailModel) {
         coEvery {
-            repo.getMenuDetail(any(), any())
+            repo.getMenuDetail(any())
         } returns response
     }
 
     protected fun onGetMenuDetail_thenReturn(error: Throwable) {
         coEvery {
-            repo.getMenuDetail(any(), any())
+            repo.getMenuDetail(any())
         } throws error
     }
 
@@ -72,13 +72,25 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
 
     protected fun onGetFavoriteNumber_thenReturn(response: TopupBillsPersoFavNumberData) {
         coEvery {
-            repo.getFavoriteNumberChips(any())
+            repo.getFavoriteNumberChips(any(), any())
         } returns response
     }
 
     protected fun onGetFavoriteNumber_thenReturn(error: Throwable) {
         coEvery {
-            repo.getFavoriteNumberChips(any())
+            repo.getFavoriteNumberChips(any(), any())
+        } throws error
+    }
+
+    protected fun onGetAutoComplete_thenReturn(response: TopupBillsPersoFavNumberData) {
+        coEvery {
+            repo.getFavoriteNumberList(any(), any())
+        } returns response
+    }
+
+    protected fun onGetAutoComplete_thenReturn(error: Throwable) {
+        coEvery {
+            repo.getFavoriteNumberList(any(), any())
         } throws error
     }
 
@@ -139,11 +151,15 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
     }
 
     protected fun verifyGetMenuDetailRepoGetCalled() {
-        coVerify { repo.getMenuDetail(any(), any()) }
+        coVerify { repo.getMenuDetail(any()) }
     }
 
-    protected fun verifyGetFavoriteNumberRepoGetCalled() {
-        coVerify { repo.getFavoriteNumberChips(any()) }
+    protected fun verifyGetFavoriteNumberChipsRepoGetCalled() {
+        coVerify { repo.getFavoriteNumberChips(any(), any()) }
+    }
+
+    protected fun verifyGetFavoriteNumberListRepoGetCalled() {
+        coVerify { repo.getFavoriteNumberList(any(), any()) }
     }
 
     protected fun verifyAddToCartRepoGetCalled() {
@@ -166,6 +182,21 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
 
     protected fun verifyGetFavoriteNumberFail() {
         val actualResponse = viewModel.favoriteNumberData.value
+        Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
+    }
+
+    protected fun verifyGetAutoCompleteLoading(expectedResponse: RechargeNetworkResult.Loading){
+        val actualResponse = viewModel.autoCompleteData.value
+        Assert.assertEquals(expectedResponse, actualResponse)
+    }
+
+    protected fun verifyGetAutoCompleteSuccess(expectedResponse: List<TopupBillsPersoFavNumberItem>) {
+        val actualResponse = viewModel.autoCompleteData.value
+        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
+    }
+
+    protected fun verifyGetAutoCompleteFail() {
+        val actualResponse = viewModel.autoCompleteData.value
         Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
     }
 

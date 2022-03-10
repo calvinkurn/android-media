@@ -278,6 +278,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 }
             }
         })
+
         viewModel.favoriteNumberData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetFavoriteNumber(it.data)
@@ -285,6 +286,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 is RechargeNetworkResult.Loading -> {
                     binding?.rechargePdpPulsaClientNumberWidget?.setFilterChipShimmer(true)
                 }
+            }
+        })
+
+        viewModel.autoCompleteData.observe(viewLifecycleOwner, {
+            when (it) {
+                is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
+                is RechargeNetworkResult.Fail -> {}
+                is RechargeNetworkResult.Loading -> {}
             }
         })
 
@@ -322,6 +331,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
                     onSuccessDenomGrid(denomData.data.denomWidgetModel, selectedPositionDenom)
                     onSuccessMCCM(denomData.data.mccmFlashSaleModel, selectedPositionMCCM)
+
+                    if (viewModel.isEmptyDenomMCCM(denomData.data.denomWidgetModel.listDenomData, denomData.data.mccmFlashSaleModel.listDenomData)){
+                        showEmptyState(false)
+                    } else hideEmptyState()
 
                     if (selectedPositionDenom == null && selectedPositionMCCM == null) {
                         onHideBuyWidget()
@@ -420,9 +433,21 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         )
     }
 
+    private fun getAutoComplete() {
+        viewModel.setAutoCompleteLoading()
+        viewModel.getAutoComplete(
+            listOf(
+                TelcoCategoryType.CATEGORY_PULSA,
+                TelcoCategoryType.CATEGORY_PAKET_DATA,
+                TelcoCategoryType.CATEGORY_ROAMING
+            )
+        )
+    }
+
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
+        getAutoComplete()
         getFavoriteNumber()
         initEmptyState(data.banners)
         renderPrefill(data.userPerso)
@@ -450,8 +475,15 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             if (favoriteNumber.isNotEmpty()) {
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
-                setAutoCompleteList(favoriteNumber)
                 dynamicSpacerHeightRes = R.dimen.dynamic_banner_space_extended
+            }
+        }
+    }
+
+    private fun onSuccessGetAutoComplete(autoComplete: List<TopupBillsPersoFavNumberItem>) {
+        binding?.rechargePdpPulsaClientNumberWidget?.run {
+            if (autoComplete.isNotEmpty()) {
+                setAutoCompleteList(autoComplete)
             }
         }
     }
@@ -723,21 +755,29 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun showEmptyState() {
+    private fun showEmptyState(isHideIndicatorIcon: Boolean = true) {
         binding?.run {
             if (!rechargePdpPulsaEmptyStateWidget.isVisible) {
-                digitalPDPAnalytics.impressionBannerEmptyState(
-                    rechargePdpPulsaEmptyStateWidget.imageUrl,
-                    categoryId.toString(),
-                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                    loyaltyStatus,
-                    userSession.userId
-                )
-                rechargePdpPulsaEmptyStateWidget.show()
+                /** hide empty state when imageUrl is empty*/
+                if (rechargePdpPulsaEmptyStateWidget.imageUrl.isNotEmpty()) {
+                    rechargePdpPulsaEmptyStateWidget.show()
+                    digitalPDPAnalytics.impressionBannerEmptyState(
+                        rechargePdpPulsaEmptyStateWidget.imageUrl,
+                        categoryId.toString(),
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        loyaltyStatus,
+                        userSession.userId
+                    )
+
+                } else {
+                    rechargePdpPulsaEmptyStateWidget.hide()
+                }
+
+                if (isHideIndicatorIcon) rechargePdpPulsaClientNumberWidget.hideOperatorIcon()
+
                 rechargePdpPulsaPromoWidget.hide()
                 rechargePdpPulsaRecommendationWidget.hide()
                 rechargePdpPulsaDenomGridWidget.hide()
-                rechargePdpPulsaClientNumberWidget.hideOperatorIcon()
             }
         }
     }
@@ -1222,6 +1262,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 } else {
                     handleCallbackAnySavedNumberCancel()
                 }
+                getAutoComplete()
                 getFavoriteNumber()
             } else if (requestCode == REQUEST_CODE_LOGIN) {
                 addToCart()

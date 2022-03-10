@@ -2,7 +2,6 @@ package com.tokopedia.recharge_component.widget
 
 import android.content.Context
 import android.text.Editable
-import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -14,7 +13,6 @@ import android.view.animation.AnimationSet
 import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.favorite.util.FavoriteNumberDataMapper
@@ -24,7 +22,6 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_component.R
@@ -36,15 +33,8 @@ import com.tokopedia.recharge_component.model.InputFieldType
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.unifycomponents.toPx
 import org.jetbrains.annotations.NotNull
 import kotlin.math.abs
-import android.view.animation.Animation
-
-import android.view.animation.ScaleAnimation
-
-
-
 
 /**
  * @author by misael on 05/01/22
@@ -337,10 +327,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                 clientNumberWidgetOperatorGroup.animateFadeInThenShow()
             }
         }
-    }
-
-    fun isSimplifiedLayoutShown(): Boolean {
-        return binding.includeLayout.clientNumberWidgetSimplifiedLayout.isVisible
     }
 
     fun setCustomInputNumberFormatter(func: (String) -> String) {

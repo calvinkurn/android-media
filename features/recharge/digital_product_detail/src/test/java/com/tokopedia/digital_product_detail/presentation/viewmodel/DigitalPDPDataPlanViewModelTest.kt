@@ -2,15 +2,14 @@ package com.tokopedia.digital_product_detail.presentation.viewmodel
 
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
-import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
 import com.tokopedia.digital_product_detail.data.mapper.DigitalDenomMapper
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.presentation.data.DataPlanDataFactory
-import com.tokopedia.digital_product_detail.presentation.data.PulsaDataFactory
 import kotlinx.coroutines.CancellationException
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -45,7 +44,7 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
     fun `when getting menuDetail should run and give fail result`() {
         onGetMenuDetail_thenReturn(NullPointerException())
 
-        viewModel.getMenuDetail(MENU_ID, false)
+        viewModel.getMenuDetail(MENU_ID)
         verifyGetMenuDetailRepoGetCalled()
         verifyGetMenuDetailFail()
     }
@@ -94,7 +93,7 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
         onGetFavoriteNumber_thenReturn(response)
 
         viewModel.getFavoriteNumber(listOf())
-        verifyGetFavoriteNumberRepoGetCalled()
+        verifyGetFavoriteNumberChipsRepoGetCalled()
         verifyGetFavoriteNumberSuccess(response.persoFavoriteNumber.items)
     }
 
@@ -103,8 +102,35 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
         onGetFavoriteNumber_thenReturn(NullPointerException())
 
         viewModel.getFavoriteNumber(listOf())
-        verifyGetFavoriteNumberRepoGetCalled()
+        verifyGetFavoriteNumberChipsRepoGetCalled()
         verifyGetFavoriteNumberFail()
+    }
+
+    @Test
+    fun `given autoComplete loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setAutoCompleteLoading()
+        verifyGetAutoCompleteLoading(loadingResponse)
+    }
+
+    @Test
+    fun `when getting autoComplete should run and give success result`() {
+        val response = dataFactory.getFavoriteNumberData()
+        onGetAutoComplete_thenReturn(response)
+
+        viewModel.getAutoComplete(listOf())
+        verifyGetFavoriteNumberListRepoGetCalled()
+        verifyGetAutoCompleteSuccess(response.persoFavoriteNumber.items)
+    }
+
+    @Test
+    fun `when getting autoComplete should run and give success fail`() {
+        onGetAutoComplete_thenReturn(NullPointerException())
+
+        viewModel.getAutoComplete(listOf())
+        verifyGetFavoriteNumberListRepoGetCalled()
+        verifyGetAutoCompleteFail()
     }
 
     @Test
@@ -626,6 +652,56 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
 
             verifyClientNumberThrottleJobNotSame(jobA, jobB)
         }
+
+    fun `when given list denom and list mccm is not empty, isEmptyDenomMCCM should return true`() {
+        val listDenom = listOf(DenomData())
+        val listMccm = listOf(DenomData())
+
+        val expectedResult = viewModel.isEmptyDenomMCCM(listDenom, listMccm)
+
+        verifyDenomAndMCCMIsNotEmpty(expectedResult)
+    }
+
+    @Test
+    fun `when given list denom empty and list mccm is not empty, isEmptyDenomMCCM should return true`() {
+        val listDenom = listOf<DenomData>()
+        val listMccm = listOf(DenomData())
+
+        val expectedResult = viewModel.isEmptyDenomMCCM(listDenom, listMccm)
+
+        verifyDenomAndMCCMIsNotEmpty(expectedResult)
+    }
+
+    @Test
+    fun `when given list denom is not empty and list mccm is empty, isEmptyDenomMCCM should return true`() {
+        val listDenom = listOf(DenomData())
+        val listMccm = listOf<DenomData>()
+
+        val expectedResult = viewModel.isEmptyDenomMCCM(listDenom, listMccm)
+
+        verifyDenomAndMCCMIsNotEmpty(expectedResult)
+    }
+
+    @Test
+    fun `when given list denom is empty and list mccm is empty, isEmptyDenomMCCM should return false`() {
+        val listDenom = listOf<DenomData>()
+        val listMccm = listOf<DenomData>()
+
+        val expectedResult = viewModel.isEmptyDenomMCCM(listDenom, listMccm)
+
+        verifyDenomAndMCCMIsEmpty(expectedResult)
+    }
+
+    @Test
+    fun `when resetFilter is used, filterData must be reseted`() {
+        val initialFilter = dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents
+        viewModel.updateFilterData(initialFilter)
+        verifyGetFilterTagComponentSuccess(initialFilter)
+        verifyGetFilterParamEmpty(dataFactory.getFilterParamsEmpty())
+
+        viewModel.resetFilter()
+        verifyGetFilterTagComponentSuccess(initialFilter)
+    }
 
     companion object {
         const val MENU_ID = 290

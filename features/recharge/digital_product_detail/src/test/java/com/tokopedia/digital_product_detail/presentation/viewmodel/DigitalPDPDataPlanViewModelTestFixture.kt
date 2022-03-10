@@ -49,13 +49,13 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
 
     protected fun onGetMenuDetail_thenReturn(response: MenuDetailModel) {
         coEvery {
-            repo.getMenuDetail(any(), any())
+            repo.getMenuDetail(any())
         } returns response
     }
 
     protected fun onGetMenuDetail_thenReturn(error: Throwable) {
         coEvery {
-            repo.getMenuDetail(any(), any())
+            repo.getMenuDetail(any())
         } throws error
     }
 
@@ -80,6 +80,18 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
     protected fun onGetFavoriteNumber_thenReturn(error: Throwable) {
         coEvery {
             repo.getFavoriteNumberChips(any())
+        } throws error
+    }
+
+    protected fun onGetAutoComplete_thenReturn(response: TopupBillsPersoFavNumberData) {
+        coEvery {
+            repo.getFavoriteNumberList(any())
+        } returns response
+    }
+
+    protected fun onGetAutoComplete_thenReturn(error: Throwable) {
+        coEvery {
+            repo.getFavoriteNumberList(any())
         } throws error
     }
 
@@ -130,7 +142,7 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
     }
 
     protected fun verifyGetMenuDetailRepoGetCalled() {
-        coVerify { repo.getMenuDetail(any(), any()) }
+        coVerify { repo.getMenuDetail(any()) }
     }
 
     protected fun verifyGetRecommendationsRepoGetCalled() {
@@ -141,8 +153,12 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         coVerify { repo.getRecommendations(any(), any(), any()) wasNot Called }
     }
 
-    protected fun verifyGetFavoriteNumberRepoGetCalled() {
+    protected fun verifyGetFavoriteNumberChipsRepoGetCalled() {
         coVerify { repo.getFavoriteNumberChips(any()) }
+    }
+
+    protected fun verifyGetFavoriteNumberListRepoGetCalled() {
+        coVerify { repo.getFavoriteNumberList(any()) }
     }
 
     protected fun verifyGetOperatorListRepoGetCalled() {
@@ -177,6 +193,21 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
 
     protected fun verifyGetFavoriteNumberFail() {
         val actualResponse = viewModel.favoriteNumberData.value
+        Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
+    }
+
+    protected fun verifyGetAutoCompleteLoading(expectedResponse: RechargeNetworkResult.Loading){
+        val actualResponse = viewModel.autoCompleteData.value
+        Assert.assertEquals(expectedResponse, actualResponse)
+    }
+
+    protected fun verifyGetAutoCompleteSuccess(expectedResponse: List<TopupBillsPersoFavNumberItem>) {
+        val actualResponse = viewModel.autoCompleteData.value
+        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
+    }
+
+    protected fun verifyGetAutoCompleteFail() {
+        val actualResponse = viewModel.autoCompleteData.value
         Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
     }
 
@@ -413,6 +444,14 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
     protected fun verifyRecomCheckoutUrlUpdated(expectedResult: String) {
         val actualResult = viewModel.recomCheckoutUrl
         Assert.assertEquals(expectedResult, actualResult)
+    }
+
+    protected fun verifyDenomAndMCCMIsEmpty(expectedResult: Boolean) {
+        Assert.assertTrue(expectedResult)
+    }
+
+    protected fun verifyDenomAndMCCMIsNotEmpty(expectedResult: Boolean) {
+        Assert.assertFalse(expectedResult)
     }
 
     private fun assertDigitalCheckoutPassDataEqual(expected: DigitalCheckoutPassData, actual: DigitalCheckoutPassData) {
