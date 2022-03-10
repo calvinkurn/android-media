@@ -11,6 +11,7 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.CancellationException
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
+import io.mockk.spyk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import org.junit.Test
@@ -532,6 +533,62 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
         verifySelectedProductNull()
     }
+
+    @Test
+    fun `given empty clientNumberThrottleJob when calling runThrottleJob should init new job`() =
+        testCoroutineRule.runBlockingTest {
+            viewModel.clientNumberThrottleJob = null
+            viewModel.runThrottleJob {
+                // Simulate nothing
+            }
+            verifyClientNumberThrottleJobIsNotNull()
+            verifyClientNumberThrottleJobIsActive()
+        }
+
+    @Test
+    fun `given non-empty clientNumberThrottleJob when wait for DELAY_CLIENT_NUMBER_TRANSITION the job should done`() =
+        testCoroutineRule.runBlockingTest {
+            viewModel.runThrottleJob {
+                // Simulate nothing
+            }
+            skipClientNumberTransitionDelay()
+            verifyClientNumberThrottleJobIsNotNull()
+            verifyClientNumberThrottleJobIsCompleted()
+        }
+
+    @Test
+    fun `given clientNumberThrottleJob running when calling another job should not init job`() =
+        testCoroutineRule.runBlockingTest {
+            viewModel.runThrottleJob {
+                // Simulate nothing
+            }
+            val jobA = viewModel.clientNumberThrottleJob
+
+            viewModel.runThrottleJob {
+                // Simulate nothing
+            }
+            val jobB = viewModel.clientNumberThrottleJob
+
+            verifyClientNumberThrottleJobSame(jobA, jobB)
+        }
+
+    @Test
+    fun `given clientNumberThrottleJob completed when calling another job should init new job`() =
+        testCoroutineRule.runBlockingTest {
+            viewModel.runThrottleJob {
+                // Simulate nothing
+            }
+            val jobA = viewModel.clientNumberThrottleJob
+            skipClientNumberTransitionDelay()
+            verifyClientNumberThrottleJobIsCompleted()
+
+            viewModel.runThrottleJob {
+                // Simulate nothing
+            }
+            val jobB = viewModel.clientNumberThrottleJob
+
+            verifyClientNumberThrottleJobNotSame(jobA, jobB)
+        }
 
     companion object {
         const val MENU_ID = 289

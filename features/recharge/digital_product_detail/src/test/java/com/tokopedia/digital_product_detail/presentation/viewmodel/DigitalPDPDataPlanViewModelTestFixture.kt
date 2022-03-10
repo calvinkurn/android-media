@@ -21,6 +21,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.TestCoroutineScope
 import org.junit.Assert
 import org.junit.Before
@@ -385,6 +386,30 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         Assert.assertTrue(viewModel.validatorJob?.isCancelled == true)
     }
 
+    protected fun verifyClientNumberThrottleJobIsActive() {
+        Assert.assertTrue(viewModel.clientNumberThrottleJob?.isActive == true)
+    }
+
+    protected fun verifyClientNumberThrottleJobIsNotNull() {
+        Assert.assertNotNull(viewModel.clientNumberThrottleJob)
+    }
+
+    protected fun verifyClientNumberThrottleJobIsCompleted() {
+        Assert.assertTrue(viewModel.clientNumberThrottleJob?.isCompleted == true)
+    }
+
+    protected fun verifyClientNumberThrottleJobSame(expectedInstance: Job?, actualInstance: Job?) {
+        Assert.assertNotNull(expectedInstance)
+        Assert.assertNotNull(actualInstance)
+        Assert.assertEquals(expectedInstance, actualInstance)
+    }
+
+    protected fun verifyClientNumberThrottleJobNotSame(expectedInstance: Job?, actualInstance: Job?) {
+        Assert.assertNotNull(expectedInstance)
+        Assert.assertNotNull(actualInstance)
+        Assert.assertNotEquals(expectedInstance, actualInstance)
+    }
+
     protected fun verifyRecomCheckoutUrlUpdated(expectedResult: String) {
         val actualResult = viewModel.recomCheckoutUrl
         Assert.assertEquals(expectedResult, actualResult)
@@ -414,6 +439,10 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
 
     protected fun TestCoroutineScope.skipRecommendationDelay() {
         advanceTimeBy(DigitalPDPConstant.DELAY_MULTI_TAB)
+    }
+
+    protected fun TestCoroutineScope.skipClientNumberTransitionDelay() {
+        advanceTimeBy(DigitalPDPConstant.DELAY_CLIENT_NUMBER_TRANSITION)
     }
 
     companion object {
