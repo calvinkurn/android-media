@@ -812,7 +812,7 @@ class PlayAnalytic(
             KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
             KEY_USER_ID to userId,
             )
-        return if (type != ProductSectionType.Active || type != ProductSectionType.Upcoming) {
+        return if (type == ProductSectionType.Other) {
             base.putAll(
                 mapOf(
                     KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
