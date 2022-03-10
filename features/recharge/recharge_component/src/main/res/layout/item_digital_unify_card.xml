@@ -298,7 +298,6 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/product_card_label_discount_height"
             android:layout_marginLeft="@dimen/unify_space_8"
-            android:layout_marginTop="@dimen/unify_space_4"
             android:layout_marginRight="@dimen/unify_space_8"
             android:ellipsize="end"
             android:gravity="center_vertical"

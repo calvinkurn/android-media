@@ -7,14 +7,17 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.data.PLACEHOLDER_RES_UNIFY
 import com.tokopedia.media.loader.loadImage
@@ -410,6 +413,34 @@ class DigitalUnifyCardViewHolder(
 
     private fun renderSlashedPrice(discountType: String, slashedPrice: String) {
         with(binding.dguDiscountSlashPrice) {
+
+            val mLayoutParams = layoutParams as ConstraintLayout.LayoutParams
+            if (binding.dguDiscountLabel.visibility == View.VISIBLE) {
+                mLayoutParams.topToTop = binding.dguDiscountLabel.id
+                mLayoutParams.bottomToBottom = binding.dguDiscountLabel.id
+                mLayoutParams.topToBottom = ConstraintSet.UNSET
+
+                setMargin(
+                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_4),
+                    mLayoutParams.topMargin,
+                    mLayoutParams.rightMargin,
+                    mLayoutParams.bottomMargin
+                )
+            } else {
+                mLayoutParams.topToBottom = binding.dguPriceValue.id
+                mLayoutParams.topToTop = ConstraintSet.UNSET
+                mLayoutParams.bottomToBottom = ConstraintSet.UNSET
+
+                setMargin(
+                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    mLayoutParams.topMargin,
+                    mLayoutParams.rightMargin,
+                    mLayoutParams.bottomMargin
+                )
+            }
+            layoutParams = mLayoutParams
+            requestLayout()
+
             if (slashedPrice.isNotEmpty()) {
                 text = slashedPrice
                 paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
