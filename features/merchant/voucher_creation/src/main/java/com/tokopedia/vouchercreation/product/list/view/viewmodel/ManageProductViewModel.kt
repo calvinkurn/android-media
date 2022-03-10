@@ -137,7 +137,7 @@ class ManageProductViewModel @Inject constructor(
         val mutableProductList = productList.toMutableList()
         validationResults.forEach { validationResult ->
             val productUiModel = mutableProductList.first {
-                it.id == validationResult.parentProductId.toString()
+                it.id == validationResult.parentProductId
             }
             productUiModel.hasVariant = validationResult.isVariant
             productUiModel.variants = mapVariantDataToUiModel(
@@ -185,7 +185,7 @@ class ManageProductViewModel @Inject constructor(
                     variantUiModel.isSelected = true
                 }
             }
-            if (isViewing) productUiModel?.variants = mutableVariantList?.filter { it.isSelected } ?: listOf()
+            productUiModel?.variants = mutableVariantList?.filter { it.isSelected } ?: listOf()
         }
         return mutableProductList
     }

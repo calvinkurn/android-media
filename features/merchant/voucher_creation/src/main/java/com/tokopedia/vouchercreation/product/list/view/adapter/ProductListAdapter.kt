@@ -89,7 +89,6 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
     }
 
     fun enableAllProductSelections() {
-        // todo need to be redefine
         this.productUiModelList.forEach {
             if (it.errorMessage.isEmpty()) it.isError = false
             it.variants.forEach { variantUiModel ->

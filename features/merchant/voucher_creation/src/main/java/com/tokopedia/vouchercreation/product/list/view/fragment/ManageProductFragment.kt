@@ -324,8 +324,11 @@ class ManageProductFragment : BaseDaggerFragment(),
         // TODO move this code inside viewModel
         // set selected true for mapping purpose before submitted to gql
         val mutableProducts = selectedProducts.toMutableList()
-        mutableProducts.forEach {
-            it.isSelected = true
+        mutableProducts.forEach { productUiModel ->
+            productUiModel.isSelected = true
+            productUiModel.variants.forEach { variantUiModel ->
+                variantUiModel.isSelected = true
+            }
         }
 
         val extraSelectedProducts = ArrayList<ProductUiModel>()

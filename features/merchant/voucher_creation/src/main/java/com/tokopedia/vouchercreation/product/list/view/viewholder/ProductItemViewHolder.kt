@@ -123,6 +123,7 @@ class ProductItemViewHolder(
             // only select all child variants when: 1. cbu is not selected, 2. not ind, 3. no variant selections
             val isIndeterminate = binding.cbuProductItem.getIndeterminate()
             if (!isIndeterminate) variantListAdapter.updateVariantSelections(isChecked)
+            else if (!isChecked) { variantListAdapter.updateVariantSelections(isChecked) }
         }
         binding.iuRemoveProduct.setOnClickListener {
             val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
