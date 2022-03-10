@@ -67,13 +67,16 @@ public class CommonUtils {
     }
 
     public static String getFullOperationName(GraphqlRequest request) {
+        StringBuilder fullOperationName = new StringBuilder(GraphqlClient.moduleName);
         String operationName;
+        fullOperationName.append("_");
         if (TextUtils.isEmpty(request.getOperationName())) {
             operationName = CacheHelper.getQueryName(request.getQuery());
         } else {
             operationName = request.getOperationName();
         }
-        return GraphqlClient.moduleName + "_" + operationName;
+        fullOperationName.append(operationName);
+        return fullOperationName.toString();
     }
 }
 
