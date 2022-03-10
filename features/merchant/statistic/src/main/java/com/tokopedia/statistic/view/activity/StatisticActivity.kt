@@ -168,7 +168,6 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         return listOf(
             pageHelper.getShopStatistic(),
             pageHelper.getProductStatistic(),
-            pageHelper.getTrafficStatistic(),
             pageHelper.getOperationalStatistic(),
             pageHelper.getBuyerStatistic()
         )
