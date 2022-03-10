@@ -148,17 +148,17 @@ open class UserPostBaseAdapter(
             holder.btnReminder.hide()
         }
 
-        if(item.configurations?.promoLabels?.isEmpty()
-            || item.configurations?.promoLabels?.get(0).text?.isNullOrBlank()) {
-            holder.textSpecialLabel.hide()
-        } else {
-            holder.textSpecialLabel.setLabel("Special 30%")
+        if (item.configurations?.hasPromo) {
+            holder.textSpecialLabel.setLabel(item.configurations?.promoLabels?.get(0)?.text)
             holder.textSpecialLabel.setLabelImage(
                 holder.textSpecialLabel.context.getDrawable(com.tokopedia.unifycomponents.R.drawable.iconunify_promo),
                 holder.textSpecialLabel.context.dpToPx(13).toInt(),
                 holder.textSpecialLabel.context.dpToPx(13).toInt()
             )
+
             holder.textSpecialLabel.show()
+        } else {
+            holder.textSpecialLabel.hide()
         }
 
         holder.itemView.setOnClickListener { v ->
