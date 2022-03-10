@@ -96,7 +96,7 @@ class QuestProgressBar
         val animator = ValueAnimator.ofInt(5, calculateAngle(progress).toInt())
         animator.duration = 2000
         animator.addUpdateListener { animation ->  angle =
-            animation.animatedValue as Float
+            (animation.animatedValue as Int).toFloat()
             invalidate()
         }
         
