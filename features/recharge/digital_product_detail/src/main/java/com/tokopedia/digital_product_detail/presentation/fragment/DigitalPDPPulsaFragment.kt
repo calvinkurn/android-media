@@ -62,6 +62,7 @@ import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistory
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicAppBar
+import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicScrollListener
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -113,8 +114,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     ClientNumberFilterChipListener,
     ClientNumberAutoCompleteListener
 {
-    var throttleJob: Job? = null
-
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -172,55 +171,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         getDataFromBundle()
         setupKeyboardWatcher()
+        setupDynamicScrollListener()
         initClientNumberWidget()
-        setAnimationAppBarLayout()
         observeData()
         getCatalogMenuDetail()
-
-        binding?.svContainer?.setOnScrollChangeListener(object: NestedScrollView.OnScrollChangeListener {
-            var lastIsCollapsed = false
-
-            override fun onScrollChange(
-                v: NestedScrollView?,
-                scrollX: Int,
-                scrollY: Int,
-                oldScrollX: Int,
-                oldScrollY: Int
-            ) {
-                if (scrollY == 0 && lastIsCollapsed) {
-                    throttleFirst(200L, viewLifecycleOwner.lifecycleScope) {
-                        lastIsCollapsed = false
-                        onExpandAppBar()
-                    }
-                }
-
-                if (scrollY != 0 && scrollY > oldScrollY && !lastIsCollapsed) {
-                    throttleFirst(200L, viewLifecycleOwner.lifecycleScope) {
-                        lastIsCollapsed = true
-                        onCollapseAppBar()
-                    }
-                }
-            }
-        })
-
-//        binding?.svContainer?.setOnScrollChangeListener(
-//            NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-//                if (scrollY == 0) {
-//                    throttleFirst(200L, viewLifecycleOwner.lifecycleScope) {
-//                        onExpandAppBar()
-//                    }
-//                }
-//
-//                if (scrollY != 0 && scrollY > oldScrollY) {
-//                    throttleFirst(200L, viewLifecycleOwner.lifecycleScope) {
-//                        onCollapseAppBar()
-//                    }
-//                }
-//            }
-//        )
     }
 
-    fun setupKeyboardWatcher() {
+    private fun setupKeyboardWatcher() {
         binding?.root?.let {
             keyboardWatcher.listen(it, object : DigitalKeyboardWatcher.Listener {
                 override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
@@ -231,6 +188,17 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     binding?.rechargePdpPulsaClientNumberWidget?.setClearable()
                 }
             })
+        }
+    }
+
+    private fun setupDynamicScrollListener() {
+        binding?.run {
+            svContainer.setupDynamicScrollListener(
+                { !viewModel.isEligibleToBuy },
+                { rechargePdpPulsaClientNumberWidget.getInputNumber().isEmpty() },
+                { viewModel.runThrottleJob { onCollapseAppBar() }},
+                { viewModel.runThrottleJob { onExpandAppBar() }}
+            )
         }
     }
 
@@ -832,64 +800,17 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         binding?.rechargePdpPulsaClientNumberWidget?.clearFocusAutoComplete()
     }
 
-    private fun setAnimationAppBarLayout() {
-        binding?.run {
-            rechargePdpPulsaAppbar.setupDynamicAppBar(
-                { !viewModel.isEligibleToBuy },
-                { rechargePdpPulsaClientNumberWidget.getInputNumber().isEmpty() },
-                {
-//                    throttleFirst(200L, viewLifecycleOwner.lifecycleScope) {
-//                        onCollapseAppBar()
-//                    }
-                },
-                {
-//                    throttleFirst(200L, viewLifecycleOwner.lifecycleScope) {
-//                        onExpandAppBar()
-//                    }
-                }
-            )
-        }
-    }
-
-    private fun showDynamicSpacer() {
-        binding?.rechargePdpPulsaDynamicBannerSpacer?.layoutParams?.height =
-            context?.resources?.getDimensionPixelSize(dynamicSpacerHeightRes)
-                ?: DEFAULT_SPACE_HEIGHT
-        binding?.rechargePdpPulsaDynamicBannerSpacer?.requestLayout()
-    }
-
-    private fun hideDynamicSpacer() {
-        binding?.rechargePdpPulsaDynamicBannerSpacer?.layoutParams?.height = 0
-        binding?.rechargePdpPulsaDynamicBannerSpacer?.requestLayout()
-    }
-
     private fun onCollapseAppBar() {
         binding?.run {
             rechargePdpPulsaClientNumberWidget.setVisibleSimplifiedLayout(true)
-//            showDynamicSpacer()
         }
     }
 
     private fun onExpandAppBar() {
         binding?.run {
             rechargePdpPulsaClientNumberWidget.setVisibleSimplifiedLayout(false)
-//            hideDynamicSpacer()
         }
     }
-
-    fun throttleFirst(
-        skipMs: Long = 100L,
-        coroutineScope: CoroutineScope,
-        destinationFunction: () -> Unit
-    ) {
-        if (throttleJob?.isCompleted != false) {
-            throttleJob = coroutineScope.launch {
-                destinationFunction()
-                delay(skipMs)
-            }
-        }
-    }
-
 
     private fun navigateToCart(categoryId: String) {
         context?.let { context ->

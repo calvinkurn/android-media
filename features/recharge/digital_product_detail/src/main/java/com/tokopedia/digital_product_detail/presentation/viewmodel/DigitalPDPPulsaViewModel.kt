@@ -30,6 +30,7 @@ import com.tokopedia.recharge_component.model.recommendation_card.Recommendation
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -44,6 +45,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     var validatorJob: Job? = null
     var catalogProductJob: Job? = null
     var recommendationJob: Job? = null
+    var clientNumberThrottleJob: Job? = null
     var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
     var isEligibleToBuy = false
     var selectedGridProduct = SelectedProduct()
@@ -261,5 +263,17 @@ class DigitalPDPPulsaViewModel @Inject constructor(
 
     fun onResetSelectedProduct(){
         selectedGridProduct = SelectedProduct()
+    }
+
+    fun runThrottleJob(
+        skipMs: Long = 200L,
+        destinationFunction: () -> Unit
+    ) {
+        if (clientNumberThrottleJob?.isCompleted != false) {
+            clientNumberThrottleJob = viewModelScope.launch {
+                destinationFunction()
+                delay(skipMs)
+            }
+        }
     }
 }
