@@ -5,6 +5,8 @@ import android.util.SparseIntArray
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelStore
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.mvcwidget.trackers.MvcSource
@@ -29,6 +31,8 @@ interface DynamicProductDetailListener {
     fun isNavOld(): Boolean
     fun getFragmentTrackingQueue(): TrackingQueue?
     fun getVariantString(): String
+    fun getParentViewModelStoreOwner(): ViewModelStore
+    fun getParentLifeCyclerOwner():LifecycleOwner
 
     /**
      * ProductMediaViewHolder
@@ -38,7 +42,9 @@ interface DynamicProductDetailListener {
     fun onVideoStateChange(stopDuration: Long, videoDuration: Long)
     fun getProductVideoCoordinator(): ProductVideoCoordinator?
 
-    fun onMerchantVoucherSummaryClicked(shopId: String, @MvcSource source: Int)
+    fun onMerchantVoucherSummaryClicked(shopId: String, @MvcSource source: Int, productId: String)
+
+
 
     /**
      * ProductSnapshotViewHolder
@@ -181,7 +187,7 @@ interface DynamicProductDetailListener {
     /**
      * ProductShippingViewHolder
      */
-    fun openShipmentClickedBottomSheet(title: String, labelShipping: String, isCod: Boolean, componentTrackDataModel: ComponentTrackDataModel?)
+    fun openShipmentClickedBottomSheet(title: String, chipsLabel: List<String>, isCod: Boolean, componentTrackDataModel: ComponentTrackDataModel?)
     fun clickShippingComponentError(errorCode: Int, title: String, componentTrackDataModel: ComponentTrackDataModel?)
 
     /**

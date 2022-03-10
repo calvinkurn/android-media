@@ -9,6 +9,9 @@ import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
+import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
+import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductBundleParentWidgetViewHolder
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
@@ -18,6 +21,8 @@ import com.tokopedia.shop.home.WidgetName.INFO_CARD
 import com.tokopedia.shop.home.WidgetName.NEW_PRODUCT_LAUNCH_CAMPAIGN
 import com.tokopedia.shop.home.WidgetName.PLAY_CAROUSEL_WIDGET
 import com.tokopedia.shop.home.WidgetName.PRODUCT
+import com.tokopedia.shop.home.WidgetName.PRODUCT_BUNDLE_MULTIPLE
+import com.tokopedia.shop.home.WidgetName.PRODUCT_BUNDLE_SINGLE
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.WidgetName.REMINDER
 import com.tokopedia.shop.home.WidgetName.SHOWCASE_GRID_BIG
@@ -69,9 +74,13 @@ import com.tokopedia.shop.home.view.model.ShopHomeCardDonationUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductChangeGridSectionUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
-import com.tokopedia.shop.home.view.model.WidgetState
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
+import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
+import com.tokopedia.shop_widget.common.util.WidgetState
+import com.tokopedia.shop_widget.thematicwidget.typefactory.ThematicWidgetTypeFactory
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
+import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetLoadingStateViewHolder
 
 class ShopHomeAdapterTypeFactory(
         private val listener: ShopHomeDisplayWidgetListener,
@@ -86,8 +95,11 @@ class ShopHomeAdapterTypeFactory(
         private val isShowTripleDot: Boolean,
         private val shopHomeShowcaseListWidgetListener: ShopHomeShowcaseListWidgetListener,
         private val shopHomePlayWidgetListener: ShopHomePlayWidgetListener,
-        private val shopHomeCardDonationListener: ShopHomeCardDonationListener
-) : BaseAdapterTypeFactory(), TypeFactoryShopHome {
+        private val shopHomeCardDonationListener: ShopHomeCardDonationListener,
+        private val multipleProductBundleListener: MultipleProductBundleListener,
+        private val singleProductBundleListener: SingleProductBundleListener,
+        private val thematicWidgetListener: ThematicWidgetViewHolder.ThematicWidgetListener
+) : BaseAdapterTypeFactory(), TypeFactoryShopHome, ThematicWidgetTypeFactory {
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
     private var previousViewHolder: AbstractViewHolder<*>? = null
     private var showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_LINEAR_HORIZONTAL
@@ -106,6 +118,7 @@ class ShopHomeAdapterTypeFactory(
             FLASH_SALE_TOKO -> ShopHomeFlashSaleViewHolder.LAYOUT
             PLAY_CAROUSEL_WIDGET -> CarouselPlayWidgetViewHolder.LAYOUT
             INFO_CARD -> ShopHomeCardDonationViewHolder.LAYOUT
+            PRODUCT_BUNDLE_SINGLE, PRODUCT_BUNDLE_MULTIPLE -> ShopHomeProductBundleParentWidgetViewHolder.LAYOUT
             SHOWCASE_SLIDER_SMALL, SHOWCASE_SLIDER_MEDIUM -> return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
             SHOWCASE_SLIDER_TWO_ROWS -> {
                 showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_HORIZONTAL
@@ -172,6 +185,10 @@ class ShopHomeAdapterTypeFactory(
         return model.widgetState == WidgetState.PLACEHOLDER || model.widgetState == WidgetState.LOADING
     }
 
+    private fun isShowThematicWidgetPlaceHolder(model: ThematicWidgetUiModel): Boolean {
+        return model.widgetState == WidgetState.PLACEHOLDER || model.widgetState == WidgetState.LOADING
+    }
+
     override fun type(shopHomeProductEtalaseTitleUiModel: ShopHomeProductEtalaseTitleUiModel): Int {
         return ShopHomeProductEtalaseTitleViewHolder.LAYOUT
     }
@@ -182,6 +199,13 @@ class ShopHomeAdapterTypeFactory(
 
     override fun type(carouselPlayCardViewModel: CarouselPlayWidgetUiModel): Int {
         return CarouselPlayWidgetViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: ThematicWidgetUiModel): Int {
+        return if(isShowThematicWidgetPlaceHolder(uiModel))
+            ThematicWidgetLoadingStateViewHolder.LAYOUT
+        else
+            ThematicWidgetViewHolder.LAYOUT
     }
 
     override fun type(shopHomeProductViewModel: ShopHomeProductUiModel): Int {
@@ -264,6 +288,7 @@ class ShopHomeAdapterTypeFactory(
             ShopHomeProductChangeGridSectionViewHolder.LAYOUT -> ShopHomeProductChangeGridSectionViewHolder(parent, shopProductChangeGridSectionListener)
             CarouselPlayWidgetViewHolder.LAYOUT -> CarouselPlayWidgetViewHolder(PlayWidgetViewHolder(parent, playWidgetCoordinator), shopHomePlayWidgetListener)
             ShopHomeCarouselProductPersonalizationViewHolder.LAYOUT -> ShopHomeCarouselProductPersonalizationViewHolder(parent, shopHomeCarouselProductListener)
+            ShopHomeProductBundleParentWidgetViewHolder.LAYOUT -> ShopHomeProductBundleParentWidgetViewHolder(parent, multipleProductBundleListener, singleProductBundleListener)
             ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT -> ShopHomeShowcaseListBaseWidgetViewHolder(
                     parent,
                     ShopHomeShowcaseListWidgetAdapter(showcaseListWidgetListener = shopHomeShowcaseListWidgetListener),
@@ -277,6 +302,8 @@ class ShopHomeAdapterTypeFactory(
             ShopHomeSliderSquarePlaceholderViewHolder.LAYOUT_RES -> ShopHomeSliderSquarePlaceholderViewHolder(parent)
             ShopHomeMultipleImageColumnPlaceholderViewHolder.LAYOUT_RES -> ShopHomeMultipleImageColumnPlaceholderViewHolder(parent)
             ShopHomeCardDonationViewHolder.LAYOUT -> ShopHomeCardDonationViewHolder(parent, shopHomeCardDonationListener)
+            ThematicWidgetViewHolder.LAYOUT -> ThematicWidgetViewHolder(parent, thematicWidgetListener)
+            ThematicWidgetLoadingStateViewHolder.LAYOUT -> ThematicWidgetLoadingStateViewHolder(parent)
             else -> return super.createViewHolder(parent, type)
         }
         previousViewHolder = viewHolder

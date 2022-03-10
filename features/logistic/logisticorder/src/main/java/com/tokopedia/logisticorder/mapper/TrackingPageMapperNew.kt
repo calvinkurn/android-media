@@ -56,7 +56,7 @@ class TrackingPageMapperNew @Inject constructor() {
     }
 
     private fun mapProofOrder(proof: Proof): ProofModel {
-        return ProofModel(imageId = proof.imageId)
+        return ProofModel(imageId = proof.imageId, description = proof.description)
     }
 
     private fun mapTrackingHistory(trackHistory: List<TrackHistory>): List<TrackHistoryModel> {

@@ -9,6 +9,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
@@ -37,8 +38,10 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataMo
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ContentWidgetViewHolder
+import com.tokopedia.product.detail.view.viewholder.FintechWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.OneLinersViewHolder
 import com.tokopedia.product.detail.view.viewholder.PageErrorViewHolder
 import com.tokopedia.product.detail.view.viewholder.PdpComparisonWidgetViewHolder
@@ -67,6 +70,7 @@ import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHold
 import com.tokopedia.product.detail.view.viewholder.ProductTickerInfoViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductTopAdsImageViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductVariantViewHolder
+import com.tokopedia.product.detail.view.viewholder.ShipmentViewHolder
 import com.tokopedia.product.detail.view.viewholder.TopAdsHeadlineViewHolder
 
 class DynamicProductDetailAdapterFactoryImpl(
@@ -148,7 +152,9 @@ class DynamicProductDetailAdapterFactoryImpl(
     }
 
     override fun type(data: ProductShipmentDataModel): Int {
-        return ProductShipmentViewHolder.LAYOUT
+        return if (data.type == ProductDetailConstant.SHIPMENT)
+            ProductShipmentViewHolder.LAYOUT
+        else ShipmentViewHolder.LAYOUT
     }
 
     override fun type(data: ProductMerchantVoucherSummaryDataModel): Int {
@@ -180,7 +186,7 @@ class DynamicProductDetailAdapterFactoryImpl(
     }
 
     override fun type(topadsHeadlineUiModel: TopadsHeadlineUiModel): Int {
-        return TopAdsHeadlineViewHolder.LAYOUT;
+        return TopAdsHeadlineViewHolder.LAYOUT
     }
 
     override fun type(data: ProductBundlingDataModel): Int {
@@ -195,20 +201,42 @@ class DynamicProductDetailAdapterFactoryImpl(
         return ProductArViewHolder.LAYOUT
     }
 
+    override fun type(data: FintechWidgetDataModel): Int {
+        return FintechWidgetViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(view, listener)
-            ProductDiscussionMostHelpfulViewHolder.LAYOUT -> ProductDiscussionMostHelpfulViewHolder(view, listener)
+            FintechWidgetViewHolder.LAYOUT -> FintechWidgetViewHolder(view,listener)
+            ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(
+                view,
+                listener
+            )
+            ProductDiscussionMostHelpfulViewHolder.LAYOUT -> ProductDiscussionMostHelpfulViewHolder(
+                view,
+                listener
+            )
             ProductGeneralInfoViewHolder.LAYOUT -> ProductGeneralInfoViewHolder(view, listener)
             ProductReviewViewHolder.LAYOUT -> ProductReviewViewHolder(view, listener)
             ProductShimmeringViewHolder.LAYOUT -> ProductShimmeringViewHolder(view)
             PageErrorViewHolder.LAYOUT -> PageErrorViewHolder(view, listener)
-            ProductVariantViewHolder.LAYOUT -> ProductVariantViewHolder(view, variantListener, listener)
+            ProductVariantViewHolder.LAYOUT -> ProductVariantViewHolder(
+                view,
+                variantListener,
+                listener
+            )
             ProductNotifyMeViewHolder.LAYOUT -> ProductNotifyMeViewHolder(view, listener)
             ProductMediaViewHolder.LAYOUT -> ProductMediaViewHolder(view, listener)
             ProductContentViewHolder.LAYOUT -> ProductContentViewHolder(view, listener)
-            ProductMiniSocialProofViewHolder.LAYOUT -> ProductMiniSocialProofViewHolder(view, listener)
-            ProductMiniSocialProofStockViewHolder.LAYOUT -> ProductMiniSocialProofStockViewHolder(view, listener)
+            ProductMiniSocialProofViewHolder.LAYOUT -> ProductMiniSocialProofViewHolder(
+                view,
+                listener
+            )
+            ProductMiniSocialProofStockViewHolder.LAYOUT -> ProductMiniSocialProofStockViewHolder(
+                view,
+                listener
+            )
+
             ProductMiniShopWidgetViewHolder.LAYOUT -> ProductMiniShopWidgetViewHolder(view, listener)
             ProductTickerInfoViewHolder.LAYOUT -> ProductTickerInfoViewHolder(view, listener)
             ProductShopCredibilityViewHolder.LAYOUT -> ProductShopCredibilityViewHolder(view, listener)
@@ -217,6 +245,7 @@ class DynamicProductDetailAdapterFactoryImpl(
             ProductDetailInfoViewHolder.LAYOUT -> ProductDetailInfoViewHolder(view, listener)
             ProductReportViewHolder.LAYOUT -> ProductReportViewHolder(view, listener)
             ProductShipmentViewHolder.LAYOUT -> ProductShipmentViewHolder(view, listener)
+            ShipmentViewHolder.LAYOUT -> ShipmentViewHolder(view, listener)
             ProductMerchantVoucherSummaryViewHolder.LAYOUT -> ProductMerchantVoucherSummaryViewHolder(view, listener)
             PdpComparisonWidgetViewHolder.LAYOUT -> PdpComparisonWidgetViewHolder(view, listener)
             ProductSingleVariantViewHolder.LAYOUT -> ProductSingleVariantViewHolder(view, variantListener, listener)

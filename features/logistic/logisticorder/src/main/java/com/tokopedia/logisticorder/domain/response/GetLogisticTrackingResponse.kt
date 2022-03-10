@@ -78,7 +78,7 @@ data class Detail(
         @SerializedName("send_date_time")
         @Expose
         val sendDateTime: String = "",
-        @SerializedName("send_data")
+        @SerializedName("send_date")
         @Expose
         val sendDate: String = "",
         @SerializedName("send_time")
@@ -102,7 +102,10 @@ data class Detail(
 data class Proof(
         @SerializedName("image_id")
         @Expose
-        val imageId: String = ""
+        val imageId: String = "",
+        @SerializedName("copy_writing_disclaimer")
+        @Expose
+        val description: String = ""
 )
 
 data class TrackHistory(

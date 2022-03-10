@@ -167,6 +167,16 @@ class SellerHomeUseCaseModule {
 
     @SellerHomeScope
     @Provides
+    fun provideGetCalendarDataUseCase(
+        gqlRepository: GraphqlRepository,
+        mapper: CalendarMapper,
+        dispatchers: CoroutineDispatchers
+    ): GetCalendarDataUseCase {
+        return GetCalendarDataUseCase(gqlRepository, mapper, dispatchers)
+    }
+
+    @SellerHomeScope
+    @Provides
     fun provideGetTickerUseCase(
         gqlRepository: GraphqlRepository,
         mapper: TickerMapper,

@@ -96,6 +96,9 @@
     <!-- Shop Page -->
     <string name="title_shop_page">Shop Page</string>
 
+    <!-- Shop Widget -->
+    <string name="title_shop_widget">Shop Widget</string>
+
     <!-- Shop Page Showcase Tab -->
     <string name="shop_showcase_tab">Shop Page Showcase Tab</string>
 

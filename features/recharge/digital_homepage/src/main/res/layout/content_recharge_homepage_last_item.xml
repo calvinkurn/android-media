@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.viewallcard.ViewAllCard xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view_recharge_homepage_last_item"
+    android:layout_width="@dimen/digital_unify_card_width"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/digital_unify_card_minimum_height"
+    app:cardCornerRadius="@dimen/layout_lvl1"
+    app:cardElevation="@dimen/unify_space_4"
+    app:view_all_card_unify_mode="invert"
+    app:cardUseCompatPadding="true" />
