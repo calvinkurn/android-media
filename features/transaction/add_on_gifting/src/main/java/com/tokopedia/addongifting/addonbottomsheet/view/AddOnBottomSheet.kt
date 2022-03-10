@@ -2,17 +2,13 @@ package com.tokopedia.addongifting.addonbottomsheet.view
 
 import android.app.Activity
 import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Resources
-import android.graphics.Rect
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -51,8 +47,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-
-class AddOnBottomSheet(val addOnProductData: AddOnProductData, val source: String) : BottomSheetUnify(), AddOnActionListener, HasComponent<AddOnComponent> {
+class AddOnBottomSheet(private val addOnProductData: AddOnProductData, val source: String) : BottomSheetUnify(), AddOnActionListener, HasComponent<AddOnComponent> {
 
     companion object {
         const val DELAY_ADJUST_RECYCLER_VIEW_MARGIN = 200L
@@ -68,7 +63,6 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData, val source: Strin
     private var viewBinding: LayoutAddOnBottomSheetBinding? = null
     private var measureRecyclerViewPaddingDebounceJob: Job? = null
     private var delayScrollJob: Job? = null
-    private var isKeyboardOpened = false
     private var isChecked = false
 
     private val viewModel by lazy {
@@ -95,31 +89,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData, val source: Strin
         initializeObserver(viewBinding)
         initializeData(addOnProductData)
 
-        val view = super.onCreateView(inflater, container, savedInstanceState)
-//        addViewTreeObserver(view, viewBinding)
-
-        return view
-    }
-
-    private fun addViewTreeObserver(view: View?, viewBinding: LayoutAddOnBottomSheetBinding) {
-        view?.viewTreeObserver?.addOnGlobalLayoutListener {
-            val heightDiff = (view.rootView?.height ?: 0) - view.height
-            val displayMetrics = DisplayMetrics()
-            val windowManager = context?.applicationContext?.getSystemService(Context.WINDOW_SERVICE) as? WindowManager
-            windowManager?.let {
-                windowManager.defaultDisplay.getMetrics(displayMetrics)
-                val heightDiffInDp = heightDiff.pxToDp(displayMetrics)
-                if (heightDiffInDp > 150) {
-                    if (!isKeyboardOpened) {
-                        viewBinding.totalAmount.gone()
-                    }
-                    isKeyboardOpened = true
-                } else if (isKeyboardOpened) {
-                    viewBinding.totalAmount.show()
-                    isKeyboardOpened = false
-                }
-            }
-        }
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -380,28 +350,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData, val source: Strin
     }
 
     override fun onNeedToMakeEditTextFullyVisible(view: View) {
-//        delayScrollJob?.cancel()
-//        delayScrollJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-//            delay(500)
-//            if (!isVisible(view)) {
-                viewBinding?.rvAddOn?.smoothScrollBy(0, 300)
-//            }
-//        }
-    }
-
-    private fun isVisible(view: View?): Boolean {
-        return false
-        if (view == null) {
-            return false
-        }
-        if (!view.isShown) {
-            return false
-        }
-        val actualPosition = Rect()
-        view.getGlobalVisibleRect(actualPosition)
-        val screen = Rect(0, 0, getScreenWidth(), getScreenHeight())
-        val isVisible = actualPosition.intersect(screen)
-        return isVisible
+        viewBinding?.rvAddOn?.smoothScrollBy(0, 300)
     }
 
 }
