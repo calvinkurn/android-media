@@ -40,7 +40,7 @@ buildscript {
     dependencies {
         classpath rootProject.ext.gradlePlugin.crashlytics
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.embraceSwazzler
+        classpath rootProject.ext.miscDependencies.embraceSwazzlerSA
         classpath rootProject.ext.gradlePlugin.googleServices
     }
 }
@@ -243,6 +243,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.logout)
     implementation projectOrAar(rootProject.ext.features.userIdentificationCommon)
     implementation projectOrAar(rootProject.ext.features.saldodetails)
+    implementation projectOrAar(rootProject.ext.features.pdpPaylaterWidget)
     implementation projectOrAar(rootProject.ext.features.homecredit)
     implementation projectOrAar(rootProject.ext.libraries.imageuploader)
     implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
@@ -311,7 +312,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation rootProject.ext.miscDependencies.newRelic
     // Embrace
-    implementation rootProject.ext.miscDependencies.embraceSdk
+    implementation rootProject.ext.miscDependencies.embraceSdkSA
 
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.debugToolsDependencies.chuck

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvShcCalendarTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Kalender Event:" />
+
+        <View
+            android:id="@+id/viewShcCalendarShadow"
+            android:layout_width="0dp"
+            android:layout_height="22dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvShcCalendarTitle"
+            tools:background="@drawable/bg_shc_calendar_shadow" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvShcCalendarDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvShcCalendarTitle"
+            app:layout_constraintEnd_toStartOf="@+id/notifShcTagCalendar"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@+id/tvShcCalendarTitle"
+            app:layout_constraintTop_toTopOf="@+id/tvShcCalendarTitle"
+            app:layout_constraintWidth_default="wrap"
+            app:typographyType="body_2"
+            tools:text="(01 Jan - 31 Jan)" />
+
+        <com.tokopedia.unifycomponents.NotificationUnify
+            android:id="@+id/notifShcTagCalendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="8dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/tvShcCalendarTitle"
+            app:layout_constraintEnd_toStartOf="@+id/icShcCalendarDate"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@+id/tvShcCalendarDate"
+            app:layout_constraintTop_toTopOf="@+id/tvShcCalendarTitle"
+            app:layout_constraintVertical_bias="0.45"
+            tools:visibility="visible" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icShcCalendarDate"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="16dp"
+            app:icon_name="CHEVRON_DOWN"
+            app:layout_constraintBottom_toBottomOf="@+id/tvShcCalendarTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvShcCalendarTitle" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvShcCalendar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvShcCalendarTitle"
+            app:layout_constraintVertical_bias="1"
+            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/shc_calendar_widget_page"
+            tools:orientation="horizontal" />
+
+        <com.tokopedia.unifycomponents.PageControl
+            android:id="@+id/pageControlShcCalendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rvShcCalendar" />
+
+        <include
+            android:id="@+id/shcCalendarWidgetLoadingState"
+            layout="@layout/shc_calendar_widget_loading_state"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvShcCalendarTitle"
+            app:layout_constraintVertical_bias="0" />
+
+        <include
+            android:id="@+id/shcCalendarWidgetErrorState"
+            layout="@layout/shc_calendar_widget_error_state"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:layout_marginBottom="48dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvShcCalendarTitle" />
+
+        <include
+            android:id="@+id/shcCalendarWidgetEmptyState"
+            layout="@layout/shc_partial_common_widget_state_error"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
+            android:layout_marginBottom="64dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvShcCalendarTitle" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>

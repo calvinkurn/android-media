@@ -121,10 +121,9 @@ object HomeLayoutMapper {
 
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
             if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
-                val state = HomeLayoutItemState.NOT_LOADED
                 val serviceType = localCacheModel.service_type
 
-                mapToHomeUiModel(layoutResponse, state, miniCartData, serviceType)?.let { item ->
+                mapToHomeUiModel(layoutResponse, miniCartData, serviceType)?.let { item ->
                     add(item)
                 }
 
@@ -152,7 +151,7 @@ object HomeLayoutMapper {
     ) {
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
             if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
-                mapToHomeUiModel(layoutResponse, HomeLayoutItemState.LOADED, miniCartData, serviceType)?.let { item ->
+                mapToHomeUiModel(layoutResponse, miniCartData, serviceType)?.let { item ->
                     add(item)
                 }
             }
@@ -183,10 +182,10 @@ object HomeLayoutMapper {
         updateItemById(item.id) {
             if (!response.isNullOrEmpty()) {
                 val categoryList = mapToCategoryList(response, warehouseId)
-                val layout = item.copy(categoryList = categoryList, state = TokoNowLayoutState.SHOW)
+                val layout = item.copy(categoryListUiModel = categoryList, state = TokoNowLayoutState.SHOW)
                 HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADED)
             } else {
-                val layout = item.copy(categoryList = null, state = TokoNowLayoutState.HIDE)
+                val layout = item.copy(categoryListUiModel = null, state = TokoNowLayoutState.HIDE)
                 HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADED)
             }
         }
@@ -387,6 +386,9 @@ object HomeLayoutMapper {
                 val recommendationItem = recommendationItemList.firstOrNull {
                     it.productId.toString() == productId
                 }
+
+                if (recommendationItem?.quantity == quantity) return
+
                 val index = recommendationItemList.indexOf(recommendationItem)
 
                 recommendationItemList.getOrNull(index)?.copy(quantity = quantity)?.let {
@@ -402,7 +404,7 @@ object HomeLayoutMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.removeItem(id: String) {
+    fun MutableList<HomeLayoutItemUiModel>.removeItem(id: String?) {
         getItemIndex(id)?.let { removeAt(it) }
     }
 
@@ -429,6 +431,12 @@ object HomeLayoutMapper {
         }
     }
 
+    inline fun<reified T: Visitable<*>> List<HomeLayoutItemUiModel>.getItem(itemClass: Class<T>): T? {
+        return mapNotNull { it.layout }.find {
+            it.javaClass == itemClass
+        } as? T
+    }
+
     private fun Visitable<*>.getVisitableId(): String? {
         return when (this) {
             is HomeLayoutUiModel -> visitableId
@@ -439,24 +447,41 @@ object HomeLayoutMapper {
         }
     }
 
+    /**
+     * Map dynamic channel layout response to ui model.
+     *
+     * @param response layout response from dynamic channel query.
+     * @param miniCartData mini cart data to set ATC quantity for each products.
+     * @param serviceType current active service type 15m/2h, see ServiceType object constant.
+     *
+     * @see HomeLayoutItemState.LOADED
+     * @see HomeLayoutItemState.NOT_LOADED
+     */
     private fun mapToHomeUiModel(
         response: HomeLayoutResponse,
-        state: HomeLayoutItemState = HomeLayoutItemState.NOT_LOADED,
         miniCartData: MiniCartSimplifiedData? = null,
         serviceType: String
     ): HomeLayoutItemUiModel? {
         val loadedState = HomeLayoutItemState.LOADED
+        val notLoadedState = HomeLayoutItemState.NOT_LOADED
 
         return when (response.layout) {
-            CATEGORY -> mapToCategoryLayout(response, state)
+            // region Dynamic Channel Component
+            // Layout content data already returned from dynamic channel query, set state to loaded.
             LEGO_3_IMAGE, LEGO_6_IMAGE -> mapLegoBannerDataModel(response, loadedState)
             BANNER_CAROUSEL -> mapSliderBannerModel(response, loadedState)
             PRODUCT_RECOM -> mapProductRecomDataModel(response, loadedState, miniCartData)
-            REPURCHASE_PRODUCT -> mapRepurchaseUiModel(response, state)
             EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, loadedState, serviceType)
-            SHARING_EDUCATION -> mapSharingEducationUiModel(response, state, serviceType)
-            MAIN_QUEST -> mapQuestUiModel(response, state)
-            MIX_LEFT_CAROUSEL -> mapToMixLeftCarousel(response, state)
+            MIX_LEFT_CAROUSEL -> mapToMixLeftCarousel(response, loadedState)
+            // endregion
+
+            // region TokoNow Component
+            // Layout need to fetch content data from other GQL, set state to not loaded.
+            CATEGORY -> mapToCategoryLayout(response, notLoadedState)
+            REPURCHASE_PRODUCT -> mapRepurchaseUiModel(response, notLoadedState)
+            MAIN_QUEST -> mapQuestUiModel(response, notLoadedState)
+            SHARING_EDUCATION -> mapSharingEducationUiModel(response, notLoadedState, serviceType)
+            // endregion
             else -> null
         }
     }

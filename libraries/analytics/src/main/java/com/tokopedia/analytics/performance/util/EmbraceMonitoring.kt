@@ -41,4 +41,8 @@ object EmbraceMonitoring {
                 properties
             )
     }
+
+    fun logBreadcrumb(message: String) {
+        Embrace.getInstance().logBreadcrumb(message)
+    }
 }

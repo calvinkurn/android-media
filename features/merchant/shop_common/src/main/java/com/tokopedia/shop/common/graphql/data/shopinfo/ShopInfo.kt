@@ -243,13 +243,21 @@ data class ShopInfo(
     )
 
     data class CloseDetail(
+            @SerializedName("startDate")
+            @Expose
+            val startDate: String = "0",
+            @SerializedName("endDate")
+            @Expose
+            val endDate: String = "0",
             @SerializedName("openDate")
             @Expose
             val openDateUnix: String = "",
-
             @SerializedName("openDateUTC")
             @Expose
-            val openDateUnixUtc: String = ""
+            val openDateUnixUtc: String = "",
+            @SerializedName("status")
+            @Expose
+            val status: Int = 0
     )
 
     data class CreatedInfo(
