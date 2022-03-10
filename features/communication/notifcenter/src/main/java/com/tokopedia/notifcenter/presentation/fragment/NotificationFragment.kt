@@ -409,7 +409,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
                 ServerLogger.log(
                     Priority.P1,
                     NotificationFragment::class.java.simpleName,
-                    mapOf("error" to "Failed to load Shopads in NotifCenter" )
+                    mapOf(ERROR to SHOPADS_LOAD_FAIL_ERROR)
                 )
             }
         )
@@ -807,6 +807,8 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
 
     companion object {
         private const val REQUEST_CHECKOUT = 0
+        private const val SHOPADS_LOAD_FAIL_ERROR = "Failed to load Shopads in NotifCenter"
+        private const val ERROR = "error"
     }
 
 }
