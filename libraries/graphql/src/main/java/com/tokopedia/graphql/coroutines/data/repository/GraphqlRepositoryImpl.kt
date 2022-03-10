@@ -104,7 +104,7 @@ class GraphqlRepositoryImpl @Inject constructor(
         val tempRequest = requests.regroup(indexOfEmptyCached)
         originalResponse?.forEachIndexed { index, jsonElement ->
 
-            val operationName = getFullOperationName(requests.getOrNull(index))
+            val operationName = CommonUtils.getFullOperationName(requests.getOrNull(index))
 
             try {
                 val typeOfT = tempRequest[index].typeOfT
@@ -163,7 +163,7 @@ class GraphqlRepositoryImpl @Inject constructor(
             copyRequests.addAll(requests);
 
             for (i in 0 until copyRequests.size) {
-                operationName = getFullOperationName(requests.getOrNull(i))
+                operationName = CommonUtils.getFullOperationName(requests.getOrNull(i))
 
                 if (copyRequests[i].isNoCache) {
                     continue
@@ -198,17 +198,5 @@ class GraphqlRepositoryImpl @Inject constructor(
 
 
         return graphqlCloudDataStore.getResponse(requests, cacheStrategy)
-    }
-
-    private fun getFullOperationName(request: GraphqlRequest?): String {
-        val operationName = if (TextUtils.isEmpty(request?.operationName)) {
-            CacheHelper.getQueryName(request?.query.orEmpty())
-        } else {
-            request?.operationName.orEmpty()
-        }
-        return StringBuffer()
-            .append(GraphqlClient.moduleName)
-            .append("_")
-            .append(operationName).toString()
     }
 }

@@ -1,5 +1,7 @@
 package com.tokopedia.graphql;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -7,6 +9,8 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.bind.JsonTreeReader;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.util.CacheHelper;
 
 import java.io.StringReader;
 import java.lang.reflect.Type;
@@ -60,6 +64,19 @@ public class CommonUtils {
 
     public static String getGraphqlUrlAppend(String opName) {
         return "graphql/" + GraphqlClient.moduleName + "/" + opName;
+    }
+
+    public static String getFullOperationName(GraphqlRequest request) {
+        String operationName;
+        if (TextUtils.isEmpty(request.getOperationName())) {
+            operationName = CacheHelper.getQueryName(request.getQuery());
+        } else {
+            operationName = request.getOperationName();
+        }
+        return new StringBuffer()
+                .append(GraphqlClient.moduleName)
+                .append("_")
+                .append(operationName).toString();
     }
 }
 
