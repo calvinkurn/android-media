@@ -862,6 +862,59 @@
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
+    },
+    {
+      "eventAction": "click - post to shop page",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+",
+      "sessionIris": ".*",
+      "currentSite": ".*",
+      "shopId": ".*",
+      "userId": ".*",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click - post video now",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+",
+      "sessionIris": ".*",
+      "currentSite": ".*",
+      "shopId": ".*",
+      "userId": ".*",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click - content tag",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - .*",
+      "sessionIris": ".*",
+      "currentSite": ".*",
+      "shopId": ".*",
+      "userId": ".*",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click - cover image on report page",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - \\d+ - .*",
+      "sessionIris": ".*",
+      "currentSite": ".*",
+      "shopId": ".*",
+      "userId": ".*",
+      "businessUnit": "play"
+    },
+    {
+      "event": "openScreen",
+      "businessUnit": "play",
+      "currentSite": ".*",
+      "isLoggedInStatus": "true|false",
+      "screenName": "/seller broadcast - report summary - \\d+ - \\d+",
+      "sessionIris": ".*",
+      "userId": ".*"
     }
   ]
 }
