@@ -10,6 +10,8 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.topads.common.CustomViewPager
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
@@ -41,6 +43,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 
 private const val CLICK_KATA_KUNCI_POSITIF = "click - kata kunci positif"
@@ -49,6 +52,7 @@ private const val AUTO_BID_STATE = "auto"
 private const val CLICK_BID_TYPE_SELECT = "click - mode pengaturan"
 private const val MANUAL_LAYOUT_EVENT_LABEL = "mode pengaturan atur manual"
 private const val OTOMATIS_LAYOUT_EVENT_LABEL = "mode pengaturan atur otomatis"
+private const val OTOMATIS_LEARN_MORE_LINK = "https://seller.tokopedia.com/edu/topads-otomatis/"
 
 class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.ButtonAction {
 
@@ -106,6 +110,8 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        autoBidTicker?.setHtmlDescription(resources.getString(R.string.topads_edit_auto_bid_ticker_title))
+
         initListeners()
         renderViewPager()
         chipKeyword?.chipType = ChipsUnify.TYPE_SELECTED
@@ -117,6 +123,16 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
     }
 
     private fun initListeners() {
+        autoBidTicker?.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                RouteManager.route(
+                    context, ApplinkConstInternalGlobal.WEBVIEW, OTOMATIS_LEARN_MORE_LINK
+                )
+            }
+
+            override fun onDismiss() {}
+        })
+
         chipKeyword?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(
                 CLICK_KATA_KUNCI_POSITIF,
@@ -136,7 +152,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             chipKeyword?.chipType = ChipsUnify.TYPE_NORMAL
             viewPager?.currentItem = POSITION1
         }
-        
+
         //disabling isclickable, to make sure switch button state change only if user confirms
         switchBidEditKeyword.isClickable = false
         switchBidEditKeyword.setOnTouchListener { view, motionEvent ->

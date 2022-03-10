@@ -68,7 +68,6 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/unify_space_12"
         app:closeButtonVisibility="gone"
-        app:descriptionText="@string/topads_edit_auto_bid_ticker_title"
         app:layout_constraintTop_toBottomOf="@+id/cvBidLayoutEditKeyword"
         app:tickerShapeType="loose"
         app:tickerType="announcement" />
