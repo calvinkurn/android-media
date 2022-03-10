@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelUseCase
@@ -88,9 +89,19 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             val reportChannelSummary = withContext(dispatcher.io) {
                 delay(LIVE_STATISTICS_DELAY)
+
+                var fetchTryCount = 0
+                lateinit var response : GetLiveStatisticsResponse.ReportChannelSummary
+
                 /** TODO("change hardcoded value") */
                 getLiveStatisticsUseCase.params = GetLiveStatisticsUseCase.createParams("334714")
-                return@withContext getLiveStatisticsUseCase.executeOnBackground()
+                do {
+                    response = getLiveStatisticsUseCase.executeOnBackground()
+                    fetchTryCount++
+                }
+                while(response.duration.isEmpty() && fetchTryCount < FETCH_REPORT_MAX_RETRY)
+
+                response
             }
             _observableReportDuration.value = playBroadcastMapper.mapLiveDuration(reportChannelSummary.duration)
             _observableLiveSummary.value = NetworkResult.Success(playBroadcastMapper.mapToLiveTrafficUiMetrics(reportChannelSummary.channel.metrics))
@@ -158,5 +169,6 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
 
     companion object {
         private const val LIVE_STATISTICS_DELAY = 300L
+        private const val FETCH_REPORT_MAX_RETRY = 3
     }
 }
