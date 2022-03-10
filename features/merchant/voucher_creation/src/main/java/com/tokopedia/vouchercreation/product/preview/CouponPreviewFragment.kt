@@ -700,7 +700,9 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         binding.btnCreateCoupon.isLoading = true
         binding.btnCreateCoupon.loadingText = getString(R.string.mvc_please_wait)
 
+        val isCreateMode = viewModel.isCreateMode(pageMode)
         viewModel.createCoupon(
+            isCreateMode,
             couponInformation ?: return,
             couponSettings ?: return,
             couponProducts
@@ -752,7 +754,9 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
     private fun displayCouponPreviewBottomSheet() {
         val imageUrls = viewModel.findMostSoldProductImageUrls(couponProducts)
+        val isCreateMode = viewModel.isCreateMode(pageMode)
         val bottomSheet = CouponImagePreviewBottomSheet.newInstance(
+            isCreateMode,
             couponInformation ?: return,
             couponSettings ?: return,
             couponProducts.size,
