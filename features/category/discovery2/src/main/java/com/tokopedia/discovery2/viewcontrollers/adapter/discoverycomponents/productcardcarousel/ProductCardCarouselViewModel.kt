@@ -265,7 +265,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         mixLeftComponentsItem.position = 0
         mixLeftComponentsItem.name = ComponentNames.MixLeftEmptyItem.componentName
         mixLeftComponentsItem.properties = components.properties
-        mixLeftComponentsItem.parentComponentId = components.parentComponentId
+        mixLeftComponentsItem.parentComponentId = components.id
         mixLeftComponentsItem.parentComponentPosition = components.position
     }
 

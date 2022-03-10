@@ -1910,8 +1910,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[PAGE_PATH] = removedDashPageIdentifier
         val list = ArrayList<Map<String, Any>>()
         val hashMap = HashMap<String, Any>()
-//        Todo:: Add id
-//        hashMap[KEY_ID] = it.id ?: 0
+        hashMap[KEY_ID] = componentsItems.parentComponentId
         hashMap[KEY_NAME] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${getParentPosition(componentsItems)} - - - $MIX_LEFT_BANNER"
         hashMap[KEY_CREATIVE] = componentsItems.properties?.mixLeft?.creativeName ?: EMPTY_STRING
         hashMap[KEY_POSITION] = 1
@@ -1928,6 +1927,13 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
+    override fun sendMixLeftBannerImpression(componentsItems: ComponentsItem) {
+        val id = componentsItems.parentComponentId + MIX_LEFT_BANNER
+        if (viewedProductsSet.add(id)) {
+            trackMixLeftBannerImpression(componentsItems)
+        }
+    }
+
     override fun trackMixLeftBannerClick(componentsItems: ComponentsItem) {
         val applink = componentsItems.properties?.mixLeft?.applink ?: ""
         val creativeName = componentsItems.properties?.mixLeft?.creativeName ?: ""
@@ -1935,9 +1941,8 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val list = ArrayList<Map<String, Any>>()
         list.add(
             mapOf(
-//                Todo:: Add id
-//                KEY_ID to it.id.toString(),
-                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${getParentPosition(componentsItems)} - - - ${MIX_LEFT_BANNER}}",
+                KEY_ID to componentsItems.parentComponentId,
+                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${getParentPosition(componentsItems)} - - - $MIX_LEFT_BANNER",
                 KEY_CREATIVE to creativeName,
                 KEY_POSITION to 1
             )

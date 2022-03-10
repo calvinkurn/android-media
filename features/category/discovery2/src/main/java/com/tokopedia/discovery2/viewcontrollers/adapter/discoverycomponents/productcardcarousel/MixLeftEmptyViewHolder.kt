@@ -27,7 +27,7 @@ class MixLeftEmptyViewHolder(itemView: View, val fragment: Fragment) :
     }
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as MixLeftEmptyViewModel
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackMixLeftBannerImpression(viewModel.components)
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().sendMixLeftBannerImpression(viewModel.components)
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
