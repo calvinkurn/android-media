@@ -11,6 +11,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseList
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSummaryBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
+import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryProvider
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
@@ -22,7 +23,7 @@ import javax.inject.Inject
 class ProductSetupFragment @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val productSetupViewModelFactory: PlayBroProductSetupViewModel.Factory,
-) : Fragment() {
+) : Fragment(), ViewModelFactoryProvider {
 
     private var mDataSource: DataSource? = null
 
@@ -63,6 +64,11 @@ class ProductSetupFragment @Inject constructor(
             bottomSheet.dismiss()
             openProductChooser(ChooserSource.Summary)
         }
+
+        override fun onFinish(bottomSheet: ProductSummaryBottomSheet) {
+            bottomSheet.dismiss()
+            removeFragment()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,7 +92,7 @@ class ProductSetupFragment @Inject constructor(
         }
     }
 
-    fun removeFragment() {
+    private fun removeFragment() {
         parentFragmentManager.beginTransaction()
             .remove(this)
             .commit()
@@ -119,7 +125,7 @@ class ProductSetupFragment @Inject constructor(
         mDataSource = dataSource
     }
 
-    fun getProductSetupViewModelFactory(): ViewModelProvider.Factory {
+    override fun getFactory(): ViewModelProvider.Factory {
         if (!::productSetupViewModelProviderFactory.isInitialized) {
             productSetupViewModelProviderFactory = object : AbstractSavedStateViewModelFactory(
                 this,

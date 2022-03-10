@@ -158,7 +158,7 @@ class ProductChooserBottomSheet @Inject constructor(
         show(fragmentManager, TAG)
     }
 
-    fun setListener(listener: Listener) {
+    fun setListener(listener: Listener?) {
         mListener = listener
     }
 
