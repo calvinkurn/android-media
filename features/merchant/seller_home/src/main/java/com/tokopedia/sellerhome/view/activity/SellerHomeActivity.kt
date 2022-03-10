@@ -32,7 +32,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
-import com.tokopedia.seller.active.common.service.UpdateShopActiveWorker
+import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.analytic.NavigationTracking

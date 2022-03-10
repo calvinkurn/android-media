@@ -48,7 +48,7 @@ import com.tokopedia.saldodetails.saldoDetail.domain.data.GqlMerchantCreditRespo
 import com.tokopedia.saldodetails.saldoDetail.domain.data.Saldo
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.ui.SaldoTransactionHistoryFragment
 import com.tokopedia.saldodetails.saldoHoldInfo.SaldoHoldInfoActivity
-import com.tokopedia.seller.active.common.service.UpdateShopActiveWorker
+import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
