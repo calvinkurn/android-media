@@ -38,7 +38,7 @@
     <string name="add_setting_profile">Tambah</string>
     <string name="change_setting_profile">Ubah</string>
     <string name="subtitle_name_setting_profile">Nama</string>
-    <string name="subtitle_bod_setting_profile">Tanggal Lahir</string>
+    <string name="subtitle_bod_setting_profile">Pilih Tanggal Lahir</string>
     <string name="subtitle_gender_setting_profile">Jenis Kelamin</string>
     <string name="subtitle_email_setting_profile">Email</string>
     <string name="subtitle_phone_setting_profile">Nomor HP</string>
@@ -57,8 +57,8 @@
     <string name="button_save">Simpan</string>
 
     <string name="gender_title_prof_comp">Jenis Kelamin Kamu</string>
-    <string name="profile_completion_man">Pria</string>
-    <string name="profile_completion_woman">Wanita</string>
+    <string name="profile_completion_man">Laki-Laki</string>
+    <string name="profile_completion_woman">Perempuan</string>
     <string name="profile_completion_date">Tanggal</string>
     <string name="profile_completion_month">Bulan</string>
     <string name="profile_completion_year">Tahun</string>

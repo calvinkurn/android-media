@@ -43,7 +43,7 @@ class ChangeBioUsernameViewModel @Inject constructor(
     val resultSubmitBio: LiveData<Result<SubmitBioUsername>>
         get() = _resultSubmitBio
 
-    var validationUsernameJob: Job? = null
+    private var validationUsernameJob: Job? = null
 
     private val _profileFeed = MutableLiveData<Result<ProfileFeedData>>()
 
@@ -96,7 +96,11 @@ class ChangeBioUsernameViewModel @Inject constructor(
                 val status = result.response.status
                 if (status) {
                     _resultSubmitUsername.value = Success(result.response)
+                } else {
+                    _resultSubmitUsername.value = Fail(Throwable(""))
                 }
+            } else {
+                _resultSubmitUsername.value = Fail(Throwable(""))
             }
         }, onError = {
             _resultSubmitUsername.value = Fail(it)
@@ -111,6 +115,5 @@ class ChangeBioUsernameViewModel @Inject constructor(
         }, onError = {
             _resultSubmitBio.value = Fail(it)
         })
-
     }
 }

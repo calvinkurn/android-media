@@ -202,7 +202,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 			title = getString(R.string.title_username),
 			itemValue = data.profileFeedData.profile.username,
 			placeholder = getString(R.string.placeholder_username),
-			isEnable = data.profileFeedData.profile.canChangeUsername,
+			isEnable = !data.profileFeedData.profile.canChangeUsername,
 			rightIcon = entryPointIconUsername(data)
 		) {
 			goToEditProfileInfo(ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_USERNAME)
@@ -249,7 +249,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
     }
 
 	private fun onNameClicked(data: ProfileInfoUiModel) {
-		if (data.profileRoleData.isAllowedChangeName) {
+		if (!data.profileRoleData.isAllowedChangeName) {
 			tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRYPOINT_NAME + ProfileInfoTracker.LABEL_PAGE)
 			val intent = RouteManager.getIntent(
 				context,

@@ -165,6 +165,10 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
                 val errorMsg = error.data
                     .getErrorMessage(getString(R.string.key_error_username))
                 setInvalidInputUsername(errorMsg)
+                view?.let { view ->
+                    Toaster.make(view, errorMsg,
+                        Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                }
                 tracker.trackOnBtnSimpanUsernameFailed(errorMsg)
 
             } catch (e: MessageErrorException) {
