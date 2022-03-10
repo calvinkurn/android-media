@@ -12,6 +12,7 @@ import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class PartialProductItemViewHolder(
@@ -33,7 +34,9 @@ class PartialProductItemViewHolder(
     private val tvBuyerOrderDetailProductPriceValue =
         partialProductItemViewStub?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductPriceValue)
     private val itemBomDetailProductViewStub =
-        partialProductItemViewStub?.findViewById<View>(R.id.itemBomDetailProductViewStub)
+        itemView?.findViewById<View>(R.id.itemBomDetailProductViewStub)
+    private val btnBuyerOrderDetailBuyProductAgain =
+        partialProductItemViewStub?.findViewById<UnifyButton>(R.id.btnBuyerOrderDetailBuyProductAgain)
 
     private val context = itemView?.context
 
@@ -83,6 +86,7 @@ class PartialProductItemViewHolder(
 
     private fun setupClickListeners() {
         itemBomDetailProductViewStub?.setOnClickListener(this)
+        btnBuyerOrderDetailBuyProductAgain?.setOnClickListener(this)
     }
 
     private fun setupProductName(productName: String) {
