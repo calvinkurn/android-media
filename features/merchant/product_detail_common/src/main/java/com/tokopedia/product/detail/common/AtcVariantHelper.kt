@@ -184,4 +184,5 @@ enum class VariantPageSource(val source: String) {
     CATEGORY_PAGESOURCE("category page"),
     BUNDLING_PAGESOURCE("bundling page"),
     TOKONOW_PAGESOURCE("tokonow"),
+    BNPL_PAGESOURCE("bnpl-v2"),
 }

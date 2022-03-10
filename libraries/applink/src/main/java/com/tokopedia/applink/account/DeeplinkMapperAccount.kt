@@ -5,12 +5,13 @@ import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
 object DeeplinkMapperAccount {
 
     fun getAccountInternalApplink(deeplink: String): String {
-        return deeplink.replace(ApplinkConst.ACCOUNT, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT)
+        return deeplink.replace(ApplinkConst.ACCOUNT, ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT)
     }
 
     fun usingOldAccount(context: Context): Boolean{
