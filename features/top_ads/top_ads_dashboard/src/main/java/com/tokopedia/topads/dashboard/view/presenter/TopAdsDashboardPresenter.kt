@@ -81,6 +81,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
             private val getExpiryDateUseCase: GraphqlUseCase<ExpiryDateResponse>,
             private val getHiddenTrialUseCase: GraphqlUseCase<FreeTrialShopListResponse>,
             private val whiteListedUserUseCase: GetWhiteListedUserUseCase,
+            private val topAdsGetDeletedAdsUseCase: TopAdsGetDeletedAdsUseCase,
             private val userSession: UserSessionInterface) : BaseDaggerPresenter<TopAdsDashboardView>() {
 
     var isShopWhiteListed: MutableLiveData<Boolean> = MutableLiveData()
@@ -493,6 +494,18 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         )
     }
 
+    fun getDeletedAds(
+        page: Int,
+        type: String,
+        startDate: String,
+        endDate: String,
+        onSuccess: (TopAdsDeletedAdsResponse) -> Unit,
+        onEmptyResult: () -> Unit
+    ) {
+        topAdsGetDeletedAdsUseCase.setParams(page, type, startDate, endDate)
+        topAdsGetDeletedAdsUseCase.execute(onSuccess, onEmptyResult)
+    }
+
     override fun detachView() {
         super.detachView()
         topAdsGetShopDepositUseCase.cancelJobs()
@@ -513,5 +526,6 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         bidInfoUseCase.cancelJobs()
         groupInfoUseCase.cancelJobs()
         whiteListedUserUseCase.cancelJobs()
+        topAdsGetDeletedAdsUseCase.cancelJob()
     }
 }

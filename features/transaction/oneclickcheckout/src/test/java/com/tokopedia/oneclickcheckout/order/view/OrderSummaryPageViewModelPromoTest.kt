@@ -4,7 +4,17 @@ import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccData
+import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccPaymentParameter
+import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccRedirectParam
+import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccResult
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
+import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
+import com.tokopedia.oneclickcheckout.order.view.model.OrderInsurance
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
@@ -14,7 +24,11 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.BenefitSummaryInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -69,7 +83,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(promoCode, promoRequest.codes.first())
-        assertEquals(listOf(promoCode, helper.logisticPromo.promoCode), promoRequest.orders.first()!!.codes)
+        assertEquals(listOf(promoCode, helper.logisticPromo.promoCode), promoRequest.orders.first().codes)
     }
 
     @Test
@@ -86,7 +100,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(true, promoRequest.codes.isEmpty())
-        assertEquals(true, promoRequest.orders.first()!!.codes.isEmpty())
+        assertEquals(true, promoRequest.orders.first().codes.isEmpty())
     }
 
     @Test
@@ -104,7 +118,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(true, promoRequest.codes.isEmpty())
-        assertEquals(listOf(promoCode), promoRequest.orders.first()!!.codes)
+        assertEquals(listOf(promoCode), promoRequest.orders.first().codes)
     }
 
     @Test
@@ -116,16 +130,23 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
         // When
-        orderSummaryPageViewModel.updateCartPromo { validateUsePromoRequest, promoRequest, bboCodes ->
-            // Then
-            assertEquals(ValidateUsePromoRequest(isSuggested = 0, skipApply = 0, cartType = "occ", state = "checkout",
-                    orders = listOf(OrdersItem(shippingId = helper.firstCourierFirstDuration.productData.shipperId, spId = helper.firstCourierFirstDuration.productData.shipperProductId,
-                            productDetails = listOf(ProductDetailsItem(helper.product.orderQuantity, helper.product.productId))))), validateUsePromoRequest)
-            assertEquals(PromoRequest(cartType = "occ", state = "checkout",
-                    orders = listOf(Order(isChecked = true, shippingId = helper.firstCourierFirstDuration.productData.shipperId, spId = helper.firstCourierFirstDuration.productData.shipperProductId,
-                            product_details = listOf(ProductDetail(helper.product.productId, helper.product.orderQuantity))))), promoRequest)
-            assertEquals(0, bboCodes.size)
+        var validateUsePromoRequest = ValidateUsePromoRequest()
+        var promoRequest = PromoRequest()
+        var bboCodes = emptyList<String>()
+        orderSummaryPageViewModel.updateCartPromo { resultValidateUsePromoRequest, resultPromoRequest, resultBboCodes ->
+            validateUsePromoRequest = resultValidateUsePromoRequest
+            promoRequest = resultPromoRequest
+            bboCodes = resultBboCodes
         }
+
+        // Then
+        assertEquals(ValidateUsePromoRequest(isSuggested = 0, skipApply = 0, cartType = "occmulti", state = "checkout",
+                orders = listOf(OrdersItem(shippingId = helper.firstCourierFirstDuration.productData.shipperId, spId = helper.firstCourierFirstDuration.productData.shipperProductId,
+                        shopId = helper.orderData.cart.shop.shopId, productDetails = listOf(ProductDetailsItem(helper.product.orderQuantity, helper.product.productId))))), validateUsePromoRequest)
+        assertEquals(PromoRequest(cartType = "occmulti", state = "checkout",
+                orders = listOf(Order(isChecked = true, shippingId = helper.firstCourierFirstDuration.productData.shipperId, spId = helper.firstCourierFirstDuration.productData.shipperProductId,
+                        shopId = helper.orderData.cart.shop.shopId, product_details = listOf(ProductDetail(helper.product.productId, helper.product.orderQuantity))))), promoRequest)
+        assertEquals(0, bboCodes.size)
     }
 
     @Test
@@ -141,18 +162,25 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
         // When
-        orderSummaryPageViewModel.updateCartPromo { validateUsePromoRequest, promoRequest, bboCodes ->
-            // Then
-            assertEquals(ValidateUsePromoRequest(isSuggested = 0, skipApply = 0, cartType = "occ", state = "checkout",
-                    orders = listOf(OrdersItem(shippingId = helper.logisticPromo.shipperId, spId = helper.logisticPromo.shipperProductId,
-                            codes = mutableListOf(helper.logisticPromo.promoCode),
-                            productDetails = listOf(ProductDetailsItem(helper.product.orderQuantity, helper.product.productId))))), validateUsePromoRequest)
-            assertEquals(PromoRequest(cartType = "occ", state = "checkout",
-                    orders = listOf(Order(isChecked = true, shippingId = helper.logisticPromo.shipperId, spId = helper.logisticPromo.shipperProductId,
-                            codes = mutableListOf(helper.logisticPromo.promoCode),
-                            product_details = listOf(ProductDetail(helper.product.productId, helper.product.orderQuantity))))), promoRequest)
-            assertEquals(1, bboCodes.size)
+        var validateUsePromoRequest = ValidateUsePromoRequest()
+        var promoRequest = PromoRequest()
+        var bboCodes = emptyList<String>()
+        orderSummaryPageViewModel.updateCartPromo { resultValidateUsePromoRequest, resultPromoRequest, resultBboCodes ->
+            validateUsePromoRequest = resultValidateUsePromoRequest
+            promoRequest = resultPromoRequest
+            bboCodes = resultBboCodes
         }
+
+        // Then
+        assertEquals(ValidateUsePromoRequest(isSuggested = 0, skipApply = 0, cartType = "occmulti", state = "checkout",
+                orders = listOf(OrdersItem(shippingId = helper.logisticPromo.shipperId, spId = helper.logisticPromo.shipperProductId,
+                        codes = mutableListOf(helper.logisticPromo.promoCode),
+                        shopId = helper.orderData.cart.shop.shopId, productDetails = listOf(ProductDetailsItem(helper.product.orderQuantity, helper.product.productId))))), validateUsePromoRequest)
+        assertEquals(PromoRequest(cartType = "occmulti", state = "checkout",
+                orders = listOf(Order(isChecked = true, shippingId = helper.logisticPromo.shipperId, spId = helper.logisticPromo.shipperProductId,
+                        codes = mutableListOf(helper.logisticPromo.promoCode),
+                        shopId = helper.orderData.cart.shop.shopId, product_details = listOf(ProductDetail(helper.product.productId, helper.product.orderQuantity))))), promoRequest)
+        assertEquals(1, bboCodes.size)
     }
 
     @Test

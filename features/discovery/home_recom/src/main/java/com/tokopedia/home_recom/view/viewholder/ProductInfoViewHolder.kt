@@ -9,6 +9,7 @@ import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.databinding.FragmentProductInfoBinding
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.entity.ProductDetailData
+import com.tokopedia.home_recom.util.RecomServerLogger
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -146,6 +147,12 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
                 override fun onViewHint() {
                     if (it.isTopads) {
                         listener?.onProductAnchorImpression(productInfoDataModel)
+                    } else {
+                        RecomServerLogger.logServer(
+                            RecomServerLogger.TOPADS_RECOM_PAGE_IS_NOT_ADS,
+                            productId = it.id.toString(),
+                            queryParam = listener?.getProductQueryParam()?:""
+                        )
                     }
                     listener?.onProductAnchorImpressionHitGTM(productInfoDataModel)
                 }
@@ -200,5 +207,7 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
         fun onProductAnchorAddToCart(productInfoDataModel: ProductInfoDataModel)
         fun onProductAnchorBuyNow(productInfoDataModel: ProductInfoDataModel)
         fun onProductAnchorClickWishlist(productInfoDataModel: ProductInfoDataModel, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit)
+
+        fun getProductQueryParam(): String
     }
 }

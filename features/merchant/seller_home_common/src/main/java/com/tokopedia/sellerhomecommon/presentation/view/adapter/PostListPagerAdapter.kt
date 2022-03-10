@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcItemPostListPagerBinding
 import com.tokopedia.sellerhomecommon.presentation.adapter.factory.PostListAdapterTypeFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
@@ -22,8 +21,6 @@ class PostListPagerAdapter(
     var pagers = listOf<PostListPagerUiModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostListPagerViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.shc_item_post_list_pager, parent, false)
         val binding = ShcItemPostListPagerBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
@@ -54,7 +51,6 @@ class PostListPagerAdapter(
             }
 
             postAdapter.data.addAll(pager.postList)
-            postAdapter.notifyDataSetChanged()
             postAdapter.setOnAdapterInteractionListener {
                 onPostItemClicked(it)
             }

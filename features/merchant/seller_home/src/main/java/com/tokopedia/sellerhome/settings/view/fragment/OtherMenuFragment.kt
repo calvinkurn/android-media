@@ -321,7 +321,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     override fun onShopOperationalClicked() {
-        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
+        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS)
     }
 
     override fun onGoToPowerMerchantSubscribe(tab: String?, isUpdate: Boolean) {
