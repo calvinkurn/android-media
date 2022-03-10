@@ -692,7 +692,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
         } else if (errorCode == WebViewClient.ERROR_UNSUPPORTED_SCHEME) {
             routeToNativeBrowser(webUrl);
-            getActivity().finish();
+            if (getActivity() != null) {
+                getActivity().finish();
+            }
         }
     }
 
