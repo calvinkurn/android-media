@@ -46,9 +46,9 @@ object HomeScreenshotTestHelper {
                 ScreenshotModel(name = "HomeWidget2"),
                 ScreenshotModel(name = "HomeFeaturedShop"),
                 ScreenshotModel(name = "PlayWidget"),
-                ScreenshotModel(name = "RSFSTWidget"),
+                ScreenshotModel(name = "SpecialReleaseWidget"),
                 ScreenshotModel(name = "CMHomeWidget"),
-                ScreenshotModel(name = "MerchantVoucher"),
+                ScreenshotModel(name = "MerchantVoucherWidget"),
                 ScreenshotModel(name = "HomePayLaterWidget")
         )
     }
