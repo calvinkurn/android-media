@@ -77,6 +77,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
+import timber.log.Timber
 import javax.inject.Inject
 
 open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
@@ -402,6 +403,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
             NotificationTopAdsHeadlineHelper.getParams(userSession.userId), {
                 rvAdapter?.addShopAds(it)
             }, {
+                Timber.e("Failed to load Shopads in Inbox")
             }
         )
     }
