@@ -105,6 +105,7 @@ class ChangeNameFragment : BaseDaggerFragment() {
                     when {
                         s.length < MINIMUM_LENGTH || s.length > MAXIMUM_LENGTH -> {
                             when {
+                                s.isEmpty() -> onErrorChangeName(Throwable(resources.getString(R.string.error_name_cant_empty)))
                                 s.length < MINIMUM_LENGTH -> onErrorChangeName(Throwable(resources.getString(R.string.error_name_min_3)))
                                 s.length > MAXIMUM_LENGTH -> onErrorChangeName(Throwable(resources.getString(R.string.error_name_max_35)))
                             }

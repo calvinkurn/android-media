@@ -5,7 +5,7 @@
     <string name="title_add_name">Masukkan \nNama Lengkap Anda</string>
     <string name="title_name_full">Nama Lengkap</string>
     <string name="title_add_name_empty"> </string>
-    <string name="title_change_name">Ubah Nama Lengkap</string>
+    <string name="title_change_name">Ubah Nama</string>
     <string name="title_complete_name">Nama Lengkap</string>
     <string name="email_name_top">Masukkan nama lengkap Anda dengan benar.\nNama lengkap hanya dapat diubah satu kali.</string>
     <string name="button_name_finish">Selesai</string>
@@ -15,6 +15,7 @@
     <string name="error_name_too_short">Nama lengkap terlalu pendek, minimum 3 karakter</string>
     <string name="error_name_too_long">Nama lengkap terlalu panjang, maksimal 35 karakter</string>
     <string name="error_name_min_3">Minimum 3 karakter</string>
+    <string name="error_name_cant_empty">Wajib diisi.</string>
     <string name="error_name_max_35">Maksimal 35 karakter</string>
     <string name="error_name_same_with_previous">Nama tidak boleh sama</string>
     <string name="name_confirmation_yes">Ya, benar</string>
@@ -33,6 +34,7 @@
 
     <!-- SETTING PROFILE -->
     <string name="title_setting_profile">Data Diri</string>
+    <string name="title_profile_info">Ubah Profil</string>
     <string name="add_setting_profile">Tambah</string>
     <string name="change_setting_profile">Ubah</string>
     <string name="subtitle_name_setting_profile">Nama</string>
@@ -69,7 +71,7 @@
     <!-- ADD EMAIL -->
     <string name="title_add_email">Tambah Email</string>
     <string name="warning_add_email">Pastikan email Anda aktif untuk keamanan dan kemudahan transaksi</string>
-    <string name="title_email">Email</string>
+    <string name="title_email">E-mail</string>
     <string name="we_will_send_email_verification_code">Kami akan mengirimkan kode verifikasi melalui email</string>
     <string name="error_field_required">Harus diisi</string>
     <string name="wrong_email_format">Format email salah</string>
@@ -186,7 +188,9 @@
     <string name="label_bio">Bio</string>
     <string name="key_error_biography">Biography</string>
     <string name="body_personal_info">Tenang, informasi ini rahasia. Hanya kamu yang dapat melihatnya dan tidak dibagiin ke siapa pun.</string>
+    <string name="body_profile_info">Informasi ini publik dan bisa dilihat oleh pengguna lain di Halaman Profil.</string>
     <string name="title_personal_info">Info Pribadi</string>
+    <string name="title_bottomsheet_profile_info">Info profil</string>
     <string name="see_page">Lihat Halaman</string>
     <string name="change_username_success">Username berhasil diubah</string>
     <string name="change_biography_success">Bio berhasil diubah</string>
@@ -205,5 +209,8 @@
     <string name="error_min_char">Minimum %1$d karakter.</string>
     <string name="success_edit_profile_info">Info profil berhasil diubah.</string>
     <string name="error_cant_empty">Wajib diisi.</string>
+    <string name="title_gender">Jenis Kelamin</string>
+    <string name="title_user_id">User ID</string>
+    <string name="success_copy_userid">User ID berhasil disalin!</string>
 
 </resources>

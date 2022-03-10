@@ -14,7 +14,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.datepicker.DatePickerUnify
+import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addbod.data.AddBodData
 import com.tokopedia.profilecompletion.addbod.view.widget.common.LocaleUtils
@@ -24,7 +24,6 @@ import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.sessioncommon.ErrorHandlerSession
-import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -53,7 +52,7 @@ class AddBodFragment: BaseDaggerFragment(){
     private lateinit var maxDate: Calendar
     private lateinit var defaultDate: Calendar
 
-    private var unifyDatePicker: DatePickerUnify? = null
+    private var unifyDatePicker: DateTimePickerUnify? = null
     private lateinit var chooseDateButton : View
     private var selectedDate : String = ""
     private var parentContainer: RelativeLayout? = null
@@ -72,7 +71,9 @@ class AddBodFragment: BaseDaggerFragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        maxDate = GregorianCalendar(getCurrentLocale(requireContext()))
+        maxDate = GregorianCalendar(getCurrentLocale(requireContext())).apply {
+            set(this.get(Calendar.YEAR), get(Calendar.MONTH) + 1, get(Calendar.DAY_OF_MONTH))
+        }
         defaultDate = GregorianCalendar(getCurrentLocale(requireContext()))
 
         initVar()
@@ -106,16 +107,14 @@ class AddBodFragment: BaseDaggerFragment(){
 
     private fun initDatepicker(){
         context?.run {
-            unifyDatePicker = DatePickerUnify(this, minDate, defaultDate, maxDate)
+            unifyDatePicker = DateTimePickerUnify(this, minDate, defaultDate, maxDate, null, DateTimePickerUnify.TYPE_DATEPICKER)
         }
         unifyDatePicker?.setTitle(getString(R.string.subtitle_bod_setting_profile))
         unifyDatePicker?.datePickerButton?.setOnClickListener {
-            val dateArray = unifyDatePicker?.getDate()
-            dateArray?.run {
-                if(size >= 3){
-                    selectedDate = formatDateParam( dateArray[0],dateArray[1]+1 , dateArray[2] )
-                    setChoosenDateFormat(selectedDate)
-                }
+            val selectedDatePicker = unifyDatePicker?.getDate()
+            selectedDatePicker?.run {
+                selectedDate = formatDateParam( selectedDatePicker.get(Calendar.DAY_OF_MONTH),selectedDatePicker.get(Calendar.MONTH) , selectedDatePicker.get(Calendar.YEAR) )
+                setChoosenDateFormat(selectedDate)
             }
             unifyDatePicker?.dismiss()
         }

@@ -19,9 +19,11 @@ class ProfileInfoItemViewHolder(val view: View,
 	if(element?.isEnable == true) {
 	    binding?.containerClick?.setOnClickListener {
 		element.action.invoke()
-		listener.onItemClicked(element)
 	    }
 	}
+		binding?.fragmentProfileItemIcon?.setOnClickListener {
+			listener.onRightIconClicked(element)
+		}
 	binding?.fragmentProfileItemTitle?.text = element?.title
 	binding?.fragmentProfileItemValue?.text = if (element?.itemValue.isNullOrBlank()) element?.placeholder else element?.itemValue
 		if (element?.itemValue.isNullOrBlank()) {
@@ -42,6 +44,6 @@ class ProfileInfoItemViewHolder(val view: View,
     }
 
     interface ProfileInfoItemInterface {
-	fun onItemClicked(item: ProfileInfoItemUiModel?)
+	fun onRightIconClicked(item: ProfileInfoItemUiModel?)
     }
 }

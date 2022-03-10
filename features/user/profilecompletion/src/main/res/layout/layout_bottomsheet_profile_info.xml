@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         app:typographyType="heading_3"
         android:layout_marginTop="24dp"
-        android:text="@string/title_personal_info"
+        android:text="@string/title_bottomsheet_profile_info"
         tools:text ="Info Pribadi"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -40,7 +40,7 @@
         app:typographyType="body_2"
         app:typographyWeight="reguler"
         android:layout_marginTop="@dimen/unify_space_4"
-        android:text="@string/body_personal_info"
+        android:text="@string/body_profile_info"
         tools:text = "Tenang, informasi ini rahasia. Hanya kamu yang dapat melihatnya dan tidak dibagiin ke siapa pun."/>
 
     <com.tokopedia.unifycomponents.UnifyButton

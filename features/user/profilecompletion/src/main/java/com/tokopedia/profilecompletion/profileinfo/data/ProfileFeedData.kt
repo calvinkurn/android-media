@@ -24,6 +24,12 @@ data class ProfileFeed(
 
     @SerializedName("sharelink")
     val shareLink: ShareLinkProfile = ShareLinkProfile(),
+
+    @SerializedName("canChangeUsername")
+    val canChangeUsername: Boolean = false,
+
+    @SerializedName("profilePreviewImageURL")
+    val profilePreviewImageUrl: String = ""
 )
 
 data class ShareLinkProfile(

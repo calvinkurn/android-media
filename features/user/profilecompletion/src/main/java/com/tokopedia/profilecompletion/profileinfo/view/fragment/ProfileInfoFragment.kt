@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.RouteManager
@@ -50,6 +51,7 @@ import com.tokopedia.profilecompletion.settingprofile.domain.UrlSettingProfileCo
 import com.tokopedia.profilecompletion.settingprofile.view.fragment.SettingProfileFragment
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -194,24 +196,14 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
         val listItem = listOf(
 	    ProfileInfoTitleUiModel(ProfileInfoConstants.PROFILE_INFO_SECTION, getString(R.string.profile_info_title)),
 	    ProfileInfoItemUiModel(ProfileInfoConstants.NAME, title = getString(R.string.title_item_name), itemValue = data.profileInfoData.fullName) {
-	    	if (!data.profileRoleData.isAllowedChangeName) {
-	    		tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRYPOINT_NAME + ProfileInfoTracker.LABEL_PAGE)
-				val intent = RouteManager.getIntent(
-					context,
-					ApplinkConstInternalGlobal.CHANGE_NAME,
-					data.profileInfoData.fullName,
-					data.profileRoleData.chancesChangeName
-				)
-				startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_CHANGE_NAME)
-			} else {
-				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRYPOINT_NAME + ProfileInfoTracker.LABEL_BOTTOMSHEET)
-				openBottomSheetWarning(ProfileInfoConstants.NAME, data.profileRoleData.changeNameMessageInfoTitle, data.profileRoleData.changeNameMessageInfo)
-			}
+	    	onNameClicked(data)
 		},
 	    ProfileInfoItemUiModel(ProfileInfoConstants.USERNAME,
 			title = getString(R.string.title_username),
 			itemValue = data.profileFeedData.profile.username,
-			placeholder = getString(R.string.placeholder_username)
+			placeholder = getString(R.string.placeholder_username),
+			isEnable = data.profileFeedData.profile.canChangeUsername,
+			rightIcon = entryPointIconUsername(data)
 		) {
 			goToEditProfileInfo(ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_USERNAME)
 		},
@@ -223,62 +215,100 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 			goToEditProfileInfo(ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_BIO)
 		},
 	    DividerProfileUiModel("line"),
-	    ProfileInfoTitleUiModel(ProfileInfoConstants.PROFILE_PERSONAL_INFO_SECTION, "Info Pribadi"),
-	    ProfileInfoItemUiModel(ProfileInfoConstants.USER_ID, title = "User ID", itemValue = userSession.userId, rightIcon = IconUnify.COPY),
-	    ProfileInfoItemUiModel(ProfileInfoConstants.EMAIL, title = "E-mail", itemValue = data.profileInfoData.email,
+	    ProfileInfoTitleUiModel(ProfileInfoConstants.PROFILE_PERSONAL_INFO_SECTION, getString(
+	    			title_personal_info
+	    		)),
+	    ProfileInfoItemUiModel(ProfileInfoConstants.USER_ID, title = getString(R.string.title_user_id), itemValue = userSession.userId, rightIcon = IconUnify.COPY),
+	    ProfileInfoItemUiModel(ProfileInfoConstants.EMAIL, title = getString(R.string.title_email), itemValue = data.profileInfoData.email,
 			placeholder = getString(R.string.placeholder_email)
 		) {
-			if (data.profileInfoData.email.isEmpty() || !data.profileInfoData.isEmailDone) {
-				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_EMAIL + ProfileInfoTracker.LABEL_PAGE)
-				val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_EMAIL)
-		    startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_EMAIL)
-		} else {
-				if (data.profileInfoData.msisdn.isNotEmpty() && data.profileInfoData.isMsisdnVerified) {
-					tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_EMAIL + ProfileInfoTracker.LABEL_PAGE)
-					goToChangeEmail()
-		    } else if (data.profileInfoData.msisdn.isNotEmpty() && !data.profileInfoData.isMsisdnVerified) {
-					tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_EMAIL + ProfileInfoTracker.LABEL_POP_UP)
-					showVerifyEmailDialog()
-		    } else {
-					tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_EMAIL + ProfileInfoTracker.LABEL_POP_UP)
-					showChangeEmailDialog()
-		    }
-		}
+			onEmailClicked(data)
 	    } ,
-	    ProfileInfoItemUiModel(ProfileInfoConstants.PHONE, title = "Nomor HP", itemValue = data.profileInfoData.msisdn,
+	    ProfileInfoItemUiModel(ProfileInfoConstants.PHONE, title = getString(title_phone), itemValue = data.profileInfoData.msisdn,
 			placeholder = getString(R.string.placeholder_phone)
 		) {
-			tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_PHONE + ProfileInfoTracker.LABEL_PAGE)
-			if (data.profileInfoData.msisdn.isEmpty()) {
-		    goToAddPhone()
-		} else {
-		    if (data.profileInfoData.isMsisdnVerified) {
-			goToChangePhone(data.profileInfoData.msisdn, data.profileInfoData.email)
-		    } else {
-			goToAddPhoneBy(PhoneNumberUtil.replace62with0(data.profileInfoData.msisdn))
-		    }
-		}
+			onPhoneClicked(data)
 	    },
-	    ProfileInfoItemUiModel(ProfileInfoConstants.GENDER, title = "Jenis Kelamin",
+	    ProfileInfoItemUiModel(ProfileInfoConstants.GENDER, title = getString(R.string.title_gender),
 			itemValue = getGenderText(data.profileInfoData.gender),
 			isEnable = data.profileRoleData.isAllowedChangeGender,
 			rightIcon = entryPointIconGender(data),
 			placeholder = getString(R.string.placeholder_gender)
 		){
-			if (data.profileRoleData.isAllowedChangeGender) {
-				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_GENDER + ProfileInfoTracker.LABEL_PAGE)
-				val intent =
-					RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_GENDER)
-				startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_GENDER)
-			}
+			onGenderClicked(data)
 	    },
 	    ProfileInfoItemUiModel(ProfileInfoConstants.BIRTH_DATE, title = "Tanggal Lahir",
 			itemValue = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD, DateFormatUtils.FORMAT_DD_MMMM_YYYY, data.profileInfoData.birthDay),
 			placeholder = getString(R.string.placeholder_dob)
 		) {
-			if(data.profileInfoData.birthDay.isEmpty()) {
-				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_DOB + ProfileInfoTracker.LABEL_PAGE)
-				goToAddDob()
+			onDobClicked(data)
+	    },
+	)
+	adapter.setProfileInfoItem(listItem)
+	renderWarningTickerName(data.profileInfoData)
+    }
+
+	private fun onNameClicked(data: ProfileInfoUiModel) {
+		if (data.profileRoleData.isAllowedChangeName) {
+			tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRYPOINT_NAME + ProfileInfoTracker.LABEL_PAGE)
+			val intent = RouteManager.getIntent(
+				context,
+				ApplinkConstInternalGlobal.CHANGE_NAME,
+				data.profileInfoData.fullName,
+				data.profileRoleData.chancesChangeName
+			)
+			startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_CHANGE_NAME)
+		} else {
+			tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRYPOINT_NAME + ProfileInfoTracker.LABEL_BOTTOMSHEET)
+			openBottomSheetWarning(ProfileInfoConstants.NAME, data.profileRoleData.changeNameMessageInfoTitle, data.profileRoleData.changeNameMessageInfo)
+		}
+	}
+
+	private fun onEmailClicked(data: ProfileInfoUiModel) {
+		if (data.profileInfoData.email.isEmpty() || !data.profileInfoData.isEmailDone) {
+			tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_EMAIL + ProfileInfoTracker.LABEL_PAGE)
+			val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_EMAIL)
+			startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_EMAIL)
+		} else {
+			if (data.profileInfoData.msisdn.isNotEmpty() && data.profileInfoData.isMsisdnVerified) {
+				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_EMAIL + ProfileInfoTracker.LABEL_PAGE)
+				goToChangeEmail()
+			} else if (data.profileInfoData.msisdn.isNotEmpty() && !data.profileInfoData.isMsisdnVerified) {
+				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_EMAIL + ProfileInfoTracker.LABEL_POP_UP)
+				showVerifyEmailDialog()
+			} else {
+				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_EMAIL + ProfileInfoTracker.LABEL_POP_UP)
+				showChangeEmailDialog()
+			}
+		}
+	}
+
+	private fun onPhoneClicked(data: ProfileInfoUiModel) {
+		tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_PHONE + ProfileInfoTracker.LABEL_PAGE)
+		if (data.profileInfoData.msisdn.isEmpty()) {
+			goToAddPhone()
+		} else {
+			if (data.profileInfoData.isMsisdnVerified) {
+				goToChangePhone(data.profileInfoData.msisdn, data.profileInfoData.email)
+			} else {
+				goToAddPhoneBy(PhoneNumberUtil.replace62with0(data.profileInfoData.msisdn))
+			}
+		}
+	}
+
+	private fun onGenderClicked(data: ProfileInfoUiModel) {
+		if (data.profileRoleData.isAllowedChangeGender) {
+			tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_GENDER + ProfileInfoTracker.LABEL_PAGE)
+			val intent =
+				RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_GENDER)
+			startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_GENDER)
+		}
+	}
+
+	private fun onDobClicked(data: ProfileInfoUiModel) {
+		if(data.profileInfoData.birthDay.isEmpty()) {
+			tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_DOB + ProfileInfoTracker.LABEL_PAGE)
+			goToAddDob()
 		} else {
 			if (data.profileRoleData.isAllowedChangeDob) {
 				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRY_POINT_DOB + ProfileInfoTracker.LABEL_PAGE)
@@ -288,11 +318,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 				openBottomSheetWarning(ProfileInfoConstants.BIRTH_DATE, data.profileRoleData.changeDobMessageInfoTitle, data.profileRoleData.changeDobMessageInfo)
 			}
 		}
-	    },
-	)
-	adapter.setProfileInfoItem(listItem)
-	renderWarningTickerName(data.profileInfoData)
-    }
+	}
 
 	private fun openBottomSheetWarning(entryPoint: String, title: String, msg: String) {
 		when (entryPoint) {
@@ -328,11 +354,16 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 
 	private fun entryPointIconGender(data: ProfileInfoUiModel): Int {
 		if (data.profileRoleData.isAllowedChangeGender) return IconUnify.CHEVRON_RIGHT
-		else return -1
+		else return ENTRY_POINT_DISABLED
+	}
+
+	private fun entryPointIconUsername(data: ProfileInfoUiModel): Int {
+		return if (data.profileFeedData.profile.canChangeUsername) ENTRY_POINT_DISABLED
+		else IconUnify.CHEVRON_RIGHT
 	}
 
     private fun getGenderText(gender: Int): String {
-        return if(gender == GENDER_MALE) "Pria" else "Wanita"
+        return if(gender == GENDER_MALE) "Pria" else if (gender == GENDER_FEMALE) "Wanita" else ""
     }
 
     private fun showToasterError(errorMsg: String) {
@@ -376,7 +407,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 	val myClipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 	val myClip: ClipData = ClipData.newPlainText("user_id", userSession.userId)
 	myClipboard.setPrimaryClip(myClip)
-	showNormalToaster("User ID Copied")
+	showNormalToaster(getString(R.string.success_copy_userid))
     }
 
     override fun onSectionIconClicked(id: String?) {
@@ -392,23 +423,30 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 	}
     }
 
-    override fun onItemClicked(item: ProfileInfoItemUiModel?) {
-	when(item?.id) {
-	    ProfileInfoConstants.USER_ID -> { copyUserId() }
-	}
+    override fun onRightIconClicked(item: ProfileInfoItemUiModel?) {
+    	when (item?.id) {
+    		ProfileInfoConstants.USER_ID -> {
+    			copyUserId()
+    		}
+    	}
     }
 
 	private fun openBottomSheetProfileInfo() {
 		val bottomSheetUnify = BottomSheetUnify()
+		val data = viewModel.profileInfoUiData.value?.profileFeedData?.profile
+		bottomSheetUnify.isDragable = true
 		bottomSheetUnify.showKnob = true
+		bottomSheetUnify.isSkipCollapseState = true
+		bottomSheetUnify.isHideable = true
+		bottomSheetUnify.bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_EXPANDED
 		bottomSheetUnify.showCloseIcon = false
 		val view = View.inflate(context, R.layout.layout_bottomsheet_profile_info, null).apply {
+			this.findViewById<ImageUnify>(R.id.iv_profile_info).setImageUrl(data?.profilePreviewImageUrl ?: "")
 			this.findViewById<UnifyButton>(R.id.btn_profile_info)?.setOnClickListener {
-				val shareLink = viewModel.profileInfoUiData.value?.profileFeedData?.profile?.shareLink
+				val shareLink = data?.shareLink
 				RouteManager.route(activity, shareLink?.applink ?: "")
 			}
 		}
-		bottomSheetUnify.clearContentPadding = true
 		bottomSheetUnify.setChild(view)
 		activity?.supportFragmentManager?.let {
 			bottomSheetUnify.show(it, "")
@@ -418,6 +456,9 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 	private fun openBottomSheetPersonalInfo() {
 		val bottomSheet = BottomSheetUnify()
 		bottomSheet.showKnob = true
+		bottomSheet.isSkipCollapseState = true
+		bottomSheet.isHideable = true
+		bottomSheet.bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_EXPANDED
 		bottomSheet.showCloseIcon = false
 		val view = View.inflate(context, R.layout.layout_bottomsheet_personal_info, null).apply {
 
@@ -522,7 +563,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 	const val MAX_FILE_SIZE = 2048
 	const val REQUEST_CODE_EDIT_PROFILE_PHOTO = 200
 	private const val DEFAULT_NAME = "Toppers-"
-
+	private const val ENTRY_POINT_DISABLED = -1
 	private const val GENDER_MALE = 1
 	private const val GENDER_FEMALE = 2
 

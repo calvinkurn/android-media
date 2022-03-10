@@ -22,6 +22,8 @@ class ProfileFeedInfoUseCase @Inject constructor(private val repository: Graphql
                                 weblink
                                 applink
                             }
+                            canChangeUsername
+                            profilePreviewImageURL
                         }
                         userProfileConfiguration {
                             usernameConfiguration {
