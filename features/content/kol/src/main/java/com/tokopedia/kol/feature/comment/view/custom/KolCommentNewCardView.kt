@@ -20,9 +20,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.feedcomponent.util.ColorUtil
 import com.tokopedia.feedcomponent.util.MentionTextHelper
 import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.feedcomponent.util.TimeConverter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.custom.MentionEditText
 import com.tokopedia.feedcomponent.view.span.MentionSpan
 import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel
@@ -197,10 +199,20 @@ class KolCommentNewCardView : LinearLayout {
     }
 
     private fun getCommentText(element: KolCommentNewModel): String {
-        return ("<b>" + element.name + "</b>" + " "
-                + element.review.toString().replace("(\r\n|\n)".toRegex(), "<br />"))
+        return ("<b>" + element.name + "</b>" + " ")
+            .plus(
+                "<font color='${
+                    ColorUtil.getColorFromResToString(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                    )
+                }'>"
+            )
+            .plus(
+                element.review.toString()
+                    .replace("(\r\n|\n)".toRegex(), "<br />")
+            )
     }
-
     private val colorLinkHashtag: Int
         get() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
 
