@@ -198,6 +198,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         addSocialUnFollowErrorObserver()
         addUserPostObserver()
         adduserPostErrorObserver()
+        addVideoPostReminderUpdateObserver()
     }
 
     private fun addUserProfileObserver() =
@@ -460,6 +461,30 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             }
         })
 
+    private fun addVideoPostReminderUpdateObserver() =
+        mPresenter.postReminderLiveData.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                when (it) {
+                    is Loading -> {
+
+                    }
+                    is Success -> {
+                        if (it?.data?.playToggleChannelReminder?.header?.status == 200) {
+                            Toaster.build(
+                                btnAction as View,
+                                it.data.playToggleChannelReminder.header.message,
+                                Toaster.LENGTH_LONG,
+                                Toaster.TYPE_NORMAL
+                            ).show()
+                        }
+                    }
+                    is ErrorMessage -> {
+
+                    }
+                }
+            }
+        })
+
     private fun addLiveClickListener(appLink: String) = View.OnClickListener {
         RouteManager.route(context, appLink)
     }
@@ -518,9 +543,12 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         }
 
         textDisplayName?.text = data.profileHeader.profile.name
-        textContentCount?.text = UserProfileUtils.getFormattedNumber(data.profileHeader.stats.totalPost)
-        textFollowerCount?.text = UserProfileUtils.getFormattedNumber(data.profileHeader.stats.totalFollower)
-        textFollowingCount?.text = UserProfileUtils.getFormattedNumber(data.profileHeader.stats.totalFollowing)
+        textContentCount?.text =
+            UserProfileUtils.getFormattedNumber(data.profileHeader.stats.totalPost)
+        textFollowerCount?.text =
+            UserProfileUtils.getFormattedNumber(data.profileHeader.stats.totalFollower)
+        textFollowingCount?.text =
+            UserProfileUtils.getFormattedNumber(data.profileHeader.stats.totalFollowing)
 
         setProfileImg(data.profileHeader.profile)
 

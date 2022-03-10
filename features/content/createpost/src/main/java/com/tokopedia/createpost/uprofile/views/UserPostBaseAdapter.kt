@@ -49,7 +49,7 @@ open class UserPostBaseAdapter(
         var isVisited = false
 
         override fun bindView(item: PlayPostContentItem, position: Int) {
-            setData(this, item)
+            setData(this, item, position)
         }
     }
 
@@ -102,7 +102,7 @@ open class UserPostBaseAdapter(
         loadCompletedWithError()
     }
 
-    private fun setData(holder: ViewHolder, item: PlayPostContentItem) {
+    private fun setData(holder: ViewHolder, item: PlayPostContentItem, position: Int) {
         val itemContext = holder.itemView.context
         holder.imgCover.setImageUrl(item.coverUrl)
         holder.textName.text = item.title
@@ -144,8 +144,22 @@ open class UserPostBaseAdapter(
 
         if (item.configurations?.reminder?.isSet) {
             holder.btnReminder.show()
+            holder.btnReminder.setImageDrawable(
+                holder.btnReminder.context
+                    .getDrawable(com.tokopedia.unifycomponents.R.drawable.iconunify_bell_filled)
+            )
+
+            holder.btnReminder.setOnClickListener(addVideoPostReminderClickCallBack(item.id, false, position))
+            item.configurations?.reminder?.isSet = false;
         } else {
-            holder.btnReminder.hide()
+            holder.btnReminder.show()
+            holder.btnReminder.setImageDrawable(
+                holder.btnReminder.context
+                    .getDrawable(com.tokopedia.unifycomponents.R.drawable.iconunify_bell)
+            )
+
+            holder.btnReminder.setOnClickListener(addVideoPostReminderClickCallBack(item.id, true, position))
+            item.configurations?.reminder?.isSet = true;
         }
 
         if (item.configurations?.hasPromo) {
@@ -165,6 +179,12 @@ open class UserPostBaseAdapter(
             RouteManager.route(itemContext, item.appLink)
         }
     }
+
+    private fun addVideoPostReminderClickCallBack(channelId: String, isActive: Boolean, position: Int) =
+        View.OnClickListener {
+            viewModel.updatePostReminderStatus(channelId, isActive)
+            notifyItemChanged(position)
+        }
 
 
     override fun onViewAttachedToWindow(vh: RecyclerView.ViewHolder) {

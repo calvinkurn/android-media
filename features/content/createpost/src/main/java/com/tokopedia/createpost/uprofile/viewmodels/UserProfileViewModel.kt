@@ -19,7 +19,8 @@ class UserProfileViewModel @Inject constructor(
     private var playVodUseCase: PlayPostContentUseCase,
     private val useCaseDoFollow: ProfileFollowUseCase,
     private val useCaseDoUnFollow: ProfileUnfollowedUseCase,
-    private val profileIsFollowing: ProfileTheyFollowedUseCase
+    private val profileIsFollowing: ProfileTheyFollowedUseCase,
+    private val videoPostReminderUseCase: VideoPostReminderUseCase
 ) : BaseViewModel(Dispatchers.Main) {
 
     public val userDetailsLiveData = MutableLiveData<Resources<ProfileHeaderBase>>()
@@ -32,6 +33,7 @@ class UserProfileViewModel @Inject constructor(
     public var followErrorMessageLiveData = MutableLiveData<Throwable>()
     public var unFollowErrorMessageLiveData = MutableLiveData<Throwable>()
     public var userPostErrorLiveData = MutableLiveData<Throwable>()
+    public var postReminderLiveData = MutableLiveData<Resources<VideoPostReimderModel>>()
 
     public fun getUserDetails(userName: String, isRefreshPost: Boolean = false) {
         launchCatchError(block = {
@@ -84,6 +86,16 @@ class UserProfileViewModel @Inject constructor(
             val data = profileIsFollowing.profileIsFollowing(profileIds)
             if (data != null) {
                 profileTheyFollowLiveData.value = Success(data)
+            } else throw NullPointerException("data is null")
+        }, onError = {
+        })
+    }
+
+    fun updatePostReminderStatus(channelId: String, isActive: Boolean) {
+        launchCatchError(block = {
+            val data = videoPostReminderUseCase.updateReminder(channelId, isActive)
+            if (data != null) {
+                postReminderLiveData.value = Success(data)
             } else throw NullPointerException("data is null")
         }, onError = {
         })

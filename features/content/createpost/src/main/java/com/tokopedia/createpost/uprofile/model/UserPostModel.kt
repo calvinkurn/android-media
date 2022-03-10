@@ -103,7 +103,7 @@ data class PlayPostConfigurations(
 
 data class PostReminder(
     @SerializedName("is_set")
-    val isSet: Boolean
+    var isSet: Boolean
 )
 
 data class PostPromoLabel(
