@@ -7,7 +7,6 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.*
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.*
 
-
 /**
  * @author by yoasfs on 09/06/20
  */
@@ -39,6 +38,10 @@ class CommonCarouselProductCardTypeFactoryImpl(private val channels: ChannelMode
         return CarouselCampaignCardViewHolder.LAYOUT
     }
 
+    override fun type(dataModel: CarouselSpecialReleaseDataModel): Int {
+        return SpecialReleaseItemViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             CarouselProductCardViewHolder.LAYOUT -> {
@@ -58,6 +61,9 @@ class CommonCarouselProductCardTypeFactoryImpl(private val channels: ChannelMode
             }
             CarouselCampaignCardViewHolder.LAYOUT -> {
                 CarouselCampaignCardViewHolder(parent, channels)
+            }
+            SpecialReleaseItemViewHolder.LAYOUT -> {
+                SpecialReleaseItemViewHolder(parent, channels)
             }
             else -> {
                 super.createViewHolder(parent, type)

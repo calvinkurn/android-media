@@ -9,12 +9,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.affiliate.AFFILIATE_LIHAT_KATEGORI
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
+import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.adapter.AffiliateItemOffSetDecoration
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
@@ -22,6 +24,7 @@ import com.tokopedia.affiliate.interfaces.PromotionClickInterface
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateStaggeredPromotionCardModel
 import com.tokopedia.affiliate.viewmodel.AffiliateRecommendedProductViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.RouteManager
@@ -149,9 +152,34 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if(recommendationHasNextPage)
-                    affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(identifier,currentPageNumber + 1)
+                if(recommendationHasNextPage) {
+                    sendImpressionEvent()
+                    affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(
+                        identifier,
+                        currentPageNumber + 1
+                    )
+                }
             }
+        }
+    }
+
+    private fun sendImpressionEvent() {
+        lastItem?.let { item ->
+            var itemID = ""
+            item.product.productID?.let {
+                itemID = it
+            }
+            var itemName = ""
+            item.product.title?.let {
+                itemName = it
+            }
+            var label = ""
+            lastItem?.product?.commission?.amount?.let {
+                label = "$itemID - {$it}"
+            }
+            val action = if(identifier == BOUGHT_IDENTIFIER) AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUCT_PERNAH_DIBELI else AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUCT_PERNAH_DILIHAT
+            AffiliateAnalytics.trackEventImpression(AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,action,AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
+                userSessionInterface.userId,itemID,listSize,itemName,label)
         }
     }
 
@@ -173,6 +201,7 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
                 isSwipeRefresh = !isSwipeRefresh
             }
             if (dataList.isNotEmpty()) {
+                setLastDataForEvent(dataList)
                 listSize += dataList.size
                 hideErrorGroup()
                 swipe_refresh_layout.show()
@@ -195,6 +224,15 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
             showErrorGroup()
             showEmptyState()
         })
+    }
+
+    var lastItem : AffiliateStaggeredPromotionCardModel? = null
+    private fun setLastDataForEvent(dataList: ArrayList<Visitable<AffiliateAdapterTypeFactory>>) {
+        dataList[dataList.lastIndex].let {
+            if(it is AffiliateStaggeredPromotionCardModel){
+                lastItem = it
+            }
+        }
     }
 
     private fun showErrorGroup() {
@@ -257,36 +295,33 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
 
     }
 
-    override fun onPromotionClick(productId: String, shopId : String, productName: String, productImage: String, productUrl: String, productIdentifier: String, position: Int) {
-        pushPromosikanEvent(productId, shopId,productImage,position)
+    override fun onPromotionClick(productId: String, shopId : String, productName: String, productImage: String, productUrl: String, productIdentifier: String, position: Int, commison: String) {
+        pushPromosikanEvent(productId,productName,position,commison)
         val origin = if(identifier == BOUGHT_IDENTIFIER) AffiliatePromotionBottomSheet.ORIGIN_PERNAH_DIBELI_PROMOSIKA else AffiliatePromotionBottomSheet.ORIGIN_TERAKHIR_DILIHAT
         AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
                 null,null,
                 productId, productName, productImage, productUrl,
-                productIdentifier,origin).show(childFragmentManager, "")
+                productIdentifier,origin,commission = commison).show(childFragmentManager, "")
     }
 
-    private fun pushPromosikanEvent(productId: String , shopId : String, productImage: String, position: Int) {
-        var itemName = ""
-        var actionName = ""
+    private fun pushPromosikanEvent(
+        productId: String,
+        productName: String,
+        position: Int,
+        commison: String
+    ) {
+        var item = ""
+        var eventAction = ""
         if(identifier == BOUGHT_IDENTIFIER) {
-            itemName = AffiliateAnalytics.ItemKeys.AFFILIATE_PERNAH_DIBEL
-            actionName = AffiliateAnalytics.ActionKeys.CLICK_PROMOSIKAN_PERNAH_DIABEL
+            item = AffiliateAnalytics.ItemKeys.AFFILIATE_PROMOSIKAN_PERNAH_DIBEL
+            eventAction = AffiliateAnalytics.ActionKeys.PROMISIKAN_PERNAH_DIBELI
         }
         else {
-           itemName = AffiliateAnalytics.ItemKeys.AFFILIATE_PERNAH_DILIHAT
-           actionName = AffiliateAnalytics.ActionKeys.CLICK_PROMOSIKAN_PERNAH_DILIHAT
+            item = AffiliateAnalytics.ItemKeys.AFFILIATE_PROMOSIKAN_PERNAH_DILIHAT
+            eventAction = AffiliateAnalytics.ActionKeys.PROMOSIKAN_PERNAH_DILIHAT
         }
-        AffiliateAnalytics.trackEventImpression(
-            AffiliateAnalytics.EventKeys.SELECT_CONTENT,
-            actionName,
-            AffiliateAnalytics.CategoryKeys.PROMOSIKAN_PAGE,
-            userSessionInterface.userId,
-            productId,
-            shopId,
-            productImage,
-            position,
-            itemName
+        AffiliateAnalytics.trackEventImpression(AffiliateAnalytics.EventKeys.SELECT_CONTENT,eventAction,AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,userSessionInterface.userId,
+            productId,position+1,productName,"$productId - $commison",item
         )
     }
 

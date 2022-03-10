@@ -17,7 +17,6 @@ import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.DynamicChannelLayout
-import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
@@ -33,9 +32,9 @@ class RechargeHomepageLegoBannerViewHolder(
     val view: View,
     val listener: DynamicLegoBannerListener,
     val homeListener: HomeComponentListener
-): AbstractViewHolder<DynamicLegoBannerDataModel>(view) {
+) : AbstractViewHolder<DynamicLegoBannerDataModel>(view) {
 
-    companion object{
+    companion object {
         @LayoutRes
         val LAYOUT = R.layout.view_recharge_home_lego_banner
 
@@ -52,24 +51,36 @@ class RechargeHomepageLegoBannerViewHolder(
         val binding = ViewRechargeHomeLegoBannerBinding.bind(itemView)
 
         val isCacheData = element.isCache
-        val isLego24UsingRollenceVariant = HomeComponentRollenceController.isHomeComponentLego24BannerUsingRollenceVariant()
+        val isLego24UsingRollenceVariant =
+            HomeComponentRollenceController.isHomeComponentLego24BannerUsingRollenceVariant()
 
         setHeader(binding, element)
-        setChannelDivider(binding, element)
         setGrid(binding, element, isCacheData, isLego24UsingRollenceVariant)
     }
 
     private fun setHeader(
         binding: ViewRechargeHomeLegoBannerBinding,
         element: DynamicLegoBannerDataModel
-    ){
-        binding.homeComponentHeaderView.setChannel(element.channelModel, object : HeaderListener{
+    ) {
+        binding.homeComponentHeaderView.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
-                when(element.channelModel.channelConfig.layout){
-                    DynamicChannelLayout.LAYOUT_6_IMAGE -> listener.onSeeAllSixImage(element.channelModel, adapterPosition)
-                    DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> listener.onSeeAllFourImage(element.channelModel, adapterPosition)
-                    DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE -> listener.onSeeAllThreemage(element.channelModel, adapterPosition)
-                    DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE -> listener.onSeeAllTwoImage(element.channelModel, adapterPosition)
+                when (element.channelModel.channelConfig.layout) {
+                    DynamicChannelLayout.LAYOUT_6_IMAGE -> listener.onSeeAllSixImage(
+                        element.channelModel,
+                        adapterPosition
+                    )
+                    DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> listener.onSeeAllFourImage(
+                        element.channelModel,
+                        adapterPosition
+                    )
+                    DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE -> listener.onSeeAllThreemage(
+                        element.channelModel,
+                        adapterPosition
+                    )
+                    DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE -> listener.onSeeAllTwoImage(
+                        element.channelModel,
+                        adapterPosition
+                    )
                 }
             }
 
@@ -79,33 +90,28 @@ class RechargeHomepageLegoBannerViewHolder(
         })
     }
 
-    private fun setChannelDivider(
-        binding: ViewRechargeHomeLegoBannerBinding,
-        element: DynamicLegoBannerDataModel
-    ){
-        ChannelWidgetUtil.validateHomeComponentDivider(
-            channelModel = element.channelModel,
-            dividerTop = binding.homeComponentDividerHeader,
-            dividerBottom = binding.homeComponentDividerFooter
-        )
-    }
-
     private fun setGrid(
         binding: ViewRechargeHomeLegoBannerBinding,
         element: DynamicLegoBannerDataModel,
         isCacheData: Boolean,
         isLegoRolleceVariant: Boolean
-    ){
-        if (element.channelModel.channelGrids.isNotEmpty()){
+    ) {
+        if (element.channelModel.channelGrids.isNotEmpty()) {
             val defaultSpanCount = getRecyclerviewDefaultSpanCount(element)
-            if (!isCacheData){
+            if (!isCacheData) {
                 setViewportImpression(element)
             }
-            with(binding.recycleList){
+            with(binding.recycleList) {
                 setRecycledViewPool(viewPool)
                 setHasFixedSize(true)
                 if (itemDecorationCount == 0) {
-                    addItemDecoration(GridSpacingItemDecoration(defaultSpanCount, SPAN_SPACING_0, true))
+                    addItemDecoration(
+                        GridSpacingItemDecoration(
+                            defaultSpanCount,
+                            SPAN_SPACING_0,
+                            true
+                        )
+                    )
                 }
                 layoutManager = GridLayoutManager(
                     itemView.context,
@@ -124,8 +130,8 @@ class RechargeHomepageLegoBannerViewHolder(
                 var marginValue = 0
 
                 //setup lego banner grid
-                if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE && isLegoRolleceVariant){
-                    if (itemDecorationCount == 0){
+                if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE && isLegoRolleceVariant) {
+                    if (itemDecorationCount == 0) {
                         addItemDecoration(
                             GridSpacingItemDecoration(
                                 DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context),
@@ -135,7 +141,7 @@ class RechargeHomepageLegoBannerViewHolder(
                         )
                     }
                     marginValue = getDimens(resHome.dimen.home_component_margin_default)
-                }else if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE && isLegoRolleceVariant){
+                } else if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE && isLegoRolleceVariant) {
                     if (itemDecorationCount == 0) {
                         addItemDecoration(
                             GridSpacingItemDecoration(
@@ -146,9 +152,10 @@ class RechargeHomepageLegoBannerViewHolder(
                         )
                     }
                     marginValue = getDimens(resHome.dimen.home_component_margin_default)
-                }else if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE
-                    || element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE){
-                    if (itemDecorationCount == 0){
+                } else if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE
+                    || element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE
+                ) {
+                    if (itemDecorationCount == 0) {
                         addItemDecoration(
                             GridSpacingItemDecoration(
                                 DynamicChannelTabletConfiguration.getSpacingSpaceFor2x2(itemView.context),
@@ -168,16 +175,18 @@ class RechargeHomepageLegoBannerViewHolder(
                 layoutParams = marginLayoutParams
                 setPadding(0, 0, 0, marginBottom)
             }
-        }else{
+        } else {
             listener.getDynamicLegoBannerData(element.channelModel)
         }
     }
 
     private fun getDimens(@DimenRes res: Int): Int = itemView.resources.getDimension(res).toInt()
 
-    private fun getRecyclerviewDefaultSpanCount(element: DynamicLegoBannerDataModel): Int{
-        return when(element.channelModel.channelConfig.layout){
-            DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> DynamicChannelTabletConfiguration.getSpacingSpaceFor2x2(itemView.context)
+    private fun getRecyclerviewDefaultSpanCount(element: DynamicLegoBannerDataModel): Int {
+        return when (element.channelModel.channelConfig.layout) {
+            DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> DynamicChannelTabletConfiguration.getSpacingSpaceFor2x2(
+                itemView.context
+            )
             DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE -> SPAN_COUNT_2
             else -> SPAN_COUNT_3
         }

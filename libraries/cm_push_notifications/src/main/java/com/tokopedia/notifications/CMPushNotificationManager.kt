@@ -22,6 +22,7 @@ import com.tokopedia.notifications.common.PayloadConverter.convertMapToBundle
 import com.tokopedia.notifications.data.AmplificationDataSource
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.model.NotificationMode
+import com.tokopedia.notifications.utils.NotificationSettingsUtils
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
@@ -233,10 +234,7 @@ class CMPushNotificationManager : CoroutineScope {
 
     private fun validateAndRenderNotification(notification: Bundle) {
 
-        val baseNotificationModel = PayloadConverter.convertToBaseModel(notification)
-        if (baseNotificationModel.notificationMode != NotificationMode.OFFLINE) {
-            IrisAnalyticsEvents.sendPushEvent(applicationContext, IrisAnalyticsEvents.PUSH_RECEIVED, baseNotificationModel)
-        }
+        checkAndSendEvent(notification)
         // aidlApiBundle : the data comes from AIDL service (including userSession data from another app)
         aidlApiBundle?.let { aidlBundle ->
 
@@ -257,6 +255,39 @@ class CMPushNotificationManager : CoroutineScope {
             })
 
         }?: renderPushNotification(notification) // render as usual if there's no data from AIDL service
+    }
+
+    private fun checkAndSendEvent(notification: Bundle) {
+        val baseNotificationModel = PayloadConverter.convertToBaseModel(notification)
+        if (baseNotificationModel.notificationMode != NotificationMode.OFFLINE) {
+            if (baseNotificationModel.type == CMConstant.NotificationType.SILENT_PUSH) {
+                IrisAnalyticsEvents.sendPushEvent(
+                    applicationContext,
+                    IrisAnalyticsEvents.PUSH_RECEIVED,
+                    baseNotificationModel
+                )
+            } else {
+                when (NotificationSettingsUtils(applicationContext).checkNotificationsModeForSpecificChannel(
+                    baseNotificationModel.channelName
+                )) {
+                    NotificationSettingsUtils.NotificationMode.ENABLED -> {
+                        IrisAnalyticsEvents.sendPushEvent(
+                            applicationContext,
+                            IrisAnalyticsEvents.PUSH_RECEIVED,
+                            baseNotificationModel
+                        )
+                    }
+                    NotificationSettingsUtils.NotificationMode.DISABLED,
+                    NotificationSettingsUtils.NotificationMode.CHANNEL_DISABLED -> {
+                        IrisAnalyticsEvents.sendPushEvent(
+                            applicationContext,
+                            IrisAnalyticsEvents.DEVICE_NOTIFICATION_OFF,
+                            baseNotificationModel
+                        )
+                    }
+                }
+            }
+        }
     }
 
     private fun renderPushNotification(bundle: Bundle) {

@@ -17,7 +17,7 @@ class GqlGetShopOperationalHoursListUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): ShopOperationalHoursListResponse {
         val request = GraphqlRequest(QUERY, ShopOperationalHoursListResponse::class.java, params)
-        return gqlRepository.response(listOf(request)).getData<ShopOperationalHoursListResponse>(
+        return gqlRepository.response(listOf(request)).getData(
                 ShopOperationalHoursListResponse::class.java
         )
     }
