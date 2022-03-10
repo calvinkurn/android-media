@@ -390,6 +390,14 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         Assert.assertEquals(expectedResult, actualResult)
     }
 
+    protected fun verifyDenomAndMCCMIsEmpty(expectedResult: Boolean) {
+        Assert.assertTrue(expectedResult)
+    }
+
+    protected fun verifyDenomAndMCCMIsNotEmpty(expectedResult: Boolean) {
+        Assert.assertFalse(expectedResult)
+    }
+
     private fun assertDigitalCheckoutPassDataEqual(expected: DigitalCheckoutPassData, actual: DigitalCheckoutPassData) {
         Assert.assertEquals(expected.clientNumber, actual.clientNumber)
         Assert.assertEquals(expected.categoryId, actual.categoryId)

@@ -347,6 +347,14 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
         Assert.assertTrue(viewModel.validatorJob?.isCancelled == true)
     }
 
+    protected fun verifyDenomAndMCCMIsEmpty(expectedResult: Boolean) {
+        Assert.assertTrue(expectedResult)
+    }
+
+    protected fun verifyDenomAndMCCMIsNotEmpty(expectedResult: Boolean) {
+        Assert.assertFalse(expectedResult)
+    }
+
     protected fun verifyRecomCheckoutUrlUpdated(expectedResult: String) {
         val actualResult = viewModel.recomCheckoutUrl
         Assert.assertEquals(expectedResult, actualResult)

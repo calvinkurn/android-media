@@ -11,6 +11,7 @@ import com.tokopedia.digital_product_detail.presentation.data.PulsaDataFactory
 import kotlinx.coroutines.CancellationException
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -572,6 +573,46 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
         viewModel.setAutoSelectedDenom(mappedResponse.denomFull.listDenomData, idDenom)
 
         verifySelectedProductNull()
+    }
+
+    @Test
+    fun `when given list denom and list mccm is not empty, isEmptyDenomMCCM should return true`() {
+        val listDenom = listOf(DenomData())
+        val listMccm = listOf(DenomData())
+
+        val expectedResult = viewModel.isEmptyDenomMCCM(listDenom, listMccm)
+
+        verifyDenomAndMCCMIsNotEmpty(expectedResult)
+    }
+
+    @Test
+    fun `when given list denom empty and list mccm is not empty, isEmptyDenomMCCM should return true`() {
+        val listDenom = listOf<DenomData>()
+        val listMccm = listOf(DenomData())
+
+        val expectedResult = viewModel.isEmptyDenomMCCM(listDenom, listMccm)
+
+        verifyDenomAndMCCMIsNotEmpty(expectedResult)
+    }
+
+    @Test
+    fun `when given list denom is not empty and list mccm is empty, isEmptyDenomMCCM should return true`() {
+        val listDenom = listOf(DenomData())
+        val listMccm = listOf<DenomData>()
+
+        val expectedResult = viewModel.isEmptyDenomMCCM(listDenom, listMccm)
+
+        verifyDenomAndMCCMIsNotEmpty(expectedResult)
+    }
+
+    @Test
+    fun `when given list denom is empty and list mccm is empty, isEmptyDenomMCCM should return false`() {
+        val listDenom = listOf<DenomData>()
+        val listMccm = listOf<DenomData>()
+
+        val expectedResult = viewModel.isEmptyDenomMCCM(listDenom, listMccm)
+
+        verifyDenomAndMCCMIsEmpty(expectedResult)
     }
 
     companion object {
