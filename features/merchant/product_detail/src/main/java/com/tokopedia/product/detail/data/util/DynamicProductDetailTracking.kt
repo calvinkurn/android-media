@@ -1870,7 +1870,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Category.PDP_DETAIL_BOTTOMSHEET,
                     ProductTrackingConstant.Action.CLICK_CUSTOM_INFO_HAMPERS_BOTTOM_SHEET,
                     "")
-            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
 
             TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
