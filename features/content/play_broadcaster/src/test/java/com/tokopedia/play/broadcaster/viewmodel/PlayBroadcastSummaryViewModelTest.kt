@@ -4,7 +4,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStoreImpl
 import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.SetChannelTagsUseCase
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -41,6 +43,8 @@ class PlayBroadcastSummaryViewModelTest {
     private val liveStatisticsUseCase: GetLiveStatisticsUseCase = mockk(relaxed = true)
     private val broadcastUpdateChannelUseCase: PlayBroadcastUpdateChannelUseCase = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
+    private val mockGetRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase = mockk(relaxed = true)
+    private val mockSetChannelTagsUseCase: SetChannelTagsUseCase = mockk(relaxed = true)
 
     private val modelBuilder = UiModelBuilder()
     private val mockLiveStats by lazy { modelBuilder.buildLiveStats() }
@@ -57,7 +61,9 @@ class PlayBroadcastSummaryViewModelTest {
                 liveStatisticsUseCase,
                 broadcastUpdateChannelUseCase,
                 userSession,
-                playBroadcastMapper
+                playBroadcastMapper,
+                mockGetRecommendedChannelTagsUseCase,
+                mockSetChannelTagsUseCase,
         )
         channelConfigStore.setChannelId("12345")
     }
