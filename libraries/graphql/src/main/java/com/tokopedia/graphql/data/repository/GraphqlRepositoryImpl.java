@@ -196,8 +196,6 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
         return new StringBuffer()
                 .append(GraphqlClient.moduleName)
                 .append("_")
-                .append(
-                        CacheHelper.getQueryName(operationName)
-                ).toString();
+                .append(operationName).toString();
     }
 }

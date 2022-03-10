@@ -185,8 +185,6 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
         return StringBuffer()
             .append(GraphqlClient.moduleName)
             .append("_")
-            .append(
-                CacheHelper.getQueryName(operationName)
-            ).toString()
+            .append(operationName).toString()
     }
 }

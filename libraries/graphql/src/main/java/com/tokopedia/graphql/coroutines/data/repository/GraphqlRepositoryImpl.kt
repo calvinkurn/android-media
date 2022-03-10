@@ -209,8 +209,6 @@ class GraphqlRepositoryImpl @Inject constructor(
         return StringBuffer()
             .append(GraphqlClient.moduleName)
             .append("_")
-            .append(
-                CacheHelper.getQueryName(operationName)
-            ).toString()
+            .append(operationName).toString()
     }
 }
