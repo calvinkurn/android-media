@@ -38,6 +38,7 @@ class AddProductViewModel @Inject constructor(
         const val BENEFIT_TYPE_PERCENT = "percent"
         const val COUPON_TYPE_CASHBACK = "cashback"
         const val COUPON_TYPE_SHIPPING = "shipping"
+        const val SORT_DEFAULT = "DEFAULT"
     }
 
     private var productUiModels: List<ProductUiModel> = listOf()
@@ -56,6 +57,7 @@ class AddProductViewModel @Inject constructor(
     private var showCaseSelections = listOf<ShowCaseSelection>()
     private var categorySelections = listOf<CategorySelection>()
     private var selectedSort: GoodsSortInput? = null
+    private var selectedSortName: String? = null
 
     // PRODUCT SELECTIONS
     var isSelectAllMode = true
@@ -228,6 +230,13 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
+    fun excludeDefaultSortSelection(sortList: List<Sort>): List<Sort> {
+        val filteredSortList = sortList.filter {
+            it.id != SORT_DEFAULT
+        }
+        return filteredSortList
+    }
+
     fun mapCategoriesToCategorySelections(categoryList: List<Category>): List<CategorySelection> {
         return categoryList.map { category ->
             CategorySelection(
@@ -238,7 +247,8 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
-    fun applyValidationResult(productList: List<ProductUiModel>,
+    fun applyValidationResult(isSelectAll:Boolean,
+                              productList: List<ProductUiModel>,
                               validationResults: List<VoucherValidationPartialProduct>): List<ProductUiModel> {
         val mutableProductList = productList.toMutableList()
         validationResults.forEach { validationResult ->
@@ -248,14 +258,22 @@ class AddProductViewModel @Inject constructor(
             productUiModel.isError = !validationResult.isEligible
             productUiModel.errorMessage = validationResult.reason
             productUiModel.hasVariant = validationResult.isVariant
-            productUiModel.variants = mapVariantDataToUiModel(validationResult.variants, productUiModel.sold)
+            productUiModel.isSelected = isSelectAll && validationResult.isEligible
+
+            val variantUiModels = mapVariantDataToUiModel(validationResult.variants, productUiModel.sold, isSelectAll)
+            productUiModel.variants = variantUiModels
+            if (variantUiModels.isNotEmpty()) {
+                val eligibleVariants = variantUiModels.filter { !it.isError }
+                if (eligibleVariants.isEmpty()) productUiModel.isSelectable = false
+            }
         }
         return mutableProductList.toList()
     }
 
-    private fun mapVariantDataToUiModel(variantValidationData: List<VariantValidationData>, sold: Int): List<VariantUiModel> {
+    private fun mapVariantDataToUiModel(variantValidationData: List<VariantValidationData>, sold: Int, isSelectAll: Boolean): List<VariantUiModel> {
         return variantValidationData.map { data ->
             VariantUiModel(
+                    isSelected = isSelectAll && data.is_eligible,
                     variantId = data.productId,
                     variantName = data.productName,
                     sku = "SKU : " + data.sku,
@@ -328,6 +346,12 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
+    fun getSelectedShopShowcaseNames(): List<String> {
+        return showCaseSelections.map { showCaseSelection ->
+            showCaseSelection.name
+        }
+    }
+
     fun setSelectedCategories(categorySelections: List<CategorySelection>) {
         this.categorySelections = categorySelections
     }
@@ -338,11 +362,18 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
+    fun getSelectedCategoryNames(): List<String> {
+        return categorySelections.map { categorySelection ->
+            categorySelection.name
+        }
+    }
+
     fun setSelectedSort(sortSelections: List<SortSelection>) {
         if (sortSelections.isNullOrEmpty()) this.selectedSort = null
         else {
             sortSelections.firstOrNull()?.let {
                 this.selectedSort = GoodsSortInput(it.id, it.value)
+                this.selectedSortName = it.name
             }
         }
     }
@@ -351,12 +382,20 @@ class AddProductViewModel @Inject constructor(
         return selectedSort
     }
 
+    fun getSelectedSortName(): String? {
+        return selectedSortName
+    }
+
     fun setMaxProductLimit(maxProductLimit: Int) {
         this.maxProductLimit = maxProductLimit
     }
 
     fun setCouponSettings(couponSettings: CouponSettings?) {
         this.couponSettings = couponSettings
+    }
+
+    fun getMaxProductLimit(): Int {
+        return maxProductLimit
     }
 
     fun getCouponSettings(): CouponSettings? {

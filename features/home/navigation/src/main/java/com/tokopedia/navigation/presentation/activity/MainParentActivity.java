@@ -223,7 +223,6 @@ public class MainParentActivity extends BaseActivity implements
     private Handler handler = new Handler();
     private FrameLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
-    private boolean useNewInbox = false;
     private boolean useNewNotificationOnNewInbox = false;
     private RemoteConfigInstance remoteConfigInstance;
 
@@ -268,7 +267,6 @@ public class MainParentActivity extends BaseActivity implements
 
         super.onCreate(savedInstanceState);
         initInjector();
-        initInboxAbTest();
         presenter.get().setView(this);
         if (savedInstanceState != null) {
             presenter.get().setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
@@ -297,16 +295,6 @@ public class MainParentActivity extends BaseActivity implements
         SubmitDeviceWorker.Companion.scheduleWorker(getApplicationContext(), false);
         DataVisorWorker.Companion.scheduleWorker(getApplicationContext(), false);
         AppAuthWorker.Companion.scheduleWorker(getApplicationContext(), false);
-    }
-
-    private void initInboxAbTest() {
-        try {
-            useNewInbox = RemoteConfigInstance.getInstance().getABTestPlatform().getString(
-                    RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-            ).equals(RollenceKey.VARIANT_NEW_INBOX);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void installDFonBackground() {
@@ -886,9 +874,6 @@ public class MainParentActivity extends BaseActivity implements
             if (fragment instanceof AllNotificationListener && notification != null) {
                 int totalInbox = notification.getTotalInbox();
                 int totalNotification = notification.getTotalNotif();
-                if (useNewInbox) {
-                    totalInbox = notification.totalNewInbox;
-                }
                 if (useNewNotificationOnNewInbox) {
                     totalNotification = notification.totalNotificationOnNewInbox;
                 }

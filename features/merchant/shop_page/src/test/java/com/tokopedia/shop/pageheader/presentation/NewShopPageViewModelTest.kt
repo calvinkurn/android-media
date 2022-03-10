@@ -97,6 +97,7 @@ class NewShopPageViewModelTest {
     private lateinit var shopPageViewModel : NewShopPageViewModel
 
     private val SAMPLE_SHOP_ID = "123"
+    private val mockExtParam = "fs_widget%3D23600"
 
     private val addressWidgetData: LocalCacheModel = LocalCacheModel()
 
@@ -162,7 +163,8 @@ class NewShopPageViewModelTest {
                 "",
                 "",
                 false,
-                addressWidgetData
+                addressWidgetData,
+                mockExtParam
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
@@ -196,7 +198,8 @@ class NewShopPageViewModelTest {
                 "",
                 "",
                 false,
-                addressWidgetData
+                addressWidgetData,
+                mockExtParam
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageViewModel.shopPageP1Data.value is Fail)
@@ -214,7 +217,8 @@ class NewShopPageViewModelTest {
                 "",
                 "",
                 true,
-                addressWidgetData
+                addressWidgetData,
+                mockExtParam
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageViewModel.shopPageP1Data.value is Fail)
@@ -232,7 +236,8 @@ class NewShopPageViewModelTest {
                 "",
                 "",
                 true,
-                addressWidgetData
+                addressWidgetData,
+                mockExtParam
         )
         assertTrue(shopPageViewModel.shopPageP1Data.value != null)
     }

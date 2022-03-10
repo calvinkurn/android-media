@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -19,7 +18,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
@@ -101,7 +100,6 @@ import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevati
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationClickListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
-import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
@@ -110,6 +108,8 @@ import com.tokopedia.search.result.product.ProductListParameterListener
 import com.tokopedia.search.result.product.emptystate.EmptyStateListenerDelegate
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
+import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
+import com.tokopedia.search.result.product.performancemonitoring.stopPerformanceMonitoring
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
 import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
 import com.tokopedia.search.utils.SearchLogger
@@ -159,7 +159,6 @@ class ProductListFragment: BaseDaggerFragment(),
         private const val REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123
         private const val SEARCH_RESULT_ENHANCE_ANALYTIC = "SEARCH_RESULT_ENHANCE_ANALYTIC"
         private const val LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT"
-        private const val SEARCH_PRODUCT_TRACE = "search_product_trace"
         private const val EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER"
         private const val SEARCH_RESULT_PRODUCT_ONBOARDING_TAG = "SEARCH_RESULT_PRODUCT_ONBOARDING_TAG"
         private const val REQUEST_CODE_LOGIN = 561
@@ -194,12 +193,11 @@ class ProductListFragment: BaseDaggerFragment(),
     private var refreshLayout: SwipeRefreshLayout? = null
     private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private var searchNavigationListener: SearchNavigationListener? = null
+    private var performanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var redirectionListener: RedirectionListener? = null
-    private var searchPerformanceMonitoringListener: SearchPerformanceMonitoringListener? = null
     private var recyclerView: RecyclerView? = null
     private var productListAdapter: ProductListAdapter? = null
     private var trackingQueue: TrackingQueue? = null
-    private var performanceMonitoring: PerformanceMonitoring? = null
     private var searchParameter: SearchParameter? = null
     private val filterController = FilterController()
     private var irisSession: IrisSession? = null
@@ -261,21 +259,22 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun initInjector() {
-        activity?.let {
-            DaggerProductListViewComponent.builder()
-                    .baseAppComponent(getComponent(BaseAppComponent::class.java))
-                    .searchContextModule(SearchContextModule(it))
-                    .build()
-                    .inject(this)
-        }
+        val activity = activity ?: return
+
+        DaggerProductListViewComponent.builder()
+            .baseAppComponent(getComponent(BaseAppComponent::class.java))
+            .searchContextModule(SearchContextModule(activity))
+            .performanceMonitoringModule(PerformanceMonitoringModule(performanceMonitoring))
+            .build()
+            .inject(this)
     }
     //endregion
 
     //region onCreateView
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View? {
         presenter?.attachView(this)
 
@@ -482,7 +481,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
         searchNavigationListener = castContextToSearchNavigationListener(context)
         redirectionListener = castContextToRedirectionListener(context)
-        searchPerformanceMonitoringListener = castContextToSearchPerformanceMonitoring(context)
+        performanceMonitoring = castContextToPerformanceMonitoring(context)
     }
 
     private fun castContextToSearchNavigationListener(context: Context): SearchNavigationListener? {
@@ -493,9 +492,11 @@ class ProductListFragment: BaseDaggerFragment(),
         return if (context is RedirectionListener) context else null
     }
 
-    private fun castContextToSearchPerformanceMonitoring(context: Context): SearchPerformanceMonitoringListener? {
-        return if (context is SearchPerformanceMonitoringListener) context else null
-    }
+    private fun castContextToPerformanceMonitoring(
+        context: Context
+    ): PageLoadTimePerformanceInterface? =
+        if (context is PageLoadTimePerformanceInterface) context else null
+
     //endregion
 
     override fun onResume() {
@@ -588,7 +589,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun setProductList(list: List<Visitable<*>>) {
         productListAdapter?.clearData()
 
-        stopSearchResultPagePerformanceMonitoring()
+        stopPerformanceMonitoring(performanceMonitoring, recyclerView)
         addProductList(list)
     }
 
@@ -1103,7 +1104,6 @@ class ProductListFragment: BaseDaggerFragment(),
 
         hideSearchSortFilter()
 
-        performanceMonitoring = PerformanceMonitoring.start(SEARCH_PRODUCT_TRACE)
         presenter?.loadData(searchParameter.getSearchParameterMap())
 
         setSortFilterIndicatorCounter()
@@ -1196,6 +1196,17 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun updateScrollListener() {
         staggeredGridLayoutLoadMoreTriggerListener?.updateStateAfterGetData()
+
+        tryForceLoadNextPage()
+    }
+
+    private fun tryForceLoadNextPage() {
+        val recyclerView = recyclerView ?: return
+
+        recyclerView.post {
+            if (!recyclerView.canScrollVertically(1))
+                staggeredGridLayoutLoadMoreTriggerListener?.loadMoreNextPage()
+        }
     }
 
     override fun launchLoginActivity(productId: String?) {
@@ -1682,41 +1693,6 @@ class ProductListFragment: BaseDaggerFragment(),
             Toaster.build(view, ErrorHandler.getErrorMessage(context, MessageErrorException(getString(R.string.msg_add_wishlist_failed))), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
         else
             Toaster.build(view, ErrorHandler.getErrorMessage(context, MessageErrorException(getString(R.string.msg_remove_wishlist_failed))), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
-    }
-    //endregion
-
-    //region Performance Monitoring stuff
-    private fun stopSearchResultPagePerformanceMonitoring() {
-        recyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                searchPerformanceMonitoringListener?.let {
-                    it.stopRenderPerformanceMonitoring()
-                    it.stopPerformanceMonitoring()
-                }
-
-                recyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-            }
-        })
-    }
-
-    override fun stopPreparePagePerformanceMonitoring() {
-        searchPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
-    }
-
-    override fun startNetworkRequestPerformanceMonitoring() {
-        searchPerformanceMonitoringListener?.startNetworkRequestPerformanceMonitoring()
-    }
-
-    override fun stopNetworkRequestPerformanceMonitoring() {
-        searchPerformanceMonitoringListener?.stopNetworkRequestPerformanceMonitoring()
-    }
-
-    override fun startRenderPerformanceMonitoring() {
-        searchPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
-    }
-
-    override fun stopTracePerformanceMonitoring() {
-        performanceMonitoring?.stopTrace()
     }
     //endregion
 

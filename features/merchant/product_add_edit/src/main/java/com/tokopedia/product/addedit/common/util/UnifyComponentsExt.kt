@@ -81,6 +81,18 @@ fun Typography?.setTextOrGone(text: String) {
     this?.visibility = if (text.isNotEmpty()) View.VISIBLE else View.GONE
 }
 
+fun Typography?.displayRequiredAsterisk(visible: Boolean) {
+    this?.run {
+        val asterisk = context.getString(com.tokopedia.product.addedit.R.string.label_asterisk)
+        text = text.toString().replace(asterisk, "")
+        if (visible) {
+            val redAsterisk = context.getString(com.tokopedia.product.addedit.R.string.colored_asterisk)
+            val addedAsteriskText = MethodChecker.fromHtml(text.toString() + redAsterisk)
+            text = addedAsteriskText
+        }
+    }
+}
+
 fun TextFieldUnify?.setHtmlMessage(text: String) {
     val htmlText = MethodChecker.fromHtml(text)
     this?.setMessage(htmlText)
