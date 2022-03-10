@@ -634,6 +634,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                     cancelRecommendationJob()
                     cancelCatalogProductJob()
                 }
+                rechargePdpTokenListrikClientNumberWidget.resetContactName()
                 showEmptyState()
             }
         }

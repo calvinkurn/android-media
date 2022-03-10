@@ -560,6 +560,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                 hideEmptyState()
             } else {
                 viewModel.isEligibleToBuy = false
+                rechargePdpTagihanListrikClientNumberWidget.resetContactName()
                 showEmptyState()
             }
         }

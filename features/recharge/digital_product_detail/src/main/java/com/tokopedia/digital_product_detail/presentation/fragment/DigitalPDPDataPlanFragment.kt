@@ -272,6 +272,7 @@ class DigitalPDPDataPlanFragment :
                 }
                 rechargePdpPaketDataClientNumberWidget.run {
                     setLoading(false)
+                    resetContactName()
                     if (selectedClientNumber.length >= MINIMUM_OPERATOR_PREFIX) {
                         setErrorInputField(
                             getString(com.tokopedia.recharge_component.R.string.client_number_prefix_error),

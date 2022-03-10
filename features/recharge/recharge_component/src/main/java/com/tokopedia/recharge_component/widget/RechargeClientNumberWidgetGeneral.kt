@@ -243,6 +243,11 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
         binding.clientNumberWidgetBase.clientNumberWidgetInputField.textInputLayout.hint = label
     }
 
+    fun resetContactName() {
+        binding.clientNumberWidgetBase.clientNumberWidgetInputField.textInputLayout.hint =
+            textFieldStaticLabel
+    }
+
     fun setLoading(isLoading: Boolean) {
         binding.clientNumberWidgetBase.clientNumberWidgetInputField.isLoading = isLoading
     }
