@@ -51,11 +51,6 @@ class DigitalUnifyCardViewHolder(
                 listener?.onItemClicked(element, adapterPosition)
             }
         }
-
-        applyCarousel()
-    }
-
-    fun applyCarousel() {
         setCardHeightMatchParent()
     }
 
