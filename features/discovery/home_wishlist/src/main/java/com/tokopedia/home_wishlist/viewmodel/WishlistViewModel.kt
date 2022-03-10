@@ -629,72 +629,75 @@ open class WishlistViewModel @Inject constructor(
         val productRequestId = mutableListOf<String>()
 
         val listForBulkRemoveCandidate = hashMapOf<String, WishlistItemDataModel>()
-
         if (listOfPosition.size <= wishlistData.value.size) {
-            for (i in listOfPosition.indices) {
-                wishlistData.value[i].run {
-                    if (this is WishlistItemDataModel) {
-                        listForBulkRemoveCandidate[this.productItem.id] = this
-                        productRequestId.add(this.productItem.id)
+            try {
+                listOfPosition.forEachIndexed { _, it ->
+                    wishlistData.value[it].run {
+                        if (this is WishlistItemDataModel) {
+                            listForBulkRemoveCandidate[this.productItem.id] = this
+                            productRequestId.add(this.productItem.id)
+                        }
                     }
                 }
-            }
 
-            requestParams.putObject(BulkRemoveWishlistUseCase.PARAM_PRODUCT_IDS, productRequestId)
-            requestParams.putString(BulkRemoveWishlistUseCase.PARAM_USER_ID, userSessionInterface.userId)
+                requestParams.putObject(BulkRemoveWishlistUseCase.PARAM_PRODUCT_IDS, productRequestId)
+                requestParams.putString(BulkRemoveWishlistUseCase.PARAM_USER_ID, userSessionInterface.userId)
 
-            bulkRemoveWishlistUseCase.execute(
-                    requestParams,
-                    object: Subscriber<WishlistActionData>() {
-                        override fun onNext(responselist: WishlistActionData) {
-                            val removeWishlistTriple = removeWishlistItemsInBulkRemove(
-                                    responselist, listForBulkRemoveCandidate)
-                            val updatedList = removeWishlistTriple.first
-                            val deletedIds = removeWishlistTriple.second
-                            val isPartiallyFailed = removeWishlistTriple.third
+                bulkRemoveWishlistUseCase.execute(
+                        requestParams,
+                        object: Subscriber<WishlistActionData>() {
+                            override fun onNext(responselist: WishlistActionData) {
+                                val removeWishlistTriple = removeWishlistItemsInBulkRemove(
+                                        responselist, listForBulkRemoveCandidate)
+                                val updatedList = removeWishlistTriple.first
+                                val deletedIds = removeWishlistTriple.second
+                                val isPartiallyFailed = removeWishlistTriple.third
 
-                            bulkRemoveWishlistActionData.value = Event(
-                                    BulkRemoveWishlistActionData(
-                                            message = "",
-                                            isSuccess = !isPartiallyFailed,
-                                            isPartiallyFailed = isPartiallyFailed,
-                                            productIds = deletedIds
-                                    )
-                            )
-                            bulkSelectCountActionData.value = Event(0)
+                                bulkRemoveWishlistActionData.value = Event(
+                                        BulkRemoveWishlistActionData(
+                                                message = "",
+                                                isSuccess = !isPartiallyFailed,
+                                                isPartiallyFailed = isPartiallyFailed,
+                                                productIds = deletedIds
+                                        )
+                                )
+                                bulkSelectCountActionData.value = Event(0)
 
-                            //update bulk mode first, so view can have empty state listener properly
+                                //update bulk mode first, so view can have empty state listener properly
 
-                            //check is list is empty
-                            if (updatedList.isEmpty()) {
-                                updateBulkMode(false)
-                                wishlistData.value = listOf(EmptyWishlistDataModel())
-                                getRecommendationOnEmptyWishlist(0)
-                                wishlistState.value = Status.EMPTY
-                            } else {
-                                wishlistData.value = updatedList
+                                //check is list is empty
+                                if (updatedList.isEmpty()) {
+                                    updateBulkMode(false)
+                                    wishlistData.value = listOf(EmptyWishlistDataModel())
+                                    getRecommendationOnEmptyWishlist(0)
+                                    wishlistState.value = Status.EMPTY
+                                } else {
+                                    wishlistData.value = updatedList
+                                    updateBulkMode(false)
+                                }
+
+                            }
+
+                            override fun onCompleted() {
+                            }
+
+                            override fun onError(e: Throwable) {
+                                bulkSelectCountActionData.value = Event(0)
+                                bulkRemoveWishlistActionData.value = Event(
+                                        BulkRemoveWishlistActionData(
+                                                message = e.message ?: "",
+                                                isSuccess = false,
+                                                isPartiallyFailed = false
+                                        )
+                                )
                                 updateBulkMode(false)
                             }
 
                         }
-
-                        override fun onCompleted() {
-                        }
-
-                        override fun onError(e: Throwable) {
-                            bulkSelectCountActionData.value = Event(0)
-                            bulkRemoveWishlistActionData.value = Event(
-                                    BulkRemoveWishlistActionData(
-                                            message = e.message ?: "",
-                                            isSuccess = false,
-                                            isPartiallyFailed = false
-                                    )
-                            )
-                            updateBulkMode(false)
-                        }
-
-                    }
-            )
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         } else {
             bulkRemoveWishlistActionData.value = Event(
                     BulkRemoveWishlistActionData(
