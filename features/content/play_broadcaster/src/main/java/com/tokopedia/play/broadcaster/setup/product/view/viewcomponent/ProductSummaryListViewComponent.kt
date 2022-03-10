@@ -28,11 +28,14 @@ internal class ProductSummaryListViewComponent(
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    /** TODO: gonna delete this later */
     fun setProductList(productSectionList: List<ProductTagSectionUiModel>) {
         val finalList = buildList {
-            productSectionList.forEach { section ->
-                add(ProductSummaryAdapter.Model.Header(section.name, section.campaignStatus))
+            productSectionList.forEachIndexed { idx, section ->
+                /** Don't display section title if its at the top && title is empty */
+                if(idx != 0 || section.name.isNotEmpty()) {
+                    add(ProductSummaryAdapter.Model.Header(section.name, section.campaignStatus))
+                }
+
                 addAll(section.products.map { product ->
                     ProductSummaryAdapter.Model.Body(product)
                 })
