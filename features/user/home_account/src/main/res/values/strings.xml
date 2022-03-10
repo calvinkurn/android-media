@@ -50,6 +50,7 @@
     <string name="menu_account_title_security">Keamanan Akun</string>
     <string name="menu_account_title_notification">Notifikasi</string>
     <string name="menu_account_title_account_link">Akun yang Tersambung</string>
+    <string name="menu_account_title_explicit_profile">Preferensi Belanja</string>
     <string name="menu_account_title_shake">Shake Shake</string>
     <string name="menu_account_title_geolocation">Geolokasi</string>
     <string name="menu_account_title_safe_mode">Safe Mode</string>
@@ -75,6 +76,7 @@
     <string name="menu_account_desc_security">Kata sandi, PIN, &amp; verifikasi data diri</string>
     <string name="menu_account_desc_notification">Atur segala jenis pesan notifikasi</string>
     <string name="menu_account_desc_account_link">Atur akun yang tersambung ke Tokopedia</string>
+    <string name="menu_account_desc_explicit_profile">Atur rekomendasi produk sesuai pilihanmu</string>
     <string name="menu_account_desc_shake">Goyang HP untuk dapat promo menarik</string>
     <string name="menu_account_desc_geolocation">Atur rekomendasi berdasarkan lokasi</string>
     <string name="menu_account_desc_safe_mode">Hasil pencarian aman untuk segala usia</string>
@@ -223,4 +225,14 @@
     <string name="message_success_change_profile">Sukses mengubah profil</string>
     <string name="message_success_change_password">Kata sandi berhasil diubah</string>
     <string name="label_failed_register_biometric_offering">Ada kendala waktu aktifkan fitur ini, coba lagi nanti ya.</string>
+
+    <!-- explicit Profile -->
+    <string name="explicit_profile_message_success_save">Hore! Preferensi belanja kamu berhasil disimpan.</string>
+    <string name="explicit_profile_message_success_save_ok">Oke</string>
+    <string name="explicit_profile_save">Simpan</string>
+    <string name="explicit_profile_empty_page_title">Kategori lainnya masih disiapin</string>
+    <string name="explicit_profile_empty_page_desc">Nanti kamu bisa atur preferensi belanja buat kategori selain kuliner di sini, lho!</string>
+    <string name="explicit_profile_back_dialog_title">Kamu belum menyimpan perubahan</string>
+    <string name="explicit_profile_back_dialog_desc">Perubahan pengaturan preferensi belum kamu simpan. ingin menyimpan dulu?</string>
+    <string name="explicit_profile_back_dialog_exit">Tetap keluar</string>
 </resources>
