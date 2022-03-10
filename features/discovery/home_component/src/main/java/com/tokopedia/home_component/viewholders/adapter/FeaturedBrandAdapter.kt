@@ -72,7 +72,10 @@ class FeaturedBrandAdapter(
         private val itemValue: Typography = v.findViewById(R.id.featured_brand_value)
 
         fun bind(item: Lego4AutoItem, parentPosition: Int, listener: FeaturedBrandListener?, channelModel: ChannelModel, isCacheData: Boolean) {
-            itemImage.loadImageNoRounded("https://asset.kompas.com/crops/WnAQ3rktja3sBQmI4SBo6gDCSo4=/0x0:1200x800/750x500/data/photo/2022/02/10/6204b9b13b65b.jpg", R.drawable.placeholder_grey)
+            itemImage.apply {
+                cornerRadius = 0
+                loadImageNoRounded("https://asset.kompas.com/crops/WnAQ3rktja3sBQmI4SBo6gDCSo4=/0x0:1200x800/750x500/data/photo/2022/02/10/6204b9b13b65b.jpg", R.drawable.placeholder_grey)
+            }
             if (item.grid.imageUrl.isNotEmpty()) {
                 itemLogo.loadImageRounded(item.grid.imageUrl, ROUNDED_12F){
                     setErrorDrawable(R.drawable.featured_brand_border_image_shimmer)
