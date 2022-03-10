@@ -81,6 +81,18 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
         } throws error
     }
 
+    protected fun onGetAutoComplete_thenReturn(response: TopupBillsPersoFavNumberData) {
+        coEvery {
+            repo.getFavoriteNumberList(any())
+        } returns response
+    }
+
+    protected fun onGetAutoComplete_thenReturn(error: Throwable) {
+        coEvery {
+            repo.getFavoriteNumberList(any())
+        } throws error
+    }
+
     protected fun onGetPrefixOperator_thenReturn(response: TelcoCatalogPrefixSelect) {
         coEvery {
             repo.getOperatorList(any())
@@ -133,8 +145,12 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
         coVerify { repo.getRecommendations(any(), any()) wasNot Called }
     }
 
-    protected fun verifyGetFavoriteNumberRepoGetCalled() {
+    protected fun verifyGetFavoriteNumberChipsRepoGetCalled() {
         coVerify { repo.getFavoriteNumberChips(any()) }
+    }
+
+    protected fun verifyGetFavoriteNumberListRepoGetCalled() {
+        coVerify { repo.getFavoriteNumberList(any()) }
     }
 
     protected fun verifyGetOperatorListRepoGetCalled() {
@@ -165,6 +181,21 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
 
     protected fun verifyGetFavoriteNumberFail() {
         val actualResponse = viewModel.favoriteNumberData.value
+        Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
+    }
+
+    protected fun verifyGetAutoCompleteLoading(expectedResponse: RechargeNetworkResult.Loading){
+        val actualResponse = viewModel.autoCompleteData.value
+        Assert.assertEquals(expectedResponse, actualResponse)
+    }
+
+    protected fun verifyGetAutoCompleteSuccess(expectedResponse: List<TopupBillsPersoFavNumberItem>) {
+        val actualResponse = viewModel.autoCompleteData.value
+        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
+    }
+
+    protected fun verifyGetAutoCompleteFail() {
+        val actualResponse = viewModel.autoCompleteData.value
         Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
     }
 
