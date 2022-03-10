@@ -55,6 +55,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tabBackground="@color/transparent"
+        app:tabRippleColor="@null"
         app:tabMode="scrollable"
         app:tabTextColor="@color/Unify_NN600"
         app:tabSelectedTextColor="@color/Unify_GN500"
