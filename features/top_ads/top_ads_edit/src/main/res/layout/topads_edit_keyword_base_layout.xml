@@ -34,6 +34,7 @@
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:text="@string/autobid_otomatis_title"
                 android:textAllCaps="true"
+                app:typographyType="small"
                 android:textColor="@color/Unify_N700_68"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -41,8 +42,8 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/ivBidInfoEditKeyword"
-                android:layout_width="@dimen/layout_lvl3"
-                android:layout_height="@dimen/layout_lvl3"
+                android:layout_width="@dimen/layout_lvl2"
+                android:layout_height="@dimen/layout_lvl2"
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:src="@drawable/iconunify_information"
                 android:tint="@color/Unify_NN900"
