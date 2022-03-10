@@ -227,18 +227,7 @@ class PlayAnalytic(
                         )
                     )
                 ),
-                hashMapOf(
-                    KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                    KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                    KEY_ITEM_LIST to "/groupchat - bottom sheet",
-                    KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                    KEY_USER_ID to userId,
-                    KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
-                    KEY_PRODUCT_ID to product.id,
-                    KEY_PRODUCT_NAME to product.title,
-                    KEY_PRODUCT_URL to product.applink.toString(),
-                    KEY_CHANNEL to mChannelName
-                )
+                generateBaseTracking(product = product, sectionInfo.config.type)
         )
     }
 
@@ -650,17 +639,7 @@ class PlayAnalytic(
                         )
                     )
                 ),
-                hashMapOf(
-                    KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                    KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                    KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                    KEY_USER_ID to userId,
-                    KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
-                    KEY_PRODUCT_ID to product.id,
-                    KEY_PRODUCT_NAME to product.title,
-                    KEY_PRODUCT_URL to product.applink.toString(),
-                    KEY_CHANNEL to mChannelName
-                )
+                generateBaseTracking(product = product, sectionInfo.config.type)
         )
     }
 
@@ -688,17 +667,7 @@ class PlayAnalytic(
                         )
                     )
                 ),
-                hashMapOf(
-                    KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                    KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                    KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                    KEY_USER_ID to userId,
-                    KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
-                    KEY_PRODUCT_ID to product.id,
-                    KEY_PRODUCT_NAME to product.title,
-                    KEY_PRODUCT_URL to product.applink.toString(),
-                    KEY_CHANNEL to mChannelName
-                )
+                generateBaseTracking(product = product, sectionInfo.config.type)
         )
     }
 
@@ -835,6 +804,27 @@ class PlayAnalytic(
     }
 
     private fun generateBaseEventLabel(productId: String, campaignId: String): String = "$mChannelId - $productId - ${mChannelType.value} - $campaignId"
+
+    private fun generateBaseTracking(product: PlayProductUiModel.Product, type: ProductSectionType): HashMap<String, Any>{
+        val base: HashMap<String, Any> = hashMapOf(
+            KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+            KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+            KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+            KEY_USER_ID to userId,
+            )
+       if (type == ProductSectionType.Other) {
+           base.putAll(
+               mapOf(
+                   KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
+                   KEY_PRODUCT_ID to product.id,
+                   KEY_PRODUCT_NAME to product.title,
+                   KEY_PRODUCT_URL to product.applink.toString(),
+                   KEY_CHANNEL to mChannelName
+               )
+           )
+       }
+        return base
+    }
 
     companion object {
         private const val KEY_EVENT = "event"

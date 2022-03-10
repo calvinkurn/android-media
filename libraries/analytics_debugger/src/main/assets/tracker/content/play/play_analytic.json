@@ -318,12 +318,7 @@
       "sessionIris": ".*",
       "currentSite": "tokopediamarketplace",
       "userId": ".*",
-      "businessUnit": "play",
-      "isLoggedInStatus": ".*",
-      "channel": ".*",
-      "productId": ".*",
-      "productName": ".*",
-      "productUrl": ".*"
+      "businessUnit": "play"
     },
     {
       "eventAction": "click - product in upcoming section",
@@ -346,12 +341,7 @@
       "sessionIris": ".*",
       "currentSite": "tokopediamarketplace",
       "userId": ".*",
-      "businessUnit": "play",
-      "isLoggedInStatus": ".*",
-      "channel": ".*",
-      "productId": ".*",
-      "productName": ".*",
-      "productUrl": ".*"
+      "businessUnit": "play"
     },
     {
       "eventAction": "click - atc in ongoing section",
@@ -377,12 +367,7 @@
       "sessionIris": ".*",
       "currentSite": "tokopediamarketplace",
       "userId": ".*",
-      "businessUnit": "play",
-      "isLoggedInStatus": ".*",
-      "channel": ".*",
-      "productId": ".*",
-      "productName": ".*",
-      "productUrl": ".*"
+      "businessUnit": "play"
     },
     {
       "eventAction": "click atc in varian page",
@@ -472,12 +457,7 @@
       "sessionIris": ".*",
       "currentSite": "tokopediamarketplace",
       "userId": ".*",
-      "businessUnit": "play",
-      "isLoggedInStatus": ".*",
-      "channel": ".*",
-      "productId": ".*",
-      "productName": ".*",
-      "productUrl": ".*"
+      "businessUnit": "play"
     },
     {
       "eventAction": "click lihat in message ticker",
