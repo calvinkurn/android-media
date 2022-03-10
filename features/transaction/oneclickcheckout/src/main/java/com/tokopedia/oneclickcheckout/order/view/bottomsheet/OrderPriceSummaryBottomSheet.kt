@@ -38,6 +38,15 @@ class OrderPriceSummaryBottomSheet {
     private fun setupView(binding: BottomSheetOrderPriceSummaryBinding, orderCost: OrderCost) {
         binding.tvTotalProductPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalItemPrice, false).removeDecimalSuffix()
 
+        if (orderCost.hasAddOn) {
+            binding.tvTotalProductAddonsPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.addOnPrice, false).removeDecimalSuffix()
+            binding.tvTotalProductAddonsPriceLabel.visible()
+            binding.tvTotalProductAddonsPriceValue.visible()
+        } else {
+            binding.tvTotalProductAddonsPriceLabel.gone()
+            binding.tvTotalProductAddonsPriceValue.gone()
+        }
+
         binding.tvTotalProductAddonsPriceLabel.gone()
         binding.tvTotalProductAddonsPriceValue.gone()
 
@@ -91,15 +100,6 @@ class OrderPriceSummaryBottomSheet {
         } else {
             binding.tvTotalPaymentFeePriceLabel.gone()
             binding.tvTotalPaymentFeePriceValue.gone()
-        }
-
-        if (orderCost.hasAddOn) {
-            binding.tvTotalProductAddonsPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.addOnPrice, false).removeDecimalSuffix()
-            binding.tvTotalProductAddonsPriceLabel.visible()
-            binding.tvTotalProductAddonsPriceValue.visible()
-        } else {
-            binding.tvTotalProductAddonsPriceLabel.gone()
-            binding.tvTotalProductAddonsPriceValue.gone()
         }
 
         binding.tvTotalPaymentPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalPrice, false).removeDecimalSuffix()
