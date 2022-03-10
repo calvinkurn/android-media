@@ -1070,6 +1070,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         manageCoachmarkOnFragmentVisible(isVisibleToUser = false)
 
         refreshQuestWidget()
+        adapter?.onResumeSpecialRelease()
 
         // refresh home-to-do-widget data if needed
         getHomeViewModel().getCMHomeWidgetData(false)
@@ -1621,9 +1622,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             DynamicIconComponentCallback(context, this),
             Lego6AutoBannerComponentCallback(context, this),
             CampaignWidgetComponentCallback(context, this),
-                    this,
-                    this,
-            this
+            this,
+            this,
+            this,
+            SpecialReleaseComponentCallback(context, this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -2287,6 +2289,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             playWidgetOnVisibilityChanged(
                 isUserVisibleHint = isVisibleToUser
             )
+            adapter?.onResumeSpecialRelease()
             manageCoachmarkOnFragmentVisible(isVisibleToUser)
             startTokopointRotation(rotateNow = true)
         }
