@@ -88,7 +88,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
     var cachedHomeData: HomeData? = null
 
     var localHomeRecommendationFeedDataModel: HomeRecommendationFeedDataModel? = null
-    var topadsTdnPage = "0"
+    private var topadsTdnPage = DEFAULT_TOPADS_TDN_PAGE
 
     private val jobList = mutableListOf<Deferred<AtfData>>()
 

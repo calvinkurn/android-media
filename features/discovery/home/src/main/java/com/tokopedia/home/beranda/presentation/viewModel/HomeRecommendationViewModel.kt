@@ -20,6 +20,7 @@ class HomeRecommendationViewModel @Inject constructor(
     companion object {
         private const val TOPADS_TDN_RECOM_SOURCE = "1"
         private const val TOPADS_TDN_RECOM_DIMEN = 3
+        private const val TOPADS_PAGE_DEFAULT = "1"
     }
     val homeRecommendationLiveData get() = _homeRecommendationLiveData
     private val _homeRecommendationLiveData: MutableLiveData<HomeRecommendationDataModel> = MutableLiveData()
@@ -28,7 +29,7 @@ class HomeRecommendationViewModel @Inject constructor(
     private val loadingModel = HomeRecommendationLoading()
     private val loadMoreModel = HomeRecommendationLoadMore()
 
-    var topAdsBannerNextPage = "1"
+    var topAdsBannerNextPage = TOPADS_PAGE_DEFAULT
 
     fun loadInitialPage(tabName: String, recommendationId: Int,count: Int, locationParam: String = ""){
         _homeRecommendationLiveData.postValue(HomeRecommendationDataModel(homeRecommendations = listOf(loadingModel)))
@@ -45,15 +46,16 @@ class HomeRecommendationViewModel @Inject constructor(
                         topAdsBanner = topAdsImageViewUseCase.getImageData(
                             topAdsImageViewUseCase.getQueryMap(
                                 query = "",
-                                source = "1",
+                                source = TOPADS_TDN_RECOM_SOURCE,
                                 pageToken = "",
                                 adsCount = homeBannerTopAds.size,
-                                dimenId = 3,
+                                dimenId = TOPADS_TDN_RECOM_DIMEN,
                                 depId = "",
                                 page = topAdsBannerNextPage
                             )
                         )
                     }
+                    incrementTopadsPage()
                     if(topAdsBanner.isEmpty()){
                         _homeRecommendationLiveData.postValue(data.copy(
                                 homeRecommendations = data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel}
@@ -101,6 +103,7 @@ class HomeRecommendationViewModel @Inject constructor(
                                 ""
                         )
                 )
+                incrementTopadsPage()
                 if(topAdsBanner.isEmpty()){
                     list.addAll(data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel})
                 } else {
@@ -144,4 +147,12 @@ class HomeRecommendationViewModel @Inject constructor(
         }
     }
 
+    private fun incrementTopadsPage() {
+        topAdsBannerNextPage = try {
+            val currentPage = topAdsBannerNextPage.toInt()
+            (currentPage+1).toString()
+        } catch (e: Exception) {
+            TOPADS_PAGE_DEFAULT
+        }
+    }
 }
