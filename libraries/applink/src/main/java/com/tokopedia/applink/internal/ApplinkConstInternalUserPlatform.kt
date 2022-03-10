@@ -46,4 +46,10 @@ object ApplinkConstInternalUserPlatform {
 
     // HomeAccountUserActivity
     const val NEW_HOME_ACCOUNT = "${NEW_INTERNAL_USER}/new-home-account"
+
+    /**
+     * ExplicitProfileActivity
+     * @Applink : tokopedia-android-internal://global/explicit-profile
+     **/
+    const val EXPLICIT_PROFILE = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/explicit-profile"
 }

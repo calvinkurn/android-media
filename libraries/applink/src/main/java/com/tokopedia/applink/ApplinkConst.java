@@ -244,6 +244,7 @@ public interface ApplinkConst {
     String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
 
     String LINK_ACCOUNT = "tokopedia://gojek-account-link";
+    String EXPLICIT_PROFILE = "tokopedia://explicit-profile";
 
     String FLIGHT = "tokopedia://pesawat";
     String FLIGHT_PHONE_VERIFICATION = "tokopedia-android-internal://pesawat/phone-verification";
