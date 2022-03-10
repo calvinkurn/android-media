@@ -387,7 +387,7 @@ class BroadcasterManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBit
         when (state) {
             Streamer.CAPTURE_STATE.STARTED -> {
                 // can start broadcasting video
-                // mVideoCaptureState will be checked in createConnections()
+                // mVideoCaptureState will be checked in start(rtmpUrl)
             }
             Streamer.CAPTURE_STATE.STOPPED -> {
                 // stop confirmation
@@ -405,7 +405,7 @@ class BroadcasterManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBit
         when (state) {
             Streamer.CAPTURE_STATE.STARTED -> {
                 // can start broadcasting audio
-                // mAudioCaptureState will be checked in createConnection()
+                // mAudioCaptureState will be checked in start(rtmpUrl)
             }
             Streamer.CAPTURE_STATE.STOPPED -> {
                 // stop confirmation

@@ -109,36 +109,13 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     private lateinit var pauseLiveDialog: DialogUnify
 
     private var surfaceHolder: SurfaceHolder? = null
-    private val surfaceHolderCallback: SurfaceHolder.Callback = object : SurfaceHolder.Callback {
-        override fun surfaceCreated(holder: SurfaceHolder) {
-            if (surfaceHolder != null) {
-                return
-            }
-            surfaceHolder = holder
-            // We got surface to draw on, start streamer creation
-            createStreamer()
-        }
-
-        override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-            playBroadcaster.updateSurfaceSize(Broadcaster.Size(width, height))
-        }
-
-        override fun surfaceDestroyed(holder: SurfaceHolder) {
-            surfaceHolder = null
-            releaseStreamer()
-        }
-    }
-    private val playBroadcasterCallback = object : PlayBroadcaster.Callback {
+    private val broadcasterCallback = object : PlayBroadcaster.Callback {
         override fun updateAspectRatio(aspectRatio: Double) {
             aspectFrameLayout.setAspectRatio(aspectRatio)
         }
     }
     private var mHandler: Handler? = null
-    private val playBroadcaster = broadcasterFactory.create(
-        activityContext = this,
-        handler = mHandler,
-        callback = playBroadcasterCallback
-    )
+    private val playBroadcaster = broadcasterFactory.create(this, mHandler, broadcasterCallback)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -258,7 +235,25 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     }
 
     private fun setupView() {
-        surfaceView.holder.addCallback(surfaceHolderCallback)
+        surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
+            override fun surfaceCreated(holder: SurfaceHolder) {
+                if (surfaceHolder != null) {
+                    return
+                }
+                surfaceHolder = holder
+                // We got surface to draw on, start streamer creation
+                createStreamer()
+            }
+
+            override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+                playBroadcaster.updateSurfaceSize(Broadcaster.Size(width, height))
+            }
+
+            override fun surfaceDestroyed(holder: SurfaceHolder) {
+                surfaceHolder = null
+                releaseStreamer()
+            }
+        })
     }
 
     private fun setupObserve() {

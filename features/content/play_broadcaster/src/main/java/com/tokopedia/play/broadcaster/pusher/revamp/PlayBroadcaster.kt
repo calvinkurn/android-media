@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.pusher.revamp
 import android.content.Context
 import android.os.Handler
 import android.view.SurfaceHolder
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.broadcaster.revamp.Broadcaster
 import com.tokopedia.broadcaster.revamp.util.log.DefaultBroadcasterLogger
@@ -11,6 +12,10 @@ import com.tokopedia.play.broadcaster.pusher.mediator.PlayLivePusherMediator
 import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherTimer
 import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherTimerListener
 import com.tokopedia.play.broadcaster.ui.model.DurationConfigUiModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import javax.inject.Inject
 
 /**
@@ -23,6 +28,7 @@ class PlayBroadcaster(
     private val broadcaster: Broadcaster,
     private val localCache: LocalCacheHandler,
     private val timer: PlayLivePusherTimer,
+    private val dispatcher: CoroutineDispatchers,
 ) : Broadcaster by broadcaster, Broadcaster.Callback {
 
     @ActivityRetainedScope
@@ -30,6 +36,7 @@ class PlayBroadcaster(
         private val broadcaster: Broadcaster,
         private val localCache: LocalCacheHandler,
         private val timer: PlayLivePusherTimer,
+        private val dispatcher: CoroutineDispatchers,
     ) {
         fun create(
             activityContext: Context,
@@ -42,13 +49,10 @@ class PlayBroadcaster(
                 callback,
                 broadcaster,
                 localCache,
-                timer
+                timer,
+                dispatcher
             )
         }
-    }
-
-    init {
-        broadcaster.setCallback(this)
     }
 
     val remainLiveDuration: Long
@@ -58,10 +62,18 @@ class PlayBroadcaster(
     private var mPauseDuration = 0L
     private var mMaxDuration = 0L
 
+    private val job: Job = SupervisorJob()
+    private val scope = CoroutineScope(job + dispatcher.main)
+
+    init {
+        broadcaster.setCallback(this)
+    }
+
     // call this onDestroy() to avoid memory leak
     fun destroy() {
         timer.destroy()
         broadcaster.setCallback(null)
+        scope.cancel()
     }
 
     fun setCountUpCallback(callback: PlayLivePusherTimerListener) {
@@ -138,10 +150,8 @@ class PlayBroadcaster(
         return handler
     }
 
-    override fun getActivityContext(): Context = activityContext
-
-    interface Callback {
-        fun updateAspectRatio(aspectRatio: Double)
+    override fun getActivityContext(): Context {
+        return activityContext
     }
 
     private fun setLastPauseMillis() {
@@ -159,8 +169,11 @@ class PlayBroadcaster(
         callback.updateAspectRatio(size.height.toDouble() / size.width.toDouble())
     }
 
-
     companion object {
         const val KEY_PAUSE_TIME = "play_broadcast_pause_time"
+    }
+
+    interface Callback {
+        fun updateAspectRatio(aspectRatio: Double)
     }
 }
