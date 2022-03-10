@@ -1471,7 +1471,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 layoutLihatProdukParent.gone()
             } else {
                 layoutLihatProdukParent.visible()
-                hideViewWithAnimation(layoutLihatProdukParent, context)
+                hideViewWithAnimationVod(layoutLihatProdukParent, context)
             }
             vod_frozen_view?.gone()
             vod_full_screen_icon?.visible()
@@ -1483,7 +1483,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
             handlerAnim?.postDelayed({
                 if (tagProducts.isNotEmpty()) {
-                    showViewWithAnimation(layoutLihatProdukParent, context)
+                    showViewWithAnimationVOD(layoutLihatProdukParent, context)
                 }
             }, TIME_SECOND)
             productVideoJob?.cancel()
