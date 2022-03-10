@@ -1399,7 +1399,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
 
             vod_volumeIcon?.setOnClickListener {
-                changeMuteStateVideo(vod_volumeIcon)
+                changeMuteStateVideoVOD(vod_volumeIcon)
                 setMuteUnmuteVOD(vod_volumeIcon, finalId.toString(), isFollowed, id, isVideoTap = false, isVOD = true, feedMedia.type)
 
             }
@@ -1438,6 +1438,16 @@ class PostDynamicViewNew @JvmOverloads constructor(
             volumeIcon?.setImageResource(R.drawable.ic_feed_volume_mute)
         } else {
             volumeIcon?.setImageResource(R.drawable.ic_feed_volume_up)
+        }
+    }
+
+    private fun changeMuteStateVideoVOD(volumeIcon: ImageView) {
+        GridPostAdapter.isMute = !GridPostAdapter.isMute
+        toggleVolume(GridPostAdapter.isMute)
+        if (GridPostAdapter.isMute) {
+            volumeIcon?.setImageResource(R.drawable.ic_feed_volume_mute_large)
+        } else {
+            volumeIcon?.setImageResource(R.drawable.ic_feed_volume_up_large)
         }
     }
 
@@ -1494,7 +1504,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 vod_layout_video?.player = videoPlayer?.getExoPlayer()
                 vod_layout_video?.videoSurfaceView?.setOnClickListener {
                     if (feedMedia.mediaUrl.isNotEmpty() && !isVODViewFrozen) {
-                        changeMuteStateVideo(vod_volumeIcon)
+                        changeMuteStateVideoVOD(vod_volumeIcon)
                         var finalId = if (feedXCard.typename == TYPE_FEED_X_CARD_PLAY) feedXCard.playChannelID.toIntOrZero() else feedXCard.id.toIntOrZero()
                         setMuteUnmuteVOD(vod_volumeIcon, finalId.toString(), feedXCard.followers.isFollowed, authorId, isVideoTap = true, isVOD = true, feedMedia.type)
                     }
@@ -1514,9 +1524,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 videoPlayer?.start(feedMedia.mediaUrl, GridPostAdapter.isMute)
                 vod_volumeIcon?.visible()
                 if (GridPostAdapter.isMute) {
-                    vod_volumeIcon?.setImageResource(R.drawable.ic_feed_volume_mute)
+                    vod_volumeIcon?.setImageResource(R.drawable.ic_feed_volume_mute_large)
                 } else {
-                    vod_volumeIcon?.setImageResource(R.drawable.ic_feed_volume_up)
+                    vod_volumeIcon?.setImageResource(R.drawable.ic_feed_volume_up_large)
                 }
                 videoPlayer?.setVideoStateListener(object : VideoStateListener {
                     override fun onInitialStateLoading() {
