@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.analytic
 
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
+import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
 import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.track.TrackApp
@@ -18,7 +19,10 @@ class PlayBroadcastAnalytic(
         private val userSession: UserSessionInterface,
         private val contentTaggingAnalytic: PlayBroadcastContentTaggingAnalytic,
         private val interactiveAnalytic: PlayBroadcastInteractiveAnalytic,
-) : PlayBroadcastContentTaggingAnalytic by contentTaggingAnalytic, PlayBroadcastInteractiveAnalytic by interactiveAnalytic {
+        private val summaryAnalytic: PlayBroadcastSummaryAnalytic,
+) : PlayBroadcastContentTaggingAnalytic by contentTaggingAnalytic,
+    PlayBroadcastInteractiveAnalytic by interactiveAnalytic,
+    PlayBroadcastSummaryAnalytic by summaryAnalytic {
 
     /**
      * View Camera and Microphone Permission Page
