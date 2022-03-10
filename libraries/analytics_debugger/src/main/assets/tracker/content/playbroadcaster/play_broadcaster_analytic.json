@@ -30,7 +30,7 @@
       "screenName": "/seller broadcast - permission page - \\d+",
       "userId": ".*",
       "sessionIris": ".*",
-      "currentSite": "tokopediaseller",
+      "currentSite": "(tokopediaseller|tokopediamarketplace)",
       "businessUnit": "play",
       "theme": ".*"
     },
@@ -44,7 +44,7 @@
       "screenName": "/seller broadcast - onboarding page - \\d+",
       "userId": ".*",
       "sessionIris": ".*",
-      "currentSite": "tokopediaseller",
+      "currentSite": "(tokopediaseller|tokopediamarketplace)",
       "businessUnit": "play",
       "theme": ".*"
     },
@@ -300,7 +300,7 @@
       "screenName": "/seller broadcast - camera - \\d+",
       "userId": ".*",
       "sessionIris": ".*",
-      "currentSite": "tokopediaseller",
+      "currentSite": "(tokopediaseller|tokopediamarketplace)",
       "businessUnit": "play",
       "theme": ".*"
     },
@@ -402,7 +402,7 @@
       "screenName": "/seller broadcast - preparation page - \\d+",
       "userId": ".*",
       "sessionIris": ".*",
-      "currentSite": "tokopediaseller",
+      "currentSite": "(tokopediaseller|tokopediamarketplace)",
       "businessUnit": "play",
       "theme": ".*"
     },
@@ -526,7 +526,7 @@
       "screenName": "/seller broadcast - live room - \\d+ - \\d+",
       "userId": ".*",
       "sessionIris": ".*",
-      "currentSite": "tokopediaseller",
+      "currentSite": "(tokopediaseller|tokopediamarketplace)",
       "businessUnit": "play",
       "theme": ".*"
     },
@@ -707,20 +707,6 @@
       "businessUnit": "play"
     },
     {
-      "event": "openScreen",
-      "networkSpeed": ".*",
-      "clientId": ".*",
-      "isLoggedInStatus": "true|false",
-      "appsflyerId": ".*",
-      "shopId": ".*",
-      "screenName": "/seller broadcast - report summary - \\d+ - \\d+",
-      "userId": ".*",
-      "sessionIris": ".*",
-      "currentSite": "tokopediaseller",
-      "businessUnit": "play",
-      "theme": ".*"
-    },
-    {
       "eventAction": "error state on report page",
       "event": "viewSellerBroadcastIris",
       "eventCategory": "seller broadcast",
@@ -869,7 +855,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -880,7 +866,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -891,7 +877,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - .*",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -902,19 +888,24 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - \\d+ - .*",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
     },
     {
       "event": "openScreen",
-      "businessUnit": "play",
-      "currentSite": ".*",
+      "networkSpeed": ".*",
+      "clientId": ".*",
       "isLoggedInStatus": "true|false",
+      "appsflyerId": ".*",
+      "shopId": ".*",
       "screenName": "/seller broadcast - report summary - \\d+ - \\d+",
+      "userId": ".*",
       "sessionIris": ".*",
-      "userId": ".*"
+      "currentSite": "(tokopediaseller|tokopediamarketplace)",
+      "businessUnit": "play",
+      "theme": ".*"
     }
   ]
 }
