@@ -30,11 +30,9 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.FragmentConst
+import com.tokopedia.applink.*
 import com.tokopedia.applink.FragmentConst.FEED_SHOP_FRAGMENT
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.FragmentDFUtil.invokeMethodThroughReflection
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
@@ -97,7 +95,6 @@ import com.tokopedia.shop.common.view.model.ShopShareModel
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFollowingStatusSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
-import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
 import com.tokopedia.shop.note.view.bottomsheet.ShopNoteBottomSheet
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
@@ -1690,12 +1687,13 @@ class NewShopPageFragment :
         }
 
         val feedShopFragment: Fragment? = viewPagerAdapter?.getRegisteredFragment(if (shopPageHeaderDataModel?.isOfficial == true) TAB_POSITION_FEED + 1 else TAB_POSITION_FEED)
-        if (feedShopFragment?.javaClass == feedShopFragmentClassName) {
-            try {
-                val feedShopFragmentClearCacheMethod = feedShopFragmentClassName.getDeclaredMethod("clearCache")
-                feedShopFragmentClearCacheMethod.invoke(feedShopFragment)
-            } catch (e: NoSuchMethodException) {}
-        }
+        invokeMethodThroughReflection(
+                parentFragment,
+                feedShopFragmentClassName,
+                targetedMethod = {
+                    feedShopFragmentClassName.getDeclaredMethod("clearCache").invoke(feedShopFragment)
+                }
+        )
 
         val shopPageHomeFragment: Fragment? = viewPagerAdapter?.getRegisteredFragment(TAB_POSITION_HOME)
         if (shopPageHomeFragment is ShopPageHomeFragment) {
@@ -1963,11 +1961,11 @@ class NewShopPageFragment :
         }
     }
 
-    private fun showBottomSheetSellerMigration() {
+    fun showBottomSheetSellerMigration() {
         (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    private fun hideBottomSheetSellerMigration() {
+    fun hideBottomSheetSellerMigration() {
         (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
     }
 

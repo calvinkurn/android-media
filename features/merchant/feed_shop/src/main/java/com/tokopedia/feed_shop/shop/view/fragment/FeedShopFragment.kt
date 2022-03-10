@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -24,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.FragmentDFUtil.invokeMethodThroughReflection
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
@@ -76,12 +76,12 @@ import com.tokopedia.seller_migration_common.presentation.util.goToSellerApp
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.feed_shop.shop.domain.WhitelistDomain
 import com.tokopedia.feed_shop.shop.view.InterfaceShopPageFab
-import com.tokopedia.feed_shop.shop.view.ShopPageFabConfig
 import com.tokopedia.feed_shop.shop.view.adapter.factory.FeedShopFactoryImpl
 import com.tokopedia.feed_shop.shop.view.contract.FeedShopContract
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopSellerMigrationUiModel
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopUiModel
 import com.tokopedia.feed_shop.shop.view.model.WhitelistUiModel
+import com.tokopedia.shop.common.view.model.ShopPageFabConfig
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.unifycomponents.Toaster
@@ -146,7 +146,12 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override lateinit var userSession: UserSessionInterface
     private val viewBinding: FragmentFeedShopBinding? by viewBinding()
 
+    private val newShopPageFragmentClassName = Class.forName(NEW_SHOP_PAGE_FRAGMENT_CLASS_PATH)
+
     companion object {
+        // class path for invoke public method in other module
+        private const val NEW_SHOP_PAGE_FRAGMENT_CLASS_PATH = "com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment"
+
         private const val YOUTUBE_URL = "{youtube_url}"
         private const val TEXT_PLAIN = "text/plain"
         private const val CREATE_POST = 888
@@ -240,13 +245,13 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     if (hasFeed()
                             && newState == RecyclerView.SCROLL_STATE_IDLE) {
                         if (isSellerMigrationEnabled(context) && shopId == userSession.shopId) {
-//                            showBottomSheetSellerMigration()
+                            showBottomSheetSellerMigration()
                         } else {
-//                            hideBottomSheetSellerMigration()
+                            hideBottomSheetSellerMigration()
                             FeedScrollListener.onFeedScrolled(recyclerView, adapter.list)
                         }
                     } else {
-//                        hideBottomSheetSellerMigration()
+                        hideBottomSheetSellerMigration()
                     }
                 } catch (e: IndexOutOfBoundsException) {
                 }
@@ -352,7 +357,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onSwipeRefresh() {
-//        hideFloatingActionButton()
+        hideFloatingActionButton()
         hideSnackBarRetry()
         presenter.clearCache()
         isLoadingInitialData = true
@@ -371,7 +376,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             renderList(dataList, lastCursor.isNotEmpty())
         } else {
             if (isSellerMigrationEnabled(context) && shopId == userSession.shopId) {
-//                hideBottomSheetSellerMigration()
+                hideBottomSheetSellerMigration()
                 dataList.add(EmptyFeedShopSellerMigrationUiModel())
             } else {
                 dataList.add(getEmptyResultViewModel())
@@ -942,23 +947,45 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onHashtagClickedFeed(hashtagText: String, feedXCard: FeedXCard) {
     }
 
-//    private fun showBottomSheetSellerMigration() {
-//        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state =
-//            BottomSheetBehavior.STATE_EXPANDED
-//    }
-//
-//    private fun hideBottomSheetSellerMigration() {
-//        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state =
-//            BottomSheetBehavior.STATE_HIDDEN
-//    }
-//
-//    private fun hideFloatingActionButton() {
-//        (parentFragment as? NewShopPageFragment)?.hideShopPageFab()
-//    }
-//
-//    private fun showFloatingActionButton() {
-//        (parentFragment as? NewShopPageFragment)?.showShopPageFab()
-//    }
+    private fun showBottomSheetSellerMigration() {
+        invokeMethodThroughReflection(
+                parentFragment,
+                newShopPageFragmentClassName,
+                targetedMethod = {
+                    newShopPageFragmentClassName.getDeclaredMethod("showBottomSheetSellerMigration").invoke(parentFragment)
+                }
+        )
+    }
+
+    private fun hideBottomSheetSellerMigration() {
+        invokeMethodThroughReflection(
+                parentFragment,
+                newShopPageFragmentClassName,
+                targetedMethod = {
+                    newShopPageFragmentClassName.getDeclaredMethod("hideBottomSheetSellerMigration").invoke(parentFragment)
+                }
+        )
+    }
+
+    private fun hideFloatingActionButton() {
+        invokeMethodThroughReflection(
+                parentFragment,
+                newShopPageFragmentClassName,
+                targetedMethod = {
+                    newShopPageFragmentClassName.getDeclaredMethod("hideShopPageFab").invoke(parentFragment)
+                }
+        )
+    }
+
+    private fun showFloatingActionButton() {
+        invokeMethodThroughReflection(
+                parentFragment,
+                newShopPageFragmentClassName,
+                targetedMethod = {
+                    newShopPageFragmentClassName.getDeclaredMethod("showShopPageFab").invoke(parentFragment)
+                }
+        )
+    }
 
     private fun getSellerApplink(): String {
         var applink = ApplinkConst.CONTENT_CREATE_POST
@@ -1145,11 +1172,24 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     private fun reshowFloatingActionButton() {
         if (shouldShowShopPageFab()) {
-//            (parentFragment as? NewShopPageFragment)?.setupShopPageFab(fabConfig)
-//            showFloatingActionButton()
+            setupShopPageFab()
+            showFloatingActionButton()
         } else {
-//            hideFloatingActionButton()
+            hideFloatingActionButton()
         }
+    }
+
+    private fun setupShopPageFab() {
+        invokeMethodThroughReflection(
+                parentFragment,
+                newShopPageFragmentClassName,
+                targetedMethod = {
+                    newShopPageFragmentClassName.getDeclaredMethod(
+                            "setupShopPageFab",
+                            ShopPageFabConfig::class.java
+                    ).invoke(parentFragment, fabConfig)
+                }
+        )
     }
 
     override fun onFollowClickAds(positionInFeed: Int, shopId: String, adId: String) {
