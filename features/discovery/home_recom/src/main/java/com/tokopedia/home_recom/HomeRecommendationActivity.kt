@@ -116,7 +116,7 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
         val dataIntent = intent.data?.pathSegments
         val urlPath1 = intent.data?.pathSegments?.get(URL_PATH_1)
         val urlPath2 = intent.data?.pathSegments?.get(URL_PATH_2)
-        intent.data?.pathSegments?.get(URL_PATH_1)?.let {
+        intent.data?.pathSegments?.get(URL_PATH_2)?.let {
             if (isNumber(it)) productId = it
         }
         return productId
