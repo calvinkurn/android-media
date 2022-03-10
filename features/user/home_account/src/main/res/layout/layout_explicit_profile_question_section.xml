@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/layout_lvl2">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/sectionTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/layout_lvl2"
+        android:paddingEnd="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_NN950"
+        tools:text="Title question per section"
+        app:typographyType="heading_4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/sectionInfoIcon"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        app:icon_name="INFORMATION"
+        app:layout_constraintStart_toEndOf="@id/sectionTitle"
+        app:layout_constraintTop_toTopOf="@id/sectionTitle"
+        app:layout_constraintBottom_toBottomOf="@id/sectionTitle" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/sectionQuestionList"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginBottom="@dimen/layout_lvl1"
+        app:layout_constraintTop_toBottomOf="@id/sectionTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

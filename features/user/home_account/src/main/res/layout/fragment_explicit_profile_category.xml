@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/tickerCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tickerShapeType="full"
+                app:tickerType="announcement"
+                app:closeButtonVisibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/questionsList"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"
+                android:layout_marginTop="@dimen/layout_lvl3"
+                app:layout_constraintTop_toBottomOf="@id/tickerCategory"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:listitem="@layout/view_item_explicit_profile_categories_question_chips"/>
+
+            <include
+                android:id="@+id/emptyLayout"
+                layout="@layout/layout_explicit_profile_empty_category"
+                android:visibility="gone"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/layout_lvl2"
+        android:visibility="gone"
+        android:background="@color/Unify_Background">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/layout_lvl6"
+            android:layout_height="@dimen/layout_lvl6"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
