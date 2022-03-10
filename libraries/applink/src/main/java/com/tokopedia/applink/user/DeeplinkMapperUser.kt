@@ -6,7 +6,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
 object DeeplinkMapperUser {
 
@@ -18,6 +20,7 @@ object DeeplinkMapperUser {
 	    deeplink.startsWith(ApplinkConstInternalGlobal.ADVANCED_SETTING) -> ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
 	    deeplink.startsWith(ApplinkConstInternalGlobal.GENERAL_SETTING) -> ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
 	    deeplink == ApplinkConst.SETTING_PROFILE -> getSettingProfileApplink(context)
+		deeplink == ApplinkConstInternalUserPlatform.SETTING_PROFILE -> getSettingProfileApplink(context)
 	    else -> deeplink
 	}
     }
@@ -30,6 +33,10 @@ object DeeplinkMapperUser {
 
     private fun isUseNewProfile(context: Context): Boolean {
 	val remoteConfig = FirebaseRemoteConfigInstance.get(context)
-	return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_PROFILE_INFO , false))
+	val remoteConfigValue = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_PROFILE_INFO , false)
+	return (remoteConfigValue && getAbTestPlatform().getString("userprofile_revamp").isNotEmpty())
     }
+
+	private fun getAbTestPlatform(): AbTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
+
 }
