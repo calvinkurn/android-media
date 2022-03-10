@@ -24,14 +24,14 @@ class SaveAddOnStateUseCase @Inject constructor(@ApplicationContext private val 
             throw RuntimeException("Parameter can't be null or empty!")
         }
 
-        val request = GraphqlRequest(SaveAddOnStateQuery.GQL_QUERY, SaveAddOnStateResponse::class.java, params)
+        val request = GraphqlRequest(SaveAddOnStateQuery(), SaveAddOnStateResponse::class.java, params)
         return graphqlRepository.response(listOf(request)).getSuccessData()
     }
 
     companion object {
         const val QUERY_NAME = "SaveAddOnStateQuery"
         const val QUERY = """
-            mutation save_add_ons(${'$'}params: SaveAddOnsParams) {
+            mutation SaveAddOns(${'$'}params: SaveAddOnsParams) {
               save_add_ons(params: ${'$'}params) {
                 error_message
                 status
