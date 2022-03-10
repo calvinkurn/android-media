@@ -80,7 +80,6 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
         verifyGetRecommendationFail()
     }
 
-
     @Test
     fun `given favoriteNumber loading state then should get loading state`() {
         val loadingResponse = RechargeNetworkResult.Loading
@@ -95,7 +94,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
         onGetFavoriteNumber_thenReturn(response)
 
         viewModel.getFavoriteNumber(listOf())
-        verifyGetFavoriteNumberRepoGetCalled()
+        verifyGetFavoriteNumberChipsRepoGetCalled()
         verifyGetFavoriteNumberSuccess(response.persoFavoriteNumber.items)
     }
 
@@ -104,8 +103,35 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
         onGetFavoriteNumber_thenReturn(NullPointerException())
 
         viewModel.getFavoriteNumber(listOf())
-        verifyGetFavoriteNumberRepoGetCalled()
+        verifyGetFavoriteNumberChipsRepoGetCalled()
         verifyGetFavoriteNumberFail()
+    }
+
+    @Test
+    fun `given autoComplete loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setAutoCompleteLoading()
+        verifyGetAutoCompleteLoading(loadingResponse)
+    }
+
+    @Test
+    fun `when getting autoComplete should run and give success result`() {
+        val response = dataFactory.getFavoriteNumberData()
+        onGetAutoComplete_thenReturn(response)
+
+        viewModel.getAutoComplete(listOf())
+        verifyGetFavoriteNumberListRepoGetCalled()
+        verifyGetAutoCompleteSuccess(response.persoFavoriteNumber.items)
+    }
+
+    @Test
+    fun `when getting autoComplete should run and give success fail`() {
+        onGetAutoComplete_thenReturn(NullPointerException())
+
+        viewModel.getAutoComplete(listOf())
+        verifyGetFavoriteNumberListRepoGetCalled()
+        verifyGetAutoCompleteFail()
     }
 
     @Test

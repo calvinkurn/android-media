@@ -23,6 +23,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
 import com.tokopedia.common.topupbills.data.constant.GeneralCategoryType
+import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoFavoriteNumberActivity
 import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
@@ -224,6 +225,14 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             }
         })
 
+        viewModel.autoCompleteData.observe(viewLifecycleOwner, {
+            when (it) {
+                is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
+                is RechargeNetworkResult.Fail -> {}
+                is RechargeNetworkResult.Loading -> {}
+            }
+        })
+
         viewModel.catalogSelectGroup.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetOperatorSelectGroup()
@@ -319,6 +328,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
+        getAutoComplete()
         getFavoriteNumber()
         initEmptyState(data.banners)
         renderPrefill(data.userPerso)
@@ -406,12 +416,22 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     private fun getFavoriteNumber() {
         viewModel.run {
             setFavoriteNumberLoading()
-            getFavoriteNumber(listOf(categoryId))
+            getFavoriteNumber(listOf(categoryId), listOf(operatorId.toInt()))
         }
+    }
 
+    private fun getAutoComplete() {
+        viewModel.run {
+            setAutoCompleteLoading()
+            getAutoComplete(listOf(categoryId), listOf(operatorId.toInt()))
+        }
     }
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
+        if (operatorId.isEmpty()) {
+            operatorId = data.prefillOperatorId
+        }
+
         binding?.rechargePdpTokenListrikClientNumberWidget?.run {
             if (clientNumber.isNotEmpty()) {
                 setInputNumber(clientNumber, true)
@@ -530,7 +550,14 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             if (favoriteNumber.isNotEmpty()) {
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
-                setAutoCompleteList(favoriteNumber)
+            }
+        }
+    }
+
+    private fun onSuccessGetAutoComplete(autoComplete: List<TopupBillsPersoFavNumberItem>) {
+        binding?.rechargePdpTokenListrikClientNumberWidget?.run {
+            if (autoComplete.isNotEmpty()) {
+                setAutoCompleteList(autoComplete)
             }
         }
     }
@@ -1097,6 +1124,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                 } else {
                     handleCallbackAnySavedNumberCancel()
                 }
+                getAutoComplete()
                 getFavoriteNumber()
             } else if (requestCode == REQUEST_CODE_LOGIN) {
                 addToCart()

@@ -70,6 +70,11 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     val favoriteNumberData: LiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>
         get() = _favoriteNumberData
 
+    private val _autoCompleteData =
+        MutableLiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>()
+    val autoCompleteData: LiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>
+        get() = _autoCompleteData
+
     private val _catalogPrefixSelect =
         MutableLiveData<RechargeNetworkResult<TelcoCatalogPrefixSelect>>()
     val catalogPrefixSelect: LiveData<RechargeNetworkResult<TelcoCatalogPrefixSelect>>
@@ -140,6 +145,20 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
                 RechargeNetworkResult.Success(favoriteNumber.persoFavoriteNumber.items)
         }) {
             _favoriteNumberData.value = RechargeNetworkResult.Fail(it)
+        }
+    }
+
+    fun setAutoCompleteLoading() {
+        _autoCompleteData.value = RechargeNetworkResult.Loading
+    }
+
+    fun getAutoComplete(categoryIds: List<Int>) {
+        viewModelScope.launchCatchError(dispatchers.main, block = {
+            val favoriteNumberList = repo.getFavoriteNumberList(categoryIds)
+            _autoCompleteData.value = RechargeNetworkResult.Success(
+                favoriteNumberList.persoFavoriteNumber.items)
+        }) {
+            _autoCompleteData.value = RechargeNetworkResult.Fail(it)
         }
     }
 
