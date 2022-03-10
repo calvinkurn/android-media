@@ -183,13 +183,13 @@ class PlayAnalytic(
             else -> Pair("view product", "$mChannelId - ${products.first().first.id} - ${mChannelType.value} - product in bottom sheet")
         }
         trackingQueue.putEETracking(
-                EventModel(
+                event = EventModel(
                         "productView",
                         KEY_TRACK_GROUP_CHAT_ROOM,
                         eventAction,
                         eventLabel
                 ),
-                hashMapOf(
+                enhanceECommerceMap = hashMapOf(
                         "ecommerce" to hashMapOf(
                                 "currencyCode" to "IDR",
                                 "impressions" to mutableListOf<HashMap<String, Any>>().apply {
@@ -199,12 +199,14 @@ class PlayAnalytic(
                                 }
                         )
                 ),
-                hashMapOf(
-                    KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                    KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                    KEY_USER_ID to userId,
-                    KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
-                )
+                customDimension = if(sectionInfo.config.type != ProductSectionType.Other){
+                    hashMapOf(
+                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                        KEY_USER_ID to userId,
+                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                    )
+                } else null
         )
     }
 
