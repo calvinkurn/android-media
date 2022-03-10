@@ -59,7 +59,7 @@
         tools:text="Simple &amp; Polos" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/label_add_on_price"
+        android:id="@+id/label_add_on_quantity_and_price"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@+id/check_box_add_on"
