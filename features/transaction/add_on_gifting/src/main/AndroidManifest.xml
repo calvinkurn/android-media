@@ -9,6 +9,7 @@
         <activity
             android:name="com.tokopedia.addongifting.AddOnActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:label="@string/add_on_gifting_activity_add_on_label"
             android:theme="@style/Theme.AppCompat.DayNight.Translucent">
             <intent-filter>
