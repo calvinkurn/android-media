@@ -130,6 +130,9 @@ class ManageProductFragment : BaseDaggerFragment(),
         val couponSettings = arguments?.getParcelable<CouponSettings>(BUNDLE_KEY_COUPON_SETTINGS)
         viewModel.setCouponSettings(couponSettings)
 
+        val selectedWarehouseId = arguments?.getString(BUNDLE_KEY_SELECTED_WAREHOUSE_ID)
+        viewModel.setWarehouseLocationId(selectedWarehouseId ?: "")
+
         val selectedProducts = arguments?.getParcelableArrayList<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)
         val selectedProductIds = arguments?.getParcelableArrayList<ProductId>(BUNDLE_KEY_SELECTED_PRODUCT_IDS)
 
@@ -289,7 +292,7 @@ class ManageProductFragment : BaseDaggerFragment(),
         val maxProductLimit = viewModel.getMaxProductLimit()
         val addProductIntent = Intent(requireContext(), AddProductActivity::class.java).apply {
             putExtras(Bundle().apply {
-                val selectedWarehouseId = arguments?.getString(BUNDLE_KEY_SELECTED_WAREHOUSE_ID)
+                val selectedWarehouseId = viewModel.getWarehouseLocationId()
                 putString(BUNDLE_KEY_SELECTED_WAREHOUSE_ID, selectedWarehouseId)
                 putInt(UpdateCouponActivity.BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
                 putParcelable(UpdateCouponActivity.BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
@@ -329,6 +332,8 @@ class ManageProductFragment : BaseDaggerFragment(),
         extraSelectedProducts.addAll(mutableProducts)
         val resultIntent = Intent().apply {
             putParcelableArrayListExtra(BUNDLE_KEY_SELECTED_PRODUCTS, extraSelectedProducts)
+            val selectedWarehouseId = viewModel.getWarehouseLocationId()
+            putExtra(BUNDLE_KEY_SELECTED_WAREHOUSE_ID, selectedWarehouseId)
         }
         this.activity?.setResult(Activity.RESULT_OK, resultIntent)
         this.activity?.finish()
@@ -347,5 +352,9 @@ class ManageProductFragment : BaseDaggerFragment(),
         val totalSize = adapter?.getProductList()?.size ?: 0
         binding?.tpgSelectedProductCounter?.text = "Jumlah Produk ($totalSize/$maxProductLimit)"
         binding?.tpgSelectAll?.text = "$totalSize Produk dipilih"
+    }
+
+    fun updateWarehouseLocationId(warehouseLocationId: String) {
+        viewModel.setWarehouseLocationId(warehouseLocationId)
     }
 }

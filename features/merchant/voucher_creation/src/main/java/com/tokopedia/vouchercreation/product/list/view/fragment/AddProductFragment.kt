@@ -328,18 +328,25 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                 binding?.tpgSelectAll?.gone()
                 binding?.selectionBar?.setBackgroundResource(NO_BACKGROUND)
                 binding?.buttonAddProduct?.text = getString(R.string.add_product)
-                binding?.tickerSellerLocationChange?.hide()
 
                 if (viewModel.getSelectedProductIds().isNotEmpty()) {
                     productSelectionListener?.onProductSelectionChanged(
                             viewModel.getSelectedProductIds().size,
                             viewModel.getMaxProductLimit()
                     )
-                } else {
+                }
+                // no added products
+                else {
                     productSelectionListener?.onProductSelectionChanged(
                             0,
                             viewModel.getMaxProductLimit()
                     )
+                    if (binding?.tickerSellerLocationChange?.isVisible == true) {
+                        binding?.tickerSellerLocationChange?.hide()
+                        adapter?.enableAllProductSelections()
+                        adapter?.notifyDataSetChanged()
+                        viewModel.setBoundLocationId(viewModel.getWarehouseLocationId())
+                    }
                 }
 
 
@@ -381,6 +388,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                         if (viewModel.isInitialLoad(viewModel.getPagingIndex())) {
                             binding?.selectionBar?.hide()
                             binding?.rvProductList?.hide()
+                            binding?.tickerSellerLocationChange?.hide()
                             binding?.emptyProductsLayout?.show()
                             if (viewModel.getSelectedProducts().isEmpty()) binding?.buttonAddProduct?.isEnabled = false
                         }
@@ -420,16 +428,18 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                     // TODO: improvement point: maintainability : break the codes down into functions
 
                     val origin = viewModel.getBoundLocationId() ?: viewModel.getSellerWarehouseId()
-                    viewModel.isSelectionChanged = viewModel.isSelectionChanged(origin, viewModel.getWarehouseLocationId())
+                    viewModel.isLocationSelectionChanged = viewModel.isLocationSelectionChanged(origin, viewModel.getWarehouseLocationId())
                     val addedProducts = viewModel.getSelectedProductIds()
-                    if (addedProducts.isNotEmpty() && viewModel.isSelectionChanged) {
+                    if (addedProducts.isNotEmpty() && viewModel.isLocationSelectionChanged) {
                         binding?.tickerSellerLocationChange?.show()
                         adapter?.disableAllProductSelections()
+                        adapter?.enableAllSelectedProducts()
                         binding?.cbuSelectAllProduct?.isClickable = false
                         binding?.buttonAddProduct?.isEnabled = false
-                    } else if (viewModel.getSelectedProducts().isNotEmpty() && viewModel.isSelectionChanged) {
+                    } else if (viewModel.getSelectedProducts().isNotEmpty() && viewModel.isLocationSelectionChanged) {
                         binding?.tickerSellerLocationChange?.show()
                         adapter?.disableAllProductSelections()
+                        adapter?.enableAllSelectedProducts()
                         binding?.cbuSelectAllProduct?.isClickable = false
                         binding?.buttonAddProduct?.isEnabled = false
                     } else {
@@ -527,6 +537,11 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         warehouseLocationFilter?.title = selectedWarehouseLocation.warehouseName
         adapter?.enableAllProductSelections()
         viewModel.setWarehouseLocationId(selectedWarehouseLocation.warehouseId)
+
+        if (viewModel.getSelectedProductIds().isEmpty() && viewModel.getSelectedProducts().isEmpty()) {
+            viewModel.setBoundLocationId(selectedWarehouseLocation.warehouseId)
+        }
+
         resetSelectionBar(binding)
         viewModel.isFiltering = true
         loadInitialData()

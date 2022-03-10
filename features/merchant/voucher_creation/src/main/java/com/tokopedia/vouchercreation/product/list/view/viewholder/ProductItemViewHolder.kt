@@ -95,7 +95,12 @@ class ProductItemViewHolder(
         if (productUiModel.isError) {
             binding.cbuProductItem.isClickable = false
             binding.errorLayout.show()
-            if (productUiModel.errorMessage.isNotBlank()) binding.tpgProductError.text = productUiModel.errorMessage
+            if (productUiModel.errorMessage.isNotBlank()) {
+                binding.iuRedExclamation.show()
+                binding.tpgProductError.text = productUiModel.errorMessage
+            } else {
+                binding.iuRedExclamation.hide()
+            }
         } else {
             binding.cbuProductItem.isClickable = true
             binding.errorLayout.hide()

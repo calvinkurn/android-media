@@ -68,7 +68,7 @@ class AddProductViewModel @Inject constructor(
     // PRODUCT SELECTIONS
     var isSelectAllMode = true
     var isFiltering = false
-    var isSelectionChanged = false
+    var isLocationSelectionChanged = false
 
     // LIVE DATA
     private val getProductListResultLiveData = MutableLiveData<Result<ProductListResponse>>()
@@ -535,7 +535,7 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
-    fun isSelectionChanged(origin: Int?, warehouseSelection: Int?): Boolean {
+    fun isLocationSelectionChanged(origin: Int?, warehouseSelection: Int?): Boolean {
         return origin != warehouseSelection
     }
 }
