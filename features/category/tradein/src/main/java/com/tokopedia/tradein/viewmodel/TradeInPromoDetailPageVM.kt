@@ -14,6 +14,7 @@ class TradeInPromoDetailPageVM @Inject constructor(
     val promoTradeInLiveData = MutableLiveData<PromoTradeInModel>()
 
     fun getPromo(code: String) {
+        progBarVisibility.value = true
         launchCatchError(block = {
             val promoData = promoUsecase.getPromo(code)
             promoTradeInLiveData.value = promoData

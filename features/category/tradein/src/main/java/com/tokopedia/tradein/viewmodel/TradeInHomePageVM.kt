@@ -135,6 +135,7 @@ class TradeInHomePageVM @Inject constructor(
     }
 
     fun insertLogisticOptions(intent: Intent) {
+        progBarVisibility.value = true
         launchCatchError(block = {
             val diagnosticsData = getDiagnosticData(intent)
             tradeInUniqueCode = diagnosticsData.tradeInUniqueCode ?: ""
