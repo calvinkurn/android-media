@@ -11,6 +11,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker.EventName.PROMO_CLICK
 import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker.EventName.PROMO_VIEW
 import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker.PlayTrackerConst.PROMOTIONS
+import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker.PlayTrackerConst.USER_ID
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -37,26 +38,26 @@ class PlayAnalyticsTracker @Inject constructor(
 
     //3
     fun clickOnContentHighlightCardsInVideoTab(
-        channelId: String, shopId: String, promotions: List<String>,
-        channelType: String, position: Int
+            channelId: String, shopId: String, promotions: List<String>,
+            channelType: String, position: Int
     ) {
-        sendEnhanceEcommerceEvent(PROMO_CLICK, trackEnhancedEcommerceEventNewAsBundle(
+        trackEnhancedEcommerceEventNew(
                 PROMO_CLICK,
                 EventAction.CLICK_CONTENT_HIGHLIGHT_CARDS,
                 EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
                 EventLabel.liveVodUpcoming(channelId, shopId, channelType),
                 channelId, FEED_VIDEO_TAB_HIGHLIGHT_CARDS, position, promotions
         )
-        )
+
     }
 
     //4
     fun impressOnLagiLiveContentCarouselWidget() {
         createAnalyticsData(
-            PROMO_VIEW,
-            EventAction.IMPRESSION_CAROUSEL_WIDGET_LAGI_LIVE,
-            EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
-            ""
+                PROMO_VIEW,
+                EventAction.IMPRESSION_CAROUSEL_WIDGET_LAGI_LIVE,
+                EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
+                ""
         )
     }
 
@@ -65,30 +66,30 @@ class PlayAnalyticsTracker @Inject constructor(
         channelId: String, shopId: String,
         promotions: List<String>, channelType: String, position: Int
     ) {
-        sendEnhanceEcommerceEvent(PROMO_VIEW,trackEnhancedEcommerceEventNewAsBundle(
+       trackEnhancedEcommerceEventNew(
             PROMO_VIEW,
             EventAction.IMPRESSION_CONTENT_CARDS_LAGI_LIVE,
             EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
             EventLabel.liveVodUpcoming(channelId, shopId, channelType),
             channelId, FEED_VIDEO_TAB_CONTENT_CARDS_LAGI_LIVE, position, promotions
         )
-        )
+
     }
 
     //6
     fun clickOnLagiLiveCarouselContentCards(
-        channelId: String,
-        shopId: String,
-        promotions: List<String>, channelType: String, position: Int
+            channelId: String,
+            shopId: String,
+            promotions: List<String>, channelType: String, position: Int
     ) {
-        sendEnhanceEcommerceEvent(PROMO_CLICK, trackEnhancedEcommerceEventNewAsBundle(
+        trackEnhancedEcommerceEventNew(
                 PROMO_CLICK,
                 EventAction.CLICK_CONTENT_CARD_LAGI_LIVE,
                 EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
                 EventLabel.liveVodUpcoming(channelId, shopId, channelType),
                 channelId, FEED_VIDEO_TAB_CONTENT_CARDS_LAGI_LIVE, position, promotions
         )
-        )
+
     }
 
     //7
@@ -106,7 +107,7 @@ class PlayAnalyticsTracker @Inject constructor(
         channelId: String, shopId: String,
         promotions: List<String>, channelType: String, filterCategory: String, position: Int, entryPoint: String
     ) {
-        sendEnhanceEcommerceEvent(PROMO_VIEW, trackEnhancedEcommerceEventNewAsBundle(
+        trackEnhancedEcommerceEventNew(
                 PROMO_VIEW,
                 EventAction.IMPRESSION_CONTENT_CARDS,
                 EventCategory.CONTENT_FEED_TIMELINE_VIDEO_CONTENT_LIST_PAGE,
@@ -120,7 +121,7 @@ class PlayAnalyticsTracker @Inject constructor(
                 channelId, FEED_VIDEO_TAB_CONTENT_LIST_PAGE_CONTENT_CARDS, position, promotions
 
         )
-        )
+
 
     }
 
@@ -129,7 +130,7 @@ class PlayAnalyticsTracker @Inject constructor(
             channelId: String, shopId: String,
             promotions: List<String>, channelType: String, filterCategory: String, position: Int, entryPoint: String
     ) {
-        sendEnhanceEcommerceEvent(PROMO_CLICK, trackEnhancedEcommerceEventNewAsBundle(
+        trackEnhancedEcommerceEventNew(
                 PROMO_CLICK,
                 EventAction.CLICK_CONTENT_CARDS,
                 EventCategory.CONTENT_FEED_TIMELINE_VIDEO_CONTENT_LIST_PAGE,
@@ -144,7 +145,7 @@ class PlayAnalyticsTracker @Inject constructor(
                 channelId, FEED_VIDEO_TAB_CONTENT_LIST_PAGE_CONTENT_CARDS, position, promotions
 
         )
-        )
+
     }
 
     //10//will be used  later
@@ -197,7 +198,7 @@ class PlayAnalyticsTracker @Inject constructor(
             channelId: String, shopId: String,
             promotions: List<String>, channelType: String, filterCategory: String, position: Int
     ) {
-        sendEnhanceEcommerceEvent(PROMO_VIEW, trackEnhancedEcommerceEventNewAsBundle(
+        trackEnhancedEcommerceEventNew(
                 PROMO_VIEW,
                 EventAction.IMPRESSION_CONTENT_CARDS,
                 EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
@@ -208,27 +209,27 @@ class PlayAnalyticsTracker @Inject constructor(
                         filterCategory
                 ),
                 channelId, FEED_VIDEO_TAB_CONTENT_CARDS, position, promotions)
-        )
+
 
     }
 
     //15
     fun clickOnContentCardsInVideoTabBelowTheChips(
-        channelId: String, shopId: String,
-        promotions: List<String>, channelType: String, filterCategory: String, position: Int
+            channelId: String, shopId: String,
+            promotions: List<String>, channelType: String, filterCategory: String, position: Int
     ) {
-        sendEnhanceEcommerceEvent(PROMO_CLICK, trackEnhancedEcommerceEventNewAsBundle(
-            PROMO_CLICK,
-            EventAction.CLICK_CONTENT_CARDS,
-            EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
-            EventLabel.liveVodUpcomingFilterCategory(
-                channelId,
-                shopId,
-                channelType,
-                filterCategory
-            ),
-            channelId, FEED_VIDEO_TAB_CONTENT_CARDS, position, promotions)
-        )
+        trackEnhancedEcommerceEventNew(
+                PROMO_CLICK,
+                EventAction.CLICK_CONTENT_CARDS,
+                EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
+                EventLabel.liveVodUpcomingFilterCategory(
+                        channelId,
+                        shopId,
+                        channelType,
+                        filterCategory
+                ),
+                channelId, FEED_VIDEO_TAB_CONTENT_CARDS, position, promotions)
+
     }
 
     //16
@@ -243,10 +244,10 @@ class PlayAnalyticsTracker @Inject constructor(
 
     //17
     fun impressOnUpcomingCarouselContentCards(
-        channelId: String, shopId: String,
-        promotions: List<String>, channelType: String, filterCategory: String, position: Int
+            channelId: String, shopId: String,
+            promotions: List<String>, channelType: String, filterCategory: String, position: Int
     ) {
-        sendEnhanceEcommerceEvent(PROMO_VIEW, trackEnhancedEcommerceEventNewAsBundle(
+        trackEnhancedEcommerceEventNew(
                 PROMO_VIEW,
                 EventAction.IMPRESSION_CONTENT_CARDS_UPCOMING,
                 EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
@@ -257,16 +258,16 @@ class PlayAnalyticsTracker @Inject constructor(
                         filterCategory
                 ),
                 channelId, FEED_VIDEO_TAB_CONTENT_CARDS_UPCOMING, position, promotions)
-        )
+
 
     }
 
     //18
     fun clickOnUpcomingCarouselContentCards(
-        channelId: String, shopId: String,
-        promotions: List<String>, channelType: String, filterCategory: String, position: Int
+            channelId: String, shopId: String,
+            promotions: List<String>, channelType: String, filterCategory: String, position: Int
     ) {
-        sendEnhanceEcommerceEvent(PROMO_CLICK, trackEnhancedEcommerceEventNewAsBundle(
+        trackEnhancedEcommerceEventNew(
                 PROMO_CLICK,
                 EventAction.CLICK_CONTENT_CARDS_UPCOMING,
                 EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
@@ -277,7 +278,7 @@ class PlayAnalyticsTracker @Inject constructor(
                         filterCategory
                 ),
                 channelId, FEED_VIDEO_TAB_CONTENT_CARDS_UPCOMING, position, promotions)
-        )
+
 
     }
 
@@ -305,13 +306,13 @@ class PlayAnalyticsTracker @Inject constructor(
         channelId: String, shopId: String, promotions: List<String>,
         channelType: String, position: Int
     ) {
-        sendEnhanceEcommerceEvent(PROMO_VIEW, trackEnhancedEcommerceEventNewAsBundle(
+        trackEnhancedEcommerceEventNew(
             PROMO_VIEW,
             EventAction.IMPRESSION_CONTENT_HIGHLIGHT_CARDS,
             EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
             EventLabel.liveVodUpcoming(channelId, shopId, channelType),
             channelId, FEED_VIDEO_TAB_HIGHLIGHT_CARDS, position, promotions)
-        )
+
 
     }
 
@@ -501,6 +502,42 @@ class PlayAnalyticsTracker @Inject constructor(
 
         }
     }
+    private fun trackEnhancedEcommerceEventNew(
+            eventName: String,
+            eventAction: String,
+            eventCategory: String,
+            eventLabel: String,
+            channelId: String, name: String, position: Int, creative: List<String>
+    ) {
+        val eCommerceData =
+                if (eventName == PROMO_VIEW) {
+                    getPromotionsViewData(channelId, name, position, creative)
+                } else {
+                    getPromotionsClickData(channelId, name, position, creative)
+                }
+        trackingQueue.putEETracking(
+                getGeneralDataNew(eventName, eventCategory, eventAction, eventLabel)
+                        .plus(getEcommerceData(eCommerceData)) as HashMap<String, Any>
+        )
+        
+    }
+    /**
+     * Data Generator
+     */
+    private fun getGeneralDataNew(
+            eventName: String,
+            eventCategory: String,
+            eventAction: String,
+            eventLabel: String,
+    ): Map<String, Any> = DataLayer.mapOf(
+            TrackAppUtils.EVENT, eventName,
+            TrackAppUtils.EVENT_CATEGORY, eventCategory,
+            TrackAppUtils.EVENT_ACTION, eventAction,
+            TrackAppUtils.EVENT_LABEL, eventLabel,
+            USER_ID, userSession.userId,
+            PlayTrackerConst.BUSINESS_UNIT, PlayTrackerConst.CONTENT,
+            PlayTrackerConst.CURRENT_SITE, PlayTrackerConst.TOKOPEDIA_MARKET_PLACE
+    )
 
     private fun getBundleItems(channelId: String, name: String, position: Int, creative: List<String>): ArrayList<Bundle> {
         val items = ArrayList<Bundle>()
@@ -529,6 +566,64 @@ class PlayAnalyticsTracker @Inject constructor(
 
     private fun getPromoClickDataBundle(data: Bundle): Bundle =
             Bundle().apply { putBundle(PROMO_CLICK, data) }
+
+    private fun getEcommerceData(data: Any): Map<String, Any> = DataLayer.mapOf(ECOMMERCE, data)
+
+    private fun getPromoClickData(data: Any): Map<String, Any> =
+            DataLayer.mapOf(PROMO_CLICK, data)
+
+    private fun getPromoViewData(data: Any): Map<String, Any> =
+            DataLayer.mapOf(PROMO_VIEW, data)
+
+    private fun getPromotionsData(
+            promotionDataList: List<Any>,
+    ): Map<String, Any> = DataLayer.mapOf(PROMOTIONS, promotionDataList)
+
+    private fun getPromotionsClickData(
+            channelId: String, name: String, position: Int, creative: List<String>
+    ): Map<String, Any> {
+        val listPromo: MutableList<Map<String, Any>> = mutableListOf()
+        creative.forEach {
+            listPromo.add(
+                    DataLayer.mapOf(
+                            Promotions.CREATIVE, it,
+                            Promotions.ID, channelId,
+                            Promotions.NAME, name,
+                            Promotions.POSITION, (position + 1).toString()
+                    )
+            )
+        }
+
+        return getPromoClickData(
+                getPromotionsData(
+                        listPromo
+                )
+        )
+
+    }
+
+    private fun getPromotionsViewData(
+            channelId: String, name: String, position: Int, creative: List<String>
+    ): Map<String, Any> {
+        val listPromo: MutableList<Map<String, Any>> = mutableListOf()
+        creative.forEach {
+            listPromo.add(
+                    DataLayer.mapOf(
+                            Promotions.CREATIVE, it,
+                            Promotions.ID, channelId,
+                            Promotions.NAME, name,
+                            Promotions.POSITION, (position + 1).toString()
+                    )
+            )
+        }
+
+        return getPromoViewData(
+                getPromotionsData(
+                        listPromo
+                )
+        )
+    }
+
 
 
     private object PlayTrackerConst {
