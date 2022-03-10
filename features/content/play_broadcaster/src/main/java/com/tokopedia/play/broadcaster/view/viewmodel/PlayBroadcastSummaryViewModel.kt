@@ -103,11 +103,16 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
 
                 response
             }
-            _observableReportDuration.value = playBroadcastMapper.mapLiveDuration(reportChannelSummary.duration)
+            _observableReportDuration.value = playBroadcastMapper.mapLiveDuration(reportChannelSummary.duration, isEligiblePostVideo(reportChannelSummary.duration))
             _observableLiveSummary.value = NetworkResult.Success(playBroadcastMapper.mapToLiveTrafficUiMetrics(reportChannelSummary.channel.metrics))
         }) {
             _observableLiveSummary.value = NetworkResult.Fail(it) { fetchLiveTraffic() }
         }
+    }
+
+    private fun isEligiblePostVideo(duration: String): Boolean {
+        val split = duration.split(":")
+        return (split.size == 3 && split[1].toInt() > 0) || (split.size == 2 && split[0].toInt() > 0)
     }
 
     private fun getTags() {

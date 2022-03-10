@@ -9,32 +9,30 @@
         android:id="@+id/ic_bro_summary_back"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
-        app:icon_name="CLOSE"
         android:layout_margin="@dimen/spacing_lvl4"
-        app:layout_constraintTop_toTopOf="parent"
+        app:icon_name="CLOSE"
         app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_bro_summary_page_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/play_summary_title"
         android:layout_marginStart="@dimen/spacing_lvl3"
-        app:layout_constraintTop_toTopOf="@id/ic_bro_summary_back"
+        android:text="@string/play_summary_title"
         app:layout_constraintBottom_toBottomOf="@id/ic_bro_summary_back"
-        app:layout_constraintStart_toEndOf="@id/ic_bro_summary_back"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ic_bro_summary_back"
+        app:layout_constraintTop_toTopOf="@id/ic_bro_summary_back"
         app:typographyType="heading_3" />
 
     <View
         android:id="@+id/view_bro_summary_divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/play_bro_summary_divider_height"
-        android:background="@color/Unify_NN200"
-        app:layout_constraintTop_toBottomOf="@id/tv_bro_summary_page_title"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        />
+        android:background="@color/Unify_NN200"
+        app:layout_constraintTop_toBottomOf="@id/tv_bro_summary_page_title" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/layout_summary_info"
@@ -47,7 +45,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view_bro_summary_divider">
 
-        <include layout="@layout/layout_play_summary_info"/>
+        <include layout="@layout/layout_play_summary_info" />
 
     </androidx.core.widget.NestedScrollView>
 
@@ -56,11 +54,10 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/play_bro_summary_divider_height"
         android:background="@color/play_dms_bg_shadow"
-        app:layout_constraintTop_toBottomOf="@+id/layout_summary_info"
         app:layout_constraintBottom_toTopOf="@id/fl_button_sticky"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/layout_summary_info" />
 
     <FrameLayout
         android:id="@+id/fl_button_sticky"
@@ -76,6 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/spacing_lvl4"
+            android:enabled="false"
             android:text="@string/play_summary_button_post_video"
             app:unifyButtonSize="medium" />
 

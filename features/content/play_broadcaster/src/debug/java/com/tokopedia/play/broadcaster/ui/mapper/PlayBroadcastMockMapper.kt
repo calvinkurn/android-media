@@ -214,8 +214,8 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         )
     }
 
-    override fun mapLiveDuration(duration: String): LiveDurationUiModel {
-        return LiveDurationUiModel(duration)
+    override fun mapLiveDuration(duration: String, isEligilePostVideo: Boolean): LiveDurationUiModel {
+        return LiveDurationUiModel(duration, isEligilePostVideo)
     }
 
     override fun mapIncomingChat(chat: Chat): PlayChatUiModel {

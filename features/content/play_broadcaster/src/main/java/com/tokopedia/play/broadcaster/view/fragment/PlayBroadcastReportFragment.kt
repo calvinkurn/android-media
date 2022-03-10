@@ -20,6 +20,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
+import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoViewComponent
@@ -112,9 +113,19 @@ class PlayBroadcastReportFragment @Inject constructor(
         summaryInfoView.setChannelCover(channelInfo.coverUrl)
     }
 
-    private fun setLiveDuration(model: LiveDurationUiModel) {
+    private fun handleLiveDuration(model: LiveDurationUiModel) {
         summaryInfoView.setLiveDuration(model)
         summaryInfoView.setDate()
+
+        btnPostVideo.isEnabled = model.isEligiblePostVideo
+
+        if(!model.isEligiblePostVideo) {
+            /** TODO("should be change later with ErrorFragment from RE") */
+            view?.showToaster(
+                message = getString(R.string.play_bro_cant_post_video_message),
+                actionLabel = getString(R.string.play_ok),
+            )
+        }
     }
 
     /**
@@ -155,7 +166,7 @@ class PlayBroadcastReportFragment @Inject constructor(
     }
 
     private fun observeLiveDuration() {
-        viewModel.observableReportDuration.observe(viewLifecycleOwner, Observer(this@PlayBroadcastReportFragment::setLiveDuration))
+        viewModel.observableReportDuration.observe(viewLifecycleOwner, Observer(this@PlayBroadcastReportFragment::handleLiveDuration))
     }
 
     private fun observeInteractiveLeaderboardInfo() {

@@ -137,6 +137,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
                 }
                 is NetworkResult.Fail -> {
                     binding.btnPostVideo.isLoading = false
+                    /** TODO("should be change later with ErrorFragment from RE") */
                     view?.showErrorToaster(
                         err = it.error,
                         customErrMessage = it.error.localizedMessage
