@@ -567,29 +567,27 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 setHtmlDescription(it.ticker.subtitle)
                 setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        context?.let { context ->
-                            val bottomSheet = ovoIncentiveBottomSheet ?: IncentiveOvoBottomSheet(context).also { ovoIncentiveBottomSheet = it }
-                            val bottomSheetData = IncentiveOvoBottomSheetUiModel(ovoDomain, getTncBottomSheetTrackerData())
-                            bottomSheet.init(bottomSheetData, this@CreateReviewBottomSheet)
-                            activity?.supportFragmentManager?.let { supportFragmentManager ->
-                                bottomSheet.show(supportFragmentManager, bottomSheet.tag)
-                            }
-                            if (hasIncentive()) {
-                                CreateReviewTracking.eventClickIncentivesTicker(
-                                    it.subtitle,
-                                    getReputationId(),
-                                    getOrderId(),
-                                    productId,
-                                    getUserId()
-                                )
-                            } else if (hasOngoingChallenge()) {
-                                CreateReviewTracking.eventClickOngoingChallengeTicker(
-                                    getReputationId(),
-                                    getOrderId(),
-                                    productId,
-                                    getUserId()
-                                )
-                            }
+                        val bottomSheet = ovoIncentiveBottomSheet ?: IncentiveOvoBottomSheet().also { ovoIncentiveBottomSheet = it }
+                        val bottomSheetData = IncentiveOvoBottomSheetUiModel(ovoDomain, getTncBottomSheetTrackerData())
+                        bottomSheet.init(bottomSheetData, this@CreateReviewBottomSheet)
+                        activity?.supportFragmentManager?.let { supportFragmentManager ->
+                            bottomSheet.show(supportFragmentManager, bottomSheet.tag)
+                        }
+                        if (hasIncentive()) {
+                            CreateReviewTracking.eventClickIncentivesTicker(
+                                it.subtitle,
+                                getReputationId(),
+                                getOrderId(),
+                                productId,
+                                getUserId()
+                            )
+                        } else if (hasOngoingChallenge()) {
+                            CreateReviewTracking.eventClickOngoingChallengeTicker(
+                                getReputationId(),
+                                getOrderId(),
+                                productId,
+                                getUserId()
+                            )
                         }
                     }
 

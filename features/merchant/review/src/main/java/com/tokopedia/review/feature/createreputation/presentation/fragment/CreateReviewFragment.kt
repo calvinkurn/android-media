@@ -724,14 +724,12 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     setHtmlDescription(it.subtitle)
                     setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            context?.let { context ->
-                                val bottomSheet = ovoIncentiveBottomSheet ?: IncentiveOvoBottomSheet(context).also { ovoIncentiveBottomSheet = it }
-                                val bottomSheetData = IncentiveOvoBottomSheetUiModel(data)
-                                bottomSheet.init(bottomSheetData, this@CreateReviewFragment)
-                                activity?.supportFragmentManager?.let { supportFragmentManager ->
-                                    bottomSheet.show(supportFragmentManager, bottomSheet.tag)
-                                    ReviewTracking.onClickReadSkIncentiveOvoTracker(it.subtitle, "")
-                                }
+                            val bottomSheet = ovoIncentiveBottomSheet ?: IncentiveOvoBottomSheet().also { ovoIncentiveBottomSheet = it }
+                            val bottomSheetData = IncentiveOvoBottomSheetUiModel(data)
+                            bottomSheet.init(bottomSheetData, this@CreateReviewFragment)
+                            activity?.supportFragmentManager?.let { supportFragmentManager ->
+                                bottomSheet.show(supportFragmentManager, bottomSheet.tag)
+                                ReviewTracking.onClickReadSkIncentiveOvoTracker(it.subtitle, "")
                             }
                         }
 

@@ -500,20 +500,18 @@ class ReviewPendingFragment :
     }
 
     override fun onClickOvoIncentiveTickerDescription(productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain) {
-        context?.let { context ->
-            val bottomSheet = ovoIncentiveBottomSheet ?: IncentiveOvoBottomSheet(context).also { ovoIncentiveBottomSheet = it }
-            val bottomSheetData = IncentiveOvoBottomSheetUiModel(
-                productRevIncentiveOvoDomain = productRevIncentiveOvoDomain,
-                category = ReviewInboxTrackingConstants.PENDING_TAB
+        val bottomSheet = ovoIncentiveBottomSheet ?: IncentiveOvoBottomSheet().also { ovoIncentiveBottomSheet = it }
+        val bottomSheetData = IncentiveOvoBottomSheetUiModel(
+            productRevIncentiveOvoDomain = productRevIncentiveOvoDomain,
+            category = ReviewInboxTrackingConstants.PENDING_TAB
+        )
+        bottomSheet.init(bottomSheetData, this)
+        activity?.supportFragmentManager?.let { supportFragmentManager ->
+            bottomSheet.show(supportFragmentManager, bottomSheet.tag)
+            ReviewTracking.onClickReadSkIncentiveOvoTracker(
+                productRevIncentiveOvoDomain.productrevIncentiveOvo?.ticker?.subtitle,
+                ReviewInboxTrackingConstants.PENDING_TAB
             )
-            bottomSheet.init(bottomSheetData, this)
-            activity?.supportFragmentManager?.let { supportFragmentManager ->
-                bottomSheet.show(supportFragmentManager, bottomSheet.tag)
-                ReviewTracking.onClickReadSkIncentiveOvoTracker(
-                    productRevIncentiveOvoDomain.productrevIncentiveOvo?.ticker?.subtitle,
-                    ReviewInboxTrackingConstants.PENDING_TAB
-                )
-            }
         }
     }
 
