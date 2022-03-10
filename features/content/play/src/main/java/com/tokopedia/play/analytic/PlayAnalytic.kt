@@ -812,20 +812,18 @@ class PlayAnalytic(
             KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
             KEY_USER_ID to userId,
             )
-        return if (type == ProductSectionType.Other) {
-            base.putAll(
-                mapOf(
-                    KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
-                    KEY_PRODUCT_ID to product.id,
-                    KEY_PRODUCT_NAME to product.title,
-                    KEY_PRODUCT_URL to product.applink.toString(),
-                    KEY_CHANNEL to mChannelName
-                )
-            )
-            base
-        } else {
-            base
-        }
+       if (type == ProductSectionType.Other) {
+           base.putAll(
+               mapOf(
+                   KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
+                   KEY_PRODUCT_ID to product.id,
+                   KEY_PRODUCT_NAME to product.title,
+                   KEY_PRODUCT_URL to product.applink.toString(),
+                   KEY_CHANNEL to mChannelName
+               )
+           )
+       }
+        return base
     }
 
     companion object {
