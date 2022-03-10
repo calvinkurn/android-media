@@ -22,7 +22,6 @@
 
     <dimen name="home_mvc_carousel_height">125dp</dimen>
     <dimen name="home_mvc_background_voucher_height">117dp</dimen>
-    <dimen name="home_mvc_widget_padding_start">13dp</dimen>
 
     <dimen name="special_release_padding_bottom">12dp</dimen>
     <dimen name="special_release_shop_product_height">128dp</dimen>

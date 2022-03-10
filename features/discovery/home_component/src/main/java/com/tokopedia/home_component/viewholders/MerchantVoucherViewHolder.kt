@@ -105,7 +105,7 @@ class MerchantVoucherViewHolder(
                     totalOtherCoupon = element.label,
                     iconBadge = if (element.badges.isNotEmpty()) element.badges[0].imageUrl else "",
                     imageProduct = element.imageUrl,
-                    shopAppLink = element.shop.shopAppLink,
+                    shopAppLink = element.shop.shopApplink,
                     productAppLink = element.applink,
                     merchantVoucherComponentListener = merchantVoucherComponentListener,
                     shopId = element.shop.id,
@@ -181,7 +181,7 @@ class MerchantVoucherViewHolder(
 
     private fun RecyclerView.setHeightBasedMerchantVoucherCardHeight() {
         val carouselLayoutParams = this.layoutParams
-        carouselLayoutParams?.height = this.resources.getDimensionPixelOffset(com.tokopedia.home_component.R.dimen.home_merchant_voucher_height)
+        carouselLayoutParams?.height = this.resources.getDimensionPixelOffset(com.tokopedia.home_component.R.dimen.home_mvc_carousel_height)
         this.layoutParams = carouselLayoutParams
     }
 
