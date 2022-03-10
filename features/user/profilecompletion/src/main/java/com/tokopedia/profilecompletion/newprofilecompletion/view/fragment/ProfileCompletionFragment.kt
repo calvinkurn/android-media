@@ -25,17 +25,18 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addpin.data.StatusPinData
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.newprofilecompletion.ProfileCompletionNewConstants
+import com.tokopedia.profilecompletion.newprofilecompletion.data.ProfileCompletionDataView
 import com.tokopedia.profilecompletion.newprofilecompletion.view.activity.ProfileCompletionActivity
+import com.tokopedia.profilecompletion.newprofilecompletion.view.customview.ProfileCompletionTextDrawable
 import com.tokopedia.profilecompletion.newprofilecompletion.view.listener.ProfileCompletionContract
 import com.tokopedia.profilecompletion.newprofilecompletion.view.util.ProfileCompletionProgressBarAnimation
-import com.tokopedia.profilecompletion.newprofilecompletion.data.ProfileCompletionDataView
-import com.tokopedia.profilecompletion.newprofilecompletion.view.customview.ProfileCompletionTextDrawable
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileInfoViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -130,7 +131,7 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
         if (!statusPinData.isRegistered &&
                 currentUserSession.phoneNumber?.isNotEmpty() == true &&
                 currentUserSession.isMsisdnVerified) {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PIN_ONBOARDING)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
             startActivityForResult(intent, REQUEST_CODE_PIN)
         } else {
