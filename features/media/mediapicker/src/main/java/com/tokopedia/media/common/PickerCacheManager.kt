@@ -12,7 +12,7 @@ class PickerCacheManager constructor(
 ) : LocalCacheHandler(context, PREF_NAME_CACHE_PICKER) {
 
     fun getParam(): PickerParam {
-        val param = getString(KEY_PICKER_PARAM)
+        val param = getString(KEY_PICKER_PARAM) ?: return PickerParam()
         return Gson().fromJson(param, PickerParam::class.java)
     }
 
