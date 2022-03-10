@@ -56,25 +56,17 @@ class AccountHeaderViewHolder(itemView: View,
         @LayoutRes
         val LAYOUT = R.layout.holder_account_header
         const val TEXT_LOGIN_AS = "Masuk Sebagai %s"
-        private const val GREETINGS_0_2 = "Selamat tidur~"
-        private const val GREETINGS_3_4 =  "Lagi begadang? Kangen, ya?"
-        private const val GREETINGS_5_9 =  "Selamat pagi! Semongko!"
-        private const val GREETINGS_10_14 =  "Udah makan siang?"
-        private const val GREETINGS_15_17 = "Selamat sore! Ngopi, kuy?"
-        private const val GREETINGS_18_23 = "Jangan lupa makan malam~"
+        private const val GREETINGS_5_10 = "Pagi! Udah sarapan?"
+        private const val GREETINGS_10_16 =  "Semangat jalani hari ini!"
+        private const val GREETINGS_16_22 =  "Nyantai sambil belanja, yuk~"
+        private const val GREETINGS_22_5 =  " Lagi cari apa nih kamu?"
         private const val GREETINGS_DEFAULT = "Hai Toppers"
 
         private const val HOURS_0 = 0
-        private const val HOURS_2 = 2
-        private const val HOURS_3 = 3
-        private const val HOURS_4 = 4
         private const val HOURS_5 = 5
-        private const val HOURS_9 = 9
         private const val HOURS_10 = 10
-        private const val HOURS_14 = 14
-        private const val HOURS_15 = 15
-        private const val HOURS_17 = 17
-        private const val HOURS_18 = 18
+        private const val HOURS_16 = 16
+        private const val HOURS_22 = 22
         private const val HOURS_23 = 23
 
         private const val ANIMATION_DURATION_MS: Long = 300
@@ -411,25 +403,23 @@ class AccountHeaderViewHolder(itemView: View,
 
     private fun getCurrentGreetings() : String {
         return when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-            in HOURS_0..HOURS_2 -> GREETINGS_0_2
-            in HOURS_3..HOURS_4 -> GREETINGS_3_4
-            in HOURS_5..HOURS_9 -> GREETINGS_5_9
-            in HOURS_10..HOURS_14 -> GREETINGS_10_14
-            in HOURS_15..HOURS_17 -> GREETINGS_15_17
-            in HOURS_18..HOURS_23 -> GREETINGS_18_23
+            in HOURS_5..HOURS_10 -> GREETINGS_5_10
+            in HOURS_10..HOURS_16 -> GREETINGS_10_16
+            in HOURS_16..HOURS_22 -> GREETINGS_16_22
+            in HOURS_22..HOURS_23 -> GREETINGS_22_5
+            in HOURS_0..HOURS_5 -> GREETINGS_22_5
             else -> GREETINGS_DEFAULT
         }
     }
 
     private fun getCurrentGreetingsIconStringUrl() : String {
         return when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-            in HOURS_0..HOURS_2 -> "https://ecs7.tokopedia.net/home-img/greet-sleep.png"
-            in HOURS_3..HOURS_4 -> "https://ecs7.tokopedia.net/home-img/greet-confused.png"
-            in HOURS_5..HOURS_9 -> "https://ecs7.tokopedia.net/home-img/greet-cloud-sun.png"
-            in HOURS_10..HOURS_14 -> "https://ecs7.tokopedia.net/home-img/greet-sun.png"
-            in HOURS_15..HOURS_17 -> "https://ecs7.tokopedia.net/home-img/greet-dusk.png"
-            in HOURS_18..HOURS_23 -> "https://ecs7.tokopedia.net/home-img/greet-moon.png"
-            else -> "https://ecs7.tokopedia.net/home-img/greet-sun.png"
+            in HOURS_5..HOURS_10 -> "https://images.tokopedia.net/img/android/navigation/bread.png"
+            in HOURS_10..HOURS_16 -> "https://images.tokopedia.net/img/android/navigation/hands.png"
+            in HOURS_16..HOURS_22 -> "https://images.tokopedia.net/img/android/navigation/bag.png"
+            in HOURS_22..HOURS_23 -> "https://images.tokopedia.net/img/android/navigation/emoji.png"
+            in HOURS_0..HOURS_5 -> "https://images.tokopedia.net/img/android/navigation/emoji.png"
+            else -> "https://images.tokopedia.net/img/android/navigation/bag.png"
         }
     }
 
