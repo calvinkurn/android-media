@@ -1960,6 +1960,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (promoCode != null && promoCode.length() > 0) {
                 for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
                     if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString()) && !ordersItem.getCodes().contains(promoCode)) {
+                        if (shipmentCartItemModel.getVoucherLogisticItemUiModel()!= null) {
+                            // remove previous logistic promo code
+                            ordersItem.getCodes().remove(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                        }
                         ordersItem.getCodes().add(promoCode);
                         break;
                     }
