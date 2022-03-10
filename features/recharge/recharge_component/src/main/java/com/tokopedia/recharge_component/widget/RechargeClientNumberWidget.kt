@@ -289,7 +289,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                 isInputError = true
 
                 if (resetProvider) {
-                    binding.clientNumberWidgetOperatorGroup.c
+                    binding.clientNumberWidgetOperatorGroup.invisible()
                 }
             }
         }
