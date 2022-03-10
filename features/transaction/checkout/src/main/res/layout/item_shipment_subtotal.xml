@@ -225,7 +225,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_promo_text"
             android:layout_marginBottom="16dp"
-            android:text="@string/label_add_on_cost"
+            android:text="@string/label_add_on_subtotal"
             android:visibility="gone"
             app:typographyType="body_3"
             app:typographyWeight="reguler" />

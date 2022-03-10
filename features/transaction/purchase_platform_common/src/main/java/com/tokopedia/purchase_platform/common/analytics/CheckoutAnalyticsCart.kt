@@ -962,7 +962,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         val gtmData = getGtmData(
                 ConstantTransactionAnalytics.EventName.CLICK_PP,
                 ConstantTransactionAnalytics.EventCategory.CART,
-                ConstantTransactionAnalytics.EventAction.CLICK_ADD_ONS_WIDGET,
+                ConstantTransactionAnalytics.EventAction.CLICK_ADD_ONS_DETAIL,
                 productId
         )
         gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE

@@ -376,7 +376,7 @@ object ConstantTransactionAnalytics {
 
         // Gifting
         const val VIEW_ADD_ONS_WIDGET = "view add ons widget"
-        const val CLICK_ADD_ONS_WIDGET = "click add ons widget"
+        const val CLICK_ADD_ONS_DETAIL = "click add ons detail"
         const val CLICK_SIMPAN_ON_ADD_ONS_BOTTOMSHEET = "click simpan on add ons bottomsheet"
     }
 

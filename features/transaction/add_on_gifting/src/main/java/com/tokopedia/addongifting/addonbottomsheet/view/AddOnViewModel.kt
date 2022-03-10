@@ -32,6 +32,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     val uiEvent = _uiEvent.asSharedFlow()
 
     private var hasLoadData: Boolean = false
+    private var hasSavedState: Boolean = false
 
     private val _productUiModel = MutableStateFlow(ProductUiModel())
     private val _addOnUiModel = MutableStateFlow(AddOnUiModel())
@@ -151,6 +152,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
                                  addOnByProductResponse: GetAddOnByProductResponse,
                                  getAddOnSavedStateResponse: GetAddOnSavedStateResponse? = null) {
         hasLoadData = true
+        hasSavedState = true
         launch {
             _uiEvent.emit(
                     UiEvent().apply {
@@ -167,6 +169,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     private fun handleOnErrorGetAddOnSavedState(addOnProductData: AddOnProductData,
                                                 addOnByProductResponse: GetAddOnByProductResponse) {
         hasLoadData = true
+        hasSavedState = true
         launch {
             _uiEvent.emit(
                     UiEvent().apply {
@@ -299,7 +302,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
 
     fun hasChangedState(): Boolean {
         _addOnUiModel.value.let {
-            return it.initialAddOnNote != it.addOnNote
+            return hasSavedState && it.initialAddOnNote != it.addOnNote
         }
     }
 }

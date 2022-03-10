@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ProductInformationWithIcon
+import com.tokopedia.cart.databinding.ItemAddonCartIdentifierBinding
 import com.tokopedia.cart.databinding.ItemCartProductBinding
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
@@ -421,17 +422,12 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
     private fun createProductInfoTextWithIcon(dataProduct: ProductInformationWithIcon): LinearLayout {
         return LinearLayout(itemView.context).apply {
             orientation = LinearLayout.HORIZONTAL
-            val viewIdentifier = LayoutInflater.from(itemView.context).inflate(
-                    R.layout.item_addon_cart_identifier,
-                    this,
-                    false
-            )
-            val iconIdentifier = viewIdentifier.findViewById<ImageUnify>(R.id.iv_identifier)
-            iconIdentifier.loadIcon(dataProduct.iconUrl)
-
-            val labelIdentifier = viewIdentifier.findViewById<Typography>(R.id.label_identifier)
-            labelIdentifier.text = dataProduct.text
-            this.addView(viewIdentifier)
+            val identifierBinding = ItemAddonCartIdentifierBinding.inflate(LayoutInflater.from(itemView.context))
+            identifierBinding.run {
+                ivIdentifier.loadIcon(dataProduct.iconUrl)
+                labelIdentifier.text = dataProduct.text
+            }
+            this.addView(identifierBinding.root)
         }
     }
 
