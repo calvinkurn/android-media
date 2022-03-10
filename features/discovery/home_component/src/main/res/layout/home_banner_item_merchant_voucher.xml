@@ -54,17 +54,21 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/shop_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginTop="7dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/image_badge"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/image_arrow_mvc"
             app:typographyType="heading_6"
             tools:text="Shop Name" />
 
         <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/image_arrow_mvc"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginTop="8dp"
@@ -116,33 +120,38 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title_benefit"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:textColor="@color/Unify_NN600"
+            android:maxLines="1"
             app:layout_constraintStart_toEndOf="@id/container_image_product"
             app:layout_constraintTop_toTopOf="@id/container_image_product"
+            app:layout_constraintEnd_toEndOf="parent"
             app:typographyType="body_3"
             tools:text="Cashback" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/total_other_coupon"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="@id/container_image_product"
             app:layout_constraintStart_toStartOf="@id/title_benefit"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:maxLines="1"
             app:typographyType="small"
             android:textColor="@color/Unify_NN600"
             tools:text="+5 Kupon Lainnya" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/benefit_price"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
             app:layout_constraintBottom_toTopOf="@id/total_other_coupon"
             app:layout_constraintStart_toStartOf="@id/title_benefit"
             app:layout_constraintTop_toBottomOf="@id/title_benefit"
+            app:layout_constraintEnd_toEndOf="parent"
             app:typographyType="heading_2"
             tools:text="Rp5.000.000" />
 
