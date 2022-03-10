@@ -38,7 +38,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
-    implementation projectOrAar(rootProject.ext.libraries.analytics)
 
     implementation rootProject.ext.miscDependencies.exoPlayer
 
