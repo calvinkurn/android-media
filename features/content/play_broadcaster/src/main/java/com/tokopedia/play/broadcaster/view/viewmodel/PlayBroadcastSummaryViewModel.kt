@@ -93,8 +93,7 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
                 var fetchTryCount = 0
                 lateinit var response : GetLiveStatisticsResponse.ReportChannelSummary
 
-                /** TODO("change hardcoded value") */
-                getLiveStatisticsUseCase.params = GetLiveStatisticsUseCase.createParams("334714")
+                getLiveStatisticsUseCase.params = GetLiveStatisticsUseCase.createParams(channelId)
                 do {
                     response = getLiveStatisticsUseCase.executeOnBackground()
                     fetchTryCount++

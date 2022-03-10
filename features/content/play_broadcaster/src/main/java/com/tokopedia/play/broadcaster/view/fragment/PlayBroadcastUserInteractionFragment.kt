@@ -510,7 +510,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun navigateToSummary() {
         broadcastCoordinator.navigateToFragment(PlayBroadcastSummaryFragment::class.java)
         analytic.impressReportPage(parentViewModel.channelId)
-        analytic.openReportScreen(parentViewModel.channelId)
     }
 
     private fun handleLivePushInfo(state: PlayLiveViewState) {
