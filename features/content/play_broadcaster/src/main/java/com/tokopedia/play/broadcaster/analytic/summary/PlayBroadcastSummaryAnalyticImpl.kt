@@ -59,7 +59,7 @@ class PlayBroadcastSummaryAnalyticImpl @Inject constructor(
                 KEY_EVENT to KEY_TRACK_OPEN_SCREEN,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                 KEY_CURRENT_SITE to currentSite,
-                KEY_IS_LOGGED_IN_STATUS to userSession.isLoggedIn,
+                KEY_IS_LOGGED_IN_STATUS to userSession.isLoggedIn.toString(),
                 KEY_SCREEN_NAME to "/seller broadcast - report summary - $shopId - $channelID",
                 KEY_USER_ID to userSession.userId,
             )
