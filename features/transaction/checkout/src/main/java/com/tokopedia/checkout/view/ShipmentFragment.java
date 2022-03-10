@@ -80,7 +80,6 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddressTokoNow;
-import com.tokopedia.logisticCommon.data.entity.address.WarehouseDataModel;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet;
@@ -3342,7 +3341,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, addOnProductData);
             intent.putExtra(AddOnConstant.EXTRA_ADD_ON_SOURCE, AddOnConstant.ADD_ON_SOURCE_CHECKOUT);
             startActivityForResult(intent, REQUEST_ADD_ON_PRODUCT_LEVEL_BOTTOMSHEET);
-            checkoutAnalyticsCourierSelection.eventClickAddOnsWidget(String.valueOf(cartItemModel.getProductId()));
+            checkoutAnalyticsCourierSelection.eventClickAddOnsDetail(String.valueOf(cartItemModel.getProductId()));
         }
     }
 
@@ -3370,7 +3369,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             startActivityForResult(intent, REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET);
 
             if (shipmentCartItemModel.getCartString() != null) {
-                checkoutAnalyticsCourierSelection.eventClickAddOnsWidget(shipmentCartItemModel.getCartString());
+                checkoutAnalyticsCourierSelection.eventClickAddOnsDetail(shipmentCartItemModel.getCartString());
             }
         }
     }
