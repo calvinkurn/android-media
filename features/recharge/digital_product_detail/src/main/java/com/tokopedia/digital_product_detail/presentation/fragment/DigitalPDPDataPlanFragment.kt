@@ -420,6 +420,7 @@ class DigitalPDPDataPlanFragment :
         clientNumber: String
     ) {
         viewModel.run {
+            if(isOperatorChanged) resetFilter()
             cancelCatalogProductJob()
             setRechargeCatalogInputMultiTabLoading()
             getRechargeCatalogInputMultiTab(

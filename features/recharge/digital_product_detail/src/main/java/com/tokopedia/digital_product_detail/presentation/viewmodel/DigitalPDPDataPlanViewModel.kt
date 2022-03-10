@@ -300,6 +300,15 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         setFilterDataParam(filterData)
     }
 
+    fun resetFilter(){
+        filterData.forEach {
+            it.filterTagDataCollections.forEach {
+                it.isSelected = false
+            }
+        }
+        setFilterDataParam(filterData)
+    }
+
     fun isEmptyDenomMCCM(listDenomData: List<DenomData>, listMCCMData: List<DenomData>): Boolean {
         return listDenomData.isEmpty() && listMCCMData.isEmpty()
     }
