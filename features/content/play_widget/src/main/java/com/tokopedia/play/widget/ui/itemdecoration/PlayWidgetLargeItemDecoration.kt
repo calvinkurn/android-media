@@ -15,7 +15,7 @@ class PlayWidgetLargeItemDecoration(context: Context) : RecyclerView.ItemDecorat
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val position = parent.getChildAdapterPosition(view)
 
-        outRect.top =  if (position == 0 && position == 1) 0 else defaultOffset
+        outRect.top =  if (position == 0 || position == 1) 0 else defaultOffset
         outRect.bottom = 0
     }
 }
