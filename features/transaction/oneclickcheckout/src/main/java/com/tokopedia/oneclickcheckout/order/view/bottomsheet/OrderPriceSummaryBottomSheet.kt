@@ -47,9 +47,6 @@ class OrderPriceSummaryBottomSheet {
             binding.tvTotalProductAddonsPriceValue.gone()
         }
 
-        binding.tvTotalProductAddonsPriceLabel.gone()
-        binding.tvTotalProductAddonsPriceValue.gone()
-
         if (orderCost.purchaseProtectionPrice > 0) {
             binding.tvPurchaseProtectionPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.purchaseProtectionPrice, false).removeDecimalSuffix()
             binding.tvPurchaseProtectionPriceLabel.visible()
