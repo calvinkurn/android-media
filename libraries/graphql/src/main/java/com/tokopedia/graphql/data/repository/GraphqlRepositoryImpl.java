@@ -8,6 +8,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.graphql.CommonUtils;
 import com.tokopedia.graphql.GraphqlConstant;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.model.CacheType;
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
 import com.tokopedia.graphql.data.model.GraphqlError;
@@ -82,7 +83,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
 
             if (response.getOriginalResponse() != null) {
                 for (int i = 0; i < response.getOriginalResponse().size(); i++) {
-                    String operationName = CacheHelper.getQueryName(requests.get(i).getQuery());
+                    String operationName = getFullOperationName(requests.get(i));
                     try {
                         JsonElement data = response.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
                         if (data != null && !data.isJsonNull()) {
@@ -134,7 +135,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
 
             int counter = copyRequests.size();
             for (int i = 0; i < counter; i++) {
-                operationName = CacheHelper.getQueryName(requests.get(i).getQuery());
+                operationName = getFullOperationName(requests.get(i));
                 if (copyRequests.get(i).isNoCache()) {
                     continue;
                 }
@@ -183,5 +184,20 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
         if (shouldThrow && !TextUtils.isEmpty(request)) {
             NullCheckerKt.throwIfNull(object, GraphqlUseCase.class, request);
         }
+    }
+
+    private String getFullOperationName(GraphqlRequest request) {
+        String operationName;
+        if (TextUtils.isEmpty(request.getOperationName())) {
+            operationName = CacheHelper.getQueryName(request.getQuery());
+        } else {
+            operationName = request.getOperationName();
+        }
+        return new StringBuffer()
+                .append(GraphqlClient.moduleName)
+                .append("_")
+                .append(
+                        CacheHelper.getQueryName(operationName)
+                ).toString();
     }
 }

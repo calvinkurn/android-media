@@ -1,5 +1,6 @@
 package com.tokopedia.graphql.coroutines.data.repository
 
+import android.text.TextUtils
 import android.util.Log
 import com.google.gson.JsonSyntaxException
 import com.tokopedia.graphql.CommonUtils
@@ -7,12 +8,12 @@ import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCacheDataStore
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.*
 import com.tokopedia.graphql.util.CacheHelper
 import com.tokopedia.graphql.util.LoggingUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.lang.reflect.Type
 import javax.inject.Inject
 
@@ -102,7 +103,9 @@ class GraphqlRepositoryImpl @Inject constructor(
         val errors = mutableMapOf<Type, List<GraphqlError>>()
         val tempRequest = requests.regroup(indexOfEmptyCached)
         originalResponse?.forEachIndexed { index, jsonElement ->
-            val operationName = CacheHelper.getQueryName(requests.getOrNull(index)?.query.orEmpty())
+
+            val operationName = getFullOperationName(requests.getOrNull(index))
+
             try {
                 val typeOfT = tempRequest[index].typeOfT
                 val data = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
@@ -160,7 +163,7 @@ class GraphqlRepositoryImpl @Inject constructor(
             copyRequests.addAll(requests);
 
             for (i in 0 until copyRequests.size) {
-                operationName = CacheHelper.getQueryName(requests.getOrNull(i)?.query.orEmpty())
+                operationName = getFullOperationName(requests.getOrNull(i))
 
                 if (copyRequests[i].isNoCache) {
                     continue
@@ -195,5 +198,19 @@ class GraphqlRepositoryImpl @Inject constructor(
 
 
         return graphqlCloudDataStore.getResponse(requests, cacheStrategy)
+    }
+
+    private fun getFullOperationName(request: GraphqlRequest?): String {
+        val operationName = if (TextUtils.isEmpty(request?.operationName)) {
+            CacheHelper.getQueryName(request?.query.orEmpty())
+        } else {
+            request?.operationName.orEmpty()
+        }
+        return StringBuffer()
+            .append(GraphqlClient.moduleName)
+            .append("_")
+            .append(
+                CacheHelper.getQueryName(operationName)
+            ).toString()
     }
 }
