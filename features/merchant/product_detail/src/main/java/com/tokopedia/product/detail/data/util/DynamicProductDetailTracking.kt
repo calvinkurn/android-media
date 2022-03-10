@@ -1866,7 +1866,7 @@ object DynamicProductDetailTracking {
     object ProductDetailSheet {
         fun onCustomInfoPalugadaBottomSheetClicked() {
             val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PG,
                     ProductTrackingConstant.Category.PDP_DETAIL_BOTTOMSHEET,
                     ProductTrackingConstant.Action.CLICK_CUSTOM_INFO_HAMPERS_BOTTOM_SHEET,
                     "")

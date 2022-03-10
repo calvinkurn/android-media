@@ -245,8 +245,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     }
 
     override fun onCustomInfoClicked(url: String) {
-        DynamicProductDetailTracking.ProductDetailSheet.onVariantGuideLineBottomSheetClicked(listener?.getPdpDataSource(), userSession.userId
-                ?: "")
+        DynamicProductDetailTracking.ProductDetailSheet.onCustomInfoPalugadaBottomSheetClicked()
         goToApplink(url)
     }
 
