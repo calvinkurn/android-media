@@ -169,6 +169,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     private fun handleOnErrorGetAddOnSavedState(addOnProductData: AddOnProductData,
                                                 addOnByProductResponse: GetAddOnByProductResponse) {
         hasLoadData = true
+        hasSavedState = true
         launch {
             _uiEvent.emit(
                     UiEvent().apply {

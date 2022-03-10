@@ -722,11 +722,11 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     // tracker id : 28313
-    fun eventClickAddOnsWidget(productId: String) {
+    fun eventClickAddOnsDetail(productId: String) {
         val gtmData = getGtmData(
                 ConstantTransactionAnalytics.EventName.CLICK_PP,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
-                ConstantTransactionAnalytics.EventAction.CLICK_ADD_ONS_WIDGET,
+                ConstantTransactionAnalytics.EventAction.CLICK_ADD_ONS_DETAIL,
                 productId
         )
         gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE

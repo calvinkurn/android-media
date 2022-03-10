@@ -559,7 +559,7 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
         val gtmData = getGtmData(
                 EventName.CLICK_PP,
                 EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_ADD_ONS_WIDGET,
+                EventAction.CLICK_ADD_ONS_DETAIL,
                 productId
         )
         gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
