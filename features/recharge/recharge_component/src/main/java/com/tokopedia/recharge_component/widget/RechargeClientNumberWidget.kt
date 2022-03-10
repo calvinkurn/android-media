@@ -376,10 +376,10 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
 
     fun View.animateFadeInThenShow() {
         val fadeIn = AlphaAnimation(0.5f, 1f)
-        fadeIn.interpolator = DecelerateInterpolator() //add this
+        fadeIn.interpolator = DecelerateInterpolator()
         fadeIn.duration = 500
 
-        val animation = AnimationSet(false) //change to false
+        val animation = AnimationSet(false)
         animation.addAnimation(fadeIn)
         this.animation = animation
 
@@ -389,10 +389,10 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     fun View.animateFadeOutThenGone() {
 
         val fadeOut = AlphaAnimation(1f, 0.5f)
-        fadeOut.interpolator = AccelerateInterpolator() //and this
+        fadeOut.interpolator = AccelerateInterpolator()
         fadeOut.duration = 500
 
-        val animation = AnimationSet(false) //change to false
+        val animation = AnimationSet(false)
         animation.addAnimation(fadeOut)
         this.animation = animation
 
