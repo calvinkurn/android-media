@@ -3,7 +3,6 @@ package com.tokopedia.home_component.viewholders
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
@@ -24,16 +23,11 @@ import com.tokopedia.home_component.util.getTopadsString
 import com.tokopedia.home_component.viewholders.adapter.MerchantVoucherAdapter
 import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
 import com.tokopedia.utils.view.binding.viewBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 
 class MerchantVoucherViewHolder(
     itemView: View,
     private val merchantVoucherComponentListener: MerchantVoucherComponentListener
-) : AbstractViewHolder<MerchantVoucherDataModel>(itemView), CommonProductCardCarouselListener,
-    CoroutineScope {
+) : AbstractViewHolder<MerchantVoucherDataModel>(itemView), CommonProductCardCarouselListener {
     private var binding: GlobalDcMerchantVoucherBinding? by viewBinding()
     private var adapter: MerchantVoucherAdapter? = null
 
@@ -51,14 +45,13 @@ class MerchantVoucherViewHolder(
     private fun mappingView(channel: ChannelModel) {
         val visitables: MutableList<Visitable<*>> = mappingVisitablesFromChannel(channel)
         binding?.homeComponentMvcRv?.setHasFixedSize(true)
-        valuateRecyclerViewDecoration(channel)
+        valuateRecyclerViewDecoration()
         mappingItem(channel, visitables)
     }
 
     private fun mappingVisitablesFromChannel(channel: ChannelModel): MutableList<Visitable<*>> {
         val visitables: MutableList<Visitable<*>> = mutableListOf()
         val channelMerchantVoucherData = convertDataToMerchantVoucherData(channel)
-        setRecyclerViewAndCardHeight()
         visitables.addAll(channelMerchantVoucherData)
         if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty()) {
             if (channel.channelViewAllCard.id != CarouselViewAllCardViewHolder.DEFAULT_VIEW_ALL_ID && channel.channelViewAllCard.contentType.isNotBlank() && channel.channelViewAllCard.contentType != CarouselViewAllCardViewHolder.CONTENT_DEFAULT) {
@@ -135,8 +128,7 @@ class MerchantVoucherViewHolder(
         return list
     }
 
-    private fun valuateRecyclerViewDecoration(channel: ChannelModel) {
-        binding?.homeComponentMvcRv?.invalidate()
+    private fun valuateRecyclerViewDecoration() {
         if (binding?.homeComponentMvcRv?.itemDecorationCount == 0) binding?.homeComponentMvcRv?.addItemDecoration(
             MerchantVoucherDecoration()
         )
@@ -168,37 +160,18 @@ class MerchantVoucherViewHolder(
         })
     }
 
-    private fun setRecyclerViewAndCardHeight() {
-        launch {
-            try {
-                binding?.homeComponentMvcRv?.setHeightBasedMerchantVoucherCardHeight()
-            }
-            catch (throwable: Throwable) {
-                throwable.printStackTrace()
-            }
-        }
-    }
-
-    private fun RecyclerView.setHeightBasedMerchantVoucherCardHeight() {
-        val carouselLayoutParams = this.layoutParams
-        carouselLayoutParams?.height = this.resources.getDimensionPixelOffset(com.tokopedia.home_component.R.dimen.home_mvc_carousel_height)
-        this.layoutParams = carouselLayoutParams
-    }
-
     override fun onProductCardImpressed(
         channel: ChannelModel,
         channelGrid: ChannelGrid,
         position: Int
-    ) {
-    }
+    ) {}
 
     override fun onProductCardClicked(
         channel: ChannelModel,
         channelGrid: ChannelGrid,
         position: Int,
         applink: String
-    ) {
-    }
+    ) {}
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
         merchantVoucherComponentListener.onViewAllClicked(
@@ -209,14 +182,4 @@ class MerchantVoucherViewHolder(
     }
 
     override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {}
-
-    private val masterJob = SupervisorJob()
-
-    override val coroutineContext = masterJob + Dispatchers.Main
-
-    private fun RecyclerView.resetLayout() {
-        val carouselLayoutParams = this.layoutParams
-        carouselLayoutParams?.height = RecyclerView.LayoutParams.WRAP_CONTENT
-        this.layoutParams = carouselLayoutParams
-    }
 }
