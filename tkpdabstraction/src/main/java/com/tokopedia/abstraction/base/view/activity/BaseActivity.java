@@ -282,17 +282,16 @@ public abstract class BaseActivity extends AppCompatActivity implements
                                     new AppUpdateDialogBuilder.Listener() {
                                         @Override
                                         public void onPositiveButtonClicked(DetailUpdate detail) {
-//                                            globalNavAnalytics.get().eventClickAppUpdate(detail.isForceUpdate());
+                                            /* no op */
                                         }
 
                                         @Override
                                         public void onNegativeButtonClicked(DetailUpdate detail) {
-//                                            globalNavAnalytics.get().eventClickCancelAppUpdate(detail.isForceUpdate());
+                                            /* no op */
                                         }
                                     }
                             );
                     appUpdateDialogBuilder.getAlertDialog().show();
-//                    globalNavAnalytics.get().eventImpressionAppUpdate(detail.isForceUpdate());
                 }
             }
 
