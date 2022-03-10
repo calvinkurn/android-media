@@ -48,7 +48,6 @@ class TokomemberActivity : BaseActivity() , TokomemberBottomSheetView.OnFinished
         bottomSheet.setShowListener {
             TokomemberTracker().viewBottomSheetImpression(
                 bottomSheetContentItem?.membershipType ?: 0,
-                bottomSheetContentItem?.shopID?.toString() ?: "",
                 bottomSheetContentItem?.paymentID ?: "", bottomSheetContentItem?.source ?: 0
             )
             val titleMargin = dpToPx(16).toInt()

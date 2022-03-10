@@ -83,7 +83,6 @@ class TokomemberBottomSheetView : BottomSheetUnify() {
             setCloseClickListener {
                 TokomemberTracker().closeMainBottomSheet(
                     bottomSheetData?.membershipType ?: 0,
-                    bottomSheetData?.shopID?.toString() ?: "",
                     bottomSheetData?.paymentID ?: "", bottomSheetData?.source ?: 0
                 )
                 dismiss()
@@ -102,14 +101,12 @@ class TokomemberBottomSheetView : BottomSheetUnify() {
         button?.setOnClickListener {
             TokomemberTracker().userClickBottomSheetButton(
                 bottomSheetData?.membershipType ?: 0,
-                bottomSheetData?.shopID?.toString() ?: "",
                 bottomSheetData?.paymentID ?: "", bottomSheetData?.source ?: 0
             )
             if (bottomSheetData?.membershipType == MEMBERSHIP_OPEN) {
                 RouteManager.route(context, bottomSheetData?.cta?.appLink)
-            } else {
-                this.dismiss()
             }
+            this.dismiss()
         }
     }
 

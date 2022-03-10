@@ -40,8 +40,8 @@ object Tracker {
         const val CLICK_TM_BS_OPEN_CTA = "open membership - click bottom sheet - cta"
         const val CLICK_TM_BS_OPEN_CLOSE = "open membership - click bottom sheet - close"
         const val VIEW_TM_BS_CLOSE = "close membership - view bottom sheet"
-        const val CLICK_TM_BS_CLOSE_CTA = "open membership - click bottom sheet - cta"
-        const val CLICK_TM_BS_CLOSE_CLOSE = "open membership - click bottom sheet - close"
+        const val CLICK_TM_BS_CLOSE_CTA = "close membership - click bottom sheet - cta"
+        const val CLICK_TM_BS_CLOSE_CLOSE = "close membership - click bottom sheet - close"
 
     }
 

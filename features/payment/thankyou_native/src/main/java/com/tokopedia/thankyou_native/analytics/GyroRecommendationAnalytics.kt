@@ -30,6 +30,7 @@ import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.VALUE_ORDER_COMP
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.VIEW_GYRO_RECOM
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.VIEW_TOKOMEMBER_ACION_CLOSE
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.VIEW_TOKOMEMBER_ACION_OPEN
+import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.VIEW_TOKOMEMBER_ACION_OPEN_REGISTERED
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.VIEW_TOKOMEMBER_CATEGORY
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
@@ -74,7 +75,7 @@ class GyroRecommendationAnalytics @Inject constructor(
         CoroutineScope(mainDispatcher).launchCatchError(block = {
             withContext(bgDispatcher) {
                 val data = getParentTrackingNodeTokoMember(
-                    PROMO_VIEW_TOKOMEMBER, getEventActionView(gyroRecommendationItem.membershipType),
+                    PROMO_VIEW_TOKOMEMBER, getEventActionView(gyroRecommendationItem.membershipType , gyroRecommendationItem.successRegister),
                     thanksPageData, gyroRecommendationItem)
                 analyticTracker.sendGeneralEvent(data)
             }
@@ -141,18 +142,22 @@ class GyroRecommendationAnalytics @Inject constructor(
             KEY_EVENT to eventName,
             KEY_EVENT_CATEGORY to VIEW_TOKOMEMBER_CATEGORY,
             KEY_EVENT_ACTION to eventAction,
-            KEY_EVENT_LABEL to "${gyroRecommendationListItem.id}-${thanksPageData.paymentID}",
+            KEY_EVENT_LABEL to thanksPageData.paymentID,
             KEY_BUSINESS_UNIT to BUSINESS_UNIT_TOKOPOINTS,
 
         )
     }
 
-    private fun getEventActionView(membershipType: Int): String {
-        return when (membershipType) {
-            OPEN_MEMBERSHIP -> VIEW_TOKOMEMBER_ACION_OPEN
-            CLOSE_MEMBERSHIP -> VIEW_TOKOMEMBER_ACION_CLOSE
-            else -> {
-                ""
+    private fun getEventActionView(membershipType: Int, successRegister: Boolean): String {
+        return if (successRegister) {
+            VIEW_TOKOMEMBER_ACION_OPEN_REGISTERED
+        } else {
+            when (membershipType) {
+                OPEN_MEMBERSHIP -> VIEW_TOKOMEMBER_ACION_OPEN
+                CLOSE_MEMBERSHIP -> VIEW_TOKOMEMBER_ACION_CLOSE
+                else -> {
+                    ""
+                }
             }
         }
     }
@@ -186,6 +191,7 @@ object GyroTrackingKeys {
     val VIEW_GYRO_RECOM = "view gyro recommendation"
     val CLICK_GYRO_RECOM = "click gyro recommendation"
     val VIEW_TOKOMEMBER_ACION_OPEN = "open membership - view widget"
+    val VIEW_TOKOMEMBER_ACION_OPEN_REGISTERED = "open membership - view widget after join"
     val CLICK_TOKOMEMBER_ACION_OPEN = "open membership - click widget"
     val VIEW_TOKOMEMBER_ACION_CLOSE = "close membership - view widget"
     val CLICK_TOKOMEMBER_ACION_CLOSE = "close membership - click widget"
