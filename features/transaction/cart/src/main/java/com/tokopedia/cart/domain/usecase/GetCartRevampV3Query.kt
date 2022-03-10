@@ -729,6 +729,7 @@ fun getQueryCartRevampV3(): String {
                         type
                         amount_str
                         amount
+                        currency_details_str
                       }
                       sp_ids
                     }
