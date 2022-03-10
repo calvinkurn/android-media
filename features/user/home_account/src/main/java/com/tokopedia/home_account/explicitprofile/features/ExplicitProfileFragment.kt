@@ -272,7 +272,11 @@ class ExplicitProfileFragment : BaseDaggerFragment() {
     }
 
     override fun onFragmentBackPressed(): Boolean {
-        showDialogDiscard()
+        if (viewModelShared?.isAnswersSameWithDefault() != true) {
+            showDialogDiscard()
+        } else {
+            successSaveShoppingPreference(false)
+        }
         return true
     }
 
