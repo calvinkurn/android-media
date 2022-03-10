@@ -3,6 +3,7 @@ package com.tokopedia.digital.home.presentation.adapter.viewholder
 import android.graphics.Color
 import android.view.Gravity
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -111,6 +112,21 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
                         itemView.resources.getDimensionPixelSize(com.tokopedia.digital.home.R.dimen.product_card_custom_banner_width)
                 })
             }
+
+            parallaxImage.viewTreeObserver.addOnGlobalLayoutListener(object :
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    parallaxImage.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                    rvRechargeProduct.setPadding(
+                        parallaxImage.measuredWidth,
+                        rvRechargeProduct.paddingTop,
+                        rvRechargeProduct.paddingRight,
+                        rvRechargeProduct.paddingBottom
+                    )
+                }
+
+            })
         }
     }
 
