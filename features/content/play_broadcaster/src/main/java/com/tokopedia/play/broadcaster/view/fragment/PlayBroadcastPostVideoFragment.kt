@@ -92,11 +92,12 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         }
 
         binding.clCoverPreview.setOnClickListener {
+            analytic.clickCoverOnReportPage(parentViewModel.channelId, parentViewModel.channelTitle)
             openCoverSetupFragment()
         }
 
         binding.btnPostVideo.setOnClickListener {
-            analytic.clickSaveVodOnReportPage(parentViewModel.channelId)
+            analytic.clickPostingVideoNow()
             viewModel.saveVideo()
         }
     }
@@ -176,8 +177,8 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
      * Listener
      */
     override fun onTagClicked(view: TagListViewComponent, tag: PlayTagUiModel) {
+        analytic.clickContentTag(tag.tag)
         viewModel.toggleTag(tag.tag)
-        analytic.selectRecommendedTag(parentViewModel.channelId, tag.tag, tag.isChosen)
     }
 
     /**

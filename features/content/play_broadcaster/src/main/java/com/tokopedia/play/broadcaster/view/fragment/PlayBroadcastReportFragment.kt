@@ -86,6 +86,8 @@ class PlayBroadcastReportFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
+
+        analytic.impressReportPage(parentViewModel.channelId)
     }
 
     private fun initView(view: View) {
@@ -104,6 +106,7 @@ class PlayBroadcastReportFragment @Inject constructor(
         }
 
         btnPostVideo.setOnClickListener {
+            analytic.clickPostingVideoOnReportPage()
             mListener?.onClickPostButton()
         }
     }
