@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.createpost.common.view.plist.ShopPageProduct
@@ -16,6 +17,7 @@ import com.tokopedia.createpost.uprofile.viewmodels.UserProfileViewModel
 import com.tokopedia.createpost.uprofile.views.UserProfileFragment.Companion.VAL_FEEDS_PROFILE
 import com.tokopedia.createpost.uprofile.views.UserProfileFragment.Companion.VAL_SOURCE_BUYER
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
@@ -23,9 +25,8 @@ import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.library.baseadapter.BaseItem
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Label
 import java.lang.Exception
-import java.time.LocalDate
-import java.util.*
 
 open class UserPostBaseAdapter(
     val viewModel: UserProfileViewModel,
@@ -43,6 +44,8 @@ open class UserPostBaseAdapter(
         internal var textUsername: TextView = view.findViewById(R.id.text_user_name)
         internal var textLive: TextView = view.findViewById(R.id.text_live)
         internal var textDate: TextView = view.findViewById(R.id.text_date)
+        internal var btnReminder: AppCompatImageView = view.findViewById(R.id.btn_reminder)
+        internal var textSpecialLabel: Label = view.findViewById(R.id.text_special_label)
         var isVisited = false
 
         override fun bindView(item: PlayPostContentItem, position: Int) {
@@ -118,7 +121,11 @@ open class UserPostBaseAdapter(
         if (item.startTime.isNullOrBlank()) {
             holder.textDate.hide()
         } else {
-            holder.textDate.text = PlayDateTimeFormatter.formatDate(item.startTime, "yyyy-MM-dd'T'HH:mm:ss", "dd MMM yyyy - HH:mm")
+            holder.textDate.text = PlayDateTimeFormatter.formatDate(
+                item.startTime,
+                "yyyy-MM-dd'T'HH:mm:ss",
+                "dd MMM yyyy - HH:mm"
+            )
             holder.textDate.show()
         }
 
@@ -133,6 +140,25 @@ open class UserPostBaseAdapter(
             holder.textUsername.text = "@$userName"
         } else {
             holder.textUsername.hide()
+        }
+
+        if (item.configurations?.reminder?.isSet == true) {
+            holder.btnReminder.show()
+        } else {
+            holder.btnReminder.hide()
+        }
+
+        if(item.configurations?.promoLabels?.isEmpty()
+            || item.configurations?.promoLabels?.get(0).text?.isNullOrBlank()) {
+            holder.textSpecialLabel.hide()
+        } else {
+            holder.textSpecialLabel.setLabel("Special 30%")
+            holder.textSpecialLabel.setLabelImage(
+                holder.textSpecialLabel.context.getDrawable(com.tokopedia.unifycomponents.R.drawable.iconunify_promo),
+                holder.textSpecialLabel.context.dpToPx(13).toInt(),
+                holder.textSpecialLabel.context.dpToPx(13).toInt()
+            )
+            holder.textSpecialLabel.show()
         }
 
         holder.itemView.setOnClickListener { v ->

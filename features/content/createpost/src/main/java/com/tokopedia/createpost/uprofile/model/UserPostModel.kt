@@ -71,7 +71,10 @@ data class PlayPostContentItem(
     val webLink: String,
 
     @SerializedName("stats")
-    val stats: PlayPostContentItemStats
+    val stats: PlayPostContentItemStats,
+
+    @SerializedName("configurations")
+    val configurations: PlayPostConfigurations
 ) : BaseItem()
 
 data class PlayPostContentItemStats(
@@ -85,6 +88,27 @@ data class StatsView(
 
     @SerializedName("formatted")
     val formatted: String
+)
+
+data class PlayPostConfigurations(
+    @SerializedName("has_promo")
+    val hasPromo: Boolean,
+
+    @SerializedName("reminder")
+    val reminder: PostReminder,
+
+    @SerializedName("promo_labels")
+    val promoLabels: List<PostPromoLabel>
+)
+
+data class PostReminder(
+    @SerializedName("is_set")
+    val isSet: Boolean
+)
+
+data class PostPromoLabel(
+    @SerializedName("text")
+    val text: String
 )
 
 
