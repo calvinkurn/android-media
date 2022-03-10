@@ -1,11 +1,14 @@
 package com.tokopedia.createpost.uprofile.views
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.createpost.common.view.plist.ShopPageProduct
@@ -16,6 +19,7 @@ import com.tokopedia.createpost.uprofile.model.UserPostModel
 import com.tokopedia.createpost.uprofile.viewmodels.UserProfileViewModel
 import com.tokopedia.createpost.uprofile.views.UserProfileFragment.Companion.VAL_FEEDS_PROFILE
 import com.tokopedia.createpost.uprofile.views.UserProfileFragment.Companion.VAL_SOURCE_BUYER
+import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
@@ -26,6 +30,7 @@ import com.tokopedia.library.baseadapter.BaseItem
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.Toaster
 import java.lang.Exception
 
 open class UserPostBaseAdapter(
@@ -142,24 +147,55 @@ open class UserPostBaseAdapter(
             holder.textUsername.hide()
         }
 
-        if (item.configurations?.reminder?.isSet) {
+        if (item.airTime?.equals(COMING_SOON, ignoreCase = true)) {
             holder.btnReminder.show()
+
+            if (item.configurations?.reminder?.isSet) {
+                holder.btnReminder.setImageDrawable(
+                    holder.btnReminder.context
+                        .getDrawable(com.tokopedia.unifycomponents.R.drawable.iconunify_bell_filled)
+                )
+
+                holder.btnReminder.setOnClickListener(
+                    addVideoPostReminderClickCallBack(
+                        item.id,
+                        false,
+                        position,
+                        holder.itemView
+                    )
+                )
+                item.configurations?.reminder?.isSet = false;
+            } else {
+                holder.btnReminder.setImageDrawable(
+                    holder.btnReminder.context
+                        .getDrawable(com.tokopedia.unifycomponents.R.drawable.iconunify_bell)
+                )
+
+                holder.btnReminder.setOnClickListener(
+                    addVideoPostReminderClickCallBack(
+                        item.id,
+                        true,
+                        position,
+                        holder.itemView
+                    )
+                )
+                item.configurations?.reminder?.isSet = true;
+            }
+        } else if (item.airTime?.equals(UPCOMING, ignoreCase = true)) {
+            holder.btnReminder.show()
+
             holder.btnReminder.setImageDrawable(
                 holder.btnReminder.context
                     .getDrawable(com.tokopedia.unifycomponents.R.drawable.iconunify_bell_filled)
             )
-
-            holder.btnReminder.setOnClickListener(addVideoPostReminderClickCallBack(item.id, false, position))
-            item.configurations?.reminder?.isSet = false;
-        } else {
-            holder.btnReminder.show()
-            holder.btnReminder.setImageDrawable(
-                holder.btnReminder.context
-                    .getDrawable(com.tokopedia.unifycomponents.R.drawable.iconunify_bell)
+            holder.btnReminder.setColorFilter(
+                ContextCompat.getColor(
+                    holder.btnReminder.context,
+                    com.tokopedia.unifycomponents.R.color.Unify_GN500
+                )
             )
-
-            holder.btnReminder.setOnClickListener(addVideoPostReminderClickCallBack(item.id, true, position))
-            item.configurations?.reminder?.isSet = true;
+        } else {
+            holder.btnReminder.hide()
         }
 
         if (item.configurations?.hasPromo) {
@@ -180,8 +216,29 @@ open class UserPostBaseAdapter(
         }
     }
 
-    private fun addVideoPostReminderClickCallBack(channelId: String, isActive: Boolean, position: Int) =
+    private fun addVideoPostReminderClickCallBack(
+        channelId: String,
+        isActive: Boolean,
+        position: Int,
+        item: View
+    ) =
         View.OnClickListener {
+            if (!DeviceConnectionInfo.isInternetAvailable(
+                    item.context,
+                    checkWifi = true,
+                    checkCellular = true,
+                    checkEthernet = true
+                )
+            ) {
+                Toaster.build(
+                    item,
+                    "Koneshi internetmu targanggu. Coba lagi ya.",
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
+                ).show()
+                return@OnClickListener
+            }
+
             viewModel.updatePostReminderStatus(channelId, isActive)
             notifyItemChanged(position)
         }
@@ -212,5 +269,11 @@ open class UserPostBaseAdapter(
 //            slashedPrice = if (isDiscount) item.campaign?.oPriceFormatted!! else ""
 //        )
 //    }
+
+    companion object {
+        const val COMING_SOON = "COMING_SOON"
+        const val UPCOMING = "UPCOMING"
+        const val WATCH_AGAIN = "WATCH_AGAIN"
+    }
 }
 

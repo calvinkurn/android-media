@@ -67,6 +67,9 @@ data class PlayPostContentItem(
     @SerializedName("start_time")
     val startTime: String,
 
+    @SerializedName("air_time")
+    val airTime: String,
+
     @SerializedName("web_link")
     val webLink: String,
 

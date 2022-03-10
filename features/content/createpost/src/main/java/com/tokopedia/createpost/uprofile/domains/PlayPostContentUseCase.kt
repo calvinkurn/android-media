@@ -52,6 +52,7 @@ class PlayPostContentUseCase @Inject constructor(val useCase: MultiRequestGraphq
                 "          title\n" +
                 "          start_time\n" +
                 "          description\n" +
+                "          air_time\n" +
                 "          is_live\n" +
                 "          cover_url\n" +
                 "          video {\n" +
