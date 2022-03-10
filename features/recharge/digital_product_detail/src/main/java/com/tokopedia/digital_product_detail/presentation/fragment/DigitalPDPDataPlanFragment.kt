@@ -1221,7 +1221,7 @@ class DigitalPDPDataPlanFragment :
 
     override fun onClickedChevron(denom: DenomData) {
         digitalPDPAnalytics.clickChevronBuyWidget(
-            DigitalPDPCategoryUtil.getCategoryName(denom.categoryId.toInt()),
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
             operator.attributes.name,
             denom.price,
             denom.slashPrice,
