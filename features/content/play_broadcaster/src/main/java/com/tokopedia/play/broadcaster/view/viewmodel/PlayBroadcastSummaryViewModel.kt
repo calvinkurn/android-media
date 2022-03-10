@@ -111,8 +111,13 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     }
 
     private fun isEligiblePostVideo(duration: String): Boolean {
-        val split = duration.split(":")
-        return (split.size == 3 && split[1].toInt() > 0) || (split.size == 2 && split[0].toInt() > 0)
+        return try {
+            val split = duration.split(":")
+            (split.size == 3 && split[1].toInt() > 0) || (split.size == 2 && split[0].toInt() > 0)
+        }
+        catch (e: Exception) {
+            false
+        }
     }
 
     private fun getTags() {
