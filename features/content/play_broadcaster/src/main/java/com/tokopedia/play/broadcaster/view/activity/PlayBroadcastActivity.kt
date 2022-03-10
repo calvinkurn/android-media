@@ -355,7 +355,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
     }
 
     private fun openBroadcastSetupPage() {
-        navigateToFragment(PlayBroadcastPrepareFragment::class.java)
+        navigateToFragment(PlayBroadcastSummaryFragment::class.java)
         analytic.openSetupScreen()
     }
 

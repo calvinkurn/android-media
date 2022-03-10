@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.transition.*
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
@@ -25,9 +26,7 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewMod
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayTitleAndTagsSetupViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.view.doOnApplyWindowInsets
-import com.tokopedia.play_common.view.updateMargins
-import com.tokopedia.play_common.view.updatePadding
+import com.tokopedia.play_common.view.*
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -87,6 +86,12 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     }
 
     private fun setupView() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            binding.ivCoverImageCircleDash.apply {
+                setImageBitmap(requireContext().getBitmapFromUrl(getString(R.string.ic_play_cover_circle_dash)))
+            }
+        }
+
         binding.icBroSummaryBack.setOnClickListener {
             mListener?.onClickBackButton()
         }
