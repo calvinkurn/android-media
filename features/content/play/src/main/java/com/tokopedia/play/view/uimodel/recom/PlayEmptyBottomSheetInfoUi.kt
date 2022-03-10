@@ -7,5 +7,6 @@ data class PlayEmptyBottomSheetInfoUiModel(
     val header: String = "",
     val body: String = "",
     val button: String = "",
+    val imageUrl: String = "",
     val partnerAppLink: String = "",
 )

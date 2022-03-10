@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
@@ -28,6 +29,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsBasicInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
+import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
@@ -56,6 +58,7 @@ class ProductSheetViewComponent(
     private val btnProductEmpty: UnifyButton = findViewById(R.id.btn_action_product_empty)
     private val tvHeaderProductEmpty: TextView = findViewById(R.id.tv_title_product_empty)
     private val tvBodyProductEmpty: TextView = findViewById(R.id.tv_desc_product_empty)
+    private val ivProductEmpty: AppCompatImageView = findViewById(R.id.iv_img_illustration)
 
     private val productLineAdapter = ProductLineAdapter(object : ProductLineViewHolder.Listener {
         override fun onBuyProduct(product: PlayProductUiModel.Product) {
@@ -216,20 +219,23 @@ class ProductSheetViewComponent(
         tvHeaderProductEmpty.text = emptyBottomSheetInfoUi.header
         tvBodyProductEmpty.text = emptyBottomSheetInfoUi.body
         btnProductEmpty.text = emptyBottomSheetInfoUi.button
+        ivProductEmpty.loadImage(emptyBottomSheetInfoUi.imageUrl)
 
         btnProductEmpty.setOnClickListener {
-            listener.onEmptyButtonClicked(this@ProductSheetViewComponent, emptyBottomSheetInfoUi.partnerAppLink)
+            listener.onEmptyButtonClicked(this@ProductSheetViewComponent)
         }
     }
 
     private fun showContent(shouldShow: Boolean) {
         if (shouldShow) {
+            tvSheetTitle.show()
             rvProductList.show()
             clProductVoucher.show()
 
             globalError.hide()
             clProductEmpty.hide()
         } else {
+            tvSheetTitle.hide()
             rvProductList.hide()
             clProductVoucher.hide()
 
@@ -301,7 +307,7 @@ class ProductSheetViewComponent(
         fun onBuyButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product)
         fun onAtcButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product)
         fun onProductCardClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, position: Int)
-        fun onEmptyButtonClicked(view: ProductSheetViewComponent, partnerAppLink: String)
+        fun onEmptyButtonClicked(view: ProductSheetViewComponent)
         fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>)
         fun onProductCountChanged(view: ProductSheetViewComponent)
         fun onInfoVoucherClicked(view: ProductSheetViewComponent)
