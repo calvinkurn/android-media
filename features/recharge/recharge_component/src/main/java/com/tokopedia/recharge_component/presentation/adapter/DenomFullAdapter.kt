@@ -63,16 +63,12 @@ class DenomFullAdapter: RecyclerView.Adapter<DenomFullViewHolder>(), RechargeDen
         listener?.onDenomFullClicked(denomFull, denomWidgetType, position, productTitleList, isNeedtoShowBuyWidget)
     }
 
-    override fun onDenomFullImpression(
-        denomFull: DenomData,
-        layoutType: DenomWidgetEnum,
-        position: Int
-    ) {
-        listener?.onDenomFullImpression(denomFull, layoutType, position)
-    }
-
     override fun onChevronDenomClicked(denomFull: DenomData, position: Int, layoutType: DenomWidgetEnum) {
         listener?.onChevronDenomClicked(denomFull, position, layoutType)
+    }
+
+    override fun onDenomFullImpression(denomFull: List<DenomData>, layoutType: DenomWidgetEnum) {
+        //do nothing
     }
 
     fun setDenomFullList(listDenom: List<DenomData>) {

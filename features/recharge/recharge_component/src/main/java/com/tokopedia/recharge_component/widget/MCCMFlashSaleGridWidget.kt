@@ -3,8 +3,10 @@ package com.tokopedia.recharge_component.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.ViewTreeObserver
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -96,7 +98,42 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
                 adapterDenomGrid.productTitleList = denomListTitle
                 adapter = adapterDenomGrid
                 layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+                trackFirstVisibleItemToUser(this, denomGridListener, listDenomGrid)
+                clearOnScrollListeners()
+                addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                        super.onScrollStateChanged(recyclerView, newState)
+                        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                            calculateProductItemVisibleItemTracking(this@apply, denomGridListener,
+                                listDenomGrid)
+                        }
+                    }
+                })
             }
+        }
+    }
+
+    private fun trackFirstVisibleItemToUser(recyclerView: RecyclerView, denomGridListener: RechargeDenomGridListener,
+                                            listDenomData: List<DenomData>) {
+        recyclerView.viewTreeObserver
+            .addOnGlobalLayoutListener(
+                object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        // At this point the layout is complete and the
+                        // dimensions of recyclerView and any child views
+                        // are known.
+                        calculateProductItemVisibleItemTracking(recyclerView, denomGridListener, listDenomData)
+                        recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    }
+                })
+    }
+
+    private fun calculateProductItemVisibleItemTracking(recyclerView: RecyclerView, denomGridListener: RechargeDenomGridListener,
+                                                        listDenomData: List<DenomData>){
+        val indexes = AnalyticUtils.getVisibleItemIndexes(recyclerView)
+        if (indexes.first > -1 && indexes.second > -1) {
+            denomGridListener.onDenomGridImpression(listDenomData.subList(
+                indexes.first, indexes.second + 1), DenomWidgetEnum.MCCM_GRID_TYPE)
         }
     }
 }

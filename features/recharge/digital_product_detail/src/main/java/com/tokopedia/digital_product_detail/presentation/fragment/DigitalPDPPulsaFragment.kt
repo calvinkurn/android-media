@@ -1127,9 +1127,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     override fun onDenomGridImpression(
-        denomGrid: DenomData,
+        listDenomGrid: List<DenomData>,
         layoutType: DenomWidgetEnum,
-        position: Int
     ) {
         if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE) {
             digitalPDPAnalytics.impressionProductMCCM(
@@ -1137,9 +1136,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
-                denomGrid,
-                layoutType,
-                position
+                listDenomGrid,
+                layoutType
             )
         } else if (layoutType == DenomWidgetEnum.GRID_TYPE) {
             digitalPDPAnalytics.impressionProductCluster(
@@ -1147,8 +1145,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
-                denomGrid,
-                position
+                listDenomGrid
             )
         }
     }

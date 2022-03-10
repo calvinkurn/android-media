@@ -985,9 +985,8 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     }
 
     override fun onDenomGridImpression(
-        denomGrid: DenomData,
-        layoutType: DenomWidgetEnum,
-        position: Int
+        listDenomGrid: List<DenomData>,
+        layoutType: DenomWidgetEnum
     ) {
         if (layoutType == DenomWidgetEnum.GRID_TYPE) {
             digitalPDPAnalytics.impressionProductCluster(
@@ -995,8 +994,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                 DigitalPDPCategoryUtil.getOperatorName(operatorId),
                 loyaltyStatus,
                 userSession.userId,
-                denomGrid,
-                position
+                listDenomGrid
             )
         }
     }

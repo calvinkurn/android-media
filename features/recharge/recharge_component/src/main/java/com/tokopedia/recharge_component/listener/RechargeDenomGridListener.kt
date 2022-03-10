@@ -7,5 +7,5 @@ interface RechargeDenomGridListener {
     fun onDenomGridClicked(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int,
                            productListTitle: String,
                            isShowBuyWidget: Boolean)
-    fun onDenomGridImpression(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int)
+    fun onDenomGridImpression(denomListGrid: List<DenomData>, layoutType: DenomWidgetEnum)
 }

@@ -1341,9 +1341,8 @@ class DigitalPDPDataPlanFragment :
     }
 
     override fun onDenomFullImpression(
-        denomFull: DenomData,
+        listDenomFull: List<DenomData>,
         layoutType: DenomWidgetEnum,
-        position: Int
     ) {
         if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE) {
             digitalPDPAnalytics.impressionProductMCCM(
@@ -1351,9 +1350,8 @@ class DigitalPDPDataPlanFragment :
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
-                denomFull,
+                listDenomFull,
                 layoutType,
-                position
             )
         } else if (layoutType == DenomWidgetEnum.FULL_TYPE) {
             digitalPDPAnalytics.impressionProductCluster(
@@ -1361,8 +1359,7 @@ class DigitalPDPDataPlanFragment :
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
-                denomFull,
-                position
+                listDenomFull,
             )
         }
     }

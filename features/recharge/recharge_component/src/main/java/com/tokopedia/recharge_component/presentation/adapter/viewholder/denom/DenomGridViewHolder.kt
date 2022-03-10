@@ -210,10 +210,6 @@ class DenomGridViewHolder (
                     denomGridListener.onDenomGridClicked(denomGrid, denomType, position, "", true)
                 }
             }
-
-            root.addOnImpressionListener(denomGrid, {
-                denomGridListener.onDenomGridImpression(denomGrid, denomType, position)
-            })
         }
     }
 }
