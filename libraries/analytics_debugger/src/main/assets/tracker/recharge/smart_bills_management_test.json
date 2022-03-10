@@ -1,6 +1,6 @@
 {
   "readme": "Smart bills management",
-  "mode": "exact",
+  "mode": "subset",
   "query": [
     {
       "businessUnit": "top up and tagihan",
