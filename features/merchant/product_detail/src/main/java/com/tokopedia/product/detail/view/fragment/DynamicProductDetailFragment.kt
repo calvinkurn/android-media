@@ -15,7 +15,9 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStore
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -75,6 +77,7 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
+import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
@@ -777,6 +780,16 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     override fun getLifecycleFragment(): Lifecycle {
         return lifecycle
+    }
+
+
+
+    override fun getParentViewModelStoreOwner(): ViewModelStore {
+        return  viewModelStore
+    }
+
+    override fun getParentLifeCyclerOwner(): LifecycleOwner {
+        return  viewLifecycleOwner
     }
 
     /**
@@ -1662,6 +1675,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         val boeData = viewModel.getBebasOngkirDataByProductId()
 
         pdpUiUpdater?.updateVariantData(variantProcessedData)
+        productId?.let { productId ->
+            pdpUiUpdater?.updateFintechDataWithProductId(productId)
+        }
         pdpUiUpdater?.updateDataP1(context, updatedDynamicProductInfo, enableVideo())
         pdpUiUpdater?.updateNotifyMeAndContent(selectedChild?.productId.toString(), viewModel.p2Data.value?.upcomingCampaigns, boeData.imageURL)
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.getMultiOriginByProductId().isFulfillment)
@@ -2077,6 +2093,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun onSuccessGetDataP1(data: List<DynamicPdpDataModel>) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             updateProductId()
+
+            productId?.let {
+                pdpUiUpdater?.updateFintechData(it,viewModel.variantData,productInfo)
+            }
             renderVariant(viewModel.variantData, pdpUiUpdater?.productSingleVariant != null)
             val hint = if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) {
                 String.format(getString(R.string.pdp_search_hint_tokonow), productInfo.basic.category.name)
@@ -3737,86 +3757,86 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun onToggleReminderClicked(
-            view: PlayWidgetMediumView,
-            channelId: String,
-            reminderType: PlayWidgetReminderType,
-            position: Int
+        view: PlayWidgetMediumView,
+        channelId: String,
+        reminderType: PlayWidgetReminderType,
+        position: Int
     ) {
         doActionOrLogin({
             val playWidgetUiModel =
-                    pdpUiUpdater?.contentWidgetData?.playWidgetUiModel ?: return@doActionOrLogin
+                pdpUiUpdater?.contentWidgetData?.playWidgetUiModel ?: return@doActionOrLogin
             viewModel.updatePlayWidgetToggleReminder(
-                    playWidgetUiModel, channelId, reminderType
+                playWidgetUiModel, channelId, reminderType
             )
         })
     }
 
     override fun onImpressChannelCard(
-            componentTrackDataModel: ComponentTrackDataModel,
-            item: PlayWidgetMediumChannelUiModel
+        componentTrackDataModel: ComponentTrackDataModel,
+        item: PlayWidgetMediumChannelUiModel
     ) {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return
         ContentWidgetTracking.impressChannelCard(
-                trackingQueue,
-                ContentWidgetTracker(
-                        viewModel.userId,
-                        productInfo,
-                        componentTrackDataModel,
-                        item
-                )
+            trackingQueue,
+            ContentWidgetTracker(
+                viewModel.userId,
+                productInfo,
+                componentTrackDataModel,
+                item
+            )
         )
     }
 
     override fun onClickChannelCard(
-            componentTrackDataModel: ComponentTrackDataModel,
-            item: PlayWidgetMediumChannelUiModel
+        componentTrackDataModel: ComponentTrackDataModel,
+        item: PlayWidgetMediumChannelUiModel
     ) {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return
         ContentWidgetTracking.clickChannelCard(
-                ContentWidgetTracker(
-                        viewModel.userId,
-                        productInfo,
-                        componentTrackDataModel,
-                        item
-                )
+            ContentWidgetTracker(
+                viewModel.userId,
+                productInfo,
+                componentTrackDataModel,
+                item
+            )
         )
     }
 
     override fun onClickBannerCard(componentTrackDataModel: ComponentTrackDataModel) {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return
         ContentWidgetTracking.clickBannerCard(
-                ContentWidgetTracker(
-                        viewModel.userId,
-                        productInfo,
-                        componentTrackDataModel
-                )
+            ContentWidgetTracker(
+                viewModel.userId,
+                productInfo,
+                componentTrackDataModel
+            )
         )
     }
 
     override fun onClickViewAll(componentTrackDataModel: ComponentTrackDataModel) {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return
         ContentWidgetTracking.clickViewAll(
-                ContentWidgetTracker(
-                        viewModel.userId,
-                        productInfo,
-                        componentTrackDataModel
-                )
+            ContentWidgetTracker(
+                viewModel.userId,
+                productInfo,
+                componentTrackDataModel
+            )
         )
     }
 
     override fun onClickToggleReminderChannel(
-            componentTrackDataModel: ComponentTrackDataModel,
-            item: PlayWidgetMediumChannelUiModel,
-            isRemindMe: Boolean
+        componentTrackDataModel: ComponentTrackDataModel,
+        item: PlayWidgetMediumChannelUiModel,
+        isRemindMe: Boolean
     ) {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return
         ContentWidgetTracking.clickToggleReminderChannel(
-                ContentWidgetTracker(
-                        viewModel.userId,
-                        productInfo,
-                        componentTrackDataModel,
-                        isRemindMe = isRemindMe
-                )
+            ContentWidgetTracker(
+                viewModel.userId,
+                productInfo,
+                componentTrackDataModel,
+                isRemindMe = isRemindMe
+            )
         )
     }
 

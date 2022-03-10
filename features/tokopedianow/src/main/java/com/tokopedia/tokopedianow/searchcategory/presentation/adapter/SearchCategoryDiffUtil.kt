@@ -76,7 +76,7 @@ open class SearchCategoryDiffUtil: BaseTokopediaNowDiffer() {
             newItem: TokoNowCategoryGridUiModel,
     ): Boolean {
         return oldItem.state == newItem.state
-                && oldItem.categoryList?.size == newItem.categoryList?.size
+                && oldItem.categoryListUiModel?.categoryList?.size == newItem.categoryListUiModel?.categoryList?.size
     }
 
     override fun getOldListSize() = oldList.size

@@ -44,6 +44,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LANDING_SHOP_CREATION
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_EMAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_GOOGLE
 import com.tokopedia.config.GlobalConfig
@@ -525,7 +526,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun gotoVerifyFingerprint() {
-        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.VERIFY_BIOMETRIC)
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.VERIFY_BIOMETRIC)
         startActivityForResult(intent, LoginConstants.Request.REQUEST_VERIFY_BIOMETRIC)
     }
 
@@ -1644,13 +1645,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             colorTickerDefault() -> Ticker.TYPE_ANNOUNCEMENT
             colorTickerWarning() -> Ticker.TYPE_WARNING
             else -> Ticker.TYPE_ANNOUNCEMENT
-        }
-    }
-
-    override fun goToFingerprintRegisterPage() {
-        context?.run {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_FINGERPRINT_ONBOARDING)
-            startActivity(intent)
         }
     }
 

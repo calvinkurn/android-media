@@ -69,9 +69,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val campaignWidgetComponentListener: CampaignWidgetComponentListener,
                          private val questWidgetCallbacks: QuestWidgetCallbacks,
                          private val cmHomeWidgetCallback: CMHomeWidgetCallback,
-                         private val merchantVoucherComponentListener: MerchantVoucherComponentListener,
-                         private val homePayLaterWidgetListener: HomePayLaterWidgetListener
-) :
+                         private val homePayLaterWidgetListener: HomePayLaterWidgetListener,
+                         private val specialReleaseComponentListener: SpecialReleaseComponentListener,
+                         private val merchantVoucherComponentListener: MerchantVoucherComponentListener
+                         ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
         RechargeComponentTypeFactory {
@@ -288,6 +289,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return MerchantVoucherViewHolder.LAYOUT
     }
 
+    override fun type(specialReleaseDataModel: SpecialReleaseDataModel): Int {
+        return SpecialReleaseViewHolder.LAYOUT
+    }
+
     override fun type(cmHomeWidgetDataModel: CMHomeWidgetDataModel): Int {
         return CMHomeWidgetViewHolder.LAYOUT
     }
@@ -468,6 +473,11 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             )
             MerchantVoucherViewHolder.LAYOUT -> viewHolder =
                 MerchantVoucherViewHolder(view, merchantVoucherComponentListener)
+            SpecialReleaseViewHolder.LAYOUT -> viewHolder = SpecialReleaseViewHolder(
+                view,
+                homeComponentListener,
+                specialReleaseComponentListener
+            )
             CMHomeWidgetViewHolder.LAYOUT-> viewHolder = CMHomeWidgetViewHolder(
                 view,
                 cmHomeWidgetCallback

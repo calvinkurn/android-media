@@ -351,7 +351,7 @@ public interface ApplinkConst {
     String KYC_FORM_NO_PARAM = "tokopedia://kyc-form";
     String KYC_FORM = "tokopedia://kyc-form?projectId={projectId}";
     String KYC_FORM_ONLY_NO_PARAM = "tokopedia://user-identification-only";
-    String KYC_FORM_ONLY = "tokopedia://user-identification-only?projectId={projectId}&showIntro={showIntro}&redirectUrl={redirectUrl}";
+    String KYC_FORM_ONLY = "tokopedia://user-identification-only?projectId={projectId}&showIntro={showIntro}&redirectUrl={redirectUrl}&type={type}";
 
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
 
@@ -364,6 +364,7 @@ public interface ApplinkConst {
     String HOME_CREDIT_SELFIE_WITHOUT_TYPE = "tokopedia://fintech/home-credit/selfie";
     String HOME_CREDIT_SELFIE_WITH_TYPE = "tokopedia://fintech/home-credit/selfie/{type}";
     String PAYLATER = "tokopedia://fintech/paylater";
+    String OPTIMIZED_CHECKOUT = "tokopedia://fintech/opt-checkout";
     String INBOX_HOST = "inbox";
     String INBOX = "tokopedia://inbox";
 

@@ -389,6 +389,19 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         }
     }
 
+    @Test
+    fun testSpecialReleaseWidget() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = SpecialReleaseDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnSpecialReleaseWidget(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_SPECIAL_RELEASE)
+        }
+    }
+
     private fun initTest() {
         InstrumentationAuthHelper.clearUserSession()
         waitForData()

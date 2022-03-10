@@ -12,5 +12,6 @@ data class ChannelShop(
         val shopLocation: String = "",
         val isOfficialStore: Boolean = false,
         val isGoldMerchant: Boolean = false,
-        val shopAppLink: String = ""
+        val shopUrl: String = "",
+        val shopApplink: String = ""
 )
