@@ -56,7 +56,6 @@ import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistory
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
-import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicAppBar
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicScrollListener
 import com.tokopedia.digital_product_detail.presentation.utils.toggle
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
@@ -127,7 +126,6 @@ class DigitalPDPDataPlanFragment :
 
     private var binding by autoClearedNullable<FragmentDigitalPdpDataPlanBinding>()
 
-    private var dynamicSpacerHeightRes = R.dimen.dynamic_banner_space
     private var operator = TelcoOperator()
     private var loyaltyStatus = ""
     private var clientNumber = ""
@@ -544,7 +542,6 @@ class DigitalPDPDataPlanFragment :
             if (favoriteNumber.isNotEmpty()) {
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
-                dynamicSpacerHeightRes = R.dimen.dynamic_banner_space_extended
             }
         }
     }

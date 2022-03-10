@@ -18,7 +18,6 @@ object DigitalPDPConstant {
     const val MINIMUM_VALID_NUMBER_LENGTH = 10
     const val MAXIMUM_VALID_NUMBER_LENGTH = 14
     const val DEFAULT_ICON_RES = 0
-    const val DEFAULT_SPACE_HEIGHT = 81
 
     const val TELCO_PREFERENCES_NAME = "telco_preferences"
     const val TOKEN_LISTRIK_PREFERENCES_NAME = "token_listrik_preferences"

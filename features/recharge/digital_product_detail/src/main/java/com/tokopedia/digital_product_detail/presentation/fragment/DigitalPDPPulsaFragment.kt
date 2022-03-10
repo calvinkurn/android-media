@@ -6,15 +6,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.AlphaAnimation
-import android.view.animation.AnimationSet
-import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
-import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -42,7 +36,6 @@ import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DEFAULT_ICON_RES
-import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DEFAULT_SPACE_HEIGHT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_PARAM
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FAVNUM_PERMISSION_CHECKER_IS_DENIED
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INPUT_ACTION_TRACKING_DELAY
@@ -61,10 +54,8 @@ import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelc
 import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
-import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicAppBar
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicScrollListener
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
@@ -94,12 +85,10 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.coroutines.coroutineContext
 
 /**
  * @author by firmanda on 04/01/21
@@ -134,7 +123,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private lateinit var localCacheHandler: LocalCacheHandler
 
-    private var dynamicSpacerHeightRes = R.dimen.dynamic_banner_space
     private var operator = TelcoOperator()
     private var loyaltyStatus = ""
     private var clientNumber = ""
@@ -475,7 +463,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             if (favoriteNumber.isNotEmpty()) {
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
-                dynamicSpacerHeightRes = R.dimen.dynamic_banner_space_extended
             }
         }
     }

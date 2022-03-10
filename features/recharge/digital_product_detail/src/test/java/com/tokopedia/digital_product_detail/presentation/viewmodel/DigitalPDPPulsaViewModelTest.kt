@@ -12,7 +12,6 @@ import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.CancellationException
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
-import io.mockk.spyk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import org.junit.Test

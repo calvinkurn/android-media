@@ -23,7 +23,6 @@ import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
 import com.tokopedia.common.topupbills.data.constant.GeneralCategoryType
-import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoFavoriteNumberActivity
 import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
