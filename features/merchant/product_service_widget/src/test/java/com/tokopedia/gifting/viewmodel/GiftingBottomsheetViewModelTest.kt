@@ -18,7 +18,7 @@ class GiftingBottomsheetViewModelTest: GiftingBottomsheetViewModelTestFixture() 
         } returns GetAddOnResponse().apply {
             getAddOnByID.addOnByIDResponse = listOf(
                 Addon().apply {
-                    basic = Basic().apply { ownerWarehouseID = "123123" }
+                    basic = Basic().apply { addOnLevel = "ORDER_ADDON" }
                 }
             )
         }
