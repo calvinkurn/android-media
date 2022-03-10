@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.*
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -88,7 +89,9 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     private fun setupView() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             binding.ivCoverImageCircleDash.apply {
-                setImageBitmap(requireContext().getBitmapFromUrl(getString(R.string.ic_play_cover_circle_dash)))
+                setImageBitmap(
+                    requireContext().getBitmapFromUrl(getString(R.string.ic_play_cover_circle_dash), cacheStrategy = DiskCacheStrategy.RESOURCE)
+                )
             }
         }
 
