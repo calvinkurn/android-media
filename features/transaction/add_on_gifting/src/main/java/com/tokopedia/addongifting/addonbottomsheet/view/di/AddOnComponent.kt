@@ -6,7 +6,7 @@ import com.tokopedia.addongifting.addonbottomsheet.view.AddOnBottomSheet
 import dagger.Component
 
 @ActivityScope
-@Component(modules = [AddOnViewModelModule::class, AddOnModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [AddOnViewModelModule::class], dependencies = [BaseAppComponent::class])
 interface AddOnComponent {
     fun inject(addOnBottomSheet: AddOnBottomSheet)
 }
