@@ -118,7 +118,7 @@ class ManageProductViewModel @Inject constructor(
             ProductUiModel(
                     isViewing = isViewing,
                     isEditing = isEditing,
-                    isSelected = true,
+                    isSelected = false,
                     imageUrl = productData.pictures.first().urlThumbnail,
                     id = productData.id,
                     productName = productData.name,
@@ -169,8 +169,7 @@ class ManageProductViewModel @Inject constructor(
         }
     }
 
-    fun setVariantSelection(productList: List<ProductUiModel>,
-                            selectedProductIds: List<ProductId>): MutableList<ProductUiModel> {
+    fun setVariantSelection(productList: List<ProductUiModel>, selectedProductIds: List<ProductId>, isViewing: Boolean): MutableList<ProductUiModel> {
         val mutableProductList = productList.toMutableList()
         selectedProductIds.forEach { productId ->
             val productUiModel = mutableProductList.firstOrNull() { productUiModel ->
@@ -185,6 +184,7 @@ class ManageProductViewModel @Inject constructor(
                     variantUiModel.isSelected = true
                 }
             }
+            if (isViewing) productUiModel?.variants = mutableVariantList?.filter { it.isSelected } ?: listOf()
         }
         return mutableProductList
     }
@@ -291,6 +291,7 @@ class ManageProductViewModel @Inject constructor(
     fun resetProductUiModelState(selectedProducts: List<ProductUiModel>): List<ProductUiModel> {
         val mutableSelectedProducts = selectedProducts.toMutableList()
         mutableSelectedProducts.forEach {
+            it.isSelected = false
             it.isVariantHeaderExpanded = false
             it.isEditing = true
             it.isViewing = false

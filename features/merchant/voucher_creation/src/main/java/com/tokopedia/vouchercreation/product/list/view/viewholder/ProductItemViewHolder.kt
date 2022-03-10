@@ -112,10 +112,12 @@ class ProductItemViewHolder(
 
     private fun setupListeners() {
         binding.cbuProductItem.setOnCheckedChangeListener { _, isChecked ->
-            val product = binding.root.getTag(R.id.product) as ProductUiModel
             val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
             productItemClickListener.onProductCheckBoxClicked(isChecked, dataSetPosition)
-            variantListAdapter.updateVariantSelections(isChecked)
+
+            // only select all child variants when: 1. cbu is not selected, 2. not ind, 3. no variant selections
+            val isIndeterminate = binding.cbuProductItem.getIndeterminate()
+            if (!isIndeterminate) variantListAdapter.updateVariantSelections(isChecked)
         }
         binding.iuRemoveProduct.setOnClickListener {
             val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
@@ -135,8 +137,10 @@ class ProductItemViewHolder(
     }
 
     override fun onVariantCheckBoxClicked(isSelected: Boolean, variantIndex: Int) {
+        // variant selection exist within this product item
         val isIndeterminate = binding.cbuProductItem.getIndeterminate()
         val isChecked = binding.cbuProductItem.isChecked
+
         val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
         val selectedVariantSize = productItemClickListener.onProductVariantCheckBoxClicked(isSelected, dataSetPosition, variantIndex)
         if (isSelected) {

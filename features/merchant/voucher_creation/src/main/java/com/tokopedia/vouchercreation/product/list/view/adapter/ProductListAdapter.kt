@@ -14,7 +14,8 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
     : RecyclerView.Adapter<ProductItemViewHolder>(), OnProductItemClickListener {
 
     interface OnProductItemClickListener {
-        fun onProductCheckBoxClicked(isSelected: Boolean)
+        fun onProductCheckBoxClicked(isSelected: Boolean, uiModel: ProductUiModel)
+        fun onRemoveButtonClicked()
     }
 
     private var productUiModelList: MutableList<ProductUiModel> = mutableListOf()
@@ -30,6 +31,10 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
 
     override fun getItemCount(): Int {
         return productUiModelList.size
+    }
+
+    fun getProductList(): MutableList<ProductUiModel> {
+        return productUiModelList
     }
 
     fun getSelectedProducts(): List<ProductUiModel> {
@@ -67,7 +72,7 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
 
     fun disableAllProductSelections() {
         this.productUiModelList.forEach {
-            it.isError = true
+            it.isSelectable = false
             it.variants.forEach { variantUiModel ->
                 variantUiModel.isError = true
             }
@@ -76,7 +81,7 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
 
     fun enableAllProductSelections() {
         this.productUiModelList.forEach {
-            it.isError = false
+            it.isSelectable = true
             it.variants.forEach { variantUiModel ->
                 variantUiModel.isError = false
             }
@@ -106,14 +111,16 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
     }
 
     override fun onProductCheckBoxClicked(isSelected: Boolean, dataSetPosition: Int) {
-        productUiModelList[dataSetPosition].isSelected = isSelected
-        listener.onProductCheckBoxClicked(isSelected)
+        val uiModel = productUiModelList[dataSetPosition]
+        uiModel.isSelected = isSelected
+        listener.onProductCheckBoxClicked(isSelected, uiModel)
     }
 
     override fun onRemoveProductButtonClicked(adapterPosition: Int, dataSetPosition: Int) {
         try {
             productUiModelList.removeAt(dataSetPosition)
             notifyDataSetChanged()
+            listener.onRemoveButtonClicked()
         } catch (e: Exception) {
             e.printStackTrace()
         }
