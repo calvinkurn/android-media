@@ -20,6 +20,7 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CartDetailsItem
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListRequest
+import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentOption
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccCartRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
@@ -28,7 +29,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt.Companion.TYPE_
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
-import com.tokopedia.usecase.RequestParams
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -37,6 +37,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import rx.Observable
+import java.io.IOException
 
 @ExperimentalCoroutinesApi
 class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
@@ -85,11 +86,11 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     fun `Get Occ Cart Success With No Address`() {
         // Given
         val response = OrderData(errorCode = AddressState.ERROR_CODE_OPEN_ANA)
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         // When
-        orderSummaryPageViewModel.getOccCart(true, "")
+        orderSummaryPageViewModel.getOccCart("")
 
         // Then
         assertEquals(OccState.FirstLoad(OrderPreference(hasValidProfile = false)), orderSummaryPageViewModel.orderPreference.value)
@@ -103,14 +104,14 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     @Test
     fun `Get Occ Cart Success Twice Should Trigger Analytics Once`() {
         // Given
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns helper.orderData
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
         // When
-        orderSummaryPageViewModel.getOccCart(true, "")
-        orderSummaryPageViewModel.getOccCart(true, "")
+        orderSummaryPageViewModel.getOccCart("")
+        orderSummaryPageViewModel.getOccCart("")
 
         // Then
         verify(exactly = 1) {
@@ -128,12 +129,12 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                         ))
                 )
         )
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         // When
-        orderSummaryPageViewModel.getOccCart(true, "")
-        orderSummaryPageViewModel.getOccCart(true, "")
+        orderSummaryPageViewModel.getOccCart("")
+        orderSummaryPageViewModel.getOccCart("")
 
         // Then
         verify(exactly = 1) {
@@ -143,14 +144,56 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
+    fun `Get Occ Cart Success Should Trigger Payment Tracker`() {
+        // Given
+        val response = helper.orderData
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        // When
+        orderSummaryPageViewModel.getOccCart("")
+
+        // Then
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventViewPaymentMethod(any())
+        }
+    }
+
+    @Test
+    fun `Get Occ Cart Success With CC Should Trigger Payment Tracker And Tenure Tracker`() {
+        // Given
+        val selectedTenure = 1
+        val response = helper.orderData.copy(
+                payment = OrderPayment(
+                        creditCard = OrderPaymentCreditCard(
+                                selectedTerm = OrderPaymentInstallmentTerm(
+                                        term = selectedTenure
+                                )
+                        )
+                )
+        )
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        // When
+        orderSummaryPageViewModel.getOccCart("")
+
+        // Then
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventViewPaymentMethod(any())
+            orderSummaryAnalytics.eventViewTenureOption(selectedTenure.toString())
+        }
+    }
+
+    @Test
     fun `Get Occ Cart Failed`() {
         // Given
         val response = Throwable()
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } throws response
 
         // When
-        orderSummaryPageViewModel.getOccCart(true, "")
+        orderSummaryPageViewModel.getOccCart("")
 
         // Then
         assertEquals(OccState.Failed(Failure(response)), orderSummaryPageViewModel.orderPreference.value)
@@ -168,11 +211,11 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val address = OrderProfileAddress(addressId = 0)
         val profile = OrderProfile(shipment = shipment, address = address)
         val response = OrderData(cart = OrderCart(products = mutableListOf(OrderProduct(productId = 1))), preference = profile, errorCode = "")
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         // When
-        orderSummaryPageViewModel.getOccCart(true, "")
+        orderSummaryPageViewModel.getOccCart("")
 
         // Then
         assertEquals(OccState.Failed(Failure(null)), orderSummaryPageViewModel.orderPreference.value)
@@ -191,11 +234,11 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val payment = OrderProfilePayment(gatewayCode = "payment")
         val profile = OrderProfile(shipment = shipment, address = address, payment = payment)
         val response = OrderData(cart = OrderCart(products = mutableListOf(OrderProduct(productId = 1))), preference = profile)
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         // When
-        orderSummaryPageViewModel.getOccCart(true, "")
+        orderSummaryPageViewModel.getOccCart("")
 
         // Then
         assertEquals(OccState.FirstLoad(OrderPreference(hasValidProfile = true)), orderSummaryPageViewModel.orderPreference.value)
@@ -213,16 +256,61 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val profile = OrderProfile(shipment = shipment, address = address, payment = payment)
         val prompt = OccPrompt(TYPE_DIALOG)
         val response = OrderData(cart = OrderCart(products = mutableListOf(OrderProduct(productId = 1))), preference = profile, prompt = prompt)
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         // When
-        orderSummaryPageViewModel.getOccCart(true, "")
+        orderSummaryPageViewModel.getOccCart("")
 
         // Then
         assertEquals(OccState.FirstLoad(OrderPreference(hasValidProfile = true)), orderSummaryPageViewModel.orderPreference.value)
         assertEquals(profile, orderSummaryPageViewModel.orderProfile.value)
         assertEquals(OccGlobalEvent.Prompt(prompt), orderSummaryPageViewModel.globalEvent.value)
+        verify(exactly = 1) { ratesUseCase.execute(any()) }
+    }
+
+    @Test
+    fun `Get Occ Cart Success With OccUIMessage`() {
+        // Given
+        val address = OrderProfileAddress(addressId = 1)
+        val shipment = OrderProfileShipment(serviceId = 1)
+        val payment = OrderProfilePayment(gatewayCode = "payment")
+        val profile = OrderProfile(shipment = shipment, address = address, payment = payment)
+        val response = OrderData(cart = OrderCart(products = mutableListOf(OrderProduct(productId = 1))), preference = profile)
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        val uiMessage = OccToasterAction("message")
+
+        // When
+        orderSummaryPageViewModel.getOccCart("", uiMessage = uiMessage)
+
+        // Then
+        assertEquals(OccState.FirstLoad(OrderPreference(hasValidProfile = true)), orderSummaryPageViewModel.orderPreference.value)
+        assertEquals(profile, orderSummaryPageViewModel.orderProfile.value)
+        assertEquals(OccGlobalEvent.ToasterAction(uiMessage), orderSummaryPageViewModel.globalEvent.value)
+        verify(exactly = 1) { ratesUseCase.execute(any()) }
+    }
+
+    @Test
+    fun `Get Occ Cart Success With PopUpMessage`() {
+        // Given
+        val address = OrderProfileAddress(addressId = 1)
+        val shipment = OrderProfileShipment(serviceId = 1)
+        val payment = OrderProfilePayment(gatewayCode = "payment")
+        val profile = OrderProfile(shipment = shipment, address = address, payment = payment)
+        val popUpMessage = "popUpMessage"
+        val response = OrderData(cart = OrderCart(products = mutableListOf(OrderProduct(productId = 1))), preference = profile, popUpMessage = popUpMessage)
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        // When
+        orderSummaryPageViewModel.getOccCart("")
+
+        // Then
+        assertEquals(OccState.FirstLoad(OrderPreference(hasValidProfile = true)), orderSummaryPageViewModel.orderPreference.value)
+        assertEquals(profile, orderSummaryPageViewModel.orderProfile.value)
+        assertEquals(OccGlobalEvent.ToasterInfo(popUpMessage), orderSummaryPageViewModel.globalEvent.value)
         verify(exactly = 1) { ratesUseCase.execute(any()) }
     }
 
@@ -236,7 +324,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val cart = OrderCart(products = mutableListOf(OrderProduct(productId = 1, orderQuantity = 1)))
         val promo = OrderPromo(LastApplyUiModel(listOf("promo")))
         val response = OrderData(cart = cart, preference = profile, promo = promo)
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         val shippingRecommendationData = ShippingRecommendationData().apply {
@@ -265,7 +353,65 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
 
         // When
-        orderSummaryPageViewModel.getOccCart(true, "")
+        orderSummaryPageViewModel.getOccCart("")
+
+        // Then
+        assertEquals(OccState.FirstLoad(OrderPreference(hasValidProfile = true)), orderSummaryPageViewModel.orderPreference.value)
+        assertEquals(profile, orderSummaryPageViewModel.orderProfile.value)
+        assertEquals(OrderShipment(serviceName = "kirimaja (2 hari)", serviceDuration = "kirimaja (2 hari)", serviceId = 1, shipperName = "kirimin",
+                shipperId = 1, shipperProductId = 1, ratesId = "0", shippingPrice = 0, shippingRecommendationData = shippingRecommendationData,
+                insurance = OrderInsurance(shippingRecommendationData.shippingDurationUiModels[0].shippingCourierViewModelList[0].productData.insurance)),
+                orderSummaryPageViewModel.orderShipment.value)
+        assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventViewOrderSummaryPage(any(), any(), any())
+        }
+        assertEquals(cart, orderSummaryPageViewModel.orderCart)
+        assertEquals(1, orderSummaryPageViewModel.orderShipment.value.getRealShipperId())
+        verify(exactly = 1) { ratesUseCase.execute(any()) }
+        coVerify(exactly = 1) { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() }
+    }
+
+    @Test
+    fun `Get Occ Cart Success Trigger Payment Tracker`() {
+        // Given
+        val shipment = OrderProfileShipment(serviceId = 1)
+        val address = OrderProfileAddress(addressId = 1)
+        val payment = OrderProfilePayment(gatewayCode = "payment")
+        val profile = OrderProfile(shipment = shipment, address = address, payment = payment)
+        val cart = OrderCart(products = mutableListOf(OrderProduct(productId = 1, orderQuantity = 1)))
+        val promo = OrderPromo(LastApplyUiModel(listOf("promo")))
+        val response = OrderData(cart = cart, preference = profile, promo = promo)
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        val shippingRecommendationData = ShippingRecommendationData().apply {
+            shippingDurationUiModels = listOf(
+                    ShippingDurationUiModel().apply {
+                        serviceData = ServiceData().apply {
+                            serviceId = 1
+                            serviceName = "kirimaja (2 hari)"
+                        }
+                        shippingCourierViewModelList = listOf(
+                                ShippingCourierUiModel().apply {
+                                    productData = ProductData().apply {
+                                        shipperName = "kirimin"
+                                        shipperProductId = 1
+                                        shipperId = 1
+                                        insurance = InsuranceData()
+                                        price = PriceData()
+                                    }
+                                    ratesId = "0"
+                                }
+                        )
+                    }
+            )
+        }
+        every { ratesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+
+        // When
+        orderSummaryPageViewModel.getOccCart("")
 
         // Then
         assertEquals(OccState.FirstLoad(OrderPreference(hasValidProfile = true)), orderSummaryPageViewModel.orderPreference.value)
@@ -535,7 +681,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
-    fun `Choose Installment Using Invalid Metadata`() {
+    fun `Choose Installment Using Invalid Metadata From Payment`() {
         // Given
         var preference = helper.preference
         preference = preference.copy(payment = preference.payment.copy(metadata = """
@@ -548,6 +694,28 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val term1 = OrderPaymentInstallmentTerm(term = 1, isEnable = true, isSelected = true)
         val term2 = OrderPaymentInstallmentTerm(term = 2, isEnable = true, isSelected = false)
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(availableTerms = listOf(term1, term2), selectedTerm = term1))
+
+        // When
+        orderSummaryPageViewModel.chooseInstallment(term2, listOf(term1, term2))
+
+        // Then
+        assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Choose Installment Using Invalid Metadata`() {
+        // Given
+        var preference = helper.preference
+        preference = preference.copy(payment = preference.payment.copy(metadata = """
+            {
+                "express_checkout_param" : {}
+            }
+        """.trimIndent()))
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = preference
+        val term1 = OrderPaymentInstallmentTerm(term = 1, isEnable = true, isSelected = true)
+        val term2 = OrderPaymentInstallmentTerm(term = 2, isEnable = true, isSelected = false)
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(availableTerms = listOf(term1, term2)))
 
         // When
         orderSummaryPageViewModel.chooseInstallment(term2, listOf(term1, term2))
@@ -821,13 +989,13 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val shipment = OrderProfileShipment(serviceId = 1)
         val profile = OrderProfile(shipment = shipment)
         val response = OrderData(cart = OrderCart(products = mutableListOf(OrderProduct(productId = 1))), preference = profile, onboarding = onboarding)
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         every { ratesUseCase.execute(any()) } throws Throwable()
 
         // When
-        orderSummaryPageViewModel.getOccCart(true, "")
+        orderSummaryPageViewModel.getOccCart("")
 
         // Then
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
@@ -842,7 +1010,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val payment = OrderProfilePayment(gatewayCode = "payment")
         val profile = OrderProfile(shipment = shipment, address = address, payment = payment)
         val response = OrderData(cart = OrderCart(products = mutableListOf(OrderProduct(productId = 1))), preference = profile, onboarding = onboarding)
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         val shippingRecommendationData = ShippingRecommendationData().apply {
@@ -870,7 +1038,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         every { ratesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
 
         // When
-        orderSummaryPageViewModel.getOccCart(true, "")
+        orderSummaryPageViewModel.getOccCart("")
 
         // Then
         assertEquals(OccGlobalEvent.ForceOnboarding(onboarding), orderSummaryPageViewModel.globalEvent.value)
@@ -886,7 +1054,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val prompt = OccPrompt(type = TYPE_DIALOG, "Prompt")
         val response = OrderData(cart = OrderCart(products = mutableListOf(OrderProduct(productId = 1))), preference = profile,
                 onboarding = onboarding, prompt = prompt)
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         val shippingRecommendationData = ShippingRecommendationData().apply {
@@ -914,7 +1082,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         every { ratesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
 
         // When
-        orderSummaryPageViewModel.getOccCart(true, "")
+        orderSummaryPageViewModel.getOccCart("")
 
         // Then
         assertEquals(OccGlobalEvent.Prompt(prompt), orderSummaryPageViewModel.globalEvent.value)
@@ -925,11 +1093,11 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Given
         val shopId = 123L
         val response = helper.orderData.copy(cart = helper.orderData.cart.copy(shop = helper.orderData.cart.shop.copy(shopId = shopId)))
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         // When
-        orderSummaryPageViewModel.getOccCart(true, "")
+        orderSummaryPageViewModel.getOccCart("")
 
         // Then
         assertEquals(shopId.toString(), orderSummaryPageViewModel.getShopId())
@@ -942,11 +1110,11 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val response = helper.orderData.copy(payment = OrderPayment(walletData = OrderPaymentWalletAdditionalData(
                 activation = activationData
         )))
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         // When
-        orderSummaryPageViewModel.getOccCart(true, "")
+        orderSummaryPageViewModel.getOccCart("")
 
         // Then
         assertEquals(activationData, orderSummaryPageViewModel.getActivationData())
@@ -1070,5 +1238,327 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(OccButtonState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
         assertEquals(null, orderSummaryPageViewModel.orderPayment.value.creditCard.selectedTerm)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `GoCicil Installment Options Success With Matching Selected Tenure`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+                goCicilData = OrderPaymentGoCicilData(selectedTenure = 2)))
+
+        val option1 = GoCicilInstallmentOption(
+                isActive = true,
+                installmentTerm = 2
+        )
+        val option2 = GoCicilInstallmentOption(
+                isActive = true,
+                installmentTerm = 3
+        )
+        val option3 = GoCicilInstallmentOption(
+                isActive = true,
+                installmentTerm = 4
+        )
+        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns listOf(option1, option2, option3)
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0, installmentData = OrderCostInstallmentData(installmentTerm = option1.installmentTerm),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderPaymentGoCicilData(selectedTenure = 2, availableTerms = listOf(OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = true), OrderPaymentGoCicilTerms(installmentTerm = 3, isActive = true), OrderPaymentGoCicilTerms(installmentTerm = 4, isActive = true)),
+                selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = option1.installmentTerm, isActive = true)),
+                orderSummaryPageViewModel.orderPayment.value.walletData.goCicilData)
+        coVerify { updateCartOccUseCase.executeSuspend(any()) }
+    }
+
+    @Test
+    fun `GoCicil Installment Options Success With Matching Selected Term`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+                goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = 3))))
+
+        val option1 = GoCicilInstallmentOption(
+                isActive = true,
+                installmentTerm = 2
+        )
+        val option2 = GoCicilInstallmentOption(
+                isActive = true,
+                installmentTerm = 3
+        )
+        val option3 = GoCicilInstallmentOption(
+                isActive = true,
+                installmentTerm = 4
+        )
+        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns listOf(option1, option2, option3)
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0, installmentData = OrderCostInstallmentData(installmentTerm = option2.installmentTerm),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderPaymentGoCicilData(selectedTenure = 2, availableTerms = listOf(OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = true), OrderPaymentGoCicilTerms(installmentTerm = 3, isActive = true), OrderPaymentGoCicilTerms(installmentTerm = 4, isActive = true)),
+                selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = option2.installmentTerm, isActive = true)),
+                orderSummaryPageViewModel.orderPayment.value.walletData.goCicilData)
+        coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
+    }
+
+    @Test
+    fun `GoCicil Installment Options Success With Matching Recommendation`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+                goCicilData = OrderPaymentGoCicilData(selectedTenure = 0)))
+
+        val option1 = GoCicilInstallmentOption(
+                isActive = true,
+                installmentTerm = 2,
+                isRecommended = true,
+        )
+        val option2 = GoCicilInstallmentOption(
+                isActive = true,
+                installmentTerm = 3,
+                isRecommended = true,
+        )
+        val option3 = GoCicilInstallmentOption(
+                isActive = false,
+                installmentTerm = 4,
+                isRecommended = true,
+        )
+        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns listOf(option1, option2, option3)
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0, installmentData = OrderCostInstallmentData(installmentTerm = option2.installmentTerm),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderPaymentGoCicilData(selectedTenure = 0, availableTerms = listOf(OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = true, isRecommended = true), OrderPaymentGoCicilTerms(installmentTerm = 3, isActive = true, isRecommended = true), OrderPaymentGoCicilTerms(installmentTerm = 4, isActive = false, isRecommended = true)),
+                selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = option2.installmentTerm, isActive = true, isRecommended = true)),
+                orderSummaryPageViewModel.orderPayment.value.walletData.goCicilData)
+        coVerify { updateCartOccUseCase.executeSuspend(any()) }
+    }
+
+    @Test
+    fun `GoCicil Installment Options Success With Fallback Matching Active State`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+                goCicilData = OrderPaymentGoCicilData(selectedTenure = 0)))
+
+        val option1 = GoCicilInstallmentOption(
+                isActive = true,
+                installmentTerm = 2,
+                isRecommended = false,
+        )
+        val option2 = GoCicilInstallmentOption(
+                isActive = true,
+                installmentTerm = 3,
+                isRecommended = false,
+        )
+        val option3 = GoCicilInstallmentOption(
+                isActive = false,
+                installmentTerm = 4,
+                isRecommended = false,
+        )
+        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns listOf(option1, option2, option3)
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0, installmentData = OrderCostInstallmentData(installmentTerm = option2.installmentTerm),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderPaymentGoCicilData(selectedTenure = 0, availableTerms = listOf(OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = true, isRecommended = false), OrderPaymentGoCicilTerms(installmentTerm = 3, isActive = true, isRecommended = false), OrderPaymentGoCicilTerms(installmentTerm = 4, isActive = false, isRecommended = false)),
+                selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = option2.installmentTerm, isActive = true, isRecommended = false)),
+                orderSummaryPageViewModel.orderPayment.value.walletData.goCicilData)
+        coVerify { updateCartOccUseCase.executeSuspend(any()) }
+    }
+
+    @Test
+    fun `GoCicil Installment Options Success With Fallback`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+                goCicilData = OrderPaymentGoCicilData(selectedTenure = 0)))
+
+        val option1 = GoCicilInstallmentOption(
+                isActive = false,
+                installmentTerm = 2,
+                isRecommended = false,
+        )
+        val option2 = GoCicilInstallmentOption(
+                isActive = false,
+                installmentTerm = 3,
+                isRecommended = false,
+        )
+        val option3 = GoCicilInstallmentOption(
+                isActive = false,
+                installmentTerm = 4,
+                isRecommended = false,
+        )
+        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns listOf(option1, option2, option3)
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0,
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderPaymentGoCicilData(selectedTenure = 0, availableTerms = listOf(OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = false, isRecommended = false), OrderPaymentGoCicilTerms(installmentTerm = 3, isActive = false, isRecommended = false), OrderPaymentGoCicilTerms(installmentTerm = 4, isActive = false, isRecommended = false)),
+                selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = option3.installmentTerm, isActive = false, isRecommended = false)),
+                orderSummaryPageViewModel.orderPayment.value.walletData.goCicilData)
+        assertEquals(OrderPaymentErrorData(), orderSummaryPageViewModel.orderPayment.value.errorData)
+        coVerify { updateCartOccUseCase.executeSuspend(any()) }
+    }
+
+    @Test
+    fun `GoCicil Installment Options Failed`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+                goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(isActive = true), availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = true)))))
+
+        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } throws IOException()
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0,
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderPaymentGoCicilData(selectedTenure = 2, availableTerms = emptyList(),
+                selectedTerm = OrderPaymentGoCicilTerms(isActive = true)),
+                orderSummaryPageViewModel.orderPayment.value.walletData.goCicilData)
+        assertEquals(OccGlobalEvent.AdjustAdminFeeError, orderSummaryPageViewModel.globalEvent.value)
+        coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
+    }
+
+    @Test
+    fun `GoCicil Installment Options Below Minimum`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, minimumAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+                goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(isActive = true), availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = true)))))
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        coVerify(inverse = true) {
+            goCicilInstallmentOptionUseCase.executeSuspend(any())
+        }
+    }
+
+    @Test
+    fun `GoCicil Installment Options Above Maximum`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1, walletAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+                goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(isActive = true), availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = true)))))
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        coVerify(inverse = true) {
+            goCicilInstallmentOptionUseCase.executeSuspend(any())
+        }
+    }
+
+    @Test
+    fun `GoCicil Installment Options Above Wallet Amount`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletAmount = 1, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+                goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(isActive = true), availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = true)))))
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        coVerify(inverse = true) {
+            goCicilInstallmentOptionUseCase.executeSuspend(any())
+        }
+    }
+
+    @Test
+    fun `Choose GoCicil Installment Options Silently`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+                goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(isActive = true), availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = true)))))
+
+        // When
+        orderSummaryPageViewModel.chooseInstallment(OrderPaymentGoCicilTerms(), listOf(OrderPaymentGoCicilTerms()), true)
+
+        // Then
+        coVerify(inverse = true) {
+            goCicilInstallmentOptionUseCase.executeSuspend(any())
+        }
+        coVerify(inverse = true) {
+            updateCartOccUseCase.executeSuspend(any())
+        }
+    }
+
+    @Test
+    fun `Choose GoCicil Installment Options With Invalid Profile`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(address = OrderProfileAddress())
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 1000000, walletAmount = 1000000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+                goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(isActive = true), availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = true)))))
+
+        // When
+        orderSummaryPageViewModel.chooseInstallment(OrderPaymentGoCicilTerms(), listOf(OrderPaymentGoCicilTerms()), false)
+
+        // Then
+        coVerify(inverse = true) {
+            goCicilInstallmentOptionUseCase.executeSuspend(any())
+        }
+        coVerify(inverse = true) {
+            updateCartOccUseCase.executeSuspend(any())
+        }
     }
 }

@@ -4,6 +4,7 @@ import com.tokopedia.vouchercreation.common.extension.getIndexAtOrEmpty
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
+import java.util.*
 import javax.inject.Inject
 
 class GenerateImageParamsBuilder @Inject constructor() {
@@ -74,11 +75,7 @@ class GenerateImageParamsBuilder @Inject constructor() {
             else -> amount.toFloat()
         }
 
-        val nominalAmount = if (isInteger(formattedDiscountAmount)) {
-            formattedDiscountAmount.toInt()
-        } else {
-            formattedDiscountAmount
-        }
+        val nominalAmount = formattedDiscountAmount.toInt()
 
         val startTime = couponInformation.period.startDate.parseTo(DateTimeUtils.DATE_FORMAT)
         val endTime = couponInformation.period.endDate.parseTo(DateTimeUtils.DATE_FORMAT)
@@ -128,9 +125,5 @@ class GenerateImageParamsBuilder @Inject constructor() {
         }
 
         return imageUrls
-    }
-
-    private fun isInteger(number: Float): Boolean {
-        return number % 1 == 0.0f
     }
 }
