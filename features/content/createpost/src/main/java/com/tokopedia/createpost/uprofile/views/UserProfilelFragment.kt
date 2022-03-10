@@ -26,6 +26,7 @@ import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.uprofile.ErrorMessage
 import com.tokopedia.createpost.uprofile.Loading
 import com.tokopedia.createpost.uprofile.Success
+import com.tokopedia.createpost.uprofile.UserProfileUtils
 import com.tokopedia.createpost.uprofile.di.DaggerUserProfileComponent
 import com.tokopedia.createpost.uprofile.di.UserProfileModule
 import com.tokopedia.createpost.uprofile.model.Profile
@@ -517,9 +518,9 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         }
 
         textDisplayName?.text = data.profileHeader.profile.name
-        textContentCount?.text = getFormattedNumber(data.profileHeader.stats.totalPost)
-        textFollowerCount?.text = getFormattedNumber(data.profileHeader.stats.totalFollower)
-        textFollowingCount?.text = getFormattedNumber(data.profileHeader.stats.totalFollowing)
+        textContentCount?.text = UserProfileUtils.getFormattedNumber(data.profileHeader.stats.totalPost)
+        textFollowerCount?.text = UserProfileUtils.getFormattedNumber(data.profileHeader.stats.totalFollower)
+        textFollowingCount?.text = UserProfileUtils.getFormattedNumber(data.profileHeader.stats.totalFollowing)
 
         setProfileImg(data.profileHeader.profile)
 
@@ -574,14 +575,6 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 headerProfile?.subtitle = ""
             }
         })
-    }
-
-    private fun getFormattedNumber(number: Long): String {
-        return if (number >= 10000) {
-            number.thousandFormatted(hasSpace = true, digit = 0, roundingMode = RoundingMode.DOWN)
-        } else {
-            number.thousandFormatted(hasSpace = true, digit = 1, roundingMode = RoundingMode.DOWN)
-        }
     }
 
     private fun setActionButton(followProfile: UserProfileIsFollow) {

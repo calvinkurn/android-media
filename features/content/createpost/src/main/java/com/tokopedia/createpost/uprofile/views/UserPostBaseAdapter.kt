@@ -142,7 +142,7 @@ open class UserPostBaseAdapter(
             holder.textUsername.hide()
         }
 
-        if (item.configurations?.reminder?.isSet == true) {
+        if (item.configurations?.reminder?.isSet) {
             holder.btnReminder.show()
         } else {
             holder.btnReminder.hide()
