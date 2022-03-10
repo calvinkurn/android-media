@@ -3,6 +3,7 @@ package com.tokopedia.topads.edit.view.fragment.edit
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -33,7 +34,7 @@ import com.tokopedia.topads.edit.utils.Constants.POSITIVE_DELETE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_EDIT
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_KEYWORD_ALL
 import com.tokopedia.topads.edit.utils.Constants.STRATEGIES
-import com.tokopedia.topads.edit.utils.showEditSwitchToggledDialog
+import com.tokopedia.topads.edit.utils.showChangeBidTypeConfirmationDialog
 import com.tokopedia.topads.edit.view.activity.SaveButtonStateCallBack
 import com.tokopedia.topads.edit.view.sheet.BidInfoBottomSheet
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -135,17 +136,19 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             chipKeyword?.chipType = ChipsUnify.TYPE_NORMAL
             viewPager?.currentItem = POSITION1
         }
-
-        switchBidEditKeyword.setOnClickListener {
-            context?.let {
-                showEditSwitchToggledDialog(it, isBidAutomatic(),
-                    positiveClick = {
-                        handleAutoBidState(if (isBidAutomatic()) AUTO_BID_STATE else "")
-                    }, cancel = {
+        
+        //disabling isclickable, to make sure switch button state change only if user confirms
+        switchBidEditKeyword.isClickable = false
+        switchBidEditKeyword.setOnTouchListener { view, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                context?.let {
+                    showChangeBidTypeConfirmationDialog(it, isBidAutomatic()) {
                         switchBidEditKeyword.isChecked = !switchBidEditKeyword.isChecked
+                        handleAutoBidState(if (isBidAutomatic()) AUTO_BID_STATE else "")
                     }
-                )
+                }
             }
+            false
         }
 
         ivBidInfoEditKeyword?.setOnClickListener {

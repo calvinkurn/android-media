@@ -4,8 +4,8 @@ import android.content.Context
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.topads.edit.R
 
-fun showEditSwitchToggledDialog(
-    context: Context, switchToAutomatic: Boolean, positiveClick: () -> Unit, cancel: () -> Unit,
+fun showChangeBidTypeConfirmationDialog(
+    context: Context, switchToAutomatic: Boolean, positiveClick: () -> Unit
 ) {
     DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
         if (switchToAutomatic) {
@@ -18,7 +18,6 @@ fun showEditSwitchToggledDialog(
         setPrimaryCTAText(context.resources.getString(R.string.topads_edit_dialog_cta_text))
         setSecondaryCTAText(context.resources.getString(R.string.topads_edit_batal))
         setSecondaryCTAClickListener {
-            cancel()
             dismiss()
         }
         setPrimaryCTAClickListener {
