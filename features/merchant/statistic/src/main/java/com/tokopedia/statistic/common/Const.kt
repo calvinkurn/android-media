@@ -12,11 +12,10 @@ object Const {
     const val DAYS_7 = 7
     const val DAYS_30 = 30
     const val DAYS_31 = 31
-    const val DAYS_90 = 90
     const val DAYS_91 = 91
     const val DAYS_365 = 365
 
-    const val WHITE_LIST_KEY_TRAFFIC_INSIGHT = "Traffic_stat_on_App"
+    const val WHITE_LIST_KEY_TRAFFIC_INSIGHT = "statistic-traffic-apps"
 
     const val SHOW_PRODUCT_INSIGHT_COACH_MARK_KEY = "product_insight_coach_mark_key"
     const val HAS_SHOWN_OPERATIONAL_INSIGHT_COACH_MARK_KEY = "operational_insight_coach_mark_key"
