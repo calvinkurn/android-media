@@ -24,7 +24,7 @@ class GetAddOnByProductUseCase @Inject constructor(@ApplicationContext private v
             throw RuntimeException("Parameter can't be null or empty!")
         }
 
-        val request = GraphqlRequest(GetAddOnByProductQuery.GQL_QUERY, GetAddOnByProductResponse::class.java, params)
+        val request = GraphqlRequest(GetAddOnByProductQuery(), GetAddOnByProductResponse::class.java, params)
         return graphqlRepository.response(listOf(request)).getSuccessData()
     }
 
