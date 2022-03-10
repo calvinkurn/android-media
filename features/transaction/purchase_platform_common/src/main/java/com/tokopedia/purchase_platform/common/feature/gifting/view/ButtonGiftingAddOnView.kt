@@ -91,11 +91,13 @@ class ButtonGiftingAddOnView @JvmOverloads constructor(
         binding?.run {
             titleAddon.visible()
             titleAddon.text = title
+            titleAddon.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
 
             if (desc.isEmpty()) descAddon.gone()
             else {
                 descAddon.visible()
                 descAddon.text = desc
+                descAddon.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             }
         }
     }
