@@ -358,8 +358,10 @@ class DigitalPDPDataPlanFragment :
 
                     if (viewModel.isEmptyDenomMCCM(denomData.data.denomFull.listDenomData,
                             denomData.data.denomMCCMFull.listDenomData)){
-                        showEmptyState(true)
-                    } else hideEmptyState()
+                        showGlobalErrorState()
+                    } else {
+                        hideGlobalErrorState()
+                    }
 
                     if (selectedPositionDenom == null && selectedPositionMCCM == null) {
                         onHideBuyWidget()
@@ -372,6 +374,7 @@ class DigitalPDPDataPlanFragment :
                 }
 
                 is RechargeNetworkResult.Loading -> {
+                    hideGlobalErrorState()
                     hideEmptyState()
                     onShimmeringDenomFull()
                     onLoadingAndFailMCCM()
@@ -814,7 +817,7 @@ class DigitalPDPDataPlanFragment :
         binding?.rechargePdpPaketDataEmptyStateWidget?.imageUrl = banners.firstOrNull()?.imageUrl ?: ""
     }
 
-    private fun showEmptyState(isShowFilter: Boolean = false) {
+    private fun showEmptyState() {
         binding?.run {
             if (!rechargePdpPaketDataEmptyStateWidget.isVisible) {
 
@@ -832,22 +835,14 @@ class DigitalPDPDataPlanFragment :
                     rechargePdpPaketDataEmptyStateWidget.hide()
                 }
 
-                if (isShowFilter){
-                    sortFilterPaketData.show()
-                } else {
-                    sortFilterPaketData.hide()
-                    rechargePdpPaketDataClientNumberWidget.hideOperatorIcon()
-                }
-
+                sortFilterPaketData.hide()
                 rechargePdpPaketDataPromoWidget.hide()
                 rechargePdpPaketDataRecommendationWidget.hide()
                 rechargePdpPaketDataDenomFullWidget.hide()
+                globalErrorPaketData.hide()
+                rechargePdpPaketDataClientNumberWidget.hideOperatorIcon()
+                hideBannerSpacer()
 
-                rechargePdpPaketDataBannerSpacer.run {
-                    layoutParams.height = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                        .toInt()
-                    requestLayout()
-                }
             }
         }
     }
@@ -856,12 +851,41 @@ class DigitalPDPDataPlanFragment :
         binding?.run {
             if (rechargePdpPaketDataEmptyStateWidget.isVisible) {
                 rechargePdpPaketDataEmptyStateWidget.hide()
-                rechargePdpPaketDataRecommendationWidget.show()
-                rechargePdpPaketDataBannerSpacer.run {
-                    layoutParams.height = resources.getDimension(com.tokopedia.digital_product_detail.R.dimen.banner_space)
-                        .toInt()
-                }
+                showBannerSpacer()
             }
+        }
+    }
+
+    private fun showGlobalErrorState() {
+        binding?.globalErrorPaketData?.run {
+            show()
+            errorTitle.text = getString(R.string.empty_state_paket_data_title)
+            errorDescription.text = getString(R.string.empty_state_paket_data_desc)
+            errorAction.hide()
+            hideBannerSpacer()
+        }
+    }
+
+    private fun hideGlobalErrorState() {
+        binding?.globalErrorPaketData?.run {
+            hide()
+            showBannerSpacer()
+        }
+    }
+
+    private fun hideBannerSpacer() {
+        binding?.rechargePdpPaketDataBannerSpacer?.run {
+            layoutParams.height = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                .toInt()
+            requestLayout()
+        }
+    }
+
+    private fun showBannerSpacer() {
+        binding?.rechargePdpPaketDataBannerSpacer?.run {
+            layoutParams.height = resources.getDimension(com.tokopedia.digital_product_detail.R.dimen.banner_space)
+                .toInt()
+            requestLayout()
         }
     }
 
