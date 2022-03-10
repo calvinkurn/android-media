@@ -101,6 +101,7 @@ class SmartBillsAnalytics {
                 TrackAppUtils.EVENT_LABEL,
                 "${tickedBill.categoryName} - ${tickedBill.operatorName}"
             )
+            putString(Key.SCREEN_NAME, SCREEN_NAME_INITAL)
             putString(Key.ITEM_LIST, LIST_VALUE)
             putString(Key.USER_ID, userId)
             putAll(getAdditionalData(BUSINESS_UNIT_SBM_VALUE))
@@ -121,6 +122,7 @@ class SmartBillsAnalytics {
                 TrackAppUtils.EVENT_LABEL,
                 "${untickedBill.categoryName} - ${untickedBill.operatorName}"
             )
+            putString(Key.SCREEN_NAME, SCREEN_NAME_INITAL)
             putString(Key.ITEM_LIST, LIST_VALUE)
             putString(Key.USER_ID, userId)
             putAll(getAdditionalData(BUSINESS_UNIT_SBM_VALUE))
@@ -138,6 +140,7 @@ class SmartBillsAnalytics {
             putString(TrackAppUtils.EVENT_ACTION, Action.IMPRESSION_ALL_PRODUCT)
             putString(TrackAppUtils.EVENT_CATEGORY, CATEGORY_SMART_BILLS)
             putString(TrackAppUtils.EVENT_LABEL, "")
+            putString(Key.SCREEN_NAME, SCREEN_NAME_INITAL)
             putString(Key.ITEM_LIST, LIST_VALUE)
             putString(Key.USER_ID, userId)
             putAll(getAdditionalData(BUSINESS_UNIT_RECHARGE_VALUE))
@@ -227,6 +230,7 @@ class SmartBillsAnalytics {
                 TrackAppUtils.EVENT_LABEL,
                 "${bill.categoryName} - ${bill.operatorName}"
             )
+            putString(Key.SCREEN_NAME, SCREEN_NAME_INITAL)
             putString(Key.ITEM_LIST, LIST_VALUE)
             putString(Key.USER_ID, userId)
             putAll(getAdditionalData(BUSINESS_UNIT_SBM_VALUE))

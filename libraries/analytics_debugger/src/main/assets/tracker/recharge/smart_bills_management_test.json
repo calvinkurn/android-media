@@ -25,7 +25,7 @@
       "screenName": "/initial-sbm-page",
       "currentSite": "tokopediaDigitalRecharge",
       "userId": ".*",
-      "businessUnit": "top up and tagihan",
+      "businessUnit": "sbm",
       "sessionIris": ".*"
     },
     {
@@ -36,7 +36,7 @@
       "screenName": "/initial-sbm-page",
       "currentSite": "tokopediaDigitalRecharge",
       "userId": ".*",
-      "businessUnit": "top up and tagihan",
+      "businessUnit": "sbm",
       "sessionIris": ".*"
     },
     {
@@ -47,7 +47,7 @@
       "screenName": "/initial-sbm-page",
       "currentSite": "tokopediaDigitalRecharge",
       "userId": ".*",
-      "businessUnit": "top up and tagihan",
+      "businessUnit": "sbm",
       "items": [
         {
           "dimension40": ".*",
@@ -71,7 +71,7 @@
       "screenName": "/initial-sbm-page",
       "currentSite": "tokopediaDigitalRecharge",
       "userId": ".*",
-      "businessUnit": "top up and tagihan",
+      "businessUnit": "sbm",
       "sessionIris": ".*"
     },
     {
@@ -82,7 +82,7 @@
       "screenName": "/initial-sbm-page",
       "currentSite": "tokopediaDigitalRecharge",
       "userId": ".*",
-      "businessUnit": "top up and tagihan",
+      "businessUnit": "recharge",
       "items": [
         {
           "dimension40": ".*",
@@ -106,7 +106,7 @@
       "screenName": "/detail-sbm-page",
       "currentSite": "tokopediaDigitalRecharge",
       "userId": ".*",
-      "businessUnit": "top up and tagihan",
+      "businessUnit": "sbm",
       "sessionIris": ".*"
     },
     {
