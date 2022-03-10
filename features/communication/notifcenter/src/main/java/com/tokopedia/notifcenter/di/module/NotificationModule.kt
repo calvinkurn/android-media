@@ -13,7 +13,6 @@ import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
-import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
@@ -57,10 +56,6 @@ class NotificationModule {
         )
         return NotifcenterCacheManagerImpl(notifCachePref)
     }
-
-    @NotificationScope
-    @Provides
-    internal fun provideTopAdsHeadlineViewModel() = TopAdsHeadlineViewModel()
 
 }
 

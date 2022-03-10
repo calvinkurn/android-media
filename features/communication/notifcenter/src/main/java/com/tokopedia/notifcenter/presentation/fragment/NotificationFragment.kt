@@ -31,6 +31,8 @@ import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.MarkAsSeenAnalytic
@@ -100,8 +102,9 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    @Inject
-    lateinit var topAdsHeadlineViewModel : TopAdsHeadlineViewModel
+    private val topAdsHeadlineViewModel by lazy {
+        ViewModelProvider(this)[TopAdsHeadlineViewModel::class.java]
+    }
 
     var remoteConfig: RemoteConfig? = null
 
@@ -403,7 +406,11 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
             NotificationTopAdsHeadlineHelper.getParams(userSession.userId), {
                 rvAdapter?.addShopAds(it)
             }, {
-                Timber.e("Failed to load Shopads in Inbox")
+                ServerLogger.log(
+                    Priority.P1,
+                    NotificationFragment::class.java.simpleName,
+                    mapOf("error" to "Failed to load Shopads in NotifCenter" )
+                )
             }
         )
     }
