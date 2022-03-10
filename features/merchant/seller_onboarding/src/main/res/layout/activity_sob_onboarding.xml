@@ -20,18 +20,14 @@
         tools:srcCompat="@drawable/bg_sob_full" />
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/bgSobRamadhan"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:srcCompat="@drawable/bg_sob_ramadhan"/>
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/bgSobRamadhanPattern"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:adjustViewBounds="true"
+        android:id="@+id/imgSobHeader"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/sob_dimen_112"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/bg_sob_ramadhan_pattern"/>
+        tools:src="@drawable/bg_sob_slide_header_home" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/sobViewPager"
