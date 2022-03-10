@@ -9,8 +9,15 @@ import com.tokopedia.vouchercreation.product.list.view.model.VariantUiModel
 import com.tokopedia.vouchercreation.product.list.view.viewholder.ProductItemVariantViewHolder
 import com.tokopedia.vouchercreation.product.list.view.viewholder.ProductItemVariantViewHolder.OnVariantItemClickListener
 
-class VariantListAdapter(private val variantItemClickListener: OnVariantItemClickListener)
-    : RecyclerView.Adapter<ProductItemVariantViewHolder>() {
+class VariantListAdapter(
+        private val variantItemClickListener: OnVariantItemClickListener,
+        private val variantSelectionRemovedListener: OnVariantSelectionRemovedListener,
+) : RecyclerView.Adapter<ProductItemVariantViewHolder>(), ProductItemVariantViewHolder.OnDeleteButtonClickListener {
+
+    interface OnVariantSelectionRemovedListener {
+        fun onVariantSelectionRemoved(variantList: List<VariantUiModel>)
+        fun onVariantSelectionsEmpty()
+    }
 
     private var variantList: MutableList<VariantUiModel> = mutableListOf()
     private var dataSetPosition: Int? = null
@@ -18,7 +25,7 @@ class VariantListAdapter(private val variantItemClickListener: OnVariantItemClic
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductItemVariantViewHolder {
         val binding = ItemProductListVariantLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-         return ProductItemVariantViewHolder(binding, variantItemClickListener)
+         return ProductItemVariantViewHolder(binding, variantItemClickListener, this)
     }
 
     override fun onBindViewHolder(holder: ProductItemVariantViewHolder, position: Int) {
@@ -51,5 +58,15 @@ class VariantListAdapter(private val variantItemClickListener: OnVariantItemClic
             }
         }
         notifyDataSetChanged()
+    }
+
+    override fun onDeleteButtonClicked(variantIndex: Int) {
+        variantList.removeAt(variantIndex)
+        notifyDataSetChanged()
+        if (variantList.isEmpty()) {
+            variantSelectionRemovedListener.onVariantSelectionsEmpty()
+        } else {
+            variantSelectionRemovedListener.onVariantSelectionRemoved(variantList)
+        }
     }
 }

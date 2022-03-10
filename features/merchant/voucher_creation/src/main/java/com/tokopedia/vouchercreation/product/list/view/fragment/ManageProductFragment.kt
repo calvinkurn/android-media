@@ -146,9 +146,10 @@ class ManageProductFragment : BaseDaggerFragment(),
             )
         } else {
             if (!selectedProducts.isNullOrEmpty()) {
-                viewModel.setSetSelectedProducts(selectedProducts.toList())
                 val updatedProductList = viewModel.updateProductUiModelsDisplayMode(isViewing, isEditing, selectedProducts)
-                adapter?.setProductList(resetProductUiModelState(updatedProductList))
+                val filteredProductList = viewModel.filterSelectedProductVariant(updatedProductList)
+                adapter?.setProductList(viewModel.resetProductUiModelState(filteredProductList))
+                updateProductCounter()
             }
         }
     }
@@ -164,6 +165,8 @@ class ManageProductFragment : BaseDaggerFragment(),
     private fun setupDeleteProductButton(binding: FragmentMvcManageProductBinding?) {
         binding?.tpgDeleteProduct?.setOnClickListener {
             adapter?.deleteSelectedProducts()
+            viewModel.setSetSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
+            updateProductCounter()
         }
     }
 
@@ -187,6 +190,7 @@ class ManageProductFragment : BaseDaggerFragment(),
                 binding.cbuSelectAllProduct.setIndeterminate(false)
                 adapter?.updateAllProductSelections(isChecked)
             }
+            viewModel.setSetSelectedProducts(adapter?.getSelectedProducts()?: listOf())
         }
     }
 
@@ -225,8 +229,6 @@ class ManageProductFragment : BaseDaggerFragment(),
                     binding?.selectionBar?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.mvc_grey_f3f4f5))
                 }
             }
-            val maxProductLimit = viewModel.getMaxProductLimit()
-            binding?.tpgSelectedProductCounter?.text = "Jumlah Produk (${selectedProducts.size}/$maxProductLimit)"
         })
         viewModel.getProductListResult.observe(viewLifecycleOwner, { result ->
             when (result) {
@@ -277,8 +279,10 @@ class ManageProductFragment : BaseDaggerFragment(),
 
                     val newAddedProducts = arguments?.getParcelableArrayList<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)?.toList()
                     finalProductList.addAll(newAddedProducts?: listOf())
-                    viewModel.setSetSelectedProducts(finalProductList)
+
                     adapter?.setProductList(finalProductList)
+                    viewModel.setSetSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
+                    updateProductCounter()
                 }
                 is Fail -> {
                     // TODO : handle negative case
@@ -312,10 +316,11 @@ class ManageProductFragment : BaseDaggerFragment(),
             val isChecked = binding?.cbuSelectAllProduct?.isChecked ?: false
             if (!isChecked) binding?.cbuSelectAllProduct?.isChecked = true
         }
+        viewModel.setSetSelectedProducts(adapter?.getSelectedProducts()?: listOf())
     }
 
     override fun onRemoveButtonClicked() {
-        viewModel.setSetSelectedProducts(adapter?.getProductList() ?: listOf())
+        updateProductCounter()
     }
 
     override fun onBackPressed() {
@@ -343,7 +348,11 @@ class ManageProductFragment : BaseDaggerFragment(),
     }
 
     fun resetProductUiModelState(selectedProducts: List<ProductUiModel>): List<ProductUiModel> {
-        return viewModel.resetProductUiModelState(selectedProducts)
+        val isViewing = viewModel.getIsViewing()
+        val isEditing = viewModel.getIsEditing()
+        val updatedProductList = viewModel.updateProductUiModelsDisplayMode(isViewing, isEditing, selectedProducts)
+        val filteredProductList = viewModel.filterSelectedProductVariant(updatedProductList)
+        return viewModel.resetProductUiModelState(filteredProductList)
     }
 
     fun addProducts(selectedProducts: List<ProductUiModel>) {
@@ -354,7 +363,6 @@ class ManageProductFragment : BaseDaggerFragment(),
         val maxProductLimit = viewModel.getMaxProductLimit()
         val totalSize = adapter?.getProductList()?.size ?: 0
         binding?.tpgSelectedProductCounter?.text = "Jumlah Produk ($totalSize/$maxProductLimit)"
-        binding?.tpgSelectAll?.text = "$totalSize Produk dipilih"
     }
 
     fun updateWarehouseLocationId(warehouseLocationId: String) {

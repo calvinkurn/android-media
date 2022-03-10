@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.vouchercreation.databinding.ItemProductListLayoutBinding
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
+import com.tokopedia.vouchercreation.product.list.view.model.VariantUiModel
 import com.tokopedia.vouchercreation.product.list.view.viewholder.ProductItemViewHolder
 import com.tokopedia.vouchercreation.product.list.view.viewholder.ProductItemViewHolder.OnProductItemClickListener
 
@@ -148,5 +149,9 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
 
     override fun onProductVariantHeaderClicked(isExpanded: Boolean, dataSetPosition: Int) {
         productUiModelList[dataSetPosition].isVariantHeaderExpanded = isExpanded
+    }
+
+    override fun onProductVariantRemoved(variantList: List<VariantUiModel>, dataSetPosition: Int) {
+        productUiModelList[dataSetPosition].variants = variantList
     }
 }
