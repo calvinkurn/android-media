@@ -112,10 +112,11 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
             else ""
 
     private fun getTokonowRecomProductId(): String {
-        val productId = intent.data?.pathSegments?.get(URL_PATH_2) ?: ""
-        return if (isNumber(productId)) {
-            productId
-        } else ""
+        var productId = ""
+        intent.data?.pathSegments?.get(URL_PATH_2)?.let {
+            if (isNumber(it)) productId = it
+        }
+        return productId
     }
 
 
@@ -142,7 +143,7 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
      * @return boolean
      */
     private fun isNumber(text: String): Boolean {
-        return (text.toIntOrNull() != null)
+        return text.all { it in '0'..'9' }
     }
 
     /**
