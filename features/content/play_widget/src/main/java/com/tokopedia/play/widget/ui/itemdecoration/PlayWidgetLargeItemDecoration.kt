@@ -10,7 +10,7 @@ import com.tokopedia.unifyprinciples.R.dimen as unifyRDimen
  * @author by astidhiyaa on 10/03/22
  */
 class PlayWidgetLargeItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
-    private val defaultOffset = context.resources.getDimensionPixelOffset(unifyRDimen.spacing_lvl3)
+    private val defaultOffset = context.resources.getDimensionPixelOffset(unifyRDimen.spacing_lvl2)
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val position = parent.getChildAdapterPosition(view)
