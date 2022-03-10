@@ -1,5 +1,6 @@
 package com.tokopedia.statistic.view.bottomsheet
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,9 +17,9 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import com.tokopedia.sellerhomecommon.presentation.adapter.DateFilterAdapter
 import com.tokopedia.sellerhomecommon.presentation.adapter.listener.DateFilterListener
+import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
 import com.tokopedia.statistic.common.StatisticPageHelper
@@ -91,6 +92,7 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
         showExclusiveIdentifier()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onItemDateRangeClick(model: DateFilterItem) {
         items.forEach {
             if (it != model) {
@@ -126,7 +128,9 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
     }
 
     fun show(fm: FragmentManager) {
-        show(fm, TAG)
+        if (!fm.isStateSaved) {
+            show(fm, TAG)
+        }
     }
 
     private fun showFilterItems() {

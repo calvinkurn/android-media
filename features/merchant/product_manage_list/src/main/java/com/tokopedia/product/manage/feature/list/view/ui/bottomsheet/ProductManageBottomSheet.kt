@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
@@ -16,6 +17,8 @@ import com.tokopedia.product.manage.feature.list.view.model.ProductItemDivider
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.databinding.BottomSheetProductManageBinding
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel.*
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -43,8 +46,14 @@ class ProductManageBottomSheet : BottomSheetUnify() {
     private var sellerFeatureCarousel: SellerFeatureCarousel? = null
     private var product: ProductUiModel? = null
     private var isPowerMerchantOrOfficialStore: Boolean = false
+    private var isProductCouponEnabled: Boolean = true
     
     private val access by lazy { arguments?.getParcelable<ProductManageAccess>(EXTRA_FEATURE_ACCESS) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initRemoteConfigValue()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setupChildView(inflater, container)
@@ -56,6 +65,17 @@ class ProductManageBottomSheet : BottomSheetUnify() {
         savedInstanceState?.run {
             parentFragment?.childFragmentManager?.beginTransaction()?.remove(this@ProductManageBottomSheet)?.commit()
         }
+    }
+
+    private fun initRemoteConfigValue() {
+        isProductCouponEnabled =
+            try {
+                context?.let {
+                    FirebaseRemoteConfigImpl(it).getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
+                }.orFalse()
+            } catch (ex: Exception) {
+                false
+            }
     }
 
     private fun setupView(binding: BottomSheetProductManageBinding) {
@@ -75,7 +95,11 @@ class ProductManageBottomSheet : BottomSheetUnify() {
         }
 
         product?.let { product ->
-            val menu = createProductManageMenu(product, isPowerMerchantOrOfficialStore)
+            val menu = createProductManageMenu(
+                product,
+                isPowerMerchantOrOfficialStore,
+                isProductCouponEnabled
+            )
             
             if (!GlobalConfig.isSellerApp()) {
                 val sellerFeatureList = createSellerFeatureList(product)
@@ -112,7 +136,8 @@ class ProductManageBottomSheet : BottomSheetUnify() {
 
     private fun createProductManageMenu(
         product: ProductUiModel,
-        isPowerMerchantOrOfficialStore: Boolean
+        isPowerMerchantOrOfficialStore: Boolean,
+        isProductCouponEnabled: Boolean
     ): List<Visitable<*>> {
         val menuList = mutableListOf<Visitable<*>>()
 
@@ -142,6 +167,10 @@ class ProductManageBottomSheet : BottomSheetUnify() {
                             product.hasTopAds() -> add(SeeTopAds(product))
                             else -> add(SetTopAds(product))
                         }
+                    }
+
+                    if (isProductCouponEnabled) {
+                        add(CreateProductCoupon(product))
                     }
 
                     if(broadcastChat) {

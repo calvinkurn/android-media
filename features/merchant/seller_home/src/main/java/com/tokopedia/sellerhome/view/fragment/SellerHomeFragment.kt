@@ -697,7 +697,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         )
         val perMontSelectedDate = Date(
             DateTimeUtil.getTimeInMillis(
-                element.filter.perWeek.startDate,
+                element.filter.perMonth.startDate,
                 DateTimeUtil.FORMAT_DD_MM_YYYY
             )
         )

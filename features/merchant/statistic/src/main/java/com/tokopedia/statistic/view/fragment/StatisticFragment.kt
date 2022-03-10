@@ -687,10 +687,11 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         val identifierDescription = statisticPage?.exclusiveIdentifierDateFilterDesc.orEmpty()
         DateFilterBottomSheet.newInstance(
             dateFilters, identifierDescription
-        ).setOnApplyChanges {
-            setHeaderSubTitle(it.getHeaderSubTitle(requireContext()))
-            applyDateRange(it)
-        }.show(childFragmentManager)
+        )
+            .setOnApplyChanges {
+                setHeaderSubTitle(it.getHeaderSubTitle(requireContext()))
+                applyDateRange(it)
+            }.show(childFragmentManager)
 
         val tabName = statisticPage?.pageTitle.orEmpty()
         StatisticTracker.sendCalendarClickEvent(userSession.userId, tabName, headerSubTitle)
