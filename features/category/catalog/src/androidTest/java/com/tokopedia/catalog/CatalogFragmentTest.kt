@@ -271,6 +271,7 @@ class CatalogFragmentTest
 
     @Test
     fun check_drag_product_listing_bottom_sheet() {
+        Thread.sleep(2000)
         actionTest {
             launchProductListingBottomSheet()
             closeProductListingBottomSheet()
@@ -381,6 +382,7 @@ class CatalogFragmentTest
         val intent = Intent(context, CatalogDetailPageActivity::class.java)
         intent.putExtras(bundle)
         activityRule.launchActivity(intent)
+        Thread.sleep(5000)
     }
 
     private fun setupIdlingResource() {

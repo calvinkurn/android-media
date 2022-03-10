@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -11,25 +12,26 @@ import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.order.data.get.GetOccCartGqlResponse
 import com.tokopedia.oneclickcheckout.order.domain.mapper.GetOccCartMapper
 import com.tokopedia.oneclickcheckout.order.view.model.OrderData
-import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class GetOccCartUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
                                             private val mapper: GetOccCartMapper,
                                             private val chosenAddressRequestHelper: ChosenAddressRequestHelper) {
 
-    fun createRequestParams(source: String): RequestParams {
-        val params = RequestParams.create().apply {
-            putString(PARAM_SOURCE, source)
-        }
-        chosenAddressRequestHelper.addChosenAddressParam(params)
-
-        return params
+    fun createRequestParams(source: String, gatewayCode: String, tenor: Int): Map<String, Any?> {
+        return mapOf(
+                PARAM_SOURCE to source,
+                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
+                PARAM_ADDITIONAL_PARAMS to mapOf(
+                        PARAM_GATEWAY_CODE to gatewayCode,
+                        PARAM_TENOR to tenor
+                )
+        )
     }
 
-    suspend fun executeSuspend(params: RequestParams): OrderData {
-        val graphqlRequest = GET_OCC_CART_PAGE_QUERY
-        val request = GraphqlRequest(graphqlRequest, GetOccCartGqlResponse::class.java, params.parameters)
+    @GqlQuery(GetOccMultiQuery, GET_OCC_CART_PAGE_QUERY)
+    suspend fun executeSuspend(params: Map<String, Any?>): OrderData {
+        val request = GraphqlRequest(GetOccMultiQuery(), GetOccCartGqlResponse::class.java, params)
         val response = graphqlRepository.response(listOf(request)).getSuccessData<GetOccCartGqlResponse>()
         if (response.response.status.equals(STATUS_OK, true)) {
             val errorMessage = response.response.data.errors.firstOrNull()
@@ -47,9 +49,14 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
 
     companion object {
         private const val PARAM_SOURCE = "source"
+        private const val PARAM_GATEWAY_CODE = "gateway_code"
+        private const val PARAM_TENOR = "tenure_type"
+        private const val PARAM_ADDITIONAL_PARAMS = "additional_params"
 
-        private const val GET_OCC_CART_PAGE_QUERY = """query get_occ_multi(${"$"}source: String, ${"$"}chosen_address: ChosenAddressParam) {
-  get_occ_multi(source: ${"$"}source, chosen_address: ${"$"}chosen_address) {
+        private const val GetOccMultiQuery = "GetOccMultiQuery"
+
+        private const val GET_OCC_CART_PAGE_QUERY = """query getOccMulti(${"$"}source: String, ${"$"}chosen_address: ChosenAddressParam, ${"$"}additional_params: OCCAdditionalParams) {
+  get_occ_multi(source: ${"$"}source, chosen_address: ${"$"}chosen_address, additional_params: ${"$"}additional_params) {
     error_message
     status
     data {
@@ -60,7 +67,6 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
       kero_token
       kero_unix_time
       kero_discom_token
-      error_ticker
       tickers {
         id
         message
@@ -393,6 +399,13 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
                 is_hide_digital
                 header_title
                 url_link
+            }
+            go_cicil {
+                error_message_invalid_tenure
+                error_message_top_limit
+                error_message_bottom_limit
+                error_message_unavailable_tenure
+                selected_tenure
             }
           }
         }

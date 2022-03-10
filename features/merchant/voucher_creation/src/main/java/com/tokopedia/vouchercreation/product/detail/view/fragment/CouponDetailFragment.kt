@@ -758,7 +758,6 @@ class CouponDetailFragment : BaseDaggerFragment() {
             .parseTo(DateTimeUtils.HOUR_FORMAT)
         val description = String.format(getString(R.string.placeholder_share_component_text_description), shop.shopName, endDate, endHour)
 
-
         shareComponentBottomSheet = buildShareComponentInstance(
             imageUrl,
             title,
