@@ -88,6 +88,16 @@
             app:layout_constraintBottom_toTopOf="@id/gl_cover_preview"
             />
 
+<!--        <com.tokopedia.unifycomponents.ImageUnify-->
+<!--            android:id="@+id/iv_cover_image_circle_dash"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="0dp"-->
+<!--            app:layout_constraintTop_toTopOf="@id/iv_cover_image_placeholder"-->
+<!--            app:layout_constraintStart_toStartOf="@id/iv_cover_image_placeholder"-->
+<!--            app:layout_constraintEnd_toEndOf="@id/iv_cover_image_placeholder"-->
+<!--            app:layout_constraintBottom_toBottomOf="@id/iv_cover_image_placeholder"-->
+<!--            />-->
+
         <com.tokopedia.unifycomponents.ImageUnify
             android:layout_width="0dp"
             android:layout_height="0dp"
