@@ -73,10 +73,7 @@ public class CommonUtils {
         } else {
             operationName = request.getOperationName();
         }
-        return new StringBuffer()
-                .append(GraphqlClient.moduleName)
-                .append("_")
-                .append(operationName).toString();
+        return GraphqlClient.moduleName + "_" + operationName;
     }
 }
 
