@@ -57,15 +57,15 @@ class PlayBroadcastSummaryViewModelTest {
         robot.use {
             val state = it.recordState {  }
 
-            with(state.liveReport) {
-                trafficMetricsResult.assertEqualTo(
+            with(state) {
+                liveReport.trafficMetricsResult.assertEqualTo(
                     NetworkResult.Success(
                         playBroadcastMapper.mapToLiveTrafficUiMetrics(mockLiveStats.channel.metrics)
                     )
                 )
-                duration.date.assertEqualTo(mockPublishedAtFormatted)
-                duration.duration.assertEqualTo(mockLiveStats.duration)
-                duration.isEligiblePostVideo.assertTrue()
+                channelSummary.date.assertEqualTo(mockPublishedAtFormatted)
+                channelSummary.duration.assertEqualTo(mockLiveStats.duration)
+                channelSummary.isEligiblePostVideo.assertTrue()
             }
         }
     }
@@ -84,11 +84,11 @@ class PlayBroadcastSummaryViewModelTest {
         robot.use {
             val state = it.recordState {  }
 
-            with(state.liveReport) {
-                when(val result = trafficMetricsResult) {
+            with(state) {
+                when(val result = liveReport.trafficMetricsResult) {
                     is NetworkResult.Fail -> {
                         assertTrue(result.error.message == mockException.message)
-                        duration.assertEqualTo(LiveDurationUiModel.empty())
+                        assertTrue(channelSummary.isEmpty())
                     }
                     else -> fail("Traffic metric result should be fail")
                 }
@@ -114,9 +114,9 @@ class PlayBroadcastSummaryViewModelTest {
         robot.use {
             val state = it.recordState {  }
 
-            with(state.liveReport) {
-                duration.duration.assertEqualTo(mockLiveStatUnder60Second.duration)
-                duration.isEligiblePostVideo.assertFalse()
+            with(state.channelSummary) {
+                duration.assertEqualTo(mockLiveStatUnder60Second.duration)
+                isEligiblePostVideo.assertFalse()
             }
         }
     }
