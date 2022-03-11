@@ -1,20 +1,14 @@
 package com.tokopedia.play.broadcaster.viewmodel.summary.report
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
-import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.SetChannelTagsUseCase
+import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
+import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastSummaryViewModelRobot
-import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.LiveDurationUiModel
 import com.tokopedia.play.broadcaster.util.*
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Rule
@@ -34,19 +28,31 @@ class PlayBroadcastSummaryViewModelTest {
 
     private val playBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer())
 
+    private val mockGetChannelUseCase: GetChannelUseCase = mockk(relaxed = true)
     private val mockGetLiveStatisticsUseCase: GetLiveStatisticsUseCase = mockk(relaxed = true)
 
     private val modelBuilder = UiModelBuilder()
     private val mockException = Exception("Network Error")
     private val mockLiveStats by lazy { modelBuilder.buildLiveStats() }
+    private val mockPublishedAt = "2022-03-10T18:44:00"
+    private val mockPublishedAtFormatted = "10 Maret 2022"
+    private val mockChannel = GetChannelResponse.Channel(
+        basic = GetChannelResponse.ChannelBasic(
+            timestamp = GetChannelResponse.Timestamp(
+                publishedAt = mockPublishedAt
+            )
+        )
+    )
 
     @Test
     fun `when get traffic summary is success, then it should return success`() {
+        coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
         coEvery { mockGetLiveStatisticsUseCase.executeOnBackground() } returns mockLiveStats
 
         val robot = PlayBroadcastSummaryViewModelRobot(
             dispatcher = testDispatcher,
             getLiveStatisticsUseCase = mockGetLiveStatisticsUseCase,
+            getChannelUseCase = mockGetChannelUseCase,
         )
 
         robot.use {
@@ -58,6 +64,7 @@ class PlayBroadcastSummaryViewModelTest {
                         playBroadcastMapper.mapToLiveTrafficUiMetrics(mockLiveStats.channel.metrics)
                     )
                 )
+                duration.date.assertEqualTo(mockPublishedAtFormatted)
                 duration.duration.assertEqualTo(mockLiveStats.duration)
                 duration.isEligiblePostVideo.assertTrue()
             }
@@ -66,11 +73,13 @@ class PlayBroadcastSummaryViewModelTest {
 
     @Test
     fun `when get traffic summary failed, then it should return failed`() {
+        coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
         coEvery { mockGetLiveStatisticsUseCase.executeOnBackground() } throws mockException
 
         val robot = PlayBroadcastSummaryViewModelRobot(
             dispatcher = testDispatcher,
             getLiveStatisticsUseCase = mockGetLiveStatisticsUseCase,
+            getChannelUseCase = mockGetChannelUseCase,
         )
 
         robot.use {
@@ -94,11 +103,13 @@ class PlayBroadcastSummaryViewModelTest {
             duration = "00:00:10"
         )
 
+        coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
         coEvery { mockGetLiveStatisticsUseCase.executeOnBackground() } returns mockLiveStatUnder60Second
 
         val robot = PlayBroadcastSummaryViewModelRobot(
             dispatcher = testDispatcher,
             getLiveStatisticsUseCase = mockGetLiveStatisticsUseCase,
+            getChannelUseCase = mockGetChannelUseCase,
         )
 
         robot.use {
