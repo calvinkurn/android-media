@@ -6,7 +6,19 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.CHANGE_PAYMENT_METHOD_MESSAGE
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.MAXIMUM_AMOUNT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.MINIMUM_AMOUNT_ERROR_MESSAGE
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonType
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCostCashbackData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCostInstallmentData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentErrorData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletErrorData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
@@ -62,6 +74,12 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                 return@withContext payment.copy(isCalculationError = false,
                         errorData = OrderPaymentErrorData(payment.revampErrorMessage.message, payment.revampErrorMessage.button.text, payment.revampErrorMessage.button.action)) to orderTotal.copy(orderCost = orderCost, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             }
+            if (payment.walletData.isGoCicil && payment.walletData.goCicilData.availableTerms.isNotEmpty() &&
+                    payment.walletData.goCicilData.availableTerms.find { it.isActive } == null) {
+                // no active terms
+                return@withContext payment.copy(isCalculationError = false,
+                        errorData = OrderPaymentErrorData(payment.walletData.goCicilData.errorMessageUnavailableTenures)) to orderTotal.copy(orderCost = orderCost, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
+            }
             if (payment.isOvo && payment.ovoData.isPhoneNumberMissing) {
                 if (payment.isOvoOnlyCampaign) {
                     return@withContext payment.copy(isCalculationError = true, errorData = null,
@@ -105,7 +123,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                         walletErrorData = OrderPaymentWalletErrorData(isBlockingError = false, message = payment.walletData.activation.errorMessage, buttonTitle = payment.walletData.activation.buttonTitle,
                                 type = OrderPaymentWalletErrorData.TYPE_ACTIVATION, callbackUrl = payment.walletData.callbackUrl)) to orderTotal.copy(orderCost = orderCost, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             }
-            if (payment.minimumAmount > subtotal) {
+            if (!payment.walletData.isGoCicil && payment.minimumAmount > subtotal) {
                 var buttonType = OccButtonType.CHOOSE_PAYMENT
                 if (payment.isOvoOnlyCampaign) {
                     currentState = disableButtonState(currentState)
@@ -118,12 +136,30 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                 return@withContext payment.copy(isCalculationError = true, errorData = OrderPaymentErrorData(generateMinimumAmountPaymentErrorMessage(payment.gatewayName), CHANGE_PAYMENT_METHOD_MESSAGE, OrderPaymentErrorData.ACTION_CHANGE_PAYMENT)) to orderTotal.copy(orderCost = orderCost,
                         buttonType = buttonType, buttonState = currentState)
             }
-            if (payment.maximumAmount > 0 && payment.maximumAmount < subtotal) {
+            if (payment.walletData.isGoCicil && payment.minimumAmount > orderCost.totalPriceWithoutPaymentFees) {
+                var buttonType = OccButtonType.CHOOSE_PAYMENT
+                if (payment.specificGatewayCampaignOnlyType > 0) {
+                    currentState = disableButtonState(currentState)
+                    buttonType = OccButtonType.PAY
+                }
+                return@withContext payment.copy(isCalculationError = true, errorData = OrderPaymentErrorData(message = payment.walletData.goCicilData.errorMessageBottomLimit)) to orderTotal.copy(orderCost = orderCost,
+                        buttonType = buttonType, buttonState = currentState)
+            }
+            if (!payment.walletData.isGoCicil && payment.maximumAmount > 0 && payment.maximumAmount < subtotal) {
                 var buttonType = OccButtonType.CHOOSE_PAYMENT
                 if (payment.isOvoOnlyCampaign) {
                     currentState = disableButtonState(currentState)
                     buttonType = OccButtonType.PAY
                 }
+                if (payment.specificGatewayCampaignOnlyType > 0) {
+                    currentState = disableButtonState(currentState)
+                    buttonType = OccButtonType.PAY
+                }
+                return@withContext payment.copy(isCalculationError = true, errorData = OrderPaymentErrorData(generateMaximumAmountPaymentErrorMessage(payment.gatewayName), CHANGE_PAYMENT_METHOD_MESSAGE, OrderPaymentErrorData.ACTION_CHANGE_PAYMENT)) to orderTotal.copy(orderCost = orderCost,
+                        buttonType = buttonType, buttonState = currentState)
+            }
+            if (payment.walletData.isGoCicil && payment.maximumAmount < orderCost.totalPriceWithoutPaymentFees) {
+                var buttonType = OccButtonType.CHOOSE_PAYMENT
                 if (payment.specificGatewayCampaignOnlyType > 0) {
                     currentState = disableButtonState(currentState)
                     buttonType = OccButtonType.PAY
@@ -142,7 +178,16 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                         type = OrderPaymentWalletErrorData.TYPE_TOP_UP, callbackUrl = payment.ovoData.callbackUrl, isHideDigital = payment.ovoData.topUp.isHideDigital, isOvo = true)) to orderTotal.copy(orderCost = orderCost,
                         buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             }
-            if (payment.walletData.enableWalletAmountValidation && subtotal > payment.walletAmount) {
+            if (payment.walletData.isGoCicil && payment.walletAmount < orderCost.totalPriceWithoutPaymentFees) {
+                var buttonType = OccButtonType.CHOOSE_PAYMENT
+                if (payment.specificGatewayCampaignOnlyType > 0) {
+                    currentState = disableButtonState(currentState)
+                    buttonType = OccButtonType.PAY
+                }
+                return@withContext payment.copy(isCalculationError = true, errorData = OrderPaymentErrorData(message = payment.walletData.goCicilData.errorMessageTopLimit)) to orderTotal.copy(orderCost = orderCost,
+                        buttonType = buttonType, buttonState = currentState)
+            }
+            if (!payment.walletData.isGoCicil && payment.walletData.enableWalletAmountValidation && subtotal > payment.walletAmount) {
                 if (payment.specificGatewayCampaignOnlyType > 0) {
                     return@withContext payment.copy(isCalculationError = true, walletErrorData = OrderPaymentWalletErrorData(isBlockingError = true, message = payment.walletData.topUp.errorMessage, buttonTitle = payment.walletData.topUp.buttonTitle,
                             type = OrderPaymentWalletErrorData.TYPE_TOP_UP, callbackUrl = payment.walletData.callbackUrl, isHideDigital = isHideDigitalInt)) to orderTotal.copy(orderCost = orderCost, buttonType = OccButtonType.PAY, buttonState = disableButtonState(currentState))
@@ -154,6 +199,9 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                 currentState = disableButtonState(currentState)
             }
             if (payment.creditCard.isAfpb && payment.creditCard.selectedTerm == null) {
+                currentState = disableButtonState(currentState)
+            }
+            if (payment.walletData.isGoCicil && !payment.walletData.goCicilData.hasValidTerm) {
                 currentState = disableButtonState(currentState)
             }
             return@withContext payment.copy(isCalculationError = false) to orderTotal.copy(orderCost = orderCost, buttonType = OccButtonType.PAY, buttonState = currentState)
@@ -171,16 +219,44 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.default) {
             val (cost, _) = calculateOrderCostWithoutPaymentFee(orderCart, shipping, validateUsePromoRevampUiModel, orderPayment)
-            var subtotal = cost.totalPrice + cost.productDiscountAmount + cost.shippingDiscountAmount
+            var subtotal = cost.totalPrice
             var payment = orderPayment
             if (!orderPayment.creditCard.isAfpb) {
-                payment = calculateInstallmentDetails(payment, subtotal, if (orderCart.shop.isOfficial == 1) subtotal - cost.productDiscountAmount - cost.shippingDiscountAmount else 0.0, cost.productDiscountAmount + cost.shippingDiscountAmount)
+                payment = calculateInstallmentDetails(payment, cost.totalPriceWithoutDiscountsAndPaymentFees, if (orderCart.shop.isOfficial == 1) cost.totalPriceWithoutPaymentFees else 0.0, cost.totalDiscounts)
             }
             val fee = payment.getRealFee()
             subtotal += fee
-            subtotal -= cost.productDiscountAmount
-            subtotal -= cost.shippingDiscountAmount
-            val orderCost = OrderCost(subtotal, cost.totalItemPrice, cost.shippingFee, cost.insuranceFee, fee, cost.shippingDiscountAmount, cost.productDiscountAmount, cost.purchaseProtectionPrice, cost.cashbacks)
+            var installmentData: OrderCostInstallmentData? = null
+            val selectedTerm = orderPayment.walletData.goCicilData.selectedTerm
+            if (orderPayment.walletData.isGoCicil && selectedTerm != null && orderPayment.walletData.goCicilData.hasValidTerm &&
+                    payment.minimumAmount <= cost.totalPriceWithoutPaymentFees && cost.totalPriceWithoutPaymentFees <= payment.maximumAmount) {
+                installmentData = OrderCostInstallmentData(
+                        installmentFee = selectedTerm.interestAmount,
+                        installmentTerm = selectedTerm.installmentTerm,
+                        installmentAmountPerPeriod = selectedTerm.installmentAmountPerPeriod,
+                        installmentFirstDate = selectedTerm.firstInstallmentDate,
+                        installmentLastDate = selectedTerm.lastInstallmentDate,
+                )
+                subtotal += installmentData.installmentFee
+            }
+            val orderCost = OrderCost(
+                    totalPrice = subtotal,
+                    totalItemPrice = cost.totalItemPrice,
+                    shippingFee = cost.shippingFee,
+                    insuranceFee = cost.insuranceFee,
+                    isUseInsurance = cost.isUseInsurance,
+                    paymentFee = fee,
+                    shippingDiscountAmount = cost.shippingDiscountAmount,
+                    productDiscountAmount = cost.productDiscountAmount,
+                    purchaseProtectionPrice = cost.purchaseProtectionPrice,
+                    cashbacks = cost.cashbacks,
+                    installmentData = installmentData,
+                    totalPriceWithoutPaymentFees = cost.totalPriceWithoutPaymentFees,
+                    totalPriceWithoutDiscountsAndPaymentFees = cost.totalPriceWithoutDiscountsAndPaymentFees,
+                    totalItemPriceAndShippingFee = cost.totalItemPriceAndShippingFee,
+                    totalAdditionalFee = cost.totalAdditionalFee,
+                    totalDiscounts = cost.totalDiscounts,
+            )
             return@withContext orderCost to payment
         }
         OccIdlingResource.decrement()
@@ -238,9 +314,28 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             totalProductPrice += totalProductWholesalePrice
             val totalShippingPrice = shipping.getRealOriginalPrice().toDouble()
             val insurancePrice = shipping.getRealInsurancePrice().toDouble()
+            val isUseInsurance = shipping.isUseInsurance()
             val (productDiscount, shippingDiscount, cashbacks) = calculatePromo(validateUsePromoRevampUiModel)
-            val subtotal = totalProductPrice + totalPurchaseProtectionPrice + totalShippingPrice + insurancePrice - productDiscount - shippingDiscount
-            val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, 0.0, shippingDiscount, productDiscount, totalPurchaseProtectionPrice, cashbacks)
+            val subtotalWithoutDiscountsAndPaymentFee = totalProductPrice + totalPurchaseProtectionPrice + totalShippingPrice + insurancePrice
+            val totalDiscounts = productDiscount + shippingDiscount
+            val subtotal = subtotalWithoutDiscountsAndPaymentFee - totalDiscounts
+            val orderCost = OrderCost(
+                    totalPrice = subtotal,
+                    totalItemPrice = totalProductPrice,
+                    shippingFee = totalShippingPrice,
+                    insuranceFee = insurancePrice,
+                    isUseInsurance = isUseInsurance,
+                    paymentFee = 0.0,
+                    shippingDiscountAmount = shippingDiscount,
+                    productDiscountAmount = productDiscount,
+                    purchaseProtectionPrice = totalPurchaseProtectionPrice,
+                    cashbacks = cashbacks,
+                    totalPriceWithoutPaymentFees = subtotal,
+                    totalPriceWithoutDiscountsAndPaymentFees = subtotalWithoutDiscountsAndPaymentFee,
+                    totalItemPriceAndShippingFee = totalProductPrice + totalShippingPrice,
+                    totalAdditionalFee = insurancePrice + totalPurchaseProtectionPrice,
+                    totalDiscounts = totalDiscounts,
+            )
             return@withContext orderCost to updatedProductIndex
         }
         OccIdlingResource.decrement()

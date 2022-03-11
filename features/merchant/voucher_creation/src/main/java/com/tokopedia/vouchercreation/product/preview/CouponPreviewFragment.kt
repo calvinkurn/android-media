@@ -34,13 +34,13 @@ import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.extension.splitByThousand
 import com.tokopedia.vouchercreation.common.tracker.CouponPreviewTracker
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.isBeforeRollout
 import com.tokopedia.vouchercreation.common.utils.HyperlinkClickHandler
 import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
 import com.tokopedia.vouchercreation.databinding.FragmentCouponPreviewBinding
 import com.tokopedia.vouchercreation.product.create.data.response.ProductId
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.view.bottomsheet.ExpenseEstimationBottomSheet
-import com.tokopedia.vouchercreation.product.create.view.bottomsheet.TermAndConditionBottomSheet
 import com.tokopedia.vouchercreation.product.create.view.dialog.CreateProductCouponFailedDialog
 import com.tokopedia.vouchercreation.product.create.view.dialog.UpdateProductCouponFailedDialog
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
@@ -311,7 +311,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         binding.tpgTermAndConditions.movementMethod = object : HyperlinkClickHandler() {
             override fun onLinkClick(url: String?) {
                 tracker.sendTermAndConditionClickEvent()
-                displayTermAndConditionBottomSheet()
+                redirectToTermAndConditionPage()
             }
 
         }
@@ -659,6 +659,14 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         RouteManager.route(requireActivity(), route)
     }
 
+    private fun redirectToTermAndConditionPage() {
+        if (!isAdded) return
+        val url = UrlConstant.HOSTNAME + UrlConstant.PRODUCT_COUPON_TERM_AND_CONDITION
+        val encodedUrl = URLEncoder.encode(url, "utf-8")
+        val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
+        RouteManager.route(requireActivity(), route)
+    }
+
     private fun displayExpenseEstimationDescription() {
         if (!isAdded) return
         val bottomSheet = ExpenseEstimationBottomSheet.newInstance()
@@ -740,15 +748,6 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         )
         createCouponErrorNotice.dismiss()
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, VoucherUrl.HELP_URL)
-    }
-
-
-    private fun displayTermAndConditionBottomSheet() {
-        val bottomSheet = TermAndConditionBottomSheet.newInstance(
-            requireActivity(),
-            getString(R.string.coupon_tnc)
-        )
-        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
     private fun displayCouponPreviewBottomSheet() {
@@ -838,8 +837,10 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     ) {
         //Modify duplicated coupon with current time + 3 hours
         if (mode == Mode.DUPLICATE) {
-            val startDate = getCouponDefaultStartDate()
-            val endDate = getCouponDefaultEndDate()
+            val startDate = if (requireContext().isBeforeRollout()) getCouponDefaultStartDateBeforeRollout()
+                else getCouponDefaultStartDate()
+            val endDate = if (requireContext().isBeforeRollout()) getCouponDefaultEndDateBeforeRollout()
+                else getCouponDefaultEndDate()
             val now = CouponInformation.Period(startDate, endDate)
             this.couponInformation = couponInformation.copy(
                 target = couponInformation.target,
@@ -859,6 +860,21 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     private fun getCouponDefaultEndDate(): Date {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_MONTH, COUPON_END_DATE_OFFSET_IN_DAYS)
+        return calendar.time
+    }
+
+    private fun getCouponDefaultStartDateBeforeRollout() : Date {
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = DateTimeUtils.ROLLOUT_DATE_THRESHOLD_TIME
+        }
+        return calendar.time
+    }
+
+    private fun getCouponDefaultEndDateBeforeRollout(): Date {
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = DateTimeUtils.ROLLOUT_DATE_THRESHOLD_TIME
+            add(Calendar.DAY_OF_MONTH, COUPON_END_DATE_OFFSET_IN_DAYS)
+        }
         return calendar.time
     }
 
@@ -882,7 +898,6 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         if (viewModel.isDuplicateMode(pageMode)) {
             showCouponDuplicatedToaster()
         }
-
     }
 
 }
