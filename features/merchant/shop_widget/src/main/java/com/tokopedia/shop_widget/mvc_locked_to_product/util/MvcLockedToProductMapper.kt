@@ -187,7 +187,9 @@ object MvcLockedToProductMapper {
 
     private fun getProductCardDiscountPercentage(discountPercentage: String): String {
         return discountPercentage.replace("%", "").let { discount ->
-            discount.takeIf { it != "0" }.orEmpty()
+            discount.takeIf { it != "0" &&  it.isNotEmpty() }?.let{
+                "$discount%"
+            }.orEmpty()
         }
     }
 
