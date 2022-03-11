@@ -64,7 +64,7 @@ object IrisAnalyticsEvents {
     private const val CAMPAIGN_NAME = "campaign_name"
     private const val JOURNEY_ID = "journey_id"
     private const val JOURNEY_NAME = "journey_name"
-    private const val SESSION_ID = "session_id"
+    private const val SESSION_ID = "session_id_cm"
 
     private const val AMPLIFICATION = "amplification"
 
