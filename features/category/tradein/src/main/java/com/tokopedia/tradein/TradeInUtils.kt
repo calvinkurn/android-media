@@ -18,5 +18,16 @@ class TradeInUtils {
                 }
             }
         }
+
+        fun isExpiryTimeOver(saleEndDate: String, timerFormat: String = TIMER_DATE_FORMAT): Boolean {
+            if (saleEndDate.isEmpty()) return true
+            val currentSystemTime = Calendar.getInstance().time
+            val parsedDate = parseData(saleEndDate, timerFormat)
+            return if (parsedDate != null) {
+                currentSystemTime.time >= parsedDate.time
+            } else {
+                false
+            }
+        }
     }
 }

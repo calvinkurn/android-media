@@ -28,6 +28,7 @@ const val GQL_TRADE_IN_DETAIL: String = """query getTradeInDetail(${'$'}params: 
             FinalPrice
             Subtitle
             ExpiryTime
+            CampaignTagId
             DiagnosticReview{
               Field
               Value

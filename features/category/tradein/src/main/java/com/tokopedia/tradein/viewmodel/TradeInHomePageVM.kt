@@ -50,9 +50,10 @@ class TradeInHomePageVM @Inject constructor(
     private var laku6TradeIn: Laku6TradeIn? = null
     var imei: String = ""
     var tradeInPrice: String = ""
-    var tradeInPriceInt: Int = 0
-    var finalPriceInt: Int = 0
+    var tradeInPriceDouble: Double = 0.0
+    var finalPriceDouble: Double = 0.0
     var tradeInUniqueCode: String = ""
+    var campaginTagId: String = ""
 
     fun getPDPData(tradeinPDPData: TradeInPDPData?): TradeInPDPData? {
         data = tradeinPDPData ?: data
@@ -92,11 +93,21 @@ class TradeInHomePageVM @Inject constructor(
                         rootBlocked = rootDetected,
                         deviceInfo = Laku6TestDataModel.DeviceInfo(
                             brand = deviceAttribute.brand,
-                            modelDisplayName = "",
                             modelId = deviceAttribute.modelId.toString(),
-                            modelName = deviceAttribute.model,
+                            model = deviceAttribute.model,
                             ram = deviceAttribute.ram,
                             storage = deviceAttribute.storage
+                        ),
+                        finalPageInfo = Laku6TestDataModel.FinalPageInfo(
+                            imei = if(deviceAttribute.imei.isNotEmpty()) deviceAttribute.imei.firstOrNull() ?: "" else imei,
+                            productImage = data?.productImage ?: "",
+                            productName = data?.productName ?: "",
+                            productOriginalValue = data?.productPrice ?: 0.0,
+                            productValue = finalPriceDouble,
+                            location = data?.shopLocation ?: "",
+                            storeIcon = data?.shopBadge ?: "",
+                            storeName = data?.shopName ?: "",
+                            storeType = ""
                         )
                     )
                 )
@@ -140,10 +151,12 @@ class TradeInHomePageVM @Inject constructor(
             val diagnosticsData = getDiagnosticData(intent)
             tradeInUniqueCode = diagnosticsData.tradeInUniqueCode ?: ""
             val data = insertLogisticPreferenceUseCase.insertLogistic(
-                is3PLSelected.value ?: false,
-                finalPriceInt,
-                tradeInPriceInt,
-                imei
+                is3PL = is3PLSelected.value ?: false,
+                finalPrice = finalPriceDouble,
+                tradeInPrice = tradeInPriceDouble,
+                imei = imei,
+                uniqueCode = tradeInUniqueCode,
+                campaignTagId = campaginTagId
             )
             data.insertTradeInLogisticPreference.apply {
                 if (isSuccess) {

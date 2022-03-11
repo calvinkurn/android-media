@@ -15,18 +15,20 @@ class InsertLogisticPreferenceUseCase @Inject constructor(
     private val userSession: UserSession
 ) {
 
-    suspend fun insertLogistic(is3PL : Boolean, finalPrice : Int, tradeInPrice : Int, imei : String): InsertTradeInLogisticModel {
-        return repository.getGQLData(GqlInsertLogisticPreference.GQL_QUERY, InsertTradeInLogisticModel::class.java, createRequestParams(is3PL, finalPrice, tradeInPrice, imei))
+    suspend fun insertLogistic(is3PL : Boolean, finalPrice : Double, tradeInPrice : Double, imei : String, uniqueCode : String, campaignTagId : String): InsertTradeInLogisticModel {
+        return repository.getGQLData(GqlInsertLogisticPreference.GQL_QUERY, InsertTradeInLogisticModel::class.java, createRequestParams(is3PL, finalPrice, tradeInPrice, imei, uniqueCode, campaignTagId))
     }
 
-    private fun createRequestParams(is3PL : Boolean, finalPrice : Int, tradeInPrice : Int, imei : String): Map<String, Any> {
+    private fun createRequestParams(is3PL : Boolean, finalPrice : Double, tradeInPrice : Double, imei : String, uniqueCode : String, campaignTagId : String): Map<String, Any> {
         return mapOf<String,Any>(PARAM_INPUT to
                 InsertTradeInLogisticPreferenceInput(
                     deviceId = userSession.deviceId,
                     is3PL = is3PL,
                     finalPrice = finalPrice,
                     tradeInPrice = tradeInPrice,
-                    imei = imei
+                    imei = imei,
+                    uniqueCode = uniqueCode,
+                    campaignTagId = campaignTagId
                 ))
     }
 }

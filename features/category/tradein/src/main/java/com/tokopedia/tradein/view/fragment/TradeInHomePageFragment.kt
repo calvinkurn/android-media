@@ -357,9 +357,9 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                 for (logistic in logisticData) {
                     if (is3Pl == logistic.is3PL) {
                         tradeInHomePageVM.tradeInPrice = logistic.diagnosticPriceFmt
-                        tradeInHomePageVM.tradeInPriceInt = logistic.diagnosticPrice
-                        tradeInHomePageVM.finalPriceInt = logistic.finalPrice
-                        setUpPriceView(logistic, true)
+                        tradeInHomePageVM.tradeInPriceDouble = logistic.diagnosticPrice
+                        tradeInHomePageVM.finalPriceDouble = logistic.finalPrice
+                        setUpPriceView(logistic, logistic.isDiagnosed)
                         if (logistic.isDiagnosed) {
                             findViewById<UnifyButton>(R.id.btn_continue).text =
                                 getString(com.tokopedia.tradein.R.string.tradein_continue_payment)
@@ -422,6 +422,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
         showTimer: Boolean = false
     ) {
         view?.apply {
+            tradeInHomePageVM.campaginTagId = logistic.campaignTagId
             findViewById<IconUnify>(R.id.iv_info).setOnClickListener {
                 val bottomSheet = TradeInDiagnosticReviewBS.newInstance(logistic.diagnosticReview)
                 bottomSheet.show(childFragmentManager, "")
@@ -443,7 +444,9 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             )
             findViewById<Label>(R.id.label_discount).text = logistic.discountPercentageFmt
             findViewById<TimerUnifySingle>(R.id.tradein_count_down).let { countDownView ->
-                if (showTimer || logistic.expiryTime.isEmpty()) {
+                if (showTimer && logistic.expiryTime.isNotEmpty()) {
+//                    TODO depending on laku6 sdk
+//                    findViewById<UnifyButton>(R.id.btn_continue).isEnabled = !TradeInUtils.isExpiryTimeOver(logistic.expiryTime)
                     TradeInUtils.parseData(logistic.expiryTime)?.let { parsedDate ->
                         countDownView?.show()
                         findViewById<Typography>(R.id.tradein_timer_text).show()

@@ -6,6 +6,8 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 data class Laku6DeviceModel(
+    @SerializedName("imei")
+    var imei: String,
     @SerializedName("app_version")
     var appVersion: String,
     @SerializedName("brand")
@@ -48,6 +50,7 @@ data class Laku6DeviceModel(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
+        parcel.readString() ?: "",
         parcel.readLong(),
         parcel.readString() ?: "",
         parcel.readByte() != 0.toByte(),
@@ -60,6 +63,7 @@ data class Laku6DeviceModel(
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(imei)
         parcel.writeString(appVersion)
         parcel.writeString(brand)
         parcel.writeString(campaignId)
