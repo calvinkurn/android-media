@@ -28,6 +28,7 @@ class ManageProductViewModel @Inject constructor(
 
     // PRODUCT SELECTIONS
     var isSelectAllMode = true
+    var isSingleClick = false
 
     private var isViewing = false
     private var isEditing = false
@@ -106,8 +107,20 @@ class ManageProductViewModel @Inject constructor(
             productUiModel.isError = false
             productUiModel.errorMessage = ""
             productUiModel.variants.forEach { variantUiModel ->
+                variantUiModel.isViewing = isViewing
+                variantUiModel.isEditing = isEditing
                 variantUiModel.isError = false
                 variantUiModel.errorMessage = ""
+            }
+        }
+        return mutableProductList.toList()
+    }
+
+    fun filterSelectedProductVariant(productList: List<ProductUiModel>): List<ProductUiModel> {
+        val mutableProductList = productList.toMutableList()
+        mutableProductList.forEach { productUiModel ->
+            productUiModel.variants = productUiModel.variants.filter { variantUiModel ->
+                variantUiModel.isSelected
             }
         }
         return mutableProductList.toList()
@@ -137,7 +150,7 @@ class ManageProductViewModel @Inject constructor(
         val mutableProductList = productList.toMutableList()
         validationResults.forEach { validationResult ->
             val productUiModel = mutableProductList.first {
-                it.id == validationResult.parentProductId.toString()
+                it.id == validationResult.parentProductId
             }
             productUiModel.hasVariant = validationResult.isVariant
             productUiModel.variants = mapVariantDataToUiModel(
@@ -185,7 +198,9 @@ class ManageProductViewModel @Inject constructor(
                     variantUiModel.isSelected = true
                 }
             }
-            if (isViewing) productUiModel?.variants = mutableVariantList?.filter { it.isSelected } ?: listOf()
+            val selectedVariants = mutableVariantList?.filter { it.isSelected }
+            selectedVariants?.forEach { it.isSelected  = false }
+            productUiModel?.variants = selectedVariants ?: listOf()
         }
         return mutableProductList
     }
@@ -300,6 +315,9 @@ class ManageProductViewModel @Inject constructor(
             it.isVariantHeaderExpanded = false
             it.isEditing = true
             it.isViewing = false
+            it.variants.forEach { variantUiModel ->
+                variantUiModel.isSelected = false
+            }
         }
         return mutableSelectedProducts.toList()
     }

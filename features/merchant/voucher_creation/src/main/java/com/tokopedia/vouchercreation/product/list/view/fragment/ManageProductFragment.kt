@@ -146,9 +146,10 @@ class ManageProductFragment : BaseDaggerFragment(),
             )
         } else {
             if (!selectedProducts.isNullOrEmpty()) {
-                viewModel.setSetSelectedProducts(selectedProducts.toList())
                 val updatedProductList = viewModel.updateProductUiModelsDisplayMode(isViewing, isEditing, selectedProducts)
-                adapter?.setProductList(resetProductUiModelState(updatedProductList))
+                val filteredProductList = viewModel.filterSelectedProductVariant(updatedProductList)
+                adapter?.setProductList(viewModel.resetProductUiModelState(filteredProductList))
+                updateProductCounter()
             }
         }
     }
@@ -164,6 +165,8 @@ class ManageProductFragment : BaseDaggerFragment(),
     private fun setupDeleteProductButton(binding: FragmentMvcManageProductBinding?) {
         binding?.tpgDeleteProduct?.setOnClickListener {
             adapter?.deleteSelectedProducts()
+            viewModel.setSetSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
+            updateProductCounter()
         }
     }
 
@@ -184,9 +187,12 @@ class ManageProductFragment : BaseDaggerFragment(),
                 if (isIndeterminate && !viewModel.isSelectAllMode) return@setOnCheckedChangeListener
                 adapter?.updateAllProductSelections(isChecked)
             } else {
-                binding.cbuSelectAllProduct.setIndeterminate(false)
-                adapter?.updateAllProductSelections(isChecked)
+                if (!viewModel.isSingleClick) {
+                    binding.cbuSelectAllProduct.setIndeterminate(false)
+                    adapter?.updateAllProductSelections(isChecked)
+                }
             }
+            viewModel.setSetSelectedProducts(adapter?.getSelectedProducts()?: listOf())
         }
     }
 
@@ -225,8 +231,6 @@ class ManageProductFragment : BaseDaggerFragment(),
                     binding?.selectionBar?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.mvc_grey_f3f4f5))
                 }
             }
-            val maxProductLimit = viewModel.getMaxProductLimit()
-            binding?.tpgSelectedProductCounter?.text = "Jumlah Produk (${selectedProducts.size}/$maxProductLimit)"
         })
         viewModel.getProductListResult.observe(viewLifecycleOwner, { result ->
             when (result) {
@@ -275,10 +279,13 @@ class ManageProductFragment : BaseDaggerFragment(),
                     val selectedProductIds = viewModel.getSelectedProductIds()
                     val finalProductList = viewModel.setVariantSelection(updatedProductList, selectedProductIds, viewModel.getIsViewing())
 
-                    val newAddedProducts = arguments?.getParcelableArrayList<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)?.toList()
-                    finalProductList.addAll(newAddedProducts?: listOf())
-                    viewModel.setSetSelectedProducts(finalProductList)
+                    val newAddedProducts = arguments?.getParcelableArrayList<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)?.toList() ?: listOf()
+                    val normalizedProductList = resetProductUiModelState(newAddedProducts)
+                    finalProductList.addAll(normalizedProductList?: listOf())
+
                     adapter?.setProductList(finalProductList)
+                    viewModel.setSetSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
+                    updateProductCounter()
                 }
                 is Fail -> {
                     // TODO : handle negative case
@@ -306,16 +313,20 @@ class ManageProductFragment : BaseDaggerFragment(),
 
     override fun onProductCheckBoxClicked(isSelected: Boolean, uiModel: ProductUiModel) {
         viewModel.isSelectAllMode = false
+        viewModel.isSingleClick = true
         if (isSelected) {
             val isIndeterminate = binding?.cbuSelectAllProduct?.getIndeterminate() ?: false
             if (!isIndeterminate) binding?.cbuSelectAllProduct?.setIndeterminate(true)
             val isChecked = binding?.cbuSelectAllProduct?.isChecked ?: false
             if (!isChecked) binding?.cbuSelectAllProduct?.isChecked = true
         }
+        viewModel.setSetSelectedProducts(adapter?.getSelectedProducts()?: listOf())
+        viewModel.isSingleClick = false
     }
 
     override fun onRemoveButtonClicked() {
-        viewModel.setSetSelectedProducts(adapter?.getProductList() ?: listOf())
+        updateProductCounter()
+        viewModel.setSetSelectedProducts(adapter?.getSelectedProducts()?: listOf())
     }
 
     override fun onBackPressed() {
@@ -324,8 +335,11 @@ class ManageProductFragment : BaseDaggerFragment(),
         // TODO move this code inside viewModel
         // set selected true for mapping purpose before submitted to gql
         val mutableProducts = selectedProducts.toMutableList()
-        mutableProducts.forEach {
-            it.isSelected = true
+        mutableProducts.forEach { productUiModel ->
+            productUiModel.isSelected = true
+            productUiModel.variants.forEach { variantUiModel ->
+                variantUiModel.isSelected = true
+            }
         }
 
         val extraSelectedProducts = ArrayList<ProductUiModel>()
@@ -340,7 +354,11 @@ class ManageProductFragment : BaseDaggerFragment(),
     }
 
     fun resetProductUiModelState(selectedProducts: List<ProductUiModel>): List<ProductUiModel> {
-        return viewModel.resetProductUiModelState(selectedProducts)
+        val isViewing = viewModel.getIsViewing()
+        val isEditing = viewModel.getIsEditing()
+        val updatedProductList = viewModel.updateProductUiModelsDisplayMode(isViewing, isEditing, selectedProducts)
+        val filteredProductList = viewModel.filterSelectedProductVariant(updatedProductList)
+        return viewModel.resetProductUiModelState(filteredProductList)
     }
 
     fun addProducts(selectedProducts: List<ProductUiModel>) {
@@ -351,7 +369,6 @@ class ManageProductFragment : BaseDaggerFragment(),
         val maxProductLimit = viewModel.getMaxProductLimit()
         val totalSize = adapter?.getProductList()?.size ?: 0
         binding?.tpgSelectedProductCounter?.text = "Jumlah Produk ($totalSize/$maxProductLimit)"
-        binding?.tpgSelectAll?.text = "$totalSize Produk dipilih"
     }
 
     fun updateWarehouseLocationId(warehouseLocationId: String) {
