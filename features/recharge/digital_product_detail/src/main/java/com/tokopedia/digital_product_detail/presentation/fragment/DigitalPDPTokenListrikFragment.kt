@@ -23,7 +23,6 @@ import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
 import com.tokopedia.common.topupbills.data.constant.GeneralCategoryType
-import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoFavoriteNumberActivity
 import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
@@ -676,10 +675,6 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         binding?.run {
             if (rechargePdpTokenListrikEmptyStateWidget.isVisible) {
                 rechargePdpTokenListrikEmptyStateWidget.hide()
-                rechargePdpTokenListrikBannerSpacer.run {
-                    layoutParams.height = resources.getDimension(com.tokopedia.digital_product_detail.R.dimen.banner_space)
-                        .toInt()
-                }
                 rechargePdpTickerWidgetProductDesc.show()
                 renderGreenBox()
             }
@@ -700,12 +695,6 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     private fun showEmptyState() {
         binding?.run {
             if (!rechargePdpTokenListrikEmptyStateWidget.isVisible) {
-
-                rechargePdpTokenListrikBannerSpacer.run {
-                    layoutParams.height = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                        .toInt()
-                }
-
                 /** hide empty state when imageUrl is empty*/
                 if (rechargePdpTokenListrikEmptyStateWidget.imageUrl.isNotEmpty()) {
                     digitalPDPAnalytics.impressionBannerEmptyState(
