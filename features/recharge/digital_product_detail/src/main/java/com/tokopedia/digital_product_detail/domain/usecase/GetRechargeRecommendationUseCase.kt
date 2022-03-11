@@ -37,8 +37,8 @@ class GetRechargeRecommendationUseCase @Inject constructor(
                     channelName = CHANNEL_NAME,
                     clientNumbers = clientNumbers,
                     dgCategoryIDs = dgCategoryIds,
-                    pgCategoryIDs = listOf(),
-                    dgOperatorIds = listOf()
+                    pgCategoryIDs = emptyList(),
+                    dgOperatorIds = emptyList()
                 )
             )
         }

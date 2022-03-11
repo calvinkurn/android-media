@@ -926,8 +926,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         startActivityForResult(intent, requestCode)
     }
 
-    /** Start Input Field Listener */
-
+    //region ClientNumberInputFieldListener
     override fun onRenderOperator(isDelayed: Boolean, isManualInput: Boolean) {
         viewModel.operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty().let {
             if (it) {
@@ -977,11 +976,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
         return false
     }
+    //endregion
 
-    /** End Input Field Listener */
-
-    /** Start Filter Chip Listener */
-
+    //region ClientNumberFilterChipListener
     override fun onShowFilterChip(isLabeled: Boolean) {
         if (isLabeled) {
             digitalPDPAnalytics.impressionFavoriteContactChips(
@@ -1038,11 +1035,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             )
         }
     }
+    //endregion
 
-    /** End Filter Chip Listener */
-
-    /** Start Auto Complete Listener */
-
+    //region ClientNumberAutoCompleteListener
     override fun onClickAutoComplete(isFavoriteContact: Boolean) {
         inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
         if (isFavoriteContact) {
@@ -1061,11 +1056,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             )
         }
     }
+    //endregion
 
-    /** End Auto Complete Listener */
-
-    /** Start RechargeDenomGridListener */
-
+    //region RechargeDenomGridListener
     override fun onDenomGridClicked(
         denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int,
         productListTitle: String,
@@ -1129,11 +1122,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             )
         }
     }
+    //endregion
 
-    /** End RechargeDenomGridListener */
-
-    /** Start RechargeBuyWidgetListener */
-
+    //region RechargeBuyWidgetListener
     override fun onClickedButtonLanjutkan(denom: DenomData) {
         viewModel.updateCheckoutPassData(
             denom, userSession.userId.generateRechargeCheckoutToken(),
@@ -1160,9 +1151,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    /** End RechargeBuyWidgetListener */
+    //endregion
 
-    /** Start RechargeRecommendationCardListener */
+    //region RechargeRecommendationCardListener
 
     override fun onProductRecommendationCardClicked(
         title: String,
@@ -1199,11 +1190,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             position
         )
     }
+    //endregion
 
-    /** End RechargeRecommendationCardListener */
-
-    /** Start DigitalHistoryIconListener */
-
+    //region DigitalHistoryIconListener
     override fun onClickDigitalIconHistory() {
         digitalPDPAnalytics.clickTransactionHistoryIcon(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -1211,8 +1200,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             userSession.userId
         )
     }
-
-    /** End DigitalHistoryIconListener */
+    //endregion
 
     override fun onDestroyView() {
         binding?.root?.let {

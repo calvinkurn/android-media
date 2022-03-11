@@ -39,7 +39,7 @@ data class RechargeCatalogProductInput(
     val product: RechargeCatalogProduct = RechargeCatalogProduct(),
     @SerializedName("filterTagComponents")
     @Expose
-    var filterTagComponents: List<TelcoFilterTagComponent> = mutableListOf()
+    var filterTagComponents: List<TelcoFilterTagComponent> = emptyList()
 )
 
 
@@ -94,7 +94,7 @@ data class RechargeCatalogDataCollection(
     val clusterType: String = "",
     @SerializedName("products")
     @Expose
-    val products: List<RechargeProduct> = listOf()
+    val products: List<RechargeProduct> = emptyList()
 )
 
 
@@ -111,7 +111,7 @@ data class RechargeProduct(
 data class RechargeAttributesProduct(
     @SerializedName("product_labels")
     @Expose
-    var productLabels: List<String> = listOf(),
+    var productLabels: List<String> = emptyList(),
     @SerializedName("desc")
     @Expose
     val desc: String = "",
@@ -150,10 +150,10 @@ data class RechargeAttributesProduct(
     val operatorId: String = "",
     @SerializedName("product_descriptions")
     @Expose
-    val productDescriptions: List<String> = listOf(),
+    val productDescriptions: List<String> = emptyList(),
     @SerializedName("custom_attributes")
     @Expose
-    val customAttributes: List<DigitalCustomAttributes> = listOf(),
+    val customAttributes: List<DigitalCustomAttributes> = emptyList(),
 )
 
 data class RechargeProductPromo(
@@ -189,7 +189,7 @@ data class TelcoFilterTagComponent(
     val paramName: String = "",
     @SerializedName("data_collections")
     @Expose
-    var filterTagDataCollections: List<FilterTagDataCollection> = mutableListOf()
+    var filterTagDataCollections: List<FilterTagDataCollection> = emptyList()
 )
 
 data class DigitalCustomAttributes(

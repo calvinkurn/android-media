@@ -717,8 +717,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         startActivityForResult(intent, DigitalPDPConstant.REQUEST_CODE_LOGIN)
     }
 
-    /** Start InputFieldListener */
-
+    //region InputFieldListener
     override fun onRenderOperator(isDelayed: Boolean, isManualInput: Boolean) {
         viewModel.operatorData.id.isEmpty().let {
             if (it) {
@@ -766,9 +765,9 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         return false
     }
 
-    /** End InputFieldListener */
+    //endregion
 
-    /** Start AutoCompleteListener */
+    //region AutoCompleteListener
 
     override fun onClickAutoComplete(isFavoriteContact: Boolean) {
         inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
@@ -788,11 +787,9 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             )
         }
     }
+    //endregion
 
-    /** End AutoCompleteListener */
-
-    /** Start FilterChipListener */
-
+    //region FilterChipListener
     override fun onShowFilterChip(isLabeled: Boolean) {
         if (isLabeled) {
             digitalPDPAnalytics.impressionFavoriteContactChips(
@@ -847,11 +844,9 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             )
         }
     }
+    //endregion
 
-    /** End FilterChipListener*/
-
-    /** Start SortFilterListener */
-
+    //region SortFilterListener
     override fun getSelectedChipOperator(operator: CatalogOperator) {
         viewModel.run {
             operatorData = operator
@@ -864,11 +859,9 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             )
         }
     }
+    //endregion
 
-    /** End SortFilterListener */
-
-    /** Start DigitalHistoryIconListener */
-
+    //region DigitalHistoryIconListener
     override fun onClickDigitalIconHistory() {
         digitalPDPAnalytics.clickTransactionHistoryIcon(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -876,8 +869,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             userSession.userId
         )
     }
-
-    /** End DigitalHistoryIconListener */
+    //endregion
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

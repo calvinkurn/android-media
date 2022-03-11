@@ -817,8 +817,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         }
     }
 
-    /** Start Input Field Listener */
-
+    //region InputFieldListener
     override fun onRenderOperator(isDelayed: Boolean, isManualInput: Boolean) {
         viewModel.operatorData.id.isEmpty().let {
             if (it) {
@@ -865,11 +864,9 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         }
         return false
     }
+    //endregion
 
-    /** End Input Field Listener */
-
-    /** Start Filter Chip Listener */
-
+    //region FilterChipListener
     override fun onShowFilterChip(isLabeled: Boolean) {
         if (isLabeled) {
             digitalPDPAnalytics.impressionFavoriteContactChips(
@@ -924,11 +921,9 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             )
         }
     }
+    //endregion
 
-    /** End Filter Chip Listener */
-
-    /** Start Auto Complete Listener */
-
+    //region AutoCompleteListener
     override fun onClickAutoComplete(isFavoriteContact: Boolean) {
         inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
         if (isFavoriteContact) {
@@ -947,11 +942,9 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             )
         }
     }
+    //endregion
 
-    /** End Auto Complete Listener */
-
-    /** Start RechargeDenomGridListener */
-
+    //region RechargeDenomGridListener
     override fun onDenomGridClicked(
         denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int,
         productListTitle: String,
@@ -993,11 +986,9 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             )
         }
     }
+    //endregion
 
-    /** End RechargeDenomGridListener */
-
-    /** Start RechargeBuyWidgetListener */
-
+    //region RechargeBuyWidgetListener
     override fun onClickedButtonLanjutkan(denom: DenomData) {
         viewModel.updateCheckoutPassData(
             denom, userSession.userId.generateRechargeCheckoutToken(),
@@ -1023,11 +1014,9 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             SummaryTelcoBottomSheet(getString(R.string.summary_transaction), denom).show(it, "")
         }
     }
+    //endregion
 
-    /** End RechargeBuyWidgetListener */
-
-    /** Start RechargeRecommendationCardListener */
-
+    //region RechargeRecommendationCardListener
     override fun onProductRecommendationCardClicked(
         title: String,
         recommendation: RecommendationCardWidgetModel,
@@ -1063,11 +1052,9 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             position
         )
     }
+    //endregion
 
-    /** End RechargeRecommendationCardListener */
-
-    /** Start DigitalHistoryIconListener */
-
+    //region DigitalHistoryIconListener
     override fun onClickDigitalIconHistory() {
         digitalPDPAnalytics.clickTransactionHistoryIcon(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -1075,8 +1062,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             userSession.userId
         )
     }
-
-    /** End DigitalHistoryIconListener */
+    //endregion
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
