@@ -33,12 +33,6 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         }
     }
 
-    private val postVideoListener = object : PlayBroadcastPostVideoFragment.Listener {
-        override fun onClickBackButton() {
-            childFragmentManager.popBackStack()
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -58,7 +52,6 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         super.onAttachFragment(childFragment)
         when(childFragment) {
             is PlayBroadcastReportFragment -> childFragment.setListener(reportListener)
-            is PlayBroadcastPostVideoFragment -> childFragment.setListener(postVideoListener)
         }
     }
 

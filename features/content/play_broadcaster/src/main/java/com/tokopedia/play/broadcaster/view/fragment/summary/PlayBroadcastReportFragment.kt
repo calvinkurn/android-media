@@ -102,11 +102,6 @@ class PlayBroadcastReportFragment @Inject constructor(
         }
     }
 
-    private fun setChannelInfo(channelInfo: ChannelInfoUiModel) {
-        summaryInfoView.setChannelTitle(channelInfo.title)
-        summaryInfoView.setChannelCover(channelInfo.coverUrl)
-    }
-
     /**
      * Observe
      */
@@ -138,6 +133,27 @@ class PlayBroadcastReportFragment @Inject constructor(
                     PlayBroadcastSummaryEvent.OpenPostVideoPage -> mListener?.onClickPostButton()
                 }
             }
+        }
+    }
+
+    private fun observeChannelInfo() {
+        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner) {
+            when (it) {
+                is NetworkResult.Success -> setChannelInfo(it.data)
+                else -> {}
+            }
+        }
+    }
+
+    private fun observeInteractiveLeaderboardInfo() {
+        parentViewModel.observableLeaderboardInfo.observe(viewLifecycleOwner) {
+            summaryInfoView.addTrafficMetric(
+                TrafficMetricUiModel(
+                    type = TrafficMetricType.GameParticipants,
+                    count = if (it is NetworkResult.Success) it.data.totalParticipant else getString(R.string.play_interactive_leaderboard_default)
+                ),
+                FIRST_PLACE
+            )
         }
     }
 
@@ -173,25 +189,9 @@ class PlayBroadcastReportFragment @Inject constructor(
         }
     }
 
-    private fun observeChannelInfo() {
-        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner) {
-            when (it) {
-                is NetworkResult.Success -> setChannelInfo(it.data)
-                else -> {}
-            }
-        }
-    }
-
-    private fun observeInteractiveLeaderboardInfo() {
-        parentViewModel.observableLeaderboardInfo.observe(viewLifecycleOwner) {
-            summaryInfoView.addTrafficMetric(
-                TrafficMetricUiModel(
-                    type = TrafficMetricType.GameParticipants,
-                    count = if (it is NetworkResult.Success) it.data.totalParticipant else getString(R.string.play_interactive_leaderboard_default)
-                ),
-                FIRST_PLACE
-            )
-        }
+    private fun setChannelInfo(channelInfo: ChannelInfoUiModel) {
+        summaryInfoView.setChannelTitle(channelInfo.title)
+        summaryInfoView.setChannelCover(channelInfo.coverUrl)
     }
 
     override fun onMetricClicked(view: SummaryInfoViewComponent, metricType: TrafficMetricType) {

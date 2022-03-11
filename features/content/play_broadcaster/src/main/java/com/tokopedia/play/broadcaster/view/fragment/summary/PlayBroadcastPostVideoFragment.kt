@@ -45,8 +45,6 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     private val userSession: UserSessionInterface
 ) : PlayBaseBroadcastFragment(), TagListViewComponent.Listener {
 
-    private var mListener: Listener? = null
-
     private var _binding: FragmentPlayBroadcastPostVideoBinding? = null
     private val binding: FragmentPlayBroadcastPostVideoBinding
         get() = _binding!!
@@ -132,7 +130,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect {
                 when(it) {
-                    PlayBroadcastSummaryEvent.BackToReportPage -> mListener?.onClickBackButton()
+                    PlayBroadcastSummaryEvent.BackToReportPage -> requireActivity().onBackPressed()
                     PlayBroadcastSummaryEvent.OpenSelectCoverBottomSheet -> openCoverSetupFragment()
                     is PlayBroadcastSummaryEvent.PostVideo -> {
                         when (val networkResult = it.networkResult) {
@@ -157,12 +155,6 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         }
     }
 
-    private fun renderTag(prev: TagUiState?, value: TagUiState) {
-        if(prev == value) return
-
-        tagListView.setTags(value.tags.toList())
-    }
-
     private fun observeChannelInfo() {
         parentViewModel.observableChannelInfo.observe(viewLifecycleOwner) {
             when (it) {
@@ -176,6 +168,12 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
                 else -> {}
             }
         }
+    }
+
+    private fun renderTag(prev: TagUiState?, value: TagUiState) {
+        if(prev == value) return
+
+        tagListView.setTags(value.tags.toList())
     }
 
     private fun openShopPageWithBroadcastStatus(isSaved: Boolean) {
@@ -241,15 +239,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
             .setDuration(450)
     }
 
-    fun setListener(listener: Listener) {
-        mListener = listener
-    }
-
     companion object {
         private const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
-    }
-
-    interface Listener {
-        fun onClickBackButton()
     }
 }
