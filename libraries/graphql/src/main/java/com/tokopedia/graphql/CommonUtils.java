@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.bind.JsonTreeReader;
+import com.tokopedia.graphql.data.GraphqlClient;
 
 import java.io.StringReader;
 import java.lang.reflect.Type;
@@ -58,7 +59,7 @@ public class CommonUtils {
     }
 
     public static String getGraphqlUrlAppend(String opName) {
-        return "graphql/" + opName;
+        return "graphql/" + GraphqlClient.moduleName + "/" + opName;
     }
 }
 
