@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.databinding.LayoutPlaySummaryInfoBinding
 import com.tokopedia.play.broadcaster.ui.itemdecoration.MetricReportItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricType
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
@@ -25,22 +26,12 @@ import com.tokopedia.unifyprinciples.Typography
  */
 class SummaryInfoViewComponent(
         container: ViewGroup,
-        root: ConstraintLayout,
+        private val binding: LayoutPlaySummaryInfoBinding,
         listener: Listener
-) : ViewComponent(container, root.id) {
+) : ViewComponent(container, binding.layoutSummaryContent.id) {
 
     val animationOffset = container.resources.getInteger(R.integer.play_summary_layout_animation_offset).toFloat()
     val animationDuration = container.resources.getInteger(R.integer.play_summary_layout_animation_duration_ms).toLong()
-
-    private val flInfo = findViewById<FrameLayout>(R.id.fl_info)
-    private val clMeta = findViewById<ConstraintLayout>(R.id.cl_bro_summary_meta)
-    private val tvTitle = findViewById<Typography>(R.id.tv_bro_summary_live_title)
-    private val ivCover = findViewById<ImageUnify>(R.id.iv_bro_summary_cover)
-    private val tvDate = findViewById<Typography>(R.id.tv_bro_summary_date)
-    private val tvDuration = findViewById<Typography>(R.id.tv_bro_summary_duration)
-    private val recyclerView = findViewById<RecyclerView>(R.id.rv_info)
-    private val layoutError = findViewById<ConstraintLayout>(R.id.layout_summary_error)
-    private val tvErrorTryAgain = findViewById<Typography>(R.id.tv_error_try_again)
 
     private val trafficMetricReportAdapter = TrafficMetricReportAdapter(object : TrafficMetricViewHolder.Listener {
         override fun onLabelClicked(metricType: TrafficMetricType) {
@@ -49,7 +40,7 @@ class SummaryInfoViewComponent(
     })
 
     init {
-        recyclerView.apply {
+        binding.rvInfo.apply {
             layoutManager = LinearLayoutManager(container.context, RecyclerView.VERTICAL, false)
             addItemDecoration(MetricReportItemDecoration(context))
             adapter = trafficMetricReportAdapter
@@ -61,22 +52,22 @@ class SummaryInfoViewComponent(
             override fun onGlobalLayout() {
                 container.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                flInfo.translationY = animationOffset
-                clMeta.translationY = -animationOffset
-                flInfo.animate().translationYBy(-animationOffset).duration = animationDuration
-                clMeta.animate().translationYBy(animationOffset).duration = animationDuration
+                binding.flInfo.translationY = animationOffset
+                binding.clBroSummaryMeta.translationY = -animationOffset
+                binding.flInfo.animate().translationYBy(-animationOffset).duration = animationDuration
+                binding.clBroSummaryMeta.animate().translationYBy(animationOffset).duration = animationDuration
             }
         })
     }
 
     fun setChannelCover(coverUrl: String) {
-        ivCover.setImageUrl(coverUrl)
+        binding.ivBroSummaryCover.setImageUrl(coverUrl)
     }
 
     fun setChannelHeader(data: ChannelSummaryUiState) {
-        tvTitle.text = data.title
-        tvDuration.text = data.duration
-        tvDate.text = data.date
+        binding.tvBroSummaryLiveTitle.text = data.title
+        binding.tvBroSummaryDuration.text = data.duration
+        binding.tvBroSummaryDate.text = data.date
     }
 
     fun addTrafficMetric(metric: TrafficMetricUiModel, position: Int) {
@@ -88,12 +79,12 @@ class SummaryInfoViewComponent(
     }
 
     fun showError(onRetry: () -> Unit) {
-        layoutError.show()
-        tvErrorTryAgain.setOnClickListener { onRetry() }
+        binding.layoutSummaryError.root.show()
+        binding.layoutSummaryError.tvErrorTryAgain.setOnClickListener { onRetry() }
     }
 
     fun hideError() {
-        layoutError.hide()
+        binding.layoutSummaryError.root.hide()
     }
 
     interface Listener {

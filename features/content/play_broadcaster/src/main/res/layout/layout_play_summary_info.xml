@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/layout_summary_content"
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_summary_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_bro_summary_meta"
-        android:orientation="vertical"
-        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
         android:padding="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,8 +22,8 @@
             android:layout_width="@dimen/play_summary_cover_width"
             android:layout_height="@dimen/play_summary_cover_height"
             android:scaleType="centerInside"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:unify_image_corner_radius="3" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -31,12 +31,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
-            android:maxLines="1"
             android:ellipsize="end"
-            app:layout_constraintTop_toTopOf="@id/iv_bro_summary_cover"
-            app:layout_constraintStart_toEndOf="@id/iv_bro_summary_cover"
+            android:maxLines="1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:typographyType="heading_5"
+            app:layout_constraintStart_toEndOf="@id/iv_bro_summary_cover"
+            app:layout_constraintTop_toTopOf="@id/iv_bro_summary_cover"
+            app:typographyType="heading_4"
             tools:text="Sneakers Hypebeast with Cashback 10%" />
 
         <com.tokopedia.iconunify.IconUnify
@@ -46,21 +46,19 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             app:icon_name="CALENDAR"
             app:layout_constraintStart_toStartOf="@id/tv_bro_summary_live_title"
-            app:layout_constraintTop_toBottomOf="@id/tv_bro_summary_live_title"
-            />
+            app:layout_constraintTop_toBottomOf="@id/tv_bro_summary_live_title" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_bro_summary_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            app:layout_constraintTop_toTopOf="@id/ic_bro_summary_calendar"
             app:layout_constraintBottom_toBottomOf="@id/ic_bro_summary_calendar"
-            app:layout_constraintStart_toEndOf="@id/ic_bro_summary_calendar"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ic_bro_summary_calendar"
+            app:layout_constraintTop_toTopOf="@id/ic_bro_summary_calendar"
             app:typographyType="body_3"
-            tools:text="1 Desember 2020"
-            />
+            tools:text="1 Desember 2020" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ic_bro_summary_time"
@@ -69,21 +67,19 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             app:icon_name="CLOCK"
             app:layout_constraintStart_toStartOf="@id/ic_bro_summary_calendar"
-            app:layout_constraintTop_toBottomOf="@id/tv_bro_summary_date"
-            />
+            app:layout_constraintTop_toBottomOf="@id/tv_bro_summary_date" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_bro_summary_duration"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            app:layout_constraintTop_toTopOf="@id/ic_bro_summary_time"
             app:layout_constraintBottom_toBottomOf="@id/ic_bro_summary_time"
-            app:layout_constraintStart_toEndOf="@id/ic_bro_summary_time"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ic_bro_summary_time"
+            app:layout_constraintTop_toTopOf="@id/ic_bro_summary_time"
             app:typographyType="body_3"
-            tools:text="28:42"
-            />
+            tools:text="28:42" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
