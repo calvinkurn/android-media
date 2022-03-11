@@ -13,6 +13,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
+import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
@@ -25,6 +27,7 @@ import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -64,6 +67,7 @@ class PlayBroadcastReportFragment @Inject constructor(
         val view = inflater.inflate(R.layout.fragment_play_broadcast_report, container, false)
 
         observeUiState()
+        observeEvent()
         observeChannelInfo()
         observeInteractiveLeaderboardInfo()
 
@@ -88,12 +92,12 @@ class PlayBroadcastReportFragment @Inject constructor(
         summaryInfoView.entranceAnimation(view as ViewGroup)
 
         icClose.setOnClickListener {
-            requireActivity().onBackPressed()
+            viewModel.submitAction(PlayBroadcastSummaryAction.ClickCloseReportPage)
         }
 
         btnPostVideo.setOnClickListener {
             analytic.clickPostingVideoOnReportPage()
-            mListener?.onClickPostButton()
+            viewModel.submitAction(PlayBroadcastSummaryAction.ClickPostVideo)
         }
     }
 
@@ -110,6 +114,18 @@ class PlayBroadcastReportFragment @Inject constructor(
             viewModel.uiState.withCache().collectLatest {
                 renderDuration(it.prevValue?.liveReport?.duration, it.value.liveReport.duration)
                 renderReport(it.prevValue?.liveReport?.trafficMetricsResult, it.value.liveReport.trafficMetricsResult)
+            }
+        }
+    }
+
+    private fun observeEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect {
+                when(it) {
+                    PlayBroadcastSummaryEvent.CloseReportPage -> requireActivity().onBackPressed()
+                    PlayBroadcastSummaryEvent.OpenLeaderboardBottomSheet -> openInteractiveLeaderboardSheet()
+                    PlayBroadcastSummaryEvent.OpenPostVideoPage -> mListener?.onClickPostButton()
+                }
             }
         }
     }
@@ -175,7 +191,7 @@ class PlayBroadcastReportFragment @Inject constructor(
     }
 
     override fun onMetricClicked(view: SummaryInfoViewComponent, metricType: TrafficMetricType) {
-         if (metricType.isGameParticipants) openInteractiveLeaderboardSheet()
+         if (metricType.isGameParticipants) viewModel.submitAction(PlayBroadcastSummaryAction.ClickViewLeaderboard)
     }
 
     private fun openInteractiveLeaderboardSheet() {

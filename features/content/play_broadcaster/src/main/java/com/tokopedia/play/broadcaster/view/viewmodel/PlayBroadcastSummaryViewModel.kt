@@ -10,6 +10,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.SetChannelTagsUseCase
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.LiveDurationUiModel
@@ -106,6 +107,38 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     init {
         fetchLiveTraffic()
         getTags()
+    }
+
+    /** Action Area */
+    fun submitAction(action: PlayBroadcastSummaryAction) {
+        when(action) {
+            PlayBroadcastSummaryAction.ClickCloseReportPage -> handleClickCloseReportPage()
+            PlayBroadcastSummaryAction.ClickViewLeaderboard -> handleClickViewLeaderboard()
+            PlayBroadcastSummaryAction.ClickPostVideo -> handleClickPostVideo()
+            PlayBroadcastSummaryAction.ClickPostVideoNow -> handleClickPostVideoNow()
+        }
+    }
+
+    private fun handleClickCloseReportPage() {
+        viewModelScope.launch {
+            _uiEvent.emit(PlayBroadcastSummaryEvent.CloseReportPage)
+        }
+    }
+
+    private fun handleClickViewLeaderboard() {
+        viewModelScope.launch {
+            _uiEvent.emit(PlayBroadcastSummaryEvent.OpenLeaderboardBottomSheet)
+        }
+    }
+
+    private fun handleClickPostVideo() {
+        viewModelScope.launch {
+            _uiEvent.emit(PlayBroadcastSummaryEvent.OpenPostVideoPage)
+        }
+    }
+
+    private fun handleClickPostVideoNow() {
+
     }
 
     fun fetchLiveTraffic() {
