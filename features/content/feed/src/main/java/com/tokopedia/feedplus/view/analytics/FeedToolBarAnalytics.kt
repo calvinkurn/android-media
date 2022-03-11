@@ -1,9 +1,11 @@
 package com.tokopedia.feedplus.view.analytics
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.explore.analytics.ContentExloreEventTracking.Event.*
+import com.tokopedia.explore.analytics.ContentExloreEventTracking.Screen.*
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics
-import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker
 import javax.inject.Inject
 
 private const val EVENT_NAME = "event"
@@ -81,5 +83,25 @@ class FeedToolBarAnalytics @Inject constructor() {
                         EVENT_CURRENTSITE, MARKETPLACE
                 )
         )
+    }
+     fun createAnalyticsForOpenScreen(
+            position: Int,
+            isLoggedInStatus: String,
+            userId: String
+    ) {
+        val generalData = mapOf(
+                TrackAppUtils.EVENT to OPEN_SCREEN,
+                EVENT_BUSINESSUNIT to CONTENT,
+                EVENT_CURRENTSITE to MARKETPLACE,
+                USER_ID to userId,
+                IS_LOGGED_IN to isLoggedInStatus,
+                SCREEN_NAME to when (position) {
+                    0 -> SCREEN_NAME_UPDATE
+                    1 -> SCREEN_NAME_EXPLORE
+                    else -> SCREEN_NAME_VIDEO
+                }
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(generalData)
+
     }
 }

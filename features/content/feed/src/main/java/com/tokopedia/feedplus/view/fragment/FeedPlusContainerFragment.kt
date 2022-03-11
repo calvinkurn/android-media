@@ -499,20 +499,23 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             }
 
             override fun onPageSelected(position: Int) {
-                 toolBarAnalytics.clickOnVideoTabOnFeedPage(position)
-                    if (position == 1) {
-                        context?.let {
-                            val intent = Intent(BROADCAST_VISIBLITY)
-                            LocalBroadcastManager.getInstance(it.applicationContext)
+                toolBarAnalytics.clickOnVideoTabOnFeedPage(position)
+                toolBarAnalytics.createAnalyticsForOpenScreen(position, userSession.isLoggedIn.toString(), userSession.userId)
+
+                if (position == 1) {
+                    toolBarAnalytics.createAnalyticsForOpenScreen(position, userSession.isLoggedIn.toString(), userSession.userId)
+                    context?.let {
+                        val intent = Intent(BROADCAST_VISIBLITY)
+                        LocalBroadcastManager.getInstance(it.applicationContext)
                                 .sendBroadcast(intent)
-                        }
-                        postProgressUpdateView?.hide()
-                    } else if (position == 0 && mInProgress) {
-                        postProgressUpdateView?.show()
-                    }else if (position == 2){
-                        videoTabAutoPlayJumboWidget()
                     }
+                    postProgressUpdateView?.hide()
+                } else if (position == 0 && mInProgress) {
+                    postProgressUpdateView?.show()
+                } else if (position == 2) {
+                    videoTabAutoPlayJumboWidget()
                 }
+            }
 
             override fun onPageScrollStateChanged(state: Int) {
             }
@@ -553,6 +556,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         feed_error.visibility = View.GONE
         tab_layout.visibility = View.VISIBLE
         view_pager.visibility = View.VISIBLE
+
+        if (view_pager.currentItem == 0)
+            toolBarAnalytics.createAnalyticsForOpenScreen(0,userSession.isLoggedIn.toString(),userSession.userId)
 
         if (hasCategoryIdParam()) {
             goToExplore()
