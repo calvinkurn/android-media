@@ -357,6 +357,9 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             if (favoriteNumber.isNotEmpty()) {
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
+
+                val extendedPadding = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl8)
+                binding?.rechargePdpTagihanListrikSvContainer?.setPadding(0, extendedPadding, 0, 0)
             }
         }
     }
