@@ -5,11 +5,12 @@ package com.tokopedia.play.broadcaster.ui.model
  */
 data class ChannelSummaryUiModel(
     val title: String,
+    val coverUrl: String,
     val date: String,
     val duration: String,
     val isEligiblePostVideo: Boolean,
 ) {
     companion object {
-        fun empty() = ChannelSummaryUiModel("", "", "", false)
+        fun empty() = ChannelSummaryUiModel("", "","", "", false)
     }
 }

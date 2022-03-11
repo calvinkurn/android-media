@@ -65,7 +65,7 @@ interface PlayBroadcastMapper {
 
     fun mapShareInfo(channel: GetChannelResponse.Channel): ShareUiModel
 
-    fun mapChannelSummary(title: String, date: String, duration: String, isEligiblePostVideo: Boolean): ChannelSummaryUiModel
+    fun mapChannelSummary(title: String, coverUrl: String, date: String, duration: String, isEligiblePostVideo: Boolean): ChannelSummaryUiModel
 
     fun mapIncomingChat(chat: Chat): PlayChatUiModel
 

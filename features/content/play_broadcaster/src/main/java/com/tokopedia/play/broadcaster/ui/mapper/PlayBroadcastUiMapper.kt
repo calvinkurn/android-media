@@ -272,11 +272,13 @@ class PlayBroadcastUiMapper(
 
     override fun mapChannelSummary(
         title: String,
+        coverUrl: String,
         date: String,
         duration: String,
         isEligiblePostVideo: Boolean
     ) = ChannelSummaryUiModel(
         title = title,
+        coverUrl = coverUrl,
         date = date,
         duration = duration,
         isEligiblePostVideo = isEligiblePostVideo,

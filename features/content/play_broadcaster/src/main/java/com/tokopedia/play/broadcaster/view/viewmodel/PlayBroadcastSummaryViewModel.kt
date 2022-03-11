@@ -23,7 +23,6 @@ import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
-import com.tokopedia.play_common.util.extension.setValue
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -56,6 +55,7 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     private val _channelSummaryUiState = _channelSummary.map {
         ChannelSummaryUiState(
             title = it.title,
+            coverUrl = it.coverUrl,
             date = it.date,
             duration = it.duration,
             isEligiblePostVideo = it.isEligiblePostVideo,
@@ -199,6 +199,7 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
 
             _channelSummary.value = playBroadcastMapper.mapChannelSummary(
                                         channel.basic.title,
+                                        channel.basic.coverUrl,
                                         convertDate(channel.basic.timestamp.publishedAt),
                                         reportChannelSummary.duration,
                                         isEligiblePostVideo(reportChannelSummary.duration),

@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.ui.state
 
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -15,12 +16,15 @@ data class PlayBroadcastSummaryUiState(
 
 data class ChannelSummaryUiState(
     val title: String,
+    val coverUrl: String,
     val date: String,
     val duration: String,
     val isEligiblePostVideo: Boolean,
 ) {
+    fun isEmpty() = title.isEmpty() && coverUrl.isEmpty() && date.isEmpty() && duration.isEmpty() && !isEligiblePostVideo
+
     companion object {
-        fun empty() = ChannelSummaryUiState("", "", "", false)
+        fun empty() = ChannelSummaryUiState("", "", "", "", false)
     }
 }
 

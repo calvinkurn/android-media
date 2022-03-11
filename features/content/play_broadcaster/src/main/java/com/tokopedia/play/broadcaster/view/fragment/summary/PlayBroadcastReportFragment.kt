@@ -92,7 +92,6 @@ class PlayBroadcastReportFragment @Inject constructor(
     private fun setupObserver() {
         observeUiState()
         observeEvent()
-        observeChannelInfo()
         observeInteractiveLeaderboardInfo()
     }
 
@@ -131,15 +130,6 @@ class PlayBroadcastReportFragment @Inject constructor(
         }
     }
 
-    private fun observeChannelInfo() {
-        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner) {
-            when (it) {
-                is NetworkResult.Success -> setChannelInfo(it.data)
-                else -> {}
-            }
-        }
-    }
-
     private fun observeInteractiveLeaderboardInfo() {
         parentViewModel.observableLeaderboardInfo.observe(viewLifecycleOwner) {
             summaryInfoView.addTrafficMetric(
@@ -153,7 +143,7 @@ class PlayBroadcastReportFragment @Inject constructor(
     }
 
     private fun renderChannelHeader(prev: ChannelSummaryUiState?, value: ChannelSummaryUiState) {
-        if(prev == value) return
+        if(prev == value || value.isEmpty()) return
 
         summaryInfoView.setChannelHeader(value)
         binding.btnPostVideo.isEnabled = value.isEligiblePostVideo
@@ -182,11 +172,6 @@ class PlayBroadcastReportFragment @Inject constructor(
                 )
             }
         }
-    }
-
-    private fun setChannelInfo(channelInfo: ChannelInfoUiModel) {
-        /** TODO("will get cover from getChannelUseCase") */
-        summaryInfoView.setChannelCover(channelInfo.coverUrl)
     }
 
     override fun onMetricClicked(view: SummaryInfoViewComponent, metricType: TrafficMetricType) {

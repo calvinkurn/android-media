@@ -65,6 +65,7 @@ class SummaryInfoViewComponent(
     }
 
     fun setChannelHeader(data: ChannelSummaryUiState) {
+        binding.ivBroSummaryCover.setImageUrl(data.coverUrl)
         binding.tvBroSummaryLiveTitle.text = data.title
         binding.tvBroSummaryDuration.text = data.duration
         binding.tvBroSummaryDate.text = data.date
