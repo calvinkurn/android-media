@@ -167,6 +167,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 binding?.formAddressNegative?.etKotaKecamatan?.textFieldInput?.setText(currentKotaKecamatan)
                 saveDataModel?.let {
                     if (it.latitude.isNotEmpty() || it.longitude.isNotEmpty()) {
+                        // todo add is edit flag here (D7)
                         currentLat = it.latitude.toDouble()
                         currentLong = it.longitude.toDouble()
                         binding?.cardAddressNegative?.icLocation?.setImage(IconUnify.LOCATION)

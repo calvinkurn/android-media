@@ -127,15 +127,18 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             if(requestCode == REQUEST_PINPOINT_PAGE) {
+                // todo ini kalo pilih suggestion / pake location saat ini -> ke pinpoint
                 val isFromAddressForm = data?.getBooleanExtra(EXTRA_FROM_ADDRESS_FORM, false)
                 var newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
                 if (newAddress == null) {
                     newAddress = data?.getParcelableExtra(EXTRA_SAVE_DATA_UI_MODEL)
                 }
+                // todo ini kalo success create new address
                 if (isFromAddressForm != null && newAddress != null) {
                     finishActivity(newAddress, isFromAddressForm)
                 }
             } else if (requestCode == REQUEST_ADDRESS_FORM_PAGE) {
+                // todo ini kalo search page -> isi manual -> back
                 val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
                 newAddress?.let { finishActivity(it, false) }
             }
