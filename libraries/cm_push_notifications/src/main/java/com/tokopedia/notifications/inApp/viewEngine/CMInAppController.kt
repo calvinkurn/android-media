@@ -59,7 +59,6 @@ class CMInAppController(
             val amplificationCMInApp = gson.fromJson(dataString, AmplificationCMInApp::class.java)
             val cmInApp = CmInAppBundleConvertor.getCmInApp(amplificationCMInApp)
             cmInApp?.let {
-                cmInApp.isAmplification = true
                 IrisAnalyticsEvents.sendAmplificationInAppEvent(
                     applicationContext, IrisAnalyticsEvents.INAPP_DELIVERED, cmInApp)
                 downloadImagesAndUpdateDB(applicationContext, cmInApp)

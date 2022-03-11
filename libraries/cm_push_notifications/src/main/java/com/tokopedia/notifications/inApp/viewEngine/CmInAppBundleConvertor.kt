@@ -31,7 +31,7 @@ object CmInAppBundleConvertor {
     fun getCmInApp(amplificationCMInApp: AmplificationCMInApp): CMInApp? {
         return try {
             val cmInApp = CMInApp()
-
+            cmInApp.isAmplification = true
             amplificationCMInApp.id?.let {
                 if (it == 0L)
                     return null
