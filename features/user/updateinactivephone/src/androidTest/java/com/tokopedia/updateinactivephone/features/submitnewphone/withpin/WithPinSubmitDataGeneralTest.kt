@@ -1,5 +1,7 @@
 package com.tokopedia.updateinactivephone.features.submitnewphone.withpin
 
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.common.viewaction.simulateOnBackPressed
 import com.tokopedia.updateinactivephone.features.submitnewphone.BaseSubmitDataTest
@@ -10,7 +12,10 @@ import com.tokopedia.updateinactivephone.features.submitnewphone.SubmitDataViewA
 import com.tokopedia.updateinactivephone.features.submitnewphone.SubmitDataViewAction.clickOnButtonSubmit
 import com.tokopedia.updateinactivephone.features.submitnewphone.SubmitDataViewAction.setPhoneNumberText
 import org.junit.Test
+import org.junit.runner.RunWith
 
+@UiTest
+@RunWith(AndroidJUnit4::class)
 class WithPinSubmitDataGeneralTest: BaseSubmitDataTest() {
 
     override fun before() {

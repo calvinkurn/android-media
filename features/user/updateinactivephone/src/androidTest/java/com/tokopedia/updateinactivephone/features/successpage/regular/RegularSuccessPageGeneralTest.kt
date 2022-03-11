@@ -2,9 +2,8 @@ package com.tokopedia.updateinactivephone.features.successpage.regular
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
-import com.tokopedia.updateinactivephone.features.InactivePhoneTracker
 import com.tokopedia.updateinactivephone.features.successpage.BaseSuccessPageTest
 import com.tokopedia.updateinactivephone.features.successpage.SuccessPageViewAction.checkSuccessPageIsDisplayed
 import com.tokopedia.updateinactivephone.features.successpage.SuccessPageViewAction.checkTickerContent
@@ -15,7 +14,7 @@ import com.tokopedia.updateinactivephone.features.successpage.SuccessPageViewAct
 import org.junit.Test
 import org.junit.runner.RunWith
 
-
+@UiTest
 @LargeTest
 @RunWith(AndroidJUnit4::class)
 class RegularSuccessPageGeneralTest : BaseSuccessPageTest() {
@@ -43,7 +42,7 @@ class RegularSuccessPageGeneralTest : BaseSuccessPageTest() {
         )
 
         val text = String.format(
-            "Datamu akan diproses maks. 1x24 jam ke depan. Informasi seputar pengajuan ini akan dikirim lewat SMS ke nomor %s.",
+            "Datamu akan diproses maks. 1x12 jam ke depan. Informasi seputar pengajuan ini akan dikirim lewat SMS ke nomor %s.",
             fakeInactivePhoneUserDataModel.newPhoneNumber
         )
 
@@ -62,7 +61,7 @@ class RegularSuccessPageGeneralTest : BaseSuccessPageTest() {
         )
 
         val text = String.format(
-            "Datamu akan diproses maks. 1x24 jam ke depan. Informasi seputar pengajuan ini akan dikirim lewat e-mail ke alamat %s dan SMS ke nomor %s.",
+            "Datamu akan diproses maks. 1x12 jam ke depan. Informasi seputar pengajuan ini akan dikirim lewat e-mail ke alamat %s dan SMS ke nomor %s.",
             fakeInactivePhoneUserDataModel.email,
             fakeInactivePhoneUserDataModel.newPhoneNumber
         )
