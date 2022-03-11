@@ -187,8 +187,12 @@ class ManageProductFragment : BaseDaggerFragment(),
                 if (isIndeterminate && !viewModel.isSelectAllMode) return@setOnCheckedChangeListener
                 adapter?.updateAllProductSelections(isChecked)
             } else {
-                binding.cbuSelectAllProduct.setIndeterminate(false)
-                adapter?.updateAllProductSelections(isChecked)
+                val totalProductSize = adapter?.getProductList()?.size
+                val selectedProductSize = adapter?.getSelectedProducts()?.size
+                if (totalProductSize == selectedProductSize) {
+                    binding.cbuSelectAllProduct.setIndeterminate(false)
+                    adapter?.updateAllProductSelections(isChecked)
+                }
             }
             viewModel.setSetSelectedProducts(adapter?.getSelectedProducts()?: listOf())
         }
@@ -321,6 +325,7 @@ class ManageProductFragment : BaseDaggerFragment(),
 
     override fun onRemoveButtonClicked() {
         updateProductCounter()
+        viewModel.setSetSelectedProducts(adapter?.getSelectedProducts()?: listOf())
     }
 
     override fun onBackPressed() {
