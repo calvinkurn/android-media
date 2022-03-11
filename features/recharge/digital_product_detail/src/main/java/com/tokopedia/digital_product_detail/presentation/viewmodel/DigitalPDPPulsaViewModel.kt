@@ -5,10 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
-import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
+import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
@@ -20,6 +19,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.D
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_PREFIX_TIME
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.VALIDATOR_DELAY_TIME
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
+import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -31,7 +31,6 @@ import com.tokopedia.recharge_component.model.recommendation_card.Recommendation
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -129,7 +128,8 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val favoriteNumberChips = repo.getFavoriteNumberChips(categoryIds)
             _favoriteNumberData.value = RechargeNetworkResult.Success(
-                favoriteNumberChips.persoFavoriteNumber.items)
+                favoriteNumberChips.persoFavoriteNumber.items
+            )
         }) {
             _favoriteNumberData.value = RechargeNetworkResult.Fail(it)
         }
@@ -141,9 +141,11 @@ class DigitalPDPPulsaViewModel @Inject constructor(
 
     fun getAutoComplete(categoryIds: List<Int>) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
+            delay(AUTOCOMPLETE_DELAY) // DO NOT TRY THIS AT HOME! attempt to fix race condition
             val favoriteNumberList = repo.getFavoriteNumberList(categoryIds)
             _autoCompleteData.value = RechargeNetworkResult.Success(
-                favoriteNumberList.persoFavoriteNumber.items)
+                favoriteNumberList.persoFavoriteNumber.items
+            )
         }) {
             _autoCompleteData.value = RechargeNetworkResult.Fail(it)
         }
@@ -298,5 +300,9 @@ class DigitalPDPPulsaViewModel @Inject constructor(
                 delay(skipMs)
             }
         }
+    }
+
+    companion object {
+        private const val AUTOCOMPLETE_DELAY = 500L
     }
 }
