@@ -8,6 +8,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUs
 import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.SetChannelTagsUseCase
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
+import com.tokopedia.play.broadcaster.robot.PlayBroadcastSummaryViewModelRobot
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
@@ -72,20 +73,24 @@ class PlayBroadcastSummaryViewModelTest {
     fun `when get traffic summary is success, then it should return success`() {
         coEvery { liveStatisticsUseCase.executeOnBackground() } returns mockLiveStats
 
-        rule.runBlockingTest {
-            viewModel.fetchLiveTraffic()
-            advanceUntilIdle()
+        val robot = PlayBroadcastSummaryViewModelRobot(
+            dispatcher = testDispatcher,
+        )
 
-            val result = viewModel.observableLiveSummary.getOrAwaitValue()
-
-            Assertions
-                .assertThat(result)
-                .isEqualTo(
-                    NetworkResult.Success(
-                        playBroadcastMapper.mapToLiveTrafficUiMetrics(mockLiveStats.channel.metrics)
-                    )
-                )
-        }
+//        rule.runBlockingTest {
+//            viewModel.fetchLiveTraffic()
+//            advanceUntilIdle()
+//
+//            val result = viewModel.observableLiveSummary.getOrAwaitValue()
+//
+//            Assertions
+//                .assertThat(result)
+//                .isEqualTo(
+//                    NetworkResult.Success(
+//                        playBroadcastMapper.mapToLiveTrafficUiMetrics(mockLiveStats.channel.metrics)
+//                    )
+//                )
+//        }
     }
 
     @Test
