@@ -8,6 +8,7 @@ object DynamicChannelComponentMapper {
     fun mapHomeChannelToComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int): ChannelModel {
         return ChannelModel(
                 id = channel.id,
+                name = channel.name,
                 groupId = channel.groupId,
                 type = channel.type,
                 layout = channel.layout,
@@ -71,7 +72,8 @@ object DynamicChannelComponentMapper {
                         persoType = channel.persoType,
                         campaignCode = channel.campaignCode,
                         homeAttribution = channel.homeAttribution,
-                        promoName = channel.promoName
+                        promoName = channel.promoName,
+                        campaignType = channel.campaignType
                 ),
                 channelGrids = channel.grids.map {
                     ChannelGrid(
@@ -98,7 +100,11 @@ object DynamicChannelComponentMapper {
                             freeOngkirImageUrl = it.freeOngkir.imageUrl,
                             shop =  ChannelShop(
                                     id = it.shop.shopId,
-                                    shopLocation = it.shop.city
+                                    shopLocation = it.shop.city,
+                                    shopName = it.shop.name,
+                                    shopProfileUrl = it.shop.imageUrl,
+                                    shopUrl = it.shop.url,
+                                    shopApplink = it.shop.applink
                             ),
                             labelGroup = it.labelGroup.map { label ->
                                 LabelGroup(
@@ -126,7 +132,8 @@ object DynamicChannelComponentMapper {
                                         title = badge.title,
                                         imageUrl = badge.imageUrl
                                 )
-                            }
+                            },
+                            expiredTime = it.expiredTime
                     )
                 }
         )

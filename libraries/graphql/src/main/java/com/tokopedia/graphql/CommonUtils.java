@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.bind.JsonTreeReader;
+import com.tokopedia.graphql.data.GraphqlClient;
 
 import java.io.StringReader;
 import java.lang.reflect.Type;
@@ -55,6 +56,10 @@ public class CommonUtils {
             } catch (Exception ignored) {}
         }
         return new JsonArray();
+    }
+
+    public static String getGraphqlUrlAppend(String opName) {
+        return "graphql/" + GraphqlClient.moduleName + "/" + opName;
     }
 }
 

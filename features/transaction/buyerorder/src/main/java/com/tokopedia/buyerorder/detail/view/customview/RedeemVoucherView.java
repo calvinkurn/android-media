@@ -37,6 +37,7 @@ public class RedeemVoucherView extends LinearLayout {
     private int mPos;
     OrderListDetailPresenter presenter;
     private ItemsAdapter.SetEventDetails setEventDetails;
+    private Boolean isOMP = false;
 
     public RedeemVoucherView(Context context) {
         super(context);
@@ -53,7 +54,7 @@ public class RedeemVoucherView extends LinearLayout {
         initView();
     }
 
-    public RedeemVoucherView(Context context, int voucherNumber, ActionButton actionButton, Items item, Body body, OrderListDetailPresenter presenter, int position, SetTapActionDeals setTapActionDeals, ItemsAdapter.SetEventDetails setEventDetails) {
+    public RedeemVoucherView(Context context, int voucherNumber, ActionButton actionButton, Items item, Body body, OrderListDetailPresenter presenter, int position, SetTapActionDeals setTapActionDeals, ItemsAdapter.SetEventDetails setEventDetails, Boolean isOMP) {
         super(context);
         this.context = context;
         this.voucherCount = voucherNumber;
@@ -64,6 +65,7 @@ public class RedeemVoucherView extends LinearLayout {
         this.mPos = position;
         this.setTapActionDeals = setTapActionDeals;
         this.setEventDetails = setEventDetails;
+        this.isOMP = isOMP;
         initView();
     }
 
@@ -99,8 +101,12 @@ public class RedeemVoucherView extends LinearLayout {
         redeemVoucher.setText(actionButton.getLabel());
         if (!TextUtils.isEmpty(actionButton.getHeader())) {
             Header header = actionButton.getHeaderObject();
-            if (header != null && !TextUtils.isEmpty(header.getItemLabel())) {
-                voucherNumber.setText(header.getItemLabel());
+            if (header != null && (!TextUtils.isEmpty(header.getItemLabel()) || !TextUtils.isEmpty(header.getItem_label()))) {
+                if (isOMP){
+                    voucherNumber.setText(header.getItem_label());
+                } else {
+                    voucherNumber.setText(header.getItemLabel());
+                }
             }
         }else {
             if (voucherCount > 0) {

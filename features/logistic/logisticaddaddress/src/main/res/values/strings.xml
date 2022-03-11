@@ -175,13 +175,13 @@
     <string name="tv_pinpoint_not_defined">Kamu belum pinpoint. &lt;b&gt;Atur Pinpoint (Opsional)&lt;/b&gt;</string>
     <string name="tv_pinpoint_defined">Kamu Sudah pinpoint. &lt;b&gt;Atur Pinpoint (Opsional)&lt;/b&gt;</string>
 
-    <string name="tv_discom_item_revamp_province_city_district">&lt;b&gt;%1$s, %2s, %3s&lt;/b&gt;</string>
-    <string name="tv_discom_item_revamp_province_city">&lt;b&gt;%1$s, %2s,&lt;/b&gt; %3s</string>
-    <string name="tv_discom_item_revamp_province_district">&lt;b&gt;%1$s,&lt;/b&gt; %2s, &lt;b&gt;%3$s&lt;/b&gt;</string>
+    <string name="tv_discom_item_revamp_province_city_district">&lt;b&gt;%1$s, %2$s, %3$s&lt;/b&gt;</string>
+    <string name="tv_discom_item_revamp_province_city">&lt;b&gt;%1$s, %2$s,&lt;/b&gt; %3$s</string>
+    <string name="tv_discom_item_revamp_province_district">&lt;b&gt;%1$s,&lt;/b&gt; %2$s, &lt;b&gt;%3$s&lt;/b&gt;</string>
     <string name="tv_discom_item_revamp_city_district">%1$s, &lt;b&gt;%2$s, %3$s&lt;/b&gt;</string>
     <string name="tv_discom_item_revamp_city">%1$s, &lt;b&gt;%2$s,&lt;/b&gt; %3$s</string>
-    <string name="tv_discom_item_revamp_district">%1$s, %2s, &lt;b&gt;%3$s&lt;/b&gt;</string>
-    <string name="tv_discom_item_revamp_province">&lt;b&gt;%1$s,&lt;/b&gt; %2s, %3s</string>
+    <string name="tv_discom_item_revamp_district">%1$s, %2$s, &lt;b&gt;%3$s&lt;/b&gt;</string>
+    <string name="tv_discom_item_revamp_province">&lt;b&gt;%1$s,&lt;/b&gt; %2$s, %3$s</string>
 
     <string name="tv_error_field">Wajib diisi</string>
     <string name="tv_title_nama_penerima_bottomsheet">Informasi nama penerima</string>

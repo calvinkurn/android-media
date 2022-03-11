@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.kyc_centralized.KycUrl.KYC_TYPE_KTP_WITH_SELFIE
 import com.tokopedia.kyc_centralized.KycUrl.SCAN_FACE_FAIL_GENERAL
 import com.tokopedia.kyc_centralized.KycUrl.SCAN_FACE_FAIL_NETWORK
 import com.tokopedia.kyc_centralized.R
@@ -87,6 +88,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private var analytics: UserIdentificationCommonAnalytics? = null
     private var listRetake: ArrayList<Int> = arrayListOf()
     private var isSocketTimeoutException: Boolean = false
+    private var kycType = ""
 
     private lateinit var remoteConfig: RemoteConfig
 
@@ -105,6 +107,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         }
         if (arguments != null && savedInstanceState == null) {
             stepperModel = arguments?.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA)
+            kycType = arguments?.getString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
         } else if (savedInstanceState != null) {
             stepperModel = savedInstanceState.getParcelable(BaseUserIdentificationStepperFragment.EXTRA_KYC_STEPPER_MODEL)
         }
@@ -258,20 +261,10 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
 
     private fun setContentView() {
         loadingLayout?.visibility = View.GONE
-        if (isKycSelfie) {
-            hideLoading()
-            setKycSelfieView()
-        } else {
-            //if not using encryption, send immediately, else wait for encrypt and show loading
-            if (!isUsingEncrypt()) {
-                uploadKycFiles(
-                        isKtpFileUsingEncryption = false,
-                        isFaceFileUsingEncryption = false
-                )
-            } else {
-                showLoading()
-            }
-        }
+        uploadKycFiles(
+                isKtpFileUsingEncryption = true,
+                isFaceFileUsingEncryption = true
+        )
         if (activity is UserIdentificationFormActivity) {
             (activity as UserIdentificationFormActivity)
                     .updateToolbarTitle(getString(R.string.title_kyc_form_upload))
@@ -436,7 +429,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private val isKycSelfie: Boolean
         get() {
             try {
-                if(allowedSelfie) return allowedSelfie
+                if (allowedSelfie || kycType == KYC_TYPE_KTP_WITH_SELFIE) return true
                 if (UserIdentificationFormActivity.isSupportedLiveness) {
                     return remoteConfig.getBoolean(RemoteConfigKey.KYC_USING_SELFIE)
                 }
@@ -656,10 +649,13 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         private const val RETAKE_FACE = 2
         private const val RETAKE_KTP_AND_FACE = 3
 
-        fun createInstance(projectid: Int): Fragment {
-            val fragment = UserIdentificationFormFinalFragment()
-            projectId = projectid
-            return fragment
+        fun createInstance(projectid: Int, kycType: String): Fragment {
+            return UserIdentificationFormFinalFragment().apply {
+                arguments = Bundle().apply {
+                    projectId = projectid
+                    putString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE, kycType)
+                }
+            }
         }
     }
 }
