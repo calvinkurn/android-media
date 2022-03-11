@@ -52,7 +52,7 @@ class DenomFullWidget @JvmOverloads constructor(
                         adapter = adapterDenomFull
                         layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
                     }
-                    //trackFirstVisibleItemToUser(this, denomFullListener, denomData.listDenomData)
+                    trackFirstVisibleItemToUser(this, denomFullListener, denomData.listDenomData)
                     clearOnScrollListeners()
                     addOnScrollListener(object : RecyclerView.OnScrollListener() {
                         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

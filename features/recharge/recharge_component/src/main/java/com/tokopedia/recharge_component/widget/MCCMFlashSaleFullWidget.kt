@@ -119,7 +119,7 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
                     adapter = adapterDenomFull
                     layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
                 }
-                //trackFirstVisibleItemToUser(this, denomFullListener, listDenomFull)
+                trackFirstVisibleItemToUser(this, denomFullListener, listDenomFull)
                 clearOnScrollListeners()
                 addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

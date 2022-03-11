@@ -8,6 +8,7 @@ class DigitalPDPAnalyticsUtils {
 
     companion object {
         fun getVisibleItemIndexes(list: RecyclerView): Pair<Int, Int> {
+
             var firstPos = 0
             var lastPos = 0
             if (list.layoutManager is LinearLayoutManager) {
