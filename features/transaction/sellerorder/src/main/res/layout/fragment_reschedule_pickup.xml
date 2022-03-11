@@ -167,7 +167,7 @@
                 app:layout_constraintEnd_toEndOf="@id/right_padding"
                 app:layout_constraintStart_toStartOf="@id/left_padding"
                 app:layout_constraintTop_toBottomOf="@id/tips_reschedule_pickup"
-                app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_chevron_down"
+                app:unify_text_field_append_drawable_icon_1="@drawable/ic_chevron_down"
                 app:unify_text_field_label="@string/label_day_reschedule_pick_up"
                 app:unify_text_field_label_static="true"
                 app:unify_text_field_placeholder="@string/placeholder_day_reschedule_pick_up" />
@@ -181,7 +181,7 @@
                 app:layout_constraintEnd_toEndOf="@id/right_padding"
                 app:layout_constraintStart_toStartOf="@id/left_padding"
                 app:layout_constraintTop_toBottomOf="@id/et_day"
-                app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_chevron_down"
+                app:unify_text_field_append_drawable_icon_1="@drawable/ic_chevron_down"
                 app:unify_text_field_label="@string/label_time_reschedule_pick_up"
                 app:unify_text_field_label_static="true"
                 app:unify_text_field_placeholder="@string/placeholder_time_reschedule_pick_up" />
@@ -249,7 +249,7 @@
                 app:layout_constraintStart_toStartOf="@id/left_padding"
                 app:layout_constraintTop_toBottomOf="@id/layout_reschedule_detail"
                 app:layout_constraintBottom_toTopOf="@id/et_reason_detail"
-                app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_chevron_down"
+                app:unify_text_field_append_drawable_icon_1="@drawable/ic_chevron_down"
                 app:unify_text_field_label="@string/label_reason_reschedule_pickup"
                 app:unify_text_field_label_static="false" />
 

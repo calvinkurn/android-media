@@ -85,10 +85,11 @@ object SomNavigator {
         }
     }
 
-    fun goToReschedulePickupPage(fragment: Fragment, orderId: String) {
+    fun goToReschedulePickupPage(fragment: Fragment, orderId: String, courierName: String?) {
         fragment.run {
             Intent(activity, ReschedulePickupActivity::class.java).apply {
                 putExtra(SomConsts.PARAM_ORDER_ID, orderId)
+                putExtra(SomConsts.PARAM_COURIER_NAME, courierName ?: "")
                 startActivityForResult(this, REQUEST_RESCHEDULE_PICKUP)
             }
         }

@@ -377,6 +377,10 @@
     <string name="title_reschedule_pickup_button_dialog">Mengerti</string>
     <string name="title_reschedule_pickup_loading_dialog">Perubahan jadwal pick-up sedang diproses</string>
     <string name="description_reschedule_pickup_loading_dialog">Tunggu sebentar, ya.</string>
+    <string name="title_cta_error_reschedule_pickup">Oke</string>
+    <string name="title_failed_reschedule_pickup_dialog">Yah, gagal ubah jadwal pick-up</string>
+    <string name="error_message_reason_below_min_char">Min. 15 karakter</string>
+    <string name="error_message_reason_over_max_char">Sudah mencapai maks. char</string>
     <string-array name="reschedule_guide">
         <item>Pastikan jadwal pick-up baru sesuai dengan kesepakatan pengiriman dengan pembeli</item>
         <item>Ubah jadwal pick-up hanya bisa dilakukan 1 (satu) kali</item>
