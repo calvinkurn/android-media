@@ -248,7 +248,10 @@
           "index": "\\d+(.\\d+)?"
         }
       ],
-      "item_list": "/groupchat - bottom sheet"
+      "item_list": "/groupchat - bottom sheet",
+      "currentSite": ".*",
+      "userId": ".*",
+      "businessUnit": "play"
     },
     {
       "eventAction": "impression - product in upcoming section",
@@ -267,7 +270,10 @@
           "index": "\\d+(.\\d+)?"
         }
       ],
-      "item_list": "/groupchat - bottom sheet"
+      "item_list": "/groupchat - bottom sheet",
+      "currentSite": ".*",
+      "userId": ".*",
+      "businessUnit": "play"
     },
     {
       "eventAction": "click",
