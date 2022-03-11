@@ -18,6 +18,11 @@ import com.tokopedia.product.detail.common.R
     +-----------------------------------+
  */
 class BorderedConstraintLayout : ConstraintLayout {
+    companion object {
+        private const val DEFAULT_STROKE_WIDTH = 5F
+        private const val DEFAULT_RADIUS = 4F
+    }
+
     constructor(context: Context) : super(context) {
         setup(context, null)
     }
@@ -36,7 +41,7 @@ class BorderedConstraintLayout : ConstraintLayout {
 
     private var mBorderPaint = Paint()
     private var rect: RectF = RectF()
-    private var radius = 4f.toPx()
+    private var radius = DEFAULT_RADIUS.toPx()
 
     private fun setup(context: Context, attrs: AttributeSet?) {
         getDeclaredRadius(context, attrs)
@@ -44,7 +49,7 @@ class BorderedConstraintLayout : ConstraintLayout {
         mBorderPaint.style = Paint.Style.STROKE
         mBorderPaint.color = ContextCompat.getColor(this.context,
                 com.tokopedia.unifyprinciples.R.color.Unify_NN200)
-        mBorderPaint.strokeWidth = 5F
+        mBorderPaint.strokeWidth = DEFAULT_STROKE_WIDTH
     }
 
     private fun getDeclaredRadius(context: Context?, attrs: AttributeSet?) {
