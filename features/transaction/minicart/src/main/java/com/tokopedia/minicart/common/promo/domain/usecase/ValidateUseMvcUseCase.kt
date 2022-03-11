@@ -41,6 +41,8 @@ class ValidateUseMvcUseCase @Inject constructor(@ApplicationContext private val 
         val response = validateUseMvcMapper.mapValidateUseMvcResponse(graphqlRepository.response(listOf(request)).getSuccessData<ValidateUseMvcGqlResponse>().response)
         if (response.isError) {
             throw MessageErrorException(response.errorMessage.firstOrNull() ?: "")
+        } else if (!response.success) {
+            throw MessageErrorException(response.message)
         }
         return response
     }
