@@ -6,10 +6,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
-import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.SetChannelTagsUseCase
+import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
+import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.event.UiString
@@ -43,6 +41,7 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
         private val playBroadcastMapper: PlayBroadcastMapper,
         private val getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase,
         private val setChannelTagsUseCase: SetChannelTagsUseCase,
+        private val getChannelUseCase: GetChannelUseCase,
 ) : ViewModel() {
 
     private val channelId: String
@@ -172,6 +171,10 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
         viewModelScope.launchCatchError(context = dispatcher.main, block = {
             _trafficMetric.emit(NetworkResult.Loading)
 
+            val channel = getChannelUseCase.apply {
+                params = GetChannelUseCase.createParams("337761")
+            }.executeOnBackground()
+
             val reportChannelSummary = withContext(dispatcher.io) {
                 delay(LIVE_STATISTICS_DELAY)
 
@@ -189,7 +192,7 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
             }
 
             _liveDuration.value = playBroadcastMapper.mapLiveDuration(
-                                        getCurrentDate(),
+                                        convertDate(channel.basic.timestamp.publishedAt),
                                         reportChannelSummary.duration,
                                         isEligiblePostVideo(reportChannelSummary.duration),
                                     )
@@ -236,7 +239,8 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     }
 
     /** Helper */
-    private fun getCurrentDate() = PlayDateTimeFormatter.getTodayDateTime(PlayDateTimeFormatter.dMMMMyyyy)
+    private fun convertDate(raw: String): String =
+        PlayDateTimeFormatter.formatDate(raw, outputPattern = PlayDateTimeFormatter.dMMMMyyyy)
 
     private fun isEligiblePostVideo(duration: String): Boolean {
         return try {
