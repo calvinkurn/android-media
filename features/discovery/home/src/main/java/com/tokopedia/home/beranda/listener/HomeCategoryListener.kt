@@ -106,7 +106,7 @@ interface HomeCategoryListener {
 
     fun onDynamicChannelRetryClicked()
 
-    fun getTopAdsBannerNextPageToken(): String
+    fun getTopAdsBannerNextPage(): String
 
     fun getDynamicChannelData(visitable: Visitable<*>, channelModel: ChannelModel, channelPosition: Int)
 

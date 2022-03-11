@@ -60,10 +60,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/withdraw
     const val AUTO_WITHDRAW_SETTING = "$INTERNAL_GLOBAL/autoWithdrawSettings"
 
-    // InactivePhoneOnboardingActivity
-    // tokopedia-android-internal://global/change-inactive-phone
-    const val CHANGE_INACTIVE_PHONE = "$INTERNAL_GLOBAL/change-inactive-phone"
-
     // TkpdPaySettingActivity
     // tokopedia-android-internal://global/payment-setting
     const val PAYMENT_SETTING = "$INTERNAL_GLOBAL/payment-setting"
@@ -219,25 +215,9 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/add-pin-from-2fa
     const val ADD_PIN_FROM_2FA = "$INTERNAL_GLOBAL/add-pin-from-2fa"
 
-    // PinOnboardingActivity
-    // tokopedia-android-internal://global/add-pin-onboarding
-    const val ADD_PIN_ONBOARDING = "$INTERNAL_GLOBAL/add-pin-onboarding"
-
-    // RegisterFingerprintOnboardingActivity
-    // tokopedia-android-internal://global/add-fingerprint-onboarding
-    const val ADD_FINGERPRINT_ONBOARDING = "$INTERNAL_GLOBAL/add-fingerprint-onboarding"
-
-    // PinCompleteActivity
-    // tokopedia-android-internal://global/add-pin-complete
-    const val ADD_PIN_COMPLETE = "$INTERNAL_GLOBAL/add-pin-complete"
-
     // VerificationActivity
     // tokopedia-android-internal://global/cotp
     const val COTP = "$INTERNAL_GLOBAL/cotp"
-
-    // SilentVerificationActivity
-    // tokopedia-android-internal://global/silent-verification
-    const val SILENT_VERIFICAITON = "$INTERNAL_GLOBAL/silent-verification"
 
     // ReceiverNotifActivity
     // tokopedia-android-internal://global/otp-push-notif-receiver
@@ -246,18 +226,6 @@ object ApplinkConstInternalGlobal {
     // SettingNotifActivity
     // tokopedia-android-internal://global/otp-push-notif-setting
     const val OTP_PUSH_NOTIF_SETTING = "$INTERNAL_GLOBAL/otp-push-notif-setting"
-
-    // FingerprintSettingActivity
-    // tokopedia-android-internal://global/biometric-setting
-    const val BIOMETRIC_SETTING = "$INTERNAL_GLOBAL/biometric-setting"
-
-    // VerifyFingerprintActivity
-    // tokopedia-android-internal://global/verify-fingerprint
-    const val VERIFY_BIOMETRIC = "$INTERNAL_GLOBAL/verify-fingerprint"
-
-    // RegisterFingerprintActivity
-    // tokopedia-android-internal://global/register-fingerprint
-    const val REGISTER_BIOMETRIC = "$INTERNAL_GLOBAL/register-fingerprint"
 
     // LoginByQrActivity
     // tokopedia-android-internal://global/qr-login
@@ -464,10 +432,6 @@ object ApplinkConstInternalGlobal {
     // AccountHomeActivity
     // tokopedia-android-internal://global/account-home-old
     const val OLD_HOME_ACCOUNT = "$INTERNAL_GLOBAL/old-home-account"
-
-    // HomeAccountUserActivity
-    // tokopedia-android-internal://global/new-home-account
-    const val NEW_HOME_ACCOUNT = "$INTERNAL_GLOBAL/new-home-account"
 
     // FundsAndInvestmentActivity
     // tokopedia-android-internal://global/funds-and-investment

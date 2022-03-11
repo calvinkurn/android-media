@@ -32,6 +32,9 @@ class DigitalUnifyCardViewHolder(
 ) : AbstractViewHolder<DigitalUnifyModel>(binding.root) {
 
     override fun bind(element: DigitalUnifyModel) {
+
+        listener?.onItemImpression(element, adapterPosition)
+
         renderMedia(element)
         renderCampaign(element)
         renderProductInfo(element)
@@ -138,7 +141,7 @@ class DigitalUnifyCardViewHolder(
     private fun renderTitle(element: DigitalUnifyModel) {
         with(binding.dguTitleLabel) {
             if (element.title.isNotEmpty()) {
-                text = element.title
+                text = MethodChecker.fromHtml(element.title)
                 show()
             } else {
                 hide()
@@ -197,7 +200,7 @@ class DigitalUnifyCardViewHolder(
     private fun renderSubtitle(element: DigitalUnifyModel) {
         with(binding.dguSubtitle) {
             if (element.subtitle.isNotEmpty()) {
-                text = element.subtitle
+                text = MethodChecker.fromHtml(element.subtitle)
                 show()
             } else {
                 hide()
@@ -466,6 +469,7 @@ class DigitalUnifyCardViewHolder(
 
     interface DigitalUnifyCardListener {
         fun onItemClicked(item: DigitalUnifyModel, index: Int)
+        fun onItemImpression(item: DigitalUnifyModel, index: Int)
     }
 
     companion object {
