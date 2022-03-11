@@ -123,7 +123,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         isFilterRefreshed: Boolean = true
     ) {
         catalogProductJob = viewModelScope.launchCatchError(dispatchers.main, block = {
-            delay(DELAY_MULTI_TAB)
+            if (!isFilterRefreshed) delay(DELAY_MULTI_TAB)
             val denomFull = repo.getProductInputMultiTabDenomFull(menuId, operator, clientNumber,
                 filterDataParams, isFilterRefreshed
             )

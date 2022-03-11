@@ -444,6 +444,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
+        inputNumberActionType = InputNumberActionType.NOTHING
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             if (clientNumber.isNotEmpty()) {
                 setInputNumber(clientNumber, true)
@@ -890,6 +891,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
         if (!clientNumber.isNullOrEmpty()) {
             binding?.rechargePdpPulsaClientNumberWidget?.run {
+                inputNumberActionType = InputNumberActionType.NOTHING
                 setInputNumber(clientNumber, true)
             }
         }
@@ -926,11 +928,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     /** Start Input Field Listener */
 
-    override fun onRenderOperator(isDelayed: Boolean) {
+    override fun onRenderOperator(isDelayed: Boolean, isManualInput: Boolean) {
         viewModel.operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty().let {
             if (it) {
                 getPrefixOperatorData()
             } else {
+                if (isManualInput) inputNumberActionType = InputNumberActionType.MANUAL
                 renderProduct()
             }
         }
@@ -1104,9 +1107,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     override fun onDenomGridImpression(
-        denomGrid: DenomData,
+        listDenomGrid: List<DenomData>,
         layoutType: DenomWidgetEnum,
-        position: Int
     ) {
         if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE) {
             digitalPDPAnalytics.impressionProductMCCM(
@@ -1114,9 +1116,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
-                denomGrid,
-                layoutType,
-                position
+                listDenomGrid,
+                layoutType
             )
         } else if (layoutType == DenomWidgetEnum.GRID_TYPE) {
             digitalPDPAnalytics.impressionProductCluster(
@@ -1124,8 +1125,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
-                denomGrid,
-                position
+                listDenomGrid
             )
         }
     }

@@ -267,10 +267,6 @@ class DenomFullViewHolder(
                     denomFullListener.onDenomFullClicked(denomFull, denomType, position, "", true)
                 }
             }
-
-            root.addOnImpressionListener(denomFull) {
-                denomFullListener.onDenomFullImpression(denomFull, denomType, position)
-            }
         }
     }
 }

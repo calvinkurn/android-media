@@ -211,6 +211,7 @@ class DigitalPDPDataPlanFragment :
         }
         if (!clientNumber.isNullOrEmpty()) {
             binding?.rechargePdpPaketDataClientNumberWidget?.run {
+                inputNumberActionType = InputNumberActionType.NOTHING
                 setInputNumber(clientNumber, true)
             }
         }
@@ -351,7 +352,6 @@ class DigitalPDPDataPlanFragment :
                             productId.toString()
                         )
                     }
-
                     val selectedPositionDenom =
                         viewModel.getSelectedPositionId(denomData.data.denomFull.listDenomData)
                     val selectedPositionMCCM =
@@ -370,8 +370,10 @@ class DigitalPDPDataPlanFragment :
 
                     if (viewModel.isEmptyDenomMCCM(denomData.data.denomFull.listDenomData,
                             denomData.data.denomMCCMFull.listDenomData)){
-                        showEmptyState(true)
-                    } else hideEmptyState()
+                        showGlobalErrorState()
+                    } else {
+                        hideGlobalErrorState()
+                    }
 
                     if (selectedPositionDenom == null && selectedPositionMCCM == null) {
                         onHideBuyWidget()
@@ -384,6 +386,7 @@ class DigitalPDPDataPlanFragment :
                 }
 
                 is RechargeNetworkResult.Loading -> {
+                    hideGlobalErrorState()
                     hideEmptyState()
                     onShimmeringDenomFull()
                     onLoadingAndFailMCCM()
@@ -748,6 +751,7 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
+        inputNumberActionType = InputNumberActionType.NOTHING
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
             if (clientNumber.isNotEmpty()) {
                 setInputNumber(clientNumber, true)
@@ -828,7 +832,7 @@ class DigitalPDPDataPlanFragment :
         binding?.rechargePdpPaketDataEmptyStateWidget?.imageUrl = banners.firstOrNull()?.imageUrl ?: ""
     }
 
-    private fun showEmptyState(isShowFilter: Boolean = false) {
+    private fun showEmptyState() {
         binding?.run {
             if (!rechargePdpPaketDataEmptyStateWidget.isVisible) {
 
@@ -846,16 +850,12 @@ class DigitalPDPDataPlanFragment :
                     rechargePdpPaketDataEmptyStateWidget.hide()
                 }
 
-                if (isShowFilter){
-                    sortFilterPaketData.show()
-                } else {
-                    sortFilterPaketData.hide()
-                    rechargePdpPaketDataClientNumberWidget.hideOperatorIcon()
-                }
-
+                sortFilterPaketData.hide()
                 rechargePdpPaketDataPromoWidget.hide()
                 rechargePdpPaketDataRecommendationWidget.hide()
                 rechargePdpPaketDataDenomFullWidget.hide()
+                globalErrorPaketData.hide()
+                rechargePdpPaketDataClientNumberWidget.hideOperatorIcon()
             }
         }
     }
@@ -866,6 +866,21 @@ class DigitalPDPDataPlanFragment :
                 rechargePdpPaketDataEmptyStateWidget.hide()
                 rechargePdpPaketDataRecommendationWidget.show()
             }
+        }
+    }
+
+    private fun showGlobalErrorState() {
+        binding?.globalErrorPaketData?.run {
+            show()
+            errorTitle.text = getString(R.string.empty_state_paket_data_title)
+            errorDescription.text = getString(R.string.empty_state_paket_data_desc)
+            errorAction.hide()
+        }
+    }
+
+    private fun hideGlobalErrorState() {
+        binding?.globalErrorPaketData?.run {
+            hide()
         }
     }
 
@@ -1045,11 +1060,12 @@ class DigitalPDPDataPlanFragment :
 
     /** Start Input Field Listener */
 
-    override fun onRenderOperator(isDelayed: Boolean) {
+    override fun onRenderOperator(isDelayed: Boolean, isManualInput: Boolean) {
         viewModel.operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty().let {
             if (it) {
                 getPrefixOperatorData()
             } else {
+                if (isManualInput) inputNumberActionType = InputNumberActionType.MANUAL
                 renderProduct()
             }
         }
@@ -1196,7 +1212,7 @@ class DigitalPDPDataPlanFragment :
 
     override fun onClickedChevron(denom: DenomData) {
         digitalPDPAnalytics.clickChevronBuyWidget(
-            DigitalPDPCategoryUtil.getCategoryName(denom.categoryId.toInt()),
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
             operator.attributes.name,
             denom.price,
             denom.slashPrice,
@@ -1292,9 +1308,8 @@ class DigitalPDPDataPlanFragment :
     }
 
     override fun onDenomFullImpression(
-        denomFull: DenomData,
+        listDenomFull: List<DenomData>,
         layoutType: DenomWidgetEnum,
-        position: Int
     ) {
         if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE) {
             digitalPDPAnalytics.impressionProductMCCM(
@@ -1302,9 +1317,8 @@ class DigitalPDPDataPlanFragment :
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
-                denomFull,
+                listDenomFull,
                 layoutType,
-                position
             )
         } else if (layoutType == DenomWidgetEnum.FULL_TYPE) {
             digitalPDPAnalytics.impressionProductCluster(
@@ -1312,8 +1326,7 @@ class DigitalPDPDataPlanFragment :
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
-                denomFull,
-                position
+                listDenomFull,
             )
         }
     }

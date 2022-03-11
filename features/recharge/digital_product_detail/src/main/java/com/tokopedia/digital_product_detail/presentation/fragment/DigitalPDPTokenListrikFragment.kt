@@ -183,6 +183,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         }
         if (!clientNumber.isNullOrEmpty()) {
             binding?.rechargePdpTokenListrikClientNumberWidget?.run {
+                inputNumberActionType = InputNumberActionType.NOTHING
                 setInputNumber(clientNumber)
             }
         }
@@ -430,7 +431,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         if (operatorId.isEmpty()) {
             operatorId = data.prefillOperatorId
         }
-
+        inputNumberActionType = InputNumberActionType.NOTHING
         binding?.rechargePdpTokenListrikClientNumberWidget?.run {
             if (clientNumber.isNotEmpty()) {
                 setInputNumber(clientNumber, true)
@@ -818,11 +819,12 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
 
     /** Start Input Field Listener */
 
-    override fun onRenderOperator(isDelayed: Boolean) {
+    override fun onRenderOperator(isDelayed: Boolean, isManualInput: Boolean) {
         viewModel.operatorData.id.isEmpty().let {
             if (it) {
                 getOperatorSelectGroup()
             } else {
+                if (isManualInput) inputNumberActionType = InputNumberActionType.MANUAL
                 renderProduct()
             }
         }
@@ -978,9 +980,8 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     }
 
     override fun onDenomGridImpression(
-        denomGrid: DenomData,
-        layoutType: DenomWidgetEnum,
-        position: Int
+        listDenomGrid: List<DenomData>,
+        layoutType: DenomWidgetEnum
     ) {
         if (layoutType == DenomWidgetEnum.GRID_TYPE) {
             digitalPDPAnalytics.impressionProductCluster(
@@ -988,8 +989,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                 DigitalPDPCategoryUtil.getOperatorName(operatorId),
                 loyaltyStatus,
                 userSession.userId,
-                denomGrid,
-                position
+                listDenomGrid
             )
         }
     }

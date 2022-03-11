@@ -176,15 +176,14 @@ class DigitalPDPAnalytics {
         operatorName: String,
         loyaltyStatus: String,
         userId: String,
-        denomData: DenomData,
-        position: Int
+        listDenomData: List<DenomData>,
     ) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, IMPRESSION_PRODUCT_CLUSTER)
             putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${loyaltyStatus}")
             putParcelableArrayList(
                 ITEMS,
-                mapperDenomToItemList(denomData, operatorName, position, "")
+                mapperDenomListToItemList(listDenomData, operatorName, "", categoryName)
             )
         }
 
@@ -207,7 +206,7 @@ class DigitalPDPAnalytics {
             putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${loyaltyStatus}")
             putParcelableArrayList(
                 ITEMS,
-                mapperDenomToItemList(denomData, operatorName, position, "")
+                mapperDenomToItemList(denomData, operatorName, position, "", categoryName)
             )
         }
 
@@ -288,13 +287,12 @@ class DigitalPDPAnalytics {
         operatorName: String,
         loyaltyStatus: String,
         userId: String,
-        denomData: DenomData,
+        listDenomData: List<DenomData>,
         denomType: DenomWidgetEnum,
-        position: Int
-
     ) {
         val isMCCMorFlashSale =
-            if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE) MCCM else FLASH_SALE
+            if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE ||
+                denomType == DenomWidgetEnum.MCCM_FULL_TYPE) MCCM else FLASH_SALE
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, VIEW_PROMO_CARD)
             putString(
@@ -303,7 +301,7 @@ class DigitalPDPAnalytics {
             )
             putParcelableArrayList(
                 ITEMS,
-                mapperDenomToItemList(denomData, operatorName, position, isMCCMorFlashSale)
+                mapperDenomListToItemList(listDenomData, operatorName, isMCCMorFlashSale, categoryName)
             )
         }
 
@@ -339,7 +337,8 @@ class DigitalPDPAnalytics {
         position: Int
     ) {
         val isMCCMorFlashSale =
-            if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE) MCCM else FLASH_SALE
+            if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE ||
+                denomType == DenomWidgetEnum.MCCM_FULL_TYPE) MCCM else FLASH_SALE
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, CLICK_PROMO_CARD)
             putString(ITEM_LIST, productListName)
@@ -349,7 +348,7 @@ class DigitalPDPAnalytics {
             )
             putParcelableArrayList(
                 ITEMS,
-                mapperDenomToItemList(denomData, operatorName, position, isMCCMorFlashSale)
+                mapperDenomToItemList(denomData, operatorName, position, isMCCMorFlashSale, categoryName)
             )
         }
 
@@ -628,11 +627,40 @@ class DigitalPDPAnalytics {
 
     /** Tracking mapper*/
 
+    fun mapperDenomListToItemList(
+        listDenomData: List<DenomData>,
+        operatorName: String,
+        isMCCMorFlashSale: String,
+        categoryName: String
+    ): ArrayList<Bundle> {
+        val listItems = ArrayList<Bundle>()
+        listDenomData.forEachIndexed { index, t ->
+            listItems.add(
+                Bundle().apply {
+                    putString(INDEX, (listDenomData[index].position + 1).toString())
+                    putString(ITEM_BRAND, operatorName)
+                    putString(
+                        ITEM_CATEGORY,
+                        categoryName
+                    )
+                    putString(ITEM_ID, listDenomData[index].id)
+                    putString(ITEM_NAME, listDenomData[index].title)
+                    putString(ITEM_VARIANT, isMCCMorFlashSale)
+                    putString(PRICE, listDenomData[index].price)
+                }
+            )
+        }
+
+
+        return listItems
+    }
+
     fun mapperDenomToItemList(
         denomData: DenomData,
         operatorName: String,
         position: Int,
-        isMCCMorFlashSale: String
+        isMCCMorFlashSale: String,
+        categoryName: String
     ): ArrayList<Bundle> {
         val listItems = ArrayList<Bundle>()
         denomData.run {
@@ -642,7 +670,7 @@ class DigitalPDPAnalytics {
                     putString(ITEM_BRAND, operatorName)
                     putString(
                         ITEM_CATEGORY,
-                        DigitalPDPCategoryUtil.getCategoryName(denomData.categoryId.toInt())
+                        categoryName
                     )
                     putString(ITEM_ID, denomData.id)
                     putString(ITEM_NAME, denomData.title)

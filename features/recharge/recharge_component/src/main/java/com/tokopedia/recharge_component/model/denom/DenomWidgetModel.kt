@@ -11,6 +11,7 @@ data class DenomWidgetModel(
 
 data class DenomData(
     val id: String = "",
+    var position: Int = 0,
     val isSpecialPromo: Boolean = false,
     val promoStatus: String = "0",
     val status: Int = 0,
