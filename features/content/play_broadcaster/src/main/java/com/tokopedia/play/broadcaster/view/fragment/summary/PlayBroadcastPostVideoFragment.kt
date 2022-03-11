@@ -20,6 +20,7 @@ import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPostVideo
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
+import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.TagUiState
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
@@ -115,12 +116,12 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     private fun setupObservable() {
         observeUiState()
         observeEvent()
-        observeChannelInfo()
     }
 
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
+                renderCoverInfo(it.prevValue?.channelSummary, it.value.channelSummary)
                 renderTag(it.prevValue?.tag, it.value.tag)
             }
         }
@@ -155,19 +156,12 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         }
     }
 
-    private fun observeChannelInfo() {
-        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner) {
-            when (it) {
-                is NetworkResult.Success -> {
-                    with(it.data) {
-                        binding.ivBroSummaryCoverPreview.setImageUrl(coverUrl)
-                        binding.tvBroSummaryCoverTitle.text = title
-                        binding.tvBroSummaryCoverShopName.text = parentViewModel.getShopName()
-                    }
-                }
-                else -> {}
-            }
-        }
+    private fun renderCoverInfo(prev: ChannelSummaryUiState?, value: ChannelSummaryUiState) {
+        if(prev == value || value.isEmpty()) return
+
+        binding.ivBroSummaryCoverPreview.setImageUrl(value.coverUrl)
+        binding.tvBroSummaryCoverTitle.text = value.title
+        binding.tvBroSummaryCoverShopName.text = parentViewModel.getShopName()
     }
 
     private fun renderTag(prev: TagUiState?, value: TagUiState) {
