@@ -33,6 +33,7 @@ import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFra
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment.Companion.CACHE_SHOW_COACH_MARK_KEY
 import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberViewHolder
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
+import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -50,6 +51,7 @@ class TopupBillsFavoriteNumberActivityTest {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
     var intent: Intent? = null
+    private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
     var mRuntimePermissionRule: GrantPermissionRule =
@@ -98,6 +100,7 @@ class TopupBillsFavoriteNumberActivityTest {
 
     @Test
     fun validate_favorite_number_page_happy_flow() {
+        graphqlCacheManager.deleteAll()
         setupGraphqlMockResponse(
             TopupBillsFavoriteNumberMockResponseConfig(
                 isMockFilledFavoriteNumber = true,
@@ -124,6 +127,7 @@ class TopupBillsFavoriteNumberActivityTest {
 
     @Test
     fun validate_favorite_number_empty_unhappy_flow() {
+        graphqlCacheManager.deleteAll()
         setupGraphqlMockResponse(
             TopupBillsFavoriteNumberMockResponseConfig(
                 isMockFilledFavoriteNumber = false,
@@ -144,6 +148,7 @@ class TopupBillsFavoriteNumberActivityTest {
 
     @Test
     fun validate_favorite_number_page_favorite_detail_error_flow() {
+        graphqlCacheManager.deleteAll()
         setupGraphqlMockResponse(
             TopupBillsFavoriteNumberMockResponseConfig(
                 isMockFilledFavoriteNumber = true,
