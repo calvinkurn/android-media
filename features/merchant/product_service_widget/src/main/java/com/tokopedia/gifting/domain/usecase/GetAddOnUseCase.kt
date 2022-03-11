@@ -50,6 +50,7 @@ class GetAddOnUseCase @Inject constructor(
                   }
                   Shop{
                     Name
+                    ShopTier
                   }
                 }
               }

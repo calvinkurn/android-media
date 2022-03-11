@@ -8,4 +8,8 @@ class Shop {
     @SerializedName("Name")
     @Expose
     var name: String = ""
+
+    @SerializedName("ShopTier")
+    @Expose
+    var shopTier: Long = Int.ZERO.toLong()
 }

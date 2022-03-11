@@ -8,6 +8,10 @@ class Basic {
     @Expose
     var id: String = ""
 
+    @SerializedName("ShopID")
+    @Expose
+    var shopID: String = ""
+
     @SerializedName("Name")
     @Expose
     var name: String = ""

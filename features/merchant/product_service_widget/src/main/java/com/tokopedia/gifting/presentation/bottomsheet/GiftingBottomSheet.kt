@@ -48,6 +48,9 @@ class GiftingBottomSheet(private val addOnId: String) : BottomSheetUnify() {
     private val layoutContent by lazy { binding?.layoutContent?.root }
     private val layoutShimmer by lazy { binding?.layoutShimmer?.root }
 
+    private var shopTier: Long? = null
+    private var shopIdDisplayed: String = ""
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         clearContentPadding = true
         overlayClickDismiss = true
@@ -78,12 +81,22 @@ class GiftingBottomSheet(private val addOnId: String) : BottomSheetUnify() {
 
     private fun observeGetAddOnByProduct() {
         viewModel.getAddOnResult.observe(viewLifecycleOwner) {
+            shopTier = it.addOnByIDResponse.firstOrNull()?.shop?.shopTier
+            shopIdDisplayed = it.addOnByIDResponse.firstOrNull()?.basic?.shopID.orEmpty()
+
             setPageLoading(false)
             setTextShopLocationAction(it.staticInfo.infoURL)
             setTextPromo(it.staticInfo.promoText)
             setupPageFromResponseData(it.addOnByIDResponse.firstOrNull())
+
             GiftingBottomsheetTracking.trackPageImpression(
-                bottomSheetTitle.text.toString(), userSession.userId, it.addOnByIDResponse)
+                context,
+                addOnId,
+                bottomSheetTitle.text.toString(),
+                userSession.userId,
+                shopIdDisplayed,
+                shopTier.orZero(),
+                it.addOnByIDResponse)
         }
     }
 
@@ -143,7 +156,12 @@ class GiftingBottomSheet(private val addOnId: String) : BottomSheetUnify() {
         textShopLocation?.setOnClickListener {
             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, infoUrl))
             GiftingBottomsheetTracking.trackInfoURLClick(
-                bottomSheetTitle.text.toString(), userSession.userId)
+                addOnId,
+                bottomSheetTitle.text.toString(),
+                userSession.userId,
+                shopIdDisplayed,
+                shopTier.orZero()
+            )
         }
     }
 }
