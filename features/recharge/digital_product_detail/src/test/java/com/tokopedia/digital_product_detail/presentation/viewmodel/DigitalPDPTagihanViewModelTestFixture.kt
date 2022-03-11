@@ -358,6 +358,10 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
         advanceTimeBy(DigitalPDPConstant.VALIDATOR_DELAY_TIME)
     }
 
+    protected fun TestCoroutineScope.skipAutoCompleteDelay() {
+        advanceTimeBy(DigitalPDPConstant.DELAY_AUTOCOMPLETE)
+    }
+
     companion object {
         private const val EMPTY = ""
     }

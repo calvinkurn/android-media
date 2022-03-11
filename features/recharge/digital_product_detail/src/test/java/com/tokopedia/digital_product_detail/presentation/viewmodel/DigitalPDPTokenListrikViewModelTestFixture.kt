@@ -423,6 +423,10 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
         advanceTimeBy(DigitalPDPConstant.DELAY_MULTI_TAB)
     }
 
+    protected fun TestCoroutineScope.skipAutoCompleteDelay() {
+        advanceTimeBy(DigitalPDPConstant.DELAY_AUTOCOMPLETE)
+    }
+
     companion object {
         const val EMPTY = ""
         const val POSITION_0 = 0

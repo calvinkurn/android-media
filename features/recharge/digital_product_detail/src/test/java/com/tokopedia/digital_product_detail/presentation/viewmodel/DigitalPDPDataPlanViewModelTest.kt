@@ -115,23 +115,27 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
     }
 
     @Test
-    fun `when getting autoComplete should run and give success result`() {
-        val response = dataFactory.getFavoriteNumberData()
-        onGetAutoComplete_thenReturn(response)
+    fun `when getting autoComplete should run and give success result`() =
+        testCoroutineRule.runBlockingTest {
+            val response = dataFactory.getFavoriteNumberData()
+            onGetAutoComplete_thenReturn(response)
 
-        viewModel.getAutoComplete(listOf())
-        verifyGetFavoriteNumberListRepoGetCalled()
-        verifyGetAutoCompleteSuccess(response.persoFavoriteNumber.items)
-    }
+            viewModel.getAutoComplete(listOf())
+            skipAutoCompleteDelay()
+            verifyGetFavoriteNumberListRepoGetCalled()
+            verifyGetAutoCompleteSuccess(response.persoFavoriteNumber.items)
+        }
 
     @Test
-    fun `when getting autoComplete should run and give success fail`() {
-        onGetAutoComplete_thenReturn(NullPointerException())
+    fun `when getting autoComplete should run and give success fail`() =
+        testCoroutineRule.runBlockingTest {
+            onGetAutoComplete_thenReturn(NullPointerException())
 
-        viewModel.getAutoComplete(listOf())
-        verifyGetFavoriteNumberListRepoGetCalled()
-        verifyGetAutoCompleteFail()
-    }
+            viewModel.getAutoComplete(listOf())
+            skipAutoCompleteDelay()
+            verifyGetFavoriteNumberListRepoGetCalled()
+            verifyGetAutoCompleteFail()
+        }
 
     @Test
     fun `given catalogPrefixSelect loading state then should get loading state`() {

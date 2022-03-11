@@ -16,7 +16,7 @@ import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIden
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
-import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_AUTOCOMPLETE
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.CHECKOUT_NO_PROMO
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_CLIENT_NUMBER_TRANSITION
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_MULTI_TAB
@@ -157,6 +157,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
 
     fun getAutoComplete(categoryIds: List<Int>) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
+            delay(DELAY_AUTOCOMPLETE) // temporary solution to fix race condition
             val favoriteNumberList = repo.getFavoriteNumberList(categoryIds)
             _autoCompleteData.value = RechargeNetworkResult.Success(
                 favoriteNumberList.persoFavoriteNumber.items)

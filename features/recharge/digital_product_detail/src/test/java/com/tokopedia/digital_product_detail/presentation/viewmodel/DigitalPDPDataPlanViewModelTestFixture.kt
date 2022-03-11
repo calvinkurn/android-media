@@ -484,6 +484,10 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         advanceTimeBy(DigitalPDPConstant.DELAY_CLIENT_NUMBER_TRANSITION)
     }
 
+    protected fun TestCoroutineScope.skipAutoCompleteDelay() {
+        advanceTimeBy(DigitalPDPConstant.DELAY_AUTOCOMPLETE)
+    }
+
     companion object {
         const val EMPTY = ""
         const val POSITION_0 = 0
