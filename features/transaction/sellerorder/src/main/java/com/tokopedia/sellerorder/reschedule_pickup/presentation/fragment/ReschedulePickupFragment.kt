@@ -284,20 +284,24 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
         positiveButton: String,
         image: Int,
     ) {
-        val dialog = DialogUnify(
-            requireContext(),
-            DialogUnify.SINGLE_ACTION,
-            DialogUnify.WITH_ILLUSTRATION
-        ).apply {
-            setImageDrawable(image)
-            setTitle(titleText)
-            setDescription(bodyText)
-            setPrimaryCTAText(positiveButton)
-            setPrimaryCTAClickListener {
-                this.dismiss()
-            }
+        // todo: still need to fix this
+        val dialog = context?.run {
+            DialogUnify(
+                this,
+                DialogUnify.SINGLE_ACTION,
+                DialogUnify.WITH_ILLUSTRATION
+            )
         }
-        dialog.show()
+        dialog?.let {
+            it.setTitle(titleText)
+            it.setDescription(bodyText)
+            it.setImageDrawable(image)
+            it.setPrimaryCTAText(positiveButton)
+            it.setPrimaryCTAClickListener {
+                it.dismiss()
+            }
+            it.show()
+        }
     }
 
     private fun setWrapperWatcherOtherReason(wrapper: TextInputLayout): TextWatcher {
@@ -387,26 +391,6 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
         }
     }
 
-    companion object {
-        private const val OTHER_REASON_RESCHEDULE = "Lainnya (Isi Sendiri)"
-        private const val OTHER_REASON_MIN_CHAR = 15
-        private const val OTHER_REASON_MAX_CHAR = 160
-
-        // todo confirm this status code to BE
-        private const val STATUS_CODE_ALREADY_REQUEST_NEW_DRIVER = "999"
-        fun newInstance(bundle: Bundle): ReschedulePickupFragment {
-            return ReschedulePickupFragment().apply {
-                arguments = Bundle().apply {
-                    putString(SomConsts.PARAM_ORDER_ID, bundle.getString(SomConsts.PARAM_ORDER_ID))
-                    putString(
-                        SomConsts.PARAM_COURIER_NAME,
-                        bundle.getString(SomConsts.PARAM_COURIER_NAME)
-                    )
-                }
-            }
-        }
-    }
-
     override fun onDayChosen(dayChosen: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData.DayOption) {
         binding?.run {
             etDay.editText.setText(dayChosen.day)
@@ -455,6 +439,26 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
                 timeChosen.time
             )
             validateInput()
+        }
+    }
+
+    companion object {
+        private const val OTHER_REASON_RESCHEDULE = "Lainnya (Isi Sendiri)"
+        private const val OTHER_REASON_MIN_CHAR = 15
+        private const val OTHER_REASON_MAX_CHAR = 160
+
+        // todo confirm this status code to BE
+        private const val STATUS_CODE_ALREADY_REQUEST_NEW_DRIVER = "999"
+        fun newInstance(bundle: Bundle): ReschedulePickupFragment {
+            return ReschedulePickupFragment().apply {
+                arguments = Bundle().apply {
+                    putString(SomConsts.PARAM_ORDER_ID, bundle.getString(SomConsts.PARAM_ORDER_ID))
+                    putString(
+                        SomConsts.PARAM_COURIER_NAME,
+                        bundle.getString(SomConsts.PARAM_COURIER_NAME)
+                    )
+                }
+            }
         }
     }
 }
