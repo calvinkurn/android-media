@@ -50,7 +50,6 @@
       "businessUnit": "sbm",
       "items": [
         {
-          "dimension40": ".*",
           "item_id": ".+",
           "index": ".+",
           "item_name": ".+",
@@ -85,7 +84,6 @@
       "businessUnit": "recharge",
       "items": [
         {
-          "dimension40": ".*",
           "item_id": ".+",
           "index": ".+",
           "item_name": ".+",
