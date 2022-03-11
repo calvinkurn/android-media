@@ -90,10 +90,6 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     val uiEvent: Flow<PlayBroadcastSummaryEvent>
         get() = _uiEvent
 
-    val observableSaveVideo: LiveData<NetworkResult<Boolean>>
-        get() = _observableSaveVideo
-    private val _observableSaveVideo = MutableLiveData<NetworkResult<Boolean>>()
-
     init {
         fetchLiveTraffic()
         getTags()
@@ -106,6 +102,8 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
             PlayBroadcastSummaryAction.ClickViewLeaderboard -> handleClickViewLeaderboard()
             PlayBroadcastSummaryAction.ClickPostVideo -> handleClickPostVideo()
 
+            PlayBroadcastSummaryAction.ClickBackToReportPage -> handleClickBackToReportPage()
+            PlayBroadcastSummaryAction.ClickEditCover -> handleClickEditCover()
             is PlayBroadcastSummaryAction.ToggleTag -> handleToggleTag(action.tagUiModel)
             PlayBroadcastSummaryAction.ClickPostVideoNow -> handleClickPostVideoNow()
         }
@@ -129,6 +127,18 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
         }
     }
 
+    private fun handleClickBackToReportPage() {
+        viewModelScope.launch {
+            _uiEvent.emit(PlayBroadcastSummaryEvent.BackToReportPage)
+        }
+    }
+
+    private fun handleClickEditCover() {
+        viewModelScope.launch {
+            _uiEvent.emit(PlayBroadcastSummaryEvent.OpenSelectCoverBottomSheet)
+        }
+    }
+
     private fun handleToggleTag(tagUiModel: PlayTagUiModel) {
         viewModelScope.launchCatchError(block = {
             val newSelectedTag = _selectedTags.value.toMutableSet().apply {
@@ -143,20 +153,21 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     }
 
     private fun handleClickPostVideoNow() {
-        _observableSaveVideo.value = NetworkResult.Loading
         viewModelScope.launchCatchError(block = {
+            _uiEvent.emit(PlayBroadcastSummaryEvent.PostVideo(NetworkResult.Loading))
             withContext(dispatcher.io) {
-                saveTag()
-                updateChannelStatus()
+//                saveTag()
+//                updateChannelStatus()
             }
-            _observableSaveVideo.value = NetworkResult.Success(true)
+            _uiEvent.emit(PlayBroadcastSummaryEvent.PostVideo(NetworkResult.Success(true)))
         }) {
-            _observableSaveVideo.value = NetworkResult.Fail(it) {
+            _uiEvent.emit(PlayBroadcastSummaryEvent.PostVideo(NetworkResult.Fail(it) {
                 submitAction(PlayBroadcastSummaryAction.ClickPostVideoNow)
-            }
+            }))
         }
     }
 
+    /** Fetch Area */
     fun fetchLiveTraffic() {
         viewModelScope.launchCatchError(block = {
             _trafficMetric.emit(NetworkResult.Loading)

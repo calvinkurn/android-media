@@ -12,6 +12,8 @@ sealed class PlayBroadcastSummaryAction {
     object ClickPostVideo: PlayBroadcastSummaryAction()
 
     /** Post Video Page */
+    object ClickBackToReportPage: PlayBroadcastSummaryAction()
+    object ClickEditCover: PlayBroadcastSummaryAction()
     data class ToggleTag(val tagUiModel: PlayTagUiModel): PlayBroadcastSummaryAction()
     object ClickPostVideoNow: PlayBroadcastSummaryAction()
 }

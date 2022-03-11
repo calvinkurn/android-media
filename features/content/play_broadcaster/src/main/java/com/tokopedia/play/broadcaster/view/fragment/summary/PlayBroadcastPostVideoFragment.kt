@@ -18,6 +18,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPostVideoBinding
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
+import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.state.TagUiState
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
@@ -31,6 +32,7 @@ import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.*
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -98,12 +100,12 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         }
 
         binding.icBroSummaryBack.setOnClickListener {
-            mListener?.onClickBackButton()
+            viewModel.submitAction(PlayBroadcastSummaryAction.ClickBackToReportPage)
         }
 
         binding.clCoverPreview.setOnClickListener {
             analytic.clickCoverOnReportPage(parentViewModel.channelId, parentViewModel.channelTitle)
-            openCoverSetupFragment()
+            viewModel.submitAction(PlayBroadcastSummaryAction.ClickEditCover)
         }
 
         binding.btnPostVideo.setOnClickListener {
@@ -114,14 +116,43 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
 
     private fun setupObservable() {
         observeUiState()
+        observeEvent()
         observeChannelInfo()
-        observeSaveVideo()
     }
 
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
                 renderTag(it.prevValue?.tag, it.value.tag)
+            }
+        }
+    }
+
+    private fun observeEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect {
+                when(it) {
+                    PlayBroadcastSummaryEvent.BackToReportPage -> mListener?.onClickBackButton()
+                    PlayBroadcastSummaryEvent.OpenSelectCoverBottomSheet -> openCoverSetupFragment()
+                    is PlayBroadcastSummaryEvent.PostVideo -> {
+                        when (val networkResult = it.networkResult) {
+                            is NetworkResult.Loading -> binding.btnPostVideo.isLoading = true
+                            is NetworkResult.Success -> openShopPageWithBroadcastStatus(true)
+                            is NetworkResult.Fail -> {
+                                binding.btnPostVideo.isLoading = false
+                                /** TODO("should be change later with ErrorFragment from RE") */
+                                view?.showErrorToaster(
+                                    err = networkResult.error,
+                                    customErrMessage = networkResult.error.localizedMessage
+                                        ?: getString(R.string.play_broadcaster_default_error),
+                                    actionLabel = getString(R.string.play_broadcast_try_again),
+                                    actionListener = { _ -> networkResult.onRetry() }
+                                )
+                            }
+                        }
+                    }
+                    else -> { }
+                }
             }
         }
     }
@@ -147,28 +178,6 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         }
     }
 
-    private fun observeSaveVideo() {
-        viewModel.observableSaveVideo.observe(viewLifecycleOwner) {
-            when (it) {
-                is NetworkResult.Loading -> binding.btnPostVideo.isLoading = true
-                is NetworkResult.Success -> {
-                    openShopPageWithBroadcastStatus(true)
-                }
-                is NetworkResult.Fail -> {
-                    binding.btnPostVideo.isLoading = false
-                    /** TODO("should be change later with ErrorFragment from RE") */
-                    view?.showErrorToaster(
-                        err = it.error,
-                        customErrMessage = it.error.localizedMessage
-                            ?: getString(R.string.play_broadcaster_default_error),
-                        actionLabel = getString(R.string.play_broadcast_try_again),
-                        actionListener = { _ -> it.onRetry() }
-                    )
-                }
-            }
-        }
-    }
-
     private fun openShopPageWithBroadcastStatus(isSaved: Boolean) {
         if (activity?.callingActivity == null) {
             val intent = RouteManager.getIntent(context, ApplinkConst.SHOP, userSession.shopId)
@@ -185,6 +194,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     }
 
     private fun openCoverSetupFragment() {
+        /** TODO("later will be done after merge with RE") */
         val setupClass = PlayBroadcastSetupBottomSheet::class.java
         val fragmentFactory = childFragmentManager.fragmentFactory
         val setupFragment = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as PlayBroadcastSetupBottomSheet
