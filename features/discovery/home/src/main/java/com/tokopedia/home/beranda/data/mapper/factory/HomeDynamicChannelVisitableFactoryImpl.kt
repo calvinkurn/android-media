@@ -48,6 +48,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
         private const val PROMO_NAME_UNKNOWN = "/ - p%s - %s - %s"
         private const val PROMO_NAME_TOPADS_BANNER = "/ - p%s - dynamic channel ads - %s"
         private const val PROMO_NAME_BANNER_CAROUSEL = "/ - p%s - dynamic channel carousel - %s"
+        private const val PROMO_NAME_BANNER_SPECIAL_RELEASE = "/ - p%s - dynamic channel feature campaign - banner - %s"
 
         private const val VALUE_BANNER_UNKNOWN = "banner unknown"
         private const val VALUE_BANNER_DEFAULT = "default"
@@ -147,6 +148,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_CAMPAIGN_WIDGET -> {
                     createCampaignWidget(channel, position, isCache)
                 }
+                DynamicHomeChannel.Channels.LAYOUT_CAMPAIGN_FEATURING -> {
+                    createCampaignFeaturingWidget(channel, position, isCache)
+                }
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET,
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET_V2 -> {
                     createDynamicChannel(
@@ -186,6 +190,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 }
                 DynamicHomeChannel.Channels.LAYOUT_CM_HOME_TO_DO -> {
                     createHomeToDoWidget(channel)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_PAYLATER_CICIL -> {
+                    createPayLaterHomeToDoWidget(channel)
                 }
             }
         }
@@ -347,6 +354,18 @@ class HomeDynamicChannelVisitableFactoryImpl(
         }
     }
 
+    private fun createCampaignFeaturingWidget(
+        channel: DynamicHomeChannel.Channels,
+        verticalPosition: Int,
+        isCache: Boolean
+    ) {
+        visitableList.add(
+            mappingCampaignFeaturingComponent(
+                channel, isCache, verticalPosition
+            )
+        )
+    }
+
     private fun setDynamicChannelPromoName(position: Int, channel: DynamicHomeChannel.Channels) {
         if (!isCache) {
             if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT) {
@@ -395,6 +414,13 @@ class HomeDynamicChannelVisitableFactoryImpl(
                         else VALUE_BANNER_DEFAULT
                 )
                 channel.setPosition(position)
+            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_CAMPAIGN_FEATURING) {
+                channel.promoName = String.format(
+                    PROMO_NAME_BANNER_SPECIAL_RELEASE,
+                    position.toString(),
+                    if (channel.header.name.isNotEmpty()) channel.header.name
+                    else VALUE_BANNER_DEFAULT
+                )
             }
             else {
                 val headerName = if (channel.header.name.isEmpty()) VALUE_BANNER_UNKNOWN else channel.header.name
@@ -535,6 +561,20 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
     }
 
+    private fun mappingCampaignFeaturingComponent(
+        channel: DynamicHomeChannel.Channels,
+        isCache: Boolean,
+        verticalPosition: Int
+    ): Visitable<*> {
+        return SpecialReleaseDataModel(
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                channel,
+                verticalPosition
+            ),
+            isCache = isCache
+        )
+    }
+
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
         if (!isCache) visitableList.add(
             PopularKeywordListDataModel(
@@ -611,5 +651,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
 
     private fun createHomeToDoWidget(channel: DynamicHomeChannel.Channels) {
         if (!isCache) visitableList.add(CMHomeWidgetDataModel(null, channel))
+    }
+
+    private fun createPayLaterHomeToDoWidget(channel: DynamicHomeChannel.Channels) {
+        if (!isCache) visitableList.add(HomePayLaterWidgetDataModel(null, channel))
     }
 }

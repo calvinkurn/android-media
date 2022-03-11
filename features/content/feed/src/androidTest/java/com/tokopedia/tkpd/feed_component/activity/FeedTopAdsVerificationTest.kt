@@ -61,6 +61,7 @@ class FeedTopAdsVerificationTest {
             scrollRecyclerViewToPosition(feedRecyclerView, i)
             checkProductOnDynamicChannel(feedRecyclerView, i)
         }
+        waitForData()
         topAdsAssertion?.assert()
     }
 
@@ -73,7 +74,7 @@ class FeedTopAdsVerificationTest {
                 //currently we have click impressions only for products in headline ads so we are not counting the click impressions
                 //for products in headline ads so that the test can pass
                 waitForData()
-                onView(withId(com.tokopedia.feedplus.R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition<TopAdsHeadlineViewHolder>(
+                onView(withId(com.tokopedia.feedplus.R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition<TopAdsHeadlineV2ViewHolder>(
                         i, CommonActions.clickChildViewWithId(com.tokopedia.feedcomponent.R.id.header)))
             }
         }

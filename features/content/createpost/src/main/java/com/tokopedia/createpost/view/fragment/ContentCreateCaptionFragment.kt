@@ -3,9 +3,9 @@ package com.tokopedia.createpost.view.fragment
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.text.InputType
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -123,8 +123,6 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
     private fun updateCaption() {
         if (createPostModel.caption.isNotEmpty())
             captionTxt?.setText(createPostModel.caption)
-        if (createPostModel.caption.isEmpty())
-            captionTxt?.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
 
 
         captionTxt?.afterTextChanged {

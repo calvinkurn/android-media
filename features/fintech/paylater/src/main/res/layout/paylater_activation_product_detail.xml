@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/productDetailWidget"
+        layout="@layout/product_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/unify_space_4"
+        android:layout_marginRight="@dimen/unify_space_4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_one"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/unify_space_2"
+        android:layout_marginLeft="@dimen/unify_space_16"
+        android:layout_marginRight="@dimen/unify_space_16"
+        app:layout_constraintTop_toBottomOf="@id/productDetailWidget" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/showVariantBottomSheet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:text="@string/paylater_activation_change_variant"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintBottom_toBottomOf="@+id/quantityEditor"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/quantityEditor"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_two"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pay_later_dp_5"
+        android:layout_marginTop="@dimen/pay_later_dp_20"
+        app:layout_constraintTop_toBottomOf="@id/limiterMessage" />
+
+    <com.tokopedia.unifycomponents.QuantityEditorUnify
+        android:id="@+id/quantityEditor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:layout_constraintBottom_toTopOf="@id/limiterMessage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider_one"
+        app:qty_default_value="1"
+        app:qty_min_value="1"
+        app:unify_qty_step_value="1" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/limiterMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:layout_marginBottom="@dimen/unify_font_16"
+        android:textColor="@color/Unify_RN500"
+        app:layout_constraintBottom_toTopOf="@id/divider_two"
+        tools:visibility="gone"
+        app:layout_constraintRight_toRightOf="@id/quantityEditor"
+        app:layout_constraintTop_toBottomOf="@id/quantityEditor"
+        app:typographyType="small"
+        tools:text="Minimum quantity is 1" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

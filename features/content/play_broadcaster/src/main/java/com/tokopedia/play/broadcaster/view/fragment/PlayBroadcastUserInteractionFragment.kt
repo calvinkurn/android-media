@@ -233,6 +233,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         pinnedMessageView.setOnPinnedClickedListener { _, message ->
             parentViewModel.submitAction(PlayBroadcastAction.EditPinnedMessage)
 
+            interactiveView.cancelCoachMark()
+
             if (message.isBlank()) {
                 analytic.clickAddPinChatMessage(
                     channelId = parentViewModel.channelId,

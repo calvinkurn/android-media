@@ -85,7 +85,7 @@
           "dimension104": "\\d*"
         }
       ],
-      "eventLabel": "success",
+      "eventLabel": "success - .* - .*",
       "checkout_option": "click bayar success"
     },
     {
