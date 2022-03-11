@@ -9,6 +9,7 @@ import com.tokopedia.play.domain.GetProductTagItemSectionUseCase
 import com.tokopedia.play.domain.repository.PlayViewerTagItemRepository
 import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.util.assertEqualTo
+import com.tokopedia.play.util.assertTrue
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -138,7 +139,7 @@ class PlayViewerTagItemsRepositoryTest {
                 )
                 coVerify { mockAddToCartUseCase.executeOnBackground() }
             } catch (e: Exception){
-                assert(e is MessageErrorException)
+                (e is MessageErrorException).assertTrue()
             }
         }
     }
