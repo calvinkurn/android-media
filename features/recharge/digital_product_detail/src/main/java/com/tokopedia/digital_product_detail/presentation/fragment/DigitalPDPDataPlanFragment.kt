@@ -283,6 +283,7 @@ class DigitalPDPDataPlanFragment :
                 }
                 rechargePdpPaketDataClientNumberWidget.run {
                     setLoading(false)
+                    resetContactName()
                     if (selectedClientNumber.length >= MINIMUM_OPERATOR_PREFIX) {
                         setErrorInputField(
                             getString(com.tokopedia.recharge_component.R.string.client_number_prefix_error),
@@ -542,6 +543,9 @@ class DigitalPDPDataPlanFragment :
             if (favoriteNumber.isNotEmpty()) {
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
+
+                val extendedPadding = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl8)
+                binding?.rechargePdpPaketDataSvContainer?.setPadding(0, extendedPadding, 0, 0)
             }
         }
     }

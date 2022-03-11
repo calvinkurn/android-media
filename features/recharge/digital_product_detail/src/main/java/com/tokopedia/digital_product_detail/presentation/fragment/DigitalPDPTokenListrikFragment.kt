@@ -549,6 +549,9 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             if (favoriteNumber.isNotEmpty()) {
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
+
+                val extendedPadding = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl8)
+                binding?.rechargePdpTokenListrikSvContainer?.setPadding(0, extendedPadding, 0, 0)
             }
         }
     }
@@ -633,6 +636,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                     cancelRecommendationJob()
                     cancelCatalogProductJob()
                 }
+                rechargePdpTokenListrikClientNumberWidget.resetContactName()
                 showEmptyState()
             }
         }

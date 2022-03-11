@@ -22,6 +22,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_component.R
@@ -242,6 +243,11 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.textInputLayout.hint = label
     }
 
+    fun resetContactName() {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.textInputLayout.hint =
+            textFieldStaticLabel
+    }
+
     fun setLoading(isLoading: Boolean) {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.isLoading = isLoading
     }
@@ -289,7 +295,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                 isInputError = true
 
                 if (resetProvider) {
-                    binding.clientNumberWidgetOperatorGroup.hide()
+                    binding.clientNumberWidgetOperatorGroup.invisible()
                 }
             }
         }
@@ -320,7 +326,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
             if (show) {
                 includeLayout.clientNumberWidgetSimplifiedLayout.animateFadeInThenShow()
                 clientNumberWidgetMainLayout.clientNumberWidgetBase.root.animateFadeOutThenGone()
-                clientNumberWidgetOperatorGroup.animateFadeOutThenGone()
+                clientNumberWidgetOperatorGroup.animateFadeOutThenInvisible()
             } else {
                 includeLayout.clientNumberWidgetSimplifiedLayout.animateFadeOutThenGone()
                 clientNumberWidgetMainLayout.clientNumberWidgetBase.root.animateFadeInThenShow()
@@ -351,7 +357,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
 
     fun hideOperatorIcon() {
         with (binding) {
-            clientNumberWidgetOperatorGroup.hide()
+            clientNumberWidgetOperatorGroup.invisible()
         }
     }
 
@@ -374,10 +380,10 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         mFilterChipListener = filterChipListener
     }
 
-    fun View.animateFadeInThenShow() {
-        val fadeIn = AlphaAnimation(0.5f, 1f)
+    private fun View.animateFadeInThenShow() {
+        val fadeIn = AlphaAnimation(ALPHA_0_5, ALPHA_1_0)
         fadeIn.interpolator = DecelerateInterpolator()
-        fadeIn.duration = 500
+        fadeIn.duration = FADE_DURATION
 
         val animation = AnimationSet(false)
         animation.addAnimation(fadeIn)
@@ -386,16 +392,35 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         show()
     }
 
-    fun View.animateFadeOutThenGone() {
+    private fun View.animateFadeOutThenGone() {
 
-        val fadeOut = AlphaAnimation(1f, 0.5f)
+        val fadeOut = AlphaAnimation(ALPHA_1_0, ALPHA_0_5)
         fadeOut.interpolator = AccelerateInterpolator()
-        fadeOut.duration = 500
+        fadeOut.duration = FADE_DURATION
 
         val animation = AnimationSet(false)
         animation.addAnimation(fadeOut)
         this.animation = animation
 
         gone()
+    }
+
+    private fun View.animateFadeOutThenInvisible() {
+
+        val fadeOut = AlphaAnimation(ALPHA_1_0, ALPHA_0_5)
+        fadeOut.interpolator = AccelerateInterpolator()
+        fadeOut.duration = FADE_DURATION
+
+        val animation = AnimationSet(false)
+        animation.addAnimation(fadeOut)
+        this.animation = animation
+
+        invisible()
+    }
+
+    companion object {
+        private const val FADE_DURATION = 200L
+        private const val ALPHA_0_5 = 0.5f
+        private const val ALPHA_1_0 = 1.0f
     }
 }
