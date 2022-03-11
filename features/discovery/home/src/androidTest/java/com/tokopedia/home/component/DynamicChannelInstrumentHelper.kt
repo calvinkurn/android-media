@@ -53,6 +53,7 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM_CLOSE = "trac
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_RECHARGE = "tracker/home/reminder_widget_recharge.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM = "tracker/home/reminder_widget_salam.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BANNER_CAROUSEL = "tracker/home/banner_carousel.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MERCHANT_VOUCHER = "tracker/home/merchant_voucher_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_SPECIAL_RELEASE = "tracker/home/special_release.json"
 
 private const val CHOOSE_ADDRESS_PREFERENCE_NAME = "coahmark_choose_address"
@@ -249,6 +250,42 @@ fun clickHPBSection(viewHolder: RecyclerView.ViewHolder) {
 fun actionOnBannerCarouselWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_banner, 0)
+}
+
+fun actionOnMerchantVoucherWidget(viewHolder: RecyclerView.ViewHolder) {
+    clickOnEachItemRecyclerViewMerchantVoucher(viewHolder.itemView, R.id.home_component_mvc_rv, 0)
+}
+
+fun clickOnEachItemRecyclerViewMerchantVoucher(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
+    val childRecyclerView: RecyclerView = view.findViewById(recyclerViewId)
+
+    var childItemCountExcludeViewAllCard = (childRecyclerView.adapter?.itemCount?: 0) - 1
+    if (fixedItemPositionLimit > 0) {
+        childItemCountExcludeViewAllCard = fixedItemPositionLimit
+    }
+    for (i in 0 until childItemCountExcludeViewAllCard) {
+        try {
+            Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickOnViewChild(R.id.container_shop))
+            )
+            Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickOnViewChild(R.id.container_product))
+            )
+        } catch (e: PerformException) {
+            e.printStackTrace()
+        }
+    }
+    Espresso.onView(
+        allOf(
+            ViewMatchers.withId(recyclerViewId)
+        )
+    )
+        .perform(
+            actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                childItemCountExcludeViewAllCard,
+                ViewActions.click()
+            )
+        )
 }
 
 fun checkRechargeBUWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int){
