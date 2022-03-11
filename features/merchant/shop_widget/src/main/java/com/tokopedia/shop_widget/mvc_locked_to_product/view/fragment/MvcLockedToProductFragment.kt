@@ -307,8 +307,12 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     }
 
     private fun updateMiniCartWidget() {
-        if(isUserLogin && MvcLockedToProductUtil.isMvcPhase2())
+        if(shouldUpdateMiniCartWidget())
             miniCartWidget?.updateData()
+    }
+
+    private fun shouldUpdateMiniCartWidget(): Boolean {
+        return isUserLogin && MvcLockedToProductUtil.isMvcPhase2() && !isSellerView
     }
 
     private fun showToaster(message: String, duration: Int = Toaster.LENGTH_SHORT, type: Int) {
