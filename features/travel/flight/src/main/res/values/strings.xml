@@ -335,9 +335,6 @@ di tempatmu.</string>
     <string name="flight_search_see_only_best_pairing_journey_description"><![CDATA[Harga tiket berangkatmu akan berubah ke harga semula yaitu <b>%1$s</b>.]]></string>
     <string name="flight_search_see_only_best_pairing_journey_button">Cek Penerbangan Best Pairing</string>
 
-    <string name="flight_search_has_seat_distancing_label">Seat Distancing</string>
-    <string name="flight_search_free_rapid_test_label">Free Rapid Test</string>
-
     <string name="flight_detail_bottom_sheet_title">Detail tiket</string>
     <string name="flight_detail_bottom_sheet_tab_journey_title">Perjalanan</string>
     <string name="flight_detail_bottom_sheet_tab_facility_title">Fasilitas</string>

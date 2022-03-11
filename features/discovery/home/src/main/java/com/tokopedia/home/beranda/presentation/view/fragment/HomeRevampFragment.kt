@@ -95,6 +95,7 @@ import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.IS_SUCCESS_RESET
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
 import com.tokopedia.home.constant.HomePerformanceConstant
+import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.model.ChannelGrid
@@ -190,7 +191,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         PlayWidgetListener,
         RecommendationWidgetListener,
         QuestWidgetCallbacks,
-        CMHomeWidgetCallback {
+        CMHomeWidgetCallback,
+        HomePayLaterWidgetListener{
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
@@ -352,7 +354,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var gopayCoachmarkIsShowing = false
     private var tokopointsCoachmarkIsShowing = false
     private var tokonowCoachmarkIsShowing = false
-    private var useNewInbox = false
     private var coachmark: CoachMark2? = null
     private var coachmarkGopay: CoachMark2? = null
     private var coachmarkTokopoint: CoachMark2? = null
@@ -371,6 +372,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
     private var chooseAddressWidgetInitialized: Boolean = false
+    private var fragmentCurrentCacheState: Boolean = true
+    private var fragmentCurrentVisitableCount: Int = -1
+    private var fragmentCurrentScrollPosition: Int = -1
 
     @Suppress("TooGenericExceptionCaught")
     private fun isEligibleForBeautyFest(): Boolean {
@@ -534,7 +538,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         backgroundViewImage = view.findViewById<ImageView>(R.id.view_background_image)
         loaderHeaderImage = view.findViewById<FrameLayout>(R.id.loader_header_home)
         homeRecyclerView?.setHasFixedSize(true)
-        initInboxAbTest()
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
 
         //show nav toolbar
@@ -568,9 +571,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             val icons = IconBuilder(
                     IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)
             ).addIcon(getInboxIcon()) {}
-            if (!useNewInbox) {
-                icons.addIcon(IconList.ID_NOTIFICATION) {}
-            }
+            icons.addIcon(IconList.ID_NOTIFICATION) {}
             icons.apply {
                 addIcon(IconList.ID_CART) {}
                 addIcon(IconList.ID_NAV_GLOBAL) {}
@@ -593,18 +594,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return view
     }
 
-    private fun initInboxAbTest() {
-        useNewInbox = getAbTestPlatform().getString(
-                RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-        ) == RollenceKey.VARIANT_NEW_INBOX
-    }
-
     private fun getInboxIcon(): Int {
-        return if (useNewInbox) {
-            IconList.ID_INBOX
-        } else {
-            IconList.ID_MESSAGE
-        }
+        return IconList.ID_MESSAGE
     }
 
     private fun ArrayList<CoachMark2Item>.buildGopayNewCoachmark() {
@@ -878,6 +869,31 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 evaluateHomeComponentOnScroll(recyclerView)
             }
         })
+        setupEmbraceBreadcrumbListener()
+    }
+
+    private fun setupEmbraceBreadcrumbListener() {
+        if (remoteConfig.getBoolean(RemoteConfigKey.HOME_ENABLE_SCROLL_EMBRACE_BREADCRUMB)) {
+            homeRecyclerView?.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    trackEmbraceBreadcrumbPosition()
+                }
+            })
+        }
+    }
+
+    private fun trackEmbraceBreadcrumbPosition() {
+        if (fragmentCurrentScrollPosition != layoutManager?.findLastVisibleItemPosition()) {
+            fragmentCurrentScrollPosition = layoutManager?.findLastVisibleItemPosition() ?: -1
+            HomeServerLogger.sendEmbraceBreadCrumb(
+                fragment = this@HomeRevampFragment,
+                isLoggedIn = userSession.isLoggedIn,
+                isCache = fragmentCurrentCacheState,
+                visitableListCount = fragmentCurrentVisitableCount,
+                scrollPosition = fragmentCurrentScrollPosition
+            )
+        }
     }
 
     private fun setupStatusBar() {
@@ -1054,6 +1070,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         manageCoachmarkOnFragmentVisible(isVisibleToUser = false)
 
         refreshQuestWidget()
+        adapter?.onResumeSpecialRelease()
 
         // refresh home-to-do-widget data if needed
         getHomeViewModel().getCMHomeWidgetData(false)
@@ -1155,9 +1172,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             /*
              * set notification gimmick
              */
-            if (!useNewInbox) {
-                navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, NOTIFICATION_NUMBER_DEFAULT)
-            }
+            navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, NOTIFICATION_NUMBER_DEFAULT)
         }
         refreshLayout.setOnRefreshListener(this)
     }
@@ -1444,6 +1459,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 getPageLoadTimeCallback()?.startRenderPerformanceMonitoring()
                 setOnRecyclerViewLayoutReady(isCache)
             }
+            this.fragmentCurrentCacheState = isCache
+            this.fragmentCurrentVisitableCount = data.size
+
+            HomeServerLogger.sendEmbraceBreadCrumb(
+                fragment = this,
+                isLoggedIn = userSession.isLoggedIn,
+                isCache = isCache,
+                visitableListCount = data.size,
+                scrollPosition = layoutManager?.findLastVisibleItemPosition()
+            )
             adapter?.submitList(data)
             showCoachmarkWithDataValidation(data)
         }
@@ -1597,8 +1622,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             DynamicIconComponentCallback(context, this),
             Lego6AutoBannerComponentCallback(context, this),
             CampaignWidgetComponentCallback(context, this),
-                    this,
-                    this
+            this,
+            this,
+            this,
+            SpecialReleaseComponentCallback(context, this),
+            MerchantVoucherComponentCallback(this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -2133,8 +2161,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun getTopAdsBannerNextPageToken(): String {
-        return getHomeViewModel().currentTopAdsBannerToken
+    override fun getTopAdsBannerNextPage(): String {
+        return getHomeViewModel().currentTopAdsBannerPage
     }
 
     override fun getDynamicChannelData(visitable: Visitable<*>, channelModel: ChannelModel, channelPosition: Int) {
@@ -2262,6 +2290,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             playWidgetOnVisibilityChanged(
                 isUserVisibleHint = isVisibleToUser
             )
+            adapter?.onResumeSpecialRelease()
             manageCoachmarkOnFragmentVisible(isVisibleToUser)
             startTokopointRotation(rotateNow = true)
         }
@@ -2864,5 +2893,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun getCMHomeWidget() {
         getHomeViewModel().getCMHomeWidgetData()
+    }
+
+    override fun getPayLaterWidgetData() {
+        getHomeViewModel().getPayLaterWidgetData()
+    }
+
+    override fun deletePayLaterWidget() {
+        getHomeViewModel().deletePayLaterWidget()
     }
 }

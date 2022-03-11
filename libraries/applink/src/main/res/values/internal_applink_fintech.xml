@@ -14,6 +14,8 @@
     <string name="path_saldo_deposit">/saldo</string>
     <string name="path_saldo_intro">/saldo-intro</string>
     <string name="path_paylater" translatable="false">/paylater</string>
+    <string name="path_optimized_checkout" translatable="false">/opt-checkout</string>
+
     <string name="path_home_credit_register">/home-credit-register</string>
 
     <string name="path_upgrade">/upgrade</string>

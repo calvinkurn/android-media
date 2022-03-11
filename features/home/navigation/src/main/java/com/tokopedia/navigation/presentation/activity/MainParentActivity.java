@@ -82,6 +82,7 @@ import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
+import com.tokopedia.navigation.util.MainParentServerLogger;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
@@ -222,7 +223,6 @@ public class MainParentActivity extends BaseActivity implements
     private Handler handler = new Handler();
     private FrameLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
-    private boolean useNewInbox = false;
     private boolean useNewNotificationOnNewInbox = false;
     private RemoteConfigInstance remoteConfigInstance;
 
@@ -235,6 +235,8 @@ public class MainParentActivity extends BaseActivity implements
     private PageLoadTimePerformanceCallback mainParentPageLoadTimePerformanceCallback;
 
     private boolean isOsExperiment;
+
+    private String embracePageName = "";
 
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class)
@@ -265,7 +267,6 @@ public class MainParentActivity extends BaseActivity implements
 
         super.onCreate(savedInstanceState);
         initInjector();
-        initInboxAbTest();
         presenter.get().setView(this);
         if (savedInstanceState != null) {
             presenter.get().setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
@@ -294,16 +295,6 @@ public class MainParentActivity extends BaseActivity implements
         SubmitDeviceWorker.Companion.scheduleWorker(getApplicationContext(), false);
         DataVisorWorker.Companion.scheduleWorker(getApplicationContext(), false);
         AppAuthWorker.Companion.scheduleWorker(getApplicationContext(), false);
-    }
-
-    private void initInboxAbTest() {
-        try {
-            useNewInbox = RemoteConfigInstance.getInstance().getABTestPlatform().getString(
-                    RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-            ).equals(RollenceKey.VARIANT_NEW_INBOX);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void installDFonBackground() {
@@ -604,6 +595,7 @@ public class MainParentActivity extends BaseActivity implements
             Fragment currentFrag = manager.findFragmentByTag(backStateName);
             if (currentFrag != null && manager.getFragments().size() > 0) {
                 showSelectedFragment(fragment, manager, ft);
+
             } else {
                 ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
                 showSelectedFragment(fragment, manager, ft);
@@ -882,9 +874,6 @@ public class MainParentActivity extends BaseActivity implements
             if (fragment instanceof AllNotificationListener && notification != null) {
                 int totalInbox = notification.getTotalInbox();
                 int totalNotification = notification.getTotalNotif();
-                if (useNewInbox) {
-                    totalInbox = notification.totalNewInbox;
-                }
                 if (useNewNotificationOnNewInbox) {
                     totalNotification = notification.totalNotificationOnNewInbox;
                 }
@@ -1318,21 +1307,27 @@ public class MainParentActivity extends BaseActivity implements
             currentFragment.setUserVisibleHint(false);
         }
         this.currentSelectedFragmentPosition = position;
+        String pageName = "";
+        String pageTitle = "";
+        if (menu.size() > index) {
+            pageTitle = menu.get(index).getTitle();
+        }
+
+        if (pageTitle.equals(getResources().getString(R.string.home))) {
+            pageName = "/";
+        } else if (pageTitle.equals(getResources().getString(R.string.official))) {
+            pageName = PAGE_OS_HOMEPAGE;
+        } else if (pageTitle.equals(getResources().getString(R.string.feed))) {
+            globalNavAnalytics.get().userVisitsFeed(Boolean.toString(userSession.get().isLoggedIn()), userSession.get().getUserId());
+            pageName = PAGE_FEED;
+        } else if (pageTitle.equals(getResources().getString(R.string.uoh))) {
+            pageName = PAGE_DAFTAR_TRANSAKSI;
+        } else if (pageTitle.equals(getResources().getString(R.string.wishlist))) {
+            pageName = PAGE_WISHLIST;
+        }
+
         if (!isFirstNavigationImpression) {
-            String pageName = "";
-                if (menu.get(index).getTitle().equals(getResources().getString(R.string.home))) {
-                    pageName = "/";
-                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.official))) {
-                    pageName = PAGE_OS_HOMEPAGE;
-                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.feed))) {
-                   globalNavAnalytics.get().userVisitsFeed(Boolean.toString(userSession.get().isLoggedIn()), userSession.get().getUserId());
-                    pageName = PAGE_FEED;
-                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.uoh))) {
-                    pageName = PAGE_DAFTAR_TRANSAKSI;
-                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.wishlist))) {
-                    pageName = PAGE_WISHLIST;
-                }
-                globalNavAnalytics.get().eventBottomNavigationDrawer(pageName, menu.get(index).getTitle(), userSession.get().getUserId());
+            globalNavAnalytics.get().eventBottomNavigationDrawer(pageName, menu.get(index).getTitle(), userSession.get().getUserId());
         }
         isFirstNavigationImpression = false;
 
@@ -1368,6 +1363,8 @@ public class MainParentActivity extends BaseActivity implements
             this.currentFragment = fragment;
             selectFragment(fragment);
         }
+        this.embracePageName = pageTitle;
+        MainParentServerLogger.Companion.sendEmbraceBreadCrumb(embracePageName);
         return true;
     }
 
@@ -1380,6 +1377,11 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public boolean isOsExperiment() {
         return isOsExperiment;
+    }
+
+    @Override
+    public String currentVisibleFragment() {
+        return embracePageName;
     }
 
     public void populateBottomNavigationView() {

@@ -17,7 +17,7 @@ import com.tokopedia.flight.search.data.cache.db.dao.FlightJourneyDao
             FlightComboTable::class,
             FlightJourneyTable::class,
             FlightRouteTable::class],
-        version = 15
+        version = 16
 )
 @TypeConverters(FlightTypeConverters::class)
 abstract class FlightSearchRoomDb : RoomDatabase() {

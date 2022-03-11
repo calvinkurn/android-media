@@ -243,6 +243,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.logout)
     implementation projectOrAar(rootProject.ext.features.userIdentificationCommon)
     implementation projectOrAar(rootProject.ext.features.saldodetails)
+    implementation projectOrAar(rootProject.ext.features.pdpPaylaterWidget)
     implementation projectOrAar(rootProject.ext.features.homecredit)
     implementation projectOrAar(rootProject.ext.libraries.imageuploader)
     implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)

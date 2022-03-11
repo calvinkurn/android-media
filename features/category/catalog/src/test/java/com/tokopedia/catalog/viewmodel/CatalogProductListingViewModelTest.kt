@@ -2,6 +2,7 @@ package com.tokopedia.catalog.viewmodel
 
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.google.gson.JsonObject
 import com.tokopedia.catalog.CatalogTestUtils
@@ -13,7 +14,10 @@ import com.tokopedia.catalog.usecase.listing.CatalogDynamicFilterUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogGetProductListUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogQuickFilterUseCase
 import com.tokopedia.common_category.model.filter.FilterResponse
+import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.GraphqlError
@@ -24,6 +28,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.every
 import io.mockk.mockk
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -48,6 +53,11 @@ class CatalogProductListingViewModelTest {
     private var productListObserver = mockk<Observer<Result<List<CatalogProductItem>>>>(relaxed = true)
     private var quickFilterObserver = mockk<Observer<Result<DynamicFilterModel>>>(relaxed = true)
     private var dynamicFilterObserver = mockk<Observer<Result<DynamicFilterModel>>>(relaxed = true)
+    private var quickFilterOptionListObserver = mockk<Observer<Option>>(relaxed = true)
+    private val quickFilterModelObserver = mockk<Observer<DynamicFilterModel>>(relaxed = true)
+    private val quickFilterClickedObserver = mockk<Observer<Boolean>>(relaxed = true)
+    private val dynamicFilterModelObserver = mockk<Observer<DynamicFilterModel>>(relaxed = true)
+    private val selectedSortIndicatorCount = mockk<Observer<Int>>(relaxed = true)
 
     @Before
     fun setUp() {
@@ -55,6 +65,10 @@ class CatalogProductListingViewModelTest {
         viewModel.mProductList.observeForever(productListObserver)
         viewModel.mQuickFilterModel.observeForever(quickFilterObserver)
         viewModel.mDynamicFilterModel.observeForever(dynamicFilterObserver)
+        viewModel.quickFilterModel.observeForever(quickFilterModelObserver)
+        viewModel.quickFilterClicked.observeForever(quickFilterClickedObserver)
+        viewModel.dynamicFilterModel.observeForever(dynamicFilterModelObserver)
+        viewModel.selectedSortIndicatorCount.observeForever(selectedSortIndicatorCount)
     }
 
     @Test
@@ -77,18 +91,48 @@ class CatalogProductListingViewModelTest {
     }
 
     @Test
+    fun `Get Catalog Product Response Success List More Than Limit`() {
+        val productListResponse = ProductListResponse(CatalogSearchProductResponse.SearchProduct(
+            CatalogSearchProductResponse.SearchProductHeader()))
+        val productsList = arrayListOf<CatalogProductItem?>()
+        for(i in 0 until 10 ){
+            productsList.add(mockk(relaxed = true))
+        }
+        productListResponse.searchProduct?.data = CatalogSearchProductResponse.SearchProductData(
+            0,true,"",productsList)
+        viewModel.comparisonCardIsAdded = false
+        every { getProductListUseCase.execute(any(), any()) }.answers {
+            (secondArg() as Subscriber<ProductListResponse>).onNext(productListResponse)
+            (secondArg() as Subscriber<ProductListResponse>).onCompleted()
+        }
+        viewModel.fetchProductListing(RequestParams())
+        viewModel.isPagingAllowed = false
+        if(viewModel.mProductList.value is Success && viewModel.pageCount > 0 && !viewModel.isPagingAllowed) {
+            assert(true)
+        }else {
+            assert(false)
+        }
+    }
+
+    @Test
     fun `Get Catalog Product Response Empty`() {
         val mockGqlResponse: GraphqlResponse  = createMockGraphqlResponse(getJsonObject("catalog_empty_dummy_response.json"),CatalogSearchProductResponse().javaClass)
         val data = mockGqlResponse.getData(CatalogSearchProductResponse::class.java) as CatalogSearchProductResponse
         val productListResponse = ProductListResponse(data.searchProduct)
         viewModel.catalogUrl = CatalogTestUtils.CATALOG_URL
+        viewModel.catalogId = CatalogTestUtils.CATALOG_ID
+        viewModel.catalogName = "Apple Iphone 12"
         every { getProductListUseCase.execute(any(), any()) }.answers {
             (secondArg() as Subscriber<ProductListResponse>).onNext(productListResponse)
             (secondArg() as Subscriber<ProductListResponse>).onCompleted()
         }
         viewModel.catalogUrl
+        viewModel.catalogName
+        assert(viewModel.catalogId.isNotEmpty())
         viewModel.fetchProductListing(RequestParams())
-
+        viewModel.filterController
+        viewModel.searchParameter
+        viewModel.searchParametersMap
         if(viewModel.mProductList.value is Success && (viewModel.mProductList.value as Success<List<CatalogProductItem>>).data.isEmpty()) {
             assert(true)
         }else {
@@ -102,21 +146,31 @@ class CatalogProductListingViewModelTest {
         every { getProductListUseCase.execute(any(), any()) }.answers {
             (secondArg() as Subscriber<ProductListResponse>).onError(Throwable("No Data"))
         }
+        viewModel.categoryId = CatalogTestUtils.CATALOG_ID
+        viewModel.brand = "Apple"
         viewModel.fetchProductListing(RequestParams())
         if(viewModel.mProductList.value is Fail) { assert(true) }else { assert(false) }
+        viewModel.quickFilterOptionList = arrayListOf()
+        viewModel.searchParameter = SearchParameter("")
+        viewModel.filterController = FilterController()
+        viewModel.quickFilterOptionList
+        viewModel.quickFilterClicked
+        viewModel.dynamicFilterModel
+        assert(viewModel.brand.isNotBlank())
+        assert(viewModel.categoryId.isNotBlank())
     }
 
     @Test
     fun `Get Catalog Product Quick Filter Response Success`() {
         val mockGqlResponse: GraphqlResponse  = createMockGraphqlResponse(getJsonObject("catalog_product_quick_filter_response.json"),SearchFilterResponse().javaClass)
         val data = mockGqlResponse.getData(SearchFilterResponse::class.java) as SearchFilterResponse
-
+        viewModel.comparisonCardIsAdded = true
         every { quickFilterUseCase.execute(any(), any()) }.answers {
             (secondArg() as Subscriber<DynamicFilterModel>).onNext(data.dynamicAttribute)
             (secondArg() as Subscriber<DynamicFilterModel>).onCompleted()
         }
+        assert(viewModel.comparisonCardIsAdded)
         viewModel.fetchQuickFilters(RequestParams())
-
         if(viewModel.mQuickFilterModel.value is Success) {
             assert(true)
         }else {
@@ -170,20 +224,22 @@ class CatalogProductListingViewModelTest {
         }
     }
 
-    private fun createMockGraphqlResponse(response : JsonObject, objectType : Class<Any>): GraphqlResponse {
-        val result = HashMap<Type, Any>()
-        val errors = HashMap<Type, List<GraphqlError>>()
-        val jsonObject: JsonObject = response
-        val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
-        val obj: Any = CommonUtils.fromJson(data, objectType)
-        result[objectType] = obj
-        return GraphqlResponse(result, errors, false)
-    }
+    companion object {
+        private fun createMockGraphqlResponse(response : JsonObject, objectType : Class<Any>): GraphqlResponse {
+            val result = HashMap<Type, Any>()
+            val errors = HashMap<Type, List<GraphqlError>>()
+            val jsonObject: JsonObject = response
+            val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
+            val obj: Any = CommonUtils.fromJson(data, objectType)
+            result[objectType] = obj
+            return GraphqlResponse(result, errors, false)
+        }
 
-    private fun getJsonObject(pathString : String) : JsonObject {
-        return CommonUtils.fromJson(
+        private fun getJsonObject(pathString : String) : JsonObject {
+            return CommonUtils.fromJson(
                 CatalogTestUtils.getJsonFromFile(pathString),
                 JsonObject::class.java
-        )
+            )
+        }
     }
 }

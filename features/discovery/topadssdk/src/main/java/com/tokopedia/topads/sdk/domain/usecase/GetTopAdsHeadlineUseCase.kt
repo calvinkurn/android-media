@@ -61,6 +61,7 @@ const val GET_TOPADS_HEADLINE_QUERY: String = """query TopadsCPMHeadlineQuery(${
             }
             price_format
             product_rating
+            uri
             count_review_format
             label_group {
               title
