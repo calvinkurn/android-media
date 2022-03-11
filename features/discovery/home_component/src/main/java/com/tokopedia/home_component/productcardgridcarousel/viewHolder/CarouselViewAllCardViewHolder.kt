@@ -92,23 +92,12 @@ class CarouselViewAllCardViewHolder(
                 card.mode = MODE_INVERT
                 card.backgroundView.setImageResource(R.drawable.ic_graphic_element_white)
             }
-        } else if (element.layoutType == DynamicChannelLayout.LAYOUT_CAMPAIGN_FEATURING) {
-            if (element.imageUrl.isEmpty() || getGradientBackgroundViewAllWhite(
-                    element.gradientColor, itemView.context
-                )
-            ) {
-                card.mode = MODE_INVERT
-                card.backgroundView.setImageResource(R.drawable.ic_graphic_element_green)
-            } else {
-                card.mode = MODE_INVERT
-                card.backgroundView.setImageResource(R.drawable.ic_graphic_element_white)
-            }
         } else {
             if (isGradientWhite || getGradientBackgroundViewAllWhite(element.gradientColor, itemView.context)) {
                 card.mode = MODE_NORMAL
                 card.backgroundView.setImageResource(R.drawable.ic_graphic_element_green)
             } else {
-                card.mode = MODE_COLOR
+                card.mode = MODE_INVERT
                 card.containerView.setGradientBackground(element.channelViewAllCard.gradientColor)
                 card.backgroundView.setImageResource(R.drawable.ic_graphic_element_white)
             }
