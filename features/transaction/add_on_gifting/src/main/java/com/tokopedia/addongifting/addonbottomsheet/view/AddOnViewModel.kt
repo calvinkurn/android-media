@@ -302,10 +302,14 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
 
     private fun hasChangedState(): Boolean {
         _addOnUiModel.value.let {
-            return it.initialAddOnNote != it.addOnNote ||
-                    it.initialAddOnNoteTo != it.addOnNoteTo ||
-                    it.initialAddOnNoteFrom != it.addOnNoteFrom ||
-                    it.initialSelectedState != it.isAddOnSelected
+            return if (hasSavedState) {
+                it.initialSelectedState != it.isAddOnSelected ||
+                        it.initialAddOnNote != it.addOnNote ||
+                        it.initialAddOnNoteTo != it.addOnNoteTo ||
+                        it.initialAddOnNoteFrom != it.addOnNoteFrom
+            } else {
+                it.initialSelectedState != it.isAddOnSelected
+            }
         }
     }
 }
