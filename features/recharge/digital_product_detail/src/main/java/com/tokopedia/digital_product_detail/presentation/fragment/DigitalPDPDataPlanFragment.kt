@@ -350,7 +350,6 @@ class DigitalPDPDataPlanFragment :
                             productId.toString()
                         )
                     }
-
                     val selectedPositionDenom =
                         viewModel.getSelectedPositionId(denomData.data.denomFull.listDenomData)
                     val selectedPositionMCCM =
@@ -851,8 +850,6 @@ class DigitalPDPDataPlanFragment :
                 rechargePdpPaketDataDenomFullWidget.hide()
                 globalErrorPaketData.hide()
                 rechargePdpPaketDataClientNumberWidget.hideOperatorIcon()
-                hideBannerSpacer()
-
             }
         }
     }
@@ -862,7 +859,6 @@ class DigitalPDPDataPlanFragment :
             if (rechargePdpPaketDataEmptyStateWidget.isVisible) {
                 rechargePdpPaketDataEmptyStateWidget.hide()
                 rechargePdpPaketDataRecommendationWidget.show()
-                showBannerSpacer()
             }
         }
     }
@@ -873,30 +869,12 @@ class DigitalPDPDataPlanFragment :
             errorTitle.text = getString(R.string.empty_state_paket_data_title)
             errorDescription.text = getString(R.string.empty_state_paket_data_desc)
             errorAction.hide()
-            hideBannerSpacer()
         }
     }
 
     private fun hideGlobalErrorState() {
         binding?.globalErrorPaketData?.run {
             hide()
-            showBannerSpacer()
-        }
-    }
-
-    private fun hideBannerSpacer() {
-        binding?.rechargePdpPaketDataBannerSpacer?.run {
-            layoutParams.height = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                .toInt()
-            requestLayout()
-        }
-    }
-
-    private fun showBannerSpacer() {
-        binding?.rechargePdpPaketDataBannerSpacer?.run {
-            layoutParams.height = resources.getDimension(com.tokopedia.digital_product_detail.R.dimen.banner_space)
-                .toInt()
-            requestLayout()
         }
     }
 

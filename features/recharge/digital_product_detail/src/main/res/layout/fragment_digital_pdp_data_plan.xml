@@ -85,6 +85,19 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"/>
 
+
+                        <com.tokopedia.globalerror.GlobalError
+                            android:id="@+id/global_error_paket_data"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/sort_filter_paket_data"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:globalerrors_type="PAGE_NOT_FOUND"
+                            />
+
                         <com.tokopedia.recharge_component.widget.DenomFullWidget
                             android:id="@+id/recharge_pdp_paket_data_denom_full_widget"
                             android:layout_width="match_parent"
