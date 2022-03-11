@@ -202,7 +202,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 			title = getString(R.string.title_username),
 			itemValue = data.profileFeedData.profile.username,
 			placeholder = getString(R.string.placeholder_username),
-			isEnable = !data.profileFeedData.profile.canChangeUsername,
+			isEnable = data.profileFeedData.profile.canChangeUsername,
 			rightIcon = entryPointIconUsername(data)
 		) {
 			goToEditProfileInfo(ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_USERNAME)
@@ -348,9 +348,6 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 			bottomSheetUnify.show(it, "")
 		}
 	}
-
-	private fun isEligibleChangeGender(data: ProfileInfoUiModel): Boolean =
-		data.profileInfoData.gender != GENDER_MALE && data.profileInfoData.gender != GENDER_FEMALE
 
 	private fun entryPointIconGender(data: ProfileInfoUiModel): Int {
 		if (data.profileRoleData.isAllowedChangeGender) return IconUnify.CHEVRON_RIGHT
