@@ -509,11 +509,11 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
     @Test
     fun `when cancelCatalogProductJob called the job should be cancelled and live data should not emit value`() {
         val response = dataFactory.getCatalogInputMultiTabData()
-        val isRefreshedFilter = true
+        val isRefreshedFilter = false
         val mappedResponse = mapperFactory.mapMultiTabFullDenom(response, isRefreshedFilter)
         onGetCatalogInputMultitab_thenReturn(mappedResponse)
 
-        viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "")
+        viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "", isRefreshedFilter)
         viewModel.cancelCatalogProductJob()
         verifyCatalogProductJobIsCancelled()
         verifyGetProductInputMultiTabRepoWasNotCalled()
