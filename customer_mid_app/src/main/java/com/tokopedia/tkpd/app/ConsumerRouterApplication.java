@@ -189,6 +189,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initCMPushNotification();
         initTetraDebugger();
         initCMDependencies();
+        initDataStoreMigration();
         return true;
     }
 
