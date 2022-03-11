@@ -28,6 +28,7 @@ import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 import javax.inject.Inject
 
@@ -175,7 +176,8 @@ class DigitalPDPTagihanViewModel @Inject constructor(
                 data = repo.inquiryProduct(productId, clientNumber, inputData)
 
                 with(data.enquiry) {
-                    if (status == STATUS_PENDING && retryDuration > 0) delay((retryDuration.toLong()) * MS_TO_S_DURATION)
+                    if (status == STATUS_PENDING && retryDuration > 0)
+                        delay(TimeUnit.SECONDS.toMillis(retryDuration.toLong()))
                 }
             } while (data.enquiry.status != STATUS_DONE)
             _inquiry.value = RechargeNetworkResult.Success(data)
@@ -264,7 +266,6 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     companion object {
         const val STATUS_DONE = "DONE"
         const val STATUS_PENDING = "PENDING"
-        const val MS_TO_S_DURATION = 1000
     }
 
 }
