@@ -116,20 +116,11 @@ class ButtonGiftingAddOnView @JvmOverloads constructor(
         }
     }
 
-    enum class State(val id: Int) : Parcelable {
+    enum class State(val id: Int) {
         ACTIVE(1),
         INACTIVE(2);
 
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-            parcel.writeInt(id)
-        }
-
-        override fun describeContents(): Int {
-            return 0
-        }
-
-        companion object CREATOR : Parcelable.Creator<State> {
-
+        companion object {
             fun fromId(id: Int): State {
                 for (state: State in values()) {
                     if (id == state.id) {
@@ -137,14 +128,6 @@ class ButtonGiftingAddOnView @JvmOverloads constructor(
                     }
                 }
                 return ACTIVE
-            }
-
-            override fun createFromParcel(parcel: Parcel): State {
-                return values()[parcel.readInt()]
-            }
-
-            override fun newArray(size: Int): Array<State?> {
-                return arrayOfNulls(size)
             }
         }
     }

@@ -6,11 +6,13 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.*
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.*
 
 object AddOnMapper {
 
-    fun mapAddOnBottomSheetParam(addOn: AddOnsDataModel,
+    fun mapAddOnBottomSheetParam(addOnBottomSheetType: Int,
+                                 addOn: AddOnsDataModel,
                                  orderProduct: OrderProduct,
                                  orderShop: OrderShop,
                                  orderCart: OrderCart,
@@ -28,43 +30,66 @@ object AddOnMapper {
             defaultReceiver = orderProfileAddress.receiverName
         }
 
+        val bottomSheetType: Int
+        var availableBottomSheetData = AvailableBottomSheetData()
+        var unavailableBottomSheetData = UnavailableBottomSheetData()
+
+        if (addOnBottomSheetType == AddOnsResponse.STATUS_SHOW_DISABLED_ADD_ON_BUTTON) {
+            bottomSheetType = AddOnProductData.ADD_ON_UNAVAILABLE_BOTTOM_SHEET
+            val products = addOn.addOnsBottomSheetModel.products.map {
+                Product(
+                        productName = it.productName,
+                        productImageUrl = it.productImageUrl
+                )
+            }
+            unavailableBottomSheetData = UnavailableBottomSheetData(
+                    unavailableProducts = products,
+                    description = addOn.addOnsBottomSheetModel.description,
+                    tickerMessage = addOn.addOnsBottomSheetModel.ticker.text,
+            )
+        } else {
+            bottomSheetType = AddOnProductData.ADD_ON_BOTTOM_SHEET
+            availableBottomSheetData = AvailableBottomSheetData(
+                    defaultTo = defaultReceiver,
+                    defaultFrom = userName,
+                    products = listOf(Product(
+                            cartId = orderProduct.cartId,
+                            productId = productId,
+                            productName = orderProduct.productName,
+                            productImageUrl = orderProduct.productImageUrl,
+                            productPrice = orderProduct.productPrice,
+                            productQuantity = orderProduct.orderQuantity,
+                            productParentId = orderProduct.parentId
+                    )),
+                    isTokoCabang = orderShop.isFulfillment,
+                    cartString = orderCart.cartString,
+                    warehouseId = orderShop.warehouseId.toString(),
+                    shopName = orderShop.shopName,
+                    addOnInfoWording = orderCart.addOnWordingData,
+                    addOnSavedStates = addOn.addOnsDataItemModelList.map {
+                        AddOnData(
+                                addOnId = it.addOnId,
+                                addOnPrice = it.addOnPrice,
+                                addOnQty = it.addOnQty.toInt(),
+                                addOnMetadata = AddOnMetadata(
+                                        addOnNote = AddOnNote(
+                                                from = "",
+                                                to = "",
+                                                notes = "",
+                                                isCustomNote = true
+                                        )
+                                )
+                        )
+                    }
+            )
+        }
+
         return AddOnProductData(
-                bottomSheetType = AddOnProductData.ADD_ON_BOTTOM_SHEET,
+                bottomSheetType = bottomSheetType,
                 bottomSheetTitle = addOn.addOnsBottomSheetModel.headerTitle,
                 source = AddOnProductData.SOURCE_ONE_CLICK_CHECKOUT,
-                availableBottomSheetData = AvailableBottomSheetData(
-                        defaultTo = defaultReceiver,
-                        defaultFrom = userName,
-                        products = listOf(Product(
-                                cartId = orderProduct.cartId,
-                                productId = productId,
-                                productName = orderProduct.productName,
-                                productImageUrl = orderProduct.productImageUrl,
-                                productPrice = orderProduct.productPrice,
-                                productQuantity = orderProduct.orderQuantity,
-                                productParentId = orderProduct.parentId
-                        )),
-                        isTokoCabang = orderShop.isFulfillment,
-                        cartString = orderCart.cartString,
-                        warehouseId = orderShop.warehouseId.toString(),
-                        shopName = orderShop.shopName,
-                        addOnInfoWording = orderCart.addOnWordingData,
-                        addOnSavedStates = addOn.addOnsDataItemModelList.map {
-                            AddOnData(
-                                    addOnId = it.addOnId,
-                                    addOnPrice = it.addOnPrice,
-                                    addOnQty = it.addOnQty.toInt(),
-                                    addOnMetadata = AddOnMetadata(
-                                            addOnNote = AddOnNote(
-                                                    from = "",
-                                                    to = "",
-                                                    notes = "",
-                                                    isCustomNote = true
-                                            )
-                                    )
-                            )
-                        }
-                )
+                availableBottomSheetData = availableBottomSheetData,
+                unavailableBottomSheetData = unavailableBottomSheetData
         )
     }
 

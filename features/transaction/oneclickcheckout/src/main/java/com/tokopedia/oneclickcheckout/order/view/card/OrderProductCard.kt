@@ -390,7 +390,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                         state = ButtonGiftingAddOnView.State.ACTIVE
                         setAddOnButtonData(addOn)
                         setOnClickListener {
-                            listener.onClickAddOnButton(addOn, product, shop)
+                            listener.onClickAddOnButton(AddOnsResponse.STATUS_SHOW_ENABLED_ADD_ON_BUTTON, addOn, product, shop)
                             orderSummaryAnalytics.eventClickAddOnsDetail(product.productId.toString())
                         }
                         show()
@@ -401,6 +401,9 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                     buttonGiftingAddon.apply {
                         state = ButtonGiftingAddOnView.State.INACTIVE
                         setAddOnButtonData(addOn)
+                        setOnClickListener {
+                            listener.onClickAddOnButton(AddOnsResponse.STATUS_SHOW_DISABLED_ADD_ON_BUTTON, addOn, product, shop)
+                        }
                         show()
                         orderSummaryAnalytics.eventViewAddOnsWidget(product.productId.toString())
                     }
@@ -431,7 +434,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
 
         fun getLastPurchaseProtectionCheckState(productId: Long): Int
 
-        fun onClickAddOnButton(addOn: AddOnsDataModel, product: OrderProduct, shop: OrderShop)
+        fun onClickAddOnButton(addOnButtonType: Int, addOn: AddOnsDataModel, product: OrderProduct, shop: OrderShop)
     }
 
     companion object {

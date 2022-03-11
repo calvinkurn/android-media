@@ -818,11 +818,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                             serviceType = if (shouldUpdateTokoNowData) addressModel.tokoNow.serviceType else localCache.service_type)
                 } else if (shouldUpdateTokoNowData) {
                     ChooseAddressUtils.updateTokoNowData(
-                        context = it,
-                        shopId = addressModel.tokoNow.shopId,
-                        warehouseId = addressModel.tokoNow.warehouseId,
-                        warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(addressModel.tokoNow.warehouses),
-                        serviceType = addressModel.tokoNow.serviceType
+                            context = it,
+                            shopId = addressModel.tokoNow.shopId,
+                            warehouseId = addressModel.tokoNow.warehouseId,
+                            warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(addressModel.tokoNow.warehouses),
+                            serviceType = addressModel.tokoNow.serviceType
                     )
                 }
             }
@@ -1285,10 +1285,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     ?: PurchaseProtectionPlanData.STATE_EMPTY
         }
 
-        override fun onClickAddOnButton(addOn: AddOnsDataModel, product: OrderProduct, shop: OrderShop) {
+        override fun onClickAddOnButton(addOnButtonType: Int, addOn: AddOnsDataModel, product: OrderProduct, shop: OrderShop) {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
             intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA,
-                    AddOnMapper.mapAddOnBottomSheetParam(addOn, product, shop, viewModel.orderCart, viewModel.addressState.value.address, userSession.get().name)
+                    AddOnMapper.mapAddOnBottomSheetParam(addOnButtonType, addOn, product, shop, viewModel.orderCart, viewModel.addressState.value.address, userSession.get().name)
             )
             intent.putExtra(AddOnConstant.EXTRA_ADD_ON_SOURCE, AddOnConstant.ADD_ON_SOURCE_OCC)
             startActivityForResult(intent, REQUEST_CODE_ADD_ON)

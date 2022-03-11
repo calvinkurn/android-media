@@ -30,6 +30,22 @@ object AddOnUiModelMapper {
         }
     }
 
+    fun hasSavedAddOn(addOnProductData: AddOnProductData, addOnByProductResponse: GetAddOnByProductResponse, addOnSavedStateResponse: GetAddOnSavedStateResponse? = null): Boolean {
+        val addOnByProduct = addOnByProductResponse.dataResponse.addOnByProducts.firstOrNull()
+        val addOn = addOnByProduct?.addOns?.firstOrNull()
+        return if (addOnSavedStateResponse != null) {
+            // Get saved state from API
+            val addonSavedStateData = getAddOnSavedStateById(addOn?.basicInfo?.id
+                    ?: "", addOnSavedStateResponse)
+            addonSavedStateData != null
+        } else {
+            // Get saved state from previous page (Checkout / OSP)
+            val addonSavedStateData = getAddOnSavedStateById(addOn?.basicInfo?.id
+                    ?: "", addOnProductData.availableBottomSheetData.addOnSavedStates)
+            addonSavedStateData != null
+        }
+    }
+
     fun mapAddOn(addOnProductData: AddOnProductData, addOnByProductResponse: GetAddOnByProductResponse, addOnSavedStateResponse: GetAddOnSavedStateResponse? = null): AddOnUiModel {
         val addOnByProduct = addOnByProductResponse.dataResponse.addOnByProducts.firstOrNull()
         val addOn = addOnByProduct?.addOns?.firstOrNull()

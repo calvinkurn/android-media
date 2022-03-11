@@ -322,6 +322,14 @@ class AddOnBottomSheet(private val addOnProductData: AddOnProductData, val sourc
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        val touchOutsideView = dialog?.window?.decorView?.findViewById<View>(com.google.android.material.R.id.touch_outside)
+        touchOutsideView?.setOnClickListener {
+            viewModel.validateCloseAction()
+        }
+    }
+
     override fun onDismiss(dialog: DialogInterface) {
         viewBinding = null
         measureRecyclerViewPaddingDebounceJob?.cancel()

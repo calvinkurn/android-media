@@ -110,7 +110,6 @@
                 android:id="@+id/ll_gifting_addon_order_level"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
                 android:orientation="vertical"
                 android:visibility="gone">
 
