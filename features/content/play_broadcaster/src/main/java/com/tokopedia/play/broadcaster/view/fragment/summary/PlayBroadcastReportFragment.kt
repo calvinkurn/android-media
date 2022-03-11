@@ -65,8 +65,6 @@ class PlayBroadcastReportFragment @Inject constructor(
 
         observeUiState()
         observeChannelInfo()
-//        observeLiveDuration()
-//        observeLiveTrafficMetrics()
         observeInteractiveLeaderboardInfo()
 
         return view
@@ -103,21 +101,6 @@ class PlayBroadcastReportFragment @Inject constructor(
         summaryInfoView.setChannelTitle(channelInfo.title)
         summaryInfoView.setChannelCover(channelInfo.coverUrl)
     }
-
-//    private fun handleLiveDuration(model: LiveDurationUiModel) {
-//        summaryInfoView.setLiveDuration(model)
-//        summaryInfoView.setDate()
-//
-//        btnPostVideo.isEnabled = model.isEligiblePostVideo
-//
-//        if(!model.isEligiblePostVideo) {
-//            /** TODO("should be change later with ErrorFragment from RE") */
-//            view?.showToaster(
-//                message = getString(R.string.play_bro_cant_post_video_message),
-//                actionLabel = getString(R.string.play_ok),
-//            )
-//        }
-//    }
 
     /**
      * Observe
@@ -178,35 +161,6 @@ class PlayBroadcastReportFragment @Inject constructor(
             }
         }
     }
-
-//    private fun observeLiveTrafficMetrics() {
-//        viewModel.observableLiveSummary.observe(viewLifecycleOwner) {
-//            when(it) {
-//                is NetworkResult.Loading -> {
-//                    loaderView.visible()
-//                    summaryInfoView.hideError()
-//                }
-//                is NetworkResult.Success -> {
-//                    loaderView.gone()
-//                    summaryInfoView.hideError()
-//                    summaryInfoView.addTrafficMetrics(it.data)
-//                }
-//                is NetworkResult.Fail -> {
-//                    loaderView.gone()
-//                    summaryInfoView.showError { it.onRetry() }
-//                    analytic.viewErrorOnReportPage(
-//                            channelId = parentViewModel.channelId,
-//                            titleChannel = parentViewModel.channelTitle,
-//                            errorMessage = it.error.localizedMessage?:getString(R.string.play_broadcaster_default_error)
-//                    )
-//                }
-//            }
-//        }
-//    }
-
-//    private fun observeLiveDuration() {
-//        viewModel.observableReportDuration.observe(viewLifecycleOwner, Observer(this@PlayBroadcastReportFragment::handleLiveDuration))
-//    }
 
     private fun observeInteractiveLeaderboardInfo() {
         parentViewModel.observableLeaderboardInfo.observe(viewLifecycleOwner) {

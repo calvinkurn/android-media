@@ -72,16 +72,6 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     val uiEvent: Flow<PlayBroadcastSummaryEvent>
         get() = _uiEvent
 
-    val observableLiveSummary: LiveData<NetworkResult<List<TrafficMetricUiModel>>>
-        get() = _observableLiveSummary
-    private val _observableLiveSummary = MutableLiveData<NetworkResult<List<TrafficMetricUiModel>>>()
-
-    val observableReportDuration: LiveData<LiveDurationUiModel>
-        get() = _observableReportDuration
-    private val _observableReportDuration = MutableLiveData<LiveDurationUiModel>()
-
-    /** Divider */
-
     val observableSaveVideo: LiveData<NetworkResult<Boolean>>
         get() = _observableSaveVideo
     private val _observableSaveVideo = MutableLiveData<NetworkResult<Boolean>>()
@@ -119,7 +109,6 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     }
 
     fun fetchLiveTraffic() {
-//        _observableLiveSummary.value = NetworkResult.Loading
         viewModelScope.launchCatchError(block = {
             _trafficMetric.emit(NetworkResult.Loading)
 
@@ -145,14 +134,9 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
                                         isEligiblePostVideo(reportChannelSummary.duration)
                                     )
             _trafficMetric.value = NetworkResult.Success(playBroadcastMapper.mapToLiveTrafficUiMetrics(reportChannelSummary.channel.metrics))
-
-//            _observableReportDuration.value = playBroadcastMapper.mapLiveDuration(reportChannelSummary.duration, isEligiblePostVideo(reportChannelSummary.duration))
-//            _observableLiveSummary.value = NetworkResult.Success(playBroadcastMapper.mapToLiveTrafficUiMetrics(reportChannelSummary.channel.metrics))
         }) {
             _liveDuration.value = LiveDurationUiModel.empty()
             _trafficMetric.value = NetworkResult.Fail(it) { fetchLiveTraffic() }
-
-//            _observableLiveSummary.value = NetworkResult.Fail(it) { fetchLiveTraffic() }
         }
     }
 
