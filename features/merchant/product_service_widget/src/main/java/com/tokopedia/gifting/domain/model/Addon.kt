@@ -12,10 +12,6 @@ class Addon {
     @Expose
     var inventory: Inventory = Inventory()
 
-    @SerializedName("Warehouse")
-    @Expose
-    var warehouse: Warehouse = Warehouse()
-
     @SerializedName("Shop")
     @Expose
     var shop: Shop = Shop()

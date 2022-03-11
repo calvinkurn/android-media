@@ -24,10 +24,6 @@ class Basic {
     @Expose
     var addOnLevel: String = ""
 
-    @SerializedName("Rules")
-    @Expose
-    var rules: Rules = Rules()
-
     @SerializedName("Metadata")
     @Expose
     var metadata: Metadata = Metadata()

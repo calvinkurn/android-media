@@ -7,8 +7,4 @@ class Metadata {
     @SerializedName("Pictures")
     @Expose
     var pictures: List<Picture> = emptyList()
-
-    @SerializedName("NotesTemplate")
-    @Expose
-    var notesTemplate: String = ""
 }

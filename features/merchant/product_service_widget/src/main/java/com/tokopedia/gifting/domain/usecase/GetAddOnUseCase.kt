@@ -37,35 +37,19 @@ class GetAddOnUseCase @Inject constructor(
                     AddOnLevel
                     OwnerWarehouseID
                     AddOnType
-                    Rules{
-                      MaxOrder
-                      CustomNotes
-                    }
                     Metadata{
                       Pictures{
-                        FilePath
-                        FileName
-                        URL
                         URL100
                         URL200
                       }
-                      NotesTemplate
                     }
                   }
                   Inventory{
-                    WarehouseID
                     Price
                     Stock
-                    UnlimitedStock
-                  }
-                  Warehouse{
-                    WarehouseName
-                    CityName
                   }
                   Shop{
                     Name
-                    ShopTier
-                    ShopGrade
                   }
                 }
               }
