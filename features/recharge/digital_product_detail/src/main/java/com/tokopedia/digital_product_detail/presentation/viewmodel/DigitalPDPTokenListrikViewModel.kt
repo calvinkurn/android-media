@@ -45,10 +45,10 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
     var validatorJob: Job? = null
     var catalogProductJob: Job? = null
     var recommendationJob: Job? = null
-    var validators: List<RechargeValidation> = listOf()
+    var validators: List<RechargeValidation> = emptyList()
     var isEligibleToBuy = false
     var selectedGridProduct = SelectedProduct()
-    var operatorList: List<CatalogOperator> = listOf()
+    var operatorList: List<CatalogOperator> = emptyList()
     var operatorData: CatalogOperator = CatalogOperator()
     var recomCheckoutUrl = ""
 

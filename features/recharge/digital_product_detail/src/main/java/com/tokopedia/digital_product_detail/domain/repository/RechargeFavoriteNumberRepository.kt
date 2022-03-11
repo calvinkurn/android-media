@@ -5,11 +5,11 @@ import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberDat
 interface RechargeFavoriteNumberRepository {
     suspend fun getFavoriteNumberChips(
         categoryIds: List<Int>,
-        operatorIds: List<Int> = listOf()
+        operatorIds: List<Int> = emptyList()
     ): TopupBillsPersoFavNumberData
 
     suspend fun getFavoriteNumberList(
         categoryIds: List<Int>,
-        operatorIds: List<Int> = listOf()
+        operatorIds: List<Int> = emptyList()
     ): TopupBillsPersoFavNumberData
 }

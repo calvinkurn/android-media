@@ -38,9 +38,9 @@ class DigitalPDPTagihanViewModel @Inject constructor(
 
     var validatorJob: Job? = null
 
-    var validators: List<RechargeValidation> = listOf()
+    var validators: List<RechargeValidation> = emptyList()
     var isEligibleToBuy = false
-    var operatorList: List<CatalogOperator> = listOf()
+    var operatorList: List<CatalogOperator> = emptyList()
     var operatorData: CatalogOperator = CatalogOperator()
     val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()
         .action(DigitalCheckoutPassData.DEFAULT_ACTION)

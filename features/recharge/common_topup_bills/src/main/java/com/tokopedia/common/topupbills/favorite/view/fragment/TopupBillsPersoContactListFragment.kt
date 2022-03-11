@@ -89,7 +89,7 @@ class TopupBillsPersoContactListFragment:
 
     private fun initRecyclerView() {
         val typeFactory = ContactListTypeFactoryImpl(this, this)
-        contactListAdapter = TopupBillsContactListAdapter(listOf(), typeFactory)
+        contactListAdapter = TopupBillsContactListAdapter(emptyList(), typeFactory)
         binding?.commonTopupBillsContactsRv?.run {
             layoutManager = LinearLayoutManager(context)
             adapter = contactListAdapter

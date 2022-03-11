@@ -24,10 +24,10 @@ data class DigitalOperatorCluster(
     val help: String = "",
     @SerializedName("operatorGroup")
     @Expose
-    var operatorGroups: List<DigitalOperatorGroup>? = listOf(),
+    var operatorGroups: List<DigitalOperatorGroup>? = emptyList(),
     @SerializedName("validations")
     @Expose
-    var validations: List<RechargeValidation>? = listOf()
+    var validations: List<RechargeValidation>? = emptyList()
 
 )
 
@@ -37,5 +37,5 @@ data class DigitalOperatorGroup(
     val name: String = "",
     @SerializedName("operators")
     @Expose
-    val operators: List<CatalogOperator> = listOf()
+    val operators: List<CatalogOperator> = emptyList()
 )
