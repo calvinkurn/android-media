@@ -110,31 +110,31 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     }
 
     private fun handleClickCloseReportPage() {
-        viewModelScope.launch {
+        viewModelScope.launch(context = dispatcher.main) {
             _uiEvent.emit(PlayBroadcastSummaryEvent.CloseReportPage)
         }
     }
 
     private fun handleClickViewLeaderboard() {
-        viewModelScope.launch {
+        viewModelScope.launch(context = dispatcher.main) {
             _uiEvent.emit(PlayBroadcastSummaryEvent.OpenLeaderboardBottomSheet)
         }
     }
 
     private fun handleClickPostVideo() {
-        viewModelScope.launch {
+        viewModelScope.launch(context = dispatcher.main) {
             _uiEvent.emit(PlayBroadcastSummaryEvent.OpenPostVideoPage)
         }
     }
 
     private fun handleClickBackToReportPage() {
-        viewModelScope.launch {
+        viewModelScope.launch(context = dispatcher.main) {
             _uiEvent.emit(PlayBroadcastSummaryEvent.BackToReportPage)
         }
     }
 
     private fun handleClickEditCover() {
-        viewModelScope.launch {
+        viewModelScope.launch(context = dispatcher.main) {
             _uiEvent.emit(PlayBroadcastSummaryEvent.OpenSelectCoverBottomSheet)
         }
     }
@@ -153,7 +153,7 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     }
 
     private fun handleClickPostVideoNow() {
-        viewModelScope.launchCatchError(block = {
+        viewModelScope.launchCatchError(context = dispatcher.main, block = {
             _uiEvent.emit(PlayBroadcastSummaryEvent.PostVideo(NetworkResult.Loading))
             withContext(dispatcher.io) {
                 saveTag()
@@ -168,8 +168,8 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     }
 
     /** Fetch Area */
-    fun fetchLiveTraffic() {
-        viewModelScope.launchCatchError(block = {
+    private fun fetchLiveTraffic() {
+        viewModelScope.launchCatchError(context = dispatcher.main, block = {
             _trafficMetric.emit(NetworkResult.Loading)
 
             val reportChannelSummary = withContext(dispatcher.io) {
@@ -206,7 +206,7 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     }
 
     private fun getTags() {
-        viewModelScope.launchCatchError(block = {
+        viewModelScope.launchCatchError(context = dispatcher.main, block = {
             val response = getRecommendedChannelTagsUseCase.apply {
                 setChannelId(channelId)
             }.executeOnBackground()

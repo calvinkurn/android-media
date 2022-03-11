@@ -6,6 +6,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.SetChannelTagsUseCase
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
@@ -105,6 +106,10 @@ class PlayBroadcastSummaryViewModelRobot(
         dispatcher.coroutineDispatcher.advanceUntilIdle()
         scope.cancel()
         return uiState to uiEvents
+    }
+
+    suspend fun submitAction(action: PlayBroadcastSummaryAction) = act {
+        viewModel.submitAction(action)
     }
 
     fun getViewModel() = viewModel
