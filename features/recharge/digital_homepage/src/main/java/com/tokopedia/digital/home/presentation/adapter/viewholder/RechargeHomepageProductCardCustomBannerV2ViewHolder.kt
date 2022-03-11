@@ -107,7 +107,7 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
                     parallaxImage.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
                     rvRechargeProduct.setPadding(
-                        parallaxImage.measuredWidth,
+                        parallaxImage.measuredWidth + parallaxImage.paddingStart,
                         rvRechargeProduct.paddingTop,
                         rvRechargeProduct.paddingRight,
                         rvRechargeProduct.paddingBottom
