@@ -44,6 +44,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWa
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPTagihanViewModel
+import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -70,6 +71,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 
 class DigitalPDPTagihanFragment : BaseDaggerFragment(),
     RechargeSimplifyWidgetListener,
@@ -345,7 +347,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
 
-                val extendedPadding = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl8)
+                val extendedPadding = getDimens(unifyDimens.layout_lvl8)
                 binding?.rechargePdpTagihanListrikSvContainer?.setPadding(0, extendedPadding, 0, 0)
             }
         }

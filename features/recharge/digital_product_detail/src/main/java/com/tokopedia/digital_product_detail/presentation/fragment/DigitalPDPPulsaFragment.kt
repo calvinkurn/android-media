@@ -56,6 +56,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalyti
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicScrollListener
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
+import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
@@ -89,6 +90,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 
 /**
  * @author by firmanda on 04/01/21
@@ -463,7 +465,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
 
-                val extendedPadding = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl8)
+                val extendedPadding = getDimens(unifyDimens.layout_lvl8)
                 binding?.rechargePdpPulsaSvContainer?.setPadding(0, extendedPadding, 0, 0)
             }
         }

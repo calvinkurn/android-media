@@ -12,10 +12,12 @@ import com.tokopedia.digital_product_detail.presentation.adapter.ProductDescAdap
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 
 class ProductDescBottomSheet(
     private val denomData: DenomData,
@@ -62,16 +64,13 @@ class ProductDescBottomSheet(
                     tickerWidgetProductDesc.setText(denomData.greenLabel)
             } else {
                 tickerWidgetProductDesc.hide()
-                rvProductDesc.setMargin(
-                    resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                        .toInt(),
-                    resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                        .toInt(),
-                    resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                        .toInt(),
-                    resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl9)
-                        .toInt()
-                )
+                rvProductDesc.run {
+                    setMargin(
+                        getDimens(unifyDimens.unify_space_0),
+                        getDimens(unifyDimens.unify_space_0),
+                        getDimens(unifyDimens.unify_space_0),
+                        getDimens(unifyDimens.layout_lvl9))
+                }
             }
 
             buyWidgetProductDesc.showBuyWidget(denomData, listener)

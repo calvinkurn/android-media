@@ -5,12 +5,12 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.databinding.ViewRechargeDenomGridBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
@@ -21,6 +21,7 @@ import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 
 class DenomGridViewHolder (
     private val denomGridListener: RechargeDenomGridListener,
@@ -87,14 +88,11 @@ class DenomGridViewHolder (
                     }
 
                     setMargin(
-                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                            .toInt(),
-                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
-                            .toInt(),
-                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                            .toInt(),
-                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                            .toInt())
+                        getDimens(unifyDimens.unify_space_0),
+                        getDimens(unifyDimens.spacing_lvl2),
+                        getDimens(unifyDimens.unify_space_0),
+                        getDimens(unifyDimens.unify_space_0)
+                            )
 
                 } else if (!denomGrid.discountLabel.isNullOrEmpty()){
                     show()
@@ -119,14 +117,11 @@ class DenomGridViewHolder (
                     }
 
                     setMargin(
-                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                            .toInt(),
-                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                            .toInt(),
-                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                            .toInt(),
-                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                            .toInt())
+                        getDimens(unifyDimens.unify_space_0),
+                        getDimens(unifyDimens.unify_space_0),
+                        getDimens(unifyDimens.unify_space_0),
+                        getDimens(unifyDimens.unify_space_0)
+                    )
 
                     setStatusNormal(denomGrid.discountLabel)
                 } else hide()
@@ -148,10 +143,8 @@ class DenomGridViewHolder (
                             context,
                             com.tokopedia.resources.common.R.drawable.ic_fire_filled_product_card
                         ),
-                        width = resources.getDimension(R.dimen.widget_denom_flash_sale_image_width)
-                            .toInt(),
-                        height = resources.getDimension(R.dimen.widget_denom_flash_sale_image_height)
-                            .toInt()
+                        width = getDimens(R.dimen.widget_denom_flash_sale_image_width),
+                        height = getDimens(R.dimen.widget_denom_flash_sale_image_height)
                     )
                     progressBarColorType = ProgressBarUnify.COLOR_RED
                     setValue(denomGrid.flashSalePercentage, false)
@@ -165,24 +158,16 @@ class DenomGridViewHolder (
                     paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     if(denomGrid.discountLabel.isNullOrEmpty()) {
                         setMargin(
-                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                                .toInt(),
-                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
-                                .toInt(),
-                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                                .toInt(),
-                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                                .toInt()
+                            getDimens(unifyDimens.unify_space_0),
+                            getDimens(unifyDimens.spacing_lvl2),
+                            getDimens(unifyDimens.unify_space_0),
+                            getDimens(unifyDimens.unify_space_0)
                         )
                     } else setMargin(
-                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
-                            .toInt(),
-                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
-                            .toInt(),
-                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                            .toInt(),
-                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                            .toInt()
+                        getDimens(unifyDimens.spacing_lvl2),
+                        getDimens(unifyDimens.spacing_lvl3),
+                        getDimens(unifyDimens.unify_space_0),
+                        getDimens(unifyDimens.unify_space_0)
                     )
                 } else if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE && denomGrid.status != DENOM_STATUS_OUT_OF_STOCK) invisible()
                   else hide()
@@ -191,10 +176,10 @@ class DenomGridViewHolder (
             cardDenomGrid.run {
                 layoutParams.width = if (denomType == DenomWidgetEnum.GRID_TYPE){
                     ViewGroup.LayoutParams.MATCH_PARENT
-                } else resources.getDimension(R.dimen.widget_denom_grid_width).toInt()
+                } else getDimens(R.dimen.widget_denom_grid_width)
 
                 layoutParams.height = if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE){
-                    resources.getDimension(R.dimen.widget_denom_grid_height).toInt()
+                    getDimens (R.dimen.widget_denom_grid_height)
                 } else ViewGroup.LayoutParams.WRAP_CONTENT
 
                 setBackgroundColor(ContextCompat.getColor(rootView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
