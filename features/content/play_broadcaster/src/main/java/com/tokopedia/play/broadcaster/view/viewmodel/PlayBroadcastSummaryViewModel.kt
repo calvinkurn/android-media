@@ -3,8 +3,8 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
-import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
@@ -12,6 +12,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelU
 import com.tokopedia.play.broadcaster.domain.usecase.SetChannelTagsUseCase
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
+import com.tokopedia.play.broadcaster.ui.event.UiString
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.LiveDurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
@@ -23,7 +24,6 @@ import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
-import com.tokopedia.play_common.util.extension.setValue
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -164,12 +164,17 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
             _liveDuration.value = playBroadcastMapper.mapLiveDuration(
                                         getCurrentDate(),
                                         reportChannelSummary.duration,
-                                        isEligiblePostVideo(reportChannelSummary.duration)
+                                        isEligiblePostVideo(reportChannelSummary.duration),
                                     )
             _trafficMetric.value = NetworkResult.Success(playBroadcastMapper.mapToLiveTrafficUiMetrics(reportChannelSummary.channel.metrics))
+
+            if(!isEligiblePostVideo(reportChannelSummary.duration))
+                _uiEvent.emit(PlayBroadcastSummaryEvent.ShowInfo(UiString.Resource(R.string.play_bro_cant_post_video_message)))
         }) {
             _liveDuration.value = LiveDurationUiModel.empty()
             _trafficMetric.value = NetworkResult.Fail(it) { fetchLiveTraffic() }
+
+            _uiEvent.emit(PlayBroadcastSummaryEvent.ShowInfo(UiString.Resource(R.string.play_bro_cant_post_video_message)))
         }
     }
 

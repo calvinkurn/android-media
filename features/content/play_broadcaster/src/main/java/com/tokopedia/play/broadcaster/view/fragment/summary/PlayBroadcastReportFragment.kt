@@ -15,6 +15,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
+import com.tokopedia.play.broadcaster.ui.event.UiString
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
@@ -122,6 +123,16 @@ class PlayBroadcastReportFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect {
                 when(it) {
+                    is PlayBroadcastSummaryEvent.ShowInfo -> {
+                        val text = when(val uiString = it.uiString) {
+                            is UiString.Text -> uiString.text
+                            is UiString.Resource -> getString(uiString.resource)
+                        }
+                        view?.showToaster(
+                            message = text,
+                            actionLabel = getString(R.string.play_ok),
+                        )
+                    }
                     PlayBroadcastSummaryEvent.CloseReportPage -> requireActivity().onBackPressed()
                     PlayBroadcastSummaryEvent.OpenLeaderboardBottomSheet -> openInteractiveLeaderboardSheet()
                     PlayBroadcastSummaryEvent.OpenPostVideoPage -> mListener?.onClickPostButton()
@@ -135,14 +146,6 @@ class PlayBroadcastReportFragment @Inject constructor(
 
         summaryInfoView.setLiveDuration(value)
         btnPostVideo.isEnabled = value.isEligiblePostVideo
-
-        if(!value.isEligiblePostVideo) {
-            /** TODO("should be change later with ErrorFragment from RE") */
-            view?.showToaster(
-                message = getString(R.string.play_bro_cant_post_video_message),
-                actionLabel = getString(R.string.play_ok),
-            )
-        }
     }
 
     private fun renderReport(prev: NetworkResult<List<TrafficMetricUiModel>>?, value: NetworkResult<List<TrafficMetricUiModel>>) {
