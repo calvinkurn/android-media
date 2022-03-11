@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastReportBinding
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.event.UiString
@@ -41,20 +42,18 @@ class PlayBroadcastReportFragment @Inject constructor(
         private val analytic: PlayBroadcastAnalytic,
 ) : PlayBaseBroadcastFragment(), SummaryInfoViewComponent.Listener {
 
-    companion object {
-        private const val FIRST_PLACE = 0
-    }
-
     private var mListener: Listener? = null
 
     private lateinit var viewModel: PlayBroadcastSummaryViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
-    private lateinit var icClose: IconUnify
-    private lateinit var btnPostVideo: UnifyButton
-    private lateinit var loaderView: LoaderUnify
+    private var _binding: FragmentPlayBroadcastReportBinding? = null
+    private val binding: FragmentPlayBroadcastReportBinding
+        get() = _binding!!
 
-    private val summaryInfoView by viewComponent(isEagerInit = true) { SummaryInfoViewComponent(it, this) }
+    private val summaryInfoView by viewComponent(isEagerInit = true) {
+        SummaryInfoViewComponent(it, binding.layoutPlaySummaryInfo.layoutSummaryContent, this)
+    }
 
     override fun getScreenName(): String = "Play Report Page"
 
@@ -65,41 +64,39 @@ class PlayBroadcastReportFragment @Inject constructor(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_play_broadcast_report, container, false)
-
-        observeUiState()
-        observeEvent()
-        observeChannelInfo()
-        observeInteractiveLeaderboardInfo()
-
-        return view
+        _binding = FragmentPlayBroadcastReportBinding.inflate(LayoutInflater.from(requireContext()), container, false)
+        return _binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(view)
         setupView(view)
+        setupObserver()
     }
 
-    private fun initView(view: View) {
-        with(view) {
-            icClose = findViewById(R.id.ic_bro_summary_back)
-            btnPostVideo = findViewById(R.id.btn_post_video)
-            loaderView = findViewById(R.id.loader_summary)
-        }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun setupView(view: View) {
         summaryInfoView.entranceAnimation(view as ViewGroup)
 
-        icClose.setOnClickListener {
+        binding.icBroSummaryBack.setOnClickListener {
             viewModel.submitAction(PlayBroadcastSummaryAction.ClickCloseReportPage)
         }
 
-        btnPostVideo.setOnClickListener {
+        binding.btnPostVideo.setOnClickListener {
             analytic.clickPostingVideoOnReportPage()
             viewModel.submitAction(PlayBroadcastSummaryAction.ClickPostVideo)
         }
+    }
+
+    private fun setupObserver() {
+        observeUiState()
+        observeEvent()
+        observeChannelInfo()
+        observeInteractiveLeaderboardInfo()
     }
 
     /**
@@ -161,7 +158,7 @@ class PlayBroadcastReportFragment @Inject constructor(
         if(prev == value) return
 
         summaryInfoView.setLiveDuration(value)
-        btnPostVideo.isEnabled = value.isEligiblePostVideo
+        binding.btnPostVideo.isEnabled = value.isEligiblePostVideo
     }
 
     private fun renderReport(prev: NetworkResult<List<TrafficMetricUiModel>>?, value: NetworkResult<List<TrafficMetricUiModel>>) {
@@ -169,16 +166,16 @@ class PlayBroadcastReportFragment @Inject constructor(
 
         when(value) {
             is NetworkResult.Loading -> {
-                loaderView.visible()
+                binding.layoutPlaySummaryInfo.loaderSummary.visible()
                 summaryInfoView.hideError()
             }
             is NetworkResult.Success -> {
-                loaderView.gone()
+                binding.layoutPlaySummaryInfo.loaderSummary.gone()
                 summaryInfoView.hideError()
                 summaryInfoView.addTrafficMetrics(value.data)
             }
             is NetworkResult.Fail -> {
-                loaderView.gone()
+                binding.layoutPlaySummaryInfo.loaderSummary.gone()
                 summaryInfoView.showError { value.onRetry() }
                 analytic.viewErrorOnReportPage(
                     channelId = parentViewModel.channelId,
@@ -208,6 +205,10 @@ class PlayBroadcastReportFragment @Inject constructor(
 
     fun setListener(listener: Listener) {
         mListener = listener
+    }
+
+    companion object {
+        private const val FIRST_PLACE = 0
     }
 
     interface Listener {

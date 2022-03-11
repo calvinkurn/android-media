@@ -27,8 +27,9 @@ import com.tokopedia.utils.date.DateUtil
  */
 class SummaryInfoViewComponent(
         container: ViewGroup,
+        root: ConstraintLayout,
         listener: Listener
-) : ViewComponent(container, R.id.layout_summary_content) {
+) : ViewComponent(container, root.id) {
 
     val animationOffset = container.resources.getInteger(R.integer.play_summary_layout_animation_offset).toFloat()
     val animationDuration = container.resources.getInteger(R.integer.play_summary_layout_animation_duration_ms).toLong()

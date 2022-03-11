@@ -45,7 +45,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view_bro_summary_divider">
 
-        <include layout="@layout/layout_play_summary_info" />
+        <include
+            android:id="@+id/layout_play_summary_info"
+            layout="@layout/layout_play_summary_info" />
 
     </androidx.core.widget.NestedScrollView>
 
