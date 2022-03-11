@@ -26,6 +26,13 @@ import com.tokopedia.home_account.stub.di.DaggerHomeAccountTopAdsComponentsStub
 import com.tokopedia.home_account.stub.di.HomeAccountTopAdsComponentsStub
 import com.tokopedia.home_account.stub.di.topads.FakeHomeAccountTopAdsModules
 import com.tokopedia.home_account.stub.view.activity.InstrumentationNewHomeAccountTestActivity
+import com.tokopedia.home_account.test.R
+import com.tokopedia.home_account.view.adapter.HomeAccountUserAdapter
+import com.tokopedia.home_account.view.adapter.viewholder.ProductItemViewHolder
+import com.tokopedia.home_account.view.custom.SwipeRecyclerView
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.sessioncommon.di.SessionModule
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -34,13 +41,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import com.tokopedia.home_account.test.R
-import com.tokopedia.home_account.view.adapter.HomeAccountUserAdapter
-import com.tokopedia.home_account.view.custom.SwipeRecyclerView
-import com.tokopedia.home_account.view.adapter.viewholder.ProductItemViewHolder
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.sessioncommon.di.SessionModule
 
+@UiTest
 class HomeAccountNewTopAdsVerificationTest {
     @get:Rule
     var activityRule = object : IntentsTestRule<InstrumentationNewHomeAccountTestActivity>(
