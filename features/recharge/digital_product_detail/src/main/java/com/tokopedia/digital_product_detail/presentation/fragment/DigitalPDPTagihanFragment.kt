@@ -153,7 +153,6 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetMenuDetail(it.data)
                 is RechargeNetworkResult.Fail -> onFailedGetMenuDetail(it.error)
-                is RechargeNetworkResult.Loading -> {}
             }
         })
 
@@ -170,8 +169,6 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         viewModel.autoCompleteData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
-                is RechargeNetworkResult.Fail -> {}
-                is RechargeNetworkResult.Loading -> {}
             }
         })
 
@@ -179,7 +176,6 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetOperatorSelectGroup(it.data)
                 is RechargeNetworkResult.Fail -> onFailedGetOperatorSelectGroup(it.error)
-                is RechargeNetworkResult.Loading -> {}
             }
         })
 
@@ -188,8 +184,6 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                 is RechargeNetworkResult.Success -> {
                     productId = it.data.id.toIntOrZero()
                 }
-                is RechargeNetworkResult.Fail -> {}
-                is RechargeNetworkResult.Loading -> {}
             }
         })
 

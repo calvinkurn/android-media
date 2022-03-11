@@ -228,8 +228,6 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         viewModel.autoCompleteData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
-                is RechargeNetworkResult.Fail -> {}
-                is RechargeNetworkResult.Loading -> {}
             }
         })
 
@@ -237,7 +235,6 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetOperatorSelectGroup()
                 is RechargeNetworkResult.Fail -> onFailedGetOperatorSelectGroup(it.error)
-                is RechargeNetworkResult.Loading -> {}
             }
         })
 

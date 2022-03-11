@@ -281,8 +281,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         viewModel.autoCompleteData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
-                is RechargeNetworkResult.Fail -> {}
-                is RechargeNetworkResult.Loading -> {}
             }
         })
 
@@ -290,7 +288,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetPrefixOperator()
                 is RechargeNetworkResult.Fail -> onFailedGetPrefixOperator(it.error)
-                is RechargeNetworkResult.Loading -> {}
             }
         })
 
