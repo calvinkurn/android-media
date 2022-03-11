@@ -16,7 +16,9 @@ import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIden
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.CHECKOUT_NO_PROMO
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_CLIENT_NUMBER_TRANSITION
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_MULTI_TAB
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_PREFIX_TIME
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.VALIDATOR_DELAY_TIME
@@ -47,6 +49,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     var validatorJob: Job? = null
     var catalogProductJob: Job? = null
     var recommendationJob: Job? = null
+    var clientNumberThrottleJob: Job? = null
     var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
     var isEligibleToBuy = false
     var selectedFullProduct = SelectedProduct()
@@ -364,6 +367,18 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
             val item = iterator.next()
             if (item.containsValue(paramName)) {
                 iterator.remove()
+            }
+        }
+    }
+
+    fun runThrottleJob(
+        skipMs: Long = DELAY_CLIENT_NUMBER_TRANSITION,
+        destinationFunction: () -> Unit
+    ) {
+        if (clientNumberThrottleJob?.isCompleted != false) {
+            clientNumberThrottleJob = viewModelScope.launch {
+                destinationFunction()
+                delay(skipMs)
             }
         }
     }

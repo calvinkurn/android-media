@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.view.Menu
 import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -19,30 +20,32 @@ import kotlin.math.abs
 
 private const val TOOLBAR_ICON_SIZE = 64
 
-fun AppBarLayout.setupDynamicAppBar(
+fun NestedScrollView.setupDynamicScrollListener(
     isErrorMessageShown: () -> Boolean,
     isInputEmpty: () -> Boolean,
     onCollapseAppBar: () -> Unit,
     onExpandAppBar: () -> Unit
 ) {
-    addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
-        var lastOffset = -1
+    setOnScrollChangeListener(object: NestedScrollView.OnScrollChangeListener {
         var lastIsCollapsed = false
 
-        override fun onOffsetChanged(p0: AppBarLayout?, verticalOffSet: Int) {
-            if (lastOffset == verticalOffSet) return
-
-            lastOffset = verticalOffSet
-            if (abs(verticalOffSet) >= totalScrollRange && !lastIsCollapsed) {
-                if (!isErrorMessageShown() && !isInputEmpty()) {
-                    //Collapsed
-                    lastIsCollapsed = true
-                    onCollapseAppBar()
-                }
-            } else if (verticalOffSet == 0 && lastIsCollapsed) {
-                //Expanded
+        override fun onScrollChange(
+            v: NestedScrollView?,
+            scrollX: Int,
+            scrollY: Int,
+            oldScrollX: Int,
+            oldScrollY: Int
+        ) {
+            if (scrollY == 0 && lastIsCollapsed) {
                 lastIsCollapsed = false
                 onExpandAppBar()
+            }
+
+            if (scrollY != 0 && scrollY > oldScrollY && !lastIsCollapsed) {
+                lastIsCollapsed = true
+                if (!isErrorMessageShown() && !isInputEmpty()) {
+                    onCollapseAppBar()
+                }
             }
         }
     })

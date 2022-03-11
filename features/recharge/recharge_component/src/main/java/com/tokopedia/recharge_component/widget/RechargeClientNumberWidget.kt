@@ -5,7 +5,12 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.AlphaAnimation
+import android.view.animation.AnimationSet
+import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
@@ -15,6 +20,7 @@ import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapte
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -312,13 +318,13 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
             includeLayout.clientNumberSimplifiedPhoneNumber.text = getInputNumber()
 
             if (show) {
-                includeLayout.clientNumberWidgetSimplifiedLayout.show()
-                clientNumberWidgetMainLayout.clientNumberWidgetBase.root.hide()
-                clientNumberWidgetOperatorGroup.hide()
+                includeLayout.clientNumberWidgetSimplifiedLayout.animateFadeInThenShow()
+                clientNumberWidgetMainLayout.clientNumberWidgetBase.root.animateFadeOutThenGone()
+                clientNumberWidgetOperatorGroup.animateFadeOutThenGone()
             } else {
-                includeLayout.clientNumberWidgetSimplifiedLayout.hide()
-                clientNumberWidgetMainLayout.clientNumberWidgetBase.root.show()
-                clientNumberWidgetOperatorGroup.show()
+                includeLayout.clientNumberWidgetSimplifiedLayout.animateFadeOutThenGone()
+                clientNumberWidgetMainLayout.clientNumberWidgetBase.root.animateFadeInThenShow()
+                clientNumberWidgetOperatorGroup.animateFadeInThenShow()
             }
         }
     }
@@ -366,5 +372,30 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         mInputFieldListener = inputFieldListener
         mAutoCompleteListener = autoCompleteListener
         mFilterChipListener = filterChipListener
+    }
+
+    fun View.animateFadeInThenShow() {
+        val fadeIn = AlphaAnimation(0.5f, 1f)
+        fadeIn.interpolator = DecelerateInterpolator()
+        fadeIn.duration = 500
+
+        val animation = AnimationSet(false)
+        animation.addAnimation(fadeIn)
+        this.animation = animation
+
+        show()
+    }
+
+    fun View.animateFadeOutThenGone() {
+
+        val fadeOut = AlphaAnimation(1f, 0.5f)
+        fadeOut.interpolator = AccelerateInterpolator()
+        fadeOut.duration = 500
+
+        val animation = AnimationSet(false)
+        animation.addAnimation(fadeOut)
+        this.animation = animation
+
+        gone()
     }
 }
