@@ -28,7 +28,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.internal_review.factory.createReviewHelper
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
+import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
@@ -38,7 +42,10 @@ import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
-import com.tokopedia.sellerhome.common.*
+import com.tokopedia.sellerhome.common.DeepLinkHandler
+import com.tokopedia.sellerhome.common.FragmentType
+import com.tokopedia.sellerhome.common.PageFragment
+import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
@@ -152,6 +159,10 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         observeIsRoleEligible()
         fetchSellerAppWidget()
         setupSellerHomeInsetListener()
+    }
+
+    override fun checkAppUpdateAndInApp() {
+        // no op, this activity already uses UpdateCheckerHelper
     }
 
     override fun getComponent(): HomeDashboardComponent {
