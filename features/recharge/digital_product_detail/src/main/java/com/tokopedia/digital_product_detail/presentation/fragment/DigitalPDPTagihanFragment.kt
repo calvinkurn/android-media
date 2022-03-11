@@ -193,14 +193,6 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             }
         })
 
-        viewModel.inquiry.observe(viewLifecycleOwner, {
-            when (it) {
-                is RechargeNetworkResult.Success -> {}
-                is RechargeNetworkResult.Fail -> {}
-                is RechargeNetworkResult.Loading -> {}
-            }
-        })
-
         viewModel.addToCartResult.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> {
