@@ -88,7 +88,7 @@ class SummaryInfoViewComponent(
     }
 
     fun addTrafficMetrics(dataList: List<TrafficMetricUiModel>) {
-        trafficMetricReportAdapter.addItems(dataList)
+        trafficMetricReportAdapter.setItemsAndAnimateChanges(dataList)
     }
 
     fun showError(onRetry: () -> Unit) {

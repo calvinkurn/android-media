@@ -111,7 +111,7 @@ class PlayBroadcastReportFragment @Inject constructor(
      * Observe
      */
     private fun observeUiState() {
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
                 renderDuration(it.prevValue?.liveReport?.duration, it.value.liveReport.duration)
                 renderReport(it.prevValue?.liveReport?.trafficMetricsResult, it.value.liveReport.trafficMetricsResult)
@@ -150,6 +150,7 @@ class PlayBroadcastReportFragment @Inject constructor(
 
     private fun renderReport(prev: NetworkResult<List<TrafficMetricUiModel>>?, value: NetworkResult<List<TrafficMetricUiModel>>) {
         if(prev == value) return
+
         when(value) {
             is NetworkResult.Loading -> {
                 loaderView.visible()
