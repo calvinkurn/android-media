@@ -111,7 +111,7 @@ class PlayBroadcastReportFragment @Inject constructor(
      * Observe
      */
     private fun observeUiState() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.uiState.withCache().collectLatest {
                 renderDuration(it.prevValue?.liveReport?.duration, it.value.liveReport.duration)
                 renderReport(it.prevValue?.liveReport?.trafficMetricsResult, it.value.liveReport.trafficMetricsResult)

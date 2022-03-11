@@ -17,7 +17,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPostVideoBinding
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
+import com.tokopedia.play.broadcaster.ui.state.TagUiState
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
@@ -25,9 +27,11 @@ import com.tokopedia.play.broadcaster.view.partial.TagListViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.*
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 /**
@@ -104,14 +108,28 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
 
         binding.btnPostVideo.setOnClickListener {
             analytic.clickPostingVideoNow()
-            viewModel.saveVideo()
+            viewModel.submitAction(PlayBroadcastSummaryAction.ClickPostVideoNow)
         }
     }
 
     private fun setupObservable() {
+        observeUiState()
         observeChannelInfo()
-        observeTags()
         observeSaveVideo()
+    }
+
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiState.withCache().collectLatest {
+                renderTag(it.prevValue?.tag, it.value.tag)
+            }
+        }
+    }
+
+    private fun renderTag(prev: TagUiState?, value: TagUiState) {
+        if(prev == value) return
+
+        tagListView.setTags(value.tags.toList())
     }
 
     private fun observeChannelInfo() {
@@ -126,12 +144,6 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
                 }
                 else -> {}
             }
-        }
-    }
-
-    private fun observeTags() {
-        viewModel.observableRecommendedTagsModel.observe(viewLifecycleOwner) {
-            tagListView.setTags(it.toList())
         }
     }
 
@@ -184,7 +196,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
      */
     override fun onTagClicked(view: TagListViewComponent, tag: PlayTagUiModel) {
         analytic.clickContentTag(tag.tag)
-        viewModel.toggleTag(tag.tag)
+        viewModel.submitAction(PlayBroadcastSummaryAction.ToggleTag(tag))
     }
 
     /**

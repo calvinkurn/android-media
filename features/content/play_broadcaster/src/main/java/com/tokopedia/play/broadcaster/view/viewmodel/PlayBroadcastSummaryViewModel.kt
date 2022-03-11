@@ -19,6 +19,7 @@ import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.state.LiveReportUiState
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastSummaryUiState
+import com.tokopedia.play.broadcaster.ui.state.TagUiState
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -49,8 +50,10 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
 
     private val _trafficMetric = MutableStateFlow<NetworkResult<List<TrafficMetricUiModel>>>(NetworkResult.Loading)
     private val _liveDuration = MutableStateFlow(LiveDurationUiModel.empty())
+    private val _tags = MutableStateFlow<Set<String>>(emptySet())
+    private val _selectedTags = MutableStateFlow<Set<String>>(emptySet())
 
-    private val _liveReport = combine(
+    private val _liveReportUiState = combine(
         _trafficMetric, _liveDuration,
     ) { trafficMetric, liveDuration ->
         LiveReportUiState(
@@ -59,12 +62,26 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
         )
     }
 
+    private val _tagUiState = combine(
+        _tags, _selectedTags,
+    ) { tags, selectedTags ->
+        TagUiState(
+            tags = tags.map {
+                PlayTagUiModel(
+                    tag = it,
+                    isChosen = selectedTags.contains(it)
+                )
+            },
+        )
+    }
+
     val uiState: Flow<PlayBroadcastSummaryUiState> = combine(
-        _liveReport.distinctUntilChanged(),
-        _trafficMetric, /** TODO("will be removed later") */
-    ) { liveReport, _ ->
+        _liveReportUiState.distinctUntilChanged(),
+        _tagUiState.distinctUntilChanged(),
+    ) { liveReportUiState, tagUiState ->
         PlayBroadcastSummaryUiState(
-            liveReport = liveReport,
+            liveReport = liveReportUiState,
+            tag = tagUiState,
         )
     }.flowOn(dispatcher.computation)
 
@@ -77,33 +94,6 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
         get() = _observableSaveVideo
     private val _observableSaveVideo = MutableLiveData<NetworkResult<Boolean>>()
 
-    private val addedTags: Set<String>
-        get() = _observableAddedTags.value.orEmpty()
-    private val _observableAddedTags = MutableLiveData<Set<String>>(mutableSetOf())
-
-    val observableRecommendedTagsModel: LiveData<List<PlayTagUiModel>>
-        get() = _observableRecommendedTagsModel
-
-    private val _observableRecommendedTags = MutableLiveData<Set<String>>()
-    private val _observableRecommendedTagsModel = MediatorLiveData<List<PlayTagUiModel>>().apply {
-        addSource(_observableAddedTags) { addedTags ->
-            value = _observableRecommendedTags.value.orEmpty().map { tag ->
-                PlayTagUiModel(
-                    tag = tag,
-                    isChosen = addedTags.contains(tag)
-                )
-            }
-        }
-        addSource(_observableRecommendedTags) { recommendedTags ->
-            value = recommendedTags.map { tag ->
-                PlayTagUiModel(
-                    tag = tag,
-                    isChosen = addedTags.contains(tag)
-                )
-            }
-        }
-    }
-
     init {
         fetchLiveTraffic()
         getTags()
@@ -115,6 +105,8 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
             PlayBroadcastSummaryAction.ClickCloseReportPage -> handleClickCloseReportPage()
             PlayBroadcastSummaryAction.ClickViewLeaderboard -> handleClickViewLeaderboard()
             PlayBroadcastSummaryAction.ClickPostVideo -> handleClickPostVideo()
+
+            is PlayBroadcastSummaryAction.ToggleTag -> handleToggleTag(action.tagUiModel)
             PlayBroadcastSummaryAction.ClickPostVideoNow -> handleClickPostVideoNow()
         }
     }
@@ -137,8 +129,32 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
         }
     }
 
-    private fun handleClickPostVideoNow() {
+    private fun handleToggleTag(tagUiModel: PlayTagUiModel) {
+        viewModelScope.launchCatchError(block = {
+            val newSelectedTag = _selectedTags.value.toMutableSet().apply {
+                with(tagUiModel) {
+                    if(_selectedTags.value.contains(tag)) remove(tag)
+                    else add(tag)
+                }
+            }
 
+            _selectedTags.value = newSelectedTag
+        }) { }
+    }
+
+    private fun handleClickPostVideoNow() {
+        _observableSaveVideo.value = NetworkResult.Loading
+        viewModelScope.launchCatchError(block = {
+            withContext(dispatcher.io) {
+                saveTag()
+                updateChannelStatus()
+            }
+            _observableSaveVideo.value = NetworkResult.Success(true)
+        }) {
+            _observableSaveVideo.value = NetworkResult.Fail(it) {
+                submitAction(PlayBroadcastSummaryAction.ClickPostVideoNow)
+            }
+        }
     }
 
     fun fetchLiveTraffic() {
@@ -178,58 +194,19 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
         }
     }
 
-    private fun getCurrentDate() = PlayDateTimeFormatter.getTodayDateTime(PlayDateTimeFormatter.dMMMMyyyy)
-
-    private fun isEligiblePostVideo(duration: String): Boolean {
-        return try {
-            val split = duration.split(":")
-            (split.size == 3 && split[1].toInt() > 0) || (split.size == 2 && split[0].toInt() > 0)
-        }
-        catch (e: Exception) {
-            false
-        }
-    }
-
     private fun getTags() {
         viewModelScope.launchCatchError(block = {
-            val recommendedTags = getRecommendedTags().toSet()
-            val addedNotRecommendedTags = withContext(dispatcher.computation) { addedTags - recommendedTags }
-            _observableRecommendedTags.value = addedNotRecommendedTags + recommendedTags
+            val response = getRecommendedChannelTagsUseCase.apply {
+                setChannelId(channelId)
+            }.executeOnBackground()
+
+            _tags.value = response.recommendedTags.tags.toSet()
         }) {}
-    }
-
-    private suspend fun getRecommendedTags(): List<String> = withContext(dispatcher.io) {
-        val recommendedTags = getRecommendedChannelTagsUseCase.apply {
-            setChannelId(channelId)
-        }.executeOnBackground()
-
-        return@withContext recommendedTags.recommendedTags.tags
-    }
-
-    fun toggleTag(tag: String) {
-        val oldAddedTags = addedTags
-        val newAddedTags = if (!oldAddedTags.contains(tag)) oldAddedTags + tag
-                            else oldAddedTags - tag
-
-        _observableAddedTags.value = newAddedTags
-    }
-
-    fun saveVideo() {
-        _observableSaveVideo.value = NetworkResult.Loading
-        viewModelScope.launchCatchError(block = {
-            withContext(dispatcher.io) {
-                saveTag()
-                updateChannelStatus()
-            }
-            _observableSaveVideo.value = NetworkResult.Success(true)
-        }) {
-            _observableSaveVideo.value = NetworkResult.Fail(it) { saveVideo() }
-        }
     }
 
     private suspend fun saveTag() {
         val isSuccess = setChannelTagsUseCase.apply {
-            setParams(channelId, addedTags.toSet())
+            setParams(channelId, _selectedTags.value)
         }.executeOnBackground().recommendedTags.success
 
         if(!isSuccess) throw DefaultErrorThrowable("${DefaultErrorThrowable.DEFAULT_MESSAGE}: Error Tag")
@@ -245,6 +222,19 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
                 )
             )
         }.executeOnBackground()
+    }
+
+    /** Helper */
+    private fun getCurrentDate() = PlayDateTimeFormatter.getTodayDateTime(PlayDateTimeFormatter.dMMMMyyyy)
+
+    private fun isEligiblePostVideo(duration: String): Boolean {
+        return try {
+            val split = duration.split(":")
+            (split.size == 3 && split[1].toInt() > 0) || (split.size == 2 && split[0].toInt() > 0)
+        }
+        catch (e: Exception) {
+            false
+        }
     }
 
     companion object {
