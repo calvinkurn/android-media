@@ -106,22 +106,12 @@ class MerchantVoucherViewHolder(
                     positionWidget = positionWidget,
                     headerName = channel.channelHeader.name,
                     userId = merchantVoucherComponentListener.getUserId(),
-                    couponCode = "",
                     couponType = element.name,
-                    creativeName = "",
                     productId = element.id,
-                    productName = "",
-                    productVariant = "",
                     productPrice = element.price,
-                    productBrand = "",
                     buType = channel.trackingAttributionModel.galaxyAttribution,
                     topAds = element.getTopadsString(),
-                    carousel = "",
                     recommendationType = element.recommendationType,
-                    recomPageName = "",
-                    catNameLevel1 = "",
-                    catNameLevel2 = "",
-                    catNameLevel3 = ""
                 )
             )
         }

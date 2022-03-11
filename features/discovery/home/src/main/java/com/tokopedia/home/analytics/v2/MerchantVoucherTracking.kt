@@ -25,6 +25,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
             const val ITEM_CATEGORY_PRODUCT_DETAIL_FORMAT = "%s / %s / %s"
             const val VIEW_COUPON = "view coupon"
             const val CREATIVE_NAME_VIEW_COUPON_FORMAT = "%s - %s - %s"
+            const val DEFAULT_VALUE = ""
         }
     }
 
@@ -72,9 +73,9 @@ object MerchantVoucherTracking : BaseTrackerConst() {
             CustomAction.ITEM_LIST_PRODUCT_DETAIL_FORMAT.format(
                 element.positionWidget,
                 element.topAds,
-                element.carousel,
+                CustomAction.DEFAULT_VALUE,
                 element.recommendationType,
-                element.recomPageName,
+                CustomAction.DEFAULT_VALUE,
                 element.buType,
                 element.headerName
             )
@@ -83,16 +84,16 @@ object MerchantVoucherTracking : BaseTrackerConst() {
         val item = Bundle()
         item.putString(Items.DIMENSION_83, Items.DIMENSION_83_DEFAULT)
         item.putString(Items.INDEX, (horizontalPosition + 1).toString())
-        item.putString(Items.ITEM_BRAND, element.productBrand)
+        item.putString(Items.ITEM_BRAND, CustomAction.DEFAULT_VALUE)
         val itemCategory = CustomAction.ITEM_CATEGORY_PRODUCT_DETAIL_FORMAT.format(
-            element.catNameLevel1,
-            element.catNameLevel2,
-            element.catNameLevel3
+            CustomAction.DEFAULT_VALUE,
+            CustomAction.DEFAULT_VALUE,
+            CustomAction.DEFAULT_VALUE
         )
         item.putString(Items.ITEM_CATEGORY, itemCategory)
         item.putString(Items.ITEM_ID, element.productId)
-        item.putString(Items.ITEM_NAME, element.productName)
-        item.putString(Items.ITEM_VARIANT, element.productVariant)
+        item.putString(Items.ITEM_NAME, CustomAction.DEFAULT_VALUE)
+        item.putString(Items.ITEM_VARIANT, CustomAction.DEFAULT_VALUE)
         item.putString(Items.PRICE, element.productPrice)
 
         bundle.putParcelableArrayList(Items.KEY, arrayListOf(item))
@@ -117,9 +118,9 @@ object MerchantVoucherTracking : BaseTrackerConst() {
     fun getMerchantVoucherView(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int) : Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         val creativeName = CustomAction.CREATIVE_NAME_VIEW_COUPON_FORMAT.format(
-            element.couponCode,
+            CustomAction.DEFAULT_VALUE,
             element.couponType,
-            element.creativeName
+            CustomAction.DEFAULT_VALUE
         )
         val creativeSlot = (horizontalPosition + 1).toString()
         val itemId = CustomAction.ITEM_ID_FORMAT.format(
