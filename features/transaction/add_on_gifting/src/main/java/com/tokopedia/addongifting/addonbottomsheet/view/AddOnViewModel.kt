@@ -152,7 +152,9 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
                                  addOnByProductResponse: GetAddOnByProductResponse,
                                  getAddOnSavedStateResponse: GetAddOnSavedStateResponse? = null) {
         hasLoadData = true
-        hasSavedState = true
+        if (AddOnUiModelMapper.hasSavedAddOn(addOnProductData, addOnByProductResponse, getAddOnSavedStateResponse)) {
+            hasSavedState = true
+        }
         launch {
             _uiEvent.emit(
                     UiEvent().apply {
@@ -169,7 +171,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     private fun handleOnErrorGetAddOnSavedState(addOnProductData: AddOnProductData,
                                                 addOnByProductResponse: GetAddOnByProductResponse) {
         hasLoadData = true
-        hasSavedState = true
+        hasSavedState = false
         launch {
             _uiEvent.emit(
                     UiEvent().apply {
@@ -308,7 +310,9 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
                         it.initialAddOnNoteTo != it.addOnNoteTo ||
                         it.initialAddOnNoteFrom != it.addOnNoteFrom
             } else {
-                it.initialSelectedState != it.isAddOnSelected
+                it.initialAddOnNote != it.addOnNote ||
+                        it.initialAddOnNoteTo != it.addOnNoteTo ||
+                        it.initialAddOnNoteFrom != it.addOnNoteFrom
             }
         }
     }
