@@ -80,10 +80,7 @@ class SummaryInfoViewComponent(
 
     fun setLiveDuration(data: LiveDurationUiModel) {
         tvDuration.text = data.duration
-    }
-
-    fun setDate() {
-        tvDate.text = PlayDateTimeFormatter.getTodayDateTime(PlayDateTimeFormatter.dMMMMyyyy)
+        tvDate.text = data.date
     }
 
     fun addTrafficMetric(metric: TrafficMetricUiModel, position: Int) {

@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.fragment
+package com.tokopedia.play.broadcaster.view.fragment.summary
 
 import android.content.res.Configuration
 import android.os.Bundle
@@ -7,14 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastSummaryBinding
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**

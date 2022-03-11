@@ -10,16 +10,22 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.SetChannelTagsUseCase
+import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.LiveDurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
+import com.tokopedia.play.broadcaster.ui.state.LiveReportUiState
+import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastSummaryUiState
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.types.PlayChannelStatusType
+import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
+import com.tokopedia.play_common.util.extension.setValue
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 /**
@@ -40,17 +46,45 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     private val channelId: String
         get() = channelConfigStore.getChannelId()
 
+    private val _trafficMetric = MutableStateFlow<NetworkResult<List<TrafficMetricUiModel>>>(NetworkResult.Loading)
+    private val _liveDuration = MutableStateFlow(LiveDurationUiModel.empty())
+
+    private val _liveReport = combine(
+        _trafficMetric, _liveDuration,
+    ) { trafficMetric, liveDuration ->
+        LiveReportUiState(
+            trafficMetric,
+            liveDuration,
+        )
+    }
+
+    val uiState: Flow<PlayBroadcastSummaryUiState> = combine(
+        _liveReport.distinctUntilChanged(),
+        _trafficMetric, /** TODO("will be removed later") */
+    ) { liveReport, _ ->
+        PlayBroadcastSummaryUiState(
+            liveReport = liveReport,
+        )
+    }.flowOn(dispatcher.computation)
+
+
+    private val _uiEvent = MutableSharedFlow<PlayBroadcastSummaryEvent>()
+    val uiEvent: Flow<PlayBroadcastSummaryEvent>
+        get() = _uiEvent
+
     val observableLiveSummary: LiveData<NetworkResult<List<TrafficMetricUiModel>>>
         get() = _observableLiveSummary
     private val _observableLiveSummary = MutableLiveData<NetworkResult<List<TrafficMetricUiModel>>>()
 
-    val observableSaveVideo: LiveData<NetworkResult<Boolean>>
-        get() = _observableSaveVideo
-    private val _observableSaveVideo = MutableLiveData<NetworkResult<Boolean>>()
-
     val observableReportDuration: LiveData<LiveDurationUiModel>
         get() = _observableReportDuration
     private val _observableReportDuration = MutableLiveData<LiveDurationUiModel>()
+
+    /** Divider */
+
+    val observableSaveVideo: LiveData<NetworkResult<Boolean>>
+        get() = _observableSaveVideo
+    private val _observableSaveVideo = MutableLiveData<NetworkResult<Boolean>>()
 
     private val addedTags: Set<String>
         get() = _observableAddedTags.value.orEmpty()
@@ -85,8 +119,10 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     }
 
     fun fetchLiveTraffic() {
-        _observableLiveSummary.value = NetworkResult.Loading
+//        _observableLiveSummary.value = NetworkResult.Loading
         viewModelScope.launchCatchError(block = {
+            _trafficMetric.emit(NetworkResult.Loading)
+
             val reportChannelSummary = withContext(dispatcher.io) {
                 delay(LIVE_STATISTICS_DELAY)
 
@@ -102,12 +138,25 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
 
                 response
             }
-            _observableReportDuration.value = playBroadcastMapper.mapLiveDuration(reportChannelSummary.duration, isEligiblePostVideo(reportChannelSummary.duration))
-            _observableLiveSummary.value = NetworkResult.Success(playBroadcastMapper.mapToLiveTrafficUiMetrics(reportChannelSummary.channel.metrics))
+
+            _liveDuration.value = playBroadcastMapper.mapLiveDuration(
+                                        getCurrentDate(),
+                                        reportChannelSummary.duration,
+                                        isEligiblePostVideo(reportChannelSummary.duration)
+                                    )
+            _trafficMetric.value = NetworkResult.Success(playBroadcastMapper.mapToLiveTrafficUiMetrics(reportChannelSummary.channel.metrics))
+
+//            _observableReportDuration.value = playBroadcastMapper.mapLiveDuration(reportChannelSummary.duration, isEligiblePostVideo(reportChannelSummary.duration))
+//            _observableLiveSummary.value = NetworkResult.Success(playBroadcastMapper.mapToLiveTrafficUiMetrics(reportChannelSummary.channel.metrics))
         }) {
-            _observableLiveSummary.value = NetworkResult.Fail(it) { fetchLiveTraffic() }
+            _liveDuration.value = LiveDurationUiModel.empty()
+            _trafficMetric.value = NetworkResult.Fail(it) { fetchLiveTraffic() }
+
+//            _observableLiveSummary.value = NetworkResult.Fail(it) { fetchLiveTraffic() }
         }
     }
+
+    private fun getCurrentDate() = PlayDateTimeFormatter.getTodayDateTime(PlayDateTimeFormatter.dMMMMyyyy)
 
     private fun isEligiblePostVideo(duration: String): Boolean {
         return try {

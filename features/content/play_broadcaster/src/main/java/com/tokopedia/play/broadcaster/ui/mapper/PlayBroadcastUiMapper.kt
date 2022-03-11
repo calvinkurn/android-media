@@ -270,7 +270,8 @@ class PlayBroadcastUiMapper(
             shortenUrl = channel.share.useShortURL
     )
 
-    override fun mapLiveDuration(duration: String, isEligiblePostVideo: Boolean): LiveDurationUiModel = LiveDurationUiModel(
+    override fun mapLiveDuration(date: String, duration: String, isEligiblePostVideo: Boolean): LiveDurationUiModel = LiveDurationUiModel(
+            date = date,
             duration = duration,
             isEligiblePostVideo = isEligiblePostVideo,
     )

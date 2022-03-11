@@ -1,25 +1,19 @@
-package com.tokopedia.play.broadcaster.view.fragment
+package com.tokopedia.play.broadcaster.view.fragment.summary
 
-import android.app.Activity
-import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.model.*
-import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
@@ -27,14 +21,11 @@ import com.tokopedia.play.broadcaster.view.partial.SummaryInfoViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.view.doOnApplyWindowInsets
-import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
-import com.tokopedia.play_common.view.updateMargins
-import com.tokopedia.play_common.view.updatePadding
+import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 
@@ -72,9 +63,10 @@ class PlayBroadcastReportFragment @Inject constructor(
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_play_broadcast_report, container, false)
 
+        observeUiState()
         observeChannelInfo()
-        observeLiveDuration()
-        observeLiveTrafficMetrics()
+//        observeLiveDuration()
+//        observeLiveTrafficMetrics()
         observeInteractiveLeaderboardInfo()
 
         return view
@@ -112,13 +104,40 @@ class PlayBroadcastReportFragment @Inject constructor(
         summaryInfoView.setChannelCover(channelInfo.coverUrl)
     }
 
-    private fun handleLiveDuration(model: LiveDurationUiModel) {
-        summaryInfoView.setLiveDuration(model)
-        summaryInfoView.setDate()
+//    private fun handleLiveDuration(model: LiveDurationUiModel) {
+//        summaryInfoView.setLiveDuration(model)
+//        summaryInfoView.setDate()
+//
+//        btnPostVideo.isEnabled = model.isEligiblePostVideo
+//
+//        if(!model.isEligiblePostVideo) {
+//            /** TODO("should be change later with ErrorFragment from RE") */
+//            view?.showToaster(
+//                message = getString(R.string.play_bro_cant_post_video_message),
+//                actionLabel = getString(R.string.play_ok),
+//            )
+//        }
+//    }
 
-        btnPostVideo.isEnabled = model.isEligiblePostVideo
+    /**
+     * Observe
+     */
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiState.withCache().collectLatest {
+                renderDuration(it.prevValue?.liveReport?.duration, it.value.liveReport.duration)
+                renderReport(it.prevValue?.liveReport?.trafficMetricsResult, it.value.liveReport.trafficMetricsResult)
+            }
+        }
+    }
 
-        if(!model.isEligiblePostVideo) {
+    private fun renderDuration(prev: LiveDurationUiModel?, value: LiveDurationUiModel) {
+        if(prev == value) return
+
+        summaryInfoView.setLiveDuration(value)
+        btnPostVideo.isEnabled = value.isEligiblePostVideo
+
+        if(!value.isEligiblePostVideo) {
             /** TODO("should be change later with ErrorFragment from RE") */
             view?.showToaster(
                 message = getString(R.string.play_bro_cant_post_video_message),
@@ -127,9 +146,30 @@ class PlayBroadcastReportFragment @Inject constructor(
         }
     }
 
-    /**
-     * Observe
-     */
+    private fun renderReport(prev: NetworkResult<List<TrafficMetricUiModel>>?, value: NetworkResult<List<TrafficMetricUiModel>>) {
+        if(prev == value) return
+        when(value) {
+            is NetworkResult.Loading -> {
+                loaderView.visible()
+                summaryInfoView.hideError()
+            }
+            is NetworkResult.Success -> {
+                loaderView.gone()
+                summaryInfoView.hideError()
+                summaryInfoView.addTrafficMetrics(value.data)
+            }
+            is NetworkResult.Fail -> {
+                loaderView.gone()
+                summaryInfoView.showError { value.onRetry() }
+                analytic.viewErrorOnReportPage(
+                    channelId = parentViewModel.channelId,
+                    titleChannel = parentViewModel.channelTitle,
+                    errorMessage = value.error.localizedMessage?:getString(R.string.play_broadcaster_default_error)
+                )
+            }
+        }
+    }
+
     private fun observeChannelInfo() {
         parentViewModel.observableChannelInfo.observe(viewLifecycleOwner) {
             when (it) {
@@ -139,34 +179,34 @@ class PlayBroadcastReportFragment @Inject constructor(
         }
     }
 
-    private fun observeLiveTrafficMetrics() {
-        viewModel.observableLiveSummary.observe(viewLifecycleOwner) {
-            when(it) {
-                is NetworkResult.Loading -> {
-                    loaderView.visible()
-                    summaryInfoView.hideError()
-                }
-                is NetworkResult.Success -> {
-                    loaderView.gone()
-                    summaryInfoView.hideError()
-                    summaryInfoView.addTrafficMetrics(it.data)
-                }
-                is NetworkResult.Fail -> {
-                    loaderView.gone()
-                    summaryInfoView.showError { it.onRetry() }
-                    analytic.viewErrorOnReportPage(
-                            channelId = parentViewModel.channelId,
-                            titleChannel = parentViewModel.channelTitle,
-                            errorMessage = it.error.localizedMessage?:getString(R.string.play_broadcaster_default_error)
-                    )
-                }
-            }
-        }
-    }
+//    private fun observeLiveTrafficMetrics() {
+//        viewModel.observableLiveSummary.observe(viewLifecycleOwner) {
+//            when(it) {
+//                is NetworkResult.Loading -> {
+//                    loaderView.visible()
+//                    summaryInfoView.hideError()
+//                }
+//                is NetworkResult.Success -> {
+//                    loaderView.gone()
+//                    summaryInfoView.hideError()
+//                    summaryInfoView.addTrafficMetrics(it.data)
+//                }
+//                is NetworkResult.Fail -> {
+//                    loaderView.gone()
+//                    summaryInfoView.showError { it.onRetry() }
+//                    analytic.viewErrorOnReportPage(
+//                            channelId = parentViewModel.channelId,
+//                            titleChannel = parentViewModel.channelTitle,
+//                            errorMessage = it.error.localizedMessage?:getString(R.string.play_broadcaster_default_error)
+//                    )
+//                }
+//            }
+//        }
+//    }
 
-    private fun observeLiveDuration() {
-        viewModel.observableReportDuration.observe(viewLifecycleOwner, Observer(this@PlayBroadcastReportFragment::handleLiveDuration))
-    }
+//    private fun observeLiveDuration() {
+//        viewModel.observableReportDuration.observe(viewLifecycleOwner, Observer(this@PlayBroadcastReportFragment::handleLiveDuration))
+//    }
 
     private fun observeInteractiveLeaderboardInfo() {
         parentViewModel.observableLeaderboardInfo.observe(viewLifecycleOwner) {
