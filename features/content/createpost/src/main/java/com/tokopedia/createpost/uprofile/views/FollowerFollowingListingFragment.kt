@@ -225,12 +225,7 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
 
     override fun onClick(source: View) {
         when (source.id) {
-            R.id.gr_follower -> {
-                Toast.makeText(context, "Follower", Toast.LENGTH_SHORT).show()
-            }
-            R.id.gr_following -> {
-                Toast.makeText(context, "following", Toast.LENGTH_SHORT).show()
-            }
+
         }
     }
 

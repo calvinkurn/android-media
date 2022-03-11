@@ -1,26 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/swipe_refresh_layout"
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background"
+    android:measureAllChildren="false">
 
-    <ViewFlipper
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/Unify_Background"
-        android:measureAllChildren="false">
+    <include layout="@layout/up_layout_user_profile_header" />
 
-        <include layout="@layout/up_layout_user_profile_header" />
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/global_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/dp_85" />
 
-        <com.tokopedia.globalerror.GlobalError
-            android:id="@+id/global_error"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/dp_85" />
+    <include layout="@layout/up_shimmer_user_profile_header" />
 
-        <include layout="@layout/up_shimmer_user_profile_header" />
-
-    </ViewFlipper>
-</com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+</ViewFlipper>

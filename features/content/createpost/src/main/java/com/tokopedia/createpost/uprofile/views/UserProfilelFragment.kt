@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -149,6 +150,15 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         landedUserName = requireArguments().getString(EXTRA_USERNAME)
         refreshLandingPageData(true)
         container?.displayedChild = 2
+
+        view.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.setOnChildScrollUpCallback(object : SwipeRefreshLayout.OnChildScrollUpCallback {
+            override fun canChildScrollUp(parent: SwipeRefreshLayout, child: View?): Boolean {
+                if (recyclerviewPost != null) {
+                    return recyclerviewPost!!.canScrollVertically(-1)
+                }
+                return false
+            }
+        })
     }
 
     private fun refreshLandingPageData(isRefreshPost: Boolean = false) {
