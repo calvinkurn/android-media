@@ -203,9 +203,13 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
 
     @Override
     public void updateTitle(String title) {
-        if (getIntent().getExtras() != null && !getIntent().getExtras().getString(EXTRA_UPDATED_TITLE, "").isEmpty()){
-            super.updateTitle(getIntent().getExtras().getString(EXTRA_UPDATED_TITLE, ""));
-        } else super.updateTitle(title);
+        if (getIntent() == null) super.updateTitle(title);
+        else {
+            String modifiedTitle = getIntent().getStringExtra(EXTRA_UPDATED_TITLE);
+            if (!modifiedTitle.isEmpty()) {
+                super.updateTitle(modifiedTitle);
+            } else super.updateTitle(title);
+        }
     }
 
     private Drawable iconQr(boolean isTorchOn) {

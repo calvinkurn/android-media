@@ -59,6 +59,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWa
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicScrollListener
 import com.tokopedia.digital_product_detail.presentation.utils.toggle
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
+import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -94,6 +95,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 
 /**
  * @author by firmanda on 04/01/21
@@ -321,8 +323,6 @@ class DigitalPDPDataPlanFragment :
         viewModel.autoCompleteData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
-                is RechargeNetworkResult.Fail -> {}
-                is RechargeNetworkResult.Loading -> {}
             }
         })
 
@@ -330,7 +330,6 @@ class DigitalPDPDataPlanFragment :
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetPrefixOperator()
                 is RechargeNetworkResult.Fail -> onFailedGetPrefixOperator(it.error)
-                is RechargeNetworkResult.Loading -> {}
             }
         })
 
@@ -547,7 +546,7 @@ class DigitalPDPDataPlanFragment :
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
 
-                val extendedPadding = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl8)
+                val extendedPadding = getDimens(unifyDimens.layout_lvl8)
                 binding?.rechargePdpPaketDataSvContainer?.setPadding(0, extendedPadding, 0, 0)
             }
         }

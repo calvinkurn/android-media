@@ -4,7 +4,6 @@ import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -16,11 +15,11 @@ import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.favorite.util.FavoriteNumberDataMapper
-import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.R
@@ -36,7 +35,7 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ChipsUnify
 import org.jetbrains.annotations.NotNull
 import kotlin.math.abs
-
+import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 /**
  * @author by firman on 10/02/22
  * */
@@ -191,8 +190,8 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
             context, IconUnify.VIEW_LIST,
             ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
         chevronRight.layoutParams = ViewGroup.LayoutParams(
-            resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3),
-            resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+            getDimens(unifyDimens.layout_lvl3),
+            getDimens(unifyDimens.layout_lvl3)
         )
         binding.clientNumberWidgetBase.clientNumberWidgetSortFilter.chipItems?.
         last()?.refChipUnify?.addCustomView(chevronRight)

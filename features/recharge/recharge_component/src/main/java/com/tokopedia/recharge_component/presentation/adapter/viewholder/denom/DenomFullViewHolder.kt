@@ -5,12 +5,11 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.databinding.ViewRechargeDenomFullBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomFullListener
@@ -21,6 +20,7 @@ import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 
 class DenomFullViewHolder(
     private val denomFullListener: RechargeDenomFullListener,
@@ -72,14 +72,11 @@ class DenomFullViewHolder(
                     if(!denomFull.quotaInfo.isNullOrEmpty()){
 
                         setMargin(
-                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
-                                .toInt(),
-                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1)
-                                .toInt(),
-                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                                .toInt(),
-                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                                .toInt())
+                             getDimens(unifyDimens.spacing_lvl3),
+                             getDimens(unifyDimens.spacing_lvl1),
+                             getDimens(unifyDimens.unify_space_0),
+                             getDimens(unifyDimens.unify_space_0)
+                                )
 
                         labelParams.topToBottom = ConstraintLayout.LayoutParams.UNSET
                         labelParams.leftToLeft = ConstraintLayout.LayoutParams.UNSET
@@ -116,14 +113,10 @@ class DenomFullViewHolder(
                         }
 
                         setMargin(
-                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                                .toInt(),
-                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1)
-                                .toInt(),
-                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                                .toInt(),
-                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                                .toInt())
+                             getDimens(unifyDimens.unify_space_0),
+                             getDimens(unifyDimens.spacing_lvl1),
+                             getDimens(unifyDimens.unify_space_0),
+                             getDimens(unifyDimens.unify_space_0))
                     }
 
                     layoutParams = labelParams
@@ -159,14 +152,10 @@ class DenomFullViewHolder(
                     layoutParams = labelParams
 
                     setMargin(
-                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                            .toInt(),
-                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
-                            .toInt(),
-                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                            .toInt(),
-                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                            .toInt())
+                         getDimens(unifyDimens.unify_space_0),
+                         getDimens(unifyDimens.spacing_lvl2),
+                         getDimens(unifyDimens.unify_space_0),
+                         getDimens(unifyDimens.unify_space_0))
 
                 } else if (!denomFull.discountLabel.isNullOrEmpty()){
 
@@ -180,14 +169,10 @@ class DenomFullViewHolder(
                     layoutParams = labelParams
 
                     setMargin(
-                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
-                            .toInt(),
-                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                            .toInt(),
-                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                            .toInt(),
-                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                            .toInt())
+                         getDimens(unifyDimens.spacing_lvl2),
+                         getDimens(unifyDimens.unify_space_0),
+                         getDimens(unifyDimens.unify_space_0),
+                         getDimens(unifyDimens.unify_space_0))
 
                     setStatusNormal(denomFull.discountLabel)
 
@@ -218,10 +203,8 @@ class DenomFullViewHolder(
                             context,
                             com.tokopedia.resources.common.R.drawable.ic_fire_filled_product_card
                         ),
-                        width = resources.getDimension(R.dimen.widget_denom_flash_sale_image_width)
-                            .toInt(),
-                        height = resources.getDimension(R.dimen.widget_denom_flash_sale_image_height)
-                            .toInt()
+                        width = getDimens(R.dimen.widget_denom_flash_sale_image_width),
+                        height = getDimens(R.dimen.widget_denom_flash_sale_image_height)
                     )
                     progressBarColorType = ProgressBarUnify.COLOR_RED
                     setValue(denomFull.flashSalePercentage, false)
@@ -241,13 +224,13 @@ class DenomFullViewHolder(
             cardDenomFull.run {
                 layoutParams.width = if (denomType == DenomWidgetEnum.FULL_TYPE || isOnlyOneSize){
                     ViewGroup.LayoutParams.MATCH_PARENT
-                } else resources.getDimension(R.dimen.widget_denom_full_width).toInt()
+                } else getDimens(R.dimen.widget_denom_full_width)
 
                 layoutParams.height = if (denomType == DenomWidgetEnum.MCCM_FULL_TYPE){
                     if (denomFull.flashSalePercentage.isMoreThanZero()) {
-                        resources.getDimension(R.dimen.widget_denom_full_height_countdown).toInt()
+                        getDimens(R.dimen.widget_denom_full_height_countdown)
                     } else {
-                        resources.getDimension(R.dimen.widget_denom_full_height).toInt()
+                        getDimens(R.dimen.widget_denom_full_height)
                     }
                 } else ViewGroup.LayoutParams.WRAP_CONTENT
 
@@ -257,8 +240,7 @@ class DenomFullViewHolder(
                     else CardUnify.TYPE_BORDER
 
                 if (denomType == DenomWidgetEnum.MCCM_FULL_TYPE && isOnlyOneSize){
-                    setMargin(0, 0, resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
-                            .toInt(), 0)
+                    setMargin(0, 0,  getDimens(unifyDimens.spacing_lvl3), 0)
                 }
             }
 

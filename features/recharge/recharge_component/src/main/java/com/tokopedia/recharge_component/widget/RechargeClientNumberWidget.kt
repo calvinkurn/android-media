@@ -20,6 +20,7 @@ import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapte
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -36,6 +37,7 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ChipsUnify
 import org.jetbrains.annotations.NotNull
 import kotlin.math.abs
+import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 
 /**
  * @author by misael on 05/01/22
@@ -184,8 +186,8 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
             context, IconUnify.VIEW_LIST,
             ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
         chevronRight.layoutParams = ViewGroup.LayoutParams(
-            resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3),
-            resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+            getDimens(unifyDimens.layout_lvl3),
+            getDimens(unifyDimens.layout_lvl3)
         )
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetSortFilter.chipItems?.
             last()?.refChipUnify?.addCustomView(chevronRight)
