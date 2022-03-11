@@ -249,7 +249,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
     }
 
 	private fun onNameClicked(data: ProfileInfoUiModel) {
-		if (!data.profileRoleData.isAllowedChangeName) {
+		if (data.profileRoleData.isAllowedChangeName) {
 			tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_CLICK + ProfileInfoTracker.LABEL_ENTRYPOINT_NAME + ProfileInfoTracker.LABEL_PAGE)
 			val intent = RouteManager.getIntent(
 				context,
