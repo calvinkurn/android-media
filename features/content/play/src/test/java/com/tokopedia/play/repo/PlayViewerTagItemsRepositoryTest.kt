@@ -4,15 +4,11 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.play.data.Config
-import com.tokopedia.play.data.ProductSection
-import com.tokopedia.play.data.Section
 import com.tokopedia.play.data.repository.PlayViewerTagItemRepositoryImpl
 import com.tokopedia.play.domain.GetProductTagItemSectionUseCase
 import com.tokopedia.play.domain.repository.PlayViewerTagItemRepository
+import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.util.assertEqualTo
-import com.tokopedia.play.util.assertFalse
-import com.tokopedia.play.util.assertTrue
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -47,6 +43,8 @@ class PlayViewerTagItemsRepositoryTest {
     private val mockGetProductVariantUseCase: GetProductVariantUseCase = mockk(relaxed = true)
     private val mockAddToCartUseCase: AddToCartUseCase = mockk(relaxed = true)
 
+    private val modelBuilder = ModelBuilder()
+
     @Before
     fun setUp(){
         tagItemRepo = PlayViewerTagItemRepositoryImpl(
@@ -62,14 +60,7 @@ class PlayViewerTagItemsRepositoryTest {
     @Test
     fun  `when get section success return success with complete config`(){
         runBlockingTest {
-            val mockResponse = ProductSection.Response(
-                playGetTagsItem = ProductSection(
-                    sectionList = listOf(
-                        Section(sectionType = "upcoming", serverTime = "2022-03-11T10:41:23+07:00", timerStartTime = "2022-03-11T10:41:23+07:00",
-                            sectionTitle = "upco campaign", background = Section.Background(imageUrl = "httpp"))),
-                    config = Config(peekProductCount = 15, bottomSheetTitle = "Promo")
-                )
-            )
+            val mockResponse = modelBuilder.generateResponseSectionGql(gradient = null)
 
             coEvery { mockGetProductTagUseCase.executeOnBackground() } returns mockResponse
 
@@ -85,14 +76,7 @@ class PlayViewerTagItemsRepositoryTest {
     @Test
     fun  `when get section success return success with bg config null`(){
         runBlockingTest {
-            val mockResponse = ProductSection.Response(
-                playGetTagsItem = ProductSection(
-                    sectionList = listOf(
-                        Section(sectionType = "upcoming", serverTime = "2022-03-11T10:41:23+07:00", timerStartTime = "2022-03-11T10:41:23+07:00",
-                            sectionTitle = "upco campaign", background = Section.Background(gradientList = null))),
-                    config = Config(peekProductCount = 15, bottomSheetTitle = "Promo")
-                )
-            )
+            val mockResponse = modelBuilder.generateResponseSectionGql(gradient = listOf("3fffff", "#45a5aa"))
 
             coEvery { mockGetProductTagUseCase.executeOnBackground() } returns mockResponse
 
