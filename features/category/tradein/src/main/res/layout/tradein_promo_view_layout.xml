@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintBottom_toTopOf="@id/promo_detail"
         app:layout_constraintLeft_toRightOf="@id/iv_promo"
         app:layout_constraintTop_toTopOf="parent"

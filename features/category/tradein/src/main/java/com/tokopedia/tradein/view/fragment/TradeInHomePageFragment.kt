@@ -192,6 +192,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                 if(it.getTradeInDetail.isFraud){
                     setErrorTokopedia(Throwable(it.getTradeInDetail.errMessage), true, it.getTradeInDetail.errTitle)
                 } else {
+                    onTradeInDetailSuccess(it)
                     showToast(it.getTradeInDetail.errMessage, getString(R.string.tradein_ok), {
                         activity?.finish()
                     })
