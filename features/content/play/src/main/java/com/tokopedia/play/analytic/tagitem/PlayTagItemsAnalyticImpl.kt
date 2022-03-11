@@ -34,13 +34,17 @@ import dagger.assisted.AssistedInject
  * Created by kenny.hadisaputra on 10/03/22
  */
 class PlayTagItemsAnalyticImpl @AssistedInject constructor(
+    @Assisted private val trackingQueue: TrackingQueue,
     @Assisted private val channelInfo: PlayChannelInfoUiModel,
     private val userSession: UserSessionInterface,
 ) : PlayTagItemsAnalytic {
     
     @AssistedFactory
     interface Factory : PlayTagItemsAnalytic.Factory {
-        override fun create(channelInfo: PlayChannelInfoUiModel): PlayTagItemsAnalyticImpl
+        override fun create(
+            trackingQueue: TrackingQueue,
+            channelInfo: PlayChannelInfoUiModel,
+        ): PlayTagItemsAnalyticImpl
     }
     
     private val channelId: String
@@ -59,7 +63,6 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
         get() = if (userSession.isLoggedIn) userSession.userId else "0"
 
     override fun impressBottomSheetProducts(
-        trackingQueue: TrackingQueue,
         products: List<Pair<PlayProductUiModel.Product, Int>>,
         sectionInfo: ProductSectionUiModel.Section
     ) {
@@ -91,7 +94,6 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
     }
 
     override fun impressFeaturedProducts(
-        trackingQueue: TrackingQueue,
         products: List<Pair<PlayProductUiModel.Product, Int>>
     ) {
         if (products.isEmpty()) return
@@ -123,7 +125,6 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
     }
 
     override fun clickProduct(
-        trackingQueue: TrackingQueue,
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section,
         position: Int
@@ -165,7 +166,6 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
     }
 
     override fun clickFeaturedProduct(
-        trackingQueue: TrackingQueue,
         featuredProduct: PlayProductUiModel.Product,
         position: Int
     ) {
@@ -216,7 +216,6 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
     }
 
     override fun clickProductAction(
-        trackingQueue: TrackingQueue,
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section,
         cartId: String,

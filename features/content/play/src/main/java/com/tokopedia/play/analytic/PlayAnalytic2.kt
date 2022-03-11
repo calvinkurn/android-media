@@ -8,6 +8,7 @@ import com.tokopedia.play.analytic.socket.PlaySocketAnalytic
 import com.tokopedia.play.analytic.tagitem.PlayTagItemsAnalytic
 import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalytic
 import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -16,6 +17,7 @@ import dagger.assisted.AssistedInject
  * Created by kenny.hadisaputra on 11/03/22
  */
 class PlayAnalytic2 @AssistedInject constructor(
+    @Assisted trackingQueue: TrackingQueue,
     @Assisted channelInfo: PlayChannelInfoUiModel,
     partnerAnalytic: PlayPartnerAnalytic,
     interactiveAnalytic: PlayInteractiveAnalytic,
@@ -30,10 +32,13 @@ class PlayAnalytic2 @AssistedInject constructor(
     PlaySocketAnalytic by socketAnalytic,
     PlayUpcomingAnalytic by upcomingAnalytic,
     PlayShareExperienceAnalytic by shareExperienceAnalytic,
-    PlayTagItemsAnalytic by tagItemsAnalytic.create(channelInfo) {
+    PlayTagItemsAnalytic by tagItemsAnalytic.create(trackingQueue, channelInfo) {
 
     @AssistedFactory
     interface Factory {
-        fun create(channelInfo: PlayChannelInfoUiModel): PlayAnalytic2
+        fun create(
+            trackingQueue: TrackingQueue,
+            channelInfo: PlayChannelInfoUiModel,
+        ): PlayAnalytic2
     }
 }

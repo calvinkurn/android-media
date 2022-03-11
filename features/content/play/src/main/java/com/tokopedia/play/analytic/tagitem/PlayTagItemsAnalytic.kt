@@ -14,25 +14,21 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 interface PlayTagItemsAnalytic {
 
     fun impressBottomSheetProducts(
-        trackingQueue: TrackingQueue,
         products: List<Pair<PlayProductUiModel.Product, Int>>,
         sectionInfo: ProductSectionUiModel.Section,
     )
 
     fun impressFeaturedProducts(
-        trackingQueue: TrackingQueue,
         products: List<Pair<PlayProductUiModel.Product, Int>>,
     )
 
     fun clickProduct(
-        trackingQueue: TrackingQueue,
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section,
         position: Int,
     )
 
     fun clickFeaturedProduct(
-        trackingQueue: TrackingQueue,
         featuredProduct: PlayProductUiModel.Product,
         position: Int,
     )
@@ -45,7 +41,6 @@ interface PlayTagItemsAnalytic {
     )
 
     fun clickProductAction(
-        trackingQueue: TrackingQueue,
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section,
         cartId: String,
@@ -58,6 +53,7 @@ interface PlayTagItemsAnalytic {
 
     interface Factory {
         fun create(
+            trackingQueue: TrackingQueue,
             channelInfo: PlayChannelInfoUiModel
         ): PlayTagItemsAnalytic
     }
