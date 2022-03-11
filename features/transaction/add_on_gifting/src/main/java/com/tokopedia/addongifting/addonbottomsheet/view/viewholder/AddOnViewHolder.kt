@@ -162,11 +162,7 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
 
             if (element.isCustomNote) {
                 textFieldAddOnNote.editText.isEnabled = true
-                if (textFieldAddOnNote.editText.text.isNotEmpty()) {
-                    textFieldAddOnNote.setMessage("")
-                } else {
-                    textFieldAddOnNote.setMessage(itemView.context.getString(R.string.add_on_label_message_custom_note))
-                }
+                textFieldAddOnNote.setMessage(itemView.context.getString(R.string.add_on_label_message_custom_note))
             } else {
                 textFieldAddOnNote.editText.isEnabled = false
                 textFieldAddOnNote.setMessage(itemView.context.getString(R.string.add_on_label_message_pre_defined_note))
