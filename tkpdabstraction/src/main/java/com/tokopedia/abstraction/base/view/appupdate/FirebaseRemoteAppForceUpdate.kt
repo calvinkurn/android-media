@@ -1,10 +1,10 @@
 package com.tokopedia.abstraction.base.view.appupdate
 
 import android.content.Context
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate.OnUpdateListener
 import com.tokopedia.abstraction.base.view.appupdate.model.DataUpdateApp
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate
+import com.tokopedia.cachemanager.gson.GsonSingleton
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -25,8 +25,7 @@ class FirebaseRemoteAppForceUpdate(context: Context) : ApplicationUpdate {
             remoteConfig.getString(ANDROID_CUSTOMER_APP_UPDATE)
         }
         if (dataAppUpdate.isNotEmpty()) {
-            val gson = Gson()
-            val dataUpdateApp = gson.fromJson(dataAppUpdate, DataUpdateApp::class.java)
+            val dataUpdateApp = GsonSingleton.instance.fromJson(dataAppUpdate, DataUpdateApp::class.java)
             if (dataUpdateApp != null) {
                 val detailUpdate = generateDetailUpdate(dataUpdateApp)
                 if (detailUpdate.isNeedUpdate) {
