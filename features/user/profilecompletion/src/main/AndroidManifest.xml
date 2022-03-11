@@ -282,7 +282,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.tokopedia.profilecompletion.changebiousername.view.ChangeBioUsernameActivity"
-            android:label="Ubah Info Profil"
+            android:label="@string/change_profile_info_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden"
