@@ -1,6 +1,6 @@
 package com.tokopedia.media.picker.ui.uimodel
 
-import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.uimodel.MediaUiModel
 
 fun List<MediaUiModel>?.hasVideoBy(count: Int): Boolean {
     return this?.filter { it.isVideo() }?.size?: 0 >= count

@@ -6,12 +6,11 @@ import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
-import com.tokopedia.media.common.basecomponent.uiComponent
-import com.tokopedia.media.common.component.NavToolbarComponent
-import com.tokopedia.media.common.component.ToolbarTheme
-import com.tokopedia.media.common.intent.PreviewIntent
-import com.tokopedia.media.common.types.PickerSelectionType
-import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.basecomponent.uiComponent
+import com.tokopedia.picker.common.component.NavToolbarComponent
+import com.tokopedia.picker.common.intent.PreviewIntent
+import com.tokopedia.picker.common.types.PickerSelectionType
+import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.databinding.ActivityPreviewBinding
 import com.tokopedia.media.picker.ui.PickerUiConfig
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerActionType
@@ -124,7 +123,7 @@ class PickerPreviewActivity : BaseActivity()
     private fun setupToolbar() = with(navToolbar) {
         setTitle(getString(R.string.picker_toolbar_preview_title))
         showContinueButtonAs(true)
-        onToolbarThemeChanged(ToolbarTheme.Solid)
+        onToolbarThemeChanged(com.tokopedia.picker.common.component.ToolbarTheme.Solid)
     }
 
     private fun setupSelectionDrawerOrActionButton() {

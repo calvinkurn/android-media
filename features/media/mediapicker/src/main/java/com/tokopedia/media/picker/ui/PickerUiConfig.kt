@@ -2,10 +2,10 @@ package com.tokopedia.media.picker.ui
 
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst.MediaPicker
-import com.tokopedia.media.common.PickerParam
-import com.tokopedia.media.common.types.PickerModeType
-import com.tokopedia.media.common.types.PickerPageType
-import com.tokopedia.media.common.types.PickerSelectionType
+import com.tokopedia.picker.common.PickerParam
+import com.tokopedia.picker.common.types.PickerModeType
+import com.tokopedia.picker.common.types.PickerPageType
+import com.tokopedia.picker.common.types.PickerSelectionType
 
 object PickerUiConfig {
 

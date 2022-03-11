@@ -4,8 +4,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.media.R
-import com.tokopedia.media.common.basecomponent.UiComponent
-import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.basecomponent.UiComponent
+import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.preview.ui.activity.pagers.adapter.PreviewPagerAdapter
 import com.tokopedia.media.preview.ui.uimodel.PreviewUiModel
 

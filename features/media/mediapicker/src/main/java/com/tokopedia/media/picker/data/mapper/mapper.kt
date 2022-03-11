@@ -2,8 +2,8 @@ package com.tokopedia.media.picker.data.mapper
 
 import com.tokopedia.media.picker.data.entity.Album
 import com.tokopedia.media.picker.data.entity.Media
-import com.tokopedia.media.common.uimodel.AlbumUiModel
-import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.uimodel.AlbumUiModel
+import com.tokopedia.picker.common.uimodel.MediaUiModel
 
 fun Media.toUiModel() = MediaUiModel(
     id = id,

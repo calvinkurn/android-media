@@ -9,10 +9,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.media.R
-import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.databinding.WidgetSelectionBottomNavBinding
 import com.tokopedia.media.picker.ui.widget.drawerselector.adapter.DrawerSelectionAdapter
-import com.tokopedia.media.picker.utils.Unify_N0
+import com.tokopedia.picker.common.utils.Unify_N0
 
 class DrawerSelectionWidget : FrameLayout {
 

@@ -5,11 +5,11 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.media.common.PickerParam
-import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.PickerParam
+import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.picker.data.mapper.toUiModel
 import com.tokopedia.media.picker.data.repository.MediaRepository
-import com.tokopedia.media.common.observer.EventFlowFactory
+import com.tokopedia.picker.common.observer.EventFlowFactory
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

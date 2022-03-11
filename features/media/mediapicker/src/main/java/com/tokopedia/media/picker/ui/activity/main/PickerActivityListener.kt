@@ -1,6 +1,6 @@
 package com.tokopedia.media.picker.ui.activity.main
 
-import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.uimodel.MediaUiModel
 
 interface PickerActivityListener {
     fun tabVisibility(isShown: Boolean)

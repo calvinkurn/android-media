@@ -1,7 +1,7 @@
 package com.tokopedia.media.picker.ui.observer
 
-import com.tokopedia.media.common.observer.EventState
-import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.observer.EventState
+import com.tokopedia.picker.common.uimodel.MediaUiModel
 
 sealed class EventPickerState : EventState {
     class CameraCaptured(

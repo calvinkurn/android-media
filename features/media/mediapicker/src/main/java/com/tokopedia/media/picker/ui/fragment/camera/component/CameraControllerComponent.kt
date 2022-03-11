@@ -9,21 +9,21 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.media.common.basecomponent.UiComponent
+import com.tokopedia.picker.common.basecomponent.UiComponent
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
-import com.tokopedia.media.common.PickerParam
+import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.media.picker.ui.fragment.camera.recyclers.adapter.CameraSliderAdapter
 import com.tokopedia.media.picker.ui.fragment.camera.recyclers.managers.SliderLayoutManager
-import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.picker.ui.uimodel.CameraSelectionUiModel
 import com.tokopedia.media.picker.ui.widget.thumbnail.MediaThumbnailWidget
 import com.tokopedia.media.picker.utils.anim.CameraButton.animStartRecording
 import com.tokopedia.media.picker.utils.anim.CameraButton.animStopRecording
-import com.tokopedia.media.common.utils.toVideoDurationFormat
+import com.tokopedia.picker.common.utils.toVideoDurationFormat
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.Typography
 

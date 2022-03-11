@@ -7,7 +7,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.media.R
-import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.databinding.ViewItemSelectionThumbnailBinding
 import com.tokopedia.utils.view.binding.viewBinding
 import java.io.File

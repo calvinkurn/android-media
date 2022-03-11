@@ -8,11 +8,11 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.databinding.WidgetMediaThumbnailBinding
-import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.picker.ui.widget.layout.SquareFrameLayout
-import com.tokopedia.media.common.utils.extractVideoDuration
+import com.tokopedia.picker.common.utils.extractVideoDuration
 import com.tokopedia.media.picker.utils.pickerLoadImage
-import com.tokopedia.media.common.utils.toVideoDurationFormat
+import com.tokopedia.picker.common.utils.toVideoDurationFormat
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_3
 import com.tokopedia.unifyprinciples.Typography.Companion.SMALL
 

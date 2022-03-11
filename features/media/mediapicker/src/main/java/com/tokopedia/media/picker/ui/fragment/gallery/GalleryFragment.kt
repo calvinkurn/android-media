@@ -14,9 +14,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
-import com.tokopedia.media.common.PickerCacheManager
-import com.tokopedia.media.common.types.PickerSelectionType
-import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.PickerCacheManager
+import com.tokopedia.picker.common.types.PickerSelectionType
+import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.databinding.FragmentGalleryBinding
 import com.tokopedia.media.picker.data.repository.AlbumRepositoryImpl.Companion.RECENT_ALBUM_ID
 import com.tokopedia.media.picker.di.DaggerPickerComponent

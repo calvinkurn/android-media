@@ -1,7 +1,7 @@
 package com.tokopedia.media.picker.ui.gallery
 
 import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.media.common.PickerParam
+import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.media.picker.common.di.TestPickerInterceptor
 import com.tokopedia.media.picker.data.entity.Media
 import com.tokopedia.media.picker.ui.core.GalleryPageTest

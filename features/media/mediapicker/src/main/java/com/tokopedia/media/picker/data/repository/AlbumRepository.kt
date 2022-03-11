@@ -4,7 +4,7 @@ import android.content.Context
 import android.net.Uri
 import com.tokopedia.media.picker.data.entity.Album
 import com.tokopedia.media.picker.data.loader.LoaderDataSource
-import com.tokopedia.media.common.PickerParam
+import com.tokopedia.picker.common.PickerParam
 import java.io.File
 
 interface AlbumRepository {

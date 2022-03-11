@@ -1,6 +1,6 @@
 package com.tokopedia.media.picker.ui.widget.drawerselector
 
-import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.uimodel.MediaUiModel
 
 sealed class DrawerActionType {
     class Add(

@@ -2,7 +2,7 @@ package com.tokopedia.media.picker.ui.uimodel
 
 import android.Manifest.permission.*
 import com.tokopedia.media.R
-import com.tokopedia.media.common.types.PickerPageType
+import com.tokopedia.picker.common.types.PickerPageType
 import com.tokopedia.media.picker.ui.PickerUiConfig
 
 data class PermissionUiModel(

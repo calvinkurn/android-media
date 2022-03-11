@@ -8,11 +8,11 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
-import com.tokopedia.media.common.PickerCacheManager
-import com.tokopedia.media.common.basecomponent.uiComponent
-import com.tokopedia.media.common.component.NavToolbarComponent
-import com.tokopedia.media.common.component.ToolbarTheme
-import com.tokopedia.media.common.uimodel.AlbumUiModel
+import com.tokopedia.picker.common.PickerCacheManager
+import com.tokopedia.picker.common.basecomponent.uiComponent
+import com.tokopedia.picker.common.component.NavToolbarComponent
+import com.tokopedia.picker.common.component.ToolbarTheme
+import com.tokopedia.picker.common.uimodel.AlbumUiModel
 import com.tokopedia.media.databinding.ActivityAlbumBinding
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.di.module.PickerModule

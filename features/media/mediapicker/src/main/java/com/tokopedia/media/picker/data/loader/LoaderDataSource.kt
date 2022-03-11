@@ -10,8 +10,8 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.MediaStore.Files.FileColumns.*
 import com.tokopedia.media.picker.data.entity.Media
-import com.tokopedia.media.common.PickerParam
-import com.tokopedia.media.common.utils.isGifFormat
+import com.tokopedia.picker.common.PickerParam
+import com.tokopedia.picker.common.utils.isGifFormat
 import java.io.File
 
 open class LoaderDataSource(private val context: Context) {

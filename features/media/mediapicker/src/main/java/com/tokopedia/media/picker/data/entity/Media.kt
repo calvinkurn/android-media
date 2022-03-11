@@ -3,7 +3,7 @@ package com.tokopedia.media.picker.data.entity
 import android.content.ContentUris
 import android.net.Uri
 import android.provider.MediaStore
-import com.tokopedia.media.common.utils.isVideoFormat
+import com.tokopedia.picker.common.utils.isVideoFormat
 import java.io.File
 
 data class Media(
