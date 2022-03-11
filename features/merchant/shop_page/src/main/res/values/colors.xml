@@ -5,4 +5,5 @@
     <color name="fs_toko_bg_start_dms_gradient_color">#008849</color>
     <color name="clr_dms_EF144A">#EF144A</color>
     <color name="clr_dms_AD31353B">#AD31353B</color>
+    <color name="clr_transparent">#00000000</color>
 </resources>
