@@ -21,6 +21,7 @@ class DenomGridAdapter: RecyclerView.Adapter<DenomGridViewHolder>(), RechargeDen
     override fun getItemCount(): Int = listDenom.size
 
     override fun onBindViewHolder(holder: DenomGridViewHolder, position: Int) {
+        listDenom[position].position = position
         holder.bind(listDenom[position], denomWidgetType, position == selectedProductIndex, position)
     }
 

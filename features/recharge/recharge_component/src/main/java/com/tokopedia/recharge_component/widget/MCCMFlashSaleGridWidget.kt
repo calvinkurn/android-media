@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.ViewTreeObserver
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -14,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.databinding.WidgetRechargeMccmGridBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.mapper.DenomMCCMFlashSaleMapper
+import com.tokopedia.recharge_component.mapper.DigitalPDPAnalyticsUtils
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
@@ -130,8 +130,8 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
 
     private fun calculateProductItemVisibleItemTracking(recyclerView: RecyclerView, denomGridListener: RechargeDenomGridListener,
                                                         listDenomData: List<DenomData>){
-        val indexes = AnalyticUtils.getVisibleItemIndexes(recyclerView)
-        if (indexes.first > -1 && indexes.second > -1) {
+        val indexes = DigitalPDPAnalyticsUtils.getVisibleItemIndexes(recyclerView)
+        if (DigitalPDPAnalyticsUtils.hasVisibleItems(indexes)) {
             denomGridListener.onDenomGridImpression(listDenomData.subList(
                 indexes.first, indexes.second + 1), DenomWidgetEnum.MCCM_GRID_TYPE)
         }

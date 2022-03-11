@@ -21,6 +21,7 @@ class DenomFullAdapter: RecyclerView.Adapter<DenomFullViewHolder>(), RechargeDen
     override fun getItemCount(): Int = listDenom.size
 
     override fun onBindViewHolder(holder: DenomFullViewHolder, position: Int) {
+        listDenom[position].position = position
         holder.bind(
             listDenom[position],
             denomWidgetType,

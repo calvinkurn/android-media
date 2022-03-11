@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.ViewTreeObserver
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -14,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.databinding.WidgetRechargeMccmFullBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomFullListener
 import com.tokopedia.recharge_component.mapper.DenomMCCMFlashSaleMapper
+import com.tokopedia.recharge_component.mapper.DigitalPDPAnalyticsUtils
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
@@ -119,7 +119,7 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
                     adapter = adapterDenomFull
                     layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
                 }
-                trackFirstVisibleItemToUser(this, denomFullListener, listDenomFull)
+                //trackFirstVisibleItemToUser(this, denomFullListener, listDenomFull)
                 clearOnScrollListeners()
                 addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -149,8 +149,8 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
     }
 
     private fun calculateProductItemVisibleItemTracking(recyclerView: RecyclerView, denomFullListener: RechargeDenomFullListener, listDenomData: List<DenomData>){
-        val indexes = AnalyticUtils.getVisibleItemIndexes(recyclerView)
-        if (indexes.first > -1 && indexes.second > -1) {
+        val indexes = DigitalPDPAnalyticsUtils.getVisibleItemIndexes(recyclerView)
+        if (DigitalPDPAnalyticsUtils.hasVisibleItems(indexes)) {
             denomFullListener.onDenomFullImpression(listDenomData.subList(
                 indexes.first, indexes.second + 1), DenomWidgetEnum.MCCM_FULL_TYPE)
         }

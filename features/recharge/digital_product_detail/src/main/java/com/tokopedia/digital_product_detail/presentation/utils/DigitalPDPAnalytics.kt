@@ -637,7 +637,7 @@ class DigitalPDPAnalytics {
         listDenomData.forEachIndexed { index, t ->
             listItems.add(
                 Bundle().apply {
-                    putString(INDEX, (index + 1).toString())
+                    putString(INDEX, (listDenomData[index].position + 1).toString())
                     putString(ITEM_BRAND, operatorName)
                     putString(
                         ITEM_CATEGORY,
