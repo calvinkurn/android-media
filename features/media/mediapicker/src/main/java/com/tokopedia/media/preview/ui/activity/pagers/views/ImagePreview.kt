@@ -15,160 +15,166 @@ class ImagePreview(
 ) : BasePagerPreview {
 
     private var mScaleFactor = 1f
-    private var mImageViewRef: ImageView? = null
+    private lateinit var mImageViewRef: ImageView
     private lateinit var mScaleGestureDetector: ScaleGestureDetector
-    private var dX = 0f
-    private var dY = 0f
-    private var onScale = false
+    private var onScaling = false
+    private var wrapperWidth = 0
+    private var wrapperHeight = 0
+    private var assetWidth = 0
+    private var assetHeight = 0
 
-    private lateinit var mainWrapper: View
+    // 1st finger position (raw coordinate)
+    private var posX = 0f
+    private var posY = 0f
 
     override val layout: Int
         get() = R.layout.view_item_preview_image
 
     override fun setupView(media: PreviewUiModel): View {
-        mainWrapper = rootLayoutView(context).also { it ->
-            mImageViewRef = it.findViewById<ImageView>(R.id.img_preview)
+        return rootLayoutView(context).also {
+            mImageViewRef = it.findViewById(R.id.img_preview)
 
-            mImageViewRef?.loadImage(media.data.path)
+            mImageViewRef.loadImage(media.data.path, properties = {
+                listener({_, _ ->
+                    mImageViewRef.post {
+                        wrapperWidth = it.width
+                        wrapperHeight = it.height
+
+                        // image view asset width & height ready after image view source is set & render
+                        assetWidth = mImageViewRef.drawable.intrinsicWidth
+                        assetHeight = mImageViewRef.drawable.intrinsicHeight
+                    }
+                },{})
+            })
 
             mScaleGestureDetector = ScaleGestureDetector(context, scaleGestureListener())
 
-            it.setOnTouchListener { v, event ->
-                v.performClick()
-                mScaleGestureDetector.onTouchEvent(event)
-
-                when (event.action and MotionEvent.ACTION_MASK) {
-                    MotionEvent.ACTION_DOWN -> {
-                        dX = event.rawX
-                        dY = event.rawY
-                    }
-                    MotionEvent.ACTION_MOVE -> {
-                        if (onScale) return@setOnTouchListener true
-                        val xDiff = event.rawX - dX
-                        val yDiff = event.rawY - dY
-
-                        mImageViewRef?.let { mImageView ->
-                            val newCoordinate = moveImageValidation(mImageView.x + xDiff, mImageView.y + yDiff)
-                            mImageView.animate()
-                                .x(newCoordinate.x)
-                                .y(newCoordinate.y)
-                                .setDuration(0)
-                                .start()
-                        }
-
-                        dX = event.rawX
-                        dY = event.rawY
-                    }
-                    MotionEvent.ACTION_POINTER_DOWN -> {
-                        onScale = true
-                    }
-                    MotionEvent.ACTION_UP -> {
-                        onScale = false
-
-                        val rescalingPosition = rescalingPosition()
-                        mImageViewRef?.animate()
-                            ?.x(rescalingPosition.x)
-                            ?.y(rescalingPosition.y)
-                            ?.setDuration(0)
-                            ?.start()
-                    }
-                }
-                true
-            }
+            it.setOnTouchListener(touchListener())
         }
-
-        return mainWrapper
     }
 
     private fun scaleGestureListener() = object: ScaleGestureDetector.SimpleOnScaleGestureListener(){
         override fun onScale(detector: ScaleGestureDetector?): Boolean {
             detector?.let {
                 mScaleFactor *= it.scaleFactor
+
+                /**
+                 * zoom in & zoom out size limit
+                 * zoom in max 5x original size
+                 * zoom out max 1x original size
+                 */
                 mScaleFactor = when {
                     mScaleFactor < 1f -> 1f
                     mScaleFactor > 5f -> 5f
                     else -> mScaleFactor
                 }
 
-                mImageViewRef?.scaleX = mScaleFactor
-                mImageViewRef?.scaleY = mScaleFactor
+                mImageViewRef.scaleX = mScaleFactor
+                mImageViewRef.scaleY = mScaleFactor
             }
             return true
         }
     }
 
-    private fun moveImageValidation(targetX: Float, targetY: Float) : Coordinate{
-        mImageViewRef?.let { mImageView ->
-            var scaledWidth = mImageView.drawable.intrinsicWidth * mScaleFactor
-            var scaledHeight = mImageView.drawable.intrinsicHeight * mScaleFactor
+    private fun touchListener() = View.OnTouchListener { v, event ->
+        v.performClick()
+        mScaleGestureDetector.onTouchEvent(event)
 
-            /**
-             * xMin => value for prevent user drag left
-             * xMax => value for prevent user drag right
-             */
-            val horizontalGap = if(scaledWidth >= mainWrapper.width) 0f else (mainWrapper.width - (scaledWidth))
-            var xMin = ((scaledWidth - mainWrapper.width)/2)
-            var xMax = -xMin
-            xMin -= horizontalGap
-            xMax += horizontalGap
-            val newXCoor = if(targetX < xMin && targetX > xMax) targetX else mImageView.x
+        when (event.action and MotionEvent.ACTION_MASK) {
+            MotionEvent.ACTION_DOWN -> {
+                posX = event.rawX
+                posY = event.rawY
+            }
+            MotionEvent.ACTION_MOVE -> {
+                if (onScaling) return@OnTouchListener true
+                val xDiff = event.rawX - posX
+                val yDiff = event.rawY - posY
 
-            val verticalGap =  if(scaledHeight >= mainWrapper.height) 0f else (mainWrapper.height - (scaledHeight))
-            var yMin = ((scaledHeight - mainWrapper.height)/2)
-            var yMax = -yMin
-            yMin -= verticalGap
-            yMax += verticalGap
-            val newYCoor = if(targetY < yMin && targetY > yMax) targetY else mImageView.y
+                val newCoordinate =
+                    moveImageValidation(mImageViewRef.x + xDiff, mImageViewRef.y + yDiff)
+                mImageViewRef.animate()
+                    .x(newCoordinate.x)
+                    .y(newCoordinate.y)
+                    .setDuration(0)
+                    .start()
 
-            return Coordinate(newXCoor, newYCoor)
+                posX = event.rawX
+                posY = event.rawY
+            }
+            MotionEvent.ACTION_POINTER_DOWN -> {
+                onScaling = true
+            }
+            MotionEvent.ACTION_UP -> {
+                onScaling = false
+
+                /**
+                 * validate image position after re-scale
+                 * reposition if needed
+                 */
+                val rescalingPosition = rescalingPosition(mImageViewRef.x, mImageViewRef.y)
+                mImageViewRef.animate()
+                    .x(rescalingPosition.x)
+                    .y(rescalingPosition.y)
+                    .setDuration(0)
+                    .start()
+            }
         }
-        return Coordinate(targetX, targetY)
+        true
     }
 
-    private fun rescalingPosition() : Coordinate{
-        mImageViewRef?.let { mImageView ->
-            val assetWidth = mImageView.drawable.intrinsicWidth
-            val assetHeight = mImageView.drawable.intrinsicHeight
+    private fun moveImageValidation(targetX: Float, targetY: Float): Coordinate {
+        var scaledWidth = assetWidth * mScaleFactor
+        var scaledHeight = assetHeight * mScaleFactor
 
-            var originalWidth = assetWidth
-            var scaledWidth = assetWidth * mScaleFactor
-            var originalHeight = assetHeight
-            var scaledHeight = assetHeight * mScaleFactor
+        /**
+         * xMax -> limit drag movement to the right
+         * xMin -> limit drag movement to the left
+         *
+         * yMax -> limit drag movement to the bottom
+         * yMin -> limit drag movement to the top
+         */
+        val horizontalGap = if (scaledWidth >= wrapperWidth) 0f else (wrapperWidth - (scaledWidth))
+        var xMax = ((scaledWidth - wrapperWidth) / 2)
+        var xMin = -xMax
+        xMax -= horizontalGap
+        xMin += horizontalGap
+        val newXCoordinate = if (targetX < xMax && targetX > xMin) targetX else mImageViewRef.x
 
-//            var horizontalGap = (mainWrapper.width - (scaledWidth))
-//            if(scaledWidth >= mainWrapper.width){
-//                horizontalGap
-//            }
+        val verticalGap =
+            if (scaledHeight >= wrapperHeight) 0f else (wrapperHeight - (scaledHeight))
+        var yMax = ((scaledHeight - wrapperHeight) / 2)
+        var yMin = -yMax
+        yMax -= verticalGap
+        yMin += verticalGap
+        val newYCoordinate = if (targetY < yMax && targetY > yMin) targetY else mImageViewRef.y
 
-            var xMin = ((scaledWidth - mainWrapper.width)/2)
-            var xMax = -xMin
+        return Coordinate(newXCoordinate, newYCoordinate)
+    }
 
-            var yMin = ((scaledHeight - originalHeight)/2)
-            var yMax = -yMin
+    private fun rescalingPosition(targetX: Float, targetY: Float): Coordinate {
+        var scaledWidth = assetWidth * mScaleFactor
+        var scaledHeight = assetHeight * mScaleFactor
 
-            var newX = when {
-                scaledWidth < mainWrapper.width -> 0f
-                mImageView.x > xMin -> xMin
-                mImageView.x < xMax -> xMax
-                else -> mImageView.x
-            }
+        var xMax = ((scaledWidth - wrapperWidth) / 2)
+        var xMin = -xMax
 
-            var newY = when {
-                mImageView.y > yMin -> yMin
-                mImageView.y < yMax -> yMax
-                else -> mImageView.y
-            }
+        var yMax = ((scaledHeight - wrapperHeight) / 2)
+        var yMin = -yMax
 
-//            Log.d("asdasd","scaled = ${scaledWidth} vs ${originalWidth}")
-//            Log.d("asdasd","target x = ${mImageView.x}")
-//            Log.d("asdasd","gap = ${horizontalGap}")
-//            Log.d("asdasd","xmin = ${xMin}")
-//            Log.d("asdasd","xmax = ${xMax}")
-
-            return Coordinate(newX, newY)
+        var newX = when {
+            scaledWidth < wrapperWidth -> 0f
+            targetX > xMax -> xMax
+            targetX < xMin -> xMin
+            else -> targetX
         }
-        return Coordinate(0f, 0f)
+
+        var newY = when {
+            scaledHeight < wrapperHeight -> 0f
+            targetY > yMax -> yMax
+            targetY < yMin -> yMin
+            else -> targetY
+        }
+        return Coordinate(newX, newY)
     }
 
     inner class Coordinate (var x: Float, var y: Float)
