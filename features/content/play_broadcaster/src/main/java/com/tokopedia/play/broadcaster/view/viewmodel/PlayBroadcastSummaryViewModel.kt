@@ -140,7 +140,7 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     }
 
     private fun handleToggleTag(tagUiModel: PlayTagUiModel) {
-        viewModelScope.launchCatchError(block = {
+        viewModelScope.launchCatchError(context = dispatcher.main, block = {
             val newSelectedTag = _selectedTags.value.toMutableSet().apply {
                 with(tagUiModel) {
                     if(_selectedTags.value.contains(tag)) remove(tag)
@@ -156,8 +156,8 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             _uiEvent.emit(PlayBroadcastSummaryEvent.PostVideo(NetworkResult.Loading))
             withContext(dispatcher.io) {
-//                saveTag()
-//                updateChannelStatus()
+                saveTag()
+                updateChannelStatus()
             }
             _uiEvent.emit(PlayBroadcastSummaryEvent.PostVideo(NetworkResult.Success(true)))
         }) {

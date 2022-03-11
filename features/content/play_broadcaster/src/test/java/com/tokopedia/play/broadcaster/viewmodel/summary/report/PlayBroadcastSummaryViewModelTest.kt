@@ -28,9 +28,6 @@ import org.junit.jupiter.api.fail
 class PlayBroadcastSummaryViewModelTest {
 
     @get:Rule
-    val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
-
-    @get:Rule
     val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val testDispatcher = rule.dispatchers
@@ -38,9 +35,6 @@ class PlayBroadcastSummaryViewModelTest {
     private val playBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer())
 
     private val mockGetLiveStatisticsUseCase: GetLiveStatisticsUseCase = mockk(relaxed = true)
-    private val broadcastUpdateChannelUseCase: PlayBroadcastUpdateChannelUseCase = mockk(relaxed = true)
-    private val mockGetRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase = mockk(relaxed = true)
-    private val mockSetChannelTagsUseCase: SetChannelTagsUseCase = mockk(relaxed = true)
 
     private val modelBuilder = UiModelBuilder()
     private val mockException = Exception("Network Error")
