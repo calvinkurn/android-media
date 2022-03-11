@@ -366,12 +366,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun removeWidget(position: Int, widget: BaseWidgetUiModel<*>) {
-        notifyWidgetWithSdkChecking {
-            val tmpWidgets = adapter.data.toMutableList()
-            val isRemoved = tmpWidgets.remove(widget)
-            if (isRemoved) {
-                updateWidgets(tmpWidgets)
-            }
+        recyclerView?.post {
+            adapter.data.remove(widget)
+            adapter.notifyItemRemoved(position)
         }
     }
 
