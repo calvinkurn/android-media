@@ -380,10 +380,10 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         mFilterChipListener = filterChipListener
     }
 
-    fun View.animateFadeInThenShow() {
-        val fadeIn = AlphaAnimation(0.7f, 1f)
+    private fun View.animateFadeInThenShow() {
+        val fadeIn = AlphaAnimation(ALPHA_0_5, ALPHA_1_0)
         fadeIn.interpolator = DecelerateInterpolator()
-        fadeIn.duration = 100
+        fadeIn.duration = FADE_DURATION
 
         val animation = AnimationSet(false)
         animation.addAnimation(fadeIn)
@@ -392,11 +392,11 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         show()
     }
 
-    fun View.animateFadeOutThenGone() {
+    private fun View.animateFadeOutThenGone() {
 
-        val fadeOut = AlphaAnimation(1f, 0.7f)
+        val fadeOut = AlphaAnimation(ALPHA_1_0, ALPHA_0_5)
         fadeOut.interpolator = AccelerateInterpolator()
-        fadeOut.duration = 100
+        fadeOut.duration = FADE_DURATION
 
         val animation = AnimationSet(false)
         animation.addAnimation(fadeOut)
@@ -405,16 +405,22 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         gone()
     }
 
-    fun View.animateFadeOutThenInvisible() {
+    private fun View.animateFadeOutThenInvisible() {
 
-        val fadeOut = AlphaAnimation(1f, 0.7f)
+        val fadeOut = AlphaAnimation(ALPHA_1_0, ALPHA_0_5)
         fadeOut.interpolator = AccelerateInterpolator()
-        fadeOut.duration = 100
+        fadeOut.duration = FADE_DURATION
 
         val animation = AnimationSet(false)
         animation.addAnimation(fadeOut)
         this.animation = animation
 
         invisible()
+    }
+
+    companion object {
+        private const val FADE_DURATION = 200L
+        private const val ALPHA_0_5 = 0.5f
+        private const val ALPHA_1_0 = 1.0f
     }
 }
