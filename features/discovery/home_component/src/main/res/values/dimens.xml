@@ -20,6 +20,9 @@
     <dimen name="campaign_widget_card_height">235dp</dimen>
     <dimen name="campaign_widget_card_width">@dimen/product_card_flashsale_width</dimen>
 
+    <dimen name="home_mvc_carousel_height">125dp</dimen>
+    <dimen name="home_mvc_background_voucher_height">117dp</dimen>
+
     <dimen name="special_release_padding_bottom">12dp</dimen>
     <dimen name="special_release_shop_product_height">128dp</dimen>
     <dimen name="special_release_shop_image_offset_height">42dp</dimen>
