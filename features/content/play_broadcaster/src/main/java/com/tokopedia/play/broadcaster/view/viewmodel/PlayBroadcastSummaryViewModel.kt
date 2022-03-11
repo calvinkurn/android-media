@@ -11,9 +11,10 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.event.UiString
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
-import com.tokopedia.play.broadcaster.ui.model.LiveDurationUiModel
+import com.tokopedia.play.broadcaster.ui.model.ChannelSummaryUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
+import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.LiveReportUiState
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.TagUiState
@@ -22,6 +23,7 @@ import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
+import com.tokopedia.play_common.util.extension.setValue
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -46,18 +48,21 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     private val channelId: String
         get() = channelConfigStore.getChannelId()
 
+    private val _channelSummary = MutableStateFlow(ChannelSummaryUiModel.empty())
     private val _trafficMetric = MutableStateFlow<NetworkResult<List<TrafficMetricUiModel>>>(NetworkResult.Loading)
-    private val _liveDuration = MutableStateFlow(LiveDurationUiModel.empty())
     private val _tags = MutableStateFlow<Set<String>>(emptySet())
     private val _selectedTags = MutableStateFlow<Set<String>>(emptySet())
 
-    private val _liveReportUiState = combine(
-        _trafficMetric, _liveDuration,
-    ) { trafficMetric, liveDuration ->
-        LiveReportUiState(
-            trafficMetric,
-            liveDuration,
+    private val _channelSummaryUiState = _channelSummary.map {
+        ChannelSummaryUiState(
+            title = it.title,
+            date = it.date,
+            duration = it.duration,
+            isEligiblePostVideo = it.isEligiblePostVideo,
         )
+    }
+    private val _liveReportUiState = _trafficMetric.map {
+        LiveReportUiState(it)
     }
 
     private val _tagUiState = combine(
@@ -74,10 +79,12 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     }
 
     val uiState: Flow<PlayBroadcastSummaryUiState> = combine(
+        _channelSummaryUiState,
         _liveReportUiState.distinctUntilChanged(),
         _tagUiState.distinctUntilChanged(),
-    ) { liveReportUiState, tagUiState ->
+    ) { channelSummaryUiState, liveReportUiState, tagUiState ->
         PlayBroadcastSummaryUiState(
+            channelSummary = channelSummaryUiState,
             liveReport = liveReportUiState,
             tag = tagUiState,
         )
@@ -190,17 +197,19 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
                 response
             }
 
-            _liveDuration.value = playBroadcastMapper.mapLiveDuration(
+            _channelSummary.value = playBroadcastMapper.mapChannelSummary(
+                                        channel.basic.title,
                                         convertDate(channel.basic.timestamp.publishedAt),
                                         reportChannelSummary.duration,
                                         isEligiblePostVideo(reportChannelSummary.duration),
                                     )
+
             _trafficMetric.value = NetworkResult.Success(playBroadcastMapper.mapToLiveTrafficUiMetrics(reportChannelSummary.channel.metrics))
 
             if(!isEligiblePostVideo(reportChannelSummary.duration))
                 _uiEvent.emit(PlayBroadcastSummaryEvent.ShowInfo(UiString.Resource(R.string.play_bro_cant_post_video_message)))
         }) {
-            _liveDuration.value = LiveDurationUiModel.empty()
+            _channelSummary.value = ChannelSummaryUiModel.empty()
             _trafficMetric.value = NetworkResult.Fail(it) { fetchLiveTraffic() }
 
             _uiEvent.emit(PlayBroadcastSummaryEvent.ShowInfo(UiString.Resource(R.string.play_bro_cant_post_video_message)))

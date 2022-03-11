@@ -5,7 +5,6 @@ import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastSummaryViewModelRobot
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
-import com.tokopedia.play.broadcaster.ui.model.LiveDurationUiModel
 import com.tokopedia.play.broadcaster.util.*
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.unit.test.rule.CoroutineTestRule

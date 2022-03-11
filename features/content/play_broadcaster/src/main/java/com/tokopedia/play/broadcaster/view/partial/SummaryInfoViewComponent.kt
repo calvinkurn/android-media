@@ -10,16 +10,14 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.MetricReportItemDecoration
-import com.tokopedia.play.broadcaster.ui.model.LiveDurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricType
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
+import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.ui.viewholder.TrafficMetricViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.TrafficMetricReportAdapter
-import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.utils.date.DateUtil
 
 
 /**
@@ -71,15 +69,12 @@ class SummaryInfoViewComponent(
         })
     }
 
-    fun setChannelTitle(title: String) {
-        tvTitle.text = title
-    }
-
     fun setChannelCover(coverUrl: String) {
         ivCover.setImageUrl(coverUrl)
     }
 
-    fun setLiveDuration(data: LiveDurationUiModel) {
+    fun setChannelHeader(data: ChannelSummaryUiState) {
+        tvTitle.text = data.title
         tvDuration.text = data.duration
         tvDate.text = data.date
     }
