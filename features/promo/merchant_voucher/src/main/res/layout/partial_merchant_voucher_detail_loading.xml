@@ -8,54 +8,62 @@
     android:visibility="gone"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_120"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         android:layout_gravity="start|center_vertical"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/dp_200"
         android:layout_height="12dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="24dp"
         app:corners="@integer/corner_radius_shimmering_small"
+        app:loader_corner_radius="3dp"
+        app:loader_type="rect"
         android:layout_gravity="start|center_vertical"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/dp_150"
         android:layout_height="12dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="16dp"
-        app:corners="@integer/corner_radius_shimmering_small"
+        app:loader_corner_radius="3dp"
+        app:loader_type="rect"
         android:layout_gravity="start|center_vertical"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/dp_150"
         android:layout_height="12dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="16dp"
-        app:corners="@integer/corner_radius_shimmering_small"
+        app:loader_corner_radius="3dp"
+        app:loader_type="rect"
         android:layout_gravity="start|center_vertical"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/dp_200"
         android:layout_height="12dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="@dimen/dp_60"
-        app:corners="@integer/corner_radius_shimmering_small"
+        app:loader_corner_radius="3dp"
+        app:loader_type="rect"
         android:layout_gravity="start|center_vertical"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/dp_150"
         android:layout_height="12dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="16dp"
-        app:corners="@integer/corner_radius_shimmering_small"
+        app:loader_corner_radius="3dp"
+        app:loader_type="rect"
         android:layout_gravity="start|center_vertical"/>
 
 </LinearLayout>
