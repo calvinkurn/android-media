@@ -41,6 +41,7 @@ object RollenceKey {
     const val EXPERIMENT_NAME_REVIEW_CREDIBILITY = "review_credibility"
     const val VARIANT_REVIEW_CREDIBILITY_WITHOUT_BOTTOM_SHEET = "without_bottomsheet"
     const val VARIANT_REVIEW_CREDIBILITY_WITH_BOTTOM_SHEET = "with_bottomsheet"
+    const val VARIANT_NEW_PROFILE_REVAMP = "userprofile_revamp"
 
     //Auto Complete
     const val AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING = "keyword_track_init"

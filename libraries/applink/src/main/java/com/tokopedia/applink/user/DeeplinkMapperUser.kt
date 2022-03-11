@@ -8,6 +8,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
 object DeeplinkMapperUser {
@@ -33,8 +34,8 @@ object DeeplinkMapperUser {
 
     private fun isUseNewProfile(context: Context): Boolean {
 	val remoteConfig = FirebaseRemoteConfigInstance.get(context)
-	val remoteConfigValue = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_PROFILE_INFO , false)
-	return (remoteConfigValue && getAbTestPlatform().getString("userprofile_revamp").isNotEmpty())
+	val remoteConfigValue = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_PROFILE_INFO , true)
+	return (remoteConfigValue && getAbTestPlatform().getString(RollenceKey.VARIANT_NEW_PROFILE_REVAMP).isNotEmpty())
     }
 
 	private fun getAbTestPlatform(): AbTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
