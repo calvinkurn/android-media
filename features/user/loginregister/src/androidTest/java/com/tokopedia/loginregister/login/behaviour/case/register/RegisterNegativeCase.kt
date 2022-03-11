@@ -1,11 +1,16 @@
 package com.tokopedia.loginregister.login.behaviour.case.register
 
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.behaviour.base.RegisterInitialBase
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
+import com.tokopedia.test.application.annotations.UiTest
+import org.hamcrest.Matchers
 import org.junit.Test
 
+@UiTest
 class RegisterNegativeCase: RegisterInitialBase() {
 
     @Test
@@ -56,7 +61,12 @@ class RegisterNegativeCase: RegisterInitialBase() {
     fun forbiddenPage_discoverEmpty() {
         isDefaultDiscover = false
         runTest {
-            isDisplayingSubGivenText(com.google.android.material.R.id.snackbar_text, "Terjadi kesalahan. Ulangi beberapa saat lagi")
+            Espresso.onView(
+                Matchers.allOf(
+                    ViewMatchers.withText(Matchers.containsString("Terjadi kesalahan. Ulangi beberapa saat lagi")),
+                    ViewMatchers.isDisplayed()
+                )
+            )
         }
     }
 

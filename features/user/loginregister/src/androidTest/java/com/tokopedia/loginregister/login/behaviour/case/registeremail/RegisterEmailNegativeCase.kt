@@ -7,11 +7,13 @@ import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.behaviour.base.RegisterEmailBase
 import com.tokopedia.loginregister.login.common.TextFieldUnifyMatcher
+import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.CoreMatchers
 import org.hamcrest.core.AnyOf.anyOf
 import org.hamcrest.core.Is.`is`
 import org.junit.Test
 
+@UiTest
 class RegisterEmailNegativeCase: RegisterEmailBase() {
 
     val emptyErrorText = "Harus diisi"

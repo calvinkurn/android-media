@@ -13,11 +13,13 @@ import com.tokopedia.loginregister.common.Event
 import com.tokopedia.loginregister.login.behaviour.base.RegisterInitialBase
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
+import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@UiTest
 @RunWith(AndroidJUnit4::class)
 @LargeTest
 class RegisterInitialPhoneTest: RegisterInitialBase() {

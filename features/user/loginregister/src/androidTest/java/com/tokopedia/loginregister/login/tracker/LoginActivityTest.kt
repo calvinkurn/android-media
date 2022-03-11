@@ -22,11 +22,13 @@ import com.tokopedia.loginregister.common.CassavaTestRuleMatcher.validate
 import com.tokopedia.loginregister.login.behaviour.base.LoginBase
 import com.tokopedia.loginregister.login.helper.LoginSocmedTestHelper
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
+import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.Matchers
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@UiTest
 @LargeTest
 @RunWith(AndroidJUnit4::class)
 class LoginActivityTest: LoginBase() {
