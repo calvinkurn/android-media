@@ -61,12 +61,16 @@ class VariantListAdapter(
     }
 
     override fun onDeleteButtonClicked(variantIndex: Int) {
-        variantList.removeAt(variantIndex)
-        notifyDataSetChanged()
-        if (variantList.isEmpty()) {
-            variantSelectionRemovedListener.onVariantSelectionsEmpty()
-        } else {
-            variantSelectionRemovedListener.onVariantSelectionRemoved(variantList)
+        try {
+            variantList.removeAt(variantIndex)
+            notifyDataSetChanged()
+            if (variantList.isEmpty()) {
+                variantSelectionRemovedListener.onVariantSelectionsEmpty()
+            } else {
+                variantSelectionRemovedListener.onVariantSelectionRemoved(variantList)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }
