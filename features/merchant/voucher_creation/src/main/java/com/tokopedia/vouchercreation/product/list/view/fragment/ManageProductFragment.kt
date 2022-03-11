@@ -187,9 +187,7 @@ class ManageProductFragment : BaseDaggerFragment(),
                 if (isIndeterminate && !viewModel.isSelectAllMode) return@setOnCheckedChangeListener
                 adapter?.updateAllProductSelections(isChecked)
             } else {
-                val totalProductSize = adapter?.getProductList()?.size
-                val selectedProductSize = adapter?.getSelectedProducts()?.size
-                if (totalProductSize == selectedProductSize) {
+                if (!viewModel.isSingleClick) {
                     binding.cbuSelectAllProduct.setIndeterminate(false)
                     adapter?.updateAllProductSelections(isChecked)
                 }
@@ -281,8 +279,9 @@ class ManageProductFragment : BaseDaggerFragment(),
                     val selectedProductIds = viewModel.getSelectedProductIds()
                     val finalProductList = viewModel.setVariantSelection(updatedProductList, selectedProductIds, viewModel.getIsViewing())
 
-                    val newAddedProducts = arguments?.getParcelableArrayList<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)?.toList()
-                    finalProductList.addAll(newAddedProducts?: listOf())
+                    val newAddedProducts = arguments?.getParcelableArrayList<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)?.toList() ?: listOf()
+                    val normalizedProductList = resetProductUiModelState(newAddedProducts)
+                    finalProductList.addAll(normalizedProductList?: listOf())
 
                     adapter?.setProductList(finalProductList)
                     viewModel.setSetSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
@@ -314,6 +313,7 @@ class ManageProductFragment : BaseDaggerFragment(),
 
     override fun onProductCheckBoxClicked(isSelected: Boolean, uiModel: ProductUiModel) {
         viewModel.isSelectAllMode = false
+        viewModel.isSingleClick = true
         if (isSelected) {
             val isIndeterminate = binding?.cbuSelectAllProduct?.getIndeterminate() ?: false
             if (!isIndeterminate) binding?.cbuSelectAllProduct?.setIndeterminate(true)
@@ -321,6 +321,7 @@ class ManageProductFragment : BaseDaggerFragment(),
             if (!isChecked) binding?.cbuSelectAllProduct?.isChecked = true
         }
         viewModel.setSetSelectedProducts(adapter?.getSelectedProducts()?: listOf())
+        viewModel.isSingleClick = false
     }
 
     override fun onRemoveButtonClicked() {

@@ -28,6 +28,7 @@ class ManageProductViewModel @Inject constructor(
 
     // PRODUCT SELECTIONS
     var isSelectAllMode = true
+    var isSingleClick = false
 
     private var isViewing = false
     private var isEditing = false
