@@ -1,5 +1,6 @@
 package com.tokopedia.digital_product_detail.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -30,11 +31,7 @@ import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.regex.Pattern
 import javax.inject.Inject
 
@@ -129,7 +126,8 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val favoriteNumberChips = repo.getFavoriteNumberChips(categoryIds)
             _favoriteNumberData.value = RechargeNetworkResult.Success(
-                favoriteNumberChips.persoFavoriteNumber.items)
+                favoriteNumberChips.persoFavoriteNumber.items
+            )
         }) {
             _favoriteNumberData.value = RechargeNetworkResult.Fail(it)
         }
@@ -141,9 +139,11 @@ class DigitalPDPPulsaViewModel @Inject constructor(
 
     fun getAutoComplete(categoryIds: List<Int>) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
+            delay(AUTOCOMPLETE_DELAY) // DO NOT TRY THIS AT HOME! attempt to fix race condition
             val favoriteNumberList = repo.getFavoriteNumberList(categoryIds)
             _autoCompleteData.value = RechargeNetworkResult.Success(
-                favoriteNumberList.persoFavoriteNumber.items)
+                favoriteNumberList.persoFavoriteNumber.items
+            )
         }) {
             _autoCompleteData.value = RechargeNetworkResult.Fail(it)
         }
@@ -298,5 +298,9 @@ class DigitalPDPPulsaViewModel @Inject constructor(
                 delay(skipMs)
             }
         }
+    }
+
+    companion object {
+        private const val AUTOCOMPLETE_DELAY = 500L
     }
 }
