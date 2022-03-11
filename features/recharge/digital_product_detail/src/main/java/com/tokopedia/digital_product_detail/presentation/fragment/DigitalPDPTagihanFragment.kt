@@ -279,6 +279,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         }
         if (!clientNumber.isNullOrEmpty()) {
             binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
+                inputNumberActionType = InputNumberActionType.NOTHING
                 setInputNumber(clientNumber, true)
             }
         }
@@ -429,7 +430,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         if (operatorId.isEmpty()) {
             operatorId = data.prefillOperatorId
         }
-
+        inputNumberActionType = InputNumberActionType.NOTHING
         binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
             if (clientNumber.isNotEmpty()) {
                 setInputNumber(clientNumber, true)
@@ -714,11 +715,12 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
 
     /** Start InputFieldListener */
 
-    override fun onRenderOperator(isDelayed: Boolean) {
+    override fun onRenderOperator(isDelayed: Boolean, isManualInput: Boolean) {
         viewModel.operatorData.id.isEmpty().let {
             if (it) {
                 getOperatorSelectGroup()
             } else {
+                if (isManualInput) inputNumberActionType = InputNumberActionType.MANUAL
                 renderProduct()
             }
         }

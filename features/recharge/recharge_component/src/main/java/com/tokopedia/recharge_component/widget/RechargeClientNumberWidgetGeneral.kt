@@ -95,14 +95,16 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
                     }
 
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                        var isManualInput = false
                         hideClearIcon()
                         clearErrorState()
                         // if manual input
                         if (abs(before - count) == 1 && mInputFieldListener?.isKeyboardShown() == true) {
                             isClearableState = false
+                            isManualInput = true
                         }
                         setLoading(s?.toString()?.isNotEmpty() == true)
-                        mInputFieldListener?.onRenderOperator(true)
+                        mInputFieldListener?.onRenderOperator(true, isManualInput)
                     }
                 })
 

@@ -443,6 +443,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
+        inputNumberActionType = InputNumberActionType.NOTHING
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             if (clientNumber.isNotEmpty()) {
                 setInputNumber(clientNumber, true)
@@ -886,6 +887,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
         if (!clientNumber.isNullOrEmpty()) {
             binding?.rechargePdpPulsaClientNumberWidget?.run {
+                inputNumberActionType = InputNumberActionType.NOTHING
                 setInputNumber(clientNumber, true)
             }
         }
@@ -922,11 +924,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     /** Start Input Field Listener */
 
-    override fun onRenderOperator(isDelayed: Boolean) {
+    override fun onRenderOperator(isDelayed: Boolean, isManualInput: Boolean) {
         viewModel.operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty().let {
             if (it) {
                 getPrefixOperatorData()
             } else {
+                if (isManualInput) inputNumberActionType = InputNumberActionType.MANUAL
                 renderProduct()
             }
         }
