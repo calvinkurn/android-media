@@ -1058,8 +1058,7 @@ class DigitalPDPDataPlanFragment :
         startActivityForResult(intent, requestCode)
     }
 
-    /** Start Input Field Listener */
-
+    //region ClientNumberInputFieldListener
     override fun onRenderOperator(isDelayed: Boolean, isManualInput: Boolean) {
         viewModel.operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty().let {
             if (it) {
@@ -1109,10 +1108,9 @@ class DigitalPDPDataPlanFragment :
         }
         return false
     }
-    /** End Input Field Listener */
+    //endregion
 
-    /** Start Filter Chip Listener */
-
+    //region ClientNumberFilterChipListener
     override fun onShowFilterChip(isLabeled: Boolean) {
         if (isLabeled) {
             digitalPDPAnalytics.impressionFavoriteContactChips(
@@ -1169,11 +1167,9 @@ class DigitalPDPDataPlanFragment :
             )
         }
     }
+    //endregion
 
-    /** End Filter Chip Listener */
-
-    /** Start Auto Complete Listener */
-
+    //region ClientNumberAutoCompleteListener
     override fun onClickAutoComplete(isFavoriteContact: Boolean) {
         inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
         if (isFavoriteContact) {
@@ -1192,11 +1188,9 @@ class DigitalPDPDataPlanFragment :
             )
         }
     }
+    //endregion
 
-    /** End Auto Complete Listener */
-
-    /** Start Buy Widget Listener */
-
+    //region RechargeBuyWidgetListener
     override fun onClickedButtonLanjutkan(denom: DenomData) {
         viewModel.updateCheckoutPassData(
             denom, userSession.userId.generateRechargeCheckoutToken(),
@@ -1222,11 +1216,9 @@ class DigitalPDPDataPlanFragment :
             SummaryTelcoBottomSheet(getString(R.string.summary_transaction), denom).show(it, "")
         }
     }
+    //endregion
 
-    /** End Buy Widget Listener */
-
-    /** Start Recommendation Card Listener */
-
+    //region RechargeRecommendationCardListener
     override fun onProductRecommendationCardClicked(
         title: String,
         recommendation: RecommendationCardWidgetModel,
@@ -1262,11 +1254,9 @@ class DigitalPDPDataPlanFragment :
             position
         )
     }
+    //endregion
 
-    /** End Recommendation Card Listener */
-
-    /** Start Denom Full Listener */
-
+    //region RechargeDenomFullListener
     override fun onDenomFullClicked(
         denomFull: DenomData, layoutType: DenomWidgetEnum, position: Int,
         productListTitle: String,
@@ -1356,10 +1346,9 @@ class DigitalPDPDataPlanFragment :
             )
         }
     }
-    /** End Denom Full Listener */
+    //endregion
 
-    /** Start FilterBottomSheetListener */
-
+    //region FilterBottomSheetListener
     override fun onClickSaveFilter(
         filterTagComponents: List<TelcoFilterTagComponent>,
         initialSelectedCounter: Int
@@ -1386,11 +1375,9 @@ class DigitalPDPDataPlanFragment :
             userSession.userId,
         )
     }
+    //endregion
 
-    /** Start FilterBottomSheetListener */
-
-    /** Start DigitalHistoryIconListener */
-
+    //region DigitalHistoryIconListener
     override fun onClickDigitalIconHistory() {
         digitalPDPAnalytics.clickTransactionHistoryIcon(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -1398,8 +1385,7 @@ class DigitalPDPDataPlanFragment :
             userSession.userId
         )
     }
-
-    /** End DigitalHistoryIconListener */
+    //endregion
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
