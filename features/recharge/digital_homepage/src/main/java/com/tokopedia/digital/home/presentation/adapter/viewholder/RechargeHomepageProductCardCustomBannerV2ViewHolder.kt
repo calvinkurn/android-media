@@ -99,18 +99,6 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
                     DigitalUnifyCardAdapterTypeFactory(digitalUnifyCardListener),
                     element
                 )
-                addOnScrollListener(object : ParallaxScrollEffectListener(layoutManagers) {
-                    override fun translatedX(translatedX: Float) {
-                        bind.parallaxView.translationX = translatedX
-                    }
-
-                    override fun setAlpha(alpha: Float) {
-                        bind.parallaxImage.alpha = alpha
-                    }
-
-                    override fun getPixelSize(): Int =
-                        itemView.resources.getDimensionPixelSize(com.tokopedia.digital.home.R.dimen.product_card_custom_banner_width)
-                })
             }
 
             parallaxImage.viewTreeObserver.addOnGlobalLayoutListener(object :
@@ -124,6 +112,20 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
                         rvRechargeProduct.paddingRight,
                         rvRechargeProduct.paddingBottom
                     )
+
+                    rvRechargeProduct.addOnScrollListener(object :
+                        ParallaxScrollEffectListener(layoutManagers) {
+                        override fun translatedX(translatedX: Float) {
+                            bind.parallaxView.translationX = translatedX
+                        }
+
+                        override fun setAlpha(alpha: Float) {
+                            bind.parallaxImage.alpha = alpha
+                        }
+
+                        override fun getPixelSize(): Int =
+                            parallaxImage.measuredWidth + parallaxImage.paddingStart
+                    })
                 }
 
             })
