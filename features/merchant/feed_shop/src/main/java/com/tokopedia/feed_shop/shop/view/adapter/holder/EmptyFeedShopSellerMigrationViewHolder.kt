@@ -3,12 +3,14 @@ package com.tokopedia.feed_shop.shop.view.adapter.holder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feed_shop.R
-import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
-import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
+import com.tokopedia.feed_shop.databinding.WidgetShopPageTabFeedNoPostSellerMigrationBinding
 import com.tokopedia.feed_shop.shop.view.contract.FeedShopContract
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopSellerMigrationUiModel
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
+import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
+import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 
@@ -19,9 +21,10 @@ class EmptyFeedShopSellerMigrationViewHolder(view: View,
         val LAYOUT = R.layout.widget_shop_page_tab_feed_no_post_seller_migration
     }
 
-    private val ivTabFeedNoPost: ShopCarouselBannerImageUnify? = view.findViewById(R.id.ivTabFeedNoPost)
-    private val tvSellerMigrationLearnMoreLink: Typography? = view.findViewById(R.id.tvSellerMigrationLearnMoreLink)
-    private val btnPlayStoreTabFeedNoPost: View? = view.findViewById(R.id.btnPlayStoreTabFeedNoPost)
+    private val viewBinding : WidgetShopPageTabFeedNoPostSellerMigrationBinding? by viewBinding()
+    private val ivTabFeedNoPost: ShopCarouselBannerImageUnify? = viewBinding?.ivTabFeedNoPost
+    private val tvSellerMigrationLearnMoreLink: Typography? = viewBinding?.tvSellerMigrationLearnMoreLink
+    private val btnPlayStoreTabFeedNoPost: View? = viewBinding?.btnPlayStoreTabFeedNoPost
 
     override fun bind(element: EmptyFeedShopSellerMigrationUiModel?) {
         with(itemView) {

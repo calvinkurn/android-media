@@ -7,6 +7,9 @@ import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.feed_shop.shop.domain.DynamicFeedShopDomain
+import com.tokopedia.feed_shop.shop.domain.usecase.GetFeedShopFirstUseCase
+import com.tokopedia.feed_shop.shop.view.contract.FeedShopContract
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
@@ -20,9 +23,6 @@ import com.tokopedia.kolcommon.view.subscriber.LikeKolPostSubscriber
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.feed_shop.shop.domain.DynamicFeedShopDomain
-import com.tokopedia.feed_shop.shop.domain.usecase.GetFeedShopFirstUseCase
-import com.tokopedia.feed_shop.shop.view.contract.FeedShopContract
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -39,8 +39,8 @@ class FeedShopPresenter @Inject constructor(
         private val atcUseCase: AddToCartUseCase,
         private val sendTopAdsUseCase: SendTopAdsUseCase
 ) :
-    BaseDaggerPresenter<FeedShopContract.View>(),
-    FeedShopContract.Presenter {
+        BaseDaggerPresenter<FeedShopContract.View>(),
+        FeedShopContract.Presenter {
 
     override var cursor: String = ""
 
@@ -59,40 +59,37 @@ class FeedShopPresenter @Inject constructor(
     }
 
     override fun getFeedFirstPage(
-        shopId: String,
-        isPullToRefresh: Boolean,
-        authorListEmpty: Boolean
+            shopId: String,
+            isPullToRefresh: Boolean,
+            authorListEmpty: Boolean
     ) {
         cursor = ""
         if (getUserId() != "0") {
             getDynamicFeedFirstUseCase.getWhitelistUseCase.setCacheStrategy(authorListEmpty)
             getDynamicFeedFirstUseCase.execute(
-                GetFeedShopFirstUseCase.createRequestParams(getUserId(), shopId, isPullToRefresh),
-                object : Subscriber<DynamicFeedShopDomain>() {
-                    override fun onNext(t: DynamicFeedShopDomain?) {
-                        t?.let {
-                            cursor = t.dynamicFeedDomainModel.cursor
-                            view.onSuccessGetFeedFirstPage(
-                                t.dynamicFeedDomainModel.postList,
-                                t.dynamicFeedDomainModel.cursor,
-                                t.whitelistDomain
-                            )
+                    GetFeedShopFirstUseCase.createRequestParams(getUserId(), shopId, isPullToRefresh),
+                    object : Subscriber<DynamicFeedShopDomain>() {
+                        override fun onNext(t: DynamicFeedShopDomain?) {
+                            t?.let {
+                                cursor = t.dynamicFeedDomainModel.cursor
+                                view.onSuccessGetFeedFirstPage(
+                                        t.dynamicFeedDomainModel.postList,
+                                        t.dynamicFeedDomainModel.cursor,
+                                        t.whitelistDomain
+                                )
+                            }
                         }
-                    }
 
-                    override fun onCompleted() {
-                    }
+                        override fun onCompleted() {
+                        }
 
-                    override fun onError(e: Throwable?) {
-                        if (isViewAttached) {
-
+                        override fun onError(e: Throwable?) {
                             if (GlobalConfig.isAllowDebuggingTools()) {
                                 e?.printStackTrace()
                             }
                             view.showGetListError(e)
                         }
                     }
-                }
             )
         } else {
             getFeed(shopId)
@@ -101,38 +98,38 @@ class FeedShopPresenter @Inject constructor(
 
     override fun getFeed(shopId: String) {
         getDynamicFeedUseCase.execute(
-            GetDynamicFeedUseCase.createRequestParams(
-                userId = getUserId(),
-                cursor = cursor,
-                source = GetDynamicFeedUseCase.FeedV2Source.Shop,
-                sourceId = shopId
-            ),
-            object : Subscriber<DynamicFeedDomainModel>() {
-                override fun onNext(t: DynamicFeedDomainModel?) {
-                    t?.let {
-                        view.onSuccessGetFeed(t.postList, t.cursor)
-                    }
-                }
-
-                override fun onCompleted() {
-                }
-
-                override fun onError(e: Throwable?) {
-                    if (isViewAttached) {
-                        if (GlobalConfig.isAllowDebuggingTools()) {
-                            e?.printStackTrace()
+                GetDynamicFeedUseCase.createRequestParams(
+                        userId = getUserId(),
+                        cursor = cursor,
+                        source = GetDynamicFeedUseCase.FeedV2Source.Shop,
+                        sourceId = shopId
+                ),
+                object : Subscriber<DynamicFeedDomainModel>() {
+                    override fun onNext(t: DynamicFeedDomainModel?) {
+                        t?.let {
+                            view.onSuccessGetFeed(t.postList, t.cursor)
                         }
-                        view.showGetListError(e)
+                    }
+
+                    override fun onCompleted() {
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        if (isViewAttached) {
+                            if (GlobalConfig.isAllowDebuggingTools()) {
+                                e?.printStackTrace()
+                            }
+                            view.showGetListError(e)
+                        }
                     }
                 }
-            }
         )
     }
 
     override fun followKol(id: Int) {
         followKolPostGqlUseCase.clearRequest()
         followKolPostGqlUseCase.addRequest(
-            followKolPostGqlUseCase.getRequest(id, FollowKolPostGqlUseCase.PARAM_FOLLOW)
+                followKolPostGqlUseCase.getRequest(id, FollowKolPostGqlUseCase.PARAM_FOLLOW)
         )
         followKolPostGqlUseCase.execute(object : Subscriber<GraphqlResponse>() {
 
@@ -143,7 +140,7 @@ class FeedShopPresenter @Inject constructor(
                         throwable?.printStackTrace()
                     }
                     view.onErrorFollowKol(
-                        ErrorHandler.getErrorMessage(view.context, throwable)
+                            ErrorHandler.getErrorMessage(view.context, throwable)
                     )
                 }
             }
@@ -160,8 +157,8 @@ class FeedShopPresenter @Inject constructor(
                 }
                 if (!TextUtils.isEmpty(query.data.error)) {
                     val errorMessage = ErrorHandler.getErrorMessage(
-                        view.context,
-                        MessageErrorException(query.data.error)
+                            view.context,
+                            MessageErrorException(query.data.error)
                     )
                     view.onErrorFollowKol(errorMessage)
                     return
@@ -172,8 +169,8 @@ class FeedShopPresenter @Inject constructor(
                     view.onSuccessFollowKol()
                 } else {
                     val errorMessage = ErrorHandler.getErrorMessage(
-                        view.context,
-                        MessageErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+                            view.context,
+                            MessageErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
                     )
                     view.onErrorFollowKol(errorMessage)
                 }
@@ -184,7 +181,7 @@ class FeedShopPresenter @Inject constructor(
     override fun unfollowKol(id: Int) {
         followKolPostGqlUseCase.clearRequest()
         followKolPostGqlUseCase.addRequest(
-            followKolPostGqlUseCase.getRequest(id, FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
+                followKolPostGqlUseCase.getRequest(id, FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
         )
         followKolPostGqlUseCase.execute(object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {
@@ -210,8 +207,8 @@ class FeedShopPresenter @Inject constructor(
                 }
                 if (!TextUtils.isEmpty(query.data.error)) {
                     val errorMessage = ErrorHandler.getErrorMessage(
-                        view.context,
-                        MessageErrorException(query.data.error)
+                            view.context,
+                            MessageErrorException(query.data.error)
                     )
                     view.onErrorFollowKol(errorMessage)
                     return
@@ -222,8 +219,8 @@ class FeedShopPresenter @Inject constructor(
                     view.onSuccessFollowKol()
                 } else {
                     val errorMessage = ErrorHandler.getErrorMessage(
-                        view.context,
-                        MessageErrorException(query.data.error)
+                            view.context,
+                            MessageErrorException(query.data.error)
                     )
                     view.onErrorFollowKol(errorMessage)
                 }
@@ -234,12 +231,12 @@ class FeedShopPresenter @Inject constructor(
     override fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener) {
         if (isViewAttached) {
             likeKolPostUseCase.execute(
-                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like),
-                LikeKolPostSubscriber(
-                    likeListener,
-                    rowNumber,
-                    LikeKolPostUseCase.LikeKolPostAction.Like
-                )
+                    LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like),
+                    LikeKolPostSubscriber(
+                            likeListener,
+                            rowNumber,
+                            LikeKolPostUseCase.LikeKolPostAction.Like
+                    )
             )
         }
     }
@@ -247,117 +244,121 @@ class FeedShopPresenter @Inject constructor(
     override fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener) {
         if (isViewAttached) {
             likeKolPostUseCase.execute(
-                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike),
-                LikeKolPostSubscriber(
-                    likeListener,
-                    rowNumber,
-                    LikeKolPostUseCase.LikeKolPostAction.Unlike
-                )
+                    LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike),
+                    LikeKolPostSubscriber(
+                            likeListener,
+                            rowNumber,
+                            LikeKolPostUseCase.LikeKolPostAction.Unlike
+                    )
             )
         }
     }
 
     override fun deletePost(id: Int, rowNumber: Int) {
         deletePostUseCase.execute(
-            DeletePostUseCase.createRequestParams(id.toString()),
-            object : Subscriber<Boolean>() {
-                override fun onNext(isSuccess: Boolean?) {
-                    if (isSuccess == null || isSuccess.not()) {
-                        onError(RuntimeException())
-                        return
-                    }
-                    view.onSuccessDeletePost(rowNumber)
-                }
-
-                override fun onCompleted() {
-                }
-
-                override fun onError(e: Throwable?) {
-                    if (isViewAttached) {
-
-                        if (GlobalConfig.isAllowDebuggingTools()) {
-                            e?.printStackTrace()
+                DeletePostUseCase.createRequestParams(id.toString()),
+                object : Subscriber<Boolean>() {
+                    override fun onNext(isSuccess: Boolean?) {
+                        if (isSuccess == null || isSuccess.not()) {
+                            onError(RuntimeException())
+                            return
                         }
-                        view.onErrorDeletePost(
-                            ErrorHandler.getErrorMessage(view.context, e),
-                            id,
-                            rowNumber
-                        )
+                        view.onSuccessDeletePost(rowNumber)
+                    }
+
+                    override fun onCompleted() {
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        if (isViewAttached) {
+
+                            if (GlobalConfig.isAllowDebuggingTools()) {
+                                e?.printStackTrace()
+                            }
+                            view.onErrorDeletePost(
+                                    ErrorHandler.getErrorMessage(view.context, e),
+                                    id,
+                                    rowNumber
+                            )
+                        }
                     }
                 }
-            }
         )
     }
 
     override fun trackPostClick(uniqueTrackingId: String, redirectLink: String) {
         trackAffiliateClickUseCase.execute(
-            TrackAffiliateClickUseCase.createRequestParams(
-                uniqueTrackingId,
-                view.userSession.deviceId,
-                if (view.userSession.isLoggedIn) view.userSession.userId else "0"
-            ),
-            object : Subscriber<Boolean>() {
-                override fun onNext(isSuccess: Boolean?) {
+                TrackAffiliateClickUseCase.createRequestParams(
+                        uniqueTrackingId,
+                        view.userSession.deviceId,
+                        if (view.userSession.isLoggedIn) view.userSession.userId else "0"
+                ),
+                object : Subscriber<Boolean>() {
+                    override fun onNext(isSuccess: Boolean?) {
 
-                }
+                    }
 
-                override fun onCompleted() {
-                }
+                    override fun onCompleted() {
+                    }
 
-                override fun onError(e: Throwable?) {
-                    if (GlobalConfig.isAllowDebuggingTools()) {
-                        e?.printStackTrace()
+                    override fun onError(e: Throwable?) {
+                        if (GlobalConfig.isAllowDebuggingTools()) {
+                            e?.printStackTrace()
+                        }
                     }
                 }
-            }
         )
     }
 
     override fun trackPostClickUrl(url: String) {
         trackAffiliateClickUseCase.execute(
-            TrackAffiliateClickUseCase.createRequestParams(url),
-            object : Subscriber<Boolean>() {
-                override fun onNext(isSuccess: Boolean?) {
+                TrackAffiliateClickUseCase.createRequestParams(url),
+                object : Subscriber<Boolean>() {
+                    override fun onNext(isSuccess: Boolean?) {
 
-                }
+                    }
 
-                override fun onCompleted() {
-                }
+                    override fun onCompleted() {
+                    }
 
-                override fun onError(e: Throwable?) {
-                    if (GlobalConfig.isAllowDebuggingTools()) {
-                        e?.printStackTrace()
+                    override fun onError(e: Throwable?) {
+                        if (GlobalConfig.isAllowDebuggingTools()) {
+                            e?.printStackTrace()
+                        }
                     }
                 }
-            }
         )
     }
 
     override fun addPostTagItemToCart(postTagItem: PostTagItem) {
         if (postTagItem.shop.isNotEmpty()) {
             atcUseCase.execute(
-                AddToCartUseCase.getMinimumParams(
-                    postTagItem.id, postTagItem.shop.first().shopId, productName = postTagItem.text,
-                    price = postTagItem.price, userId = getUserId()
-                ),
-                object : Subscriber<AddToCartDataModel>() {
-                    override fun onNext(model: AddToCartDataModel?) {
-                        if (model?.data?.success != 1) {
+                    AddToCartUseCase.getMinimumParams(
+                            postTagItem.id, postTagItem.shop.first().shopId, productName = postTagItem.text,
+                            price = postTagItem.price, userId = getUserId()
+                    ),
+                    object : Subscriber<AddToCartDataModel>() {
+                        override fun onNext(model: AddToCartDataModel?) {
+                            if (model != null) {
+                                val isNotSuccess = model.data.success != 1
+                                if(isNotSuccess)
+                                    view.onAddToCartFailed(postTagItem.applink)
+                                else
+                                    view.onAddToCartSuccess()
+                            } else {
+                                view.onAddToCartFailed(postTagItem.applink)
+                            }
+                        }
+
+                        override fun onCompleted() {
+
+                        }
+
+                        override fun onError(e: Throwable?) {
+                            if (GlobalConfig.isAllowDebuggingTools()) e?.printStackTrace()
                             view.onAddToCartFailed(postTagItem.applink)
-                        } else {
-                            view.onAddToCartSuccess()
                         }
                     }
-
-                    override fun onCompleted() {
-
-                    }
-
-                    override fun onError(e: Throwable?) {
-                        if (GlobalConfig.isAllowDebuggingTools()) e?.printStackTrace()
-                        view.onAddToCartFailed(postTagItem.applink)
-                    }
-                }
             )
         } else {
             view.onAddToCartFailed(postTagItem.applink)
@@ -369,11 +370,11 @@ class FeedShopPresenter @Inject constructor(
     }
 
     override fun doTopAdsTracker(
-        url: String,
-        shopId: String,
-        shopName: String,
-        imageUrl: String,
-        isClick: Boolean
+            url: String,
+            shopId: String,
+            shopName: String,
+            imageUrl: String,
+            isClick: Boolean
     ) {
         if (isClick) {
             sendTopAdsUseCase.hitClick(url, shopId, shopName, imageUrl)
@@ -385,8 +386,10 @@ class FeedShopPresenter @Inject constructor(
 
     private fun getUserId(): String {
         var userId = "0"
-        if (view.userSession.userId.isNotEmpty()) {
-            userId = view.userSession.userId
+        if(isViewAttached) {
+            if (view.userSession.userId.isNotEmpty()) {
+                userId = view.userSession.userId
+            }
         }
         return userId
     }

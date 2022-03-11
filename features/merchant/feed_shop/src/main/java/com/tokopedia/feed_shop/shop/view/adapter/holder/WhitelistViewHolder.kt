@@ -6,10 +6,12 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feed_shop.R
-import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.feed_shop.databinding.ItemPostEntryShopPageBinding
 import com.tokopedia.feed_shop.shop.view.contract.FeedShopContract
 import com.tokopedia.feed_shop.shop.view.model.WhitelistUiModel
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * @author by yfsx on 16/05/19.
@@ -25,9 +27,10 @@ class WhitelistViewHolder(v: View,
         private const val FORMAT_NAME = "{{name}}"
     }
 
-    private val tvCaption: Typography? = itemView.findViewById(R.id.tvCaption)
-    private val ivAvatar: ImageView? = itemView.findViewById(R.id.ivAvatar)
-    private val btnCreatePost: View? = itemView.findViewById(R.id.btnCreatePost)
+    private val viewBinding : ItemPostEntryShopPageBinding? by viewBinding()
+    private val tvCaption: Typography? = viewBinding?.tvCaption
+    private val ivAvatar: ImageView? = viewBinding?.ivAvatar
+    private val btnCreatePost: View? = viewBinding?.btnCreatePost
 
     override fun bind(element: WhitelistUiModel) {
         initView(element)
