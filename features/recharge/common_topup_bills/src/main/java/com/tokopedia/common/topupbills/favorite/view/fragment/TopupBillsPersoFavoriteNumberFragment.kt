@@ -171,7 +171,7 @@ class TopupBillsPersoFavoriteNumberFragment :
         observeData()
         initView()
         loadData()
-        KeyboardHandler.showSoftKeyboard(activity)
+        KeyboardHandler.showSoftKeyboard(requireActivity())
     }
 
     fun initView() {

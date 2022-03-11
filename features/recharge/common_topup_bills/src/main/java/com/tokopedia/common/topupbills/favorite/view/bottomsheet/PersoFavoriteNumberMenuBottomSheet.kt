@@ -6,6 +6,7 @@ import com.tokopedia.common.topupbills.databinding.BottomSheetSeamlessFavoriteNu
 import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsPersoFavNumberDataView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class PersoFavoriteNumberMenuBottomSheet(
@@ -34,11 +35,7 @@ class PersoFavoriteNumberMenuBottomSheet(
 
     private fun initView() {
         with(binding) {
-            if (isShowDelete) {
-                commonTopupBillsFavoriteNumberDelete.show()
-            } else {
-                commonTopupBillsFavoriteNumberDelete.hide()
-            }
+            commonTopupBillsFavoriteNumberDelete.showWithCondition(isShowDelete)
         }
     }
 
