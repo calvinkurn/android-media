@@ -6,6 +6,7 @@ import com.tokopedia.addongifting.addonbottomsheet.data.getaddonbyproduct.*
 import com.tokopedia.addongifting.addonbottomsheet.data.getaddonsavedstate.GetAddOnSavedStateRequest
 import com.tokopedia.addongifting.addonbottomsheet.data.getaddonsavedstate.GetAddOnSavedStateResponse
 import com.tokopedia.addongifting.addonbottomsheet.data.saveaddonstate.*
+import com.tokopedia.addongifting.addonbottomsheet.domain.mapper.AddOnRequestMapper
 import com.tokopedia.addongifting.addonbottomsheet.domain.usecase.GetAddOnByProductUseCase
 import com.tokopedia.addongifting.addonbottomsheet.domain.usecase.GetAddOnSavedStateUseCase
 import com.tokopedia.addongifting.addonbottomsheet.domain.usecase.SaveAddOnStateUseCase
@@ -32,7 +33,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     val uiEvent = _uiEvent.asSharedFlow()
 
     private var hasLoadData: Boolean = false
-    private var hasSavedState: Boolean = false
+    var hasSavedState: Boolean = false
 
     private val _productUiModel = MutableStateFlow(ProductUiModel())
     private val _addOnUiModel = MutableStateFlow(AddOnUiModel())
@@ -51,7 +52,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     }.flowOn(executorDispatchers.immediate)
 
     fun loadAddOnData(addOnProductData: AddOnProductData) {
-        val params = generateGetAddOnByProductRequestParams(addOnProductData)
+        val params = AddOnRequestMapper.generateGetAddOnByProductRequestParams(addOnProductData)
         getAddOnByProductUseCase.setParams(params)
         getAddOnByProductUseCase.execute(
                 onSuccess = {
@@ -61,34 +62,6 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
                     handleOnErrorGetAddOnProduct(it)
                 }
         )
-    }
-
-    private fun generateGetAddOnByProductRequestParams(addOnProductData: AddOnProductData): GetAddOnByProductRequest {
-        return GetAddOnByProductRequest().apply {
-            addOnRequest = addOnProductData.availableBottomSheetData.products.map {
-                var parentId = ""
-                parentId = if (it.productParentId.isNotEmpty() && it.productParentId.toLongOrZero() > 0) {
-                    it.productParentId
-                } else it.productId
-                AddOnByProductRequest().apply {
-                    productId = parentId
-                    warehouseId = addOnProductData.availableBottomSheetData.warehouseId
-                    addOnLevel = if (addOnProductData.availableBottomSheetData.isTokoCabang) {
-                        AddOnByProductRequest.ADD_ON_LEVEL_ORDER
-                    } else {
-                        AddOnByProductRequest.ADD_ON_LEVEL_PRODUCT
-                    }
-                }
-            }
-            sourceRequest = SourceRequest().apply {
-                squad = SourceRequest.SQUAD_VALUE
-                useCase = SourceRequest.USE_CASE_VALUE
-            }
-            requestData = RequestData().apply {
-                inventory = true
-                staticInfo = true
-            }
-        }
     }
 
     private fun handleOnSuccessGetAddOnByProduct(getAddOnByProductResponse: GetAddOnByProductResponse,
@@ -113,7 +86,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
 
     private fun loadSavedStateData(addOnProductData: AddOnProductData,
                                    addOnByProductResponse: GetAddOnByProductResponse) {
-        val params = generateGetAddOnSavedStateRequestParams(addOnProductData)
+        val params = AddOnRequestMapper.generateGetAddOnSavedStateRequestParams(addOnProductData)
         getAddOnSavedStateUseCase.setParams(params)
         getAddOnSavedStateUseCase.execute(
                 onSuccess = {
@@ -123,19 +96,6 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
                     handleOnErrorGetAddOnSavedState(addOnProductData, addOnByProductResponse)
                 }
         )
-    }
-
-    private fun generateGetAddOnSavedStateRequestParams(addOnProductData: AddOnProductData): GetAddOnSavedStateRequest {
-        return GetAddOnSavedStateRequest().apply {
-            source = addOnProductData.source
-            addOnKeys = listOf(
-                    if (addOnProductData.availableBottomSheetData.isTokoCabang) {
-                        "${addOnProductData.availableBottomSheetData.cartString}-0"
-                    } else {
-                        "${addOnProductData.availableBottomSheetData.cartString}-${addOnProductData.availableBottomSheetData.products.firstOrNull()?.cartId ?: ""}"
-                    }
-            )
-        }
     }
 
     private fun handleOnSuccessGetAddOnSavedState(getAddOnSavedStateResponse: GetAddOnSavedStateResponse,
@@ -186,7 +146,8 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     }
 
     fun saveAddOnState(addOnProductData: AddOnProductData) {
-        val params = generateSaveAddOnStateRequestParams(addOnProductData)
+        val addOnUiModel = _addOnUiModel.value
+        val params = AddOnRequestMapper.generateSaveAddOnStateRequestParams(addOnProductData, addOnUiModel)
         saveAddOnStateUseCase.setParams(params)
         saveAddOnStateUseCase.execute(
                 onSuccess = {
@@ -196,53 +157,6 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
                     handleOnErrorSaveAddOnState(it)
                 }
         )
-    }
-
-    private fun generateSaveAddOnStateRequestParams(addOnProductData: AddOnProductData): SaveAddOnStateRequest {
-        return SaveAddOnStateRequest().apply {
-            source = addOnProductData.source
-            addOns = listOf(
-                    AddOnRequest().apply {
-                        if (addOnProductData.availableBottomSheetData.isTokoCabang) {
-                            addOnKey = "${addOnProductData.availableBottomSheetData.cartString}-0"
-                            addOnLevel = AddOnConstant.ADD_ON_LEVEL_ORDER
-                        } else {
-                            addOnKey = "${addOnProductData.availableBottomSheetData.cartString}-${addOnProductData.availableBottomSheetData.products.firstOrNull()?.cartId}"
-                            addOnLevel = AddOnConstant.ADD_ON_LEVEL_PRODUCT
-                        }
-                        cartProducts = addOnProductData.availableBottomSheetData.products.map {
-                            CartProduct().apply {
-                                cartId = it.cartId.toLongOrZero()
-                                productId = it.productId.toLongOrZero()
-                                warehouseId = addOnProductData.availableBottomSheetData.warehouseId.toLongOrZero()
-                                productName = it.productName
-                                productImageUrl = it.productImageUrl
-                                productParentId = it.productParentId
-                            }
-                        }
-                        _addOnUiModel.value.let {
-                            if (it.isAddOnSelected) {
-                                addOnData = listOf(
-                                        AddOnDataRequest().apply {
-                                            addOnId = it.addOnId.toLongOrZero()
-                                            addOnQty = it.addOnQty
-                                            addOnMetadata = AddOnMetadataRequest().apply {
-                                                addOnNote = AddOnNoteRequest().apply {
-                                                    isCustomNote = it.isCustomNote
-                                                    to = it.addOnNoteTo
-                                                    from = it.addOnNoteFrom
-                                                    notes = it.addOnNote
-                                                }
-                                            }
-                                        }
-                                )
-                            } else {
-                                addOnData = emptyList()
-                            }
-                        }
-                    }
-            )
-        }
     }
 
     private fun handleOnSuccessSaveAddOnState(saveAddOnStateResponse: SaveAddOnStateResponse) {
@@ -273,6 +187,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     }
 
     fun updateFragmentUiModel(addOnUiModel: AddOnUiModel) {
+        _addOnUiModel.value = addOnUiModel
         _totalAmountUiModel.value = TotalAmountUiModel().apply {
             if (addOnUiModel.isAddOnSelected) {
                 addOnTotalPrice = addOnUiModel.addOnQty * addOnUiModel.addOnPrice

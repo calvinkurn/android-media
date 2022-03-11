@@ -3,6 +3,7 @@ package com.tokopedia.addongifting.addonbottomsheet.view
 import com.google.gson.Gson
 import com.tokopedia.addongifting.addonbottomsheet.data.getaddonbyproduct.GetAddOnByProductResponse
 import com.tokopedia.addongifting.addonbottomsheet.data.getaddonsavedstate.GetAddOnSavedStateResponse
+import com.tokopedia.addongifting.addonbottomsheet.data.saveaddonstate.SaveAddOnStateResponse
 
 object DataProvider {
 
@@ -25,4 +26,11 @@ object DataProvider {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_add_on_saved_state_error"), GetAddOnSavedStateResponse::class.java)
     }
 
+    fun provideSaveAddOnDataSuccess(): SaveAddOnStateResponse {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/save_add_on_state_success"), SaveAddOnStateResponse::class.java)
+    }
+
+    fun provideSaveAddOnDataError(): SaveAddOnStateResponse {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/save_add_on_state_error"), SaveAddOnStateResponse::class.java)
+    }
 }
