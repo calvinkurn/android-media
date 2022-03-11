@@ -19,7 +19,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.PATTERN_DATE_PARAM
 import com.tokopedia.sellerorder.common.util.SomConsts.UNIFY_TICKER_TYPE_ANNOUNCEMENT
@@ -171,11 +171,11 @@ object Utils {
     }
 
     fun Fragment?.updateShopActive() {
-        this?.context?.let { UpdateShopActiveService.startService(it) }
+        this?.context?.let { UpdateShopActiveWorker.execute(it) }
     }
 
     fun Activity.updateShopActive() {
-        UpdateShopActiveService.startService(this)
+        UpdateShopActiveWorker.execute(this)
     }
 
     fun View.generateHapticFeedback() {

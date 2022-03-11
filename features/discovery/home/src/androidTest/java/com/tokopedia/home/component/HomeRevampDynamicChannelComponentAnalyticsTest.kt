@@ -376,6 +376,32 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         }
     }
 
+    @Test
+    fun testComponentMerchantVoucherWidget() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = MerchantVoucherDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnMerchantVoucherWidget(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MERCHANT_VOUCHER)
+        }
+    }
+
+    @Test
+    fun testSpecialReleaseWidget() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = SpecialReleaseDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnSpecialReleaseWidget(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_SPECIAL_RELEASE)
+        }
+    }
+
     private fun initTest() {
         InstrumentationAuthHelper.clearUserSession()
         waitForData()

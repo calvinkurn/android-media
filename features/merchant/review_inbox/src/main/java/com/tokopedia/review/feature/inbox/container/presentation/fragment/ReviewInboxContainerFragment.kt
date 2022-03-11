@@ -23,7 +23,6 @@ import com.tokopedia.review.ReviewInboxInstance
 import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
-import com.tokopedia.review.common.presentation.InboxUnifiedRemoteConfig
 import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.review.feature.inbox.buyerreview.view.fragment.InboxReputationFragment
 import com.tokopedia.review.feature.inbox.container.analytics.ReviewInboxContainerTracking
@@ -137,9 +136,6 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         observeReviewTabs()
         getCounterData()
         setupTabLayout()
-        if(InboxUnifiedRemoteConfig.isInboxUnified()) {
-            adjustViewBasedOnRole()
-        }
     }
 
     override fun onDestroy() {
@@ -269,9 +265,6 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     }
 
     private fun updateCounter(counter: Int) {
-        if(InboxUnifiedRemoteConfig.isInboxUnified()) {
-            return
-        }
         binding?.reviewInboxTabs?.tabLayout?.getTabAt(PENDING_TAB_INDEX)?.setCounter(counter)
     }
 
@@ -288,10 +281,6 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     }
 
     private fun initToolbar() {
-        if(InboxUnifiedRemoteConfig.isInboxUnified()) {
-            binding?.headerReviewInboxContainer?.hide()
-            return
-        }
         activity?.run {
             (this as? AppCompatActivity)?.run {
                 supportActionBar?.hide()
@@ -357,15 +346,5 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
             }
         }
         return tabTitles
-    }
-
-    private fun adjustViewBasedOnRole() {
-        if(containerListener?.role == RoleType.BUYER) {
-            updateInboxUnifiedBuyerView()
-            return
-        }
-        updateInboxUnifiedSellerView()
-        setBuyerReviewFragment()
-        attachBuyerReviewFragment()
     }
 }
