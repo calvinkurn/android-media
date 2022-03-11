@@ -13,9 +13,15 @@ class SaveReschedulePickupUseCase @Inject constructor(private val useCase: Graph
     }
 
     suspend fun execute(param: SaveReschedulePickupParam): SaveReschedulePickupResponse.Data {
-        useCase.setGraphqlQuery(SaveReschedulePickupQuery)
-        useCase.setRequestParams(generateParam(param))
-        return useCase.executeOnBackground()
+//        useCase.setGraphqlQuery(SaveReschedulePickupQuery)
+//        useCase.setRequestParams(generateParam(param))
+//        return useCase.executeOnBackground()
+        return SaveReschedulePickupResponse.Data(
+                mpLogisticInsertReschedulePickup = SaveReschedulePickupResponse.Data.MpLogisticInsertReschedulePickup(
+                    message = "Sepertinya pencarian driver baru sudah dilakukan (maks. 1x) atau masih berlangsung.",
+                    status = "999"
+                )
+            )
     }
 
     private fun generateParam(param: SaveReschedulePickupParam): Map<String, Any?> {
