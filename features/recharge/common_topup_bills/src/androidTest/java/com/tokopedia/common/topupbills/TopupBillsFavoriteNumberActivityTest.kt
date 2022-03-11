@@ -110,7 +110,6 @@ class TopupBillsFavoriteNumberActivityTest {
         isCoachmarkDisabled(targetContext, false)
         mActivityRule.launchActivity(intent)
 
-        Thread.sleep(3000)
         validate_show_contents_favorite_number_page()
         validate_coachmark_favorite_number()
         validate_menu_bottom_sheet_favorite_number()
@@ -137,7 +136,6 @@ class TopupBillsFavoriteNumberActivityTest {
         isCoachmarkDisabled(targetContext, true)
         mActivityRule.launchActivity(intent)
 
-        Thread.sleep(3000)
         validate_empty_state()
 
         MatcherAssert.assertThat(
@@ -158,7 +156,6 @@ class TopupBillsFavoriteNumberActivityTest {
         isCoachmarkDisabled(targetContext, true)
         mActivityRule.launchActivity(intent)
 
-        Thread.sleep(3000)
         validate_delete_favorite_number_fail()
 
         MatcherAssert.assertThat(
