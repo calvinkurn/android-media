@@ -120,4 +120,28 @@ class PlayBroadcastSummaryViewModelTest {
             }
         }
     }
+
+    @Test
+    fun `when parse duration is failed, it should not eligible to post video`() {
+        val mockLiveStatWithWrongDuration = mockLiveStats.copy(
+            duration = "wrong:duration:haha"
+        )
+
+        coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
+        coEvery { mockGetLiveStatisticsUseCase.executeOnBackground() } returns mockLiveStatWithWrongDuration
+
+        val robot = PlayBroadcastSummaryViewModelRobot(
+            dispatcher = testDispatcher,
+            getLiveStatisticsUseCase = mockGetLiveStatisticsUseCase,
+            getChannelUseCase = mockGetChannelUseCase,
+        )
+
+        robot.use {
+            val state = it.recordState {  }
+
+            with(state.channelSummary) {
+                isEligiblePostVideo.assertFalse()
+            }
+        }
+    }
 }
