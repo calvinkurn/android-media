@@ -42,7 +42,31 @@ class SaveAddOnTest : BaseAddOnTest() {
     }
 
     @Test
-    fun `WHEN save add on error THEN ui state should be STATE_FAILED_SAVE_ADD_ON`() = runBlockingTest {
+    fun `WHEN save add on got error THEN ui state should be STATE_FAILED_SAVE_ADD_ON`() = runBlockingTest {
+        // Given
+        val addOnProductData = AddOnProductData()
+        val response = DataProvider.provideSaveAddOnDataError()
+        coEvery { saveAddOnStateUseCase.setParams(any()) } just Runs
+        coEvery { saveAddOnStateUseCase.execute(any(), any()) } answers {
+            firstArg<(SaveAddOnStateResponse) -> Unit>().invoke(response)
+        }
+
+        // store the result
+        val result = mutableListOf<UiEvent>()
+        val job = launch {
+            viewModel.uiEvent.toCollection(result)
+        }
+
+        // When
+        viewModel.saveAddOnState(addOnProductData)
+
+        // Then
+        assert(result.first().state == UiEvent.STATE_FAILED_SAVE_ADD_ON)
+        job.cancel()
+    }
+
+    @Test
+    fun `WHEN save add on got exception THEN ui state should be STATE_FAILED_SAVE_ADD_ON`() = runBlockingTest {
         // Given
         val addOnProductData = AddOnProductData()
         coEvery { saveAddOnStateUseCase.setParams(any()) } just Runs

@@ -12,13 +12,63 @@ import org.junit.Test
 class UiLogicTest : BaseAddOnTest() {
 
     @Test
-    fun `WHEN has saved add on state and has changed add on selection state THEN ui state should be STATE_SHOW_CLOSE_DIALOG_CONFIRMATION`() = runBlockingTest {
+    fun `WHEN has saved add on state and has no changed add on selection state THEN ui state should be STATE_DISMISS_BOTTOM_SHEET`() = runBlockingTest {
+        // Given
+        viewModel.hasSavedState = true
+        viewModel.updateFragmentUiModel(
+                addOnUiModel = AddOnUiModel(
+                        initialSelectedState = true,
+                        isAddOnSelected = true
+                )
+        )
+
+        // store the result
+        val result = mutableListOf<UiEvent>()
+        val job = launch {
+            viewModel.uiEvent.toCollection(result)
+        }
+
+        // When
+        viewModel.validateCloseAction()
+
+        // Then
+        assert(result.first().state == UiEvent.STATE_DISMISS_BOTTOM_SHEET)
+        job.cancel()
+    }
+
+    @Test
+    fun `WHEN has saved add on state and has changed add on selection state to false THEN ui state should be STATE_SHOW_CLOSE_DIALOG_CONFIRMATION`() = runBlockingTest {
         // Given
         viewModel.hasSavedState = true
         viewModel.updateFragmentUiModel(
                 addOnUiModel = AddOnUiModel(
                         initialSelectedState = true,
                         isAddOnSelected = false
+                )
+        )
+
+        // store the result
+        val result = mutableListOf<UiEvent>()
+        val job = launch {
+            viewModel.uiEvent.toCollection(result)
+        }
+
+        // When
+        viewModel.validateCloseAction()
+
+        // Then
+        assert(result.first().state == UiEvent.STATE_SHOW_CLOSE_DIALOG_CONFIRMATION)
+        job.cancel()
+    }
+
+    @Test
+    fun `WHEN has saved add on state and has changed add on selection state to true THEN ui state should be STATE_SHOW_CLOSE_DIALOG_CONFIRMATION`() = runBlockingTest {
+        // Given
+        viewModel.hasSavedState = true
+        viewModel.updateFragmentUiModel(
+                addOnUiModel = AddOnUiModel(
+                        initialSelectedState = false,
+                        isAddOnSelected = true
                 )
         )
 

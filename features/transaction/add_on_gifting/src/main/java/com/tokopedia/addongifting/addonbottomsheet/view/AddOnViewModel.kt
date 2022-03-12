@@ -69,7 +69,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
         if (getAddOnByProductResponse.dataResponse.error.errorCode.isBlank()) {
             loadSavedStateData(addOnProductData, getAddOnByProductResponse)
         } else {
-            throw ResponseErrorException(getAddOnByProductResponse.dataResponse.error.message)
+            handleOnErrorGetAddOnProduct(ResponseErrorException(getAddOnByProductResponse.dataResponse.error.message))
         }
     }
 
@@ -102,7 +102,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
                                                   addOnProductData: AddOnProductData,
                                                   addOnByProductResponse: GetAddOnByProductResponse) {
         if (getAddOnSavedStateResponse.getAddOns.errorMessage.firstOrNull()?.isNotBlank() == true) {
-            throw ResponseErrorException(getAddOnSavedStateResponse.getAddOns.errorMessage.joinToString(". "))
+            handleOnErrorGetAddOnSavedState(addOnProductData, addOnByProductResponse)
         } else {
             prepareAddOnData(addOnProductData, addOnByProductResponse, getAddOnSavedStateResponse)
         }
@@ -161,8 +161,7 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
 
     private fun handleOnSuccessSaveAddOnState(saveAddOnStateResponse: SaveAddOnStateResponse) {
         if (saveAddOnStateResponse.saveAddOns.errorMessage.firstOrNull()?.isNotBlank() == true) {
-            throw ResponseErrorException(saveAddOnStateResponse.saveAddOns.errorMessage.firstOrNull()
-                    ?: "")
+            handleOnErrorSaveAddOnState(ResponseErrorException(saveAddOnStateResponse.saveAddOns.errorMessage.first()))
         } else {
             launch {
                 _uiEvent.emit(

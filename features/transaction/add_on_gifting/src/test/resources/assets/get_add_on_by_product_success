@@ -1,5 +1,5 @@
 {
-  "GetAddOnByProductResponse": {
+  "GetAddOnByProduct": {
     "error": {
       "messages": "",
       "reason": [],

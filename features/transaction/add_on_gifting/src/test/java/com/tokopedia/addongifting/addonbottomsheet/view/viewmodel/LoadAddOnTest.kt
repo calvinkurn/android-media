@@ -19,7 +19,7 @@ import org.junit.Test
 class LoadAddOnTest: BaseAddOnTest() {
 
     @Test
-    fun `WHEN load add on data and ad on saved state success THEN ui state should be STATE_SUCCESS_LOAD_ADD_ON_DATA`() = runBlockingTest {
+    fun `WHEN load add on data success and load add on saved state success THEN ui state should be STATE_SUCCESS_LOAD_ADD_ON_DATA`() = runBlockingTest {
         // GIVEN
         val addOnProductData = AddOnProductData()
         val addOnSuccessResponse = DataProvider.provideLoadAddOnDataSuccess()
@@ -49,7 +49,7 @@ class LoadAddOnTest: BaseAddOnTest() {
     }
 
     @Test
-    fun `WHEN load add on data error THEN ui state should be STATE_FAILED_LOAD_ADD_ON_DATA`() = runBlockingTest {
+    fun `WHEN load add on data got error exception THEN ui state should be STATE_FAILED_LOAD_ADD_ON_DATA`() = runBlockingTest {
         // GIVEN
         val addOnProductData = AddOnProductData()
         coEvery { getAddOnByProductUseCase.setParams(any()) } just Runs
@@ -68,6 +68,65 @@ class LoadAddOnTest: BaseAddOnTest() {
 
         // THEN
         assert(result.first().state == UiEvent.STATE_FAILED_LOAD_ADD_ON_DATA)
+        job.cancel()
+    }
+
+    @Test
+    fun `WHEN load add on data got error message THEN ui state should be STATE_FAILED_LOAD_ADD_ON_DATA`() = runBlockingTest {
+        // GIVEN
+        val addOnProductData = AddOnProductData()
+        val addOnErrorResponse = DataProvider.provideLoadAddOnDataError()
+        coEvery { getAddOnByProductUseCase.setParams(any()) } just Runs
+        coEvery { getAddOnByProductUseCase.execute(any(), any()) } answers {
+            firstArg<(GetAddOnByProductResponse) -> Unit>().invoke(addOnErrorResponse)
+        }
+        val addOnSavedStateSuccessResponse = DataProvider.provideLoadAddOnSavedStateDataSuccess()
+        coEvery { getAddOnSavedStateUseCase.setParams(any()) } just Runs
+        coEvery { getAddOnSavedStateUseCase.execute(any(), any()) } answers {
+            firstArg<(GetAddOnSavedStateResponse) -> Unit>().invoke(addOnSavedStateSuccessResponse)
+        }
+
+        // store the result
+        val result = mutableListOf<UiEvent>()
+        val job = launch {
+            viewModel.uiEvent.toCollection(result)
+        }
+
+        // WHEN
+        viewModel.loadAddOnData(addOnProductData)
+
+        // THEN
+        assert(result.first().state == UiEvent.STATE_FAILED_LOAD_ADD_ON_DATA)
+        job.cancel()
+    }
+
+    @Test
+    fun `WHEN load add on data success but load add on saved state got error message THEN ui state should be STATE_SUCCESS_LOAD_ADD_ON_DATA`() = runBlockingTest {
+        // GIVEN
+        val addOnProductData = AddOnProductData()
+        val addOnSuccessResponse = DataProvider.provideLoadAddOnDataSuccess()
+        coEvery { getAddOnByProductUseCase.setParams(any()) } just Runs
+        coEvery { getAddOnByProductUseCase.execute(any(), any()) } answers {
+            firstArg<(GetAddOnByProductResponse) -> Unit>().invoke(addOnSuccessResponse)
+        }
+
+        val addOnSavedStateSuccessResponse = DataProvider.provideLoadAddOnSavedStateDataError()
+        coEvery { getAddOnSavedStateUseCase.setParams(any()) } just Runs
+        coEvery { getAddOnSavedStateUseCase.execute(any(), any()) } answers {
+            firstArg<(GetAddOnSavedStateResponse) -> Unit>().invoke(addOnSavedStateSuccessResponse)
+        }
+
+        // store the result
+        val result = mutableListOf<UiEvent>()
+        val job = launch {
+            viewModel.uiEvent.toCollection(result)
+        }
+
+        // WHEN
+        viewModel.loadAddOnData(addOnProductData)
+
+        // THEN
+        assert(result.first().state == UiEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA)
         job.cancel()
     }
 
