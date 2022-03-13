@@ -2,12 +2,12 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.animation.Animator
 import android.animation.ValueAnimator
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.charts.common.ChartColor
 import com.tokopedia.charts.common.ChartTooltip
@@ -15,7 +15,6 @@ import com.tokopedia.charts.config.LineChartConfig
 import com.tokopedia.charts.model.*
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcMultiLineGraphWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.adapter.MultiLineMetricsAdapter
@@ -178,7 +177,7 @@ class MultiLineGraphViewHolder(
             }
         }
 
-        notifyAdapterDateChanged()
+        metricsAdapter.notifyDataSetChanged()
         val selectedMetrics = metricsAdapter.items.filter { it.isSelected }
         showLineGraph(selectedMetrics)
     }
@@ -198,7 +197,8 @@ class MultiLineGraphViewHolder(
             it.gone()
         }
         errorStateBinding.commonWidgetErrorState.visible()
-        errorStateBinding.imgWidgetOnError.loadImage(
+        ImageHandler.loadImageWithId(
+            errorStateBinding.imgWidgetOnError,
             com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
         )
 
@@ -353,14 +353,9 @@ class MultiLineGraphViewHolder(
 
             metricsAdapter.setItems(items)
             rvShcGraphMetrics.post {
-                notifyAdapterDateChanged()
+                metricsAdapter.notifyDataSetChanged()
             }
         }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private fun notifyAdapterDateChanged() {
-        metricsAdapter.notifyDataSetChanged()
     }
 
     private fun showLineGraph(metrics: List<MultiLineMetricUiModel>) {
@@ -599,7 +594,8 @@ class MultiLineGraphViewHolder(
     private fun showMetricErrorState() {
         binding.chartViewShcMultiLine.gone()
         errorStateBinding.commonWidgetErrorState.visible()
-        errorStateBinding.imgWidgetOnError.loadImage(
+        ImageHandler.loadImageWithId(
+            errorStateBinding.imgWidgetOnError,
             com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
         )
     }
