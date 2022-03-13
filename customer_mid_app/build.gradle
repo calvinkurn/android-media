@@ -374,4 +374,5 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.benchmark
     androidTestImplementation rootProject.ext.testDependencies.testCore
 
+    debugImplementation rootProject.ext.testDependencies.fragmentTest
 }

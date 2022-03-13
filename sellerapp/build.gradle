@@ -416,6 +416,8 @@ dependencies {
 
     //Adding this to df_base_sellerapp/build.gradle was giving error - https://github.com/Meituan-Dianping/Robust/issues/444
     implementation projectOrAar(rootProject.ext.libraries.imagePickerInsta)
+
+    debugImplementation rootProject.ext.testDependencies.fragmentTest
 }
 
 apply plugin: 'com.google.gms.google-services'

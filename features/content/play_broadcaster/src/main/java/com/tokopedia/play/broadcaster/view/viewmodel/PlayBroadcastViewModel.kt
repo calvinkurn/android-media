@@ -13,28 +13,28 @@ import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.InteractiveDataStoreImpl
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
-import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
-import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocket
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocketMapper
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
+import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.pusher.*
 import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
+import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
+import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleFormUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
-import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
-import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
-import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
+import com.tokopedia.play.broadcaster.ui.state.*
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherException
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
@@ -58,6 +58,9 @@ import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketClosedReason
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.*
@@ -67,7 +70,8 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 24/05/20.
  */
-internal class PlayBroadcastViewModel @Inject constructor(
+class PlayBroadcastViewModel @AssistedInject constructor(
+    @Assisted private val handle: SavedStateHandle,
     private val livePusherMediator: PusherMediator,
     private val mDataStore: PlayBroadcastDataStore,
     private val hydraConfigStore: HydraConfigStore,
@@ -79,13 +83,16 @@ internal class PlayBroadcastViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val playBroadcastWebSocket: PlayWebSocket,
     private val playBroadcastMapper: PlayBroadcastMapper,
+    private val productMapper: PlayBroProductUiMapper,
     private val channelInteractiveMapper: PlayChannelInteractiveMapper,
     private val repo: PlayBroadcastRepository,
     private val logger: PlayLogger
 ) : ViewModel() {
 
-    val isFirstStreaming: Boolean
-        get() = sharedPref.isFirstStreaming()
+    @AssistedFactory
+    interface Factory {
+        fun create(handle: SavedStateHandle): PlayBroadcastViewModel
+    }
 
     val channelId: String
         get() = hydraConfigStore.getChannelId()
@@ -115,9 +122,6 @@ internal class PlayBroadcastViewModel @Inject constructor(
         get() = _observableNewChat
     val observableNewMetrics: LiveData<Event<List<PlayMetricUiModel>>>
         get() = _observableNewMetrics
-    val observableProductList = getCurrentSetupDataStore().getObservableSelectedProducts()
-            .map { dataList -> dataList.map { ProductContentUiModel.createFromData(it) } }
-            .asLiveData(viewModelScope.coroutineContext + dispatcher.computation)
     val observableCover = getCurrentSetupDataStore().getObservableSelectedCover()
     val observableTitle: LiveData<PlayTitleUiModel.HasTitle> = getCurrentSetupDataStore().getObservableTitle()
                 .filterIsInstance<PlayTitleUiModel.HasTitle>()
@@ -150,6 +154,9 @@ internal class PlayBroadcastViewModel @Inject constructor(
     val observableLivePusherInfo: LiveData<PlayLiveLogState>
         get() = _observableLivePusherInfo
 
+    val productSectionList: List<ProductTagSectionUiModel>
+        get() = _productSectionList.value
+
     private val _observableConfigInfo = MutableLiveData<NetworkResult<ConfigurationUiModel>>()
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
     private val _observableTotalView = MutableLiveData<TotalViewUiModel>()
@@ -176,6 +183,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
     private val _pinnedMessage = MutableStateFlow<PinnedMessageUiModel>(
         PinnedMessageUiModel.Empty()
     )
+    private val _productSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
     private val _isExiting = MutableStateFlow(false)
 
     private val _channelUiState = _configInfo
@@ -197,11 +205,13 @@ internal class PlayBroadcastViewModel @Inject constructor(
     val uiState = combine(
         _channelUiState.distinctUntilChanged(),
         _pinnedMessageUiState.distinctUntilChanged(),
+        _productSectionList,
         _isExiting
-    ) { channelState, pinnedMessage, isExiting ->
+    ) { channelState, pinnedMessage, productMap, isExiting ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
+            selectedProduct = productMap,
             isExiting = isExiting,
         )
     }
@@ -270,6 +280,16 @@ internal class PlayBroadcastViewModel @Inject constructor(
     private val gson by lazy { Gson() }
 
     init {
+        val savedTitle = handle.get<String>(KEY_TITLE)
+        if (savedTitle != null) getCurrentSetupDataStore().setTitle(savedTitle)
+
+        viewModelScope.launch(dispatcher.computation) {
+            getCurrentSetupDataStore().getObservableTitle().collectLatest {
+                if (it is PlayTitleUiModel.HasTitle) handle[KEY_TITLE] = it.title
+                else handle.remove(KEY_TITLE)
+            }
+        }
+
         _observableChatList.value = mutableListOf()
         livePusherMediator.addListener(liveViewStateListener)
         livePusherMediator.addListener(liveChannelStateListener)
@@ -290,6 +310,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
             PlayBroadcastAction.EditPinnedMessage -> handleEditPinnedMessage()
             is PlayBroadcastAction.SetPinnedMessage -> handleSetPinnedMessage(event.message)
             PlayBroadcastAction.CancelEditPinnedMessage -> handleCancelEditPinnedMessage()
+            is PlayBroadcastAction.SetCover -> handleSetCover(event.cover)
+            is PlayBroadcastAction.SetProduct -> handleSetProduct(event.productTagSectionList)
         }
     }
 
@@ -312,11 +334,18 @@ internal class PlayBroadcastViewModel @Inject constructor(
             // get channel when channel status is paused
             if (configUiModel.channelType == ChannelType.Pause
                     // also when complete draft is true
-                    || configUiModel.channelType == ChannelType.CompleteDraft) {
-                val err = getChannelById(configUiModel.channelId)
-                if (err != null) {
-                    throw err
-                }
+                    || configUiModel.channelType == ChannelType.CompleteDraft
+                    || configUiModel.channelType == ChannelType.Draft) {
+                        val deferredChannel = async { getChannelById(configUiModel.channelId) }
+                        val deferredProductMap = async {
+                            repo.getProductTagSummarySection(channelID = configUiModel.channelId)
+                        }
+
+                        val error = deferredChannel.await()
+                        val productMap = deferredProductMap.await()
+
+                        if (error != null) throw error
+                        setSelectedProduct(productMap)
             }
 
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
@@ -337,14 +366,6 @@ internal class PlayBroadcastViewModel @Inject constructor(
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { this.getConfiguration() }
         }
-    }
-
-    fun getHydraSetupData(): SerializableHydraSetupData {
-        return mDataStore.getSerializableData()
-    }
-
-    fun setHydraSetupData(setupData: SerializableHydraSetupData) {
-        mDataStore.setSerializableData(setupData)
     }
 
     suspend fun getChannelDetail() = getChannelById(channelId)
@@ -383,7 +404,6 @@ internal class PlayBroadcastViewModel @Inject constructor(
             setChannelInfo(channelInfo)
             setAddedTags(tags.recommendedTags.tags.toSet())
 
-            setSelectedProduct(playBroadcastMapper.mapChannelProductTags(channel.productTags))
             setSelectedCover(playBroadcastMapper.mapCover(getCurrentSetupDataStore().getSelectedCover(), channel.basic.coverUrl))
             setBroadcastSchedule(playBroadcastMapper.mapChannelSchedule(channel.basic.timestamp))
 
@@ -709,7 +729,9 @@ internal class PlayBroadcastViewModel @Inject constructor(
                 if (result.remaining <= 0) logger.logSocketType(result)
                 restartLiveDuration(result)
             }
-            is ProductTagging -> setSelectedProduct(playBroadcastMapper.mapProductTag(result))
+            is SectionedProductTagSocketResponse -> {
+                setSelectedProduct(productMapper.mapSectionedProduct(result))
+            }
             is Chat -> retrieveNewChat(playBroadcastMapper.mapIncomingChat(result))
             is Freeze -> {
                 if (_observableLiveTimerState.value !is PlayLiveTimerState.Finish) {
@@ -744,8 +766,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
-    private fun setSelectedProduct(products: List<ProductData>) {
-        getCurrentSetupDataStore().setSelectedProducts(products)
+    private fun setSelectedProduct(productSectionList: List<ProductTagSectionUiModel>) {
+        _productSectionList.value = productSectionList
     }
 
     private fun setSelectedCover(cover: PlayCoverUiModel) {
@@ -854,6 +876,14 @@ internal class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
+    private fun handleSetCover(cover: PlayCoverUiModel) {
+        setSelectedCover(cover)
+    }
+
+    private fun handleSetProduct(productSectionList: List<ProductTagSectionUiModel>) {
+        setSelectedProduct(productSectionList)
+    }
+
     /**
      * UI
      */
@@ -891,7 +921,11 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
     fun getShopIconUrl(): String = userSession.shopAvatar
 
+    fun getShopName(): String = userSession.shopName
+
     companion object {
+
+        private const val KEY_TITLE = "title"
 
         private const val INTERACTIVE_GQL_CREATE_DELAY = 3000L
         private const val INTERACTIVE_GQL_LEADERBOARD_DELAY = 3000L
