@@ -671,6 +671,7 @@ class MultiLineGraphViewHolder(
     private fun animateShowEmptyState() {
         with(emptyStateBinding) {
             if (hideAnimation?.isRunning == true) hideAnimation?.end()
+            if (multiLineEmptyState.isVisible) return
             multiLineEmptyState.show()
             showAnimation = multiLineEmptyState.animatePop(0f, 1f)
         }
