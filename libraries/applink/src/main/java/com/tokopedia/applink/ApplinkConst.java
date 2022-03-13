@@ -461,9 +461,6 @@ public interface ApplinkConst {
     String MONEYIN = "tokopedia://money_in/device_validation";
     String IMAGE_PICKER_V2 = "tokopedia://image-picker/v2";
 
-    String MEDIA_PICKER = "tokopedia://media-picker";
-    String MEDIA_PICKER_PREVIEW = "tokopedia://media-picker-preview";
-
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";
     }
@@ -688,6 +685,9 @@ public interface ApplinkConst {
     }
 
     interface MediaPicker {
+        String MEDIA_PICKER = "tokopedia://media-picker";
+        String MEDIA_PICKER_PREVIEW = "tokopedia://media-picker-preview";
+
         String PARAM_PAGE = "page";
         String VALUE_PAGE_CAMERA = "camera";
         String VALUE_PAGE_GALLERY = "gallery";
@@ -699,6 +699,10 @@ public interface ApplinkConst {
         String PARAM_SELECTION = "type";
         String VALUE_TYPE_SINGLE = "single";
         String VALUE_TYPE_MULTIPLE = "multiple";
+
+        String PARAM_LANDING_PAGE = "start";
+        String VALUE_CAMERA_PAGE = "0";
+        String VALUE_GALLERY_PAGE = "1";
     }
 
     interface GeneralInfo {

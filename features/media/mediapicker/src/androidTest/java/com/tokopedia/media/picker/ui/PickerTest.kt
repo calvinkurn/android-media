@@ -61,7 +61,7 @@ abstract class PickerTest {
 
     private fun createIntent(): Uri.Builder {
         val builder = Uri.parse(
-            ApplinkConst.MEDIA_PICKER
+            ApplinkConst.MediaPicker.MEDIA_PICKER
         ).buildUpon()
 
         createAndAppendUri(builder)

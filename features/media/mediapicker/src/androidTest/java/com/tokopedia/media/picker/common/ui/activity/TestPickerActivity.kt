@@ -20,6 +20,7 @@ class TestPickerActivity : PickerActivity() {
         PickerUiConfig.setupQueryPage(data)
         PickerUiConfig.setupQueryMode(data)
         PickerUiConfig.setupQuerySelectionType(data)
+        PickerUiConfig.setupQueryLandingPageIndex(data)
     }
 
     override fun createFragmentFactory(): PickerFragmentFactory {

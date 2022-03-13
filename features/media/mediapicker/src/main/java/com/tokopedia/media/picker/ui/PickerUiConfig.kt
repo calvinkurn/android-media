@@ -21,7 +21,7 @@ object PickerUiConfig {
     var selectionMode = PickerSelectionType.MULTIPLE
         private set
 
-    var pickerParam: PickerParam? = null
+    var startPageIndex = 0
         private set
 
     fun isSingleSelectionType()
@@ -80,6 +80,11 @@ object PickerUiConfig {
             MediaPicker.VALUE_TYPE_SINGLE -> PickerSelectionType.SINGLE
             else -> PickerSelectionType.MULTIPLE // default
         }
+    }
+
+    fun setupQueryLandingPageIndex(data: Uri) {
+        val value = data.getQueryParameter(MediaPicker.PARAM_LANDING_PAGE)?: "0"
+        startPageIndex = value.toInt()
     }
 
 }

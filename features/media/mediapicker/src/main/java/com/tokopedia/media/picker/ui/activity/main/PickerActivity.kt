@@ -186,6 +186,7 @@ open class PickerActivity : BaseActivity()
         PickerUiConfig.setupQueryPage(data)
         PickerUiConfig.setupQueryMode(data)
         PickerUiConfig.setupQuerySelectionType(data)
+        PickerUiConfig.setupQueryLandingPageIndex(data)
 
         cacheManager.setParam(
             PickerUiConfig.pageType,
@@ -269,6 +270,9 @@ open class PickerActivity : BaseActivity()
 
                 // display the tab navigation
                 setupTabView()
+
+                // start position of tab
+                binding?.tabPage?.tabLayout?.getTabAt(PickerUiConfig.startPageIndex)?.select()
             }
         }
     }
