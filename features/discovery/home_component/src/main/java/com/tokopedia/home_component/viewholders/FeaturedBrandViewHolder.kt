@@ -69,13 +69,6 @@ class FeaturedBrandViewHolder (itemView: View,
         adapter.addData(element)
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
-        if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                GridSpacingItemDecoration(
-                    FeaturedBrandTabletConfiguration.SPAN_COUNT,
-                    FeaturedBrandTabletConfiguration.getSpanSpacing(itemView.context),
-                    false
-                )
-        )
     }
 
     private fun setHeaderComponent(element: FeaturedBrandDataModel) {
