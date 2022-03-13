@@ -12,7 +12,7 @@ object FeaturedBrandTabletConfiguration {
 
     const val SPAN_COUNT = 4
     private const val SPAN_SPACING_MOBILE = 8
-    private const val SPAN_SPACING_TABLET = 0
+    private const val SPAN_SPACING_TABLET = 8
     @LayoutRes
     private val LAYOUT_MOBILE = R.layout.layout_featured_brand_item_mobile
     @LayoutRes

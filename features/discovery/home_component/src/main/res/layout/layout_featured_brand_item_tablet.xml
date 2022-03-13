@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify2
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginBottom="@dimen/unify_space_16"
-    android:layout_marginHorizontal="@dimen/unify_space_4"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true"
     android:id="@+id/featured_brand_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/unify_space_8">
+        android:layout_height="match_parent"
+        android:paddingBottom="8dp">
         <com.tokopedia.unifycomponents.ImageUnify
             android:contentDescription="@string/content_desc_featured_brand_image"
             android:id="@+id/featured_brand_image"
             android:layout_width="0dp"
-            android:layout_height="123dp"
+            android:layout_height="0dp"
             android:maxHeight="@dimen/component_featured_brand_image_size"
+            app:layout_constraintDimensionRatio="1:1"
             android:scaleType="centerCrop"
             tools:background="@color/Unify_N75"
             tools:visibility="visible"
@@ -27,11 +29,11 @@
 
         <FrameLayout
             android:id="@+id/container_featured_brand_logo"
-            android:layout_width="@dimen/component_featured_brand_logo_circle_size"
-            android:layout_height="@dimen/component_featured_brand_logo_circle_size"
+            android:layout_width="@dimen/component_featured_brand_logo_size"
+            android:layout_height="@dimen/component_featured_brand_logo_size"
             android:padding="4dp"
-            android:layout_marginTop="@dimen/unify_space_8"
-            android:layout_marginHorizontal="@dimen/unify_space_8"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginVertical="8dp"
             android:background="@drawable/featured_brand_border_image"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -42,9 +44,8 @@
             <ImageView
                 android:contentDescription="@string/content_desc_featured_brand_icon"
                 android:id="@+id/featured_brand_logo"
-                android:layout_gravity="center"
-                android:layout_width="@dimen/component_featured_brand_logo_image_size"
-                android:layout_height="@dimen/component_featured_brand_logo_image_size"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -61,7 +62,7 @@
             android:minLines="1"
             android:maxLines="2"
             android:ellipsize="end"
-            android:layout_marginHorizontal="@dimen/unify_space_8"
+            android:layout_marginHorizontal="8dp"
             android:gravity="start"
             app:layout_constraintVertical_chainStyle="packed"
             app:layout_constraintEnd_toEndOf="parent"
@@ -80,8 +81,8 @@
             android:lines="1"
             app:layout_constraintVertical_chainStyle="packed"
             android:maxLines="1"
-            android:layout_marginTop="@dimen/unify_space_4"
-            android:layout_marginHorizontal="@dimen/unify_space_8"
+            android:layout_marginTop="4dp"
+            android:layout_marginHorizontal="8dp"
             android:gravity="start"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/container_featured_brand_logo"
@@ -90,4 +91,4 @@
             tools:text="brand Name"
             tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-</com.tokopedia.unifycomponents.CardUnify2>
+</androidx.cardview.widget.CardView>
