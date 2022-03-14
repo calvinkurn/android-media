@@ -42,10 +42,8 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo
-import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.*
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -129,6 +127,7 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.EmbraceConstant
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
@@ -565,7 +564,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun initRecyclerView() {
-        val gridLayoutManager = object: GridLayoutManager(context, 2) {
+        val gridLayoutManager = object : GridLayoutManager(context, 2) {
             override fun supportsPredictiveItemAnimations() = false
 
             override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State?) {
@@ -1260,6 +1259,17 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onShowAllItem(appLink: String) {
         routeToApplink(appLink)
+    }
+
+    override fun onClickAddOnCart(productId: String, addOnId: String) {
+        activity?.let {
+            RouteManager.route(it, UriUtil.buildUri(ApplinkConst.GIFTING, addOnId))
+        }
+        cartPageAnalytics.eventClickAddOnsWidget(productId)
+    }
+
+    override fun addOnImpression(productId: String) {
+        cartPageAnalytics.eventViewAddOnsWidget(productId)
     }
 
     private fun onErrorAddWishList(errorMessage: String, productId: String) {

@@ -1,12 +1,9 @@
 package com.tokopedia.play.broadcaster.view.adapter.delegate
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.databinding.ItemPlayBroPlaceholderCarouselBinding
-import com.tokopedia.play.broadcaster.databinding.ItemPlayBroProductCarouselBinding
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.carousel.ProductCarouselViewHolder
 
@@ -16,7 +13,7 @@ import com.tokopedia.play.broadcaster.ui.viewholder.carousel.ProductCarouselView
 internal class ProductCarouselAdapterDelegate private constructor() {
 
     class Product : TypedAdapterDelegate<
-            ProductUiModel, Any, ProductCarouselViewHolder.Product>(R.layout.view_empty) {
+            ProductUiModel, Any, ProductCarouselViewHolder.Product>(commonR.layout.view_play_empty) {
 
         override fun onBindViewHolder(
             item: ProductUiModel,
@@ -34,7 +31,7 @@ internal class ProductCarouselAdapterDelegate private constructor() {
     }
 
     class Loading : TypedAdapterDelegate<
-            Unit, Any, ProductCarouselViewHolder.Loading>(R.layout.view_empty) {
+            Unit, Any, ProductCarouselViewHolder.Loading>(commonR.layout.view_play_empty) {
 
         override fun onBindViewHolder(item: Unit, holder: ProductCarouselViewHolder.Loading) {
 

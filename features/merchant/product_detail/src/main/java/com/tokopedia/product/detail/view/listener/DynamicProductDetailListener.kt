@@ -1,18 +1,13 @@
 package com.tokopedia.product.detail.view.listener
 
-import android.app.Application
-import android.content.Context
 import android.util.SparseIntArray
-import androidx.fragment.app.Fragment
+import android.view.View
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStore
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.mvcwidget.trackers.MvcSource
-import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
-import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
@@ -28,8 +23,6 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 interface DynamicProductDetailListener {
-    fun getApplicationContext(): Application?
-    fun getLifecycleFragment(): Lifecycle
     fun refreshPage()
     fun isNavOld(): Boolean
     fun getFragmentTrackingQueue(): TrackingQueue?
@@ -69,6 +62,7 @@ interface DynamicProductDetailListener {
     fun goToApplink(url: String)
 
     fun onBbiInfoClick(url: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
+    fun showCustomInfoCoachMark(componentName: String, viewTarget: View)
 
     /**
      * BestSellerViewHolder
@@ -175,7 +169,8 @@ interface DynamicProductDetailListener {
     /**
      * ProductDetailInfoViewHolder
      */
-    fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>, componentTrackDataModel: ComponentTrackDataModel)
+    fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>,
+                                    componentTrackDataModel: ComponentTrackDataModel)
 
     /**
      * ProductReportViewHolder

@@ -38,8 +38,14 @@ class OrderPriceSummaryBottomSheet {
     private fun setupView(binding: BottomSheetOrderPriceSummaryBinding, orderCost: OrderCost) {
         binding.tvTotalProductPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalItemPrice, false).removeDecimalSuffix()
 
-        binding.tvTotalProductAddonsPriceLabel.gone()
-        binding.tvTotalProductAddonsPriceValue.gone()
+        if (orderCost.hasAddOn) {
+            binding.tvTotalProductAddonsPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.addOnPrice, false).removeDecimalSuffix()
+            binding.tvTotalProductAddonsPriceLabel.visible()
+            binding.tvTotalProductAddonsPriceValue.visible()
+        } else {
+            binding.tvTotalProductAddonsPriceLabel.gone()
+            binding.tvTotalProductAddonsPriceValue.gone()
+        }
 
         if (orderCost.purchaseProtectionPrice > 0) {
             binding.tvPurchaseProtectionPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.purchaseProtectionPrice, false).removeDecimalSuffix()
