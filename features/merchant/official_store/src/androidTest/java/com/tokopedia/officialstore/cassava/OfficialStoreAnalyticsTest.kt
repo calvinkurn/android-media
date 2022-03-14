@@ -196,9 +196,6 @@ class OfficialStoreAnalyticsTest {
             is DynamicChannelSprintSaleViewHolder -> {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_sprintsale_rv,0)
             }
-            is DynamicChannelLegoViewHolder -> {
-                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_lego_rv,0)
-            }
             is DynamicChannelThematicViewHolder -> {
                 CommonActions.clickOnEachItemRecyclerView(
                     viewHolder.itemView,
