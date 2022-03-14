@@ -42,7 +42,8 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
     private val analytic: PlayBroadcastAnalytic,
 ) : BottomSheetDialogFragment() {
 
-    private val channelId = arguments?.getString(ARG_CHANNEL_ID) ?: ""
+    private val channelId
+        get() = arguments?.getString(ARG_CHANNEL_ID) ?: ""
 
     private val leaderboardAdapter = PlayInteractiveLeaderboardAdapter(object : PlayInteractiveLeaderboardViewHolder.Listener{
         override fun onChatWinnerButtonClicked(winner: PlayWinnerUiModel, position: Int) {
