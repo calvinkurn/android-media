@@ -31,15 +31,10 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
 	        if(userSession.isLoggedIn) {
 		    val syncResult = checkDataSync()
 		    if (isNeedMigration() && (dataStore.getUserId().first().isEmpty() || syncResult.isNotEmpty())) {
-			println("worker_migrate")
 			migrateData()
 		    } else {
-			println("worker_check_only")
 			logSyncResult(syncResult)
-			println("worker_check_result: $syncResult")
 		    }
-		} else {
-		    println("worker_do_nothing")
 		}
 		Result.success()
 	    } catch (e: Exception) {
@@ -58,11 +53,9 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
 	    if(migrationResult.isEmpty()) {
 		getDataStoreMigrationPreference(applicationContext).edit().putBoolean(KEY_MIGRATION_STATUS, true).apply()
 		logMigrationResultSuccess()
-		println("worker_migration_success")
 	    } else {
 		getDataStoreMigrationPreference(applicationContext).edit().putBoolean(KEY_MIGRATION_STATUS, false).apply()
 		logMigrationResultFailed(migrationResult)
-		println("worker_migration_failed $migrationResult")
 	    }
 	}catch (e: Exception) {
 	    e.printStackTrace()
