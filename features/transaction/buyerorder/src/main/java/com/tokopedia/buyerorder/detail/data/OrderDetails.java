@@ -1,7 +1,10 @@
 package com.tokopedia.buyerorder.detail.data;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.buyerorder.recharge.data.response.AdditionalTickerInfo;
 
 import java.util.List;
 
@@ -30,6 +33,9 @@ public class OrderDetails {
     @SerializedName("additionalInfo")
     @Expose
     private List<AdditionalInfo> additionalInfo;
+    @SerializedName("additionalTickerInfo")
+    @Expose
+    private List<AdditionalTickerInfo> additionalTickerInfo;
     @SerializedName("pricing")
     @Expose
     private List<Pricing> pricing;
@@ -83,6 +89,10 @@ public class OrderDetails {
         return additionalInfo;
     }
 
+    public List<AdditionalTickerInfo> getAdditionalTickerInfo() {
+        return additionalTickerInfo;
+    }
+
     public List<Pricing> pricing() { return pricing; }
 
     public List<PayMethod> getPayMethods() {
@@ -117,6 +127,7 @@ public class OrderDetails {
         return helpLink;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "[OrderDetails:{"
@@ -126,6 +137,7 @@ public class OrderDetails {
                 + "invoice="+invoice +","
                 + "detail="+detail +","
                 + "additionalInfo="+additionalInfo +","
+                + "additionalTickerInfo="+additionalTickerInfo +","
                 + "pricing="+pricing +","
                 + "paymethods="+payMethods +","
                 + "paymentData="+paymentData +","
