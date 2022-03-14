@@ -9,14 +9,14 @@ import androidx.annotation.IntDef
     AnnotationTarget.VALUE_PARAMETER
 )
 @IntDef(value = [
-    PickerPageType.COMMON,
-    PickerPageType.CAMERA,
-    PickerPageType.GALLERY,
+    ModeType.COMMON,
+    ModeType.IMAGE_ONLY,
+    ModeType.VIDEO_ONLY,
 ])
-annotation class PickerPageType {
+annotation class ModeType {
     companion object {
         const val COMMON = 0
-        const val CAMERA = 1
-        const val GALLERY = 2
+        const val IMAGE_ONLY = 1
+        const val VIDEO_ONLY = 2
     }
 }

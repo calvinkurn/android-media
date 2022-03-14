@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
-import com.tokopedia.picker.common.types.PickerFragmentType
+import com.tokopedia.picker.common.types.FragmentType
 import com.tokopedia.media.picker.ui.fragment.camera.CameraFragment
 import com.tokopedia.media.picker.ui.fragment.gallery.GalleryFragment
 import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment
@@ -23,8 +23,8 @@ class PickerNavigator constructor(
     private var cameraFragment: Fragment? = null
     private var galleryFragment: Fragment? = null
 
-    @PickerFragmentType
-    var currentSelectedPage = PickerFragmentType.NONE
+    @FragmentType
+    var currentSelectedPage = FragmentType.NONE
 
     private val pages = mutableMapOf<Fragment?, String?>()
 
@@ -39,18 +39,18 @@ class PickerNavigator constructor(
     }
 
     fun permissionFragment(): PermissionFragment {
-        return fragmentOf(PickerFragmentType.PERMISSION) as PermissionFragment
+        return fragmentOf(FragmentType.PERMISSION) as PermissionFragment
     }
 
     fun cameraFragment(): CameraFragment {
-        return fragmentOf(PickerFragmentType.CAMERA) as CameraFragment
+        return fragmentOf(FragmentType.CAMERA) as CameraFragment
     }
 
     fun galleryFragment(): GalleryFragment {
-        return fragmentOf(PickerFragmentType.GALLERY) as GalleryFragment
+        return fragmentOf(FragmentType.GALLERY) as GalleryFragment
     }
 
-    private fun start(@PickerFragmentType page: Int) {
+    private fun start(@FragmentType page: Int) {
         val transaction = fm.beginTransaction()
         val fragment = pageFragment(page)
 
@@ -64,13 +64,13 @@ class PickerNavigator constructor(
         }
     }
 
-    private fun onPageSelected(@PickerFragmentType page: Int) {
+    private fun onPageSelected(@FragmentType page: Int) {
         if (isActivityResumed() && !isCurrentPageOf(page)) {
             showPage(page)
         }
     }
 
-    fun open(@PickerFragmentType page: Int) {
+    fun open(@FragmentType page: Int) {
         try {
             start(page)
         } catch (t: Throwable) {
@@ -89,7 +89,7 @@ class PickerNavigator constructor(
         pages.clear()
     }
 
-    private fun fragmentOf(@PickerFragmentType type: Int): Fragment? {
+    private fun fragmentOf(@FragmentType type: Int): Fragment? {
         val fragment = pageFragment(type) ?: return null
 
         val tag = fragment::class.java.canonicalName
@@ -98,7 +98,7 @@ class PickerNavigator constructor(
         return fragmentByTag ?: fragment
     }
 
-    private fun isCurrentPageOf(@PickerFragmentType page: Int): Boolean {
+    private fun isCurrentPageOf(@FragmentType page: Int): Boolean {
         val fragment = fragmentOf(page) ?: return false
         val fragmentState = fragment.lifecycle.currentState
 
@@ -136,7 +136,7 @@ class PickerNavigator constructor(
         fm.fragments.forEach { transaction.hide(it) }
     }
 
-    private fun setSelectedPage(@PickerFragmentType page: Int) {
+    private fun setSelectedPage(@FragmentType page: Int) {
         currentSelectedPage = page
     }
 
@@ -168,11 +168,11 @@ class PickerNavigator constructor(
         return state == Lifecycle.State.RESUMED || state == Lifecycle.State.STARTED
     }
 
-    private fun pageFragment(@PickerFragmentType page: Int): Fragment? {
+    private fun pageFragment(@FragmentType page: Int): Fragment? {
         return when(page) {
-            PickerFragmentType.PERMISSION -> permissionFragment
-            PickerFragmentType.CAMERA -> cameraFragment
-            PickerFragmentType.GALLERY -> galleryFragment
+            FragmentType.PERMISSION -> permissionFragment
+            FragmentType.CAMERA -> cameraFragment
+            FragmentType.GALLERY -> galleryFragment
             else -> null
         }
     }

@@ -9,12 +9,12 @@ import androidx.annotation.IntDef
     AnnotationTarget.VALUE_PARAMETER
 )
 @IntDef(value = [
-    PickerFragmentType.NONE,
-    PickerFragmentType.PERMISSION,
-    PickerFragmentType.CAMERA,
-    PickerFragmentType.GALLERY,
+    FragmentType.NONE,
+    FragmentType.PERMISSION,
+    FragmentType.CAMERA,
+    FragmentType.GALLERY,
 ])
-annotation class PickerFragmentType {
+annotation class FragmentType {
     companion object {
         // idle page state
         const val NONE = -1

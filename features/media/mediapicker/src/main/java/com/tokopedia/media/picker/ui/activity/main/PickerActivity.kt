@@ -30,14 +30,16 @@ import com.tokopedia.media.picker.utils.delegates.permissionGranted
 import com.tokopedia.media.picker.utils.dimensionPixelOffsetOf
 import com.tokopedia.media.picker.utils.setBottomMargin
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
-import com.tokopedia.picker.common.PickerCacheManager
+import com.tokopedia.picker.common.ParamCacheManager
+import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
+import com.tokopedia.picker.common.intent.PickerIntent.KEY_PICKER_PARAM
 import com.tokopedia.picker.common.intent.PreviewIntent
 import com.tokopedia.picker.common.observer.EventFlowFactory
-import com.tokopedia.picker.common.types.PickerFragmentType
-import com.tokopedia.picker.common.types.PickerPageType
+import com.tokopedia.picker.common.types.FragmentType
+import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.unifycomponents.Toaster
@@ -91,7 +93,7 @@ open class PickerActivity : BaseActivity()
     , PickerActivityListener {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
-    @Inject lateinit var cacheManager: PickerCacheManager
+    @Inject lateinit var cacheManager: ParamCacheManager
 
     private val binding: ActivityPickerBinding? by viewBinding()
     private val hasPermissionGranted: Boolean by permissionGranted()
@@ -131,7 +133,7 @@ open class PickerActivity : BaseActivity()
         setContentView(R.layout.activity_picker)
         initInjector()
 
-        setupQueryAndUIConfigBuilder()
+        setupParamQueryAndDataIntent()
         restoreDataState(savedInstanceState)
 
         initView()
@@ -181,19 +183,24 @@ open class PickerActivity : BaseActivity()
         startActivityForResult(intent, REQUEST_PREVIEW_PAGE)
     }
 
-    private fun setupQueryAndUIConfigBuilder() {
-        val data = intent?.data ?: return
+    private fun setupParamQueryAndDataIntent() {
+        val pickerParam = intent.getParcelableExtra(KEY_PICKER_PARAM)?: PickerParam()
 
-        PickerUiConfig.setupQueryPage(data)
-        PickerUiConfig.setupQueryMode(data)
-        PickerUiConfig.setupQuerySelectionType(data)
-        PickerUiConfig.setupQueryLandingPageIndex(data)
+        intent?.data?.let {
+            PickerUiConfig.setupQueryPage(it)
+            PickerUiConfig.setupQueryMode(it)
+            PickerUiConfig.setupQuerySelectionType(it)
+            PickerUiConfig.setupQueryLandingPageIndex(it)
 
-        cacheManager.setParam(
-            PickerUiConfig.pageType,
-            PickerUiConfig.modeType,
-            PickerUiConfig.selectionMode,
-        )
+            pickerParam.apply {
+                pageType(PickerUiConfig.pageType)
+                modeType(PickerUiConfig.modeType)
+                asMultipleSelectionMode(PickerUiConfig.isMultipleSelectionMode)
+            }
+        }
+
+        // set the picker param as cache
+        cacheManager.setParam(pickerParam)
 
         // get pre-included media items
         param.includeMedias()
@@ -220,7 +227,7 @@ open class PickerActivity : BaseActivity()
             navigateByPageType()
         } else {
             navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
-            navigator?.open(PickerFragmentType.PERMISSION)
+            navigator?.open(FragmentType.PERMISSION)
         }
     }
 
@@ -237,7 +244,7 @@ open class PickerActivity : BaseActivity()
                     }
                 },
                 onAdded = {
-                    if (PickerUiConfig.isSingleSelectionType()) {
+                    if (!cacheManager.getParam().isMultipleSelectionType()) {
                         medias.clear()
                     }
 
@@ -255,13 +262,13 @@ open class PickerActivity : BaseActivity()
 
     private fun navigateByPageType() {
         when (PickerUiConfig.pageType) {
-            PickerPageType.CAMERA -> {
+            PageType.CAMERA -> {
                 navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
-                navigator?.open(PickerFragmentType.CAMERA)
+                navigator?.open(FragmentType.CAMERA)
             }
-            PickerPageType.GALLERY -> {
+            PageType.GALLERY -> {
                 navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
-                navigator?.open(PickerFragmentType.GALLERY)
+                navigator?.open(FragmentType.GALLERY)
             }
             else -> {
                 navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
@@ -310,13 +317,13 @@ open class PickerActivity : BaseActivity()
     }
 
     private fun onCameraTabSelected() {
-        navigator?.open(PickerFragmentType.CAMERA)
+        navigator?.open(FragmentType.CAMERA)
         navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
         binding?.container?.setBottomMargin(0)
     }
 
     private fun onGalleryTabSelected() {
-        navigator?.open(PickerFragmentType.GALLERY)
+        navigator?.open(FragmentType.GALLERY)
         navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
 
         val marginBottom = dimensionPixelOffsetOf(R.dimen.picker_page_margin_bottom)

@@ -6,24 +6,18 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_PREVIEW
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 
-object PreviewIntent : BaseIntent<MediaUiModel> {
+object PreviewIntent {
 
-    override val appLink: String
-        get() = INTERNAL_MEDIA_PICKER_PREVIEW
-
-    override val keyName: String
-        get() = "picker-preview"
+    private const val KEY_PREVIEW_ITEMS = "picker-preview-items"
 
     fun intent(context: Context, elements: ArrayList<MediaUiModel>): Intent {
-        return RouteManager.getIntent(context, appLink).apply {
-            putExtra(keyName, elements)
+        return RouteManager.getIntent(context, INTERNAL_MEDIA_PICKER_PREVIEW).apply {
+            putExtra(KEY_PREVIEW_ITEMS, elements)
         }
     }
 
-    fun intentWith(context: Context, elements: ArrayList<MediaUiModel>) {
-        if (elements.isEmpty()) return
-        val intent = intent(context, elements)
-        context.startActivity(intent)
+    fun result(intent: Intent?): ArrayList<MediaUiModel> {
+        return intent?.getParcelableArrayListExtra(KEY_PREVIEW_ITEMS)?: arrayListOf()
     }
 
 }

@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
-import com.tokopedia.picker.common.types.PickerPageType
+import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.media.databinding.FragmentPermissionBinding
 import com.tokopedia.media.picker.ui.PickerUiConfig
 import com.tokopedia.media.picker.ui.fragment.permission.recyclers.adapter.PermissionAdapter
@@ -72,7 +72,7 @@ open class PermissionFragment : BaseDaggerFragment() {
 
     private fun initPermissionDynamicWording() {
         val (_title, _message) = when (PickerUiConfig.pageType) {
-            PickerPageType.CAMERA -> if (PickerUiConfig.isPhotoModeOnly()) {
+            PageType.CAMERA -> if (PickerUiConfig.isPhotoModeOnly()) {
                 Pair(
                     getString(R.string.picker_title_camera_photo_permission),
                     getString(R.string.picker_message_camera_photo_permission)
@@ -83,7 +83,7 @@ open class PermissionFragment : BaseDaggerFragment() {
                     getString(R.string.picker_message_camera_video_permission)
                 )
             }
-            PickerPageType.GALLERY -> Pair(
+            PageType.GALLERY -> Pair(
                 getString(R.string.picker_title_gallery_permission),
                 getString(R.string.picker_message_gallery_permission)
             )

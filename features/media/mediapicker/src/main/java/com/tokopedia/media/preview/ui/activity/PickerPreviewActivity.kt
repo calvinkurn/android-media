@@ -3,25 +3,30 @@ package com.tokopedia.media.preview.ui.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
+import com.tokopedia.media.databinding.ActivityPreviewBinding
+import com.tokopedia.media.picker.di.module.PickerModule
+import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerActionType
+import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
+import com.tokopedia.media.preview.di.DaggerPreviewComponent
+import com.tokopedia.media.preview.ui.component.PreviewPagerComponent
+import com.tokopedia.picker.common.ParamCacheManager
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.intent.PreviewIntent
-import com.tokopedia.picker.common.types.PickerSelectionType
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.media.databinding.ActivityPreviewBinding
-import com.tokopedia.media.picker.ui.PickerUiConfig
-import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerActionType
-import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
-import com.tokopedia.media.preview.ui.component.PreviewPagerComponent
 import com.tokopedia.utils.view.binding.viewBinding
 import java.io.File
+import javax.inject.Inject
 
 class PickerPreviewActivity : BaseActivity()
     , NavToolbarComponent.Listener
     , DrawerSelectionWidget.Listener {
+
+    @Inject lateinit var cacheManager: ParamCacheManager
 
     private val binding: ActivityPreviewBinding? by viewBinding()
     private val uiModel = arrayListOf<MediaUiModel>()
@@ -127,9 +132,7 @@ class PickerPreviewActivity : BaseActivity()
     }
 
     private fun setupSelectionDrawerOrActionButton() {
-        val isMultipleSelectionType = PickerUiConfig.selectionMode == PickerSelectionType.MULTIPLE
-
-        if (isMultipleSelectionType) {
+        if (cacheManager.getParam().isMultipleSelectionType()) {
             binding?.drawerSelector?.setMaxAdapterSize(uiModel.size)
             binding?.drawerSelector?.addAllData(uiModel)
             binding?.drawerSelector?.show()
@@ -181,6 +184,14 @@ class PickerPreviewActivity : BaseActivity()
         intent.putExtra(MEDIA_ELEMENT_RESULT, uiModel)
         setResult(Activity.RESULT_OK, intent)
         finish()
+    }
+
+    protected open fun initInjector() {
+        DaggerPreviewComponent.builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .pickerModule(PickerModule())
+            .build()
+            .inject(this)
     }
 
     companion object {

@@ -2,7 +2,7 @@ package com.tokopedia.media.picker.ui.uimodel
 
 import android.Manifest.permission.*
 import com.tokopedia.media.R
-import com.tokopedia.picker.common.types.PickerPageType
+import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.media.picker.ui.PickerUiConfig
 
 data class PermissionUiModel(
@@ -29,14 +29,14 @@ data class PermissionUiModel(
 
         fun get(): List<PermissionUiModel> {
             return when (PickerUiConfig.pageType) {
-                PickerPageType.CAMERA -> {
+                PageType.CAMERA -> {
                     if (PickerUiConfig.isPhotoModeOnly()) {
                         listOf(camera())
                     } else {
                         listOf(camera(), microphone())
                     }
                 }
-                PickerPageType.GALLERY -> listOf(storage())
+                PageType.GALLERY -> listOf(storage())
                 else -> listOf(storage(), camera(), microphone())
             }
         }

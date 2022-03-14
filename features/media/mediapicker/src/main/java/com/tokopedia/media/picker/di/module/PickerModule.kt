@@ -2,7 +2,7 @@ package com.tokopedia.media.picker.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.picker.common.PickerCacheManager
+import com.tokopedia.picker.common.ParamCacheManager
 import com.tokopedia.media.picker.data.repository.AlbumRepository
 import com.tokopedia.media.picker.data.repository.AlbumRepositoryImpl
 import com.tokopedia.media.picker.data.repository.MediaRepository
@@ -16,10 +16,10 @@ class PickerModule {
 
     @Provides
     @PickerScope
-    fun provideCacheHandler(
+    fun provideParamCacheManager(
         @ApplicationContext context: Context
-    ): PickerCacheManager {
-        return PickerCacheManager(context)
+    ): ParamCacheManager {
+        return ParamCacheManager(context)
     }
 
     @Provides

@@ -14,14 +14,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
-import com.tokopedia.picker.common.PickerCacheManager
-import com.tokopedia.picker.common.types.PickerSelectionType
-import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.databinding.FragmentGalleryBinding
 import com.tokopedia.media.picker.data.repository.AlbumRepositoryImpl.Companion.RECENT_ALBUM_ID
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.di.module.PickerModule
-import com.tokopedia.media.picker.ui.PickerUiConfig
 import com.tokopedia.media.picker.ui.activity.album.AlbumActivity
 import com.tokopedia.media.picker.ui.activity.main.PickerActivity
 import com.tokopedia.media.picker.ui.activity.main.PickerActivityListener
@@ -34,13 +30,15 @@ import com.tokopedia.media.picker.ui.observer.stateOnRemovePublished
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerActionType
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
 import com.tokopedia.media.picker.utils.exceptionHandler
+import com.tokopedia.picker.common.ParamCacheManager
+import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listener {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
-    @Inject lateinit var cacheManager: PickerCacheManager
+    @Inject lateinit var cacheManager: ParamCacheManager
 
     private val binding: FragmentGalleryBinding? by viewBinding()
     private var listener: PickerActivityListener? = null
@@ -164,7 +162,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     }
 
     private fun setupSelectionDrawerWidget(isShown: Boolean) {
-        val isMultipleSelectionType = PickerUiConfig.selectionMode == PickerSelectionType.MULTIPLE
+        val isMultipleSelectionType = cacheManager.getParam().isMultipleSelectionType()
 
         if (isMultipleSelectionType) {
             binding?.drawerSelector?.setMaxAdapterSize(cacheManager.getParam().maxMediaAmount())
@@ -202,7 +200,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     }
 
     private fun selectMedia(media: MediaUiModel, isSelected: Boolean): Boolean {
-        if (PickerUiConfig.selectionMode == PickerSelectionType.MULTIPLE) {
+        if (cacheManager.getParam().isMultipleSelectionType()) {
             if (!isSelected && media.isVideo()) {
                 // video validation
                 if (listener?.hasVideoLimitReached() == true) {
@@ -223,7 +221,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
                 listener?.onShowMediaLimitReachedToast()
                 return false
             }
-        } else if (PickerUiConfig.selectionMode == PickerSelectionType.SINGLE) {
+        } else {
             if (listener?.mediaSelected()?.isNotEmpty() == true || adapter.selectedMedias.isNotEmpty()) {
                 adapter.removeAllSelectedSingleClick()
             }

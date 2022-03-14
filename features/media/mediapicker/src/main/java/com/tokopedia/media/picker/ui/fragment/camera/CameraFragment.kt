@@ -18,7 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
-import com.tokopedia.picker.common.PickerCacheManager
+import com.tokopedia.picker.common.ParamCacheManager
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.cameraToUiModel
@@ -44,7 +44,7 @@ open class CameraFragment : BaseDaggerFragment()
     , CameraPreviewComponent.Listener {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
-    @Inject lateinit var cacheManager: PickerCacheManager
+    @Inject lateinit var cacheManager: ParamCacheManager
 
     private val binding: FragmentCameraBinding? by viewBinding()
     private var listener: PickerActivityListener? = null

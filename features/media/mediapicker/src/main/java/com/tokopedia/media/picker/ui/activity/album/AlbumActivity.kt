@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
-import com.tokopedia.picker.common.PickerCacheManager
+import com.tokopedia.picker.common.ParamCacheManager
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
@@ -24,7 +24,7 @@ import javax.inject.Inject
 class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
-    @Inject lateinit var cacheManager: PickerCacheManager
+    @Inject lateinit var cacheManager: ParamCacheManager
 
     private val binding: ActivityAlbumBinding? by viewBinding()
 
