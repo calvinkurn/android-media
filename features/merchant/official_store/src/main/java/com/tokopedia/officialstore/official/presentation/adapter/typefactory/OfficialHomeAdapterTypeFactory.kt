@@ -129,6 +129,10 @@ class OfficialHomeAdapterTypeFactory(
         return FeaturedBrandViewHolder.LAYOUT
     }
 
+    override fun type(merchantVoucherDataModel: MerchantVoucherDataModel): Int {
+        return MerchantVoucherViewHolder.LAYOUT
+    }
+
     override fun type(bestSellerDataModel: BestSellerDataModel): Int {
         return BestSellerViewHolder.LAYOUT
     }
@@ -145,6 +149,7 @@ class OfficialHomeAdapterTypeFactory(
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<Visitable<*>> {
         return when (type) {
+            MerchantVoucherViewHolder.LAYOUT -> MerchantVoucherViewHolder(view, merchantVoucherComponentListener)
             OfficialTopAdsHeadlineViewHolder.LAYOUT -> OfficialTopAdsHeadlineViewHolder(view, onTopAdsHeadlineClicked)
             BestSellerViewHolder.LAYOUT -> BestSellerViewHolder(view, recommendationWidgetListener)
             OfficialLoadingContentViewHolder.LAYOUT -> OfficialLoadingContentViewHolder(view)
