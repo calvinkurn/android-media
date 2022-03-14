@@ -857,6 +857,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         val leaderBoardBottomSheet = fragmentFactory.instantiate(
             requireContext().classLoader,
             PlayInteractiveLeaderBoardBottomSheet::class.java.name) as PlayInteractiveLeaderBoardBottomSheet
+        leaderBoardBottomSheet.arguments = Bundle().apply {
+            putString(PlayInteractiveLeaderBoardBottomSheet.ARG_CHANNEL_ID, parentViewModel.channelId)
+        }
         leaderBoardBottomSheet.show(childFragmentManager)
     }
 
