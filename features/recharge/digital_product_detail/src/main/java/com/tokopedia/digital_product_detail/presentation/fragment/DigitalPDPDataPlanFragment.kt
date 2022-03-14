@@ -871,8 +871,9 @@ class DigitalPDPDataPlanFragment :
     private fun showGlobalErrorState() {
         binding?.globalErrorPaketData?.run {
             show()
-            errorTitle.text = getString(R.string.empty_state_paket_data_title)
-            errorDescription.text = getString(R.string.empty_state_paket_data_desc)
+            val categoryName = DigitalPDPCategoryUtil.getCategoryName(categoryId)
+            errorTitle.text = getString(R.string.empty_state_paket_data_title, categoryName)
+            errorDescription.text = getString(R.string.empty_state_paket_data_desc, categoryName)
             errorAction.hide()
         }
     }
