@@ -101,8 +101,16 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merc
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.*
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.MerchantVoucherCarouselViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcarditem.ShopCardItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcarditem.ShopCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.SectionViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.SectionViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerCalendarViewHolder
@@ -209,6 +217,11 @@ class DiscoveryHomeFactory {
             //Topads Headline View
             initializeComponent(ComponentsList.TopadsHeadlineView, ::TopAdsHeadlineViewHolder, ::TopAdsHeadlineViewModel)
 
+            //Rilisan Spesial View
+            initializeComponent(ComponentsList.ShopCardView, ::ShopCardViewHolder, ::ShopCardViewModel)
+            //Rilisan Spesial ItemView
+            initializeComponent(ComponentsList.ShopCardItemView, ::ShopCardItemViewHolder, ::ShopCardItemViewModel)
+
             initializeComponent(ComponentsList.Section,::SectionViewHolder,::SectionViewModel)
 //            initializeComponent(ComponentsList.AnchorTabs,::AnchorTabsViewHolder,::AnchorTabsViewModel)
             initializeComponent(ComponentsList.AnchorTabsItem,::AnchorTabsItemViewHolder,::AnchorTabsItemViewModel)
@@ -218,6 +231,8 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.CalendarWidgetItem, ::CalendarWidgetItemViewHolder, ::CalendarWidgetItemViewModel)
             initializeComponent(ComponentsList.ShimmerCalendarWidget, ::ShimmerCalendarViewHolder, ::ShimmerViewModel)
             initializeComponent(ComponentsList.TopQuestWidget, ::TopQuestViewHolder, ::TopQuestViewModel)
+            initializeComponent(ComponentsList.MyCoupon, ::MyCouponViewHolder, ::MyCouponViewModel)
+            initializeComponent(ComponentsList.MyCouponItem, ::MyCouponItemViewHolder, ::MyCouponItemViewModel)
 
         }
 

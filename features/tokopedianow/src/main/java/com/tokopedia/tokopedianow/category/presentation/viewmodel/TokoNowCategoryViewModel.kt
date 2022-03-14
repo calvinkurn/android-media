@@ -31,6 +31,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryListUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
@@ -169,7 +170,7 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     override fun createFooterVisitableList(): List<Visitable<*>> {
         val recomData =
-            TokoNowRecommendationCarouselUiModel(pageName = TOKONOW_CLP, isBindWithPageName = true)
+            TokoNowRecommendationCarouselUiModel(pageName = TOKONOW_CLP)
         recomData.categoryId = getRecomCategoryId(recomData)
         return listOf(
             createAisleDataView(),
@@ -201,7 +202,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         val categoryGridUIModel = TokoNowCategoryGridUiModel(
                 id = "",
                 title = CATEGORY_GRID_TITLE,
-                categoryList = null,
+                categoryListUiModel = null,
                 state = TokoNowLayoutState.LOADING,
         )
         visitableList.add(categoryGridIndex, categoryGridUIModel)
@@ -233,13 +234,13 @@ class TokoNowCategoryViewModel @Inject constructor (
             getCategoryListUseCase.execute(warehouseId, CATEGORY_LIST_DEPTH)?.data
 
     private suspend fun updateCategoryUIModel(
-            categoryItemListUIModel: List<TokoNowCategoryItemUiModel>?,
+            categoryItemListUIModel: TokoNowCategoryListUiModel?,
             categoryUIModelState: Int,
     ) {
         val currentCategoryUIModel = getCategoryGridUIModelInVisitableList() ?: return
 
         val updatedCategoryUiModel = currentCategoryUIModel.copy(
-                categoryList = categoryItemListUIModel,
+                categoryListUiModel = categoryItemListUIModel,
                 state = categoryUIModelState,
         )
 

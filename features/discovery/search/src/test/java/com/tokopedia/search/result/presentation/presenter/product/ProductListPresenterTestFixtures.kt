@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -45,6 +46,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
     protected val searchCoachMarkLocalCache = mockk<CoachMarkLocalCache>(relaxed = true)
     protected val topAdsHeadlineHelper = mockk<TopAdsHeadlineHelper>(relaxed = true)
+    protected val performanceMonitoring = mockk<PageLoadTimePerformanceInterface>(relaxed = true)
     protected val testSchedulersProvider = object : SchedulersProvider {
         override fun io() = Schedulers.immediate()
 
@@ -69,7 +71,8 @@ internal open class ProductListPresenterTestFixtures {
             { saveLastFilterUseCase },
             topAdsUrlHitter,
             testSchedulersProvider,
-            topAdsHeadlineHelper
+            topAdsHeadlineHelper,
+            { performanceMonitoring },
         )
         productListPresenter.attachView(productListView)
 
