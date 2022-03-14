@@ -109,6 +109,7 @@ import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.locationmanager.DeviceLocation
@@ -1178,6 +1179,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun subscribeHome() {
+        observeTokonowData()
         observeHomeData()
         observeUpdateNetworkStatusData()
         observeOneClickCheckout()
@@ -1191,6 +1193,32 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         observeResetNestedScrolling()
         observeBeautyFestData()
         observeSearchHint()
+    }
+
+    @FlowPreview
+    private fun observeTokonowData() {
+        getHomeViewModel().tokonowData.observe(viewLifecycleOwner, Observer {
+                (status, data, throwable) ->
+            when {
+                status === Result.Status.SUCCESS -> {
+                    if (data != null) {
+                        val refreshTokonowData = data.refreshTokonowData.data
+                        ChooseAddressUtils.refreshTokonowData(
+                            requireContext(),
+                            refreshTokonowData.lastUpdate,
+                            refreshTokonowData.warehouseId,
+                            refreshTokonowData.shopId,
+                            TokonowWarehouseMapper.mapWarehouseItemToLocal(refreshTokonowData.warehouses),
+                            refreshTokonowData.serviceType)
+                    }
+                }
+                else -> {
+                    // do nothing
+                }
+            }
+        })
+        val lca = ChooseAddressUtils.getLocalizingAddressData(requireContext())
+        getHomeViewModel().refreshTokonowWarehouse(lca)
     }
 
     private fun observeResetNestedScrolling() {
