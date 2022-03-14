@@ -32,45 +32,30 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
-    implementation rootProject.ext.unifyDependencies.coach_mark
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
-    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.unifyDependencies.dialog
-    implementation rootProject.ext.unifyDependencies.list
     implementation rootProject.ext.unifyDependencies.header
 
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation projectOrAar(rootProject.ext.features.playCommon)
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.debugToolsDependencies.chuck
-    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
-        exclude group: "com.android.support"
-    }
-    implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
-        exclude group: 'com.android.support'
-    }
-    implementation projectOrAar(rootProject.ext.features.createpostCommon)
+    implementation projectOrAar(rootProject.ext.libraries.baseAdapter)
+    implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
 
     //Below Hardcoded dependencies are very old. Will refactor it later (TECH DEBT)
-    implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation projectOrAar(rootProject.ext.libraries.baseAdapter)
-    implementation 'androidx.fragment:fragment-ktx:1.2.0'
-    implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
 }
 
 project.ext {
-    artifactId = 'createpost'
-    groupId = 'com.tokopedia.content'
-    versionName = "0.0.2"
-    artifactName = "createpost-release"
+    artifactId = 'people'
+    groupId = 'com.tokopedia.people'
+    versionName = "0.0.1"
+    artifactName = "people-release"
 }
 
 apply from: '../../../publish_local.gradle'

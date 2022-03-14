@@ -9,7 +9,6 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.createpost.common.view.plist.ShopPageProduct
 import com.tokopedia.people.model.PlayPostContentItem
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.viewmodels.UserProfileViewModel
@@ -250,9 +249,6 @@ open class UserPostBaseAdapter(
         }
     }
 
-    private fun sendClickEvent(context: Context, data: ShopPageProduct, position: Int) {
-//        listener.shopProductClicked(position, data)
-    }
 
 //    private fun toShopProductModel(item: ShopPageProduct): ProductCardModel {
 //        val isDiscount = !item.campaign?.dPrice?.toInt().isZero()
