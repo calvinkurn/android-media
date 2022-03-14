@@ -3274,7 +3274,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         newTokoNowData.isModified() ? newTokoNowData.getShopId() : localCache.getShop_id(),
                         newTokoNowData.isModified() ? newTokoNowData.getWarehouseId() : localCache.getWarehouse_id(),
                         newTokoNowData.isModified() ? TokonowWarehouseMapper.INSTANCE.mapWarehousesAddAddressModelToLocal(newTokoNowData.getWarehouses()) : localCache.getWarehouses(),
-                        newTokoNowData.isModified() ? newTokoNowData.getServiceType() : localCache.getService_type()
+                        newTokoNowData.isModified() ? newTokoNowData.getServiceType() : localCache.getService_type(),
+                        ""
                 );
             } else if (newTokoNowData.isModified()) {
                 ChooseAddressUtils.INSTANCE.updateTokoNowData(
@@ -3303,7 +3304,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     String.valueOf(saveAddressDataModel.getShopId()),
                     String.valueOf(saveAddressDataModel.getWarehouseId()),
                     TokonowWarehouseMapper.INSTANCE.mapWarehousesAddAddressModelToLocal(saveAddressDataModel.getWarehouses()),
-                    saveAddressDataModel.getServiceType()
+                    saveAddressDataModel.getServiceType(),
+                    ""
             );
         }
     }
