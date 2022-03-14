@@ -2,6 +2,7 @@ package com.tokopedia.minicart.common.simplified
 
 import android.app.Application
 import android.content.Context
+import android.os.SystemClock
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,7 @@ import com.tokopedia.minicart.common.promo.widget.PromoProgressBarWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
 import com.tokopedia.minicart.databinding.WidgetMiniCartSimplifiedBinding
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -51,10 +53,12 @@ class MiniCartSimplifiedWidget : BaseCustomView {
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
 
     private var binding: WidgetMiniCartSimplifiedBinding =
-        WidgetMiniCartSimplifiedBinding.inflate(LayoutInflater.from(context), this, true)
+            WidgetMiniCartSimplifiedBinding.inflate(LayoutInflater.from(context), this, true)
     private var promoProgressBar: PromoProgressBarWidget = PromoProgressBarWidget(context)
 
     private var animationDebounceJob: Job? = null
+    private var lastFailedValidateMoveToCartMessage: String = ""
+    private var lastFailedValidateMoveToCart: Long = FAILED_VALIDATE_MOVE_TO_CART_DEFAULT
 
     /*
     * Function to initialize the widget
@@ -80,9 +84,9 @@ class MiniCartSimplifiedWidget : BaseCustomView {
     private fun initializeInjector(baseAppComponent: Application?) {
         if (baseAppComponent is BaseMainApplication) {
             DaggerMiniCartWidgetComponent.builder()
-                .baseAppComponent(baseAppComponent.baseAppComponent)
-                .build()
-                .inject(this)
+                    .baseAppComponent(baseAppComponent.baseAppComponent)
+                    .build()
+                    .inject(this)
         }
     }
 
@@ -119,6 +123,27 @@ class MiniCartSimplifiedWidget : BaseCustomView {
                     promoProgressBar.visibility = View.GONE
                     binding.miniCartSimplifiedTotalAmount.hideTopContent()
                     showToasterError(fragment, state.throwable)
+                }
+
+                MiniCartSimplifiedState.STATE_FAILED_VALIDATE_USE_MOVE_TO_CART -> {
+                    setTotalAmountLoading(false)
+                    promoProgressBar.visibility = View.GONE
+                    binding.miniCartSimplifiedTotalAmount.hideTopContent()
+                    val throwable = state.throwable
+                    val currentTime = SystemClock.elapsedRealtime()
+                    if (throwable is MessageErrorException && throwable.message == lastFailedValidateMoveToCartMessage) {
+                        if (lastFailedValidateMoveToCart > FAILED_VALIDATE_MOVE_TO_CART_DEFAULT && currentTime - lastFailedValidateMoveToCart < FAILED_VALIDATE_MOVE_TO_CART_LIMIT) {
+                            RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
+                            lastFailedValidateMoveToCart = FAILED_VALIDATE_MOVE_TO_CART_DEFAULT
+                        } else {
+                            lastFailedValidateMoveToCart = currentTime
+                            lastFailedValidateMoveToCartMessage = throwable.message ?: ""
+                        }
+                    } else {
+                        lastFailedValidateMoveToCart = currentTime
+                        lastFailedValidateMoveToCartMessage = throwable?.message ?: ""
+                        showToasterError(fragment, throwable)
+                    }
                 }
 
                 MiniCartSimplifiedState.STATE_FAILED_MINICART -> {
@@ -199,14 +224,15 @@ class MiniCartSimplifiedWidget : BaseCustomView {
         fragment.view?.let {
             Toaster.toasterCustomBottomHeight = TOASTER_BOTTOM_HEIGHT.toPx()
             Toaster.build(
-                it,
-                ErrorHandler.getErrorMessage(
-                    it.context,
-                    throwable,
-                    ErrorHandler.Builder().withErrorCode(false).build()
-                ),
-                Toaster.LENGTH_SHORT,
-                Toaster.TYPE_ERROR
+                    it,
+                    ErrorHandler.getErrorMessage(
+                            it.context,
+                            throwable,
+                            ErrorHandler.Builder().withErrorCode(false).build()
+                    ),
+                    Toaster.LENGTH_SHORT,
+                    Toaster.TYPE_ERROR,
+                    actionText = context.getString(R.string.mini_cart_cta_ok)
             ).show()
         }
     }
@@ -270,5 +296,8 @@ class MiniCartSimplifiedWidget : BaseCustomView {
     companion object {
         private const val ANIMATION_DEBOUNCE_DELAY = 2000L
         private const val TOASTER_BOTTOM_HEIGHT = 100
+
+        private const val FAILED_VALIDATE_MOVE_TO_CART_LIMIT = 10 * 60 * 1000
+        private const val FAILED_VALIDATE_MOVE_TO_CART_DEFAULT = -1L
     }
 }

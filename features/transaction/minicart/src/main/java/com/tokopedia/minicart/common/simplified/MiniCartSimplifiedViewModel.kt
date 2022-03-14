@@ -118,7 +118,7 @@ class MiniCartSimplifiedViewModel @Inject constructor(private val getMiniCartLis
                 onSuccessValidateUseMvc(it, isMoveToCart)
             },
             onError = {
-                onErrorValidateUseMvc(it)
+                onErrorValidateUseMvc(it, isMoveToCart)
             }
         )
     }
@@ -130,9 +130,13 @@ class MiniCartSimplifiedViewModel @Inject constructor(private val getMiniCartLis
         }
     }
 
-    private fun onErrorValidateUseMvc(throwable: Throwable) {
+    private fun onErrorValidateUseMvc(throwable: Throwable, isMoveToCart: Boolean) {
         Timber.d(throwable)
-        _miniCartSimplifiedState.value = MiniCartSimplifiedState(state = MiniCartSimplifiedState.STATE_FAILED_VALIDATE_USE, throwable = throwable)
+        if (isMoveToCart) {
+            _miniCartSimplifiedState.value = MiniCartSimplifiedState(state = MiniCartSimplifiedState.STATE_FAILED_VALIDATE_USE_MOVE_TO_CART, throwable = throwable)
+        } else {
+            _miniCartSimplifiedState.value = MiniCartSimplifiedState(state = MiniCartSimplifiedState.STATE_FAILED_VALIDATE_USE, throwable = throwable)
+        }
     }
 
     override fun onCleared() {

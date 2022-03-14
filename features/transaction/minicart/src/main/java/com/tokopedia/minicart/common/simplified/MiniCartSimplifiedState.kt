@@ -8,6 +8,7 @@ data class MiniCartSimplifiedState(
     companion object {
         const val STATE_MOVE_TO_CART = 11
         const val STATE_FAILED_VALIDATE_USE = 22
+        const val STATE_FAILED_VALIDATE_USE_MOVE_TO_CART = 23
         const val STATE_FAILED_MINICART = 33
     }
 }

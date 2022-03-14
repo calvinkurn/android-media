@@ -59,6 +59,7 @@ class ValidateUseMvcUseCase @Inject constructor(@ApplicationContext private val 
                     message
                     error_code
                     data {
+                        success
                         curr_purchase
                         min_purchase
                         progress_percentage
