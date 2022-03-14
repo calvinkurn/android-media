@@ -72,12 +72,14 @@ class AffiliatePromotionCardItemVH(itemView: View, private val promotionClickInt
     }
     private fun getStatus(item: AffiliateSearchData.SearchAffiliate.Data.Card.Item?) :String{
         var status = ""
-        when(item?.status?.messages?.first()?.messageType){
-            AVAILABLE -> status = AffiliateAnalytics.LabelKeys.AVAILABLE
-            ALMOST_OOS -> status = AffiliateAnalytics.LabelKeys.ALMOST_OOS
-            EMPTY_STOCK -> status = AffiliateAnalytics.LabelKeys.EMPTY_STOCK
-            PRODUCT_INACTIVE -> status = AffiliateAnalytics.LabelKeys.PRODUCT_INACTIVE
-            SHOP_INACTIVE -> status = AffiliateAnalytics.LabelKeys.SHOP_INACTIVE
+        if(item?.status?.messages?.isNotEmpty() == true) {
+            when (item?.status?.messages?.first()?.messageType) {
+                AVAILABLE -> status = AffiliateAnalytics.LabelKeys.AVAILABLE
+                ALMOST_OOS -> status = AffiliateAnalytics.LabelKeys.ALMOST_OOS
+                EMPTY_STOCK -> status = AffiliateAnalytics.LabelKeys.EMPTY_STOCK
+                PRODUCT_INACTIVE -> status = AffiliateAnalytics.LabelKeys.PRODUCT_INACTIVE
+                SHOP_INACTIVE -> status = AffiliateAnalytics.LabelKeys.SHOP_INACTIVE
+            }
         }
         return status
     }

@@ -233,8 +233,10 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
                             adapter.addElement(AffiliatePromotionCardModel(it))
                         }
                     }
-                    items.first()?.let {
-                        sendEnhancedTracker(it)
+                    if(items.isNotEmpty()) {
+                        items.first()?.let {
+                            sendEnhancedTracker(it)
+                        }
                     }
 
                 }
@@ -244,12 +246,14 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
 
     private fun sendEnhancedTracker(it: AffiliateSearchData.SearchAffiliate.Data.Card.Item) {
         var status = ""
-        when(it.status?.messages?.first()?.messageType){
-            AVAILABLE -> status = AffiliateAnalytics.LabelKeys.AVAILABLE
-            ALMOST_OOS -> status = AffiliateAnalytics.LabelKeys.ALMOST_OOS
-            EMPTY_STOCK -> status = AffiliateAnalytics.LabelKeys.EMPTY_STOCK
-            PRODUCT_INACTIVE -> status = AffiliateAnalytics.LabelKeys.PRODUCT_INACTIVE
-            SHOP_INACTIVE -> status = AffiliateAnalytics.LabelKeys.SHOP_INACTIVE
+        if(it.status?.messages?.isNotEmpty() == true) {
+            when (it.status?.messages?.first()?.messageType) {
+                AVAILABLE -> status = AffiliateAnalytics.LabelKeys.AVAILABLE
+                ALMOST_OOS -> status = AffiliateAnalytics.LabelKeys.ALMOST_OOS
+                EMPTY_STOCK -> status = AffiliateAnalytics.LabelKeys.EMPTY_STOCK
+                PRODUCT_INACTIVE -> status = AffiliateAnalytics.LabelKeys.PRODUCT_INACTIVE
+                SHOP_INACTIVE -> status = AffiliateAnalytics.LabelKeys.SHOP_INACTIVE
+            }
         }
         AffiliateAnalytics.trackEventImpression(
             AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,
