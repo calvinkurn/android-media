@@ -303,16 +303,18 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         val list = arrayListOf<ShopProductModel.ShopProductModelItem>()
         cpmModel.data?.forEachIndexed { index, it ->
             val item = ShopProductModel.ShopProductModelItem(
-                    imageUrl = it.cpm.cpmShop.products.getOrNull(0)?.imageProduct?.imageUrl ?: "",
-                    shopIcon = it.cpm.cpmImage.fullEcs,
-                    shopName = it.cpm.cpmShop.name,
-                    ratingCount = it.cpm.cpmShop.products.getOrNull(0)?.countReviewFormat?:"",
-                    ratingAverage = it.cpm.cpmShop.products.getOrNull(0)?.headlineProductRatingAverage?:"",
-                    isOfficial = it.cpm?.cpmShop?.isOfficial ?: false,
-                    isPMPro = it.cpm?.cpmShop?.isPMPro ?: false,
-                    goldShop = if (it.cpm?.cpmShop?.isPowerMerchant == true) 1 else 0,
-                    impressHolder = it.cpm?.cpmShop?.imageShop,
-                    position = index
+                imageUrl = it.cpm.cpmShop.products.firstOrNull()?.imageProduct?.imageUrl ?: "",
+                shopIcon = it.cpm.cpmImage.fullEcs,
+                shopName = it.cpm.cpmShop.name,
+                ratingCount = it.cpm.cpmShop.products.firstOrNull()?.countReviewFormat ?: "",
+                ratingAverage = it.cpm.cpmShop.products.firstOrNull()?.headlineProductRatingAverage
+                    ?: "",
+                isOfficial = it.cpm?.cpmShop?.isOfficial ?: false,
+                isPMPro = it.cpm?.cpmShop?.isPMPro ?: false,
+                goldShop = if (it.cpm?.cpmShop?.isPowerMerchant == true) 1 else 0,
+                impressHolder = it.cpm?.cpmShop?.imageShop,
+                location = it.cpm.cpmShop.location,
+                position = index
             )
             list.add(item)
         }
