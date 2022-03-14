@@ -8,8 +8,8 @@ object TradeinConstants {
     const val LOGIN_REQUIRED = 1
     const val LOGGED_IN = 2
     const val TRADEIN_EXCHANGE = "exchange"
-    const val TRADE_IN_HOST_SOURCE = "tradein"
-    const val TRADE_IN_HOST_TRACKING_SOURCE = "tradein page"
+    const val TRADE_IN_HOST_SOURCE = "trade-in"
+    const val TRADE_IN_HOST_TRACKING_SOURCE = "trade in start page"
     const val CAMPAIGN_TAG_SELECTION = "exchange::fastlane"
 
 

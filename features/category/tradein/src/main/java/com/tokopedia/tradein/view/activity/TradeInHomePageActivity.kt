@@ -200,6 +200,7 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
     }
 
     override fun onClick() {
+        tradeInAnalytics.clickEducationalPage()
         supportFragmentManager.popBackStack()
         setUpFragment()
     }

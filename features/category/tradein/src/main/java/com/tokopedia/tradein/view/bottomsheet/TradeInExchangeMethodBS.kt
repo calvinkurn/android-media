@@ -9,6 +9,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tradein.R
+import com.tokopedia.tradein.TradeInAnalytics
 import com.tokopedia.tradein.model.TradeInDetailModel.GetTradeInDetail.LogisticOption
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -17,6 +18,7 @@ import com.tokopedia.unifyprinciples.Typography
 class TradeInExchangeMethodBS : BottomSheetUnify() {
     private var contentView: View? = null
     private var onLogisticSelected: OnLogisticSelected? = null
+    var tradeInAnalytics: TradeInAnalytics? = null
 
     companion object {
         private const val LOGISTIC_OPTIONS = "LOGISTIC_OPTIONS"
@@ -64,6 +66,11 @@ class TradeInExchangeMethodBS : BottomSheetUnify() {
                 findViewById<Ticker>(R.id.ticker_address_info).setTextDescription(this)
             }
             arguments?.getParcelableArrayList<LogisticOption>(LOGISTIC_OPTIONS)?.let {
+                if(it.firstOrNull()?.is3PL == false) {
+                    tradeInAnalytics?.impressionExchangeMethod(it[0].isAvailable, it[0].estimatedPriceFmt, it[1].isAvailable, it[1].estimatedPriceFmt)
+                } else {
+                    tradeInAnalytics?.impressionExchangeMethod(it[1].isAvailable, it[1].estimatedPriceFmt, it[0].isAvailable, it[0].estimatedPriceFmt)
+                }
                 for (logistic in it) {
                     if (!logistic.is3PL) {
                         logistic.isAvailable.let { available ->
@@ -77,7 +84,12 @@ class TradeInExchangeMethodBS : BottomSheetUnify() {
                                 }
                             }
                             if(available) {
-                                findViewById<View>(R.id.tradein_p1_view).setOnClickListener {
+                                findViewById<View>(R.id.tradein_p1_view).setOnClickListener { click->
+                                    if(it.firstOrNull()?.is3PL == false) {
+                                        tradeInAnalytics?.clickExchangeMethods(it[0].isAvailable, it[0].estimatedPriceFmt, it[1].isAvailable, it[1].estimatedPriceFmt)
+                                    } else {
+                                        tradeInAnalytics?.clickExchangeMethods(it[1].isAvailable, it[1].estimatedPriceFmt, it[0].isAvailable, it[0].estimatedPriceFmt)
+                                    }
                                     onLogisticSelected?.onLogisticSelected(false)
                                     dismiss()
                                 }
@@ -116,7 +128,12 @@ class TradeInExchangeMethodBS : BottomSheetUnify() {
                                 }
                             }
                             if(available) {
-                                findViewById<View>(R.id.tradein_p3_view).setOnClickListener {
+                                findViewById<View>(R.id.tradein_p3_view).setOnClickListener { click->
+                                    if(it.firstOrNull()?.is3PL == false) {
+                                        tradeInAnalytics?.clickExchangeMethods(it[0].isAvailable, it[0].estimatedPriceFmt, it[1].isAvailable, it[1].estimatedPriceFmt)
+                                    } else {
+                                        tradeInAnalytics?.clickExchangeMethods(it[1].isAvailable, it[1].estimatedPriceFmt, it[0].isAvailable, it[0].estimatedPriceFmt)
+                                    }
                                     onLogisticSelected?.onLogisticSelected(true)
                                     dismiss()
                                 }

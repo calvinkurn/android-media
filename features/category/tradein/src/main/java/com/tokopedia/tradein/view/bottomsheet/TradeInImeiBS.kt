@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tradein.R
+import com.tokopedia.tradein.TradeInAnalytics
 import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.di.TradeInComponent
 import com.tokopedia.tradein.model.Laku6DeviceModel
@@ -28,6 +29,7 @@ class TradeInImeiBS() : BottomSheetUnify() {
     private var actionListener: ActionListener? = null
     private var contentView: View? = null
     private var etWrapper: TextAreaUnify? = null
+    var tradeInAnalytics: TradeInAnalytics? = null
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -72,6 +74,7 @@ class TradeInImeiBS() : BottomSheetUnify() {
         viewModel.tradeInImeiLiveData.observe(viewLifecycleOwner, Observer {
             it.validateImei.apply {
                 if (isValid) {
+                    tradeInAnalytics?.successIMEIBottomSheet(etWrapper?.textAreaInput?.text.toString())
                     actionListener?.onImeiButtonClick(etWrapper?.textAreaInput?.text.toString())
                     dismiss()
                 } else {
@@ -90,6 +93,7 @@ class TradeInImeiBS() : BottomSheetUnify() {
     }
 
     private fun initLayout() {
+        tradeInAnalytics?.viewIMEIBottomSheet()
         setTitle(getString(R.string.tradein_imei_title))
         isDragable = true
         isHideable = true
@@ -120,6 +124,7 @@ class TradeInImeiBS() : BottomSheetUnify() {
 
                     etWrapper?.textAreaInput?.text.toString().length == 15 -> {
                         etWrapper?.textAreaInput?.isEnabled = false
+                        tradeInAnalytics?.attemptIMEIBottomSheet()
                         viewModel.validateImei(
                             this,
                             etWrapper?.textAreaInput?.text.toString()

@@ -49,6 +49,7 @@ class TradeInHomePageVM @Inject constructor(
 
     private var laku6TradeIn: Laku6TradeIn? = null
     var imei: String = ""
+    var isDiagnosed: Boolean = false
     var tradeInPrice: String = ""
     var tradeInPriceDouble: Double = 0.0
     var finalPriceDouble: Double = 0.0
