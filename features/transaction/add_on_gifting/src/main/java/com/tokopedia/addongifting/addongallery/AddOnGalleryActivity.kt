@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.addongifting.R
 import com.tokopedia.addongifting.databinding.GalleryActivityBinding
-import com.tokopedia.image_gallery.ImageGalleryItem
+//import com.tokopedia.image_gallery.ImageGalleryItem
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
@@ -37,20 +37,20 @@ class AddOnGalleryActivity : BaseSimpleActivity() {
 
     private fun renderImageGallery(viewBinding: GalleryActivityBinding, imageUrls: List<String>) {
         with(viewBinding) {
-            val imageGalleryItems = arrayListOf<ImageGalleryItem>()
-            imageUrls.forEach {
-                imageGalleryItems.add(ImageGalleryItem(null, it))
-            }
-            if (imageGalleryItems.isNotEmpty()) {
-                imageGalleryAddOn.apply {
-                    isHiddenOverlay = true
-                    overlayContainer.gone()
-                    setImages(imageGalleryItems)
-                }
-                imageGalleryAddOn.show()
-            } else {
-                imageGalleryAddOn.gone()
-            }
+//            val imageGalleryItems = arrayListOf<ImageGalleryItem>()
+//            imageUrls.forEach {
+//                imageGalleryItems.add(ImageGalleryItem(null, it))
+//            }
+//            if (imageGalleryItems.isNotEmpty()) {
+//                imageGalleryAddOn.apply {
+//                    isHiddenOverlay = true
+//                    overlayContainer.gone()
+//                    setImages(imageGalleryItems)
+//                }
+//                imageGalleryAddOn.show()
+//            } else {
+//                imageGalleryAddOn.gone()
+//            }
 
             buttonClose.setOnClickListener {
                 finish()

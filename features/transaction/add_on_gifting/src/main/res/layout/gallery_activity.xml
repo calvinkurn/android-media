@@ -5,10 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+<!--
     <com.tokopedia.image_gallery.ImageGallery
         android:id="@+id/image_gallery_add_on"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+-->
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/button_close"
