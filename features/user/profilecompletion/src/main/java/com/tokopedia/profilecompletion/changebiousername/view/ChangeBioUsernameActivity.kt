@@ -1,5 +1,6 @@
 package com.tokopedia.profilecompletion.changebiousername.view
 
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -47,5 +48,10 @@ class ChangeBioUsernameActivity : BaseSimpleActivity(), HasComponent<ProfileComp
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
             .build()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        supportActionBar?.title = "hohoho"
     }
 }

@@ -273,6 +273,7 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
     }
 
     private fun initViewsUsername(data: ProfileFeed) {
+        setToolbarUsername(data)
         binding?.stubField?.etUsername?.editText?.setText(data.username)
         binding?.stubField?.etUsername?.setCounter(maxChar)
         binding?.stubField?.etUsername?.icon1?.hide()
@@ -280,13 +281,40 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
         setEditTextUsernameListener()
     }
 
+    private fun setToolbarUsername(data: ProfileFeed) {
+        if (data.username.isNotEmpty()) {
+            activity?.let {
+                (it as ChangeBioUsernameActivity).supportActionBar?.title = getString(R.string.title_toolbar_edit_username)
+            }
+            binding?.stubField?.etUsername?.setMessage(getString(R.string.description_textfield_username))
+        } else {
+            activity?.let {
+                (it as ChangeBioUsernameActivity).supportActionBar?.title = getString(R.string.title_toolbar_add_username)
+            }
+        }
+    }
+
     private fun initViewsBio(data: ProfileFeed) {
+        setToolbarBio(data)
         binding?.stubField?.etBio?.editText?.setText(data.biography)
         binding?.stubField?.etUsername?.setCounter(maxChar)
         binding?.stubField?.etBio?.minLine = 5
         binding?.stubField?.etBio?.maxLine = 10
         binding?.stubField?.etBio?.visibility = View.VISIBLE
         setEditTextBioListener()
+    }
+
+    private fun setToolbarBio(data: ProfileFeed) {
+        if (data.biography.isNotEmpty()) {
+            activity?.let {
+                (it as ChangeBioUsernameActivity).supportActionBar?.title = getString(R.string.title_toolbar_edit_bio)
+            }
+            binding?.stubField?.etUsername?.setMessage(getString(R.string.description_textfield_username))
+        } else {
+            activity?.let {
+                (it as ChangeBioUsernameActivity).supportActionBar?.title = getString(R.string.title_toolbar_add_bio)
+            }
+        }
     }
 
     private fun setEditTextUsernameListener() {

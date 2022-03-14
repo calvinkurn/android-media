@@ -70,11 +70,11 @@
 
     <!-- ADD EMAIL -->
     <string name="title_add_email">Tambah Email</string>
-    <string name="warning_add_email">Pastikan email Anda aktif untuk keamanan dan kemudahan transaksi</string>
+    <string name="warning_add_email">Biar akunmu aman, pastikan e-mail kamu aktif.</string>
     <string name="title_email">E-mail</string>
     <string name="we_will_send_email_verification_code">Kami akan mengirimkan kode verifikasi melalui email</string>
     <string name="error_field_required">Harus diisi</string>
-    <string name="wrong_email_format">Format email salah</string>
+    <string name="wrong_email_format">Pastikan format e-mail kamu sudah benar.</string>
     <string name="success_add_email">Email berhasil ditambah</string>
     <string name="success_add_email_v2">Yay! E-mail kamu berhasil disimpan</string>
     <string name="change_email_change_success">Email berhasil diubah</string>
@@ -199,7 +199,7 @@
     <string name="placeholder_gender">Pilih Jenis Kelamin</string>
     <string name="placeholder_email">Tambah E-mail</string>
     <string name="placeholder_phone">Tambah Nomor HP</string>
-    <string name="placeholder_username">Buat nama akun</string>
+    <string name="placeholder_username">Buat username yang unik</string>
     <string name="title_username">Username</string>
     <string name="title_bio">Bio</string>
     <string name="placeholder_bio">Tulis bio kamu</string>
@@ -212,5 +212,9 @@
     <string name="title_gender">Jenis Kelamin</string>
     <string name="title_user_id">User ID</string>
     <string name="success_copy_userid">User ID berhasil disalin!</string>
+    <string name="title_toolbar_edit_username">Ubah Username</string>
+    <string name="title_toolbar_add_username">Tambah Username</string>
+    <string name="title_toolbar_edit_bio">Ubah Bio</string>
+    <string name="title_toolbar_add_bio">Tambah Bio</string>
 
 </resources>
