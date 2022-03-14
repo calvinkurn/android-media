@@ -407,6 +407,9 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                     bottomSheet.tradeInAnalytics = tradeInAnalytics
                     bottomSheet.show(childFragmentManager, "")
                 }
+                logisticData.firstOrNull()?.let {
+                    setUpPriceView(it, it.isDiagnosed)
+                }
                 showToast(
                     getString(com.tokopedia.tradein.R.string.tradein_no_delivery_area),
                     getString(com.tokopedia.tradein.R.string.tradein_oke),
