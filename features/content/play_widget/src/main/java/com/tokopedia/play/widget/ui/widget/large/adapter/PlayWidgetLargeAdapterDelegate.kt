@@ -3,7 +3,7 @@ package com.tokopedia.play.widget.ui.widget.large.adapter
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.play.widget.R
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
@@ -16,7 +16,7 @@ class PlayWidgetLargeAdapterDelegate {
     internal class Banner(
         private val cardBannerListener: PlayWidgetLargeViewHolder.Banner.Listener,
     ) : TypedAdapterDelegate<PlayWidgetBannerUiModel, PlayWidgetItemUiModel, PlayWidgetLargeViewHolder.Banner>(
-        R.layout.view_empty
+        commonR.layout.view_play_empty
     ) {
 
         override fun onBindViewHolder(
@@ -37,7 +37,7 @@ class PlayWidgetLargeAdapterDelegate {
     internal class Channel(
         private val cardChannelListener: PlayWidgetLargeViewHolder.Channel.Listener,
     ) : TypedAdapterDelegate<PlayWidgetChannelUiModel, PlayWidgetItemUiModel, PlayWidgetLargeViewHolder.Channel>(
-        R.layout.view_empty
+        commonR.layout.view_play_empty
     ) {
 
         override fun onBindViewHolder(
