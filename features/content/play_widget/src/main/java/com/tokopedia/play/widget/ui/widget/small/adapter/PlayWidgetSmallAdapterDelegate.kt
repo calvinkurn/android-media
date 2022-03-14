@@ -3,7 +3,7 @@ package com.tokopedia.play.widget.ui.widget.small.adapter
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.play.widget.R
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
@@ -15,7 +15,7 @@ internal class PlayWidgetSmallAdapterDelegate {
 
     internal class Banner(
         private val cardBannerListener: PlayWidgetSmallViewHolder.Banner.Listener,
-    ) : TypedAdapterDelegate<PlayWidgetBannerUiModel, PlayWidgetItemUiModel, PlayWidgetSmallViewHolder.Banner>(R.layout.view_empty) {
+    ) : TypedAdapterDelegate<PlayWidgetBannerUiModel, PlayWidgetItemUiModel, PlayWidgetSmallViewHolder.Banner>(commonR.layout.view_play_empty) {
 
         override fun onBindViewHolder(
             item: PlayWidgetBannerUiModel,
@@ -34,7 +34,7 @@ internal class PlayWidgetSmallAdapterDelegate {
 
     internal class Channel(
         private val cardChannelListener: PlayWidgetSmallViewHolder.Channel.Listener,
-    ) : TypedAdapterDelegate<PlayWidgetChannelUiModel, PlayWidgetItemUiModel, PlayWidgetSmallViewHolder.Channel>(R.layout.view_empty) {
+    ) : TypedAdapterDelegate<PlayWidgetChannelUiModel, PlayWidgetItemUiModel, PlayWidgetSmallViewHolder.Channel>(commonR.layout.view_play_empty) {
 
         override fun onBindViewHolder(
             item: PlayWidgetChannelUiModel,

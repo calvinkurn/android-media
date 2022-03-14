@@ -38,7 +38,10 @@ data class CartShopHolderData(
         var latitude: String = "",
         var longitude: String = "",
         var boMetadata: BoMetadata = BoMetadata(),
-        var boAffordability: CartShopBoAffordabilityData = CartShopBoAffordabilityData()
+        var boAffordability: CartShopBoAffordabilityData = CartShopBoAffordabilityData(),
+        var addOnText: String = "",
+        var addOnImgUrl: String = "",
+        var addOnId: String = ""
 ) {
     val shouldValidateWeight: Boolean
         get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()
