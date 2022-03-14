@@ -209,7 +209,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_CONTENT_PLAY_BROADCASTER = "df_content_play_broadcaster"
     const val DF_IMAGE_PICKER_INSTA = "df_imagepicker_insta"
     const val DF_CREATE_POST = "df_createpost"
-    const val DF_FEEDBACKFORM = "df_common_feedbackform"
+    const val DF_ALPHA_TESTING = "df_alpha_testing"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
@@ -605,7 +605,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
             //Feedback Form
             add(DFP({ it.startsWith(ApplinkConstInternalGlobal.FEEDBACK_FORM) ||
-                    it == ApplinkConstInternalGlobal.FEEDBACK_FORM }, DF_FEEDBACKFORM, R.string.internal_feedback))
+                    it == ApplinkConstInternalGlobal.FEEDBACK_FORM }, DF_ALPHA_TESTING, R.string.internal_feedback))
         }
     }
 

@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
-    package="com.tokopedia.df.common.feedbackform">
+    package="com.tokopedia.df.common.alphatesting">
 
-    <dist:module dist:title="@string/df_title_feedbackform">
+    <dist:module dist:title="@string/df_title_alpha_testing">
         <dist:delivery>
             <dist:on-demand />
             <dist:install-time>
