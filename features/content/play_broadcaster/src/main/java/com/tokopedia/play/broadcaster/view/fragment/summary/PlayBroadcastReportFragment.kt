@@ -38,14 +38,12 @@ import javax.inject.Inject
  * @author by jessica on 26/05/20
  */
 class PlayBroadcastReportFragment @Inject constructor(
-        private val viewModelFactory: ViewModelFactory,
         private val analytic: PlayBroadcastAnalytic,
 ) : PlayBaseBroadcastFragment(), SummaryInfoViewComponent.Listener {
 
     private var mListener: Listener? = null
 
     private lateinit var viewModel: PlayBroadcastSummaryViewModel
-    private lateinit var parentViewModel: PlayBroadcastViewModel
 
     private var _binding: FragmentPlayBroadcastReportBinding? = null
     private val binding: FragmentPlayBroadcastReportBinding
@@ -64,7 +62,6 @@ class PlayBroadcastReportFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity(), (parentFragment as ViewModelFactoryProvider).getFactory()).get(PlayBroadcastSummaryViewModel::class.java)
-        parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -99,7 +96,6 @@ class PlayBroadcastReportFragment @Inject constructor(
     private fun setupObserver() {
         observeUiState()
         observeEvent()
-        observeInteractiveLeaderboardInfo()
     }
 
     /**
@@ -134,18 +130,6 @@ class PlayBroadcastReportFragment @Inject constructor(
                     else -> { }
                 }
             }
-        }
-    }
-
-    private fun observeInteractiveLeaderboardInfo() {
-        parentViewModel.observableLeaderboardInfo.observe(viewLifecycleOwner) {
-            summaryInfoView.addTrafficMetric(
-                TrafficMetricUiModel(
-                    type = TrafficMetricType.GameParticipants,
-                    count = if (it is NetworkResult.Success) it.data.totalParticipant else getString(R.string.play_interactive_leaderboard_default)
-                ),
-                FIRST_PLACE
-            )
         }
     }
 

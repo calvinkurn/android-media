@@ -30,8 +30,8 @@ class SummaryInfoViewComponent(
         listener: Listener
 ) : ViewComponent(container, binding.layoutSummaryContent.id) {
 
-    val animationOffset = container.resources.getInteger(R.integer.play_summary_layout_animation_offset).toFloat()
-    val animationDuration = container.resources.getInteger(R.integer.play_summary_layout_animation_duration_ms).toLong()
+    private val animationOffset = container.resources.getInteger(R.integer.play_summary_layout_animation_offset).toFloat()
+    private val animationDuration = container.resources.getInteger(R.integer.play_summary_layout_animation_duration_ms).toLong()
 
     private val trafficMetricReportAdapter = TrafficMetricReportAdapter(object : TrafficMetricViewHolder.Listener {
         override fun onLabelClicked(metricType: TrafficMetricType) {
@@ -60,19 +60,11 @@ class SummaryInfoViewComponent(
         })
     }
 
-    fun setChannelCover(coverUrl: String) {
-        binding.ivBroSummaryCover.setImageUrl(coverUrl)
-    }
-
     fun setChannelHeader(data: ChannelSummaryUiState) {
         binding.ivBroSummaryCover.setImageUrl(data.coverUrl)
         binding.tvBroSummaryLiveTitle.text = data.title
         binding.tvBroSummaryDuration.text = data.duration
         binding.tvBroSummaryDate.text = data.date
-    }
-
-    fun addTrafficMetric(metric: TrafficMetricUiModel, position: Int) {
-        trafficMetricReportAdapter.addItem(position, metric)
     }
 
     fun addTrafficMetrics(dataList: List<TrafficMetricUiModel>) {

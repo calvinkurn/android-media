@@ -12,9 +12,7 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.event.UiString
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
-import com.tokopedia.play.broadcaster.ui.model.ChannelSummaryUiModel
-import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
-import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
+import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
@@ -23,9 +21,11 @@ import com.tokopedia.play.broadcaster.ui.state.LiveReportUiState
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.TagUiState
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
+import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastReportFragment
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.play_common.util.extension.setValue
@@ -44,6 +44,7 @@ import javax.inject.Inject
 class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     @Assisted val channelId: String,
     @Assisted val productSectionList: List<ProductTagSectionUiModel>,
+    @Assisted private val summaryLeaderboardInfo: SummaryLeaderboardInfo,
     private val dispatcher: CoroutineDispatchers,
     private val getLiveStatisticsUseCase: GetLiveStatisticsUseCase,
     private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
@@ -59,6 +60,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
         fun create(
             channelId: String,
             productSectionList: List<ProductTagSectionUiModel>,
+            summaryLeaderboardInfo: SummaryLeaderboardInfo,
         ): PlayBroadcastSummaryViewModel
     }
 
@@ -253,7 +255,20 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
                                         isEligiblePostVideo(reportChannelSummary.duration),
                                     )
 
-            _trafficMetric.value = NetworkResult.Success(playBroadcastMapper.mapToLiveTrafficUiMetrics(reportChannelSummary.channel.metrics))
+            val metrics = mutableListOf<TrafficMetricUiModel>().apply {
+                if(summaryLeaderboardInfo.isLeaderboardExists) {
+                    add(
+                        0,
+                        TrafficMetricUiModel(
+                            type = TrafficMetricType.GameParticipants,
+                            count = summaryLeaderboardInfo.totalInteractiveParticipant,
+                        )
+                    )
+                }
+                addAll(playBroadcastMapper.mapToLiveTrafficUiMetrics(reportChannelSummary.channel.metrics))
+            }.toList()
+
+            _trafficMetric.value = NetworkResult.Success(metrics)
 
             if(!isEligiblePostVideo(reportChannelSummary.duration))
                 _uiEvent.emit(PlayBroadcastSummaryEvent.ShowInfo(UiString.Resource(R.string.play_bro_cant_post_video_message)))
