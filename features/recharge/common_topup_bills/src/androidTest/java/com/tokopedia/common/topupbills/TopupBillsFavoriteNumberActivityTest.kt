@@ -33,6 +33,7 @@ import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFra
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment.Companion.CACHE_SHOW_COACH_MARK_KEY
 import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberViewHolder
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
+import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -50,6 +51,7 @@ class TopupBillsFavoriteNumberActivityTest {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
     var intent: Intent? = null
+    private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
     var mRuntimePermissionRule: GrantPermissionRule =
@@ -98,6 +100,7 @@ class TopupBillsFavoriteNumberActivityTest {
 
     @Test
     fun validate_favorite_number_page_happy_flow() {
+        graphqlCacheManager.deleteAll()
         setupGraphqlMockResponse(
             TopupBillsFavoriteNumberMockResponseConfig(
                 isMockFilledFavoriteNumber = true,
@@ -107,7 +110,6 @@ class TopupBillsFavoriteNumberActivityTest {
         isCoachmarkDisabled(targetContext, false)
         mActivityRule.launchActivity(intent)
 
-        Thread.sleep(3000)
         validate_show_contents_favorite_number_page()
         validate_coachmark_favorite_number()
         validate_menu_bottom_sheet_favorite_number()
@@ -124,6 +126,7 @@ class TopupBillsFavoriteNumberActivityTest {
 
     @Test
     fun validate_favorite_number_empty_unhappy_flow() {
+        graphqlCacheManager.deleteAll()
         setupGraphqlMockResponse(
             TopupBillsFavoriteNumberMockResponseConfig(
                 isMockFilledFavoriteNumber = false,
@@ -133,7 +136,6 @@ class TopupBillsFavoriteNumberActivityTest {
         isCoachmarkDisabled(targetContext, true)
         mActivityRule.launchActivity(intent)
 
-        Thread.sleep(3000)
         validate_empty_state()
 
         MatcherAssert.assertThat(
@@ -144,6 +146,7 @@ class TopupBillsFavoriteNumberActivityTest {
 
     @Test
     fun validate_favorite_number_page_favorite_detail_error_flow() {
+        graphqlCacheManager.deleteAll()
         setupGraphqlMockResponse(
             TopupBillsFavoriteNumberMockResponseConfig(
                 isMockFilledFavoriteNumber = true,
@@ -153,7 +156,6 @@ class TopupBillsFavoriteNumberActivityTest {
         isCoachmarkDisabled(targetContext, true)
         mActivityRule.launchActivity(intent)
 
-        Thread.sleep(3000)
         validate_delete_favorite_number_fail()
 
         MatcherAssert.assertThat(
@@ -183,6 +185,8 @@ class TopupBillsFavoriteNumberActivityTest {
 
     fun validate_modify_bottom_sheet_favorite_number() {
         favoriteNumberItem_clickMenu(0)
+        Thread.sleep(1000)
+
         onView(withId(R.id.common_topupbills_favorite_number_change_name)).perform(click())
 
         Thread.sleep(1000)
@@ -233,6 +237,7 @@ class TopupBillsFavoriteNumberActivityTest {
     }
 
     fun validate_empty_state() {
+        Thread.sleep(1000)
         onView(withId(R.id.common_topupbills_not_found_state_title)).check(matches(isDisplayed()))
         onView(withId(R.id.common_topupbills_not_found_state_button)).perform(click())
     }
@@ -278,11 +283,13 @@ class TopupBillsFavoriteNumberActivityTest {
     }
 
     private fun modifyBottomSheet_validateTextFields() {
+        Thread.sleep(1000)
         onView(withId(R.id.common_topupbills_favorite_number_name_field)).check(matches(isDisplayed()))
         onView(withId(R.id.common_topupbills_favorite_number_phone_field)).check(matches(isDisplayed()))
     }
 
     private fun menuBottomSheet_clickDelete() {
+        Thread.sleep(1000)
         onView(withId(R.id.common_topup_bills_favorite_number_delete)).perform(click())
     }
 
@@ -309,21 +316,25 @@ class TopupBillsFavoriteNumberActivityTest {
     }
 
     private fun favoriteNumberMenu_validateContents() {
+        Thread.sleep(1000)
         onView(withId(R.id.common_topupbills_favorite_number_change_name)).check(matches(isDisplayed()))
         onView(withId(R.id.common_topup_bills_favorite_number_delete)).check(matches(isDisplayed()))
     }
 
     private fun coachMark_clickButtonWithText(text: String) {
+        Thread.sleep(1000)
         onView(withText(text))
             .inRoot(RootMatchers.isPlatformPopup())
             .perform(click());
     }
 
     private fun deleteConfirmationDialog_clickCancel() {
+        Thread.sleep(1000)
         onView(withId(R.id.dialog_btn_secondary)).perform(click())
     }
 
     private fun deleteConfirmationDialog_clickConfirm() {
+        Thread.sleep(1000)
         onView(withId(R.id.dialog_btn_primary)).perform(click())
     }
 
