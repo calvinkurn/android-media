@@ -26,6 +26,14 @@ class ImagePreview(
     private var posX = 0f
     private var posY = 0f
 
+    /**
+     * zoom in & zoom out size limit
+     * zoom in max 5x original size
+     * zoom out max 1x original size
+     */
+    private val zoomInLimit = 5f
+    private val zoomOutLimit = 1f
+
     override val layout: Int
         get() = R.layout.view_item_preview_image
 
@@ -57,14 +65,9 @@ class ImagePreview(
             detector?.let {
                 mScaleFactor *= it.scaleFactor
 
-                /**
-                 * zoom in & zoom out size limit
-                 * zoom in max 5x original size
-                 * zoom out max 1x original size
-                 */
                 mScaleFactor = when {
-                    mScaleFactor < 1f -> 1f
-                    mScaleFactor > 5f -> 5f
+                    mScaleFactor < zoomOutLimit -> zoomOutLimit
+                    mScaleFactor > zoomInLimit -> zoomInLimit
                     else -> mScaleFactor
                 }
 
