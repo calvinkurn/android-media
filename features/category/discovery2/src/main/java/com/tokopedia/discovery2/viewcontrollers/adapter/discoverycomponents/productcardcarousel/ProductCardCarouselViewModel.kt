@@ -239,7 +239,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         return productList
     }
 
-    fun areFitterApplied():Boolean{
+    fun areFiltersApplied():Boolean{
         return ((components.selectedSort != null && components.selectedFilters != null) &&
             (components.selectedSort?.isNotEmpty() == true ||
                     components.selectedFilters?.isNotEmpty() == true))

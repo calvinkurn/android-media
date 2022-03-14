@@ -244,7 +244,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
                 errorHolder.gone()
             }
         } else if (mProductCarouselComponentViewModel.getProductList()?.isEmpty() == true
-            && mProductCarouselComponentViewModel.areFitterApplied()) {
+            && mProductCarouselComponentViewModel.areFiltersApplied()) {
             if (errorHolder.childCount > 0) {
                 errorHolder.removeAllViews()
             }
