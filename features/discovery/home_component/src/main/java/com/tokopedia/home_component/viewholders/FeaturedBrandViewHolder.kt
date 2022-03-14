@@ -8,11 +8,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.GlobalComponentFeaturedBrandBinding
-import com.tokopedia.home_component.decoration.GridSpacingItemDecoration
 import com.tokopedia.home_component.listener.FeaturedBrandListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.util.FeaturedBrandTabletConfiguration
 import com.tokopedia.home_component.viewholders.adapter.FeaturedBrandAdapter
 import com.tokopedia.home_component.visitable.FeaturedBrandDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -28,7 +26,7 @@ class FeaturedBrandViewHolder (itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.global_component_featured_brand
-        private const val FEATURED_BRAND_SPACING = 10
+        val FEATURED_BRAND_SPAN_COUNT = 4
     }
     private var binding: GlobalComponentFeaturedBrandBinding? by viewBinding()
     private lateinit var recyclerView: RecyclerView
@@ -59,7 +57,7 @@ class FeaturedBrandViewHolder (itemView: View,
 
     private fun initRV() {
         recyclerView = itemView.findViewById(R.id.recycleList)
-        layoutManager = GridLayoutManager(itemView.context, 4)
+        layoutManager = GridLayoutManager(itemView.context, FEATURED_BRAND_SPAN_COUNT)
         parentRecyclerViewPool?.let { recyclerView.setRecycledViewPool(parentRecyclerViewPool) }
         recyclerView.layoutManager = layoutManager
     }

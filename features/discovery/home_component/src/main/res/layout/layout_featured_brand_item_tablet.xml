@@ -37,16 +37,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/featured_brand_image">
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:contentDescription="@string/content_desc_featured_brand_icon"
                 android:id="@+id/featured_brand_logo"
+                android:scaleType="fitCenter"
                 android:layout_gravity="center"
                 android:layout_width="@dimen/component_featured_brand_logo_image_size_tablet"
                 android:layout_height="@dimen/component_featured_brand_logo_image_size_tablet"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="parent"
                 />
         </FrameLayout>
 
@@ -72,6 +69,7 @@
         <com.tokopedia.unifyprinciples.Typography
             app:typographyType="heading_3"
             android:textColor="@color/Unify_N700_96"
+            android:textStyle="bold"
             android:id="@+id/featured_brand_value"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
