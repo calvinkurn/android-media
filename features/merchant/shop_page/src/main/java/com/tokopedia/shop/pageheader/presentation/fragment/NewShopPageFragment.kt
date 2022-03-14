@@ -514,6 +514,7 @@ class NewShopPageFragment :
                 }
                 is Fail -> {
                     val throwable = result.throwable
+                    val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
                     if(throwable is ShopAsyncErrorException){
                         val actionName  = when(throwable.asyncQueryType){
                             ShopAsyncErrorException.AsyncQueryType.SHOP_PAGE_P1 -> {
@@ -533,9 +534,10 @@ class NewShopPageFragment :
                             actionName,
                             shopId,
                             shopDomain.orEmpty(),
-                            throwable.message.orEmpty(),
+                            errorMessage,
                             throwable.stackTraceToString()
                         )
+                        sendEmbraceLogError(actionName, errorMessage)
                     }
                     if (!ShopLogger.isExceptionIgnored(throwable)) {
                         ShopLogger.logShopPageP2BuyerFlowAlerting(
@@ -545,7 +547,7 @@ class NewShopPageFragment :
                                 userId = userId,
                                 shopId = shopId,
                                 shopName = shopName,
-                                errorMessage = ErrorHandler.getErrorMessage(context, throwable),
+                                errorMessage = errorMessage,
                                 stackTrace = Log.getStackTraceString(throwable),
                                 errType = SHOP_PAGE_HEADER_BUYER_FLOW_TAG
                         )
@@ -705,6 +707,14 @@ class NewShopPageFragment :
             }
         })
 
+    }
+
+    private fun sendEmbraceLogError(message: String, throwableMessage: String) {
+        ShopLogger.sendEmbraceLogError(message, mapOf(
+            ShopLogger.SHOP_EMBRACE_LOG_SHOP_ID to shopId,
+            ShopLogger.SHOP_EMBRACE_LOG_SHOP_NAME to shopDomain.orEmpty(),
+            ShopLogger.SHOP_EMBRACE_LOG_ERROR_MESSAGE to throwableMessage
+        ))
     }
 
     private fun sendEmbraceBreadCrumbLogger(

@@ -435,6 +435,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     }
                     is Fail -> {
                         val throwable = it.throwable
+                        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
                         if(throwable is ShopAsyncErrorException){
                             val actionName  = when(throwable.asyncQueryType){
                                 ShopAsyncErrorException.AsyncQueryType.SHOP_PAGE_GET_LAYOUT_V2 -> {
@@ -448,11 +449,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                                 actionName,
                                 shopId,
                                 shopName,
-                                throwable.message.orEmpty(),
+                                errorMessage,
                                 throwable.stackTraceToString()
                             )
+                            sendEmbraceLogError(actionName, errorMessage)
                         }
-                        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
                         if (!ShopLogger.isExceptionIgnored(throwable)) {
                             ShopLogger.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
@@ -461,7 +462,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                                 userId = userId,
                                 shopId = shopId,
                                 shopName = shopName,
-                                errorMessage = ErrorHandler.getErrorMessage(context, throwable),
+                                errorMessage = errorMessage,
                                 stackTrace = Log.getStackTraceString(throwable),
                                 errType = SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
                             )
@@ -818,6 +819,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 stackTraceString
             )
         )
+    }
+
+    private fun sendEmbraceLogError(message: String, throwableMessage: String) {
+        ShopLogger.sendEmbraceLogError(message, mapOf(
+            ShopLogger.SHOP_EMBRACE_LOG_SHOP_ID to shopId,
+            ShopLogger.SHOP_EMBRACE_LOG_SHOP_NAME to shopName,
+            ShopLogger.SHOP_EMBRACE_LOG_ERROR_MESSAGE to throwableMessage
+        ))
     }
 
     private fun onSuccessGetShopProductFilterCount(count: Int) {
