@@ -282,6 +282,8 @@ ext {
             promotionsTarget                : ":features:promo:promotions_target",
             logintestapp                    : ":testapp-features:user:logintestapp",
             customer_mid_app                : ":customer_mid_app",
-            telephony_masking               : ":features:user:telephony_masking"
+            telephony_masking               : ":features:user:telephony_masking",
+
+            tokofood                        : ":features:tokofood"
     ]
 }

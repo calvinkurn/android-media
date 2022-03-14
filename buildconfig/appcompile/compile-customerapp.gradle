@@ -264,6 +264,8 @@ includeIfEnabled("features:user:vote")
 includeIfEnabled("features:user:telephony_masking")
 includeIfEnabled("features:user:fcm_common")
 
+includeIfEnabled("features:tokofood")
+
 includeIfEnabled("tkpdcore")
 includeIfEnabled("tkpddesign")
 includeIfEnabled("tkpdabstraction")
