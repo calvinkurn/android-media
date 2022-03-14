@@ -19,6 +19,7 @@ public interface ApplinkConst {
     String AMP_FIND = "tokopedia://amp/find";
     String FEED_HASHTAG = "tokopedia://feed/hashtag/{hashtag}";
     String FEED_DETAILS = "tokopedia://feedcommunicationdetail";
+    String FEED_PlAY_LIVE_DETAIL = "tokopedia://feedplaylivedetail";
     String HOME_CATEGORY = "tokopedia://home/category";
     String HOME_HOT_HOST = "hot";
     String HOME_HOTLIST = "tokopedia://hot";

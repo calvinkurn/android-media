@@ -78,10 +78,11 @@ import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
+import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.reminded
@@ -1520,8 +1521,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         })
     }
 
-    private fun handlePlayWidgetUiModel(playWidgetUiModel: PlayWidgetUiModel) {
-        pdpUiUpdater?.updatePlayWidget(playWidgetUiModel)
+    private fun handlePlayWidgetUiModel(playWidgetState: PlayWidgetState) {
+        pdpUiUpdater?.updatePlayWidget(playWidgetState)
     }
 
     private fun onSuccessUpdateAddress() {
@@ -3768,17 +3769,17 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         position: Int
     ) {
         doActionOrLogin({
-            val playWidgetUiModel =
-                pdpUiUpdater?.contentWidgetData?.playWidgetUiModel ?: return@doActionOrLogin
+            val playWidgetState =
+                pdpUiUpdater?.contentWidgetData?.playWidgetState ?: return@doActionOrLogin
             viewModel.updatePlayWidgetToggleReminder(
-                playWidgetUiModel, channelId, reminderType
+                playWidgetState, channelId, reminderType
             )
         })
     }
 
     override fun onImpressChannelCard(
         componentTrackDataModel: ComponentTrackDataModel,
-        item: PlayWidgetMediumChannelUiModel
+        item: PlayWidgetChannelUiModel
     ) {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return
         ContentWidgetTracking.impressChannelCard(
@@ -3794,7 +3795,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     override fun onClickChannelCard(
         componentTrackDataModel: ComponentTrackDataModel,
-        item: PlayWidgetMediumChannelUiModel
+        item: PlayWidgetChannelUiModel
     ) {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return
         ContentWidgetTracking.clickChannelCard(
@@ -3831,7 +3832,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     override fun onClickToggleReminderChannel(
         componentTrackDataModel: ComponentTrackDataModel,
-        item: PlayWidgetMediumChannelUiModel,
+        item: PlayWidgetChannelUiModel,
         isRemindMe: Boolean
     ) {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return

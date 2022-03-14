@@ -15,6 +15,7 @@
         order by name
     -->
     <string name="host_feed_detail_page" translatable="false">feedcommunicationdetail</string>
+    <string name="host_feed_play_live_detail" translatable="false">feedplaylivedetail</string>
     <string name="path_category_detail" translatable="false">/category/.*\\/</string>
 
     <string name="path_checkout_variant" translatable="false">/checkout-variant</string>
