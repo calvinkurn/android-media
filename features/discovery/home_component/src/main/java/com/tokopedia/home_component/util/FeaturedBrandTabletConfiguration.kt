@@ -5,9 +5,6 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.home_component.R
 
-/**
- * Created by yfsx on 31/08/21.
- */
 object FeaturedBrandTabletConfiguration {
 
     const val SPAN_COUNT = 4

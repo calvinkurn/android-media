@@ -32,6 +32,8 @@ class FeaturedBrandAdapter(
     companion object {
         private const val MAX_ITEM = 4
         private const val ROUNDED_12F = 12F
+        private const val PRODUCT_IMAGE_CORNER = 0
+        private const val DESC_MAXIMUM_CHAR = 12
     }
 
     private lateinit var dataModel: FeaturedBrandDataModel
@@ -81,7 +83,7 @@ class FeaturedBrandAdapter(
             isCacheData: Boolean
         ) {
             itemImage.apply {
-                cornerRadius = 0
+                cornerRadius = PRODUCT_IMAGE_CORNER
                 loadImageNoRounded(item.grid.productImageUrl, R.drawable.placeholder_grey)
             }
             if (item.grid.imageUrl.isNotEmpty()) {
@@ -98,7 +100,7 @@ class FeaturedBrandAdapter(
                 itemDesc.text = item.grid.benefit.type.ifEmpty {
                     item.grid.benefit.value
                 }.apply {
-                    if (length > 12) StringBuilder(this).apply { insert(12, "\n") }.toString()
+                    if (length > DESC_MAXIMUM_CHAR) StringBuilder(this).apply { insert(DESC_MAXIMUM_CHAR, "\n") }.toString()
                 }
                 itemValue.hide()
             }

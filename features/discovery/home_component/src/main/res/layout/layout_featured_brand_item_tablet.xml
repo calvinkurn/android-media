@@ -69,7 +69,7 @@
         <com.tokopedia.unifyprinciples.Typography
             app:typographyType="heading_3"
             android:textColor="@color/Unify_N700_96"
-            android:textStyle="bold"
+            app:typographyWeight="bold"
             android:id="@+id/featured_brand_value"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
