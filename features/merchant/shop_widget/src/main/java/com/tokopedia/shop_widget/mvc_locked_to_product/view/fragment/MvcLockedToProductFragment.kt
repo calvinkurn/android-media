@@ -23,7 +23,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -81,7 +80,6 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
 
     companion object {
         private const val CART_LOCAL_CACHE_NAME = "CART"
-        private const val TOTAL_CART_CACHE_KEY = "CACHE_TOTAL_CART"
         private const val GRID_SPAN_COUNT = 2
         private const val START_PAGE = 1
         private const val PER_PAGE = 10
@@ -469,7 +467,8 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
                 PER_PAGE,
                 selectedSortData,
                 userAddressLocalData
-            )
+            ),
+            isSellerView
         )
     }
 
@@ -512,7 +511,8 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
                 PER_PAGE,
                 selectedSortData,
                 userAddressLocalData
-            )
+            ),
+            isSellerView
         )
     }
 
@@ -583,10 +583,6 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun getCartCounter(): Int {
-        return cartLocalCacheHandler?.getInt(TOTAL_CART_CACHE_KEY, 0).orZero()
-    }
-
     override fun getScreenName(): String {
         return ""
     }
@@ -647,22 +643,27 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
         redirectToPdp(uiModel.productID)
     }
 
-    override fun onProductVariantClickAtc(uiModel: MvcLockedToProductGridProductUiModel) {
+    override fun onProductCartDefaultAtcClick(uiModel: MvcLockedToProductGridProductUiModel) {
         if (isUserLogin) {
-            AtcVariantHelper.goToAtcVariant(
-                context = requireContext(),
-                productId = uiModel.productID,
-                pageSource = VariantPageSource.SHOP_COUPON_PAGESOURCE,
-                shopId = shopId,
-                dismissAfterTransaction = false,
-                startActivitResult = this::startActivityForResult
-            )
+            if (isSellerView) {
+                val sellerViewAtcErrorMessage = getString(R.string.mvc_discovery_seller_atc_error_message)
+                showToaster(message = sellerViewAtcErrorMessage, type = Toaster.TYPE_ERROR)
+            } else {
+                AtcVariantHelper.goToAtcVariant(
+                    context = requireContext(),
+                    productId = uiModel.productID,
+                    pageSource = VariantPageSource.SHOP_COUPON_PAGESOURCE,
+                    shopId = shopId,
+                    dismissAfterTransaction = false,
+                    startActivitResult = this::startActivityForResult
+                )
+            }
         } else {
             redirectToLoginPage()
         }
     }
 
-    override fun onProductNonVariantAtcQuantityChanged(
+    override fun onProductCartQuantityAtcEditorChanged(
         productId: String,
         quantity: Int
     ) {

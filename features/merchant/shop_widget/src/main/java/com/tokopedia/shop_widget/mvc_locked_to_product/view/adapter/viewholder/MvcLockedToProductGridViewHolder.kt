@@ -24,8 +24,8 @@ open class MvcLockedToProductGridViewHolder(
 
     interface Listener {
         fun onProductClicked(index: Int, uiModel: MvcLockedToProductGridProductUiModel)
-        fun onProductVariantClickAtc(uiModel: MvcLockedToProductGridProductUiModel)
-        fun onProductNonVariantAtcQuantityChanged(productId: String, quantity: Int)
+        fun onProductCartDefaultAtcClick(uiModel: MvcLockedToProductGridProductUiModel)
+        fun onProductCartQuantityAtcEditorChanged(productId: String, quantity: Int)
     }
 
     override fun bind(uiModel: MvcLockedToProductGridProductUiModel) {
@@ -41,11 +41,11 @@ open class MvcLockedToProductGridViewHolder(
             }
             setAddToCartNonVariantClickListener(object : ATCNonVariantListener {
                 override fun onQuantityChanged(quantity: Int) {
-                    listener.onProductNonVariantAtcQuantityChanged(uiModel.productID, quantity)
+                    listener.onProductCartQuantityAtcEditorChanged(uiModel.productID, quantity)
                 }
             })
             setAddToCartOnClickListener {
-                listener.onProductVariantClickAtc(uiModel)
+                listener.onProductCartDefaultAtcClick(uiModel)
             }
         }
     }
