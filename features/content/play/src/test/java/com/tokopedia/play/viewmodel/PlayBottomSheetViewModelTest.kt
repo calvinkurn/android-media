@@ -316,4 +316,36 @@ class PlayBottomSheetViewModelTest {
             .assertThat((actualValue as PlayResult.Success).data.reasoningList)
             .isEqualTo(expectedResult)
     }
+
+    @Test
+    fun `when logged in, should be allowed to send upcoming reminder`() {
+        val eventSendUpcomingReminder = InteractionEvent.SendUpcomingReminder(
+            sectionInfo = sectionMockData
+        )
+
+        coEvery { userSession.isLoggedIn } returns true
+
+        val expectedResult = Event(LoginStateEvent.InteractionAllowed(eventSendUpcomingReminder))
+
+        playBottomSheetViewModel.doInteractionEvent(eventSendUpcomingReminder)
+
+        Assertions.assertThat(playBottomSheetViewModel.observableLoggedInInteractionEvent.getOrAwaitValue())
+            .isEqualToComparingFieldByFieldRecursively(expectedResult)
+    }
+
+    @Test
+    fun `when not logged in, should not be allowed to send upcoming reminder`() {
+        val eventSendUpcomingReminder = InteractionEvent.SendUpcomingReminder(
+            sectionInfo = sectionMockData
+        )
+
+        coEvery { userSession.isLoggedIn } returns false
+
+        val expectedResult = Event(LoginStateEvent.NeedLoggedIn(eventSendUpcomingReminder))
+
+        playBottomSheetViewModel.doInteractionEvent(eventSendUpcomingReminder)
+
+        Assertions.assertThat(playBottomSheetViewModel.observableLoggedInInteractionEvent.getOrAwaitValue())
+            .isEqualToComparingFieldByFieldRecursively(expectedResult)
+    }
 }
