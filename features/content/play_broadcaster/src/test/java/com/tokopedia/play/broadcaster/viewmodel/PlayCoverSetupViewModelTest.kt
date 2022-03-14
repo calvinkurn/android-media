@@ -15,6 +15,7 @@ import com.tokopedia.play.broadcaster.ui.model.CarouselCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
@@ -36,7 +37,6 @@ class PlayCoverSetupViewModelTest {
 
     private val dispatcherProvider = CoroutineTestDispatchersProvider
 
-    private lateinit var productDataStore: ProductDataStore
     private lateinit var coverDataStore: MockCoverDataStore
     private lateinit var broadcastScheduleDataStore: BroadcastScheduleDataStore
     private lateinit var titleDataStore: TitleDataStore
@@ -60,15 +60,15 @@ class PlayCoverSetupViewModelTest {
         channelConfigStore = ChannelConfigStoreImpl()
         titleConfigStore = TitleConfigStoreImpl()
 
-        productDataStore = ProductDataStoreImpl(dispatcherProvider, mockk())
         coverDataStore = MockCoverDataStore(dispatcherProvider)
         broadcastScheduleDataStore = BroadcastScheduleDataStoreImpl(dispatcherProvider, mockk())
         titleDataStore = TitleDataStoreImpl(dispatcherProvider, mockk(), mockk())
         tagsDataStore = TagsDataStoreImpl(dispatcherProvider, mockk())
         interactiveDataStore = InteractiveDataStoreImpl()
-        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore, broadcastScheduleDataStore, titleDataStore, tagsDataStore, interactiveDataStore)
+        mockSetupDataStore = MockSetupDataStore(coverDataStore, broadcastScheduleDataStore, titleDataStore, tagsDataStore, interactiveDataStore)
 
         viewModel = PlayCoverSetupViewModel(
+                productList = emptyList(),
                 hydraConfigStore = HydraConfigStoreImpl(
                         channelConfigStore,
                         ProductConfigStoreImpl(),
@@ -137,18 +137,6 @@ class PlayCoverSetupViewModelTest {
         Assertions
                 .assertThat(croppedState.coverSource)
                 .isEqualTo(source)
-    }
-
-    @Test
-    fun `when observe selected products, it should return the correct products`() {
-        val productList = listOf(modelBuilder.buildProductData())
-        productDataStore.setSelectedProducts(productList)
-
-        val actual = viewModel.observableSelectedProducts.getOrAwaitValue()
-
-        Assertions
-                .assertThat(actual)
-                .isEqualTo(productList.map { CarouselCoverUiModel.Product(ProductContentUiModel.createFromData(it)) })
     }
 
     @Test

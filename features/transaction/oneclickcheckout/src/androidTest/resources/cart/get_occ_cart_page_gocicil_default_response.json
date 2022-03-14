@@ -342,7 +342,7 @@
               "description": "Limit tersedia: Rp5.000.000",
               "minimum_amount": 300000,
               "maximum_amount": 5000000,
-              "wallet_amount": 0,
+              "wallet_amount": 5000000,
               "fee": 0,
               "metadata": "{\"success\":true,\"message\":\"Success\",\"gateway_code\":\"PEMUDACICIL\",\"express_checkout_param\":{\"account_name\":\"\",\"account_number\":\"\",\"bank_id\":\"\",\"pan\":\"\",\"issuer\":\"\",\"card_token\":\"\",\"card_type\":\"\",\"total_saved_card\":\"\",\"installment_term\":\"0\",\"expiry\":\"\",\"bank_code\":\"\"},\"express_checkout_url\":\"https://pay-staging.tokopedia.com/v2/api/payment/PEMUDACICIL\",\"high_risk_flag\":\"\",\"description\":\"GoPayLater Cicil\",\"image\":\"https://ecs7.tokopedia.net/img/toppay/pemuda-paylater.png\",\"signature\":\"1b9df7786f392574d1685354bd5ed774e7178761\",\"customer_name\":\"gocicil\",\"customer_email\":\"danan.pambudi+testcicil01@tokopedia.com\",\"user_id\":9095120}",
               "mdr": 0,
@@ -449,9 +449,9 @@
               "service_id": 1104,
               "service_duration": "Reguler (2-4 hari)",
               "service_name": "Reguler",
-              "sp_id": 18,
+              "sp_id": 50,
               "recommendation_service_id": 1104,
-              "recommendation_sp_id": 18,
+              "recommendation_sp_id": 50,
               "is_free_shipping_selected": false
             }
           },

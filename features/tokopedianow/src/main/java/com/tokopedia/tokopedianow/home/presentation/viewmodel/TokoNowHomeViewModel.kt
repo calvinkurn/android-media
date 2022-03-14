@@ -276,7 +276,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 _homeLayoutList.postValue(Success(data))
             }
         }) {
-            _homeLayoutList.postValue(Fail(it))
+            // do nothing
         }
     }
 
