@@ -43,6 +43,8 @@ class MerchantVoucherComponentCallback(val homeCategoryListener: HomeCategoryLis
         element: CarouselMerchantVoucherDataModel,
         horizontalPosition: Int
     ) {
-
+        val tracking = MerchantVoucherTracking.getClickProduct(element, horizontalPosition)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(tracking.first, tracking.second)
+        homeCategoryListener.onDynamicChannelClicked(element.productAppLink)
     }
 }
