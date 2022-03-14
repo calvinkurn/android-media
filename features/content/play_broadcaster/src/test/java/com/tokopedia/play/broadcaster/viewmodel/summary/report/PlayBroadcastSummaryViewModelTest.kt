@@ -5,6 +5,9 @@ import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastSummaryViewModelRobot
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
+import com.tokopedia.play.broadcaster.ui.model.SummaryLeaderboardInfo
+import com.tokopedia.play.broadcaster.ui.model.TrafficMetricType
+import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play.broadcaster.util.*
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -62,6 +65,43 @@ class PlayBroadcastSummaryViewModelTest {
                     NetworkResult.Success(
                         playBroadcastMapper.mapToLiveTrafficUiMetrics(mockLiveStats.channel.metrics)
                     )
+                )
+                channelSummary.date.assertEqualTo(mockPublishedAtFormatted)
+                channelSummary.duration.assertEqualTo(mockLiveStats.duration)
+                channelSummary.isEligiblePostVideo.assertTrue()
+            }
+        }
+    }
+
+    @Test
+    fun `when get traffic summary is success & theres a leaderboard, then it should return success with additional metrics`() {
+
+        val mockTotalInteractiveParticipant = "1"
+        val mockMetricList = mutableListOf<TrafficMetricUiModel>(
+            TrafficMetricUiModel(
+                type = TrafficMetricType.GameParticipants,
+                count = mockTotalInteractiveParticipant,
+            )
+        ).apply {
+            addAll(playBroadcastMapper.mapToLiveTrafficUiMetrics(mockLiveStats.channel.metrics))
+        }
+
+        coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
+        coEvery { mockGetLiveStatisticsUseCase.executeOnBackground() } returns mockLiveStats
+
+        val robot = PlayBroadcastSummaryViewModelRobot(
+            summaryLeaderboardInfo = SummaryLeaderboardInfo(true, mockTotalInteractiveParticipant),
+            dispatcher = testDispatcher,
+            getLiveStatisticsUseCase = mockGetLiveStatisticsUseCase,
+            getChannelUseCase = mockGetChannelUseCase,
+        )
+
+        robot.use {
+            val state = it.recordState {  }
+
+            with(state) {
+                liveReport.trafficMetricsResult.assertEqualTo(
+                    NetworkResult.Success(mockMetricList)
                 )
                 channelSummary.date.assertEqualTo(mockPublishedAtFormatted)
                 channelSummary.duration.assertEqualTo(mockLiveStats.duration)

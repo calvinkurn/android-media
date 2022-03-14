@@ -7,11 +7,14 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
+import com.tokopedia.play.broadcaster.ui.model.SummaryLeaderboardInfo
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastSummaryUiState
 import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.assisted.Assisted
 import io.mockk.mockk
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
@@ -22,7 +25,9 @@ import java.io.Closeable
  * Created By : Jonathan Darwin on March 11, 2022
  */
 class PlayBroadcastSummaryViewModelRobot(
-    channelConfigStore: ChannelConfigStore = mockk(relaxed = true),
+    channelId: String = "123",
+    productSectionList: List<ProductTagSectionUiModel> = emptyList(),
+    summaryLeaderboardInfo: SummaryLeaderboardInfo = SummaryLeaderboardInfo(false, "0"),
     private val dispatcher: CoroutineTestDispatchers = CoroutineTestDispatchers,
     getLiveStatisticsUseCase: GetLiveStatisticsUseCase = mockk(relaxed = true),
     updateChannelUseCase: PlayBroadcastUpdateChannelUseCase = mockk(relaxed = true),
@@ -34,7 +39,9 @@ class PlayBroadcastSummaryViewModelRobot(
 ) : Closeable {
 
     private val viewModel = PlayBroadcastSummaryViewModel(
-        channelConfigStore = channelConfigStore,
+        channelId = channelId,
+        productSectionList = productSectionList,
+        summaryLeaderboardInfo = summaryLeaderboardInfo,
         dispatcher = dispatcher,
         getLiveStatisticsUseCase = getLiveStatisticsUseCase,
         updateChannelUseCase = updateChannelUseCase,

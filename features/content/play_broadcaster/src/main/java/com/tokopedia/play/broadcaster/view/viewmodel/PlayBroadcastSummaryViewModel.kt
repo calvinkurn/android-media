@@ -257,7 +257,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
 
             val metrics = mutableListOf<TrafficMetricUiModel>().apply {
                 if(summaryLeaderboardInfo.isLeaderboardExists) {
-                    add(0, TrafficMetricUiModel(
+                    add(TrafficMetricUiModel(
                             type = TrafficMetricType.GameParticipants,
                             count = summaryLeaderboardInfo.totalInteractiveParticipant,
                         )
