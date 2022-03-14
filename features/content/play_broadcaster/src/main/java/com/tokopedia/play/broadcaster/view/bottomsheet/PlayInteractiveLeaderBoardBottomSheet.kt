@@ -156,7 +156,7 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
                    btnRefresh.isLoading = false
                }
                is NetworkResult.Success -> {
-                   showError(true)
+                   showError(false)
                    btnRefresh.isLoading = false
                    if(needRebindLeaderboard()) {
                        leaderboardAdapter.setItems(it.data.leaderboardWinners)
