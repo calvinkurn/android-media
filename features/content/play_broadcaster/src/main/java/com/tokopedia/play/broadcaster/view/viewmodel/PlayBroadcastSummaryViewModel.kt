@@ -48,7 +48,7 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val channelId: String
-        get() = "337916"
+        get() = channelConfigStore.getChannelId()
 
     private val _channelSummary = MutableStateFlow(ChannelSummaryUiModel.empty())
     private val _trafficMetric = MutableStateFlow<NetworkResult<List<TrafficMetricUiModel>>>(NetworkResult.Loading)
