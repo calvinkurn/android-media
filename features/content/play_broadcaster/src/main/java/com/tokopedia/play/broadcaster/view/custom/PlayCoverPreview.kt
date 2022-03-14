@@ -44,12 +44,6 @@ class PlayCoverPreview : ConstraintLayout {
     private val job = SupervisorJob()
     private val scope = CoroutineScope(Dispatchers.Main + job)
 
-    init {
-        binding.root.setOnClickListener {
-            mListener?.onClickCoverPreview(isCoverAvailable)
-        }
-    }
-
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         scope.launch {
@@ -90,13 +84,5 @@ class PlayCoverPreview : ConstraintLayout {
 
     fun setShopName(shopName: String) {
         binding.tvCoverShopName.text = shopName
-    }
-
-    fun setListener(listener: CoverFormView.Listener) {
-        mListener = listener
-    }
-
-    interface Listener {
-        fun onClickCoverPreview(isEditCover: Boolean)
     }
 }

@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.*
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -34,7 +33,6 @@ import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
-import com.tokopedia.play_common.view.*
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
@@ -118,14 +116,6 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     }
 
     private fun setupView() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            binding.ivCoverImageCircleDash.apply {
-                setImageBitmap(
-                    requireContext().getBitmapFromUrl(getString(R.string.ic_play_cover_circle_dash), cacheStrategy = DiskCacheStrategy.RESOURCE)
-                )
-            }
-        }
-
         binding.icBroSummaryBack.setOnClickListener {
             viewModel.submitAction(PlayBroadcastSummaryAction.ClickBackToReportPage)
         }
@@ -186,9 +176,11 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     private fun renderCoverInfo(prev: ChannelSummaryUiState?, value: ChannelSummaryUiState) {
         if(prev == value || value.isEmpty()) return
 
-        binding.ivBroSummaryCoverPreview.setImageUrl(value.coverUrl)
-        binding.tvBroSummaryCoverTitle.text = value.title
-        binding.tvBroSummaryCoverShopName.text = parentViewModel.getShopName()
+        binding.clCoverPreview.apply {
+            setCoverWithPlaceholder(value.coverUrl)
+            setTitle(value.title)
+            setShopName(parentViewModel.getShopName())
+        }
     }
 
     private fun renderTag(prev: TagUiState?, value: TagUiState) {
