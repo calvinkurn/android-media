@@ -2,6 +2,7 @@ package com.tokopedia.productcard
 
 import android.view.View
 import android.widget.ImageView
+import com.tokopedia.productcard.video.ProductCardVideo
 import com.tokopedia.unifycomponents.UnifyButton
 
 interface IProductCardView {
@@ -22,5 +23,5 @@ interface IProductCardView {
 
     fun getProductImageView(): ImageView?
 
-    fun getProductVideoView(): ProductCardVideoView?
+    fun getProductCardVideo(): ProductCardVideo
 }

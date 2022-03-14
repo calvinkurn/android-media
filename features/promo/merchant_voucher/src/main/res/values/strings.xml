@@ -38,4 +38,5 @@
     <string name="applied">Terpasang</string>
     <string name="use_promo">Gunakan</string>
     <string name="message_share_shop">Klik link ini untuk menemukan toko dari Tokopedia. </string>
+    <string name="voucher_public_suffix">untuk produk tertentu</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.tokopedia.mvcwidget
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.usecases.CatalogMVCListUseCase
 import com.tokopedia.mvcwidget.usecases.FollowShopUseCase
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
@@ -27,13 +28,17 @@ class MvcDetailViewModel @Inject constructor(@Named(IO) workerDispatcher: Corout
     val followLiveData = SingleLiveEvent<LiveDataResult<String>>()
     var membershipCardID: String? = null
     var shopId: String = ""
+    var productId: String = ""
+    var source: Int = MvcSource.DEFAULT
     var membershipRegistrationSuccessMessage = ""
 
-    fun getListData(shopId: String) {
+    fun getListData(shopId: String, productId: String = "", source: Int = MvcSource.DEFAULT) {
         this.shopId = shopId
+        this.productId = productId
+        this.source = source
         launchCatchError(block = {
             listLiveData.postValue(LiveDataResult.loading())
-            val response = catalogMVCListUseCase.getResponse(catalogMVCListUseCase.getQueryParams(shopId))
+            val response = catalogMVCListUseCase.getResponse(catalogMVCListUseCase.getQueryParams(shopId, productId, source))
             membershipRegistrationSuccessMessage = response?.data?.toasterSuccessMessage ?: ""
             if (response != null) {
                 membershipCardID = response.data?.followWidget?.membershipCardID
@@ -55,7 +60,7 @@ class MvcDetailViewModel @Inject constructor(@Named(IO) workerDispatcher: Corout
             if (response?.data?.resultStatus?.code == "200") {
                 membershipLiveData.postValue(LiveDataResult.success(membershipRegistrationSuccessMessage))
                 getMvcSummary()
-                getListData(shopId)
+                getListData(shopId, productId, source)
             } else {
                 membershipLiveData.postValue(LiveDataResult.error(Exception(ERROR_MSG)))
             }
