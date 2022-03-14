@@ -15,13 +15,13 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.CassavaTestRuleMatcher
 import com.tokopedia.loginregister.common.CassavaTestRuleMatcher.validate
 import com.tokopedia.loginregister.login.behaviour.base.RegisterInitialBase
-import com.tokopedia.test.application.annotations.UiTest
+import com.tokopedia.test.application.annotations.CassavaTest
 import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@UiTest
+@CassavaTest
 @RunWith(AndroidJUnit4::class)
 @LargeTest
 class RegisterInitialSocMedTest: RegisterInitialBase() {
