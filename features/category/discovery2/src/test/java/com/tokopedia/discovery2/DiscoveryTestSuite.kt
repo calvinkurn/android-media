@@ -80,7 +80,8 @@ import org.junit.runners.Suite
         MerchantVoucherCarouselViewModelTest::class,
         MerchantVoucherListViewModelTest::class,
         DiscoMerchantVoucherViewModelTest::class,
-
+        MyCouponModelTest::class,
+        MyCouponItemModelTest::class
 )
 
 
