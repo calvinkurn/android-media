@@ -9,20 +9,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
-import com.tokopedia.picker.common.PickerCacheManager
-import com.tokopedia.picker.common.basecomponent.uiComponent
-import com.tokopedia.picker.common.component.NavToolbarComponent
-import com.tokopedia.picker.common.component.ToolbarTheme
-import com.tokopedia.picker.common.intent.PreviewIntent
-import com.tokopedia.picker.common.observer.EventFlowFactory
-import com.tokopedia.picker.common.types.PickerFragmentType
-import com.tokopedia.picker.common.types.PickerPageType
-import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.media.databinding.ActivityPickerBinding
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.di.module.PickerModule
@@ -38,7 +28,18 @@ import com.tokopedia.media.picker.ui.uimodel.safeRemove
 import com.tokopedia.media.picker.utils.addOnTabSelected
 import com.tokopedia.media.picker.utils.delegates.permissionGranted
 import com.tokopedia.media.picker.utils.dimensionPixelOffsetOf
+import com.tokopedia.media.picker.utils.setBottomMargin
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
+import com.tokopedia.picker.common.PickerCacheManager
+import com.tokopedia.picker.common.basecomponent.uiComponent
+import com.tokopedia.picker.common.component.NavToolbarComponent
+import com.tokopedia.picker.common.component.ToolbarTheme
+import com.tokopedia.picker.common.intent.PreviewIntent
+import com.tokopedia.picker.common.observer.EventFlowFactory
+import com.tokopedia.picker.common.types.PickerFragmentType
+import com.tokopedia.picker.common.types.PickerPageType
+import com.tokopedia.picker.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
 import com.tokopedia.utils.image.ImageProcessingUtil
@@ -219,7 +220,7 @@ open class PickerActivity : BaseActivity()
             navigateByPageType()
         } else {
             navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
-            navigator?.start(PickerFragmentType.PERMISSION)
+            navigator?.open(PickerFragmentType.PERMISSION)
         }
     }
 
@@ -256,25 +257,34 @@ open class PickerActivity : BaseActivity()
         when (PickerUiConfig.pageType) {
             PickerPageType.CAMERA -> {
                 navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
-                navigator?.start(PickerFragmentType.CAMERA)
+                navigator?.open(PickerFragmentType.CAMERA)
             }
             PickerPageType.GALLERY -> {
                 navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
-                navigator?.start(PickerFragmentType.GALLERY)
+                navigator?.open(PickerFragmentType.GALLERY)
             }
             else -> {
                 navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
-
-                // show camera as initial page
-                navigator?.start(PickerFragmentType.CAMERA)
 
                 // display the tab navigation
                 setupTabView()
 
                 // start position of tab
-                binding?.tabPage?.tabLayout?.getTabAt(PickerUiConfig.startPageIndex)?.select()
+                onTabStartPositionChanged()
             }
         }
+    }
+
+    private fun onTabStartPositionChanged() {
+        var position = PickerUiConfig.startPageIndex
+        val tabCount = binding?.tabPage?.tabLayout?.tabCount.orZero()
+
+        if (position > tabCount) {
+            position = 0
+        }
+
+        binding?.tabPage?.tabLayout?.getTabAt(position)?.select()
+        onTabSelectionChanged(position)
     }
 
     private fun setupTabView() {
@@ -286,28 +296,31 @@ open class PickerActivity : BaseActivity()
         binding?.tabPage?.addNewTab(getString(R.string.picker_title_camera))
         binding?.tabPage?.addNewTab(getString(R.string.picker_title_gallery))
 
-        binding?.tabPage?.tabLayout?.addOnTabSelected { position ->
-            if (position == PAGE_CAMERA_INDEX) {
-                onCameraTabSelected()
-            } else if (position == PAGE_GALLERY_INDEX) {
-                onGalleryTabSelected()
-            }
+        binding?.tabPage?.tabLayout?.addOnTabSelected(
+            ::onTabSelectionChanged
+        )
+    }
+
+    private fun onTabSelectionChanged(position: Int) {
+        if (position == PAGE_CAMERA_INDEX) {
+            onCameraTabSelected()
+        } else if (position == PAGE_GALLERY_INDEX) {
+            onGalleryTabSelected()
         }
     }
 
     private fun onCameraTabSelected() {
-        navigator?.onPageSelected(PickerFragmentType.CAMERA)
+        navigator?.open(PickerFragmentType.CAMERA)
         navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
-        binding?.container?.setMargin(0, 0, 0, 0)
+        binding?.container?.setBottomMargin(0)
     }
 
     private fun onGalleryTabSelected() {
-        val marginBottom = dimensionPixelOffsetOf(R.dimen.picker_page_margin_bottom)
-
-        navigator?.onPageSelected(PickerFragmentType.GALLERY)
+        navigator?.open(PickerFragmentType.GALLERY)
         navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
 
-        binding?.container?.setMargin(0, 0, 0, marginBottom)
+        val marginBottom = dimensionPixelOffsetOf(R.dimen.picker_page_margin_bottom)
+        binding?.container?.setBottomMargin(marginBottom)
     }
 
     protected open fun createFragmentFactory(): PickerFragmentFactory {

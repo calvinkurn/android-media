@@ -1,6 +1,8 @@
 package com.tokopedia.media.picker.utils
 
 import android.content.Context
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.config.GlobalConfig
@@ -35,6 +37,11 @@ fun Context.dimensionPixelOffsetOf(dimen: Int)
 
 fun Context.dimensionOf(dimen: Int)
     = resources.getDimension(dimen)
+
+fun View.setBottomMargin(value: Int) {
+    val layoutParams = this.layoutParams as ViewGroup.MarginLayoutParams
+    layoutParams.setMargins(0, 0, 0, value)
+}
 
 // TODO create shared-component for this
 fun ImageView.pickerLoadImage(path: String) {

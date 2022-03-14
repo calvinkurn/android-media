@@ -39,24 +39,18 @@ class PickerNavigator constructor(
     }
 
     fun permissionFragment(): PermissionFragment {
-        return fragmentOf(
-            PickerFragmentType.PERMISSION
-        ) as PermissionFragment
+        return fragmentOf(PickerFragmentType.PERMISSION) as PermissionFragment
     }
 
     fun cameraFragment(): CameraFragment {
-        return fragmentOf(
-            PickerFragmentType.CAMERA
-        ) as CameraFragment
+        return fragmentOf(PickerFragmentType.CAMERA) as CameraFragment
     }
 
     fun galleryFragment(): GalleryFragment {
-        return fragmentOf(
-            PickerFragmentType.GALLERY
-        ) as GalleryFragment
+        return fragmentOf(PickerFragmentType.GALLERY) as GalleryFragment
     }
 
-    fun start(@PickerFragmentType page: Int) {
+    private fun start(@PickerFragmentType page: Int) {
         val transaction = fm.beginTransaction()
         val fragment = pageFragment(page)
 
@@ -70,6 +64,20 @@ class PickerNavigator constructor(
         }
     }
 
+    private fun onPageSelected(@PickerFragmentType page: Int) {
+        if (isActivityResumed() && !isCurrentPageOf(page)) {
+            showPage(page)
+        }
+    }
+
+    fun open(@PickerFragmentType page: Int) {
+        try {
+            start(page)
+        } catch (t: Throwable) {
+            onPageSelected(page)
+        }
+    }
+
     fun cleanUp() {
         val transaction = fm.beginTransaction()
         fm.fragments.forEach {
@@ -79,12 +87,6 @@ class PickerNavigator constructor(
         }
         transaction.commitAllowingStateLoss()
         pages.clear()
-    }
-
-    fun onPageSelected(@PickerFragmentType page: Int) {
-        if (isActivityResumed() && !isCurrentPageOf(page)) {
-            showPage(page)
-        }
     }
 
     private fun fragmentOf(@PickerFragmentType type: Int): Fragment? {
