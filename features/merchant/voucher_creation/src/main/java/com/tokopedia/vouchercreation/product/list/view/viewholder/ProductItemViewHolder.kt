@@ -162,7 +162,10 @@ class ProductItemViewHolder(
         if (isSelected) {
             // select parent product if one of its variant got selected
             val isParentProductSelected = binding.cbuProductItem.isChecked
-            if (!isParentProductSelected) binding.cbuProductItem.isChecked = true
+            if (!isParentProductSelected) {
+                binding.cbuProductItem.isChecked = true
+                productItemClickListener.onProductCheckBoxClicked(true, dataSetPosition)
+            }
         }
         // if no variant item got selected set uncheck parent selection
         else {
