@@ -1,5 +1,6 @@
 package com.tokopedia.media.picker.ui.widget.drawerselector.viewholder
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,7 @@ class ThumbnailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         binding?.imgThumbnail?.smallThumbnail(media)
 
         binding?.imgThumbnail?.setOnClickListener {
+            setThumbnailSelected(true)
             onClicked()
         }
 
@@ -60,6 +62,10 @@ class ThumbnailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         if (file.exists()) {
             file.delete()
         }
+    }
+
+    fun setThumbnailSelected(isSelected: Boolean){
+        binding?.imgThumbnail?.setThumbnailSelected(isSelected)
     }
 
     companion object {

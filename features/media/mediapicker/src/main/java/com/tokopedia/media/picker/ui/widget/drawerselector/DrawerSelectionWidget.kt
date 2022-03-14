@@ -12,6 +12,7 @@ import com.tokopedia.media.R
 import com.tokopedia.media.common.uimodel.MediaUiModel
 import com.tokopedia.media.databinding.WidgetSelectionBottomNavBinding
 import com.tokopedia.media.picker.ui.widget.drawerselector.adapter.DrawerSelectionAdapter
+import com.tokopedia.media.picker.ui.widget.drawerselector.viewholder.ThumbnailViewHolder
 import com.tokopedia.media.picker.utils.Unify_N0
 
 class DrawerSelectionWidget : FrameLayout {
@@ -150,6 +151,10 @@ class DrawerSelectionWidget : FrameLayout {
 
     fun removeListener() {
         adapter?.removeListener()
+    }
+
+    fun setThumbnailSelected(isSelected: Boolean, index: Int){
+        (binding?.rvThumbnail?.findViewHolderForAdapterPosition(index) as ThumbnailViewHolder).setThumbnailSelected(isSelected)
     }
 
     interface Listener {

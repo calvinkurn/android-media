@@ -1,6 +1,8 @@
 package com.tokopedia.media.picker.ui.widget.thumbnail
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.tokopedia.kotlin.extensions.view.hide
@@ -13,6 +15,7 @@ import com.tokopedia.media.picker.ui.widget.layout.SquareFrameLayout
 import com.tokopedia.media.common.utils.extractVideoDuration
 import com.tokopedia.media.picker.utils.pickerLoadImage
 import com.tokopedia.media.common.utils.toVideoDurationFormat
+import com.tokopedia.media.picker.utils.dimensionOf
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_3
 import com.tokopedia.unifyprinciples.Typography.Companion.SMALL
 
@@ -58,4 +61,18 @@ class MediaThumbnailWidget @JvmOverloads constructor(
         binding.txtDuration.text = duration.toVideoDurationFormat()
     }
 
+    fun setThumbnailSelected(isSelected: Boolean){
+        if(isSelected){
+            var backgroundAsset = GradientDrawable()
+            backgroundAsset.cornerRadius = context.dimensionOf(com.tokopedia.media.R.dimen.picker_thumbnail_rounded)
+            val strokeSize = context.dimensionOf(com.tokopedia.media.R.dimen.picker_thumbnail_border).toInt()
+            backgroundAsset.setStroke(strokeSize, Color.GREEN)
+
+            binding.imgPreview.setPadding(strokeSize, strokeSize, strokeSize, strokeSize)
+            binding.imgPreview.background = backgroundAsset
+        } else {
+            binding.imgPreview.setPadding(0, 0, 0, 0)
+            binding.imgPreview.background = null
+        }
+    }
 }
