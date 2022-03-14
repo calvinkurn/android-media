@@ -22,10 +22,8 @@ import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.library.baseadapter.AdapterCallback
-import com.tokopedia.seller_migration_common.presentation.fragment.*
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.up_layout_user_profile_header.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject

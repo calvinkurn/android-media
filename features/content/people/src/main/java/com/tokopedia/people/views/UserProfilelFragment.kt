@@ -34,7 +34,6 @@ import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.model.UserProfileIsFollow
 import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.views.UserProfileActivity.Companion.EXTRA_USERNAME
-import com.tokopedia.feedcomponent.util.util.convertDpToPixel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_FULL
@@ -184,14 +183,10 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         recyclerviewPost = view?.findViewById(R.id.recycler_view)
         recyclerviewPost?.layoutManager = GridLayoutManager(activity, 2)
         if (recyclerviewPost?.itemDecorationCount == 0) {
-            recyclerviewPost?.addItemDecoration(
-                PostItemDecoration(
-                    convertDpToPixel(
-                        8F,
-                        requireContext()
-                    )
-                )
-            )
+            context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
+                ?.let {
+                    recyclerviewPost?.addItemDecoration(PostItemDecoration(it))
+                }
         }
         recyclerviewPost?.adapter = mAdapter
         mAdapter.resetAdapter()
@@ -606,7 +601,9 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         }
 
         appBarLayout?.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout, verticalOffset ->
-            if (abs(verticalOffset) > convertDpToPixel(OFFSET_USERINFO, requireContext())) {
+            val offset =
+                context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
+            if ((abs(verticalOffset) > offset!!)) {
                 headerProfile?.title = data.profileHeader.profile.name
                 headerProfile?.subtitle = data.profileHeader.profile.username
             } else {
