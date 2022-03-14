@@ -57,4 +57,5 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.attachinvoice)
     implementation projectOrAar(rootProject.ext.features.attachvoucher)
     implementation projectOrAar(rootProject.ext.features.attachproduct)
+    implementation projectOrAar(rootProject.ext.features.productServiceWidget)
 }
