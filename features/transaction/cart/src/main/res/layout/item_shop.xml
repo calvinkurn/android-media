@@ -179,6 +179,15 @@
 
         </com.google.android.flexbox.FlexboxLayout>
 
+        <include
+            android:id="@+id/gifting_widget_layout"
+            layout="@layout/item_cart_gifting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rl_product_policies_layout"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp" />
+
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView

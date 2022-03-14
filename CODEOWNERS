@@ -81,6 +81,7 @@
 /features/merchant/youtube_common/                      @tokopedia/android-minionken-dev
 /features/merchant/voucher_creation/                    @tokopedia/android-minionken-dev
 /features/tokopedianow/                                 @tokopedia/android-minionken-dev
+/features/merchant/product_service_widget/              @tokopedia/android-minionken-dev
 /features/merchant/product_bundle/                      @tokopedia/android-minionken-dev
 /features/merchant/shop_widget/                         @tokopedia/android-minionken-dev
 /features/merchant/campaign_list/                       @tokopedia/android-minionken-dev
@@ -166,6 +167,7 @@
 /features/transaction/oneclickcheckout/        		    @tokopedia/android-minionbob-dev
 /features/transaction/promo_checkout_marketplace/       @tokopedia/android-minionbob-dev
 /features/transaction/minicart/                         @tokopedia/android-minionbob-dev
+/features/transaction/add_on_gifting/                   @tokopedia/android-minionbob-dev
 /features/logistic/logisticCommon/                		@tokopedia/android-minionbob-dev
 /features/logistic/logisticaddaddress/          		@tokopedia/android-minionbob-dev
 /features/logistic/logisticorder/                    	@tokopedia/android-minionbob-dev
