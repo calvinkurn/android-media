@@ -2,6 +2,7 @@ package com.tokopedia.officialstore.analytics
 
 import android.os.Bundle
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMerchantVoucherDataModel
+import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
 /**
@@ -23,6 +24,8 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
             const val MERCHANT_VOUCHER_MULTIPLE = "merchant_voucher_multiple"
             const val ITEM_NAME_FORMAT = "/official-store/%s - $MERCHANT_VOUCHER_MULTIPLE - %s"
             const val DEFAULT_VALUE = ""
+            const val VIEW_COUPON = "view coupon"
+            const val CREATIVE_NAME_VIEW_COUPON_FORMAT = "%s - %s - %s"
         }
     }
 
@@ -106,5 +109,39 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
         bundle.putString(UserId.KEY, element.userId)
 
         return Pair(Ecommerce.PRODUCT_CLICK, bundle)
+    }
+
+    fun getMerchantVoucherView(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int) : Map<String, Any> {
+        val trackingBuilder = BaseTrackerBuilder()
+        val creativeName = CustomAction.CREATIVE_NAME_VIEW_COUPON_FORMAT.format(
+            CustomAction.DEFAULT_VALUE,
+            element.couponType,
+            CustomAction.DEFAULT_VALUE
+        )
+        val creativeSlot = (horizontalPosition + 1).toString()
+        val itemId = CustomAction.ITEM_ID_FORMAT.format(
+            element.bannerId,
+            element.shopId
+        )
+        val itemName =
+            CustomAction.ITEM_NAME_FORMAT.format(CustomAction.DEFAULT_VALUE, element.headerName)
+        val listPromotions = arrayListOf(
+            Promotion(
+                creative = creativeName,
+                position = creativeSlot,
+                id = itemId,
+                name = itemName
+            )
+        )
+        return trackingBuilder.constructBasicPromotionView(
+                event = Event.PROMO_VIEW,
+                eventCategory = OfficialStoreTracking.OS_MICROSITE_SINGLE,
+                eventAction = CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.VIEW_COUPON),
+                eventLabel = Label.NONE,
+                promotions = listPromotions)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendUserId(element.userId)
+                .build()
     }
 }

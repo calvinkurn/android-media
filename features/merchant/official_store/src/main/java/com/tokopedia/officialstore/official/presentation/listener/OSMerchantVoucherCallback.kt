@@ -23,7 +23,8 @@ class OSMerchantVoucherCallback(private val dcEventHandler: DynamicChannelEventH
     }
 
     override fun onMerchantImpressed(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int) {
-
+        dcEventHandler.getTrackingObject()?.trackingQueueObj?.putEETracking(
+                OSMerchantVoucherTracking.getMerchantVoucherView(element, horizontalPosition) as HashMap<String, Any>)
     }
 
     override fun onProductClicked(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int) {
@@ -33,4 +34,11 @@ class OSMerchantVoucherCallback(private val dcEventHandler: DynamicChannelEventH
     }
 
     override fun getUserId(): String = dcEventHandler.getUserId()
+
+    override fun onVoucherDetailClicked(
+        element: CarouselMerchantVoucherDataModel,
+        horizontalPosition: Int
+    ) {
+
+    }
 }

@@ -38,4 +38,11 @@ class MerchantVoucherComponentCallback(val homeCategoryListener: HomeCategoryLis
     override fun getUserId(): String {
         return homeCategoryListener.userId
     }
+
+    override fun onVoucherDetailClicked(
+        element: CarouselMerchantVoucherDataModel,
+        horizontalPosition: Int
+    ) {
+
+    }
 }
