@@ -13,10 +13,10 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.home_account.base.HomeAccountTest
 import com.tokopedia.home_account.utils.QueryUtils
 import com.tokopedia.home_account.utils.ViewUtils
-import com.tokopedia.test.application.annotations.UiTest
+import com.tokopedia.test.application.annotations.CassavaTest
 import org.junit.Test
 
-@UiTest
+@CassavaTest
 class HomeAccountInstrumentTest : HomeAccountTest() {
 
     //1.Cassava Test ID - 759
