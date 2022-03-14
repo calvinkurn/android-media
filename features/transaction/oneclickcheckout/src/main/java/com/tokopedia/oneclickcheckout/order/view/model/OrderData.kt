@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 
 data class OrderData(
@@ -15,5 +16,7 @@ data class OrderData(
         val popUpMessage: String = "",
         // AFPB
         val totalProductPrice: String = "",
-        val profileCode: String = ""
+        val profileCode: String = "",
+        // Gifting
+        val popUp: PopUpData = PopUpData()
 )
