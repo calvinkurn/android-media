@@ -101,6 +101,8 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackScrollDepth(screenScrollPercentage: Int, lastVisibleComponent: ComponentsItem?, isManualScroll : Boolean) {}
     open fun trackScreenshotAccess(eventAction : String = "", eventLabel : String = "", userID: String?, ) {}
     open fun trackEventProductATC(componentsItems: ComponentsItem, userID: String?) {}
+    open fun trackEventViewMyCouponList(componentsItems: ComponentsItem, userID: String) {}
+    open fun trackEventClickMyCouponList(componentsItems: ComponentsItem, userID: String) {}
     open fun trackMerchantVoucherMultipleImpression(
         components: ComponentsItem,
         userID: String?,
@@ -139,4 +141,6 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun slideQuestCard(source: Int, direction: String) {}
     open fun trackAnchorTabClick(components: ComponentsItem){}
     open fun viewAnchorTabs(componentsItems: ComponentsItem) {}
+    open fun trackShopCardImpression(componentsItems: ComponentsItem) {}
+    open fun trackEventClickShopCard(componentsItems: ComponentsItem) {}
 }

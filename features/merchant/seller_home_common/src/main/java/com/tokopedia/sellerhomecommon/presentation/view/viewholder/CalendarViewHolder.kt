@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -60,9 +61,6 @@ class CalendarViewHolder(
         observeState(element)
         setShadowBackground()
         showTag(element)
-        binding.root.addOnImpressionListener(element.impressHolder) {
-            listener.sendCalendarImpressionEvent(element)
-        }
     }
 
     private fun showTag(element: CalendarWidgetUiModel) {
@@ -79,7 +77,20 @@ class CalendarViewHolder(
     }
 
     private fun setShadowBackground() {
-        binding.viewShcCalendarShadow.setBackgroundResource(R.drawable.bg_shc_calendar_shadow)
+        binding.viewShcCalendarShadow.run {
+            try {
+                layoutParams.height = context.resources.getDimensionPixelSize(
+                    R.dimen.shc_dimen_22dp
+                )
+                setBackgroundResource(R.drawable.bg_shc_calendar_shadow)
+            } catch (e: Exception) {
+                layoutParams.height = context.resources.getDimensionPixelSize(
+                    R.dimen.shc_dimen_1dp
+                )
+                setBackgroundColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN50))
+            }
+            requestLayout()
+        }
     }
 
     private fun observeState(element: CalendarWidgetUiModel) {
@@ -107,6 +118,10 @@ class CalendarViewHolder(
             val isEmpty = element.data?.eventGroups.isNullOrEmpty()
             if (isEmpty) {
                 showEmptyState()
+            }
+
+            root.addOnImpressionListener(element.impressHolder) {
+                listener.sendCalendarImpressionEvent(element)
             }
         }
     }

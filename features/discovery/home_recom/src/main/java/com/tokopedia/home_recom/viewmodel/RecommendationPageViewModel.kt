@@ -14,6 +14,10 @@ import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationCPMDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
 import com.tokopedia.home_recom.model.entity.PrimaryProductEntity
+import com.tokopedia.home_recom.util.RecomServerLogger
+import com.tokopedia.home_recom.util.RecomServerLogger.TOPADS_RECOM_PAGE_BE_ERROR
+import com.tokopedia.home_recom.util.RecomServerLogger.TOPADS_RECOM_PAGE_HIT_DYNAMIC_SLOTTING
+import com.tokopedia.home_recom.util.RecomServerLogger.TOPADS_RECOM_PAGE_TIMEOUT_EXCEEDED
 import com.tokopedia.home_recom.util.RecommendationRollenceController
 import com.tokopedia.home_recom.util.Response
 import com.tokopedia.home_recom.util.mapDataModel
@@ -185,6 +189,13 @@ open class RecommendationPageViewModel @Inject constructor(
                 GetTopadsIsAdsUseCase.TIMEOUT_REMOTE_CONFIG_KEY,
                 PARAM_JOB_TIMEOUT_DEFAULT
             )
+
+            RecomServerLogger.logServer(
+                tag = TOPADS_RECOM_PAGE_HIT_DYNAMIC_SLOTTING,
+                productId = productId,
+                queryParam = queryParam
+            )
+
             val job = withTimeoutOrNull(timeout) {
                 getTopadsIsAdsUseCase.setParams(
                         productId = productId,
@@ -209,8 +220,20 @@ open class RecommendationPageViewModel @Inject constructor(
 
                         _recommendationListLiveData.postValue(dataList)
                     }
+                } else {
+                    RecomServerLogger.logServer(
+                        tag = TOPADS_RECOM_PAGE_BE_ERROR,
+                        reason = "Error code $errorCode",
+                        productId = productId,
+                        queryParam = queryParam
+                    )
                 }
             }
+            if (job == null) RecomServerLogger.logServer(
+                tag = TOPADS_RECOM_PAGE_TIMEOUT_EXCEEDED,
+                productId = productId,
+                queryParam = queryParam
+            )
         }) {
             it.printStackTrace()
         }
