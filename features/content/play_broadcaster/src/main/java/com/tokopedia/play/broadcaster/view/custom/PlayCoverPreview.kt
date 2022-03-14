@@ -1,0 +1,102 @@
+package com.tokopedia.play.broadcaster.view.custom
+
+import android.content.Context
+import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.databinding.ViewPlayCoverPreviewBinding
+import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
+import com.tokopedia.play_common.view.getBitmapFromUrl
+import kotlinx.coroutines.*
+
+/**
+ * Created By : Jonathan Darwin on March 14, 2022
+ */
+class PlayCoverPreview : ConstraintLayout {
+
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
+    constructor(
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+        defStyleRes: Int
+    ) : super(context, attrs, defStyleAttr, defStyleRes)
+
+    private val binding = ViewPlayCoverPreviewBinding.inflate(
+        LayoutInflater.from(context),
+        this,
+        true
+    )
+
+    private var mListener: CoverFormView.Listener? = null
+
+    private var isCoverAvailable = false
+
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(Dispatchers.Main + job)
+
+    init {
+        binding.root.setOnClickListener {
+            mListener?.onClickCoverPreview(isCoverAvailable)
+        }
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        scope.launch {
+            binding.ivCoverImageCircleDash.apply {
+                setImageBitmap(
+                    context.getBitmapFromUrl(context.getString(R.string.ic_play_cover_circle_dash), cacheStrategy = DiskCacheStrategy.RESOURCE)
+                )
+            }
+        }
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        mListener = null
+        job.cancelChildren()
+    }
+
+    fun setCover(imageUrl: String) {
+        setCover(imageUrl, false)
+    }
+
+    fun setCoverWithPlaceholder(imageUrl: String) {
+        setCover(imageUrl, true)
+    }
+
+    private fun setCover(imageUrl: String, isShowPlaceholder: Boolean) {
+        binding.apply {
+            ivCoverImageCircleDash.visibility = if(isShowPlaceholder) View.VISIBLE else View.GONE
+            ivCoverImagePlaceholder.visibility = if(isShowPlaceholder) View.VISIBLE else View.GONE
+            ivCoverPreview.setImageUrl(imageUrl)
+        }
+        isCoverAvailable = true
+    }
+
+    fun setTitle(title: String) {
+        binding.tvCoverTitle.text = title
+    }
+
+    fun setShopName(shopName: String) {
+        binding.tvCoverShopName.text = shopName
+    }
+
+    fun setListener(listener: CoverFormView.Listener) {
+        mListener = listener
+    }
+
+    interface Listener {
+        fun onClickCoverPreview(isEditCover: Boolean)
+    }
+}
