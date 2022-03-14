@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -112,7 +113,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     }
 
     open fun goToSilentVerificationpage(modeListData: ModeListData) {
-        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.SILENT_VERIFICAITON)
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.SILENT_VERIFICAITON)
         val bundle = createBundle(modeListData)
         bundle.putParcelable(OtpConstant.OTP_DATA_EXTRA, otpData)
         intent.putExtras(bundle)
@@ -392,7 +393,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         context?.let {
             analytics.trackClickInactivePhoneNumber(otpData.otpType.toString())
             analytics.trackClickInactivePhoneLink()
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.CHANGE_INACTIVE_PHONE)
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalUserPlatform.CHANGE_INACTIVE_PHONE)
             if (otpData.email.isEmpty() && otpData.msisdn.isEmpty()) {
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, userSession.tempPhoneNumber)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.tempEmail)

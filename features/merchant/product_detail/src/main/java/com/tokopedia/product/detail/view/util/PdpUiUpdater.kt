@@ -6,18 +6,21 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.pdp.fintech.view.FintechPriceUrlDataModel
+import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
@@ -80,6 +83,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     val productReviewMap: ProductMostHelpfulReviewDataModel?
         get() = mapOfData[ProductDetailConstant.REVIEW] as? ProductMostHelpfulReviewDataModel
+
+    val fintechWidgetMap: FintechWidgetDataModel?
+        get()= mapOfData[ProductDetailConstant.FINTECH_WIDGET_NAME] as? FintechWidgetDataModel
 
     val productTradeinMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.TRADE_IN] as? ProductGeneralInfoDataModel
@@ -247,6 +253,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
 
             val productId = it.basic.productID
+
             dataP1.bestSellerContent?.let { bestSellerInfoContent ->
                 if (bestSellerInfoContent.contains(productId)) {
                     updateBestSellerData(dataP1 = dataP1, productId = productId)
@@ -298,6 +305,42 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     context?.getString(com.tokopedia.common_tradein.R.string.trade_in_exchange)
                             ?: ""
                 }
+            }
+        }
+    }
+
+    fun updateFintechData(selectedProductId: String, variantData: ProductVariant?, productInfo: DynamicProductInfoP1?) {
+        productInfo?.let{ productDetail->
+            val productIdToPriceURLMap = HashMap<String, FintechPriceUrlDataModel>()
+            val productCategoryId: String = productDetail.basic.category.id
+            if (variantData == null) {
+                productIdToPriceURLMap[productDetail.basic.productID] = FintechPriceUrlDataModel(productDetail.basic.url,productDetail.data.price.value.toString())
+
+            } else {
+                for (i in variantData.children.indices) {
+                    productIdToPriceURLMap[variantData.children[i].productId] =
+                        FintechPriceUrlDataModel( variantData.children[i].url,
+                            variantData.children[i].price.toString())
+                }
+            }
+
+            updateData(ProductDetailConstant.FINTECH_WIDGET_NAME)
+            {
+                fintechWidgetMap?.run {
+                    productId = selectedProductId
+                    categoryId = productCategoryId
+                    idToPriceUrlMap = productIdToPriceURLMap
+                }
+            }
+        }
+    }
+
+    fun updateFintechDataWithProductId(selectedProductId: String)
+    {
+        updateData(ProductDetailConstant.FINTECH_WIDGET_NAME)
+        {
+            fintechWidgetMap?.run {
+                productId = selectedProductId
             }
         }
     }
@@ -438,7 +481,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     totalReviewCount = it.rating.totalReviewTextAndImage
                 }
             }
-            
+
             updateData(ProductDetailConstant.PRODUCT_BUNDLING) {
                 productBundlingData?.bundleInfo = it.bundleInfoMap[productId]
             }
@@ -823,9 +866,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updatePlayWidget(playWidgetUiModel: PlayWidgetUiModel) {
+    fun updatePlayWidget(playWidgetState: PlayWidgetState) {
         updateData(ProductDetailConstant.PLAY_CAROUSEL) {
-            contentWidgetData?.playWidgetUiModel = playWidgetUiModel
+            contentWidgetData?.playWidgetState = playWidgetState
         }
     }
 

@@ -125,7 +125,7 @@ class PlayBroadcastUiMapper(
     override fun mapNewMetricList(metric: NewMetricList): List<PlayMetricUiModel> = metric.metricList.map {
         PlayMetricUiModel(
                 iconUrl = it.icon,
-                spannedSentence = MethodChecker.fromHtml(it.sentence),
+                spannedSentence = textTransformer.transform(it.sentence),
                 type = it.metricType,
                 interval = it.interval
         )

@@ -187,7 +187,7 @@
             android:layout_marginBottom="@dimen/spacing_lvl3"
             android:layout_weight="1"
             android:enabled="false"
-            android:text="@string/play_next"
+            android:text="@string/play_bro_save"
             android:transitionName="@string/transition_next_button"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

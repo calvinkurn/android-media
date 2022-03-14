@@ -1,13 +1,19 @@
 package com.tokopedia.product.detail.view.listener
 
 import android.app.Application
+import android.content.Context
 import android.util.SparseIntArray
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelStore
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.mvcwidget.trackers.MvcSource
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
+import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
+import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
@@ -28,6 +34,8 @@ interface DynamicProductDetailListener {
     fun isNavOld(): Boolean
     fun getFragmentTrackingQueue(): TrackingQueue?
     fun getVariantString(): String
+    fun getParentViewModelStoreOwner(): ViewModelStore
+    fun getParentLifeCyclerOwner():LifecycleOwner
 
     /**
      * ProductMediaViewHolder
@@ -38,6 +46,8 @@ interface DynamicProductDetailListener {
     fun getProductVideoCoordinator(): ProductVideoCoordinator?
 
     fun onMerchantVoucherSummaryClicked(shopId: String, @MvcSource source: Int, productId: String)
+
+
 
     /**
      * ProductSnapshotViewHolder
@@ -199,9 +209,9 @@ interface DynamicProductDetailListener {
     /**
      * ContentWidgetViewHolder
      */
-    fun onImpressChannelCard(componentTrackDataModel: ComponentTrackDataModel, item: PlayWidgetMediumChannelUiModel)
-    fun onClickChannelCard(componentTrackDataModel: ComponentTrackDataModel, item:PlayWidgetMediumChannelUiModel)
+    fun onImpressChannelCard(componentTrackDataModel: ComponentTrackDataModel, item: PlayWidgetChannelUiModel)
+    fun onClickChannelCard(componentTrackDataModel: ComponentTrackDataModel, item:PlayWidgetChannelUiModel)
     fun onClickBannerCard(componentTrackDataModel: ComponentTrackDataModel)
     fun onClickViewAll(componentTrackDataModel: ComponentTrackDataModel)
-    fun onClickToggleReminderChannel(componentTrackDataModel: ComponentTrackDataModel, item: PlayWidgetMediumChannelUiModel, isRemindMe: Boolean)
+    fun onClickToggleReminderChannel(componentTrackDataModel: ComponentTrackDataModel, item: PlayWidgetChannelUiModel, isRemindMe: Boolean)
 }

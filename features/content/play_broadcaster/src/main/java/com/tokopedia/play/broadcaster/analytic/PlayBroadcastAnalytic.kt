@@ -2,8 +2,14 @@ package com.tokopedia.play.broadcaster.analytic
 
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
+import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalytic
+import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
+import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
+import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
+import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
 import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -16,12 +22,20 @@ import com.tokopedia.user.session.UserSessionInterface
  * Channel Scheduling https://mynakama.tokopedia.com/datatracker/product/requestdetail/247
  */
 class PlayBroadcastAnalytic(
-        private val userSession: UserSessionInterface,
-        private val contentTaggingAnalytic: PlayBroadcastContentTaggingAnalytic,
-        private val interactiveAnalytic: PlayBroadcastInteractiveAnalytic,
-        private val summaryAnalytic: PlayBroadcastSummaryAnalytic,
+    private val userSession: UserSessionInterface,
+    private val contentTaggingAnalytic: PlayBroadcastContentTaggingAnalytic,
+    private val interactiveAnalytic: PlayBroadcastInteractiveAnalytic,
+    private val setupMenuAnalytic: PlayBroSetupMenuAnalytic,
+    private val setupTitleAnalytic: PlayBroSetupTitleAnalytic,
+    private val setupCoverAnalytic: PlayBroSetupCoverAnalytic,
+    private val setupProductAnalytic: PlayBroSetupProductAnalytic,
+    private val summaryAnalytic: PlayBroadcastSummaryAnalytic,
 ) : PlayBroadcastContentTaggingAnalytic by contentTaggingAnalytic,
     PlayBroadcastInteractiveAnalytic by interactiveAnalytic,
+    PlayBroSetupMenuAnalytic by setupMenuAnalytic,
+    PlayBroSetupTitleAnalytic by setupTitleAnalytic,
+    PlayBroSetupCoverAnalytic by setupCoverAnalytic,
+    PlayBroSetupProductAnalytic by setupProductAnalytic,
     PlayBroadcastSummaryAnalytic by summaryAnalytic {
 
     /**
@@ -511,7 +525,7 @@ class PlayBroadcastAnalytic(
     /**
      * Scroll Product Tag Carousel
      */
-    fun scrollProductTag(channelId: String, product: ProductContentUiModel, position: Int) {
+    fun scrollProductTag(channelId: String, product: ProductUiModel, position: Int) {
         scrollGeneralEvent(
             "- product tag carousel",
             "- $channelId - ${product.id} - $position"
