@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Add on</string>
     <string name="add_on_gifting_module_title_activity_add_on_selection">Atur pelengkap produk</string>
-    <string name="add_on_gifting_activity_add_on_gallery_label">Add on gallery activity</string>
+    <string name="add_on_gifting_module_title_activity_gallery">Pelengkap produk</string>
     <string name="add_on_toaster_message_failed_save_add_on">Gagal menyimpan pelengkap. Silakan coba lagi.</string>
     <string name="add_on_bottomsheet_title">Atur pelengkap produk</string>
     <string name="add_on_label_total_amount">Total Pelengkap Produk</string>

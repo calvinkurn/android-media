@@ -322,6 +322,7 @@
     <string name="title_one_click_checkout_credit_card_and_debit">Kartu Kredit</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
     <string name="add_on_gifting_module_title_activity_add_on_selection">Atur pelengkap produk</string>
+    <string name="add_on_gifting_module_title_activity_gallery">Pelengkap produk</string>
 
 
     <!-- Dynamic feature for buyerorder-->

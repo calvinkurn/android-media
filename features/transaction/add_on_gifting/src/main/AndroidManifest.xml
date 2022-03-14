@@ -28,7 +28,7 @@
             android:name="com.tokopedia.addongifting.addongallery.AddOnGalleryActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:label="@string/add_on_gifting_activity_add_on_gallery_label"
+            android:label="@string/add_on_gifting_module_title_activity_gallery"
             android:theme="@style/Theme.WhiteUnify"/>
     </application>
 

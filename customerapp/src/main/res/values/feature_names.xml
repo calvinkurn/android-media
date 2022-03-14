@@ -334,6 +334,7 @@
     <string name="title_uoh_list">Daftar Transaksi</string>
     <string name="title_wishlist_v2">Wishlist</string>
     <string name="add_on_gifting_module_title_activity_add_on_selection">Atur pelengkap produk</string>
+    <string name="add_on_gifting_module_title_activity_gallery">Pelengkap produk</string>
 
     <!-- Dynamic feature for cart -->
     <string name="checkout_module_title_activity_cart">Keranjang</string>
