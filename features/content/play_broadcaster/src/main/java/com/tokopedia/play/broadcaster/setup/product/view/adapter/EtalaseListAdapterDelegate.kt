@@ -3,7 +3,7 @@ package com.tokopedia.play.broadcaster.setup.product.view.adapter
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.EtalaseListViewHolder
 
 /**
@@ -14,7 +14,7 @@ internal class EtalaseListAdapterDelegate private constructor() {
     internal class Header : TypedAdapterDelegate<
             EtalaseListAdapter.Model.Header,
             EtalaseListAdapter.Model,
-            EtalaseListViewHolder.Header>(R.layout.view_empty) {
+            EtalaseListViewHolder.Header>(commonR.layout.view_play_empty) {
 
         override fun onBindViewHolder(
             item: EtalaseListAdapter.Model.Header,
@@ -36,7 +36,7 @@ internal class EtalaseListAdapterDelegate private constructor() {
     ) : TypedAdapterDelegate<
             EtalaseListAdapter.Model.Campaign,
             EtalaseListAdapter.Model,
-            EtalaseListViewHolder.Body>(R.layout.view_empty) {
+            EtalaseListViewHolder.Body>(commonR.layout.view_play_empty) {
 
         override fun onBindViewHolder(
             item: EtalaseListAdapter.Model.Campaign,
@@ -58,7 +58,7 @@ internal class EtalaseListAdapterDelegate private constructor() {
     ) : TypedAdapterDelegate<
             EtalaseListAdapter.Model.Etalase,
             EtalaseListAdapter.Model,
-            EtalaseListViewHolder.Body>(R.layout.view_empty) {
+            EtalaseListViewHolder.Body>(commonR.layout.view_play_empty) {
 
         override fun onBindViewHolder(
             item: EtalaseListAdapter.Model.Etalase,

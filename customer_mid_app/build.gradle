@@ -257,8 +257,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.playServicesDependencies.measurementApi
-    
-
 
     // lint checks
     lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
