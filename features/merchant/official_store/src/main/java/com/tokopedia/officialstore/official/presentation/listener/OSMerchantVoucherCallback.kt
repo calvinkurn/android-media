@@ -17,14 +17,23 @@ class OSMerchantVoucherCallback(private val dcEventHandler: DynamicChannelEventH
     }
 
     override fun onShopClicked(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int) {
-        val tracking = OSMerchantVoucherTracking.getShopClicked(element, horizontalPosition)
+        val tracking = OSMerchantVoucherTracking.getShopClicked(
+            element,
+            horizontalPosition,
+            dcEventHandler.getOSCategory()?.title ?: ""
+        )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(tracking.first, tracking.second)
         dcEventHandler.goToApplink(element.shopAppLink)
     }
 
     override fun onMerchantImpressed(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int) {
         dcEventHandler.getTrackingObject()?.trackingQueueObj?.putEETracking(
-                OSMerchantVoucherTracking.getMerchantVoucherView(element, horizontalPosition) as HashMap<String, Any>)
+            OSMerchantVoucherTracking.getMerchantVoucherView(
+                element,
+                horizontalPosition,
+                dcEventHandler.getOSCategory()?.title ?: ""
+            ) as HashMap<String, Any>
+        )
     }
 
     override fun onProductClicked(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int) {
@@ -39,6 +48,8 @@ class OSMerchantVoucherCallback(private val dcEventHandler: DynamicChannelEventH
         element: CarouselMerchantVoucherDataModel,
         horizontalPosition: Int
     ) {
-
+        val tracking = OSMerchantVoucherTracking.getClickVoucherDetail(element, horizontalPosition, dcEventHandler.getOSCategory()?.title ?: "")
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(tracking.first, tracking.second)
+        dcEventHandler.goToApplink(element.productAppLink)
     }
 }

@@ -26,10 +26,12 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
             const val DEFAULT_VALUE = ""
             const val VIEW_COUPON = "view coupon"
             const val CREATIVE_NAME_VIEW_COUPON_FORMAT = "%s - %s - %s"
+            const val CLICK_VOUCHER_DETAIL = "click voucher detail"
+            const val CREATIVE_NAME_VOUCHER_DETAIL_FORMAT = "voucher detail - %s - %s - %s"
         }
     }
 
-    fun getShopClicked(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int): Pair<String, Bundle> {
+    fun getShopClicked(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int, categoryName: String): Pair<String, Bundle> {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
         bundle.putString(
@@ -48,7 +50,7 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
         )
         promotion.putString(Promotion.CREATIVE_SLOT, (horizontalPosition + 1).toString())
         promotion.putString(Promotion.ITEM_ID, CustomAction.ITEM_ID_FORMAT.format(element.bannerId, element.shopId))
-        promotion.putString(Promotion.ITEM_NAME, CustomAction.ITEM_NAME_FORMAT.format(CustomAction.DEFAULT_VALUE, element.headerName))
+        promotion.putString(Promotion.ITEM_NAME, CustomAction.ITEM_NAME_FORMAT.format(categoryName, element.headerName))
         bundle.putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
         bundle.putString(UserId.KEY, element.userId)
         return Pair(Ecommerce.PROMO_CLICK, bundle)
@@ -111,7 +113,7 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
         return Pair(Ecommerce.PRODUCT_CLICK, bundle)
     }
 
-    fun getMerchantVoucherView(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int) : Map<String, Any> {
+    fun getMerchantVoucherView(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int, categoryName: String) : Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         val creativeName = CustomAction.CREATIVE_NAME_VIEW_COUPON_FORMAT.format(
             CustomAction.DEFAULT_VALUE,
@@ -124,7 +126,7 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
             element.shopId
         )
         val itemName =
-            CustomAction.ITEM_NAME_FORMAT.format(CustomAction.DEFAULT_VALUE, element.headerName)
+            CustomAction.ITEM_NAME_FORMAT.format(categoryName, element.headerName)
         val listPromotions = arrayListOf(
             Promotion(
                 creative = creativeName,
@@ -143,5 +145,43 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(element.userId)
                 .build()
+    }
+
+    fun getClickVoucherDetail(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int, categoryName: String): Pair<String, Bundle> {
+        val bundle = Bundle()
+        bundle.putString(Event.KEY, Event.SELECT_CONTENT)
+        bundle.putString(
+            Action.KEY,
+            CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.CLICK_VOUCHER_DETAIL)
+        )
+        bundle.putString(Category.KEY, Category.HOMEPAGE)
+        bundle.putString(Label.KEY, element.shopId)
+        bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
+        bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+
+        val promotion = Bundle()
+        promotion.putString(
+            Promotion.CREATIVE_NAME,
+            CustomAction.CREATIVE_NAME_VOUCHER_DETAIL_FORMAT.format(
+                CustomAction.DEFAULT_VALUE,
+                CustomAction.DEFAULT_VALUE,
+                CustomAction.DEFAULT_VALUE
+            )
+        )
+        promotion.putString(Promotion.CREATIVE_SLOT, (horizontalPosition + 1).toString())
+        promotion.putString(
+            Promotion.ITEM_ID,
+            CustomAction.ITEM_ID_FORMAT.format(
+                element.bannerId,
+                element.shopId
+            )
+        )
+        promotion.putString(
+            Promotion.ITEM_NAME,
+            CustomAction.ITEM_NAME_FORMAT.format(categoryName, element.headerName)
+        )
+        bundle.putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
+        bundle.putString(UserId.KEY, element.userId)
+        return Pair(Ecommerce.PROMO_CLICK, bundle)
     }
 }
