@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/unify_space_16"
-    android:layout_marginHorizontal="@dimen/unify_space_4"
+    android:layout_marginBottom="@dimen/unify_space_12"
     android:id="@+id/featured_brand_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -28,7 +27,7 @@
         <Space
             android:id="@+id/margin_brand_image"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/unify_space_8"
+            android:layout_height="@dimen/unify_space_16"
             app:layout_constraintTop_toBottomOf="@id/featured_brand_image"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
@@ -48,8 +47,8 @@
                 android:contentDescription="@string/content_desc_featured_brand_icon"
                 android:id="@+id/featured_brand_logo"
                 android:layout_gravity="center"
-                android:layout_width="@dimen/component_featured_brand_logo_image_size"
-                android:layout_height="@dimen/component_featured_brand_logo_image_size"
+                android:layout_width="@dimen/component_featured_brand_logo_image_size_mobile"
+                android:layout_height="@dimen/component_featured_brand_logo_image_size_mobile"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -92,4 +91,4 @@
             tools:text="brand Name"
             tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-</com.tokopedia.unifycomponents.CardUnify2>
+</com.tokopedia.unifycomponents.CardUnify>

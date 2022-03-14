@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/unify_space_16"
-    android:layout_marginHorizontal="@dimen/unify_space_4"
+    android:layout_marginBottom="@dimen/unify_space_12"
     android:id="@+id/featured_brand_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:paddingBottom="@dimen/unify_space_8">
         <com.tokopedia.unifycomponents.ImageUnify
             android:contentDescription="@string/content_desc_featured_brand_image"
@@ -42,8 +41,8 @@
                 android:contentDescription="@string/content_desc_featured_brand_icon"
                 android:id="@+id/featured_brand_logo"
                 android:layout_gravity="center"
-                android:layout_width="@dimen/component_featured_brand_logo_image_size"
-                android:layout_height="@dimen/component_featured_brand_logo_image_size"
+                android:layout_width="@dimen/component_featured_brand_logo_image_size_tablet"
+                android:layout_height="@dimen/component_featured_brand_logo_image_size_tablet"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -79,7 +78,6 @@
             android:lines="1"
             app:layout_constraintVertical_chainStyle="packed"
             android:maxLines="1"
-            android:layout_marginTop="@dimen/unify_space_4"
             android:layout_marginHorizontal="@dimen/unify_space_8"
             android:gravity="start"
             app:layout_constraintEnd_toEndOf="parent"
@@ -89,4 +87,4 @@
             tools:text="brand Name"
             tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-</com.tokopedia.unifycomponents.CardUnify2>
+</com.tokopedia.unifycomponents.CardUnify>

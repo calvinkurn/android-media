@@ -13,7 +13,8 @@
 
     <dimen name="component_featured_brand_image_size">76dp</dimen>
     <dimen name="component_featured_brand_logo_circle_size">56dp</dimen>
-    <dimen name="component_featured_brand_logo_image_size">48dp</dimen>
+    <dimen name="component_featured_brand_logo_image_size_mobile">48dp</dimen>
+    <dimen name="component_featured_brand_logo_image_size_tablet">42dp</dimen>
     <dimen name="component_featured_brand_content_max_widht">75dp</dimen>
 
     <dimen name="component_featured_brand_logo_shimmer_size">40dp</dimen>

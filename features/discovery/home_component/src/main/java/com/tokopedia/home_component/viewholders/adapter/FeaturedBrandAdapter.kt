@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.loadImageRounded
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -65,7 +66,7 @@ class FeaturedBrandAdapter(
     }
 
     class Holder(v: View): RecyclerView.ViewHolder(v) {
-        private val itemLayout: CardUnify2 = v.findViewById(R.id.featured_brand_layout)
+        private val itemLayout: CardUnify = v.findViewById(R.id.featured_brand_layout)
         private val itemImage: ImageUnify = v.findViewById(R.id.featured_brand_image)
         private val itemLogo: ImageView = v.findViewById(R.id.featured_brand_logo)
         private val itemDesc: Typography = v.findViewById(R.id.featured_brand_desc)
@@ -74,7 +75,7 @@ class FeaturedBrandAdapter(
         fun bind(item: Lego4AutoItem, parentPosition: Int, listener: FeaturedBrandListener?, channelModel: ChannelModel, isCacheData: Boolean) {
             itemImage.apply {
                 cornerRadius = 0
-                loadImageNoRounded("https://asset.kompas.com/crops/WnAQ3rktja3sBQmI4SBo6gDCSo4=/0x0:1200x800/750x500/data/photo/2022/02/10/6204b9b13b65b.jpg", R.drawable.placeholder_grey)
+                loadImageNoRounded(item.grid.productImageUrl, R.drawable.placeholder_grey)
             }
             if (item.grid.imageUrl.isNotEmpty()) {
                 itemLogo.loadImageRounded(item.grid.imageUrl, ROUNDED_12F){
