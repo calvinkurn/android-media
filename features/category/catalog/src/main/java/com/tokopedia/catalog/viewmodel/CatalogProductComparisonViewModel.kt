@@ -44,13 +44,16 @@ class CatalogProductComparisonViewModel @Inject constructor(
     private fun processResult(recommendedCatalogId : String, result: Result<CatalogComparisonProductsResponse>) {
         when(result){
             is Success -> {
-                if(result.data.catalogComparisonList?.catalogComparisonList.isNullOrEmpty()){
-                    dataList.value = masterDataList
-                    hasMoreItems.value = false
-                }else {
-                    addToMasterList(recommendedCatalogId,result.data.catalogComparisonList)
-                    dataList.value = masterDataList
-                    hasMoreItems.value = true
+                result.data.catalogComparisonList?.let { catalogComparisonData ->
+                    if(catalogComparisonData.catalogComparisonList.isNotEmpty()){
+                        addToMasterList(recommendedCatalogId,catalogComparisonData.catalogComparisonList)
+                        dataList.value = masterDataList
+                        hasMoreItems.value = true
+                    }else {
+                        emptyData()
+                    }
+                } ?: kotlin.run {
+                    emptyData()
                 }
             }
 
@@ -60,19 +63,20 @@ class CatalogProductComparisonViewModel @Inject constructor(
         }
     }
 
+    private fun emptyData() {
+        dataList.value = masterDataList
+        hasMoreItems.value = false
+    }
+
     private fun handleFail() {
         hasMoreItems.value = false
     }
 
-    private fun addToMasterList(recommendedCatalogId : String, it: CatalogComparisonProductsResponse.CatalogComparisonList?) {
-        it?.catalogComparisonList?.let { items ->
-            for (product in items){
-                product?.let {
-                    product.isActive = (product.id != recommendedCatalogId)
-                    masterDataList.add(CatalogStaggeredProductModel(CatalogConstant.COMPARISON_PRODUCT,
-                        CatalogConstant.COMPARISON_PRODUCT,product))
-                }
-            }
+    private fun addToMasterList(recommendedCatalogId : String, list : List<CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison?>) {
+        for (product in list){
+            product?.isActive = (product?.id != recommendedCatalogId)
+            masterDataList.add(CatalogStaggeredProductModel(CatalogConstant.COMPARISON_PRODUCT,
+                CatalogConstant.COMPARISON_PRODUCT,product))
         }
     }
 
@@ -80,16 +84,14 @@ class CatalogProductComparisonViewModel @Inject constructor(
     private val shimmerList = arrayListOf<BaseCatalogDataModel>()
 
     private fun addShimmer(page : Int) {
-        if(shimmerList.size == 0){
-            for (i in 1..shimmerItemCount) {
-                shimmerList.add(CatalogStaggeredShimmerModel())
-            }
-            if(page == pageFirst){
-                masterDataList.clear()
-            }
-            masterDataList.addAll(shimmerList)
-            shimmerData.value = masterDataList
+        for (i in 1..shimmerItemCount) {
+            shimmerList.add(CatalogStaggeredShimmerModel())
         }
+        if(page == pageFirst){
+            masterDataList.clear()
+        }
+        masterDataList.addAll(shimmerList)
+        shimmerData.value = masterDataList
     }
 
     private fun removeShimmer() {
