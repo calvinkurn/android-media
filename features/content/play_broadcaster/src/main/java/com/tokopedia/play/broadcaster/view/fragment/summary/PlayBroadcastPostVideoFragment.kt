@@ -44,7 +44,6 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on March 07, 2022
  */
 class PlayBroadcastPostVideoFragment @Inject constructor(
-    private val viewModelFactory: ViewModelFactory,
     private val analytic: PlayBroadcastAnalytic,
     private val userSession: UserSessionInterface
 ) : PlayBaseBroadcastFragment(), TagListViewComponent.Listener {
@@ -60,7 +59,6 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     )
 
     private lateinit var viewModel: PlayBroadcastSummaryViewModel
-    private lateinit var parentViewModel: PlayBroadcastViewModel
 
     override fun getScreenName(): String = "Play Post Video Page"
 
@@ -68,8 +66,6 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity(), (parentFragment as ViewModelFactoryProvider).getFactory()).get(
             PlayBroadcastSummaryViewModel::class.java)
-        parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(
-            PlayBroadcastViewModel::class.java)
 
         setupTransition()
     }
@@ -122,7 +118,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         }
 
         binding.clCoverPreview.setOnClickListener {
-            analytic.clickCoverOnReportPage(parentViewModel.channelId, parentViewModel.channelTitle)
+            analytic.clickCoverOnReportPage(viewModel.channelId, viewModel.channelTitle)
             viewModel.submitAction(PlayBroadcastSummaryAction.ClickEditCover)
         }
 
@@ -180,7 +176,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         binding.clCoverPreview.apply {
             setCoverWithPlaceholder(value.coverUrl)
             setTitle(value.title)
-            setShopName(parentViewModel.getShopName())
+            setShopName(viewModel.shopName)
         }
     }
 

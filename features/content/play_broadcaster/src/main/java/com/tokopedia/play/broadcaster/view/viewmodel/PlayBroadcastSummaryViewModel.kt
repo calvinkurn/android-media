@@ -42,9 +42,8 @@ import javax.inject.Inject
  */
 
 class PlayBroadcastSummaryViewModel @AssistedInject constructor(
-    @Assisted private val channelId: String,
-    @Assisted private val productSectionList: List<ProductTagSectionUiModel>,
-    private val channelConfigStore: ChannelConfigStore,
+    @Assisted val channelId: String,
+    @Assisted val productSectionList: List<ProductTagSectionUiModel>,
     private val dispatcher: CoroutineDispatchers,
     private val getLiveStatisticsUseCase: GetLiveStatisticsUseCase,
     private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
@@ -63,6 +62,12 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
         ): PlayBroadcastSummaryViewModel
     }
 
+    val channelTitle: String
+        get() = _channelSummary.value.title
+
+    val shopName: String
+        get() = userSession.shopName
+
     private val _channelSummary = MutableStateFlow(ChannelSummaryUiModel.empty())
     private val _trafficMetric = MutableStateFlow<NetworkResult<List<TrafficMetricUiModel>>>(NetworkResult.Loading)
     private val _tags = MutableStateFlow<Set<String>>(emptySet())
@@ -77,6 +82,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             isEligiblePostVideo = it.isEligiblePostVideo,
         )
     }
+
     private val _liveReportUiState = _trafficMetric.map {
         LiveReportUiState(it)
     }

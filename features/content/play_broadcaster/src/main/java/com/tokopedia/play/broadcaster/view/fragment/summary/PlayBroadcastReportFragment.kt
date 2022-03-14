@@ -173,8 +173,8 @@ class PlayBroadcastReportFragment @Inject constructor(
                 binding.layoutPlaySummaryInfo.loaderSummary.gone()
                 summaryInfoView.showError { value.onRetry() }
                 analytic.viewErrorOnReportPage(
-                    channelId = parentViewModel.channelId,
-                    titleChannel = parentViewModel.channelTitle,
+                    channelId = viewModel.channelId,
+                    titleChannel = viewModel.channelTitle,
                     errorMessage = value.error.localizedMessage?:getString(R.string.play_broadcaster_default_error)
                 )
             }
