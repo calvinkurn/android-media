@@ -32,6 +32,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.config.GlobalConfig
@@ -659,7 +660,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                                     biometricTracker.trackClickOnAktivasi()
                                     val intent = RouteManager.getIntent(
                                         requireContext(),
-                                        ApplinkConstInternalGlobal.REGISTER_BIOMETRIC
+                                        ApplinkConstInternalUserPlatform.REGISTER_BIOMETRIC
                                     )
                                     startActivityForResult(intent, REQUEST_CODE_REGISTER_BIOMETRIC)
                                     biometricOfferingDialog?.dismiss()

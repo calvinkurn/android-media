@@ -27,6 +27,7 @@ import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
@@ -66,8 +67,9 @@ import com.tokopedia.review.feature.createreputation.presentation.widget.ReviewB
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.data.ThankYouBottomSheetTrackerData
 import com.tokopedia.review.feature.ovoincentive.data.TncBottomSheetTrackerData
-import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoBottomSheetBuilder
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
+import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoBottomSheet
+import com.tokopedia.review.feature.ovoincentive.presentation.model.IncentiveOvoBottomSheetUiModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -125,7 +127,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private var progressBar: CreateReviewProgressBar? = null
     private var submitButton: UnifyButton? = null
     private var loadingView: View? = null
-    private var ovoIncentiveBottomSheet: BottomSheetUnify? = null
+    private var ovoIncentiveBottomSheet: IncentiveOvoBottomSheet? = null
     private var thankYouBottomSheet: BottomSheetUnify? = null
     private var badRatingCategoryRecyclerView: RecyclerView? = null
 
@@ -557,49 +559,33 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 setHtmlDescription(it.ticker.subtitle)
                 setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        if (ovoIncentiveBottomSheet == null) {
-                            ovoIncentiveBottomSheet = context?.let { context ->
-                                IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(
-                                    context = context,
-                                    productRevIncentiveOvoDomain = ovoDomain,
-                                    hasIncentive = hasIncentive(),
-                                    hasOngoingChallenge = hasOngoingChallenge(),
-                                    incentiveOvoListener = this@CreateReviewBottomSheet,
-                                    category = "",
-                                    trackerData = getTncBottomSheetTrackerData()
-                                )
-                            }
+                        val bottomSheet = ovoIncentiveBottomSheet ?: IncentiveOvoBottomSheet().also { ovoIncentiveBottomSheet = it }
+                        val bottomSheetData = IncentiveOvoBottomSheetUiModel(ovoDomain, getTncBottomSheetTrackerData())
+                        bottomSheet.init(bottomSheetData, this@CreateReviewBottomSheet)
+                        activity?.supportFragmentManager?.let { supportFragmentManager ->
+                            bottomSheet.show(supportFragmentManager, bottomSheet.tag)
                         }
-                        ovoIncentiveBottomSheet?.let { bottomSheet ->
-                            activity?.supportFragmentManager?.let { supportFragmentManager ->
-                                bottomSheet.show(
-                                    supportFragmentManager,
-                                    bottomSheet.tag
-                                )
-                            }
-                            if (hasIncentive()) {
-                                CreateReviewTracking.eventClickIncentivesTicker(
-                                    it.subtitle,
-                                    getReputationId(),
-                                    getOrderId(),
-                                    productId,
-                                    getUserId()
-                                )
-                            } else if (hasOngoingChallenge()) {
-                                CreateReviewTracking.eventClickOngoingChallengeTicker(
-                                    getReputationId(),
-                                    getOrderId(),
-                                    productId,
-                                    getUserId()
-                                )
-                            }
+                        if (hasIncentive()) {
+                            CreateReviewTracking.eventClickIncentivesTicker(
+                                it.subtitle,
+                                getReputationId(),
+                                getOrderId(),
+                                productId,
+                                getUserId()
+                            )
+                        } else if (hasOngoingChallenge()) {
+                            CreateReviewTracking.eventClickOngoingChallengeTicker(
+                                getReputationId(),
+                                getOrderId(),
+                                productId,
+                                getUserId()
+                            )
                         }
                     }
 
                     override fun onDismiss() {
                         // No Op
                     }
-
                 })
                 viewTreeObserver.addOnGlobalLayoutListener(object :
                     ViewTreeObserver.OnGlobalLayoutListener {
@@ -1085,35 +1071,29 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         incentivesHelperText?.apply {
             incentiveHelper = when {
                 textLength >= CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD -> {
-                    if (hasIncentive()) {
+                    if (hasIncentive() || hasOngoingChallenge()) {
                         context?.getString(R.string.review_create_bottom_sheet_text_area_eligible_for_incentive) ?: ""
-                    } else if (hasOngoingChallenge()) {
-                        context?.getString(R.string.review_create_bottom_sheet_text_area_eligible_for_challenge) ?: ""
                     } else {
                         ""
                     }
                 }
                 textLength < CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD && textLength != 0 -> {
-                    if (hasIncentive()) {
+                    if (hasIncentive() || hasOngoingChallenge()) {
                         context?.getString(R.string.review_create_bottom_sheet_text_area_partial_incentive) ?: ""
-                    } else if (hasOngoingChallenge()) {
-                        context?.getString(R.string.review_create_bottom_sheet_text_area_partial_challenge) ?: ""
                     } else {
                         ""
                     }
                 }
                 else -> {
-                    if (hasIncentive()) {
+                    if (hasIncentive() || hasOngoingChallenge()) {
                         context?.getString(R.string.review_create_bottom_sheet_text_area_empty_incentive) ?: ""
-                    } else if (hasOngoingChallenge()) {
-                        context?.getString(R.string.review_create_bottom_sheet_text_area_empty_challenge) ?: ""
                     } else {
                         ""
                     }
                 }
             }
             text = incentiveHelper
-            show()
+            showWithCondition(incentiveHelper.isNotBlank())
         }
     }
 
