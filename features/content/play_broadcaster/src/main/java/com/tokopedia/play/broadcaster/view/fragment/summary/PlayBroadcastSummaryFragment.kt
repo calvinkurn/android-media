@@ -7,8 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
+import androidx.lifecycle.AbstractSavedStateViewModelFactory
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastSummaryBinding
+import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryProvider
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
@@ -19,9 +26,14 @@ import javax.inject.Inject
  */
 class PlayBroadcastSummaryFragment @Inject constructor(
     private val fragmentFactory: FragmentFactory,
-) : PlayBaseBroadcastFragment() {
+    private val summaryViewModelFactory: PlayBroadcastSummaryViewModel.Factory,
+) : PlayBaseBroadcastFragment(), ViewModelFactoryProvider {
 
     override fun getScreenName(): String = "Play Summary page"
+
+    private lateinit var summaryViewModelProviderFactory: ViewModelProvider.Factory
+
+    private lateinit var parentViewModel: PlayBroadcastViewModel
 
     private var _binding: FragmentPlayBroadcastSummaryBinding? = null
     private val binding: FragmentPlayBroadcastSummaryBinding
@@ -31,6 +43,32 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         override fun onClickPostButton() {
             navigateToFragment(PlayBroadcastPostVideoFragment::class.java, true)
         }
+    }
+
+    override fun getFactory(): ViewModelProvider.Factory {
+        if (!::summaryViewModelProviderFactory.isInitialized) {
+            summaryViewModelProviderFactory = object : AbstractSavedStateViewModelFactory(
+                this,
+                arguments
+            ) {
+                override fun <T : ViewModel?> create(
+                    key: String,
+                    modelClass: Class<T>,
+                    handle: SavedStateHandle
+                ): T {
+                    return summaryViewModelFactory.create(
+                        parentViewModel.channelId,
+                        parentViewModel.productSectionList,
+                    ) as T
+                }
+            }
+        }
+        return summaryViewModelProviderFactory
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        parentViewModel = ViewModelProvider(requireActivity())[PlayBroadcastViewModel::class.java]
     }
 
     override fun onCreateView(
