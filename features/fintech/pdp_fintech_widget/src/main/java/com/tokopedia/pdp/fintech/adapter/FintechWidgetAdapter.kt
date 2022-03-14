@@ -182,7 +182,6 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
                         redirectionUrl = url,
                         tenure = tenure,
                         gatewayId = gatewayId,
-                        productUrl = null,
                         gatewayCode = gatewayCode,
                         widgetBottomSheet = bottomSheetWidgetDetail,
                         userStatus = userStatus,
