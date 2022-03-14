@@ -27,7 +27,7 @@
 
         <activity
             android:name=".profileinfo.view.activity.ProfileInfoActivity"
-            android:label="@string/title_setting_profile"
+            android:label="@string/title_profile_info"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden"

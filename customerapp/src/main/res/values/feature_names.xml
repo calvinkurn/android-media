@@ -46,6 +46,7 @@
     <!--Profile completion-->
     <string name="title_module_setting_profile">Data Diri Module</string>
     <string name="title_setting_profile">Data Diri</string>
+    <string name="title_profile_info">Ubah Profil</string>
     <string name="title_profile_completion">Lengkapi Profil</string>
     <string name="change_profile_info_title">Ubah Info Profil</string>
     <string name="title_change_gender">Tambah Jenis Kelamin</string>
