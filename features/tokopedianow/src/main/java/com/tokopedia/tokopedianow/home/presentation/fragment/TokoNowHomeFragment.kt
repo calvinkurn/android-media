@@ -500,7 +500,7 @@ class TokoNowHomeFragment: Fragment(),
 
     override fun onShareBtnSharingEducationClicked() {
         shareClicked(shareHomeTokonow())
-        analytics.onClickShareToOthers()
+        analytics.trackClickShareButtonWidget()
     }
 
     override fun onCloseBtnSharingEducationClicked(id: String) {
