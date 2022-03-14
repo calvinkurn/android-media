@@ -4,9 +4,9 @@ import com.tokopedia.home.analytics.v2.BaseTracking.BusinessUnit.ADS_SOLUTION
 import com.tokopedia.home.analytics.v2.BaseTracking.Event.CLICK_HOMEPAGE
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumBannerUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
@@ -44,17 +44,17 @@ class HomePlayWidgetAnalyticListener(
         )
     }
 
-    override fun onImpressOverlayCard(view: PlayWidgetMediumView, item: PlayWidgetMediumOverlayUiModel, channelPositionInList: Int) {
+    override fun onImpressOverlayCard(view: PlayWidgetMediumView, item: PlayWidgetBackgroundUiModel, channelPositionInList: Int) {
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
                 event = Event.PROMO_VIEW,
                 eventCategory = "homepage-cmp",
                 eventAction = "impression on play sgc banner",
-                eventLabel = "${item.imageUrl} - $mBusinessWidgetPosition",
+                eventLabel = "${item.overlayImageUrl} - $mBusinessWidgetPosition",
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = widgetId,
                                 name = "/ - p$channelPositionInList - play sgc banner - $widgetName",
-                                creative = item.imageUrl,
+                                creative = item.overlayImageUrl,
                                 position = channelPositionInList.toString()
                         )
                 )
@@ -66,17 +66,17 @@ class HomePlayWidgetAnalyticListener(
         if (trackerMap is HashMap<String, Any>) trackingQueue?.putEETracking(trackerMap)
     }
 
-    override fun onClickOverlayCard(view: PlayWidgetMediumView, item: PlayWidgetMediumOverlayUiModel, channelPositionInList: Int) {
+    override fun onClickOverlayCard(view: PlayWidgetMediumView, item: PlayWidgetBackgroundUiModel, channelPositionInList: Int) {
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
                 event = Event.PROMO_CLICK,
                 eventCategory = "homepage-cmp",
                 eventAction = Event.CLICK,
-                eventLabel = "click on banner play - ${item.imageUrl} - $mBusinessWidgetPosition",
+                eventLabel = "click on banner play - ${item.overlayImageUrl} - $mBusinessWidgetPosition",
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = widgetId,
                                 name = "/ - p$channelPositionInList - play sgc banner - $widgetName",
-                                creative = item.imageUrl,
+                                creative = item.overlayImageUrl,
                                 position = channelPositionInList.toString()
                         )
                 )
@@ -88,7 +88,7 @@ class HomePlayWidgetAnalyticListener(
         if (trackerMap is HashMap<String, Any>) trackingQueue?.putEETracking(trackerMap)
     }
 
-    override fun onImpressChannelCard(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean) {
+    override fun onImpressChannelCard(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean) {
         val finalChannelPositionInList = channelPositionInList + 1
         val promoText = if (item.promoType.promoText.isNotBlank()) item.promoType.promoText else "no promo"
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
@@ -121,7 +121,7 @@ class HomePlayWidgetAnalyticListener(
         if (trackerMap is HashMap<String, Any>) trackingQueue?.putEETracking(trackerMap)
     }
 
-    override fun onClickChannelCard(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean) {
+    override fun onClickChannelCard(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean) {
         val finalChannelPositionInList = channelPositionInList + 1
         val promoText = if (item.promoType.promoText.isNotBlank()) item.promoType.promoText else "no promo"
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
@@ -155,7 +155,7 @@ class HomePlayWidgetAnalyticListener(
         if (trackerMap is HashMap<String, Any>) trackingQueue?.putEETracking(trackerMap)
     }
 
-    override fun onClickToggleReminderChannel(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isRemindMe: Boolean) {
+    override fun onClickToggleReminderChannel(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isRemindMe: Boolean) {
         val finalChannelPositionInList = channelPositionInList + 1
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
@@ -173,7 +173,7 @@ class HomePlayWidgetAnalyticListener(
         )
     }
 
-    override fun onClickBannerCard(view: PlayWidgetMediumView, item: PlayWidgetMediumBannerUiModel, channelPositionInList: Int) {
+    override fun onClickBannerCard(view: PlayWidgetMediumView, item: PlayWidgetBannerUiModel, channelPositionInList: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         Event.KEY to CLICK_HOMEPAGE,

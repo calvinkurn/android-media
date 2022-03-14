@@ -28,6 +28,7 @@ data class ShopOperationalHourResponse(
     }
 
     fun is24Hour() = "$startTime - $endTime" == OPERATIONAL_24_HOUR
+    fun isWeeklyOperationalClosed() = startTime == endTime
 }
 
 data class ShopOperationalHourError(
