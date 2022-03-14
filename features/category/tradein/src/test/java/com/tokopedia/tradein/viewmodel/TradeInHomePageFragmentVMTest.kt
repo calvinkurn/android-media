@@ -58,7 +58,7 @@ class TradeInHomePageFragmentVMTest {
         every { tradeInDetailModel.getTradeInDetail.errMessage } returns  errorMsg
         coEvery { tradeInDetailUseCase.getTradeInDetail(any(), any(), any(), "") } returns tradeInDetailModel
 
-        tradeInHomePageFragmentVM.getTradeInDetail(mockk(), 1000, mockk(), "")
+        tradeInHomePageFragmentVM.getTradeInDetail(mockk(), 1000.0, mockk(), "")
 
         assertEquals(tradeInHomePageFragmentVM.tradeInDetailLiveData.value, tradeInDetailModel)
         assertEquals(tradeInHomePageFragmentVM.logisticData, tradeInDetailModel.getTradeInDetail.logisticOptions)
@@ -71,7 +71,7 @@ class TradeInHomePageFragmentVMTest {
         val exception = Exception("TradeIn Detail Data Exception")
         coEvery { tradeInDetailUseCase.getTradeInDetail(any(), any(), any(), "") } throws exception
 
-        tradeInHomePageFragmentVM.getTradeInDetail(mockk(),1000, mockk(), "")
+        tradeInHomePageFragmentVM.getTradeInDetail(mockk(),1000.0, mockk(), "")
 
         assertEquals(tradeInHomePageFragmentVM.getErrorMessage().value, exception)
 
