@@ -39,7 +39,6 @@ import com.tokopedia.shop.common.constant.ShopPageLoggerConstant
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_PRODUCT_SEARCH_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.di.component.ShopComponent
-import com.tokopedia.shop.common.util.ShopLogger
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.FragmentShopSearchProductBinding
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
@@ -297,8 +296,8 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
                 }
                 is Fail -> {
                     val throwable = it.throwable
-                    if (!ShopLogger.isExceptionIgnored(throwable)) {
-                        ShopLogger.logShopPageP2BuyerFlowAlerting(
+                    if (!ShopUtil.isExceptionIgnored(throwable)) {
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeShopSearchProductResult.name,
                                 liveDataName = ShopSearchProductViewModel::shopSearchProductResult.name,

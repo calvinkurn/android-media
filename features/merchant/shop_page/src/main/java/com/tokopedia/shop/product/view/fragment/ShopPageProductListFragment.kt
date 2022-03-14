@@ -65,7 +65,6 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstan
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
-import com.tokopedia.shop.common.util.ShopLogger
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.getIndicatorCount
@@ -1210,8 +1209,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 }
                 is Fail -> {
                     val throwable = it.throwable
-                    if (!ShopLogger.isExceptionIgnored(throwable)) {
-                        ShopLogger.logShopPageP2BuyerFlowAlerting(
+                    if (!ShopUtil.isExceptionIgnored(throwable)) {
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeViewModelLiveData.name,
                                 liveDataName = ShopPageProductListViewModel::productListData.name,

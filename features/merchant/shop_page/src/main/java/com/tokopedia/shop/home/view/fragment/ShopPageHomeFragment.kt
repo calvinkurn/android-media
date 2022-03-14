@@ -85,6 +85,9 @@ import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.*
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_GET_YOUTUBE_DATA
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
+import com.tokopedia.shop.common.util.ShopProductViewGridType
+import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.util.getIndicatorCount
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
@@ -454,8 +457,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             )
                             sendEmbraceLogError(actionName, errorMessage)
                         }
-                        if (!ShopLogger.isExceptionIgnored(throwable)) {
-                            ShopLogger.logShopPageP2BuyerFlowAlerting(
+                        if (!ShopUtil.isExceptionIgnored(throwable)) {
+                            ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this@ShopPageHomeFragment::observeShopHomeWidgetContentData.name,
                                 liveDataName = ShopHomeViewModel::shopHomeWidgetContentData.name,
@@ -632,8 +635,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 }
                 is Fail -> {
                     val throwable = it.throwable
-                    if (!ShopLogger.isExceptionIgnored(throwable)) {
-                        ShopLogger.logShopPageP2BuyerFlowAlerting(
+                    if (!ShopUtil.isExceptionIgnored(throwable)) {
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
                             tag = SHOP_PAGE_BUYER_FLOW_TAG,
                             functionName = this::observeLiveData.name,
                             liveDataName = ShopHomeViewModel::shopHomeWidgetLayoutData.name,
@@ -666,8 +669,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 is Fail -> {
                     val throwable = it.throwable
                     val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-                    if (!ShopLogger.isExceptionIgnored(throwable)) {
-                        ShopLogger.logShopPageP2BuyerFlowAlerting(
+                    if (!ShopUtil.isExceptionIgnored(throwable)) {
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
                             tag = SHOP_PAGE_BUYER_FLOW_TAG,
                             functionName = this::observeLiveData.name,
                             liveDataName = ShopHomeViewModel::productListData.name,
@@ -2108,8 +2111,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             )
                         },
                         {
-                            if (!ShopLogger.isExceptionIgnored(it)) {
-                                ShopLogger.logShopPageP2BuyerFlowAlerting(
+                            if (!ShopUtil.isExceptionIgnored(it)) {
+                                ShopUtil.logShopPageP2BuyerFlowAlerting(
                                     tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                     functionName = ShopHomeViewModel::addProductToCartOcc.name,
                                     liveDataName = "",
@@ -2138,8 +2141,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             )
                         },
                         {
-                            if (!ShopLogger.isExceptionIgnored(it)) {
-                                ShopLogger.logShopPageP2BuyerFlowAlerting(
+                            if (!ShopUtil.isExceptionIgnored(it)) {
+                                ShopUtil.logShopPageP2BuyerFlowAlerting(
                                     tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                     functionName = ShopHomeViewModel::addProductToCart.name,
                                     liveDataName = "",
@@ -2183,8 +2186,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         }
                     },
                     {
-                        if (!ShopLogger.isExceptionIgnored(it)) {
-                            ShopLogger.logShopPageP2BuyerFlowAlerting(
+                        if (!ShopUtil.isExceptionIgnored(it)) {
+                            ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = ShopHomeViewModel::addProductToCart.name,
                                 liveDataName = "",
@@ -2435,8 +2438,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         }
                     },
                     {
-                        if (!ShopLogger.isExceptionIgnored(it)) {
-                            ShopLogger.logShopPageP2BuyerFlowAlerting(
+                        if (!ShopUtil.isExceptionIgnored(it)) {
+                            ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = ShopHomeViewModel::addProductToCart.name,
                                 liveDataName = "",
@@ -2628,8 +2631,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         )
                     },
                     {
-                        if (!ShopLogger.isExceptionIgnored(it)) {
-                            ShopLogger.logShopPageP2BuyerFlowAlerting(
+                        if (!ShopUtil.isExceptionIgnored(it)) {
+                            ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = ShopHomeViewModel::addProductToCart.name,
                                 liveDataName = "",

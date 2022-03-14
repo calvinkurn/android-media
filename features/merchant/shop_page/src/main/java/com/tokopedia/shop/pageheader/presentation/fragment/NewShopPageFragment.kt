@@ -539,8 +539,8 @@ class NewShopPageFragment :
                         )
                         sendEmbraceLogError(actionName, errorMessage)
                     }
-                    if (!ShopLogger.isExceptionIgnored(throwable)) {
-                        ShopLogger.logShopPageP2BuyerFlowAlerting(
+                    if (!ShopUtil.isExceptionIgnored(throwable)) {
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeLiveData.name,
                                 liveDataName = NewShopPageViewModel::shopPageP1Data.name,
@@ -600,8 +600,8 @@ class NewShopPageFragment :
                 }
                 is Fail -> {
                     val throwable = result.throwable
-                    if (!ShopLogger.isExceptionIgnored(throwable)) {
-                        ShopLogger.logShopPageP2BuyerFlowAlerting(
+                    if (!ShopUtil.isExceptionIgnored(throwable)) {
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeLiveData.name,
                                 liveDataName = NewShopPageViewModel::shopIdFromDomainData.name,

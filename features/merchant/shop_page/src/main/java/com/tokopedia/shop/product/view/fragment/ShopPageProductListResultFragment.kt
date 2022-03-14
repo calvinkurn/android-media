@@ -65,7 +65,6 @@ import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseRules
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.common.util.ShopLogger
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.getIndicatorCount
@@ -449,8 +448,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 is Fail -> {
                     onErrorGetShopInfo(it.throwable)
                     val throwable = it.throwable
-                    if (!ShopLogger.isExceptionIgnored(throwable)) {
-                        ShopLogger.logShopPageP2BuyerFlowAlerting(
+                    if (!ShopUtil.isExceptionIgnored(throwable)) {
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeLiveData.name,
                                 liveDataName = ShopPageProductListResultViewModel::shopInfoResp.name,
@@ -471,8 +470,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 is Success -> onSuccessGetSortFilterData(it.data)
                 is Fail -> {
                     val throwable = it.throwable
-                    if (!ShopLogger.isExceptionIgnored(throwable)) {
-                        ShopLogger.logShopPageP2BuyerFlowAlerting(
+                    if (!ShopUtil.isExceptionIgnored(throwable)) {
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeLiveData.name,
                                 liveDataName = ShopPageProductListResultViewModel::shopSortFilterData.name,
@@ -509,8 +508,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 }
                 is Fail -> {
                     val throwable = it.throwable
-                    if (!ShopLogger.isExceptionIgnored(throwable)) {
-                        ShopLogger.logShopPageP2BuyerFlowAlerting(
+                    if (!ShopUtil.isExceptionIgnored(throwable)) {
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeLiveData.name,
                                 liveDataName = ShopPageProductListResultViewModel::productData.name,
