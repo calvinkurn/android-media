@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Shop Admin</string>
+    <string name="title_invitation_expires">Oops, undangan akses admin sudah tidak berlaku</string>
+    <string name="desc_invitation_expires">Kamu telah melewati batas waktu yang ditentukan untuk menerima undangan akses. Hubungi pemilik toko untuk mengirimnya lagi, ya.</string>
+
+    <string name="title_invitation_rejected">Akses admin berhasil ditolak</string>
+    <string name="desc_invitation_rejected">Kamu telah menolak undangan untuk menjadi admin di toko %s. Hubungi pemilik toko jika ini merupakan kesalahan, ya.</string>
+
+    <string name="btn_admin_understand">Oke, Saya Mengerti</string>
+
+    <string name="title_admin_confirmation_invitation">Kamu diundang untuk menjadi admin di toko %s!</string>
+    <string name="label_admin_confirmation_invitation_with_email">Klik Terima Akses supaya kamu bisa mengakses toko sebagai admin, ya.</string>
+    <string name="label_admin_confirmation_invitation_with_no_email">Sebelum Terima Akses menjadi admin, tambahkan email ke akun Tokopedia-mu dulu, ya.</string>
+
+    <string name="placeholder_email">Email</string>
+
+    <string name="title_reject_access_button">Tolak Akses</string>
+    <string name="title_accept_access_button">Terima Akses</string>
+
+</resources>

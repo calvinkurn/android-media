@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerAdminConfirmationWithEmail"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvAdminConfirmationWithEmailLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:typographyType="body_2"
+        android:textColor="@color/Unify_NN600"
+        android:text="@string/label_admin_confirmation_invitation_with_email"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/dividerAdminConfirmationWithEmail"
+        app:layout_constraintEnd_toEndOf="@id/dividerAdminConfirmationWithEmail"
+        app:layout_constraintTop_toBottomOf="@id/dividerAdminConfirmationWithEmail"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

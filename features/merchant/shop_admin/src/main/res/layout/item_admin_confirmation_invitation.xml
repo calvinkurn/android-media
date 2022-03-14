@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgAdminConfirmationInvitation"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvAdminConfirmationTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:typographyType="heading_2"
+        app:typographyWeight="reguler"
+        android:textColor="@color/Unify_NN950"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="28dp"
+        android:text="@string/title_admin_confirmation_invitation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imgAdminConfirmationInvitation"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgShopAdminAvatar"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="24dp"
+        android:adjustViewBounds="true"
+        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintEnd_toEndOf="@id/tvAdminConfirmationTitle"
+        app:layout_constraintStart_toStartOf="@id/tvAdminConfirmationTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvAdminConfirmationTitle"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icShopAdmin"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="14dp"
+        app:icon_name="SHOP"
+        app:layout_constraintStart_toEndOf="@id/imgShopAdminAvatar"
+        app:layout_constraintTop_toTopOf="@id/imgShopAdminAvatar"
+        app:layout_constraintBottom_toBottomOf="@id/imgShopAdminAvatar"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShopTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        tools:text="Heylook Outerwear"
+        android:layout_marginStart="8dp"
+        app:typographyType="heading_4"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintTop_toTopOf="@id/imgShopAdminAvatar"
+        app:layout_constraintBottom_toBottomOf="@id/imgShopAdminAvatar"
+        app:layout_constraintStart_toEndOf="@id/icShopAdmin"
+        app:layout_constraintEnd_toEndOf="@id/tvAdminConfirmationTitle"/>
+
+    <include
+        android:id="@+id/adminInvitationWithNoEmailSection"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imgShopAdminAvatar"
+        android:visibility="gone"
+        layout="@layout/item_admin_confirmation_with_no_email_section"/>
+
+    <include
+        android:id="@+id/adminInvitationWithEmailSection"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imgShopAdminAvatar"
+        android:visibility="visible"
+        layout="@layout/item_admin_confirmation_with_email_section"/>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierAdminInvitationLabelSection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="adminInvitationWithEmailSection, adminInvitationWithNoEmailSection"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imgShopAdminAvatar"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/barrierAdminInvitationLabelSection"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnAccessReject"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/title_reject_access_button"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="4dp"
+        app:unifyButtonType="alternate"
+        app:unifyButtonSize="large"
+        app:unifyButtonVariant="ghost"
+        app:layout_constraintTop_toBottomOf="@id/barrierAdminInvitationLabelSection"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guidelineButton"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnAccessAccept"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/title_reject_access_button"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="16dp"
+        app:unifyButtonType="main"
+        app:unifyButtonSize="large"
+        app:unifyButtonVariant="filled"
+        app:layout_constraintTop_toBottomOf="@id/barrierAdminInvitationLabelSection"
+        app:layout_constraintStart_toEndOf="@id/guidelineButton"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
