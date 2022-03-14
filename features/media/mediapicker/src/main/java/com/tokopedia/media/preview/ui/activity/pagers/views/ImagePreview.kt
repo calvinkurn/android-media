@@ -1,7 +1,6 @@
 package com.tokopedia.media.preview.ui.activity.pagers.views
 
 import android.content.Context
-import android.util.Log
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.View
