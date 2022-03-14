@@ -1,23 +1,16 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.applink.ApplinkConst
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
 import com.google.android.gms.cast.framework.CastStateListener
 import com.google.gson.Gson
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.linker.LinkerManager
-import com.tokopedia.linker.LinkerUtils
-import com.tokopedia.linker.interfaces.ShareCallback
-import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.linker.model.LinkerError
-import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.R
@@ -52,6 +45,7 @@ import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
@@ -82,7 +76,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlinx.coroutines.flow.collect
 import kotlin.math.max
 
 /**
@@ -1010,7 +1003,9 @@ class PlayViewModel @AssistedInject constructor(
             _tagItems.value = tagItem
 
             sendProductTrackerToBro(
-                productList = tagItem.product.productList
+                productList = tagItem.product.productSectionList
+                    .filterIsInstance<ProductSectionUiModel.Section>()
+                    .flatMap { it.productList }
             )
         }) { err ->
             _tagItems.update { it.copy(resultState = ResultState.Fail(err)) }
@@ -1472,20 +1467,18 @@ class PlayViewModel @AssistedInject constructor(
                     channelStateProcessor.setIsFreeze(result.isFreeze)
                 }
             }
-            is ProductTag -> {
-                val (mappedProductTags, shouldShow) = playSocketToModelMapper.mapProductTag(result)
+            is ProductSection -> {
+                val mappedData = playSocketToModelMapper.mapProductSection(result)
+
                 _tagItems.update {
                     it.copy(
                         product = it.product.copy(
-                            productList = mappedProductTags,
-                            canShow = shouldShow
+                            productSectionList = mappedData.first
                         ),
+                        maxFeatured = mappedData.second,
+                        bottomSheetTitle = mappedData.third
                     )
                 }
-
-                sendProductTrackerToBro(
-                    productList = mappedProductTags
-                )
             }
             is MerchantVoucher -> {
                 val mappedVouchers = playSocketToModelMapper.mapMerchantVoucher(result)

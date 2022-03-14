@@ -50,6 +50,8 @@ public class GraphqlClient {
     private static Context applicationContext;
     private static Function function;
 
+    public static String moduleName = "";
+
     private GraphqlClient() {
 
     }

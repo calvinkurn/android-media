@@ -39,6 +39,7 @@ import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.test.application.GqlActivityCallback;
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface;
 import com.tokopedia.test.application.environment.interceptor.TopAdsDetectorInterceptor;
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor;
@@ -94,6 +95,8 @@ public class InstrumentationTestApp extends CoreNetworkApplication
         NetworkClient.init(this);
         GraphqlClient.init(this, getAuthenticator());
         RemoteConfigInstance.initAbTestPlatform(this);
+
+        registerActivityLifecycleCallbacks(new GqlActivityCallback());
 
         super.onCreate();
 

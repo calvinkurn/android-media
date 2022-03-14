@@ -70,7 +70,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val questWidgetCallbacks: QuestWidgetCallbacks,
                          private val cmHomeWidgetCallback: CMHomeWidgetCallback,
                          private val homePayLaterWidgetListener: HomePayLaterWidgetListener,
-                         private val specialReleaseComponentListener: SpecialReleaseComponentListener
+                         private val specialReleaseComponentListener: SpecialReleaseComponentListener,
+                         private val merchantVoucherComponentListener: MerchantVoucherComponentListener
                          ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
@@ -284,6 +285,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return CampaignWidgetViewHolder.LAYOUT
     }
 
+    override fun type(merchantVoucherDataModel: MerchantVoucherDataModel): Int {
+        return MerchantVoucherViewHolder.LAYOUT
+    }
+
     override fun type(specialReleaseDataModel: SpecialReleaseDataModel): Int {
         return SpecialReleaseViewHolder.LAYOUT
     }
@@ -466,6 +471,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                 campaignWidgetComponentListener,
                 parentRecycledViewPool
             )
+            MerchantVoucherViewHolder.LAYOUT -> viewHolder =
+                MerchantVoucherViewHolder(view, merchantVoucherComponentListener)
             SpecialReleaseViewHolder.LAYOUT -> viewHolder = SpecialReleaseViewHolder(
                 view,
                 homeComponentListener,
@@ -477,8 +484,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             )
             HomePayLaterWidgetViewHolder.LAYOUT -> viewHolder = HomePayLaterWidgetViewHolder(
                 view, homePayLaterWidgetListener)
-
-
             else -> viewHolder = super.createViewHolder(view, type)
 
         }
