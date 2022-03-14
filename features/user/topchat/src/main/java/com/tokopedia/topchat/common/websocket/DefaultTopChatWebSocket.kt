@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.common.websocket
 
+import com.tokopedia.network.authentication.AuthHelper.Companion.getUserAgent
 import com.tokopedia.topchat.BuildConfig
 import com.tokopedia.url.TokopediaUrl
 import okhttp3.OkHttpClient
@@ -40,6 +41,7 @@ class DefaultTopChatWebSocket @Inject constructor(
         val requestBuilder = Request.Builder().url(webSocketUrl)
                 .header(HEADER_KEY_ORIGIN, TokopediaUrl.getInstance().WEB)
                 .header(HEADER_KEY_AUTH, "$HEADER_VALUE_BEARER $token")
+                .header(HEADER_USER_AGENT, getUserAgent())
         if (BuildConfig.DEBUG) {
             requestBuilder.header(HEADER_KEY_PAGE, page)
         }
@@ -50,6 +52,7 @@ class DefaultTopChatWebSocket @Inject constructor(
         private const val HEADER_KEY_ORIGIN = "Origin"
         private const val HEADER_KEY_AUTH = "Accounts-Authorization"
         private const val HEADER_KEY_PAGE = "page"
+        private const val HEADER_USER_AGENT = "User-Agent"
 
         private const val HEADER_VALUE_BEARER = "Bearer"
 
