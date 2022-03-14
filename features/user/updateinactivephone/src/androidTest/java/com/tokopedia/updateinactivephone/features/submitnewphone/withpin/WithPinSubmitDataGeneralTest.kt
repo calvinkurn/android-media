@@ -50,7 +50,6 @@ class WithPinSubmitDataGeneralTest: BaseSubmitDataTest() {
         runTest(source = InactivePhoneConstant.EXPEDITED) {
             setPhoneNumberText(phone)
             clickOnButtonSubmit()
-            checkTracker()
         }
     }
 
@@ -59,7 +58,6 @@ class WithPinSubmitDataGeneralTest: BaseSubmitDataTest() {
         runTest {
             simulateOnBackPressed()
             checkPopupIsDisplayed()
-            checkTracker()
         }
     }
 
@@ -68,7 +66,6 @@ class WithPinSubmitDataGeneralTest: BaseSubmitDataTest() {
         runTest {
             simulateOnBackPressed()
             clickOnButtonExitPopup()
-            checkTracker()
         }
     }
 
@@ -77,7 +74,6 @@ class WithPinSubmitDataGeneralTest: BaseSubmitDataTest() {
         runTest {
             simulateOnBackPressed()
             clickOnButtonLanjutVerifikasi()
-            checkTracker()
         }
     }
 }

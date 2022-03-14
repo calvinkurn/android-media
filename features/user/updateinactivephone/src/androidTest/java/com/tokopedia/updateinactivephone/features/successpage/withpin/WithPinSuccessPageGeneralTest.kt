@@ -36,7 +36,6 @@ class WithPinSuccessPageGeneralTest : BaseSuccessPageTest() {
     fun click_on_button_goto_home() {
         runTest(source = InactivePhoneConstant.EXPEDITED) {
             clickOnGotoHomeButton()
-            checkTracker()
         }
     }
 }

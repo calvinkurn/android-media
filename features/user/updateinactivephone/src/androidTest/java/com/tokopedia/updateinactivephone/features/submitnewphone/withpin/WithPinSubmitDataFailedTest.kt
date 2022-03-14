@@ -31,7 +31,6 @@ class WithPinSubmitDataFailedTest : BaseSubmitDataTest() {
             setPhoneNumberText(phone)
             clickOnButtonSubmit()
             checkErrorMessageOnInputPhone("Wajib diisi.")
-            checkTracker()
         }
     }
 
@@ -43,7 +42,6 @@ class WithPinSubmitDataFailedTest : BaseSubmitDataTest() {
             setPhoneNumberText(phone)
             clickOnButtonSubmit()
             checkErrorMessageOnInputPhone("Min. 9 digit.")
-            checkTracker()
         }
     }
 }

@@ -46,7 +46,6 @@ class RegularSubmitDataGeneralTest : BaseSubmitDataTest() {
         runTest {
             setPhoneNumberText(phone)
             clickOnButtonSubmit()
-            checkTracker()
         }
     }
 
@@ -55,7 +54,6 @@ class RegularSubmitDataGeneralTest : BaseSubmitDataTest() {
         runTest {
             simulateOnBackPressed()
             SubmitDataViewAction.checkPopupIsDisplayed()
-            checkTracker()
         }
     }
 
@@ -64,7 +62,6 @@ class RegularSubmitDataGeneralTest : BaseSubmitDataTest() {
         runTest {
             simulateOnBackPressed()
             SubmitDataViewAction.clickOnButtonExitPopup()
-            checkTracker()
         }
     }
 
@@ -73,7 +70,6 @@ class RegularSubmitDataGeneralTest : BaseSubmitDataTest() {
         runTest {
             simulateOnBackPressed()
             SubmitDataViewAction.clickOnButtonLanjutVerifikasi()
-            checkTracker()
         }
     }
 
