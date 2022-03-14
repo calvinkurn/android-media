@@ -164,7 +164,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         val errorMessage = String.format(
                 "\"Error upload product.\",\"userId: %s\",\"errorMessage: %s\",params: \"%s\"",
                 userSession.userId,
-                getErrorMessage(throwable),
+                throwable.message,
                 URLEncoder.encode(gson.toJson(requestParams), REQUEST_ENCODE))
         val exception = AddEditProductUploadException(errorMessage, throwable)
 
