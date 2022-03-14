@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.pdp.fintech.view.FintechPriceUrlDataModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
@@ -874,9 +874,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updatePlayWidget(playWidgetUiModel: PlayWidgetUiModel) {
+    fun updatePlayWidget(playWidgetState: PlayWidgetState) {
         updateData(ProductDetailConstant.PLAY_CAROUSEL) {
-            contentWidgetData?.playWidgetUiModel = playWidgetUiModel
+            contentWidgetData?.playWidgetState = playWidgetState
         }
     }
 

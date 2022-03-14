@@ -650,10 +650,14 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         info1.setImageDrawable(getIconUnifyDrawable(view.context, IconUnify.INFORMATION))
         info2.setImageDrawable(getIconUnifyDrawable(view.context, IconUnify.INFORMATION))
         info1.setOnClickListener {
-            InfoBottomSheet.newInstance().show(childFragmentManager, 0)
+            InfoBottomSheet(
+                InfoBottomSheet.TYPE_DASAR, sharedViewModel.getIsWhiteListedUser()
+            ).show(childFragmentManager)
         }
         info2.setOnClickListener {
-            InfoBottomSheet.newInstance().show(childFragmentManager, 1)
+            InfoBottomSheet(
+                InfoBottomSheet.TYPE_KATA_KUNCI, sharedViewModel.getIsWhiteListedUser()
+            ).show(childFragmentManager)
         }
         addKeyword.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(

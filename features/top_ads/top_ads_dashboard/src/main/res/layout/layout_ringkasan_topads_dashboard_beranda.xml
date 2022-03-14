@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtRingkasan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/topads_dashboard_dp_6"
+        android:text="@string/topads_dash_text_ringkasan"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtAdType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:text="@string/topads_dashboard_all_promo_menu"
+        android:textColor="@color/Unify_G500"
+        app:layout_constraintBottom_toBottomOf="@id/txtRingkasan"
+        app:layout_constraintStart_toEndOf="@id/txtRingkasan"
+        app:layout_constraintTop_toTopOf="@id/txtRingkasan" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivSummaryDropDown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:src="@drawable/unify_chips_ic_chevron_disabled"
+        app:layout_constraintBottom_toBottomOf="@id/txtAdType"
+        app:layout_constraintStart_toEndOf="@id/txtAdType"
+        app:layout_constraintTop_toTopOf="@id/txtAdType" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtLastUpdated"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/topads_dashboard_dp_6"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:text="@string/topads_dashboard_last_update_text"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtRingkasan"
+        app:typographyType="body_3"
+        tools:text="Update terakhir Januari 2021, 16:00 WIB" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivSummaryInformation"
+        android:layout_width="@dimen/top_ads_common_dp_20"
+        android:layout_height="@dimen/top_ads_common_dp_20"
+        android:padding="@dimen/spacing_lvl1"
+        android:src="@drawable/iconunify_information"
+        android:tint="@color/Unify_NN900"
+        app:layout_constraintBottom_toBottomOf="@id/txtLastUpdated"
+        app:layout_constraintStart_toEndOf="@id/txtLastUpdated"
+        app:layout_constraintTop_toTopOf="@id/txtLastUpdated" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_constraintTop_toBottomOf="@id/txtLastUpdated">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_lvl1">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvSummary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="2"
+                tools:itemCount="3"
+                tools:listitem="@layout/item_rv_ringkasan" />
+
+            <FrameLayout
+                android:id="@+id/graph_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:visibility="visible" />
+
+        </LinearLayout>
+    </com.tokopedia.unifycomponents.CardUnify>
+</androidx.constraintlayout.widget.ConstraintLayout>
