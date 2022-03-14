@@ -80,7 +80,7 @@ import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
-import com.tokopedia.search.result.product.fulfillment.FulfillmentFilter
+import com.tokopedia.search.result.product.postprocessing.PostProcessingFilter
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringProvider
@@ -219,7 +219,7 @@ class ProductListPresenter @Inject constructor(
     override var pageComponentId: String = ""
         private set
     private val adsInjector = AdsInjector()
-    private val fulfillmentFilter = FulfillmentFilter()
+    private val postProcessingFilter = PostProcessingFilter()
 
     override fun attachView(view: ProductListSectionContract.View) {
         super.attachView(view)
@@ -469,12 +469,12 @@ class ProductListPresenter @Inject constructor(
         additionalParams = productDataView.additionalParams
 
         if (productDataView.productList.isEmpty()) {
-            fulfillmentFilter.checkFulfillmentFilter(searchParameter, totalData, ::loadMoreData) {
+            postProcessingFilter.checkPostProcessingFilter(searchParameter, totalData, ::loadMoreData) {
                 getViewToProcessEmptyResultDuringLoadMore(searchProductModel.searchProduct)
             }
         }
         else {
-            fulfillmentFilter.resetCount()
+            postProcessingFilter.resetCount()
             getViewToShowMoreData(searchParameter, searchProductModel, productDataView)
         }
 
@@ -746,14 +746,14 @@ class ProductListPresenter @Inject constructor(
         view.setDefaultLayoutType(productDataView.defaultView)
 
         if (productDataView.productList.isEmpty()) {
-            fulfillmentFilter.checkFulfillmentFilter(searchParameter, totalData, ::loadData) {
+            postProcessingFilter.checkPostProcessingFilter(searchParameter, totalData, ::loadData) {
                 getViewToHandleEmptyProductList(
                     searchProductModel.searchProduct,
                     productDataView,
                 )
             }
         } else {
-            fulfillmentFilter.resetCount()
+            postProcessingFilter.resetCount()
 
             runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_SHOW_PRODUCT_LIST) {
                 getViewToShowProductList(searchParameter, searchProductModel, productDataView)

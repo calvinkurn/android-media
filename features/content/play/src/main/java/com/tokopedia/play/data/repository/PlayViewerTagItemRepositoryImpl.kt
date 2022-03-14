@@ -5,14 +5,11 @@ import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.play.domain.GetProductTagItemsUseCase
+import com.tokopedia.play.domain.GetProductTagItemSectionUseCase
 import com.tokopedia.play.domain.repository.PlayViewerTagItemRepository
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
-import com.tokopedia.play.view.uimodel.recom.tagitem.ProductUiModel
-import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
-import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
-import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.*
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
@@ -21,7 +18,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class PlayViewerTagItemRepositoryImpl @Inject constructor(
-    private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
+    private val getProductTagItemsUseCase: GetProductTagItemSectionUseCase,
     private val getProductVariantUseCase: GetProductVariantUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val mapper: PlayUiModelMapper,
@@ -30,30 +27,29 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
 ): PlayViewerTagItemRepository {
 
     override suspend fun getTagItem(
-        channelId: String
+        channelId: String,
     ): TagItemUiModel = withContext(dispatchers.io) {
         val response = getProductTagItemsUseCase.apply {
-            setRequestParams(GetProductTagItemsUseCase.createParam(channelId))
+            setRequestParams(GetProductTagItemSectionUseCase.createParam(channelId).parameters)
         }.executeOnBackground()
 
-        val productList = mapper.mapProductTags(
-            response.playGetTagsItem.listOfProducts
-        )
+        val productList = mapper.mapProductSection(response.playGetTagsItem.sectionList)
 
         val voucherList = mapper.mapMerchantVouchers(
-            response.playGetTagsItem.listOfVouchers
+            response.playGetTagsItem.voucherList
         )
 
         return@withContext TagItemUiModel(
             product = ProductUiModel(
-                productList = productList as List<PlayProductUiModel.Product>,
-                canShow = true,
+                productSectionList = productList,
+                canShow = true
             ),
             voucher = VoucherUiModel(
                 voucherList = voucherList,
             ),
             maxFeatured = response.playGetTagsItem.config.peekProductCount,
             resultState = ResultState.Success,
+            bottomSheetTitle = response.playGetTagsItem.config.bottomSheetTitle
         )
     }
 

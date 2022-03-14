@@ -116,9 +116,9 @@ import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.navigation_common.listener.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play.widget.const.PlayWidgetConst
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
-import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
@@ -1625,7 +1625,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             this,
             this,
             this,
-            SpecialReleaseComponentCallback(context, this)
+            SpecialReleaseComponentCallback(context, this),
+            MerchantVoucherComponentCallback(this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1828,8 +1829,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 }
             }
             REQUEST_CODE_PLAY_ROOM -> if (data != null) {
-                val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID)
-                val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW)
+                val channelId = data.getStringExtra(PlayWidgetConst.KEY_EXTRA_CHANNEL_ID)
+                val totalView = data.getStringExtra(PlayWidgetConst.KEY_EXTRA_TOTAL_VIEW)
                 getHomeViewModel().updateBannerTotalView(channelId, totalView)
             }
             REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET -> if (data != null) {
@@ -2160,8 +2161,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun getTopAdsBannerNextPageToken(): String {
-        return getHomeViewModel().currentTopAdsBannerToken
+    override fun getTopAdsBannerNextPage(): String {
+        return getHomeViewModel().currentTopAdsBannerPage
     }
 
     override fun getDynamicChannelData(visitable: Visitable<*>, channelModel: ChannelModel, channelPosition: Int) {
@@ -2755,16 +2756,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun notifyPlayWidgetTotalView(data: Intent) {
-        val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID)
-        val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW)
+        val channelId = data.getStringExtra(PlayWidgetConst.KEY_EXTRA_CHANNEL_ID)
+        val totalView = data.getStringExtra(PlayWidgetConst.KEY_EXTRA_TOTAL_VIEW)
 
         if (channelId == null || totalView == null) return
         getHomeViewModel().updatePlayWidgetTotalView(channelId, totalView)
     }
 
     private fun notifyPlayWidgetReminder(data: Intent) {
-        val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID)
-        val isReminder = data.getBooleanExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_IS_REMINDER, false)
+        val channelId = data.getStringExtra(PlayWidgetConst.KEY_EXTRA_CHANNEL_ID)
+        val isReminder = data.getBooleanExtra(PlayWidgetConst.KEY_EXTRA_IS_REMINDER, false)
 
         if (channelId == null) return
         getHomeViewModel().updatePlayWidgetReminder(channelId, isReminder)
