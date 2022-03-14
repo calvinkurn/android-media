@@ -17,7 +17,10 @@ data class GetVoucherParam (
     var voucher_type: Int? = null,
 
     @SerializedName("hide_overbook")
-    var hideOverbook: String = "1"
+    var hideOverbook: String = "1",
+
+    @SerializedName("is_lock_to_product")
+    var isLockToProduct: String = "0,1"
 )
 
 data class FilterParam(

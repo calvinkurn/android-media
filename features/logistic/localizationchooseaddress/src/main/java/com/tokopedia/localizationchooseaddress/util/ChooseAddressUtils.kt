@@ -130,6 +130,11 @@ object ChooseAddressUtils {
         chooseAddressPref.setLocalCache(localData)
     }
 
+    fun updateLocalizingAddressDataFromOther(context: Context, localData: LocalCacheModel) {
+        val chooseAddressPref = ChooseAddressSharePref(context)
+        chooseAddressPref.setLocalCache(localData)
+    }
+
     fun updateTokoNowData(context: Context, warehouseId: String, shopId: String, warehouses: List<LocalWarehouseModel>, serviceType: String) {
         val chooseAddressPref = ChooseAddressSharePref(context)
         val newData = getLocalizingAddressData(context).copy(warehouse_id = warehouseId, shop_id = shopId, warehouses = warehouses, service_type = serviceType, version = LCA_VERSION)

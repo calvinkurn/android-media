@@ -18,5 +18,7 @@ data class Messages(
         @SerializedName("ErrorProductMaxQuantity")
         val errorProductMaxQuantity: String = "",
         @SerializedName("ErrorProductMinQuantity")
-        val errorProductMinQuantity: String = ""
+        val errorProductMinQuantity: String = "",
+        @SerializedName("ErrorBOAffordability")
+        val errorBoAffordability: String = ""
 )

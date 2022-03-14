@@ -59,6 +59,13 @@ interface TagItemBuilder {
             type = ProductSectionType.Unknown,
             title = "", timerInfo = "", serverTime = "", startTime = "", endTime = "",
             background = ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(), imageUrl = "")
-        )
-    ): ProductSectionUiModel
+        ),
+        id: String = ""
+    ): ProductSectionUiModel.Section
+
+    fun buildSectionConfig(type: ProductSectionType = ProductSectionType.Unknown,
+                           title: String = "", timerInfo: String = "", serverTime: String = "",
+                           startTime: String = "", endTime: String = "",
+                           background: ProductSectionUiModel.Section.BackgroundUiModel = ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(), imageUrl = "")
+    ): ProductSectionUiModel.Section.ConfigUiModel
 }

@@ -183,13 +183,13 @@ class PlayAnalytic(
             else -> Pair("view product", "$mChannelId - ${products.first().first.id} - ${mChannelType.value} - product in bottom sheet")
         }
         trackingQueue.putEETracking(
-                EventModel(
+                event = EventModel(
                         "productView",
                         KEY_TRACK_GROUP_CHAT_ROOM,
                         eventAction,
                         eventLabel
                 ),
-                hashMapOf(
+                enhanceECommerceMap = hashMapOf(
                         "ecommerce" to hashMapOf(
                                 "currencyCode" to "IDR",
                                 "impressions" to mutableListOf<HashMap<String, Any>>().apply {
@@ -198,7 +198,15 @@ class PlayAnalytic(
                                     }
                                 }
                         )
-                )
+                ),
+                customDimension = if(sectionInfo.config.type != ProductSectionType.Other){
+                    hashMapOf(
+                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                        KEY_USER_ID to userId,
+                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                    )
+                } else null
         )
     }
 
@@ -227,18 +235,7 @@ class PlayAnalytic(
                         )
                     )
                 ),
-                hashMapOf(
-                    KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                    KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                    KEY_ITEM_LIST to "/groupchat - bottom sheet",
-                    KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                    KEY_USER_ID to userId,
-                    KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
-                    KEY_PRODUCT_ID to product.id,
-                    KEY_PRODUCT_NAME to product.title,
-                    KEY_PRODUCT_URL to product.applink.toString(),
-                    KEY_CHANNEL to mChannelName
-                )
+                generateBaseTracking(product = product, sectionInfo.config.type)
         )
     }
 
@@ -344,38 +341,6 @@ class PlayAnalytic(
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                         KEY_USER_ID to userId,
                         KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
-                )
-        )
-    }
-
-    fun impressionHighlightedVoucher(voucher: MerchantVoucherUiModel) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                mapOf(
-                        KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
-                        KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                        KEY_EVENT_ACTION to "impression on merchant voucher",
-                        KEY_EVENT_LABEL to "$mChannelId - ${voucher.id} - ${mChannelType.value}",
-                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                        KEY_USER_ID to userId,
-                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
-                )
-        )
-    }
-
-    fun clickHighlightedVoucher(voucher: MerchantVoucherUiModel) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                mapOf(
-                        KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
-                        KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                        KEY_EVENT_ACTION to "click on merchant voucher",
-                        KEY_EVENT_LABEL to "$mChannelId - ${voucher.id} - ${mChannelType.value}",
-                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                        KEY_USER_ID to userId,
-                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                        KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
-                        KEY_CHANNEL to mChannelName,
                 )
         )
     }
@@ -650,17 +615,7 @@ class PlayAnalytic(
                         )
                     )
                 ),
-                hashMapOf(
-                    KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                    KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                    KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                    KEY_USER_ID to userId,
-                    KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
-                    KEY_PRODUCT_ID to product.id,
-                    KEY_PRODUCT_NAME to product.title,
-                    KEY_PRODUCT_URL to product.applink.toString(),
-                    KEY_CHANNEL to mChannelName
-                )
+                generateBaseTracking(product = product, sectionInfo.config.type)
         )
     }
 
@@ -688,17 +643,7 @@ class PlayAnalytic(
                         )
                     )
                 ),
-                hashMapOf(
-                    KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                    KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                    KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                    KEY_USER_ID to userId,
-                    KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
-                    KEY_PRODUCT_ID to product.id,
-                    KEY_PRODUCT_NAME to product.title,
-                    KEY_PRODUCT_URL to product.applink.toString(),
-                    KEY_CHANNEL to mChannelName
-                )
+                generateBaseTracking(product = product, sectionInfo.config.type)
         )
     }
 
@@ -835,6 +780,27 @@ class PlayAnalytic(
     }
 
     private fun generateBaseEventLabel(productId: String, campaignId: String): String = "$mChannelId - $productId - ${mChannelType.value} - $campaignId"
+
+    private fun generateBaseTracking(product: PlayProductUiModel.Product, type: ProductSectionType): HashMap<String, Any>{
+        val base: HashMap<String, Any> = hashMapOf(
+            KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+            KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+            KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+            KEY_USER_ID to userId,
+            )
+       if (type == ProductSectionType.Other) {
+           base.putAll(
+               mapOf(
+                   KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
+                   KEY_PRODUCT_ID to product.id,
+                   KEY_PRODUCT_NAME to product.title,
+                   KEY_PRODUCT_URL to product.applink.toString(),
+                   KEY_CHANNEL to mChannelName
+               )
+           )
+       }
+        return base
+    }
 
     companion object {
         private const val KEY_EVENT = "event"

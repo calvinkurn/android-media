@@ -1387,4 +1387,82 @@ class ModelBuilder {
         )
         return PlayUserReportUiModel.Loaded(listOf(userReportOpt, userReportOpt))
     }
+
+    fun generateResponseSectionGql(
+        size: Int = 2,
+        shopId: String = "123",
+        imageUrl: String = "https://www.tokopedia.com",
+        title: String = "Barang Murah",
+        isVariantAvailable: Boolean = false,
+        minQty: Int = 1,
+        isFreeShipping: Boolean = false,
+        applink: String? = null,
+        gradient: List<String>? = null
+    ): ProductSection.Response {
+        var productList = ""
+        for (i in 1..size) {
+            productList += """
+                {
+                    app_link: "$applink",
+                    discount: 0,
+                    id: $i,
+                    image_url: "$imageUrl",
+                    is_available: false,
+                    is_free_shipping: $isFreeShipping,
+                    is_variant: $isVariantAvailable,
+                    min_quantity: $minQty,
+                    name: "Barang $i",
+                    order: 0,
+                    original_price: 123,
+                    original_price_formatted: "123",
+                    price: 0,
+                    price_formatted: "",
+                    quantity: 0,
+                    shop_id: "$shopId",
+                    web_link: "https://staging.tokopedia.com/ramayana-qc/ramayana-kemeja-pria-blue-camouflage-raf-07901447"
+              }
+            """.trimIndent()
+            if (i != size) productList += ","
+        }
+
+        var sectionList = ""
+        for (x in 1..size) {
+            sectionList += """{
+                type: "active",
+                title: "$title $x",
+                countdown: {
+                    copy: "Berakhir dalam"
+                },
+                background: {
+                    gradient: "$gradient",
+                    image_url: "https://via.placeholder.com/150"
+                },
+                start_time: "2022-01-02T15:04:05Z07:00",
+                end_time: "2022-01-02T16:04:05Z07:00",
+                server_time: "2022-01-02T15:14:05Z07:00",
+                products : [
+                    $productList
+                 ]
+                }
+            """.trimIndent()
+            if (x != size) sectionList += ","
+        }
+        val data =  """
+             {
+                "data": {
+                      "playGetTagsItemSection":{
+                          "sections" : [
+                            $sectionList
+                          ],
+                          "config" : {
+                            "peek_product_count" : 15,
+                            "title_bottomsheet" : "Promo dan Produk Lainnya"
+                          }
+                      }
+                }
+             }
+            """.trimIndent()
+
+        return gson.fromJson(data, ProductSection.Response::class.java)
+    }
 }
