@@ -1,6 +1,8 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.common.const.MetricsType
 import com.tokopedia.sellerhomecommon.domain.model.GetMultiLineGraphResponse
 import com.tokopedia.sellerhomecommon.domain.model.LineModel
@@ -92,8 +94,8 @@ class MultiLineGraphMapper @Inject constructor(): BaseResponseMapper<GetMultiLin
     }
 
     private fun isMetricEmpty(line: LineModel?): Boolean {
-        val isCurrentPeriodEmpty = line?.currentPeriode?.sumBy { (it.yVal ?: 0f).toInt() } == 0
-        val isLastPeriodEmpty = line?.lastPeriode?.sumBy { (it.yVal ?: 0f).toInt() } == 0
+        val isCurrentPeriodEmpty = line?.currentPeriode?.sumOf { (it.yVal.orZero()).toInt() } == Int.ZERO
+        val isLastPeriodEmpty = line?.lastPeriode?.sumOf { (it.yVal.orZero()).toInt() } == Int.ZERO
         return isCurrentPeriodEmpty && isLastPeriodEmpty
     }
 
