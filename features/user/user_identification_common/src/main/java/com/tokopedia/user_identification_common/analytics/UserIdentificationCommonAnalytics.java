@@ -532,14 +532,17 @@ public class UserIdentificationCommonAnalytics {
     }
 
     private String getKycType(String projectID) {
+        String TYPE_ALA_CARTE = "ala carte";
+        String TYPE_CKYC = "ckyc";
+
         if (
             projectID.equals(HOME_CREDIT_PROJECT_ID) ||
             projectID.equals(CO_BRAND_PROJECT_ID) ||
             projectID.equals(GO_CICIL_PROJECT_ID)
         ) {
-            return "ala carte";
+            return TYPE_ALA_CARTE;
         } else {
-            return "ckyc";
+            return TYPE_CKYC;
         }
     }
 

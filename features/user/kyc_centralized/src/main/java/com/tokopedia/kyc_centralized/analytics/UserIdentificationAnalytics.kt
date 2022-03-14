@@ -224,9 +224,9 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 projectID == CO_BRAND_PROJECT_ID ||
                 projectID == GO_CICIL_PROJECT_ID
         ) {
-            "ala carte"
+            TYPE_ALA_CARTE
         } else {
-            "ckyc"
+            TYPE_CKYC
         }
     }
 
@@ -241,6 +241,9 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
 
         private const val BUSSINESS_UNIT = "user platform"
         private const val CURRENT_SITE = "tokopediamarketplace"
+
+        private const val TYPE_ALA_CARTE = "ala carte"
+        private const val TYPE_CKYC = "ckyc"
     }
 
 }
