@@ -117,6 +117,10 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sect
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.SectionViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerCalendarViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.*
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tdnbanner.DiscoveryTDNBannerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tdnbanner.DiscoveryTDNBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topquest.TopQuestViewHolder
@@ -237,6 +241,8 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.TopQuestWidget, ::TopQuestViewHolder, ::TopQuestViewModel)
             initializeComponent(ComponentsList.MyCoupon, ::MyCouponViewHolder, ::MyCouponViewModel)
             initializeComponent(ComponentsList.MyCouponItem, ::MyCouponItemViewHolder, ::MyCouponItemViewModel)
+            initializeComponent(ComponentsList.BannerInfinite, ::ShopBannerInfiniteViewHolder, ::ShopBannerInfiniteViewModel)
+            initializeComponent(ComponentsList.BannerInfiniteItem, ::ShopBannerInfiniteItemViewHolder, ::ShopBannerInfiniteItemViewModel)
 
         }
 

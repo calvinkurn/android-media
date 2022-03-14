@@ -116,6 +116,9 @@ enum class ComponentNames(val componentName: String) {
 
     //my coupon
     MyCoupon("my_coupon"),
-    MyCouponItem("my_coupon_item")
+    MyCouponItem("my_coupon_item"),
+
+    BannerInfinite("banner_infinite"),
+    BannerInfiniteItem("banner_infinite_item")
 
 }

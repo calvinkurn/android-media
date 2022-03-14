@@ -117,5 +117,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
 
     MyCoupon(R.layout.component_my_coupon_layout,ComponentNames.MyCoupon.componentName),
     MyCouponItem(R.layout.item_disco_my_coupon,ComponentNames.MyCouponItem.componentName),
+    BannerInfinite(R.layout.disco_merchant_voucher_list,ComponentNames.BannerInfinite.componentName),
+    BannerInfiniteItem(R.layout.disco_merchant_voucher_list,ComponentNames.BannerInfiniteItem.componentName)
 
 }
