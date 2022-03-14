@@ -16,6 +16,14 @@ object OfficialStoreDynamicChannelComponentMapper {
                 widgetParam = channel.widgetParam,
                 contextualInfo = channel.contextualInfo,
                 verticalPosition = verticalPosition,
+                channelViewAllCard = ChannelViewAllCard(
+                        id = channel.viewAllCard.id,
+                        contentType = channel.viewAllCard.contentType,
+                        description = channel.viewAllCard.description,
+                        title = channel.viewAllCard.title,
+                        imageUrl = channel.viewAllCard.imageUrl,
+                        gradientColor = channel.viewAllCard.gradientColor
+                ),
                 channelHeader = ChannelHeader(
                         channel.header?.id.toString(),
                         channel.header?.name?:"",
@@ -87,6 +95,18 @@ object OfficialStoreDynamicChannelComponentMapper {
                                         url = label.imageUrl
                                 )
                             },
+                            shop =  ChannelShop(
+                                    id = it.shop.shopId,
+                                    shopLocation = it.shop.city,
+                                    shopName = it.shop.name,
+                                    shopApplink = it.shop.applink
+                            ),
+                            badges = it.badges?.map { badge ->
+                                ChannelGridBadges(
+                                        title = badge.title,
+                                        imageUrl = badge.imageUrl
+                                )
+                            } ?: listOf(),
                             backColor = it.backColor,
                             productImageUrl = it.productImageUrl,
                             benefit = ChannelBenefit(it.benefit.type, it.benefit.value)

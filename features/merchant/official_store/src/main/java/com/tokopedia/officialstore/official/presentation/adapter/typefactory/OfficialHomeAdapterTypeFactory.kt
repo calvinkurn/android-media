@@ -31,6 +31,7 @@ class OfficialHomeAdapterTypeFactory(
         private val featuredBrandListener: FeaturedBrandListener,
         private val featuredShopDCListener: com.tokopedia.home_component.listener.FeaturedShopListener,
         private val recycledViewPool: RecyclerView.RecycledViewPool? = null,
+        private val merchantVoucherComponentListener: MerchantVoucherComponentListener,
         private val onTopAdsHeadlineClicked: (applink: String) -> Unit
 ) : OfficialHomeTypeFactory, BaseAdapterTypeFactory(), RecommendationTypeFactory {
 
