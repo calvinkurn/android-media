@@ -166,7 +166,10 @@ class ProductItemViewHolder(
         }
         // if no variant item got selected set uncheck parent selection
         else {
-            if (selectedVariantSize.isZero()) binding.cbuProductItem.isChecked = false
+            if (selectedVariantSize.isZero()) {
+                binding.cbuProductItem.isChecked = false
+                productItemClickListener.onProductCheckBoxClicked(false, dataSetPosition)
+            }
         }
         // return ui listeners
         setupListeners()
