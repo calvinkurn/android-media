@@ -30,7 +30,7 @@ class OtherMenuAdapter(
     companion object {
         private const val WEBVIEW_APPLINK_FORMAT = "%s?url=%s"
         private const val FEEDBACK_EXPIRED_DATE = 1638115199000 //28-11-2021
-        private const val PRODUCT_COUPON_END_DATE = 1650301200000 // Wed Apr 19 2022 00:00:00
+        private const val PRODUCT_COUPON_END_DATE = 1649869200000 // Wed Apr 14 2022 00:00:00
     }
 
     private val settingList = listOf(
