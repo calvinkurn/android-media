@@ -23,7 +23,9 @@ import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragme
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import kotlinx.coroutines.flow.collect
@@ -51,6 +53,10 @@ class PlayBroadcastReportFragment @Inject constructor(
     private val summaryInfoView by viewComponent(isEagerInit = true) {
         SummaryInfoViewComponent(it, binding.layoutPlaySummaryInfo, this)
     }
+
+    private val toaster by viewLifecycleBound(
+        creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
+    )
 
     override fun getScreenName(): String = "Play Report Page"
 
@@ -116,7 +122,7 @@ class PlayBroadcastReportFragment @Inject constructor(
                             is UiString.Text -> uiString.text
                             is UiString.Resource -> getString(uiString.resource)
                         }
-                        view?.showToaster(
+                        toaster.showToaster(
                             message = text,
                             actionLabel = getString(R.string.play_ok),
                         )

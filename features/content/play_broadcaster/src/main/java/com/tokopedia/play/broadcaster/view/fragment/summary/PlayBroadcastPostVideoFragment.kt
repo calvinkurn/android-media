@@ -18,7 +18,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPostVideoBinding
-import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
@@ -26,13 +25,14 @@ import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.TagUiState
-import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.TagListViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.*
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -55,6 +55,10 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         get() = _binding!!
 
     private val tagListView by viewComponent { TagListViewComponent(it, binding.rvTagsRecommendation.id, this) }
+
+    private val toaster by viewLifecycleBound(
+        creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
+    )
 
     private lateinit var viewModel: PlayBroadcastSummaryViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
@@ -163,13 +167,12 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
                             is NetworkResult.Success -> openShopPageWithBroadcastStatus(true)
                             is NetworkResult.Fail -> {
                                 binding.btnPostVideo.isLoading = false
-                                /** TODO("should be change later with ErrorFragment from RE") */
-                                view?.showErrorToaster(
+                                toaster.showError(
                                     err = networkResult.error,
                                     customErrMessage = networkResult.error.localizedMessage
                                         ?: getString(R.string.play_broadcaster_default_error),
                                     actionLabel = getString(R.string.play_broadcast_try_again),
-                                    actionListener = { _ -> networkResult.onRetry() }
+                                    actionListener = { networkResult.onRetry() }
                                 )
                             }
                         }

@@ -48,7 +48,7 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val channelId: String
-        get() = channelConfigStore.getChannelId()
+        get() = "337916"
 
     private val _channelSummary = MutableStateFlow(ChannelSummaryUiModel.empty())
     private val _trafficMetric = MutableStateFlow<NetworkResult<List<TrafficMetricUiModel>>>(NetworkResult.Loading)
@@ -204,7 +204,7 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
             _trafficMetric.emit(NetworkResult.Loading)
 
             val channel = getChannelUseCase.apply {
-                params = GetChannelUseCase.createParams("337761")
+                params = GetChannelUseCase.createParams(channelId)
             }.executeOnBackground()
 
             val reportChannelSummary = withContext(dispatcher.io) {
@@ -213,7 +213,7 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
                 var fetchTryCount = 0
                 lateinit var response : GetLiveStatisticsResponse.ReportChannelSummary
 
-                getLiveStatisticsUseCase.params = GetLiveStatisticsUseCase.createParams("337761")
+                getLiveStatisticsUseCase.params = GetLiveStatisticsUseCase.createParams(channelId)
                 do {
                     response = getLiveStatisticsUseCase.executeOnBackground()
                     fetchTryCount++
