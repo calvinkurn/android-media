@@ -84,6 +84,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.DROPOFF_PICKE
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.MANAGE_ADDRESS
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.SHIPPING_CONFIRMATION
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.SHOP_EDIT_ADDRESS
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ADD_ON_GIFTING
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_INVOICE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_PRODUCT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_VOUCHER
@@ -550,6 +551,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(ONE_CLICK_CHECKOUT) }, DF_BASE, R.string.title_one_click_checkout))
             add(DFP({ it.startsWith(PROMO_CHECKOUT_MARKETPLACE) }, DF_BASE, R.string.promo_checkout_marketplace_module_title_activity_promo_list))
             add(DFP({ it.startsWith(WISHLIST_V2) }, DF_BASE, R.string.title_wishlist))
+            add(DFP({ it.startsWith(ADD_ON_GIFTING) }, DF_BASE, R.string.add_on_gifting_module_title_activity_promo_list))
 
             // buyerorder
             add(DFP({

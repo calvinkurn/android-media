@@ -70,6 +70,7 @@
     <string name="checkout_module_title_activity_shipping_address">Alamat Pengiriman</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
     <string name="title_buyerorder">Daftar Transaksi</string>
+    <string name="add_on_gifting_module_title_activity_promo_list">Atur Pelengkap Produk</string>
 
     <!--Snapshot-->
     <string name="title_snapshot">Riwayat Detail Produk</string>
