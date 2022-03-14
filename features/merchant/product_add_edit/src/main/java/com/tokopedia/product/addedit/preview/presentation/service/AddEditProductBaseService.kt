@@ -103,16 +103,17 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
 
     fun uploadProductImages(imageUrlOrPathList: List<String>, variantInputModel: VariantInputModel){
         val imagePathList = filterPathOnly(imageUrlOrPathList)
+        val imagePathListCompressed = compressImages(imagePathList)
         val pathImageCount = imagePathList.size
         val uploadIdList: ArrayList<String> = ArrayList()
-        val primaryImagePathOrUrl = imageUrlOrPathList.getOrNull(0).orEmpty()
+        val primaryImagePathOrUrl = imageUrlOrPathList.firstOrNull().orEmpty()
 
-        notificationManager = getNotificationManager(pathImageCount)
+        notificationManager = getNotificationManager(pathImageCount + variantInputModel.products.size)
         notificationManager?.onStartUpload(primaryImagePathOrUrl)
 
         launchCatchError(block = {
             repeat(pathImageCount) { i ->
-                val imageId = uploadImageAndGetId(imagePathList[i])
+                val imageId = uploadImageAndGetId(imagePathListCompressed[i])
                 if (imageId.isNotEmpty()) {
                     notificationManager?.onAddProgress()
                     uploadIdList.add(imageId)
@@ -129,6 +130,16 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
             setUploadProductDataError(cleanErrorMessage(throwable.localizedMessage.orEmpty()))
             logError(TITLE_ERROR_UPLOAD_IMAGE, throwable)
         })
+    }
+
+    private fun compressImages(imagePathList: List<String>): List<String> {
+        return imagePathList.map {
+            if (it.endsWith(EXT_JPG) || it.endsWith(EXT_JPEG)) {
+                it // cancel compressing jpeg, image file will bigger if use jpeg as input
+            } else {
+                resizeBitmap(it, DEF_WIDTH, DEF_HEIGHT, true, Bitmap.CompressFormat.WEBP)
+            }
+        }
     }
 
     protected fun getErrorMessage(throwable: Throwable): String {
@@ -192,8 +203,10 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
             productVariants: List<ProductVariantInputModel>
     ): List<ProductVariantInputModel> {
         productVariants.forEach {
+            notificationManager?.onAddProgress()
             it.pictures.firstOrNull()?.let { picture ->
                 if (picture.picID.isEmpty() && picture.urlOriginal.isNotEmpty()) {
+                    delay(REQUEST_DELAY_MILLIS) // add delay when uploading to reduce server load
                     val uploadId = uploadImageAndGetId(picture.urlOriginal)
                     if (uploadId.isNotEmpty()) {
                         picture.uploadId = uploadId

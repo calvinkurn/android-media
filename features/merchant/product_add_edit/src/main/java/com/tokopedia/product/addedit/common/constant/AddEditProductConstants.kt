@@ -20,6 +20,8 @@ object AddEditProductConstants {
     const val FULL_YOUTUBE_URL = "www.youtube.com"
     const val TEMP_IMAGE_EXTENSION = ".0"
     const val KEY_OPEN_BOTTOMSHEET = "tokopedia://bottomsheet_product_limitation"
+    const val EXT_JPG = ".jpg"
+    const val EXT_JPEG = ".jpeg"
 
 
     const val PHOTO_TIPS_URL_1 = "https://ecs7.tokopedia.net/android/others/stuart/product_photo_choosing_tips_1.png"
