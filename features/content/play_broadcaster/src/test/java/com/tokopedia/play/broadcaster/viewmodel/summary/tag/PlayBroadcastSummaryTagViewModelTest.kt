@@ -33,7 +33,8 @@ class PlayBroadcastSummaryTagViewModelTest {
 
     private val mockGetRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase = mockk(relaxed = true)
 
-    private val mockException = Exception("Network Error")
+    private val modelBuilder = UiModelBuilder()
+    private val mockException = modelBuilder.buildException()
     private val listTag = listOf("A", "B", "C", "A", "B")
     private val mockTag = GetRecommendedChannelTagsResponse(
         recommendedTags = GetRecommendedChannelTagsResponse.GetRecommendedTags(

@@ -31,7 +31,7 @@ class PlayBroadcastSummaryViewModelTest {
     private val mockGetLiveStatisticsUseCase: GetLiveStatisticsUseCase = mockk(relaxed = true)
 
     private val modelBuilder = UiModelBuilder()
-    private val mockException = Exception("Network Error")
+    private val mockException = modelBuilder.buildException()
     private val mockLiveStats by lazy { modelBuilder.buildLiveStats() }
     private val mockPublishedAt = "2022-03-10T18:44:00"
     private val mockPublishedAtFormatted = "10 Maret 2022"
