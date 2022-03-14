@@ -2,7 +2,7 @@ package com.tokopedia.localizationchooseaddress.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.domain.query.RefreshTokonowDataQuery
+import com.tokopedia.localizationchooseaddress.data.query.RefreshTokonowDataQuery
 import com.tokopedia.localizationchooseaddress.domain.response.RefreshTokonowDataResponse
 import javax.inject.Inject
 

@@ -1,4 +1,4 @@
-package com.tokopedia.localizationchooseaddress.domain.query
+package com.tokopedia.localizationchooseaddress.data.query
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
