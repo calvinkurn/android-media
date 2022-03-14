@@ -181,10 +181,6 @@ class PlayBroadcastReportFragment @Inject constructor(
         mListener = listener
     }
 
-    companion object {
-        private const val FIRST_PLACE = 0
-    }
-
     interface Listener {
         fun onClickPostButton()
     }
