@@ -34,7 +34,9 @@ import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogComparisionDataModel
+import com.tokopedia.catalog.model.datamodel.CatalogForYouModel
 import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
+import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
 import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.catalog.model.raw.ComparisionModel
 import com.tokopedia.catalog.model.raw.VideoComponentData
@@ -121,9 +123,10 @@ class CatalogDetailPageFragment : Fragment(),
         )
     }
 
+    var isBottomSheetOpen = false
+
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
-        var isBottomSheetOpen = false
         const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
 
         fun newInstance(catalogId: String): CatalogDetailPageFragment {
@@ -161,9 +164,6 @@ class CatalogDetailPageFragment : Fragment(),
 
         setupRecyclerView(view)
         setObservers()
-        if(requireActivity().supportFragmentManager.findFragmentByTag(CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG) == null){
-            setUpBottomSheet()
-        }
         setUpUniversalShare()
     }
 
@@ -189,7 +189,8 @@ class CatalogDetailPageFragment : Fragment(),
 
     private fun setUpBottomSheet(){
         requireActivity().supportFragmentManager.beginTransaction().replace(
-                R.id.bottom_sheet_fragment_container, CatalogPreferredProductsBottomSheet.newInstance(catalogName,catalogId,catalogUrl),
+                R.id.bottom_sheet_fragment_container, CatalogPreferredProductsBottomSheet.newInstance(catalogName,catalogId,
+                catalogUrl,catalogDepartmentId,catalogBrand),
                 CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG).commit()
 
         mBottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet_fragment_container)
@@ -249,7 +250,7 @@ class CatalogDetailPageFragment : Fragment(),
     private fun setCatalogUrlForTracking() {
         activity?.supportFragmentManager?.findFragmentByTag(CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG)?.let { fragment ->
             if(fragment is CatalogPreferredProductsBottomSheet){
-                fragment.setCatalogUrl(catalogName,catalogUrl)
+                fragment.setData(catalogName,catalogUrl,catalogId,catalogDepartmentId,catalogBrand)
             }
         }
     }
@@ -317,6 +318,9 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     private fun updateUi() {
+        if(requireActivity().supportFragmentManager.findFragmentByTag(CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG) == null){
+            setUpBottomSheet()
+        }
         hideShimmer()
         catalogPageRecyclerView?.show()
         bottom_sheet_fragment_container.show()
@@ -617,6 +621,7 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     fun onBackPressed(){
+        isBottomSheetOpen = false
         mBottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 

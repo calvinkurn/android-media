@@ -7,7 +7,7 @@ import com.tokopedia.home.beranda.di.module.query.QuerySuggestedReview.SUGGESTED
 @GqlQuery(SUGGESTED_REVIEW_QUERY_NAME, SUGGESTED_REVIEW_QUERY)
 internal object QuerySuggestedReview {
     const val SUGGESTED_REVIEW_QUERY_NAME = "SuggestedReviewQuery"
-    const val SUGGESTED_REVIEW_QUERY: String = "{ query suggestedProductReview() { \n" +
+    const val SUGGESTED_REVIEW_QUERY: String = "{ \n" +
             "  suggestedProductReview{\n" +
             "    title\n" +
             "    description\n" +
@@ -18,6 +18,5 @@ internal object QuerySuggestedReview {
             "    orderID\n" +
             "    productID\n" +
             "  }\n" +
-            " }" +
-            "}"
+            " }"
 }

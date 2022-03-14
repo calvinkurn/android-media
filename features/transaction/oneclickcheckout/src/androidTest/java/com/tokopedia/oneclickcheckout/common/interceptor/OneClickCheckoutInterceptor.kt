@@ -5,7 +5,6 @@ import com.tokopedia.graphql.data.GraphqlClient
 
 object OneClickCheckoutInterceptor {
     val cartInterceptor = CartTestInterceptor()
-    val preferenceInterceptor = PreferenceTestInterceptor()
     val logisticInterceptor = LogisticTestInterceptor()
     val promoInterceptor = PromoTestInterceptor()
     val checkoutInterceptor = CheckoutTestInterceptor()
@@ -13,13 +12,12 @@ object OneClickCheckoutInterceptor {
 
     fun setupGraphqlMockResponse(context: Context) {
         GraphqlClient.reInitRetrofitWithInterceptors(
-                listOf(cartInterceptor, preferenceInterceptor, logisticInterceptor, promoInterceptor, checkoutInterceptor, paymentInterceptor),
+                listOf(cartInterceptor, logisticInterceptor, promoInterceptor, checkoutInterceptor, paymentInterceptor),
                 context)
     }
 
     fun resetAllCustomResponse() {
         cartInterceptor.resetInterceptor()
-        preferenceInterceptor.resetInterceptor()
         logisticInterceptor.resetInterceptor()
         promoInterceptor.resetInterceptor()
         checkoutInterceptor.resetInterceptor()
