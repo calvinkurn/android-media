@@ -7,10 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewPlayBroPreparationCoverFormBinding
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.getBitmapFromUrl
 import com.tokopedia.play_common.view.updateMargins
+import kotlinx.coroutines.*
 
 /**
  * Created By : Jonathan Darwin on January 26, 2022
@@ -39,6 +44,9 @@ class CoverFormView : ConstraintLayout {
 
     private var isCoverAvailable = false
 
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(Dispatchers.Main + job)
+
     init {
         binding.icCloseCoverForm.setOnClickListener { mListener?.onCloseCoverForm() }
         binding.clCoverFormPreview.setOnClickListener {
@@ -56,16 +64,28 @@ class CoverFormView : ConstraintLayout {
                 v.parent.requestLayout()
             }
         }
+
+        scope.launch {
+            binding.ivCoverImageCircleDash.apply {
+                setImageBitmap(
+                    context.getBitmapFromUrl(context.getString(R.string.ic_play_cover_circle_dash), cacheStrategy = DiskCacheStrategy.RESOURCE)
+                )
+            }
+        }
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         mListener = null
+        job.cancelChildren()
     }
 
     fun setCover(imageUrl: String) {
-        binding.ivCoverImagePlaceholder.visibility = View.GONE
-        binding.ivCoverFormPreview.setImageUrl(imageUrl)
+        binding.apply {
+            ivCoverImageCircleDash.visibility = View.GONE
+            ivCoverImagePlaceholder.visibility = View.GONE
+            ivCoverFormPreview.setImageUrl(imageUrl)
+        }
         isCoverAvailable = true
     }
 

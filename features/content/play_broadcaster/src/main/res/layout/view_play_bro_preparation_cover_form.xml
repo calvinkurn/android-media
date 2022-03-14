@@ -76,6 +76,16 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_cover_image_circle_dash"
+            android:layout_width="@dimen/layout_lvl8"
+            android:layout_height="@dimen/layout_lvl8"
+            app:layout_constraintTop_toTopOf="@id/iv_cover_image_placeholder"
+            app:layout_constraintStart_toStartOf="@id/iv_cover_image_placeholder"
+            app:layout_constraintEnd_toEndOf="@id/iv_cover_image_placeholder"
+            app:layout_constraintBottom_toBottomOf="@id/iv_cover_image_placeholder"
+            />
+
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iv_cover_image_placeholder"
             android:layout_width="@dimen/layout_lvl6"
