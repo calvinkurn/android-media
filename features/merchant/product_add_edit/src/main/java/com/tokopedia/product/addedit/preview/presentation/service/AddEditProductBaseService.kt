@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.preview.presentation.service
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.core.app.JobIntentService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -10,14 +11,17 @@ import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.BROADCAST_ADD_PRODUCT
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXT_JPEG
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXT_JPG
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.GQL_ERROR_SUBSTRING
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.IMAGE_SOURCE_ID
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.REQUEST_DELAY_MILLIS
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
@@ -35,8 +39,12 @@ import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCa
 import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.image.ImageProcessingUtil.DEF_HEIGHT
+import com.tokopedia.utils.image.ImageProcessingUtil.DEF_WIDTH
+import com.tokopedia.utils.image.ImageProcessingUtil.resizeBitmap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import java.io.File
 import java.net.URLEncoder
 import javax.inject.Inject
