@@ -99,7 +99,8 @@ class ChooseAddressWidget : ConstraintLayout,
                                 shopId = data.tokonowModel.shopId.toString(),
                                 warehouseId = data.tokonowModel.warehouseId.toString(),
                                 warehouses = TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses),
-                                serviceType = data.tokonowModel.serviceType
+                                serviceType = data.tokonowModel.serviceType,
+                                lastUpdate = data.tokonowModel.lastUpdate
                             )
                             chooseAddressPref?.setLocalCache(localData)
                             chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
@@ -116,7 +117,8 @@ class ChooseAddressWidget : ConstraintLayout,
                                 shopId = data.tokonowModel.shopId.toString(),
                                 warehouseId = data.tokonowModel.warehouseId.toString(),
                                 warehouses = TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses),
-                                serviceType = data.tokonowModel.serviceType
+                                serviceType = data.tokonowModel.serviceType,
+                                lastUpdate = data.tokonowModel.lastUpdate
                             )
                             chooseAddressPref?.setLocalCache(localData)
                             chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
@@ -162,7 +164,7 @@ class ChooseAddressWidget : ConstraintLayout,
     private fun initChooseAddressFlow() {
         val localData = ChooseAddressUtils.getLocalizingAddressData(context)
         updateWidget()
-        if (localData.address_id.isEmpty() || localData.version != LCA_VERSION) {
+        if (localData.address_id.isEmpty()) {
             chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()?.let { viewModel.getStateChosenAddress(it, isSupportWarehouseLoc) }
             initObservers()
         }

@@ -47,6 +47,7 @@ object ChooseAddressUtils {
                 localCache?.warehouse_id ?: "",
                 localCache?.warehouses ?: listOf(),
                 localCache?.service_type ?: "",
+                localCache?.tokonow_last_update ?: "",
                 localCache?.version ?: DEFAULT_LCA_VERSION
             )
         } else {
@@ -101,12 +102,13 @@ object ChooseAddressUtils {
             if (latestChooseAddressData.warehouses != localizingAddressStateData.warehouses) validate = true
             if (latestChooseAddressData.service_type != localizingAddressStateData.service_type) validate = true
             if (latestChooseAddressData.version != localizingAddressStateData.version) validate = true
+            if (latestChooseAddressData.tokonow_last_update != localizingAddressStateData.tokonow_last_update) validate = true
         }
         return validate
     }
 
     fun setLocalizingAddressData(addressId: String, cityId: String, districtId: String, lat: String, long: String, label: String,
-                                 postalCode: String, shopId: String, warehouseId: String, warehouses: List<LocalWarehouseModel>, serviceType: String): LocalCacheModel {
+                                 postalCode: String, shopId: String, warehouseId: String, warehouses: List<LocalWarehouseModel>, serviceType: String, lastUpdate: String = ""): LocalCacheModel {
         return LocalCacheModel(
                 address_id = addressId,
                 city_id = cityId,
@@ -119,20 +121,39 @@ object ChooseAddressUtils {
                 warehouse_id = warehouseId,
                 warehouses = warehouses,
                 service_type = serviceType,
+                tokonow_last_update = lastUpdate,
                 version = LCA_VERSION
         )
     }
 
     fun updateLocalizingAddressDataFromOther(context: Context, addressId: String, cityId: String, districtId: String, lat: String, long: String, label: String,
-                                             postalCode: String, shopId: String, warehouseId: String, warehouses: List<LocalWarehouseModel>, serviceType: String) {
+                                             postalCode: String, shopId: String, warehouseId: String, warehouses: List<LocalWarehouseModel>, serviceType: String, lastUpdate: String = "") {
         val chooseAddressPref = ChooseAddressSharePref(context)
         val localData = setLocalizingAddressData(addressId = addressId, cityId = cityId, districtId = districtId, lat = lat, long = long, label = label, postalCode = postalCode, shopId = shopId, warehouseId = warehouseId, warehouses = warehouses, serviceType = serviceType)
-        chooseAddressPref.setLocalCache(localData)
+        if (lastUpdate.isEmpty()) {
+            val previousTokonowLastUpdateData = getLocalizingAddressData(context).tokonow_last_update
+            if (previousTokonowLastUpdateData.isNotEmpty()) {
+                chooseAddressPref.setLocalCache(localData.copy(tokonow_last_update = previousTokonowLastUpdateData))
+            } else {
+                chooseAddressPref.setLocalCache(localData)
+            }
+        } else {
+            chooseAddressPref.setLocalCache(localData)
+        }
     }
 
     fun updateLocalizingAddressDataFromOther(context: Context, localData: LocalCacheModel) {
         val chooseAddressPref = ChooseAddressSharePref(context)
-        chooseAddressPref.setLocalCache(localData)
+        if (localData.tokonow_last_update.isEmpty()) {
+            val previousTokonowLastUpdateData = getLocalizingAddressData(context).tokonow_last_update
+            if (previousTokonowLastUpdateData.isNotEmpty()) {
+                chooseAddressPref.setLocalCache(localData.copy(tokonow_last_update = previousTokonowLastUpdateData))
+            } else {
+                chooseAddressPref.setLocalCache(localData)
+            }
+        } else {
+            chooseAddressPref.setLocalCache(localData)
+        }
     }
 
     fun updateTokoNowData(context: Context, warehouseId: String, shopId: String, warehouses: List<LocalWarehouseModel>, serviceType: String) {
