@@ -32,7 +32,7 @@ class DigitTextView : FrameLayout {
         currentTextView = rootView.findViewById<View>(R.id.currentTextView) as Typography
         nextTextView = rootView.findViewById<View>(R.id.nextTextView) as Typography
         nextTextView?.translationY = height.toFloat()
-        setValue(0)
+        setValue(5)
     }
 
     fun setValue(desiredValue: Int) {
@@ -88,6 +88,6 @@ class DigitTextView : FrameLayout {
     }
 
     companion object {
-        private const val ANIMATION_DURATION = 100
+        private const val ANIMATION_DURATION = 150
     }
 }
