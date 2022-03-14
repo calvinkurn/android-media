@@ -4,10 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.vouchercreation.common.utils.ResourceProvider
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
 import com.tokopedia.vouchercreation.product.create.domain.entity.DiscountType
@@ -19,8 +21,10 @@ import com.tokopedia.vouchercreation.product.list.domain.usecase.*
 import com.tokopedia.vouchercreation.product.list.view.model.*
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.math.abs
 
 class AddProductViewModel @Inject constructor(
+        private val resourceProvider: ResourceProvider,
         private val dispatchers: CoroutineDispatchers,
         private val getProductListUseCase: GetProductListUseCase,
         private val validateVoucherUseCase: ValidateVoucherUseCase,
@@ -32,6 +36,8 @@ class AddProductViewModel @Inject constructor(
     companion object {
         private const val FIRST_PAGE = 1
         private const val PAGE_SIZE = 10
+        private const val ONE = 1
+        private const val THOUSAND = 1000
         const val SELLER_WAREHOUSE_TYPE = 1
         const val EMPTY_STRING = ""
         const val BENEFIT_TYPE_IDR = "idr"
@@ -62,7 +68,7 @@ class AddProductViewModel @Inject constructor(
     // PRODUCT SELECTIONS
     var isSelectAllMode = true
     var isFiltering = false
-    var isSelectionChanged = false
+    var isLocationSelectionChanged = false
 
     // LIVE DATA
     private val getProductListResultLiveData = MutableLiveData<Result<ProductListResponse>>()
@@ -181,13 +187,29 @@ class AddProductViewModel @Inject constructor(
                     imageUrl = productData.pictures.first().urlThumbnail,
                     id = productData.id,
                     productName = productData.name,
-                    sku = "SKU : " + productData.sku,
+                    sku = getFormattedSku(productData.sku),
                     price = "Rp " + productData.price.max.toString(),
                     sold = productData.txStats.sold,
                     soldNStock = "Terjual " + productData.txStats.sold + " | " + "Stok " + productData.stock.toString(),
                     hasVariant = productData.isVariant
             )
         }
+    }
+
+    private fun getFormattedSku(sku: String): String {
+        val skuTemplate = resourceProvider.getFormattedSku()
+        return skuTemplate.format(sku)
+    }
+
+    private fun getFormattedPrice(price: Double): String {
+        val formattedPrice = (price / THOUSAND).toInt()
+        val priceTemplate = resourceProvider.getFormattedProductPrice()
+        return priceTemplate.format(formattedPrice.toString())
+    }
+
+    private fun getFormattedStatisticText(sold: Int, stock: Int): String {
+        val statisticTemplate = resourceProvider.getFormattedProductStatistic()
+        return statisticTemplate.format()
     }
 
     fun mapWarehouseLocationToSelections(warehouses: List<Warehouses>,
@@ -286,6 +308,28 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
+    fun applyUserSelections(userSelections: List<ProductUiModel>,
+                            productData: List<ProductUiModel>): List<ProductUiModel> {
+        val productDataWithSelections = productData.toMutableList()
+        productDataWithSelections.forEach { productUiModel ->
+            val selectedProductMatch = userSelections.firstOrNull() { selection ->
+                selection.id == productUiModel.id
+            }
+            if (selectedProductMatch != null) {
+                productUiModel.isSelected = true
+                val mutableVariants = productUiModel.variants.toMutableList()
+                mutableVariants.forEach { variantUiModel ->
+                    val variantMatch = selectedProductMatch.variants.firstOrNull {
+                        variantUiModel.variantId == it.variantId
+                    }
+                    variantUiModel.isSelected = variantMatch?.isSelected ?: false
+                }
+                productUiModel.variants = mutableVariants.toList()
+            }
+        }
+        return productDataWithSelections.toList()
+    }
+
     // dont confuse this with selected warehouse id
     fun setSellerWarehouseId(warehouseId: Int) {
         this.sellerWarehouseId = warehouseId
@@ -300,7 +344,22 @@ class AddProductViewModel @Inject constructor(
     }
 
     fun setSelectedProducts(productList: List<ProductUiModel>) {
-        this.selectedProductListLiveData.value = productList
+        this.selectedProductListLiveData.value = productList.toMutableList()
+    }
+
+    fun addSelectedProduct(productUiModel: ProductUiModel) {
+        val selectedProducts = this.selectedProductListLiveData.value?.toMutableList()?: mutableListOf()
+        val matched = selectedProducts.firstOrNull { it.id == productUiModel.id }
+        if (matched == null) selectedProducts.add(productUiModel)
+        this.selectedProductListLiveData.value = selectedProducts
+    }
+
+    fun removeSelectedProduct(productUiModel: ProductUiModel) {
+        val selectedProducts = this.selectedProductListLiveData.value?.toMutableList()?: mutableListOf()
+        selectedProducts.removeFirst {
+            it.id == productUiModel.id
+        }
+        this.selectedProductListLiveData.value = selectedProducts
     }
 
     fun getSelectedProducts(): List<ProductUiModel> {
@@ -476,7 +535,7 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
-    fun isSelectionChanged(origin: Int?, warehouseSelection: Int?): Boolean {
+    fun isLocationSelectionChanged(origin: Int?, warehouseSelection: Int?): Boolean {
         return origin != warehouseSelection
     }
 }

@@ -15,6 +15,7 @@
         android:layout_marginTop="@dimen/pay_later_benefit_margin_dp_6"
         android:layout_marginEnd="@dimen/pay_later_margin_dp_10"
         app:card_type="border"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
