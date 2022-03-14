@@ -73,7 +73,6 @@ class AddOnUnavailableBottomSheet(val addOnProductData: AddOnProductData) : Bott
     override fun onDismiss(dialog: DialogInterface) {
         viewBinding = null
         activity?.finish()
-//        activity?.overridePendingTransition(android.R.anim.fade_in, R.anim.push_down)
         super.onDismiss(dialog)
     }
 

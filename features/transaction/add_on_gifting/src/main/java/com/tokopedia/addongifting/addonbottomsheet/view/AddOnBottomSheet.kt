@@ -335,7 +335,6 @@ class AddOnBottomSheet(private val addOnProductData: AddOnProductData, val sourc
         measureRecyclerViewPaddingDebounceJob?.cancel()
         delayScrollJob?.cancel()
         activity?.finish()
-//        activity?.overridePendingTransition(android.R.anim.fade_in, R.anim.push_down)
         super.onDismiss(dialog)
     }
 
