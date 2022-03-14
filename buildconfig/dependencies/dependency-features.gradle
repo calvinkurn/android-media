@@ -165,6 +165,7 @@ ext {
             shopCommon                      : ":features:merchant:shop_common",
             shopOpen                        : ":features:merchant:shop_open",
             shopScore                       : ":features:merchant:shop_score",
+            shopAdmin                       : ":features:merchant:shop_admin",
             shopShowcase                    : ":features:merchant:shop_showcase",
             shopPage                        : ":features:merchant:shop_page",
             shopPageWidget                  : ":features:merchant:shop_widget",
