@@ -30,6 +30,7 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                element?.portfolioItm?.firstTime = false
                 portfolioUrlTextUpdateInterface?.onUrlUpdate(adapterPosition,
                     s.toString())
 
@@ -74,7 +75,7 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
 
     private fun setState(element: AffiliatePortfolioUrlModel?) {
         urlEtView.isInputError = element?.portfolioItm?.isError == true
-        if(element?.portfolioItm?.isError == true) {
+        if(element?.portfolioItm?.isError == true && element.portfolioItm.firstTime == false) {
             element.portfolioItm.errorContent?.let { message ->
                 urlEtView.setMessage(message)
             }

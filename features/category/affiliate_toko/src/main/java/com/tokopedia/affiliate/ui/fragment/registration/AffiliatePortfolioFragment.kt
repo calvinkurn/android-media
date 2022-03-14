@@ -217,10 +217,10 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
             val portfolioDataItemText = affiliatePortfolioViewModel.finEditTextModelWithId(item.id)?.text
             if(portfolioDataItemText?.isNotBlank() == true){
                 updateList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(item.id,item.serviceFormat,"${getString(com.tokopedia.affiliate_toko.R.string.affiliate_link)} ${item.name}",
-                        portfolioDataItemText,item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false,regex = item.regex)))
+                        portfolioDataItemText,item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false,regex = item.regex )))
             }else {
                 updateList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(item.id,item.serviceFormat,"${getString(com.tokopedia.affiliate_toko.R.string.affiliate_link)} ${item.name}",
-                        "",item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false,regex = item.regex)))
+                        item.defaultText,item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false,regex = item.regex,firstTime = true)))
             }
         }
         updateList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData(getString(com.tokopedia.affiliate_toko.R.string.affiliate_tambah_sosial_media), UnifyButton.Type.ALTERNATE, UnifyButton.Variant.GHOST)))
@@ -244,7 +244,7 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
             val arrayListOfChannels = arrayListOf<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>()
             affiliatePortfolioViewModel.affiliatePortfolioData.value?.forEach { channelItem ->
                 (channelItem as? AffiliatePortfolioUrlModel)?.let {
-                    if(channelItem.portfolioItm.text?.isNotEmpty() == true){
+                    if(channelItem.portfolioItm.text?.isNotEmpty() == true && channelItem.portfolioItm.firstTime != true){
                         arrayListOfChannels.add(OnboardAffiliateRequest.OnboardAffiliateChannelRequest(channelItem.portfolioItm.serviceFormat
                                 ,channelItem.portfolioItm.id,channelItem.portfolioItm.text))
                     }
