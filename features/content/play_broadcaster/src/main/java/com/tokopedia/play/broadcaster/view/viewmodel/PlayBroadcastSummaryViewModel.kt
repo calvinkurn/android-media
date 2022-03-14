@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
+import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
@@ -14,6 +15,8 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.ChannelSummaryUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.LiveReportUiState
@@ -36,15 +39,16 @@ import javax.inject.Inject
  */
 
 class PlayBroadcastSummaryViewModel @Inject constructor(
-        private val channelConfigStore: ChannelConfigStore,
-        private val dispatcher: CoroutineDispatchers,
-        private val getLiveStatisticsUseCase: GetLiveStatisticsUseCase,
-        private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
-        private val userSession: UserSessionInterface,
-        private val playBroadcastMapper: PlayBroadcastMapper,
-        private val getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase,
-        private val setChannelTagsUseCase: SetChannelTagsUseCase,
-        private val getChannelUseCase: GetChannelUseCase,
+    private val channelConfigStore: ChannelConfigStore,
+    private val dispatcher: CoroutineDispatchers,
+    private val getLiveStatisticsUseCase: GetLiveStatisticsUseCase,
+    private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
+    private val userSession: UserSessionInterface,
+    private val playBroadcastMapper: PlayBroadcastMapper,
+    private val getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase,
+    private val setChannelTagsUseCase: SetChannelTagsUseCase,
+    private val getChannelUseCase: GetChannelUseCase,
+    private val repo: PlayBroadcastRepository,
 ) : ViewModel() {
 
     private val channelId: String
@@ -54,6 +58,7 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     private val _trafficMetric = MutableStateFlow<NetworkResult<List<TrafficMetricUiModel>>>(NetworkResult.Loading)
     private val _tags = MutableStateFlow<Set<String>>(emptySet())
     private val _selectedTags = MutableStateFlow<Set<String>>(emptySet())
+    private val _productSectionList = MutableStateFlow<List<ProductTagSectionUiModel>>(emptyList())
 
     private val _channelSummaryUiState = _channelSummary.map {
         ChannelSummaryUiState(
@@ -85,7 +90,7 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
         _channelSummaryUiState,
         _liveReportUiState.distinctUntilChanged(),
         _tagUiState.distinctUntilChanged(),
-    ) { channelSummaryUiState, liveReportUiState, tagUiState ->
+    ) { channelSummaryUiState, liveReportUiState, tagUiState, ->
         PlayBroadcastSummaryUiState(
             channelSummary = channelSummaryUiState,
             liveReport = liveReportUiState,
@@ -98,6 +103,9 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     val uiEvent: Flow<PlayBroadcastSummaryEvent>
         get() = _uiEvent
 
+    val productList: List<ProductUiModel>
+        get() = _productSectionList.value.flatMap { it.products }
+
     init {
         fetchLiveTraffic()
         getTags()
@@ -106,6 +114,7 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     /** Action Area */
     fun submitAction(action: PlayBroadcastSummaryAction) {
         when(action) {
+            is PlayBroadcastSummaryAction.SetProductSectionList -> handleSetProductSectionList(action.productSectionList)
             PlayBroadcastSummaryAction.ClickCloseReportPage -> handleClickCloseReportPage()
             PlayBroadcastSummaryAction.ClickViewLeaderboard -> handleClickViewLeaderboard()
             PlayBroadcastSummaryAction.ClickPostVideo -> handleClickPostVideo()
@@ -116,6 +125,14 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
             is PlayBroadcastSummaryAction.ToggleTag -> handleToggleTag(action.tagUiModel)
             PlayBroadcastSummaryAction.ClickPostVideoNow -> handleClickPostVideoNow()
         }
+    }
+
+    private fun handleSetProductSectionList(productSectionList: List<ProductTagSectionUiModel>) {
+        /**
+         * Need to set product section list here since when config change happens,
+         * it would trigger getConfiguration & receive new empty channel config, hence the product list will be gone
+         */
+        _productSectionList.value = productSectionList
     }
 
     private fun handleClickCloseReportPage() {

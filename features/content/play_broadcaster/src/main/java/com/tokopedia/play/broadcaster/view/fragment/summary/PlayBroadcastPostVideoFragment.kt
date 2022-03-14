@@ -108,7 +108,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
                 })
                 childFragment.setDataSource(object : PlayBroadcastSetupBottomSheet.DataSource {
                     override fun getProductList(): List<ProductUiModel> {
-                        return parentViewModel.productSectionList.flatMap { it.products }
+                        return viewModel.productList
                     }
                 })
             }

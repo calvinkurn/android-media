@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.ui.action
 
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 
 /**
@@ -8,6 +9,7 @@ import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
  */
 sealed class PlayBroadcastSummaryAction {
     /** Report Page */
+    data class SetProductSectionList(val productSectionList: List<ProductTagSectionUiModel>): PlayBroadcastSummaryAction()
     object ClickCloseReportPage: PlayBroadcastSummaryAction()
     object ClickViewLeaderboard: PlayBroadcastSummaryAction()
     object ClickPostVideo: PlayBroadcastSummaryAction()

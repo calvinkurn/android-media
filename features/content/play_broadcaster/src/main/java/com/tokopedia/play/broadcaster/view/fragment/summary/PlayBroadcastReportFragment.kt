@@ -75,6 +75,8 @@ class PlayBroadcastReportFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
         setupObserver()
+
+        viewModel.submitAction(PlayBroadcastSummaryAction.SetProductSectionList(parentViewModel.productSectionList))
     }
 
     override fun onDestroyView() {
