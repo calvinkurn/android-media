@@ -394,7 +394,7 @@ class OrderSummaryPageRobot {
             override fun getDescription(): String = "click button order detail"
 
             override fun perform(uiController: UiController?, view: View) {
-                click().perform(uiController, view.findViewById(R.id.btn_order_detail))
+                view.findViewById<View>(R.id.btn_order_detail).performClick()
             }
         }))
         OrderPriceSummaryBottomSheetRobot().apply(func)

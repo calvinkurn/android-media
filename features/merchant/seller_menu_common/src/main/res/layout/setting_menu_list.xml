@@ -42,6 +42,7 @@
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@+id/settingMenuTitle"
         app:layout_constraintTop_toTopOf="@+id/settingMenuTitle"
+        app:notificationColor="color_text_type"
         tools:text="baru" />
 
     <com.tokopedia.unifycomponents.NotificationUnify
