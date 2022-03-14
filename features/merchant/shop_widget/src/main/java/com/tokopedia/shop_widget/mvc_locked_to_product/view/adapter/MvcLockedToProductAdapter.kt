@@ -63,8 +63,12 @@ class MvcLockedToProductAdapter(
     }
 
     fun addProductListData(mvcLockedToListProductGridProductUiModel: List<MvcLockedToProductGridProductUiModel>) {
+        val listNewProduct = mvcLockedToListProductGridProductUiModel.toMutableList()
+        listNewProduct.removeAll {
+            getProductUiModel(it.productID) != null
+        }
         val newList = getNewVisitableItems()
-        newList.addAll(mvcLockedToListProductGridProductUiModel)
+        newList.addAll(listNewProduct)
         submitList(newList)
     }
 
@@ -238,21 +242,10 @@ class MvcLockedToProductAdapter(
         productQuantityInCart: Int
     ): ProductCardModel {
         return if (productUiModel.isVariant) {
-            if (productQuantityInCart.isZero()) {
-                productUiModel.productCardModel.copy(
-                    hasAddToCartButton = true,
-                    nonVariant = null
-                )
-            } else {
-                productUiModel.productCardModel.copy(
-                    hasAddToCartButton = false,
-                    nonVariant = ProductCardModel.NonVariant(
-                        quantity = productQuantityInCart,
-                        minQuantity = 1,
-                        maxQuantity = productUiModel.stock
-                    )
-                )
-            }
+            productUiModel.productCardModel.copy(
+                hasAddToCartButton = true,
+                nonVariant = null
+            )
         } else {
             productUiModel.productCardModel.copy(
                 nonVariant = productUiModel.productCardModel.nonVariant?.copy(

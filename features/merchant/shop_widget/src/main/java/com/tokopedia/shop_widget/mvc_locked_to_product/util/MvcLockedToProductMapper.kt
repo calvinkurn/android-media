@@ -29,7 +29,8 @@ object MvcLockedToProductMapper {
 
     fun mapToMvcLockedToProductLayoutUiModel(
         response: MvcLockedToProductResponse.ShopPageMVCProductLock,
-        selectedSortData: MvcLockedToProductSortUiModel
+        selectedSortData: MvcLockedToProductSortUiModel,
+        isSellerView:Boolean
     ): MvcLockedToProductLayoutUiModel {
         val hasNextPage = checkHasNextPage(response.nextPage)
         val mvcLockedToProductVoucherUiModel = mapToMvcVoucherUiModel(response.voucher)
@@ -39,7 +40,8 @@ object MvcLockedToProductMapper {
             selectedSortData
         )
         val mvcLockedToProductProductListUiModel = mapToMvcLockedToProductProductListUiModel(
-            response.productList
+            response.productList,
+            isSellerView
         )
         val mvcLockedToProductErrorUiModel = mapToMvcLockedToProductErrorUiModel(
             response.error.message,
@@ -73,10 +75,12 @@ object MvcLockedToProductMapper {
     }
 
     fun mapToMvcLockedToProductProductListUiModel(
-        productListResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList
+        productListResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList,
+        isSellerView: Boolean
+
     ): List<MvcLockedToProductGridProductUiModel> {
         return productListResponse.data.map {
-            mapToMvcProductUiModel(it)
+            mapToMvcProductUiModel(it, isSellerView)
         }
     }
 
@@ -85,7 +89,9 @@ object MvcLockedToProductMapper {
     }
 
     private fun mapToMvcProductUiModel(
-        productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data
+        productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data,
+        isSellerView: Boolean
+
     ): MvcLockedToProductGridProductUiModel {
         return MvcLockedToProductGridProductUiModel(
             productResponse.productID,
@@ -99,25 +105,27 @@ object MvcLockedToProductMapper {
                 productResponse.productInCart.qty
             ),
             productResponse.isVariant(),
-            mapToProductCardModel(productResponse)
+            mapToProductCardModel(productResponse, isSellerView)
         )
     }
 
     private fun mapToProductCardModel(
-        productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data
+        productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data,
+        isSellerView: Boolean
     ): ProductCardModel {
         return if(!MvcLockedToProductUtil.isMvcPhase2()){
             createProductCardModelPhase1(productResponse)
         } else {
-            if (productResponse.isVariant()) {
-                createVariantProductCardModel(productResponse)
+            if (productResponse.isVariant() || isSellerView) {
+                createProductCardWithDefaultAtcModel(productResponse)
             } else {
-                createNonVariantProductCardModel(productResponse)
+                createProductCardWithQuantityAtcModel(productResponse)
             }
         }
     }
 
-    private fun createNonVariantProductCardModel(productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data): ProductCardModel {
+    private fun createProductCardWithQuantityAtcModel(
+        productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data): ProductCardModel {
         return ProductCardModel(
             productName = productResponse.name,
             productImageUrl = productResponse.imageUrl,
@@ -141,8 +149,8 @@ object MvcLockedToProductMapper {
         )
     }
 
-    private fun createVariantProductCardModel(productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data): ProductCardModel {
-        var productCardModel = ProductCardModel(
+    private fun createProductCardWithDefaultAtcModel(productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data): ProductCardModel {
+        return ProductCardModel(
             productName = productResponse.name,
             productImageUrl = productResponse.imageUrl,
             formattedPrice = productResponse.displayPrice,
@@ -156,39 +164,9 @@ object MvcLockedToProductMapper {
             ratingCount = productResponse.rating,
             countSoldRating = getProductCardRating(productResponse.averageRating),
             reviewCount = productResponse.totalReview.toIntOrZero(),
-            labelGroupList = productResponse.labelGroups.map { mapToProductCardLabelGroup(it) }
-        ).let {
-            val productInCartQuantity = productResponse.productInCart.qty
-            if( productInCartQuantity != 0){
-                it.copy(
-                    nonVariant = ProductCardModel.NonVariant(
-                        quantity = productInCartQuantity,
-                        minQuantity = 1,
-                        maxQuantity = productResponse.stock
-                    )
-                )
-            }else{
-                it.copy(
-                    hasAddToCartButton = true
-                )
-            }
-        }
-        val productInCartQuantity = productResponse.productInCart.qty
-        productCardModel = if( productInCartQuantity != 0){
-            productCardModel.copy(
-                hasAddToCartButton = false,
-                nonVariant = ProductCardModel.NonVariant(
-                    quantity = productInCartQuantity,
-                    minQuantity = 0,
-                    maxQuantity = productResponse.stock
-                )
-            )
-        }else{
-            productCardModel.copy(
-                hasAddToCartButton = true
-            )
-        }
-        return productCardModel
+            labelGroupList = productResponse.labelGroups.map { mapToProductCardLabelGroup(it) },
+            hasAddToCartButton = true
+        )
     }
 
     private fun createProductCardModelPhase1(productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data): ProductCardModel {
@@ -217,7 +195,9 @@ object MvcLockedToProductMapper {
 
     private fun getProductCardDiscountPercentage(discountPercentage: String): String {
         return discountPercentage.replace("%", "").let { discount ->
-            discount.takeIf { it != "0" }.orEmpty()
+            discount.takeIf { it != "0" &&  it.isNotEmpty() }?.let{
+                "$discount%"
+            }.orEmpty()
         }
     }
 

@@ -14,5 +14,6 @@
     <string name="mvc_locked_to_product_bottom_sheet_title">Urutkan</string>
     <string name="mvc_discovery_sort_section_left_wording">Produk Pilihan</string>
     <string name="mvc_discovery_sort_apply_button">Terapkan</string>
+    <string name="mvc_discovery_seller_atc_error_message">Eits, kamu nggak bisa menambahkan barang jualanmu ke keranjang</string>
 
 </resources>
