@@ -27,7 +27,6 @@
                 app:unify_image_type="circle"
                 android:scaleType="fitCenter"
                 app:unify_image_corner_radius="8"
-                app:srcCompat="@drawable/rect"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
