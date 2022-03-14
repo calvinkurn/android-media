@@ -7,71 +7,71 @@ data class RefreshTokonowDataResponse(
 
     @Expose
     @SerializedName("data")
-    val data: Data
+    val data: Data = Data()
 ) {
     data class Data(
 
         @Expose
         @SerializedName("RefreshTokonowData")
-        val refreshTokonowData: RefreshTokonowData
+        val refreshTokonowData: RefreshTokonowData = RefreshTokonowData()
     ) {
         data class RefreshTokonowData(
 
             @Expose
             @SerializedName("data")
-            val data: RefreshTokonowDataSuccess,
+            val data: RefreshTokonowDataSuccess = RefreshTokonowDataSuccess(),
 
             @Expose
             @SerializedName("header")
-            val header: Header
+            val header: Header = Header()
         ) {
             data class Header(
 
                 @Expose
                 @SerializedName("reason")
-                val reason: String,
+                val reason: String = "",
 
                 @Expose
                 @SerializedName("error_code")
-                val errorCode: String,
+                val errorCode: String = "",
 
                 @Expose
                 @SerializedName("process_time")
-                val processTime: Double
+                val processTime: Double = 0.0
             )
 
             data class RefreshTokonowDataSuccess(
 
                 @Expose
                 @SerializedName("shop_id")
-                val shopId: String,
+                val shopId: String = "",
 
                 @Expose
                 @SerializedName("service_type")
-                val serviceType: String,
+                val serviceType: String = "",
 
                 @Expose
                 @SerializedName("last_update")
-                val lastUpdate: String,
+                val lastUpdate: String = "",
 
 
                 @Expose
                 @SerializedName("warehouses")
-                val warehouses: List<WarehousesItem>,
+                val warehouses: List<WarehouseItem> = emptyList(),
 
                 @Expose
                 @SerializedName("warehouse_id")
-                val warehouseId: String
+                val warehouseId: String = ""
             ) {
-                data class WarehousesItem(
+                data class WarehouseItem(
 
                     @Expose
                     @SerializedName("service_type")
-                    val serviceType: String,
+                    val serviceType: String = "",
 
                     @Expose
                     @SerializedName("warehouse_id")
-                    val warehouseId: String
+                    val warehouseId: String = ""
                 )
             }
         }

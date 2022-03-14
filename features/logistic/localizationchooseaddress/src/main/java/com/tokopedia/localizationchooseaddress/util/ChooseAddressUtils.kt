@@ -141,6 +141,26 @@ object ChooseAddressUtils {
         chooseAddressPref.setLocalCache(newData)
     }
 
+    fun refreshTokonowData(
+        context: Context,
+        lastUpdate: String,
+        warehouseId: String,
+        shopId: String,
+        warehouses: List<LocalWarehouseModel>,
+        serviceType: String
+    ) {
+        val chooseAddressPref = ChooseAddressSharePref(context)
+        val newData = getLocalizingAddressData(context).copy(
+            tokonow_last_update = lastUpdate,
+            warehouse_id = warehouseId,
+            shop_id = shopId,
+            warehouses = warehouses,
+            service_type = serviceType,
+            version = LCA_VERSION
+        )
+        chooseAddressPref.setLocalCache(newData)
+    }
+
     /**
      * Host can use this for show or not coachmark
      * we not provide coackmark. just KEY for identifier.
