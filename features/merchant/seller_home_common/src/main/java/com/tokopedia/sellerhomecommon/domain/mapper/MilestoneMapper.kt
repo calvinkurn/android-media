@@ -18,7 +18,6 @@ class MilestoneMapper @Inject constructor(
 
     companion object {
         private const val HIDDEN_BUTTON_STATUS = 0
-        private const val ENABLED_BUTTON_STATUS = 1
         private const val DISABLED_BUTTON_STATUS = 2
         private const val ZERO_MS = 0L
         private const val ONE_SECOND_MILLIS = 1000L
@@ -30,8 +29,14 @@ class MilestoneMapper @Inject constructor(
     ): List<MilestoneDataUiModel> {
         val data = response.fetchMilestoneWidgetData?.data.orEmpty()
         return data.map {
-            val missionMilestone = mapGetMilestoneMission(it.mission.orEmpty())
-                .plus(mapGetMilestoneFinish(it.finishMission))
+            val missions = mapGetMilestoneMission(it.mission.orEmpty())
+            val finishCard = mapGetMilestoneFinish(it.finishMission)
+            val areAllMissionsCompleted = missions.all { m -> m.missionCompletionStatus }
+            val allMissions = if (areAllMissionsCompleted) {
+                finishCard.plus(missions)
+            } else {
+                missions.plus(finishCard)
+            }
             return@map MilestoneDataUiModel(
                 dataKey = it.dataKey.orEmpty(),
                 error = it.errorMsg.orEmpty(),
@@ -44,7 +49,7 @@ class MilestoneMapper @Inject constructor(
                 showNumber = it.showNumber.orFalse(),
                 isError = it.error.orFalse(),
                 milestoneProgress = mapGetMilestoneProgressbar(it.progressBar),
-                milestoneMissions = missionMilestone,
+                milestoneMissions = allMissions,
                 milestoneCta = mapGetMilestoneCta(it.cta),
                 deadlineMillis = convertSecondToMillisecond(it.deadlineMillis.orZero()),
                 lastUpdated = getLastUpdatedMillis(it.dataKey.orEmpty(), isFromCache)

@@ -45,12 +45,14 @@ class ManageProductViewModel @Inject constructor(
     val selectedProductListLiveData = MutableLiveData<List<ProductUiModel>>(listOf())
 
     fun getProductList(
+            pageSize: Int = 0,
             shopId: String? = null,
             selectedProductIds: List<String>? = null
     ) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 val params = GetProductListUseCase.createRequestParams(
+                        pageSize = pageSize,
                         shopId = shopId,
                         productIds = selectedProductIds
                 )

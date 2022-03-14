@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_marginLeft="-12dp"
+    android:layout_marginRight="-12dp"
+    android:paddingBottom="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/content_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/tp_see_all"
+            android:layout_width="62dp"
+            android:layout_height="8dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="end"
+            android:lineSpacingExtra="3sp"
+            android:textColor="@color/Unify_G500"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginLeft="16dp"
+            app:loader_type="line"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:text="Lihat Semua" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/tp_title"
+            android:layout_width="189dp"
+            android:layout_height="8dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:ellipsize="end"
+            android:lines="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_type="line"
+            app:typographyType="heading_4"
+            app:typographyWeight="reguler"
+            tools:text="Campaign Title Max.28" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/parallax_background"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tp_title"
+            app:loader_type="rect" />
+
+        <include
+            android:id="@+id/include"
+            layout="@layout/item_product_card_loading_state"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="148dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/parallax_background" />
+
+        <include
+            android:id="@+id/include2"
+            layout="@layout/item_product_card_loading_state"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/include"
+            app:layout_constraintStart_toEndOf="@+id/include"
+            app:layout_constraintTop_toTopOf="@+id/include" />
+
+        <include
+            android:id="@+id/include3"
+            layout="@layout/item_product_card_loading_state"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/include2"
+            app:layout_constraintStart_toEndOf="@+id/include2"
+            app:layout_constraintTop_toTopOf="@+id/include2" />
+
+        <include
+            layout="@layout/item_product_card_loading_state"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/include3"
+            app:layout_constraintTop_toTopOf="@+id/include3"
+            app:layout_constraintStart_toEndOf="@+id/include3"
+            app:layout_constraintVertical_bias="0.0"
+            tools:layout_editor_absoluteX="545dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
