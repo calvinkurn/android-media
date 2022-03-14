@@ -43,7 +43,6 @@ fun View.setBottomMargin(value: Int) {
     layoutParams.setMargins(0, 0, 0, value)
 }
 
-// TODO create shared-component for this
 fun ImageView.pickerLoadImage(path: String) {
     val thumbnailSize = context.dimensionPixelOffsetOf(R.dimen.picker_thumbnail_size)
     val roundedSize = context.dimensionOf(R.dimen.picker_thumbnail_rounded)

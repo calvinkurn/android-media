@@ -35,7 +35,7 @@ import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
-import com.tokopedia.picker.common.intent.PickerIntent.KEY_PICKER_PARAM
+import com.tokopedia.picker.common.intent.EXTRA_PICKER_PARAM
 import com.tokopedia.picker.common.intent.PreviewIntent
 import com.tokopedia.picker.common.observer.EventFlowFactory
 import com.tokopedia.picker.common.types.FragmentType
@@ -142,8 +142,9 @@ open class PickerActivity : BaseActivity()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
+        // get data from preview if user had an updated the media elements
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_PREVIEW_PAGE && data != null) {
-            // get data from preview if user had an updated the media elements
             val mediasFromPreview = data.getParcelableArrayListExtra<MediaUiModel>(
                 PickerPreviewActivity.MEDIA_ELEMENT_RESULT
             )?.toList()?: return
@@ -184,7 +185,7 @@ open class PickerActivity : BaseActivity()
     }
 
     private fun setupParamQueryAndDataIntent() {
-        val pickerParam = intent.getParcelableExtra(KEY_PICKER_PARAM)?: PickerParam()
+        val pickerParam = intent.getParcelableExtra(EXTRA_PICKER_PARAM)?: PickerParam()
 
         intent?.data?.let {
             PickerUiConfig.setupQueryPage(it)

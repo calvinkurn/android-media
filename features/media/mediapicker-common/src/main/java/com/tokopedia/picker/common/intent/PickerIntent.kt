@@ -7,22 +7,23 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER
 import com.tokopedia.picker.common.PickerParam
 
-object PickerIntent {
-    private const val KEY_PICKER_PARAM = "key-picker-param"
+const val EXTRA_PICKER_PARAM = "key-picker-param"
+const val RESULT_PICKER = "result-picker"
 
+object PickerIntent {
     fun intent(context: Context, param: PickerParam.() -> Unit = {}): Intent {
         val pickerParam = PickerParam().apply(param)
 
         return RouteManager.getIntent(context, INTERNAL_MEDIA_PICKER).apply {
-            putExtra(KEY_PICKER_PARAM, pickerParam)
+            putExtra(EXTRA_PICKER_PARAM, pickerParam)
         }
     }
 
     fun result(intent: Intent?): ArrayList<String> {
-        return intent?.getStringArrayListExtra(KEY_PICKER_PARAM)?: arrayListOf()
+        return intent?.getStringArrayListExtra(RESULT_PICKER)?: arrayListOf()
     }
 
     fun result(bundle: Bundle?): ArrayList<String> {
-        return bundle?.getStringArrayList(KEY_PICKER_PARAM)?: arrayListOf()
+        return bundle?.getStringArrayList(RESULT_PICKER)?: arrayListOf()
     }
 }
