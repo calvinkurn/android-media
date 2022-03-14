@@ -32,6 +32,7 @@ import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
 import com.tokopedia.statistic.analytics.TrackingHelper
+import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.ANNOUNCEMENT_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.BAR_CHART_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.CARD_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.CAROUSEL_WIDGET_TRACE
@@ -150,6 +151,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private var performanceMonitoringTableWidget: PerformanceMonitoring? = null
     private var performanceMonitoringPieChartWidget: PerformanceMonitoring? = null
     private var performanceMonitoringBarChartWidget: PerformanceMonitoring? = null
+    private var performanceMonitoringAnnouncementWidget: PerformanceMonitoring? = null
 
     private var binding by autoClearedNullable<FragmentStcStatisticBinding>()
 
@@ -192,6 +194,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         observeWidgetData(mViewModel.tableWidgetData, WidgetType.TABLE)
         observeWidgetData(mViewModel.pieChartWidgetData, WidgetType.PIE_CHART)
         observeWidgetData(mViewModel.barChartWidgetData, WidgetType.BAR_CHART)
+        observeWidgetData(mViewModel.announcementWidgetData, WidgetType.ANNOUNCEMENT)
         observeTickers()
     }
 
@@ -209,12 +212,17 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         hideMonthPickerIfExist()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mLayoutManager = null
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
 
         inflater.inflate(R.menu.menu_stc_action_calendar, menu)
 
-        for (i in 0 until menu.size()) {
+        for (i in Int.ZERO until menu.size()) {
             menu.getItem(i)?.let { menuItem ->
                 menuItem.actionView?.setOnClickListener {
                     onOptionsItemSelected(menuItem)
@@ -663,12 +671,23 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         mViewModel.getBarChartWidgetData(dataKeys)
     }
 
+    private fun fetchAnnouncementData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.forEach { it.isLoaded = true }
+        val dataKeys: List<String> = Utils.getWidgetDataKeys<AnnouncementWidgetUiModel>(widgets)
+        performanceMonitoringAnnouncementWidget =
+            PerformanceMonitoring.start(ANNOUNCEMENT_WIDGET_TRACE)
+        mViewModel.getAnnouncementWidgetData(dataKeys)
+    }
+
     private fun selectDateRange() {
         if (!isAdded || context == null) return
         StatisticTracker.sendDateFilterEvent(userSession)
+
         val dateFilters: List<DateFilterItem> = statisticPage?.dateFilters.orEmpty()
         val identifierDescription = statisticPage?.exclusiveIdentifierDateFilterDesc.orEmpty()
-        DateFilterBottomSheet.newInstance(dateFilters, identifierDescription)
+        DateFilterBottomSheet.newInstance(
+            dateFilters, identifierDescription
+        )
             .setOnApplyChanges {
                 setHeaderSubTitle(it.getHeaderSubTitle(requireContext()))
                 applyDateRange(it)
@@ -778,6 +797,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         groupedWidgets[WidgetType.TABLE]?.run { fetchTableData(this) }
         groupedWidgets[WidgetType.PIE_CHART]?.run { fetchPieChartData(this) }
         groupedWidgets[WidgetType.BAR_CHART]?.run { fetchBarChartData(this) }
+        groupedWidgets[WidgetType.ANNOUNCEMENT]?.run { fetchAnnouncementData(this) }
     }
 
     private fun setOnErrorGetLayout(throwable: Throwable) = view?.run {
@@ -1034,6 +1054,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             WidgetType.TABLE -> performanceMonitoringTableWidget?.stopTrace()
             WidgetType.PIE_CHART -> performanceMonitoringPieChartWidget?.stopTrace()
             WidgetType.BAR_CHART -> performanceMonitoringBarChartWidget?.stopTrace()
+            WidgetType.ANNOUNCEMENT -> performanceMonitoringAnnouncementWidget?.stopTrace()
         }
     }
 

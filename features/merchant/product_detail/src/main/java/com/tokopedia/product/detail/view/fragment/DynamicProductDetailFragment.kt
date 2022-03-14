@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.view.fragment
 
 import android.app.Activity
-import android.app.Application
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
@@ -79,10 +78,11 @@ import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
+import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.reminded
@@ -117,6 +117,7 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product.detail.common.view.AtcVariantListener
+import com.tokopedia.product.detail.common.view.ProductDetailCoachMarkHelper
 import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
 import com.tokopedia.product.detail.common.view.ProductDetailRestrictionHelper
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
@@ -186,8 +187,8 @@ import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
 import com.tokopedia.product.estimasiongkir.view.bottomsheet.ProductDetailShippingBottomSheet
 import com.tokopedia.product.info.util.ProductDetailBottomSheetBuilder
+import com.tokopedia.product.info.util.ProductDetailInfoHelper
 import com.tokopedia.product.info.view.bottomsheet.ProductDetailBottomSheetListener
-import com.tokopedia.product.info.view.bottomsheet.ProductDetailInfoBottomSheet
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.purchase_platform.common.constant.CartConstant
@@ -294,6 +295,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private val nplFollowersButton: PartialButtonShopFollowersView? by lazy {
         binding?.baseBtnFollow?.root?.run {
             PartialButtonShopFollowersView.build(this, this@DynamicProductDetailFragment)
+        }
+    }
+
+    private val pdpCoachmarkHelper by lazy(LazyThreadSafetyMode.NONE) {
+        context?.let {
+            ProductDetailCoachMarkHelper(it)
         }
     }
 
@@ -754,32 +761,25 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         })
     }
 
-    override fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>, componentTrackDataModel: ComponentTrackDataModel) {
+    override fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>,
+                                             componentTrackDataModel: ComponentTrackDataModel) {
         activity?.let {
-            DynamicProductDetailTracking.Click.eventClickProductDescriptionReadMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-            val productDetailSheet = ProductDetailInfoBottomSheet()
-            val cacheManager = SaveInstanceCacheManager(it, true)
-            val parcelData = DynamicProductDetailMapper.generateProductInfoParcel(
+            DynamicProductDetailTracking.Click.eventClickProductDescriptionReadMore(
                     viewModel.getDynamicProductInfoP1,
-                    viewModel.variantData?.sizeChart ?: "",
-                    dataContent, shouldRefreshProductInfoBottomSheet
+                    componentTrackDataModel
             )
-            cacheManager.put(ProductDetailInfoBottomSheet::class.java.simpleName, parcelData)
 
-            productDetailSheet.arguments = Bundle().apply {
-                putString(ProductDetailInfoBottomSheet.PRODUCT_DETAIL_INFO_PARCEL_KEY, cacheManager.id)
-            }
+            ProductDetailInfoHelper.showBottomSheetInfo(
+                    fragmentActivity = it,
+                    daggerComponent = productDaggerComponent,
+                    listener = this,
+                    p1Data = viewModel.getDynamicProductInfoP1,
+                    sizeChartImageUrl = viewModel.variantData?.sizeChart,
+                    detailInfoContent = dataContent,
+                    forceRefresh = shouldRefreshProductInfoBottomSheet,
+            )
             shouldRefreshProductInfoBottomSheet = false
-            productDetailSheet.show(it.supportFragmentManager, productDaggerComponent, this)
         }
-    }
-
-    override fun getApplicationContext(): Application? {
-        return activity?.application
-    }
-
-    override fun getLifecycleFragment(): Lifecycle {
-        return lifecycle
     }
 
 
@@ -876,6 +876,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     override fun goToApplink(url: String) {
         RouteManager.route(context, url)
+    }
+
+    override fun showCustomInfoCoachMark(componentName: String, viewTarget: View) {
+        if (componentName == ProductDetailConstant.HAMPERS_INFO) {
+            pdpCoachmarkHelper?.showCoachMarkHampers(viewTarget)
+        }
     }
 
     override fun onBbiInfoClick(url: String, title: String, componentTrackDataModel: ComponentTrackDataModel) {
@@ -1515,8 +1521,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         })
     }
 
-    private fun handlePlayWidgetUiModel(playWidgetUiModel: PlayWidgetUiModel) {
-        pdpUiUpdater?.updatePlayWidget(playWidgetUiModel)
+    private fun handlePlayWidgetUiModel(playWidgetState: PlayWidgetState) {
+        pdpUiUpdater?.updatePlayWidget(playWidgetState)
     }
 
     private fun onSuccessUpdateAddress() {
@@ -3763,17 +3769,17 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         position: Int
     ) {
         doActionOrLogin({
-            val playWidgetUiModel =
-                pdpUiUpdater?.contentWidgetData?.playWidgetUiModel ?: return@doActionOrLogin
+            val playWidgetState =
+                pdpUiUpdater?.contentWidgetData?.playWidgetState ?: return@doActionOrLogin
             viewModel.updatePlayWidgetToggleReminder(
-                playWidgetUiModel, channelId, reminderType
+                playWidgetState, channelId, reminderType
             )
         })
     }
 
     override fun onImpressChannelCard(
         componentTrackDataModel: ComponentTrackDataModel,
-        item: PlayWidgetMediumChannelUiModel
+        item: PlayWidgetChannelUiModel
     ) {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return
         ContentWidgetTracking.impressChannelCard(
@@ -3789,7 +3795,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     override fun onClickChannelCard(
         componentTrackDataModel: ComponentTrackDataModel,
-        item: PlayWidgetMediumChannelUiModel
+        item: PlayWidgetChannelUiModel
     ) {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return
         ContentWidgetTracking.clickChannelCard(
@@ -3826,7 +3832,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     override fun onClickToggleReminderChannel(
         componentTrackDataModel: ComponentTrackDataModel,
-        item: PlayWidgetMediumChannelUiModel,
+        item: PlayWidgetChannelUiModel,
         isRemindMe: Boolean
     ) {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return

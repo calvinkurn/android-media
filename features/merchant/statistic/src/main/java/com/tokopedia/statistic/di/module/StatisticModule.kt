@@ -6,6 +6,8 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPref
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.statistic.di.StatisticScope
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -41,5 +43,11 @@ class StatisticModule {
     @Provides
     fun provideLastUpdatedInfoEnabled(): Boolean {
         return false
+    }
+
+    @StatisticScope
+    @Provides
+    fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
     }
 }

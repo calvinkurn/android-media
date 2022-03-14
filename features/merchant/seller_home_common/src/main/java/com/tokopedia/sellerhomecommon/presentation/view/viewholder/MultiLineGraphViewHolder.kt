@@ -8,7 +8,6 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.charts.common.ChartColor
 import com.tokopedia.charts.common.ChartTooltip
@@ -181,7 +180,7 @@ class MultiLineGraphViewHolder(
             }
         }
 
-        metricsAdapter.notifyDataSetChanged()
+        notifyAdapterDateChanged()
         val selectedMetrics = metricsAdapter.items.filter { it.isSelected }
         showLineGraph(selectedMetrics)
     }
@@ -199,6 +198,7 @@ class MultiLineGraphViewHolder(
         loadingStateBinding.shcMlgLoadingState.gone()
         emptyStateBinding.multiLineEmptyState.gone()
         binding.shcMlgSuccessState.visible()
+        emptyStateBinding.multiLineEmptyState.gone()
         binding.luvShcMultiLineGraph.setRefreshButtonVisibility(false)
         getWidgetComponents().forEach {
             it.gone()
@@ -393,9 +393,14 @@ class MultiLineGraphViewHolder(
 
             metricsAdapter.setItems(items)
             rvShcGraphMetrics.post {
-                metricsAdapter.notifyDataSetChanged()
+                notifyAdapterDateChanged()
             }
         }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun notifyAdapterDateChanged() {
+        metricsAdapter.notifyDataSetChanged()
     }
 
     private fun showLineGraph(metrics: List<MultiLineMetricUiModel>) {
@@ -634,8 +639,7 @@ class MultiLineGraphViewHolder(
     private fun showMetricErrorState() {
         binding.chartViewShcMultiLine.gone()
         errorStateBinding.commonWidgetErrorState.visible()
-        ImageHandler.loadImageWithId(
-            errorStateBinding.imgWidgetOnError,
+        errorStateBinding.imgWidgetOnError.loadImage(
             com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
         )
     }
@@ -707,7 +711,6 @@ class MultiLineGraphViewHolder(
     private fun animateShowEmptyState() {
         with(emptyStateBinding) {
             if (hideAnimation?.isRunning == true) hideAnimation?.end()
-            if (multiLineEmptyState.isVisible) return
             multiLineEmptyState.show()
             showAnimation = multiLineEmptyState.animatePop(0f, 1f)
         }
