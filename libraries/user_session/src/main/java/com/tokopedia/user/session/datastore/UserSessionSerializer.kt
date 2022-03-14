@@ -2,8 +2,8 @@ package com.tokopedia.user.session.datastore
 
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
-import androidx.datastore.preferences.protobuf.InvalidProtocolBufferException
 import com.google.crypto.tink.Aead
+import com.google.protobuf.InvalidProtocolBufferException
 import com.tokopedia.user.session.UserSessionProto
 import java.io.InputStream
 import java.io.OutputStream
