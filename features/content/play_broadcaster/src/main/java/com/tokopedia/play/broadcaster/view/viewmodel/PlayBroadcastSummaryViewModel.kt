@@ -12,6 +12,7 @@ import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.event.UiString
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.ChannelSummaryUiModel
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
@@ -19,10 +20,12 @@ import com.tokopedia.play.broadcaster.ui.state.LiveReportUiState
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.TagUiState
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
+import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
+import com.tokopedia.play_common.util.extension.setValue
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -109,6 +112,7 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
 
             PlayBroadcastSummaryAction.ClickBackToReportPage -> handleClickBackToReportPage()
             PlayBroadcastSummaryAction.ClickEditCover -> handleClickEditCover()
+            is PlayBroadcastSummaryAction.SetCover -> handleSetCover(action.cover)
             is PlayBroadcastSummaryAction.ToggleTag -> handleToggleTag(action.tagUiModel)
             PlayBroadcastSummaryAction.ClickPostVideoNow -> handleClickPostVideoNow()
         }
@@ -141,6 +145,28 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     private fun handleClickEditCover() {
         viewModelScope.launch(context = dispatcher.main) {
             _uiEvent.emit(PlayBroadcastSummaryEvent.OpenSelectCoverBottomSheet)
+        }
+    }
+
+    private fun handleSetCover(cover: PlayCoverUiModel) {
+        viewModelScope.launch(context = dispatcher.main) {
+            when (val croppedCover = cover.croppedCover) {
+                is CoverSetupState.Cropped.Uploaded -> {
+
+                    val imageUri = if(croppedCover.coverImage.toString().isNotEmpty() &&
+                                    croppedCover.coverImage.toString().contains("http"))
+                        croppedCover.coverImage.toString()
+                    else if (!croppedCover.localImage?.toString().isNullOrEmpty())
+                        croppedCover.localImage.toString()
+                    else ""
+
+                    if(imageUri.isNotEmpty()) {
+                        _channelSummary.setValue {
+                            copy(coverUrl = imageUri)
+                        }
+                    }
+                }
+            }
         }
     }
 

@@ -7,6 +7,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.*
@@ -17,8 +18,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPostVideoBinding
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.TagUiState
@@ -87,6 +91,26 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when(childFragment) {
+            is PlayBroadcastSetupBottomSheet -> {
+                childFragment.setListener(object: PlayBroadcastSetupBottomSheet.Listener {
+                    override fun onCoverChanged(cover: PlayCoverUiModel) {
+                        viewModel.submitAction(
+                            PlayBroadcastSummaryAction.SetCover(cover)
+                        )
+                    }
+                })
+                childFragment.setDataSource(object : PlayBroadcastSetupBottomSheet.DataSource {
+                    override fun getProductList(): List<ProductUiModel> {
+                        return parentViewModel.productSectionList.flatMap { it.products }
+                    }
+                })
+            }
+        }
     }
 
     private fun setupView() {
@@ -186,7 +210,6 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     }
 
     private fun openCoverSetupFragment() {
-        /** TODO("later will be done after merge with RE") */
         val setupClass = PlayBroadcastSetupBottomSheet::class.java
         val fragmentFactory = childFragmentManager.fragmentFactory
         val setupFragment = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as PlayBroadcastSetupBottomSheet
