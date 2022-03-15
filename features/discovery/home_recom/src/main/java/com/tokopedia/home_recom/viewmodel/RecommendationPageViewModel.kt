@@ -239,8 +239,7 @@ open class RecommendationPageViewModel @Inject constructor(
         }) {
             RecomServerLogger.logServer(
                 tag = TOPADS_RECOM_PAGE_GENERAL_ERROR,
-                reason = (it.message ?: "").take(RecomServerLogger.MAX_LIMIT),
-                data = Log.getStackTraceString(it).take(RecomServerLogger.MAX_LIMIT),
+                throwable = it,
                 productId = productId,
                 queryParam = queryParam
             )

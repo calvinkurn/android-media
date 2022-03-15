@@ -1,5 +1,6 @@
 package com.tokopedia.home_recom.util
 
+import android.util.Log
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import okhttp3.internal.http2.ConnectionShutdownException
@@ -41,8 +42,17 @@ object RecomServerLogger {
         reason: String = "",
         productId: String = "-1",
         queryParam: String = "-1",
-        data: String = ""
+        data: String = "",
+        throwable: Throwable? = null
     ) {
+        var reasonValue = reason
+        var dataValue = data
+
+        throwable?.let {
+            reasonValue = (it.message ?: "").take(MAX_LIMIT)
+            dataValue = Log.getStackTraceString(it).take(MAX_LIMIT)
+        }
+
         ServerLogger.log(
             Priority.P2,
             TOPADS_RECOM_PAGE,
@@ -50,8 +60,8 @@ object RecomServerLogger {
                 "action" to tag,
                 "productId" to productId,
                 "queryParam" to queryParam,
-                "reason" to reason,
-                "data" to data
+                "reason" to reasonValue,
+                "data" to dataValue
             )
         )
     }
