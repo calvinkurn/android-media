@@ -30,10 +30,7 @@ import com.tokopedia.play.extensions.isProductSheetsShown
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.contract.PlayFragmentContract
-import com.tokopedia.play.view.type.BottomInsetsState
-import com.tokopedia.play.view.type.BottomInsetsType
-import com.tokopedia.play.view.type.ProductAction
-import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
@@ -410,7 +407,8 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun shouldCheckProductVariant(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, action: ProductAction) {
         if (product.isVariantAvailable) {
             openVariantSheet(product, action)
-            analytic.clickActionProductWithVariant(product.id, action)
+            if(sectionInfo.config.type != ProductSectionType.Active) analytic.clickActionProductWithVariant(product.id, action, sectionInfo)
+            else analytic.clickATCBuyWithVariantRSProduct(product, action, sectionInfo)
         } else {
             shouldDoActionProduct(product, sectionInfo,action,BottomInsetsType.ProductSheet)
         }

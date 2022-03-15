@@ -248,11 +248,28 @@ class PlayAnalytic(
         )
     }
 
-    fun clickActionProductWithVariant(productId: String, productAction: ProductAction) {
+    fun clickActionProductWithVariant(productId: String, productAction: ProductAction, sectionInfo: ProductSectionUiModel.Section) {
         when(productAction) {
             ProductAction.AddToCart -> clickAtcButtonProductWithVariant(productId)
             ProductAction.Buy -> clickBeliButtonProductWithVariant(productId)
         }
+    }
+
+    fun clickATCBuyWithVariantRSProduct(product: PlayProductUiModel.Product, productAction: ProductAction, sectionInfo: ProductSectionUiModel.Section){
+        val action = if(productAction == ProductAction.AddToCart) "atc" else "buy"
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_ADD_TO_CART,
+                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                KEY_EVENT_ACTION to "$KEY_TRACK_CLICK $action in varian page in ongoing section",
+                KEY_EVENT_LABEL to "$mChannelId - ${product.id} - ${mChannelType.value} - ${sectionInfo.id}",
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_CLIENT_ID to TrackApp.getInstance().gtm.cachedClientIDString,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId,
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+            )
+        )
     }
 
     fun clickProductAction(product: PlayProductUiModel.Product,
