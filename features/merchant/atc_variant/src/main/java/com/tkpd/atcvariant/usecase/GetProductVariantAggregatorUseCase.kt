@@ -32,8 +32,8 @@ class GetProductVariantAggregatorUseCase @Inject constructor(
 
     companion object {
         val QUERY = """
-        query pdpGetVariantComponent(${'$'}productID : String, ${'$'}source : String, ${'$'}shopID : String, ${'$'}whID : String, ${'$'}pdpSession : String , ${'$'}userLocation: pdpUserLocation, ${'$'}isTokoNow: Boolean, ${'$'}tokonow: pdpTokoNow) {
-            pdpGetVariantComponent(productID: ${'$'}productID, source: ${'$'}source, shopID: ${'$'}shopID, whID: ${'$'}whID, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation, isTokoNow: ${'$'}isTokoNow, tokonow: ${'$'}tokonow) {
+        query pdpGetVariantComponent(${'$'}productID : String, ${'$'}source : String, ${'$'}shopID : String, ${'$'}whID : String, ${'$'}pdpSession : String , ${'$'}userLocation: pdpUserLocation, ${'$'}isTokoNow: Boolean, ${'$'}tokonow: pdpTokoNow , ${'$'}extParams: String) {
+            pdpGetVariantComponent(productID: ${'$'}productID, source: ${'$'}source, shopID: ${'$'}shopID, whID: ${'$'}whID, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation, isTokoNow: ${'$'}isTokoNow, tokonow: ${'$'}tokonow, extParams: ${'$'}extParams) {
                     isCashback{
                         percentage
                     }
@@ -235,6 +235,7 @@ class GetProductVariantAggregatorUseCase @Inject constructor(
                             source: String,
                             isTokoNow:Boolean,
                             shopId: String,
+                            extParams: String,
                             warehouseId: String? = null,
                             pdpSession: String? = null): Map<String, Any?> = mapOf(
             ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId,
@@ -243,6 +244,7 @@ class GetProductVariantAggregatorUseCase @Inject constructor(
             ProductDetailCommonConstant.PARAM_TEASER_SOURCE to source,
             ProductDetailCommonConstant.PARAM_TOKO_NOW to isTokoNow,
             ProductDetailCommonConstant.PARAM_SHOP_ID to shopId,
+            ProductDetailCommonConstant.PARAM_EXT_PARAMS to extParams,
             ProductDetailCommonConstant.PARAM_USER_LOCATION to UserLocationRequest(
                     chosenAddressRequestHelper.getChosenAddress()?.districtId ?: "",
                     chosenAddressRequestHelper.getChosenAddress()?.addressId ?: "",
