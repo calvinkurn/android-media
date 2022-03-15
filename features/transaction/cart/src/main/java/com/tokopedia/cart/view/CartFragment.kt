@@ -39,6 +39,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -124,7 +125,6 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_FLOW
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
-import com.tokopedia.purchase_platform.common.constant.EmbraceConstant
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.*
@@ -308,8 +308,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             if (savedInstanceState != null) {
                 loadCachedData()
             } else {
-                EmbraceMonitoring.startMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_LOAD_CART)
-                EmbraceMonitoring.startMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_CART_INCOMPLETE)
+                EmbraceMonitoring.startMoments(EmbraceKey.KEY_MP_CART)
+                EmbraceMonitoring.startMoments(EmbraceKey.KEY_MP_CART_INCOMPLETE)
                 cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE)
                 cartAllPerformanceMonitoring = PerformanceMonitoring.start(CART_ALL_TRACE)
             }
@@ -1743,7 +1743,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             binding?.vDisabledGoToCourierPageButton?.gone()
             binding?.goToCourierPageButton?.isEnabled = true
             binding?.goToCourierPageButton?.setOnClickListener {
-                EmbraceMonitoring.startMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_ACT_BUY)
+                EmbraceMonitoring.startMoments(EmbraceKey.KEY_ACT_BUY)
                 checkGoToShipment("")
             }
         }
@@ -2435,9 +2435,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun stopCartPerformanceTrace(isSuccessLoadCart: Boolean) {
         if (!isTraceCartStopped) {
-            EmbraceMonitoring.stopMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_LOAD_CART)
+            EmbraceMonitoring.stopMoments(EmbraceKey.KEY_MP_CART)
             if (!isSuccessLoadCart) {
-                EmbraceMonitoring.stopMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_CART_INCOMPLETE)
+                EmbraceMonitoring.stopMoments(EmbraceKey.KEY_MP_CART_INCOMPLETE)
             }
             cartPerformanceMonitoring?.stopTrace()
             isTraceCartStopped = true
