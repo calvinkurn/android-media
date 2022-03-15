@@ -6,47 +6,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.people.views.UserProfileFragment.Companion.EXTRA_DISPLAY_NAME
 import com.tokopedia.people.views.UserProfileFragment.Companion.EXTRA_IS_FOLLOWERS
 import com.tokopedia.people.views.UserProfileFragment.Companion.EXTRA_TOTAL_FOLLOWERS
 import com.tokopedia.people.views.UserProfileFragment.Companion.EXTRA_TOTAL_FOLLOWINGS
 import com.tokopedia.people.views.UserProfileFragment.Companion.EXTRA_USER_NAME
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.people.R
 import com.tokopedia.people.di.UserProfileModule
 import com.tokopedia.people.di.DaggerUserProfileComponent
 import com.tokopedia.unifycomponents.TabsUnify
-import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
 
-class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListener,
-    AdapterCallback {
+class FollowerFollowingListingFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-
-    private val mPresenter: FollowerFollowingViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory).get(FollowerFollowingViewModel::class.java)
-    }
-
     var tabLayout: TabsUnify? = null
     var ffViewPager: ViewPager? = null
     var isFollowersTab: Boolean = true
 
-//    private val mAdapter: UserPostBaseAdapter by lazy {
-//        UserPostBaseAdapter(
-//            mPresenter,
-//            this
-//        )
-//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,53 +47,14 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //initObserver()
-        //initListener()
         isFollowersTab = arguments?.getBoolean(EXTRA_IS_FOLLOWERS, true) == true
         setHeader()
-        val userSessionInterface = UserSession(context)
-        //mPresenter.getUserDetails(userSessionInterface.userId)
-        //initUserPost()
         setMainUi()
     }
-
-    private fun initObserver() {
-        //observeUserProfile()
-    }
-
-    private fun initListener() {
-//        view?.findViewById<Group>(R.id.gr_following)?.setOnClickListener(this)
-//        view?.findViewById<Group>(R.id.gr_follower)?.setOnClickListener(this)
-    }
-
-    private fun initUserPost() {
-//        val postRv = view?.findViewById<RecyclerView>(R.id.recycler_view)
-//        postRv?.layoutManager = GridLayoutManager(activity, 2)
-//        postRv?.adapter = mAdapter
-//        mAdapter.resetAdapter()
-//        mAdapter.startDataLoading()
-    }
-
-//    private fun observeUserProfile() =
-//        mPresenter.userDetailsLiveData.observe(viewLifecycleOwner, Observer {
-//            it?.let {
-//                when (it) {
-//                    is Loading -> showLoader()
-//                    is ErrorMessage -> {
-//
-//                    }
-//                    is Success -> {
-//                        setMainUi(it.data)
-//                    }
-//                }
-//            }
-//        })
 
     private fun setMainUi() {
         ffViewPager = view?.findViewById(R.id.view_pager)
         tabLayout = view?.findViewById(R.id.tp_follow)
-//        tabLayout?.addNewTab("Followers")
-//        tabLayout?.addNewTab("Followings")
         tabLayout?.apply {
             tabLayout.setTabTextColors(
                 MethodChecker.getColor(
@@ -119,13 +64,9 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
                 MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G500)
             )
         }
-//        tabLayout?.addNewTab("Followers")
-//        tabLayout?.addNewTab("Followings")
 
         initViewPager(ffViewPager!!)
-//
-//        // If we dont use setupWithViewPager() method then
-//        // tabs are not used or shown when activity opened
+
         tabLayout?.setupWithViewPager(ffViewPager!!)
         tabLayout?.getUnifyTabLayout()?.setupWithViewPager(ffViewPager!!)
 
@@ -140,8 +81,6 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
     private fun initViewPager(viewPager: ViewPager) {
         adapter = ProfileFollowUnfollowViewPagerAdapter(requireFragmentManager())
 
-        // LoginFragment is the name of Fragment and the Login
-        // is a title of tab
         arguments?.let { FollowerListingFragment.newInstance(it) }?.let {
             adapter?.addFragment(
                 it,
@@ -177,11 +116,6 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
             }
         })
     }
-
-    private fun showLoader() {
-
-    }
-
 
     private fun setHeader() {
         val header = view?.findViewById<HeaderUnify>(R.id.header_follower)
@@ -220,12 +154,6 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
             .inject(this)
     }
 
-    override fun onClick(source: View) {
-        when (source.id) {
-
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
     }
@@ -236,34 +164,6 @@ class FollowerFollowingListingFragment : BaseDaggerFragment(), View.OnClickListe
             fragment.arguments = extras
             return fragment
         }
-    }
-
-    override fun onRetryPageLoad(pageNumber: Int) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onEmptyList(rawObject: Any?) {
-        // TODO("Not yet implemented")
-    }
-
-    override fun onStartFirstPageLoad() {
-        //  TODO("Not yet implemented")
-    }
-
-    override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
-        //  TODO("Not yet implemented")
-    }
-
-    override fun onStartPageLoad(pageNumber: Int) {
-        // TODO("Not yet implemented")
-    }
-
-    override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
-        //  TODO("Not yet implemented")
-    }
-
-    override fun onError(pageNumber: Int) {
-        // TODO("Not yet implemented")
     }
 
 }

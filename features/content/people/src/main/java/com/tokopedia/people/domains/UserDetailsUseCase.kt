@@ -5,7 +5,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.model.UserProfileIsFollow
-import com.tokopedia.peoplee.domains.ProfileTheyFollowedUseCase
 import javax.inject.Inject
 
 class UserDetailsUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
@@ -32,6 +31,12 @@ class UserDetailsUseCase @Inject constructor(val useCase: MultiRequestGraphqlUse
     private fun getRequestParams(userName: String): MutableMap<String, Any?> {
         val requestMap = mutableMapOf<String, Any?>()
         requestMap[KEY_USERNAME] = userName
+        return requestMap
+    }
+
+    private fun getRequestParams(profileIds: MutableList<String>): MutableMap<String, Any?> {
+        val requestMap = mutableMapOf<String, Any?>()
+        requestMap[ProfileTheyFollowedUseCase.KEY_USERIDS] = profileIds
         return requestMap
     }
 
@@ -87,11 +92,5 @@ class UserDetailsUseCase @Inject constructor(val useCase: MultiRequestGraphqlUse
                 "    }\n" +
                 "  }\n" +
                 "}\n"
-    }
-
-    private fun getRequestParams(profileIds: MutableList<String>): MutableMap<String, Any?> {
-        val requestMap = mutableMapOf<String, Any?>()
-        requestMap[ProfileTheyFollowedUseCase.KEY_USERIDS] = profileIds
-        return requestMap
     }
 }

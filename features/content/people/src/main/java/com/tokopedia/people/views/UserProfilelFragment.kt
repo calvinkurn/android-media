@@ -1,6 +1,5 @@
 package com.tokopedia.people.views
 
-import PostItemDecoration
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle

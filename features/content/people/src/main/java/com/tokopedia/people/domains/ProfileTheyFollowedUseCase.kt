@@ -1,8 +1,7 @@
-package com.tokopedia.peoplee.domains
+package com.tokopedia.people.domains
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.people.model.UserProfileIsFollow
 import javax.inject.Inject
 

@@ -1,3 +1,4 @@
+package com.tokopedia.people.views
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

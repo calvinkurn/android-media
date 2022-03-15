@@ -82,9 +82,6 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
         followersContainer = view.findViewById(R.id.container)
         globalError = view?.findViewById(R.id.ge_followers)
         initObserver()
-        //initListener()
-        val userSessionInterface = UserSession(context)
-        //mPresenter.getUserDetails(userSessionInterface.userId)
         initMainUi()
     }
 
@@ -195,14 +192,6 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
                 }
             }
         })
-
-    private fun setMainUi(data: ProfileHeaderBase) {
-
-    }
-
-    private fun showLoader() {
-
-    }
 
     override fun onDestroy() {
         super.onDestroy()

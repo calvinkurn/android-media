@@ -1,6 +1,5 @@
 package com.tokopedia.people.views
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -245,22 +244,8 @@ open class UserPostBaseAdapter(
         if (vh is ViewHolder) {
             val holder = vh as ViewHolder
             val data = items[holder.adapterPosition] ?: return
-            //listener.shopProductImpressed(holder.adapterPosition, data)
         }
     }
-
-
-//    private fun toShopProductModel(item: ShopPageProduct): ProductCardModel {
-//        val isDiscount = !item.campaign?.dPrice?.toInt().isZero()
-//        return ProductCardModel(
-//            productImageUrl = item.pImage?.img!!,
-//            productName = item.name ?: "",
-//            formattedPrice = item.price?.priceIdr!!,
-//            discountPercentage = if (isDiscount)
-//                ("${item.campaign?.dPrice!!}%") else "",
-//            slashedPrice = if (isDiscount) item.campaign?.oPriceFormatted!! else ""
-//        )
-//    }
 
     companion object {
         const val COMING_SOON = "COMING_SOON"

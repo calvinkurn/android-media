@@ -5,10 +5,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.people.Resources
 import com.tokopedia.people.Success
 import com.tokopedia.people.di.UserProfileScope
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.people.domains.*
 import com.tokopedia.people.model.*
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.peoplee.domains.ProfileTheyFollowedUseCase
 import kotlinx.coroutines.Dispatchers
 
 import java.lang.NullPointerException

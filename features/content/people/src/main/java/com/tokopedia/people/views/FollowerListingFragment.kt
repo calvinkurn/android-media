@@ -29,7 +29,7 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 
 
-class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, AdapterCallback {
+class FollowerListingFragment : BaseDaggerFragment(), AdapterCallback {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -210,12 +210,6 @@ class FollowerListingFragment : BaseDaggerFragment(), View.OnClickListener, Adap
             .userProfileModule(UserProfileModule(requireContext().applicationContext))
             .build()
             .inject(this)
-    }
-
-    override fun onClick(source: View) {
-        when (source.id) {
-
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

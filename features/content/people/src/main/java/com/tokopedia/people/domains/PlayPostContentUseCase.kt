@@ -1,11 +1,8 @@
 package com.tokopedia.people.domains
 
-import com.tokopedia.people.model.FeedXProfileHeader
-import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import javax.inject.Inject
 
 class PlayPostContentUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
