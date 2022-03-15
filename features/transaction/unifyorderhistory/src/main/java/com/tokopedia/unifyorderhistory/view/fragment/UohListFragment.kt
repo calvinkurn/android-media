@@ -447,6 +447,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun initialLoad() {
         uohListViewModel.loadFilterCategory()
+        uohListViewModel.loadPmsCounter()
     }
 
     private fun initialLoadOrderHistoryList() {
