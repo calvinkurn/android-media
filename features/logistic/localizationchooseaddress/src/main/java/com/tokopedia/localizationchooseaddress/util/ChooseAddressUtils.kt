@@ -47,8 +47,9 @@ object ChooseAddressUtils {
                 localCache?.warehouse_id ?: "",
                 localCache?.warehouses ?: listOf(),
                 localCache?.service_type ?: "",
-                localCache?.tokonow_last_update ?: "",
-                localCache?.version ?: DEFAULT_LCA_VERSION
+                localCache?.version ?: DEFAULT_LCA_VERSION,
+                localCache?.tokonow_last_update ?: ""
+
             )
         } else {
             if (isLoginUser(context)) {
