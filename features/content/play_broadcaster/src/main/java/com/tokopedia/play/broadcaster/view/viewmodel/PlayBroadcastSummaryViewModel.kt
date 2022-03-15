@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
@@ -220,14 +221,24 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
 
     /** Fetch Area */
     private fun fetchLiveTraffic() {
-        viewModelScope.launchCatchError(context = dispatcher.main, block = {
+        viewModelScope.launchCatchError(context = dispatcher.io, block = {
             _trafficMetric.emit(NetworkResult.Loading)
 
-            val deferredChannel = async(dispatcher.io) { getChannelInfo() }
-            val deferredReportChannelSummary = async(dispatcher.io) { getLiveStatistics() }
+            val channel = getChannelUseCase.apply {
+                params = GetChannelUseCase.createParams(channelId)
+            }.executeOnBackground()
 
-            val channel = deferredChannel.await()
-            val reportChannelSummary = deferredReportChannelSummary.await()
+            delay(LIVE_STATISTICS_DELAY)
+
+            var fetchTryCount = 0
+            lateinit var reportChannelSummary : GetLiveStatisticsResponse.ReportChannelSummary
+
+            getLiveStatisticsUseCase.params = GetLiveStatisticsUseCase.createParams(channelId)
+            do {
+                reportChannelSummary = getLiveStatisticsUseCase.executeOnBackground()
+                fetchTryCount++
+            }
+            while(reportChannelSummary.duration.isEmpty() && fetchTryCount < FETCH_REPORT_MAX_RETRY)
 
             _channelSummary.value = playBroadcastMapper.mapChannelSummary(
                                         channel.basic.title,
@@ -258,28 +269,6 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
 
             _uiEvent.emit(PlayBroadcastSummaryEvent.ShowInfo(UiString.Resource(R.string.play_bro_cant_post_video_message)))
         }
-    }
-
-    private suspend fun getChannelInfo(): GetChannelResponse.Channel {
-        return getChannelUseCase.apply {
-            params = GetChannelUseCase.createParams(channelId)
-        }.executeOnBackground()
-    }
-
-    private suspend fun getLiveStatistics(): GetLiveStatisticsResponse.ReportChannelSummary {
-        delay(LIVE_STATISTICS_DELAY)
-
-        var fetchTryCount = 0
-        lateinit var response : GetLiveStatisticsResponse.ReportChannelSummary
-
-        getLiveStatisticsUseCase.params = GetLiveStatisticsUseCase.createParams(channelId)
-        do {
-            response = getLiveStatisticsUseCase.executeOnBackground()
-            fetchTryCount++
-        }
-        while(response.duration.isEmpty() && fetchTryCount < FETCH_REPORT_MAX_RETRY)
-
-        return response
     }
 
     private fun getTags() {
