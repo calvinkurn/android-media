@@ -26,7 +26,7 @@ class PickerPreviewActivity : BaseActivity()
 
     private val binding: ActivityPreviewBinding? by viewBinding()
     private val uiModel = arrayListOf<MediaUiModel>()
-    private var currentDrawerSelectionSelectedIndex = 0
+    private var drawerIndexSelected = 0
 
     private val navToolbar by uiComponent {
         NavToolbarComponent(
@@ -74,8 +74,10 @@ class PickerPreviewActivity : BaseActivity()
     }
 
     override fun onItemClicked(media: MediaUiModel) {
-        binding?.drawerSelector?.setThumbnailSelected(false, currentDrawerSelectionSelectedIndex)
-        currentDrawerSelectionSelectedIndex = pickerPager.moveToOf(media)
+        val previousIndex = drawerIndexSelected
+        drawerIndexSelected = pickerPager.moveToOf(media)
+
+        binding?.drawerSelector?.setThumbnailSelected(previousIndex, drawerIndexSelected)
     }
 
     override fun onDataSetChanged(action: DrawerActionType) {
@@ -136,6 +138,12 @@ class PickerPreviewActivity : BaseActivity()
             binding?.drawerSelector?.setMaxAdapterSize(uiModel.size)
             binding?.drawerSelector?.addAllData(uiModel)
             binding?.drawerSelector?.show()
+
+
+            binding?.drawerSelector?.post {
+                // set first index as selected item
+                binding?.drawerSelector?.setThumbnailSelected(nextIndex = drawerIndexSelected)
+            }
         } else {
             val media = uiModel.first()
             retakeButtonAction(media)

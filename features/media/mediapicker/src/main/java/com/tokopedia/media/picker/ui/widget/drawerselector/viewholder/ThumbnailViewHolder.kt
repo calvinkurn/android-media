@@ -22,7 +22,6 @@ class ThumbnailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         binding?.imgThumbnail?.smallThumbnail(media)
 
         binding?.imgThumbnail?.setOnClickListener {
-            setThumbnailSelected(true)
             onClicked()
         }
 

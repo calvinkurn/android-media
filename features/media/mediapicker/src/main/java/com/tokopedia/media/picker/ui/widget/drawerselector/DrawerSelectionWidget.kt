@@ -153,8 +153,18 @@ class DrawerSelectionWidget : FrameLayout {
         adapter?.removeListener()
     }
 
-    fun setThumbnailSelected(isSelected: Boolean, index: Int){
-        (binding?.rvThumbnail?.findViewHolderForAdapterPosition(index) as ThumbnailViewHolder).setThumbnailSelected(isSelected)
+    fun setThumbnailSelected(previousIndex: Int? = null, nextIndex: Int){
+        // set previous index item border back to normal
+        previousIndex?.let { index ->
+            binding?.rvThumbnail?.findViewHolderForAdapterPosition(index)?.let {
+                (it as ThumbnailViewHolder).setThumbnailSelected(false)
+            }
+        }
+
+        // set next index item border to selected
+        binding?.rvThumbnail?.findViewHolderForAdapterPosition(nextIndex)?.let {
+            (it as ThumbnailViewHolder).setThumbnailSelected(true)
+        }
     }
 
     interface Listener {
