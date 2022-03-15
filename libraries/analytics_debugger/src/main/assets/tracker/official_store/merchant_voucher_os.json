@@ -65,7 +65,7 @@
       "eventLabel": ".*",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
-      "sessionIrs": ".*",
+      "sessionIris": ".*",
       "clientId": ".*",
       "userId": ".*"
     },
