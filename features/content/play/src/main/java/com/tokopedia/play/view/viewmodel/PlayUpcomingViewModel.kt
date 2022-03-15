@@ -327,6 +327,7 @@ class PlayUpcomingViewModel @Inject constructor(
     }
 
     private fun handleClickFollow(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_FOLLOW) {
+        if(isFromLogin) updatePartnerInfo(_partnerInfo.value)
         if (_partnerInfo.value.status !is PlayPartnerFollowStatus.NotFollowable) {
             val action = doFollowUnfollow(shouldForceFollow = isFromLogin) ?: return@needLogin
             val shopId = _partnerInfo.value.id
