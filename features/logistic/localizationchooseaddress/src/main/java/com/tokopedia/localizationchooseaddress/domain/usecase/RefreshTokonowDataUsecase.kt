@@ -17,12 +17,11 @@ class RefreshTokonowDataUsecase @Inject constructor(private val useCase: Graphql
 //        useCase.setGraphqlQuery(RefreshTokonowDataQuery)
 //        useCase.setRequestParams(generateParam(localCacheModel))
 //        return useCase.executeOnBackground()
-        delay(1000)
         return RefreshTokonowDataResponse.Data(
             RefreshTokonowDataResponse.Data.RefreshTokonowData(
                 RefreshTokonowDataResponse.Data.RefreshTokonowData.RefreshTokonowDataSuccess(
-                    shopId = "2",
-                    serviceType = "15m",
+                    shopId = localCacheModel.shop_id,
+                    serviceType = localCacheModel.service_type,
                     lastUpdate = "2021-07-16T05:51:54+07:00",
                     warehouseId = "250508"
                 )
