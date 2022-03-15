@@ -84,13 +84,18 @@ class FollowerFollowingListingFragment : BaseDaggerFragment() {
         arguments?.let { FollowerListingFragment.newInstance(it) }?.let {
             adapter?.addFragment(
                 it,
-                arguments?.getString(EXTRA_TOTAL_FOLLOWERS, "Followers") + " " + "Followers"
+                arguments?.getString(
+                    EXTRA_TOTAL_FOLLOWERS,
+                    getString(com.tokopedia.people.R.string.up_lb_followers)
+                )
+                        + " " + getString(com.tokopedia.people.R.string.up_lb_followers)
             )
         }
         arguments?.let { FollowingListingFragment.newInstance(it) }?.let {
             adapter?.addFragment(
                 it,
-                arguments?.getString(EXTRA_TOTAL_FOLLOWINGS, "Followings") + " " + "Following"
+                arguments?.getString(EXTRA_TOTAL_FOLLOWINGS, getString(R.string.up_lb_following))
+                        + " " + getString(R.string.up_lb_following)
             )
         }
 
@@ -165,6 +170,5 @@ class FollowerFollowingListingFragment : BaseDaggerFragment() {
             return fragment
         }
     }
-
 }
 

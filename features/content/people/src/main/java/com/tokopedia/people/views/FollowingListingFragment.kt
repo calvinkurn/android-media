@@ -146,44 +146,44 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
             it?.let {
                 when (it) {
                     is UnknownHostException, is SocketTimeoutException -> {
-                        followersContainer?.displayedChild = 2
+                        followersContainer?.displayedChild = PAGE_ERROR
 
                         globalError?.refreshBtn?.setOnClickListener {
-                            followersContainer?.displayedChild = 1
+                            followersContainer?.displayedChild = PAGE_LOADING
                             refreshMainUi()
                         }
                     }
                     is IllegalStateException -> {
-                        followersContainer?.displayedChild = 2
+                        followersContainer?.displayedChild = PAGE_ERROR
 
                         globalError?.refreshBtn?.setOnClickListener {
-                            followersContainer?.displayedChild = 1
+                            followersContainer?.displayedChild = PAGE_LOADING
                             refreshMainUi()
                         }
                     }
                     is RuntimeException -> {
                         when (it.localizedMessage?.toIntOrNull()) {
                             ReponseStatus.NOT_FOUND -> {
-                                followersContainer?.displayedChild = 2
+                                followersContainer?.displayedChild = PAGE_ERROR
 
                                 globalError?.refreshBtn?.setOnClickListener {
-                                    followersContainer?.displayedChild = 1
+                                    followersContainer?.displayedChild = PAGE_LOADING
                                     refreshMainUi()
                                 }
                             }
                             ReponseStatus.INTERNAL_SERVER_ERROR -> {
-                                followersContainer?.displayedChild = 2
+                                followersContainer?.displayedChild = PAGE_ERROR
 
                                 globalError?.refreshBtn?.setOnClickListener {
-                                    followersContainer?.displayedChild = 1
+                                    followersContainer?.displayedChild = PAGE_LOADING
                                     refreshMainUi()
                                 }
                             }
                             else -> {
-                                followersContainer?.displayedChild = 2
+                                followersContainer?.displayedChild = PAGE_ERROR
 
                                 globalError?.refreshBtn?.setOnClickListener {
-                                    followersContainer?.displayedChild = 1
+                                    followersContainer?.displayedChild = PAGE_LOADING
                                     refreshMainUi()
                                 }
                             }
@@ -236,34 +236,27 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
         mAdapter.cursor = ""
         mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_ID))
     }
-    companion object {
-        fun newInstance(extras: Bundle): Fragment {
-            val fragment = FollowingListingFragment()
-            fragment.arguments = extras
-            return fragment
-        }
-    }
 
     override fun onRetryPageLoad(pageNumber: Int) {
     }
 
     override fun onEmptyList(rawObject: Any?) {
-        followersContainer?.displayedChild = 3 //emptypage
+        followersContainer?.displayedChild = PAGE_EMPTY
         val textTitle = view?.findViewById<TextView>(R.id.text_error_empty_title)
         val textDescription = view?.findViewById<TextView>(R.id.text_error_empty_desc)
 
-        textTitle?.text = "No following"
+        textTitle?.text = getString(com.tokopedia.people.R.string.up_lb_no_following)
         textDescription?.hide()
     }
 
     override fun onStartFirstPageLoad() {
         if (isSwipeRefresh != true) {
-            followersContainer?.displayedChild = 1
+            followersContainer?.displayedChild = PAGE_LOADING
         }
     }
 
     override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
-        followersContainer?.displayedChild = 0
+        followersContainer?.displayedChild = PAGE_CONTENT
 
     }
 
@@ -274,6 +267,19 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
     }
 
     override fun onError(pageNumber: Int) {
+    }
+
+    companion object {
+        const val PAGE_CONTENT = 0
+        const val PAGE_ERROR = 2
+        const val PAGE_LOADING = 1
+        const val PAGE_EMPTY = 3
+
+        fun newInstance(extras: Bundle): Fragment {
+            val fragment = FollowingListingFragment()
+            fragment.arguments = extras
+            return fragment
+        }
     }
 }
 

@@ -8,13 +8,13 @@
 
     <include layout="@layout/up_layout_user_profile_header" />
 
+    <include layout="@layout/up_shimmer_user_profile_header" />
+
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/global_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/up_error_margin" />
-
-    <include layout="@layout/up_shimmer_user_profile_header" />
 
 </ViewFlipper>

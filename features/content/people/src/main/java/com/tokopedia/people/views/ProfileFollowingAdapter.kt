@@ -101,14 +101,17 @@ open class ProfileFollowingAdapter(
                 updateToFollowUi(holder.btnAction)
 
                 holder.btnAction.setOnClickListener { v ->
-                    if(!DeviceConnectionInfo.isInternetAvailable(itemContext.applicationContext,
+                    if (!DeviceConnectionInfo.isInternetAvailable(
+                            itemContext.applicationContext,
                             checkWifi = true,
                             checkCellular = true,
-                            checkEthernet = true)){
+                            checkEthernet = true
+                        )
+                    ) {
 
                         val snackBar = Toaster.build(
                             holder.btnAction as View,
-                            "Gagal unfollow. Coba lagi ya.",
+                            itemContext.getString(com.tokopedia.people.R.string.up_error_unfollow),
                             Toaster.LENGTH_LONG,
                             Toaster.TYPE_ERROR
                         )
@@ -133,14 +136,17 @@ open class ProfileFollowingAdapter(
                 updateToUnFollowUi(holder.btnAction)
 
                 holder.btnAction.setOnClickListener { v ->
-                    if(!DeviceConnectionInfo.isInternetAvailable(itemContext.applicationContext,
+                    if (!DeviceConnectionInfo.isInternetAvailable(
+                            itemContext.applicationContext,
                             checkWifi = true,
                             checkCellular = true,
-                            checkEthernet = true)){
+                            checkEthernet = true
+                        )
+                    ) {
 
                         val snackBar = Toaster.build(
                             holder.btnAction as View,
-                            "Gagal follow. Coba lagi ya.",
+                            itemContext.getString(com.tokopedia.people.R.string.up_error_follow),
                             Toaster.LENGTH_LONG,
                             Toaster.TYPE_ERROR
                         )
@@ -170,13 +176,13 @@ open class ProfileFollowingAdapter(
     }
 
     private fun updateToFollowUi(btnAction: UnifyButton) {
-        btnAction?.text = "Following"
+        btnAction?.text = btnAction.context.getString(R.string.up_lb_following)
         btnAction?.buttonVariant = UnifyButton.Variant.GHOST
         btnAction?.buttonType = UnifyButton.Type.ALTERNATE
     }
 
     private fun updateToUnFollowUi(btnAction: UnifyButton) {
-        btnAction?.text = "Follow"
+        btnAction?.text = btnAction.context.getString(R.string.up_btn_text_follow)
         btnAction?.buttonVariant = UnifyButton.Variant.FILLED
         btnAction?.buttonType = UnifyButton.Type.MAIN
     }

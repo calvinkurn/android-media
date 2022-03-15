@@ -122,8 +122,8 @@ open class UserPostBaseAdapter(
         } else {
             holder.textDate.text = PlayDateTimeFormatter.formatDate(
                 item.startTime,
-                "yyyy-MM-dd'T'HH:mm:ss",
-                "dd MMM yyyy - HH:mm"
+                DATE_FORMAT_INPUT,
+                DATE_FORMAT_OUTPUT
             )
             holder.textDate.show()
         }
@@ -226,7 +226,7 @@ open class UserPostBaseAdapter(
             ) {
                 Toaster.build(
                     item,
-                    "Koneshi internetmu targanggu. Coba lagi ya.",
+                    item.context.getString(com.tokopedia.people.R.string.up_error_local_error),
                     Toaster.LENGTH_LONG,
                     Toaster.TYPE_ERROR
                 ).show()
@@ -251,6 +251,8 @@ open class UserPostBaseAdapter(
         const val COMING_SOON = "COMING_SOON"
         const val UPCOMING = "UPCOMING"
         const val WATCH_AGAIN = "WATCH_AGAIN"
+        const val DATE_FORMAT_INPUT = "yyyy-MM-dd'T'HH:mm:ss"
+        const val DATE_FORMAT_OUTPUT = "dd MMM yyyy - HH:mm"
     }
 }
 

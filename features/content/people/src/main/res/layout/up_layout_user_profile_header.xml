@@ -279,8 +279,6 @@
 
             <include layout="@layout/up_shimmer_user_post" />
 
-            <include layout="@layout/up_layout_error_empty_user_post" />
-
             <com.tokopedia.unifycomponents.LocalLoad
                 android:id="@+id/global_error_post"
                 android:layout_width="match_parent"
@@ -289,6 +287,8 @@
                 android:layout_marginRight="@dimen/unify_space_16"
                 app:unify_local_load_description="@string/up_common_failed_desc"
                 app:unify_local_load_title="@string/up_common_failed_title" />
+
+            <include layout="@layout/up_layout_error_empty_user_post" />
 
         </ViewFlipper>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -11,5 +11,12 @@
     <string name="up_empty_page_title2">Belum ada postingan</string>
     <string name="up_lb_post">Postingan</string>
     <string name="up_lb_follower">Follower</string>
+    <string name="up_btn_profile">Ubah Profil</string>
+    <string name="up_lb_followers">Followers</string>
     <string name="up_lb_following">Following</string>
+    <string name="up_lb_no_follower">No follower</string>
+    <string name="up_lb_no_following">No following</string>
+    <string name="up_error_unfollow">Gagal unfollow. Coba lagi ya."</string>
+    <string name="up_error_follow">Gagal follow. Coba lagi ya."</string>
+    <string name="up_error_local_error">Koneshi internetmu targanggu. Coba lagi ya."</string>
 </resources>

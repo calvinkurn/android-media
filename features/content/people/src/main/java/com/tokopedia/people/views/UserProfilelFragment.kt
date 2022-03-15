@@ -147,7 +147,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         isNewlyCreated = true;
         landedUserName = requireArguments().getString(EXTRA_USERNAME)
         refreshLandingPageData(true)
-        container?.displayedChild = 2
+        container?.displayedChild = PAGE_LOADING
 
         view.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)
             ?.setOnChildScrollUpCallback(object : SwipeRefreshLayout.OnChildScrollUpCallback {
@@ -227,7 +227,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                             //Hide shimmer
                         }
 
-                        container?.displayedChild = 0
+                        container?.displayedChild = PAGE_CONTENT
                         setMainUi(it.data)
                         mPresenter.getFollowingStatus(mutableListOf(profileUserId))
                     }
@@ -325,54 +325,54 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             it?.let {
                 when (it) {
                     is UnknownHostException, is SocketTimeoutException -> {
-                        container?.displayedChild = 1
+                        container?.displayedChild = PAGE_ERROR
                         globalError?.setType(NO_CONNECTION)
                         globalError?.show()
 
                         globalError?.setActionClickListener {
-                            container?.displayedChild = 2
+                            container?.displayedChild = PAGE_LOADING
                             refreshLandingPageData()
                         }
                     }
                     is IllegalStateException -> {
-                        container?.displayedChild = 1
+                        container?.displayedChild = PAGE_ERROR
                         globalError?.setType(PAGE_FULL)
                         globalError?.show()
 
                         globalError?.setActionClickListener {
-                            container?.displayedChild = 2
+                            container?.displayedChild = PAGE_LOADING
                             refreshLandingPageData()
                         }
                     }
                     is RuntimeException -> {
                         when (it.localizedMessage?.toIntOrNull()) {
                             ReponseStatus.NOT_FOUND -> {
-                                container?.displayedChild = 1
+                                container?.displayedChild = PAGE_ERROR
                                 globalError?.setType(PAGE_NOT_FOUND)
                                 globalError?.show()
 
                                 globalError?.setActionClickListener {
-                                    container?.displayedChild = 2
+                                    container?.displayedChild = PAGE_LOADING
                                     refreshLandingPageData()
                                 }
                             }
                             ReponseStatus.INTERNAL_SERVER_ERROR -> {
-                                container?.displayedChild = 1
+                                container?.displayedChild = PAGE_ERROR
                                 globalError?.setType(SERVER_ERROR)
                                 globalError?.show()
 
                                 globalError?.setActionClickListener {
-                                    container?.displayedChild = 2
+                                    container?.displayedChild = PAGE_LOADING
                                     refreshLandingPageData()
                                 }
                             }
                             else -> {
-                                container?.displayedChild = 1
+                                container?.displayedChild = PAGE_ERROR
                                 globalError?.setType(SERVER_ERROR)
                                 globalError?.show()
 
                                 globalError?.setActionClickListener {
-                                    container?.displayedChild = 2
+                                    container?.displayedChild = PAGE_LOADING
                                     refreshLandingPageData()
                                 }
                             }
@@ -387,44 +387,44 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             it?.let {
                 when (it) {
                     is UnknownHostException, is SocketTimeoutException -> {
-                        userPostContainer?.displayedChild = 3
+                        userPostContainer?.displayedChild = PAGE_ERROR
 
                         globalErrorPost?.refreshBtn?.setOnClickListener {
-                            userPostContainer?.displayedChild = 1
+                            userPostContainer?.displayedChild = PAGE_LOADING
                             landedUserName?.let { it1 -> initUserPost(it1) }
                         }
                     }
                     is IllegalStateException -> {
-                        userPostContainer?.displayedChild = 3
+                        userPostContainer?.displayedChild = PAGE_ERROR
 
                         globalErrorPost?.refreshBtn?.setOnClickListener {
-                            userPostContainer?.displayedChild = 1
+                            userPostContainer?.displayedChild = PAGE_LOADING
                             landedUserName?.let { it1 -> initUserPost(it1) }
                         }
                     }
                     is RuntimeException -> {
                         when (it.localizedMessage?.toIntOrNull()) {
                             ReponseStatus.NOT_FOUND -> {
-                                userPostContainer?.displayedChild = 3
+                                userPostContainer?.displayedChild = PAGE_ERROR
 
                                 globalErrorPost?.refreshBtn?.setOnClickListener {
-                                    userPostContainer?.displayedChild = 1
+                                    userPostContainer?.displayedChild = PAGE_LOADING
                                     landedUserName?.let { it1 -> initUserPost(it1) }
                                 }
                             }
                             ReponseStatus.INTERNAL_SERVER_ERROR -> {
-                                userPostContainer?.displayedChild = 3
+                                userPostContainer?.displayedChild = PAGE_ERROR
 
                                 globalErrorPost?.refreshBtn?.setOnClickListener {
-                                    userPostContainer?.displayedChild = 1
+                                    userPostContainer?.displayedChild = PAGE_LOADING
                                     landedUserName?.let { it1 -> initUserPost(it1) }
                                 }
                             }
                             else -> {
-                                userPostContainer?.displayedChild = 3
+                                userPostContainer?.displayedChild = PAGE_ERROR
 
                                 globalErrorPost?.refreshBtn?.setOnClickListener {
-                                    userPostContainer?.displayedChild = 1
+                                    userPostContainer?.displayedChild = PAGE_LOADING
                                     landedUserName?.let { it1 -> initUserPost(it1) }
                                 }
                             }
@@ -439,7 +439,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             it?.let {
                 val snackBar = Toaster.build(
                     btnAction as View,
-                    "Gagal follow. Coba lagi ya.",
+                    getString(com.tokopedia.people.R.string.up_error_follow),
                     Toaster.LENGTH_LONG,
                     Toaster.TYPE_ERROR
                 )
@@ -455,7 +455,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             it?.let {
                 val snackBar = Toaster.build(
                     btnAction as View,
-                    "Gagal unfollow. Coba lagi ya.",
+                    getString(com.tokopedia.people.R.string.up_error_unfollow),
                     Toaster.LENGTH_LONG,
                     Toaster.TYPE_ERROR
                 )
@@ -518,13 +518,13 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         }
 
     private fun updateToFollowUi() {
-        btnAction?.text = "Following"
+        btnAction?.text =  getString(R.string.up_btn_text_following)
         btnAction?.buttonVariant = UnifyButton.Variant.GHOST
         btnAction?.buttonType = UnifyButton.Type.ALTERNATE
     }
 
     private fun updateToUnFollowUi() {
-        btnAction?.text = "Follow"
+        btnAction?.text = getString(R.string.up_btn_text_follow)
         btnAction?.buttonVariant = UnifyButton.Variant.FILLED
         btnAction?.buttonType = UnifyButton.Type.MAIN
     }
@@ -565,7 +565,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         profileImage = data.profileHeader.profile.imageCover
         profileUserId = data.profileHeader.profile.userID
         userWebLink = data.profileHeader.profile.sharelink.weblink
-        textBio?.maxLines = 20
+        textBio?.maxLines = MAX_LINE
 
         textBio?.postDelayed({
             textBio?.text = context?.let {
@@ -575,12 +575,12 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 ).spannedString
             }
 
-            if (textBio?.lineCount > 3) {
+            if (textBio?.lineCount > SEE_ALL_LINE) {
                 if (isViewMoreClickedBio == true) {
-                    textBio.maxLines = 20
+                    textBio.maxLines = MAX_LINE
                     textSeeMore?.hide()
                 } else {
-                    textBio.maxLines = 3
+                    textBio.maxLines = SEE_ALL_LINE
                     textSeeMore?.show()
                 }
             } else {
@@ -615,13 +615,13 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     private fun setActionButton(followProfile: UserProfileIsFollow) {
 
         if (!userSession?.userId.isNullOrBlank() && followProfile.profileHeader.items[0].userID == userSession?.userId) {
-            btnAction?.text = "Ubah Profil"
+            btnAction?.text = getString(com.tokopedia.people.R.string.up_btn_profile)
             btnAction?.buttonVariant = UnifyButton.Variant.GHOST
             btnAction?.buttonType = UnifyButton.Type.ALTERNATE
 
             btnAction?.setOnClickListener(
                 addProfileClickListener(
-                    "tokopedia://setting/profile",
+                    APPLINK_PROFILE,
                     followProfile.profileHeader.items[0].userID
                 )
             )
@@ -711,7 +711,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             )
 
             imgMenu.setOnClickListener {
-                RouteManager.route(activity, "tokopedia://navigation/main")
+                RouteManager.route(activity, APPLINK_MENU)
             }
         }
     }
@@ -768,7 +768,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             R.id.text_see_more -> {
                 val textBio = view?.findViewById<TextView>(R.id.text_bio)
                 val btnSeeAll = view?.findViewById<TextView>(R.id.text_see_more)
-                textBio?.maxLines = 20
+                textBio?.maxLines = MAX_LINE
                 btnSeeAll?.hide()
                 isViewMoreClickedBio = true;
             }
@@ -791,15 +791,15 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     }
 
     override fun onEmptyList(rawObject: Any?) {
-        userPostContainer?.displayedChild = 2
+        userPostContainer?.displayedChild = PAGE_EMPTY
     }
 
     override fun onStartFirstPageLoad() {
-        userPostContainer?.displayedChild = 1
+        userPostContainer?.displayedChild = PAGE_LOADING
     }
 
     override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
-        userPostContainer?.displayedChild = 0
+        userPostContainer?.displayedChild = PAGE_CONTENT
     }
 
     override fun onStartPageLoad(pageNumber: Int) {
@@ -853,8 +853,17 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         const val EXTRA_USER_NAME = "user_name"
         const val EXTRA_USER_ID = "userid"
         const val EXTRA_IS_FOLLOWERS = "is_followers"
+        const val APPLINK_MENU = "tokopedia://navigation/main"
+        const val APPLINK_PROFILE = "tokopedia://setting/profile"
         const val OFFSET_USERINFO = 136F
         const val REQUEST_CODE_LOGIN = 1
+
+        const val PAGE_CONTENT = 0
+        const val PAGE_ERROR = 2
+        const val PAGE_LOADING = 1
+        const val PAGE_EMPTY = 3
+        const val SEE_ALL_LINE = 3
+        const val MAX_LINE = 20
 
         fun newInstance(extras: Bundle): Fragment {
             val fragment = UserProfileFragment()
