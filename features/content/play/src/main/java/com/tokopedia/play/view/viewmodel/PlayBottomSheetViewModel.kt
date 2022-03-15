@@ -51,32 +51,6 @@ class PlayBottomSheetViewModel @Inject constructor(
     val observableUserReportReasoning : LiveData<PlayResult<PlayUserReportUiModel.Loaded>> = _observableUserReportReasoning
     val observableUserReportSubmission : LiveData<PlayResult<Event<Unit>>> = _observableUserReportSubmission
 
-    fun getProductVariant(product: PlayProductUiModel.Product, action: ProductAction) {
-        _observableProductVariant.value = PlayResult.Loading(true)
-
-        viewModelScope.launchCatchError(block = {
-            val variantSheetUiModel = withContext(dispatchers.io) {
-                getProductVariantUseCase.params = getProductVariantUseCase.createParams(product.id)
-                val response = getProductVariantUseCase.executeOnBackground()
-                val mapOfSelectedVariants = VariantCommonMapper.mapVariantIdentifierToHashMap(response.data)
-                val categoryVariants = VariantCommonMapper.processVariant(response.data,
-                        mapOfSelectedVariant = mapOfSelectedVariants)
-                VariantSheetUiModel(
-                        product = product,
-                        action = action,
-                        parentVariant = response.data,
-                        mapOfSelectedVariants = mapOfSelectedVariants,
-                        listOfVariantCategory = categoryVariants.orEmpty()
-                )
-            }
-            _observableProductVariant.value = PlayResult.Success(variantSheetUiModel)
-        }){
-            _observableProductVariant.value = PlayResult.Failure(it) {
-                getProductVariant(product, action)
-            }
-        }
-    }
-
     fun doInteractionEvent(event: InteractionEvent) {
         _observableLoggedInInteractionEvent.value = Event(
                 if (event.needLogin && !userSession.isLoggedIn) LoginStateEvent.NeedLoggedIn(event)

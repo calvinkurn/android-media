@@ -14,24 +14,27 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.variantsheet.adapter.VariantAdapter
 import com.tokopedia.play.ui.variantsheet.itemdecoration.VariantItemDecoration
 import com.tokopedia.play.view.custom.TopShadowOutlineProvider
-import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.type.DiscountedPrice
+import com.tokopedia.play.view.type.OriginalPrice
+import com.tokopedia.play.view.type.ProductAction
+import com.tokopedia.play.view.type.StockAvailable
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VariantPlaceholderUiModel
-import com.tokopedia.play.view.uimodel.VariantSheetUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
-import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.variant_common.util.VariantCommonMapper
 
 /**
  * Created by jegul on 31/07/20
@@ -65,7 +68,9 @@ class VariantSheetViewComponent(
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
     private val variantAdapter: VariantAdapter = VariantAdapter(this)
-    private var variantSheetUiModel: VariantSheetUiModel? = null
+    private var mAction: ProductAction = ProductAction.Buy
+
+    private var mVariantModel: VariantUiModel? = null
 
     init {
         findViewById<ImageView>(com.tokopedia.play_common.R.id.iv_sheet_close)
@@ -108,70 +113,7 @@ class VariantSheetViewComponent(
     }
 
     override fun onVariantClicked(variantOptions: VariantOptionWithAttribute, state: Int) {
-        variantSheetUiModel?.let {
-            it.mapOfSelectedVariants[variantOptions.variantCategoryKey] = variantOptions.variantId
-        }
-
-        val isPartialSelected = variantSheetUiModel?.isPartialySelected() ?: false
-        val listOfVariants = VariantCommonMapper.processVariant(
-                variantSheetUiModel?.parentVariant,
-                variantSheetUiModel?.mapOfSelectedVariants,
-                variantOptions.level,
-                isPartialSelected
-        )
-
-        val findVariant = variantSheetUiModel?.mapOfSelectedVariants?.keys?.indexOf(variantOptions.variantCategoryKey)
-        val indexOf = variantSheetUiModel?.mapOfSelectedVariants?.keys
-        labelVariant1.shouldShowWithAction(listOfVariants?.getOrNull(0)?.variantOptions?.isNotEmpty() == true &&
-                variantSheetUiModel?.mapOfSelectedVariants?.getValue(indexOf?.first().orEmpty()) != "0"){
-            if(findVariant == 0) labelVariant1.text = variantOptions.variantName
-        }
-        labelVariant2.shouldShowWithAction(listOfVariants?.getOrNull(1)?.variantOptions?.isNotEmpty() == true &&
-                variantSheetUiModel?.mapOfSelectedVariants?.getValue(indexOf?.last().orEmpty()) != "0"){
-            if(findVariant == 1) labelVariant2.text = variantOptions.variantName
-        }
-
-        if (!listOfVariants.isNullOrEmpty()) {
-            val pairSelectedProduct = VariantCommonMapper.selectedProductData(
-                    variantSheetUiModel?.parentVariant?: ProductVariant())
-            val selectedProduct = pairSelectedProduct?.second
-            if (selectedProduct != null) {
-                val stock = selectedProduct.stock
-
-                val product = PlayProductUiModel.Product(
-                        id = selectedProduct.productId,
-                        shopId = variantSheetUiModel?.product?.shopId.toEmptyStringIfNull(),
-                        imageUrl = selectedProduct.picture?.original ?: "",
-                        title = selectedProduct.name,
-                        stock = if (stock == null) OutOfStock else StockAvailable(stock.stock ?: 0),
-                        isVariantAvailable = true,
-                        price = if (selectedProduct.campaign?.isActive == true) {
-                            DiscountedPrice(
-                                    originalPrice = selectedProduct.campaign?.originalPriceFmt.toEmptyStringIfNull(),
-                                    discountedPriceNumber = selectedProduct.campaign?.discountedPrice ?: 0.0,
-                                    discountPercent = selectedProduct.campaign?.discountedPercentage?.toInt()?:0,
-                                    discountedPrice = selectedProduct.campaign?.discountedPriceFmt.toEmptyStringIfNull()
-                            )
-                        } else {
-                            OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull(), selectedProduct.price)
-                        },
-                        minQty = variantSheetUiModel?.product?.minQty.orZero(),
-                        isFreeShipping = variantSheetUiModel?.product?.isFreeShipping ?: false,
-                        applink = variantSheetUiModel?.product?.applink
-                )
-                variantSheetUiModel?.stockWording = stock?.stockWordingHTML
-                variantSheetUiModel?.product = product
-
-                tvProductStock.shouldShowWithAction(stock != null){
-                    val stockInString = stock?.stock.toString()
-                    tvProductStock.text = getString(R.string.play_product_item_stock, ": $stockInString")
-                }
-                setProduct(product)
-
-                btnAction.isEnabled = variantSheetUiModel?.isPartialySelected() == false
-            }
-            variantAdapter.setItemsAndAnimateChanges(listOfVariants)
-        }
+        listener.onVariantOptionClicked(variantOptions)
     }
 
     override fun onVariantGuideLineHide(): Boolean {
@@ -179,11 +121,10 @@ class VariantSheetViewComponent(
     }
 
     override fun getStockWording(): String {
-        return  if (variantSheetUiModel?.isPartialySelected() == true) {
-            ""
-        } else {
-            variantSheetUiModel?.stockWording ?: getString(R.string.play_stock_available)
-        }
+        return if (
+            VariantUiModel.isVariantPartiallySelected(mVariantModel?.selectedVariants.orEmpty())
+        ) ""
+        else mVariantModel?.stockWording ?: getString(R.string.play_stock_available)
     }
 
     fun showWithHeight(height: Int) {
@@ -196,33 +137,73 @@ class VariantSheetViewComponent(
         show()
     }
 
-    fun setVariantSheet(model: VariantSheetUiModel) {
-        showContent(shouldShow = true, withPlaceholder = false)
-
-        variantSheetUiModel = model
-
-        setProduct(model.product)
-
-        if (model.listOfVariantCategory.isNotEmpty()) {
-            variantAdapter.setItemsAndAnimateChanges(model.listOfVariantCategory)
-        }
-
-        btnAction.isEnabled = !model.isPartialySelected()
-
+    fun setAction(action: ProductAction) {
         btnAction.text = getString(
-                if (model.action == ProductAction.Buy) R.string.play_product_buy
-                else R.string.play_product_add_to_card
+            if (action == ProductAction.Buy) R.string.play_product_buy
+            else R.string.play_product_add_to_card
         )
 
-        btnAction.setOnClickListener {
-            variantSheetUiModel?.product?.let { product ->
-                if (model.action == ProductAction.Buy) listener.onBuyClicked(this, product)
-                else listener.onAddToCartClicked(this, product)
+        mAction = action
+    }
+
+    fun setVariantSheet(model: VariantUiModel) {
+        mVariantModel = model
+
+        showContent(shouldShow = true, withPlaceholder = false)
+
+        ivProductImage.setImageUrl(model.variantDetail.imageUrl)
+        when (model.variantDetail.price) {
+            is DiscountedPrice -> {
+                tvProductDiscount.show()
+                tvOriginalPrice.show()
+                tvProductDiscount.text = getString(
+                    R.string.play_discount_percent,
+                    model.variantDetail.price.discountPercent
+                )
+                tvOriginalPrice.text = model.variantDetail.price.originalPrice
+                tvCurrentPrice.text = model.variantDetail.price.discountedPrice
+            }
+            is OriginalPrice -> {
+                tvProductDiscount.hide()
+                tvOriginalPrice.hide()
+                tvCurrentPrice.text = model.variantDetail.price.price
             }
         }
 
-        labelVariant1.gone()
-        labelVariant2.gone()
+        variantAdapter.setItemsAndAnimateChanges(model.categories)
+        btnAction.isEnabled = !VariantUiModel.isVariantPartiallySelected(
+            model.selectedVariants
+        )
+        btnAction.setOnClickListener {
+            listener.onActionClicked(model.variantDetail, mAction)
+        }
+
+        val variantEntries = model.selectedVariants.entries.toList()
+        val firstIndex = 0
+        val firstEntry = variantEntries.getOrNull(firstIndex)
+        if (firstEntry != null && firstEntry.value != "0") {
+            labelVariant1.visibility = View.VISIBLE
+            labelVariant1.text = model.categories.getOrNull(firstIndex)?.variantOptions?.firstOrNull {
+                it.variantId == firstEntry.value
+            }?.variantName
+        } else labelVariant1.visibility = View.GONE
+
+        val secondIndex = 1
+        val secondEntry = variantEntries.getOrNull(secondIndex)
+        if (secondEntry != null && secondEntry.value != "0") {
+            labelVariant2.visibility = View.VISIBLE
+            labelVariant2.text = model.categories.getOrNull(firstIndex)?.variantOptions?.firstOrNull {
+                it.variantId == secondEntry.value
+            }?.variantName
+        } else labelVariant2.visibility = View.GONE
+
+        if (model.variantDetail.stock is StockAvailable) {
+            tvProductStock.visibility = View.VISIBLE
+            tvProductStock.text = getString(
+                R.string.play_product_item_stock,
+                ": ${model.variantDetail.stock.stock}"
+            )
+        } else tvProductStock.visibility = View.GONE
     }
 
     fun showPlaceholder() {
@@ -316,5 +297,7 @@ class VariantSheetViewComponent(
         fun onCloseButtonClicked(view: VariantSheetViewComponent)
         fun onAddToCartClicked(view: VariantSheetViewComponent, productModel: PlayProductUiModel.Product)
         fun onBuyClicked(view: VariantSheetViewComponent, productModel: PlayProductUiModel.Product)
+        fun onVariantOptionClicked(option: VariantOptionWithAttribute)
+        fun onActionClicked(variant: PlayProductUiModel.Product, action: ProductAction)
     }
 }
