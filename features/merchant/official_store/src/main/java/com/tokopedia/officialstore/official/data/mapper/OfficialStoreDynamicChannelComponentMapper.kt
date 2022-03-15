@@ -96,10 +96,10 @@ object OfficialStoreDynamicChannelComponentMapper {
                                 )
                             },
                             shop =  ChannelShop(
-                                    id = it.shop.shopId,
-                                    shopLocation = it.shop.city,
-                                    shopName = it.shop.name,
-                                    shopApplink = it.shop.applink
+                                    id = it.shop?.shopId?: "",
+                                    shopLocation = it.shop?.city?: "",
+                                    shopName = it.shop?.name?: "",
+                                    shopApplink = it.shop?.applink?: ""
                             ),
                             badges = it.badges?.map { badge ->
                                 ChannelGridBadges(
