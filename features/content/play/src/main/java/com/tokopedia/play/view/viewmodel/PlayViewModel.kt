@@ -1002,12 +1002,7 @@ class PlayViewModel @AssistedInject constructor(
             val tagItem = repo.getTagItem(channelId)
             _tagItems.value = tagItem
 
-            //TODO () = check reminder
-
-            if(userSession.isLoggedIn)
-                _tagItems.value.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().forEach {
-                    if(it.config.type == ProductSectionType.Upcoming) checkUpcomingCampaignSub(it)
-                }
+            checkReminderStatus()
 
             sendProductTrackerToBro(
                 productList = tagItem.product.productSectionList
@@ -1017,6 +1012,13 @@ class PlayViewModel @AssistedInject constructor(
         }) { err ->
             _tagItems.update { it.copy(resultState = ResultState.Fail(err)) }
         }
+    }
+
+    private fun checkReminderStatus(){
+        if(userSession.isLoggedIn)
+            _tagItems.value.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().forEach {
+                if(it.config.type == ProductSectionType.Upcoming) checkUpcomingCampaignSub(it)
+            }
     }
 
     /**
