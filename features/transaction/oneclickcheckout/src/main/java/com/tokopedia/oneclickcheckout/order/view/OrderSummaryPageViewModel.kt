@@ -477,7 +477,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             val shippingRecommendationData = orderShipment.value.shippingRecommendationData
             if (shippingRecommendationData != null) {
                 globalEvent.value = OccGlobalEvent.Loading
-                val (isApplied, resultValidateUse, newGlobalEvent) = promoProcessor.validateUseLogisticPromo(generateValidateUsePromoRequestWithBbo(logisticPromoUiModel), logisticPromoUiModel.promoCode)
+                val (isApplied, resultValidateUse, newGlobalEvent) = promoProcessor.validateUseLogisticPromo(generateValidateUsePromoRequestWithBbo(logisticPromoUiModel, shipping.logisticPromoViewModel?.promoCode), logisticPromoUiModel.promoCode)
                 if (isApplied && resultValidateUse != null) {
                     val (newShipment, newEvent) = logisticProcessor.onApplyBbo(shipping, logisticPromoUiModel)
                     if (newShipment != null) {
