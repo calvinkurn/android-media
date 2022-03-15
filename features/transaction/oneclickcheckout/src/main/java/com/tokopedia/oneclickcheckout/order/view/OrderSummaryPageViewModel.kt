@@ -384,7 +384,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderShipment.value = if (orderProfile.value.shipment.isDisableChangeCourier) {
                 shipping.copy(serviceErrorMessage = FAIL_GET_RATES_ERROR_MESSAGE, isApplyLogisticPromo = false, logisticPromoShipping = null)
             } else {
-                shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
+                shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) logisticPromoUiModel.tickerAvailableFreeShippingCourierTitle else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
             }
             if (resultValidateUse != null) {
                 validateUsePromoRevampUiModel = resultValidateUse
