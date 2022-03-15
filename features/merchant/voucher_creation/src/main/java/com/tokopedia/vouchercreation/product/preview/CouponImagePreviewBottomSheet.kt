@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
@@ -39,12 +40,14 @@ class CouponImagePreviewBottomSheet : BottomSheetUnify() {
         private const val BUNDLE_KEY_COUPON_SETTINGS = "settings"
         private const val BUNDLE_KEY_PRODUCT_COUNT = "product-count"
         private const val BUNDLE_KEY_PRODUCT_IMAGE_URL = "imageUrl"
+        private const val BUNDLE_KEY_IS_CREATE_MODE = "create-mode"
         private const val SCREEN_HEIGHT_FULL = 1f
         private const val SCREEN_HEIGHT_ONE_HALF = 1.5f
         private const val SCREEN_HEIGHT_MULTIPLIED = 2
 
         @JvmStatic
         fun newInstance(
+            isCreateMode: Boolean,
             couponInformation: CouponInformation,
             couponSettings: CouponSettings,
             productCount: Int,
@@ -55,9 +58,11 @@ class CouponImagePreviewBottomSheet : BottomSheetUnify() {
             args.putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
             args.putInt(BUNDLE_KEY_PRODUCT_COUNT, productCount)
             args.putStringArrayList(BUNDLE_KEY_PRODUCT_IMAGE_URL, productImageUrls)
+            args.putBoolean(BUNDLE_KEY_IS_CREATE_MODE, isCreateMode)
             val fragment = CouponImagePreviewBottomSheet()
             fragment.arguments = args
             return fragment
+
         }
     }
 
@@ -169,6 +174,7 @@ class CouponImagePreviewBottomSheet : BottomSheetUnify() {
         binding.loader.type = LoaderUnify.TYPE_CIRCULAR
         binding.loader.visible()
 
+        val isCreateMode = arguments?.getBoolean(BUNDLE_KEY_IS_CREATE_MODE, false).orFalse()
         val couponInformation =
             arguments?.getParcelable(BUNDLE_KEY_COUPON_INFORMATION) as? CouponInformation
                 ?: return
@@ -177,11 +183,13 @@ class CouponImagePreviewBottomSheet : BottomSheetUnify() {
         val productCount = arguments?.getInt(BUNDLE_KEY_PRODUCT_COUNT).orZero()
         val productImageUrls = arguments?.getStringArrayList(BUNDLE_KEY_PRODUCT_IMAGE_URL) ?: arrayListOf()
 
+
         val firstProductImageUrl = productImageUrls.getIndexAtOrEmpty(FIRST_IMAGE_URL)
         val secondProductImageUrl = productImageUrls.getIndexAtOrEmpty(SECOND_IMAGE_URL)
         val thirdImageUrl = productImageUrls.getIndexAtOrEmpty(THIRD_IMAGE_URL)
 
         viewModel.previewImage(
+            isCreateMode,
             couponInformation,
             couponSettings,
             productCount,

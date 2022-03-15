@@ -25,6 +25,7 @@ abstract class BaseTrackerConst {
         const val PROMO_VIEW_IRIS = "promoViewIris"
         const val CLICK_HOMEPAGE = "clickHomepage"
         const val PRODUCT_ADD_TO_CART = "addToCart"
+        const val SELECT_CONTENT = "select_content"
     }
 
     protected object Category{
@@ -81,6 +82,23 @@ abstract class BaseTrackerConst {
         const val KEY = "campaignCode"
     }
 
+    protected object ItemList {
+        const val KEY = "item_list"
+    }
+
+    protected object Items {
+        const val KEY = "items"
+        const val DIMENSION_83 = "dimension83"
+        const val DIMENSION_83_DEFAULT = "bebas ongkir"
+        const val INDEX = "index"
+        const val ITEM_BRAND = "item_brand"
+        const val ITEM_CATEGORY = "item_category"
+        const val ITEM_ID = "item_id"
+        const val ITEM_NAME = "item_name"
+        const val ITEM_VARIANT = "item_variant"
+        const val PRICE = "price"
+    }
+
     protected object Value {
         const val NONE_OTHER = "none / other"
         const val LIST_WITH_HEADER = "/ - p%s - %s - %s"
@@ -98,7 +116,15 @@ abstract class BaseTrackerConst {
             val position: String,
             val promoIds: String = "",
             val promoCodes: String = "",
-            val creativeUrl: String = "")
+            val creativeUrl: String = "") {
+        companion object {
+            const val KEY = "promotions"
+            const val CREATIVE_NAME = "creative_name"
+            const val CREATIVE_SLOT = "creative_slot"
+            const val ITEM_ID = "item_id"
+            const val ITEM_NAME = "item_name"
+        }
+    }
 
     open class  Product(
             val name: String,
@@ -130,12 +156,12 @@ abstract class BaseTrackerConst {
         const val KEY = "ecommerce"
         const val PROMOTION_NAME = "/ - p%s - %s - %s"
         private const val PRODUCT_VIEW = "productView"
-        private const val PRODUCT_CLICK = "productClick"
+        const val PRODUCT_CLICK = "productClick"
         private const val CLICK = "click"
         private const val ADD = "add"
         private const val IMPRESSIONS = "impressions"
         private const val PROMO_VIEW = "promoView"
-        private const val PROMO_CLICK = "promoClick"
+        const val PROMO_CLICK = "promoClick"
         private const val PROMOTIONS = "promotions"
         private const val PRODUCTS = "products"
         private const val ACTION_FIELD = "actionField"

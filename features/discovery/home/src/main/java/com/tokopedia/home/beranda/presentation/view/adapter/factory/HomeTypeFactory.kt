@@ -78,4 +78,6 @@ interface HomeTypeFactory {
     fun type(errorStateAtfModel: ErrorStateAtfModel): Int
 
     fun type(cmHomeWidgetDataModel: CMHomeWidgetDataModel): Int
+
+    fun type(homePayLaterWidgetDataModel: HomePayLaterWidgetDataModel): Int
 }

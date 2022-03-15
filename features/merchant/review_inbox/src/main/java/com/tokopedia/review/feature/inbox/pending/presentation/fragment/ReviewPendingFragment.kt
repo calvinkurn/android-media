@@ -32,7 +32,6 @@ import com.tokopedia.review.common.analytics.ReviewTracking
 import com.tokopedia.review.common.data.Fail
 import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.data.Success
-import com.tokopedia.review.common.presentation.InboxUnifiedRemoteConfig
 import com.tokopedia.review.common.util.ReviewInboxUtil
 import com.tokopedia.review.feature.inbox.container.presentation.listener.ReviewInboxListener
 import com.tokopedia.review.feature.inbox.pending.analytics.ReviewPendingTracking
@@ -500,20 +499,18 @@ class ReviewPendingFragment :
     }
 
     override fun onClickOvoIncentiveTickerDescription(productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain) {
-        context?.let { context ->
-            val bottomSheet = ovoIncentiveBottomSheet ?: IncentiveOvoBottomSheet(context).also { ovoIncentiveBottomSheet = it }
-            val bottomSheetData = IncentiveOvoBottomSheetUiModel(
-                productRevIncentiveOvoDomain = productRevIncentiveOvoDomain,
-                category = ReviewInboxTrackingConstants.PENDING_TAB
+        val bottomSheet = ovoIncentiveBottomSheet ?: IncentiveOvoBottomSheet().also { ovoIncentiveBottomSheet = it }
+        val bottomSheetData = IncentiveOvoBottomSheetUiModel(
+            productRevIncentiveOvoDomain = productRevIncentiveOvoDomain,
+            category = ReviewInboxTrackingConstants.PENDING_TAB
+        )
+        bottomSheet.init(bottomSheetData, this)
+        activity?.supportFragmentManager?.let { supportFragmentManager ->
+            bottomSheet.show(supportFragmentManager, bottomSheet.tag)
+            ReviewTracking.onClickReadSkIncentiveOvoTracker(
+                productRevIncentiveOvoDomain.productrevIncentiveOvo?.ticker?.subtitle,
+                ReviewInboxTrackingConstants.PENDING_TAB
             )
-            bottomSheet.init(bottomSheetData, this)
-            activity?.supportFragmentManager?.let { supportFragmentManager ->
-                bottomSheet.show(supportFragmentManager, bottomSheet.tag)
-                ReviewTracking.onClickReadSkIncentiveOvoTracker(
-                    productRevIncentiveOvoDomain.productrevIncentiveOvo?.ticker?.subtitle,
-                    ReviewInboxTrackingConstants.PENDING_TAB
-                )
-            }
         }
     }
 
@@ -556,13 +553,6 @@ class ReviewPendingFragment :
     }
 
     private fun getSourceData() {
-        if (InboxUnifiedRemoteConfig.isInboxUnified()) {
-            source = containerListener?.getPageSource() ?: ReviewInboxConstants.DEFAULT_SOURCE
-            if (source.isBlank()) {
-                source = ReviewInboxConstants.DEFAULT_SOURCE
-            }
-            return
-        }
         source = arguments?.getString(
             ReviewInboxConstants.PARAM_SOURCE,
             ReviewInboxConstants.DEFAULT_SOURCE

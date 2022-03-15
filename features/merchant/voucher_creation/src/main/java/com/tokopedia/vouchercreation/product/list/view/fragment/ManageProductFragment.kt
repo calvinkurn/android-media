@@ -130,6 +130,9 @@ class ManageProductFragment : BaseDaggerFragment(),
         val couponSettings = arguments?.getParcelable<CouponSettings>(BUNDLE_KEY_COUPON_SETTINGS)
         viewModel.setCouponSettings(couponSettings)
 
+        val selectedWarehouseId = arguments?.getString(BUNDLE_KEY_SELECTED_WAREHOUSE_ID)
+        viewModel.setWarehouseLocationId(selectedWarehouseId ?: "")
+
         val selectedProducts = arguments?.getParcelableArrayList<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)
         val selectedProductIds = arguments?.getParcelableArrayList<ProductId>(BUNDLE_KEY_SELECTED_PRODUCT_IDS)
 
@@ -137,14 +140,16 @@ class ManageProductFragment : BaseDaggerFragment(),
             viewModel.setSelectedProductIds(selectedProductIds)
             val selectedParentProductIds = viewModel.getSelectedParentProductIds()
             viewModel.getProductList(
+                    pageSize = viewModel.getMaxProductLimit(),
                     shopId = shopId,
                     selectedProductIds = selectedParentProductIds
             )
         } else {
             if (!selectedProducts.isNullOrEmpty()) {
-                viewModel.setSetSelectedProducts(selectedProducts.toList())
                 val updatedProductList = viewModel.updateProductUiModelsDisplayMode(isViewing, isEditing, selectedProducts)
-                adapter?.setProductList(resetProductUiModelState(updatedProductList))
+                val filteredProductList = viewModel.filterSelectedProductVariant(updatedProductList)
+                adapter?.setProductList(viewModel.resetProductUiModelState(filteredProductList))
+                updateProductCounter()
             }
         }
     }
@@ -160,6 +165,8 @@ class ManageProductFragment : BaseDaggerFragment(),
     private fun setupDeleteProductButton(binding: FragmentMvcManageProductBinding?) {
         binding?.tpgDeleteProduct?.setOnClickListener {
             adapter?.deleteSelectedProducts()
+            viewModel.setSetSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
+            updateProductCounter()
         }
     }
 
@@ -179,12 +186,13 @@ class ManageProductFragment : BaseDaggerFragment(),
                 val isIndeterminate = binding.cbuSelectAllProduct.getIndeterminate()
                 if (isIndeterminate && !viewModel.isSelectAllMode) return@setOnCheckedChangeListener
                 adapter?.updateAllProductSelections(isChecked)
-                viewModel.setSetSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
             } else {
-                binding.cbuSelectAllProduct.setIndeterminate(false)
-                adapter?.updateAllProductSelections(isChecked)
-                viewModel.setSetSelectedProducts(listOf())
+                if (!viewModel.isSingleClick) {
+                    binding.cbuSelectAllProduct.setIndeterminate(false)
+                    adapter?.updateAllProductSelections(isChecked)
+                }
             }
+            viewModel.setSetSelectedProducts(adapter?.getSelectedProducts()?: listOf())
         }
     }
 
@@ -223,8 +231,6 @@ class ManageProductFragment : BaseDaggerFragment(),
                     binding?.selectionBar?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.mvc_grey_f3f4f5))
                 }
             }
-            val maxProductLimit = viewModel.getMaxProductLimit()
-            binding?.tpgSelectedProductCounter?.text = "Jumlah Produk (${selectedProducts.size}/$maxProductLimit)"
         })
         viewModel.getProductListResult.observe(viewLifecycleOwner, { result ->
             when (result) {
@@ -271,11 +277,15 @@ class ManageProductFragment : BaseDaggerFragment(),
                     )
                     // set product variant selection
                     val selectedProductIds = viewModel.getSelectedProductIds()
-                    val finalProductList = viewModel.setVariantSelection(updatedProductList, selectedProductIds)
+                    val finalProductList = viewModel.setVariantSelection(updatedProductList, selectedProductIds, viewModel.getIsViewing())
 
-                    val newAddedProducts = arguments?.getParcelableArrayList<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)?.toList()
-                    finalProductList.addAll(newAddedProducts?: listOf())
+                    val newAddedProducts = arguments?.getParcelableArrayList<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)?.toList() ?: listOf()
+                    val normalizedProductList = resetProductUiModelState(newAddedProducts)
+                    finalProductList.addAll(normalizedProductList?: listOf())
+
                     adapter?.setProductList(finalProductList)
+                    viewModel.setSetSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
+                    updateProductCounter()
                 }
                 is Fail -> {
                     // TODO : handle negative case
@@ -289,45 +299,79 @@ class ManageProductFragment : BaseDaggerFragment(),
         val maxProductLimit = viewModel.getMaxProductLimit()
         val addProductIntent = Intent(requireContext(), AddProductActivity::class.java).apply {
             putExtras(Bundle().apply {
-                val selectedWarehouseId = arguments?.getString(BUNDLE_KEY_SELECTED_WAREHOUSE_ID)
+                val selectedWarehouseId = viewModel.getWarehouseLocationId()
                 putString(BUNDLE_KEY_SELECTED_WAREHOUSE_ID, selectedWarehouseId)
                 putInt(UpdateCouponActivity.BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
                 putParcelable(UpdateCouponActivity.BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
                 val selectedProducts = arrayListOf<ProductUiModel>()
-                selectedProducts.addAll(adapter?.getSelectedProducts() ?: listOf())
+                selectedProducts.addAll(adapter?.getProductList() ?: listOf())
                 putParcelableArrayList(BUNDLE_KEY_SELECTED_PRODUCTS, selectedProducts)
             })
         }
         activity?.startActivityForResult(addProductIntent, CreateCouponProductActivity.REQUEST_CODE_ADD_PRODUCT)
     }
 
-    override fun onProductCheckBoxClicked(isSelected: Boolean) {
+    override fun onProductCheckBoxClicked(isSelected: Boolean, uiModel: ProductUiModel) {
         viewModel.isSelectAllMode = false
+        viewModel.isSingleClick = true
         if (isSelected) {
             val isIndeterminate = binding?.cbuSelectAllProduct?.getIndeterminate() ?: false
             if (!isIndeterminate) binding?.cbuSelectAllProduct?.setIndeterminate(true)
             val isChecked = binding?.cbuSelectAllProduct?.isChecked ?: false
             if (!isChecked) binding?.cbuSelectAllProduct?.isChecked = true
         }
-        viewModel.setSetSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
+        viewModel.setSetSelectedProducts(adapter?.getSelectedProducts()?: listOf())
+        viewModel.isSingleClick = false
+    }
+
+    override fun onRemoveButtonClicked() {
+        updateProductCounter()
+        viewModel.setSetSelectedProducts(adapter?.getSelectedProducts()?: listOf())
     }
 
     override fun onBackPressed() {
-        val selectedProducts = adapter?.getSelectedProducts() ?: listOf()
+        val selectedProducts = adapter?.getProductList() ?: listOf()
+
+        // TODO move this code inside viewModel
+        // set selected true for mapping purpose before submitted to gql
+        val mutableProducts = selectedProducts.toMutableList()
+        mutableProducts.forEach { productUiModel ->
+            productUiModel.isSelected = true
+            productUiModel.variants.forEach { variantUiModel ->
+                variantUiModel.isSelected = true
+            }
+        }
+
         val extraSelectedProducts = ArrayList<ProductUiModel>()
-        extraSelectedProducts.addAll(selectedProducts)
+        extraSelectedProducts.addAll(mutableProducts)
         val resultIntent = Intent().apply {
             putParcelableArrayListExtra(BUNDLE_KEY_SELECTED_PRODUCTS, extraSelectedProducts)
+            val selectedWarehouseId = viewModel.getWarehouseLocationId()
+            putExtra(BUNDLE_KEY_SELECTED_WAREHOUSE_ID, selectedWarehouseId)
         }
         this.activity?.setResult(Activity.RESULT_OK, resultIntent)
         this.activity?.finish()
     }
 
     fun resetProductUiModelState(selectedProducts: List<ProductUiModel>): List<ProductUiModel> {
-        return viewModel.resetProductUiModelState(selectedProducts)
+        val isViewing = viewModel.getIsViewing()
+        val isEditing = viewModel.getIsEditing()
+        val updatedProductList = viewModel.updateProductUiModelsDisplayMode(isViewing, isEditing, selectedProducts)
+        val filteredProductList = viewModel.filterSelectedProductVariant(updatedProductList)
+        return viewModel.resetProductUiModelState(filteredProductList)
     }
 
     fun addProducts(selectedProducts: List<ProductUiModel>) {
         adapter?.addProducts(selectedProducts)
+    }
+
+    fun updateProductCounter() {
+        val maxProductLimit = viewModel.getMaxProductLimit()
+        val totalSize = adapter?.getProductList()?.size ?: 0
+        binding?.tpgSelectedProductCounter?.text = "Jumlah Produk ($totalSize/$maxProductLimit)"
+    }
+
+    fun updateWarehouseLocationId(warehouseLocationId: String) {
+        viewModel.setWarehouseLocationId(warehouseLocationId)
     }
 }

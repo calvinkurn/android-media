@@ -1,10 +1,12 @@
 package com.tokopedia.play.broadcaster.di
 
+import com.tokopedia.play.broadcaster.data.repository.PlayBroProductRepositoryImpl
 import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastChannelRepositoryImpl
 import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastInteractiveRepositoryImpl
 import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastPinnedMessageRepositoryImpl
 import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastRepositoryImpl
 import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
+import com.tokopedia.play.broadcaster.domain.repository.PlayBroProductRepository
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastInteractiveRepository
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastPinnedMessageRepository
@@ -36,6 +38,12 @@ abstract class PlayBroadcastRepositoryModule {
     abstract fun bindInteractiveRepository(
         repo: PlayBroadcastInteractiveRepositoryImpl
     ): PlayBroadcastInteractiveRepository
+
+    @Binds
+    @ActivityRetainedScope
+    abstract fun bindProductRepository(
+        repo: PlayBroProductRepositoryImpl
+    ): PlayBroProductRepository
 
     @Binds
     @ActivityRetainedScope

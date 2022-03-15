@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.kotlin.extensions.orFalse
@@ -25,23 +26,22 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
 
-class IncentiveOvoBottomSheet(context: Context): BottomSheetUnify(),
+class IncentiveOvoBottomSheet: BottomSheetUnify(),
     IncentiveOvoTnCViewHolder.Listener {
 
     companion object {
         private const val BOTTOM_SHEET_WRAPPER_TOP_PADDING = 16
     }
 
-    private var binding: IncentiveOvoTncBottomSheetBinding = IncentiveOvoTncBottomSheetBinding.inflate(LayoutInflater.from(context))
     private var incentiveOvoListener: IncentiveOvoListener? = null
+    private val binding by lazy(LazyThreadSafetyMode.NONE) { IncentiveOvoTncBottomSheetBinding.inflate(LayoutInflater.from(requireContext())) }
     private val incentiveOvoIllustrationMapper by lazy(LazyThreadSafetyMode.NONE) { IncentiveOvoIllustrationMapper() }
-    private val illustrationLayoutManager by lazy(LazyThreadSafetyMode.NONE) { IncentiveOvoIllustrationLayoutManager(context) }
+    private val illustrationLayoutManager by lazy(LazyThreadSafetyMode.NONE) { IncentiveOvoIllustrationLayoutManager(requireContext()) }
     private val illustrationAdapterTypeFactory by lazy(LazyThreadSafetyMode.NONE) { IncentiveOvoIllustrationAdapterTypeFactory() }
     private val illustrationAdapter by lazy(LazyThreadSafetyMode.NONE) { BaseAdapter(illustrationAdapterTypeFactory) }
     private val tncAdapter by lazy(LazyThreadSafetyMode.NONE) { IncentiveOvoTnCAdapter(emptyList(), this) }
 
     init {
-        setChild(binding.root)
         showKnob = true
         showCloseIcon = false
         showHeader = false
@@ -49,16 +49,20 @@ class IncentiveOvoBottomSheet(context: Context): BottomSheetUnify(),
         isDragable = true
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupShowBehavior()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        setChild(binding.root)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onClickTnCLink(url: String): Boolean {
         return incentiveOvoListener?.onUrlClicked(url).orFalse()
     }
 
-    private fun setupShowBehavior() {
+    private fun setupShowBehavior(action: () -> Unit) {
         setShowListener {
             bottomSheetWrapper.setPadding(Int.ZERO, BOTTOM_SHEET_WRAPPER_TOP_PADDING.toPx(), Int.ZERO, Int.ZERO)
             bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
@@ -69,6 +73,7 @@ class IncentiveOvoBottomSheet(context: Context): BottomSheetUnify(),
                     if (state == BottomSheetBehavior.STATE_COLLAPSED) dismiss()
                 }
             })
+            action()
         }
     }
 
@@ -150,17 +155,19 @@ class IncentiveOvoBottomSheet(context: Context): BottomSheetUnify(),
     }
 
     fun init(data: IncentiveOvoBottomSheetUiModel, incentiveOvoListener: IncentiveOvoListener) {
-        setupIllustrationView(incentiveOvoIllustrationMapper.mapResponseToUiModel(data.productRevIncentiveOvoDomain))
-        setupTermsAndConditionView(
-            productRevIncentiveOvoDomain = data.productRevIncentiveOvoDomain,
-            trackerData = data.trackerData,
-            category = data.category,
-            incentiveOvoListener = incentiveOvoListener
-        )
-        setupDismissBehavior(
-            productRevIncentiveOvoDomain = data.productRevIncentiveOvoDomain,
-            trackerData = data.trackerData,
-            category = data.category
-        )
+        setupShowBehavior {
+            setupIllustrationView(incentiveOvoIllustrationMapper.mapResponseToUiModel(data.productRevIncentiveOvoDomain))
+            setupTermsAndConditionView(
+                productRevIncentiveOvoDomain = data.productRevIncentiveOvoDomain,
+                trackerData = data.trackerData,
+                category = data.category,
+                incentiveOvoListener = incentiveOvoListener
+            )
+            setupDismissBehavior(
+                productRevIncentiveOvoDomain = data.productRevIncentiveOvoDomain,
+                trackerData = data.trackerData,
+                category = data.category
+            )
+        }
     }
 }

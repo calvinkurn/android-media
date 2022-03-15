@@ -4,10 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
 import android.text.*
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.EditorInfo
+import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -15,13 +14,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.ProductInformationWithIcon
+import com.tokopedia.cart.databinding.ItemAddonCartIdentifierBinding
 import com.tokopedia.cart.databinding.ItemCartProductBinding
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.showSoftKeyboard
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
@@ -83,7 +86,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
             with(binding) {
                 checkboxProduct.gone()
                 vBundlingProductSeparator.show()
-                val marginStart = itemView.context.resources.getDimension(R.dimen.dp_12).toInt()
+                val marginStart = IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
                 val marginTop = itemView.context.resources.getDimension(R.dimen.dp_4).toInt()
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProductInformation)
@@ -96,7 +99,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
                 if (data.isError) {
                     params.leftMargin = 0
                 } else {
-                    params.leftMargin = itemView.resources.getDimensionPixelSize(R.dimen.dp_32)
+                    params.leftMargin = BUNDLING_SEPARATOR_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
                 }
 
                 val textFieldNotesParams = textFieldNotes.layoutParams as ViewGroup.MarginLayoutParams
@@ -110,7 +113,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
             with(binding) {
                 vBundlingProductSeparator.gone()
                 checkboxProduct.show()
-                val marginStart = itemView.context.resources.getDimension(R.dimen.dp_12).toInt()
+                val marginStart = IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
                 val marginTop = itemView.context.resources.getDimension(R.dimen.dp_4).toInt()
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProductInformation)
@@ -370,9 +373,22 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
     private fun renderProductProperties(data: CartItemHolderData) {
         val layoutProductInfo = binding.layoutProductInfo
         layoutProductInfo.gone()
+
+        var isProductInformationExist = false
+        val productInformationWithIcon = data.productInformationWithIcon
+        if (productInformationWithIcon.isNotEmpty()) {
+            isProductInformationExist = true
+            layoutProductInfo.removeAllViews()
+            productInformationWithIcon.forEach {
+                val productInfoWithIcon = createProductInfoTextWithIcon(it)
+                layoutProductInfo.addView(productInfoWithIcon)
+            }
+            layoutProductInfo.show()
+        }
+
         val productInformationList = data.productInformation
         if (productInformationList.isNotEmpty()) {
-            layoutProductInfo.removeAllViews()
+            if (!isProductInformationExist) layoutProductInfo.removeAllViews()
             productInformationList.forEach {
                 var tmpLabel = it
                 if (tmpLabel.toLowerCase(Locale.getDefault()).contains(LABEL_CASHBACK)) {
@@ -400,6 +416,18 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
             setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             setType(Typography.BODY_3)
             text = if (binding.layoutProductInfo.childCount > 0) ", $it" else it
+        }
+    }
+
+    private fun createProductInfoTextWithIcon(dataProduct: ProductInformationWithIcon): LinearLayout {
+        return LinearLayout(itemView.context).apply {
+            orientation = LinearLayout.HORIZONTAL
+            val identifierBinding = ItemAddonCartIdentifierBinding.inflate(LayoutInflater.from(itemView.context))
+            identifierBinding.run {
+                ivIdentifier.loadIcon(dataProduct.iconUrl)
+                labelIdentifier.text = dataProduct.text
+            }
+            this.addView(identifierBinding.root)
         }
     }
 
@@ -597,12 +625,12 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
     private fun setProductNotesWidth(data: CartItemHolderData) {
         with(binding) {
             val paddingParent = itemView.resources.getDimensionPixelSize(R.dimen.dp_16) * 2
-            val textNotesChangeWidth = itemView.resources.getDimensionPixelSize(R.dimen.dp_32)
+            val textNotesChangeWidth = TEXT_NOTES_CHANGE_WIDTH.dpToPx(itemView.resources.displayMetrics)
             val paddingLeftTextNotesChange = itemView.resources.getDimensionPixelSize(R.dimen.dp_4)
             val screenWidth = getScreenWidth()
             var maxNotesWidth = screenWidth - paddingParent - paddingLeftTextNotesChange - textNotesChangeWidth
             if (data.isBundlingItem) {
-                val bundlingSeparatorMargin = itemView.resources.getDimensionPixelSize(R.dimen.dp_48)
+                val bundlingSeparatorMargin = BUNDLING_SEPARATOR_WIDTH.dpToPx(itemView.resources.displayMetrics)
                 maxNotesWidth -= bundlingSeparatorMargin
             }
 
@@ -726,6 +754,9 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         } else if (data.shouldValidateWeight) {
             viewHolderListener?.onNeedToRefreshWeight(data)
             viewHolderListener?.onNeedToRefreshSingleProduct(adapterPosition)
+        } else if (data.shouldCheckBoAffordability) {
+            viewHolderListener?.onNeedToRefreshBoAffordability(data)
+            viewHolderListener?.onNeedToRefreshSingleProduct(adapterPosition)
         } else {
             viewHolderListener?.onNeedToRefreshSingleProduct(adapterPosition)
         }
@@ -831,6 +862,8 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
 
         fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData)
 
+        fun onNeedToRefreshBoAffordability(cartItemHolderData: CartItemHolderData)
+
         fun onNeedToRefreshAllShop()
 
     }
@@ -847,5 +880,10 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         private const val RESET_QTY_DEBOUNCE_TIME = 1000L
         const val ALPHA_HALF = 0.5f
         const val ALPHA_FULL = 1.0f
+
+        private const val IMAGE_PRODUCT_MARGIN_START = 12
+        private const val TEXT_NOTES_CHANGE_WIDTH = 32
+        private const val BUNDLING_SEPARATOR_MARGIN_START = 32
+        private const val BUNDLING_SEPARATOR_WIDTH = 48
     }
 }
