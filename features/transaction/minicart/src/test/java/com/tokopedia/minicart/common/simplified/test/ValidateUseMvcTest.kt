@@ -80,6 +80,26 @@ class ValidateUseMvcTest {
     }
 
     @Test
+    fun `WHEN validate mvc failed on move to cart THEN should set state failed validate use move to cart`() {
+        //given
+        val validateUseResponse = ValidateUseMvcData(status = "OK", progressPercentage = 100)
+        coEvery { validateUseMvcUseCase.setParam(any()).execute(any(), any()) } answers {
+            firstArg<(ValidateUseMvcData) -> Unit>().invoke(validateUseResponse)
+        }
+        viewModel.getLatestWidgetState()
+        val throwable = IOException()
+        coEvery { validateUseMvcUseCase.setParam(any()).execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        //when
+        viewModel.moveToCart()
+
+        //then
+        assert(viewModel.miniCartSimplifiedState.value == MiniCartSimplifiedState(state = MiniCartSimplifiedState.STATE_FAILED_VALIDATE_USE_MOVE_TO_CART, throwable = throwable))
+    }
+
+    @Test
     fun `WHEN move to cart without data THEN should not validate mvc with apply true and directly set state move to cart`() {
         //when
         viewModel.moveToCart()
