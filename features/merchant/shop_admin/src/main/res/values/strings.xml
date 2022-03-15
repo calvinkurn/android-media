@@ -18,4 +18,9 @@
     <string name="title_reject_access_button">Tolak Akses</string>
     <string name="title_accept_access_button">Terima Akses</string>
 
+    <!-- Invitation Accepted -->
+    <string name="title_admin_success_invitation_accepted">Hi %1s, kamu berhasil menjadi admin di %2s!</string>
+    <string name="label_admin_feature_detail">Detail fitur yang bisa kamu akses:</string>
+
+    <string name="btn_go_to_shop">Masuk Toko</string>
 </resources>
