@@ -20,28 +20,37 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/imageOne"
+            <FrameLayout
+                android:id="@+id/imgOneContainer"
                 android:layout_width="@dimen/unify_space_64"
                 android:layout_height="@dimen/unify_space_64"
-                app:unify_image_type="circle"
-                android:scaleType="fitCenter"
-                app:unify_image_corner_radius="8"
+                android:background="@drawable/tm_bg_shop"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/imageOne"
+                    android:layout_width="@dimen/tm_dp_63"
+                    android:layout_height="@dimen/tm_dp_63"
+                    android:scaleType="fitCenter"
+                    android:layout_gravity="center"
+                    app:unify_image_corner_radius="8"
+                    app:unify_image_type="circle" />
+
+            </FrameLayout>
 
             <FrameLayout
                 android:layout_width="@dimen/unify_space_64"
                 android:layout_height="@dimen/unify_space_64"
                 android:layout_marginStart="@dimen/tm_dp_20"
-                app:layout_constraintStart_toEndOf="@id/imageOne"
+                app:layout_constraintStart_toEndOf="@id/imgOneContainer"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/imageTwo"
                     android:layout_width="@dimen/unify_space_64"
                     android:layout_height="@dimen/unify_space_64"
-                    app:srcCompat="@drawable/tm_ic_tokoemember" />
+                    app:srcCompat="@drawable/tm_ic_tokomember" />
 
             </FrameLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
