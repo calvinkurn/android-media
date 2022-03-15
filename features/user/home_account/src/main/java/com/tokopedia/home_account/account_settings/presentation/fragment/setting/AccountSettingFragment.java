@@ -26,6 +26,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.home_account.BuildConfig;
 import com.tokopedia.home_account.R;
@@ -344,7 +345,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     private void goToPinOnboarding(){
-        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING);
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalUserPlatform.ADD_PIN_ONBOARDING);
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true);
         startActivity(intent);
     }
@@ -374,7 +375,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     private void onBiometricSettingClicked() {
         accountAnalytics.eventClickFingerprint();
-        RouteManager.route(getContext(), ApplinkConstInternalGlobal.BIOMETRIC_SETTING);
+        RouteManager.route(getContext(), ApplinkConstInternalUserPlatform.BIOMETRIC_SETTING);
     }
 
     private void onPushNotifClicked() {

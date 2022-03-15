@@ -22,6 +22,8 @@ import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.extension.toCalendar
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.EXTRA_DAYS_COUPON
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.isBeforeRollout
 import com.tokopedia.vouchercreation.databinding.BottomsheetUpdateCouponPeriodBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import java.util.*
@@ -35,7 +37,6 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
         private const val ERROR_MESSAGE = "Error edit coupon quota"
         private const val TIME_PICKER_TIME_INTERVAL_IN_MINUTE = 30
         private const val COUPON_START_DATE_OFFSET_IN_HOUR = 3
-        private const val COUPON_END_DATE_OFFSET_IN_DAYS = 30
         private const val DATE_TIME_FORMAT_FULL = "EEE, dd MMM yyyy, HH:mm z"
 
         @JvmStatic
@@ -207,7 +208,7 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
             requireActivity(),
             getCouponStartDate(),
             currentStartDate.toCalendar(),
-            getCouponEndDate(),
+            getCouponEndDate(currentStartDate),
             null,
             DateTimePickerUnify.TYPE_DATETIMEPICKER
         )
@@ -240,7 +241,7 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
             requireActivity(),
             getCouponStartDate(),
             currentEndDate.toCalendar(),
-            getCouponEndDate(),
+            getCouponEndDate(currentStartDate),
             null,
             DateTimePickerUnify.TYPE_DATETIMEPICKER
         )
@@ -288,6 +289,7 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
     }
 
     private fun getCouponStartDate(): Calendar {
+        if (requireContext().isBeforeRollout()) return getCouponStartDateBeforeRollout()
         val calendar = Calendar.getInstance()
         calendar.add(
             Calendar.HOUR_OF_DAY,
@@ -296,12 +298,20 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
         return calendar
     }
 
-    private fun getCouponEndDate(): Calendar {
+    private fun getCouponEndDate(currentStartDate: Date): Calendar {
         val calendar = Calendar.getInstance()
+        calendar.timeInMillis = currentStartDate.time
         calendar.add(
             Calendar.DAY_OF_MONTH,
-            COUPON_END_DATE_OFFSET_IN_DAYS
+            EXTRA_DAYS_COUPON
         )
+        return calendar
+    }
+
+    private fun getCouponStartDateBeforeRollout(): Calendar {
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = DateTimeUtils.ROLLOUT_DATE_THRESHOLD_TIME
+        }
         return calendar
     }
 
@@ -317,6 +327,4 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
         val errorMessage = ErrorHandler.getErrorMessage(requireActivity(), throwable)
         Toaster.build(binding.root, errorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
     }
-
-
 }

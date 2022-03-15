@@ -34,7 +34,7 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringActivity
-import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.NavigationSearchTracking
@@ -268,7 +268,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeShopShareData()
         observeShopShareTracker()
 
-        context?.let { UpdateShopActiveService.startService(it) }
+        context?.let { UpdateShopActiveWorker.execute(it) }
+        setupPMShopScoreInterrupt()
     }
 
     override fun onResume() {
@@ -694,7 +695,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         )
         val perMontSelectedDate = Date(
             DateTimeUtil.getTimeInMillis(
-                element.filter.perWeek.startDate,
+                element.filter.perMonth.startDate,
                 DateTimeUtil.FORMAT_DD_MM_YYYY
             )
         )
@@ -772,6 +773,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     val calendarWidget = it.apply calendarWidget@{
                         data = null
                         filter = getAppliedDateFilter(filter, startDate, endData, dateFilter.type)
+                        impressHolder = ImpressHolder()
                     }.copyWidget()
                     calendarWidgets.add(calendarWidget)
                     return@map calendarWidget

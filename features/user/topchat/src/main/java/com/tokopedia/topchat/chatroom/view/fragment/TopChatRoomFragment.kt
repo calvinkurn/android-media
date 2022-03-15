@@ -1717,11 +1717,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun goToMvcPage(applink: String) {
+        //If seller in MA, show toaster
         if(!GlobalConfig.isSellerApp() && isSeller()) {
             view?.let {
                 val text = getStringResource(R.string.topchat_mvc_not_available)
                 Toaster.build(it, text).show()
             }
+        //If applink is empty or wrong applink in sellerapp, return
+        } else if (applink.isEmpty() || GlobalConfig.isSellerApp() &&
+            !applink.contains(PREFIX_SELLER_APPLINK, ignoreCase = true)) {
+            return
         } else {
             context?.let {
                 val intent = RouteManager.getIntent(it, applink)
@@ -2936,6 +2941,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         const val AB_TEST_OCC = "chat_occ_exp"
         const val AB_TEST_NON_OCC = "chat_occ_control"
+
+        private const val PREFIX_SELLER_APPLINK = "sellerapp://"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {

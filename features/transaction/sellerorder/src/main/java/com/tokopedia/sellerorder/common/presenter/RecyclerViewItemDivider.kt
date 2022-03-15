@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 
 class RecyclerViewItemDivider(
@@ -25,13 +26,15 @@ class RecyclerViewItemDivider(
         val itemPosition = parent.getChildAdapterPosition(view)
         val isLastItem: Boolean = itemPosition == parent.adapter?.itemCount.orZero() - 1
         val layoutParams = view.layoutParams as ViewGroup.MarginLayoutParams
-        layoutParams.topMargin += if (itemPosition == 0) {
+        layoutParams.topMargin = if (itemPosition == 0) {
             topMargin
         } else {
             topMargin + divider?.intrinsicHeight.orZero()
         }
         if (!isLastItem || applyMarginAfterLastItem) {
-            layoutParams.bottomMargin += bottomMargin
+            layoutParams.bottomMargin = bottomMargin
+        } else {
+            layoutParams.bottomMargin = Int.ZERO
         }
         view.layoutParams = layoutParams
     }
