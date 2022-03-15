@@ -4,9 +4,8 @@ import androidx.lifecycle.*
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
+import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
@@ -21,11 +20,9 @@ import com.tokopedia.play.broadcaster.ui.state.LiveReportUiState
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.TagUiState
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
-import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastReportFragment
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.play_common.util.extension.setValue
@@ -35,7 +32,6 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import javax.inject.Inject
 
 /**
  * @author by jessica on 27/05/20
@@ -227,25 +223,11 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(context = dispatcher.main, block = {
             _trafficMetric.emit(NetworkResult.Loading)
 
-            val channel = getChannelUseCase.apply {
-                params = GetChannelUseCase.createParams(channelId)
-            }.executeOnBackground()
+            val deferredChannel = async(dispatcher.io) { getChannelInfo() }
+            val deferredReportChannelSummary = async(dispatcher.io) { getLiveStatistics() }
 
-            val reportChannelSummary = withContext(dispatcher.io) {
-                delay(LIVE_STATISTICS_DELAY)
-
-                var fetchTryCount = 0
-                lateinit var response : GetLiveStatisticsResponse.ReportChannelSummary
-
-                getLiveStatisticsUseCase.params = GetLiveStatisticsUseCase.createParams(channelId)
-                do {
-                    response = getLiveStatisticsUseCase.executeOnBackground()
-                    fetchTryCount++
-                }
-                while(response.duration.isEmpty() && fetchTryCount < FETCH_REPORT_MAX_RETRY)
-
-                response
-            }
+            val channel = deferredChannel.await()
+            val reportChannelSummary = deferredReportChannelSummary.await()
 
             _channelSummary.value = playBroadcastMapper.mapChannelSummary(
                                         channel.basic.title,
@@ -276,6 +258,28 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
 
             _uiEvent.emit(PlayBroadcastSummaryEvent.ShowInfo(UiString.Resource(R.string.play_bro_cant_post_video_message)))
         }
+    }
+
+    private suspend fun getChannelInfo(): GetChannelResponse.Channel {
+        return getChannelUseCase.apply {
+            params = GetChannelUseCase.createParams(channelId)
+        }.executeOnBackground()
+    }
+
+    private suspend fun getLiveStatistics(): GetLiveStatisticsResponse.ReportChannelSummary {
+        delay(LIVE_STATISTICS_DELAY)
+
+        var fetchTryCount = 0
+        lateinit var response : GetLiveStatisticsResponse.ReportChannelSummary
+
+        getLiveStatisticsUseCase.params = GetLiveStatisticsUseCase.createParams(channelId)
+        do {
+            response = getLiveStatisticsUseCase.executeOnBackground()
+            fetchTryCount++
+        }
+        while(response.duration.isEmpty() && fetchTryCount < FETCH_REPORT_MAX_RETRY)
+
+        return response
     }
 
     private fun getTags() {
