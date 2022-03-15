@@ -145,7 +145,7 @@ class VariantSheetViewComponent(
                         title = selectedProduct.name,
                         stock = if (stock == null) OutOfStock else StockAvailable(stock.stock ?: 0),
                         isVariantAvailable = true,
-                        price = if (selectedProduct.campaign?.discountedPercentage ?: 0f != 0f) {
+                        price = if (selectedProduct.campaign?.discountedPercentage != 0f) {
                             DiscountedPrice(
                                     originalPrice = selectedProduct.campaign?.originalPriceFmt.toEmptyStringIfNull(),
                                     discountedPriceNumber = selectedProduct.campaign?.discountedPrice ?: 0.0,
