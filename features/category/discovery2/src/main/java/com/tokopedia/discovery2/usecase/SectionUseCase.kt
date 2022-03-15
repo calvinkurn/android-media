@@ -37,14 +37,16 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
                                     comp.data,
                                     ComponentNames.MasterProductCardItemList.componentName,
                                     comp.properties,
-                                    creativeName
+                                    creativeName,
+                                    parentSectionId = comp.parentSectionId
                                 )
                             } else {
                                 DiscoveryDataMapper().mapListToComponentList(
                                     comp.data,
                                     ComponentNames.ProductCardRevampItem.componentName,
                                     comp.properties,
-                                    creativeName
+                                    creativeName,
+                                    parentSectionId = comp.parentSectionId
                                 )
                             }
                         }
@@ -61,7 +63,8 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
                                 comp.data,
                                 ComponentNames.ProductCardSprintSaleItem.componentName,
                                 comp.properties,
-                                creativeName
+                                creativeName,
+                                parentSectionId = comp.parentSectionId
                             )
                         }
                         ComponentNames.ProductCardSprintSaleCarousel.componentName -> {

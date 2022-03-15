@@ -393,8 +393,10 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(pos))
         sheet.show(childFragmentManager, "")
         sheet.onSaved = { bid, position ->
-            (adapter.items[position] as EditKeywordItemViewModel).data.priceBid = bid
-            adapter.notifyItemChanged(position)
+            (adapter.items.getOrNull(position) as? EditKeywordItemViewModel)?.let {
+                it.data.priceBid = bid
+                adapter.notifyItemChanged(position)
+            }
         }
     }
 

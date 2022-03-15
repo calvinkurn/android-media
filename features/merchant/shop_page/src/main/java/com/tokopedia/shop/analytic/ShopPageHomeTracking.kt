@@ -1,6 +1,8 @@
 package com.tokopedia.shop.analytic
 
 import android.os.Bundle
+import com.tokopedia.kotlin.extensions.view.getDigits
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ACTION_FIELD
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ADD
@@ -2332,7 +2334,7 @@ class ShopPageHomeTracking(
                         position = position,
                         productId = productCardUiModel.id.orEmpty(),
                         productName = productCardUiModel.name.orEmpty(),
-                        productPrice = productCardUiModel.displayedPrice.orEmpty()
+                        productPrice = productCardUiModel.displayedPrice?.getDigits().orZero().toLong()
                     )
                 )
             }
@@ -2363,7 +2365,7 @@ class ShopPageHomeTracking(
                         position = position,
                         productId = product.id.orEmpty(),
                         productName = product.name.orEmpty(),
-                        productPrice = product.displayedPrice.orEmpty()
+                        productPrice = product.displayedPrice?.getDigits().orZero().toLong()
                 )
             ))
         }
@@ -2426,7 +2428,7 @@ class ShopPageHomeTracking(
         }
     }
 
-    private fun getItemsCampaignBundle(position: Int, productId: String, productName: String,  productPrice: String, productBrand: String = "", productCategory: String = "", productVariant: String = ""): Bundle {
+    private fun getItemsCampaignBundle(position: Int, productId: String, productName: String,  productPrice: Long, productBrand: String = "", productCategory: String = "", productVariant: String = ""): Bundle {
         return Bundle().apply {
             putString(INDEX, position.toString())
             putString(ITEM_BRAND, productBrand)
@@ -2434,7 +2436,7 @@ class ShopPageHomeTracking(
             putString(ITEM_ID, productId)
             putString(ITEM_NAME, productName)
             putString(ITEM_VARIANT, productVariant)
-            putString(PRICE, productPrice)
+            putLong(PRICE, productPrice)
         }
     }
 }

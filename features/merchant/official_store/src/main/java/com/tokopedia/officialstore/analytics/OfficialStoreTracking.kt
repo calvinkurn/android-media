@@ -63,6 +63,7 @@ class OfficialStoreTracking(context: Context) {
     private val USER_ID = "userId"
     private val REFERENCE_POPULAR_BRANDS = "reference: row 18"
 
+    private val CLICK_HOMEPAGE = "clickHomepage"
     private val CLICK_OS_MICROSITE = "clickOSMicrosite"
     private val PROMO_CLICK = "promoClick"
     private val PROMO_VIEW = "promoView"
@@ -339,7 +340,7 @@ class OfficialStoreTracking(context: Context) {
         val eventLabelFirstFormat = "$CLICK $VIEW_ALL"
         val trackerClickAllFeaturedBrand = TrackAppUtils
             .gtmData(
-                CLICK_OS_MICROSITE,
+                CLICK_HOMEPAGE,
                 OS_MICROSITE_SINGLE,
                 eventAction,
                 EVENT_POPULAR_BRANDS.format(eventLabelFirstFormat, categoryName)

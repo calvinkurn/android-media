@@ -58,6 +58,7 @@ ext {
             rechargePdpEmoney               : ":features:recharge:recharge_pdp_emoney",
             smartBills                      : ":features:recharge:smart_bills",
             voucherGame                     : ":features:recharge:voucher_game",
+            digitalProductDetail            : ":features:recharge:digital_product_detail",
 
             commonTravel                    : ":features:travel:common_travel",
             flight                          : ":features:travel:flight",

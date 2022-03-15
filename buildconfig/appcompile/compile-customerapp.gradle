@@ -55,6 +55,7 @@ includeIfEnabled("features:recharge:recharge_credit_card")
 includeIfEnabled("features:recharge:smart_bills")
 includeIfEnabled("features:recharge:recharge_component")
 includeIfEnabled("features:recharge:recharge_pdp_emoney")
+includeIfEnabled("features:recharge:digital_product_detail")
 
 includeIfEnabled("features:travel:travel_homepage")
 includeIfEnabled("features:travel:travel_country_code")
