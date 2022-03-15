@@ -309,6 +309,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 loadCachedData()
             } else {
                 EmbraceMonitoring.startMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_LOAD_CART)
+                EmbraceMonitoring.startMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_CART_INCOMPLETE)
                 cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE)
                 cartAllPerformanceMonitoring = PerformanceMonitoring.start(CART_ALL_TRACE)
             }
@@ -2432,9 +2433,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         PromoRevampAnalytics.eventCartEmptyPromoApplied(listPromos)
     }
 
-    override fun stopCartPerformanceTrace() {
+    override fun stopCartPerformanceTrace(isSuccessLoadCart: Boolean) {
         if (!isTraceCartStopped) {
             EmbraceMonitoring.stopMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_LOAD_CART)
+            if (!isSuccessLoadCart) {
+                EmbraceMonitoring.stopMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_CART_INCOMPLETE)
+            }
             cartPerformanceMonitoring?.stopTrace()
             isTraceCartStopped = true
         }
