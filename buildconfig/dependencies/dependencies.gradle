@@ -247,8 +247,7 @@ ext {
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
             loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.5.0@aar",
             hansel                : "io.hansel.preprocessor:preprocessor:9.1.5",
-            robust                : "com.tokopedia.patch:robust:0.0.1@aar",
-            autopatchbase         : "com.tokopedia.patch:autopatchbase:0.0.1",
+            autopatchbase         : "com.tokopedia.patch:core:1.0.0",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             ucrop                 : "com.github.yalantis:ucrop:2.2.2",
             flexBoxLayout         : "com.google.android:flexbox:0.3.2",
@@ -299,6 +298,10 @@ ext {
             mp4Composer           : "com.github.MasayukiSuda:Mp4Composer-android:v0.4.1",
             localBroadcastManager : "androidx.localbroadcastmanager:localbroadcastmanager:$localBroadcastManagerVersion",
             startupRuntime        : "androidx.startup:startup-runtime:$startupRuntimeVersion",
+            jjwtApi               : "io.jsonwebtoken:jjwt-api:0.11.2",
+            jjwtImpl              : "io.jsonwebtoken:jjwt-impl:0.11.2",
+            jjwtJson              : "io.jsonwebtoken:jjwt-orgjson:0.11.2"
+
     ]
 
     testDependencies = [
