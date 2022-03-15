@@ -1218,8 +1218,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             }
             onChooseAddressUpdated(false)
         })
-        val lca = ChooseAddressUtils.getLocalizingAddressData(requireContext())
-        getHomeViewModel().refreshTokonowWarehouse(lca)
     }
 
     private fun observeResetNestedScrolling() {
