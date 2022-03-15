@@ -18,7 +18,6 @@
         app:elevation="@dimen/unify_space_4"
         app:unify_header_is_show_back_button="true"
         app:unify_header_is_show_shadow="false"
-        app:unify_header_title=""
         app:unify_header_transparent_mode="false" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -30,15 +29,15 @@
         <com.tokopedia.unifycomponents.TabsUnify
             android:id="@+id/tp_follow"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_48"
+            android:layout_height="@dimen/unify_space_48"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
             app:tabGravity="center"
-            app:tabMode="fixed">
+            app:tabMode="fixed"
+            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget">
 
         </com.tokopedia.unifycomponents.TabsUnify>
 

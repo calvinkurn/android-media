@@ -46,7 +46,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/btn_action_follow"
         android:layout_width="@dimen/cp_dp_88"
-        android:layout_height="24dp"
+        android:layout_height="@dimen/unify_space_24"
         app:layout_constraintBottom_toBottomOf="@+id/img_profile_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
