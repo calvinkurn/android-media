@@ -15,8 +15,11 @@ import com.tokopedia.unifyorderhistory.data.model.UohTypeData
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.unifyorderhistory.data.model.PmsNotification
+import com.tokopedia.unifyorderhistory.data.model.UohEmptyState
 import com.tokopedia.unifyorderhistory.databinding.*
 import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_BANNER
+import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_PMS_BUTTON
 import com.tokopedia.unifyorderhistory.view.adapter.viewholder.*
 import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
 
@@ -35,6 +38,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         const val LAYOUT_RECOMMENDATION_TITLE = 4
         const val LAYOUT_RECOMMENDATION_LIST = 5
         const val LAYOUT_BANNER = 6
+        const val LAYOUT_PMS_BUTTON = 7
     }
 
     interface ActionListener {
@@ -80,6 +84,10 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 val binding = UohTdnBannerLayoutBinding.inflate(LayoutInflater.from(parent.context), null, false)
                 UohTdnBannerViewHolder(binding)
             }
+            LAYOUT_PMS_BUTTON -> {
+                val binding = UohPmsButtonItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                UohPmsButtonViewHolder(binding, actionListener)
+            }
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -97,10 +105,10 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             TYPE_RECOMMENDATION_TITLE -> LAYOUT_RECOMMENDATION_TITLE
             TYPE_RECOMMENDATION_ITEM -> LAYOUT_RECOMMENDATION_LIST
             TDN_BANNER -> LAYOUT_BANNER
+            TYPE_PMS_BUTTON -> LAYOUT_PMS_BUTTON
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
-
 
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -125,6 +133,9 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 holder.bind(element, holder.adapterPosition)
             }
             is UohTdnBannerViewHolder -> {
+                holder.bind(element)
+            }
+            is UohPmsButtonViewHolder -> {
                 holder.bind(element)
             }
         }
@@ -173,5 +184,33 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun getRecommendationItemAtIndex(index: Int): RecommendationItem {
         return listTypeData[index].dataObject as RecommendationItem
+    }
+
+    fun appendPmsButton(pmsButtonData: UohTypeData) {
+        var targetIndex = RecyclerView.NO_POSITION
+        var targetData: UohTypeData? = null
+        loop@ for ((index, data) in listTypeData.withIndex()) {
+            if (data.dataObject is PmsNotification) {
+                targetData = data
+                targetIndex = index
+                break@loop
+            } else if (data.dataObject is UohListOrder.Data.UohOrders.Order || data.dataObject is UohEmptyState) {
+                targetIndex = index
+                break@loop
+            }
+        }
+
+        // Only add or update pms button item when uoh list already loaded
+        if (targetIndex != RecyclerView.NO_POSITION) {
+            if (targetData != null) {
+                // Update existing pms button item
+                listTypeData[targetIndex] = pmsButtonData
+                notifyItemChanged(targetIndex)
+            } else {
+                // insert pms button item
+                listTypeData.add(targetIndex, pmsButtonData)
+                notifyItemInserted(targetIndex)
+            }
+        }
     }
 }

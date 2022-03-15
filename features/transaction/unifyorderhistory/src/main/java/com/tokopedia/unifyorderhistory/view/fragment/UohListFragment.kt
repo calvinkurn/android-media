@@ -586,6 +586,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         observingFlightResendEmail()
         observingTrainResendEmail()
         observeTdnBanner()
+        observeUohPmsCounter()
     }
 
     private fun observeTdnBanner() {
@@ -595,6 +596,17 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     tdnBanner = it.data
                 }
                 is Fail -> {
+                }
+            }
+        })
+    }
+
+    private fun observeUohPmsCounter() {
+        uohListViewModel.getUohPmsCounterResult.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    val data = UohTypeData(dataObject = it.data, typeLayout = UohConsts.TYPE_PMS_BUTTON)
+                    uohItemAdapter.appendPmsButton(data)
                 }
             }
         })
@@ -1484,6 +1496,13 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         if (!onLoadMore) {
             uohItemAdapter.addList(listOrder)
             scrollRecommendationListener.resetState()
+
+            uohListViewModel.getUohPmsCounterResult.value?.let {
+                if (it is Success) {
+                    val data = UohTypeData(dataObject = it.data, typeLayout = UohConsts.TYPE_PMS_BUTTON)
+                    uohItemAdapter.appendPmsButton(data)
+                }
+            }
         } else {
             uohItemAdapter.appendList(listOrder)
             scrollRecommendationListener.updateStateAfterGetData()
