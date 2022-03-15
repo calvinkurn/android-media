@@ -6,10 +6,10 @@
       "event": "clickHomepage",
       "eventCategory": "seller app - home",
       "eventAction": "click widget banner - see more",
-      "eventLabel": ".*",
+      "eventLabel": ".{1,}",
       "currentSite": "tokopediaseller",
       "businessUnit": "physical goods",
-      "sessionIris": ".*"
+      "sessionIris": ".{1,}"
     }
   ]
 }
