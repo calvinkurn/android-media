@@ -29,13 +29,11 @@ import com.tokopedia.media.picker.utils.addOnTabSelected
 import com.tokopedia.media.picker.utils.delegates.permissionGranted
 import com.tokopedia.media.picker.utils.dimensionPixelOffsetOf
 import com.tokopedia.media.picker.utils.setBottomMargin
-import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
 import com.tokopedia.picker.common.ParamCacheManager
-import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
-import com.tokopedia.picker.common.intent.EXTRA_PICKER_PARAM
+import com.tokopedia.picker.common.intent.PickerIntent
 import com.tokopedia.picker.common.intent.PreviewIntent
 import com.tokopedia.picker.common.observer.EventFlowFactory
 import com.tokopedia.picker.common.types.FragmentType
@@ -145,11 +143,8 @@ open class PickerActivity : BaseActivity()
 
         // get data from preview if user had an updated the media elements
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_PREVIEW_PAGE && data != null) {
-            val mediasFromPreview = data.getParcelableArrayListExtra<MediaUiModel>(
-                PickerPreviewActivity.MEDIA_ELEMENT_RESULT
-            )?.toList()?: return
-
-            stateOnChangePublished(mediasFromPreview)
+            val medias = PreviewIntent.Result.get(intent)?: return
+            stateOnChangePublished(medias)
         }
     }
 
@@ -180,12 +175,12 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun onContinueClicked() {
-        val intent = PreviewIntent.intent(this, medias)
+        val intent = PreviewIntent.Router.intent(this, medias)
         startActivityForResult(intent, REQUEST_PREVIEW_PAGE)
     }
 
     private fun setupParamQueryAndDataIntent() {
-        val pickerParam = intent.getParcelableExtra(EXTRA_PICKER_PARAM)?: PickerParam()
+        val pickerParam = PickerIntent.Router.get(intent)
 
         intent?.data?.let {
             PickerUiConfig.setupQueryPage(it)

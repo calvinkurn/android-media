@@ -1,7 +1,5 @@
 package com.tokopedia.media.preview.ui.activity
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -16,6 +14,7 @@ import com.tokopedia.media.preview.ui.component.PreviewPagerComponent
 import com.tokopedia.picker.common.ParamCacheManager
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
+import com.tokopedia.picker.common.intent.PickerIntent
 import com.tokopedia.picker.common.intent.PreviewIntent
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -71,8 +70,9 @@ class PickerPreviewActivity : BaseActivity()
     }
 
     override fun onContinueClicked() {
-        uiModel.forEach {
-            println("MEDIAPICKER -> ${it.path}")
+        uiModel.map { it.path }.let {
+            val result = ArrayList(it)
+            PickerIntent.Result.finish(this, result)
         }
     }
 
@@ -106,7 +106,7 @@ class PickerPreviewActivity : BaseActivity()
 
     private fun restoreDataState(savedInstanceState: Bundle?) {
         // get data from picker
-        PreviewIntent.result(intent).also { elements ->
+        PreviewIntent.Router.get(intent).also { elements ->
             setUiModelData(elements)
         }
 
@@ -180,10 +180,7 @@ class PickerPreviewActivity : BaseActivity()
     }
 
     private fun finishIntent() {
-        val intent = Intent()
-        intent.putExtra(MEDIA_ELEMENT_RESULT, uiModel)
-        setResult(Activity.RESULT_OK, intent)
-        finish()
+        PreviewIntent.Result.finish(this, uiModel)
     }
 
     private fun initInjector() {
@@ -196,8 +193,6 @@ class PickerPreviewActivity : BaseActivity()
 
     companion object {
         private const val CACHE_LAST_SELECTION = "cache_last_selection"
-
-        const val MEDIA_ELEMENT_RESULT = "media_element_result"
     }
 
 }

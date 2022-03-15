@@ -1,8 +1,9 @@
 package com.tokopedia.picker.common.intent
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
+import androidx.fragment.app.FragmentActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER
 import com.tokopedia.picker.common.PickerParam
@@ -11,19 +12,32 @@ const val EXTRA_PICKER_PARAM = "key-picker-param"
 const val RESULT_PICKER = "result-picker"
 
 object PickerIntent {
-    fun intent(context: Context, param: PickerParam.() -> Unit = {}): Intent {
-        val pickerParam = PickerParam().apply(param)
 
-        return RouteManager.getIntent(context, INTERNAL_MEDIA_PICKER).apply {
-            putExtra(EXTRA_PICKER_PARAM, pickerParam)
+    object Router {
+        fun intent(context: Context, param: PickerParam.() -> Unit = {}): Intent {
+            val pickerParam = PickerParam().apply(param)
+
+            return RouteManager.getIntent(context, INTERNAL_MEDIA_PICKER).apply {
+                putExtra(EXTRA_PICKER_PARAM, pickerParam)
+            }
+        }
+
+        fun get(intent: Intent?): PickerParam {
+            return intent?.getParcelableExtra(EXTRA_PICKER_PARAM)?: PickerParam()
         }
     }
 
-    fun result(intent: Intent?): ArrayList<String> {
-        return intent?.getStringArrayListExtra(RESULT_PICKER)?: arrayListOf()
+    object Result {
+        fun finish(fa: FragmentActivity, files: ArrayList<String>) {
+            val intent = Intent()
+            intent.putExtra(RESULT_PICKER, files)
+            fa.setResult(Activity.RESULT_OK, intent)
+            fa.finish()
+        }
+
+        fun get(intent: Intent?): ArrayList<String> {
+            return intent?.getStringArrayListExtra(RESULT_PICKER)?: arrayListOf()
+        }
     }
 
-    fun result(bundle: Bundle?): ArrayList<String> {
-        return bundle?.getStringArrayList(RESULT_PICKER)?: arrayListOf()
-    }
 }
