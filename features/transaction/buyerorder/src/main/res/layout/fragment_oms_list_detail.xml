@@ -46,6 +46,16 @@
                         android:textSize="@dimen/font_medium"
                         android:textStyle="bold" />
 
+                    <com.tokopedia.unifycomponents.ticker.Ticker
+                        android:id="@+id/ticker_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_lvl2"
+                        android:visibility="gone"
+                        app:tickerShapeType="loose"
+                        app:closeButtonVisibility="gone"
+                        app:tickerType="information"/>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp_1"
@@ -128,8 +138,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:nestedScrollingEnabled="false"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/voucher_item_card_events" />
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
             </LinearLayout>
 
@@ -296,6 +305,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/iv_event_send_mail"
                     android:gravity="center"
+                    android:layout_centerVertical="true"
                     android:textColor="@color/Unify_N700_68"
                     android:textSize="14sp"
                     android:layout_marginLeft="8dp"
@@ -307,6 +317,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_marginTop="4dp"
+                    android:layout_centerVertical="true"
                     android:layout_marginRight="16dp"
                     android:tint="@color/Unify_N700_68"
                     app:srcCompat="@drawable/ic_arrow_right_grey" />
