@@ -260,7 +260,7 @@
       "screenName": "/seller broadcast - permission page - \\d+",
       "userId": ".*",
       "sessionIris": ".*",
-      "currentSite": "tokopediaseller",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "businessUnit": "play",
       "theme": ".*"
     },
@@ -274,7 +274,7 @@
       "screenName": "/seller broadcast - onboarding page - \\d+",
       "userId": ".*",
       "sessionIris": ".*",
-      "currentSite": "tokopediaseller",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "businessUnit": "play",
       "theme": ".*"
     },
@@ -284,7 +284,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -295,7 +295,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - .+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -306,7 +306,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -317,7 +317,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -328,7 +328,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -339,7 +339,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -350,7 +350,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -361,7 +361,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -376,7 +376,7 @@
       "screenName": "/seller broadcast - camera - \\d+",
       "userId": ".*",
       "sessionIris": ".*",
-      "currentSite": "tokopediaseller",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "businessUnit": "play",
       "theme": ".*"
     },
@@ -386,7 +386,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -397,7 +397,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -408,7 +408,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - \\d+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -419,7 +419,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -430,7 +430,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -441,7 +441,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -452,7 +452,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -463,7 +463,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -474,7 +474,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - .+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -489,7 +489,7 @@
       "screenName": "/seller broadcast - live room - \\d+ - \\d+",
       "userId": ".*",
       "sessionIris": ".*",
-      "currentSite": "tokopediaseller",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "businessUnit": "play",
       "theme": ".*"
     },
@@ -499,7 +499,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - \\d+ - .+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -510,7 +510,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - \\d+ - .+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -521,7 +521,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - \\d+ - .+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -587,7 +587,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - \\d+ - .+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -598,7 +598,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - \\d+ - .+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -609,7 +609,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - \\d+ - .+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -620,7 +620,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - \\d+ - .+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -631,7 +631,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - \\d+ - .+ - .+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -642,7 +642,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - \\d+ - .+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -653,7 +653,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - \\d+ - .+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -664,7 +664,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - \\d+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -679,7 +679,7 @@
       "screenName": "/seller broadcast - report summary - \\d+ - \\d+",
       "userId": ".*",
       "sessionIris": ".*",
-      "currentSite": "tokopediaseller",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "businessUnit": "play",
       "theme": ".*"
     },
@@ -689,7 +689,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel":"(.+) - (.+) - (.+) - (.+) - (.+)",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -700,7 +700,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - \\d+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -711,7 +711,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - \\d+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -722,7 +722,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - \\d+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -733,7 +733,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - \\d+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -744,7 +744,7 @@
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
       "sessionIris": ".*",
-      "currentSite": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
       "userId": ".*",
       "businessUnit": "play"
