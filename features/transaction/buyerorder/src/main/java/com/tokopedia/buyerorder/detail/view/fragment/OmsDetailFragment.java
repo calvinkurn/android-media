@@ -71,12 +71,14 @@ import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter;
 import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
+import com.tokopedia.buyerorder.recharge.data.response.AdditionalTickerInfo;
 import com.tokopedia.coachmark.CoachMark;
 import com.tokopedia.coachmark.CoachMarkBuilder;
 import com.tokopedia.coachmark.CoachMarkItem;
 import com.tokopedia.kotlin.util.DownloadHelper;
 import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.Toaster;
+import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
@@ -156,6 +158,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     private View bannerDeals;
     private Typography bannerMainTitle;
     private Typography bannerSubTitle;
+    private Ticker tickerStatus;
     private NestedScrollView parentScroll;
     private Boolean _isDownloadable;
 
@@ -219,6 +222,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         bannerMainTitle = view.findViewById(R.id.tg_deal_banner_title);
         bannerSubTitle = view.findViewById(R.id.tg_deal_banner_sub_title);
         parentScroll = view.findViewById(R.id.parentScroll);
+        tickerStatus = view.findViewById(R.id.ticker_status);
 
         localCacheHandler = new LocalCacheHandler(getContext(),PREFERENCES_NAME);
 
@@ -239,6 +243,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     public void setDetailsData(OrderDetails details) {
         hideProgressBar();
         setStatus(details.status());
+        setTicker(details.getAdditionalTickerInfo(), details.status().statusText());
         if (details.conditionalInfo().text() != null && !details.conditionalInfo().text().equals("")) {
             setConditionalInfo(details.conditionalInfo());
         }
@@ -319,6 +324,40 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             shape.setColor(Color.parseColor(status.backgroundColor()));
         }
         statusValue.setBackground(shape);
+    }
+
+    private void setTicker(List<AdditionalTickerInfo> additionalTickerInfoList, String status){
+        if (status.equals(getString(R.string.deals_order_canceled))){
+            tickerStatus.setVisibility(View.VISIBLE);
+            setTickerByFilter(
+                    additionalTickerInfoList,
+                    getString(R.string.deals_ticker_full_refund_no_promo),
+                    getString(R.string.deals_ticker_full_refund_cashback),
+                    getString(R.string.deals_ticker_full_refund_discount)
+            );
+        }else if (status.equals(getString(R.string.deals_order_success))){
+            tickerStatus.setVisibility(View.VISIBLE);
+            setTickerByFilter(additionalTickerInfoList, getString(R.string.deals_ticker_partial_refund_no_promo));
+        }else{
+            tickerStatus.setVisibility(View.GONE);
+        }
+    }
+
+    private void setTickerByFilter(
+            List<AdditionalTickerInfo> additionalTickerInfoList,
+            String ...param
+    ){
+        if (!additionalTickerInfoList.isEmpty()){
+            for (AdditionalTickerInfo additionalTickerInfo: additionalTickerInfoList){
+                if (additionalTickerInfo.getTitle().equals(param[0]) ||
+                        additionalTickerInfo.getTitle().equals(param[1]) ||
+                        additionalTickerInfo.getTitle().equals(param[2])
+                ){
+                    tickerStatus.setTickerTitle(additionalTickerInfo.getTitle());
+                    tickerStatus.setTextDescription(additionalTickerInfo.getNotes());
+                }else{ tickerStatus.setVisibility(View.GONE); }
+            }
+        }else { tickerStatus.setVisibility(View.GONE); }
     }
 
     @Override
