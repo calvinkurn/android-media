@@ -54,6 +54,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun trackProductViewRecommendation(recommendationItem: RecommendationItem, index: Int)
         fun trackProductClickRecommendation(recommendationItem: RecommendationItem, index: Int)
         fun atcRecommendationItem(recommendationItem: RecommendationItem)
+        fun onImpressionPmsButton()
         fun onPmsButtonClicked()
     }
 

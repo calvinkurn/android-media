@@ -1980,8 +1980,13 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         if (isTopAds) activity?.let { TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
     }
 
+    override fun onImpressionPmsButton() {
+        UohAnalytics.impressionMenungguPembayaran()
+    }
+
     override fun onPmsButtonClicked() {
         activity?.let {
+            UohAnalytics.clickMenungguPembayaran()
             RouteManager.route(it, ApplinkConstInternalPayment.PMS_PAYMENT_LIST)
         }
     }

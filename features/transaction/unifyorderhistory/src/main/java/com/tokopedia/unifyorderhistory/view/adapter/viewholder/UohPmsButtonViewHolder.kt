@@ -12,6 +12,7 @@ class UohPmsButtonViewHolder(private val binding: UohPmsButtonItemBinding, priva
 
     fun bind(item: UohTypeData) {
         if (item.dataObject is PmsNotification) {
+            actionListener?.onImpressionPmsButton()
             val counter = item.dataObject.notifications.buyerOrderStatus.paymentStatus
             if (counter > 0) {
                 binding.labelCounter.setLabel(counter.toString())
