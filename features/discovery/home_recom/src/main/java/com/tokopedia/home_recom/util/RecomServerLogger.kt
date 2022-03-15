@@ -20,6 +20,7 @@ object RecomServerLogger {
     const val TOPADS_RECOM_PAGE_TIMEOUT_EXCEEDED = "topads_recom_page_timeout"
     const val TOPADS_RECOM_PAGE_HIT_DYNAMIC_SLOTTING = "topads_recom_page_hit_dynamic_slotting"
     const val TOPADS_RECOM_PAGE_HIT_ADS_TRACKER = "topads_recom_page_hit_ads_tracker"
+    const val TOPADS_RECOM_PAGE_HIT_ADS_TRACKER_IMPRESSION = "topads_recom_page_hit_ads_tracker_impression"
     const val TOPADS_RECOM_PAGE_IS_NOT_ADS = "topads_recom_page_is_not_ads"
     const val TOPADS_RECOM_PAGE_BE_ERROR = "topads_recom_page_be_error"
     const val TOPADS_RECOM_PAGE_GENERAL_ERROR = "topads_recom_page_general_error"
