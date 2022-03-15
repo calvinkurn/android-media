@@ -74,7 +74,7 @@ open class RecommendationPageViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher.getMainDispatcher()) {
 
     companion object {
-        const val PARAM_JOB_TIMEOUT_DEFAULT = 1000L
+        const val PARAM_JOB_TIMEOUT_DEFAULT = 5000L
         const val PARAM_SUCCESS_200 = 200
         const val PARAM_SUCCESS_300 = 300
         const val POS_CPM = 1
