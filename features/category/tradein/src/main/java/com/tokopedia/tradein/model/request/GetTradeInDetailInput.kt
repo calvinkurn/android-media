@@ -8,6 +8,8 @@ data class GetTradeInDetailInput(
     var appDeviceId: String,
     @SerializedName("ModelInfo")
     var modelInfo: String,
+    @SerializedName("DeviceSignature")
+    var deviceSignature: String,
     @SerializedName("OriginalPrice")
     var originalPrice: Double,
     @SerializedName("SessionId")
