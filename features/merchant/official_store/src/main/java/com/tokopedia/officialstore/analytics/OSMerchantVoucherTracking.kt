@@ -16,12 +16,12 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
             const val CLICK_SHOP = "click shop"
             const val SHOP_DETAIL = "shop detail"
             const val CREATIVE_NAME_FORMAT = "%s - %s"
-            const val ITEM_LIST_PRODUCT_DETAIL_FORMAT = "/official-store/%s - %s - %s - %s"
             const val ITEM_CATEGORY_PRODUCT_DETAIL_FORMAT = "%s / %s / %s"
             const val DIMENSION_38_FORMAT = "%s_%s_%s_%s_%s_%s"
-            const val CLICK_VIEW_ALL = "click view all card"
+            const val CLICK_VIEW_ALL = "click view all"
             const val ITEM_ID_FORMAT = "%s_%s"
             const val MERCHANT_VOUCHER_MULTIPLE = "merchant_voucher_multiple"
+            const val ITEM_LIST_PRODUCT_DETAIL_FORMAT = "/official-store/%s - $MERCHANT_VOUCHER_MULTIPLE - %s - %s"
             const val ITEM_NAME_FORMAT = "/official-store/%s - $MERCHANT_VOUCHER_MULTIPLE - %s"
             const val DEFAULT_VALUE = ""
             const val VIEW_COUPON = "view coupon"
@@ -69,7 +69,7 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
         return Pair(Event.CLICK_HOMEPAGE, bundle)
     }
 
-    fun getClickProduct(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int): Pair<String, Bundle> {
+    fun getClickProduct(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int, categoryName: String): Pair<String, Bundle> {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
         bundle.putString(
@@ -82,11 +82,15 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
         bundle.putString(
             ItemList.KEY,
-            CustomAction.ITEM_LIST_PRODUCT_DETAIL_FORMAT.format()
+            CustomAction.ITEM_LIST_PRODUCT_DETAIL_FORMAT.format(
+                categoryName,
+                element.productAppLink,
+                element.headerName
+            )
         )
 
         val item = Bundle()
-        item.putString(Items.DIMENSION_83, CustomAction.DIMENSION_38_FORMAT.format(
+        item.putString(Items.DIMENSION_38, CustomAction.DIMENSION_38_FORMAT.format(
             "",
             "",
             "",

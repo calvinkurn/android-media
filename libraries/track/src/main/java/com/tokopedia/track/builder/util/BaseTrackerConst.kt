@@ -88,6 +88,7 @@ abstract class BaseTrackerConst {
 
     protected object Items {
         const val KEY = "items"
+        const val DIMENSION_38 = "dimension38"
         const val DIMENSION_83 = "dimension83"
         const val DIMENSION_83_DEFAULT = "bebas ongkir"
         const val INDEX = "index"

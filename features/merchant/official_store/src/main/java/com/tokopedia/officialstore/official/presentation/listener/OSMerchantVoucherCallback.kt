@@ -37,7 +37,7 @@ class OSMerchantVoucherCallback(private val dcEventHandler: DynamicChannelEventH
     }
 
     override fun onProductClicked(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int) {
-        val tracking = OSMerchantVoucherTracking.getClickProduct(element, horizontalPosition)
+        val tracking = OSMerchantVoucherTracking.getClickProduct(element, horizontalPosition, dcEventHandler.getOSCategory()?.title ?: "")
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(tracking.first, tracking.second)
         dcEventHandler.goToApplink(element.productAppLink)
     }

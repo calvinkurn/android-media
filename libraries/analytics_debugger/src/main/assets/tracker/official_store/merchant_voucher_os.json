@@ -90,7 +90,7 @@
         }
       ],
       "userId": ".*",
-      "sessionIrs": ".*",
+      "sessionIris": ".*",
       "clientId": ".*"
     }
   ]
