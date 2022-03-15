@@ -141,7 +141,7 @@ class PickerPreviewActivity : BaseActivity()
 
 
             binding?.drawerSelector?.post {
-                // set first index as selected item
+                // set selected index on drawerSelector initialize
                 binding?.drawerSelector?.setThumbnailSelected(nextIndex = drawerIndexSelected)
             }
         } else {
