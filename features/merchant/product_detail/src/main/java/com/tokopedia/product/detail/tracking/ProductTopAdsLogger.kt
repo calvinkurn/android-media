@@ -11,16 +11,24 @@ object ProductTopAdsLogger {
     const val TOPADS_PDP_HIT_ADS_TRACKER = "topads_pdp_hit_ads_tracker"
     const val TOPADS_PDP_IS_NOT_ADS = "topads_pdp_is_not_ads"
     const val TOPADS_PDP_BE_ERROR = "topads_recom_page_be_error"
+    const val TOPADS_PDP_GENERAL_ERROR = "topads_recom_page_general_error"
 
-    fun logServer(tag: String, reason: String = "", productId: String = "-1", queryParam: String = "-1") {
+    fun logServer(
+        tag: String,
+        reason: String = "",
+        productId: String = "-1",
+        queryParam: String = "-1",
+        data: String = ""
+    ) {
         ServerLogger.log(
             Priority.P2,
-            TOPADS_PDP,
+            TOPADS_PDP_GENERAL_ERROR,
             mapOf(
                 "action" to tag,
                 "productId" to productId,
                 "queryParam" to queryParam,
-                "reason" to reason
+                "reason" to reason,
+                "data" to data
             )
         )
     }

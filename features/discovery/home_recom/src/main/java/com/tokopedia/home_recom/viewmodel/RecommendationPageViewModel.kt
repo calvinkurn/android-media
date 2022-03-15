@@ -1,6 +1,7 @@
 package com.tokopedia.home_recom.viewmodel
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -16,6 +17,7 @@ import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
 import com.tokopedia.home_recom.model.entity.PrimaryProductEntity
 import com.tokopedia.home_recom.util.RecomServerLogger
 import com.tokopedia.home_recom.util.RecomServerLogger.TOPADS_RECOM_PAGE_BE_ERROR
+import com.tokopedia.home_recom.util.RecomServerLogger.TOPADS_RECOM_PAGE_GENERAL_ERROR
 import com.tokopedia.home_recom.util.RecomServerLogger.TOPADS_RECOM_PAGE_HIT_DYNAMIC_SLOTTING
 import com.tokopedia.home_recom.util.RecomServerLogger.TOPADS_RECOM_PAGE_TIMEOUT_EXCEEDED
 import com.tokopedia.home_recom.util.RecommendationRollenceController
@@ -235,6 +237,13 @@ open class RecommendationPageViewModel @Inject constructor(
                 queryParam = queryParam
             )
         }) {
+            RecomServerLogger.logServer(
+                tag = TOPADS_RECOM_PAGE_GENERAL_ERROR,
+                reason = (it.message ?: "").take(RecomServerLogger.MAX_LIMIT),
+                data = Log.getStackTraceString(it).take(RecomServerLogger.MAX_LIMIT),
+                productId = productId,
+                queryParam = queryParam
+            )
             it.printStackTrace()
         }
     }
