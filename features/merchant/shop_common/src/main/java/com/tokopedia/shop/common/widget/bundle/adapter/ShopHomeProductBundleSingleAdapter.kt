@@ -3,6 +3,7 @@ package com.tokopedia.shop.common.widget.bundle.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.viewholder.ShopHomeProductBundleSinglePackageViewHolder
 
@@ -51,8 +52,22 @@ class ShopHomeProductBundleSingleAdapter(
 
         // set first bundle as default selected
         if (bundleDetails.isNotEmpty()) {
+            val lastSelectedPackagePosition = bundleDetails.withIndex().filter {
+                // filter the previous selected package
+                it.value.isSelected
+            }.map {
+                // get the index of filtered selected package
+                it.index
+            }.firstOrNull().orZero()
+
+            // unselected previous selected package based on filter above
+            bundleDetails.getOrNull(lastSelectedPackagePosition)?.isSelected = false
+            notifyItemChanged(lastSelectedPackagePosition)
+
+            // set default selected to first element on the list
             bundleDetails.firstOrNull()?.isSelected = true
             lastSelectedPosition = 0
+            notifyItemChanged(lastSelectedPosition)
         }
         notifyDataSetChanged()
     }
