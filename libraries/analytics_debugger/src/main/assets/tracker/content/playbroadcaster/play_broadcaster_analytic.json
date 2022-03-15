@@ -958,50 +958,6 @@
       "businessUnit": "play"
     },
     {
-      "eventAction": "click save vod",
-      "event": "clickSellerBroadcast",
-      "eventCategory": "seller broadcast",
-      "eventLabel": "\\d+ - \\d+",
-      "sessionIris": ".*",
-      "currentSite": ".*",
-      "shopId": ".*",
-      "userId": ".*",
-      "businessUnit": "play"
-    },
-    {
-      "eventAction": "click delete vod",
-      "event": "clickSellerBroadcast",
-      "eventCategory": "seller broadcast",
-      "eventLabel": "\\d+ - \\d+",
-      "sessionIris": ".*",
-      "currentSite": ".*",
-      "shopId": ".*",
-      "userId": ".*",
-      "businessUnit": "play"
-    },
-    {
-      "eventAction": "view confirm on pop up delete",
-      "event": "viewSellerBroadcastIris",
-      "eventCategory": "seller broadcast",
-      "eventLabel": "\\d+ - \\d+",
-      "sessionIris": ".*",
-      "currentSite": ".*",
-      "shopId": ".*",
-      "userId": ".*",
-      "businessUnit": "play"
-    },
-    {
-      "eventAction": "click delete on pop up delete",
-      "event": "clickSellerBroadcast",
-      "eventCategory": "seller broadcast",
-      "eventLabel": "\\d+ - \\d+",
-      "sessionIris": ".*",
-      "currentSite": ".*",
-      "shopId": ".*",
-      "userId": ".*",
-      "businessUnit": "play"
-    },
-    {
       "eventAction": "click add schedule",
       "event": "clickSellerBroadcast",
       "eventCategory": "seller broadcast",

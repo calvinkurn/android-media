@@ -621,46 +621,6 @@ class PlayBroadcastAnalytic(
     }
 
     /**
-     * Click save vod on Report Page
-     */
-    fun clickSaveVodOnReportPage(channelId: String) {
-        clickGeneralEvent(
-                "save vod",
-                "- $channelId"
-        )
-    }
-
-    /**
-     * Click Delete vod on Report Page
-     */
-    fun clickDeleteVodOnReportPage(channelId: String) {
-        clickGeneralEvent(
-                "delete vod",
-                "- $channelId"
-        )
-    }
-
-    /**
-     * View confirm on pop up delete on Report Page
-     */
-    fun viewConfirmDeleteOnReportPage(channelId: String) {
-        viewGeneralEvent(
-                "confirm on pop up delete",
-                "- $channelId"
-        )
-    }
-
-    /**
-     * Click Delete on pop up delete on Report Page
-     */
-    fun clickDeleteOnPopupOnReportPage(channelId: String) {
-        clickGeneralEvent(
-                "delete on pop up delete",
-                "- $channelId"
-        )
-    }
-
-    /**
      * Seller click pencil icon channel schedule
      */
     fun clickAddEditScheduleOnFinalSetupPage(isEdit: Boolean) {
