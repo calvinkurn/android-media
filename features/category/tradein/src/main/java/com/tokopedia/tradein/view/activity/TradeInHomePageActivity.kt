@@ -216,7 +216,7 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
         duration: Int = Snackbar.LENGTH_LONG
     ) {
         Toaster.build(
-            findViewById<FrameLayout>(R.id.parent_view),
+            findViewById<FrameLayout>(com.tokopedia.abstraction.R.id.parent_view),
             message,
             duration, Toaster.TYPE_ERROR, actionText, listener
         ).show()
