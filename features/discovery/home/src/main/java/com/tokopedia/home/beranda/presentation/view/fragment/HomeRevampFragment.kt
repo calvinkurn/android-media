@@ -579,7 +579,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             }
             it.setIcon(icons)
         }
-        onChooseAddressUpdated()
+        onChooseAddressUpdated(true)
 
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout)
         stickyLoginView = view.findViewById(R.id.sticky_login_text)
@@ -1216,6 +1216,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     // do nothing
                 }
             }
+            onChooseAddressUpdated(false)
         })
         val lca = ChooseAddressUtils.getLocalizingAddressData(requireContext())
         getHomeViewModel().refreshTokonowWarehouse(lca)
@@ -1936,16 +1937,23 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         loadEggData(isPageRefresh)
     }
 
-    override fun onChooseAddressUpdated() {
+    override fun onChooseAddressUpdated(shouldRefreshTokonowData: Boolean) {
         context?.let { currentContext ->
             val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(currentContext)
-            getHomeViewModel().updateChooseAddressData(
-                HomeChooseAddressData(isActive = true)
-                    .setLocalCacheModel(localCacheModel)
-            )
-            chooseAddressWidgetInitialized = false
-            if (getHomeViewModel().homeDataModel.list.isNotEmpty()) {
-                getHomeViewModel().refreshWithThreeMinsRules(forceRefresh = true, isFirstInstall = isFirstInstall())
+            if (shouldRefreshTokonowData) {
+                getHomeViewModel().refreshTokonowWarehouse(localCacheModel)
+            } else {
+                getHomeViewModel().updateChooseAddressData(
+                    HomeChooseAddressData(isActive = true)
+                        .setLocalCacheModel(localCacheModel)
+                )
+                chooseAddressWidgetInitialized = false
+                if (getHomeViewModel().homeDataModel.list.isNotEmpty()) {
+                    getHomeViewModel().refreshWithThreeMinsRules(
+                        forceRefresh = true,
+                        isFirstInstall = isFirstInstall()
+                    )
+                }
             }
         }
     }

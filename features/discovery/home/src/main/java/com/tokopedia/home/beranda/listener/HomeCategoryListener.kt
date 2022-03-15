@@ -121,7 +121,7 @@ interface HomeCategoryListener {
 
     fun getRechargeBUWidget(source: WidgetSource)
 
-    fun onChooseAddressUpdated()
+    fun onChooseAddressUpdated(shouldRefreshTokonowData: Boolean)
 
     fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean)
 
