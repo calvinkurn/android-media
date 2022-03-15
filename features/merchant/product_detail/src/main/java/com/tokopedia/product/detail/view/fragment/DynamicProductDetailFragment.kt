@@ -76,7 +76,6 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
-import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.PlayWidgetView
@@ -226,8 +225,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import rx.subscriptions.CompositeSubscription
-import java.util.Locale
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -509,6 +507,17 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         reloadCartCounter()
         reloadUserLocationChanged()
         reloadMiniCart()
+        reloadFintechWidget()
+    }
+
+    private fun reloadFintechWidget() {
+        productId?.let {
+            pdpUiUpdater?.updateFintechDataWithProductId(
+                it,
+                viewModel.userSessionInterface.isLoggedIn
+            )
+        }
+
     }
 
     override fun onDestroy() {
@@ -1682,7 +1691,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
         pdpUiUpdater?.updateVariantData(variantProcessedData)
         productId?.let { productId ->
-            pdpUiUpdater?.updateFintechDataWithProductId(productId)
+            pdpUiUpdater?.updateFintechDataWithProductId(
+                productId,
+                viewModel.userSessionInterface.isLoggedIn
+            )
         }
         pdpUiUpdater?.updateDataP1(context, updatedDynamicProductInfo, enableVideo())
         pdpUiUpdater?.updateNotifyMeAndContent(selectedChild?.productId.toString(), viewModel.p2Data.value?.upcomingCampaigns, boeData.imageURL)
@@ -2101,7 +2113,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             updateProductId()
 
             productId?.let {
-                pdpUiUpdater?.updateFintechData(it,viewModel.variantData,productInfo)
+                pdpUiUpdater?.updateFintechData(
+                    it,
+                    viewModel.variantData,
+                    productInfo,
+                    viewModel.userSessionInterface.isLoggedIn
+                )
             }
             renderVariant(viewModel.variantData, pdpUiUpdater?.productSingleVariant != null)
             val hint = if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) {

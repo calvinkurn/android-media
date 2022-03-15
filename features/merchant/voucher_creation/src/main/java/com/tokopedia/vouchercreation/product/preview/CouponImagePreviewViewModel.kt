@@ -26,6 +26,7 @@ class CouponImagePreviewViewModel @Inject constructor(
         get() = _couponImage
 
     fun previewImage(
+        isCreateMode: Boolean,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         productCount: Int,
@@ -38,6 +39,7 @@ class CouponImagePreviewViewModel @Inject constructor(
             block = {
                 val result = withContext(dispatchers.io) {
                     getCouponImagePreviewUseCase.execute(
+                        isCreateMode,
                         this,
                         couponInformation,
                         couponSettings,

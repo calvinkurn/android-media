@@ -287,7 +287,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
             }
             if (result is Fail) {
                 hideLoader()
-                showToaster(ErrorHandler.getErrorMessage(context, result.throwable), Toaster.TYPE_ERROR)
+                showToaster(getString(R.string.shop_operational_failed_update_operational_hours), Toaster.TYPE_ERROR)
             }
         }
     }
