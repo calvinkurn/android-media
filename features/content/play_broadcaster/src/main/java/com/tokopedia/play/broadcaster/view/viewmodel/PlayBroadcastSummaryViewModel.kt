@@ -2,15 +2,11 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
-import com.tokopedia.play.broadcaster.ui.event.UiString
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
@@ -262,12 +258,12 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             _trafficMetric.value = NetworkResult.Success(metrics)
 
             if(!isEligiblePostVideo(reportChannelSummary.duration))
-                _uiEvent.emit(PlayBroadcastSummaryEvent.ShowInfo(UiString.Resource(R.string.play_bro_cant_post_video_message)))
+                _uiEvent.emit(PlayBroadcastSummaryEvent.VideoUnder60Seconds)
         }) {
             _channelSummary.value = ChannelSummaryUiModel.empty()
             _trafficMetric.value = NetworkResult.Fail(it) { fetchLiveTraffic() }
 
-            _uiEvent.emit(PlayBroadcastSummaryEvent.ShowInfo(UiString.Resource(R.string.play_bro_cant_post_video_message)))
+            _uiEvent.emit(PlayBroadcastSummaryEvent.VideoUnder60Seconds)
         }
     }
 

@@ -32,7 +32,7 @@ class MetricReportItemDecoration(
             val viewHolder = parent.getChildViewHolder(child)
 
             if (viewHolder is TrafficMetricViewHolder) {
-                val tvMetric = viewHolder.itemView.findViewById<Typography>(R.id.tv_item_play_summary_description)
+                val tvMetric = viewHolder.binding.tvItemPlaySummaryDescription
 
                 val start = if (tvMetric.left <= 0) child.left
                 else tvMetric.left

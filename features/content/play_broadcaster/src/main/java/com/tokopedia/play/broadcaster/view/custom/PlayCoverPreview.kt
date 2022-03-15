@@ -8,7 +8,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewPlayCoverPreviewBinding
-import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
 import com.tokopedia.play_common.view.getBitmapFromUrl
 import kotlinx.coroutines.*
 
@@ -37,8 +36,6 @@ class PlayCoverPreview : ConstraintLayout {
         true
     )
 
-    private var mListener: CoverFormView.Listener? = null
-
     private var isCoverAvailable = false
 
     private val job = SupervisorJob()
@@ -57,7 +54,6 @@ class PlayCoverPreview : ConstraintLayout {
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        mListener = null
         job.cancelChildren()
     }
 
