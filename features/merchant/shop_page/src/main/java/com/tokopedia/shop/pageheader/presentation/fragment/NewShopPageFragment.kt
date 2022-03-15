@@ -51,6 +51,7 @@ import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.network.exception.MessageErrorException
@@ -538,6 +539,15 @@ class NewShopPageFragment :
                             throwable.stackTraceToString()
                         )
                         sendEmbraceLogError(actionName, errorMessage)
+                        ShopUtil.logTimberWarning(
+                            Priority.P2,
+                            "BUYER_FLOW_SHOP_PAGE_TEST",
+                            mapOf("TEST" to "HERE")
+                        )
+//                        ShopUtil.logShopPageP2BuyerFlowAlerting(
+//                            tag = "BUYER_FLOW_SHOP_PAGE_TEST",
+//                            functionName = this::observeLiveData.name
+//                        )
                     }
                     if (!ShopUtil.isExceptionIgnored(throwable)) {
                         ShopUtil.logShopPageP2BuyerFlowAlerting(
