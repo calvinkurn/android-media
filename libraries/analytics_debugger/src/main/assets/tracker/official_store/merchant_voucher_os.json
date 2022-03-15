@@ -66,7 +66,8 @@
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
       "sessionIrs": ".*",
-      "clientId": ".*"
+      "clientId": ".*",
+      "userId": ".*"
     }
   ]
 }
