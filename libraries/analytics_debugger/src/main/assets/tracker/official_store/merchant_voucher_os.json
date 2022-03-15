@@ -57,6 +57,16 @@
       "userId": ".*",
       "sessionIris": ".*",
       "clientId": ".*"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "merchant voucher multiple - click view all",
+      "eventCategory": "os microsite",
+      "eventLabel": ".*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "sessionIrs": ".*",
+      "clientId": ".*"
     }
   ]
 }
