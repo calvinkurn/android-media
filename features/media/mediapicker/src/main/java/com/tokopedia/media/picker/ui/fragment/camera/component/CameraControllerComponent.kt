@@ -137,6 +137,9 @@ class CameraControllerComponent(
     fun setThumbnailPreview(model: MediaUiModel) {
         if (!param.isMultipleSelectionType()) return
         imgThumbnail.smallThumbnail(model)
+        imgThumbnail.setOnClickListener {
+
+        }
     }
 
     fun removeThumbnailPreview() {
