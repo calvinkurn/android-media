@@ -19,8 +19,8 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_img_illustration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/play_product_empty_illustration_size"
+            android:layout_height="@dimen/play_product_empty_illustration_size"
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             app:layout_constraintEnd_toEndOf="parent"
