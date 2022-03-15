@@ -1,11 +1,9 @@
 package com.tokopedia.pdp.fintech.view
 
 import android.content.Context
-import android.content.Intent
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.AttrRes
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
@@ -25,9 +23,6 @@ import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataCl
 import com.tokopedia.pdp.fintech.domain.datamodel.WidgetDetail
 import com.tokopedia.pdp.fintech.listner.ProductUpdateListner
 import com.tokopedia.pdp.fintech.listner.WidgetClickListner
-import com.tokopedia.pdp.fintech.view.activity.ActivationBottomSheetActivity
-import com.tokopedia.pdp.fintech.view.bottomsheet.GopayLinkBenefitBottomSheet.Companion.ACTIVATION_BOTTOMSHEET_DETAIl
-import com.tokopedia.pdp.fintech.view.bottomsheet.GopayLinkBenefitBottomSheet.Companion.ACTIVATION_WEBVIEW_LINK
 import com.tokopedia.pdp.fintech.viewmodel.FintechWidgetViewModel
 import com.tokopedia.pdp_fintech.R
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -134,44 +129,22 @@ class PdpFintechWidget @JvmOverloads constructor(
             override fun clickedWidget(
                 fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass
             ) {
-                customRouter(
-                    fintechRedirectionWidgetDataClass
-                )
-
+                routeToPdp( fintechRedirectionWidgetDataClass)
             }
 
         })
         recyclerView?.adapter = fintechWidgetAdapter
     }
 
-    private fun customRouter(fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass) {
-        fintechRedirectionWidgetDataClass.redirectionUrl?.let {
-            val rediretionLink = fintechRedirectionWidgetDataClass.redirectionUrl +
-                    "?productID=${this.productID}" +
-                    "&tenure=${fintechRedirectionWidgetDataClass.tenure}" +
-                    "&gatewayCode=${fintechRedirectionWidgetDataClass.gatewayCode}" +
-                    "&gatewayID=${fintechRedirectionWidgetDataClass.gatewayId}"
-            "&productURL=${setProductUrl()}"
-
-            if (fintechRedirectionWidgetDataClass.cta == ACTIVATION_LINKINING_FLOW &&
-                fintechRedirectionWidgetDataClass.widgetBottomSheet?.show == false
-            ) {
-                openWebViewUrl(url = rediretionLink, false)
-            } else if (fintechRedirectionWidgetDataClass.cta == ACTIVATION_LINKINING_FLOW &&
-                fintechRedirectionWidgetDataClass.widgetBottomSheet?.show == true
-            ) {
-                val intent = Intent(context, ActivationBottomSheetActivity::class.java)
-                intent.putExtra(ACTIVATION_BOTTOMSHEET_DETAIl, fintechRedirectionWidgetDataClass)
-                intent.putExtra(ACTIVATION_WEBVIEW_LINK, rediretionLink)
-                startActivity(context, intent, null)
-            } else {
-
-                RouteManager.route(context, rediretionLink)
-
-            }
-        }
+    private fun routeToPdp(fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass) {
+        val rediretionLink = fintechRedirectionWidgetDataClass.redirectionUrl +
+                "?productID=${this.productID}" +
+                "&tenure=${fintechRedirectionWidgetDataClass.tenure}" +
+                "&gatewayCode=${fintechRedirectionWidgetDataClass.gatewayCode}" +
+                "&gatewayID=${fintechRedirectionWidgetDataClass.gatewayId}"
+        "&productURL=${setProductUrl()}"
+        instanceProductUpdateListner?.fintechChipClicked(fintechRedirectionWidgetDataClass,rediretionLink)
     }
-
 
     private fun setProductUrl(): String {
         return UriUtil.buildUri(ApplinkConst.PRODUCT_INFO, this.productID).encodeToUtf8()
