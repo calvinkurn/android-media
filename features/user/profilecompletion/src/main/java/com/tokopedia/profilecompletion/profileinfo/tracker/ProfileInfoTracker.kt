@@ -40,13 +40,13 @@ class ProfileInfoTracker {
     }
 
     // tracker ID: 28683 - Click - done
-    fun trackOnEntryPointListClick(entryPoint: String, page: String) {
+    fun trackOnEntryPointListClick(entryPoint: String) {
 	track(
 	    TrackAppUtils.gtmData(
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_CHANGE_PROFILE,
 		ACTION_CLICK_ENTRY_POINT,
-		"$LABEL_CLICK - $entryPoint - $page")
+		"$LABEL_CLICK - $entryPoint")
 	)
     }
 
@@ -394,17 +394,16 @@ class ProfileInfoTracker {
 	const val LABEL_SUCCESS = "success"
 	const val LABEL_FAILED = "failed"
 	const val LABEL_CHANGE_PROFILE_PAGE = " - change profile page"
-		const val LABEL_ENTRYPOINT_NAME = "name"
-		const val LABEL_ENTRYPOINT_USERNAME = " - username"
-		const val LABEL_ENTRYPOINT_BIO = " - bio"
-		const val LABEL_ENTRY_POINT_USER_ID = "userid"
-		const val LABEL_ENTRY_POINT_EMAIL = "email"
-		const val LABEL_ENTRY_POINT_PHONE = "phone"
-		const val LABEL_ENTRY_POINT_GENDER = "gender"
-		const val LABEL_ENTRY_POINT_DOB = "dob"
-		const val LABEL_PAGE = "page"
-		const val LABEL_BOTTOMSHEET = "bottomsheet"
-		const val LABEL_POP_UP = "pop up"
+	const val LABEL_ENTRYPOINT_NAME = "name"
+	const val LABEL_ENTRYPOINT_USERNAME = " - username"
+	const val LABEL_ENTRYPOINT_BIO = " - bio"
+	const val LABEL_ENTRY_POINT_USER_ID = "userid"
+	const val LABEL_ENTRY_POINT_EMAIL = "email"
+	const val LABEL_ENTRY_POINT_PHONE = "phone"
+	const val LABEL_ENTRY_POINT_GENDER = "gender"
+	const val LABEL_ENTRY_POINT_DOB = "dob"
+	const val LABEL_PROFILE_INFO = "info profil"
+	const val LABEL_PERSONAL_INFO = "info pribadi"
 
 	const val BUSSINESS_UNIT = "user platform"
 	const val CURRENT_SITE = "tokopediamarketplace"

@@ -366,7 +366,6 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
                 if (binding?.stubField?.etBio?.editText?.lineCount ?: 0 > 10) {
                     binding?.let{
                         it.stubField.etBio.editText.text?.delete(it.stubField.etBio.editText.text.length - 1, it.stubField.etBio.editText.text.length)
-
                     }
                 }
                 if (binding?.stubField?.etBio?.isInputError == true) {

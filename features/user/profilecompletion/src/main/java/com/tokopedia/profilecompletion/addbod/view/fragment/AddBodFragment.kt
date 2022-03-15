@@ -113,7 +113,7 @@ class AddBodFragment: BaseDaggerFragment(){
         unifyDatePicker?.datePickerButton?.setOnClickListener {
             val selectedDatePicker = unifyDatePicker?.getDate()
             selectedDatePicker?.run {
-                selectedDate = formatDateParam( selectedDatePicker.get(Calendar.DAY_OF_MONTH),selectedDatePicker.get(Calendar.MONTH) , selectedDatePicker.get(Calendar.YEAR) )
+                selectedDate = formatDateParam( selectedDatePicker.get(Calendar.DAY_OF_MONTH),selectedDatePicker.get(Calendar.MONTH) + 1 , selectedDatePicker.get(Calendar.YEAR) )
                 setChoosenDateFormat(selectedDate)
             }
             unifyDatePicker?.dismiss()

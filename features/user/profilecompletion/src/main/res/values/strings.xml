@@ -51,7 +51,7 @@
     <string name="label_cancel">Batal</string>
 
     <!-- CHANGE GENDER -->
-    <string name="title_change_gender">Tambah Jenis Kelamin</string>
+    <string name="title_change_gender">Jenis Kelamin</string>
     <string name="choose_gender">Pilih Jenis Kelamin</string>
     <string name="can_only_choose_one_gender">Jenis kelamin hanya dapat diatur sekali</string>
     <string name="button_save">Simpan</string>
