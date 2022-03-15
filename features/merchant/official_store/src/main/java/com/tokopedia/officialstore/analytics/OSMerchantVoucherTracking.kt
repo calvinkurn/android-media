@@ -154,7 +154,7 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
             Action.KEY,
             CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.CLICK_VOUCHER_DETAIL)
         )
-        bundle.putString(Category.KEY, Category.HOMEPAGE)
+        bundle.putString(Category.KEY, OfficialStoreTracking.OS_MICROSITE_SINGLE)
         bundle.putString(Label.KEY, element.shopId)
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
