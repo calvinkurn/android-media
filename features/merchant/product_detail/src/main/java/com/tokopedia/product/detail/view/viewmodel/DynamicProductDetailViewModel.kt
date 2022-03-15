@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewmodel
 
 import android.text.TextUtils
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
@@ -71,6 +72,7 @@ import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_BE_E
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_HIT_DYNAMIC_SLOTTING
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_TIMEOUT_EXCEEDED
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
+import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_GENERAL_ERROR
 import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
 import com.tokopedia.product.detail.usecase.GetP2DataAndMiniCartUseCase
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
@@ -921,6 +923,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 ProductDetailServerLogger.logBreadCrumbTopAdsIsAds(
                         isSuccess = false,
                         errorMessage = it.message,
+                )
+                ProductTopAdsLogger.logServer(
+                    tag = TOPADS_PDP_GENERAL_ERROR,
+                    throwable = it,
+                    productId = productId
                 )
                 //nothing to do since fire and forget
             }
