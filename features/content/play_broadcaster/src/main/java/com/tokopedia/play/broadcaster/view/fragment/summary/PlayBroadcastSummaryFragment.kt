@@ -119,14 +119,9 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         navigateToFragment(PlayBroadcastReportFragment::class.java)
     }
 
-    private fun getFragmentByClassName(fragmentClass: Class<out Fragment>): Fragment {
-        return fragmentFactory.instantiate(requireActivity().classLoader, fragmentClass.name)
-    }
-
     private fun navigateToFragment(fragmentClass: Class<out Fragment>, isAddToBackstack: Boolean = false) {
-        val fragment = getFragmentByClassName(fragmentClass)
         childFragmentManager.beginTransaction()
-            .replace(binding.flBroSummaryContainer.id, fragment, fragmentClass.name).apply {
+            .replace(binding.flBroSummaryContainer.id, fragmentClass, null, fragmentClass.name).apply {
                 if(isAddToBackstack) addToBackStack(null)
             }
             .commit()
