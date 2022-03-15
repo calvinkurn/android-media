@@ -175,10 +175,11 @@ class TokoNowHomeFragment: Fragment(),
         const val SOURCE_TRACKING = "tokonow page"
         const val DEFAULT_QUANTITY = 0
         const val SHARE_URL = "https://www.tokopedia.com/now"
-        const val THUMBNAIL_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/thumbnail_now_home.png"
-        const val OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/tokonow/og_tokonow.jpg"
-        const val PAGE_SHARE_NAME = "TokoNow"
-        const val SHARE = "Share"
+        const val THUMBNAIL_AND_OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/now/PN-RICH.jpg"
+        const val PAGE_SHARE_NAME = "Tokonow"
+        const val SHARE = "share"
+        const val PAGE_TYPE_HOME = "home"
+        const val PAGE_TYPE_QUEST = "quest"
         const val SUCCESS_CODE = "200"
 
         fun newInstance() = TokoNowHomeFragment()
@@ -235,6 +236,7 @@ class TokoNowHomeFragment: Fragment(),
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var movingPosition = 0
     private var isRefreshed = true
+    private var pageType = ""
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector : ScreenshotDetector? = null
     private var carouselScrollState = mutableMapOf<Int, Parcelable?>()
@@ -276,7 +278,6 @@ class TokoNowHomeFragment: Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        shareHomeTokonow()
         setupUi()
         setupNavToolbar()
         stickyLoginSetup()
@@ -354,6 +355,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     override fun screenShotTaken() {
+        pageType = PAGE_TYPE_HOME
         showUniversalShareBottomSheet(shareHomeTokonow(true))
     }
 
@@ -499,6 +501,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     override fun onShareBtnSharingEducationClicked() {
+        pageType = PAGE_TYPE_QUEST
         shareClicked(shareHomeTokonow())
         analytics.trackClickShareButtonWidget()
     }
@@ -767,6 +770,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun onClickShareButton() {
+        pageType = PAGE_TYPE_HOME
         shareClicked(shareHomeTokonow())
         analytics.onClickShareButton()
     }
@@ -1392,16 +1396,14 @@ class TokoNowHomeFragment: Fragment(),
                             if (linkerShareData.url != null) {
                                 shareData(
                                     activity,
-                                    String.format("%s %s", shareHomeTokonow?.sharingText,
-                                            linkerShareData.shareUri),
+                                    String.format("%s %s", shareHomeTokonow?.sharingText, linkerShareData.shareUri),
                                     linkerShareData.url
                                 )
                             }
                         }
 
                         override fun onError(linkerError: LinkerError) {
-                            shareData(activity, shareHomeTokonow?.sharingText ?: "",
-                                    shareHomeTokonow?.sharingUrl ?: "")
+                            shareData(activity, shareHomeTokonow?.sharingText ?: "", shareHomeTokonow?.sharingUrl ?: "")
                         }
                     })
             )
@@ -1418,25 +1420,24 @@ class TokoNowHomeFragment: Fragment(),
     private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareHomeTokonow?) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@TokoNowHomeFragment)
-            setUtmCampaignData(
+            setTokonowUtmCampaignData(
                     pageName = PAGE_SHARE_NAME,
-                    userId = shareHomeTokonow?.userId ?: "",
-                    pageId = shareHomeTokonow?.pageId ?: "",
+                    userId = shareHomeTokonow?.userId.orEmpty(),
+                    pageType = shareHomeTokonow?.pageType.orEmpty(),
                     feature = SHARE
             )
             setMetaData(
-                    tnTitle = shareHomeTokonow?.thumbNailTitle ?: "",
-                    tnImage = shareHomeTokonow?.thumbNailImage ?: "",
+                    tnTitle = shareHomeTokonow?.thumbNailTitle.orEmpty(),
+                    tnImage = shareHomeTokonow?.thumbNailImage.orEmpty(),
             )
             //set the Image Url of the Image that represents page
-            setOgImageUrl(imgUrl = shareHomeTokonow?.ogImageUrl ?: "")
+            setOgImageUrl(imgUrl = shareHomeTokonow?.ogImageUrl.orEmpty())
         }
         universalShareBottomSheet?.show(childFragmentManager, this, screenshotDetector)
     }
 
     private fun linkerDataMapper(shareHomeTokonow: ShareHomeTokonow?): LinkerShareData {
         val linkerData = LinkerData()
-        linkerData.id = shareHomeTokonow?.pageId ?: ""
         linkerData.name = shareHomeTokonow?.specificPageName ?: ""
         linkerData.uri = shareHomeTokonow?.sharingUrl ?: ""
         linkerData.description = shareHomeTokonow?.specificPageDescription ?: ""
@@ -1451,11 +1452,11 @@ class TokoNowHomeFragment: Fragment(),
                 resources.getString(R.string.tokopedianow_home_share_main_text),
                 SHARE_URL,
                 userSession.userId,
-                TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2,
+                pageType,
                 if(isScreenShot) resources.getString(R.string.tokopedianow_home_share_thumbnail_title_ss)
                 else resources.getString(R.string.tokopedianow_home_share_thumbnail_title),
-                THUMBNAIL_IMAGE_SHARE_URL,
-                OG_IMAGE_SHARE_URL,
+                THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
+                THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
                 resources.getString(R.string.tokopedianow_home_share_title),
                 resources.getString(R.string.tokopedianow_home_share_desc),
         )

@@ -785,16 +785,24 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         val sharingDate: String = SimpleDateFormat("ddMMyy", Locale.getDefault()).format(
             Date()
         )
-        var tempUsr = userId
-        if(TextUtils.isEmpty(tempUsr)){
-            tempUsr = "0"
-        }
-        campaignStr = "$pageName-$tempUsr-$pageId-$sharingDate"
+        campaignStr = "$pageName-$${getUserId(userId)}-$pageId-$sharingDate"
         if(isImageOnlySharing && !TextUtils.isEmpty(screenShotImagePath)){
             channelStr = "screenshot-share"
         }
         else {
             channelStr = feature
+        }
+    }
+
+    fun setTokonowUtmCampaignData(pageName: String, pageType: String, userId: String, feature: String){
+        val sharingDate: String = SimpleDateFormat("ddMMyy", Locale.getDefault()).format(
+            Date()
+        )
+        campaignStr = "$pageName-${getUserId(userId)}-$pageType-$sharingDate"
+        channelStr = if(isImageOnlySharing && screenShotImagePath.isNotBlank()){
+            "screenshot-share"
+        } else {
+            feature
         }
     }
 
@@ -805,6 +813,11 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         setUtmCampaignData(pageName, userId, pageIdCombined, feature)
     }
 
+    private fun getUserId(userId: String): String = if (userId.isNotBlank()) {
+        userId
+    } else {
+        "0"
+    }
 
     fun setOgImageUrl(imgUrl: String){
         ogImageUrl = imgUrl
