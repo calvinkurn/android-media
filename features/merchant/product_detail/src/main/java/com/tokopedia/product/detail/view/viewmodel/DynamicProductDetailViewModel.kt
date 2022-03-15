@@ -920,8 +920,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             }) {
                 ProductTopAdsLogger.logServer(
                     tag = TOPADS_PDP_GENERAL_ERROR,
-                    reason = (it.message ?: "").take(ProductTopAdsLogger.MAX_LIMIT),
-                    data = Log.getStackTraceString(it).take(ProductTopAdsLogger.MAX_LIMIT),
+                    throwable = it,
                     productId = productId
                 )
                 it.printStackTrace()
