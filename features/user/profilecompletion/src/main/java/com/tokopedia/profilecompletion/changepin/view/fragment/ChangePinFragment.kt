@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.pin.PinUnify
 import com.tokopedia.profilecompletion.R
@@ -310,7 +311,7 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
 
     open fun goToSuccessPage() {
 
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_COMPLETE).apply {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PIN_COMPLETE).apply {
             flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
             if(source < 1) {
                 source = PinCompleteFragment.SOURCE_CHANGE_PIN

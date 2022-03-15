@@ -1,12 +1,18 @@
 package com.tokopedia.oneclickcheckout.order.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.oneclickcheckout.order.data.get.*
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.CourierSelectionError
 import com.tokopedia.oneclickcheckout.order.view.model.ProductTrackerData
 import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.*
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnWording
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.Button
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.PopUp
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.*
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
@@ -27,6 +33,7 @@ class GetOccCartMapper @Inject constructor() {
             products = productList
             shop.firstProductErrorIndex = firstProductErrorIndex
             kero = OrderKero(data.keroToken, data.keroDiscomToken, data.keroUnixTime)
+            addOnWordingData = mapAddOnWording(data.addOnWording)
         }
         return OrderData(
                 ticker = mapTicker(data.tickers),
@@ -39,7 +46,9 @@ class GetOccCartMapper @Inject constructor() {
                 errorCode = data.errorCode,
                 popUpMessage = data.popUpMessage,
                 totalProductPrice = data.totalProductPrice,
-                profileCode = data.paymentAdditionalData.profileCode)
+                profileCode = data.paymentAdditionalData.profileCode,
+                popUp = mapPopUp(data.popUp)
+        )
     }
 
     private fun generateShopShipment(shopShipments: List<OccShopShipment>): ArrayList<ShopShipment> {
@@ -110,6 +119,7 @@ class GetOccCartMapper @Inject constructor() {
             maximumWeight = shop.maximumShippingWeight
             unblockingErrorMessage = groupShop.unblockingErrors.firstOrNull() ?: ""
             boMetadata = groupShop.boMetadata
+            addOn = mapAddOns(groupShop.addOns)
         }
     }
 
@@ -176,6 +186,7 @@ class GetOccCartMapper @Inject constructor() {
             productInformation = product.productInformation.reversed()
             errorMessage = product.errors.firstOrNull() ?: ""
             isError = errorMessage.isNotEmpty() || shop.isError
+            addOn = mapAddOns(product.addOns)
         }
         return orderProduct
     }
@@ -441,5 +452,96 @@ class GetOccCartMapper @Inject constructor() {
                 promptResponse.description, promptResponse.imageUrl, promptResponse.buttons.map {
             OccPromptButton(it.text, it.link, it.action.lowercase(), it.color.lowercase())
         })
+    }
+
+    private fun mapAddOns(addOnsResponse: AddOnsResponse?): AddOnsDataModel {
+        return if (addOnsResponse != null) {
+            AddOnsDataModel(
+                    status = addOnsResponse.status,
+                    addOnsDataItemModelList = addOnsResponse.addOnData.map { mapAddOnDataItem(it) },
+                    addOnsButtonModel = mapAddOnButton(addOnsResponse.addOnButton),
+                    addOnsBottomSheetModel = mapAddOnBottomSheet(addOnsResponse.addOnBottomsheet),
+            )
+        } else {
+            AddOnsDataModel(status = 0)
+        }
+    }
+
+    private fun mapAddOnDataItem(addOnDataItem: AddOnsResponse.AddOnDataItem): AddOnDataItemModel {
+        return AddOnDataItemModel(
+                addOnPrice = addOnDataItem.addOnPrice,
+                addOnId = addOnDataItem.addOnId,
+                addOnQty = addOnDataItem.addOnQty,
+                addOnMetadata = mapAddOnMetadata(addOnDataItem.addOnMetadata)
+        )
+    }
+
+    private fun mapAddOnMetadata(addOnMetadata: AddOnsResponse.AddOnDataItem.AddOnMetadata): AddOnMetadataItemModel {
+        return AddOnMetadataItemModel(
+                addOnNoteItemModel = mapAddOnNoteItem(addOnMetadata.addOnNote)
+        )
+    }
+
+    private fun mapAddOnNoteItem(addOnNote: AddOnsResponse.AddOnDataItem.AddOnMetadata.AddOnNote): AddOnNoteItemModel {
+        return AddOnNoteItemModel(
+                isCustomNote = addOnNote.isCustomNote,
+                to = addOnNote.to,
+                from = addOnNote.from,
+                notes = addOnNote.notes
+        )
+    }
+
+    private fun mapAddOnButton(addOnButton: AddOnsResponse.AddOnButton): AddOnButtonModel {
+        return AddOnButtonModel(
+                leftIconUrl = addOnButton.leftIconUrl,
+                rightIconUrl = addOnButton.rightIconUrl,
+                description = addOnButton.description,
+                action = addOnButton.action,
+                title = addOnButton.title
+        )
+    }
+
+    private fun mapAddOnBottomSheet(addOnBottomSheet: AddOnsResponse.AddOnBottomsheet): AddOnBottomSheetModel {
+        return AddOnBottomSheetModel(
+                headerTitle = addOnBottomSheet.headerTitle,
+                description = addOnBottomSheet.description,
+                ticker = mapAddOnTicker(addOnBottomSheet.ticker),
+                products = addOnBottomSheet.products.map { mapAddOnProduct(it) }
+        )
+    }
+
+    private fun mapAddOnTicker(ticker: AddOnsResponse.AddOnBottomsheet.Ticker): AddOnTickerModel {
+        return AddOnTickerModel(
+                text = ticker.text
+        )
+    }
+
+    private fun mapAddOnProduct(product: AddOnsResponse.AddOnBottomsheet.ProductsItem): AddOnProductItemModel {
+        return AddOnProductItemModel(
+                productName = product.productName,
+                productImageUrl = product.productImageUrl
+        )
+    }
+
+    private fun mapPopUp(popUp: PopUp): PopUpData {
+        return PopUpData(
+                title = popUp.title,
+                description = popUp.description,
+                button = mapButton(popUp.button)
+        )
+    }
+
+    private fun mapButton(button: Button): ButtonData {
+        return ButtonData(
+                text = button.text
+        )
+    }
+
+    private fun mapAddOnWording(addOnWording: AddOnWording): AddOnWordingData {
+        return AddOnWordingData(
+                packagingAndGreetingCard = addOnWording.packagingAndGreetingCard,
+                onlyGreetingCard = addOnWording.onlyGreetingCard,
+                invoiceNotSendToRecipient = addOnWording.invoiceNotSendToRecipient
+        )
     }
 }

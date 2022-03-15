@@ -601,10 +601,10 @@ class ShopHomeViewModel @Inject constructor(
                     if (shopId == userSessionShopId) PlayWidgetUseCase.WidgetType.SellerApp(shopId) else PlayWidgetUseCase.WidgetType.ShopPage(shopId),
                     dispatcherProvider.io
             )
-            val widgetUiModel = playWidgetTools.mapWidgetToModel(widgetResponse = response, prevModel = _playWidgetObservable.value?.widgetUiModel)
+            val widgetUiModel = playWidgetTools.mapWidgetToModel(widgetResponse = response, prevState = _playWidgetObservable.value?.playWidgetState)
             _playWidgetObservable.postValue(carouselPlayWidgetUiModel.copy(
                     actionEvent = Event(CarouselPlayWidgetUiModel.Action.Refresh),
-                    widgetUiModel = widgetUiModel
+                    playWidgetState = widgetUiModel
             ))
         }) {
             _playWidgetObservable.postValue(null)
@@ -615,7 +615,7 @@ class ShopHomeViewModel @Inject constructor(
         if (channelId == null || totalView == null) return
 
         updateWidget {
-            it.copy(widgetUiModel = playWidgetTools.updateTotalView(it.widgetUiModel, channelId, totalView))
+            it.copy(playWidgetState = playWidgetTools.updateTotalView(it.playWidgetState, channelId, totalView))
         }
     }
 
@@ -624,7 +624,7 @@ class ShopHomeViewModel @Inject constructor(
 
         updateWidget {
             val reminderType = if(isReminder) PlayWidgetReminderType.Reminded else PlayWidgetReminderType.NotReminded
-            it.copy(widgetUiModel = playWidgetTools.updateActionReminder(it.widgetUiModel, channelId, reminderType))
+            it.copy(playWidgetState = playWidgetTools.updateActionReminder(it.playWidgetState, channelId, reminderType))
         }
     }
 
@@ -635,7 +635,7 @@ class ShopHomeViewModel @Inject constructor(
 
     private fun updatePlayWidgetToggleReminder(channelId: String, reminderType: PlayWidgetReminderType) {
         updateWidget {
-            it.copy(widgetUiModel = playWidgetTools.updateActionReminder(it.widgetUiModel, channelId, reminderType))
+            it.copy(playWidgetState = playWidgetTools.updateActionReminder(it.playWidgetState, channelId, reminderType))
         }
 
         launchCatchError(block = {
@@ -651,14 +651,14 @@ class ShopHomeViewModel @Inject constructor(
                 }
                 else -> {
                     updateWidget {
-                        it.copy(widgetUiModel = playWidgetTools.updateActionReminder(it.widgetUiModel, channelId, reminderType.switch()))
+                        it.copy(playWidgetState = playWidgetTools.updateActionReminder(it.playWidgetState, channelId, reminderType.switch()))
                     }
                     _playWidgetReminderObservable.postValue(Fail(Throwable()))
                 }
             }
         }) { throwable ->
             updateWidget {
-                it.copy(widgetUiModel = playWidgetTools.updateActionReminder(it.widgetUiModel, channelId, reminderType.switch()))
+                it.copy(playWidgetState = playWidgetTools.updateActionReminder(it.playWidgetState, channelId, reminderType.switch()))
             }
             _playWidgetReminderObservable.postValue(Fail(throwable))
         }
@@ -666,7 +666,7 @@ class ShopHomeViewModel @Inject constructor(
 
     fun deleteChannel(channelId: String) {
         updateWidget {
-            it.copy(widgetUiModel = playWidgetTools.updateDeletingChannel(it.widgetUiModel, channelId))
+            it.copy(playWidgetState = playWidgetTools.updateDeletingChannel(it.playWidgetState, channelId))
         }
 
         launchCatchError(block = {
@@ -677,14 +677,14 @@ class ShopHomeViewModel @Inject constructor(
 
             updateWidget {
                 it.copy(
-                        widgetUiModel = playWidgetTools.updateDeletedChannel(it.widgetUiModel, channelId),
+                        playWidgetState = playWidgetTools.updateDeletedChannel(it.playWidgetState, channelId),
                         actionEvent = Event(CarouselPlayWidgetUiModel.Action.Delete(channelId))
                 )
             }
         }, onError = { err ->
             updateWidget {
                 it.copy(
-                        widgetUiModel = playWidgetTools.updateFailedDeletingChannel(it.widgetUiModel, channelId),
+                        playWidgetState = playWidgetTools.updateFailedDeletingChannel(it.playWidgetState, channelId),
                         actionEvent = Event(CarouselPlayWidgetUiModel.Action.DeleteFailed(channelId, err))
                 )
             }
@@ -693,7 +693,9 @@ class ShopHomeViewModel @Inject constructor(
 
     private fun updateWidget(onUpdate: (oldVal: CarouselPlayWidgetUiModel) -> CarouselPlayWidgetUiModel) {
         val currentValue = _playWidgetObservable.value
-        if (currentValue != null) _playWidgetObservable.postValue(onUpdate(currentValue))
+        if (currentValue != null) {
+            _playWidgetObservable.value = onUpdate(currentValue)
+        }
     }
 
     fun getWidgetContentData(

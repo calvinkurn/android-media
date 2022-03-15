@@ -46,6 +46,7 @@ import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceAdd
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
@@ -1155,7 +1156,12 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             setDimension118(cartItemHolderData.bundleId)
             setCampaignId(cartItemHolderData.campaignId)
             if (cartItemHolderData.shopBoAffordabilityData.tickerText.isNotBlank()) {
-                setBoAffordability("${cartItemHolderData.shopBoAffordabilityData.tickerText}_${cartItemHolderData.shopBoMetadata.boType}")
+                val fulfillText = if (cartItemHolderData.shopBoAffordabilityData.state == CartShopBoAffordabilityState.SUCCESS_AFFORD) {
+                    ConstantTransactionAnalytics.EventLabel.BO_FULFILL
+                } else {
+                    ConstantTransactionAnalytics.EventLabel.BO_UNFULFILL
+                }
+                setBoAffordability("${fulfillText}_${cartItemHolderData.shopBoMetadata.boType}")
             } else {
                 setBoAffordability("")
             }

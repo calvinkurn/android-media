@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
@@ -211,7 +212,7 @@ open class VerificationActivity : BaseOtpActivity() {
     }
 
     open fun goToSilentVerificationpage(modeListData: ModeListData) {
-        val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SILENT_VERIFICAITON)
+        val intent = RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.SILENT_VERIFICAITON)
         val bundle = createBundle(modeListData)
         bundle.putParcelable(OtpConstant.OTP_DATA_EXTRA, otpData)
         intent.putExtras(bundle)

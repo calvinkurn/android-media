@@ -18,9 +18,6 @@ class PlayRectCropImageOverlay @JvmOverloads constructor(context: Context, attrs
     private var mBlackTransparentPaint: Paint
     private var mPath = Path()
 
-    private val centerOfX: Float
-    private var bottomDetailHeight: Int
-
     private var leftPosition: Float = 0f
     private var topPosition: Float = 0f
     private var rightPosition: Float = 0f
@@ -36,9 +33,6 @@ class PlayRectCropImageOverlay @JvmOverloads constructor(context: Context, attrs
 
         mBlackTransparentPaint = Paint()
         mBlackTransparentPaint.color = resources.getColor(R.color.play_dms_N700_68)
-
-        centerOfX = (right - left).toFloat() / 2
-        bottomDetailHeight = resources.getDimensionPixelSize(R.dimen.play_cover_bottom_detail)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -88,23 +82,6 @@ class PlayRectCropImageOverlay @JvmOverloads constructor(context: Context, attrs
                     mTransparentPaint)
         }
 
-        // draw bottom black overlay
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            canvas.drawRect(leftPosition,
-                    rectHeight - bottomDetailHeight,
-                    rightPosition,
-                    bottomPosition,
-                    mBlackTransparentPaint)
-        } else {
-            canvas.drawRoundRect(leftPosition,
-                    rectHeight - bottomDetailHeight,
-                    rightPosition,
-                    bottomPosition,
-                    CENTER_RECT_RADIUS,
-                    CENTER_RECT_RADIUS,
-                    mBlackTransparentPaint)
-        }
-
         canvas.drawPath(mPath, mSemiPaint)
         canvas.clipPath(mPath)
         canvas.drawColor(resources.getColor(R.color.play_dms_cover_crop_overlay))
@@ -113,15 +90,8 @@ class PlayRectCropImageOverlay @JvmOverloads constructor(context: Context, attrs
     fun getCropRect(): RectF =
             RectF(leftPosition, topPosition, rightPosition, bottomPosition)
 
-    fun getCenterX(): Float =
-            (rightPosition - leftPosition) / 2 + leftPosition
-
-    fun getCenterY(): Float =
-            (bottomPosition - topPosition) / 2 + topPosition
-
     companion object {
         private const val CENTER_RECT_RADIUS = 20f
         private const val STROKE_WIDTH = 10f
     }
-
 }

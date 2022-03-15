@@ -15,7 +15,6 @@ class CPLItemViewHolder(private val binding: ItemShippingEditorCardBinding, priv
 
     fun bindData(data: ShipperCPLModel) {
         val shipperProductData = data.shipperProduct
-        val sb = StringBuilder()
 
         hideUnusedLayout()
 
@@ -24,10 +23,8 @@ class CPLItemViewHolder(private val binding: ItemShippingEditorCardBinding, priv
             ImageHandler.loadImageFitCenter(binding.root.context, it, data.logo)
         }
 
-        for (x in shipperProductData.indices) {
-            sb.append(shipperProductData[x].shipperProductName).append(" | ")
-        }
-        binding.shipmentCategory.text = sb.substring(0, sb.length - 2)
+        binding.shipmentCategory.text =
+            shipperProductData.joinToString(" | ") { it.shipperProductName }
 
         setAdapterData(data)
         setItemChecked(data)

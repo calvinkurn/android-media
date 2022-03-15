@@ -163,13 +163,10 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                     uploadButton?.isEnabled = true
                     when (retakeActionCode) {
                         NOT_RETAKE -> {
-                            //if liveness, upload the files immediately
-                            if (!isKycSelfie) {
-                                uploadKycFiles(
-                                        isKtpFileUsingEncryption = true,
-                                        isFaceFileUsingEncryption = true
-                                )
-                            }
+                            uploadKycFiles(
+                                    isKtpFileUsingEncryption = true,
+                                    isFaceFileUsingEncryption = true
+                            )
                         }
                         RETAKE_KTP -> {
                             retakeActionCode = RETAKE_KTP_AND_FACE
@@ -261,10 +258,6 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
 
     private fun setContentView() {
         loadingLayout?.visibility = View.GONE
-        uploadKycFiles(
-                isKtpFileUsingEncryption = true,
-                isFaceFileUsingEncryption = true
-        )
         if (activity is UserIdentificationFormActivity) {
             (activity as UserIdentificationFormActivity)
                     .updateToolbarTitle(getString(R.string.title_kyc_form_upload))
@@ -610,8 +603,8 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                 }
                 else -> {
                     uploadKycFiles(
-                            isKtpFileUsingEncryption = true,
-                            isFaceFileUsingEncryption = true
+                            isKtpFileUsingEncryption = false,
+                            isFaceFileUsingEncryption = false
                     )
                 }
             }
