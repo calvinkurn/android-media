@@ -50,6 +50,9 @@ class PlayFollowBuyerTest {
 
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
 
+    private val mockNotFollowed = Pair(false, encUserId)
+    private val mockFollowed = Pair(true, encUserId)
+
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
 
@@ -60,8 +63,7 @@ class PlayFollowBuyerTest {
     @Test
     fun `given user is logged in and has not followed buyer, when click follow, the buyer should be followed`() {
         val mockPartnerRepo: PlayViewerRepository = mockk(relaxed = true)
-        coEvery { mockPartnerRepo.getProfileHeader(any()) } returns encUserId
-        coEvery { mockPartnerRepo.getFollowingKOL(any()) } returns false
+        coEvery { mockPartnerRepo.getFollowingKOL(any()) } returns mockNotFollowed
         coEvery { mockPartnerRepo.postFollowKol(any(), PartnerFollowAction.Follow) } returns true
 
         givenPlayViewModelRobot(
@@ -86,8 +88,7 @@ class PlayFollowBuyerTest {
     @Test
     fun `given user is logged in and has followed buyer, when click follow, the buyer should be unfollowed`() {
         val mockPartnerRepo: PlayViewerRepository = mockk(relaxed = true)
-        coEvery { mockPartnerRepo.getProfileHeader(any()) } returns encUserId
-        coEvery { mockPartnerRepo.getFollowingKOL(any()) } returns true
+        coEvery { mockPartnerRepo.getFollowingKOL(any()) } returns mockFollowed
         coEvery { mockPartnerRepo.postFollowKol(any(), PartnerFollowAction.UnFollow) } returns true
 
         givenPlayViewModelRobot(
@@ -112,7 +113,7 @@ class PlayFollowBuyerTest {
     @Test
     fun `given user is not logged in, when click follow, the buyer should stay unfollowed and open login page`() {
         val mockPartnerRepo: PlayViewerRepository = mockk(relaxed = true)
-        coEvery { mockPartnerRepo.getFollowingKOL(any()) } returns false
+        coEvery { mockPartnerRepo.getFollowingKOL(any()) } returns mockNotFollowed
 
         givenPlayViewModelRobot(
             repo = mockPartnerRepo,
@@ -141,8 +142,7 @@ class PlayFollowBuyerTest {
     @Test
     fun `given user is logged in and has not followed buyer, when click follow, the buyer should be followable but not followed`() {
         val mockRepo: PlayViewerRepository = mockk(relaxed = true)
-        coEvery { mockRepo.getProfileHeader(any()) } returns encUserId
-        coEvery { mockRepo.getFollowingKOL(any()) } returns false
+        coEvery { mockRepo.getFollowingKOL(any()) } returns mockNotFollowed
 
         givenPlayViewModelRobot(
             repo = mockRepo,
@@ -166,8 +166,7 @@ class PlayFollowBuyerTest {
     @Test
     fun `given user is logged in and has followed buyer, when click follow, the buyer should be followable and not followed`() {
         val mockRepo: PlayViewerRepository = mockk(relaxed = true)
-        coEvery { mockRepo.getProfileHeader(any()) } returns encUserId
-        coEvery { mockRepo.getFollowingKOL(any()) } returns true
+        coEvery { mockRepo.getFollowingKOL(any()) } returns mockFollowed
         coEvery { mockRepo.postFollowKol(any(), any()) } returns true
 
         givenPlayViewModelRobot(
@@ -192,7 +191,7 @@ class PlayFollowBuyerTest {
     @Test
     fun `given user is not logged in, when click follow, the buyer should be not unknown`() {
         val mockRepo: PlayViewerRepository = mockk(relaxed = true)
-        coEvery { mockRepo.getFollowingKOL(any()) } returns false
+        coEvery { mockRepo.getFollowingKOL(any()) } returns mockNotFollowed
 
         givenPlayViewModelRobot(
             repo = mockRepo,
