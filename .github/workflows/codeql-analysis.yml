@@ -17,14 +17,14 @@ on:
 jobs:
   analyze:
     name: Analyze
-    runs-on: [linux, it-security, crc-2]
+    runs-on: [linux, it-security, X64, auto-scale, aws, cluster2]
 
     strategy:
       fail-fast: false
       matrix:
         # Override automatic language detection by changing the below list
         # Supported options are ['csharp', 'cpp', 'go', 'java', 'javascript', 'python']
-        language: ['javascript', 'java', 'python']
+        language: ['java', 'python', 'javascript']
         # Learn more...
         # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
 
