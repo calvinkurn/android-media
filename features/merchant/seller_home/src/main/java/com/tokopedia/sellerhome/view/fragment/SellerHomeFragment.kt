@@ -269,7 +269,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeShopShareTracker()
 
         context?.let { UpdateShopActiveWorker.execute(it) }
-        setupPMShopScoreInterrupt()
     }
 
     override fun onResume() {
