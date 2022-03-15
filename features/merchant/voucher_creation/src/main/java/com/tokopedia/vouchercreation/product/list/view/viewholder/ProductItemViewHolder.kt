@@ -9,21 +9,23 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.databinding.ItemProductListLayoutBinding
 import com.tokopedia.vouchercreation.product.list.view.adapter.VariantListAdapter
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
+import com.tokopedia.vouchercreation.product.list.view.model.VariantUiModel
 
 class ProductItemViewHolder(
         private val binding: ItemProductListLayoutBinding,
         private val productItemClickListener: OnProductItemClickListener
-) : RecyclerView.ViewHolder(binding.root), ProductItemVariantViewHolder.OnVariantItemClickListener {
+) : RecyclerView.ViewHolder(binding.root), ProductItemVariantViewHolder.OnVariantItemClickListener, VariantListAdapter.OnVariantSelectionRemovedListener {
 
     interface OnProductItemClickListener {
         fun onProductCheckBoxClicked(isSelected: Boolean, dataSetPosition: Int)
         fun onRemoveProductButtonClicked(adapterPosition: Int, dataSetPosition: Int)
         fun onProductVariantCheckBoxClicked(isSelected: Boolean, dataSetPosition: Int, variantIndex: Int): Int
         fun onProductVariantHeaderClicked(isExpanded: Boolean, dataSetPosition: Int)
+        fun onProductVariantRemoved(variantList: List<VariantUiModel>, dataSetPosition: Int)
     }
 
     private var context: Context? = null
-    private var variantListAdapter = VariantListAdapter(this)
+    private var variantListAdapter = VariantListAdapter(this, this)
 
     init {
         context = binding.root.context
@@ -95,7 +97,12 @@ class ProductItemViewHolder(
         if (productUiModel.isError) {
             binding.cbuProductItem.isClickable = false
             binding.errorLayout.show()
-            if (productUiModel.errorMessage.isNotBlank()) binding.tpgProductError.text = productUiModel.errorMessage
+            if (productUiModel.errorMessage.isNotBlank()) {
+                binding.iuRedExclamation.show()
+                binding.tpgProductError.text = productUiModel.errorMessage
+            } else {
+                binding.iuRedExclamation.hide()
+            }
         } else {
             binding.cbuProductItem.isClickable = true
             binding.errorLayout.hide()
@@ -112,10 +119,13 @@ class ProductItemViewHolder(
 
     private fun setupListeners() {
         binding.cbuProductItem.setOnCheckedChangeListener { _, isChecked ->
-            val product = binding.root.getTag(R.id.product) as ProductUiModel
             val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
             productItemClickListener.onProductCheckBoxClicked(isChecked, dataSetPosition)
-            variantListAdapter.updateVariantSelections(isChecked)
+
+            // only select all child variants when: 1. cbu is not selected, 2. not ind, 3. no variant selections
+            val isIndeterminate = binding.cbuProductItem.getIndeterminate()
+            if (!isIndeterminate) variantListAdapter.updateVariantSelections(isChecked)
+            else if (!isChecked) { variantListAdapter.updateVariantSelections(isChecked) }
         }
         binding.iuRemoveProduct.setOnClickListener {
             val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
@@ -135,8 +145,10 @@ class ProductItemViewHolder(
     }
 
     override fun onVariantCheckBoxClicked(isSelected: Boolean, variantIndex: Int) {
+        // variant selection exist within this product item
         val isIndeterminate = binding.cbuProductItem.getIndeterminate()
         val isChecked = binding.cbuProductItem.isChecked
+
         val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
         val selectedVariantSize = productItemClickListener.onProductVariantCheckBoxClicked(isSelected, dataSetPosition, variantIndex)
         if (isSelected) {
@@ -148,5 +160,15 @@ class ProductItemViewHolder(
                 if (selectedVariantSize.isZero()) binding.cbuProductItem.isChecked = false
             }
         }
+    }
+
+    override fun onVariantSelectionRemoved(variantList: List<VariantUiModel>) {
+        val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
+        productItemClickListener.onProductVariantRemoved(variantList, dataSetPosition)
+    }
+
+    override fun onVariantSelectionsEmpty() {
+        val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
+        productItemClickListener.onRemoveProductButtonClicked(adapterPosition, dataSetPosition)
     }
 }

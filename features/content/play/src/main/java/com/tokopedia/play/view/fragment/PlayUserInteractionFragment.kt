@@ -59,12 +59,10 @@ import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.view.storage.multiplelikes.MultipleLikesIconCacheStorage
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
-import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
-import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play.view.viewcomponent.*
@@ -75,7 +73,6 @@ import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
-import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.*
@@ -86,15 +83,13 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
-import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.play_common.R as commonR
 
 /**
  * Created by jegul on 29/11/19
@@ -462,7 +457,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onProductFeaturedClicked(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int) {
-        viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product, position))
+        viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product, ProductSectionUiModel.Section.ConfigUiModel.Empty, position))
         analytic.clickFeaturedProduct(product, position)
     }
 
@@ -1040,7 +1035,7 @@ class PlayUserInteractionFragment @Inject constructor(
     //TODO("This action is duplicated with the one in PlayBottomSheetFragment, find a way to prevent duplication")
     private fun doOpenProductDetail(product: PlayProductUiModel.Product, position: Int) {
         if (product.applink != null && product.applink.isNotEmpty()) {
-            analytic.clickProduct(product, position)
+            analytic.clickProduct(product, ProductSectionUiModel.Section.ConfigUiModel.Empty, position)
             openPageByApplink(product.applink, pipMode = true)
         }
     }
@@ -1521,7 +1516,11 @@ class PlayUserInteractionFragment @Inject constructor(
         if(!bottomInsets.isAnyShown) productSeeMoreView?.show()
         else productSeeMoreView?.hide()
 
-        productSeeMoreView?.setTotalProduct(tagItem.product.productList.size)
+        val productListSize = tagItem.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().sumOf {
+            it.productList.size
+        }
+
+        productSeeMoreView?.setTotalProduct(productListSize)
     }
 
     private fun renderFeaturedProductView(
@@ -1530,16 +1529,16 @@ class PlayUserInteractionFragment @Inject constructor(
         bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
         status: PlayStatusUiModel,
     ) {
-        if (tagItem.resultState.isLoading && tagItem.product.productList.isEmpty()) {
+        if (tagItem.resultState.isLoading && tagItem.product.productSectionList.isEmpty()) {
             productFeaturedView?.setPlaceholder()
-        } else if (prevTagItem?.product?.productList != tagItem.product.productList) {
+        } else if (prevTagItem?.product?.productSectionList != tagItem.product.productSectionList) {
             productFeaturedView?.setFeaturedProducts(
-                tagItem.product.productList,
+                tagItem.product.productSectionList,
                 tagItem.maxFeatured,
             )
         }
 
-        if (!tagItem.resultState.isLoading && tagItem.product.productList.isEmpty()) {
+        if (!tagItem.resultState.isLoading && tagItem.product.productSectionList.isEmpty()) {
             productFeaturedView?.hide()
         } else if (tagItem.product.canShow &&
             !bottomInsets.isAnyShown &&

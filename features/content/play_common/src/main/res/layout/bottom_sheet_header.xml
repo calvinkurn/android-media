@@ -22,7 +22,7 @@
             android:id="@+id/iv_sheet_close"
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
-            app:icon_color_light_enable="@color/Unify_N700_96"
+            app:icon_color_light_enable="@color/Unify_N400"
             app:icon_name="CLOSE"
             />
 

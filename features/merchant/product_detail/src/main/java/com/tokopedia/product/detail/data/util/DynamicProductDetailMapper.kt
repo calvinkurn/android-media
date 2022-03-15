@@ -309,9 +309,12 @@ object DynamicProductDetailMapper {
         return data.content.map { ProductDetailInfoContent(icon = it.icon, title = it.title, subtitle = it.subtitle, applink = it.applink, showAtFront = it.showAtFront, isAnnotation = it.isAnnotation) }
     }
 
-    private fun mapToCustomInfoUiModel(componentData: ComponentData?, componentName: String, componentType: String): ProductCustomInfoDataModel? {
+    private fun mapToCustomInfoUiModel(componentData: ComponentData?,
+                                       componentName: String,
+                                       componentType: String): ProductCustomInfoDataModel? {
         if (componentData == null) return null
 
+        val label = componentData.labels.firstOrNull()
         return ProductCustomInfoDataModel(
                 name = componentName,
                 type = componentType,
@@ -319,7 +322,10 @@ object DynamicProductDetailMapper {
                 applink = if (componentData.isApplink) componentData.applink else "",
                 description = componentData.description,
                 icon = componentData.icon,
-                separator = componentData.separator)
+                separator = componentData.separator,
+                labelColor = label?.color ?: "",
+                labelValue = label?.value ?: ""
+        )
     }
 
     fun generateProductReportFallback(productUrl: String): String {
@@ -382,20 +388,12 @@ object DynamicProductDetailMapper {
         return if (affiliateUniqueString.isNotBlank()) AffiliateUIIDRequest(trackerID = uuid, uuid = affiliateUniqueString, irisSessionID = TrackApp.getInstance().gtm.irisSessionId) else null
     }
 
-    fun determineSelectedOptionIds(variantData: ProductVariant, selectedChild: VariantChild?): MutableMap<String, String> {
-        val isParent = selectedChild == null
-        return when {
-            isParent -> {
-                AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
-            }
-            else -> {
-                if (selectedChild == null) {
-                    AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
-                } else {
-                    AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, selectedChild.optionIds)
-                }
-            }
-        }
+    fun determineSelectedOptionIds(variantData: ProductVariant,
+                                   selectedChild: VariantChild?): MutableMap<String, String> {
+        return AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(
+                variantData,
+                selectedChild?.optionIds
+        )
     }
 
     fun generateProductShareData(productInfo: DynamicProductInfoP1, userId: String, shopUrl: String): ProductData {

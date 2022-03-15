@@ -11,7 +11,6 @@ object ShopScoreReputationErrorLogger {
     const val SHOP_PENALTY_ERROR = "Shop Penalty error"
     const val SHOP_PENALTY_DETAIL_NEXT_ERROR = "Shop penalty detail lazy load error"
 
-    const val OLD_SHOP_SCORE_ERROR = "Old Shop Score error"
     const val SHOP_ACCOUNT = "Akun Toko"
     const val SHOP_PERFORMANCE = "Shop Performance"
 
