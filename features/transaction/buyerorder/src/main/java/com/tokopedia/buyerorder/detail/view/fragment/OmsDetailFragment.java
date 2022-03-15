@@ -243,7 +243,6 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     public void setDetailsData(OrderDetails details) {
         hideProgressBar();
         setStatus(details.status());
-        setTicker(details.getAdditionalTickerInfo(), details.status().statusText());
         if (details.conditionalInfo().text() != null && !details.conditionalInfo().text().equals("")) {
             setConditionalInfo(details.conditionalInfo());
         }
@@ -308,6 +307,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 setActionButtonsVisibility(View.GONE, View.GONE);
             }
         }
+
+        setTicker(details.getAdditionalTickerInfo(), details.status().statusText());
+
         setMainViewVisible(View.VISIBLE);
     }
 
@@ -337,7 +339,11 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             );
         }else if (status.equals(getString(R.string.deals_order_success))){
             tickerStatus.setVisibility(View.VISIBLE);
-            setTickerByFilter(additionalTickerInfoList, getString(R.string.deals_ticker_partial_refund_no_promo));
+            setTickerByFilter(
+                    additionalTickerInfoList,
+                    getString(R.string.deals_ticker_partial_refund_no_promo),
+                    getString(R.string.deals_ticker_cashback)
+            );
         }else{
             tickerStatus.setVisibility(View.GONE);
         }
@@ -353,7 +359,6 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                         additionalTickerInfo.getTitle().equals(param[1]) ||
                         additionalTickerInfo.getTitle().equals(param[2])
                 ){
-                    tickerStatus.setTickerTitle(additionalTickerInfo.getTitle());
                     tickerStatus.setTextDescription(additionalTickerInfo.getNotes());
                 }else{ tickerStatus.setVisibility(View.GONE); }
             }
