@@ -27,8 +27,12 @@ class RefreshTokonowDataUsecase @Inject constructor(private val useCase: Graphql
             PARAM_SHOP_ID to localCacheModel.shop_id,
             PARAM_WAREHOUSE_ID to localCacheModel.warehouse_id,
             PARAM_SERVICE_TYPE to localCacheModel.service_type,
-            // todo need to map to warehouses param in now module
-            PARAM_WAREHOUSES to localCacheModel.warehouses
+            PARAM_WAREHOUSES to localCacheModel.warehouses.map {
+                mapOf(
+                    PARAM_WAREHOUSE_ID to it.warehouse_id.toString(),
+                    PARAM_SERVICE_TYPE to it.service_type
+                )
+            }
         )
     }
 
@@ -41,6 +45,5 @@ class RefreshTokonowDataUsecase @Inject constructor(private val useCase: Graphql
         private const val PARAM_WAREHOUSE_ID = "warehouseId"
         private const val PARAM_SERVICE_TYPE = "serviceType"
         private const val PARAM_WAREHOUSES = "warehouses"
-
     }
 }
