@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -90,9 +91,9 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
 
     private fun initTicker() {
         if(filterType == TODAY && (listItem as? List<Any>)?.isNotEmpty() == true){
-            contentView?.findViewById<CardView>(R.id.affilitate_recylerview_ticker)?.show()
+            contentView?.findViewById<Group>(R.id.ticker_group)?.show()
         }
-        else contentView?.findViewById<CardView>(R.id.affilitate_recylerview_ticker)?.gone()
+        else contentView?.findViewById<Group>(R.id.ticker_group)?.gone()
     }
 
     private fun initList(listItem: Any?) {

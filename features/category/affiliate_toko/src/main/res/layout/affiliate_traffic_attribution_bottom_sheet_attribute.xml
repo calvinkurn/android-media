@@ -16,11 +16,10 @@
         android:layout_marginBottom="@dimen/unify_space_12"
         />
     <androidx.cardview.widget.CardView
-        android:layout_marginBottom="@dimen/unify_space_12"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:id="@+id/affilitate_recylerview_ticker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         app:cardCornerRadius="@dimen/dp_8"
         app:cardElevation="0dp">
 
@@ -35,6 +34,20 @@
             app:tickerType="announcement" />
     </androidx.cardview.widget.CardView>
 
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_marginHorizontal="-16dp"
+        android:id="@+id/divider_2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl4"/>
+    <androidx.constraintlayout.widget.Group
+        android:visibility="gone"
+        android:id="@+id/ticker_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="affilitate_recylerview_ticker,divider_2"
+
+        />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/traffic_rv"
         android:layout_width="match_parent"
