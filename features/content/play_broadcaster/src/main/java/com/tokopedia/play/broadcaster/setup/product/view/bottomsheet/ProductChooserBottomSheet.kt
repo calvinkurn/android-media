@@ -35,6 +35,7 @@ import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
+import com.tokopedia.play.broadcaster.util.extension.isNetworkError
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
@@ -44,6 +45,8 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.net.ConnectException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -261,7 +264,16 @@ class ProductChooserBottomSheet @Inject constructor(
         prevSelectedProducts: List<ProductUiModel>?,
         selectedProducts: List<ProductUiModel>,
     ) {
-        if (prevProductListPaging == productListPaging && prevSelectedProducts == selectedProducts) return
+        if (prevProductListPaging == productListPaging &&
+            prevSelectedProducts == selectedProducts) return
+
+        when {
+            productListPaging.resultState is PageResultState.Fail ||
+                    isProductEmpty(productListPaging) -> {
+                productListView.hide()
+            }
+            else -> productListView.show()
+        }
 
         viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
             productListView.setProductList(
@@ -360,17 +372,23 @@ class ProductChooserBottomSheet @Inject constructor(
         campaignAndEtalase: CampaignAndEtalaseUiModel,
         productList: ProductListPaging,
     ) {
-        if (productList.resultState is PageResultState.Fail) {
-            productErrorView.setServerError()
-            productErrorView.show()
-        }
-        else if (isProductEmpty(productList)) {
-            if (isEtalaseEmpty(campaignAndEtalase)) productErrorView.setHasNoProduct()
-            else productErrorView.setProductNotFound()
+        when {
+            productList.resultState is PageResultState.Fail -> {
+                val error = productList.resultState.error
+                if (error.isNetworkError) productErrorView.setConnectionError()
+                else productErrorView.setServerError()
 
-            productErrorView.show()
-        } else {
-            productErrorView.hide()
+                productErrorView.show()
+            }
+            isProductEmpty(productList) -> {
+                if (isEtalaseEmpty(campaignAndEtalase)) productErrorView.setHasNoProduct()
+                else productErrorView.setProductNotFound()
+
+                productErrorView.show()
+            }
+            else -> {
+                productErrorView.hide()
+            }
         }
     }
 
@@ -442,7 +460,7 @@ class ProductChooserBottomSheet @Inject constructor(
                 RouteManager.route(context, ApplinkConst.PRODUCT_ADD)
             }
             ProductErrorViewComponent.Event.RetryClicked -> {
-                eventBus.emit(ProductSetupAction.RetryFetchProducts)
+                viewModel.submitAction(ProductSetupAction.RetryFetchProducts)
             }
         }
     }
