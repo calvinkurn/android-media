@@ -1235,9 +1235,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 setPrimaryCTAClickListener {
                     dismiss()
                 }
-                setOnDismissListener {
-                    refresh()
-                }
                 show()
             }
         }
