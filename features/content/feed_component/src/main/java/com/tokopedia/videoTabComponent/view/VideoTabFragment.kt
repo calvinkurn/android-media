@@ -384,7 +384,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
             if (it.getViewHolderAtPosition(f) != null && it.getViewHolderAtPosition(f) is PlayFeedWidgetViewHolder.Jumbo) {
                 val vh = it.getViewHolderAtPosition(f) as PlayFeedWidgetViewHolder.Jumbo
                 val recyclerView = vh.itemView.findViewById<RecyclerView>(R.id.play_widget_recycler_view)
-                recyclerView?.let { playWidgetCoordinator.configureAutoplayForLargeAndJumboWidget(it) }
+                recyclerView?.let { playWidgetCoordinator.configureAutoplayForLargeAndJumboWidget(recyclerView) }
 
             }
         }

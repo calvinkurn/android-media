@@ -2067,4 +2067,11 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
             "${ApplinkConst.QRSCAN}?redirect=https://tokopedia.com/peduli-lindungi/callback?hash=yourhash"
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
+
+    @Test
+    fun `check feeds video tab detail page applink customerapp`() {
+        val queryParam = "?widgetType=live&source_type=abc&source_id=1&filter_category=Untukmu"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://feedplaylivedetail" + queryParam
+        assertEqualsDeepLinkMapper(ApplinkConst.FEED_PlAY_LIVE_DETAIL + queryParam, expectedDeepLink)
+    }
 }
