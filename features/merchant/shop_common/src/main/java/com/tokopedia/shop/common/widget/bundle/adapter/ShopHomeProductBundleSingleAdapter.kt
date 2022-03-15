@@ -3,8 +3,8 @@ package com.tokopedia.shop.common.widget.bundle.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.shop.common.widget.bundle.viewholder.ShopHomeProductBundleSinglePackageViewHolder
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
+import com.tokopedia.shop.common.widget.bundle.viewholder.ShopHomeProductBundleSinglePackageViewHolder
 
 class ShopHomeProductBundleSingleAdapter(
         private val singleBundleVariantSelectedListener: SingleBundleVariantSelectedListener
@@ -52,6 +52,7 @@ class ShopHomeProductBundleSingleAdapter(
         // set first bundle as default selected
         if (bundleDetails.isNotEmpty()) {
             bundleDetails.firstOrNull()?.isSelected = true
+            lastSelectedPosition = 0
         }
         notifyDataSetChanged()
     }
