@@ -66,15 +66,6 @@ class SomGetOrderDetailUseCase @Inject constructor(
                 checkout_date
                 payment_date
                 notes
-                products {
-                  id
-                  order_detail_id
-                  name
-                  thumbnail
-                  price_text
-                  quantity
-                  note
-                }
                 customer {
                   id
                   name
@@ -243,9 +234,8 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   action_key
                   action_url
                 }
-                have_product_bundle
-                bundle_detail {
-                  bundle {
+                details {
+                  bundles {
                     bundle_id
                     bundle_name
                     bundle_price
@@ -258,9 +248,37 @@ class SomGetOrderDetailUseCase @Inject constructor(
                       price_text
                       note
                       thumbnail
+                      addon_summary {
+                        addons {
+                          order_id
+                          id
+                          reference_id
+                          level
+                          name
+                          price
+                          price_str
+                          subtotal_price
+                          subtotal_price_str
+                          quantity
+                          type
+                          image_url
+                          metadata {
+                            add_on_note {
+                              from
+                              notes
+                              to
+                            }
+                          }
+                          create_time
+                        }
+                        total
+                        total_price
+                        total_price_str
+                        total_quantity
+                      }
                     }
                   }
-                  non_bundle {
+                  non_bundles {
                     order_detail_id
                     id
                     name
@@ -268,7 +286,70 @@ class SomGetOrderDetailUseCase @Inject constructor(
                     price_text
                     note
                     thumbnail
+                    addon_summary {
+                      addons {
+                        order_id
+                        id
+                        reference_id
+                        level
+                        name
+                        price
+                        price_str
+                        subtotal_price
+                        subtotal_price_str
+                        quantity
+                        type
+                        image_url
+                        metadata {
+                          add_on_note {
+                            from
+                            notes
+                            to
+                          }
+                        }
+                        create_time
+                      }
+                      total
+                      total_price
+                      total_price_str
+                      total_quantity
+                    }
                   }
+                  bundle_icon
+                  addon_icon
+                  addon_label
+                }
+                addon_info {
+                  order_level {
+                    addons {
+                      order_id
+                      id
+                      reference_id
+                      level
+                      name
+                      price
+                      price_str
+                      subtotal_price
+                      subtotal_price_str
+                      quantity
+                      type
+                      image_url
+                      metadata {
+                        add_on_note {
+                          from
+                          notes
+                          to
+                        }
+                      }
+                      create_time
+                    }
+                    total
+                    total_price
+                    total_price_str
+                    total_quantity
+                  }
+                  label
+                  icon_url
                 }
               }
             }

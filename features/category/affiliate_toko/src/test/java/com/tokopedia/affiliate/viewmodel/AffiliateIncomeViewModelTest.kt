@@ -121,4 +121,12 @@ class AffiliateIncomeViewModelTest{
         assertEquals(affiliateIncomeViewModel.getShimmerVisibility().value, false)
         assertEquals(affiliateIncomeViewModel.getErrorMessage().value , throwable)
     }
+
+    /**************************** testAffiliateUserBlackListed() *******************************************/
+    @Test
+    fun testAffiliateUserBlackListed() {
+        affiliateIncomeViewModel.setBlacklisted(false)
+        assertEquals(affiliateIncomeViewModel.getIsBlackListed(), false)
+
+    }
 }

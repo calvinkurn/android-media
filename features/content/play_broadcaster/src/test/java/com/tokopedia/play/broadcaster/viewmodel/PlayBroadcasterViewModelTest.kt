@@ -4,9 +4,12 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
+import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -24,18 +27,24 @@ class PlayBroadcasterViewModelTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val testDispatcher = CoroutineTestDispatchers
+    @get:Rule
+    val rule: CoroutineTestRule = CoroutineTestRule()
+
+    private val testDispatcher = rule.dispatchers
+
+    private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
 
     private val uiModelBuilder = UiModelBuilder()
+    private val productSetupUiModelBuilder = ProductSetupUiModelBuilder()
+
+    private val mockConfig = uiModelBuilder.buildConfigurationUiModel(
+        streamAllowed = true,
+        channelId = "123"
+    )
 
     @Before
     fun setUp() {
-        Dispatchers.setMain(testDispatcher.coroutineDispatcher)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
+        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
     }
 
     @Test
@@ -64,5 +73,24 @@ class PlayBroadcasterViewModelTest {
         val defaultCountDown = robot.getViewModelPrivateField<Int>("DEFAULT_BEFORE_LIVE_COUNT_DOWN")
 
         robot.getViewModel().getBeforeLiveCountDownDuration().assertEqualTo(defaultCountDown)
+    }
+
+    @Test
+    fun `when user submit set product action, it should emit new product section list state`() {
+        val mockProductTagSection = productSetupUiModelBuilder.buildProductTagSectionList()
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                getConfig()
+                getViewModel().submitAction(PlayBroadcastAction.SetProduct(mockProductTagSection))
+            }
+
+            state.selectedProduct.assertEqualTo(mockProductTagSection)
+        }
     }
 }

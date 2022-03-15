@@ -6,8 +6,8 @@ import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
 import com.tokopedia.oneclickcheckout.order.view.model.PriceChangeMessage
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
-import java.util.*
 
 sealed class OccState<out T : Any> {
     data class FirstLoad<out T : Any>(val data: T) : OccState<T>()
@@ -26,16 +26,17 @@ sealed class OccGlobalEvent {
     object Loading : OccGlobalEvent()
     data class Error(val throwable: Throwable? = null, val errorMessage: String = "") : OccGlobalEvent()
     data class PriceChangeError(val message: PriceChangeMessage) : OccGlobalEvent()
-    data class TriggerRefresh(val isFullRefresh: Boolean = true, val throwable: Throwable? = null,
-                              val errorMessage: String = "", val successMessage: String = "",
+    data class TriggerRefresh(val throwable: Throwable? = null, val errorMessage: String = "", val successMessage: String = "",
                               val uiMessage: OccToasterAction? = null, val shouldTriggerAnalytics: Boolean = false) : OccGlobalEvent()
     data class PromoClashing(val notEligiblePromoHolderDataList: ArrayList<NotEligiblePromoHolderdata>) : OccGlobalEvent()
     data class AtcError(val throwable: Throwable? = null, val errorMessage: String = "") : OccGlobalEvent()
     data class AtcSuccess(val message: String = "") : OccGlobalEvent()
     data class Prompt(val prompt: OccPrompt) : OccGlobalEvent()
     data class ToasterAction(val toast: OccToasterAction) : OccGlobalEvent()
+    data class ToasterInfo(val message: String) : OccGlobalEvent()
     data class ForceOnboarding(val onboarding: OccOnboarding) : OccGlobalEvent()
     data class UpdateLocalCacheAddress(val addressModel: ChosenAddressModel) : OccGlobalEvent()
+    data class PopUp(val popUp: PopUpData) : OccGlobalEvent()
     object AdjustAdminFeeError : OccGlobalEvent()
 }
 

@@ -58,7 +58,6 @@ import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
@@ -154,7 +153,6 @@ import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProd
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 
-
 /**
  * @author : Steven 29/11/18
  */
@@ -215,6 +213,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private var seenAttachedProduct = HashSet<String>()
     private var seenAttachedBannedProduct = HashSet<String>()
+    private var seenAttachmentVoucher = HashSet<String>()
     private val reviewRequest = Stack<ReviewRequestResult>()
     private var composeMsgArea: ComposeMessageAreaConstraintLayout? = null
     private var orderProgress: TransactionOrderProgressLayout? = null
@@ -1707,12 +1706,45 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun onVoucherClicked(data: MerchantVoucherViewModel) {
-        analytics.eventVoucherThumbnailClicked()
+    override fun onVoucherClicked(data: TopChatVoucherUiModel, source: String) {
+        TopChatAnalyticsKt.eventVoucherThumbnailClicked(source, data.voucher.voucherId)
+        if (data.isLockToProduct()) {
+            goToMvcPage(data.applink)
+        } else {
+            goToMerchantVoucherDetail(data)
+        }
+    }
+
+    override fun onVoucherSeen(data: TopChatVoucherUiModel, source: String) {
+        if (seenAttachmentVoucher.add(data.voucher.voucherId.toString())) {
+            TopChatAnalyticsKt.eventViewVoucher(source, data.voucher.voucherId)
+        }
+    }
+
+    private fun goToMvcPage(applink: String) {
+        //If seller in MA, show toaster
+        if(!GlobalConfig.isSellerApp() && isSeller()) {
+            view?.let {
+                val text = getStringResource(R.string.topchat_mvc_not_available)
+                Toaster.build(it, text).show()
+            }
+        //If applink is empty or wrong applink in sellerapp, return
+        } else if (applink.isEmpty() || GlobalConfig.isSellerApp() &&
+            !applink.contains(PREFIX_SELLER_APPLINK, ignoreCase = true)) {
+            return
+        } else {
+            context?.let {
+                val intent = RouteManager.getIntent(it, applink)
+                startActivity(intent)
+            }
+        }
+    }
+
+    private fun goToMerchantVoucherDetail(data: TopChatVoucherUiModel) {
         activity?.let {
             val intent = MerchantVoucherDetailActivity.createIntent(
-                it, data.voucherId,
-                data, shopId.toString()
+                it, data.voucher.voucherId,
+                data.voucher, shopId.toString()
             )
             startActivityForResult(intent, MerchantVoucherListFragment.REQUEST_CODE_MERCHANT_DETAIL)
         }
@@ -2914,6 +2946,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         const val AB_TEST_OCC = "chat_occ_exp"
         const val AB_TEST_NON_OCC = "chat_occ_control"
+
+        private const val PREFIX_SELLER_APPLINK = "sellerapp://"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {
