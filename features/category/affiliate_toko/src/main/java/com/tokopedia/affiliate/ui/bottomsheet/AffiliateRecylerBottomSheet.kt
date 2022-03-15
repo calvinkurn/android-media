@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,11 +19,15 @@ import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.model.response.AffiliateCommissionDetailsData
 import com.tokopedia.affiliate.model.response.AffiliateUserPerformaListItemData
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker.Companion.TODAY
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateBottomDividerItemModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTrafficAttributionModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateWithrawalInfoAttributionModel
 import com.tokopedia.affiliate.viewmodel.AffiliateRecyclerViewModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
@@ -32,6 +37,7 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
     private var type: String =""
     private var titleSheet: String = ""
     private var subText: String = ""
+    private var filterType: String = ""
     private var listItem :Any? = null
 
 
@@ -43,18 +49,21 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
         private const val TYPE = "type"
         private const val TITLE = "title"
         private const val SUB_TEXT = "subText"
+        private const val FILTER_TYPE = "filterType"
         const val TYPE_WITHDRAWAL = "withdrawalType"
         const val TYPE_HOME = "homeType"
         fun newInstance(type: String,
                         title: String?,
                         subText: String?,
-                        list: Any?
+                        list: Any?,
+                        filterType: String = ""
         ): AffiliateRecylerBottomSheet {
             return AffiliateRecylerBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(TYPE,type)
                     putString(TITLE,title)
                     putString(SUB_TEXT,subText)
+                    putString(FILTER_TYPE,filterType)
                 }
                 listItem = list
             }
@@ -73,9 +82,17 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
             text = subText
         }
         dataRv = contentView?.findViewById(R.id.traffic_rv)
+        initTicker()
         initList(listItem)
         setData()
         setChild(contentView)
+    }
+
+    private fun initTicker() {
+        if(filterType == TODAY && (listItem as? List<Any>)?.isNotEmpty() == true){
+            contentView?.findViewById<CardView>(R.id.affilitate_recylerview_ticker)?.show()
+        }
+        else contentView?.findViewById<CardView>(R.id.affilitate_recylerview_ticker)?.gone()
     }
 
     private fun initList(listItem: Any?) {
@@ -105,6 +122,7 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
             type = bundle.getString(TYPE,"")
             titleSheet = bundle.getString(TITLE,"")
             subText = bundle.getString(SUB_TEXT,"")
+            filterType = bundle.getString(FILTER_TYPE,"")
         }
     }
 

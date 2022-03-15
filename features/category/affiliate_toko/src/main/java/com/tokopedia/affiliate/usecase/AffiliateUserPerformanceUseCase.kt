@@ -46,8 +46,8 @@ class AffiliateUserPerformanceUseCase @Inject constructor(
                 "                        {\n" +
                 "                            \"MetricType\": \"totalItems\",\n" +
                 "                            \"MetricTitle\": \"-\",\n" +
-                "                            \"MetricValue\": \"24\",\n" +
-                "                            \"MetricValueFmt\": \"24\",\n" +
+                "                            \"MetricValue\": \"0\",\n" +
+                "                            \"MetricValueFmt\": \"0\",\n" +
                 "                            \"MetricDifferenceValue\": \"-12\",\n" +
                 "                            \"MetricDifferenceValueFmt\": \"-12\",\n" +
                 "                            \"Order\": 0,\n" +
