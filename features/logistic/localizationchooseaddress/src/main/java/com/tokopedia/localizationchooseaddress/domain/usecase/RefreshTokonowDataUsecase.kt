@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.data.query.RefreshTokonowDataQuery
 import com.tokopedia.localizationchooseaddress.domain.response.RefreshTokonowDataResponse
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class RefreshTokonowDataUsecase @Inject constructor(private val useCase: GraphqlUseCase<RefreshTokonowDataResponse.Data>) {
@@ -13,9 +14,20 @@ class RefreshTokonowDataUsecase @Inject constructor(private val useCase: Graphql
     }
 
     suspend fun execute(localCacheModel: LocalCacheModel): RefreshTokonowDataResponse.Data {
-        useCase.setGraphqlQuery(RefreshTokonowDataQuery)
-        useCase.setRequestParams(generateParam(localCacheModel))
-        return useCase.executeOnBackground()
+//        useCase.setGraphqlQuery(RefreshTokonowDataQuery)
+//        useCase.setRequestParams(generateParam(localCacheModel))
+//        return useCase.executeOnBackground()
+        delay(1000)
+        return RefreshTokonowDataResponse.Data(
+            RefreshTokonowDataResponse.Data.RefreshTokonowData(
+                RefreshTokonowDataResponse.Data.RefreshTokonowData.RefreshTokonowDataSuccess(
+                    shopId = "2",
+                    serviceType = "15m",
+                    lastUpdate = "2021-07-16T05:51:54+07:00",
+                    warehouseId = "250508"
+                )
+            )
+        )
     }
 
     private fun generateParam(localCacheModel: LocalCacheModel): Map<String, Any?> {
