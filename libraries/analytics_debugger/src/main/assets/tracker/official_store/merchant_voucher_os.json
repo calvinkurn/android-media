@@ -68,6 +68,30 @@
       "sessionIrs": ".*",
       "clientId": ".*",
       "userId": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "merchant voucher multiple - click product detail",
+      "eventCategory": "os microsite",
+      "eventLabel": ".* - .*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/official-store/.* - merchant_voucher_multiple - .* - .*",
+      "items": [
+        {
+          "dimension38": ".*_.*_.*_.*_.*_.*",
+          "index": ".*",
+          "item_brand": ".*",
+          "item_category": ".* / .* / .*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "item_variant": ".*",
+          "price": ".*"
+        }
+      ],
+      "userId": ".*",
+      "sessionIrs": ".*",
+      "clientId": ".*"
     }
   ]
 }
