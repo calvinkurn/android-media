@@ -43,6 +43,7 @@ import com.tokopedia.sellerapp.anr.AnrActivityLifecycleCallback;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
+import com.tokopedia.sellerapp.utils.GqlActivityCallback;
 import com.tokopedia.sellerapp.utils.SessionActivityLifecycleCallbacks;
 import com.tokopedia.sellerfeedback.SellerFeedbackScreenshot;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
@@ -268,6 +269,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         registerActivityLifecycleCallbacks(new PageInfoPusherSubscriber());
         registerActivityLifecycleCallbacks(new SellerFeedbackScreenshot(getApplicationContext()));
         registerActivityLifecycleCallbacks(new AnrActivityLifecycleCallback());
+        registerActivityLifecycleCallbacks(new GqlActivityCallback());
     }
 
     @Override
