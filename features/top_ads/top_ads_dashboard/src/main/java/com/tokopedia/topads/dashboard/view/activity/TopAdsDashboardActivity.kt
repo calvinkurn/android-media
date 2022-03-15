@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
@@ -65,6 +66,7 @@ import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineBaseFragment
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_dash_activity_base_layout.*
 import java.util.*
@@ -87,7 +89,8 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     private lateinit var headerToolbar: HeaderUnify
     lateinit var ivEducationTopAdsActionBar: ImageUnify
-    lateinit var ivCalendarTopAdsActionBar: ImageUnify
+    private lateinit var ivCalendarTopAdsActionBar: ImageUnify
+    private lateinit var txtBuatIklan : Typography
 
     private var customStartDate: String? = null
     private var customEndDate: String? = null
@@ -170,9 +173,13 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     ivCalendarTopAdsActionBar.hide()
+                    txtBuatIklan.show()
+                    ivEducationTopAdsActionBar.hide()
                     when (tab?.position) {
                         CONST_0 -> {
+                            ivEducationTopAdsActionBar.show()
                             ivCalendarTopAdsActionBar.show()
+                            txtBuatIklan.hide()
                             bottom?.visible()
                             multiActionBtn.buttonSize = UnifyButton.Size.LARGE
                             multiActionBtn?.text =
@@ -220,10 +227,6 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     }
 
     private fun setUpClick() {
-        ivCalendarTopAdsActionBar = headerToolbarRight.findViewById(R.id.ivCalendarTopAdsActionBar)
-        ivEducationTopAdsActionBar =
-            headerToolbarRight.findViewById(R.id.ivEducationTopAdsActionBar)
-
         ivCalendarTopAdsActionBar.setOnClickListener {
             showBottomSheet()
         }
@@ -231,11 +234,22 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         ivEducationTopAdsActionBar.setOnClickListener {
             startActivity(Intent(this, TopAdsEducationActivity::class.java))
         }
+        txtBuatIklan.setOnClickListener {
+            if (GlobalConfig.isSellerApp()) {
+                navigateToAdTypeSelection()
+            }
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUAT_IKLAN, "")
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendAutoAdsEvent(CLICK_BUAT_IKLAN_1, "")
+        }
     }
 
     private fun initView() {
         headerToolbar = findViewById(R.id.header_toolbar)
         headerToolbar.addCustomRightContent(headerToolbarRight)
+        txtBuatIklan = findViewById(R.id.txtBuatIklan)
+        ivCalendarTopAdsActionBar = headerToolbarRight.findViewById(R.id.ivCalendarTopAdsActionBar)
+        ivEducationTopAdsActionBar =
+            headerToolbarRight.findViewById(R.id.ivEducationTopAdsActionBar)
     }
 
     private fun removeBtn() {
