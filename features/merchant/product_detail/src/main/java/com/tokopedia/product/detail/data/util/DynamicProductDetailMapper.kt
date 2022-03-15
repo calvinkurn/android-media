@@ -22,6 +22,7 @@ import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.affiliate.AffiliateUIIDRequest
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
@@ -190,6 +191,15 @@ object DynamicProductDetailMapper {
                         )
                     )
                 }
+
+                ProductDetailConstant.FINTECH_WIDGET_TYPE -> {
+                    listOfComponent.add(
+                        FintechWidgetDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
+                }
             }
         }
         return listOfComponent
@@ -299,9 +309,12 @@ object DynamicProductDetailMapper {
         return data.content.map { ProductDetailInfoContent(icon = it.icon, title = it.title, subtitle = it.subtitle, applink = it.applink, showAtFront = it.showAtFront, isAnnotation = it.isAnnotation) }
     }
 
-    private fun mapToCustomInfoUiModel(componentData: ComponentData?, componentName: String, componentType: String): ProductCustomInfoDataModel? {
+    private fun mapToCustomInfoUiModel(componentData: ComponentData?,
+                                       componentName: String,
+                                       componentType: String): ProductCustomInfoDataModel? {
         if (componentData == null) return null
 
+        val label = componentData.labels.firstOrNull()
         return ProductCustomInfoDataModel(
                 name = componentName,
                 type = componentType,
@@ -309,7 +322,10 @@ object DynamicProductDetailMapper {
                 applink = if (componentData.isApplink) componentData.applink else "",
                 description = componentData.description,
                 icon = componentData.icon,
-                separator = componentData.separator)
+                separator = componentData.separator,
+                labelColor = label?.color ?: "",
+                labelValue = label?.value ?: ""
+        )
     }
 
     fun generateProductReportFallback(productUrl: String): String {

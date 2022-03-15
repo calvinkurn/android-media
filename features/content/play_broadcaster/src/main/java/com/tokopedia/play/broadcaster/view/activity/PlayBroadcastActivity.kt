@@ -442,21 +442,12 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     }
 
     private fun getLoadingFragment(): LoadingDialogFragment {
-        val loadingFragment = getAddedLoadingDialog()
-        return if (loadingFragment == null) {
-            val setupClass = LoadingDialogFragment::class.java
-            val fragmentFactory = supportFragmentManager.fragmentFactory
-            fragmentFactory.instantiate(this.classLoader, setupClass.name) as LoadingDialogFragment
-        } else loadingFragment
+        return LoadingDialogFragment.get(supportFragmentManager, classLoader)
     }
 
     private fun isLoadingDialogVisible(): Boolean {
-        val loadingDialog = getAddedLoadingDialog()
-        return loadingDialog != null && loadingDialog.isVisible
-    }
-
-    private fun getAddedLoadingDialog(): LoadingDialogFragment? {
-        return LoadingDialogFragment.get(supportFragmentManager)
+        val loadingDialog = getLoadingFragment()
+        return loadingDialog.isVisible
     }
 
     private fun showLoading(isLoading: Boolean) {

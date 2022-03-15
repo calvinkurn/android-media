@@ -109,7 +109,6 @@
             android:name=".adminrestriction.view.activity.AdminRestrictionActivity"
             android:label="@string/sah_admin_restriction_label"
             android:theme="@style/SellerHomeTheme.Transparent"
-            android:screenOrientation="portrait"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -131,7 +130,6 @@
             android:name="com.tokopedia.centralizedpromo.view.activity.FirstVoucherActivity"
             android:label="@string/centralized_promo_first_voucher_label"
             android:theme="@style/SellerHomeTheme.Transparent"
-            android:screenOrientation="portrait"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

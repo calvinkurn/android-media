@@ -25,6 +25,8 @@ class GetProductListUseCase @Inject constructor(@ApplicationContext repository: 
         private const val KEY_PAGE_SIZE = "pageSize"
         private const val KEY_PRODUCT_IDS = "productIDInclude"
         private const val KEY_IS_PRE_ORDER_ONLY = "isPreorderOnly"
+        private const val KEY_STATUS = "status"
+        private const val PRODUCT_STATUS_ACTIVE = "ACTIVE"
         private const val VALUE_FALSE = "false"
 
         @JvmStatic
@@ -46,6 +48,7 @@ class GetProductListUseCase @Inject constructor(@ApplicationContext repository: 
                 categories?.run { add(GoodsFilterInput(id = KEY_CATEGORY, value = categories)) }
                 page?.run { add(GoodsFilterInput(id = KEY_PAGE, value = listOf(this.toString()))) }
                 pageSize?.run { add(GoodsFilterInput(id = KEY_PAGE_SIZE, value = listOf(this.toString()))) }
+                add(GoodsFilterInput(id = KEY_STATUS, value = listOf(PRODUCT_STATUS_ACTIVE)))
                 add(GoodsFilterInput(id = KEY_IS_PRE_ORDER_ONLY, value = listOf(VALUE_FALSE)))
             }
 

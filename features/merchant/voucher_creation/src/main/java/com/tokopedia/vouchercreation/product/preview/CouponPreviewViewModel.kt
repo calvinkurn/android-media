@@ -92,6 +92,7 @@ class CouponPreviewViewModel @Inject constructor(
 
 
     fun createCoupon(
+        isCreateMode: Boolean,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         couponProducts: List<CouponProduct>
@@ -101,6 +102,7 @@ class CouponPreviewViewModel @Inject constructor(
                 val result = withContext(dispatchers.io) {
                     createCouponUseCase.execute(
                         this,
+                        isCreateMode,
                         ImageGeneratorConstant.IMAGE_TEMPLATE_COUPON_PRODUCT_SOURCE_ID,
                         couponInformation,
                         couponSettings,
@@ -219,25 +221,21 @@ class CouponPreviewViewModel @Inject constructor(
         val couponProductData = mutableListOf<CouponProduct>()
         selectedProducts.forEach { selectedProduct ->
             val isParentProductSelected = selectedProduct.isSelected
-
             if (isParentProductSelected) {
-                val variants = selectedProduct.variants
-                if (variants.isNotEmpty()) {
-                    variants.forEach { variant ->
-                        val isVariantSelected = variant.isSelected
-                        if (isVariantSelected) {
-                            couponProductData.add(CouponProduct(
+                val selectedVariants = selectedProduct.variants.filter { it.isSelected }
+                if (selectedVariants.isNotEmpty()) {
+                    selectedVariants.forEach { variant ->
+                        couponProductData.add(CouponProduct(
                                 id = variant.variantId,
                                 imageUrl = selectedProduct.imageUrl,
                                 soldCount = selectedProduct.sold
-                            ))
-                        }
+                        ))
                     }
                 } else {
                     couponProductData.add(CouponProduct(
-                        id = selectedProduct.id,
-                        imageUrl = selectedProduct.imageUrl,
-                        soldCount = selectedProduct.sold
+                            id = selectedProduct.id,
+                            imageUrl = selectedProduct.imageUrl,
+                            soldCount = selectedProduct.sold
                     ))
                 }
             }

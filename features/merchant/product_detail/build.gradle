@@ -71,6 +71,7 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.features.affiliateCommon)
     implementation projectOrAar(rootProject.ext.features.gallery)
+    implementation projectOrAar(rootProject.ext.features.pdpPaylaterWidget)
     implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.merchantVoucher)

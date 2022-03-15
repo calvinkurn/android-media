@@ -69,6 +69,7 @@ class OrderSummaryPageActivityCreditCardAfpbTest {
                 assertSummary(
                         productPrice = "Rp500.000",
                         shippingPrice = "Rp16.000",
+                        insurancePrice = "Rp0",
                         totalPrice = "Rp516.000"
                 )
                 closeBottomSheet()
@@ -105,6 +106,7 @@ class OrderSummaryPageActivityCreditCardAfpbTest {
                 assertSummary(
                         productPrice = "Rp500.000",
                         shippingPrice = "Rp16.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.899",
                         totalPrice = "Rp517.899"
                 )
@@ -145,6 +147,7 @@ class OrderSummaryPageActivityCreditCardAfpbTest {
                 assertSummary(
                         productPrice = "Rp1.000.000",
                         shippingPrice = "Rp16.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp4.599",
                         totalPrice = "Rp1.020.599"
                 )
@@ -191,6 +194,7 @@ class OrderSummaryPageActivityCreditCardAfpbTest {
                 assertSummary(
                         productPrice = "Rp1.000.000",
                         shippingPrice = "Rp16.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp4.599",
                         totalPrice = "Rp1.020.599"
                 )

@@ -110,7 +110,9 @@ class ProductChooserBottomSheet @Inject constructor(
         creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
     )
 
+    //TODO("Need to find a better way to handle this")
     private var isSelectedProductsChanged = false
+
     private var mListener: Listener? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -156,7 +158,7 @@ class ProductChooserBottomSheet @Inject constructor(
         show(fragmentManager, TAG)
     }
 
-    fun setListener(listener: Listener) {
+    fun setListener(listener: Listener?) {
         mListener = listener
     }
 
@@ -181,12 +183,6 @@ class ProductChooserBottomSheet @Inject constructor(
     private fun setupObserve() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
-                if (prevState?.selectedProductList != null &&
-                    prevState.selectedProductList != state.selectedProductList) {
-
-                    isSelectedProductsChanged = true
-                }
-
                 renderProductList(
                     prevState?.focusedProductList,
                     state.focusedProductList,
@@ -213,7 +209,7 @@ class ProductChooserBottomSheet @Inject constructor(
                     prevState?.config,
                     state.config
                 )
-                renderSaveButton(isSelectedProductsChanged, state.saveState)
+                renderSaveButton(state.saveState)
                 renderProductError(state.campaignAndEtalase, state.focusedProductList)
                 renderChipsContainer(state.campaignAndEtalase, state.focusedProductList)
             }
@@ -352,7 +348,6 @@ class ProductChooserBottomSheet @Inject constructor(
     }
 
     private fun renderSaveButton(
-        isSelectedProductsChanged: Boolean,
         saveState: ProductSaveStateUiModel
     ) {
         saveButtonView.setState(
@@ -414,6 +409,7 @@ class ProductChooserBottomSheet @Inject constructor(
     private fun handleProductListEvent(event: ProductListViewComponent.Event) {
         when (event) {
             is ProductListViewComponent.Event.OnSelected -> {
+                isSelectedProductsChanged = true
                 viewModel.submitAction(ProductSetupAction.SelectProduct(event.product))
             }
             is ProductListViewComponent.Event.OnLoadMore -> {

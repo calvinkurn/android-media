@@ -16,6 +16,7 @@
     <string name="choose_category">Pilih Kategori</string>
     <string name="error_get_local_dynamic_filter">Gagal memproses data Filter</string>
     <string name="bottom_sheet_filter_finish_button_template_text">Tampilkan %s produk</string>
+    <string name="bottom_sheet_filter_finish_button_no_count">Tampilkan produk</string>
 
     <string name="title_category">Kategori</string>
     <string name="title_sort_but">Urutkan</string>

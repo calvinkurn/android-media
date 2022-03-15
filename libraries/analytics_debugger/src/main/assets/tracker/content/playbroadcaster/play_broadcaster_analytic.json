@@ -126,7 +126,7 @@
       "event": "clickSellerBroadcast",
       "eventAction": "click - add product card",
       "eventCategory": "seller broadcast",
-      "eventLabel": "\\d+ - .*",
+      "eventLabel": "\\d+",
       "businessUnit": "play",
       "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",

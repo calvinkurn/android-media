@@ -4,9 +4,9 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.widget.analytic.list.PlayWidgetInListAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumBannerUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.track.TrackApp
@@ -83,7 +83,7 @@ class ShopPlayWidgetAnalyticListener(
 
     override fun onImpressOverlayCard(
             view: PlayWidgetMediumView,
-            item: PlayWidgetMediumOverlayUiModel,
+            item: PlayWidgetBackgroundUiModel,
             channelPositionInList: Int,
             verticalWidgetPosition: Int,
             businessWidgetPosition: Int,
@@ -98,7 +98,7 @@ class ShopPlayWidgetAnalyticListener(
                         BaseTrackerConst.Promotion(
                                 id = widgetId,
                                 name = "/shoppage play outside banner - p$channelPositionInList",
-                                creative = item.imageUrl,
+                                creative = item.overlayImageUrl,
                                 position = channelPositionInList.toString()
                         )
                 )
@@ -109,7 +109,7 @@ class ShopPlayWidgetAnalyticListener(
 
     override fun onClickOverlayCard(
             view: PlayWidgetMediumView,
-            item: PlayWidgetMediumOverlayUiModel,
+            item: PlayWidgetBackgroundUiModel,
             channelPositionInList: Int,
             verticalWidgetPosition: Int,
             businessWidgetPosition: Int,
@@ -124,7 +124,7 @@ class ShopPlayWidgetAnalyticListener(
                         BaseTrackerConst.Promotion(
                                 id = widgetId,
                                 name = "/shoppage play outside banner - p$channelPositionInList",
-                                creative = item.imageUrl,
+                                creative = item.overlayImageUrl,
                                 position = channelPositionInList.toString()
                         )
                 )
@@ -135,7 +135,7 @@ class ShopPlayWidgetAnalyticListener(
 
     override fun onImpressChannelCard(
             view: PlayWidgetMediumView,
-            item: PlayWidgetMediumChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             channelPositionInList: Int,
             isAutoPlay: Boolean,
             verticalWidgetPosition: Int,
@@ -183,7 +183,7 @@ class ShopPlayWidgetAnalyticListener(
 
     override fun onClickChannelCard(
             view: PlayWidgetMediumView,
-            item: PlayWidgetMediumChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             channelPositionInList: Int,
             isAutoPlay: Boolean,
             verticalWidgetPosition: Int,
@@ -231,7 +231,7 @@ class ShopPlayWidgetAnalyticListener(
 
     override fun onClickToggleReminderChannel(
             view: PlayWidgetMediumView,
-            item: PlayWidgetMediumChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             channelPositionInList: Int,
             isRemindMe: Boolean,
             verticalWidgetPosition: Int,
@@ -253,7 +253,7 @@ class ShopPlayWidgetAnalyticListener(
 
     override fun onClickBannerCard(
             view: PlayWidgetMediumView,
-            item: PlayWidgetMediumBannerUiModel,
+            item: PlayWidgetBannerUiModel,
             channelPositionInList: Int,
             verticalWidgetPosition: Int,
             businessWidgetPosition: Int,
@@ -272,7 +272,7 @@ class ShopPlayWidgetAnalyticListener(
         )
     }
 
-    override fun onClickMoreActionChannel(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
+    override fun onClickMoreActionChannel(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         EVENT to CLICK_SHOP_PAGE,
@@ -287,7 +287,7 @@ class ShopPlayWidgetAnalyticListener(
         )
     }
 
-    override fun onClickDeleteChannel(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
+    override fun onClickDeleteChannel(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         EVENT to CLICK_SHOP_PAGE,
@@ -302,7 +302,7 @@ class ShopPlayWidgetAnalyticListener(
         )
     }
 
-    fun onImpressMoreActionChannel(item: PlayWidgetMediumChannelUiModel) {
+    fun onImpressMoreActionChannel(item: PlayWidgetChannelUiModel) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         EVENT to VIEW_SHOP_PAGE_IRIS,

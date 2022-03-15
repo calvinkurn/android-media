@@ -1,8 +1,10 @@
 package com.tokopedia.cart.view.uimodel
 
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.ProductInformationWithIcon
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopTypeInfo
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.WholesalePrice
+import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 
 data class CartItemHolderData(
         var cartString: String = "",
@@ -14,10 +16,12 @@ data class CartItemHolderData(
         var selectedUnavailableActionId: String = "",
         var selectedUnavailableActionLink: String = "",
         var shouldValidateWeight: Boolean = false,
+        var shouldCheckBoAffordability: Boolean = true,
         var productName: String = "",
         var productImage: String = "",
         var productId: String = "",
         var productInformation: List<String> = emptyList(),
+        var productInformationWithIcon: List<ProductInformationWithIcon> = emptyList(),
         var productAlertMessage: String = "",
         var productPrice: Long = 0,
         var productOriginalPrice: Long = 0,
@@ -72,6 +76,8 @@ data class CartItemHolderData(
         var warehouseId: String = "",
         var isFulfillment: Boolean = false,
         var bundleType: String = "",
+        var shopBoMetadata: BoMetadata = BoMetadata(),
+        var shopBoAffordabilityData: CartShopBoAffordabilityData = CartShopBoAffordabilityData(),
 
         // Will be set after calculation
         var wholesalePrice: Long = 0,
