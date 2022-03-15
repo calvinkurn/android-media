@@ -19,6 +19,7 @@ import com.tokopedia.unifyorderhistory.data.model.PmsNotification
 import com.tokopedia.unifyorderhistory.data.model.UohEmptyState
 import com.tokopedia.unifyorderhistory.databinding.*
 import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_BANNER
+import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_LOADER_PMS_BUTTON
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_PMS_BUTTON
 import com.tokopedia.unifyorderhistory.view.adapter.viewholder.*
 import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
@@ -39,6 +40,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         const val LAYOUT_RECOMMENDATION_LIST = 5
         const val LAYOUT_BANNER = 6
         const val LAYOUT_PMS_BUTTON = 7
+        const val LAYOUT_LOADER_PMS_BUTTON = 8
     }
 
     interface ActionListener {
@@ -89,6 +91,10 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 val binding = UohPmsButtonItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
                 UohPmsButtonViewHolder(binding, actionListener)
             }
+            LAYOUT_LOADER_PMS_BUTTON -> {
+                val binding = UohLoaderPmsButtonItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                UohLoaderPmsButtonItemViewHolder(binding)
+            }
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -107,6 +113,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             TYPE_RECOMMENDATION_ITEM -> LAYOUT_RECOMMENDATION_LIST
             TDN_BANNER -> LAYOUT_BANNER
             TYPE_PMS_BUTTON -> LAYOUT_PMS_BUTTON
+            TYPE_LOADER_PMS_BUTTON -> LAYOUT_LOADER_PMS_BUTTON
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -139,11 +146,15 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is UohPmsButtonViewHolder -> {
                 holder.bind(element)
             }
+            is UohLoaderPmsButtonItemViewHolder -> {
+                holder.bind(element)
+            }
         }
     }
 
     fun showLoader() {
         listTypeData.clear()
+        listTypeData.add(UohTypeData("", TYPE_LOADER_PMS_BUTTON))
         for (x in 0 until 5) {
             listTypeData.add(UohTypeData("", TYPE_LOADER))
         }
