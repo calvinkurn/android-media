@@ -142,7 +142,6 @@ class PlayUpcomingViewModel @Inject constructor(
         updateUpcomingState(channelData.upcomingInfo)
         updateStatusInfo(mChannelId, false)
         updatePartnerInfo(channelData.partnerInfo)
-        getKolHeader(channelData.partnerInfo)
     }
 
     override fun onCleared() {
@@ -203,7 +202,11 @@ class PlayUpcomingViewModel @Inject constructor(
         return if (userSession.isLoggedIn) {
             when(partnerInfo.type){
                 PartnerType.Shop -> repo.getIsFollowingPartner(partnerId = partnerInfo.id)
-                PartnerType.Buyer -> repo.getFollowingKOL(partnerInfo.id.toString())
+                PartnerType.Buyer -> {
+                    val data = repo.getFollowingKOL(partnerInfo.id.toString())
+                    _observableKolId.value = data.second
+                    data.first
+                }
                 else -> false
             }
         } else false
@@ -579,16 +582,6 @@ class PlayUpcomingViewModel @Inject constructor(
             metaDescription = shareInfo.metaDescription,
         )
     }
-
-    private fun getKolHeader(partnerInfo: PlayPartnerInfo){
-        if(userSession.isLoggedIn && partnerInfo.type == PartnerType.Buyer){
-            viewModelScope.launchCatchError(block =  {
-                val kolId = repo.getProfileHeader(partnerInfo.id.toString())
-                _observableKolId.value = kolId
-            }){}
-        }
-    }
-
 
     companion object {
         const val REQUEST_CODE_LOGIN_REMIND_ME = 678

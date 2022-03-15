@@ -33,6 +33,7 @@ class GetFollowingKOLUseCase @Inject constructor(
                     isUserFollowing {
                       userID
                       status
+                      encryptedUserID
                     }
                 }
             }

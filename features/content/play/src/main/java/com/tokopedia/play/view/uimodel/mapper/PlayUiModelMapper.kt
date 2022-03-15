@@ -74,9 +74,7 @@ class PlayUiModelMapper @Inject constructor(
         return input.status == "success"
     }
 
-    fun mapProfileHeader(input: ProfileHeader): String = input.profileInfo.encryptedUserId
-
-    fun mapFollowingKol(input: List<FollowKOL.FollowedKOL>): Boolean = input.firstOrNull()?.status ?: false
+    fun mapFollowingKol(input: List<FollowKOL.FollowedKOL>): Pair<Boolean, String> = Pair(input.firstOrNull()?.status ?: false, input.firstOrNull()?.encryptedUserId ?: "")
 
     fun mapUnfollowKol(input: KOLUnFollowStatus): Boolean {
         return input.unFollowedKOLInfo.data.isSuccess == 1
