@@ -22,8 +22,29 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
+import com.tokopedia.globalerror.GlobalError.Companion.PAGE_FULL
+import com.tokopedia.globalerror.GlobalError.Companion.PAGE_NOT_FOUND
+import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
+import com.tokopedia.globalerror.ReponseStatus
+import com.tokopedia.header.HeaderUnify
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.clearImage
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.library.baseadapter.AdapterCallback
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.people.ErrorMessage
 import com.tokopedia.people.Loading
+import com.tokopedia.people.R
 import com.tokopedia.people.Success
 import com.tokopedia.people.UserProfileUtils
 import com.tokopedia.people.di.DaggerUserProfileComponent
@@ -33,21 +54,7 @@ import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.model.UserProfileIsFollow
 import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.views.UserProfileActivity.Companion.EXTRA_USERNAME
-import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
-import com.tokopedia.globalerror.GlobalError.Companion.PAGE_FULL
-import com.tokopedia.globalerror.GlobalError.Companion.PAGE_NOT_FOUND
-import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
-import com.tokopedia.globalerror.ReponseStatus
-import com.tokopedia.header.HeaderUnify
-import com.tokopedia.library.baseadapter.AdapterCallback
-import com.tokopedia.linker.LinkerManager
-import com.tokopedia.linker.LinkerUtils
-import com.tokopedia.linker.interfaces.ShareCallback
-import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.linker.model.LinkerError
-import com.tokopedia.linker.model.LinkerShareResult
-import com.tokopedia.linker.share.DataMapper
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
@@ -58,14 +65,6 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.abs
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.clearImage
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.*
-import com.tokopedia.people.R
-
 
 class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterCallback,
     ShareBottomsheetListener {
@@ -95,6 +94,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     private var isSwipeRefresh: Boolean? = null
     private var isNewlyCreated: Boolean? = false
     private var isViewMoreClickedBio: Boolean? = false
+    private var userProfileTracker: UserProfileTracker? = null
 
     private val mPresenter: UserProfileViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(UserProfileViewModel::class.java)
@@ -679,6 +679,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         headerProfile?.apply {
             setNavigationOnClickListener {
                 activity?.onBackPressed()
+                userProfileTracker?.clickBack(sessionIris = "", userId, self = true)
             }
 
             val imgShare = addRightIcon(0)
