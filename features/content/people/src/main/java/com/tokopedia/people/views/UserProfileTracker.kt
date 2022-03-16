@@ -4,7 +4,7 @@ import com.tokopedia.people.UserProfileAnalytics
 
 class UserProfileTracker {
 
-    private fun openUserProfile(isLoggedIn: Boolean, screenName:String, sessionIris: String, userId: String, live: Boolean){
+    fun openUserProfile(isLoggedIn: Boolean, screenName:String, sessionIris: String, userId: String, live: Boolean){
         val label = if(live){
             "live"
         } else{
@@ -23,7 +23,7 @@ class UserProfileTracker {
 
     }
 
-    private fun clickBack(sessionIris: String, userId: String, self: Boolean){
+    fun clickBack(sessionIris: String, userId: String, self: Boolean){
         val label = if(self){
             "self"
         } else{
@@ -43,7 +43,7 @@ class UserProfileTracker {
 
     }
 
-    private fun clickShare(sessionIris: String, userId: String, self: Boolean){
+    fun clickShare(sessionIris: String, userId: String, self: Boolean){
         val label = if(self){
             "self"
         } else{
@@ -63,7 +63,7 @@ class UserProfileTracker {
 
     }
 
-    private fun clickBurgerMenu(sessionIris: String, userId: String, self: Boolean){
+    fun clickBurgerMenu(sessionIris: String, userId: String, self: Boolean){
         val label = if(self){
             "self"
         } else{
@@ -83,7 +83,7 @@ class UserProfileTracker {
 
     }
 
-    private fun clickProfilePicture(sessionIris: String, userId: String, self: Boolean, activityId: String){
+    fun clickProfilePicture(sessionIris: String, userId: String, self: Boolean, activityId: String){
         val label = if(self){
             "self"
         } else{
@@ -103,7 +103,7 @@ class UserProfileTracker {
 
     }
 
-    private fun clickFollowers(sessionIris: String, userId: String, self: Boolean){
+    fun clickFollowers(sessionIris: String, userId: String, self: Boolean){
         val label = if(self){
             "self"
         } else{
@@ -123,7 +123,7 @@ class UserProfileTracker {
 
     }
 
-    private fun clickFollowing(sessionIris: String, userId: String, self: Boolean){
+    fun clickFollowing(sessionIris: String, userId: String, self: Boolean){
         val label = if(self){
             "self"
         } else{
@@ -143,7 +143,7 @@ class UserProfileTracker {
 
     }
 
-    private fun clickSelengkapnya(sessionIris: String, userId: String, self: Boolean){
+    fun clickSelengkapnya(sessionIris: String, userId: String, self: Boolean){
         val label = if(self){
             "self"
         } else{
@@ -163,7 +163,7 @@ class UserProfileTracker {
 
     }
 
-    private fun clickFollow(sessionIris: String, userId: String, self: Boolean){
+    fun clickFollow(sessionIris: String, userId: String, self: Boolean){
         val label = if(self){
             "self"
         } else{
@@ -183,7 +183,7 @@ class UserProfileTracker {
 
     }
 
-    private fun clickUnfollow(sessionIris: String, userId: String, self: Boolean){
+    fun clickUnfollow(sessionIris: String, userId: String, self: Boolean){
         val label = if(self){
             "self"
         } else{
@@ -203,7 +203,7 @@ class UserProfileTracker {
 
     }
 
-    private fun clickVideoTab(sessionIris: String, userId: String, self: Boolean){
+    fun clickVideoTab(sessionIris: String, userId: String, self: Boolean){
         val label = if(self){
             "self"
         } else{
@@ -223,7 +223,7 @@ class UserProfileTracker {
 
     }
 
-    private fun impressionVideo(sessionIris: String, userId: String, self: Boolean, live: Boolean, activityId: String, imageUrl: String, videoPosition: Int){
+    fun impressionVideo(sessionIris: String, userId: String, self: Boolean, live: Boolean, activityId: String, imageUrl: String, videoPosition: Int){
         val label = if(self){
             "self"
         } else{
@@ -252,7 +252,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun clickVideo(sessionIris: String, userId: String, self: Boolean, live: Boolean, activityId: String, imageUrl: String, videoPosition: Int){
+    fun clickVideo(sessionIris: String, userId: String, self: Boolean, live: Boolean, activityId: String, imageUrl: String, videoPosition: Int){
         val label = if(self){
             "self"
         } else{
@@ -281,7 +281,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun clickFeedTab(sessionIris: String, userId: String, self: Boolean){
+    fun clickFeedTab(sessionIris: String, userId: String, self: Boolean){
         val label = if(self){
             "self"
         } else{
@@ -299,7 +299,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun impressionPost(sessionIris: String, userId: String, self: Boolean, activityId: String, imageUrl: String, postPosition: Int, mediaType: String){
+    fun impressionPost(sessionIris: String, userId: String, self: Boolean, activityId: String, imageUrl: String, postPosition: Int, mediaType: String){
         val label = if(self){
             "self"
         } else{
@@ -323,7 +323,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun clickPost(sessionIris: String, userId: String, self: Boolean, activityId: String, imageUrl: String, postPosition: Int, mediaType: String){
+    fun clickPost(sessionIris: String, userId: String, self: Boolean, activityId: String, imageUrl: String, postPosition: Int, mediaType: String){
         val label = if(self){
             "self"
         } else{
@@ -347,7 +347,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun openFollowersTab(isLoggedIn: Boolean, sessionIris: String, userId: String, self: Boolean){
+    fun openFollowersTab(isLoggedIn: Boolean, sessionIris: String, userId: String, self: Boolean){
         val label = if(self){
             "self"
         } else{
@@ -364,7 +364,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun clickUserFollowers(sessionIris: String, userId: String, self: Boolean){
+    fun clickUserFollowers(sessionIris: String, userId: String, self: Boolean){
         val label = if(self){
             "self"
         } else{
@@ -382,7 +382,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun clickFollowFromFollowers(sessionIris: String, userId: String, self: Boolean){
+    fun clickFollowFromFollowers(sessionIris: String, userId: String, self: Boolean){
         val label = if(self){
             "self"
         } else{
@@ -400,7 +400,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun clickUnfollowFromFollowers(sessionIris: String, userId: String, self: Boolean){
+    fun clickUnfollowFromFollowers(sessionIris: String, userId: String, self: Boolean){
         val label = if(self){
             "self"
         } else{
@@ -418,7 +418,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun openFollowingTab(isLoggedIn: Boolean, sessionIris: String, userId: String, self: Boolean){
+    fun openFollowingTab(isLoggedIn: Boolean, sessionIris: String, userId: String, self: Boolean){
         val label = if(self){
             "self"
         } else{
@@ -435,7 +435,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun clickUserFollowing(sessionIris: String, userId: String, self: Boolean){
+    fun clickUserFollowing(sessionIris: String, userId: String, self: Boolean){
         val label = if(self){
             "self"
         } else{
@@ -453,7 +453,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun clickFollowFromFollowing(sessionIris: String, userId: String, self: Boolean){
+    fun clickFollowFromFollowing(sessionIris: String, userId: String, self: Boolean){
         val label = if(self){
             "self"
         } else{
@@ -471,7 +471,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun clickUnfollowFromFollowing(sessionIris: String, userId: String, self: Boolean){
+    fun clickUnfollowFromFollowing(sessionIris: String, userId: String, self: Boolean){
         val label = if(self){
             "self"
         } else{
@@ -489,7 +489,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun impressionProfileCompletionPrompt(sessionIris: String, userId: String){
+    fun impressionProfileCompletionPrompt(sessionIris: String, userId: String){
         val map = mutableMapOf<String, Any>()
         map[UserProfileAnalytics.Constants.EVENT] = UserProfileAnalytics.Event.EVENT_VIEW_HOME_PAGE
         map[UserProfileAnalytics.Constants.EVENT_ACTION] = UserProfileAnalytics.Action.IMPRESSION_PROFILE_COMPLETION_PROMPT
@@ -502,7 +502,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun clickProfileCompletionPrompt(sessionIris: String, userId: String){
+    fun clickProfileCompletionPrompt(sessionIris: String, userId: String){
         val map = mutableMapOf<String, Any>()
         map[UserProfileAnalytics.Constants.EVENT] = UserProfileAnalytics.Event.EVENT_CLICK_HOME_PAGE
         map[UserProfileAnalytics.Constants.EVENT_ACTION] = UserProfileAnalytics.Action.CLICK_PROFILE_COMPLETION_PROMPT
@@ -515,7 +515,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun impressionProfileRecommendation(sessionIris: String, userId: String, shopId: String, imageUrl: String, postPosition: Int){
+    fun impressionProfileRecommendation(sessionIris: String, userId: String, shopId: String, imageUrl: String, postPosition: Int){
         val map = mutableMapOf<String, Any>()
         map[UserProfileAnalytics.Constants.EVENT] = UserProfileAnalytics.Event.EVENT_VIEW_ITEM
         map[UserProfileAnalytics.Constants.EVENT_ACTION] = UserProfileAnalytics.Action.IMPRESSION_PROFILE_RECOMMENDATION
@@ -534,7 +534,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun clickProfileRecommendation(sessionIris: String, userId: String, shopId: String){
+    fun clickProfileRecommendation(sessionIris: String, userId: String, shopId: String){
         val map = mutableMapOf<String, Any>()
         map[UserProfileAnalytics.Constants.EVENT] = UserProfileAnalytics.Event.EVENT_SELECT_CONTENT
         map[UserProfileAnalytics.Constants.EVENT_ACTION] = UserProfileAnalytics.Action.CLICK_PROFILE_RECOMMENDATION
@@ -547,7 +547,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun clickFollowProfileRecommendation(sessionIris: String, userId: String, shopId: String){
+    fun clickFollowProfileRecommendation(sessionIris: String, userId: String, shopId: String){
         val map = mutableMapOf<String, Any>()
         map[UserProfileAnalytics.Constants.EVENT] = UserProfileAnalytics.Event.EVENT_CLICK_HOME_PAGE
         map[UserProfileAnalytics.Constants.EVENT_ACTION] = UserProfileAnalytics.Action.CLICK_FOLLOW_PROFILE_RECOMMENDATION
@@ -560,7 +560,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun clickCreatePost(sessionIris: String, userId: String){
+    fun clickCreatePost(sessionIris: String, userId: String){
         val map = mutableMapOf<String, Any>()
         map[UserProfileAnalytics.Constants.EVENT] = UserProfileAnalytics.Event.EVENT_CLICK_HOME_PAGE
         map[UserProfileAnalytics.Constants.EVENT_ACTION] = UserProfileAnalytics.Action.CLICK_CREATE_POST
@@ -573,7 +573,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun impressionOnBoardingBottomSheetWithUsername(sessionIris: String, userId: String){
+    fun impressionOnBoardingBottomSheetWithUsername(sessionIris: String, userId: String){
         val map = mutableMapOf<String, Any>()
         map[UserProfileAnalytics.Constants.EVENT] = UserProfileAnalytics.Event.EVENT_VIEW_HOME_PAGE
         map[UserProfileAnalytics.Constants.EVENT_ACTION] = UserProfileAnalytics.Action.IMPRESSION_ONBOARDING_BOTTOMSHEET_WITH_USERNAME
@@ -586,7 +586,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun clickLanjutOnBoardingBottomSheetWithUsername(sessionIris: String, userId: String){
+    fun clickLanjutOnBoardingBottomSheetWithUsername(sessionIris: String, userId: String){
         val map = mutableMapOf<String, Any>()
         map[UserProfileAnalytics.Constants.EVENT] = UserProfileAnalytics.Event.EVENT_VIEW_HOME_PAGE
         map[UserProfileAnalytics.Constants.EVENT_ACTION] = UserProfileAnalytics.Action.IMPRESSION_ONBOARDING_BOTTOMSHEET_WITH_USERNAME
@@ -599,7 +599,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun impressionOnBoardingBottomSheetWithoutUsername(sessionIris: String, userId: String){
+    fun impressionOnBoardingBottomSheetWithoutUsername(sessionIris: String, userId: String){
         val map = mutableMapOf<String, Any>()
         map[UserProfileAnalytics.Constants.EVENT] = UserProfileAnalytics.Event.EVENT_VIEW_HOME_PAGE
         map[UserProfileAnalytics.Constants.EVENT_ACTION] = UserProfileAnalytics.Action.IMPRESSION_ONBOARDING_BOTTOMSHEET_WITHOUT_USERNAME
@@ -612,7 +612,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun clickLanjutOnBoardingBottomSheetWithoutUsername(sessionIris: String, userId: String){
+    fun clickLanjutOnBoardingBottomSheetWithoutUsername(sessionIris: String, userId: String){
         val map = mutableMapOf<String, Any>()
         map[UserProfileAnalytics.Constants.EVENT] = UserProfileAnalytics.Event.EVENT_VIEW_HOME_PAGE
         map[UserProfileAnalytics.Constants.EVENT_ACTION] = UserProfileAnalytics.Action.IMPRESSION_ONBOARDING_BOTTOMSHEET_WITHOUT_USERNAME
@@ -625,7 +625,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun clickShareButton(sessionIris: String, userId: String, self: Boolean){
+    fun clickShareButton(sessionIris: String, userId: String, self: Boolean){
         val label = if(self){
             "self"
         } else{
@@ -643,7 +643,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun clickCloseShareButton(sessionIris: String, userId: String, self: Boolean){
+    fun clickCloseShareButton(sessionIris: String, userId: String, self: Boolean){
         val label = if(self){
             "self"
         } else{
@@ -661,7 +661,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun clickShareChannel(sessionIris: String, userId: String, self: Boolean, channel: String){
+    fun clickShareChannel(sessionIris: String, userId: String, self: Boolean, channel: String){
         val label = if(self){
             "self"
         } else{
@@ -679,7 +679,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun viewShareChannel(sessionIris: String, userId: String, self: Boolean){
+    fun viewShareChannel(sessionIris: String, userId: String, self: Boolean){
         val label = if(self){
             "self"
         } else{
@@ -697,7 +697,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun viewScreenshotShareBottomsheet(sessionIris: String, userId: String, self: Boolean){
+    fun viewScreenshotShareBottomsheet(sessionIris: String, userId: String, self: Boolean){
         val label = if(self){
             "self"
         } else{
@@ -715,7 +715,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun clickCloseScreenshotShareBottomsheet(sessionIris: String, userId: String, self: Boolean){
+    fun clickCloseScreenshotShareBottomsheet(sessionIris: String, userId: String, self: Boolean){
         val label = if(self){
             "self"
         } else{
@@ -733,7 +733,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun clickChannelScreenshotShareBottomsheet(sessionIris: String, userId: String, self: Boolean){
+    fun clickChannelScreenshotShareBottomsheet(sessionIris: String, userId: String, self: Boolean){
         val label = if(self){
             "self"
         } else{
@@ -751,7 +751,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    private fun clickAccessMedia(sessionIris: String, userId: String, self: Boolean, allow:String){
+    fun clickAccessMedia(sessionIris: String, userId: String, self: Boolean, allow:String){
         val label = if(self){
             "self"
         } else{

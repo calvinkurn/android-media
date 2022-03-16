@@ -21,7 +21,11 @@ class UserProfileAnalytics {
         const val USER_ID = "userId"
         const val CONTENT = "content"
         const val PROMOTIONS = "promotions"
-        const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace "
+        const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
+        const val ALLOW = "Allow"
+        const val DENY = "Deny"
+        const val IZINKAN_AKSES = "Izinkan Akses"
+        const val LAIN_KALI = "Lain Kali"
     }
 
     object Event{
