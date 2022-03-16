@@ -138,8 +138,6 @@ class PlayViewModel @AssistedInject constructor(
         get() = _observableUserReportReasoning
     val observableUserReportSubmission : LiveData<PlayResult<Event<Unit>>>
         get() = _observableUserReportSubmission
-    val observableLoggedInInteractionEvent: LiveData<Event<LoginStateEvent>>
-        get() = _observableLoggedInInteractionEvent
 
 
     /**
@@ -2084,9 +2082,8 @@ class PlayViewModel @AssistedInject constructor(
         _observableUserReportReasoning.value = PlayResult.Loading(true)
 
         viewModelScope.launchCatchError(block = {
-            val userReportUiModel = withContext(dispatchers.io){
-                repo.getReasoningList()
-            }
+            val userReportUiModel = repo.getReasoningList()
+
             val data = PlayUserReportUiModel.Loaded(
                 reasoningList = userReportUiModel
             )
@@ -2106,7 +2103,7 @@ class PlayViewModel @AssistedInject constructor(
                          timestamp: Long,
                          reportDesc: String){
         viewModelScope.launchCatchError(block = {
-            val isSuccess = withContext(dispatchers.io) {
+            val isSuccess =
                 repo.submitReport(
                     channelId = channelId,
                     mediaUrl = mediaUrl,
@@ -2115,7 +2112,7 @@ class PlayViewModel @AssistedInject constructor(
                     timestamp = timestamp,
                     reportDesc = reportDesc
                 )
-            }
+
             if(isSuccess){
                 _observableUserReportSubmission.value = PlayResult.Success(Event(Unit))
             }else{
