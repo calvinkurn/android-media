@@ -646,6 +646,7 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_RESEND_OTP,
                 "click - ${otpData.otpType} - ${modeListData.modeText}"
+                        + if (modeListData.modeText == OtpConstant.OtpMode.MISCALL && isNewOtpMiscall) " - $TAG_AUTO_READ" else ""
         ))
     }
 
