@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,7 +18,6 @@ import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.model.response.AffiliateCommissionDetailsData
 import com.tokopedia.affiliate.model.response.AffiliateUserPerformaListItemData
-import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker.Companion.TODAY
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateBottomDividerItemModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTrafficAttributionModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateWithrawalInfoAttributionModel
@@ -52,11 +50,7 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
         private const val FILTER_TYPE = "filterType"
         const val TYPE_WITHDRAWAL = "withdrawalType"
         const val TYPE_HOME = "homeType"
-        fun newInstance(type: String,
-                        title: String?,
-                        subText: String?,
-                        list: Any?,
-                        filterType: String = ""
+        fun newInstance(type: String, title: String?, subText: String?, list: Any?, filterType: String = ""
         ): AffiliateRecylerBottomSheet {
             return AffiliateRecylerBottomSheet().apply {
                 arguments = Bundle().apply {
@@ -83,19 +77,16 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
             text = subText
         }
         dataRv = contentView?.findViewById(R.id.traffic_rv)
-        initTicker()
+        initDivider()
         initList(listItem)
         setData()
         setChild(contentView)
     }
 
-    private fun initTicker() {
-        if(filterType == TODAY && (listItem as? List<Any>)?.isNotEmpty() == true){
-            contentView?.findViewById<CardView>(R.id.affilitate_recylerview_ticker)?.show()
+    private fun initDivider() {
+        if((listItem as? List<Any>)?.isNotEmpty() == true && type == TYPE_HOME) {
             contentView?.findViewById<DividerUnify>(R.id.divider_2)?.show()
-        }
-        else{
-            contentView?.findViewById<CardView>(R.id.affilitate_recylerview_ticker)?.gone()
+        }else{
             contentView?.findViewById<DividerUnify>(R.id.divider_2)?.gone()
         }
     }

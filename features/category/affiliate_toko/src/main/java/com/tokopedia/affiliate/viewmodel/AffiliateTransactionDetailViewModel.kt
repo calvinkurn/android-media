@@ -24,10 +24,10 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
     private var detailList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var errorMessage = MutableLiveData<Throwable>()
     private var progressBar = MutableLiveData<Boolean>()
-    private var lastItem :String?= "0"
-    private var additionKey: String? = ""
+    private var lastItem :String= "0"
+    private var additionKey: String = ""
     private var shimmerVisibility = MutableLiveData<Boolean>()
-    private var pageType :String? = ""
+    private var pageType :String = ""
     var commissionType :String? = ""
 
     fun affiliateCommission(transactionID:String,page :Int = PAGE_ZERO) {
@@ -36,13 +36,19 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
                 progressBar.value = true
                 affiliateCommissionDetailUserCase.affiliateCommissionDetails(transactionID).getAffiliateCommissionDetail?.let { affiliateCommissionDetail ->
                     var tempCardDetails: List<AffiliateTrafficCommissionCardDetails.GetAffiliateTrafficCommissionDetailCards.Data.TrafficCommissionCardDetail?>? = null
-                    additionKey = affiliateCommissionDetail.data?.additionQueryKey
-                    pageType = affiliateCommissionDetail.data?.pageType
+                    affiliateCommissionDetail.data?.additionQueryKey?.let {key ->
+                        additionKey = key
+                    }
+                    affiliateCommissionDetail.data?.pageType?.let {type ->
+                        pageType = type
+                    }
                     commissionType = affiliateCommissionDetail.data?.commissionType
                     if (affiliateCommissionDetail.data?.commissionType == TRAFFIC_TYPE) {
                         affiliateCommissionDetailUserCase.affiliateTrafficCardDetails(additionKey, lastItem,pageType)?.let {
                             tempCardDetails = it.getAffiliateTrafficCommissionDetailCards?.data?.trafficCommissionCardDetail
-                            lastItem = it.getAffiliateTrafficCommissionDetailCards?.data?.lastID
+                            it.getAffiliateTrafficCommissionDetailCards?.data?.lastID?.let {lastID ->
+                            lastItem = lastID
+                            }
                         }
                     }
                     detailList.value = getDetailListOrganize(affiliateCommissionDetail.data?.detail, tempCardDetails)

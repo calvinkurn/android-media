@@ -22,6 +22,7 @@
         android:id="@+id/affilitate_recylerview_ticker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:cardCornerRadius="@dimen/dp_8"
         app:cardElevation="0dp">
 
@@ -37,6 +38,7 @@
     </androidx.cardview.widget.CardView>
 
     <com.tokopedia.unifycomponents.DividerUnify
+        android:visibility="gone"
         android:id="@+id/divider_2"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl3"

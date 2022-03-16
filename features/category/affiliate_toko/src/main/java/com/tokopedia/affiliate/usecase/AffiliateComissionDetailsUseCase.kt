@@ -1,7 +1,7 @@
 package com.tokopedia.affiliate.usecase
 
-import com.google.gson.Gson
 import com.tokopedia.affiliate.model.raw.GQL_Affiliate_Commission
+import com.tokopedia.affiliate.model.raw.GQL_Affiliate_Traffic_Cards
 import com.tokopedia.affiliate.model.response.AffiliateCommissionDetailsData
 import com.tokopedia.affiliate.model.response.AffiliateTrafficCommissionCardDetails
 import com.tokopedia.affiliate.repository.AffiliateRepository
@@ -26,122 +26,29 @@ class AffiliateCommissionDetailsUseCase @Inject constructor(
 
     }
 
-    fun affiliateTrafficCardDetails(transactionDate: String?, lastItem: String?, type: String?): AffiliateTrafficCommissionCardDetails? {
-        return Gson().fromJson("{\n" +
-                "\t\"getAffiliateTrafficCommissionDetailCards\": {\n" +
-                "\t\t\"Data\": {\n" +
-                "\t\t\t\"LastID\": \"129312\",\n" +
-                "\t\t\t\"HasNext\": true,\n" +
-                "\t\t\t\"Status\": 1,\n" +
-                "\t\t\t\"Error\": {\n" +
-                "\t\t\t\t\"ErrorType\": 0,\n" +
-                "\t\t\t\t\"Message\": \"\",\n" +
-                "\t\t\t\t\"CtaText\": \"\",\n" +
-                "\t\t\t\t\"CtaLink\": {\n" +
-                "\t\t\t\t\t\"DesktopURL\": \"\",\n" +
-                "\t\t\t\t\t\"MobileURL\": \"\",\n" +
-                "\t\t\t\t\t\"AndroidURL\": \"\",\n" +
-                "\t\t\t\t\t\"IosURL\": \"\"\n" +
-                "\t\t\t\t}\n" +
-                "\t\t\t},\n" +
-                "\t\t\t\"TrafficCommissionCardDetail\": [{\n" +
-                "\t\t\t\t\t\"CardTitle\": \"Things you dream at night\",\n" +
-                "\t\t\t\t\t\"CardDescription\": \"500 Total Kunjungan\",\n" +
-                "\t\t\t\t\t\"Image\": {\n" +
-                "\t\t\t\t\t\t\"DesktopURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"MobileURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"AndroidURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"IosURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\"\n" +
-                "\t\t\t\t\t}\n" +
-                "\t\t\t\t},\n" +
-                "\t\t\t\t{\n" +
-                "\t\t\t\t\t\"CardTitle\": \"Things you dream at night\",\n" +
-                "\t\t\t\t\t\"CardDescription\": \"500 Total Kunjungan\",\n" +
-                "\t\t\t\t\t\"Image\": {\n" +
-                "\t\t\t\t\t\t\"DesktopURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"MobileURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"AndroidURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"IosURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\"\n" +
-                "\t\t\t\t\t}\n" +
-                "\t\t\t\t},\n" +
-                "\t\t\t\t{\n" +
-                "\t\t\t\t\t\"CardTitle\": \"Things you dream at night\",\n" +
-                "\t\t\t\t\t\"CardDescription\": \"500 Total Kunjungan\",\n" +
-                "\t\t\t\t\t\"Image\": {\n" +
-                "\t\t\t\t\t\t\"DesktopURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"MobileURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"AndroidURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"IosURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\"\n" +
-                "\t\t\t\t\t}\n" +
-                "\t\t\t\t},\n" +
-                "\t\t\t\t{\n" +
-                "\t\t\t\t\t\"CardTitle\": \"Things you dream at night\",\n" +
-                "\t\t\t\t\t\"CardDescription\": \"500 Total Kunjungan\",\n" +
-                "\t\t\t\t\t\"Image\": {\n" +
-                "\t\t\t\t\t\t\"DesktopURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"MobileURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"AndroidURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"IosURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\"\n" +
-                "\t\t\t\t\t}\n" +
-                "\t\t\t\t},\n" +
-                "\t\t\t\t{\n" +
-                "\t\t\t\t\t\"CardTitle\": \"Things you dream at night\",\n" +
-                "\t\t\t\t\t\"CardDescription\": \"500 Total Kunjungan\",\n" +
-                "\t\t\t\t\t\"Image\": {\n" +
-                "\t\t\t\t\t\t\"DesktopURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"MobileURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"AndroidURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"IosURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\"\n" +
-                "\t\t\t\t\t}\n" +
-                "\t\t\t\t},\n" +
-                "\t\t\t\t{\n" +
-                "\t\t\t\t\t\"CardTitle\": \"Things you dream at night\",\n" +
-                "\t\t\t\t\t\"CardDescription\": \"500 Total Kunjungan\",\n" +
-                "\t\t\t\t\t\"Image\": {\n" +
-                "\t\t\t\t\t\t\"DesktopURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"MobileURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"AndroidURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"IosURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\"\n" +
-                "\t\t\t\t\t}\n" +
-                "\t\t\t\t},\n" +
-                "\t\t\t\t{\n" +
-                "\t\t\t\t\t\"CardTitle\": \"Things you dream at night\",\n" +
-                "\t\t\t\t\t\"CardDescription\": \"500 Total Kunjungan\",\n" +
-                "\t\t\t\t\t\"Image\": {\n" +
-                "\t\t\t\t\t\t\"DesktopURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"MobileURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"AndroidURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"IosURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\"\n" +
-                "\t\t\t\t\t}\n" +
-                "\t\t\t\t},\n" +
-                "\t\t\t\t{\n" +
-                "\t\t\t\t\t\"CardTitle\": \"Things you dream at night\",\n" +
-                "\t\t\t\t\t\"CardDescription\": \"500 Total Kunjungan\",\n" +
-                "\t\t\t\t\t\"Image\": {\n" +
-                "\t\t\t\t\t\t\"DesktopURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"MobileURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"AndroidURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"IosURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\"\n" +
-                "\t\t\t\t\t}\n" +
-                "\t\t\t\t},\n" +
-                "\t\t\t\t{\n" +
-                "\t\t\t\t\t\"CardTitle\": \"Things you dream at night\",\n" +
-                "\t\t\t\t\t\"CardDescription\": \"500 Total Kunjungan\",\n" +
-                "\t\t\t\t\t\"Image\": {\n" +
-                "\t\t\t\t\t\t\"DesktopURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"MobileURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"AndroidURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\",\n" +
-                "\t\t\t\t\t\t\"IosURL\": \"https://images.tokopedia.net/img/cache/900/product-1/2018/8/6/14481426/14481426_78ac25e0-ae52-4095-92e6-c30026c378fe_386_500.jpg\"\n" +
-                "\t\t\t\t\t}\n" +
-                "\t\t\t\t}\n" +
-                "\t\t\t]\n" +
-                "\t\t}\n" +
-                "\t}\n" +
-                "}",AffiliateTrafficCommissionCardDetails::class.java)
+    suspend fun affiliateTrafficCardDetails(transactionDate: String, lastItem: String, type: String): AffiliateTrafficCommissionCardDetails? {
+        return repository.getGQLData(
+            GQL_Affiliate_Traffic_Cards,
+            AffiliateTrafficCommissionCardDetails::class.java,
+            createTrafficRequestParams(transactionDate,lastItem,type)
+        )
+    }
+
+    private fun createTrafficRequestParams(transactionDate: String, lastItem: String, type: String): HashMap<String, Any> {
+        val request = HashMap<String, Any>()
+        request[PARAM_TRANSACTION_DATE] = transactionDate
+        request[LAST_ID] = lastItem
+        request[LIMIT] = 10
+        request[PAGE_TYPE] = type
+        return request
     }
 
 
     companion object {
         private const val PARAM_TRANSACTION_ID = "transactionID"
+        private const val PARAM_TRANSACTION_DATE = "transactionDate"
+        private const val LAST_ID = "lastID"
+        private const val LIMIT = "limit"
+        private const val PAGE_TYPE = "pageType"
     }
 }
