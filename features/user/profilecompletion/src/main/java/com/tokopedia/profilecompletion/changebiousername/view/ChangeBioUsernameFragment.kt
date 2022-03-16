@@ -341,7 +341,7 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
         setToolbarBio(data)
         binding?.stubField?.etBio?.editText?.setText(data.biography)
         binding?.stubField?.etUsername?.setCounter(maxChar)
-        binding?.stubField?.etBio?.minLine = 5
+        binding?.stubField?.etBio?.minLine = 3
         binding?.stubField?.etBio?.maxLine = 10
         binding?.stubField?.etBio?.visibility = View.VISIBLE
         setEditTextBioListener()
