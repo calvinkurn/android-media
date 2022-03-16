@@ -196,8 +196,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     private fun isEnableExplicitProfileMenu(): Boolean {
-//        return getAbTestPlatform().getString(EXPLICIT_PROFILE_MENU_ROLLOUT).isNotEmpty()
-        return true
+        return getAbTestPlatform().getString(EXPLICIT_PROFILE_MENU_ROLLOUT).isNotEmpty()
     }
 
     private fun getAbTestPlatform(): AbTestPlatform {
