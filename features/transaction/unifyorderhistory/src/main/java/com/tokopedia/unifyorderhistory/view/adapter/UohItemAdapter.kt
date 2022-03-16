@@ -226,4 +226,21 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }
         }
     }
+
+    fun removePmsButton() {
+        var targetIndex = RecyclerView.NO_POSITION
+        loop@ for ((index, data) in listTypeData.withIndex()) {
+            if (data.dataObject is PmsNotification) {
+                targetIndex = index
+                break@loop
+            } else if (data.dataObject is UohListOrder.Data.UohOrders.Order || data.dataObject is UohEmptyState) {
+                break@loop
+            }
+        }
+
+        if (targetIndex != RecyclerView.NO_POSITION) {
+            listTypeData.removeAt(targetIndex)
+            notifyItemRemoved(targetIndex)
+        }
+    }
 }

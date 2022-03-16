@@ -448,7 +448,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun initialLoad() {
         uohListViewModel.loadFilterCategory()
-        uohListViewModel.loadPmsCounter()
     }
 
     private fun initialLoadOrderHistoryList() {
@@ -568,6 +567,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
         setInitialValue()
         loadOrderHistoryList("")
+        if (!paramUohOrder.hasActiveFilter()) {
+            uohListViewModel.loadPmsCounter()
+        }
     }
 
     private fun setInitialValue() {
@@ -606,8 +608,10 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         uohListViewModel.getUohPmsCounterResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    val data = UohTypeData(dataObject = it.data, typeLayout = UohConsts.TYPE_PMS_BUTTON)
-                    uohItemAdapter.appendPmsButton(data)
+                    if (!paramUohOrder.hasActiveFilter()) {
+                        val data = UohTypeData(dataObject = it.data, typeLayout = UohConsts.TYPE_PMS_BUTTON)
+                        uohItemAdapter.appendPmsButton(data)
+                    }
                 }
             }
         })
@@ -1498,11 +1502,15 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             uohItemAdapter.addList(listOrder)
             scrollRecommendationListener.resetState()
 
-            uohListViewModel.getUohPmsCounterResult.value?.let {
-                if (it is Success) {
-                    val data = UohTypeData(dataObject = it.data, typeLayout = UohConsts.TYPE_PMS_BUTTON)
-                    uohItemAdapter.appendPmsButton(data)
+            if (!paramUohOrder.hasActiveFilter()) {
+                uohListViewModel.getUohPmsCounterResult.value?.let {
+                    if (it is Success) {
+                        val data = UohTypeData(dataObject = it.data, typeLayout = UohConsts.TYPE_PMS_BUTTON)
+                        uohItemAdapter.appendPmsButton(data)
+                    }
                 }
+            } else {
+                uohItemAdapter.removePmsButton()
             }
         } else {
             uohItemAdapter.appendList(listOrder)
