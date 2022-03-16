@@ -10,6 +10,7 @@ import android.view.ViewOutlineProvider
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -154,7 +155,7 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
             if (!data.boxColor.isNullOrEmpty())
                 if (titleImageViewParent.isVisible) {
                     backgroundImageView.background = ContextCompat.getDrawable(itemView.context, R.drawable.disco_lihat_semua_title_bg)
-                    backgroundImageView.backgroundTintList = ColorStateList.valueOf(Color.parseColor(data.boxColor))
+                    ViewCompat.setBackgroundTintList(backgroundImageView,ColorStateList.valueOf(Color.parseColor(data.boxColor)))
                 } else {
                     backgroundImageView.setBackgroundColor(Color.parseColor(data.boxColor))
                 }
