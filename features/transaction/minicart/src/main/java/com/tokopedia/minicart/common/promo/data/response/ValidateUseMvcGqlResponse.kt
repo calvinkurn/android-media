@@ -19,6 +19,8 @@ class ValidateUseMvcResponse(
 )
 
 class ValidateUseMvcData(
+    @SerializedName("success")
+    val success: Boolean = false,
     @SerializedName("curr_purchase")
     val currentPurchase: Long = 0,
     @SerializedName("min_purchase")

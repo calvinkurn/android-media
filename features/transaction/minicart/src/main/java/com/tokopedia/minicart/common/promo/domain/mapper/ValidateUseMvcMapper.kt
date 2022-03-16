@@ -9,6 +9,7 @@ class ValidateUseMvcMapper @Inject constructor() {
     fun mapValidateUseMvcResponse(validateUseMvcResponse: ValidateUseMvcResponse): ValidateUseMvcData {
         return ValidateUseMvcData(
             validateUseMvcResponse.status,
+            validateUseMvcResponse.data.success,
             validateUseMvcResponse.message,
             validateUseMvcResponse.data.currentPurchase,
             validateUseMvcResponse.data.minimumPurchase,
