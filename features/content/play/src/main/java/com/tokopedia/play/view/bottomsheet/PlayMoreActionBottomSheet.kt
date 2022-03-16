@@ -210,11 +210,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
         playViewModel.hideThreeDotsSheet()
     }
 
-    override fun dismiss() {
-        playViewModel.hideThreeDotsSheet()
-        super.dismiss()
-    }
-
     private fun doActionUserReport(){
         analytic.clickUserReport()
         playViewModel.onShowUserReportSheet(userReportSheetHeight)
