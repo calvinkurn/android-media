@@ -1,5 +1,5 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="42dp" android:height="42dp" android:viewportWidth="42" android:viewportHeight="42">
-    <path android:pathData="M0 21a21 21 0 1 1 42 0 21 21 0 1 1-42 0" android:fillColor="#C4C4C4" android:fillAlpha="0.2"/>
     <path android:pathData="M1 20a20 20 0 1 1 40 0 20 20 0 1 1-40 0" android:fillColor="@color/disco_lihat_bg"/>
     <path android:pathData="M25.242 21.144l-6.449 6.372c-0.41 0.405-1.075 0.405-1.485 0-0.41-0.405-0.41-1.063 0-1.468l5.706-5.638-5.706-5.638c-0.41-0.406-0.41-1.063 0-1.468s1.075-0.405 1.485 0l6.45 6.372c0.205 0.203 0.307 0.468 0.307 0.734 0 0.265-0.103 0.531-0.308 0.734z" android:fillColor="@color/disco_lihat_clr_arrow"/>
 </vector>
+

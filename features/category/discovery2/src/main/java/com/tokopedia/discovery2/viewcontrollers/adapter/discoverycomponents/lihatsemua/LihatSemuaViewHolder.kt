@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua
 
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Outline
 import android.os.Build
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.view.ViewOutlineProvider
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -25,6 +27,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
@@ -148,48 +151,51 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
             return
         }
         try {
-            if(!data.boxColor.isNullOrEmpty())
-                backgroundImageView.setBackgroundColor(Color.parseColor(data.boxColor))
-            if(!data.backgroundImageUrl.isNullOrEmpty())
+            if (!data.boxColor.isNullOrEmpty())
+                if (titleImageViewParent.isVisible) {
+                    backgroundImageView.background = ContextCompat.getDrawable(itemView.context, R.drawable.disco_lihat_semua_title_bg)
+                    backgroundImageView.backgroundTintList = ColorStateList.valueOf(Color.parseColor(data.boxColor))
+                } else {
+                    backgroundImageView.setBackgroundColor(Color.parseColor(data.boxColor))
+                }
+            if (!data.backgroundImageUrl.isNullOrEmpty())
                 backgroundImageView.loadImageWithoutPlaceholder(data.backgroundImageUrl)
             cornersForBackground(backgroundImageView)
             backgroundImageView.show()
-        }catch (e:Exception){
+        } catch (e: Exception) {
             backgroundImageView.hide()
         }
     }
 
-    private fun setupPadding(isBackgroundPresent:Boolean,isTitleImagePresent:Boolean) {
+    private fun setupPadding(isBackgroundPresent: Boolean, isTitleImagePresent: Boolean) {
         fragment.context?.resources?.let {
             if (isBackgroundPresent) {
                 textTitleParent.setPadding(
-                    if (isTitleImagePresent) it.getDimensionPixelOffset(R.dimen.dp_12) else it.getDimensionPixelOffset(
-                        R.dimen.dp_16
-                    ),
-                    it.getDimensionPixelOffset(R.dimen.dp_8),
-                    it.getDimensionPixelOffset(R.dimen.dp_20),
-                    it.getDimensionPixelOffset(R.dimen.dp_8)
+                        if (isTitleImagePresent) it.getDimensionPixelOffset(R.dimen.dp_12) else it.getDimensionPixelOffset(R.dimen.dp_16),
+                        if (isTitleImagePresent) it.getDimensionPixelOffset(R.dimen.dp_8) else it.getDimensionPixelOffset(R.dimen.dp_6),
+                        it.getDimensionPixelOffset(R.dimen.dp_26),
+                        it.getDimensionPixelOffset(R.dimen.dp_8)
                 )
                 lihatTextView.setPadding(
-                    0,
-                    0,
-                    0,
-                    it.getDimensionPixelOffset(R.dimen.dp_8)
+                        0,
+                        0,
+                        0,
+                        it.getDimensionPixelOffset(R.dimen.dp_8)
                 )
             } else {
                 textTitleParent.setPadding(
-                    if (isTitleImagePresent) it.getDimensionPixelOffset(R.dimen.dp_4) else it.getDimensionPixelOffset(
-                        R.dimen.dp_16
-                    ),
-                    if (isTitleImagePresent) it.getDimensionPixelOffset(R.dimen.dp_8) else 0,
-                    it.getDimensionPixelOffset(R.dimen.dp_20),
-                    if (isTitleImagePresent) it.getDimensionPixelOffset(R.dimen.dp_8) else 0
+                        if (isTitleImagePresent) it.getDimensionPixelOffset(R.dimen.dp_4) else it.getDimensionPixelOffset(
+                                R.dimen.dp_16
+                        ),
+                        if (isTitleImagePresent) it.getDimensionPixelOffset(R.dimen.dp_8) else 0,
+                        it.getDimensionPixelOffset(R.dimen.dp_26),
+                        if (isTitleImagePresent) it.getDimensionPixelOffset(R.dimen.dp_8) else 0
                 )
                 lihatTextView.setPadding(
-                    0,
-                    0,
-                    0,
-                    if (!isTitleImagePresent) 0 else it.getDimensionPixelOffset(R.dimen.dp_8)
+                        0,
+                        0,
+                        0,
+                        if (!isTitleImagePresent) 0 else it.getDimensionPixelOffset(R.dimen.dp_8)
                 )
             }
         }
@@ -207,6 +213,7 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
             if (width != null && height != null) {
                 val aspectRatio = width.toFloat() / height.toFloat()
                 fragment.context?.resources?.let {
+                    Utils.corners(titleImageViewParent,0 - it.getDimension(R.dimen.dp_12).toInt(),0,0,0 + it.getDimension(R.dimen.dp_12).toInt(),it.getDimension(R.dimen.dp_12))
                     Utils.corners(titleImageView,0,0,0,0,it.getDimension(R.dimen.dp_8))
                     if (lihatSubTitleTextView.isVisible) {
                         lp.height = it.getDimensionPixelOffset(R.dimen.dp_56)
