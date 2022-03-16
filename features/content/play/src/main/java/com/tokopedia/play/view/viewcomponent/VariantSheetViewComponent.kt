@@ -19,7 +19,9 @@ import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.variantsheet.adapter.VariantAdapter
+import com.tokopedia.play.ui.variantsheet.adapter.VariantLabelAdapter
 import com.tokopedia.play.ui.variantsheet.itemdecoration.VariantItemDecoration
+import com.tokopedia.play.ui.variantsheet.itemdecoration.VariantLabelItemDecoration
 import com.tokopedia.play.view.custom.TopShadowOutlineProvider
 import com.tokopedia.play.view.type.DiscountedPrice
 import com.tokopedia.play.view.type.OriginalPrice
@@ -32,7 +34,6 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -57,8 +58,7 @@ class VariantSheetViewComponent(
     private val tvOriginalPrice: TextView = findViewById(R.id.tv_original_price)
     private val tvCurrentPrice: TextView = findViewById(R.id.tv_current_price)
     private val tvProductStock: TextView = findViewById(R.id.tv_product_stock)
-    private val labelVariant1: Label = findViewById(R.id.label_variant1)
-    private val labelVariant2: Label = findViewById(R.id.label_variant2)
+    private val rvLabel: RecyclerView = findViewById(R.id.rv_label)
 
     private val globalErrorContainer: ScrollView = findViewById(R.id.global_error_variant_container)
     private val globalError: GlobalError = findViewById(R.id.global_error_variant)
@@ -70,9 +70,15 @@ class VariantSheetViewComponent(
     private val variantAdapter: VariantAdapter = VariantAdapter(this)
     private var mAction: ProductAction = ProductAction.Buy
 
+    private val labelAdapter = VariantLabelAdapter()
+
     private var mVariantModel: VariantUiModel? = null
 
     init {
+        rvLabel.adapter = labelAdapter
+        rvLabel.addItemDecoration(VariantLabelItemDecoration(rvLabel.context))
+        rvLabel.itemAnimator = null
+
         findViewById<ImageView>(com.tokopedia.play_common.R.id.iv_sheet_close)
                 .setOnClickListener {
                     listener.onCloseButtonClicked(this)
@@ -178,24 +184,12 @@ class VariantSheetViewComponent(
             listener.onActionClicked(model.variantDetail, mAction)
         }
 
-        val variantEntries = model.selectedVariants.entries.toList()
-        val firstIndex = 0
-        val firstEntry = variantEntries.getOrNull(firstIndex)
-        if (firstEntry != null && firstEntry.value != "0") {
-            labelVariant1.visibility = View.VISIBLE
-            labelVariant1.text = model.categories.getOrNull(firstIndex)?.variantOptions?.firstOrNull {
-                it.variantId == firstEntry.value
-            }?.variantName
-        } else labelVariant1.visibility = View.GONE
-
-        val secondIndex = 1
-        val secondEntry = variantEntries.getOrNull(secondIndex)
-        if (secondEntry != null && secondEntry.value != "0") {
-            labelVariant2.visibility = View.VISIBLE
-            labelVariant2.text = model.categories.getOrNull(secondIndex)?.variantOptions?.firstOrNull {
-                it.variantId == secondEntry.value
-            }?.variantName
-        } else labelVariant2.visibility = View.GONE
+        val labelList = model.selectedVariants.entries.mapIndexedNotNull { index, entry ->
+            model.categories.getOrNull(index)?.variantOptions
+                ?.find { it.variantId == entry.value }
+                ?.variantName
+        }
+        labelAdapter.setItemsAndAnimateChanges(labelList)
 
         if (model.variantDetail.stock is StockAvailable) {
             tvProductStock.visibility = View.VISIBLE
