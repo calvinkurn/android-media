@@ -81,3 +81,4 @@ data class AllowedWhenInactiveEvent(
 }
 
 object OpenKebabEvent: PlayViewerNewUiEvent()
+object OpenUserReportEvent: PlayViewerNewUiEvent()

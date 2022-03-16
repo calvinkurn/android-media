@@ -861,6 +861,8 @@ class PlayViewModel @AssistedInject constructor(
             is ClickSharingOptionAction -> handleSharingOption(action.shareModel)
             is SharePermissionAction -> handleSharePermission(action.label)
             is OpenKebabAction -> handleThreeDotsMenuClick(action.height)
+            is OpenFooterUserReport -> handleFooterClick(action.appLink)
+            OpenUserReport -> handleUserReport()
         }
     }
 
@@ -1777,6 +1779,7 @@ class PlayViewModel @AssistedInject constructor(
             REQUEST_CODE_LOGIN_FOLLOW -> handleClickFollow(isFromLogin = true)
             REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE -> handleClickFollowInteractive()
             REQUEST_CODE_LOGIN_LIKE -> handleClickLike(isFromLogin = true)
+            REQUEST_CODE_USER_REPORT -> handleUserReport()
             else -> {}
         }
     }
@@ -2000,8 +2003,22 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleThreeDotsMenuClick(height: Int){
-        viewModelScope.launch(dispatchers.main) {
+        viewModelScope.launch {
             _uiEvent.emit(OpenKebabEvent)
+        }
+    }
+
+    private fun handleFooterClick(appLink: String){
+        viewModelScope.launch {
+            _uiEvent.emit(OpenPageEvent(applink = appLink))
+        }
+    }
+
+    private fun handleUserReport(){
+        needLogin(REQUEST_CODE_LOGIN_FOLLOW){
+            viewModelScope.launch {
+                _uiEvent.emit(OpenUserReportEvent)
+            }
         }
     }
 
@@ -2110,13 +2127,6 @@ class PlayViewModel @AssistedInject constructor(
 
     }
 
-    fun doInteractionEvent(event: InteractionEvent) {
-        _observableLoggedInInteractionEvent.value = Event(
-            if (event.needLogin && !userSession.isLoggedIn) LoginStateEvent.NeedLoggedIn(event)
-            else LoginStateEvent.InteractionAllowed(event)
-        )
-    }
-
     companion object {
         private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
         private const val FIREBASE_REMOTE_CONFIG_KEY_INTERACTIVE = "android_main_app_enable_play_interactive"
@@ -2133,6 +2143,7 @@ class PlayViewModel @AssistedInject constructor(
         private const val REQUEST_CODE_LOGIN_FOLLOW = 571
         private const val REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE = 572
         private const val REQUEST_CODE_LOGIN_LIKE = 573
+        private const val REQUEST_CODE_USER_REPORT = 575
 
         private const val WEB_SOCKET_SOURCE_PLAY_VIEWER = "Viewer"
     }

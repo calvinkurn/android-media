@@ -7,7 +7,6 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -21,21 +20,23 @@ import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
+import com.tokopedia.play.view.uimodel.action.OpenFooterUserReport
+import com.tokopedia.play.view.uimodel.action.OpenUserReport
+import com.tokopedia.play.view.uimodel.event.OpenPageEvent
+import com.tokopedia.play.view.uimodel.event.OpenUserReportEvent
 import com.tokopedia.play.view.uimodel.state.KebabMenuType
 import com.tokopedia.play.view.viewcomponent.KebabMenuSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.PlayUserReportSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.PlayUserReportSubmissionViewComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play.view.wrapper.InteractionEvent
-import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
-import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toDate
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.lang.Exception
 import java.net.ConnectException
@@ -134,7 +135,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
         observeBottomInsets()
         observeUserReport()
         observeUserReportSubmission()
-        observeLoginState()
+        observeEvent()
     }
 
     private fun observeBottomInsets() {
@@ -197,8 +198,20 @@ class PlayMoreActionBottomSheet @Inject constructor(
         })
     }
 
-    private fun observeLoginState(){
-        playViewModel.observableLoggedInInteractionEvent.observe(viewLifecycleOwner, EventObserver(::handleLoginInteractionEvent))
+    private fun observeEvent(){
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            playViewModel.uiEvent.collect { event ->
+                when (event) {
+                    OpenUserReportEvent -> doActionUserReport()
+                    is OpenPageEvent -> openPageByApplink(
+                        applink = event.applink,
+                        params = event.params.toTypedArray(),
+                        requestCode = event.requestCode,
+                        pipMode = event.pipMode
+                    )
+                }
+            }
+        }
     }
 
     /***
@@ -217,7 +230,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
     }
 
     private fun shouldOpenUserReport() {
-        playViewModel.doInteractionEvent(InteractionEvent.OpenUserReport)
+        playViewModel.submitAction(OpenUserReport)
     }
 
     private fun onSubmitUserReport(reasonId: Int, description: String) {
@@ -275,23 +288,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
         requireActivity().overridePendingTransition(R.anim.anim_play_enter_page, R.anim.anim_play_exit_page)
 
         if (shouldFinish) requireActivity().finish()
-    }
-
-    private fun handleInteractionEvent(event: InteractionEvent) {
-        when (event) {
-            is InteractionEvent.OpenUserReport -> doActionUserReport()
-        }
-    }
-
-    private fun handleLoginInteractionEvent(loginInteractionEvent: LoginStateEvent) {
-        when (loginInteractionEvent) {
-            is LoginStateEvent.InteractionAllowed -> handleInteractionEvent(loginInteractionEvent.event)
-            is LoginStateEvent.NeedLoggedIn -> openLoginPage()
-        }
-    }
-
-    private fun openLoginPage() {
-        openPageByApplink(ApplinkConst.LOGIN, requestCode = 911)
     }
 
     private fun showDialog(title: String, description: String, primaryCTAText: String, secondaryCTAText: String, primaryAction: () -> Unit, secondaryAction: () -> Unit = {}){
@@ -357,7 +353,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
     }
 
     override fun onFooterClicked(view: PlayUserReportSheetViewComponent) {
-        openApplink(applink = getString(R.string.play_user_report_footer_weblink))
+        playViewModel.submitAction(OpenFooterUserReport(getString(R.string.play_user_report_footer_weblink)))
     }
 
     /***
@@ -368,7 +364,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
     }
 
     override fun onFooterClicked(view: PlayUserReportSubmissionViewComponent) {
-        openApplink(applink = getString(R.string.play_user_report_footer_weblink))
+        playViewModel.submitAction(OpenFooterUserReport(getString(R.string.play_user_report_footer_weblink)))
     }
 
     override fun onShowVerificationDialog(
