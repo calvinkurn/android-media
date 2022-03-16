@@ -14,7 +14,7 @@ class ChooseAddressWidgetCallback(
         val fragment: Fragment
 ): ChooseAddressWidget.ChooseAddressWidgetListener {
     override fun onLocalizingAddressUpdatedFromWidget() {
-        homeCategoryListener.onChooseAddressUpdated(false)
+        homeCategoryListener.onChooseAddressUpdated()
     }
 
     override fun onLocalizingAddressUpdatedFromBackground() {
