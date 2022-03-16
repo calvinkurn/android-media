@@ -19,6 +19,7 @@ public interface LinkerConstants {
     String DISCOVERY_CATALOG = "tokopedia://catalog/{EXTRA_CATALOG_ID}";
     String GROUPCHAT = "tokopedia://groupchat/{channel_id}";
     String PROMO_DETAIL = "tokopedia://promo/{slug}";
+    String USER_PROFILE_SOCIAL = "tokopedia://people/kumamoto/{USER_PAGE_ID}";
     String PLAY = "tokopedia://play/{channel_id}";
     String APPLINKS = "tokopedia";
     String WEB_DOMAIN = "https://www.tokopedia.com/";

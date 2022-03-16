@@ -50,6 +50,7 @@ class ThematicWidgetViewHolder (
     private var dynamicHeaderCustomView: DynamicHeaderCustomView? = null
     private var uiModel: ThematicWidgetUiModel? = null
     private var isFirstAttached: Boolean = true
+    private var trackerProductsModel = mutableListOf<ProductCardUiModel>()
 
     private val adapter by lazy {
         ProductCardAdapter(
@@ -123,13 +124,12 @@ class ThematicWidgetViewHolder (
             newList.add(ProductCardSeeAllUiModel(element.header.ctaTextLink))
         }
         adapter.submitList(newList)
-        trackForTheFirstTimeViewHolderAttached(element, products)
+        trackForTheFirstTimeViewHolderAttached(element)
     }
 
-    private fun trackForTheFirstTimeViewHolderAttached(element: ThematicWidgetUiModel, products: List<ProductCardUiModel>) {
+    private fun trackForTheFirstTimeViewHolderAttached(element: ThematicWidgetUiModel) {
         if (isFirstAttached) {
             listener.onThematicWidgetImpressListener(element, adapterPosition)
-            listener.onProductCardThematicWidgetImpressListener(products, adapterPosition, uiModel?.campaignId.orEmpty(), uiModel?.name.orEmpty())
             isFirstAttached = false
         }
     }
@@ -206,6 +206,11 @@ class ThematicWidgetViewHolder (
                 campaignName = uiModel?.name.orEmpty(),
                 position = adapterPosition
             )
+        }
+
+        override fun onProductCardImpressListener(product: ProductCardUiModel) {
+            trackerProductsModel.add(product)
+            listener.onProductCardThematicWidgetImpressListener(trackerProductsModel, adapterPosition, uiModel?.campaignId.orEmpty(), uiModel?.name.orEmpty())
         }
     }
 

@@ -45,6 +45,7 @@ import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
@@ -1004,7 +1005,9 @@ class PlayViewModel @AssistedInject constructor(
             _tagItems.value = tagItem
 
             sendProductTrackerToBro(
-                productList = tagItem.product.productList
+                productList = tagItem.product.productSectionList
+                    .filterIsInstance<ProductSectionUiModel.Section>()
+                    .flatMap { it.productList }
             )
         }) { err ->
             _tagItems.update { it.copy(resultState = ResultState.Fail(err)) }
@@ -1474,20 +1477,18 @@ class PlayViewModel @AssistedInject constructor(
                     channelStateProcessor.setIsFreeze(result.isFreeze)
                 }
             }
-            is ProductTag -> {
-                val (mappedProductTags, shouldShow) = playSocketToModelMapper.mapProductTag(result)
+            is ProductSection -> {
+                val mappedData = playSocketToModelMapper.mapProductSection(result)
+
                 _tagItems.update {
                     it.copy(
                         product = it.product.copy(
-                            productList = mappedProductTags,
-                            canShow = shouldShow
+                            productSectionList = mappedData.first
                         ),
+                        maxFeatured = mappedData.second,
+                        bottomSheetTitle = mappedData.third
                     )
                 }
-
-                sendProductTrackerToBro(
-                    productList = mappedProductTags
-                )
             }
             is MerchantVoucher -> {
                 val mappedVouchers = playSocketToModelMapper.mapMerchantVoucher(result)

@@ -98,7 +98,9 @@ class ProfileInfoViewModel @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
-                _saveImageProfileResponse.value = Fail(e)
+                withContext(dispatcher.main) {
+                    _saveImageProfileResponse.value = Fail(e)
+                }
             }
         }
     }

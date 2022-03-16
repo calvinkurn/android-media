@@ -34,6 +34,7 @@ import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.extension.splitByThousand
 import com.tokopedia.vouchercreation.common.tracker.CouponPreviewTracker
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.EXTRA_DAYS_COUPON
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.isBeforeRollout
 import com.tokopedia.vouchercreation.common.utils.HyperlinkClickHandler
 import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
@@ -61,7 +62,6 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         private const val ROTATION_ANIM_DURATION_IN_MILLIS: Long = 300
         const val COUPON_ID_NOT_YET_CREATED : Long = -1
         private const val COUPON_START_DATE_OFFSET_IN_HOUR = 3
-        private const val COUPON_END_DATE_OFFSET_IN_DAYS = 30
         private const val EMPTY_STATE_REMOTE_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/voucher_creation/DilarangMasukImage.png"
         private const val ERROR_MESSAGE_CODE_EXCEED_MAX_COUPON_CREATION_LIMIT = "Kupon Aktif maksimal"
 
@@ -700,7 +700,9 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         binding.btnCreateCoupon.isLoading = true
         binding.btnCreateCoupon.loadingText = getString(R.string.mvc_please_wait)
 
+        val isCreateMode = viewModel.isCreateMode(pageMode)
         viewModel.createCoupon(
+            isCreateMode,
             couponInformation ?: return,
             couponSettings ?: return,
             couponProducts
@@ -752,7 +754,9 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
     private fun displayCouponPreviewBottomSheet() {
         val imageUrls = viewModel.findMostSoldProductImageUrls(couponProducts)
+        val isCreateMode = viewModel.isCreateMode(pageMode)
         val bottomSheet = CouponImagePreviewBottomSheet.newInstance(
+            isCreateMode,
             couponInformation ?: return,
             couponSettings ?: return,
             couponProducts.size,
@@ -859,7 +863,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
     private fun getCouponDefaultEndDate(): Date {
         val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_MONTH, COUPON_END_DATE_OFFSET_IN_DAYS)
+        calendar.add(Calendar.DAY_OF_MONTH, EXTRA_DAYS_COUPON)
         return calendar.time
     }
 
@@ -873,7 +877,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     private fun getCouponDefaultEndDateBeforeRollout(): Date {
         val calendar = Calendar.getInstance().apply {
             timeInMillis = DateTimeUtils.ROLLOUT_DATE_THRESHOLD_TIME
-            add(Calendar.DAY_OF_MONTH, COUPON_END_DATE_OFFSET_IN_DAYS)
+            add(Calendar.DAY_OF_MONTH, EXTRA_DAYS_COUPON)
         }
         return calendar.time
     }

@@ -501,6 +501,9 @@
     <string name="mvc_add_coupon_product">Yuk, mulai tambah produk untuk kuponmu</string>
     <string name="mvc_product_seller_location_warning_title">Kupon tidak bisa dipasang</string>
     <string name="mvc_product_seller_location_warning_message">kupon hanya bisa dipasang ke produk dari satu\nlokasi toko. Hapus dulu produk yang terdaftar untuk mengubah lokasi</string>
+    <string name="mvc_formatted_product_sku">SKU : %s</string>
+    <string name="mvc_formatted_product_price">Rp %s rb</string>
+    <string name="mvc_formatted_product_statistic">Terjual %s | Stok %s</string>
 
     <!-- more menu bottom sheet -->
     <string name="coupon_toaster_cta_oke">Oke</string>

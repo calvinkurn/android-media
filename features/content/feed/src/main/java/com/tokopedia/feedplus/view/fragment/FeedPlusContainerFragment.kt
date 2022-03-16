@@ -72,6 +72,7 @@ import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.videoTabComponent.view.VideoTabFragment
 import kotlinx.android.synthetic.main.fragment_feed_plus_container.*
 import kotlinx.android.synthetic.main.partial_feed_error.*
 import timber.log.Timber
@@ -154,7 +155,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private var startToTransitionOffset = 0
     private var searchBarTransitionRange = 0
     private var isLightThemeStatusBar = false
-    private var useNewInbox = false
     private var isSeller = false
 
     private lateinit var coachMarkItem: CoachMarkItem
@@ -195,7 +195,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             status_bar_bg2.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
         }
         initNavRevampAbTest()
-        initInboxAbTest()
         initToolbar()
         initView()
         requestFeedTab()
@@ -206,18 +205,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         showOldToolbar = false
     }
 
-    private fun initInboxAbTest() {
-        useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-        ) == RollenceKey.VARIANT_NEW_INBOX && !showOldToolbar
-    }
-
     private fun getInboxIcon(): Int {
-        return if (useNewInbox) {
-            IconList.ID_INBOX
-        } else {
-            IconList.ID_MESSAGE
-        }
+        return IconList.ID_MESSAGE
     }
 
     private fun initToolbar() {
@@ -267,9 +256,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
                 .addIcon(getInboxIcon()) { onInboxButtonClick() }
 
-        if (!useNewInbox) {
-            icons.addIcon(IconList.ID_NOTIFICATION) { onNotificationClick() }
-        }
+        icons.addIcon(IconList.ID_NOTIFICATION) { onNotificationClick() }
         icons.apply {
             addIcon(IconList.ID_CART) {}
         }
@@ -363,9 +350,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             setInboxNumber(inboxCount)
         }
         (feedToolbar as? NavToolbar)?.run {
-            if (!useNewInbox) {
-                setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
-            }
+            setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
             setBadgeCounter(getInboxIcon(), inboxCount)
             setBadgeCounter(IconList.ID_CART, cartCount)
         }
@@ -498,17 +483,23 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             }
 
             override fun onPageSelected(position: Int) {
-                    if (position == 1) {
-                        context?.let {
-                            val intent = Intent(BROADCAST_VISIBLITY)
-                            LocalBroadcastManager.getInstance(it.applicationContext)
+                toolBarAnalytics.clickOnVideoTabOnFeedPage(position)
+                toolBarAnalytics.createAnalyticsForOpenScreen(position, userSession.isLoggedIn.toString(), userSession.userId)
+
+                if (position == 1) {
+                    toolBarAnalytics.createAnalyticsForOpenScreen(position, userSession.isLoggedIn.toString(), userSession.userId)
+                    context?.let {
+                        val intent = Intent(BROADCAST_VISIBLITY)
+                        LocalBroadcastManager.getInstance(it.applicationContext)
                                 .sendBroadcast(intent)
-                        }
-                        postProgressUpdateView?.hide()
-                    } else if (position == 0 && mInProgress) {
-                        postProgressUpdateView?.show()
                     }
+                    postProgressUpdateView?.hide()
+                } else if (position == 0 && mInProgress) {
+                    postProgressUpdateView?.show()
+                } else if (position == 2) {
+                    videoTabAutoPlayJumboWidget()
                 }
+            }
 
             override fun onPageScrollStateChanged(state: Int) {
             }
@@ -540,7 +531,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun onSuccessGetTab(data: FeedTabs) {
-        val feedData = data.feedData.filter { it.type == FeedTabs.TYPE_FEEDS || it.type == FeedTabs.TYPE_EXPLORE || it.type == FeedTabs.TYPE_CUSTOM }
+        val feedData = data.feedData.filter { it.type == FeedTabs.TYPE_FEEDS || it.type == FeedTabs.TYPE_EXPLORE || it.type == FeedTabs.TYPE_CUSTOM || it.type == FeedTabs.TYPE_VIDEO }
+
         pagerAdapter.setItemList(feedData)
         view_pager.currentItem = if (data.meta.selectedIndex < feedData.size) data.meta.selectedIndex else 0
         view_pager.offscreenPageLimit = pagerAdapter.count
@@ -548,6 +540,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         feed_error.visibility = View.GONE
         tab_layout.visibility = View.VISIBLE
         view_pager.visibility = View.VISIBLE
+
+        if (view_pager.currentItem == 0)
+            toolBarAnalytics.createAnalyticsForOpenScreen(0,userSession.isLoggedIn.toString(),userSession.userId)
 
         if (hasCategoryIdParam()) {
             goToExplore()
@@ -745,6 +740,17 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             //no op
         }
         updateVisibility(false)
+    }
+    fun videoTabAutoPlayJumboWidget(){
+        try {
+            val fragment = pagerAdapter.getRegisteredFragment(view_pager.currentItem)
+            if (fragment is VideoTabFragment) {
+                fragment.autoplayJumboWidget()
+            }
+        } catch (e: IllegalStateException) {
+            Timber.e(e)
+        }
+
     }
 
     override fun onRetryCLicked() {
