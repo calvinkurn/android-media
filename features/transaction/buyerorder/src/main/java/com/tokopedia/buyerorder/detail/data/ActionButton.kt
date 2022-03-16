@@ -8,7 +8,7 @@ import java.io.Serializable
 data class ActionButton(
     @SerializedName("body")
     @Expose
-    var Body: Body = Body(),
+    var body: Body = Body(),
 
     @SerializedName("label")
     @Expose
