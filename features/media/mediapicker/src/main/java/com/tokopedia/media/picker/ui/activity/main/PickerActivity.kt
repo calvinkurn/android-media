@@ -29,12 +29,13 @@ import com.tokopedia.media.picker.utils.addOnTabSelected
 import com.tokopedia.media.picker.utils.delegates.permissionGranted
 import com.tokopedia.media.picker.utils.dimensionPixelOffsetOf
 import com.tokopedia.media.picker.utils.setBottomMargin
+import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
+import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity.Companion.EXTRA_INTENT_PREVIEW
 import com.tokopedia.picker.common.ParamCacheManager
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
 import com.tokopedia.picker.common.intent.PickerIntent
-import com.tokopedia.picker.common.intent.PreviewIntent
 import com.tokopedia.picker.common.observer.EventFlowFactory
 import com.tokopedia.picker.common.types.FragmentType
 import com.tokopedia.picker.common.types.PageType
@@ -143,7 +144,10 @@ open class PickerActivity : BaseActivity()
 
         // get data from preview if user had an updated the media elements
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_PREVIEW_PAGE && data != null) {
-            val medias = PreviewIntent.Result.get(intent)?: return
+            val medias = data.getParcelableArrayListExtra<MediaUiModel>(
+                PickerPreviewActivity.RESULT_INTENT_PREVIEW
+            )?.toList()?: return
+
             stateOnChangePublished(medias)
         }
     }
@@ -175,7 +179,9 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun onContinueClicked() {
-        val intent = PreviewIntent.Router.intent(this, medias)
+        val intent = Intent(this, PickerPreviewActivity::class.java).apply {
+            putExtra(EXTRA_INTENT_PREVIEW, medias)
+        }
         startActivityForResult(intent, REQUEST_PREVIEW_PAGE)
     }
 
@@ -419,7 +425,7 @@ open class PickerActivity : BaseActivity()
     }
 
     companion object {
-        private const val REQUEST_PREVIEW_PAGE = 123
+        const val REQUEST_PREVIEW_PAGE = 123
 
         private const val LAST_MEDIA_SELECTION = "last_media_selection"
 

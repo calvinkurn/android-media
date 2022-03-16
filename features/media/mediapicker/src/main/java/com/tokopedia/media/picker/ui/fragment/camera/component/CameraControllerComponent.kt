@@ -138,7 +138,7 @@ class CameraControllerComponent(
         if (!param.isMultipleSelectionType()) return
         imgThumbnail.smallThumbnail(model)
         imgThumbnail.setOnClickListener {
-
+            listener.onImageThumbnailClicked()
         }
     }
 
@@ -275,6 +275,8 @@ class CameraControllerComponent(
 
         fun onCameraModeChanged(mode: Int)
         fun isFacingCameraIsFront(): Boolean
+
+        fun onImageThumbnailClicked()
         fun onTakeMediaClicked()
         fun onFlashClicked()
         fun onFlipClicked()

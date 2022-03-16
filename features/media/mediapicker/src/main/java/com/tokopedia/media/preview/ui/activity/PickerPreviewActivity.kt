@@ -1,5 +1,7 @@
 package com.tokopedia.media.preview.ui.activity
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -14,8 +16,7 @@ import com.tokopedia.media.preview.ui.component.PreviewPagerComponent
 import com.tokopedia.picker.common.ParamCacheManager
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
-import com.tokopedia.picker.common.intent.PickerIntent
-import com.tokopedia.picker.common.intent.PreviewIntent
+import com.tokopedia.picker.common.intent.RESULT_PICKER
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import java.io.File
@@ -62,17 +63,17 @@ class PickerPreviewActivity : BaseActivity()
     }
 
     override fun onCloseClicked() {
-        finishIntent()
+        onBackPickerIntent()
     }
 
     override fun onBackPressed() {
-        finishIntent()
+        onBackPickerIntent()
     }
 
     override fun onContinueClicked() {
         uiModel.map { it.path }.let {
             val result = ArrayList(it)
-            PickerIntent.Result.finish(this, result)
+            onFinishIntent(result)
         }
     }
 
@@ -87,7 +88,7 @@ class PickerPreviewActivity : BaseActivity()
                 setUiModelData(action.data)
 
                 if (action.data.isEmpty()) {
-                    finishIntent()
+                    onBackPickerIntent()
                 }
             }
             is DrawerActionType.Add -> {
@@ -106,8 +107,12 @@ class PickerPreviewActivity : BaseActivity()
 
     private fun restoreDataState(savedInstanceState: Bundle?) {
         // get data from picker
-        PreviewIntent.Router.get(intent).also { elements ->
-            setUiModelData(elements)
+        intent?.let {
+            val items = it.getParcelableArrayListExtra<MediaUiModel>(EXTRA_INTENT_PREVIEW)?: listOf()
+
+            if (items.isNotEmpty()) {
+                setUiModelData(items)
+            }
         }
 
         // temporary cache of uiModel
@@ -176,11 +181,22 @@ class PickerPreviewActivity : BaseActivity()
 
     private fun cancelIntent() {
         uiModel.clear()
-        finishIntent()
+        onBackPickerIntent()
     }
 
-    private fun finishIntent() {
-        PreviewIntent.Result.finish(this, uiModel)
+    private fun onBackPickerIntent() {
+        val intent = Intent()
+        intent.putExtra(RESULT_INTENT_PREVIEW, uiModel)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
+    }
+
+    private fun onFinishIntent(files: ArrayList<String>) {
+        val intent = Intent()
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.putExtra(RESULT_PICKER, files)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 
     private fun initInjector() {
@@ -193,6 +209,9 @@ class PickerPreviewActivity : BaseActivity()
 
     companion object {
         private const val CACHE_LAST_SELECTION = "cache_last_selection"
+
+        const val EXTRA_INTENT_PREVIEW = "extra-intent-preview"
+        const val RESULT_INTENT_PREVIEW = "result-intent-preview"
     }
 
 }

@@ -1,9 +1,7 @@
 package com.tokopedia.picker.common.intent
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import androidx.fragment.app.FragmentActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER
 import com.tokopedia.picker.common.PickerParam
@@ -28,13 +26,6 @@ object PickerIntent {
     }
 
     object Result {
-        fun finish(fa: FragmentActivity, files: ArrayList<String>) {
-            val intent = Intent()
-            intent.putExtra(RESULT_PICKER, files)
-            fa.setResult(Activity.RESULT_OK, intent)
-            fa.finish()
-        }
-
         fun get(intent: Intent?): ArrayList<String> {
             return intent?.getStringArrayListExtra(RESULT_PICKER)?: arrayListOf()
         }

@@ -18,11 +18,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
-import com.tokopedia.picker.common.ParamCacheManager
-import com.tokopedia.picker.common.basecomponent.uiComponent
-import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.cameraToUiModel
-import com.tokopedia.picker.common.utils.FileGenerator
 import com.tokopedia.media.databinding.FragmentCameraBinding
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.di.module.PickerModule
@@ -35,6 +30,11 @@ import com.tokopedia.media.picker.ui.observer.stateOnCameraCapturePublished
 import com.tokopedia.media.picker.ui.uimodel.safeRemove
 import com.tokopedia.media.picker.utils.exceptionHandler
 import com.tokopedia.media.picker.utils.wrapper.FlingGestureWrapper
+import com.tokopedia.picker.common.ParamCacheManager
+import com.tokopedia.picker.common.basecomponent.uiComponent
+import com.tokopedia.picker.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.cameraToUiModel
+import com.tokopedia.picker.common.utils.FileGenerator
 import com.tokopedia.utils.view.binding.viewBinding
 import java.io.File
 import javax.inject.Inject
@@ -112,6 +112,8 @@ open class CameraFragment : BaseDaggerFragment()
     override fun onCameraModeChanged(mode: Int) {
         isTakingPictureMode = mode == CameraControllerComponent.PHOTO_MODE
     }
+
+    override fun onImageThumbnailClicked() {}
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -214,6 +216,10 @@ open class CameraFragment : BaseDaggerFragment()
     private fun initObservable() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.uiEvent.observe(
+                onChanged = {
+                    medias.clear()
+                    medias.addAll(it)
+                },
                 onRemoved = {
                     if (medias.contains(it)) {
                         medias.safeRemove(it)
@@ -225,8 +231,6 @@ open class CameraFragment : BaseDaggerFragment()
                     }
                 }
             ) {
-                // update the thumbnail
-                // TODO bug, still shown the preview even the data is empty
                 if (medias.isNotEmpty()) {
                     val lastMedia = medias.last()
                     controller.setThumbnailPreview(lastMedia)
