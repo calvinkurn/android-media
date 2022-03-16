@@ -125,7 +125,7 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
             val response = postUpcomingCampaignReminderUseCase.apply {
                 setRequestParams(PostUpcomingCampaignReminderUseCase.createParam(campaignId, reminderType).parameters)
             }.executeOnBackground()
-            return@withContext Pair(response.response.success, if(response.response.errorMessage.isNotEmpty()) response.response.message else response.response.message)
+            return@withContext Pair(response.response.success, if(response.response.errorMessage.isNotEmpty()) response.response.errorMessage else response.response.message)
         } catch (e: Exception){
             throw e
         }
