@@ -140,28 +140,30 @@ class PlayMoreActionBottomSheet @Inject constructor(
     private fun observeBottomInsets() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             playViewModel.uiState.withCache().collectLatest { (_, type) ->
-                type.playKebabMenuBottomSheetUiState.kebabMenuType[KebabMenuType.ThreeDots]?.let { it ->
-                    if (it is BottomInsetsState.Shown) {
-                        customPeekHeight = kebabMenuSheetHeight
-                        kebabMenuSheetView.showWithHeight(customPeekHeight)
+                with(type.playKebabMenuBottomSheetUiState){
+                    kebabMenuType[KebabMenuType.ThreeDots]?.let { it ->
+                        if (it is BottomInsetsState.Shown) {
+                            customPeekHeight = kebabMenuSheetHeight
+                            kebabMenuSheetView.showWithHeight(customPeekHeight)
+                        }
+                        else kebabMenuSheetView.hide()
                     }
-                    else kebabMenuSheetView.hide()
-                }
 
-                type.playKebabMenuBottomSheetUiState.kebabMenuType[KebabMenuType.UserReportList]?.let { state ->
-                    if (state is BottomInsetsState.Shown) {
-                        customPeekHeight = userReportSheetHeight
-                        userReportSheetView.showWithHeight(customPeekHeight)
+                    kebabMenuType[KebabMenuType.UserReportList]?.let { state ->
+                        if (state is BottomInsetsState.Shown) {
+                            customPeekHeight = userReportSheetHeight
+                            userReportSheetView.showWithHeight(customPeekHeight)
+                        }
+                        else userReportSheetView.hide()
                     }
-                    else userReportSheetView.hide()
-                }
 
-                type.playKebabMenuBottomSheetUiState.kebabMenuType[KebabMenuType.UserReportSubmission]?.let { state ->
-                    if (state is BottomInsetsState.Shown) {
-                        customPeekHeight = userReportSheetHeight
-                        userReportSubmissionSheetView.showWithHeight(customPeekHeight)
+                    kebabMenuType[KebabMenuType.UserReportSubmission]?.let { state ->
+                        if (state is BottomInsetsState.Shown) {
+                            customPeekHeight = userReportSheetHeight
+                            userReportSubmissionSheetView.showWithHeight(customPeekHeight)
+                        }
+                        else userReportSubmissionSheetView.hide()
                     }
-                    else userReportSubmissionSheetView.hide()
                 }
             }
         }

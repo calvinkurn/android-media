@@ -62,4 +62,4 @@ object RetryGetTagItemsAction : PlayViewerNewAction()
 
 data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()
 
-data class OpenKebab (val height: Int): PlayViewerNewAction()
+data class OpenKebabAction (val height: Int): PlayViewerNewAction()

@@ -42,7 +42,6 @@ import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.action.*
-import com.tokopedia.play.view.uimodel.action.OpenKebab
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
@@ -251,9 +250,8 @@ class PlayViewModel @AssistedInject constructor(
         )
     }.flowOn(dispatchers.computation)
 
-    private val _userReportUiState = _kebabBottomSheet.map {
+    private val _threeDotsMenuUiState = _kebabBottomSheet.map {
         PlayKebabMenuBottomSheetUiState(
-            shouldShow = !isFreezeOrBanned && it.isAnyThreeDotsShown,
             kebabMenuType = it
         )
     }.flowOn(dispatchers.computation)
@@ -278,7 +276,7 @@ class PlayViewModel @AssistedInject constructor(
         _status,
         _quickReply,
         _kebabMenuUiState.distinctUntilChanged(),
-        _userReportUiState.distinctUntilChanged(),
+        _threeDotsMenuUiState.distinctUntilChanged(),
     ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
         like, totalView, rtn, title, tagItems,
         status, quickReply, kebabMenu, playKebabMenuBottomSheet ->
@@ -840,7 +838,6 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     fun submitAction(action: PlayViewerNewAction) {
-        //Add Action Untuk Buka Bottom Sheet
         when (action) {
             SetChannelActiveAction -> handleSetChannelActive()
             InteractivePreStartFinishedAction -> handleInteractivePreStartFinished()
@@ -863,7 +860,7 @@ class PlayViewModel @AssistedInject constructor(
             CloseSharingOptionAction -> handleCloseSharingOption()
             is ClickSharingOptionAction -> handleSharingOption(action.shareModel)
             is SharePermissionAction -> handleSharePermission(action.label)
-            is OpenKebab -> onShowKebabMenuSheet(estimatedSheetHeight = action.height * 10)
+            is OpenKebabAction -> handleThreeDotsMenuClick(action.height)
         }
     }
 
@@ -2000,6 +1997,12 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun handleSharePermission(label: String) {
         playAnalytic.clickSharePermission(channelId, partnerId, channelType.value, label)
+    }
+
+    private fun handleThreeDotsMenuClick(height: Int){
+        viewModelScope.launch(dispatchers.main) {
+            _uiEvent.emit(OpenKebabEvent)
+        }
     }
 
     /**

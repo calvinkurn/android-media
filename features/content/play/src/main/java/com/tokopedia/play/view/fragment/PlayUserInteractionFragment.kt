@@ -916,6 +916,7 @@ class PlayUserInteractionFragment @Inject constructor(
                             actionText = getString(R.string.play_sharing_refresh),
                         )
                     }
+                    OpenKebabEvent -> showMoreActionBottomSheet()
                 }
             }
         }
@@ -1572,7 +1573,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun renderKebabView(playKebabMenuBottomSheetUiState: PlayKebabMenuBottomSheetUiState){
-        if(playKebabMenuBottomSheetUiState.shouldShow) showMoreActionBottomSheet()
+        playViewModel.onShowKebabMenuSheet(estimatedSheetHeight = bottomSheetMenuMaxHeight)
     }
 
     private fun castViewOnStateChanged(
@@ -1664,7 +1665,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onKebabMenuClick(view: KebabMenuViewComponent) {
         analytic.clickKebabMenu()
-        playViewModel.submitAction(OpenKebab(height = bottomSheetMenuMaxHeight))
+        playViewModel.submitAction(OpenKebabAction(height = bottomSheetMenuMaxHeight))
     }
 
     companion object {

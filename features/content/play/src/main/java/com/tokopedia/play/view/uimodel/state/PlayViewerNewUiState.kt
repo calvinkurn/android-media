@@ -95,7 +95,6 @@ data class PlayKebabMenuUiState(
 )
 
 data class PlayKebabMenuBottomSheetUiState(
-    val shouldShow: Boolean,
     val kebabMenuType: Map<KebabMenuType, BottomInsetsState>
 )
 
