@@ -4,7 +4,7 @@ data class ShareHomeTokonow(
         val sharingText: String = "",
         val sharingUrl: String = "",
         val userId: String = "",
-        val pageType: String = "",
+        val pageIdConstituents: List<String> = listOf(),
         val thumbNailTitle: String = "",
         val thumbNailImage: String = "",
         val ogImageUrl: String = "",

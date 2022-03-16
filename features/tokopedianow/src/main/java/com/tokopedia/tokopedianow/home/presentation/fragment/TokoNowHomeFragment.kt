@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
@@ -33,12 +32,6 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.linker.LinkerManager
-import com.tokopedia.linker.LinkerUtils
-import com.tokopedia.linker.interfaces.ShareCallback
-import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.linker.model.LinkerError
-import com.tokopedia.linker.model.LinkerShareData
-import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
@@ -103,6 +96,8 @@ import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.ATC_QUANTI
 import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.ErrorType.ERROR_CHOOSE_ADDRESS
 import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.ErrorType.ERROR_LAYOUT
 import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.LOAD_LAYOUT_ERROR
+import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareOptionRequest
+import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareRequest
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
@@ -137,7 +132,6 @@ import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
-import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
@@ -1387,34 +1381,9 @@ class TokoNowHomeFragment: Fragment(),
     private fun shareClicked(shareHomeTokonow: ShareHomeTokonow?){
         if(UniversalShareBottomSheet.isCustomSharingEnabled(context)){
             showUniversalShareBottomSheet(shareHomeTokonow)
+        } else {
+            LinkerManager.getInstance().executeShareRequest(shareRequest(context, shareHomeTokonow))
         }
-        else {
-            LinkerManager.getInstance().executeShareRequest(
-                LinkerUtils.createShareRequest(0,
-                    linkerDataMapper(shareHomeTokonow), object : ShareCallback {
-                        override fun urlCreated(linkerShareData: LinkerShareResult) {
-                            if (linkerShareData.url != null) {
-                                shareData(
-                                    activity,
-                                    String.format("%s %s", shareHomeTokonow?.sharingText, linkerShareData.shareUri),
-                                    linkerShareData.url
-                                )
-                            }
-                        }
-
-                        override fun onError(linkerError: LinkerError) {
-                            shareData(activity, shareHomeTokonow?.sharingText ?: "", shareHomeTokonow?.sharingUrl ?: "")
-                        }
-                    })
-            )
-        }
-    }
-
-    fun shareData(context: Context?, shareTxt: String?, pageUri: String?) {
-        val share = Intent(Intent.ACTION_SEND)
-        share.type = "text/plain"
-        share.putExtra(Intent.EXTRA_TEXT, shareTxt + "\n" + pageUri)
-        context?.startActivity(Intent.createChooser(share, shareTxt))
     }
 
     private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareHomeTokonow?) {
@@ -1423,7 +1392,7 @@ class TokoNowHomeFragment: Fragment(),
             setUtmCampaignData(
                     pageName = PAGE_SHARE_NAME,
                     userId = shareHomeTokonow?.userId.orEmpty(),
-                    pageIdConstituents = listOf(shareHomeTokonow?.pageType.orEmpty()),
+                    pageIdConstituents = shareHomeTokonow?.pageIdConstituents.orEmpty(),
                     feature = SHARE
             )
             setMetaData(
@@ -1436,23 +1405,12 @@ class TokoNowHomeFragment: Fragment(),
         universalShareBottomSheet?.show(childFragmentManager, this, screenshotDetector)
     }
 
-    private fun linkerDataMapper(shareHomeTokonow: ShareHomeTokonow?): LinkerShareData {
-        val linkerData = LinkerData()
-        linkerData.name = shareHomeTokonow?.specificPageName ?: ""
-        linkerData.uri = shareHomeTokonow?.sharingUrl ?: ""
-        linkerData.description = shareHomeTokonow?.specificPageDescription ?: ""
-        linkerData.isThrowOnError = true
-        val linkerShareData = LinkerShareData()
-        linkerShareData.linkerData = linkerData
-        return linkerShareData
-    }
-
     private fun shareHomeTokonow(isScreenShot: Boolean = false): ShareHomeTokonow{
         return ShareHomeTokonow(
                 resources.getString(R.string.tokopedianow_home_share_main_text),
                 SHARE_URL,
                 userSession.userId,
-                pageType,
+                listOf(pageType),
                 if(isScreenShot) resources.getString(R.string.tokopedianow_home_share_thumbnail_title_ss)
                 else resources.getString(R.string.tokopedianow_home_share_thumbnail_title),
                 THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
@@ -1501,27 +1459,14 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
-        val shareHomeTokonow = shareHomeTokonow()
-        val linkerShareData = linkerDataMapper(shareHomeTokonow)
-        linkerShareData.linkerData.apply {
-            feature = shareModel.feature
-            channel = shareModel.channel
-            campaign = shareModel.campaign
-            isThrowOnError = false
-            if(shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
-                ogImageUrl = shareModel.ogImgUrl
+        shareOptionRequest(
+            shareModel = shareModel,
+            shareHomeTokonow = shareHomeTokonow(),
+            activity = activity,
+            view = view,
+            onSuccess = {
+                universalShareBottomSheet?.dismiss()
             }
-        }
-        LinkerManager.getInstance().executeShareRequest(
-            LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
-                override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    val shareString = String.format("%s %s", shareHomeTokonow.sharingText, linkerShareData?.shareUri)
-                    SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
-                    universalShareBottomSheet?.dismiss()
-                }
-
-                override fun onError(linkerError: LinkerError?) {}
-            })
         )
     }
 
