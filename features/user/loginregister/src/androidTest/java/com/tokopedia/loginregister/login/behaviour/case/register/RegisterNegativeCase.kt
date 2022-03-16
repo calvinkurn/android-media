@@ -2,12 +2,16 @@ package com.tokopedia.loginregister.login.behaviour.case.register
 
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.behaviour.base.RegisterInitialBase
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.containsString
 import org.junit.Test
 
 @UiTest
@@ -62,9 +66,9 @@ class RegisterNegativeCase: RegisterInitialBase() {
         isDefaultDiscover = false
         runTest {
             Espresso.onView(
-                Matchers.allOf(
-                    ViewMatchers.withText(Matchers.containsString("Terjadi kesalahan. Ulangi beberapa saat lagi")),
-                    ViewMatchers.isDisplayed()
+                allOf(
+                    withText(containsString("Terjadi kesalahan. Ulangi beberapa saat lagi")),
+                    isDisplayed()
                 )
             )
         }
