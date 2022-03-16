@@ -310,7 +310,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             }
         }
 
-        setTicker(details.getAdditionalTickerInfo(), details.status().statusText());
+        setTicker(details.getAdditionalTickerInfo());
 
         setMainViewVisible(View.VISIBLE);
     }
@@ -330,7 +330,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         statusValue.setBackground(shape);
     }
 
-    private void setTicker(List<AdditionalTickerInfo> additionalTickerInfoList, String status){
+    private void setTicker(List<AdditionalTickerInfo> additionalTickerInfoList){
         if (additionalTickerInfoList.size() > 0){
             tickerStatus.setVisibility(View.VISIBLE);
             tickerStatus.setTextDescription(additionalTickerInfoList.get(0).getNotes());
