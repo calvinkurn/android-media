@@ -97,7 +97,7 @@ class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: 
     }
 
     fun getTokonowData(localCacheModel: LocalCacheModel) {
-        viewModelScope.launch(onErrorGetDefaultChosenAddress) {
+        viewModelScope.launch(onErrorRefreshTokonow) {
             isFirstLoad = false
             _tokonowData.value = Success(refreshTokonowDataUsecase.execute(localCacheModel).refreshTokonowData.data)
         }

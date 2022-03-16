@@ -141,7 +141,8 @@ class ChooseAddressWidget : ConstraintLayout,
                                 lastUpdate = data.lastUpdate,
                                 shopId = data.shopId
                             )
-                            chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                            // trigger home to refresh data
+                            chooseAddressWidgetListener?.onTokonowDataRefreshed()
                     }
                     is Fail -> {
                         // do nothing
@@ -366,5 +367,9 @@ class ChooseAddressWidget : ConstraintLayout,
         fun isSupportWarehouseLoc(): Boolean {
             return true
         }
+        /**
+         * To trigger UI refresh after getting new tokonow warehouse data
+         */
+        fun onTokonowDataRefreshed() {}
     }
 }
