@@ -84,27 +84,6 @@ class CouponPreviewViewModel @Inject constructor(
         _areInputValid.value = true
     }
 
-    fun areRequiredFieldsFilled(
-        couponSettings: CouponSettings?,
-        couponInformation: CouponInformation?,
-        couponProducts: List<CouponProduct>
-    ): Boolean {
-        if (couponSettings == null) {
-            return false
-        }
-
-        if (couponInformation == null) {
-            return false
-        }
-
-        if (couponProducts.isEmpty()) {
-            return false
-        }
-
-        return true
-    }
-
-
     fun createCoupon(
         isCreateMode: Boolean,
         couponInformation: CouponInformation,
