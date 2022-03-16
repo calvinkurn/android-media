@@ -75,9 +75,11 @@ class VariantSheetViewComponent(
     private var mVariantModel: VariantUiModel? = null
 
     init {
-        rvLabel.adapter = labelAdapter
-        rvLabel.addItemDecoration(VariantLabelItemDecoration(rvLabel.context))
-        rvLabel.itemAnimator = null
+        rvLabel.apply {
+            adapter = labelAdapter
+            addItemDecoration(VariantLabelItemDecoration(context))
+            itemAnimator = null
+        }
 
         findViewById<ImageView>(com.tokopedia.play_common.R.id.iv_sheet_close)
                 .setOnClickListener {
