@@ -58,7 +58,7 @@ class AccountHeaderViewHolder(itemView: View,
         const val TEXT_LOGIN_AS = "Masuk Sebagai %s"
         private const val GREETINGS_5_10 = "Pagi! Udah sarapan?"
         private const val GREETINGS_10_16 =  "Semangat jalani hari ini!"
-        private const val GREETINGS_16_22 =  "Nyantai sambil belanja, yuk~"
+        private const val GREETINGS_16_21 =  "Nyantai sambil belanja, yuk~"
         private const val GREETINGS_22_5 =  " Lagi cari apa nih kamu?"
         private const val GREETINGS_DEFAULT = "Hai Toppers"
 
@@ -66,6 +66,7 @@ class AccountHeaderViewHolder(itemView: View,
         private const val HOURS_5 = 5
         private const val HOURS_10 = 10
         private const val HOURS_16 = 16
+        private const val HOURS_21 = 21
         private const val HOURS_22 = 22
         private const val HOURS_23 = 23
 
@@ -405,7 +406,7 @@ class AccountHeaderViewHolder(itemView: View,
         return when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
             in HOURS_5..HOURS_10 -> GREETINGS_5_10
             in HOURS_10..HOURS_16 -> GREETINGS_10_16
-            in HOURS_16..HOURS_22 -> GREETINGS_16_22
+            in HOURS_16..HOURS_21 -> GREETINGS_16_21
             in HOURS_22..HOURS_23 -> GREETINGS_22_5
             in HOURS_0..HOURS_5 -> GREETINGS_22_5
             else -> GREETINGS_DEFAULT
@@ -416,7 +417,7 @@ class AccountHeaderViewHolder(itemView: View,
         return when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
             in HOURS_5..HOURS_10 -> "https://images.tokopedia.net/img/android/navigation/bread.png"
             in HOURS_10..HOURS_16 -> "https://images.tokopedia.net/img/android/navigation/hands.png"
-            in HOURS_16..HOURS_22 -> "https://images.tokopedia.net/img/android/navigation/bag.png"
+            in HOURS_16..HOURS_21 -> "https://images.tokopedia.net/img/android/navigation/bag.png"
             in HOURS_22..HOURS_23 -> "https://images.tokopedia.net/img/android/navigation/emoji.png"
             in HOURS_0..HOURS_5 -> "https://images.tokopedia.net/img/android/navigation/emoji.png"
             else -> "https://images.tokopedia.net/img/android/navigation/bag.png"
