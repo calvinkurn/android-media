@@ -623,9 +623,11 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_METHOD_OTP,
-                if (isSuccess) { "success" } else { "fail - $message" }
-                        + " - ${otpData.otpType} - ${modeListData.modeText}"
-                        + if (modeListData.modeText == OtpConstant.OtpMode.MISCALL && isNewOtpMiscall) " - $TAG_AUTO_READ" else ""
+                if (isSuccess) {
+                    getLabelWithOtpMethod(TrackerLabelType.SUCCESS, otpData, modeListData)
+                } else {
+                    getLabelWithOtpMethod(TrackerLabelType.FAIL, otpData, modeListData, message)
+                }
         ))
     }
 
@@ -634,9 +636,11 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_RESEND_OTP,
-                if (isSuccess) { "success" } else { "fail - $message" }
-                        + " - ${otpData.otpType} - ${modeListData.modeText}"
-                        + if (modeListData.modeText == OtpConstant.OtpMode.MISCALL && isNewOtpMiscall) " - $TAG_AUTO_READ" else ""
+                if (isSuccess) {
+                    getLabelWithOtpMethod(TrackerLabelType.SUCCESS, otpData, modeListData)
+                } else {
+                    getLabelWithOtpMethod(TrackerLabelType.FAIL, otpData, modeListData, message)
+                }
         ))
     }
 
@@ -645,8 +649,7 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_RESEND_OTP,
-                "click - ${otpData.otpType} - ${modeListData.modeText}"
-                        + if (modeListData.modeText == OtpConstant.OtpMode.MISCALL && isNewOtpMiscall) " - $TAG_AUTO_READ" else ""
+                getLabelWithOtpMethod(TrackerLabelType.CLICK, otpData, modeListData)
         ))
     }
 
@@ -656,9 +659,11 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_AUTO_SUBMIT_OTP,
-                if (isSuccess) { "success" } else { "fail - $message" }
-                        + " - ${otpData.otpType} - ${modeListData.modeText}"
-                        + if (modeListData.modeText == OtpConstant.OtpMode.MISCALL && isNewOtpMiscall) " - $TAG_AUTO_READ" else ""
+                if (isSuccess) {
+                    getLabelWithOtpMethod(TrackerLabelType.SUCCESS, otpData, modeListData)
+                } else {
+                    getLabelWithOtpMethod(TrackerLabelType.FAIL, otpData, modeListData, message)
+                }
         ))
     }
 
@@ -781,5 +786,44 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
             Action.ACTION_CLICK_ON_REQUEST_CHANGE_PHONE_NUMBER,
             Label.LABEL_OTP_PAGE
         )
+    }
+
+    private fun getLabelWithOtpMethod(labelType: TrackerLabelType, otpData: OtpData, otpModeListData: ModeListData, message: String = ""): String {
+        val label = if (message.isNotEmpty()) {
+            "$labelType $message"
+        } else {
+            labelType.toString()
+        }
+
+        val tag = when(otpModeListData.modeText) {
+            OtpConstant.OtpMode.MISCALL -> {
+                if (isNewOtpMiscall) " - $TAG_AUTO_READ" else ""
+            }
+            else -> {
+                ""
+            }
+        }
+
+        return "$label - ${otpData.otpType} - ${otpModeListData.modeText}$tag"
+    }
+
+    private enum class TrackerLabelType {
+        SUCCESS,
+        FAIL,
+        CLICK;
+
+        override fun toString(): String {
+            return when(this) {
+                SUCCESS -> {
+                    Label.LABEL_SUCCESS
+                }
+                FAIL -> {
+                    Label.LABEL_FAILED
+                }
+                CLICK -> {
+                    Label.LABEL_CLICK
+                }
+            }
+        }
     }
 }
