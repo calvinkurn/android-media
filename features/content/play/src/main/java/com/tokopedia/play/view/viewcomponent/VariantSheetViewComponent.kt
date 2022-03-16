@@ -223,6 +223,7 @@ class VariantSheetViewComponent(
 
         labelVariant1.gone()
         labelVariant2.gone()
+        tvProductStock.gone()
     }
 
     fun showPlaceholder() {
