@@ -12,7 +12,7 @@ import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.R
 import com.tokopedia.picker.common.databinding.ActivityPickerDebugBinding
 import com.tokopedia.picker.common.intent.EXTRA_PICKER_PARAM
-import com.tokopedia.picker.common.intent.PickerIntent
+import com.tokopedia.picker.common.intent.RESULT_PICKER
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.picker.widget.drawerselector.DebugDrawerActionType
@@ -46,7 +46,7 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == RESULT_PICKER_CODE && resultCode == Activity.RESULT_OK) {
-            val elements = PickerIntent.Result.get(data)
+            val elements = intent?.getStringArrayListExtra(RESULT_PICKER)?: return
             val uiModels = elements.map { File(it).toUiModel() }
             binding?.drawerSelector?.addAllData(uiModels)
         }

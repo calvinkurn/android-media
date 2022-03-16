@@ -28,6 +28,8 @@ data class PickerParam(
 ) : Parcelable {
 
     // getter
+    fun pageType() = pageType
+    fun isImageModeOnly() = modeType == ModeType.IMAGE_ONLY
     fun isCommonPageType() = pageType == PageType.COMMON
     fun ratioIsSquare() = cameraRatio == CameraRatio.Square
     fun isMultipleSelectionType() = isMultipleSelection

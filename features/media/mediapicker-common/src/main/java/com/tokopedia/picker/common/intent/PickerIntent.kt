@@ -11,24 +11,16 @@ const val RESULT_PICKER = "result-picker"
 
 object PickerIntent {
 
-    object Router {
-        fun intent(context: Context, param: PickerParam.() -> Unit = {}): Intent {
-            val pickerParam = PickerParam().apply(param)
+    fun intent(context: Context, param: PickerParam.() -> Unit = {}): Intent {
+        val pickerParam = PickerParam().apply(param)
 
-            return RouteManager.getIntent(context, INTERNAL_MEDIA_PICKER).apply {
-                putExtra(EXTRA_PICKER_PARAM, pickerParam)
-            }
-        }
-
-        fun get(intent: Intent?): PickerParam {
-            return intent?.getParcelableExtra(EXTRA_PICKER_PARAM)?: PickerParam()
+        return RouteManager.getIntent(context, INTERNAL_MEDIA_PICKER).apply {
+            putExtra(EXTRA_PICKER_PARAM, pickerParam)
         }
     }
 
-    object Result {
-        fun get(intent: Intent?): ArrayList<String> {
-            return intent?.getStringArrayListExtra(RESULT_PICKER)?: arrayListOf()
-        }
+    fun get(intent: Intent?): PickerParam {
+        return intent?.getParcelableExtra(EXTRA_PICKER_PARAM)?: PickerParam()
     }
 
 }

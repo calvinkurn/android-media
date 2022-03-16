@@ -194,19 +194,11 @@ open class PickerActivity : BaseActivity()
     }
 
     private fun setupParamQueryAndDataIntent() {
-        val pickerParam = PickerIntent.Router.get(intent)
+        val pickerParam = PickerIntent.get(intent)
 
+        // get data from uri query parameter
         intent?.data?.let {
-            PickerUiConfig.setupQueryPage(it)
-            PickerUiConfig.setupQueryMode(it)
-            PickerUiConfig.setupQuerySelectionType(it)
-            PickerUiConfig.setupQueryLandingPageIndex(it)
-
-            pickerParam.apply {
-                pageType(PickerUiConfig.pageType)
-                modeType(PickerUiConfig.modeType)
-                asMultipleSelectionMode(PickerUiConfig.isMultipleSelectionMode)
-            }
+            PickerUiConfig.getStartPageIndex(it)
         }
 
         // set the picker param as cache
@@ -271,7 +263,7 @@ open class PickerActivity : BaseActivity()
     }
 
     private fun navigateByPageType() {
-        when (PickerUiConfig.pageType) {
+        when (param.pageType()) {
             PageType.CAMERA -> {
                 navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
                 navigator?.open(FragmentType.CAMERA)

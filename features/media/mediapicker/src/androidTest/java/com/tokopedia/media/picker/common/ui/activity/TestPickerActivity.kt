@@ -17,10 +17,11 @@ class TestPickerActivity : PickerActivity() {
     private fun setupQueryAndUIConfigBuilder() {
         val data = intent?.data ?: return
 
-        PickerUiConfig.setupQueryPage(data)
-        PickerUiConfig.setupQueryMode(data)
-        PickerUiConfig.setupQuerySelectionType(data)
-        PickerUiConfig.setupQueryLandingPageIndex(data)
+        // TODO: change with intent data from [RESULT_PICKER]
+//        PickerUiConfig.setupQueryPage(data)
+//        PickerUiConfig.setupQueryMode(data)
+//        PickerUiConfig.setupQuerySelectionType(data)
+//        PickerUiConfig.setupQueryLandingPageIndex(data)
     }
 
     override fun createFragmentFactory(): PickerFragmentFactory {

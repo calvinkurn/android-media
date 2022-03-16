@@ -3,7 +3,6 @@ package com.tokopedia.media.picker.ui.uimodel
 import android.Manifest.permission.*
 import com.tokopedia.media.R
 import com.tokopedia.picker.common.types.PageType
-import com.tokopedia.media.picker.ui.PickerUiConfig
 
 data class PermissionUiModel(
     var title: Int,
@@ -27,10 +26,10 @@ data class PermissionUiModel(
             RECORD_AUDIO
         )
 
-        fun get(): List<PermissionUiModel> {
-            return when (PickerUiConfig.pageType) {
+        fun get(@PageType page: Int, isImageModeOnly: Boolean): List<PermissionUiModel> {
+            return when (page) {
                 PageType.CAMERA -> {
-                    if (PickerUiConfig.isPhotoModeOnly()) {
+                    if (isImageModeOnly) {
                         listOf(camera())
                     } else {
                         listOf(camera(), microphone())
