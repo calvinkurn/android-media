@@ -362,17 +362,16 @@
                     android:id="@+id/info_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:layout_marginHorizontal="@dimen/spacing_lvl4"
                     android:text="@string/info_label"
                     android:textSize="@dimen/font_medium"
                     android:textStyle="bold" />
-
                 <LinearLayout
                     android:id="@+id/info_payment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
+                    android:layout_marginHorizontal="@dimen/spacing_lvl4"
                     android:orientation="vertical" />
 
 
@@ -404,6 +403,16 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="16dp"
                     android:orientation="vertical" />
+
+                <com.tokopedia.unifycomponents.ticker.Ticker
+                    android:id="@+id/ticker_detail_order"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/spacing_lvl4"
+                    android:visibility="gone"
+                    app:tickerShapeType="loose"
+                    app:closeButtonVisibility="gone"
+                    app:tickerType="information"/>
             </LinearLayout>
 
             <TextView
