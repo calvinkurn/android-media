@@ -1,14 +1,9 @@
 package com.tokopedia.tkpd
 
-import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
-import android.os.VibrationEffect
-import android.os.Vibrator
-import android.view.HapticFeedbackConstants
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.Toast
@@ -17,7 +12,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.thankyou_native.presentation.fragment.LoaderFragment
+import com.tokopedia.tkpd.testgql.TestGqlUseCase
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -64,10 +59,7 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(logoutIntent, REQUEST_CODE_LOGOUT)
         }
 
-        testGqlButton.setOnClickListener {
-            triggerHaptics()
-            //TestGqlUseCase().execute()
-        }
+        testGqlButton.setOnClickListener { TestGqlUseCase().execute() }
 
         devOptButton.setOnClickListener {
             RouteManager.route(this, ApplinkConst.DEVELOPER_OPTIONS)
@@ -117,17 +109,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun goTo() {
-        loginButton.performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK)
         /* @example: open groupchat module;
          * startActivity(PlayActivity.getCallingIntent(this, "668", true))
          * or, you can use route like this:
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-        /*val appLink = etAppLink.text.toString()
+        val appLink = etAppLink.text.toString()
         if(appLink.isNotBlank())
             RouteManager.route(this, appLink)
-        else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()*/
+        else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
     }
 
     private fun getDefaultAppLink(): String {
@@ -136,14 +127,4 @@ class MainActivity : AppCompatActivity() {
          */
         return ""
     }
-
-    private fun triggerHaptics() {
-        val vibrationService = applicationContext.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrationService.vibrate(VibrationEffect.createOneShot(LoaderFragment.VIBRATION_MILLIS, VibrationEffect.DEFAULT_AMPLITUDE))
-        } else {
-            vibrationService.vibrate(LoaderFragment.VIBRATION_MILLIS)
-        }
-    }
-
 }
