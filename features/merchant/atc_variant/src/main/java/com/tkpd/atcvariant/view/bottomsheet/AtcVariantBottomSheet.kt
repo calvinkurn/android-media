@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tkpd.atcvariant.BuildConfig
 import com.tkpd.atcvariant.R
 import com.tkpd.atcvariant.data.uidata.PartialButtonDataModel
 import com.tkpd.atcvariant.data.uidata.VariantErrorDataModel
@@ -22,7 +23,8 @@ import com.tkpd.atcvariant.di.DaggerAtcVariantComponent
 import com.tkpd.atcvariant.util.ATC_LOGIN_REQUEST_CODE
 import com.tkpd.atcvariant.util.AtcCommonMapper
 import com.tkpd.atcvariant.util.BS_SHIPMENT_ERROR_ATC_VARIANT
-import com.tkpd.atcvariant.view.*
+import com.tkpd.atcvariant.view.PartialAtcButtonListener
+import com.tkpd.atcvariant.view.PartialAtcButtonView
 import com.tkpd.atcvariant.view.activity.AtcVariantActivity
 import com.tkpd.atcvariant.view.adapter.AtcVariantAdapter
 import com.tkpd.atcvariant.view.adapter.AtcVariantAdapterTypeFactoryImpl
@@ -47,12 +49,19 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.product.detail.common.*
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.AtcVariantMapper
+import com.tokopedia.product.detail.common.ProductCartHelper
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_TRADEIN_PDP
+import com.tokopedia.product.detail.common.ProductTrackingCommon
+import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.showToasterError
+import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
 import com.tokopedia.product.detail.common.view.ProductDetailRestrictionHelper
@@ -93,6 +102,12 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
     private val sharedViewModel by lazy {
         ViewModelProvider(requireActivity()).get(AtcVariantSharedViewModel::class.java)
+    }
+
+    private val localizationChooseAddressData by lazy(LazyThreadSafetyMode.NONE) {
+        context?.let {
+            ChooseAddressUtils.getLocalizingAddressData(it)
+        }
     }
 
     private var loadingProgressDialog: ProgressDialog? = null
@@ -314,11 +329,11 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     }
 
     private fun renderRestrictionBottomSheet(reData: RestrictionData) {
-        ProductDetailRestrictionHelper.renderNplUi(
+        ProductDetailRestrictionHelper.renderRestrictionUi(
                 reData = reData,
                 isFavoriteShop = viewModel.getActivityResultData().isFollowShop,
                 isShopOwner = sharedViewModel.aggregatorParams.value?.isShopOwner ?: false,
-                nplView = nplFollowersButton
+                reView = nplFollowersButton
         )
     }
 
@@ -527,7 +542,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 isCod = variantAggregatorData?.isCod ?: false,
                 ratesEstimateData = ratesEstimateData,
                 buyerDistrictId = buyerDistrictId,
-                sellerDistrictId = sellerDistrictId
+                sellerDistrictId = sellerDistrictId,
+                lcaWarehouseId = localizationChooseAddressData?.warehouse_id ?: ""
         )
     }
 
@@ -647,7 +663,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         val parentId = viewModel.getVariantAggregatorData()?.variantData?.parentId ?: ""
 
         when (cartType) {
-            ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON -> {
+            ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON,
+            ProductDetailCommonConstant.KEY_DEFAULT_CHOOSE_VARIANT -> {
                 ProductTrackingCommon.eventClickPilihVariant(adapter.getHeaderDataModel()?.productId
                         ?: "", pageSource, cartType, parentId, productIdPreviousPage)
                 onSaveButtonClicked()
@@ -905,6 +922,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                     RouteManager.route(context, it)
                 }
             }
+        } else if (reData.restrictionGamificationType()) {
+            reData.action.firstOrNull()?.buttonLink?.let {
+                RouteManager.route(context, it)
+            }
         }
     }
 
@@ -913,13 +934,11 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
             val isTokoNow = sharedViewModel.aggregatorParams.value?.isTokoNow == true
             val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
             val productId = adapter.getHeaderDataModel()?.productId ?: ""
-            val boImageUrl = viewModel.getVariantAggregatorData()?.getIsFreeOngkirImageUrl(productId)
-                    ?: ""
 
             if (isTokoNow) {
                 RouteManager.route(context, EDUCATIONAL_INFO)
             } else {
-                val bottomSheet = ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(it, boImageUrl, uspImageUrl)
+                val bottomSheet = ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(it, uspImageUrl)
                 bottomSheet.show(childFragmentManager, ProductDetailCommonBottomSheetBuilder.TAG_USP_BOTTOM_SHEET)
             }
 

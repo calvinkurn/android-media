@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-parcelize'
 
 kapt {
     correctErrorTypes = true
@@ -49,7 +50,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.dialog
 
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig

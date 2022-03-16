@@ -10,6 +10,9 @@ android {
             }
         }
     }
+    buildFeatures {
+        buildConfig true
+    }
 }
 
 buildscript {

@@ -18,6 +18,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.product.detail.common.VariantPageSource
@@ -35,7 +36,7 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRes
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickATCButtonAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickBuyButtonAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickWishlistButtonAt
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewResult.hasVariantLebelPreview
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewResult.verifyVariantLabel
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
 import com.tokopedia.topchat.matchers.withTotalItem
 import org.hamcrest.Matchers.not
@@ -45,31 +46,9 @@ import org.junit.Test
 @UiTest
 class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
-    lateinit var productPreview: ProductPreview
-    private val testVariantSize = "S"
-    private val testVariantColor = "Putih"
-
     @Before
     override fun before() {
         super.before()
-        productPreview = ProductPreview(
-            "1111",
-            ProductPreviewAttribute.productThumbnail,
-            ProductPreviewAttribute.productName,
-            "Rp 23.000.000",
-            "",
-            testVariantColor,
-            "",
-            "",
-            testVariantSize,
-            "tokopedia://product/1111",
-            false,
-            "",
-            "Rp 50.000.000",
-            500000.0,
-            "50%",
-            false
-        )
         addToCartUseCase.isError = false
     }
 
@@ -199,6 +178,8 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
+            generate3PreAttachPayload(exProductId)
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
             .respondWith(
                 Instrumentation.ActivityResult(
@@ -241,6 +222,8 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         // Given
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
+                generatePreAttachPayload(exProductId)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -249,8 +232,8 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         doScrollChatToPosition(0)
 
         // Then
-        hasVariantLebelPreview(R.id.tv_variant_color, testVariantColor, 0)
-        hasVariantLebelPreview(R.id.tv_variant_size, testVariantSize, 0)
+        verifyVariantLabel(R.id.tv_variant_color, isDisplayed(), 0)
+        verifyVariantLabel(R.id.tv_variant_size, isDisplayed(), 0)
     }
 
     @Test
@@ -424,10 +407,54 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
     // TODO: assert attach product, stock info seller, and tokocabang is not displayed on buyer side
 
-    private fun putProductAttachmentIntent(intent: Intent) {
-        val productPreviews = listOf(productPreview)
-        val stringProductPreviews = CommonUtil.toJson(productPreviews)
-        intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
+    override fun getAttachProductData(totalProduct: Int): Intent {
+        val products = ArrayList<ResultProduct>(totalProduct)
+        for (i in 0 until totalProduct) {
+            products.add(
+                    ResultProduct(
+                            exProductId,
+                            "tokopedia://product/1111",
+                            ProductPreviewAttribute.productThumbnail,
+                            "Rp ${i + 1}5.000.000",
+                            "${i + 1} ${ProductPreviewAttribute.productName}"
+                    )
+            )
+        }
+        return Intent().apply {
+            putParcelableArrayListExtra(
+                    ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY, products
+            )
+        }
+    }
+
+    companion object {
+        val testVariantSize = "S"
+        val testVariantColor = "Putih"
+        val exProductId = "1111"
+        fun putProductAttachmentIntent(intent: Intent) {
+            val productPreviews = listOf(
+                    ProductPreview(
+                            exProductId,
+                            ProductPreviewAttribute.productThumbnail,
+                            ProductPreviewAttribute.productName,
+                            "Rp 23.000.000",
+                            "",
+                            testVariantColor,
+                            "",
+                            "",
+                            testVariantSize,
+                            "tokopedia://product/1111",
+                            false,
+                            "",
+                            "Rp 50.000.000",
+                            500000.0,
+                            "50%",
+                            false
+                    )
+            )
+            val stringProductPreviews = CommonUtil.toJson(productPreviews)
+            intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
+        }
     }
 
     private fun getZeroStockAttachment(): ChatAttachmentResponse {

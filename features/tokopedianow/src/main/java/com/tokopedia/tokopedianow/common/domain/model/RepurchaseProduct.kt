@@ -72,7 +72,8 @@ data class RepurchaseProduct(
     }
 
     fun isVariant(): Boolean {
-        return parentProductId.toIntOrZero() != 0
+        return parentProductId != "0" &&
+            parentProductId.isNotBlank()
     }
 
     fun getDiscount(): String {

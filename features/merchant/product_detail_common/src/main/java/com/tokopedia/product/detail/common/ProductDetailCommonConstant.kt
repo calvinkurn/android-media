@@ -13,6 +13,7 @@ object ProductDetailCommonConstant {
     const val PARAM_INPUT = "input"
     const val PARAM_IS_SHOP_OWNER = "isShopOwner"
     const val PARAM_USER_LOCATION = "userLocation"
+    const val PARAM_TOKONOW = "tokonow"
     const val PARAM_AFFILIATE_UUID = "affiliate"
 
     const val PARAM_SHOP_IDS = "shopIds"
@@ -26,6 +27,8 @@ object ProductDetailCommonConstant {
     const val SHOP_ID_PARAM = "shopId"
     const val FIELDS_PARAM = "fields"
     const val PRODUCT_ID_PARAM = "productId"
+    const val GIFTABLE_PARAM = "isGiftable"
+    const val PARENT_ID_PARAM = "parentId"
 
 
     //notify me (teaser campaign)
@@ -58,6 +61,7 @@ object ProductDetailCommonConstant {
     const val KEY_OCC_BUTTON = "occ"
     const val KEY_SAVE_BUNDLING_BUTTON = "save_bundling"
     const val KEY_SAVE_TRADEIN_BUTTON = "save_tradein"
+    const val KEY_DEFAULT_CHOOSE_VARIANT = "default_choose_variant"
     const val KEY_CHAT = "chat"
     const val KEY_REMIND_ME = "remind_me"
     const val KEY_DEFAULT_OOS = "default-oos"
@@ -101,6 +105,7 @@ object ProductDetailCommonConstant {
     const val BEBAS_ONGKIR_NORMAL = 1
     const val BEBAS_ONGKIR_EXTRA = 2
     const val BO_TOKONOW = 3
+    const val BO_TOKONOW_15 = 4
 
     const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
     const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"

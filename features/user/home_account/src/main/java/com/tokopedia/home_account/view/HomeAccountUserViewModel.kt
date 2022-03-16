@@ -236,23 +236,23 @@ class HomeAccountUserViewModel @Inject constructor(
         })
     }
 
-    fun getBalanceAndPoint(walletId: String) {
+    fun getBalanceAndPoint(walletId: String, hideTitle: Boolean) {
         launchCatchError(block = {
             when (walletId) {
                 AccountConstants.WALLET.TOKOPOINT -> {
                     val result = getTokopointsBalanceAndPointUseCase(Unit)
-                    setBalanceAndPointValue(result.data, walletId)
+                    setBalanceAndPointValue(result.data, walletId, hideTitle)
                 }
                 AccountConstants.WALLET.SALDO -> {
                     val result = getSaldoBalanceUseCase(Unit)
-                    setBalanceAndPointValue(result.data, walletId)
+                    setBalanceAndPointValue(result.data, walletId, hideTitle)
                 }
                 AccountConstants.WALLET.CO_BRAND_CC -> {
                     val result = getCoBrandCCBalanceAndPointUseCase(Unit)
-                    setBalanceAndPointValue(result.data, walletId)
+                    setBalanceAndPointValue(result.data, walletId, hideTitle)
                 }
                 else -> {
-                    getOtherBalanceAndPoint(walletId)
+                    getOtherBalanceAndPoint(walletId, hideTitle)
                 }
             }
         }, onError = {
@@ -260,7 +260,10 @@ class HomeAccountUserViewModel @Inject constructor(
         })
     }
 
-    private suspend fun getOtherBalanceAndPoint(walletId: String) {
+    /**
+     * same API
+     */
+    private suspend fun getOtherBalanceAndPoint(walletId: String, hideTitle: Boolean) {
         val result = when (walletId) {
             AccountConstants.WALLET.GOPAY -> {
                 getBalanceAndPointUseCase(GOPAY_PARTNER_CODE)
@@ -275,11 +278,12 @@ class HomeAccountUserViewModel @Inject constructor(
                 BalanceAndPointDataModel()
             }
         }
-        setBalanceAndPointValue(result.data, walletId)
+        setBalanceAndPointValue(result.data, walletId, hideTitle)
     }
 
-    private fun setBalanceAndPointValue(data: WalletappGetAccountBalance, walletId: String) {
+    private fun setBalanceAndPointValue(data: WalletappGetAccountBalance, walletId: String, hideTitle: Boolean) {
         if (data.id.isNotEmpty()) {
+            data.hideTitle = hideTitle
             _balanceAndPoint.value = ResultBalanceAndPoint.Success(data, walletId)
         } else {
             _balanceAndPoint.value = ResultBalanceAndPoint.Fail(IllegalArgumentException(), walletId)

@@ -12,6 +12,7 @@ import static com.tokopedia.webview.ConstantKt.KEY_URL;
 import static com.tokopedia.webview.ConstantKt.PARAM_EXTERNAL_TRUE;
 import static com.tokopedia.webview.ConstantKt.SEAMLESS;
 import static com.tokopedia.webview.ConstantKt.STAGING;
+import static com.tokopedia.webview.ConstantKt.ZOOM_US_STRING;
 import static com.tokopedia.webview.ext.UrlEncoderExtKt.encodeOnce;
 
 import android.annotation.TargetApi;
@@ -180,7 +181,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         allowOverride = args.getBoolean(KEY_ALLOW_OVERRIDE, true);
         pullToRefresh = args.getBoolean(KEY_PULL_TO_REFRESH, false);
         String host = Uri.parse(url).getHost();
-        isTokopediaUrl = host != null && host.contains(TOKOPEDIA_STRING);
+        isTokopediaUrl = host != null && host.contains(TOKOPEDIA_STRING) && !host.contains(ZOOM_US_STRING);
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
@@ -212,7 +213,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
-    private void redirectToWebViewPlaystore(){
+    private void redirectToWebViewPlaystore() {
         //fix crash Failed to load WebView provider: No WebView installed
         Intent webViewPlaystoreIntent = new Intent(
                 Intent.ACTION_VIEW,
@@ -483,7 +484,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         public void onReceivedTitle(WebView view, String title) {
             super.onReceivedTitle(view, title);
             Activity activity = getActivity();
-            if (activity instanceof AppCompatActivity) {
+            if (activity instanceof BaseSimpleWebViewActivity) {
+                BaseSimpleWebViewActivity activityInstance = (BaseSimpleWebViewActivity) activity;
+                String activityTitle = activityInstance.getWebViewTitle();
+
                 ActionBar actionBar = ((AppCompatActivity) activity).getSupportActionBar();
                 if (actionBar != null) {
                     String decodedUrl = Uri.decode(url).toLowerCase();
@@ -491,7 +495,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                             && Uri.parse(title).getScheme() == null
                             && (isKolUrl(decodedUrl) || isPrintAwbUrl(decodedUrl))) {
                         actionBar.setTitle(title);
-                    } else if (!isHelpUrl(decodedUrl)) {
+                    } else if ((TextUtils.isEmpty(activityTitle) || activityTitle.equals(DEFAULT_TITLE))
+                            && !isHelpUrl(decodedUrl)) {
                         actionBar.setTitle(getString(R.string.tokopedia));
                     }
                 }
@@ -685,6 +690,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             if (swipeRefreshLayout != null) {
                 swipeRefreshLayout.setVisibility(View.GONE);
             }
+        } else if (errorCode == WebViewClient.ERROR_UNSUPPORTED_SCHEME) {
+            routeToNativeBrowser(webUrl);
+            if (getActivity() != null) {
+                getActivity().finish();
+            }
         }
     }
 
@@ -712,6 +722,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (goToLoginGoogle(uri)) return true;
         if (uri.getHost() == null) {
             return false;
+        }
+        if (isBriIntent(uri)) {
+            return handlingBriIntent(url);
         }
 
         String queryParam = null;
@@ -817,11 +830,39 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         return hasMoveToNativePage;
     }
 
+    private boolean isBriIntent(Uri uri) {
+        return uri.getScheme().equals("intent") &&
+                uri.getHost().contains("kartukreditbri.co.id") &&
+                uri.toString().contains("browser_fallback_url=");
+    }
+
+    private boolean handlingBriIntent(String briUrl) {
+        String newUrl = briUrl.substring(briUrl.indexOf("browser_fallback_url=") + 21, briUrl.length() - 1);
+        newUrl = newUrl.substring(0, newUrl.indexOf(";"));
+        return launchWebviewForNewUrl(UrlEncoderExtKt.decode(newUrl));
+    }
+
+    private boolean launchWebviewForNewUrl(String newUrl) {
+        if (webView != null) {
+            if (Uri.parse(newUrl).getHost().contains(TOKOPEDIA_STRING)) {
+                webView.loadAuthUrl(newUrl, userSession);
+            } else {
+                webView.loadUrl(newUrl);
+            }
+            return true;
+        } else {
+            // change first url directly
+            url = newUrl;
+            return false;
+        }
+    }
+
     private void gotoAlaCarteKyc(Uri uri) {
         String projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID);
         String kycRedirectionUrl = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
         String layout = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_SHOW_INTRO);
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.KYC_FORM_ONLY, projectId, layout, kycRedirectionUrl);
+        String kycType = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.KYC_FORM_ONLY, projectId, layout, kycRedirectionUrl, kycType);
         startActivityForResult(intent, REQUEST_CODE_LIVENESS);
     }
 

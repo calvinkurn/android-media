@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="dms_tracking_preview_static_black">#E6000000</color>
+    <color name="dms_proof_description_static_black">#99000000</color>
 
     <color name="_dms_zxing_custom_possible_result_points">#903A89CF</color>
     <color name="_dms_zxing_custom_result_view">#b0000000</color>

@@ -23,10 +23,6 @@ import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.review.ReviewInboxInstance
 import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.common.analytics.ReviewInboxTrackingConstants
@@ -36,7 +32,6 @@ import com.tokopedia.review.common.analytics.ReviewTracking
 import com.tokopedia.review.common.data.Fail
 import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.data.Success
-import com.tokopedia.review.common.presentation.InboxUnifiedRemoteConfig
 import com.tokopedia.review.common.util.ReviewInboxUtil
 import com.tokopedia.review.feature.inbox.container.presentation.listener.ReviewInboxListener
 import com.tokopedia.review.feature.inbox.pending.analytics.ReviewPendingTracking
@@ -57,11 +52,11 @@ import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendin
 import com.tokopedia.review.feature.inbox.pending.presentation.viewmodel.ReviewPendingViewModel
 import com.tokopedia.review.feature.inbox.pending.util.ReviewPendingPreference
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
-import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoBottomSheetBuilder
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
+import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoBottomSheet
+import com.tokopedia.review.feature.ovoincentive.presentation.model.IncentiveOvoBottomSheetUiModel
 import com.tokopedia.review.inbox.R
 import com.tokopedia.review.inbox.databinding.FragmentReviewPendingBinding
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -91,7 +86,7 @@ class ReviewPendingFragment :
     lateinit var viewModel: ReviewPendingViewModel
 
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
-    private var ovoIncentiveBottomSheet: BottomSheetUnify? = null
+    private var ovoIncentiveBottomSheet: IncentiveOvoBottomSheet? = null
     private var reviewInboxListener: ReviewInboxListener? = null
     private var source: String = ""
     private var containerListener: InboxFragmentContainer? = null
@@ -365,23 +360,11 @@ class ReviewPendingFragment :
 
     private fun initView() {
         setupErrorPage()
-        setupEmptyState()
     }
 
     private fun setupErrorPage() {
         binding?.reviewPendingConnectionError?.reviewConnectionErrorRetryButton?.setOnClickListener {
             getPendingReviewData(ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE, true)
-        }
-    }
-
-    private fun setupEmptyState() {
-        binding?.reviewPendingEmpty?.apply {
-            reviewEmptyImage.loadImage(ReviewInboxConstants.REVIEW_INBOX_NO_PRODUCTS_BOUGHT_IMAGE)
-            reviewEmptyTitle.text = getString(R.string.review_pending_no_product_empty_title)
-            reviewEmptySubtitle.text = getString(R.string.review_pending_no_product_empty_content)
-            reviewEmptyButton.setOnClickListener {
-                goToHome()
-            }
         }
     }
 
@@ -399,14 +382,6 @@ class ReviewPendingFragment :
 
     private fun hideList() {
         binding?.reviewPendingSwipeRefresh?.hide()
-    }
-
-    private fun showEmptyState() {
-        binding?.reviewPendingEmpty?.root?.show()
-    }
-
-    private fun hideEmptyState() {
-        binding?.reviewPendingEmpty?.root?.hide()
     }
 
     private fun showFullPageLoading() {
@@ -472,7 +447,7 @@ class ReviewPendingFragment :
                     hideFullPageLoading()
                     hideError()
                     hideLoading()
-                    if (it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE && shouldShowCredibility()) {
+                    if (it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
                         addCredibilityCarouselWidget(it.data.banners)
                     }
                     if (it.data.list.isEmpty() && it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
@@ -492,13 +467,11 @@ class ReviewPendingFragment :
                 is LoadingView -> {
                     showFullPageLoading()
                     hideError()
-                    hideEmptyState()
                 }
                 is Fail -> {
                     hideFullPageLoading()
                     if (it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
                         showError()
-                        hideEmptyState()
                         hideList()
                     } else {
                         showErrorToaster(
@@ -526,20 +499,14 @@ class ReviewPendingFragment :
     }
 
     override fun onClickOvoIncentiveTickerDescription(productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain) {
-        if (ovoIncentiveBottomSheet == null) {
-            ovoIncentiveBottomSheet = context?.let {
-                IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(
-                    context = it,
-                    productRevIncentiveOvoDomain = productRevIncentiveOvoDomain,
-                    hasIncentive = true,
-                    hasOngoingChallenge = false,
-                    incentiveOvoListener = this,
-                    category = ReviewInboxTrackingConstants.PENDING_TAB
-                )
-            }
-        }
-        ovoIncentiveBottomSheet?.let { bottomSheet ->
-            activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
+        val bottomSheet = ovoIncentiveBottomSheet ?: IncentiveOvoBottomSheet().also { ovoIncentiveBottomSheet = it }
+        val bottomSheetData = IncentiveOvoBottomSheetUiModel(
+            productRevIncentiveOvoDomain = productRevIncentiveOvoDomain,
+            category = ReviewInboxTrackingConstants.PENDING_TAB
+        )
+        bottomSheet.init(bottomSheetData, this)
+        activity?.supportFragmentManager?.let { supportFragmentManager ->
+            bottomSheet.show(supportFragmentManager, bottomSheet.tag)
             ReviewTracking.onClickReadSkIncentiveOvoTracker(
                 productRevIncentiveOvoDomain.productrevIncentiveOvo?.ticker?.subtitle,
                 ReviewInboxTrackingConstants.PENDING_TAB
@@ -556,7 +523,6 @@ class ReviewPendingFragment :
     }
 
     private fun renderReviewData(reviewData: List<ReviewPendingUiModel>, hasNextPage: Boolean) {
-        hideEmptyState()
         showList()
         renderList(reviewData, hasNextPage)
     }
@@ -587,13 +553,6 @@ class ReviewPendingFragment :
     }
 
     private fun getSourceData() {
-        if (InboxUnifiedRemoteConfig.isInboxUnified()) {
-            source = containerListener?.getPageSource() ?: ReviewInboxConstants.DEFAULT_SOURCE
-            if (source.isBlank()) {
-                source = ReviewInboxConstants.DEFAULT_SOURCE
-            }
-            return
-        }
         source = arguments?.getString(
             ReviewInboxConstants.PARAM_SOURCE,
             ReviewInboxConstants.DEFAULT_SOURCE
@@ -632,28 +591,6 @@ class ReviewPendingFragment :
         reviewPendingPreference = ReviewPendingPreference(context)
     }
 
-    private fun shouldShowCredibility(): Boolean {
-        return isNewCredibilityEnabled()
-    }
-
-    private fun isNewCredibilityEnabled(): Boolean {
-        getAbTestPlatform()?.let {
-            return it.getString(
-                RollenceKey.EXPERIMENT_NAME_REVIEW_CREDIBILITY,
-                RollenceKey.VARIANT_REVIEW_CREDIBILITY_WITHOUT_BOTTOM_SHEET
-            ) == RollenceKey.VARIANT_REVIEW_CREDIBILITY_WITH_BOTTOM_SHEET
-        }
-        return false
-    }
-
-    private fun getAbTestPlatform(): AbTestPlatform? {
-        return try {
-            RemoteConfigInstance.getInstance().abTestPlatform
-        } catch (e: java.lang.IllegalStateException) {
-            null
-        }
-    }
-
     private fun showCredibilityEmptyState(imageUrl: String, title: String, subtitle: String) {
         (adapter as? ReviewPendingAdapter)?.insertEmptyModel(
             ReviewPendingEmptyUiModel(
@@ -665,12 +602,8 @@ class ReviewPendingFragment :
     }
 
     private fun handleEmptyState(emptyImageUrl: String, labelTitle: String, labelSubtitle: String) {
-        if (shouldShowCredibility()) {
-            showCredibilityEmptyState(emptyImageUrl, labelTitle, labelSubtitle)
-            showList()
-        } else {
-            showEmptyState()
-        }
+        showCredibilityEmptyState(emptyImageUrl, labelTitle, labelSubtitle)
+        showList()
     }
 
     private fun refresh() {

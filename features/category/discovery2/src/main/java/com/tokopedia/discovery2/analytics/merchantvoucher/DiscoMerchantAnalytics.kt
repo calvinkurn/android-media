@@ -11,7 +11,7 @@ import com.tokopedia.mvcwidget.trackers.Tracker.Event.CLICK_SHOP_NAME
 class DiscoMerchantAnalytics(private val discoveryAnalytics: BaseDiscoveryAnalytics,private val componentsItem: ComponentsItem,
                              private val positionInPage:Int,private val couponName:String?,private val componentPosition:Int = -1):DefaultMvcTrackerImpl() {
     var shopID :String = ""
-    override fun userClickEntryPoints(shopId: String,userId: String?, source: Int,isTokomember: Boolean) {
+    override fun userClickEntryPoints(shopId: String,userId: String?, source: Int,isTokomember: Boolean, productId: String) {
         shopID = shopId
         discoveryAnalytics.trackSingleMerchantVoucherClick(componentsItem,shopId,userId,positionInPage,couponName)
     }

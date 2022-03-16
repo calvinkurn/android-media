@@ -75,7 +75,7 @@ object FingerprintDialogHelper {
             }
             setChild(view)
             activity.supportFragmentManager.run {
-                show(this, "reg biom bottomsheet")
+                show(this, "")
             }
         }
     }

@@ -8,6 +8,7 @@ import com.tokopedia.checkout.view.uimodel.CrossSellInfoModel
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.*
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop
 import com.tokopedia.checkout.domain.model.cartshipmentform.*
 import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
@@ -16,10 +17,17 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
+import com.tokopedia.logisticCommon.data.entity.address.UserAddressTokoNow
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.model.ShipProd
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.Button
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.PopUp
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.ButtonData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.*
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.*
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Data
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
@@ -87,6 +95,8 @@ class ShipmentMapper @Inject constructor() {
             if (!isDisableCrossSell) {
                 crossSell = mapCrossSell(shipmentAddressFormDataResponse)
             }
+            popup = mapPopUp(shipmentAddressFormDataResponse.popup)
+            addOnWording = mapAddOnWording(shipmentAddressFormDataResponse.addOnWording)
         }
     }
 
@@ -142,6 +152,7 @@ class ShipmentMapper @Inject constructor() {
                         fulfillmentName = it.tokoCabangInfo.message
                         shipmentInformationData = mapShipmentInformationData(it.shipmentInformation)
                         shop = mapShopData(it.shop)
+                        addOns = mapAddOnsData(it.addOns)
                         shopShipments = mapShopShipments(it.shopShipments)
                         val mapProducts = mapProducts(it, groupAddress, shipmentAddressFormDataResponse, isDisablePPP, shop.shopTypeInfoData)
                         products = mapProducts.first
@@ -241,6 +252,7 @@ class ShipmentMapper @Inject constructor() {
                     if (!isDisablePPP && product.purchaseProtectionPlanDataResponse.protectionAvailable) {
                         purchaseProtectionPlanData = mapPurchaseProtectionData(product.purchaseProtectionPlanDataResponse)
                     }
+                    variantParentId = product.productVariantsResponse.parentId
                     variant = product.variantDescriptionDetail.variantDescription
                     productAlertMessage = product.productAlertMessage
                     productInformation = product.productInformation
@@ -266,6 +278,7 @@ class ShipmentMapper @Inject constructor() {
                         isBundlingItem = false
                         bundleId = "0"
                     }
+                    addOnProduct = mapAddOnsData(product.addOns)
                 }
                 productListResult.add(productResult)
             }
@@ -375,7 +388,80 @@ class ShipmentMapper @Inject constructor() {
             cityName = shop.cityName
             shopAlertMessage = shop.shopAlertMessage
             isTokoNow = shop.isTokoNow
+            shopTickerTitle = shop.shopTickerTitle
+            shopTicker = shop.shopTicker
         }
+    }
+
+    private fun mapAddOnsData(addOns: AddOnsResponse): AddOnsDataModel {
+        return AddOnsDataModel().apply {
+            status = addOns.status
+            addOnsButtonModel = mapAddOnButton(addOns.addOnButton)
+            addOnsBottomSheetModel = mapAddOnBottomSheet(addOns.addOnBottomsheet)
+            addOnsDataItemModelList = mapAddOnListData(addOns.addOnData)
+        }
+    }
+
+    private fun mapAddOnListData(addOnData: List<AddOnsResponse.AddOnDataItem>): MutableList<AddOnDataItemModel> {
+        val listAddOnDataItem = arrayListOf<AddOnDataItemModel>()
+        addOnData.forEach { item ->
+            listAddOnDataItem.add(AddOnDataItemModel().apply {
+                addOnPrice = item.addOnPrice
+                addOnId = item.addOnId
+                addOnMetadata = mapAddOnMetadata(item.addOnMetadata)
+                addOnQty = item.addOnQty
+            })
+        }
+        return listAddOnDataItem
+    }
+
+    private fun mapAddOnMetadata(addOnMetadata: AddOnsResponse.AddOnDataItem.AddOnMetadata): AddOnMetadataItemModel {
+        return AddOnMetadataItemModel(mapAddOnNote(addOnMetadata.addOnNote))
+    }
+
+    private fun mapAddOnNote(addOnNote: AddOnsResponse.AddOnDataItem.AddOnMetadata.AddOnNote): AddOnNoteItemModel {
+        return AddOnNoteItemModel().apply {
+            isCustomNote = addOnNote.isCustomNote
+            to = addOnNote.to
+            from = addOnNote.from
+            notes = addOnNote.notes
+        }
+    }
+
+    private fun mapAddOnButton(addOnButton: AddOnsResponse.AddOnButton): AddOnButtonModel {
+        return AddOnButtonModel().apply {
+            leftIconUrl = addOnButton.leftIconUrl
+            rightIconUrl = addOnButton.rightIconUrl
+            description = addOnButton.description
+            action = addOnButton.action
+            title = addOnButton.title
+        }
+    }
+
+    private fun mapAddOnBottomSheet(addOnBottomsheet: AddOnsResponse.AddOnBottomsheet): AddOnBottomSheetModel {
+        return AddOnBottomSheetModel().apply {
+            headerTitle = addOnBottomsheet.headerTitle
+            description = addOnBottomsheet.description
+            ticker = mapAddOnTicker(addOnBottomsheet.ticker)
+            products = mapAddOnProducts(addOnBottomsheet.products)
+        }
+    }
+
+    private fun mapAddOnTicker(ticker: AddOnsResponse.AddOnBottomsheet.Ticker): AddOnTickerModel {
+        return AddOnTickerModel().apply {
+            text = ticker.text
+        }
+    }
+
+    private fun mapAddOnProducts(products: List<AddOnsResponse.AddOnBottomsheet.ProductsItem>): MutableList<AddOnProductItemModel> {
+        val listAddOnProductItem = arrayListOf<AddOnProductItemModel>()
+        products.forEach { productItem ->
+            listAddOnProductItem.add(AddOnProductItemModel().apply {
+                productImageUrl = productItem.productImageUrl
+                productName = productItem.productName
+            })
+        }
+        return listAddOnProductItem
     }
 
     private fun mapShopTypeInfo(shop: Shop): ShopTypeInfoData {
@@ -444,8 +530,13 @@ class ShipmentMapper @Inject constructor() {
             isCorner = groupAddress.userAddress.isCorner
             state = groupAddress.userAddress.state
             stateDetail = groupAddress.userAddress.stateDetail
-            shopId = groupAddress.userAddress.tokoNow.shopId
-            warehouseId = groupAddress.userAddress.tokoNow.warehouseId
+            tokoNow = UserAddressTokoNow(
+                isModified = groupAddress.userAddress.tokoNow.isModified,
+                shopId = groupAddress.userAddress.tokoNow.shopId,
+                warehouseId = groupAddress.userAddress.tokoNow.warehouseId,
+                warehouses = groupAddress.userAddress.tokoNow.warehouses,
+                serviceType = groupAddress.userAddress.tokoNow.serviceType
+            )
         }
     }
 
@@ -614,6 +705,28 @@ class ShipmentMapper @Inject constructor() {
         }
     }
 
+    private fun mapPopUp(popup: PopUp): PopUpData {
+        return PopUpData().apply {
+            button = mapButton(popup.button)
+            description = popup.description
+            title = popup.title
+        }
+    }
+
+    private fun mapAddOnWording(addOnWording: AddOnWording): AddOnWordingData {
+        return AddOnWordingData().apply {
+            packagingAndGreetingCard = addOnWording.packagingAndGreetingCard
+            onlyGreetingCard = addOnWording.onlyGreetingCard
+            invoiceNotSendToRecipient = addOnWording.invoiceNotSendToRecipient
+        }
+    }
+
+    private fun mapButton(button: Button): ButtonData {
+        return ButtonData().apply {
+            text = button.text
+        }
+    }
+
     private fun mapDonation(shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse): Donation {
         return Donation().apply {
             title = shipmentAddressFormDataResponse.donation.title
@@ -775,8 +888,13 @@ class ShipmentMapper @Inject constructor() {
             provinceName = defaultAddress.provinceName
             receiverName = defaultAddress.receiverName
             status = defaultAddress.status
-            shopId = defaultAddress.tokoNow.shopId
-            warehouseId = defaultAddress.tokoNow.warehouseId
+            tokoNow = UserAddressTokoNow(
+                isModified = defaultAddress.tokoNow.isModified,
+                shopId = defaultAddress.tokoNow.shopId,
+                warehouseId = defaultAddress.tokoNow.warehouseId,
+                warehouses = defaultAddress.tokoNow.warehouses,
+                serviceType = defaultAddress.tokoNow.serviceType
+            )
         }
     }
 

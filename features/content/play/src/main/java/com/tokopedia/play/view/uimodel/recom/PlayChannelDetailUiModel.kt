@@ -10,5 +10,4 @@ data class PlayChannelDetailUiModel(
         val channelInfo: PlayChannelInfoUiModel = PlayChannelInfoUiModel(),
         val rtnConfigInfo: PlayRealTimeNotificationConfig = PlayRealTimeNotificationConfig(),
         val videoInfo: PlayVideoConfigUiModel = PlayVideoConfigUiModel(),
-        val bottomSheetTitle: String = "",
 )

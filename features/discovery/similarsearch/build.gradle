@@ -79,8 +79,8 @@ dependencies {
 //    testImplementation rootProject.ext.testDependencies.junit
 //    androidTestImplementation projectOrAar(rootProject.ext.libraries.commonNetwork)
 //    androidTestImplementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
-//    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
-//    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.authentication
+//    androidTestimplementation projectOrAar(rootProject.ext.libraries.network)
+//    androidTest
 //    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
 }
 

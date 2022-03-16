@@ -29,7 +29,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:closeButtonVisibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tickerType="announcement" />
+
+            <com.tokopedia.unifycomponents.TipsUnify
+                android:id="@+id/reviewDetailTips"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrierReviewDetailEditDisclaimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="reviewDetailTicker,reviewDetailTips" />
 
             <com.tokopedia.unifycomponents.CardUnify
                 android:id="@+id/reviewDetailProductCard"
@@ -38,7 +53,7 @@
                 android:layout_marginStart="@dimen/layout_lvl1"
                 android:layout_marginEnd="@dimen/layout_lvl1"
                 app:card_type="border"
-                app:layout_constraintTop_toBottomOf="@id/reviewDetailTicker">
+                app:layout_constraintTop_toBottomOf="@id/barrierReviewDetailEditDisclaimer">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"

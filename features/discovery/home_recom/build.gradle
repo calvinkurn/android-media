@@ -71,7 +71,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.sortFilter
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
 

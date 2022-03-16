@@ -2,16 +2,20 @@ package com.tokopedia.cart.view
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
-import com.tokopedia.cart.view.uimodel.PromoSummaryData
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
-import com.tokopedia.cart.view.uimodel.*
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
+import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
+import com.tokopedia.cart.view.uimodel.PromoSummaryData
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.wishlist.common.listener.WishListActionListener
-import java.util.*
 
 interface ICartListPresenter {
 
@@ -125,6 +129,10 @@ interface ICartListPresenter {
     fun followShop(shopId: String)
 
     fun doClearAllPromo()
+
+    fun setLocalizingAddressData(lca: LocalCacheModel?)
+
+    fun checkBoAffordability(cartShopHolderData: CartShopHolderData)
 
     companion object {
         const val GET_CART_STATE_DEFAULT = 0

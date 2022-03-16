@@ -6,14 +6,10 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.previewattachment.
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.previewattachment.ProductPreviewViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.previewattachment.VoucherPreviewViewHolder
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableVoucherPreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatProductAttachmentPreviewUiModel
 
 class AttachmentPreviewFactoryImpl : AttachmentPreviewFactory {
-
-    override fun type(sendableProductPreview: SendableProductPreview): Int {
-        return ProductPreviewViewHolder.LAYOUT
-    }
 
     override fun type(productPreviewViewModel: InvoicePreviewUiModel): Int {
         return InvoicePreviewViewHolder.LAYOUT
@@ -21,6 +17,10 @@ class AttachmentPreviewFactoryImpl : AttachmentPreviewFactory {
 
     override fun type(sendableVoucherPreview: SendableVoucherPreview): Int {
         return VoucherPreviewViewHolder.LAYOUT
+    }
+
+    override fun type(product: TopchatProductAttachmentPreviewUiModel): Int {
+        return ProductPreviewViewHolder.LAYOUT
     }
 
     override fun create(

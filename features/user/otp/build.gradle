@@ -45,7 +45,7 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
@@ -54,6 +54,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation projectOrAar(rootProject.ext.libraries.logger)
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7

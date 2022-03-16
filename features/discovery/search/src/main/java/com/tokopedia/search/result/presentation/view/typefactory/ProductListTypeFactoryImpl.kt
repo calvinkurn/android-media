@@ -54,9 +54,11 @@ import com.tokopedia.search.result.presentation.view.listener.SearchNavigationCl
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
-import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
+import com.tokopedia.search.result.product.emptystate.EmptyStateFilterDataView
+import com.tokopedia.search.result.product.emptystate.EmptyStateFilterViewHolder
+import com.tokopedia.search.result.product.emptystate.EmptyStateKeywordDataView
+import com.tokopedia.search.result.product.emptystate.EmptyStateKeywordViewHolder
 import com.tokopedia.search.result.product.emptystate.EmptyStateListener
-import com.tokopedia.search.result.product.emptystate.EmptyStateViewHolder
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListener
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavViewHolder
@@ -122,8 +124,12 @@ class ProductListTypeFactoryImpl(
         }
     }
 
-    override fun type(emptySearchProductDataView: EmptyStateDataView): Int {
-        return EmptyStateViewHolder.LAYOUT
+    override fun type(emptySearchProductDataView: EmptyStateKeywordDataView): Int {
+        return EmptyStateKeywordViewHolder.LAYOUT
+    }
+
+    override fun type(emptySearchFilterDataView: EmptyStateFilterDataView): Int {
+        return EmptyStateFilterViewHolder.LAYOUT
     }
 
     override fun type(globalNavDataView: GlobalNavDataView): Int {
@@ -219,7 +225,8 @@ class ProductListTypeFactoryImpl(
             CpmViewHolder.LAYOUT -> CpmViewHolder(view, bannerAdsListener)
             TickerViewHolder.LAYOUT -> TickerViewHolder(view, tickerListener)
             SuggestionViewHolder.LAYOUT -> SuggestionViewHolder(view, suggestionListener)
-            EmptyStateViewHolder.LAYOUT -> EmptyStateViewHolder(view, emptyStateListener)
+            EmptyStateKeywordViewHolder.LAYOUT -> EmptyStateKeywordViewHolder(view, emptyStateListener)
+            EmptyStateFilterViewHolder.LAYOUT -> EmptyStateFilterViewHolder(view, emptyStateListener)
             GlobalNavViewHolder.LAYOUT -> GlobalNavViewHolder(view, globalNavListener)
             InspirationCarouselViewHolder.LAYOUT ->
                 InspirationCarouselViewHolder(view, inspirationCarouselListener)
