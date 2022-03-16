@@ -76,7 +76,6 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
-import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.PlayWidgetView
@@ -226,8 +225,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import rx.subscriptions.CompositeSubscription
-import java.util.Locale
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -509,6 +507,17 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         reloadCartCounter()
         reloadUserLocationChanged()
         reloadMiniCart()
+        reloadFintechWidget()
+    }
+
+    private fun reloadFintechWidget() {
+        productId?.let {
+            pdpUiUpdater?.updateFintechDataWithProductId(
+                it,
+                viewModel.userSessionInterface.isLoggedIn
+            )
+        }
+
     }
 
     override fun onDestroy() {
@@ -546,27 +555,15 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             }
 
             if (data.isFollowShop) {
+                //vbs can only follow shop that NPL type
                 onSuccessFavoriteShop(true, true)
             }
 
-            val isSelectedTheSame = pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant?.values?.containsAll(data.mapOfSelectedVariantOption?.values
-                    ?: mutableListOf())
-                    ?: false // means selected variant in bottom sheet is the same in pdp
-            val noNeedToUpdateVariant = pdpUiUpdater?.productSingleVariant == null ||
-                    pdpUiUpdater?.productSingleVariant?.isVariantError == true ||
-                    data.mapOfSelectedVariantOption == null ||
-                    isSelectedTheSame
-
-            if (noNeedToUpdateVariant) {
-                if (data.requestCode == ProductDetailCommonConstant.REQUEST_CODE_TRADEIN_PDP) {
-                    onTradeinClickedAfter()
-                }
-                return
-            }
-
             pdpUiUpdater?.updateVariantSelected(data.mapOfSelectedVariantOption)
-            val variantLevelOne = ProductDetailVariantLogic.determineVariant(data.mapOfSelectedVariantOption
-                    ?: mapOf(), viewModel.variantData)
+            val variantLevelOne = ProductDetailVariantLogic.determineVariant(
+                    data.mapOfSelectedVariantOption ?: mapOf(),
+                    viewModel.variantData)
+
             updateVariantDataAndUi(if (variantLevelOne != null) listOf(variantLevelOne) else listOf()) {
                 if (data.requestCode == ProductDetailCommonConstant.REQUEST_CODE_TRADEIN_PDP) {
                     onTradeinClickedAfter()
@@ -1077,7 +1074,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     override fun onChipFilterClicked(recommendationDataModel: ProductRecommendationDataModel, annotationChip: AnnotationChip, position: Int, filterPosition: Int) {
         DynamicProductDetailTracking.Click.eventClickSeeFilterAnnotation(annotationChip.recommendationFilterChip.value)
-        viewModel.getRecommendation(recommendationDataModel, annotationChip, position, filterPosition)
+        val pid = viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
+        viewModel.recommendationChipClicked(recommendationDataModel, annotationChip, pid)
     }
 
     override fun onSeeAllRecomClicked(recommendationWidget: RecommendationWidget, pageName: String, applink: String, componentTrackDataModel: ComponentTrackDataModel) {
@@ -1114,7 +1112,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun loadTopads(pageName: String) {
-        viewModel.loadRecommendation(pageName)
+        val p1 = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
+        viewModel.loadRecommendation(pageName = pageName,
+                productId = p1.basic.productID,
+                isTokoNow = p1.basic.isTokoNow,
+                miniCart = viewModel.p2Data.value?.miniCart)
     }
 
     override fun loadPlayWidget() {
@@ -1682,7 +1684,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
         pdpUiUpdater?.updateVariantData(variantProcessedData)
         productId?.let { productId ->
-            pdpUiUpdater?.updateFintechDataWithProductId(productId)
+            pdpUiUpdater?.updateFintechDataWithProductId(
+                productId,
+                viewModel.userSessionInterface.isLoggedIn
+            )
         }
         pdpUiUpdater?.updateDataP1(context, updatedDynamicProductInfo, enableVideo())
         pdpUiUpdater?.updateNotifyMeAndContent(selectedChild?.productId.toString(), viewModel.p2Data.value?.upcomingCampaigns, boeData.imageURL)
@@ -2101,7 +2106,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             updateProductId()
 
             productId?.let {
-                pdpUiUpdater?.updateFintechData(it,viewModel.variantData,productInfo)
+                pdpUiUpdater?.updateFintechData(
+                    it,
+                    viewModel.variantData,
+                    productInfo,
+                    viewModel.userSessionInterface.isLoggedIn
+                )
             }
             renderVariant(viewModel.variantData, pdpUiUpdater?.productSingleVariant != null)
             val hint = if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) {
@@ -2405,22 +2415,28 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 pdpUiUpdater?.updateVariantError()
                 updateUi()
             } else {
-                val selectedOptionIds = autoSelectVariant(productId)
-                viewModel.processVariant(data, selectedOptionIds, shouldRenderNewVariant)
+                val selectedOptionIds = determineInitialOptionId(productId)
+                viewModel.processVariant(
+                        data,
+                        selectedOptionIds,
+                        shouldRenderNewVariant
+                )
             }
         }
     }
 
-    private fun autoSelectVariant(productId: String?): MutableMap<String, String> {
+    private fun determineInitialOptionId(productId: String?): MutableMap<String, String> {
         viewModel.variantData?.let {
-            //Auto select variant will be execute when there is only 1 child left
-            val selectedChild = it.children.firstOrNull { it.productId == productId ?: "" }
 
             pdpUiUpdater?.productNewVariantDataModel?.apply {
                 mapOfSelectedVariant = AtcVariantMapper.mapVariantIdentifierToHashMap(it)
             }
             pdpUiUpdater?.productSingleVariant?.apply {
-                mapOfSelectedVariant = DynamicProductDetailMapper.determineSelectedOptionIds(it, selectedChild)
+                val selectedChild = it.children.firstOrNull { it.productId == productId ?: "" }
+                mapOfSelectedVariant = DynamicProductDetailMapper.determineSelectedOptionIds(
+                        it,
+                        selectedChild
+                )
             }
         }
         return pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant
