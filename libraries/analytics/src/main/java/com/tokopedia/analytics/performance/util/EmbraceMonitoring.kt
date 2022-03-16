@@ -45,8 +45,4 @@ object EmbraceMonitoring {
     fun logBreadcrumb(message: String) {
         Embrace.getInstance().logBreadcrumb(message)
     }
-
-    fun logError(message: String, properties: Map<String, Any>, allowScreenshot: Boolean = false){
-        Embrace.getInstance().logError(message, properties, allowScreenshot)
-    }
 }

@@ -451,11 +451,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             sendEmbraceBreadCrumbLogger(
                                 actionName,
                                 shopId,
-                                shopName,
-                                errorMessage,
                                 throwable.stackTraceToString()
                             )
-                            sendEmbraceLogError(actionName, errorMessage)
                         }
                         if (!ShopUtil.isExceptionIgnored(throwable)) {
                             ShopUtil.logShopPageP2BuyerFlowAlerting(
@@ -809,27 +806,15 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun sendEmbraceBreadCrumbLogger(
         actionName: String,
         shopId: String,
-        shopName: String,
-        errorMessage: String,
         stackTraceString: String
     ) {
         ShopLogger.logBreadCrumbShopPageHomeTabJourney(
             actionName,
             ShopLogger.mapToShopPageHomeTabJourneyEmbraceBreadCrumbJsonData(
                 shopId,
-                shopName,
-                errorMessage,
                 stackTraceString
             )
         )
-    }
-
-    private fun sendEmbraceLogError(message: String, throwableMessage: String) {
-        ShopLogger.sendEmbraceLogError(message, mapOf(
-            ShopLogger.SHOP_EMBRACE_LOG_SHOP_ID to shopId,
-            ShopLogger.SHOP_EMBRACE_LOG_SHOP_NAME to shopName,
-            ShopLogger.SHOP_EMBRACE_LOG_ERROR_MESSAGE to throwableMessage
-        ))
     }
 
     private fun onSuccessGetShopProductFilterCount(count: Int) {

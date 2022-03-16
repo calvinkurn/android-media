@@ -18,7 +18,7 @@ object ShopLogger {
         "fail get shopPageGetLayoutV2"
     private const val SHOP_EMBRACE_BREADCRUMB_FORMAT = "%s, %s, %s"
     private const val SHOP_EMBRACE_BREADCRUMB_SHOP_PAGE_HOME_TAB_JOURNEY =
-        "shop_page_home_tab_journey"
+        "shop_home_journey"
 
     fun logBreadCrumbShopPageHomeTabJourney(
         actionName: String,
@@ -34,23 +34,12 @@ object ShopLogger {
 
     fun mapToShopPageHomeTabJourneyEmbraceBreadCrumbJsonData(
         shopId: String,
-        shopName: String,
-        errorMessage: String,
         stackTrace: String
     ): ShopPageHomeTabJourneyEmbraceBreadCrumbJsonData {
         return ShopPageHomeTabJourneyEmbraceBreadCrumbJsonData(
             shopId,
-            shopName,
-            errorMessage,
             stackTrace
         )
-    }
-
-    fun sendEmbraceLogError(
-        message: String,
-        properties: Map<String, Any>
-    ) {
-        EmbraceMonitoring.logError(message, properties, true)
     }
 
     private fun sendEmbraceBreadCrumb(eventName: String, action: String, jsonObject: JSONObject) {

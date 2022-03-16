@@ -534,20 +534,8 @@ class NewShopPageFragment :
                         sendEmbraceBreadCrumbLogger(
                             actionName,
                             shopId,
-                            shopDomain.orEmpty(),
-                            errorMessage,
                             throwable.stackTraceToString()
                         )
-                        sendEmbraceLogError(actionName, errorMessage)
-                        ShopUtil.logTimberWarning(
-                            Priority.P2,
-                            "BUYER_FLOW_SHOP_PAGE_TEST",
-                            mapOf("TEST" to "HERE")
-                        )
-//                        ShopUtil.logShopPageP2BuyerFlowAlerting(
-//                            tag = "BUYER_FLOW_SHOP_PAGE_TEST",
-//                            functionName = this::observeLiveData.name
-//                        )
                     }
                     if (!ShopUtil.isExceptionIgnored(throwable)) {
                         ShopUtil.logShopPageP2BuyerFlowAlerting(
@@ -719,27 +707,15 @@ class NewShopPageFragment :
 
     }
 
-    private fun sendEmbraceLogError(message: String, throwableMessage: String) {
-        ShopLogger.sendEmbraceLogError(message, mapOf(
-            ShopLogger.SHOP_EMBRACE_LOG_SHOP_ID to shopId,
-            ShopLogger.SHOP_EMBRACE_LOG_SHOP_NAME to shopDomain.orEmpty(),
-            ShopLogger.SHOP_EMBRACE_LOG_ERROR_MESSAGE to throwableMessage
-        ))
-    }
-
     private fun sendEmbraceBreadCrumbLogger(
         actionName: String,
         shopId: String,
-        shopName: String,
-        errorMessage: String,
         stackTraceString: String
     ) {
         ShopLogger.logBreadCrumbShopPageHomeTabJourney(
             actionName,
             ShopLogger.mapToShopPageHomeTabJourneyEmbraceBreadCrumbJsonData(
                 shopId,
-                shopName,
-                errorMessage,
                 stackTraceString
             )
         )
