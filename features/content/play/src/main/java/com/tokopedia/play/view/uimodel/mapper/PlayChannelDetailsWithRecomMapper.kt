@@ -44,7 +44,6 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                         it.config.realTimeNotif
                     ),
                     videoInfo = mapVideoInfo(it.video),
-                    bottomSheetTitle = it.config.pinnedProductConfig.bottomSheetTitle,
                     emptyBottomSheetInfo = mapEmptyBottomSheet(it)
                 ),
                 partnerInfo = mapPartnerInfo(it.partner, it.config.hasFollowButton),
