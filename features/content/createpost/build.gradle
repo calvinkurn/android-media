@@ -32,7 +32,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.videoplayer)
     implementation projectOrAar(rootProject.ext.libraries.videoUploader)
     implementation projectOrAar(rootProject.ext.features.affiliateCommon)
-    implementation projectOrAar(rootProject.ext.features.attachcommon)
+    implementation projectOrAar(rootProject.ext.features.attachcommon)header
     implementation projectOrAar(rootProject.ext.features.feedComponent)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
@@ -57,10 +57,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.carousel
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.list
-    implementation rootProject.ext.unifyDependencies.header
 
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
-    implementation projectOrAar(rootProject.ext.libraries.linker)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
@@ -69,7 +67,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
-    implementation projectOrAar(rootProject.ext.features.playCommon)
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.multiDex
@@ -89,7 +86,6 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation projectOrAar(rootProject.ext.libraries.baseAdapter)
     implementation 'androidx.fragment:fragment-ktx:1.2.0'
-    implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
 }
 
 project.ext {
