@@ -1,6 +1,8 @@
 package com.tokopedia.vouchercreation.product.create.view.fragment
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,19 +14,25 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.datepicker.LocaleUtils
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking.clickFillCouponProduct
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking.clickSaveInfo
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.*
-import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMaxStartDate
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.ROLLOUT_DATE_THRESHOLD_TIME
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getCouponMaxStartDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinStartDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getToday
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.isBeforeRollout
 import com.tokopedia.vouchercreation.databinding.FragmentMvcCreateCouponDetailBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.view.adapter.CreateCouponTargetAdapter
@@ -63,6 +71,8 @@ class CreateCouponDetailFragment(
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)
@@ -93,6 +103,7 @@ class CreateCouponDetailFragment(
 
         setupToolbar()
         setupRecyclerViewTarget()
+        setupCouponInput()
         setupDateInput()
         setupNextButton()
 
@@ -223,6 +234,24 @@ class CreateCouponDetailFragment(
         }
     }
 
+    private fun setupCouponInput() {
+        val onTextFilledWatcher = object: TextWatcher {
+            var textOld = ""
+
+            override fun afterTextChanged(editable: Editable?) {
+                if (textOld.isEmpty() && editable?.isNotEmpty().orFalse()) onCouponInputChanged()
+            }
+
+            override fun beforeTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                textOld = text.toString()
+            }
+
+            override fun onTextChanged(char: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        }
+        tfuFillCouponCode?.textFieldInput?.addTextChangedListener(onTextFilledWatcher)
+        tfuFillCouponName?.textFieldInput?.addTextChangedListener(onTextFilledWatcher)
+    }
+
     private fun setupNextButton() {
         btnCouponCreateNext?.isButtonEnabled = false
         btnCouponCreateNext?.setOnClickListener {
@@ -231,6 +260,7 @@ class CreateCouponDetailFragment(
             viewModel.validateCouponTarget(promoCode, couponName)
             viewModel.validateCouponPeriod()
             clearErrorMessage()
+            clickSaveInfo(userSession.shopId, viewModel.selectedCouponTargetValue.name)
         }
     }
 
@@ -244,35 +274,101 @@ class CreateCouponDetailFragment(
         tfuCouponDateEnd?.getFirstIcon()?.tintDrawableToBlack()
 
         tfuCouponDateStart?.setFieldOnClickListener {
-            pickStartDate()
+            if (requireContext().isBeforeRollout()) {
+                pickStartDateBeforeRollout()
+            } else {
+                pickStartDate()
+            }
         }
 
         tfuCouponDateEnd?.setFieldOnClickListener {
-            pickEndDate()
+            val startDate = GregorianCalendar().apply {
+                timeInMillis = viewModel.startDateCalendarLiveData.value?.timeInMillis.orZero()
+            }
+            if (requireContext().isBeforeRollout()) {
+                pickEndDateBeforeRollout()
+            } else {
+                pickEndDate(startDate)
+            }
         }
     }
 
     private fun onCouponTargetChanged(target: CouponTargetEnum) {
         viewModel.setSelectedCouponTarget(target)
+        onCouponInputChanged()
     }
 
-    private fun pickStartDate() {
+    private fun onCouponInputChanged() {
+        val couponCode = tfuFillCouponCode?.textFieldInput?.text
+        val couponName = tfuFillCouponName?.textFieldInput?.text
+        if (viewModel.selectedCouponTargetValue == CouponTargetEnum.PRIVATE)  {
+            if (!couponCode.isNullOrEmpty() && !couponName.isNullOrEmpty()) {
+                clickFillCouponProduct(userSession.shopId, viewModel.selectedCouponTargetValue.name)
+            }
+        } else if (viewModel.selectedCouponTargetValue == CouponTargetEnum.PUBLIC) {
+            if (!couponName.isNullOrEmpty()) {
+                clickFillCouponProduct(userSession.shopId, viewModel.selectedCouponTargetValue.name)
+            }
+        }
+    }
+
+    private fun pickStartDateBeforeRollout() {
+        val thresholdDate = requireContext().getToday().apply { timeInMillis = ROLLOUT_DATE_THRESHOLD_TIME }
+        val selectedDate = viewModel.startDateCalendarLiveData.value ?: thresholdDate
         val title = getString(R.string.mvc_start_date_title)
         val info = getString(R.string.mvc_create_coupon_date_desc).parseAsHtml()
-        val minDate = requireContext().getMinStartDate()
-        val defaultDate = viewModel.startDateCalendarLiveData.value ?: GregorianCalendar()
-        val maxDate = requireContext().getMaxStartDate()
+        val minDate = thresholdDate
+        val maxDate = requireContext().getToday().apply  {
+            timeInMillis = ROLLOUT_DATE_THRESHOLD_TIME
+            add(Calendar.DATE, DateTimeUtils.EXTRA_DAYS_COUPON)
+        }
+        val defaultDate = if (selectedDate.timeInMillis < ROLLOUT_DATE_THRESHOLD_TIME) {
+            thresholdDate
+        } else {
+            selectedDate
+        }
         getStartDateTimePicker(title, info, minDate, defaultDate, maxDate) {
             viewModel.setStartDateCalendar(it)
         }
     }
 
-    private fun pickEndDate() {
+    private fun pickEndDateBeforeRollout() {
         val title = getString(R.string.mvc_start_date_title)
         val info = getString(R.string.mvc_create_coupon_date_desc).parseAsHtml()
-        val minDate = DateTimeUtils.getMinEndDate(requireContext().getToday()) ?: GregorianCalendar()
+        val thresholdDate = requireContext().getToday().apply { timeInMillis = ROLLOUT_DATE_THRESHOLD_TIME }
+        val selectedDate = viewModel.endDateCalendarLiveData.value ?: thresholdDate
+        val startDate = GregorianCalendar().apply {
+            timeInMillis = viewModel.startDateCalendarLiveData.value?.timeInMillis.orZero()
+        }
+        val minDate = DateTimeUtils.getMinEndDate(startDate) ?: thresholdDate
+        val maxDate = DateTimeUtils.getCouponMaxEndDate(startDate)
+        val defaultDate = if (selectedDate.timeInMillis < ROLLOUT_DATE_THRESHOLD_TIME) {
+            thresholdDate
+        } else {
+            selectedDate
+        }
+        getStartDateTimePicker(title, info, minDate, defaultDate, maxDate) {
+            viewModel.setEndDateCalendar(it)
+        }
+    }
+
+    private fun pickStartDate() {
+        val title = getString(R.string.mvc_start_date_title)
+        val info = getString(R.string.mvc_create_coupon_date_desc).parseAsHtml()
+        val defaultDate = viewModel.startDateCalendarLiveData.value ?: GregorianCalendar()
+        val minDate = requireContext().getMinStartDate()
+        val maxDate = requireContext().getCouponMaxStartDate()
+        getStartDateTimePicker(title, info, minDate, defaultDate, maxDate) {
+            viewModel.setStartDateCalendar(it)
+        }
+    }
+
+    private fun pickEndDate(startDate: GregorianCalendar) {
+        val title = getString(R.string.mvc_start_date_title)
+        val info = getString(R.string.mvc_create_coupon_date_desc).parseAsHtml()
         val defaultDate = viewModel.endDateCalendarLiveData.value ?: GregorianCalendar()
-        val maxDate = DateTimeUtils.getMaxEndDate(requireContext().getToday()) ?: GregorianCalendar()
+        val minDate = DateTimeUtils.getMinEndDate(startDate) ?: GregorianCalendar()
+        val maxDate = DateTimeUtils.getCouponMaxEndDate(startDate)
         getStartDateTimePicker(title, info, minDate, defaultDate, maxDate) {
             viewModel.setEndDateCalendar(it)
         }

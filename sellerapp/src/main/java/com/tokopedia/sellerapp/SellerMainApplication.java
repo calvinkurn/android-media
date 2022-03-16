@@ -11,14 +11,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.work.Configuration;
 
-import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
-import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
-
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
-import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
@@ -29,6 +25,8 @@ import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.encryption.security.AESEncryptorECB;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
+import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
@@ -36,6 +34,7 @@ import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.media.common.Loader;
 import com.tokopedia.media.common.common.MediaLoaderActivityLifecycle;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -337,7 +336,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
             map.put("type", "init");
             map.put("error", Log.getStackTraceString(throwable));
             ServerLogger.log(Priority.P1, "WORK_MANAGER", map);
-            throw new RuntimeException("WorkManager failed to initialize", throwable);
         }).build();
     }
 }

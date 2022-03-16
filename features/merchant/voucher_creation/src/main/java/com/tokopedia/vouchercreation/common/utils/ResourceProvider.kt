@@ -15,4 +15,15 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context : Con
         return context.getString(R.string.error_message_invalid_cashback_minimum_purchase_nominal)
     }
 
+    fun getFormattedSku(): String {
+        return context.getString(R.string.mvc_formatted_product_sku)
+    }
+
+    fun getFormattedProductPrice(): String {
+        return context.getString(R.string.mvc_formatted_product_price)
+    }
+
+    fun getFormattedProductStatistic(): String {
+        return context.getString(R.string.mvc_formatted_product_statistic)
+    }
 }

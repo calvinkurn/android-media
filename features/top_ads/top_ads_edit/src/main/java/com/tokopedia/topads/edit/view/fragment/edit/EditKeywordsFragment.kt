@@ -393,8 +393,10 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(pos))
         sheet.show(childFragmentManager, "")
         sheet.onSaved = { bid, position ->
-            (adapter.items[position] as EditKeywordItemViewModel).data.priceBid = bid
-            adapter.notifyItemChanged(position)
+            (adapter.items.getOrNull(position) as? EditKeywordItemViewModel)?.let {
+                it.data.priceBid = bid
+                adapter.notifyItemChanged(position)
+            }
         }
     }
 
@@ -648,10 +650,14 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         info1.setImageDrawable(getIconUnifyDrawable(view.context, IconUnify.INFORMATION))
         info2.setImageDrawable(getIconUnifyDrawable(view.context, IconUnify.INFORMATION))
         info1.setOnClickListener {
-            InfoBottomSheet.newInstance().show(childFragmentManager, 0)
+            InfoBottomSheet(
+                InfoBottomSheet.TYPE_DASAR, sharedViewModel.getIsWhiteListedUser()
+            ).show(childFragmentManager)
         }
         info2.setOnClickListener {
-            InfoBottomSheet.newInstance().show(childFragmentManager, 1)
+            InfoBottomSheet(
+                InfoBottomSheet.TYPE_KATA_KUNCI, sharedViewModel.getIsWhiteListedUser()
+            ).show(childFragmentManager)
         }
         addKeyword.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(

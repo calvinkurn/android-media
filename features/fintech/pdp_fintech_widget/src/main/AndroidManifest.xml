@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.pdp_fintech">
+
+    <application>
+
+        <activity android:name="com.tokopedia.pdp.fintech.view.activity.ActivationBottomSheetActivity"
+            android:theme="@style/pdp_fintech_widget_Widget.Theme.AppCompat.Translucent"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+            </intent-filter>
+
+        </activity>
+    </application>
+
+</manifest>

@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.vouchercreation.databinding.ItemProductListLayoutBinding
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
+import com.tokopedia.vouchercreation.product.list.view.model.VariantUiModel
 import com.tokopedia.vouchercreation.product.list.view.viewholder.ProductItemViewHolder
 import com.tokopedia.vouchercreation.product.list.view.viewholder.ProductItemViewHolder.OnProductItemClickListener
 
@@ -14,7 +15,8 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
     : RecyclerView.Adapter<ProductItemViewHolder>(), OnProductItemClickListener {
 
     interface OnProductItemClickListener {
-        fun onProductCheckBoxClicked(isSelected: Boolean)
+        fun onProductCheckBoxClicked(isSelected: Boolean, uiModel: ProductUiModel)
+        fun onRemoveButtonClicked()
     }
 
     private var productUiModelList: MutableList<ProductUiModel> = mutableListOf()
@@ -32,6 +34,10 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
         return productUiModelList.size
     }
 
+    fun getProductList(): MutableList<ProductUiModel> {
+        return productUiModelList
+    }
+
     fun getSelectedProducts(): List<ProductUiModel> {
         return productUiModelList.filter {
             it.isSelected
@@ -45,9 +51,15 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
 
     fun updateAllProductSelections(isSelectAll: Boolean) {
         this.productUiModelList.forEach {
-            if (!it.isError) {
+            if (!it.isError && it.isSelectable) {
                 it.isSelectAll = isSelectAll
                 it.isSelected = isSelectAll
+                it.variants.forEach { variantUiModel ->
+                    if (!variantUiModel.isError) {
+                        variantUiModel.isSelectAll = isSelectAll
+                        variantUiModel.isSelected = isSelectAll
+                    }
+                }
             }
         }
         notifyDataSetChanged()
@@ -68,11 +80,20 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
         }
     }
 
+    fun enableAllSelectedProducts() {
+        this.productUiModelList.forEach {
+            val isSelected = it.isSelected
+            if (isSelected)  {
+                it.isError = false
+            }
+        }
+    }
+
     fun enableAllProductSelections() {
         this.productUiModelList.forEach {
-            it.isError = false
+            if (it.errorMessage.isEmpty()) it.isError = false
             it.variants.forEach { variantUiModel ->
-                variantUiModel.isError = false
+                if (variantUiModel.errorMessage.isEmpty()) variantUiModel.isError = false
             }
         }
     }
@@ -100,21 +121,37 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
     }
 
     override fun onProductCheckBoxClicked(isSelected: Boolean, dataSetPosition: Int) {
-        productUiModelList[dataSetPosition].isSelected = isSelected
-        listener.onProductCheckBoxClicked(isSelected)
+        val uiModel = productUiModelList[dataSetPosition]
+        uiModel.isSelected = isSelected
+        listener.onProductCheckBoxClicked(isSelected, uiModel)
     }
 
     override fun onRemoveProductButtonClicked(adapterPosition: Int, dataSetPosition: Int) {
-        productUiModelList.removeAt(dataSetPosition)
-        notifyItemRemoved(adapterPosition)
+        try {
+            productUiModelList.removeAt(dataSetPosition)
+            notifyDataSetChanged()
+            listener.onRemoveButtonClicked()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun onProductVariantCheckBoxClicked(isSelected: Boolean, dataSetPosition: Int, variantIndex: Int): Int {
-        productUiModelList[dataSetPosition].variants[variantIndex].isSelected = isSelected
-        return productUiModelList[dataSetPosition].getSelectedVariants().size
+        var selectedVariantSize = 0
+        try {
+            productUiModelList[dataSetPosition].variants[variantIndex].isSelected = isSelected
+            selectedVariantSize = productUiModelList[dataSetPosition].getSelectedVariants().size
+        }  catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return selectedVariantSize
     }
 
     override fun onProductVariantHeaderClicked(isExpanded: Boolean, dataSetPosition: Int) {
         productUiModelList[dataSetPosition].isVariantHeaderExpanded = isExpanded
+    }
+
+    override fun onProductVariantRemoved(variantList: List<VariantUiModel>, dataSetPosition: Int) {
+        productUiModelList[dataSetPosition].variants = variantList
     }
 }

@@ -34,5 +34,16 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.WhiteUnify" />
+        <activity
+            android:name="com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/Theme.WhiteUnify" />
+        <activity
+            android:name="com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoFavoriteNumberActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false" />
     </application>
 </manifest>

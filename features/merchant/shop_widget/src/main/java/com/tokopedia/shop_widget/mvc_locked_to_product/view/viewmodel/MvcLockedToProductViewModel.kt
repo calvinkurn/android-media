@@ -11,8 +11,6 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -76,12 +74,16 @@ class MvcLockedToProductViewModel @Inject constructor(
         get() = _miniCartSimplifiedData
     private val _miniCartSimplifiedData = MutableLiveData<MiniCartSimplifiedData>()
 
-    fun getMvcLockedToProductData(mvcLockedToProductRequestUiModel: MvcLockedToProductRequestUiModel) {
+    fun getMvcLockedToProductData(
+        mvcLockedToProductRequestUiModel: MvcLockedToProductRequestUiModel,
+        isSellerView: Boolean
+    ) {
         launchCatchError(dispatcherProvider.io, block = {
             val response = getMvcLockToProductResponse(mvcLockedToProductRequestUiModel)
             val uiModel = MvcLockedToProductMapper.mapToMvcLockedToProductLayoutUiModel(
                 response.shopPageMVCProductLock,
-                mvcLockedToProductRequestUiModel.selectedSortData
+                mvcLockedToProductRequestUiModel.selectedSortData,
+                isSellerView
             )
             _mvcLockToProductLiveData.postValue(Success(uiModel))
             _nextPageLiveData.postValue(response.shopPageMVCProductLock.nextPage)
@@ -90,11 +92,15 @@ class MvcLockedToProductViewModel @Inject constructor(
         }
     }
 
-    fun getProductListData(mvcLockedToProductRequestUiModel: MvcLockedToProductRequestUiModel) {
+    fun getProductListData(
+        mvcLockedToProductRequestUiModel: MvcLockedToProductRequestUiModel,
+        isSellerView: Boolean
+    ) {
         launchCatchError(dispatcherProvider.io, block = {
             val response = getMvcLockToProductResponse(mvcLockedToProductRequestUiModel)
             val uiModel = MvcLockedToProductMapper.mapToMvcLockedToProductProductListUiModel(
-                response.shopPageMVCProductLock.productList
+                response.shopPageMVCProductLock.productList,
+                isSellerView
             )
             _productListData.postValue(Success(uiModel))
             _nextPageLiveData.postValue(response.shopPageMVCProductLock.nextPage)

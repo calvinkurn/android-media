@@ -1,5 +1,8 @@
 package com.tokopedia.sellerhome.adminrestriction.view.activity
 
+import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -18,6 +21,7 @@ class AdminRestrictionActivity: BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sah_transparent_base)
+        setOrientation()
     }
 
     override fun onStart() {
@@ -30,6 +34,13 @@ class AdminRestrictionActivity: BaseSimpleActivity() {
             finish()
         }
         bottomSheet.show(supportFragmentManager)
+    }
+
+    @SuppressLint("SourceLockedOrientationActivity")
+    private fun setOrientation() {
+        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
     }
 
 }
