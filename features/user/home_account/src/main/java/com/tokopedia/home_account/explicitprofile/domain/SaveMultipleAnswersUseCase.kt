@@ -16,9 +16,7 @@ class SaveMultipleAnswersUseCase @Inject constructor(
     private val repository: MultiRequestGraphqlUseCase
 ) : CoroutineUseCase<MutableList<SaveMultipleAnswersParam>, ExplicitProfileSaveMultiAnswers>(Dispatchers.IO) {
 
-    override suspend fun execute(
-        params: MutableList<SaveMultipleAnswersParam>
-    ): ExplicitProfileSaveMultiAnswers {
+    override suspend fun execute(params: MutableList<SaveMultipleAnswersParam>): ExplicitProfileSaveMultiAnswers {
         repository.clearRequest()
         repository.clearCache()
         repository.setCacheStrategy(
