@@ -55,16 +55,16 @@ class AccountHeaderViewHolder(itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.holder_account_header
-        const val TEXT_LOGIN_AS = "Masuk Sebagai %s"
         private const val GREETINGS_5_10 = "Pagi! Udah sarapan?"
         private const val GREETINGS_10_16 =  "Semangat jalani hari ini!"
         private const val GREETINGS_16_21 =  "Nyantai sambil belanja, yuk~"
         private const val GREETINGS_22_5 =  " Lagi cari apa nih kamu?"
-        private const val GREETINGS_DEFAULT = "Hai Toppers"
 
         private const val HOURS_0 = 0
         private const val HOURS_5 = 5
+        private const val HOURS_9 = 9
         private const val HOURS_10 = 10
+        private const val HOURS_15 = 15
         private const val HOURS_16 = 16
         private const val HOURS_21 = 21
         private const val HOURS_22 = 22
@@ -404,12 +404,10 @@ class AccountHeaderViewHolder(itemView: View,
 
     private fun getCurrentGreetings() : String {
         return when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-            in HOURS_5..HOURS_10 -> GREETINGS_5_10
-            in HOURS_10..HOURS_16 -> GREETINGS_10_16
+            in HOURS_5..HOURS_9 -> GREETINGS_5_10
+            in HOURS_10..HOURS_15 -> GREETINGS_10_16
             in HOURS_16..HOURS_21 -> GREETINGS_16_21
-            in HOURS_22..HOURS_23 -> GREETINGS_22_5
-            in HOURS_0..HOURS_5 -> GREETINGS_22_5
-            else -> GREETINGS_DEFAULT
+            else -> GREETINGS_22_5
         }
     }
 
