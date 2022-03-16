@@ -131,6 +131,10 @@
     <string name="tokopedianow_search_category_title_two_hours">Belanja 2 Jam Tiba</string>
     <string name="tokopedianow_search_category_subtitle">Tiba dalam %1$s</string>
 
+    <string name="tokopedianow_category_share_main_text">Belanja %1$s di Tokopedia NOW! sampai dalam 2 jam. Produknya pasti tersedia, lho!</string>
+    <string name="tokopedianow_category_share_title">Jual %1$s Langsung Kirim Sekarang | Tokopedia Now</string>
+    <string name="tokopedianow_category_share_desc">Belanja %1$s terlengkap dan berkualitas 🛒✨. Dapatkan Promo Khusus ✅, Bebas Ongkir ✅ dan 2 jam sampai tujuan ✈️ Hanya di Tokopedia Now</string>
+
     <string name="tokopedianow_15m_empty_state_title">Tunggu Tokopedia NOW! 15 menit tiba tersedia di lokasimu</string>
     <string name="tokopedianow_15m_empty_state_desc">Nantikan kabar dari kami, ya. Saat ini, kamu bisa nikmati layanan 2 jam tiba dulu.</string>
     <string name="tokopedianow_15m_empty_state_primary_btn">Belanja 2 Jam Tiba</string>

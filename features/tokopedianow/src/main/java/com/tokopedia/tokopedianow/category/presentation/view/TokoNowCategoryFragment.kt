@@ -1,7 +1,10 @@
 package com.tokopedia.tokopedianow.category.presentation.view
 
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -10,10 +13,19 @@ import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareData
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_ATC_CLP_PRODUCT_TOKONOW
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_CLP_PRODUCT_TOKONOW
@@ -26,6 +38,7 @@ import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.RECOM
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.RECOM_LIST_PAGE_NON_OOC
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC
 import com.tokopedia.tokopedianow.category.di.CategoryComponent
+import com.tokopedia.tokopedianow.category.domain.model.CategorySharingModel
 import com.tokopedia.tokopedianow.category.domain.model.CategoryTrackerModel
 import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleListener
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemDataView
@@ -35,19 +48,32 @@ import com.tokopedia.tokopedianow.category.utils.RECOM_QUERY_PARAM_CATEGORY_ID
 import com.tokopedia.tokopedianow.category.utils.RECOM_QUERY_PARAM_REF
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
+import com.tokopedia.tokopedianow.home.domain.model.ShareHomeTokonow
+import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
+import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import javax.inject.Inject
 
 class TokoNowCategoryFragment:
         BaseSearchCategoryFragment(),
         CategoryAisleListener,
-        TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener {
+        ScreenShotListener,
+        TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener,
+        ShareBottomsheetListener {
 
     companion object {
+        const val PAGE_SHARE_NAME = "Tokonow"
+        const val SHARE = "share"
+
         @JvmStatic
         fun create(): TokoNowCategoryFragment {
             return TokoNowCategoryFragment()
@@ -57,6 +83,9 @@ class TokoNowCategoryFragment:
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var tokoNowCategoryViewModel: TokoNowCategoryViewModel
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+    private var screenshotDetector : ScreenshotDetector? = null
+    private var categorySharingModel: CategorySharingModel? = null
 
     override val toolbarPageName = "TokoNow Category"
 
@@ -66,11 +95,39 @@ class TokoNowCategoryFragment:
         initViewModel()
     }
 
+    override fun onResume() {
+        super.onResume()
+        screenshotDetector?.start()
+    }
+
+    override fun onStop() {
+        UniversalShareBottomSheet.clearState(screenshotDetector)
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        UniversalShareBottomSheet.clearState(screenshotDetector)
+        super.onDestroy()
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        context?.let {
+            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this)
+        }
+    }
+
     private fun initViewModel() {
         activity?.let {
             tokoNowCategoryViewModel = ViewModelProvider(it, viewModelFactory).get(TokoNowCategoryViewModel::class.java)
         }
     }
+
+    override fun createNavToolbarIconBuilder(): IconBuilder = IconBuilder()
+        .addShare()
+        .addCart()
+        .addGlobalNav()
 
     override val isDisableSearchBarDefaultGtmTracker: Boolean
         get() = true
@@ -120,6 +177,7 @@ class TokoNowCategoryFragment:
         super.observeViewModel()
 
         getViewModel().openScreenTrackingUrlLiveData.observe(this::sendOpenScreenTracking)
+        getViewModel().sharingLiveData.observe(this::setCategorySharingModel)
     }
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
@@ -142,6 +200,122 @@ class TokoNowCategoryFragment:
                 getViewModel().categoryIdTracking,
         )
     }
+
+    override fun screenShotTaken() {
+        showUniversalShareBottomSheet(shareHomeTokonow(true))
+    }
+
+    override fun onShareOptionClicked(shareModel: ShareModel) {
+        val shareHomeTokonow = shareHomeTokonow()
+        val linkerShareData = linkerDataMapper(shareHomeTokonow)
+        linkerShareData.linkerData.apply {
+            feature = shareModel.feature
+            channel = shareModel.channel
+            campaign = shareModel.campaign
+            isThrowOnError = false
+            if(shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
+                ogImageUrl = shareModel.ogImgUrl
+            }
+        }
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
+                override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                    val shareString = String.format("%s %s", shareHomeTokonow.sharingText, linkerShareData?.shareUri)
+                    SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
+                    universalShareBottomSheet?.dismiss()
+                }
+
+                override fun onError(linkerError: LinkerError?) {}
+            })
+        )
+    }
+
+    private fun linkerDataMapper(shareHomeTokonow: ShareHomeTokonow?): LinkerShareData {
+        val linkerData = LinkerData()
+        linkerData.name = shareHomeTokonow?.specificPageName ?: ""
+        linkerData.uri = shareHomeTokonow?.sharingUrl ?: ""
+        linkerData.description = shareHomeTokonow?.specificPageDescription ?: ""
+        linkerData.isThrowOnError = true
+        val linkerShareData = LinkerShareData()
+        linkerShareData.linkerData = linkerData
+        return linkerShareData
+    }
+
+    private fun shareHomeTokonow(isScreenShot: Boolean = false): ShareHomeTokonow{
+        return ShareHomeTokonow(
+            resources.getString(R.string.tokopedianow_category_share_main_text, categorySharingModel?.name.orEmpty()),
+            categorySharingModel?.url.orEmpty(),
+            userSession.userId,
+            "category",
+            if(isScreenShot) resources.getString(R.string.tokopedianow_home_share_thumbnail_title_ss)
+            else resources.getString(R.string.tokopedianow_home_share_thumbnail_title),
+            TokoNowHomeFragment.THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
+            TokoNowHomeFragment.THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
+            resources.getString(R.string.tokopedianow_category_share_title, categorySharingModel?.name.orEmpty()),
+            resources.getString(R.string.tokopedianow_category_share_desc, categorySharingModel?.name.orEmpty()),
+        )
+    }
+
+    override fun onCloseOptionClicked() {
+        //you will use this to implement the GA events
+    }
+
+    override fun onNavToolbarShareClicked() {
+        shareClicked(shareHomeTokonow())
+    }
+
+    private fun shareClicked(shareHomeTokonow: ShareHomeTokonow?){
+        if(UniversalShareBottomSheet.isCustomSharingEnabled(context)){
+            showUniversalShareBottomSheet(shareHomeTokonow)
+        }
+        else {
+            LinkerManager.getInstance().executeShareRequest(
+                LinkerUtils.createShareRequest(0,
+                    linkerDataMapper(shareHomeTokonow), object : ShareCallback {
+                        override fun urlCreated(linkerShareData: LinkerShareResult) {
+                            if (linkerShareData.url != null) {
+                                shareData(
+                                    activity,
+                                    String.format("%s %s", shareHomeTokonow?.sharingText, linkerShareData.shareUri),
+                                    linkerShareData.url
+                                )
+                            }
+                        }
+
+                        override fun onError(linkerError: LinkerError) {
+                            shareData(activity, shareHomeTokonow?.sharingText ?: "", shareHomeTokonow?.sharingUrl ?: "")
+                        }
+                    })
+            )
+        }
+    }
+
+    private fun shareData(context: Context?, shareTxt: String?, pageUri: String?) {
+        val share = Intent(Intent.ACTION_SEND)
+        share.type = "text/plain"
+        share.putExtra(Intent.EXTRA_TEXT, shareTxt + "\n" + pageUri)
+        context?.startActivity(Intent.createChooser(share, shareTxt))
+    }
+
+    private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareHomeTokonow?) {
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(this@TokoNowCategoryFragment)
+            setTokonowUtmCampaignData(
+                pageName = PAGE_SHARE_NAME,
+                userId = shareHomeTokonow?.userId.orEmpty(),
+                pageType = shareHomeTokonow?.pageType.orEmpty(),
+                feature = SHARE
+            )
+            setMetaData(
+                tnTitle = shareHomeTokonow?.thumbNailTitle.orEmpty(),
+                tnImage = shareHomeTokonow?.thumbNailImage.orEmpty(),
+            )
+            //set the Image Url of the Image that represents page
+            setOgImageUrl(imgUrl = shareHomeTokonow?.ogImageUrl.orEmpty())
+        }
+        universalShareBottomSheet?.show(childFragmentManager, this, screenshotDetector)
+    }
+
 
     override fun onProductClick(productItemDataView: ProductItemDataView) {
         CategoryTracking.sendProductClickEvent(
@@ -357,6 +531,10 @@ class TokoNowCategoryFragment:
         val categorySlug = uri.lastPathSegment ?: return
 
         CategoryTracking.sendOpenScreenTracking(categorySlug, model.id, model.name, userSession.isLoggedIn)
+    }
+
+    private fun setCategorySharingModel(model: CategorySharingModel) {
+        categorySharingModel = model
     }
 
     override fun sendOOCOpenScreenTracking(isTracked: Boolean) {

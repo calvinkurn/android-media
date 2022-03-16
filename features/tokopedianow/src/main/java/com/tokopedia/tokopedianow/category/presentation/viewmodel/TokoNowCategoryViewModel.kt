@@ -15,6 +15,7 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
+import com.tokopedia.tokopedianow.category.domain.model.CategorySharingModel
 import com.tokopedia.tokopedianow.category.domain.model.CategoryTrackerModel
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail.NavigationItem
@@ -30,7 +31,6 @@ import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryListUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper
@@ -88,8 +88,11 @@ class TokoNowCategoryViewModel @Inject constructor (
         userSession,
 ) {
 
-    protected val openScreenTrackingUrlMutableLiveData = SingleLiveEvent<CategoryTrackerModel>()
+    private val openScreenTrackingUrlMutableLiveData = SingleLiveEvent<CategoryTrackerModel>()
     val openScreenTrackingUrlLiveData: LiveData<CategoryTrackerModel> = openScreenTrackingUrlMutableLiveData
+
+    private val sharingMutableLiveData = SingleLiveEvent<CategorySharingModel>()
+    val sharingLiveData: LiveData<CategorySharingModel> = sharingMutableLiveData
 
     val categoryIdTracking: String
 
@@ -157,6 +160,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         onGetFirstPageSuccess(headerDataView, contentDataView, searchProduct)
 
         sendOpenScreenTrackingUrl(categoryModel)
+        setSharingModel(categoryModel)
     }
 
     override fun createTitleDataView(headerDataView: HeaderDataView): TitleDataView {
@@ -279,6 +283,13 @@ class TokoNowCategoryViewModel @Inject constructor (
     private fun sendOpenScreenTrackingUrl(categoryModel: CategoryModel) {
         openScreenTrackingUrlMutableLiveData.value = CategoryTrackerModel(
             id = categoryModel.categoryDetail.data.id,
+            name = categoryModel.categoryDetail.data.name,
+            url = categoryModel.categoryDetail.data.url
+        )
+    }
+
+    private fun setSharingModel(categoryModel: CategoryModel) {
+        sharingMutableLiveData.value = CategorySharingModel(
             name = categoryModel.categoryDetail.data.name,
             url = categoryModel.categoryDetail.data.url
         )
