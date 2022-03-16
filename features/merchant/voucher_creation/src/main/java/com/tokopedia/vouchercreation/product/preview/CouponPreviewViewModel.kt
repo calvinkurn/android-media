@@ -2,8 +2,6 @@ package com.tokopedia.vouchercreation.product.preview
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -35,10 +33,6 @@ class CouponPreviewViewModel @Inject constructor(
     private val getCouponDetailUseCase: GetCouponFacadeUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-    companion object {
-        private const val NUMBER_OF_MOST_SOLD_PRODUCT_TO_TAKE = 3
-    }
-
     private val _areInputValid = SingleLiveEvent<Boolean>()
     val areInputValid: LiveData<Boolean>
         get() = _areInputValid
@@ -62,16 +56,10 @@ class CouponPreviewViewModel @Inject constructor(
     var selectedWarehouseId:String = ""
 
     fun validateCoupon(
-        pageMode : CouponPreviewFragment.Mode,
-        couponSettings: CouponSettings?,
         couponInformation: CouponInformation?,
+        couponSettings: CouponSettings?,
         couponProducts: List<CouponProduct>
     ) {
-        if (isUpdateMode(pageMode) || isDuplicateMode(pageMode)) {
-            _areInputValid.value = true
-            return
-        }
-
         if (couponSettings == null) {
             _areInputValid.value = false
             return
@@ -90,12 +78,33 @@ class CouponPreviewViewModel @Inject constructor(
         _areInputValid.value = true
     }
 
+    fun areRequiredFieldsFilled(
+        couponSettings: CouponSettings?,
+        couponInformation: CouponInformation?,
+        couponProducts: List<CouponProduct>
+    ): Boolean {
+        if (couponSettings == null) {
+            return false
+        }
+
+        if (couponInformation == null) {
+            return false
+        }
+
+        if (couponProducts.isEmpty()) {
+            return false
+        }
+
+        return true
+    }
+
 
     fun createCoupon(
         isCreateMode: Boolean,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
-        couponProducts: List<CouponProduct>
+        allProducts: List<CouponProduct>,
+        parentProductIds: List<Long>
     ) {
         launchCatchError(
             block = {
@@ -106,7 +115,8 @@ class CouponPreviewViewModel @Inject constructor(
                         ImageGeneratorConstant.IMAGE_TEMPLATE_COUPON_PRODUCT_SOURCE_ID,
                         couponInformation,
                         couponSettings,
-                        couponProducts
+                        allProducts,
+                        parentProductIds
                     )
                 }
                 _createCoupon.setValue(Success(result))
@@ -121,7 +131,8 @@ class CouponPreviewViewModel @Inject constructor(
         couponId: Long,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
-        couponProducts: List<CouponProduct>
+        allProducts: List<CouponProduct>,
+        parentProductIds: List<Long>
     ) {
         launchCatchError(
             block = {
@@ -132,7 +143,8 @@ class CouponPreviewViewModel @Inject constructor(
                         couponId,
                         couponInformation,
                         couponSettings,
-                        couponProducts
+                        allProducts,
+                        parentProductIds
                     )
                 }
                 _updateCouponResult.value = Success(result)
@@ -141,21 +153,6 @@ class CouponPreviewViewModel @Inject constructor(
                 _updateCouponResult.value = Fail(it)
             }
         )
-    }
-
-
-    fun findMostSoldProductImageUrls(couponProducts: List<CouponProduct>): ArrayList<String> {
-        val mostSoldProductsImageUrls = couponProducts.sortedByDescending { it.soldCount }
-            .take(NUMBER_OF_MOST_SOLD_PRODUCT_TO_TAKE)
-            .map { it.imageUrl }
-
-        val imageUrls = arrayListOf<String>()
-
-        mostSoldProductsImageUrls.forEach { imageUrl ->
-            imageUrls.add(imageUrl)
-        }
-
-        return imageUrls
     }
 
     fun isCouponInformationValid(couponInformation: CouponInformation): Boolean {
