@@ -314,6 +314,24 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         selectedFullProduct = SelectedProduct()
     }
 
+    fun isFilterChanged(filterTagComponents: List<TelcoFilterTagComponent>): Boolean {
+        if (filterTagComponents.size != filterData.size) return true
+
+        var isFilterChanged = false
+        run lit@ {
+            filterTagComponents.forEachIndexed { index, filterTagComponent ->
+                filterTagComponent.filterTagDataCollections.forEachIndexed { indexTag, filterTagDataCollection ->
+                    if (filterTagDataCollection.isSelected != filterData.get(index).filterTagDataCollections.get(indexTag).isSelected){
+                        isFilterChanged = true
+                        return@lit
+                    }
+                }
+            }
+        }
+
+        return isFilterChanged
+    }
+
     fun updateFilterData(filterTagComponents: List<TelcoFilterTagComponent>) {
         filterData = filterTagComponents
         updateFilterData()

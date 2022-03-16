@@ -1352,17 +1352,19 @@ class DigitalPDPDataPlanFragment :
         filterTagComponents: List<TelcoFilterTagComponent>,
         initialSelectedCounter: Int
     ) {
-        viewModel.updateFilterData(filterTagComponents)
-        onSuccessSortFilter(initialSelectedCounter)
-        viewModel.run {
-            cancelCatalogProductJob()
-            setRechargeCatalogInputMultiTabLoading()
-            getRechargeCatalogInputMultiTab(
-                menuId,
-                operator.id,
-                binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "",
-                false
-            )
+        if (viewModel.isFilterChanged(filterTagComponents)) {
+            viewModel.updateFilterData(filterTagComponents)
+            onSuccessSortFilter(initialSelectedCounter)
+            viewModel.run {
+                cancelCatalogProductJob()
+                setRechargeCatalogInputMultiTabLoading()
+                getRechargeCatalogInputMultiTab(
+                    menuId,
+                    operator.id,
+                    binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "",
+                    false
+                )
+            }
         }
     }
 

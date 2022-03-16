@@ -19,12 +19,14 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class FilterPDPBottomsheet(
     private val title: String, private val action: String,
-    private val filterTagComponents: List<TelcoFilterTagComponent>,
+    private val initialFilterTagComponents: List<TelcoFilterTagComponent>,
     private val listener: FilterBottomSheetListener
 ) : BottomSheetUnify(),
     DigitalPDPChipFilterViewHolder.ChipListener,
     DigitalPDPChipListFilterViewHolder.ListFilterListener,
     AllFilterPDPBottomsheet.OnCheckBoxAllFilterListener {
+
+    var filterTagComponents = mutableListOf<TelcoFilterTagComponent>()
 
     init {
         isFullpage = false
@@ -41,6 +43,7 @@ class FilterPDPBottomsheet(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setFilterTagData(initialFilterTagComponents)
         initView()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -133,6 +136,17 @@ class FilterPDPBottomsheet(
         }
 
         return initialSelectedCounter
+    }
+
+    private fun setFilterTagData(initialFilterTagComponents: List<TelcoFilterTagComponent>) {
+        initialFilterTagComponents.forEach {
+            val dataCollections = mutableListOf<FilterTagDataCollection>()
+            it.filterTagDataCollections.forEach {
+                dataCollections.add(FilterTagDataCollection(it.key, it.value, it.isSelected))
+            }
+            val filterTagComponent = TelcoFilterTagComponent(it.name, it.text, it.paramName, dataCollections)
+            filterTagComponents.add(filterTagComponent)
+        }
     }
 
     interface FilterBottomSheetListener {
