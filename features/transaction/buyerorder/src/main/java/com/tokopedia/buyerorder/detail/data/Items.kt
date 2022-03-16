@@ -1,179 +1,59 @@
-package com.tokopedia.buyerorder.detail.data;
+package com.tokopedia.buyerorder.detail.data
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
-import java.io.Serializable;
-import java.util.List;
-
-public class Items implements Serializable {
-
+data class Items(
     @SerializedName("categoryID")
     @Expose
-    private int categoryID;
+    var categoryID: Int = 0,
 
     @SerializedName("title")
     @Expose
-    private String title;
+    var title: String = "",
 
     @SerializedName("category")
     @Expose
-    private String category;
+    var category: String = "",
 
     @SerializedName("tapActions")
     @Expose
-    private List<ActionButton> tapActions;
+    var tapActions: List<ActionButton> = emptyList(),
 
     @SerializedName("price")
     @Expose
-    private String price;
+    var price: String = "",
 
     @SerializedName("imageUrl")
     @Expose
-    private String imageUrl;
+    var imageUrl: String = "",
 
     @SerializedName("quantity")
     @Expose
-    private int quantity;
+    var quantity: Int = 0,
 
     @SerializedName("actionButtons")
     @Expose
-    private List<ActionButton> actionButtons;
+    var actionButtons: List<ActionButton> = emptyList(),
 
     @SerializedName("metaData")
     @Expose
-    private String metaData;
+    var metaData: String = "",
 
     @SerializedName("totalPrice")
     @Expose
-    private String totalPrice;
+    var totalPrice: String = "",
 
     @SerializedName("trackingNumber")
     @Expose
-    private String trackingNumber;
+    var trackingNumber: String = "",
 
     @SerializedName("invoiceID")
     @Expose
-    private String invoiceId;
+    var invoiceId: String = "",
 
-    private boolean isTapActionsLoaded;
+    var isTapActionsLoaded: Boolean = false,
 
-    private boolean isActionButtonLoaded;
-
-    public int getCategoryID() {
-        return categoryID;
-    }
-
-    public void setCategoryID(int categoryID) {
-        this.categoryID = categoryID;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public List<ActionButton> getTapActions() {
-        return tapActions;
-    }
-
-    public void setTapActions(List<ActionButton> tapActions) {
-        this.tapActions = tapActions;
-    }
-
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public List<ActionButton> getActionButtons() {
-        return actionButtons;
-    }
-
-    public void setActionButtons(List<ActionButton> actionButtons) {
-        this.actionButtons = actionButtons;
-    }
-
-    public String getMetaData() {
-        return metaData;
-    }
-
-    public void setMetaData(String metaData) {
-        this.metaData = metaData;
-    }
-
-    public boolean isTapActionsLoaded() {
-        return isTapActionsLoaded;
-    }
-
-    public void setTapActionsLoaded(boolean tapActionsLoaded) {
-        isTapActionsLoaded = tapActionsLoaded;
-    }
-
-    public boolean isActionButtonLoaded() {
-        return isActionButtonLoaded;
-    }
-
-    public void setActionButtonLoaded(boolean actionButtonLoaded) {
-        isActionButtonLoaded = actionButtonLoaded;
-    }
-
-    public String getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(String totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
-    public String getTrackingNumber() {
-        return trackingNumber;
-    }
-
-    public void setTrackingNumber(String trackingNumber) {
-        this.trackingNumber = trackingNumber;
-    }
-
-    public String getInvoiceId() {
-        return invoiceId;
-    }
-
-    public void setInvoiceId(String invoiceId) {
-        this.invoiceId = invoiceId;
-    }
-
-    @Override
-    public String toString() {
-        return "ClassPojo [title = " + title + ", tapActions = " + tapActions + ", price = " + price + ", imageUrl = " + imageUrl + ", quantity = " + quantity + ", actionButtons = " + actionButtons + ", metaData = " + metaData + "]";
-    }
-}
+    var isActionButtonLoaded: Boolean = false
+) : Serializable

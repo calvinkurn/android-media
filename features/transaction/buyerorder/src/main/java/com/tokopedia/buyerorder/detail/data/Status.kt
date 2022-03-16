@@ -1,57 +1,29 @@
-package com.tokopedia.buyerorder.detail.data;
+package com.tokopedia.buyerorder.detail.data
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
+import com.google.gson.annotations.Expose
 
 /**
  * Created by baghira on 10/05/18.
  */
-
-public class Status {
+data class Status(
     @SerializedName("statusText")
     @Expose
-    private String statusText;
+    val statusText: String = "",
+
     @SerializedName("status")
     @Expose
-    private String status;
+    val status: String = "",
+
     @SerializedName("statusLabel")
     @Expose
-    private String statusLabel;
+    val statusLabel: String = "",
+
     @SerializedName("textColor")
     @Expose
-    private String textColor;
+    val textColor: String = "",
+
     @SerializedName("backgroundColor")
     @Expose
-    private String backgroundColor;
-
-    public String statusText() {
-        return statusText;
-    }
-
-    public String status() {
-        return status;
-    }
-
-    public String statusLabel() {
-        return statusLabel;
-    }
-
-    public String textColor() {
-        return textColor;
-    }
-
-    public String backgroundColor() {
-        return backgroundColor;
-    }
-
-    @Override
-    public String toString() {
-        return "[Status:{" +" "+
-                "statusText=" + statusText +" "+
-                "status=" + status + " "+
-                "statusLabel=" + statusLabel + " "+
-                "textColor=" + textColor + " "+
-                "backgroundColor=" + backgroundColor
-                + "}]";
-    }
-}
+    val backgroundColor: String = ""
+)

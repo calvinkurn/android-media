@@ -1,32 +1,19 @@
-package com.tokopedia.buyerorder.detail.data;
+package com.tokopedia.buyerorder.detail.data
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
+import com.google.gson.annotations.Expose
 
 /**
  * Created by baghira on 11/05/18.
  */
 
-public class ContactUs {
+class ContactUs {
+
     @SerializedName("helpText")
     @Expose
-    private String helpText;
+    val helpText: String = ""
+
     @SerializedName("helpUrl")
     @Expose
-    private String helpUrl;
-
-    public String helpText(){
-        return helpText;
-    }
-
-    public String helpUrl(){
-        return helpUrl;
-    }
-    @Override
-    public String toString() {
-        return "[ContactUs:{"
-                + "helpText="+helpText +" "
-                + "helpUrl="+helpUrl
-                + "}]";
-    }
+    val helpUrl: String = ""
 }

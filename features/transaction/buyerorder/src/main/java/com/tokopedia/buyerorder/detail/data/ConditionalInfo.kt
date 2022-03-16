@@ -1,29 +1,15 @@
-package com.tokopedia.buyerorder.detail.data;
+package com.tokopedia.buyerorder.detail.data
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
+import com.google.gson.annotations.Expose
 
-public class ConditionalInfo {
+data class ConditionalInfo (
     @SerializedName("text")
     @Expose
-    private String text;
+    val text: String = "",
+
     @SerializedName("color")
     @Expose
-    private Color color;
+    val color: Color = Color()
+)
 
-    public String text() {
-        return text;
-    }
-
-    public Color color() {
-        return color;
-    }
-
-    @Override
-    public String toString() {
-        return "ConditionalInfo{"
-                + "text=" + text + ", "
-                + "color=" + color
-                + "}";
-    }
-}

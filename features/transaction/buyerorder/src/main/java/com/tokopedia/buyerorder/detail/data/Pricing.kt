@@ -1,33 +1,17 @@
-package com.tokopedia.buyerorder.detail.data;
+package com.tokopedia.buyerorder.detail.data
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
+import com.google.gson.annotations.Expose
 
 /**
  * Created by baghira on 11/05/18.
  */
-
-public class Pricing {
+data class Pricing(
     @SerializedName("label")
     @Expose
-    private String label;
+    val label: String = "",
+
     @SerializedName("value")
     @Expose
-    private String value;
-
-    public String label() {
-        return label;
-    }
-
-    public String value() {
-        return value;
-    }
-
-    @Override
-    public String toString() {
-        return "[Pricing:{ "
-                + "label="+label +" "
-                + "value="+value
-                + "}]";
-    }
-}
+    val value: String = ""
+)

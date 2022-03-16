@@ -1,38 +1,19 @@
-package com.tokopedia.buyerorder.detail.data;
+package com.tokopedia.buyerorder.detail.data
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
+import com.google.gson.annotations.Expose
+import java.io.Serializable
 
-import java.io.Serializable;
-
-public class Body implements Serializable {
-
+data class Body(
     @SerializedName("body")
     @Expose
-    private String Body;
+    val body: String = "",
 
     @SerializedName("appURL")
     @Expose
-    private String AppURL;
+    val appURL: String = "",
 
     @SerializedName("method")
     @Expose
-    private String Method;
-
-    public String getBody() {
-        return Body;
-    }
-
-    public String getAppURL() {
-        return AppURL;
-    }
-
-    public String getMethod() {
-        return Method;
-    }
-
-    @Override
-    public String toString() {
-        return "ClassPojo [Body = " + Body + ", AppURL = " + AppURL + ", Method = " + Method + "]";
-    }
-}
+    val method: String = ""
+) : Serializable

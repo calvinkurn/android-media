@@ -1,31 +1,14 @@
-package com.tokopedia.buyerorder.detail.data;
+package com.tokopedia.buyerorder.detail.data
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
+import com.google.gson.annotations.Expose
 
-public class PayMethod {
-
+data class PayMethod(
     @SerializedName("label")
     @Expose
-    private String label;
+    val label: String = "",
 
     @SerializedName("value")
     @Expose
-    private String value;
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-}
+    val value: String = ""
+)

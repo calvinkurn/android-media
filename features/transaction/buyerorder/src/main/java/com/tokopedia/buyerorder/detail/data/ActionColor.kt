@@ -1,33 +1,19 @@
-package com.tokopedia.buyerorder.detail.data;
+package com.tokopedia.buyerorder.detail.data
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
+import com.google.gson.annotations.Expose
+import java.io.Serializable
 
-import java.io.Serializable;
-
-public class ActionColor implements Serializable {
+class ActionColor(
     @SerializedName("textColor")
     @Expose
-    private String textColor;
+    val textColor: String = "",
 
     @SerializedName("border")
     @Expose
-    private String border;
+    val border: String = "",
 
     @SerializedName("background")
     @Expose
-    private String background;
-
-    public String getTextColor() {
-        return textColor;
-    }
-
-    public String getBorder() {
-        return border;
-    }
-
-    public String getBackground() {
-        return background;
-    }
-}
-
+    val background: String = ""
+) : Serializable
