@@ -54,25 +54,25 @@ object ShopUtil {
     }
 
     fun logShopPageP2BuyerFlowAlerting(
-        tag: String,
-        functionName: String,
-        liveDataName: String = "",
-        userId: String = "",
-        shopId: String,
-        shopName: String = "",
-        errorMessage: String,
-        stackTrace: String,
-        errType: String
+            tag: String,
+            functionName: String,
+            liveDataName: String = "",
+            userId: String = "",
+            shopId: String,
+            shopName: String = "",
+            errorMessage: String,
+            stackTrace: String,
+            errType: String
     ) {
         val extraParam = mapOf(
-            TYPE to errType,
-            FUNCTION_NAME_KEY to functionName,
-            LIVE_DATA_NAME_KEY to liveDataName,
-            SHOP_ID_KEY to shopId,
-            USER_ID_KEY to userId,
-            SHOP_NAME_KEY to shopName,
-            REASON_KEY to errorMessage,
-            DATA_KEY to stackTrace
+                TYPE to errType,
+                FUNCTION_NAME_KEY to functionName,
+                LIVE_DATA_NAME_KEY to liveDataName,
+                SHOP_ID_KEY to shopId,
+                USER_ID_KEY to userId,
+                SHOP_NAME_KEY to shopName,
+                REASON_KEY to errorMessage,
+                DATA_KEY to stackTrace
         )
         logTimberWarning(Priority.P2, tag, extraParam)
     }

@@ -25,7 +25,7 @@ class GqlShopPageGetHomeType @Inject constructor(
 
         const val QUERY = """
             query shopPageGetHomeType(${'$'}shopID: Int!, ${'$'}extParam: String!){
-              shopPageGetHomeTypeASD(
+              shopPageGetHomeType(
                 shopID: ${'$'}shopID,
                 extParam: ${'$'}extParam
               ){
