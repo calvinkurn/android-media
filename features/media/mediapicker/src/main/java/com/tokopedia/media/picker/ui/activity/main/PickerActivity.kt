@@ -36,6 +36,7 @@ import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
 import com.tokopedia.picker.common.intent.PickerIntent
+import com.tokopedia.picker.common.intent.RESULT_PICKER
 import com.tokopedia.picker.common.observer.EventFlowFactory
 import com.tokopedia.picker.common.types.FragmentType
 import com.tokopedia.picker.common.types.PageType
@@ -144,11 +145,18 @@ open class PickerActivity : BaseActivity()
 
         // get data from preview if user had an updated the media elements
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_PREVIEW_PAGE && data != null) {
-            val medias = data.getParcelableArrayListExtra<MediaUiModel>(
+            data.getParcelableArrayListExtra<MediaUiModel>(
                 PickerPreviewActivity.RESULT_INTENT_PREVIEW
-            )?.toList()?: return
+            )?.toList()?.let {
+                stateOnChangePublished(it)
+            }
 
-            stateOnChangePublished(medias)
+            data.getStringArrayListExtra(RESULT_PICKER)?.let {
+                val intent = Intent()
+                intent.putExtra(RESULT_PICKER, it)
+                setResult(Activity.RESULT_OK, intent)
+                finish()
+            }
         }
     }
 
