@@ -91,14 +91,18 @@ class CatalogForYouViewModel @Inject constructor(
     private val shimmerList = arrayListOf<BaseCatalogDataModel>()
 
     private fun addShimmer(page : Int) {
-        for (i in 1..shimmerItemCount) {
-            shimmerList.add(CatalogForYouShimmerModel())
+        repeat(shimmerItemCount) {
+            addShimmerModel()
         }
         if(page == pageFirst){
             masterDataList.clear()
         }
         masterDataList.addAll(shimmerList)
         shimmerData.value = masterDataList
+    }
+
+    private fun addShimmerModel(){
+        shimmerList.add(CatalogForYouShimmerModel())
     }
 
     private fun removeShimmer() {
