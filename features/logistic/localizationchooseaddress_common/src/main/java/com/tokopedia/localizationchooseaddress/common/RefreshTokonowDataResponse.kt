@@ -1,4 +1,4 @@
-package com.tokopedia.localizationchooseaddress.domain.response
+package com.tokopedia.localizationchooseaddress.common
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

@@ -1,10 +1,7 @@
-package com.tokopedia.localizationchooseaddress.domain.usecase
+package com.tokopedia.localizationchooseaddress.common
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.data.query.RefreshTokonowDataQuery
-import com.tokopedia.localizationchooseaddress.domain.response.RefreshTokonowDataResponse
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class RefreshTokonowDataUsecase @Inject constructor(private val useCase: GraphqlUseCase<RefreshTokonowDataResponse.Data>) {
