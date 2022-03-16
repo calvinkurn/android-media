@@ -44,10 +44,9 @@ class PdpFintechWidget @JvmOverloads constructor(
     private var categoryId: String? = null
     private  var productID: String? = ""
     private  var productPrice: String? = ""
-    private val ACTIVATION_LINKINING_FLOW = 2
     private val NOT_BRANDER_CHIPS = "not branded chips"
     private val BRANDER_CHIPS = "branded chips"
-    const  val ACTIVATION_LINKINING_FLOW = 2
+
 
 
     @Inject
@@ -237,6 +236,10 @@ class PdpFintechWidget @JvmOverloads constructor(
     ) {
         idToPriceUrlMap = productIdToPrice
         categoryId = productCategoryId
+    }
+
+    companion object{
+        const val ACTIVATION_LINKINING_FLOW = 2
     }
 
 }
