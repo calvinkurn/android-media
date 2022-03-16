@@ -152,21 +152,21 @@ class ExplicitProfileFragment : BaseDaggerFragment() {
 
             it.tabCategories.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    tab?.customView?.apply {
+                    tab?.customView?.let { tabView ->
                         tracker.clickOnTabMenu(categories.data.dataCategories[tab.position].name)
-                        setTabCategoryView(tab.position, true, this)
+                        setTabCategoryView(tab.position, true, tabView)
                     }
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
-                    tab?.customView?.apply {
-                        setTabCategoryView(tab.position, false, this)
+                    tab?.customView?.let { tabView ->
+                        setTabCategoryView(tab.position, false, tabView)
                     }
                 }
 
                 override fun onTabReselected(tab: TabLayout.Tab?) {
-                    tab?.customView?.apply {
-                        setTabCategoryView(tab.position, true, this)
+                    tab?.customView?.let { tabView ->
+                        setTabCategoryView(tab.position, true, tabView)
                     }
                 }
             })

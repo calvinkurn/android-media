@@ -230,6 +230,7 @@
     <string name="explicit_profile_message_success_save">Hore! Preferensi belanja kamu berhasil disimpan.</string>
     <string name="explicit_profile_message_success_save_ok">Oke</string>
     <string name="explicit_profile_save">Simpan</string>
+    <string name="explicit_profile_info">Info</string>
     <string name="explicit_profile_empty_page_title">Kategori lainnya masih disiapin</string>
     <string name="explicit_profile_empty_page_desc">Nanti kamu bisa atur preferensi belanja buat kategori selain kuliner di sini, lho!</string>
     <string name="explicit_profile_back_dialog_title">Kamu belum menyimpan perubahan</string>

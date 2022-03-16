@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.home_account.R
 import com.tokopedia.home_account.databinding.LayoutExplicitBottomSheetSectionsInfoBinding
 import com.tokopedia.home_account.explicitprofile.data.SectionsDataModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -33,7 +34,7 @@ class SectionInfoBottomSheet: BottomSheetUnify() {
     }
 
     private fun initView() {
-        setTitle("Info")
+        setTitle(getString(R.string.explicit_profile_info))
 
         viewBinding?.sectionQuestionList?.apply {
             adapter = sectionAdapter
