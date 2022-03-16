@@ -64,7 +64,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                 selectedProducts: ArrayList<ProductUiModel>
         ) = AddProductFragment().apply {
             this.arguments = Bundle().apply {
-                putString(BUNDLE_KEY_SELECTED_WAREHOUSE_ID,selectedWarehouseId)
+                putString(BUNDLE_KEY_SELECTED_WAREHOUSE_ID, selectedWarehouseId)
                 putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
                 putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
                 putParcelableArrayList(BUNDLE_KEY_SELECTED_PRODUCTS, selectedProducts)
@@ -145,7 +145,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         viewModel.setCouponSettings(couponSettings)
 
         val selectedProducts = arguments?.getParcelableArrayList<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)
-        val selectedProductIds = viewModel.getSelectedProductIds(selectedProducts?: arrayListOf())
+        val selectedProductIds = viewModel.getSelectedProductIds(selectedProducts ?: arrayListOf())
         viewModel.setSelectedProductIds(selectedProductIds)
 
         val shopId = userSession.shopId
@@ -239,7 +239,6 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
             viewModel.setSelectedShowCases(listOf())
             viewModel.setSelectedSort(listOf())
             viewModel.setSelectedCategories(listOf())
-            viewModel.setSelectedProducts(listOf())
             loadInitialData()
         }
     }
@@ -288,7 +287,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
 
     private fun setupButtonAddProduct(binding: FragmentMvcAddProductBinding?) {
         binding?.buttonAddProduct?.setOnClickListener {
-            val selectedProducts = adapter?.getSelectedProducts() ?: listOf()
+            val selectedProducts = viewModel.getSelectedProducts()
             if (viewModel.isMaxProductLimitReached(selectedProducts.size)) {
                 binding.tickerMaxProductWording.show()
                 adapter?.isProductListEnabled(false)
@@ -318,16 +317,39 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
     private fun observeLiveData() {
         viewModel.selectedProductListLiveData.observe(viewLifecycleOwner, { selectedProducts ->
             if (selectedProducts.isEmpty()) {
+
                 viewModel.isSelectAllMode = false
                 binding?.cbuSelectAllProduct?.isChecked = false
                 binding?.buttonAddProduct?.isEnabled = false
+
                 val isIndeterminate = binding?.cbuSelectAllProduct?.getIndeterminate() ?: false
                 if (isIndeterminate) binding?.cbuSelectAllProduct?.setIndeterminate(false)
+
                 binding?.tpgSelectAll?.gone()
                 binding?.selectionBar?.setBackgroundResource(NO_BACKGROUND)
                 binding?.buttonAddProduct?.text = getString(R.string.add_product)
-                binding?.tickerSellerLocationChange?.hide()
-                productSelectionListener?.onProductSelectionChanged(0, viewModel.getMaxProductLimit())
+
+                if (viewModel.getSelectedProductIds().isNotEmpty()) {
+                    productSelectionListener?.onProductSelectionChanged(
+                            viewModel.getSelectedProductIds().size,
+                            viewModel.getMaxProductLimit()
+                    )
+                }
+                // no added products
+                else {
+                    productSelectionListener?.onProductSelectionChanged(
+                            0,
+                            viewModel.getMaxProductLimit()
+                    )
+                    if (binding?.tickerSellerLocationChange?.isVisible == true) {
+                        binding?.tickerSellerLocationChange?.hide()
+                        adapter?.enableAllProductSelections()
+                        adapter?.notifyDataSetChanged()
+                        viewModel.setBoundLocationId(viewModel.getWarehouseLocationId())
+                    }
+                }
+
+
             } else {
                 val size = selectedProducts.size
                 if (binding?.tickerSellerLocationChange?.isVisible == false) {
@@ -337,7 +359,8 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                 binding?.tpgSelectAll?.visible()
                 binding?.tpgSelectAll?.text = "$size Produk dipilih"
                 binding?.selectionBar?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.mvc_grey_f3f4f5))
-                productSelectionListener?.onProductSelectionChanged(size, viewModel.getMaxProductLimit())
+                val totalSize = viewModel.getSelectedProductIds().size + size
+                productSelectionListener?.onProductSelectionChanged(totalSize, viewModel.getMaxProductLimit())
             }
         })
         viewModel.productListResult.observe(viewLifecycleOwner, { result ->
@@ -365,8 +388,9 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                         if (viewModel.isInitialLoad(viewModel.getPagingIndex())) {
                             binding?.selectionBar?.hide()
                             binding?.rvProductList?.hide()
+                            binding?.tickerSellerLocationChange?.hide()
                             binding?.emptyProductsLayout?.show()
-                            binding?.buttonAddProduct?.isEnabled = false
+                            if (viewModel.getSelectedProducts().isEmpty()) binding?.buttonAddProduct?.isEnabled = false
                         }
                     }
                 }
@@ -383,30 +407,39 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                     val isIndeterminate = binding?.cbuSelectAllProduct?.getIndeterminate() ?: false
                     val isSelectAll = binding?.cbuSelectAllProduct?.isChecked ?: false && !isIndeterminate
                     val updatedProductList = viewModel.applyValidationResult(
-                            isSelectAll,
+                            false,
                             productList = productList,
                             validationResults = validationResults
                     )
 
-                    val hasNextPage = updatedProductList.isNotEmpty()
-                    renderList(updatedProductList, hasNextPage)
-                    setupSelectionBar(binding)
+                    // in case of filtering; apply the previous selection
+                    val dataWithSelections = viewModel.applyUserSelections(
+                            userSelections = viewModel.getSelectedProducts(),
+                            productData = updatedProductList
+                    )
 
-                    if (isSelectAll) {
-                        viewModel.setSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
-                    }
+                    val hasNextPage = dataWithSelections.isNotEmpty()
+                    renderList(dataWithSelections, hasNextPage)
 
-                    val origin = viewModel.getBoundLocationId()?: viewModel.getSellerWarehouseId()
-                    viewModel.isSelectionChanged = viewModel.isSelectionChanged(origin, viewModel.getWarehouseLocationId())
+//                    if (isSelectAll) {
+//                        viewModel.setSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
+//                    }
+
+                    // TODO: improvement point: maintainability : break the codes down into functions
+
+                    val origin = viewModel.getBoundLocationId() ?: viewModel.getSellerWarehouseId()
+                    viewModel.isLocationSelectionChanged = viewModel.isLocationSelectionChanged(origin, viewModel.getWarehouseLocationId())
                     val addedProducts = viewModel.getSelectedProductIds()
-                    if (addedProducts.isNotEmpty() && viewModel.isSelectionChanged) {
+                    if (addedProducts.isNotEmpty() && viewModel.isLocationSelectionChanged) {
                         binding?.tickerSellerLocationChange?.show()
                         adapter?.disableAllProductSelections()
+                        adapter?.enableAllSelectedProducts()
                         binding?.cbuSelectAllProduct?.isClickable = false
                         binding?.buttonAddProduct?.isEnabled = false
-                    } else if (viewModel.getSelectedProducts().isNotEmpty() && viewModel.isSelectionChanged) {
+                    } else if (viewModel.getSelectedProducts().isNotEmpty() && viewModel.isLocationSelectionChanged) {
                         binding?.tickerSellerLocationChange?.show()
                         adapter?.disableAllProductSelections()
+                        adapter?.enableAllSelectedProducts()
                         binding?.cbuSelectAllProduct?.isClickable = false
                         binding?.buttonAddProduct?.isEnabled = false
                     } else {
@@ -436,6 +469,12 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
                     } else {
                         viewModel.setWarehouseLocationId(selectedWarehouseId)
                     }
+
+                    // set selected warehouse name to filter chip
+                    val selectedWarehouseData = warehouseLocations.find {
+                        it.warehouseId == viewModel.getWarehouseLocationId()
+                    }
+                    warehouseLocationFilter?.title = selectedWarehouseData?.warehouseName ?: ""
 
                     loadInitialData()
 
@@ -477,8 +516,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         })
     }
 
-    override fun onProductCheckBoxClicked(isSelected: Boolean) {
-        if (viewModel.isFiltering) return
+    override fun onProductCheckBoxClicked(isSelected: Boolean, uiModel: ProductUiModel) {
         viewModel.isSelectAllMode = false
         if (isSelected) {
             // implement selection bar ux
@@ -486,13 +524,24 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
             if (!isIndeterminate) binding?.cbuSelectAllProduct?.setIndeterminate(true)
             val isChecked = binding?.cbuSelectAllProduct?.isChecked ?: false
             if (!isChecked) binding?.cbuSelectAllProduct?.isChecked = true
-        }
-        viewModel.setSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
+            viewModel.addSelectedProduct(uiModel)
+        } else viewModel.removeSelectedProduct(uiModel)
+//        viewModel.setSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
+    }
+
+    override fun onRemoveButtonClicked() {
+        // No implementation
     }
 
     override fun onApplyWarehouseLocationFilter(selectedWarehouseLocation: WarehouseLocationSelection) {
+        warehouseLocationFilter?.title = selectedWarehouseLocation.warehouseName
         adapter?.enableAllProductSelections()
         viewModel.setWarehouseLocationId(selectedWarehouseLocation.warehouseId)
+
+        if (viewModel.getSelectedProductIds().isEmpty() && viewModel.getSelectedProducts().isEmpty()) {
+            viewModel.setBoundLocationId(selectedWarehouseLocation.warehouseId)
+        }
+
         resetSelectionBar(binding)
         viewModel.isFiltering = true
         loadInitialData()
@@ -506,8 +555,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         resetSelectionBar(binding)
         viewModel.isFiltering = true
         loadInitialData()
-        viewModel.setSelectedProducts(listOf())
-         VoucherCreationTracking.clickFilterEtalase(shopId = userSession.shopId, etalaseName = viewModel.getSelectedShopShowcaseNames())
+        VoucherCreationTracking.clickFilterEtalase(shopId = userSession.shopId, etalaseName = viewModel.getSelectedShopShowcaseNames())
     }
 
     override fun onApplyCategoryFilter(selectedCategories: List<CategorySelection>) {
@@ -517,7 +565,6 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         resetSelectionBar(binding)
         viewModel.isFiltering = true
         loadInitialData()
-        viewModel.setSelectedProducts(listOf())
         VoucherCreationTracking.clickFilterProductCategory(shopId = userSession.shopId, categoryName = viewModel.getSelectedCategoryNames())
     }
 
@@ -528,8 +575,8 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
         resetSelectionBar(binding)
         viewModel.isFiltering = true
         loadInitialData()
-        viewModel.setSelectedProducts(listOf())
-        VoucherCreationTracking.clickSortProductLabel(shopId = userSession.shopId, productLabel = viewModel.getSelectedSortName() ?: "")
+        VoucherCreationTracking.clickSortProductLabel(shopId = userSession.shopId, productLabel = viewModel.getSelectedSortName()
+                ?: "")
     }
 
     override fun createAdapter() = ProductListAdapter(this)

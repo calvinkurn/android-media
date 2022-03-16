@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play.broadcaster.databinding.ItemSortListBinding
 import com.tokopedia.play.broadcaster.setup.product.view.model.SortListModel
 
@@ -31,7 +31,7 @@ internal class SortListAdapter(
 
     private class Delegate(
         private val onSelected: (SortListModel) -> Unit,
-    ) : TypedAdapterDelegate<SortListModel, SortListModel, ViewHolder>(R.layout.view_empty) {
+    ) : TypedAdapterDelegate<SortListModel, SortListModel, ViewHolder>(commonR.layout.view_play_empty) {
 
         override fun onBindViewHolder(item: SortListModel, holder: ViewHolder) {
             holder.bind(item)

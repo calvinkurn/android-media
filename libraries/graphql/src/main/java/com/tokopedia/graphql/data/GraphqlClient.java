@@ -50,7 +50,7 @@ public class GraphqlClient {
     private static Context applicationContext;
     private static Function function;
 
-    public static String moduleName = "";
+    public static String moduleName = "tkpd";
 
     private GraphqlClient() {
 

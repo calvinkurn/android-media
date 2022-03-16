@@ -8,18 +8,27 @@ import com.tokopedia.product.info.model.productdetail.response.BottomSheetItem
 import com.tokopedia.product.info.model.productdetail.response.DataShopNotes
 import com.tokopedia.product.info.model.productdetail.response.PdpGetDetailBottomSheet
 import com.tokopedia.product.info.model.productdetail.response.ShopNotesData
-import com.tokopedia.product.info.model.productdetail.uidata.*
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoCardDataModel
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoDiscussionDataModel
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableDataModel
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableImageDataModel
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableListDataModel
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoHeaderDataModel
 import com.tokopedia.product.info.usecase.GetProductDetailBottomSheetUseCase
 import com.tokopedia.product.info.view.BsProductDetailInfoViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.user.session.UserSessionInterface
-import org.junit.*
+import org.junit.After
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
 /**
  * Created by Yehezkiel on 02/11/20
@@ -55,7 +64,8 @@ class BsProductDetailInfoViewModelTest {
                 BottomSheetItem(componentName = HEADER_DETAIL_KEY),
                 BottomSheetItem(componentName = DESCRIPTION_DETAIL_KEY),
                 BottomSheetItem(componentName = GUIDELINE_DETAIL_KEY),
-                BottomSheetItem(componentName = SHOP_NOTES_DETAIL_KEY))
+                BottomSheetItem(componentName = SHOP_NOTES_DETAIL_KEY),
+                BottomSheetItem(componentName = CUSTOM_INFO_KEY))
     }
 
     private val bottomSheetHeaderItem by lazy {
@@ -85,6 +95,7 @@ class BsProductDetailInfoViewModelTest {
         const val DESCRIPTION_DETAIL_KEY = "deskripsi"
         const val GUIDELINE_DETAIL_KEY = "panduan_ukuran"
         const val SHOP_NOTES_DETAIL_KEY = "informasi_penting"
+        const val CUSTOM_INFO_KEY = "custom_info"
     }
 
     @Test
@@ -113,6 +124,10 @@ class BsProductDetailInfoViewModelTest {
         Assert.assertTrue((viewModel.bottomSheetDetailData.value as Success).data.filterIsInstance<ProductDetailInfoExpandableListDataModel>().isEmpty())
         Assert.assertTrue((viewModel.bottomSheetDetailData.value as Success).data.filterIsInstance<ProductDetailInfoExpandableDataModel>().isEmpty())
         Assert.assertTrue((viewModel.bottomSheetDetailData.value as Success).data.filterIsInstance<ProductDetailInfoExpandableImageDataModel>().isEmpty())
+        //endregion
+
+        //region custom info
+        Assert.assertTrue((viewModel.bottomSheetDetailData.value as Success).data.filterIsInstance<ProductDetailInfoCardDataModel>().isNotEmpty())
         //endregion
     }
 
@@ -155,6 +170,10 @@ class BsProductDetailInfoViewModelTest {
 
         //region image
         Assert.assertTrue((viewModel.bottomSheetDetailData.value as Success).data.filterIsInstance<ProductDetailInfoExpandableImageDataModel>().isNotEmpty())
+        //endregion
+
+        //region custom info
+        Assert.assertTrue((viewModel.bottomSheetDetailData.value as Success).data.filterIsInstance<ProductDetailInfoCardDataModel>().isNotEmpty())
         //endregion
     }
 
