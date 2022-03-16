@@ -710,7 +710,7 @@ class PlayAnalyticsTracker @Inject constructor(
         fun liveVodUpcomingFilterCategoryEntryPointCarousel(
             channelId: String, shopId: String, type: String, filterCategory: String, entryPoint: String =""
         ) =
-            "{${channelId}} - {${shopId}} - {${type}} - {${filterCategory}} - {${entryPoint}}"
+            "{${channelId}} - {${shopId}} - {${type}} - $FILTER_CATEGORY_EMPTY - {${entryPoint}}"
 
         const val FILTER_CATEGORY_ENTRY_POINT_CAROUSEL_WIDGET =
             "{filter category} - {entry point carousel widget}"
@@ -728,6 +728,7 @@ class PlayAnalyticsTracker @Inject constructor(
     }
 
     companion object {
+        private const val FILTER_CATEGORY_EMPTY = ""
         private const val FEED_VIDEO_TAB_CONTENT_CARDS_UPCOMING =
             "/feed video tab - content cards - upcoming"
         private const val FEED_VIDEO_TAB_CONTENT_LIST_PAGE_CONTENT_CARDS =
