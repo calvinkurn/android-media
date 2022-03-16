@@ -199,6 +199,16 @@ class DigitalUnifyCardViewHolder(
         with(binding.dguSubtitle) {
             if (element.subtitle.isNotEmpty()) {
                 text = MethodChecker.fromHtml(element.subtitle)
+
+                val mLayoutParams = layoutParams as ConstraintLayout.LayoutParams
+                if (binding.dguDiscountLabel.visibility == View.VISIBLE) {
+                    mLayoutParams.topToBottom = binding.dguDiscountLabel.id
+                } else {
+                    mLayoutParams.topToBottom = binding.dguDiscountSlashPrice.id
+                }
+                layoutParams = mLayoutParams
+                requestLayout()
+
                 show()
             } else {
                 hide()
@@ -413,7 +423,6 @@ class DigitalUnifyCardViewHolder(
 
     private fun renderSlashedPrice(discountType: String, slashedPrice: String) {
         with(binding.dguDiscountSlashPrice) {
-
             val mLayoutParams = layoutParams as ConstraintLayout.LayoutParams
             if (binding.dguDiscountLabel.visibility == View.VISIBLE) {
                 mLayoutParams.topToTop = binding.dguDiscountLabel.id
