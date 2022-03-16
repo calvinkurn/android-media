@@ -539,5 +539,7 @@ class UserSessionDataStoreImpl (val context: Context):
         const val USER_PREFERENCES_NAME = "user_session"
         const val DATA_STORE_FILE_NAME = "user_session.pb"
         const val SORT_ORDER_KEY = "sort_order"
+
+        const val USER_SESSION_AB_TEST_KEY = "android_data_store"
     }
 }

@@ -1,9 +1,14 @@
 package com.tokopedia.user.session
 
 import android.content.Context
+import android.util.Log
 import android.util.Pair
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.datastore.UserSessionDataStore
 import com.tokopedia.user.session.datastore.UserSessionDataStoreClient
+import com.tokopedia.user.session.datastore.UserSessionDataStoreImpl.Companion.USER_SESSION_AB_TEST_KEY
 import com.tokopedia.user.session.datastore.UserSessionKeyMapper
 import com.tokopedia.user.session.util.EncoderDecoder
 
@@ -12,6 +17,15 @@ open class MigratedUserSession(var context: Context?) {
     // can't use DI because it will change UserSession constructor
     private var userSessionDataStore: UserSessionDataStore? = null
     	get() = UserSessionDataStoreClient.getInstance(context!!)
+
+    private fun isEnableDataStore(): Boolean {
+	return try {
+	    val config = RemoteConfigInstance.getInstance().abTestPlatform
+	    config.getString(USER_SESSION_AB_TEST_KEY).isNotEmpty()
+	} catch (e: Exception) {
+	    false
+	}
+    }
 
     protected fun getLong(prefName: String?, keyName: String?, defValue: Long): Long {
 	val newPrefName = String.format("%s%s", prefName, suffix)
@@ -60,10 +74,21 @@ open class MigratedUserSession(var context: Context?) {
     }
 
     protected fun setLong(prefName: String, keyName: String, value: Long) {
-	try {
-	    UserSessionKeyMapper.mapUserSessionKeyString(keyName, userSessionDataStore, value.toString())
-	} catch (e: Exception) {
-	    // Log here
+	if(isEnableDataStore()) {
+	    try {
+		UserSessionKeyMapper.mapUserSessionKeyString(
+		    keyName,
+		    userSessionDataStore,
+		    value.toString()
+		)
+	    } catch (e: Exception) {
+		ServerLogger.log(
+		    Priority.P2, "USER_SESSION_DATA_STORE", mapOf(
+			"type" to "set_long_exception",
+			"error" to Log.getStackTraceString(e)
+		    )
+		)
+	    }
 	}
 	var prefName = prefName
 	var keyName = keyName
@@ -107,12 +132,23 @@ open class MigratedUserSession(var context: Context?) {
     }
 
     protected fun setString(prefName: String?, keyName: String?, value: String?) {
-	try {
-	    if (keyName != null && value != null) {
-		UserSessionKeyMapper.mapUserSessionKeyString(keyName, userSessionDataStore, value)
+	if(isEnableDataStore()) {
+	    try {
+		if (keyName != null && value != null) {
+		    UserSessionKeyMapper.mapUserSessionKeyString(
+			keyName,
+			userSessionDataStore,
+			value
+		    )
+		}
+	    } catch (e: Exception) {
+		ServerLogger.log(
+		    Priority.P2, "USER_SESSION_DATA_STORE", mapOf(
+			"type" to "set_string_exception",
+			"error" to Log.getStackTraceString(e)
+		    )
+		)
 	    }
-	} catch (e: Exception) {
-	    // Log here
 	}
 	var prefName = prefName
 	var keyName = keyName
@@ -208,12 +244,23 @@ open class MigratedUserSession(var context: Context?) {
     }
 
     protected fun setBoolean(prefName: String?, keyName: String?, value: Boolean) {
-	try {
-	    if (keyName != null) {
-//		UserSessionKeyMapper.mapUserSessionKeyBoolean(keyName, userSessionDataStore, value)
+	if(isEnableDataStore()) {
+	    try {
+		if (keyName != null) {
+		    UserSessionKeyMapper.mapUserSessionKeyBoolean(
+			keyName,
+			userSessionDataStore,
+			value
+		    )
+		}
+	    } catch (e: Exception) {
+		ServerLogger.log(
+		    Priority.P2, "USER_SESSION_DATA_STORE", mapOf(
+			"type" to "set_boolean_exception",
+			"error" to Log.getStackTraceString(e)
+		    )
+		)
 	    }
-	} catch (e: Exception) {
-	    // Log Here
 	}
 	var prefName = prefName
 	var keyName = keyName

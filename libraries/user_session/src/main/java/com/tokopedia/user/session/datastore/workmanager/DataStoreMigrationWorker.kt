@@ -6,9 +6,11 @@ import android.util.Log
 import androidx.work.*
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.datastore.DataStoreMigrationHelper
 import com.tokopedia.user.session.datastore.UserSessionDataStoreClient
+import com.tokopedia.user.session.datastore.UserSessionDataStoreImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
@@ -25,23 +27,38 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
 
     private fun isNeedMigration(): Boolean = !getDataStoreMigrationPreference(applicationContext).getBoolean(KEY_MIGRATION_STATUS, false)
 
+    private fun isEnableDataStore(): Boolean {
+	return try {
+	    val config = RemoteConfigInstance.getInstance().abTestPlatform
+	    config.getString(UserSessionDataStoreImpl.USER_SESSION_AB_TEST_KEY).isNotEmpty()
+	} catch (e: Exception) {
+	    false
+	}
+    }
+
     override suspend fun doWork(): Result {
-	return withContext(Dispatchers.IO) {
-	    try {
-	        if(userSession.isLoggedIn) {
-		    val syncResult = checkDataSync()
-		    if (isNeedMigration() && (dataStore.getUserId().first().isEmpty() || syncResult.isNotEmpty())) {
-			migrateData()
-		    } else {
-			logSyncResult(syncResult)
+	if(isEnableDataStore()) {
+	    return withContext(Dispatchers.IO) {
+		try {
+		    if (userSession.isLoggedIn) {
+			val syncResult = checkDataSync()
+			if (isNeedMigration() && (dataStore.getUserId().first()
+				.isEmpty() || syncResult.isNotEmpty())
+			) {
+			    migrateData()
+			} else {
+			    logSyncResult(syncResult)
+			}
 		    }
+		    Result.success()
+		} catch (e: Exception) {
+		    e.printStackTrace()
+		    logWorkerError(e)
+		    Result.failure()
 		}
-		Result.success()
-	    } catch (e: Exception) {
-	        e.printStackTrace()
-		logWorkerError(e)
-	        Result.failure()
 	    }
+	} else {
+	    return Result.success()
 	}
     }
 
@@ -178,7 +195,7 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
     }
 
     private fun logMigrationResultSuccess() {
-	ServerLogger.log(Priority.P2, "USER_SESSION_DATA_STORE",
+	    ServerLogger.log(Priority.P2, "USER_SESSION_DATA_STORE",
 	    mapOf(
 		"type" to "migration_result_success"
 	    )
