@@ -17,7 +17,6 @@ object ExplicitProfileAnalyticConstants {
     }
 
     object Action {
-        const val CLICK_RESET_PREFERENCE = "click reset preferensi"
         const val CLICK_CATEGORY_TABS = "click category tabs"
         const val CLICK_INFORMATION_ICON = "click information icon"
         const val CLICK_OPTION_VALUE = "click option value"

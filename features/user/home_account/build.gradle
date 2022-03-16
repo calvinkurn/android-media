@@ -32,6 +32,10 @@ android {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
+
+    testOptions {
+        animationsDisabled = true
+    }
 }
 
 dependencies {
