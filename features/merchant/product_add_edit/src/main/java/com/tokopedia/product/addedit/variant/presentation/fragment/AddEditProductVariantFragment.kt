@@ -1011,7 +1011,6 @@ class AddEditProductVariantFragment :
         val isEditMode = viewModel.isEditMode.value ?: false
         val builder = ImagePickerBuilder.getSquareImageBuilder(ctx)
                 .withSimpleEditor()
-        builder.imagePickerEditorBuilder?.convertToWebp = true
         ImagePickerGlobalSettings.onImageEditorContinue = ImagePickerCallback(ctx) { it, _ ->
             val shopId = UserSession(it).shopId ?: ""
             if (isEditMode) ProductEditVariantTracking.pickProductVariantPhotos(shopId)
@@ -1104,8 +1103,7 @@ class AddEditProductVariantFragment :
         val isEditMode = viewModel.isEditMode.value ?: false
         val builder = ImageEditorBuilder(
                 imageUrls = arrayListOf(urlOrPath),
-                defaultRatio = ImageRatioType.RATIO_1_1,
-                convertToWebp = true
+                defaultRatio = ImageRatioType.RATIO_1_1
         )
         val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_EDITOR)
         intent.putImageEditorBuilder(builder)
@@ -1340,7 +1338,6 @@ class AddEditProductVariantFragment :
         val isEditMode = viewModel.isEditMode.value ?: false
         val builder = ImagePickerBuilder.getSquareImageBuilder(ctx)
                 .withSimpleEditor()
-        builder.imagePickerEditorBuilder?.convertToWebp = true
         ImagePickerGlobalSettings.onImageEditorContinue = onImagePickerEditContinue(ctx, isEditMode)
         val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_PICKER)
         intent.putImagePickerBuilder(builder)
