@@ -37,6 +37,10 @@ class DuplicateCouponActivity : AppCompatActivity() {
         const val REQUEST_CODE_ADD_PRODUCT = 101
         const val REQUEST_CODE_MANAGE_PRODUCT = 102
 
+        // Quick fix for issue https://tokopedia.atlassian.net/browse/AN-34843
+        const val BUNDLE_KEY_BLOCK_ADD_PRODUCT = "blockAddProduct"
+        const val VALUE_BLOCK_ADD_PRODUCT = true
+
         @JvmStatic
         fun start(context: Context, couponId : Long) {
             val starter = Intent(context, DuplicateCouponActivity::class.java)
