@@ -73,8 +73,10 @@ class SpecialReleaseItemViewHolder(
                     url = badgeImageUrl
                 )
                 binding?.specialReleaseShopBadge?.visible()
+                binding?.specialReleaseShopBadgeBorder?.visible()
             } else {
                 binding?.specialReleaseShopBadge?.invisible()
+                binding?.specialReleaseShopBadgeBorder?.invisible()
             }
 
             binding?.specialReleaseBrandCard?.loadImage(
