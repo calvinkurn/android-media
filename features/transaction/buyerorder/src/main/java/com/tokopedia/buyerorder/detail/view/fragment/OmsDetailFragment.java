@@ -259,7 +259,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         if (details.getItems() != null && details.getItems().size() > 0) {
             Flags flags = details.getFlags();
             if (flags != null)
-                setItems(details.getItems(), flags.isIsOrderTradeIn(), details);
+                setItems(details.getItems(), flags.isOrderTradeIn(), details);
             else
                 setItems(details.getItems(), false, details);
         }

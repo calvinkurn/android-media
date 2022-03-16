@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class Flags(
     @SerializedName("isOrderTradeIn")
-    val isIsOrderTradeIn:Boolean = false
+    val isOrderTradeIn:Boolean = false
 )
