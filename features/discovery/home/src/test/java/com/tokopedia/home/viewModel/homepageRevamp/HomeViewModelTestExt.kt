@@ -30,9 +30,6 @@ import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.domain.response.RefreshTokonowDataResponse
-import com.tokopedia.localizationchooseaddress.domain.usecase.RefreshTokonowDataUsecase
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
@@ -77,8 +74,7 @@ fun createHomeViewModel(
         getCMHomeWidgetDataUseCase : GetCMHomeWidgetDataUseCase = mockk(relaxed = true),
         deleteCMHomeWidgetUseCase: DeleteCMHomeWidgetUseCase = mockk(relaxed = true),
         deletePayLaterWidgetUseCase: ClosePayLaterWidgetUseCase = mockk(relaxed = true),
-        getPayLaterWidgetUseCase: GetPayLaterWidgetUseCase = mockk(relaxed = true),
-        refreshTokonowDataUseCase: RefreshTokonowDataUsecase = mockk(relaxed = true)
+        getPayLaterWidgetUseCase: GetPayLaterWidgetUseCase = mockk(relaxed = true)
 ): HomeRevampViewModel{
     homeBalanceWidgetUseCase.givenGetLoadingStateReturn()
     return HomeRevampViewModel(
@@ -100,8 +96,7 @@ fun createHomeViewModel(
             getCMHomeWidgetDataUseCase = Lazy{ getCMHomeWidgetDataUseCase },
             deleteCMHomeWidgetUseCase = Lazy{ deleteCMHomeWidgetUseCase },
             deletePayLaterWidgetUseCase = Lazy {deletePayLaterWidgetUseCase  },
-            getPayLaterWidgetUseCase = Lazy { getPayLaterWidgetUseCase },
-            refreshTokonowDataUsecase = Lazy { refreshTokonowDataUseCase }
+            getPayLaterWidgetUseCase = Lazy { getPayLaterWidgetUseCase }
     )
 }
 
@@ -421,39 +416,6 @@ fun HomePopularKeywordUseCase.givenOnPopularKeywordReturn(
     resultPopularKeyword: PopularKeywordListDataModel
 ) {
     coEvery { onPopularKeywordRefresh(refreshCount, currentPopularKeyword) } returns resultPopularKeyword
-}
-
-fun RefreshTokonowDataUsecase.givenCurrentLcaDataReturn(
-    lca: LocalCacheModel,
-    refreshTokonowData: RefreshTokonowDataResponse.Data
-) {
-    coEvery {
-        execute(lca)
-    } returns refreshTokonowData
-
-}
-
-fun RefreshTokonowDataUsecase.givenCurrentLcaDataThrows(
-    lca: LocalCacheModel,
-    refreshTokonowData: RefreshTokonowDataResponse.Data
-) {
-    coEvery {
-        execute(lca)
-    } throws Exception()
-
-}
-
-fun LocalCacheModel.toRefreshTokonowDataResponse() : RefreshTokonowDataResponse.Data {
-    return RefreshTokonowDataResponse.Data(
-        refreshTokonowData = RefreshTokonowDataResponse.Data.RefreshTokonowData(
-            RefreshTokonowDataResponse.Data.RefreshTokonowData.RefreshTokonowDataSuccess(
-                warehouseId = warehouse_id,
-                shopId = shop_id,
-                serviceType = service_type,
-                lastUpdate = tokonow_last_update
-            )
-        )
-    )
 }
 
 fun areEqualKeyValues(first: Map<String, Any>, second: Map<String,Any>): Boolean{

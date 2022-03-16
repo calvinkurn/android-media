@@ -1179,6 +1179,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun subscribeHome() {
+        observeTokonowData()
         observeHomeData()
         observeUpdateNetworkStatusData()
         observeOneClickCheckout()
@@ -1192,12 +1193,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         observeResetNestedScrolling()
         observeBeautyFestData()
         observeSearchHint()
-        observeTokonowData()
     }
 
+    @FlowPreview
     private fun observeTokonowData() {
         getHomeViewModel().tokonowData.observe(viewLifecycleOwner, Observer {
-                (status, data, _) ->
+                (status, data, throwable) ->
             when {
                 status === Result.Status.SUCCESS -> {
                     if (data != null) {
