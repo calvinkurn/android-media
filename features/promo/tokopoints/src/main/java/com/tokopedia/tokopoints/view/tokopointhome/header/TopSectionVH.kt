@@ -588,14 +588,36 @@ class TopSectionVH(
         if (container?.childCount?.minus(1) ?: 0 >= 0) {
             val target = container?.getChildAt(container.childCount - 1)
             val animationScaleX =
-                ObjectAnimator.ofFloat(target, View.SCALE_X, 1.5f)
+                ObjectAnimator.ofFloat(target, View.SCALE_X, 1.2f)
                     .setDuration(ANIMATION_DURATION)
             val animationScaleY =
-                ObjectAnimator.ofFloat(target, View.SCALE_Y, 1.5f)
+                ObjectAnimator.ofFloat(target, View.SCALE_Y, 1.2f)
                     .setDuration(ANIMATION_DURATION)
 
-            val animSet = AnimatorSet()
-            animSet.addListener(object : Animator.AnimatorListener {
+            val animationScaleXN =
+                ObjectAnimator.ofFloat(target, View.SCALE_X, 1f)
+                    .setDuration(ANIMATION_DURATION)
+            val animationScaleYN =
+                ObjectAnimator.ofFloat(target, View.SCALE_Y, 1f)
+                    .setDuration(ANIMATION_DURATION)
+
+            val animSetScaleUp = AnimatorSet()
+            val animSetScaleDown = AnimatorSet()
+            animSetScaleUp.addListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(p0: Animator?) {
+                }
+                override fun onAnimationEnd(p0: Animator?) {
+                    animSetScaleDown.playTogether( animationScaleXN ,animationScaleYN )
+                    animSetScaleDown.start()                }
+                override fun onAnimationCancel(p0: Animator?) {
+                }
+                override fun onAnimationRepeat(p0: Animator?) {
+                }
+            })
+            animSetScaleUp.playTogether(animationScaleY, animationScaleX )
+            animSetScaleUp.start()
+
+            animSetScaleDown.addListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(p0: Animator?) {
                 }
                 override fun onAnimationEnd(p0: Animator?) {
@@ -606,8 +628,7 @@ class TopSectionVH(
                 override fun onAnimationRepeat(p0: Animator?) {
                 }
             })
-            animSet.playTogether(animationScaleY, animationScaleX)
-            animSet.start()
+
         }
     }
 

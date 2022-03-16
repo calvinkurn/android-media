@@ -13,7 +13,6 @@ import com.tokopedia.unifyprinciples.Typography
 class DigitTextView : FrameLayout {
     var currentTextView: Typography? = null
     var nextTextView: Typography? = null
-    var zeroAnimCounter = 0
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         init(context)
@@ -58,7 +57,9 @@ class DigitTextView : FrameLayout {
                     override fun onAnimationRepeat(animation: Animator?) {}
                 })?.start()
         } else if (oldValue < desiredValue) {
-            nextTextView?.text = String.format(Locale.getDefault(), "%d", oldValue + 1)
+            if (oldValue != 0) {
+                nextTextView?.text = String.format(Locale.getDefault(), "%d", oldValue + 1)
+            }
             currentTextView?.animate()?.translationY(height.toFloat())?.setDuration(
                 ANIMATION_DURATION.toLong()
             )?.start()
@@ -73,31 +74,6 @@ class DigitTextView : FrameLayout {
                             String.format(Locale.getDefault(), "%d", oldValue + 1)
                         currentTextView?.translationY = 0f
                         if (oldValue + 1 != desiredValue) {
-                            setValue(desiredValue)
-                        }
-                    }
-
-                    override fun onAnimationCancel(animation: Animator?) {}
-                    override fun onAnimationRepeat(animation: Animator?) {}
-                })?.start()
-        }else if (oldValue == desiredValue && oldValue==0 && desiredValue==0) {
-            nextTextView?.text = String.format(Locale.getDefault(), "%d", oldValue )
-            currentTextView?.animate()?.translationY(height.toFloat())?.setDuration(
-                ANIMATION_DURATION.toLong()
-            )?.start()
-            nextTextView?.let {
-                nextTextView?.translationY = -it.height.toFloat()
-            }
-            nextTextView?.animate()?.translationY(0f)?.setDuration(ANIMATION_DURATION.toLong())
-                ?.setListener(object : Animator.AnimatorListener {
-                    override fun onAnimationStart(animation: Animator?) {
-                    }
-                    override fun onAnimationEnd(animation: Animator?) {
-                        currentTextView?.text =
-                            String.format(Locale.getDefault(), "%d", oldValue )
-                        currentTextView?.translationY = 0f
-                        if (oldValue == desiredValue && zeroAnimCounter!=2) {
-                            zeroAnimCounter++
                             setValue(desiredValue)
                         }
                     }
