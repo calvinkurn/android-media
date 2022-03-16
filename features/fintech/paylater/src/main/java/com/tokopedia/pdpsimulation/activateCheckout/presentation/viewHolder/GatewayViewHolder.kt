@@ -22,7 +22,6 @@ class GatewayViewHolder(
 
     fun bindData(checkoutData: CheckoutData, position: Int) {
         itemView.apply {
-            setBarrierAttr()
             changeColorToEnableDisable(checkoutData.disable,checkoutData.selectedGateway)
             setIcon(checkoutData)
             inflateAllDetails(checkoutData)
@@ -31,10 +30,6 @@ class GatewayViewHolder(
                 onClickLogic(checkoutData, position)
             }
         }
-    }
-
-    private fun setBarrierAttr() {
-        itemView.barrier2.setAllowsGoneWidget(false)
     }
 
     private fun View.updateDateLogic(checkoutData: CheckoutData) {
