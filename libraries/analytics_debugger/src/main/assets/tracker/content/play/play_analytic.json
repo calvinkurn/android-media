@@ -248,7 +248,10 @@
           "index": "\\d+(.\\d+)?"
         }
       ],
-      "item_list": "/groupchat - bottom sheet"
+      "item_list": "/groupchat - bottom sheet",
+      "currentSite": ".*",
+      "userId": ".*",
+      "businessUnit": "play"
     },
     {
       "eventAction": "impression - product in upcoming section",
@@ -267,7 +270,10 @@
           "index": "\\d+(.\\d+)?"
         }
       ],
-      "item_list": "/groupchat - bottom sheet"
+      "item_list": "/groupchat - bottom sheet",
+      "currentSite": ".*",
+      "userId": ".*",
+      "businessUnit": "play"
     },
     {
       "eventAction": "click",
@@ -318,12 +324,7 @@
       "sessionIris": ".*",
       "currentSite": "tokopediamarketplace",
       "userId": ".*",
-      "businessUnit": "play",
-      "isLoggedInStatus": ".*",
-      "channel": ".*",
-      "productId": ".*",
-      "productName": ".*",
-      "productUrl": ".*"
+      "businessUnit": "play"
     },
     {
       "eventAction": "click - product in upcoming section",
@@ -346,12 +347,7 @@
       "sessionIris": ".*",
       "currentSite": "tokopediamarketplace",
       "userId": ".*",
-      "businessUnit": "play",
-      "isLoggedInStatus": ".*",
-      "channel": ".*",
-      "productId": ".*",
-      "productName": ".*",
-      "productUrl": ".*"
+      "businessUnit": "play"
     },
     {
       "eventAction": "click - atc in ongoing section",
@@ -377,12 +373,7 @@
       "sessionIris": ".*",
       "currentSite": "tokopediamarketplace",
       "userId": ".*",
-      "businessUnit": "play",
-      "isLoggedInStatus": ".*",
-      "channel": ".*",
-      "productId": ".*",
-      "productName": ".*",
-      "productUrl": ".*"
+      "businessUnit": "play"
     },
     {
       "eventAction": "click atc in varian page",
@@ -472,12 +463,7 @@
       "sessionIris": ".*",
       "currentSite": "tokopediamarketplace",
       "userId": ".*",
-      "businessUnit": "play",
-      "isLoggedInStatus": ".*",
-      "channel": ".*",
-      "productId": ".*",
-      "productName": ".*",
-      "productUrl": ".*"
+      "businessUnit": "play"
     },
     {
       "eventAction": "click lihat in message ticker",
@@ -521,28 +507,6 @@
       "clientId": ".*",
       "userId": ".*",
       "businessUnit": "play"
-    },
-    {
-      "eventAction": "impression on merchant voucher",
-      "event": "viewGroupChatIris",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod)",
-      "sessionIris": ".*",
-      "currentSite": ".*",
-      "userId": ".*",
-      "businessUnit": "play"
-    },
-    {
-      "eventAction": "click on merchant voucher",
-      "event": "clickGroupChat",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod)",
-      "sessionIris": ".*",
-      "currentSite": "tokopediamarketplace",
-      "userId": ".*",
-      "businessUnit": "play",
-      "isLoggedInStatus": ".*",
-      "channel": ".*"
     },
     {
       "eventAction": "view on featured product",

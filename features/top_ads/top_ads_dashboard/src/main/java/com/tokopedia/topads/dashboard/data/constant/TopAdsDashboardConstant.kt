@@ -13,6 +13,10 @@ object TopAdsDashboardConstant {
     const val PARAM_CURRENT_TAB = "currentTab"
     const val PARAM_INSIGHT_TAB = "tabInsight"
     const val PARAM_TAB = "tab"
+    const val PARAM_SHOP_ID = "shopID"
+    const val PARAM_AD_TYPES = "adTypes"
+    const val PARAM_SOURCE = "source"
+    const val PARAM_LEVEL = "level"
 
     const val SHOP_ID = "shopId"
     const val OFFSCREEN_PAGE_LIMIT = 3
@@ -65,6 +69,7 @@ object TopAdsDashboardConstant {
     const val NEG_KATA_KUNCI = "Kata Negatif"
     const val GRUP = "Grup"
     const val TANPA_GRUP = "Tanpa Grup"
+    const val DIHAPUS = "dihapus"
     const val TOASTER_DURATION :Long = 2000
     const val EXPIRE = "expiryDate"
     const val IS_CHANGED = "isChanged"
@@ -111,4 +116,11 @@ object TopAdsDashboardConstant {
     const val FROM_EDIT = "fromEdit"
     const val FROM_DETAIL = "fromDetail"
     const val FROM_REKOMENDASI = "fromRekomendasi"
+    const val CONST_TAMPIL = 0
+    const val CONST_KLIK = 1
+    const val CONST_TERJUAL = 2
+    const val CONST_PENDAPATAN = 3
+    const val CONST_PENGELURAN = 4
+    const val CONST_EFECTIVITAS_IKLAN = 5
+    const val DATE_PICKER_DEFAULT_INDEX = 2
 }
