@@ -120,7 +120,10 @@ class PlayMoreActionBottomSheet @Inject constructor(
         childView =
             View.inflate(requireContext(), R.layout.bottom_sheet_play_more_action, null)
         setChild(childView)
-        setCloseClickListener { dismiss() }
+        setCloseClickListener {
+            hideSheets()
+        }
+        overlayClickDismiss = false
     }
 
     /***
@@ -181,7 +184,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
         playViewModel.observableUserReportSubmission.observe(viewLifecycleOwner, DistinctObserver {
             when (it) {
                 is PlayResult.Success -> {
-                    dismiss()
+                    hideSheets()
                 }
                 is PlayResult.Failure ->
                     doShowToaster(
@@ -199,6 +202,17 @@ class PlayMoreActionBottomSheet @Inject constructor(
     /***
      * Private Methods
      */
+
+    private fun hideSheets(){
+        this.dismiss()
+        playViewModel.hideThreeDotsSheet()
+    }
+
+    override fun dismiss() {
+        playViewModel.hideThreeDotsSheet()
+        super.dismiss()
+    }
+
     private fun doActionUserReport(){
         analytic.clickUserReport()
         playViewModel.onShowUserReportSheet(userReportSheetHeight)
@@ -326,7 +340,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
     }
 
     override fun onCloseButtonClicked(view: KebabMenuSheetViewComponent) {
-        dismiss()
+        hideSheets()
     }
 
     /***

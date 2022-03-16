@@ -773,6 +773,22 @@ class PlayViewModel @AssistedInject constructor(
         return currentValue
     }
 
+    fun hideThreeDotsSheet(){
+        _kebabBottomSheet.value = getDefaultKebabInsets()
+    }
+
+    private fun getDefaultKebabInsets(): Map<KebabMenuType, BottomInsetsState> {
+        val currentValue = _kebabBottomSheet.value
+        val defaultThreeDotsState = currentValue[KebabMenuType.ThreeDots]?.isHidden ?: true
+        val defaultUserReportListState = currentValue[KebabMenuType.UserReportList]?.isHidden ?: true
+        val defaultUserReportSubmissionState = currentValue[KebabMenuType.UserReportSubmission]?.isHidden ?: true
+        return mapOf(
+            KebabMenuType.ThreeDots to BottomInsetsState.Hidden(defaultThreeDotsState),
+            KebabMenuType.UserReportList to BottomInsetsState.Hidden(defaultUserReportListState),
+            KebabMenuType.UserReportSubmission to BottomInsetsState.Hidden(defaultUserReportSubmissionState)
+        )
+    }
+
     private fun getDefaultBottomInsetsMapState(): Map<BottomInsetsType, BottomInsetsState> {
         val currentBottomInsetsMap = _observableBottomInsetsState.value
         val defaultKeyboardState = currentBottomInsetsMap?.get(BottomInsetsType.Keyboard)?.isHidden ?: true
@@ -1019,7 +1035,10 @@ class PlayViewModel @AssistedInject constructor(
      * then we don't need to retrieve the product.
      */
     private fun updateTagItems() {
-        if (!_tagItems.value.product.canShow) return
+        if (!_tagItems.value.product.canShow) {
+            _tagItems.update { it.copy(resultState = ResultState.Success) }
+            return
+        }
         _tagItems.update { it.copy(resultState = ResultState.Loading) }
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val tagItem = repo.getTagItem(channelId)
