@@ -9,6 +9,7 @@ import com.tokopedia.play.domain.CheckUpcomingCampaignReminderUseCase
 import com.tokopedia.play.domain.GetProductTagItemSectionUseCase
 import com.tokopedia.play.domain.PostUpcomingCampaignReminderUseCase
 import com.tokopedia.play.domain.repository.PlayViewerTagItemRepository
+import com.tokopedia.play.view.type.PlayUpcomingBellStatus
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.tagitem.*
@@ -119,10 +120,10 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun subscribeUpcomingCampaign(campaignId: Long): Pair<Boolean, String> = withContext(dispatchers.io)  {
+    override suspend fun subscribeUpcomingCampaign(campaignId: Long, reminderType: PlayUpcomingBellStatus): Pair<Boolean, String> = withContext(dispatchers.io)  {
         try {
             val response = postUpcomingCampaignReminderUseCase.apply {
-                setRequestParams(PostUpcomingCampaignReminderUseCase.createParam(campaignId).parameters)
+                setRequestParams(PostUpcomingCampaignReminderUseCase.createParam(campaignId, reminderType).parameters)
             }.executeOnBackground()
             return@withContext Pair(response.response.success, if(response.response.errorMessage.isNotEmpty()) response.response.message else response.response.message)
         } catch (e: Exception){

@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.data.PostUpcomingCampaign
+import com.tokopedia.play.view.type.PlayUpcomingBellStatus
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -26,7 +27,8 @@ class PostUpcomingCampaignReminderUseCase@Inject constructor(
     companion object {
         private const val CAMPAIGN_ID = "campaign_id"
         private const val ACTION_PARAM = "action"
-        private const val ACTION_PARAM_VALUE = "REGISTER"
+        private const val ACTION_REGISTER_PARAM_VALUE = "REGISTER"
+        private const val ACTION_UNREGISTER_PARAM_VALUE = "UNREGISTER"
         private const val SOURCE_PARAM = "source"
         private const val SOURCE_PARAM_VALUE = "campaign"
         private const val REQUEST_TYPE_PARAM = "requestType"
@@ -44,10 +46,10 @@ class PostUpcomingCampaignReminderUseCase@Inject constructor(
             }
         """
 
-        fun createParam(campaignId: Long): RequestParams {
+        fun createParam(campaignId: Long, reminderType: PlayUpcomingBellStatus): RequestParams {
             val params = mapOf(
                 CAMPAIGN_ID to campaignId,
-                ACTION_PARAM to ACTION_PARAM_VALUE,
+                ACTION_PARAM to if(reminderType is PlayUpcomingBellStatus.On) ACTION_UNREGISTER_PARAM_VALUE else ACTION_REGISTER_PARAM_VALUE,
                 SOURCE_PARAM to SOURCE_PARAM_VALUE,
                 REQUEST_TYPE_PARAM to REQUEST_TYPE_PARAM_VALUE
             )

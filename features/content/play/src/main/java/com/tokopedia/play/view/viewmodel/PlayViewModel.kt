@@ -2044,7 +2044,7 @@ class PlayViewModel @AssistedInject constructor(
     private fun sendReminder(){
         viewModelScope.launchCatchError(block = {
             playAnalytic.clickUpcomingReminder(selectedUpcomingCampaign, channelId, channelType)
-            val data = repo.subscribeUpcomingCampaign(campaignId = selectedUpcomingCampaign.id.toLongOrZero())
+            val data = repo.subscribeUpcomingCampaign(campaignId = selectedUpcomingCampaign.id.toLongOrZero(), reminderType = selectedUpcomingCampaign.config.reminder)
             val message = if(data.first) {
                 updateReminderUi(selectedUpcomingCampaign.config.reminder.reversed(selectedUpcomingCampaign.id.toLongOrZero()))
                 if(data.second.isNotEmpty()) UiString.Text(data.second) else UiString.Resource(R.string.play_product_upcoming_reminder_success)
