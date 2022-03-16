@@ -31,12 +31,13 @@
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
                 android:overScrollMode="never"
-                android:layout_marginTop="@dimen/layout_lvl3"
+                android:paddingBottom="@dimen/layout_lvl3"
                 app:layout_constraintTop_toBottomOf="@id/tickerCategory"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                tools:listitem="@layout/view_item_explicit_profile_categories_question_chips"/>
+                tools:listitem="@layout/layout_explicit_profile_question_section"
+                tools:itemCount="1"/>
 
             <include
                 android:id="@+id/emptyLayout"

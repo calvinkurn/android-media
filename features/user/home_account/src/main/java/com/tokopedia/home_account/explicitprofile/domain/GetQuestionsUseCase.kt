@@ -53,6 +53,7 @@ class GetQuestionsUseCase @Inject constructor(
                         title
                         subtitle
                         infoContent
+                        image
                         options {
                           value
                           caption

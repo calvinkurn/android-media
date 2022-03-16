@@ -6,6 +6,8 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.databinding.ViewItemExplicitProfileSectionInfoBinding
 import com.tokopedia.home_account.explicitprofile.data.QuestionDataModel
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.utils.view.binding.viewBinding
 
 class SectionInfoViewHolder(
@@ -18,6 +20,12 @@ class SectionInfoViewHolder(
         itemViewBinding?.apply {
             sectionInfoTitle.text = questionDataModel.property.name
             sectionInfoDescription.text = questionDataModel.property.infoContent
+
+            sectionInfoImage.apply {
+                loadImageWithoutPlaceholder(questionDataModel.property.image) {
+                    useCache(true)
+                }
+            }.show()
         }
     }
 

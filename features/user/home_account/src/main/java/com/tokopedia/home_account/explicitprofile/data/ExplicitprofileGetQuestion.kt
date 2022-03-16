@@ -93,8 +93,8 @@ data class QuestionDataModel(
     data class Property(
         @SerializedName("name")
         var name: String = "",
-//        @SerializedName("image")
-//        var image: String = "",
+        @SerializedName("image")
+        var image: String = "",
         @SerializedName("title")
         var title: String = "",
         @SerializedName("subtitle")

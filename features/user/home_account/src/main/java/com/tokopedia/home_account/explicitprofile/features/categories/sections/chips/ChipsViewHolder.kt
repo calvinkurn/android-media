@@ -8,6 +8,8 @@ import com.tokopedia.home_account.databinding.ViewItemExplicitProfileCategoriesQ
 import com.tokopedia.home_account.explicitprofile.ExplicitProfileConstant.ANSWER_NO
 import com.tokopedia.home_account.explicitprofile.ExplicitProfileConstant.ANSWER_YES
 import com.tokopedia.home_account.explicitprofile.data.QuestionDataModel
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -23,13 +25,13 @@ class ChipsViewHolder(
             setSelectionByResponse(questionDataModel)
 
             chipText = questionDataModel.property.name
-//            chip_image_icon.apply {
-//                loadImage(questionDataModel.property.image) {
-//                    useCache(true)
-//                }
-//            }.show()
+            chip_image_icon.apply {
+                loadImageWithoutPlaceholder(questionDataModel.property.image) {
+                    useCache(true)
+                }
+            }.show()
 
-            itemView.setOnClickListener {
+            setOnClickListener {
                 this.isSelected = !this.isSelected
                 this.chipType = if (this.isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
 

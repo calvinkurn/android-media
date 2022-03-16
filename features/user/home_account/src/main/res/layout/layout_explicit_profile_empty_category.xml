@@ -30,6 +30,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/descriptionEmptyPage"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:text="@string/explicit_profile_empty_page_desc"
