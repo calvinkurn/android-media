@@ -193,7 +193,6 @@ class PickerPreviewActivity : BaseActivity()
 
     private fun onFinishIntent(files: ArrayList<String>) {
         val intent = Intent()
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.putExtra(RESULT_PICKER, files)
         setResult(Activity.RESULT_OK, intent)
         finish()
