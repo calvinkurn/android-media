@@ -1009,4 +1009,10 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
         val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://play-broadcaster"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_CONTENT_PLAY_BROADCASTER)
     }
+
+    @Test
+    fun `check telephony masking appLink then should return DF_OPERATIONAL_CONTACT_US in customerapp`() {
+        val internalApplink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/telephony-masking"
+        assertEqualDeepLinkCustomerApp(internalApplink, DeeplinkDFMapper.DF_OPERATIONAL_CONTACT_US)
+    }
 }
