@@ -192,7 +192,7 @@ class VariantSheetViewComponent(
         val secondEntry = variantEntries.getOrNull(secondIndex)
         if (secondEntry != null && secondEntry.value != "0") {
             labelVariant2.visibility = View.VISIBLE
-            labelVariant2.text = model.categories.getOrNull(firstIndex)?.variantOptions?.firstOrNull {
+            labelVariant2.text = model.categories.getOrNull(secondIndex)?.variantOptions?.firstOrNull {
                 it.variantId == secondEntry.value
             }?.variantName
         } else labelVariant2.visibility = View.GONE
