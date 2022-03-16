@@ -133,6 +133,7 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -155,7 +156,8 @@ class TokoNowHomeFragment: Fragment(),
         ScreenShotListener,
         HomeSharingEducationListener,
         HomeEducationalInformationListener,
-        ServerErrorListener
+        ServerErrorListener,
+        PermissionListener
 {
 
     companion object {
@@ -230,7 +232,7 @@ class TokoNowHomeFragment: Fragment(),
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var movingPosition = 0
     private var isRefreshed = true
-    private var pageType = ""
+    private var shareHomeTokonow: ShareHomeTokonow = createShareHomeTokonow()
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector : ScreenshotDetector? = null
     private var carouselScrollState = mutableMapOf<Int, Parcelable?>()
@@ -349,8 +351,13 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     override fun screenShotTaken() {
-        pageType = PAGE_TYPE_HOME
-        showUniversalShareBottomSheet(shareHomeTokonow(true))
+        updateShareHomeData(
+            pageIdConstituents = listOf(PAGE_TYPE_HOME),
+            isScreenShot = true,
+            thumbNailTitle = resources.getString(R.string.tokopedianow_home_share_thumbnail_title_ss)
+        )
+
+        showUniversalShareBottomSheet(shareHomeTokonow)
     }
 
     override fun onRequestPermissionsResult(
@@ -495,8 +502,13 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     override fun onShareBtnSharingEducationClicked() {
-        pageType = PAGE_TYPE_QUEST
-        shareClicked(shareHomeTokonow())
+        updateShareHomeData(
+            pageIdConstituents = listOf(PAGE_TYPE_QUEST),
+            isScreenShot = false,
+            thumbNailTitle = resources.getString(R.string.tokopedianow_home_share_thumbnail_title)
+        )
+
+        shareClicked(shareHomeTokonow)
         analytics.trackClickShareButtonWidget()
     }
 
@@ -764,9 +776,20 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun onClickShareButton() {
-        pageType = PAGE_TYPE_HOME
-        shareClicked(shareHomeTokonow())
+        updateShareHomeData(
+            pageIdConstituents = listOf(PAGE_TYPE_HOME),
+            isScreenShot = false,
+            thumbNailTitle = resources.getString(R.string.tokopedianow_home_share_thumbnail_title)
+        )
+
+        shareClicked(shareHomeTokonow)
         analytics.onClickShareButton()
+    }
+
+    private fun updateShareHomeData(pageIdConstituents: List<String>, isScreenShot: Boolean, thumbNailTitle: String) {
+        shareHomeTokonow.pageIdConstituents = pageIdConstituents
+        shareHomeTokonow.isScreenShot = isScreenShot
+        shareHomeTokonow.thumbNailTitle = thumbNailTitle
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
@@ -1402,21 +1425,24 @@ class TokoNowHomeFragment: Fragment(),
             //set the Image Url of the Image that represents page
             setOgImageUrl(imgUrl = shareHomeTokonow?.ogImageUrl.orEmpty())
         }
+
+        if (shareHomeTokonow?.isScreenShot == true) {
+            analytics.trackImpressChannelShareBottomSheetScreenShot()
+        } else {
+            analytics.trackImpressChannelSharingChannel()
+        }
         universalShareBottomSheet?.show(childFragmentManager, this, screenshotDetector)
     }
 
-    private fun shareHomeTokonow(isScreenShot: Boolean = false): ShareHomeTokonow{
+    private fun createShareHomeTokonow(): ShareHomeTokonow{
         return ShareHomeTokonow(
-                resources.getString(R.string.tokopedianow_home_share_main_text),
-                SHARE_URL,
-                userSession.userId,
-                listOf(pageType),
-                if(isScreenShot) resources.getString(R.string.tokopedianow_home_share_thumbnail_title_ss)
-                else resources.getString(R.string.tokopedianow_home_share_thumbnail_title),
-                THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
-                THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
-                resources.getString(R.string.tokopedianow_home_share_title),
-                resources.getString(R.string.tokopedianow_home_share_desc),
+                sharingText = resources.getString(R.string.tokopedianow_home_share_main_text),
+                sharingUrl = SHARE_URL,
+                userId = userSession.userId,
+                thumbNailImage = THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
+                ogImageUrl = THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
+                specificPageName = resources.getString(R.string.tokopedianow_home_share_title),
+                specificPageDescription = resources.getString(R.string.tokopedianow_home_share_desc)
         )
     }
 
@@ -1459,9 +1485,15 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
+        if (shareHomeTokonow.isScreenShot) {
+            analytics.trackClickChannelShareBottomSheetScreenshot(shareModel.channel.orEmpty())
+        } else {
+            analytics.trackClickSharingChannel(shareModel.channel.orEmpty())
+        }
+
         shareOptionRequest(
             shareModel = shareModel,
-            shareHomeTokonow = shareHomeTokonow(),
+            shareHomeTokonow = shareHomeTokonow,
             activity = activity,
             view = view,
             onSuccess = {
@@ -1471,10 +1503,18 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     override fun onCloseOptionClicked() {
-        //you will use this to implement the GA events
+        if (shareHomeTokonow.isScreenShot) {
+            analytics.trackClickCloseScreenShotShareBottomSheet()
+        } else {
+            analytics.trackClickCloseShareBottomSheet()
+        }
     }
 
     private fun getMiniCartHeight(): Int {
         return miniCartWidget?.height.orZero() - resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16).toInt()
+    }
+
+    override fun permissionAction(action: String, label: String) {
+        analytics.trackClickAccessMediaAndFiles(label)
     }
 }

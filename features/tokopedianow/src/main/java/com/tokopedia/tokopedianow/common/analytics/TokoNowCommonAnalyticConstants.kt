@@ -85,5 +85,13 @@ object TokoNowCommonAnalyticConstants {
     object ACTION{
         const val EVENT_ACTION_CLICK_CHANGE_ADDRESS_ON_OOC = "click change address on ooc"
         const val EVENT_ACTION_CLICK_SHOP_ON_TOKOPEDIA = "click belanja di tokopedia on ooc"
+        const val EVENT_ACTION_CLICK_SHARE_WIDGET_BUTTON = "click - share button"
+        const val EVENT_ACTION_CLICK_ACCESS_PHOTO_MEDIA_FILES = "click - access photo media and files"
+        const val EVENT_ACTION_CLICK_CHANNEL_SHARE_BOTTOM_SHEET_SCREENSHOT = "click - channel share bottom sheet - screenshot"
+        const val EVENT_ACTION_CLICK_CLOSE_SCREENSHOT_SHARE_BOTTOM_SHEET = "click - close screenshot share bottom sheet"
+        const val EVENT_ACTION_IMPRESSION_CHANNEL_SHARE_BOTTOM_SHEET_SCREENSHOT = "view - screenshot share bottom sheet"
+        const val EVENT_ACTION_IMPRESSION_SHARING_CHANNEL = "view on sharing channel"
+        const val EVENT_ACTION_CLICK_SHARING_CHANNEL = "click - sharing channel"
+        const val EVENT_ACTION_CLICK_CLOSE_SHARE_BOTTOM_SHEET  = "click - close share bottom sheet"
     }
 }
