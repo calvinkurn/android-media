@@ -87,24 +87,24 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     TopAdsProductIklanFragment.AppBarAction, TopAdsProductIklanFragment.AdInfo,
     TopAdsHeadlineBaseFragment.AppBarActionHeadline, CustomDatePicker.ActionListener {
 
+    private lateinit var viewPager : ViewPager
     private lateinit var headerToolbar: HeaderUnify
     lateinit var ivEducationTopAdsActionBar: ImageUnify
     private lateinit var ivCalendarTopAdsActionBar: ImageUnify
     private lateinit var txtBuatIklan : Typography
-
-    private var customStartDate: String? = null
-    private var customEndDate: String? = null
-    internal var startDate = Utils.getStartDate()
-    internal var endDate = Utils.getEndDate()
-    private var datePickerSheet: DatePickerSheet? = null
-    var datePickerIndex = 2
-        private set
-
     private val headerToolbarRight by lazy(LazyThreadSafetyMode.NONE) {
         layoutInflater.inflate(
             R.layout.layout_topads_dashboard_actionbar, null, false
         )
     }
+
+    private var datePickerSheet: DatePickerSheet? = null
+    private var customStartDate: String? = null
+    private var customEndDate: String? = null
+    internal var startDate = Utils.getStartDate()
+    internal var endDate = Utils.getEndDate()
+    var datePickerIndex = 2
+        private set
     private var tracker: TopAdsDashboardTracking? = null
     private var adType = "-1"
     private var isNoProduct = false
@@ -129,14 +129,10 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         topAdsDashboardPresenter.getShopListHiddenTrial(resources)
         setContentView(R.layout.topads_dash_activity_base_layout)
-        renderTabAndViewPager()
+
         initView()
         setUpClick()
-        headerToolbar.setNavigationOnClickListener {
-            onBackPressed()
-        }
-        tracker = TopAdsDashboardTracking()
-        actionSendAnalyticsIfFromPushNotif()
+        renderTabAndViewPager()
 
         topAdsDashboardPresenter.isShopWhiteListed.observe(this, Observer {
             if (it) {
@@ -150,24 +146,19 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             finish()
         })
 
-        multiActionBtn?.setOnClickListener {
-            if (tab_layout?.getUnifyTabLayout()?.selectedTabPosition == 0)
-                navigateToAdTypeSelection()
-            if (tab_layout?.getUnifyTabLayout()?.selectedTabPosition == 3) {
-                val fragments = (view_pager?.adapter as TopAdsDashboardBasePagerAdapter).getList()
-                for (frag in fragments) {
-                    when (frag.fragment) {
-                        is TopAdsRecommendationFragment -> {
-                            (frag.fragment as TopAdsRecommendationFragment).setClick()
-                        }
-                    }
-                }
-            }
-        }
+        tracker = TopAdsDashboardTracking()
+        actionSendAnalyticsIfFromPushNotif()
         setPadding()
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsOpenScreenEvent()
+        setToast()
+    }
+
+    private fun setUpClick() {
         tab_layout?.getUnifyTabLayout()
             ?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                override fun onTabReselected(p0: TabLayout.Tab?) {}
+                override fun onTabReselected(p0: TabLayout.Tab?) {
+
+                }
 
                 override fun onTabUnselected(p0: TabLayout.Tab?) {}
 
@@ -222,11 +213,26 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                     }
                 }
             })
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsOpenScreenEvent()
-        setToast()
-    }
 
-    private fun setUpClick() {
+        headerToolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+
+        multiActionBtn?.setOnClickListener {
+            if (tab_layout?.getUnifyTabLayout()?.selectedTabPosition == 0)
+                navigateToAdTypeSelection()
+            if (tab_layout?.getUnifyTabLayout()?.selectedTabPosition == 3) {
+                val fragments = (viewPager?.adapter as TopAdsDashboardBasePagerAdapter).getList()
+                for (frag in fragments) {
+                    when (frag.fragment) {
+                        is TopAdsRecommendationFragment -> {
+                            (frag.fragment as TopAdsRecommendationFragment).setClick()
+                        }
+                    }
+                }
+            }
+        }
+
         ivCalendarTopAdsActionBar.setOnClickListener {
             showBottomSheet()
         }
@@ -234,6 +240,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         ivEducationTopAdsActionBar.setOnClickListener {
             startActivity(Intent(this, TopAdsEducationActivity::class.java))
         }
+
         txtBuatIklan.setOnClickListener {
             if (GlobalConfig.isSellerApp()) {
                 navigateToAdTypeSelection()
@@ -244,6 +251,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     }
 
     private fun initView() {
+        viewPager = findViewById(R.id.view_pager)
         headerToolbar = findViewById(R.id.header_toolbar)
         headerToolbar.addCustomRightContent(headerToolbarRight)
         txtBuatIklan = findViewById(R.id.txtBuatIklan)
@@ -254,7 +262,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     private fun removeBtn() {
         bottom?.gone()
-        view_pager?.setPadding(0, 0, 0, 0)
+        viewPager?.setPadding(0, 0, 0, 0)
     }
 
     private fun setToast() {
@@ -274,7 +282,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     }
 
     private fun checkVisibility() {
-        val fragments = (view_pager?.adapter as TopAdsDashboardBasePagerAdapter).getList()
+        val fragments = (viewPager?.adapter as TopAdsDashboardBasePagerAdapter).getList()
         for (frag in fragments) {
             when (frag.fragment) {
                 is TopAdsRecommendationFragment -> {
@@ -288,7 +296,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         if (multiActionBtn?.text?.equals(getString(com.tokopedia.topads.common.R.string.topads_iklankan_button)) == true) {
             bottom.visibility = if (toHide) View.GONE else View.VISIBLE
             if (toHide) {
-                view_pager?.setPadding(0, 0, 0, 0)
+                viewPager?.setPadding(0, 0, 0, 0)
             } else {
                 setPadding()
             }
@@ -298,7 +306,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     private fun setPadding() {
         multiActionBtn?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val heightButton = multiActionBtn?.measuredHeight
-        view_pager?.setPadding(0, 0, 0, heightButton ?: 0)
+        viewPager?.setPadding(0, 0, 0, heightButton ?: 0)
     }
 
     fun enableRecommButton(isEnable: Boolean) {
@@ -336,14 +344,14 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                 else -> CONST_0
             }
         }
-        view_pager.adapter = getViewPagerAdapter()
-        view_pager.offscreenPageLimit = 3
+        viewPager.adapter = getViewPagerAdapter()
+        viewPager.offscreenPageLimit = 3
         tab_layout?.getUnifyTabLayout()?.getTabAt(redirectToTab)?.select()
-        view_pager.currentItem = redirectToTab
-        if (view_pager.currentItem != 0) {
+        viewPager.currentItem = redirectToTab
+        if (viewPager.currentItem != 0) {
             bottom.gone()
         }
-        view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
 
             override fun onPageScrolled(
@@ -366,7 +374,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                 }
             }
         })
-        tab_layout?.setupWithViewPager(view_pager)
+        tab_layout?.setupWithViewPager(viewPager)
     }
 
     private fun showFirstTimeDialog(context: Context) {
@@ -528,8 +536,10 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     }
 
     fun toggleMultiActionButton(show: Boolean) {
-        if (show) bottom.show()
-        else bottom.hide()
+        when {
+            viewPager.currentItem == IKLANKAN_PRODUK_TAB || viewPager.currentItem == HEADLINE_ADS_TAB || !show -> bottom.hide()
+            show -> bottom.show()
+        }
     }
 
     fun updateMultiActionButton(type: Int, count: Int) {
@@ -546,10 +556,6 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             else -> ""
         }
         multiActionBtn.isEnabled = count > 0
-    }
-
-    fun disableMultiActionButton() {
-        multiActionBtn.isEnabled = false
     }
 
     private fun showBottomSheet() {
@@ -586,7 +592,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     }
 
     private fun loadSummaryStats() {
-        val fragments = (view_pager?.adapter as TopAdsDashboardBasePagerAdapter).getList()
+        val fragments = (viewPager?.adapter as TopAdsDashboardBasePagerAdapter).getList()
         for (frag in fragments) {
             when (frag.fragment) {
                 is TopAdsDashboardBerandaFragment -> (frag.fragment as TopAdsDashboardBerandaFragment).loadSummaryStats()
