@@ -904,6 +904,11 @@ class PlayViewModel @AssistedInject constructor(
         handleLikeInfo(channelData.likeInfo)
         handlePinnedInfo(channelData.pinnedInfo)
         handleLeaderboardInfo(channelData.leaderboardInfo)
+
+        _partnerInfo.value = channelData.partnerInfo
+        _status.value = channelData.status
+        _tagItems.value = channelData.tagItems
+        _quickReply.value = channelData.quickReplyInfo
     }
 
     fun focusPage(channelData: PlayChannelData) {
