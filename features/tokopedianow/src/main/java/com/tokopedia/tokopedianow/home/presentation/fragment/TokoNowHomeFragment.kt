@@ -1420,10 +1420,10 @@ class TokoNowHomeFragment: Fragment(),
     private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareHomeTokonow?) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@TokoNowHomeFragment)
-            setTokonowUtmCampaignData(
+            setUtmCampaignData(
                     pageName = PAGE_SHARE_NAME,
                     userId = shareHomeTokonow?.userId.orEmpty(),
-                    pageType = shareHomeTokonow?.pageType.orEmpty(),
+                    pageIdConstituents = listOf(shareHomeTokonow?.pageType.orEmpty()),
                     feature = SHARE
             )
             setMetaData(

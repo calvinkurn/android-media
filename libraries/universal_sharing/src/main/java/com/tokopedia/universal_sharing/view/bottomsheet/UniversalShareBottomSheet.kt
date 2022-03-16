@@ -785,7 +785,11 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         val sharingDate: String = SimpleDateFormat("ddMMyy", Locale.getDefault()).format(
             Date()
         )
-        campaignStr = "$pageName-$${getUserId(userId)}-$pageId-$sharingDate"
+        var tempUsr = userId
+        if(TextUtils.isEmpty(tempUsr)){
+            tempUsr = "0"
+        }
+        campaignStr = "$pageName-$tempUsr-$pageId-$sharingDate"
         if(isImageOnlySharing && !TextUtils.isEmpty(screenShotImagePath)){
             channelStr = "screenshot-share"
         }
@@ -794,29 +798,11 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }
     }
 
-    fun setTokonowUtmCampaignData(pageName: String, pageType: String, userId: String, feature: String){
-        val sharingDate: String = SimpleDateFormat("ddMMyy", Locale.getDefault()).format(
-            Date()
-        )
-        campaignStr = "$pageName-${getUserId(userId)}-$pageType-$sharingDate"
-        channelStr = if(isImageOnlySharing && screenShotImagePath.isNotBlank()){
-            "screenshot-share"
-        } else {
-            feature
-        }
-    }
-
 //  can be called like this  setUtmCampaignData(listOf("a", "b"), "c", "d", "e")
 //  seller specific example  setUtmCampaignData(listOf("ShopRS", "$[User ID]", "$[Shop ID]", "$[Campaign Type ID]"), "$userId", "$pageId", "$feature")
     fun setUtmCampaignData(pageName: String, userId: String, pageIdConstituents: List<String>, feature: String){
         val pageIdCombined = TextUtils.join("-", pageIdConstituents)
         setUtmCampaignData(pageName, userId, pageIdCombined, feature)
-    }
-
-    private fun getUserId(userId: String): String = if (userId.isNotBlank()) {
-        userId
-    } else {
-        "0"
     }
 
     fun setOgImageUrl(imgUrl: String){
