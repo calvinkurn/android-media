@@ -1261,8 +1261,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                             newWidgets.add(newWidget)
                         } else {
                             if (oldWidget.isFromCache && !oldWidget.needToRefreshData(newWidget as BaseWidgetUiModel<BaseDataUiModel>)) {
+                                val newData = newWidget.data as? LastUpdatedDataInterface
                                 newWidget.apply {
-                                    data = oldWidget.data
+                                    data = oldWidget.data.also {
+                                        if (it is LastUpdatedDataInterface && newData != null) {
+                                            it.lastUpdated.lastUpdatedInMillis = newData.lastUpdated.lastUpdatedInMillis
+                                            it.lastUpdated.needToUpdated = newData.lastUpdated.needToUpdated
+                                        }
+                                    }
                                     isLoaded = oldWidget.isLoaded
                                     isLoading = oldWidget.isLoading
                                 }

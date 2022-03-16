@@ -526,7 +526,6 @@ class SellerHomeViewModel @Inject constructor(
                     useCase.setUseCache(true)
                     liveData.value = Success(useCase.executeUseCase())
                 } catch (_: Exception) {
-                    // ignore exception from cache
                     throw networkException
                 }
             } else {

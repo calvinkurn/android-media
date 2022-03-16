@@ -148,7 +148,7 @@ class CardViewHolder(
 
     private fun setupRefreshButton(element: CardWidgetUiModel) {
         with(binding) {
-            root.viewTreeObserver.addOnPreDrawListener {
+            containerCard.viewTreeObserver.addOnPreDrawListener {
                 element.data?.lastUpdated?.let {
                     val shouldShowRefreshButton = it.needToUpdated.orFalse() && !element.showLoadingState
                     icShcRefreshCard.isVisible = shouldShowRefreshButton && it.isEnabled
