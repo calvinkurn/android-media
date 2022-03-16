@@ -208,7 +208,10 @@
     <string name="key_error_username">Username</string>
     <string name="error_min_char">Minimum %1$d karakter.</string>
     <string name="success_edit_profile_info">Info profil berhasil diubah.</string>
-    <string name="error_cant_empty">Wajib diisi.</string>
+    <string name="success_edit_username">Yay! Username kamu berhasil diubah.</string>
+    <string name="success_add_username">"Yay! Username berhasil ditambah.</string>
+    <string name="success_edit_bio">Yay! Bio kamu berhasil diubah.</string>
+    <string name="success_add_bio">"Yay! Bio berhasil ditambah.</string>    <string name="error_cant_empty">Wajib diisi.</string>
     <string name="title_gender">Jenis Kelamin</string>
     <string name="title_user_id">User ID</string>
     <string name="success_copy_userid">User ID berhasil disalin!</string>

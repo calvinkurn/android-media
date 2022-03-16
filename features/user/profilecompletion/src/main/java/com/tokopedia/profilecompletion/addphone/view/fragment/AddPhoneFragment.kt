@@ -112,6 +112,7 @@ open class AddPhoneFragment : BaseDaggerFragment() {
                 if (s.isNotEmpty()) {
                     setErrorText("")
                 }else {
+                    setErrorText(getString(R.string.error_cant_empty))
                     buttonSubmit.isEnabled = false
                 }
             }

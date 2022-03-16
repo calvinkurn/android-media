@@ -7,6 +7,7 @@
     <com.tokopedia.unifycomponents.TextFieldUnify2
         app:unify_text_field_label="@string/change_username"
         app:unify_text_field_prepend_text="\@"
+        app:unify_text_field_message="@string/description_textfield_username"
         app:unify_text_field_counter="20"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -3,6 +3,8 @@ package com.tokopedia.profilecompletion.addbod.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +31,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_add_bod.*
 import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.inject.Inject
 
@@ -72,19 +75,38 @@ class AddBodFragment: BaseDaggerFragment(){
         super.onViewCreated(view, savedInstanceState)
 
         maxDate = GregorianCalendar(getCurrentLocale(requireContext())).apply {
-            set(this.get(Calendar.YEAR), get(Calendar.MONTH) + 1, get(Calendar.DAY_OF_MONTH))
+            set(this.get(Calendar.YEAR), get(Calendar.MONTH), get(Calendar.DAY_OF_MONTH))
         }
         defaultDate = GregorianCalendar(getCurrentLocale(requireContext()))
-
+        setListener()
         initVar()
         initDatepicker()
 
         chooseDate.editText.setFocusable(false)
+
+        initObserver()
+        parentContainer
+    }
+
+    private fun setListener() {
         chooseDate.editText.setOnClickListener {
             fragmentManager?.run {
                 unifyDatePicker?.show(this, TAG)
             }
         }
+
+        chooseDate.editText.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                checkInput()
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+        })
 
         btnSave.setOnClickListener {
             if(selectedDate.isNotBlank()) {
@@ -94,8 +116,15 @@ class AddBodFragment: BaseDaggerFragment(){
             }
         }
 
-        initObserver()
-        parentContainer
+    }
+
+    private fun checkInput() {
+        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", LocaleUtils.getIDLocale())
+        val date = simpleDateFormat.parse(selectedDate)
+        val stringDate = simpleDateFormat.format(date)
+        val bod = arguments?.getString(ApplinkConstInternalGlobal.PARAM_BOD)
+        println("get data $stringDate $bod")
+        btnSave.isEnabled = stringDate != bod
     }
 
     private fun setChoosenDateFormat(date: String){
@@ -125,8 +154,8 @@ class AddBodFragment: BaseDaggerFragment(){
         if(!bod.isNullOrEmpty()){
             val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", LocaleUtils.getIDLocale())
             defaultDate.time = simpleDateFormat.parse(bod)
-            setChoosenDateFormat(bod)
             selectedDate = bod
+            setChoosenDateFormat(bod)
         }else{
             defaultDate.add(Calendar.YEAR, -17)
         }

@@ -48,6 +48,8 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
 
     private val binding: FragmentChangeBioUsernameBinding? by viewBinding()
 
+    private var profileFeed: ProfileFeed? = null
+
     private var maxChar = 0
     private var minChar = 0
     private var page = ""
@@ -99,7 +101,12 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
                 is Fail -> {
                     hideLoading()
                     view?.let { view ->
-                        Toaster.make(view, ErrorHandler.getErrorMessage(context, it.throwable), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                        Toaster.make(
+                            view,
+                            ErrorHandler.getErrorMessage(context, it.throwable),
+                            Toaster.LENGTH_LONG,
+                            Toaster.TYPE_ERROR
+                        )
                     }
                 }
             }
@@ -117,7 +124,12 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
 
                 is Fail -> {
                     view?.let { view ->
-                        Toaster.make(view, ErrorHandler.getErrorMessage(context, state.throwable), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                        Toaster.make(
+                            view,
+                            ErrorHandler.getErrorMessage(context, state.throwable),
+                            Toaster.LENGTH_LONG,
+                            Toaster.TYPE_ERROR
+                        )
                     }
                 }
             }
@@ -153,7 +165,15 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
     private fun onSuccessSubmitUsername() {
         tracker.trackOnBtnSimpanUsernameSuccess()
         val resultIntent = Intent()
-        resultIntent.putExtra(RESULT_KEY_MESSAGE_SUCCESS_USERNAME_BIO, getString(R.string.success_edit_profile_info))
+        if (profileFeed?.username.isNullOrEmpty())
+            resultIntent.putExtra(
+                RESULT_KEY_MESSAGE_SUCCESS_USERNAME_BIO,
+                getString(R.string.success_add_username)
+            )
+        else resultIntent.putExtra(
+            RESULT_KEY_MESSAGE_SUCCESS_USERNAME_BIO,
+            getString(R.string.success_edit_username)
+        )
         activity?.setResult(Activity.RESULT_OK, resultIntent)
         activity?.finish()
     }
@@ -166,24 +186,30 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
                     .getErrorMessage(getString(R.string.key_error_username))
                 setInvalidInputUsername(errorMsg)
                 view?.let { view ->
-                    Toaster.make(view, errorMsg,
-                        Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                    Toaster.make(
+                        view, errorMsg,
+                        Toaster.LENGTH_LONG, Toaster.TYPE_ERROR
+                    )
                 }
                 tracker.trackOnBtnSimpanUsernameFailed(errorMsg)
 
             } catch (e: MessageErrorException) {
                 val errorMsg = ErrorHandler.getErrorMessage(context, e)
                 view?.let { view ->
-                    Toaster.make(view, errorMsg,
-                        Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                    Toaster.make(
+                        view, errorMsg,
+                        Toaster.LENGTH_LONG, Toaster.TYPE_ERROR
+                    )
                 }
                 tracker.trackOnBtnSimpanUsernameFailed(errorMsg)
             }
         } else {
             view?.let { view ->
                 val errorMsg = ErrorHandler.getErrorMessage(context, error)
-                Toaster.make(view, errorMsg,
-                    Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                Toaster.make(
+                    view, errorMsg,
+                    Toaster.LENGTH_LONG, Toaster.TYPE_ERROR
+                )
                 tracker.trackOnBtnSimpanUsernameFailed(errorMsg)
             }
         }
@@ -193,7 +219,15 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
         tracker.trackOnBtnLanjutChangeBioSuccess()
         hideLoading()
         val resultIntent = Intent()
-        resultIntent.putExtra(RESULT_KEY_MESSAGE_SUCCESS_USERNAME_BIO, getString(R.string.success_edit_profile_info))
+        if (profileFeed?.biography.isNullOrBlank())
+            resultIntent.putExtra(
+                RESULT_KEY_MESSAGE_SUCCESS_USERNAME_BIO,
+                getString(R.string.success_add_bio)
+            ) else
+            resultIntent.putExtra(
+                RESULT_KEY_MESSAGE_SUCCESS_USERNAME_BIO,
+                getString(R.string.success_edit_bio)
+            )
         activity?.setResult(Activity.RESULT_OK, resultIntent)
         activity?.finish()
     }
@@ -210,16 +244,20 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
             } catch (e: MessageErrorException) {
                 val errorMsg = ErrorHandler.getErrorMessage(context, e)
                 view?.let { view ->
-                    Toaster.make(view, errorMsg,
-                        Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                    Toaster.make(
+                        view, errorMsg,
+                        Toaster.LENGTH_LONG, Toaster.TYPE_ERROR
+                    )
                 }
                 tracker.trackOnBtnLanjutChangeBioFailed(errorMsg)
             }
         } else {
             view?.let { view ->
                 val errorMsg = ErrorHandler.getErrorMessage(context, error)
-                Toaster.make(view, errorMsg,
-                    Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                Toaster.make(
+                    view, errorMsg,
+                    Toaster.LENGTH_LONG, Toaster.TYPE_ERROR
+                )
                 tracker.trackOnBtnLanjutChangeBioFailed(errorMsg)
 
             }
@@ -254,18 +292,21 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
 
     private fun initData(profileFeedData: ProfileFeedData) {
         val data = activity?.intent?.extras
+        profileFeed = profileFeedData.profile
         data?.let { bundle ->
             if (bundle[ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PARAM]
-                == ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_USERNAME) {
+                == ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_USERNAME
+            ) {
                 minChar = profileFeedData.userProfileConfiguration.usernameConfiguration.minimumChar
                 maxChar = profileFeedData.userProfileConfiguration.usernameConfiguration.maximumChar
                 page = ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_USERNAME
                 initViewsUsername(profileFeedData.profile)
-            }
-            else if (bundle[ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PARAM]
-                == ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_BIO) {
+            } else if (bundle[ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PARAM]
+                == ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_BIO
+            ) {
                 minChar = 0
-                maxChar = profileFeedData.userProfileConfiguration.biographyConfiguration.maximumChar
+                maxChar =
+                    profileFeedData.userProfileConfiguration.biographyConfiguration.maximumChar
                 page = ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_BIO
                 initViewsBio(profileFeedData.profile)
             }
@@ -284,12 +325,14 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
     private fun setToolbarUsername(data: ProfileFeed) {
         if (data.username.isNotEmpty()) {
             activity?.let {
-                (it as ChangeBioUsernameActivity).supportActionBar?.title = getString(R.string.title_toolbar_edit_username)
+                (it as ChangeBioUsernameActivity).supportActionBar?.title =
+                    getString(R.string.title_toolbar_edit_username)
             }
             binding?.stubField?.etUsername?.setMessage(getString(R.string.description_textfield_username))
         } else {
             activity?.let {
-                (it as ChangeBioUsernameActivity).supportActionBar?.title = getString(R.string.title_toolbar_add_username)
+                (it as ChangeBioUsernameActivity).supportActionBar?.title =
+                    getString(R.string.title_toolbar_add_username)
             }
         }
     }
@@ -307,12 +350,14 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
     private fun setToolbarBio(data: ProfileFeed) {
         if (data.biography.isNotEmpty()) {
             activity?.let {
-                (it as ChangeBioUsernameActivity).supportActionBar?.title = getString(R.string.title_toolbar_edit_bio)
+                (it as ChangeBioUsernameActivity).supportActionBar?.title =
+                    getString(R.string.title_toolbar_edit_bio)
             }
             binding?.stubField?.etUsername?.setMessage(getString(R.string.description_textfield_username))
         } else {
             activity?.let {
-                (it as ChangeBioUsernameActivity).supportActionBar?.title = getString(R.string.title_toolbar_add_bio)
+                (it as ChangeBioUsernameActivity).supportActionBar?.title =
+                    getString(R.string.title_toolbar_add_bio)
             }
         }
     }
@@ -324,7 +369,8 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
             viewModel.submitUsername(binding?.stubField?.etUsername?.editText?.text.toString())
         }
 
-        binding?.stubField?.etUsername?.textInputLayout?.editText?.addTextChangedListener(object : TextWatcher {
+        binding?.stubField?.etUsername?.textInputLayout?.editText?.addTextChangedListener(object :
+            TextWatcher {
             override fun beforeTextChanged(editable: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
@@ -354,7 +400,7 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
             viewModel.submitBio(binding?.stubField?.etBio?.editText?.text.toString())
         }
 
-        binding?.stubField?.etBio?.editText?.addTextChangedListener(object: TextWatcher {
+        binding?.stubField?.etBio?.editText?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
@@ -364,8 +410,11 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
 
             override fun afterTextChanged(p0: Editable?) {
                 if (binding?.stubField?.etBio?.editText?.lineCount ?: 0 > 10) {
-                    binding?.let{
-                        it.stubField.etBio.editText.text?.delete(it.stubField.etBio.editText.text.length - 1, it.stubField.etBio.editText.text.length)
+                    binding?.let {
+                        it.stubField.etBio.editText.text?.delete(
+                            it.stubField.etBio.editText.text.length - 1,
+                            it.stubField.etBio.editText.text.length
+                        )
                     }
                 }
                 if (binding?.stubField?.etBio?.isInputError == true) {
@@ -399,6 +448,7 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
     private fun setValidInput() {
         binding?.btnSubmit?.isEnabled = true
         binding?.stubField?.etUsername?.icon1?.show()
+        binding?.stubField?.etUsername?.setMessage(getString(R.string.description_textfield_username))
         binding?.stubField?.etUsername?.setMessage(getString(R.string.description_textfield_username))
         binding?.stubField?.etUsername?.isInputError = false
     }

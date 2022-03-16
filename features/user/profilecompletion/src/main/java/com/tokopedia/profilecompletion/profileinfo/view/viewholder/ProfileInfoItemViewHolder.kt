@@ -22,6 +22,7 @@ class ProfileInfoItemViewHolder(val view: View,
 	    }
 	}
 		binding?.fragmentProfileItemIcon?.setOnClickListener {
+			element?.action?.invoke()
 			listener.onRightIconClicked(element)
 		}
 	binding?.fragmentProfileItemTitle?.text = element?.title
