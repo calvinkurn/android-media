@@ -11,10 +11,10 @@ import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.widget.drawerselector.DrawerActionType
-import com.tokopedia.picker.widget.drawerselector.DrawerSelectionWidget
-import com.tokopedia.picker.widget.drawerselector.viewholder.PlaceholderViewHolder
-import com.tokopedia.picker.widget.drawerselector.viewholder.ThumbnailViewHolder
+import com.tokopedia.picker.widget.drawerselector.DebugDrawerActionType
+import com.tokopedia.picker.widget.drawerselector.DebugDrawerSelectionWidget
+import com.tokopedia.picker.widget.drawerselector.viewholder.DebugPlaceholderViewHolder
+import com.tokopedia.picker.widget.drawerselector.viewholder.DebugThumbnailViewHolder
 
 class DrawerSelectionAdapter(
     mediaPathList: List<MediaUiModel>,
@@ -23,7 +23,7 @@ class DrawerSelectionAdapter(
     private val medias: MutableList<MediaUiModel> = mediaPathList.toMutableList()
     private val listRect: MutableMap<Int, Rect> = mutableMapOf()
 
-    private var listener: DrawerSelectionWidget.Listener? = null
+    private var listener: DebugDrawerSelectionWidget.Listener? = null
     private var maxSize = 10
 
     var backgroundColorPlaceHolder: Int = 0
@@ -32,8 +32,8 @@ class DrawerSelectionAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            PLACEHOLDER_TYPE -> PlaceholderViewHolder.create(parent)
-            ITEM_TYPE -> ThumbnailViewHolder.create(parent)
+            PLACEHOLDER_TYPE -> DebugPlaceholderViewHolder.create(parent)
+            ITEM_TYPE -> DebugThumbnailViewHolder.create(parent)
             else -> error("invalid view holder type")
         }
     }
@@ -49,16 +49,14 @@ class DrawerSelectionAdapter(
                     setupDragListener(holder, position)
                 }
 
-                if (holder is ThumbnailViewHolder) {
-                    holder.bind(
-                        media,
-                        onClicked = { listener?.onItemClicked(media) },
-                        onRemoved = { removeData(media, true) }
-                    )
+                if (holder is DebugThumbnailViewHolder) {
+                    holder.bind(media) {
+                        listener?.onItemClicked(media)
+                    }
                 }
             }
             PLACEHOLDER_TYPE -> {
-                if (holder is PlaceholderViewHolder) {
+                if (holder is DebugPlaceholderViewHolder) {
                     holder.bind(backgroundColorPlaceHolder, placeholderPreview)
                 }
             }
@@ -73,7 +71,7 @@ class DrawerSelectionAdapter(
         return if (maxSize > 0) maxSize else medias.size
     }
 
-    fun setOnDataChangedListener(listener: DrawerSelectionWidget.Listener) {
+    fun setOnDataChangedListener(listener: DebugDrawerSelectionWidget.Listener) {
         this.listener = listener
     }
 
@@ -103,7 +101,7 @@ class DrawerSelectionAdapter(
 
             if (isPublishedOnListener) {
                 listener?.onDataSetChanged(
-                    DrawerActionType.Remove(medias, media, null)
+                    DebugDrawerActionType.Remove(medias, media, null)
                 )
             }
 
@@ -117,7 +115,7 @@ class DrawerSelectionAdapter(
         this.medias.add(media)
 
         listener?.onDataSetChanged(
-            DrawerActionType.Add(medias, media, null)
+            DebugDrawerActionType.Add(medias, media, null)
         )
 
         notifyDataSetChanged()
@@ -188,7 +186,7 @@ class DrawerSelectionAdapter(
                     medias[position] = draggedImagePath
 
                     listener?.onDataSetChanged(
-                        DrawerActionType.Reorder(medias, null)
+                        DebugDrawerActionType.Reorder(medias, null)
                     )
 
                     notifyDataSetChanged()

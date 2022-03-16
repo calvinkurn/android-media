@@ -4,5 +4,5 @@
         android:startColor="@android:color/transparent"
         android:endColor="#40444E"
         android:angle="270"/>
-    <corners android:radius="@dimen/picker_item_padding"/>
+    <corners android:radius="4dp"/>
 </shape>

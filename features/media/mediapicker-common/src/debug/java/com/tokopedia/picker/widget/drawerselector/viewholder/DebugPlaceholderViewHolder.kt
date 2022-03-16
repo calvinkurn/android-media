@@ -11,7 +11,7 @@ import com.tokopedia.picker.common.R
 import com.tokopedia.picker.common.databinding.ViewItemSelectionPlaceholderBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
-class PlaceholderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+class DebugPlaceholderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     private val binding: ViewItemSelectionPlaceholderBinding? by viewBinding()
 
@@ -29,12 +29,12 @@ class PlaceholderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     companion object {
         @LayoutRes val LAYOUT = R.layout.view_item_selection_placeholder
 
-        fun create(viewGroup: ViewGroup): PlaceholderViewHolder {
+        fun create(viewGroup: ViewGroup): DebugPlaceholderViewHolder {
             val view = LayoutInflater
                 .from(viewGroup.context)
                 .inflate(LAYOUT, viewGroup, false)
 
-            return PlaceholderViewHolder(view)
+            return DebugPlaceholderViewHolder(view)
         }
     }
 

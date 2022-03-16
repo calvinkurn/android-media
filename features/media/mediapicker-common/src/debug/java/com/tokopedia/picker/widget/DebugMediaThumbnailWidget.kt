@@ -7,21 +7,22 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.picker.common.databinding.WidgetMediaThumbnailBinding
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.picker.common.databinding.WidgetMediaThumbnailDebugBinding
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.utils.extractVideoDuration
 import com.tokopedia.picker.common.utils.toVideoDurationFormat
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_3
 import com.tokopedia.unifyprinciples.Typography.Companion.SMALL
 
-class MediaThumbnailWidget @JvmOverloads constructor(
+class DebugMediaThumbnailWidget @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : SquareFrameLayout(context, attributeSet, defStyleAttr) {
+) : DebugSquareFrameLayout(context, attributeSet, defStyleAttr) {
 
-    private val binding: WidgetMediaThumbnailBinding =
-        WidgetMediaThumbnailBinding.inflate(
+    private val binding: WidgetMediaThumbnailDebugBinding =
+        WidgetMediaThumbnailDebugBinding.inflate(
             LayoutInflater.from(context)
         ).also {
             addView(it.root)
@@ -40,7 +41,13 @@ class MediaThumbnailWidget @JvmOverloads constructor(
     private fun renderView(element: MediaUiModel?) {
         if (element == null) return
         binding.container.show()
-//        binding.imgPreview.pickerLoadImage(element.path)
+
+        binding.imgPreview.loadImage(element.path) {
+            isAnimate(true)
+            setPlaceHolder(-1)
+            centerCrop()
+        }
+
         binding.bgVideoShadow.showWithCondition(element.isVideo())
         binding.txtDuration.shouldShowWithAction(element.isVideo()) {
             videoDuration(element.path)

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.picker.widget.SquareFrameLayout
+<com.tokopedia.picker.widget.DebugSquareFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -46,4 +46,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</com.tokopedia.picker.widget.SquareFrameLayout>
+</com.tokopedia.picker.widget.DebugSquareFrameLayout>

@@ -14,7 +14,7 @@ import com.tokopedia.picker.common.databinding.WidgetSelectionBottomNavBinding
 import com.tokopedia.picker.widget.drawerselector.adapter.DrawerSelectionAdapter
 import com.tokopedia.picker.common.utils.Unify_N0
 
-class DrawerSelectionWidget : FrameLayout {
+class DebugDrawerSelectionWidget : FrameLayout {
 
     private var adapter: DrawerSelectionAdapter? = null
     private var placeHolderBackgroundColor: Int? = null
@@ -154,7 +154,7 @@ class DrawerSelectionWidget : FrameLayout {
 
     interface Listener {
         fun onItemClicked(media: MediaUiModel)
-        fun onDataSetChanged(action: DrawerActionType)
+        fun onDataSetChanged(action: DebugDrawerActionType)
     }
 
 }

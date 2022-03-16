@@ -15,12 +15,12 @@ import com.tokopedia.picker.common.intent.EXTRA_PICKER_PARAM
 import com.tokopedia.picker.common.intent.PickerIntent
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
-import com.tokopedia.picker.widget.drawerselector.DrawerActionType
-import com.tokopedia.picker.widget.drawerselector.DrawerSelectionWidget
+import com.tokopedia.picker.widget.drawerselector.DebugDrawerActionType
+import com.tokopedia.picker.widget.drawerselector.DebugDrawerSelectionWidget
 import com.tokopedia.utils.view.binding.viewBinding
 import java.io.File
 
-class DebugPickerActivity : AppCompatActivity(), DrawerSelectionWidget.Listener {
+class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.Listener {
 
     private val binding: ActivityPickerDebugBinding? by viewBinding()
 
@@ -62,7 +62,7 @@ class DebugPickerActivity : AppCompatActivity(), DrawerSelectionWidget.Listener 
         binding?.drawerSelector?.removeListener()
     }
 
-    override fun onDataSetChanged(action: DrawerActionType) {
+    override fun onDataSetChanged(action: DebugDrawerActionType) {
 
     }
 

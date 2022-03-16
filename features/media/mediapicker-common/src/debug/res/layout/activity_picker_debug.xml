@@ -40,7 +40,7 @@
         android:layout_below="@+id/btn_action"
         android:layout_above="@+id/drawer_selector" />
 
-    <com.tokopedia.picker.widget.drawerselector.DrawerSelectionWidget
+    <com.tokopedia.picker.widget.drawerselector.DebugDrawerSelectionWidget
         android:id="@+id/drawer_selector"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
