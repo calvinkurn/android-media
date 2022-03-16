@@ -31,9 +31,7 @@ import javax.inject.Inject
 class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface) {
 
     private val remoteConfig = RemoteConfigInstance.getInstance().abTestPlatform
-    private val isNewOtpMiscall by lazy {
-        remoteConfig?.getString(ROLLANCE_KEY_MISCALL_OTP)?.contains(ROLLANCE_KEY_MISCALL_OTP) == true
-    }
+    private val isNewOtpMiscall = remoteConfig?.getString(ROLLANCE_KEY_MISCALL_OTP)?.contains(ROLLANCE_KEY_MISCALL_OTP) == true
 
     fun trackScreen(screenName: String) {
         Timber.w("""P2screenName = $screenName | ${Build.FINGERPRINT} | ${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | ${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}""")
