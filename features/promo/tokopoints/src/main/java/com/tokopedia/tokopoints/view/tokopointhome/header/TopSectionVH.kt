@@ -624,7 +624,7 @@ class TopSectionVH(
             itemView.context,
             ApplinkConstInternalGlobal.WEBVIEW_TITLE,
             itemView.context.resources.getString(R.string.tp_label_membership),
-            "https://1031-staging-feature.tokopedia.com/rewards/membership"
+            "https://1165-beta-feature.tokopedia.com/rewards/membership"
         )
 
         AnalyticsTrackerUtil.sendEvent(itemView.context,
