@@ -3434,10 +3434,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             popUpDialog.setDescription(popUpData.getDescription());
             popUpDialog.setPrimaryCTAText(popUpData.getButton().getText());
             popUpDialog.setPrimaryCTAClickListener(() -> {
-                shipmentPresenter.processInitialLoadCheckoutPage(
-                        true, isOneClickShipment(), isTradeIn(), true,
-                        true, null, getDeviceId(), getCheckoutLeasingId()
-                );
                 popUpDialog.dismiss();
                 return Unit.INSTANCE;
             });
