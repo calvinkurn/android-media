@@ -18,6 +18,17 @@ data class MiniCartSimplifiedData(
 
 }
 
+data class MiniCartSimplifiedData2(
+        var miniCartWidgetData: MiniCartWidgetData = MiniCartWidgetData(),
+        var miniCartItems: Map<MiniCartItemKey, MiniCartItem2> = emptyMap(),
+        var isShowMiniCartWidget: Boolean = false
+) {
+
+    fun a() {
+        miniCartItems[MiniCartItemKey("2234", isBundle = true)]
+    }
+}
+
 data class MiniCartWidgetData(
         var totalProductCount: Int = 0,
         var totalProductPrice: Long = 0,
@@ -52,3 +63,51 @@ data class MiniCartItem(
         var productVariantName: String = "",
         var productPrice: Long = 0L
 )
+
+class MiniCartItemKey(
+        var id: String,
+        var isBundle: Boolean = false
+)
+
+sealed class MiniCartItem2 {
+    data class MiniCartItemBundle(
+            var isError: Boolean = false,
+            var bundleId: String = "",
+            var bundleGroupId: String = "",
+            var bundleTitle: String = "",
+            var bundlePrice: Long = 0L,
+            var bundleSlashPriceLabel: String = "",
+            var bundleOriginalPrice: Long = 0L,
+            var bundleQuantity: Int = 0,
+            var editBundleApplink: String = "",
+            var bundleIconUrl: String = "",
+            var bundleLabelQuantity: Int = 0,
+            var products: List<MiniCartItemProduct> = emptyList()
+    ): MiniCartItem2()
+
+    data class MiniCartItemProduct(
+            var isError: Boolean = false,
+            var cartId: String = "",
+            var productId: String = "",
+            var productParentId: String = "",
+            var quantity: Int = 0,
+            var notes: String = "",
+            var cartString: String = "",
+
+            // Fields below are for analytics & atc occ purpose only
+            var campaignId: String = "",
+            var attribution: String = "",
+            var productWeight: Int = 0,
+            var productSlashPriceLabel: String = "",
+            var warehouseId: String = "",
+            var shopId: String = "",
+            var shopName: String = "",
+            var shopType: String = "",
+            var categoryId: String = "",
+            var freeShippingType: String = "",
+            var category: String = "",
+            var productName: String = "",
+            var productVariantName: String = "",
+            var productPrice: Long = 0L
+    ): MiniCartItem2()
+}
