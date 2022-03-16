@@ -221,7 +221,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
                 listener?.onShowMediaLimitReachedToast()
                 return false
             }
-        } else {
+        } else if (!cacheManager.getParam().isMultipleSelectionType()) {
             if (listener?.mediaSelected()?.isNotEmpty() == true || adapter.selectedMedias.isNotEmpty()) {
                 adapter.removeAllSelectedSingleClick()
             }
