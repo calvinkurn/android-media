@@ -49,12 +49,6 @@ fun clickOnButtonWithTextAndId(textButton: String, resId: Int) {
         .perform(click())
 }
 
-fun clickOnButtonWithText(textButton: String) {
-    onView(allOf(withText(textButton)))
-        .check(matches(isDisplayed()))
-        .perform(click())
-}
-
 fun scrollToView(resId: Int) {
     onView(withId(resId))
         .perform(scrollTo())
@@ -85,22 +79,4 @@ fun setText(resId: Int, text: String) {
 fun simulateOnBackPressed() {
     Thread.sleep(2000)
     Espresso.pressBackUnconditionally()
-}
-
-
-fun clickChildViewWithId(id: Int): ViewAction {
-    return object : ViewAction {
-        override fun getConstraints(): Matcher<View>? {
-            return null
-        }
-
-        override fun getDescription(): String {
-            return "Click on a child view with specified id."
-        }
-
-        override fun perform(uiController: UiController?, view: View) {
-            val v: View = view.findViewById(id)
-            v.performClick()
-        }
-    }
 }
