@@ -41,6 +41,9 @@ class ChipsViewHolder(
         }
     }
 
+    /**
+     * set default selection answers from BE
+     */
     private fun setSelectionByResponse(questionDataModel: QuestionDataModel) {
         itemViewBinding?.chipsCategories?.apply {
             if (questionDataModel.answerValue == ANSWER_YES) {

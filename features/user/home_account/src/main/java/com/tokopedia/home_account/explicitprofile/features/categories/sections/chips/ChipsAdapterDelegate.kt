@@ -10,8 +10,8 @@ class ChipsAdapterDelegate(
 ) : TypedAdapterDelegate<QuestionDataModel, QuestionDataModel, ChipsViewHolder>(
     ChipsViewHolder.LAYOUT
 ) {
-    override fun onBindViewHolder(item: QuestionDataModel, holderChips: ChipsViewHolder) {
-        holderChips.onBind(item)
+    override fun onBindViewHolder(item: QuestionDataModel, holder: ChipsViewHolder) {
+        holder.onBind(item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): ChipsViewHolder {

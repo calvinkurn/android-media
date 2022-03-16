@@ -19,6 +19,10 @@ class ExplicitProfileSharedViewModel @Inject constructor(
     private val defaultUserAnswers: MutableList<TemplateDataModel> = mutableListOf()
     private val userAnswersCollection: MutableList<TemplateDataModel> = mutableListOf()
 
+    /**
+     * to save temporary data from BE on variable [defaultUserAnswers]
+     * also clone data into [userAnswersCollection], and the variable used to collect latest user answesr
+     */
     fun setDefaultTemplatesData(templateDataModel: TemplateDataModel) {
         val template = defaultUserAnswers.find { template ->
             template.id ==  templateDataModel.id
@@ -30,10 +34,18 @@ class ExplicitProfileSharedViewModel @Inject constructor(
         }
     }
 
+    /**
+     * used to compare between selected answers from user and default answers from BE
+     * and the data used to update `Simpan` button enable stat on [ExplicitProfileFragment.onSelectionAnswersChange]
+     */
     fun isAnswersSameWithDefault(): Boolean {
        return defaultUserAnswers.toString() == userAnswersCollection.toString()
     }
 
+    /**
+     * to update user answers
+     * also update data on [userAnswersCollection]
+     */
     fun onAnswerChange(templateDataModel: TemplateDataModel) {
         launch {
             userAnswersCollection.find {
@@ -44,6 +56,17 @@ class ExplicitProfileSharedViewModel @Inject constructor(
         }
     }
 
+    /**
+     * to create json string format
+     * used for clone data deeply and with unique addresses, because mutableList have issue when copy from another mutableList
+     * --
+     * detail issue :
+     * if we have data A(id = 1) & B(id = 2)
+     * then copy data A into B (B = A), B(id = 1) A(id = 1)
+     * and I change data from B.id = 0
+     * data A.id also change into 0 too
+     * caused : address from both data is same
+     */
     private fun deepCopyData(templateDataModel: TemplateDataModel): TemplateDataModel {
         val json = Gson().toJson(templateDataModel)
         return Gson().fromJson(json, TemplateDataModel::class.java)

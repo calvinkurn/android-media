@@ -98,6 +98,9 @@ class ExplicitProfileResult {
     }
 }
 
+/**
+ * perform click on component [IconUnify]
+ */
 fun clickOnUnifyIcon() : ViewAction {
     return object : ViewAction {
         override fun getConstraints(): Matcher<View> {

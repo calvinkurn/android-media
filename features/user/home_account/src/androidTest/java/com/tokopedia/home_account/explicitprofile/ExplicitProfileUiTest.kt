@@ -12,11 +12,13 @@ class ExplicitProfileUiTest : BaseExplicitProfileTest() {
     @Test
     fun selectTabKategoriLain() {
         explicitProfileRobot {
-            // simulate swipe tab
+            /**
+             * Simulate swipe tab to left
+             * 2x swipe to make sure latest tab is displayed
+             */
             swipeTabLeft()
             swipeTabLeft()
 
-            // select tab `Kategori Lain`
             selectTabWithText("Kategori Lain")
         } validateComponent {
             shouldViewEmptyPage()
@@ -28,6 +30,10 @@ class ExplicitProfileUiTest : BaseExplicitProfileTest() {
     @Test
     fun saveShoppingPreferences() {
         explicitProfileRobot {
+            /**
+             * click on chips with text
+             * it's expected with duplicate code, to simulate user answers with `Halal` option back to default
+             */
             clickAnswerWithText("Halal")
             clickAnswerWithText("Vegan")
             clickAnswerWithText("Halal")
@@ -43,6 +49,10 @@ class ExplicitProfileUiTest : BaseExplicitProfileTest() {
     @Test
     fun userAnswerSameWithDefault() {
         explicitProfileRobot {
+            /**
+             * click on chips with text
+             * it's expected with duplicate code, to simulate user answers back to default
+             */
             clickAnswerWithText("Halal")
             clickAnswerWithText("Vegan")
             clickAnswerWithText("Halal")

@@ -28,13 +28,7 @@ class ExplicitProfilePageAdapter(
         generatedFragments.add(fragment)
         return fragment
     }
-
-    fun getFragments(): MutableList<Fragment> = generatedFragments
-
-    fun getFragmentByPosition(position: Int): Fragment {
-        return generatedFragments[position]
-    }
-
+    
     fun clearFragments() {
         notifyItemRangeRemoved(0, itemCount)
         generatedFragments.clear()

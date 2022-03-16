@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.tabs.TabLayout
@@ -221,6 +220,10 @@ class ExplicitProfileFragment : BaseDaggerFragment() {
         setupViews()
     }
 
+    /**
+     * receiving data from [ExplicitProfileSharedViewModel.onAnswerChange]
+     * when user update default/selected answer than update `Simpan` button enable status
+     */
     private fun onSelectionAnswersChange(newTemplateDataModel: TemplateDataModel) {
         val template = templatesDataModel.find {
             it.id == newTemplateDataModel.id
@@ -287,7 +290,7 @@ class ExplicitProfileFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        fun createInstance(): Fragment {
+        fun createInstance(): ExplicitProfileFragment {
             return ExplicitProfileFragment()
         }
     }
