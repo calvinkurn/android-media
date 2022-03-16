@@ -509,9 +509,11 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             }
 
             if (isFollowed) {
+                userProfileTracker?.clickUnfollow(userId, profileUserId == userId)
                 mPresenter.doUnFollow(userIdEnc)
                 updateToUnFollowUi()
             } else {
+                userProfileTracker?.clickFollow(userId, profileUserId == userId)
                 mPresenter.doFollow(userIdEnc)
                 updateToFollowUi()
             }
@@ -554,6 +556,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             UserProfileUtils.getFormattedNumber(data.profileHeader.stats.totalFollower)
         textFollowingCount?.text =
             UserProfileUtils.getFormattedNumber(data.profileHeader.stats.totalFollowing)
+
+        userProfileTracker?.openUserProfile(screenName = screenName, userId, live = data.profileHeader.profile.liveplaychannel.islive)
 
         setProfileImg(data.profileHeader.profile)
 
@@ -643,6 +647,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     }
 
     private fun setProfileImg(profile: Profile) {
+
         if (profile == null
             || profile.liveplaychannel == null
             || profile.liveplaychannel.liveplaychannellink == null
@@ -669,7 +674,9 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
             textLive?.setOnClickListener(null)
             textLive?.setOnClickListener(null)
-            imgProfile?.setOnClickListener(null)
+            imgProfile?.setOnClickListener{
+                userProfileTracker?.clickProfilePicture(userId, profileUserId == userId, profile.liveplaychannel.liveplaychannelid)
+            }
         }
     }
 
@@ -679,7 +686,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         headerProfile?.apply {
             setNavigationOnClickListener {
                 activity?.onBackPressed()
-                userProfileTracker?.clickBack(sessionIris = "", userId, self = true)
+                userProfileTracker?.clickBack(userId, self = profileUserId == userId)
             }
 
             val imgShare = addRightIcon(0)
@@ -696,6 +703,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
             imgShare.setOnClickListener {
                 showUniversalShareBottomSheet()
+                userProfileTracker?.clickShare(userId, self = profileUserId == userId)
+                userProfileTracker?.clickShareButton(userId, self = profileUserId == userId)
             }
 
             val imgMenu = addRightIcon(0)
@@ -712,6 +721,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             )
 
             imgMenu.setOnClickListener {
+                userProfileTracker?.clickBurgerMenu(userId, self = profileUserId == userId)
                 RouteManager.route(activity, APPLINK_MENU)
             }
         }
@@ -749,6 +759,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     override fun onClick(source: View) {
         when (source.id) {
             R.id.text_following_count, R.id.text_following_label -> {
+                userProfileTracker?.clickFollowing(userId, profileUserId == userId)
                 startActivity(activity?.let {
                     FollowerFollowingListingActivity.getCallingIntent(
                         it,
@@ -758,6 +769,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             }
 
             R.id.text_follower_count, R.id.text_follower_label -> {
+                userProfileTracker?.clickFollowers(userId, profileUserId == userId)
                 startActivity(activity?.let {
                     FollowerFollowingListingActivity.getCallingIntent(
                         it,
@@ -767,6 +779,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             }
 
             R.id.text_see_more -> {
+                userProfileTracker?.clickSelengkapnya(userId, profileUserId == userId)
                 val textBio = view?.findViewById<TextView>(R.id.text_bio)
                 val btnSeeAll = view?.findViewById<TextView>(R.id.text_see_more)
                 textBio?.maxLines = MAX_LINE
@@ -781,6 +794,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         bundle.putString(EXTRA_DISPLAY_NAME, displayName)
         bundle.putString(EXTRA_USER_NAME, userName)
         bundle.putString(EXTRA_USER_ID, userId)
+        bundle.putString(EXTRA_PROFILE_USER_ID, profileUserId)
         bundle.putString(EXTRA_TOTAL_FOLLOWINGS, totalFollowings)
         bundle.putString(EXTRA_TOTAL_FOLLOWERS, totalFollowers)
         bundle.putBoolean(EXTRA_IS_FOLLOWERS, isFollowers)
@@ -853,6 +867,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         const val EXTRA_TOTAL_FOLLOWINGS = "total_following"
         const val EXTRA_USER_NAME = "user_name"
         const val EXTRA_USER_ID = "userid"
+        const val EXTRA_PROFILE_USER_ID = "profileUserid"
         const val EXTRA_IS_FOLLOWERS = "is_followers"
         const val APPLINK_MENU = "tokopedia://navigation/main"
         const val APPLINK_PROFILE = "tokopedia://setting/profile"
@@ -912,6 +927,10 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                             shareString
                         )
                         // send gtm trackers if you want to
+                        shareModel.channel?.let { it1 ->
+                            userProfileTracker?.clickShareChannel(userId, profileUserId == userId, it1)
+                        }
+                        userProfileTracker?.viewShareChannel(userId, profileUserId == userId)
                         universalShareBottomSheet?.dismiss()
                     }
                 }
@@ -926,6 +945,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     override fun onCloseOptionClicked() {
 //        TODO gtm tracking
         //This method will be mostly used for GTM Tracking stuff. So add the tracking accordingly
+        userSession?.userId?.let { UserProfileTracker().clickCloseShareButton(it, profileUserId == it) }
     }
 }
 

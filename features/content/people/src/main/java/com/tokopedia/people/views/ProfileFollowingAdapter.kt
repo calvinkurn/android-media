@@ -7,9 +7,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.people.model.ProfileFollowerV2
-import com.tokopedia.people.model.ProfileFollowingListBase
-import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -17,6 +14,9 @@ import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.library.baseadapter.BaseItem
 import com.tokopedia.people.R
+import com.tokopedia.people.model.ProfileFollowerV2
+import com.tokopedia.people.model.ProfileFollowingListBase
+import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -127,6 +127,7 @@ open class ProfileFollowingAdapter(
                             UserProfileFragment.REQUEST_CODE_LOGIN
                         )
                     } else {
+                        UserProfileTracker().clickUnfollowFromFollowing(userSession.userId, item.profile.userID == userSession.userId)
                         viewModel.doUnFollow(item.profile.encryptedUserID)
                         item.isFollow = false
                         notifyItemChanged(position)
@@ -162,6 +163,7 @@ open class ProfileFollowingAdapter(
                             UserProfileFragment.REQUEST_CODE_LOGIN
                         )
                     } else {
+                        UserProfileTracker().clickFollowFromFollowing(userSession.userId, item.profile.userID == userSession.userId)
                         viewModel.doFollow(item.profile.encryptedUserID)
                         item.isFollow = true
                         notifyItemChanged(position)
@@ -171,6 +173,7 @@ open class ProfileFollowingAdapter(
         }
 
         holder.itemView.setOnClickListener { v ->
+            UserProfileTracker().clickUserFollowing(userSession.userId, item.profile.userID == userSession.userId)
             RouteManager.route(itemContext, item.profile.sharelink.applink)
         }
     }

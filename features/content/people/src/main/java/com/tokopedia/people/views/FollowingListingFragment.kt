@@ -15,17 +15,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-import com.tokopedia.people.ErrorMessage
-import com.tokopedia.people.Loading
-import com.tokopedia.people.Success
-import com.tokopedia.people.di.UserProfileModule
-import com.tokopedia.people.di.DaggerUserProfileComponent
-import com.tokopedia.people.model.ProfileHeaderBase
-import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.library.baseadapter.AdapterCallback
+import com.tokopedia.people.ErrorMessage
+import com.tokopedia.people.Loading
 import com.tokopedia.people.R
+import com.tokopedia.people.Success
+import com.tokopedia.people.di.DaggerUserProfileComponent
+import com.tokopedia.people.di.UserProfileModule
+import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.user.session.UserSession
 import java.net.SocketTimeoutException
@@ -83,6 +82,7 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
         globalError = view?.findViewById(R.id.ge_followers)
         initObserver()
         initMainUi()
+        UserProfileTracker().openFollowingTab(userSessionInterface.userId,  arguments?.getString(UserProfileFragment.EXTRA_PROFILE_USER_ID)== userSessionInterface.userId)
     }
 
     private fun initObserver() {
