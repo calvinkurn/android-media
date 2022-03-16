@@ -20,7 +20,7 @@ class PlayProductTagUiMapper @Inject constructor() {
             mapProduct(it, ProductSectionType.getSectionValue(sectionType = input.sectionType))
         },
         config = mapConfig(input),
-        id = input.id
+        id = input.id,
     )
 
     private fun mapConfig(input: Section) = ProductSectionUiModel.Section.ConfigUiModel(
