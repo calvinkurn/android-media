@@ -54,7 +54,7 @@
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginEnd="@dimen/play_offset_12"
+        android:layout_marginEnd="@dimen/dp_20"
         android:visibility="gone"
         app:icon_name="BELL"
         app:layout_constraintEnd_toEndOf="parent"
