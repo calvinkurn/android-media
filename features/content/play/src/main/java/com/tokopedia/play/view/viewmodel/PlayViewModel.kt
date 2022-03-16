@@ -1016,9 +1016,11 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun checkReminderStatus(){
         if(userSession.isLoggedIn)
-            _tagItems.value.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().forEach {
-                if(it.config.type == ProductSectionType.Upcoming) checkUpcomingCampaignSub(it)
-            }
+            _tagItems.value.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>()
+                .filter { it.config.type == ProductSectionType.Upcoming }
+                .forEach {
+                    checkUpcomingCampaignSub(it)
+                }
     }
 
     /**
@@ -2030,16 +2032,14 @@ class PlayViewModel @AssistedInject constructor(
     fun sendReminder(productUiModel: ProductSectionUiModel.Section){
         viewModelScope.launchCatchError(block = {
             playAnalytic.clickUpcomingReminder(productUiModel, channelId, channelType)
-            val data = withContext(dispatchers.io) {
-                repo.subscribeUpcomingCampaign(campaignId = productUiModel.id.toLongOrZero())
-            }
-            if(data.first) {
+            val data = repo.subscribeUpcomingCampaign(campaignId = productUiModel.id.toLongOrZero())
+            val message = if(data.first) {
                 updateReminderUi(productUiModel.config.reminder.reversed(productUiModel.id.toLongOrZero()))
-                _uiEvent.emit(ShowInfoEvent(message = if(data.second.isNotEmpty()) UiString.Text(data.second) else UiString.Resource(R.string.play_product_upcoming_reminder_success)))
+                if(data.second.isNotEmpty()) UiString.Text(data.second) else UiString.Resource(R.string.play_product_upcoming_reminder_success)
+            } else {
+                if(data.second.isNotEmpty()) UiString.Text(data.second) else UiString.Resource(R.string.play_product_upcoming_reminder_error)
             }
-            else {
-                _uiEvent.emit(ShowInfoEvent(message = if(data.second.isNotEmpty()) UiString.Text(data.second) else UiString.Resource(R.string.play_product_upcoming_reminder_error)))
-            }
+            _uiEvent.emit(ShowInfoEvent(message))
         }){
             _uiEvent.emit(ShowErrorEvent(it))
         }
@@ -2047,9 +2047,7 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun checkUpcomingCampaignSub(productUiModel: ProductSectionUiModel.Section){
         viewModelScope.launchCatchError(block = {
-            val data = withContext(dispatchers.io) {
-                repo.checkUpcomingCampaign(campaignId = productUiModel.id.toLongOrZero())
-            }
+            val data = repo.checkUpcomingCampaign(campaignId = productUiModel.id.toLongOrZero())
             if (data)
                 updateReminderUi(productUiModel.config.reminder.reversed(productUiModel.id.toLongOrZero()))
         }){
