@@ -115,14 +115,4 @@
 
     <string name="static_assets_ic_my_bills_link">https://images.tokopedia.net/img/android/recharge_order_details/sbm.png</string>
     <string name="static_assets_ic_langganan_link">https://images.tokopedia.net/img/android/recharge_order_details/langganan.png</string>
-
-    <string name="deals_ticker_cashback">ticker_for_cashback</string>
-    <string name="deals_ticker_full_refund_no_promo">ticker_full_refund_no_promo</string>
-    <string name="deals_ticker_full_refund_cashback">ticker_full_refund_cashback</string>
-    <string name="deals_ticker_full_refund_discount">ticker_full_refund_discount</string>
-    <string name="deals_ticker_partial_refund_no_promo">ticker_partial_refund_no_promo</string>
-    <string name="deals_ticker_partial_refund_cashback">ticker_partial_refund_cashback</string>
-    <string name="deals_ticker_partial_refund_discount">ticker_partial_refund_discount</string>
-    <string name="deals_order_canceled">Transaksi Dibatalkan</string>
-    <string name="deals_order_success">Transaksi Berhasil</string>
 </resources>

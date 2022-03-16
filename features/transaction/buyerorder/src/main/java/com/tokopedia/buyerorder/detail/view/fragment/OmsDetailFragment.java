@@ -159,6 +159,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     private Typography bannerMainTitle;
     private Typography bannerSubTitle;
     private Ticker tickerStatus;
+    private Ticker tickerDetail;
     private NestedScrollView parentScroll;
     private Boolean _isDownloadable;
 
@@ -223,6 +224,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         bannerSubTitle = view.findViewById(R.id.tg_deal_banner_sub_title);
         parentScroll = view.findViewById(R.id.parentScroll);
         tickerStatus = view.findViewById(R.id.ticker_status);
+        tickerDetail = view.findViewById(R.id.ticker_detail_order);
 
         localCacheHandler = new LocalCacheHandler(getContext(),PREFERENCES_NAME);
 
@@ -329,40 +331,19 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     private void setTicker(List<AdditionalTickerInfo> additionalTickerInfoList, String status){
-        if (status.equals(getString(R.string.deals_order_canceled))){
+        if (additionalTickerInfoList.size() > 0){
             tickerStatus.setVisibility(View.VISIBLE);
-            setTickerByFilter(
-                    additionalTickerInfoList,
-                    getString(R.string.deals_ticker_full_refund_no_promo),
-                    getString(R.string.deals_ticker_full_refund_cashback),
-                    getString(R.string.deals_ticker_full_refund_discount)
-            );
-        }else if (status.equals(getString(R.string.deals_order_success))){
-            tickerStatus.setVisibility(View.VISIBLE);
-            setTickerByFilter(
-                    additionalTickerInfoList,
-                    getString(R.string.deals_ticker_partial_refund_no_promo),
-                    getString(R.string.deals_ticker_cashback)
-            );
+            tickerStatus.setTextDescription(additionalTickerInfoList.get(0).getNotes());
+            if (additionalTickerInfoList.size() > 1){
+                tickerDetail.setVisibility(View.VISIBLE);
+                tickerDetail.setTextDescription(additionalTickerInfoList.get(1).getNotes());
+            }else{
+                tickerDetail.setVisibility(View.GONE);
+            }
         }else{
             tickerStatus.setVisibility(View.GONE);
+            tickerDetail.setVisibility(View.GONE);
         }
-    }
-
-    private void setTickerByFilter(
-            List<AdditionalTickerInfo> additionalTickerInfoList,
-            String ...param
-    ){
-        if (!additionalTickerInfoList.isEmpty()){
-            for (AdditionalTickerInfo additionalTickerInfo: additionalTickerInfoList){
-                if (additionalTickerInfo.getTitle().equals(param[0]) ||
-                        additionalTickerInfo.getTitle().equals(param[1]) ||
-                        additionalTickerInfo.getTitle().equals(param[2])
-                ){
-                    tickerStatus.setTextDescription(additionalTickerInfo.getNotes());
-                }else{ tickerStatus.setVisibility(View.GONE); }
-            }
-        }else { tickerStatus.setVisibility(View.GONE); }
     }
 
     @Override
