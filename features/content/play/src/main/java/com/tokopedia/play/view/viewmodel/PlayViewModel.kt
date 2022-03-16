@@ -883,7 +883,6 @@ class PlayViewModel @AssistedInject constructor(
         trackVisitChannel(channelData.id, channelData.channelReportInfo.shouldTrack, channelData.channelReportInfo.sourceType)
 
         updateTagItems()
-        getKolHeader(channelData.partnerInfo)
         updateChannelStatus()
 
         updateChannelInfo(channelData)
@@ -1198,7 +1197,11 @@ class PlayViewModel @AssistedInject constructor(
         return if (userSession.isLoggedIn) {
             when(partnerInfo.type){
                 PartnerType.Shop -> repo.getIsFollowingPartner(partnerId = partnerInfo.id)
-                PartnerType.Buyer -> repo.getFollowingKOL(partnerInfo.id.toString())
+                PartnerType.Buyer -> {
+                    val data = repo.getFollowingKOL(partnerInfo.id.toString())
+                    _observableKolId.value = data.second
+                    data.first
+                }
                 else -> false
             }
         } else false
@@ -2026,15 +2029,6 @@ class PlayViewModel @AssistedInject constructor(
             metaTitle = shareInfo.metaTitle,
             metaDescription = shareInfo.metaDescription,
         )
-    }
-
-    private fun getKolHeader(partnerInfo: PlayPartnerInfo){
-        if(userSession.isLoggedIn && partnerInfo.type == PartnerType.Buyer){
-            viewModelScope.launchCatchError(block =  {
-                val kolId = repo.getProfileHeader(partnerInfo.id.toString())
-                _observableKolId.value = kolId
-            }){}
-        }
     }
 
     companion object {

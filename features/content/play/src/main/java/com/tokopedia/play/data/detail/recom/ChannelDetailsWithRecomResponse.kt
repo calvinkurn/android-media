@@ -272,5 +272,8 @@ data class ChannelDetailsWithRecomResponse(
 
         @SerializedName("copy_text_redirect_button")
         val redirectButtonText: String = "",
+
+        @SerializedName("image_url")
+        val imageUrl: String = "",
     )
 }

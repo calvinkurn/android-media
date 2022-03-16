@@ -31,7 +31,6 @@ class PlayViewerPartnerRepositoryTest {
 
     private val getSellerInfoUsecase: GetSellerInfoUsecase = mockk(relaxed = true)
     private val postFollowPartnerUseCase: PostFollowPartnerUseCase = mockk(relaxed = true)
-    private val getProfileInfoUseCase: GetProfileInfoUseCase = mockk(relaxed = true)
     private val getFollowingKOLUseCase: GetFollowingKOLUseCase = mockk(relaxed = true)
     private val postFollowKolUseCase: PostFollowKolUseCase = mockk(relaxed = true)
     private val postUnfollowKolUseCase: PostUnfollowKolUseCase = mockk(relaxed = true)
@@ -60,7 +59,7 @@ class PlayViewerPartnerRepositoryTest {
         )
 
         partnerRepo = PlayViewerPartnerRepositoryImpl(
-            getSellerInfoUsecase, postFollowPartnerUseCase, getProfileInfoUseCase, getFollowingKOLUseCase, postFollowKolUseCase, postUnfollowKolUseCase, playUiModelMapper, testDispatcher
+            getSellerInfoUsecase, postFollowPartnerUseCase, getFollowingKOLUseCase, postFollowKolUseCase, postUnfollowKolUseCase, playUiModelMapper, testDispatcher
         )
     }
 
@@ -139,23 +138,25 @@ class PlayViewerPartnerRepositoryTest {
     }
 
     @Test
-    fun `when user want to enter live room and the streamer is buyer fetch enc userid`(){
+    fun `when user enter live room and the streamer is buyer fetch enc userid`(){
         runBlockingTest {
-            val response = ProfileHeader.Response(
-                response = ProfileHeader(
-                    profileInfo = ProfileHeader.ProfileInfo(encryptedUserId = encUserId)
+            val response = FollowKOL.Response(
+                response = FollowKOL(
+                    followedKOLInfo = listOf(
+                        FollowKOL.FollowedKOL(encryptedUserId = encUserId)
+                    )
                 )
             )
 
-            coEvery { getProfileInfoUseCase.executeOnBackground() } returns response
+            coEvery { getFollowingKOLUseCase.executeOnBackground() } returns response
 
-            val result = partnerRepo.getProfileHeader(
-                kolId = partnerId.toString()
+            val result = partnerRepo.getFollowingKOL(
+                followedKol = partnerId.toString()
             )
 
-            coVerify { getProfileInfoUseCase.executeOnBackground() }
+            coVerify { getFollowingKOLUseCase.executeOnBackground() }
 
-            result.assertEqualTo(response.response.profileInfo.encryptedUserId)
+            result.second.assertEqualTo(encUserId)
         }
     }
 
@@ -178,7 +179,7 @@ class PlayViewerPartnerRepositoryTest {
 
             coVerify { getFollowingKOLUseCase.executeOnBackground() }
 
-            result.assertTrue()
+            result.first.assertTrue()
         }
     }
 
@@ -201,7 +202,7 @@ class PlayViewerPartnerRepositoryTest {
 
             coVerify { getFollowingKOLUseCase.executeOnBackground() }
 
-            result.assertFalse()
+            result.first.assertFalse()
         }
     }
     @Test

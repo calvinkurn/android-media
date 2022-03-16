@@ -14,7 +14,6 @@ import javax.inject.Inject
 class PlayViewerPartnerRepositoryImpl @Inject constructor(
     private val getSellerInfoUsecase: GetSellerInfoUsecase,
     private val postFollowPartnerUseCase: PostFollowPartnerUseCase,
-    private val getProfileInfoUseCase: GetProfileInfoUseCase,
     private val getFollowingKOLUseCase: GetFollowingKOLUseCase,
     private val postFollowKolUseCase: PostFollowKolUseCase,
     private val postUnfollowKolUseCase: PostUnfollowKolUseCase,
@@ -35,17 +34,7 @@ class PlayViewerPartnerRepositoryImpl @Inject constructor(
         }.executeOnBackground()
     }
 
-    /**
-     * Get KOL encUserId to do post follow / un
-     * */
-    override suspend fun getProfileHeader(kolId: String): String = withContext(dispatchers.io){
-        val encUserId = getProfileInfoUseCase.apply {
-            setRequestParams(createParam(kolId))
-        }.executeOnBackground()
-        return@withContext mapper.mapProfileHeader(encUserId.response)
-    }
-
-    override suspend fun getFollowingKOL(followedKol: String): Boolean = withContext(dispatchers.io){
+    override suspend fun getFollowingKOL(followedKol: String): Pair<Boolean, String> = withContext(dispatchers.io){
         val status = getFollowingKOLUseCase.apply {
             setRequestParams(createParam(followedKol))
         }.executeOnBackground()

@@ -141,6 +141,7 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                         copy_text_header
                         copy_text_body
                         copy_text_redirect_button
+                        image_url
                     }
                   }
                   app_link

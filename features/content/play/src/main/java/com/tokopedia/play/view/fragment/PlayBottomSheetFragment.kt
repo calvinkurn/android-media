@@ -184,8 +184,8 @@ class PlayBottomSheetFragment @Inject constructor(
         shouldOpenProductDetail(product, position)
     }
 
-    override fun onEmptyButtonClicked(view: ProductSheetViewComponent, partnerAppLink: String) {
-        if(partnerAppLink.isNotEmpty()) openPageByApplink(applink = partnerAppLink, pipMode = true) else dismissSheets()
+    override fun onEmptyButtonClicked(view: ProductSheetViewComponent) {
+        dismissSheets()
     }
 
     override fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>) {

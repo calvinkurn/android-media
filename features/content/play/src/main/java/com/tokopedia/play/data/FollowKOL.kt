@@ -20,5 +20,8 @@ data class FollowKOL(
 
         @SerializedName("status")
         val status: Boolean = false,
+
+        @SerializedName("encryptedUserID")
+        val encryptedUserId: String = "",
     )
 }
