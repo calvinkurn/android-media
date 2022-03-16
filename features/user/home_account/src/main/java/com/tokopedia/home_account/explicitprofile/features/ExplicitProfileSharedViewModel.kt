@@ -63,8 +63,8 @@ class ExplicitProfileSharedViewModel @Inject constructor(
      * detail issue :
      * if we have data A(id = 1) & B(id = 2)
      * then copy data A into B (B = A), B(id = 1) A(id = 1)
-     * and I change data from B.id = 0
-     * data A.id also change into 0 too
+     * and I change data to B.id = 0
+     * data A.id also changed into id = 0 too
      * caused : address from both data is same
      */
     private fun deepCopyData(templateDataModel: TemplateDataModel): TemplateDataModel {
