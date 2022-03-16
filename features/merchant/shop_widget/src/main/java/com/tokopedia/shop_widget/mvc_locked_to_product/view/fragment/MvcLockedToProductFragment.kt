@@ -21,10 +21,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
@@ -650,17 +647,23 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
                 val sellerViewAtcErrorMessage = getString(R.string.mvc_discovery_seller_atc_error_message)
                 showToaster(message = sellerViewAtcErrorMessage, type = Toaster.TYPE_ERROR)
             } else {
-                AtcVariantHelper.goToAtcVariant(
-                    context = requireContext(),
-                    productId = uiModel.productID,
-                    pageSource = VariantPageSource.SHOP_COUPON_PAGESOURCE,
-                    shopId = shopId,
-                    extParams = AtcVariantHelper.generateExtParams(mapOf(
-                        VBS_EXT_PARAMS_PROMO_ID to promoId
-                    )),
-                    dismissAfterTransaction = false,
-                    startActivitResult = this::startActivityForResult
-                )
+                if(uiModel.isVariant) {
+                    AtcVariantHelper.goToAtcVariant(
+                        context = requireContext(),
+                        productId = uiModel.productID,
+                        pageSource = VariantPageSource.SHOP_COUPON_PAGESOURCE,
+                        shopId = shopId,
+                        extParams = AtcVariantHelper.generateExtParams(
+                            mapOf(
+                                VBS_EXT_PARAMS_PROMO_ID to promoId
+                            )
+                        ),
+                        dismissAfterTransaction = false,
+                        startActivitResult = this::startActivityForResult
+                    )
+                } else {
+                    handleAtcFlow(uiModel.productID, Int.ONE, shopId)
+                }
             }
         } else {
             redirectToLoginPage()

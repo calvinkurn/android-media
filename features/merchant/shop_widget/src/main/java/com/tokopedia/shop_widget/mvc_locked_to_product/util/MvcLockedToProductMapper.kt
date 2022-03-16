@@ -1,6 +1,8 @@
 package com.tokopedia.shop_widget.mvc_locked_to_product.util
 
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.productcard.ProductCardModel
@@ -116,16 +118,18 @@ object MvcLockedToProductMapper {
         return if(!MvcLockedToProductUtil.isMvcPhase2()){
             createProductCardModelPhase1(productResponse)
         } else {
+            val model = createBaseProductCartModelPhase2(productResponse)
             if (productResponse.isVariant() || isSellerView) {
-                createProductCardWithDefaultAtcModel(productResponse)
+                createProductCardWithDefaultAtcModel(model)
             } else {
-                createProductCardWithQuantityAtcModel(productResponse)
+                createProductCardWithQuantityAtcModel(productResponse, model)
             }
         }
     }
 
-    private fun createProductCardWithQuantityAtcModel(
-        productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data): ProductCardModel {
+    private fun createBaseProductCartModelPhase2(
+        productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data
+    ): ProductCardModel {
         return ProductCardModel(
             productName = productResponse.name,
             productImageUrl = productResponse.imageUrl,
@@ -140,31 +144,34 @@ object MvcLockedToProductMapper {
             ratingCount = productResponse.rating,
             countSoldRating = getProductCardRating(productResponse.averageRating),
             reviewCount = productResponse.totalReview.toIntOrZero(),
-            labelGroupList = productResponse.labelGroups.map { mapToProductCardLabelGroup(it) },
-            nonVariant = ProductCardModel.NonVariant(
-                quantity = productResponse.productInCart.qty,
-                minQuantity = 1,
-                maxQuantity = productResponse.stock
-            )
+            labelGroupList = productResponse.labelGroups.map { mapToProductCardLabelGroup(it) }
         )
     }
 
-    private fun createProductCardWithDefaultAtcModel(productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data): ProductCardModel {
-        return ProductCardModel(
-            productName = productResponse.name,
-            productImageUrl = productResponse.imageUrl,
-            formattedPrice = productResponse.displayPrice,
-            slashedPrice = productResponse.originalPrice,
-            discountPercentage = getProductCardDiscountPercentage(productResponse.discountPercentage),
-            freeOngkir = ProductCardModel.FreeOngkir(
-                productResponse.isShowFreeOngkir,
-                productResponse.freeOngkirPromoIcon
-            ),
-            isOutOfStock = productResponse.isSoldOut,
-            ratingCount = productResponse.rating,
-            countSoldRating = getProductCardRating(productResponse.averageRating),
-            reviewCount = productResponse.totalReview.toIntOrZero(),
-            labelGroupList = productResponse.labelGroups.map { mapToProductCardLabelGroup(it) },
+    private fun createProductCardWithQuantityAtcModel(
+        productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data,
+        productCardModel: ProductCardModel
+    ): ProductCardModel {
+        val productInCart = productResponse.productInCart.qty
+        return if (productInCart.isZero()) {
+            productCardModel.copy(
+                nonVariant = null,
+                hasAddToCartButton = true
+            )
+        } else {
+            productCardModel.copy(
+                nonVariant = ProductCardModel.NonVariant(
+                    quantity = productInCart,
+                    minQuantity = Int.ONE,
+                    maxQuantity = productResponse.stock
+                ),
+                hasAddToCartButton = false
+            )
+        }
+    }
+
+    private fun createProductCardWithDefaultAtcModel(model: ProductCardModel): ProductCardModel {
+        return model.copy(
             hasAddToCartButton = true
         )
     }

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -247,11 +248,21 @@ class MvcLockedToProductAdapter(
                 nonVariant = null
             )
         } else {
-            productUiModel.productCardModel.copy(
-                nonVariant = productUiModel.productCardModel.nonVariant?.copy(
-                    quantity = productQuantityInCart
+            if(productQuantityInCart.isZero()){
+                productUiModel.productCardModel.copy(
+                    nonVariant = null,
+                    hasAddToCartButton = true
                 )
-            )
+            } else {
+                productUiModel.productCardModel.copy(
+                    nonVariant = ProductCardModel.NonVariant(
+                        quantity = productQuantityInCart,
+                        minQuantity = Int.ONE,
+                        maxQuantity = productUiModel.stock
+                    ),
+                    hasAddToCartButton = false
+                )
+            }
         }
     }
 
@@ -261,19 +272,4 @@ class MvcLockedToProductAdapter(
         }
     }
 
-    fun resetProductVariantQuantity(productId: String, quantity: Int) {
-        val newList = getNewVisitableItems()
-        newList.filterIsInstance<MvcLockedToProductGridProductUiModel>().firstOrNull {
-            it.childIDs.contains(productId)
-        }?.let{
-            val visitablePosition =  visitables.indexOf(it)
-            newList.setElement(visitablePosition, it.copy(
-                productInCart = MvcLockedToProductGridProductUiModel.ProductInCart(),
-                productCardModel = getMvcProductCardModel(
-                    it,
-                    quantity
-                )
-            ))
-        }
-    }
 }
