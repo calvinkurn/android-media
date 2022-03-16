@@ -27,7 +27,4 @@ sealed class InteractionEvent {
     object OpenUserReport : InteractionEvent() {
         override val needLogin: Boolean = true
     }
-    data class SendUpcomingReminder(val sectionInfo: ProductSectionUiModel.Section) : InteractionEvent() {
-        override val needLogin: Boolean = true
-    }
 }

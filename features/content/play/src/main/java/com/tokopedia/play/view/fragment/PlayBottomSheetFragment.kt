@@ -41,6 +41,7 @@ import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
 import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
+import com.tokopedia.play.view.uimodel.action.SendUpcomingReminder
 import com.tokopedia.play.view.uimodel.event.ShowErrorEvent
 import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
 import com.tokopedia.play.view.uimodel.event.UiString
@@ -527,7 +528,6 @@ class PlayBottomSheetFragment @Inject constructor(
             is InteractionEvent.DoActionProduct -> doActionProduct(product = event.product, productAction = event.action, type = event.type, sectionInfo = event.sectionInfo)
             is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.sectionInfo, event.position)
             is InteractionEvent.OpenUserReport -> doActionUserReport()
-            is InteractionEvent.SendUpcomingReminder -> sendReminder(productSectionUiModel = event.sectionInfo)
         }
     }
 
@@ -577,14 +577,6 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun copyToClipboard(content: String) {
         (requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
                 .setPrimaryClip(ClipData.newPlainText("play-room-bottom-sheet", content))
-    }
-
-    private fun shouldSendReminder(productSectionUiModel: ProductSectionUiModel.Section){
-        viewModel.doInteractionEvent(InteractionEvent.SendUpcomingReminder(productSectionUiModel))
-    }
-
-    private fun sendReminder(productSectionUiModel: ProductSectionUiModel.Section){
-        playViewModel.sendReminder(productSectionUiModel)
     }
 
     /**
@@ -802,7 +794,7 @@ class PlayBottomSheetFragment @Inject constructor(
         view: ProductSheetViewComponent,
         productSectionUiModel: ProductSectionUiModel.Section
     ) {
-        shouldSendReminder(productSectionUiModel)
+        playViewModel.submitAction(SendUpcomingReminder(productSectionUiModel))
     }
 
     private fun trackImpressedVoucher(vouchers: List<MerchantVoucherUiModel> = couponSheetView.getVisibleVouchers()) {

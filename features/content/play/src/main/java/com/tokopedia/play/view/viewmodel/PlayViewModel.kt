@@ -149,6 +149,8 @@ class PlayViewModel @AssistedInject constructor(
 
     private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 50)
 
+    private var selectedUpcomingCampaign: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty
+
     /**
      * Data State
      */
@@ -818,6 +820,7 @@ class PlayViewModel @AssistedInject constructor(
             CloseSharingOptionAction -> handleCloseSharingOption()
             is ClickSharingOptionAction -> handleSharingOption(action.shareModel)
             is SharePermissionAction -> handleSharePermission(action.label)
+            is SendUpcomingReminder -> handleSendReminder(action.section, false)
         }
     }
 
@@ -1018,8 +1021,8 @@ class PlayViewModel @AssistedInject constructor(
         if(userSession.isLoggedIn)
             _tagItems.value.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>()
                 .filter { it.config.type == ProductSectionType.Upcoming }
-                .forEach {
-                    checkUpcomingCampaignSub(it)
+                .forEach { campaign ->
+                    checkUpcomingCampaignSub(campaign)
                 }
     }
 
@@ -1749,6 +1752,7 @@ class PlayViewModel @AssistedInject constructor(
             REQUEST_CODE_LOGIN_FOLLOW -> handleClickFollow(isFromLogin = true)
             REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE -> handleClickFollowInteractive()
             REQUEST_CODE_LOGIN_LIKE -> handleClickLike(isFromLogin = true)
+            REQUEST_CODE_LOGIN_UPCO_REMINDER -> handleSendReminder(selectedUpcomingCampaign, isFromLogin = true)
             else -> {}
         }
     }
@@ -2029,12 +2033,20 @@ class PlayViewModel @AssistedInject constructor(
         )
     }
 
-    fun sendReminder(productUiModel: ProductSectionUiModel.Section){
+    private fun handleSendReminder(sectionUiModel: ProductSectionUiModel.Section, isFromLogin: Boolean){
+        selectedUpcomingCampaign = sectionUiModel
+        needLogin(REQUEST_CODE_LOGIN_UPCO_REMINDER) {
+            if(isFromLogin) checkUpcomingCampaignSub(selectedUpcomingCampaign)
+            sendReminder()
+        }
+    }
+
+    private fun sendReminder(){
         viewModelScope.launchCatchError(block = {
-            playAnalytic.clickUpcomingReminder(productUiModel, channelId, channelType)
-            val data = repo.subscribeUpcomingCampaign(campaignId = productUiModel.id.toLongOrZero())
+            playAnalytic.clickUpcomingReminder(selectedUpcomingCampaign, channelId, channelType)
+            val data = repo.subscribeUpcomingCampaign(campaignId = selectedUpcomingCampaign.id.toLongOrZero())
             val message = if(data.first) {
-                updateReminderUi(productUiModel.config.reminder.reversed(productUiModel.id.toLongOrZero()))
+                updateReminderUi(selectedUpcomingCampaign.config.reminder.reversed(selectedUpcomingCampaign.id.toLongOrZero()))
                 if(data.second.isNotEmpty()) UiString.Text(data.second) else UiString.Resource(R.string.play_product_upcoming_reminder_success)
             } else {
                 if(data.second.isNotEmpty()) UiString.Text(data.second) else UiString.Resource(R.string.play_product_upcoming_reminder_error)
@@ -2048,8 +2060,7 @@ class PlayViewModel @AssistedInject constructor(
     private fun checkUpcomingCampaignSub(productUiModel: ProductSectionUiModel.Section){
         viewModelScope.launchCatchError(block = {
             val data = repo.checkUpcomingCampaign(campaignId = productUiModel.id.toLongOrZero())
-            if (data)
-                updateReminderUi(productUiModel.config.reminder.reversed(productUiModel.id.toLongOrZero()))
+            if (data) updateReminderUi(productUiModel.config.reminder.reversed(productUiModel.id.toLongOrZero()))
         }){
         }
     }
@@ -2088,6 +2099,7 @@ class PlayViewModel @AssistedInject constructor(
         private const val REQUEST_CODE_LOGIN_FOLLOW = 571
         private const val REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE = 572
         private const val REQUEST_CODE_LOGIN_LIKE = 573
+        private const val REQUEST_CODE_LOGIN_UPCO_REMINDER = 574
 
         private const val WEB_SOCKET_SOURCE_PLAY_VIEWER = "Viewer"
     }
