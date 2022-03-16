@@ -312,12 +312,15 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
             CopyableDetailItemView itemView = new CopyableDetailItemView(getActivity());
             itemView.setTitle(detail.getLabel());
             itemView.setDescription(detail.getValue());
-            itemView.setListener(() -> {
-                if (getContext() != null) {
-                    presenter.onCopyButtonClick(detail.getValue());
-                    BuyerUtils.copyTextToClipBoard("voucher code", detail.getValue(), getContext());
-                    BuyerUtils.vibrate(getContext());
-                    Toaster.build(itemView, getString(R.string.title_voucher_code_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
+            itemView.setListener(new CopyableDetailItemView.Listener() {
+                @Override
+                public void onCopyValue() {
+                    if (getContext() != null) {
+                        presenter.onCopyButtonClick(detail.getValue());
+                        BuyerUtils.copyTextToClipBoard("voucher code", detail.getValue(), getContext());
+                        BuyerUtils.vibrate(getContext());
+                        Toaster.build(itemView, getString(R.string.title_voucher_code_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
+                    }
                 }
             });
             detailContent.addView(itemView);

@@ -382,9 +382,12 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         if (!BuyerUtils.isValidUrl(invoice.getInvoiceUrl())) {
             lihat.setVisibility(View.GONE);
         }
-        lihat.setOnClickListener(view ->
-                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, invoice.getInvoiceUrl())
-        );
+        lihat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, invoice.getInvoiceUrl());
+            }
+        });
     }
 
     @Override
@@ -594,11 +597,14 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     public void setActionButtons(List<ActionButton> actionButtons) {
         actionButtonLayout.setVisibility(View.VISIBLE);
         actionButtonText.setText(actionButtons.get(0).getLabel());
-        actionButtonLayout.setOnClickListener(v -> {
-            if (actionButtons.get(0).getControl().equalsIgnoreCase(KEY_BUTTON) && getContext() != null) {
-                presenter.getActionButtonGql(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.tapactions), actionButtons, null, 0, false);
-            } else if (actionButtons.get(0).getControl().equalsIgnoreCase(KEY_REDIRECT)) {
-                RouteManager.route(getContext(), actionButtons.get(0).getBody().getAppURL());
+        actionButtonLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (actionButtons.get(0).getControl().equalsIgnoreCase(KEY_BUTTON) && getContext() != null) {
+                    presenter.getActionButtonGql(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.tapactions), actionButtons, null, 0, false);
+                } else if (actionButtons.get(0).getControl().equalsIgnoreCase(KEY_REDIRECT)) {
+                    RouteManager.route(getContext(), actionButtons.get(0).getBody().getAppURL());
+                }
             }
         });
     }
@@ -712,10 +718,13 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                     bannerDeals.setVisibility(View.VISIBLE);
 
                     if (isCoachmarkAlreadyShowed()) {
-                        bannerDeals.post(() -> {
-                            int scrollTo = ((View) bannerDeals.getParent()).getTop() + bannerDeals.getTop();
-                            parentScroll.smoothScrollTo(0, scrollTo);
-                            addCoachmarkBannerDeals();
+                        bannerDeals.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                int scrollTo = ((View) bannerDeals.getParent()).getTop() + bannerDeals.getTop();
+                                parentScroll.smoothScrollTo(0, scrollTo);
+                                addCoachmarkBannerDeals();
+                            }
                         });
                     }
 
@@ -723,9 +732,12 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                     if (!metaDataInfo.getCustomLinkLabel().isEmpty()) {
                         bannerSubTitle.setText(metaDataInfo.getCustomLinkLabel());
                     }
-                    bannerDeals.setOnClickListener(v -> {
-                        if (!metaDataInfo.getCustomLinkAppUrl().isEmpty()) {
-                            RouteManager.route(getActivity(), metaDataInfo.getCustomLinkAppUrl());
+                    bannerDeals.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (!metaDataInfo.getCustomLinkAppUrl().isEmpty()) {
+                                RouteManager.route(getActivity(), metaDataInfo.getCustomLinkAppUrl());
+                            }
                         }
                     });
                 }
