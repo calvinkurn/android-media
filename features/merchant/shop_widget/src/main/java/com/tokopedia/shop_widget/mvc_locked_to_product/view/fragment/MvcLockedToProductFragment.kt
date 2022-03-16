@@ -21,10 +21,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
@@ -85,6 +82,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
         private const val PER_PAGE = 10
         private const val PAGE_SOURCE_KEY = "page_source"
         private const val REQUEST_CODE_USER_LOGIN = 101
+        private const val VBS_EXT_PARAMS_PROMO_ID = "promoID"
         fun createInstance() = MvcLockedToProductFragment()
     }
 
@@ -99,7 +97,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     private var cartLocalCacheHandler: LocalCacheHandler? = null
     private var chooseAddressLocalCacheModel: LocalCacheModel? = null
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
-    private var voucherId: String = ""
+    private var promoId: String = ""
     private var shopId: String = ""
     private var previousPage: String = "NULL"
     private var selectedSortData: MvcLockedToProductSortUiModel =
@@ -138,7 +136,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
             previousPage = it.getQueryParameter(PAGE_SOURCE_KEY)?.takeIf { queryParamValue ->
                 queryParamValue.isNotEmpty()
             } ?: previousPage
-            voucherId = it.pathSegments.getOrNull(5).orEmpty()
+            promoId = it.pathSegments.getOrNull(5).orEmpty()
         }
     }
 
@@ -238,7 +236,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
             tracking.sendClickAddToCartTracker(
                 atcTrackerModel.cartId,
                 it,
-                voucherId,
+                promoId,
                 atcTrackerModel.quantity,
                 shopId,
                 userId,
@@ -265,7 +263,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
             atcTrackerModel.atcType,
             shopId,
             userId,
-            voucherId,
+            promoId,
             isSellerView
         )
     }
@@ -335,7 +333,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
                 shopIds = listOf(shopId),
                 fragment = this@MvcLockedToProductFragment,
                 listener = this@MvcLockedToProductFragment,
-                promoId = voucherId,
+                promoId = promoId,
                 promoCode = voucherUiModel?.baseCode.orEmpty(),
                 businessUnit = MvcLockedToProductTrackingConstant.Value.PHYSICAL_GOODS,
                 currentSite = MvcLockedToProductTrackingConstant.Value.TOKOPEDIA_MARKETPLACE,
@@ -366,7 +364,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
 
     private fun sendOpenScreenTracker() {
         tracking.sendOpenScreenMvcLockedToProduct(
-            voucherId,
+            promoId,
             shopId,
             userId,
             previousPage,
@@ -378,7 +376,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
         hideMiniCartWidget()
         resetEndlessScrollState()
         adapter.showInitialPagePlaceholderLoading()
-        getMvcLockedToProductData(voucherId)
+        getMvcLockedToProductData(promoId)
     }
 
     private fun setupSwipeRefreshLayout() {
@@ -498,7 +496,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
 
     private fun getNextProductListData(page: Int) {
         adapter.showLoadMoreLoading()
-        getProductListData(voucherId, page)
+        getProductListData(promoId, page)
     }
 
     private fun getProductListData(promoId: String, page: Int) {
@@ -634,7 +632,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
         resetEndlessScrollState()
         adapter.updateTotalProductAndSortData(selectedSortData)
         adapter.showNewProductListPlaceholder()
-        getProductListData(voucherId, START_PAGE)
+        getProductListData(promoId, START_PAGE)
     }
 
     override fun onProductClicked(index: Int, uiModel: MvcLockedToProductGridProductUiModel) {
@@ -649,14 +647,23 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
                 val sellerViewAtcErrorMessage = getString(R.string.mvc_discovery_seller_atc_error_message)
                 showToaster(message = sellerViewAtcErrorMessage, type = Toaster.TYPE_ERROR)
             } else {
-                AtcVariantHelper.goToAtcVariant(
-                    context = requireContext(),
-                    productId = uiModel.productID,
-                    pageSource = VariantPageSource.SHOP_COUPON_PAGESOURCE,
-                    shopId = shopId,
-                    dismissAfterTransaction = false,
-                    startActivitResult = this::startActivityForResult
-                )
+                if(uiModel.isVariant) {
+                    AtcVariantHelper.goToAtcVariant(
+                        context = requireContext(),
+                        productId = uiModel.productID,
+                        pageSource = VariantPageSource.SHOP_COUPON_PAGESOURCE,
+                        shopId = shopId,
+                        extParams = AtcVariantHelper.generateExtParams(
+                            mapOf(
+                                VBS_EXT_PARAMS_PROMO_ID to promoId
+                            )
+                        ),
+                        dismissAfterTransaction = false,
+                        startActivitResult = this::startActivityForResult
+                    )
+                } else {
+                    handleAtcFlow(uiModel.productID, Int.ONE, shopId)
+                }
             }
         } else {
             redirectToLoginPage()
@@ -702,7 +709,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
             uiModel.productID,
             uiModel.productCardModel.productName,
             uiModel.finalPrice,
-            voucherId,
+            promoId,
             shopId,
             userId,
             adapter.getVoucherName(),
