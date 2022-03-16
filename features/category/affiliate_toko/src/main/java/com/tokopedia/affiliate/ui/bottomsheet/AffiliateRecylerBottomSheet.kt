@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,9 +26,9 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateWithrawalInfoAtt
 import com.tokopedia.affiliate.viewmodel.AffiliateRecyclerViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
@@ -76,6 +75,7 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
         initViewModel()
         showCloseIcon = true
         showKnob = false
+        clearContentPadding = true
         contentView = View.inflate(context,
             R.layout.affiliate_traffic_attribution_bottom_sheet_attribute, null)
         setTitle(titleSheet)
@@ -91,9 +91,13 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
 
     private fun initTicker() {
         if(filterType == TODAY && (listItem as? List<Any>)?.isNotEmpty() == true){
-            contentView?.findViewById<Group>(R.id.ticker_group)?.show()
+            contentView?.findViewById<CardView>(R.id.affilitate_recylerview_ticker)?.show()
+            contentView?.findViewById<DividerUnify>(R.id.divider_2)?.show()
         }
-        else contentView?.findViewById<Group>(R.id.ticker_group)?.gone()
+        else{
+            contentView?.findViewById<CardView>(R.id.affilitate_recylerview_ticker)?.gone()
+            contentView?.findViewById<DividerUnify>(R.id.divider_2)?.gone()
+        }
     }
 
     private fun initList(listItem: Any?) {
