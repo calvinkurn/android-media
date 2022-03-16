@@ -291,7 +291,8 @@ class TokoNowCategoryViewModel @Inject constructor (
     private fun setSharingModel(categoryModel: CategoryModel) {
         sharingMutableLiveData.value = CategorySharingModel(
             name = categoryModel.categoryDetail.data.name,
-            url = categoryModel.categoryDetail.data.url
+            url = categoryModel.categoryDetail.data.url,
+            id = categoryModel.categoryDetail.data.id
         )
     }
 
