@@ -184,7 +184,7 @@ class LoaderFragment : BaseDaggerFragment() {
     companion object {
         const val RPC_ERROR_STR = "rpc error:"
         const val DELAY_MILLIS = 2000L
-        const val VIBRATION_MILLIS = 500L
+        const val VIBRATION_MILLIS = 150L
         const val LOADER_JSON_ZIP_FILE = "thanks_payment_data_loader.zip"
         fun getLoaderFragmentInstance(bundle: Bundle): LoaderFragment = LoaderFragment().apply {
             arguments = bundle
