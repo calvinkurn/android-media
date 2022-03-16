@@ -10,6 +10,7 @@ object ApplinkConstInternalFintech {
     private const val HOST_FINTECH = "fintech"
     private const val INTERNAL_FINTECH = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_FINTECH}"
     const val PAYLATER = "$INTERNAL_FINTECH/paylater"
+    const val OCC_CHECKOUT = "$INTERNAL_FINTECH/opt-checkout"
 
     const val HOME_CREDIT_REGISTER = "$INTERNAL_FINTECH/home-credit-register"
     const val SHOW_KTP = "show_ktp"

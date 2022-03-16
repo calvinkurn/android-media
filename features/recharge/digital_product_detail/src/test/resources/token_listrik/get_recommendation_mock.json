@@ -1,0 +1,35 @@
+{
+  "digiPersoGetPersonalizedItems": {
+    "title": "Paling sering kamu beli \u0026#128071;",
+    "mediaURL": "",
+    "appLink": "",
+    "webLink": "",
+    "textLink": "Lihat Semua",
+    "items": [
+      {
+        "id": 1,
+        "title": "Token Listrik Rp 200.000",
+        "mediaURL": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/866b38b0-baa5-4db7-bb23-09e717d05b8a.png",
+        "mediaUrlType": "frame",
+        "appLink": "tokopedia://digital/cart?category_id\u003d3\u0026client_number\u003d111122223333\u0026idem_potency_key\u003d1646214008-3-111122223333-176-6\u0026operator_id\u003d6\u0026product_id\u003d176",
+        "webLink": "https://pulsa.tokopedia.com?action\u003dinit_data\u0026client_number\u003d111122223333\u0026idem_potency_key\u003d1646214008-3-111122223333-176-6\u0026operator_id\u003d6\u0026product_id\u003d176",
+        "label1": "",
+        "label2": "",
+        "price": "Rp202.750",
+        "slashedPrice": "",
+        "discount": "",
+        "backgroundColor": "",
+        "trackingData": {
+          "productID": "176",
+          "operatorID": "6",
+          "businessUnit": "recharge",
+          "itemLabel": "product",
+          "itemType": "last transactions by client number",
+          "clientNumber": "111122223333",
+          "categoryID": "3",
+          "categoryName": "Listrik PLN"
+        }
+      }
+    ]
+  }
+}
