@@ -32,16 +32,11 @@ import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.domain.response.RefreshTokonowDataResponse
-import com.tokopedia.localizationchooseaddress.domain.usecase.RefreshTokonowDataUsecase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.*
@@ -73,8 +68,7 @@ open class HomeRevampViewModel @Inject constructor(
     private val getCMHomeWidgetDataUseCase: Lazy<GetCMHomeWidgetDataUseCase>,
     private val deleteCMHomeWidgetUseCase: Lazy<DeleteCMHomeWidgetUseCase>,
     private val deletePayLaterWidgetUseCase: Lazy<ClosePayLaterWidgetUseCase>,
-    private val getPayLaterWidgetUseCase: Lazy<GetPayLaterWidgetUseCase>,
-    private val refreshTokonowDataUsecase: Lazy<RefreshTokonowDataUsecase>) : BaseCoRoutineScope(homeDispatcher.get().io) {
+    private val getPayLaterWidgetUseCase: Lazy<GetPayLaterWidgetUseCase>) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
         const val HOME_LIMITER_KEY = "HOME_LIMITER_KEY"
@@ -127,9 +121,6 @@ open class HomeRevampViewModel @Inject constructor(
 
     private val _resetNestedScrolling = MutableLiveData<Event<Boolean>>()
     val resetNestedScrolling: LiveData<Event<Boolean>> get() = _resetNestedScrolling
-
-    private val _tokonowData = MutableLiveData<Result<RefreshTokonowDataResponse.Data>>()
-    val tokonowData: LiveData<Result<RefreshTokonowDataResponse.Data>> get() = _tokonowData
 
     val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
 
@@ -572,14 +563,6 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getBeautyFest(homeDynamicChannelModel: HomeDynamicChannelModel) {
         _beautyFestLiveData.postValue(homeBeautyFestUseCase.get().getBeautyFest(homeDynamicChannelModel))
-    }
-
-    fun refreshTokonowWarehouse(localCacheModel: LocalCacheModel) {
-        launchCatchError(coroutineContext, {
-            _tokonowData.postValue(Result.success(refreshTokonowDataUsecase.get().execute(localCacheModel)))
-        }, {
-            _tokonowData.postValue(Result.error(it))
-        })
     }
 
     fun deleteQuestWidget() {
