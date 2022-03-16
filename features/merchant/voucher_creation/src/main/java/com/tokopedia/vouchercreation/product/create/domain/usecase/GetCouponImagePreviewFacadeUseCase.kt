@@ -1,10 +1,12 @@
 package com.tokopedia.vouchercreation.product.create.domain.usecase
 
+import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant
 import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.product.create.data.source.ImageGeneratorRemoteDataSource
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
+import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.InitiateVoucherUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.usecase.ShopBasicDataUseCase
 import kotlinx.coroutines.CoroutineScope
@@ -15,6 +17,7 @@ import javax.inject.Inject
 
 class GetCouponImagePreviewFacadeUseCase @Inject constructor(
     private val getShopBasicDataUseCase: ShopBasicDataUseCase,
+    private val initiateCouponUseCase: InitiateCouponUseCase,
     private val remoteDataSource: ImageGeneratorRemoteDataSource
 ) {
 
@@ -25,6 +28,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
     }
 
     suspend fun execute(
+        isCreateMode: Boolean,
         scope: CoroutineScope,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
@@ -34,11 +38,16 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
         thirdProductImageUrl: String,
         imageRatio: ImageRatio
     ): ByteArray {
+        val initiateCoupon = scope.async { initiateCoupon() }
+
         val shopDeferred = scope.async { getShopBasicDataUseCase.executeOnBackground() }
         val shop = shopDeferred.await()
+        val coupon = initiateCoupon.await()
 
         val generateImageDeferred = scope.async {
             generateImage(
+                isCreateMode,
+                coupon.voucherCodePrefix,
                 couponInformation,
                 couponSettings,
                 productCount,
@@ -58,6 +67,8 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
     }
 
     private suspend fun generateImage(
+        isCreateMode: Boolean,
+        couponCodePrefix: String,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         productCount: Int,
@@ -113,16 +124,18 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
             else -> amount.toFloat()
         }
 
-        val nominalAmount = if (isInteger(formattedDiscountAmount)) {
-            formattedDiscountAmount.toInt()
-        } else {
-            formattedDiscountAmount
-        }
+        val nominalAmount = formattedDiscountAmount.toInt()
 
         val startTime = couponInformation.period.startDate.parseTo(DateTimeUtils.DATE_FORMAT)
         val endTime = couponInformation.period.endDate.parseTo(DateTimeUtils.DATE_FORMAT)
 
         val audienceTarget = "all-users"
+
+        val couponCode = if (isCreateMode && couponInformation.target == CouponInformation.Target.PRIVATE) {
+            couponCodePrefix + couponInformation.code.uppercase()
+        } else {
+            couponInformation.code.uppercase()
+        }
 
         return remoteDataSource.previewImage(
             ImageGeneratorConstant.IMAGE_TEMPLATE_COUPON_PRODUCT_SOURCE_ID,
@@ -135,7 +148,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
             symbol,
             shop.logo,
             shop.shopName,
-            couponInformation.code,
+            couponCode,
             startTime,
             endTime,
             productCount,
@@ -146,8 +159,9 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
         )
     }
 
-    private fun isInteger(number : Float) : Boolean {
-        return number % 1 == 0.0f
+    private suspend fun initiateCoupon(): InitiateVoucherUiModel {
+        initiateCouponUseCase.query = GqlQueryConstant.INITIATE_COUPON_PRODUCT_QUERY
+        initiateCouponUseCase.params = InitiateCouponUseCase.createRequestParam(isUpdate = true, isToCreateNewCoupon = false)
+        return initiateCouponUseCase.executeOnBackground()
     }
-
 }

@@ -68,6 +68,7 @@ object VoucherCreationAnalyticConstant {
         const val CLICK_SHARE = "clickShare"
         const val CLICK_VOUCHER_DUPLICATE = "clickVoucherDuplicate"
         const val CLICK_MERCHANT_VOUCHER = "clickMerchantVoucher"
+        const val CLICK_PG = "clickPG"
     }
 
     object EventCategory {
@@ -79,12 +80,14 @@ object VoucherCreationAnalyticConstant {
             const val REVIEW = "voucher creation - review"
             const val CREATE = "merchant voucher code - create"
             const val PAGE = "voucher creation page"
+            const val CREATION = "mvc locked product - creation"
         }
 
         object VoucherList {
             const val ACTIVE = "voucher list active"
             const val HISTORY = "voucher list history"
             const val PAGE = "voucher list page"
+            const val VOUCHER_LIST = "mvc locked product - list"
         }
 
         object VoucherDetail {
@@ -213,6 +216,27 @@ object VoucherCreationAnalyticConstant {
             const val SHARE_OTHERS = "share - lainnya"
             const val PERIOD = "click periode"
             const val BROADCAST_CREATION = "click broadcast creation"
+
+            const val SEARCH_PRODUCT = "search product name or sku"
+            const val FILTER_LOCATION = "filter location"
+            const val FILTER_PRODUCT_CATEGORY = "filter product category"
+            const val FILTER_ETALASE = "filter etalase"
+            const val SORT_PRODUCT = "sort product label"
+            const val SELECT_PRODUCT = "select product"
+            const val ADD_PRODUCT = "click tambah product - product selection"
+
+            const val CLICK_DOWNLOAD = "click download - three dots"
+            const val CLICK_CANCEL = "click batalkan"
+            const val CLICK_CHANGE = "click ubah"
+            const val CLICK_STOP = "click hentikan"
+            const val CLICK_DUPLICATE = "click duplikat"
+            const val CLICK_DETAIL = "click detail"
+
+            const val FILTER_VOUCHER_TARGET = "filter voucher target"
+            const val FILTER_VOUCHER_TYPE = "filter voucher type"
+            const val FILTER_VOUCHER_STATUS = "filter voucher status"
+            const val CLICK_SAVE = "clik simpan - info"
+            const val CLICK_FILL_COUPON_PRODUCT = "fill kupon produk info"
         }
     }
 

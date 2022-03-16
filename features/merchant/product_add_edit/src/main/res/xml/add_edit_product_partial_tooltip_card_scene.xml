@@ -27,7 +27,7 @@
             android:id="@+id/layout_tips"
             android:alpha="1"
             motion:transitionEasing="accelerate"
-            android:layout_height="@dimen/dp_40"
+            android:layout_height="wrap_content"
             android:layout_width="match_parent"/>
     </ConstraintSet>
 </MotionScene>

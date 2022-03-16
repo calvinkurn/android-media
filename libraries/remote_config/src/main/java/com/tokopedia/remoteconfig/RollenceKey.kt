@@ -13,10 +13,6 @@ object RollenceKey {
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL = "follow_green_small"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG = "follow_green_big"
 
-    const val KEY_AB_INBOX_REVAMP = "ReviewTab_NewInbox"
-    const val VARIANT_OLD_INBOX = "ReviewTab_OldInbox"
-    const val VARIANT_NEW_INBOX = "ReviewTab_NewInbox"
-
     const val BALANCE_EXP = "Balance Widget"
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
@@ -62,4 +58,7 @@ object RollenceKey {
     // advanced search negative keywords
     const val SEARCH_ADVANCED_KEYWORD_ADV_NEG = "keyword_adv_neg"
     const val SEARCH_ADVANCED_NEGATIVE_NO_ADS = "negative_no_ads"
+
+    // Fulfillment Rebranding
+    const val FULFILLMENT_REBRANDING = "fulfill_rebranding"
 }

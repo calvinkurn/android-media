@@ -25,6 +25,7 @@ import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.encryption.security.AESEncryptorECB;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
 import com.tokopedia.keys.Keys;
@@ -268,6 +269,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         registerActivityLifecycleCallbacks(new PageInfoPusherSubscriber());
         registerActivityLifecycleCallbacks(new SellerFeedbackScreenshot(getApplicationContext()));
         registerActivityLifecycleCallbacks(new AnrActivityLifecycleCallback());
+        registerActivityLifecycleCallbacks(new GqlActivityCallback());
     }
 
     @Override
