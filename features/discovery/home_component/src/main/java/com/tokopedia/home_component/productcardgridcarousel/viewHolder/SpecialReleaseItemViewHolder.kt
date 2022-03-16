@@ -67,10 +67,10 @@ class SpecialReleaseItemViewHolder(
                 url = element.grid.shop.shopProfileUrl
             )
 
-            val badge = element.grid.badges.firstOrNull()
-            if (badge != null && badge.imageUrl.isNotEmpty()) {
+            val badgeImageUrl = element.grid.badges.firstOrNull()?.imageUrl?:""
+            if (badgeImageUrl.isNotEmpty()) {
                 binding?.specialReleaseShopBadge?.loadImage(
-                    url = badge.imageUrl
+                    url = badgeImageUrl
                 )
                 binding?.specialReleaseShopBadge?.visible()
             } else {
