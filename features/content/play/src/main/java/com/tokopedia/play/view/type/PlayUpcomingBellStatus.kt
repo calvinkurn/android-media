@@ -10,6 +10,6 @@ sealed class PlayUpcomingBellStatus {
 }
 
 fun PlayUpcomingBellStatus.reversed(campaignId: Long): PlayUpcomingBellStatus =
-    if (this is PlayUpcomingBellStatus.On) PlayUpcomingBellStatus.Off(campaignId) else PlayUpcomingBellStatus.On(
+    if (this is PlayUpcomingBellStatus.Off) PlayUpcomingBellStatus.On(campaignId) else PlayUpcomingBellStatus.Off(
         campaignId
     )
