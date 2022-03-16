@@ -84,6 +84,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String PARAM_EXTRA_REVIEW = "rating";
     private static final String PARAM_EXTRA_UTM_SOURCE = "utm_source";
     private static final String PARAM_BOOL_FALSE = "false";
+    private static final int SHOP_MVC_LOCKED_TO_PRODUCT_TOTAL_SEGMENT = 3;
+    private static final int SHOP_MVC_LOCKED_TO_PRODUCT_VOUCHER_SEGMENT = 1;
 
     private final Activity context;
     private final DeepLinkView viewListener;
@@ -579,6 +581,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                                     bundle,
                                     ApplinkConst.SHOP_FEED,
                                     shopId);
+                        } else  if(isShopMvcLockedToProduct(linkSegment)) {
+                          String voucherId = linkSegment.get(2);
+                          RouteManager.route(context,
+                                  bundle,
+                                  ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT,
+                                  shopId,
+                                  voucherId);
                         } else {
                             Intent intent = RouteManager.getIntent(context, ApplinkConst.SHOP,
                                     shopId);
@@ -637,6 +646,15 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private boolean isShopFeed(List<String> linkSegment) {
         String lastSegment = linkSegment.get(linkSegment.size() - 1);
         return lastSegment.equalsIgnoreCase("feed");
+    }
+
+    private boolean isShopMvcLockedToProduct(List<String> linkSegment) {
+        if (linkSegment.size() == SHOP_MVC_LOCKED_TO_PRODUCT_TOTAL_SEGMENT) {
+            String segment = linkSegment.get(SHOP_MVC_LOCKED_TO_PRODUCT_VOUCHER_SEGMENT);
+            return segment.equalsIgnoreCase("voucher");
+        } else {
+            return false;
+        }
     }
 
     private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData, Bundle bundle) {

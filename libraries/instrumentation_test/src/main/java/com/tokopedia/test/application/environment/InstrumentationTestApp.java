@@ -31,6 +31,7 @@ import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.instrumentation.test.BuildConfig;
 import com.tokopedia.instrumentation.test.R;
 import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
@@ -94,6 +95,8 @@ public class InstrumentationTestApp extends CoreNetworkApplication
         NetworkClient.init(this);
         GraphqlClient.init(this, getAuthenticator());
         RemoteConfigInstance.initAbTestPlatform(this);
+
+        registerActivityLifecycleCallbacks(new GqlActivityCallback());
 
         super.onCreate();
 

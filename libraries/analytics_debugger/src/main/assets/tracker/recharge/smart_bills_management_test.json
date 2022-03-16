@@ -1,6 +1,6 @@
 {
   "readme": "Smart bills management",
-  "mode": "exact",
+  "mode": "subset",
   "query": [
     {
       "businessUnit": "top up and tagihan",
@@ -25,7 +25,7 @@
       "screenName": "/initial-sbm-page",
       "currentSite": "tokopediaDigitalRecharge",
       "userId": ".*",
-      "businessUnit": "top up and tagihan",
+      "businessUnit": "sbm",
       "sessionIris": ".*"
     },
     {
@@ -36,7 +36,7 @@
       "screenName": "/initial-sbm-page",
       "currentSite": "tokopediaDigitalRecharge",
       "userId": ".*",
-      "businessUnit": "top up and tagihan",
+      "businessUnit": "sbm",
       "sessionIris": ".*"
     },
     {
@@ -47,10 +47,9 @@
       "screenName": "/initial-sbm-page",
       "currentSite": "tokopediaDigitalRecharge",
       "userId": ".*",
-      "businessUnit": "top up and tagihan",
+      "businessUnit": "sbm",
       "items": [
         {
-          "dimension40": ".*",
           "item_id": ".+",
           "index": ".+",
           "item_name": ".+",
@@ -71,7 +70,7 @@
       "screenName": "/initial-sbm-page",
       "currentSite": "tokopediaDigitalRecharge",
       "userId": ".*",
-      "businessUnit": "top up and tagihan",
+      "businessUnit": "sbm",
       "sessionIris": ".*"
     },
     {
@@ -82,10 +81,9 @@
       "screenName": "/initial-sbm-page",
       "currentSite": "tokopediaDigitalRecharge",
       "userId": ".*",
-      "businessUnit": "top up and tagihan",
+      "businessUnit": "recharge",
       "items": [
         {
-          "dimension40": ".*",
           "item_id": ".+",
           "index": ".+",
           "item_name": ".+",
@@ -106,7 +104,7 @@
       "screenName": "/detail-sbm-page",
       "currentSite": "tokopediaDigitalRecharge",
       "userId": ".*",
-      "businessUnit": "top up and tagihan",
+      "businessUnit": "sbm",
       "sessionIris": ".*"
     },
     {

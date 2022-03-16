@@ -107,28 +107,22 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListen
                         val textLength = s?.length ?: 0
                         incentiveHelper = when {
                             textLength >= CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD -> {
-                                if (hasIncentive) {
+                                if (hasIncentive || hasOngoingChallenge) {
                                     context?.getString(R.string.review_create_bottom_sheet_text_area_eligible_for_incentive) ?: ""
-                                } else if (hasOngoingChallenge) {
-                                    context?.getString(R.string.review_create_bottom_sheet_text_area_eligible_for_challenge) ?: ""
                                 } else {
                                     ""
                                 }
                             }
                             textLength < CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD && textLength != 0 -> {
-                                if (hasIncentive) {
+                                if (hasIncentive || hasOngoingChallenge) {
                                     context?.getString(R.string.review_create_bottom_sheet_text_area_partial_incentive) ?: ""
-                                } else if (hasOngoingChallenge) {
-                                    context?.getString(R.string.review_create_bottom_sheet_text_area_partial_challenge) ?: ""
                                 } else {
                                     ""
                                 }
                             }
                             else -> {
-                                if (hasIncentive) {
+                                if (hasIncentive || hasOngoingChallenge) {
                                     context?.getString(R.string.review_create_bottom_sheet_text_area_empty_incentive) ?: ""
-                                } else if (hasOngoingChallenge) {
-                                    context?.getString(R.string.review_create_bottom_sheet_text_area_empty_challenge) ?: ""
                                 } else {
                                     ""
                                 }
@@ -136,7 +130,6 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListen
                         }
                         incentiveHelperText?.text = incentiveHelper
                     }
-
                 })
             }
             if (hasIncentive || hasOngoingChallenge) {

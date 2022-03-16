@@ -20,6 +20,7 @@ import com.tokopedia.notifications.model.AmplificationBaseNotificationModel
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.NotificationMode
 import com.tokopedia.notifications.model.NotificationStatus
+import com.tokopedia.notifications.utils.NotificationSettingsUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
@@ -41,7 +42,9 @@ class PushController(val context: Context) : CoroutineScope {
     fun handleNotificationBundle(bundle: Bundle) {
         try {
             val baseNotificationModel = PayloadConverter.convertToBaseModel(bundle)
+
             handleNotificationBundle(baseNotificationModel)
+
         } catch (e: Exception) {
             ServerLogger.log(Priority.P2, "CM_VALIDATION",
                     mapOf("type" to "exception",
@@ -162,10 +165,32 @@ class PushController(val context: Context) : CoroutineScope {
     }
 
     suspend fun postOfflineNotification(baseNotificationModel: BaseNotificationModel) {
-        IrisAnalyticsEvents.sendPushEvent(context, IrisAnalyticsEvents.PUSH_RECEIVED, baseNotificationModel)
+        checkAndSendEvent(baseNotificationModel)
         createAndPostNotification(baseNotificationModel)
         baseNotificationModel.status = NotificationStatus.ACTIVE
         PushRepository.getInstance(context).updateNotificationModel(baseNotificationModel)
+    }
+
+    private fun checkAndSendEvent(baseNotificationModel: BaseNotificationModel) {
+        when (NotificationSettingsUtils(context).checkNotificationsModeForSpecificChannel(
+            baseNotificationModel.channelName
+        )) {
+            NotificationSettingsUtils.NotificationMode.ENABLED -> {
+                IrisAnalyticsEvents.sendPushEvent(
+                    context,
+                    IrisAnalyticsEvents.PUSH_RECEIVED,
+                    baseNotificationModel
+                )
+            }
+            NotificationSettingsUtils.NotificationMode.DISABLED,
+            NotificationSettingsUtils.NotificationMode.CHANNEL_DISABLED -> {
+                IrisAnalyticsEvents.sendPushEvent(
+                    context,
+                    IrisAnalyticsEvents.DEVICE_NOTIFICATION_OFF,
+                    baseNotificationModel
+                )
+            }
+        }
     }
 
     suspend fun cancelOfflineNotification(baseNotificationModel: BaseNotificationModel) {
