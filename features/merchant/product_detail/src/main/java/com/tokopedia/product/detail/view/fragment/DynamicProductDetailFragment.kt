@@ -247,10 +247,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         ScreenShotListener, PlayWidgetListener {
 
     companion object {
-        const  val ACTIVATION_LINKINING_FLOW = 2
-        const val ACTIVATION_BOTTOMSHEET_DETAIl = "ActivationBottomSheetDetail"
-        const val ACTIVATION_WEBVIEW_LINK = "ActivationWebViewLink"
-
         fun newInstance(productId: String? = null,
                         warehouseId: String? = null,
                         shopDomain: String? = null,

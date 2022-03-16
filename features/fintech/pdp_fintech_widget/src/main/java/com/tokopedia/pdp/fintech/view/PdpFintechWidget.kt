@@ -47,6 +47,7 @@ class PdpFintechWidget @JvmOverloads constructor(
     private val ACTIVATION_LINKINING_FLOW = 2
     private val NOT_BRANDER_CHIPS = "not branded chips"
     private val BRANDER_CHIPS = "branded chips"
+    const  val ACTIVATION_LINKINING_FLOW = 2
 
 
     @Inject
