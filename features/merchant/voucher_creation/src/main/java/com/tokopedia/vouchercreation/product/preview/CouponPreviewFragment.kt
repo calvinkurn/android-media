@@ -264,10 +264,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
                     displayToasterIfDuplicateMode()
                     showContent()
 
-
-                    if (viewModel.isUpdateMode(pageMode) || viewModel.isDuplicateMode(pageMode)) {
-                        enablePreviewAndSubmitButton()
-                    }
+                    viewModel.validateCoupon(pageMode, couponInformation, couponSettings, couponProducts)
                 }
                 is Fail -> {
                     hideContent()
@@ -394,17 +391,9 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         couponInformation?.let { coupon -> refreshCouponInformationSection(coupon) }
         couponSettings?.let { coupon -> refreshCouponSettingsSection(coupon) }
         refreshProductsSection(selectedProductCount)
-        viewModel.validateCoupon(couponInformation, couponSettings, couponProducts)
+        viewModel.validateCoupon(pageMode, couponInformation, couponSettings, couponProducts)
         hideLoading()
         showContent()
-    }
-
-    private fun enablePreviewAndSubmitButton() {
-        if (viewModel.areRequiredFieldsFilled(couponSettings, couponInformation, couponProducts)) {
-            binding.btnCreateCoupon.isEnabled = true
-            binding.btnPreviewCouponImage.isEnabled = true
-            binding.btnPreviewCouponImage.buttonType = UnifyButton.Type.MAIN
-        }
     }
 
     fun setCouponSettingsData(couponSettings: CouponSettings) {
@@ -714,7 +703,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         binding.btnCreateCoupon.loadingText = getString(R.string.mvc_please_wait)
 
         val isCreateMode = viewModel.isCreateMode(pageMode)
-        val parentProductIds = selectedProducts.map { it.id.toLong() }
+        val parentProductIds = viewModel.getParentProductIds(selectedProducts, selectedProductIds)
 
         viewModel.createCoupon(
             isCreateMode,
@@ -728,7 +717,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     private fun updateCoupon(couponId : Long) {
         binding.btnCreateCoupon.isLoading = true
         binding.btnCreateCoupon.loadingText = getString(R.string.mvc_please_wait)
-        val parentProductIds = selectedProducts.map { it.id.toLong() }
+        val parentProductIds = viewModel.getParentProductIds(selectedProducts, selectedProductIds)
 
         viewModel.updateCoupon(
             couponId,
@@ -772,7 +761,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
     private fun displayCouponPreviewBottomSheet() {
         val isCreateMode = viewModel.isCreateMode(pageMode)
-        val parentProductIds = selectedProducts.map { it.id.toLong() }
+        val parentProductIds = viewModel.getParentProductIds(selectedProducts, selectedProductIds)
 
         val bottomSheet = CouponImagePreviewBottomSheet.newInstance(
             isCreateMode,

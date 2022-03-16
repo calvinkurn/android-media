@@ -56,10 +56,16 @@ class CouponPreviewViewModel @Inject constructor(
     var selectedWarehouseId:String = ""
 
     fun validateCoupon(
+        pageMode: CouponPreviewFragment.Mode,
         couponInformation: CouponInformation?,
         couponSettings: CouponSettings?,
         couponProducts: List<CouponProduct>
     ) {
+        if ((isUpdateMode(pageMode) || isDuplicateMode(pageMode)) && couponProducts.isNotEmpty()) {
+            _areInputValid.value = true
+            return
+        }
+
         if (couponSettings == null) {
             _areInputValid.value = false
             return
@@ -251,6 +257,17 @@ class CouponPreviewViewModel @Inject constructor(
                         )
                     }
             )
+        }
+    }
+
+    fun getParentProductIds(
+        modifiedSelectedProducts: MutableList<ProductUiModel>,
+        nonModifiedSelectedProducts: MutableList<ProductId>
+    ): List<Long> {
+        return if (modifiedSelectedProducts.isNotEmpty()) {
+            modifiedSelectedProducts.map { it.id.toLong() }
+        } else {
+            nonModifiedSelectedProducts.map { it.parentProductId }
         }
     }
 }
