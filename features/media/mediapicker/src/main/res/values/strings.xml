@@ -17,6 +17,7 @@
 
 <!--    action button -->
     <string name="picker_title_all_media">Semua Media</string>
+    <string name="picker_toolbar_upload">Upload</string>
     <string name="picker_button_cancel">Batal</string>
     <string name="picker_button_retake_common">Pilih Ulang</string>
     <string name="picker_button_retake_video">Rekam Video Ulang</string>

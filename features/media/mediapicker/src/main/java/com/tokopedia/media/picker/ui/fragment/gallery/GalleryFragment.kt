@@ -214,7 +214,20 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
                 }
             } else if (!isSelected && !media.isVideo()) {
                 // image validation
-                // TODO
+                if (listener?.isMaxImageResolution(media) == true) {
+                    listener?.onShowImageMaxResToast()
+                    return false
+                }
+
+                if (listener?.isMinImageResolution(media) == true) {
+                    listener?.onShowImageMinResToast()
+                    return false
+                }
+
+                if (listener?.isMaxImageSize(media) == true) {
+                    listener?.onShowImageMaxFileSizeToast()
+                    return false
+                }
             }
 
             if (!isSelected && listener?.hasMediaLimitReached() == true) {

@@ -46,7 +46,7 @@ data class PickerParam(
     fun maxImageResolution() = maxImageResolution
     fun minImageResolution() = minImageResolution
     fun maxImageSize() = maxImageSize
-    fun isUseEditor() = withEditor
+    fun withEditor() = withEditor
 
     // setter
     fun cameraRatio(value: CameraRatio) = apply { cameraRatio = value }

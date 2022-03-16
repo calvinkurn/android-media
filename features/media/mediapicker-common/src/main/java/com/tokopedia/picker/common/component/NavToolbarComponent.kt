@@ -41,6 +41,10 @@ class NavToolbarComponent(
         }
     }
 
+    fun setContinueTitle(title: String) {
+        btnDone.text = title
+    }
+
     fun setTitle(title: String) {
         txtTitle.text = title
     }

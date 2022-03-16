@@ -1,13 +1,9 @@
-package com.tokopedia.picker.common.intent
+package com.tokopedia.picker.common
 
 import android.content.Context
 import android.content.Intent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER
-import com.tokopedia.picker.common.PickerParam
-
-const val EXTRA_PICKER_PARAM = "key-picker-param"
-const val RESULT_PICKER = "result-picker"
 
 object PickerIntent {
 

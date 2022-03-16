@@ -13,10 +13,12 @@ import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
 import com.tokopedia.media.preview.di.DaggerPreviewComponent
 import com.tokopedia.media.preview.di.module.PreviewModule
 import com.tokopedia.media.preview.ui.component.PreviewPagerComponent
+import com.tokopedia.picker.common.EXTRA_EDITOR
 import com.tokopedia.picker.common.ParamCacheManager
+import com.tokopedia.picker.common.RESULT_PICKER
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
-import com.tokopedia.picker.common.intent.RESULT_PICKER
+import com.tokopedia.picker.common.component.ToolbarTheme
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import java.io.File
@@ -30,6 +32,10 @@ class PickerPreviewActivity : BaseActivity()
 
     private val binding: ActivityPreviewBinding? by viewBinding()
     private val uiModel = arrayListOf<MediaUiModel>()
+
+    private val param by lazy {
+        cacheManager.getParam()
+    }
 
     private val navToolbar by uiComponent {
         NavToolbarComponent(
@@ -73,7 +79,12 @@ class PickerPreviewActivity : BaseActivity()
     override fun onContinueClicked() {
         uiModel.map { it.path }.let {
             val result = ArrayList(it)
-            onFinishIntent(result)
+
+            if (param.withEditor()) {
+                onEditorIntent(result)
+            } else {
+                onFinishIntent(result)
+            }
         }
     }
 
@@ -133,7 +144,10 @@ class PickerPreviewActivity : BaseActivity()
     private fun setupToolbar() = with(navToolbar) {
         setTitle(getString(R.string.picker_toolbar_preview_title))
         showContinueButtonAs(true)
-        onToolbarThemeChanged(com.tokopedia.picker.common.component.ToolbarTheme.Solid)
+        onToolbarThemeChanged(ToolbarTheme.Solid)
+        if (param.withEditor()) {
+            navToolbar.setContinueTitle(getString(R.string.picker_toolbar_upload))
+        }
     }
 
     private fun setupSelectionDrawerOrActionButton() {
@@ -194,6 +208,13 @@ class PickerPreviewActivity : BaseActivity()
     private fun onFinishIntent(files: ArrayList<String>) {
         val intent = Intent()
         intent.putExtra(RESULT_PICKER, files)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
+    }
+
+    private fun onEditorIntent(files: ArrayList<String>) {
+        val intent = Intent()
+        intent.putExtra(EXTRA_EDITOR, files)
         setResult(Activity.RESULT_OK, intent)
         finish()
     }

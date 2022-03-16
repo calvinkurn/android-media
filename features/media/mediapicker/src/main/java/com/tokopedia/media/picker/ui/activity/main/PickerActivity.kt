@@ -31,12 +31,13 @@ import com.tokopedia.media.picker.utils.dimensionPixelOffsetOf
 import com.tokopedia.media.picker.utils.setBottomMargin
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity.Companion.EXTRA_INTENT_PREVIEW
+import com.tokopedia.picker.common.EXTRA_EDITOR
 import com.tokopedia.picker.common.ParamCacheManager
+import com.tokopedia.picker.common.RESULT_PICKER
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
-import com.tokopedia.picker.common.intent.PickerIntent
-import com.tokopedia.picker.common.intent.RESULT_PICKER
+import com.tokopedia.picker.common.PickerIntent
 import com.tokopedia.picker.common.observer.EventFlowFactory
 import com.tokopedia.picker.common.types.FragmentType
 import com.tokopedia.picker.common.types.PageType
@@ -156,6 +157,10 @@ open class PickerActivity : BaseActivity()
                 intent.putExtra(RESULT_PICKER, it)
                 setResult(Activity.RESULT_OK, intent)
                 finish()
+            }
+
+            data.getStringArrayListExtra(EXTRA_EDITOR)?.let {
+                // TODO
             }
         }
     }
