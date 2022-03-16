@@ -159,7 +159,7 @@ class PlayBroadcastSetupBottomSheet :
     }
 
     fun show(fragmentManager: FragmentManager) {
-        show(fragmentManager, TAG)
+        if(!isAdded) show(fragmentManager, TAG)
     }
 
     fun setDataSource(dataSource: DataSource?) {
