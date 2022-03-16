@@ -201,10 +201,16 @@ class DigitalUnifyCardViewHolder(
                 text = MethodChecker.fromHtml(element.subtitle)
 
                 val mLayoutParams = layoutParams as ConstraintLayout.LayoutParams
-                if (binding.dguDiscountLabel.visibility == View.VISIBLE) {
-                    mLayoutParams.topToBottom = binding.dguDiscountLabel.id
-                } else {
-                    mLayoutParams.topToBottom = binding.dguDiscountSlashPrice.id
+                when {
+                    binding.dguDiscountLabel.visibility == View.VISIBLE -> {
+                        mLayoutParams.topToBottom = binding.dguDiscountLabel.id
+                    }
+                    binding.dguDiscountSlashPrice.visibility == View.VISIBLE -> {
+                        mLayoutParams.topToBottom = binding.dguDiscountSlashPrice.id
+                    }
+                    else -> {
+                        mLayoutParams.topToBottom = binding.dguPriceValue.id
+                    }
                 }
                 layoutParams = mLayoutParams
                 requestLayout()
