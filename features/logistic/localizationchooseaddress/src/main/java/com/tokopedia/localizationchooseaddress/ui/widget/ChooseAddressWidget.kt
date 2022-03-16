@@ -129,6 +129,25 @@ class ChooseAddressWidget : ConstraintLayout,
                     }
                 }
             })
+            viewModel.tokonowData.observe(fragment.viewLifecycleOwner, {
+                when (it) {
+                    is Success -> {
+                            val data = it.data
+                            ChooseAddressUtils.refreshTokonowData(
+                                context = context,
+                                warehouses = TokonowWarehouseMapper.mapWarehouseItemToLocal(data.warehouses),
+                                warehouseId = data.warehouseId,
+                                serviceType = data.serviceType,
+                                lastUpdate = data.lastUpdate,
+                                shopId = data.shopId
+                            )
+                            chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                    }
+                    is Fail -> {
+                        // do nothing
+                    }
+                }
+            })
         }
     }
 
@@ -164,8 +183,12 @@ class ChooseAddressWidget : ConstraintLayout,
     private fun initChooseAddressFlow() {
         val localData = ChooseAddressUtils.getLocalizingAddressData(context)
         updateWidget()
+        if (getLocalizingAddressHostSourceBottomSheet().equals("home", ignoreCase = true) && viewModel.isFirstLoad) {
+            viewModel.getTokonowData(localData)
+        }
         if (localData.address_id.isEmpty()) {
-            chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()?.let { viewModel.getStateChosenAddress(it, isSupportWarehouseLoc) }
+            chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
+                ?.let { viewModel.getStateChosenAddress(it, isSupportWarehouseLoc) }
             initObservers()
         }
     }
