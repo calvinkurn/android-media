@@ -13,16 +13,23 @@ import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
-import com.tokopedia.recommendation_widget_common.extension.convertMiniCartToProductIdMap
 import com.tokopedia.recommendation_widget_common.extension.mappingMiniCartDataToRecommendation
-import com.tokopedia.recommendation_widget_common.presentation.model.*
+import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
+import com.tokopedia.recommendation_widget_common.presentation.model.RecomAtcTokonowResponse
+import com.tokopedia.recommendation_widget_common.presentation.model.RecomErrorModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecomFilterResult
+import com.tokopedia.recommendation_widget_common.presentation.model.RecomMinicartWrapperData
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TEXT_ERROR
 import com.tokopedia.recommendation_widget_common.viewutil.asSuccess
 import com.tokopedia.recommendation_widget_common.viewutil.isRecomPageNameEligibleForChips
@@ -60,8 +67,8 @@ open class RecomWidgetViewModel @Inject constructor(
         get() = _errorGetRecommendation
 
 
-    val miniCartData: LiveData<MutableMap<String, MiniCartItem>> get() = _miniCartData
-    private val _miniCartData = MutableLiveData<MutableMap<String, MiniCartItem>>()
+    val miniCartData: LiveData<MutableMap<MiniCartItemKey, MiniCartItem2>> get() = _miniCartData
+    private val _miniCartData = MutableLiveData<MutableMap<MiniCartItemKey, MiniCartItem2>>()
 
     private val _atcRecomTokonow = MutableLiveData<RecomAtcTokonowResponse>()
     val atcRecomTokonow: LiveData<RecomAtcTokonowResponse> get() = _atcRecomTokonow
@@ -196,8 +203,8 @@ open class RecomWidgetViewModel @Inject constructor(
         }
     }
 
-    fun updateMiniCartWithPageData(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        val data = miniCartSimplifiedData.miniCartItems.convertMiniCartToProductIdMap()
+    fun updateMiniCartWithPageData(miniCartSimplifiedData: MiniCartSimplifiedData2) {
+        val data = miniCartSimplifiedData.miniCartItems
         _miniCartData.postValue(data.toMutableMap())
     }
 
@@ -205,7 +212,7 @@ open class RecomWidgetViewModel @Inject constructor(
         launchCatchError(block = {
             miniCartListSimplifiedUseCase.get().setParams(listOf(shopId))
             val result = miniCartListSimplifiedUseCase.get().executeOnBackground()
-            val data = result.miniCartItems.convertMiniCartToProductIdMap()
+            val data = result.miniCartItems
             _miniCartData.postValue(data.toMutableMap())
             _refreshUIMiniCartData.postValue(RecomMinicartWrapperData(pageName, result))
         }) {
@@ -258,7 +265,7 @@ open class RecomWidgetViewModel @Inject constructor(
 
     private fun deleteRecomItemFromCart(recomItem: RecommendationItem) {
         launchCatchError(block = {
-            val miniCartItem = miniCartData.value?.get(recomItem.productId.toString())
+            val miniCartItem = miniCartData.value?.getMiniCartItemProduct(recomItem.productId.toString())
             miniCartItem?.let {
                 deleteCartUseCase.get().setParams(listOf(miniCartItem.cartId))
                 val result = deleteCartUseCase.get().executeOnBackground()
@@ -314,7 +321,7 @@ open class RecomWidgetViewModel @Inject constructor(
         quantity: Int
     ) {
         launchCatchError(block = {
-            val miniCartItem = miniCartData.value?.get(recomItem.productId.toString())
+            val miniCartItem = miniCartData.value?.getMiniCartItemProduct(recomItem.productId.toString())
             miniCartItem?.let {
                 val copyOfMiniCartItem =
                     UpdateCartRequest(cartId = it.cartId, quantity = quantity, notes = it.notes)

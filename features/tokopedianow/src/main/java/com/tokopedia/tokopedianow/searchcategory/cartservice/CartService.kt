@@ -8,7 +8,11 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.tokopedianow.searchcategory.utils.NO_VARIANT_PARENT_PRODUCT_ID
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -19,16 +23,16 @@ open class CartService @Inject constructor (
     private val deleteCartUseCase: DeleteCartUseCase,
     private val userSession: UserSessionInterface,
 ) {
-    private var allMiniCartItemList: List<MiniCartItem>? = null
-    private var cartItemsVariantGrouped: Map<String, List<MiniCartItem>>? = null
+    private var allMiniCartItemList: Map<MiniCartItemKey, MiniCartItem2>? = null
+//    private var cartItemsVariantGrouped: Map<String, List<MiniCartItem>>? = null
 
-    open fun updateMiniCartItems(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        val cartItemsPartition =
-            splitCartItemsVariantAndNonVariant(miniCartSimplifiedData.miniCartItems)
+    open fun updateMiniCartItems(miniCartSimplifiedData: MiniCartSimplifiedData2) {
+//        val cartItemsPartition =
+//            splitCartItemsVariantAndNonVariant(miniCartSimplifiedData.miniCartItems)
 
         allMiniCartItemList = miniCartSimplifiedData.miniCartItems
-        cartItemsVariantGrouped =
-            cartItemsPartition.second.groupBy { it.productParentId }
+//        cartItemsVariantGrouped =
+//            cartItemsPartition.second.groupBy { it.productParentId }
     }
 
     private fun splitCartItemsVariantAndNonVariant(miniCartItems: List<MiniCartItem>) =
@@ -43,10 +47,10 @@ open class CartService @Inject constructor (
         getProductVariantTotalQuantity(parentProductId)
 
     private fun getProductNonVariantQuantity(productId: String) =
-        allMiniCartItemList?.find { it.productId == productId }?.quantity ?: 0
+        allMiniCartItemList?.getMiniCartItemProduct(productId)?.quantity ?: 0
 
     private fun getProductVariantTotalQuantity(parentProductId: String) =
-        cartItemsVariantGrouped?.get(parentProductId)?.sumOf { it.quantity } ?: 0
+        allMiniCartItemList?.getMiniCartItemParentProduct(parentProductId)?.totalQuantity ?: 0
 
     open fun handleCart(
         cartProductItem: CartProductItem,
@@ -123,7 +127,7 @@ open class CartService @Inject constructor (
     }
 
     private fun getMiniCartItem(productId: String)
-        = allMiniCartItemList?.find { it.productId == productId }
+        = allMiniCartItemList?.getMiniCartItemProduct(productId)
 
     private fun deleteCart(
         cartProductItem: CartProductItem,

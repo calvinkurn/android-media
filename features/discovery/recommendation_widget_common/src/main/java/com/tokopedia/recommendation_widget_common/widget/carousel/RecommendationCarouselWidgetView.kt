@@ -23,6 +23,8 @@ import com.tokopedia.globalerror.showUnifyError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.R
@@ -702,7 +704,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         }
     }
 
-    private fun updateUiQuantity(miniCart: MutableMap<String, MiniCartItem>) {
+    private fun updateUiQuantity(miniCart: MutableMap<MiniCartItemKey, MiniCartItem2>) {
         carouselData?.let {
             TokonowQuantityUpdater.updateRecomWithMinicartData(it, miniCart)
             setData(it)

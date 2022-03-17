@@ -1,12 +1,11 @@
 package com.tokopedia.tokopedianow.repurchase.domain.mapper
 
-import com.tokopedia.tokopedianow.datefilter.presentation.fragment.TokoNowDateFilterFragment.Companion.ALL_DATE_TRANSACTION_POSITION
-import com.tokopedia.tokopedianow.datefilter.presentation.fragment.TokoNowDateFilterFragment.Companion.LAST_ONE_MONTH_POSITION
-import com.tokopedia.tokopedianow.datefilter.presentation.fragment.TokoNowDateFilterFragment.Companion.LAST_THREE_MONTHS_POSITION
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_READY
@@ -14,9 +13,17 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
-import com.tokopedia.tokopedianow.common.model.*
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.REPURCHASE_EMPTY_RESOURCE_ID
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeRes
+import com.tokopedia.tokopedianow.datefilter.presentation.fragment.TokoNowDateFilterFragment.Companion.ALL_DATE_TRANSACTION_POSITION
+import com.tokopedia.tokopedianow.datefilter.presentation.fragment.TokoNowDateFilterFragment.Companion.LAST_ONE_MONTH_POSITION
+import com.tokopedia.tokopedianow.datefilter.presentation.fragment.TokoNowDateFilterFragment.Companion.LAST_THREE_MONTHS_POSITION
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.SORT_FILTER
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseProductMapper.mapToProductListUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.factory.RepurchaseSortFilterFactory
@@ -25,8 +32,11 @@ import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseEmpt
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseLoadingUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel
-import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
-import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.RepurchaseSortFilterType.*
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.RepurchaseSortFilterType.CATEGORY_FILTER
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.RepurchaseSortFilterType.DATE_FILTER
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.RepurchaseSortFilterType.SORT
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.SelectedDateFilter
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.SelectedSortFilter
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
 import com.tokopedia.unifycomponents.ChipsUnify
 
@@ -239,37 +249,41 @@ object RepurchaseLayoutMapper {
         }
     }
 
-    fun MutableList<Visitable<*>>.updateProductATCQuantity(miniCart: MiniCartSimplifiedData) {
-        val variantGroup = miniCart.miniCartItems.groupBy { it.productParentId }
+    fun MutableList<Visitable<*>>.updateProductATCQuantity(miniCart: MiniCartSimplifiedData2) {
+//        val variantGroup = miniCart.miniCartItems.groupBy { it.productParentId }
 
-        miniCart.miniCartItems.map { miniCartItem ->
-            val productId = miniCartItem.productId
-            val parentId = miniCartItem.productParentId
-            val quantity = if (parentId != DEFAULT_PARENT_ID) {
-                val miniCartItemsWithSameParentId = variantGroup[miniCartItem.productParentId]
-                miniCartItemsWithSameParentId?.sumOf { it.quantity }.orZero()
-            } else {
-                miniCartItem.quantity
+        miniCart.miniCartItems.values.map { miniCartItem ->
+            if (miniCartItem is MiniCartItem2.MiniCartItemProduct) {
+                val productId = miniCartItem.productId
+                val parentId = miniCartItem.productParentId
+                val quantity = if (parentId != DEFAULT_PARENT_ID) {
+                    val miniCartItemsWithSameParentId = miniCart.miniCartItems.getMiniCartItemParentProduct(miniCartItem.productParentId)
+                    miniCartItemsWithSameParentId?.totalQuantity.orZero()
+                } else {
+                    miniCartItem.quantity
+                }
+                updateProductQuantity(productId, quantity)
             }
-            updateProductQuantity(productId, quantity)
         }
     }
 
-    fun MutableList<Visitable<*>>.updateDeletedATCQuantity(miniCart: MiniCartSimplifiedData, type: String) {
+    fun MutableList<Visitable<*>>.updateDeletedATCQuantity(miniCart: MiniCartSimplifiedData2, type: String) {
         when (type) {
             PRODUCT_REPURCHASE -> {
                 val productList = filterIsInstance<RepurchaseProductUiModel>()
-                val cartProductIds = miniCart.miniCartItems.map { it.productId }
+                val cartProductIds = miniCart.miniCartItems.values.mapNotNull {
+                    if (it is MiniCartItem2.MiniCartItemProduct) it.productId else null
+                }
                 val deletedProducts = productList.filter { it.id !in cartProductIds }
-                val variantGroup = miniCart.miniCartItems.groupBy { it.productParentId }
+//                val variantGroup = miniCart.miniCartItems.groupBy { it.productParentId }
 
                 deletedProducts.forEach { model ->
                     val productId = model.id
                     val parentId = model.parentId
 
                     if (parentId != DEFAULT_PARENT_ID) {
-                        val miniCartItemsWithSameParentId = variantGroup[parentId]
-                        val totalQuantity = miniCartItemsWithSameParentId?.sumOf { it.quantity }.orZero()
+//                        val miniCartItemsWithSameParentId = variantGroup[parentId]
+                        val totalQuantity = miniCart.miniCartItems.getMiniCartItemParentProduct(parentId)?.totalQuantity.orZero()
                         if (totalQuantity == DEFAULT_QUANTITY) {
                             updateProductQuantity(productId, DEFAULT_QUANTITY)
                         } else {
@@ -283,17 +297,19 @@ object RepurchaseLayoutMapper {
             PRODUCT_RECOMMENDATION -> {
                 firstOrNull { it is TokoNowRecommendationCarouselUiModel }?.let { uiModel ->
                     val layoutUiModel = uiModel as TokoNowRecommendationCarouselUiModel
-                    val cartProductIds = miniCart.miniCartItems.map { it.productId }
+                    val cartProductIds = miniCart.miniCartItems.values.mapNotNull {
+                        if (it is MiniCartItem2.MiniCartItemProduct) it.productId else null
+                    }
                     val deletedProducts = layoutUiModel.carouselData.recommendationData.recommendationItemList.filter { it.productId.toString() !in cartProductIds }
-                    val variantGroup = miniCart.miniCartItems.groupBy { it.productParentId }
+//                    val variantGroup = miniCart.miniCartItems.groupBy { it.productParentId }
 
                     deletedProducts.forEach { model ->
                         val productId = model.productId.toString()
                         val parentId = model.parentID.toString()
 
                         if (parentId != DEFAULT_PARENT_ID) {
-                            val miniCartItemsWithSameParentId = variantGroup[parentId]
-                            val totalQuantity = miniCartItemsWithSameParentId?.sumOf { it.quantity }.orZero()
+//                            val miniCartItemsWithSameParentId = variantGroup[parentId]
+                            val totalQuantity = miniCart.miniCartItems.getMiniCartItemParentProduct(parentId)?.totalQuantity.orZero()
                             if (totalQuantity == DEFAULT_QUANTITY) {
                                 updateProductRecomQuantity(productId, DEFAULT_QUANTITY)
                             } else {

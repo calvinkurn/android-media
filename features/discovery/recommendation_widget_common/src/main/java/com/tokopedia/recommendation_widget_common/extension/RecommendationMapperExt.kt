@@ -1,11 +1,17 @@
 package com.tokopedia.recommendation_widget_common.extension
 
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
-import com.tokopedia.recommendation_widget_common.presentation.model.*
-import com.tokopedia.recommendation_widget_common.widget.comparison.specs.SpecsMapper
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationBanner
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationSpecificationLabels
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**
@@ -171,22 +177,23 @@ fun RecommendationEntity.RecommendationCampaign.mapToBannerData(): Recommendatio
     return null
 }
 
-fun mappingMiniCartDataToRecommendation(recomWidget: RecommendationWidget, miniCartMap: MutableMap<String, MiniCartItem>?) {
+fun mappingMiniCartDataToRecommendation(recomWidget: RecommendationWidget, miniCartMap: MutableMap<MiniCartItemKey, MiniCartItem2>?) {
     val recomItemList = mutableListOf<RecommendationItem>()
     recomWidget.recommendationItemList.forEach { item ->
-        val minicartcopy = miniCartMap?.toMutableMap()
-        minicartcopy?.let {
+//        val minicartcopy = miniCartMap?.toMutableMap()
+        miniCartMap?.let {
             if (item.isProductHasParentID()) {
                 var variantTotalItems = 0
-                it.values.forEach { miniCartItem ->
-                    if (miniCartItem.productParentId == item.parentID.toString()) {
-                        variantTotalItems += miniCartItem.quantity
-                    }
-                }
+                variantTotalItems += it.getMiniCartItemParentProduct(item.parentID.toString())?.totalQuantity ?: 0
+//                it.values.forEach { miniCartItem ->
+//                    if (miniCartItem.productParentId == item.parentID.toString()) {
+//                        variantTotalItems += miniCartItem.quantity
+//                    }
+//                }
                 item.updateItemCurrentStock(variantTotalItems)
             } else {
                 item.updateItemCurrentStock(
-                    it[item.productId.toString()]?.quantity
+                    it.getMiniCartItemProduct(item.productId.toString())?.quantity
                         ?: 0
                 )
             }

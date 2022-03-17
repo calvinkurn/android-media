@@ -1,6 +1,9 @@
 package com.tokopedia.recommendation_widget_common.widget.tokonowutil
 
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 
@@ -11,7 +14,7 @@ object TokonowQuantityUpdater {
 
     fun updateRecomWithMinicartData(
         data: RecommendationCarouselData,
-        miniCart: MutableMap<String, MiniCartItem>?
+        miniCart: MutableMap<MiniCartItemKey, MiniCartItem2>?
     ) {
         val newdata = mutableListOf<RecommendationItem>()
         data.recommendationData.recommendationItemList.forEach {
@@ -22,10 +25,11 @@ object TokonowQuantityUpdater {
                     recomItem.updateItemCurrentStock(
                         when {
                             recomItem.isProductHasParentID() -> {
-                                getTotalQuantityVariantBasedOnParentID(recomItem, miniCart)
+//                                getTotalQuantityVariantBasedOnParentID(recomItem, miniCart)
+                                cartData.getMiniCartItemParentProduct(recomItem.parentID.toString())?.totalQuantity ?: 0
                             }
-                            cartData.containsKey(recomItem.productId.toString()) -> {
-                                cartData[recomItem.productId.toString()]?.quantity ?: 0
+                            cartData.containsKey(MiniCartItemKey(recomItem.productId.toString())) -> {
+                                cartData.getMiniCartItemProduct(recomItem.productId.toString())?.quantity ?: 0
                             }
                             else -> 0
                         }
@@ -70,17 +74,17 @@ object TokonowQuantityUpdater {
         data.recommendationData.recommendationItemList = newdata
     }
 
-    private fun getTotalQuantityVariantBasedOnParentID(
-        recomItem: RecommendationItem,
-        miniCart: MutableMap<String, MiniCartItem>
-    ): Int {
-        var variantTotalItems = 0
-        miniCart.values.forEach { miniCartItem ->
-            if (miniCartItem.productParentId == recomItem.parentID.toString()) {
-                variantTotalItems += miniCartItem.quantity
-            }
-        }
-        return variantTotalItems
-    }
+//    private fun getTotalQuantityVariantBasedOnParentID(
+//        recomItem: RecommendationItem,
+//        miniCart: MutableMap<String, MiniCartItem>
+//    ): Int {
+//        var variantTotalItems = 0
+//        miniCart.values.forEach { miniCartItem ->
+//            if (miniCartItem.productParentId == recomItem.parentID.toString()) {
+//                variantTotalItems += miniCartItem.quantity
+//            }
+//        }
+//        return variantTotalItems
+//    }
 
 }
