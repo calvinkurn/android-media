@@ -69,7 +69,11 @@ class PickerPreviewActivity : BaseActivity()
     }
 
     override fun onBackPressed() {
-        onBackPickerIntent()
+        if (param.get().isMultipleSelectionType()) {
+            onBackPickerIntent()
+        } else {
+            onCancelOrRetakeMedia(uiModel.first())
+        }
     }
 
     override fun onContinueClicked() {
@@ -144,7 +148,7 @@ class PickerPreviewActivity : BaseActivity()
         showContinueButtonAs(true)
         onToolbarThemeChanged(ToolbarTheme.Solid)
 
-        if (param.get().withEditor()) {
+        if (!param.get().withEditor()) {
             navToolbar.setContinueTitle(getString(R.string.picker_button_upload))
         }
     }
@@ -172,9 +176,13 @@ class PickerPreviewActivity : BaseActivity()
         }
 
         binding?.btnRetake?.setOnClickListener {
-            deleteLocalCameraMedia(media)
-            cancelIntent()
+            onCancelOrRetakeMedia(media)
         }
+    }
+
+    private fun onCancelOrRetakeMedia(media: MediaUiModel) {
+        deleteLocalCameraMedia(media)
+        cancelIntent()
     }
 
     private fun deleteLocalCameraMedia(media: MediaUiModel) {

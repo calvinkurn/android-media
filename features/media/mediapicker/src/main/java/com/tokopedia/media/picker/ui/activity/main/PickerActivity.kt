@@ -147,10 +147,14 @@ open class PickerActivity : BaseActivity()
             }
 
             // exit Picker
-            data.getStringArrayListExtra(RESULT_PICKER)?.let { onFinishIntent(data) }
+            data.getStringArrayListExtra(RESULT_PICKER)?.let {
+                onFinishIntent(it)
+            }
 
             // goto Editor
-            data.getStringArrayListExtra(EXTRA_EDITOR)?.let { onEditorIntent(data) }
+            data.getStringArrayListExtra(EXTRA_EDITOR)?.let {
+                onEditorIntent(it)
+            }
         }
     }
 
@@ -339,14 +343,14 @@ open class PickerActivity : BaseActivity()
         binding?.container?.setBottomMargin(marginBottom)
     }
 
-    private fun onFinishIntent(data: Intent?) {
+    private fun onFinishIntent(path: ArrayList<String>) {
         val intent = Intent()
-        intent.putExtra(RESULT_PICKER, data)
+        intent.putExtra(RESULT_PICKER, path)
         setResult(Activity.RESULT_OK, intent)
         finish()
     }
 
-    private fun onEditorIntent(data: Intent?) {
+    private fun onEditorIntent(path: ArrayList<String>) {
 
     }
 

@@ -116,6 +116,8 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     override fun onItemClicked(media: MediaUiModel) {} //no-op
 
     override fun onDataSetChanged(action: DrawerActionType) {
+        if (!param.get().isMultipleSelectionType()) return
+
         when (action) {
             is DrawerActionType.Add -> stateOnAddPublished(action.media)
             is DrawerActionType.Remove -> stateOnRemovePublished(action.mediaToRemove)
