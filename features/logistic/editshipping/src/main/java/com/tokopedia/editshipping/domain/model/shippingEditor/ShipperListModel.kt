@@ -54,8 +54,6 @@ data class ShipperProductModel(
         var shipperProductId: String = "",
         var shipperProductName: String = "",
         var isActive: Boolean = false,
-        var shipperId: Long = 0,
-        var shipperName: String = ""
 ) : Parcelable
 
 data class TickerModel(

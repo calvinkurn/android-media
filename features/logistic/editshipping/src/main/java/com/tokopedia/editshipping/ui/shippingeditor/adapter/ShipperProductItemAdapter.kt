@@ -71,7 +71,13 @@ class ShipperProductItemAdapter(private var listener: ShipperProductItemListener
             val lastItem = shipperProduct.last()
             shipperProductName.text = data.shipperProductName
             shipperProductCb.isChecked = data.isActive
-            shouldShowInfoIcon(data)
+            if (shouldShowInfoIcon(data)) {
+                infoIcon.visibility = View.VISIBLE
+                listener.showCoachMarkOnInfoIcon(infoIcon)
+                infoIcon.setOnClickListener {
+                    listener.onClickInfoIcon()
+                }
+            }
             if (data == lastItem) {
                 divider.visibility = View.GONE
             }
@@ -81,18 +87,11 @@ class ShipperProductItemAdapter(private var listener: ShipperProductItemListener
             }
         }
 
-        private fun shouldShowInfoIcon(data: ShipperProductModel) {
-            if (data.shipperId.toString() == GOCAR_SHIPPER_ID && data.shipperProductId.equals(
+        private fun shouldShowInfoIcon(data: ShipperProductModel) : Boolean {
+            return data.shipperProductId.equals(
                     GOCAR_SHIPPER_PRODUCT_ID,
                     ignoreCase = true
                 )
-            ) {
-                infoIcon.visibility = View.VISIBLE
-                listener.showCoachMarkOnInfoIcon(infoIcon)
-                infoIcon.setOnClickListener {
-                    listener.onClickInfoIcon()
-                }
-            }
         }
     }
 }

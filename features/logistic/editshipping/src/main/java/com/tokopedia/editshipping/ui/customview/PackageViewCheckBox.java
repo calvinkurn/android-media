@@ -52,16 +52,7 @@ public class PackageViewCheckBox extends EditShippingCourierView<Service,
         serviceCheckbox.setText(service.name);
         serviceCheckbox.setChecked(service.getActive());
         this.serviceIndex = serviceIndex;
-        serviceCheckbox.setCompoundDrawablesWithIntrinsicBounds(0, 0, com.tokopedia.design.R.drawable.info_icon, 0);
-        serviceCheckbox.setOnTouchListener(onDescriptionTouchedListener(serviceCheckbox,
-                service.description, service.name));
-    }
-
-    public void renderData(@NonNull Service service, @NonNull String courierId, int serviceIndex) {
-        serviceCheckbox.setText(service.name);
-        serviceCheckbox.setChecked(service.getActive());
-        this.serviceIndex = serviceIndex;
-        if (courierId.equals(EditShippingConstant.GOCAR_SHIPPER_ID) && service.id.equals(EditShippingConstant.GOCAR_SHIPPER_PRODUCT_ID)) {
+        if (service.id.equals(EditShippingConstant.GOCAR_SHIPPER_PRODUCT_ID)) {
             mainView.showCoachmarkGocarInstan(serviceCheckbox);
         }
         serviceCheckbox.setCompoundDrawablesWithIntrinsicBounds(0, 0, com.tokopedia.design.R.drawable.info_icon, 0);
