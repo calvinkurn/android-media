@@ -75,9 +75,6 @@ class CarouselMerchantVoucherViewHolder (
             element.merchantVoucherComponentListener.onShopClicked(element, adapterPosition)
         }
         binding?.containerProduct?.setOnClickListener {
-            element.merchantVoucherComponentListener.onVoucherDetailClicked(element, adapterPosition)
-        }
-        binding?.containerImageProduct?.setOnClickListener {
             element.merchantVoucherComponentListener.onProductClicked(element, adapterPosition)
         }
         itemView.addOnImpressionListener(element.impressHolder) {

@@ -38,13 +38,4 @@ class MerchantVoucherComponentCallback(val homeCategoryListener: HomeCategoryLis
     override fun getUserId(): String {
         return homeCategoryListener.userId
     }
-
-    override fun onVoucherDetailClicked(
-        element: CarouselMerchantVoucherDataModel,
-        horizontalPosition: Int
-    ) {
-        val tracking = MerchantVoucherTracking.getClickProduct(element, horizontalPosition)
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(tracking.first, tracking.second)
-        homeCategoryListener.onDynamicChannelClicked(element.productAppLink)
-    }
 }

@@ -10,6 +10,5 @@ interface MerchantVoucherComponentListener  {
     fun onShopClicked(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int)
     fun onMerchantImpressed(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int)
     fun onProductClicked(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int)
-    fun onVoucherDetailClicked(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int)
     fun getUserId() : String
 }
