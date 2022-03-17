@@ -203,9 +203,6 @@ class CouponDetailFragment : BaseDaggerFragment() {
             }
             header.setNavigationOnClickListener { activity?.onBackPressed() }
         }
-        binding?.let {  
-            
-        }
     }
 
     private fun observeCouponDetail() {
