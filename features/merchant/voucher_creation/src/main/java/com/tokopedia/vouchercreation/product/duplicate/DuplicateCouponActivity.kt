@@ -64,7 +64,8 @@ class DuplicateCouponActivity : AppCompatActivity() {
             {},
             ::onDuplicateCouponSuccess,
             couponId,
-            CouponPreviewFragment.Mode.DUPLICATE
+            CouponPreviewFragment.Mode.DUPLICATE,
+                true
         )
     }
 
@@ -135,6 +136,7 @@ class DuplicateCouponActivity : AppCompatActivity() {
         val maxProductLimit = couponPreviewFragment.getMaxAllowedProduct()
         val manageProductIntent = Intent(this, ManageProductActivity::class.java).apply {
             putExtras(Bundle().apply {
+                putBoolean(BUNDLE_KEY_BLOCK_ADD_PRODUCT, VALUE_BLOCK_ADD_PRODUCT)
                 putString(BUNDLE_KEY_SELECTED_WAREHOUSE_ID, couponPreviewFragment.getSelectedWarehouseId())
                 putBoolean(BUNDLE_KEY_IS_EDITING, true)
                 putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)

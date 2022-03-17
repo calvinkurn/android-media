@@ -54,7 +54,8 @@ class UpdateCouponActivity : AppCompatActivity() {
                 ::onUpdateCouponSuccess,
                 {},
                 couponId,
-                CouponPreviewFragment.Mode.UPDATE
+                CouponPreviewFragment.Mode.UPDATE,
+                true
         )
     }
 
