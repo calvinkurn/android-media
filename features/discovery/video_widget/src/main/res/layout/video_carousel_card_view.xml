@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:elevation="0dp"
+    app:cardCornerRadius="8dp">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/video_thumbnail_imageview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/video_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:resize_mode="zoom"
+            app:shutter_background_color="@color/transparent"
+            app:surface_type="texture_view"
+            app:use_artwork="false"
+            app:use_controller="false"
+            tools:visibility="visible" />
+
+        <View
+            android:id="@+id/top_gradient"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/black_to_transparent_gradient_bg"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/bottom_gradient"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="@drawable/transparent_to_black_gradient_bg"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/play_button_imageview"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/video_widget_ic_play_button"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/title_textview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="2dp"
+            android:ellipsize="end"
+            android:lineSpacingExtra="4sp"
+            android:maxLines="2"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintBottom_toTopOf="@+id/subtitle_textview"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="body_3"
+            tools:text="@tools:sample/lorem/random" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/subtitle_textview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:ellipsize="end"
+            android:lineSpacingExtra="4sp"
+            android:maxLines="1"
+            android:textColor="@color/Unify_Static_White_68"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="heading_6"
+            tools:text="@tools:sample/full_names" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

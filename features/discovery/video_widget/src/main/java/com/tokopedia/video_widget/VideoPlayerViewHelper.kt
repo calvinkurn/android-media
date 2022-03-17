@@ -27,7 +27,7 @@ import java.lang.ref.WeakReference
 
 class VideoPlayerViewHelper(
     context: Context,
-    private val exoPlayerView: VideoPlayerView
+    private val exoPlayerView: VideoPlayerView,
 ) : ExoPlayerControl {
     companion object {
         private const val MINIMUM_DENSITY_MATRIX = 1.5f

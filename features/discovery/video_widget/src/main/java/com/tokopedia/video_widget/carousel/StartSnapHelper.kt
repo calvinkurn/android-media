@@ -37,12 +37,14 @@ class StartSnapHelper : LinearSnapHelper() {
         super.attachToRecyclerView(recyclerView)
     }
 
-    override fun calculateDistanceToFinalSnap(@NonNull layoutManager: RecyclerView.LayoutManager,
-                                     @NonNull targetView: View): IntArray {
+    override fun calculateDistanceToFinalSnap(
+        @NonNull layoutManager: RecyclerView.LayoutManager,
+        @NonNull targetView: View
+    ): IntArray {
         val out = IntArray(2)
 
         if (layoutManager.canScrollHorizontally()) {
-            out[0] = distanceToStart(targetView, getHorizontalHelper(layoutManager))-
+            out[0] = distanceToStart(targetView, getHorizontalHelper(layoutManager)) -
                     DimensionUtils.getDpFromInt(targetView.context, 16).toInt()
         } else {
             out[0] = 0
@@ -73,13 +75,16 @@ class StartSnapHelper : LinearSnapHelper() {
         return helper.getDecoratedStart(targetView) - helper.startAfterPadding
     }
 
-    private fun getStartView(layoutManager: RecyclerView.LayoutManager,
-                             helper: OrientationHelper): View? {
+    private fun getStartView(
+        layoutManager: RecyclerView.LayoutManager,
+        helper: OrientationHelper
+    ): View? {
 
         if (layoutManager is LinearLayoutManager) {
             val firstChild = layoutManager.findFirstVisibleItemPosition()
 
-            val isLastItem = layoutManager.findLastCompletelyVisibleItemPosition() == layoutManager.getItemCount() - 1
+            val isLastItem =
+                layoutManager.findLastCompletelyVisibleItemPosition() == layoutManager.getItemCount() - 1
 
             if (firstChild == RecyclerView.NO_POSITION || isLastItem) {
                 return null
@@ -87,7 +92,10 @@ class StartSnapHelper : LinearSnapHelper() {
 
             val child = layoutManager.findViewByPosition(firstChild)
 
-            return if (helper.getDecoratedEnd(child) >= helper.getDecoratedMeasurement(child) / 2 && helper.getDecoratedEnd(child) > 0) {
+            return if (helper.getDecoratedEnd(child) >= helper.getDecoratedMeasurement(child) / 2 && helper.getDecoratedEnd(
+                    child
+                ) > 0
+            ) {
                 child
             } else {
                 if (layoutManager.findLastCompletelyVisibleItemPosition() == layoutManager.getItemCount() - 1) {

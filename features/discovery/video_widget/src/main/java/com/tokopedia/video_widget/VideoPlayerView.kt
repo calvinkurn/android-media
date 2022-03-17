@@ -91,11 +91,11 @@ class VideoPlayerView(
         defStyleAttr: Int
     ) {
         context.theme
-            .obtainStyledAttributes(attrs, R.styleable.VideoWidgetView, defStyleAttr, 0)
+            .obtainStyledAttributes(attrs, R.styleable.VideoPlayerView, defStyleAttr, 0)
             .apply {
                 try {
                     scaleType = getInteger(
-                        R.styleable.VideoWidgetView_scaleType,
+                        R.styleable.VideoPlayerView_scaleType,
                         ScaleType.TYPE_CENTER_CROP
                     )
                 } finally {

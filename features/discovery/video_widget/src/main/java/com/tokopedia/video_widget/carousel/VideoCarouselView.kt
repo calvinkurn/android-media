@@ -1,0 +1,109 @@
+package com.tokopedia.video_widget.carousel
+
+import android.content.Context
+import android.content.res.TypedArray
+import android.util.AttributeSet
+import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.video_widget.R
+
+class VideoCarouselView : BaseCustomView {
+    private val snapHelper = StartSnapHelper()
+    private val defaultRecyclerViewDecorator = VideoCarouselDefaultDecorator()
+    private val adapter = VideoCarouselItemAdapter()
+    private var listener: VideoCarouselListener? = null
+    private var internalListener: VideoCarouselInternalListener? = null
+
+    private val titleTextView: Typography by lazy {
+        findViewById(R.id.carousel_title_textview)
+    }
+
+    private val recyclerView: RecyclerView by lazy {
+        findViewById(R.id.carousel_recycler_view)
+    }
+
+    private val scrollChangeListener: RecyclerView.OnScrollListener =
+        object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    internalListener?.onWidgetCardsScrollChanged(recyclerView)
+                }
+            }
+        }
+
+    constructor(context: Context) : super(context) {
+        init(null)
+    }
+
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+        init(attrs)
+    }
+
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
+        init(attrs)
+    }
+
+    private fun init(attrs: AttributeSet?) {
+        View.inflate(context, R.layout.video_carousel_view, this)
+
+        defineCustomAttributes(attrs)
+        initRecyclerView()
+    }
+
+    private fun defineCustomAttributes(attrs: AttributeSet?) {
+        if (attrs != null) {
+            val styledAttributes =
+                context.obtainStyledAttributes(attrs, R.styleable.VideoCarouselView, 0, 0)
+
+            try {
+                tryDefineCustomAttributes(styledAttributes)
+            } finally {
+                styledAttributes.recycle()
+            }
+        }
+    }
+
+    private fun tryDefineCustomAttributes(styledAttributes: TypedArray) {
+        titleTextView.text = styledAttributes.getString(R.styleable.VideoCarouselView_title)
+    }
+
+    private fun initRecyclerView() {
+        recyclerView.layoutManager = LinearLayoutManager(
+            this.context,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+        recyclerView.addItemDecoration(defaultRecyclerViewDecorator)
+        snapHelper.attachToRecyclerView(recyclerView)
+        recyclerView.adapter = adapter
+
+        recyclerView.addOnScrollListener(scrollChangeListener)
+    }
+
+    fun setCarouselModel(carouselModel: VideoCarouselModel) {
+        titleTextView.text = carouselModel.title
+        adapter.submitList(carouselModel.itemList)
+    }
+
+    fun recycle() {
+
+    }
+
+    fun setWidgetListener(listener: VideoCarouselListener?) {
+        this.listener = listener
+        adapter.setListener(listener)
+    }
+
+    fun setWidgetInternalListener(internalListener: VideoCarouselInternalListener?) {
+        this.internalListener = internalListener
+    }
+}
