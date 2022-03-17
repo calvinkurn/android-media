@@ -35,6 +35,7 @@ import com.tokopedia.profilecompletion.databinding.FragmentProfileInfoBinding
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoConstants
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoData
+import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoError
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoUiModel
 import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker.Companion.LABEL_ENTRY_POINT_USER_ID
@@ -81,7 +82,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
     private val editPhotoListener = object: View.OnClickListener {
 	override fun onClick(v: View?) {
 	    val ctx = v?.context ?: return
-		tracker.trackOnChangeProfilePictureClick()
+		tracker.trackOnChangeProfilePictureClick(ProfileInfoTracker.LABEL_CLICK)
 	    val builder = ImagePickerBuilder.getSquareImageBuilder(ctx).apply { maxFileSizeInKB = MAX_FILE_SIZE }
 	    val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_PICKER)
 	    intent.putImagePickerBuilder(builder)
@@ -127,12 +128,21 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 	viewModel.profileInfoUiData.observe(viewLifecycleOwner) { setProfileData(it) }
 
 	viewModel.errorMessage.observe(viewLifecycleOwner) {
-	    showToasterError(it)
+		when (it){
+			is ProfileInfoError.ErrorSavePhoto -> {
+				tracker.trackOnChangeProfilePictureClick("${ProfileInfoTracker.LABEL_FAILED} - ${it.errorMsg}")
+				showToasterError(it.errorMsg ?: "")
+			}
+			is ProfileInfoError.ErrorOthers -> {
+				showToasterError(it.errorMsg ?: "")
+			}
+		}
 	}
 
 	viewModel.saveImageProfileResponse.observe(viewLifecycleOwner) {
 	    binding?.profileInfoImageUnify?.setImageUrl(it)
-	    showNormalToaster(getString(success_change_profile_picture))
+		tracker.trackOnChangeProfilePictureClick(ProfileInfoTracker.LABEL_SUCCESS)
+		showNormalToaster(getString(success_change_profile_picture))
 	}
     }
 

@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoError
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoUiModel
 import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileFeedInfoUseCase
 import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileInfoUseCase
@@ -32,8 +33,8 @@ class ProfileViewModel @Inject constructor(
     val profileInfoUiData: LiveData<ProfileInfoUiModel>
         get() = mutableProfileInfoUiData
 
-    private val mutableErrorMessage = SingleLiveEvent<String>()
-    val errorMessage: LiveData<String> = mutableErrorMessage
+    private val mutableErrorMessage = SingleLiveEvent<ProfileInfoError>()
+    val errorMessage: LiveData<ProfileInfoError> = mutableErrorMessage
 
     private val _saveImageProfileResponse = MutableLiveData<String>()
     val saveImageProfileResponse: LiveData<String> = _saveImageProfileResponse
@@ -51,7 +52,7 @@ class ProfileViewModel @Inject constructor(
                     profileFeed.await().profileFeedData
                 )
             } catch (e: Exception) {
-                mutableErrorMessage.value = e.message
+                mutableErrorMessage.value = ProfileInfoError.ErrorOthers(e.message)
             }
         }
     }
@@ -63,10 +64,10 @@ class ProfileViewModel @Inject constructor(
                 val param = uploader.createParams(filePath = image, sourceId = SOURCE_ID)
                 when (val result = uploader(param)) {
                     is UploadResult.Success -> saveProfilePicture(result.uploadId)
-                    is UploadResult.Error -> mutableErrorMessage.value = result.message
+                    is UploadResult.Error -> mutableErrorMessage.value = ProfileInfoError.ErrorOthers(result.message)
                 }
             } catch (e: Exception) {
-                mutableErrorMessage.value = e.message
+                mutableErrorMessage.value = ProfileInfoError.ErrorOthers(e.message)
             }
         }
     }
@@ -86,10 +87,10 @@ class ProfileViewModel @Inject constructor(
                     userSession.profilePicture = imgUrl
                     _saveImageProfileResponse.value = imgUrl
                 } else {
-                    mutableErrorMessage.value = res.data.errorMessage.first()
+                    mutableErrorMessage.value = ProfileInfoError.ErrorSavePhoto(res.data.errorMessage.first())
                 }
             } catch (e: Exception) {
-                mutableErrorMessage.value = e.message
+                mutableErrorMessage.value = ProfileInfoError.ErrorSavePhoto(e.message)
             }
         }
     }

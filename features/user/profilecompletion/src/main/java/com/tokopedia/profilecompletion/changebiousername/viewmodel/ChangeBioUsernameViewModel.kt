@@ -85,7 +85,8 @@ class ChangeBioUsernameViewModel @Inject constructor(
 
     fun submitUsername(username: String) {
         launchCatchError(block = {
-            val isValidUsername = validateUseCase(username).response.isValid
+            val resultValidation = validateUseCase(username).response
+            val isValidUsername = resultValidation.isValid
             if (isValidUsername) {
                 val result = submitProfileUseCase(
                     SubmitProfileParam(
@@ -100,7 +101,7 @@ class ChangeBioUsernameViewModel @Inject constructor(
                     _resultSubmitUsername.value = Fail(Throwable(""))
                 }
             } else {
-                _resultSubmitUsername.value = Fail(Throwable(""))
+                _resultSubmitUsername.value = Fail(Throwable(resultValidation.errorMessage))
             }
         }, onError = {
             _resultSubmitUsername.value = Fail(it)

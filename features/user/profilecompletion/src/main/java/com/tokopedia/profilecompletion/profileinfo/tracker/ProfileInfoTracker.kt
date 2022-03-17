@@ -29,13 +29,13 @@ class ProfileInfoTracker {
     }
 
     // tracker ID: 28682 - done
-    fun trackOnChangeProfilePictureClick() {
+    fun trackOnChangeProfilePictureClick(label: String) {
 	track(
 	    TrackAppUtils.gtmData(
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_CHANGE_PROFILE,
 		ACTION_CLICK_UBAH_FOTO_PROFIL,
-		"")
+		label)
 	)
     }
 
@@ -383,7 +383,7 @@ class ProfileInfoTracker {
 	const val ACTION_CLICK_BACK_USERNAME = "click on button back username"
 	const val ACTION_CLICK_BACK_BIO = "click on button back bio"
 	const val ACTION_CLICK_BTN_LANJUT = "click on button lanjut"
-	const val ACTION_CLICK_UBAH_FOTO_PROFIL = "click on buttoh ubah foto profil"
+	const val ACTION_CLICK_UBAH_FOTO_PROFIL = "click on button ubah foto profil"
 	const val ACTION_CLICK_ENTRY_POINT = "click on entry point"
 	const val ACTION_CLICK_BTN_SIMPAN = "click on button simpan"
 	const val ACTION_CLOSE_BOTTOM_SHEET_CHANGE_NAME = "close bottomsheet change name"

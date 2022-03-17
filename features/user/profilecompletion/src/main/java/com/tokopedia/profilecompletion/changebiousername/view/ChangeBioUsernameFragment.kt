@@ -205,7 +205,7 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
             }
         } else {
             view?.let { view ->
-                val errorMsg = ErrorHandler.getErrorMessage(context, error)
+                val errorMsg = error.message ?: ""
                 Toaster.make(
                     view, errorMsg,
                     Toaster.LENGTH_LONG, Toaster.TYPE_ERROR

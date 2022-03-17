@@ -202,7 +202,7 @@
     <string name="placeholder_username">Buat username yang unik</string>
     <string name="title_username">Username</string>
     <string name="title_bio">Bio</string>
-    <string name="placeholder_bio">Tulis bio kamu</string>
+    <string name="placeholder_bio">Tulis bio tentangmu</string>
     <string name="profile_info_title">Info Profil</string>
     <string name="title_item_name">Nama</string>
     <string name="key_error_username">Username</string>
