@@ -102,6 +102,7 @@ class UpdateCouponActivity : AppCompatActivity() {
                 val selectedProductIds = couponPreviewFragment.getSelectedProductIds()
                 val selectedProducts = arrayListOf<ProductUiModel>()
                 selectedProducts.addAll(couponPreviewFragment.getSelectedProducts(selectedProductIds))
+                selectedProducts.addAll(couponPreviewFragment.getSelectedProducts())
                 putParcelableArrayList(BUNDLE_KEY_SELECTED_PRODUCTS, selectedProducts)
             })
         }

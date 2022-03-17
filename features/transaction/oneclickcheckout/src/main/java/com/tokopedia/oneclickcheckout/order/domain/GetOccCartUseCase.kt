@@ -250,7 +250,41 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
               protection_checkbox_disabled
               unit
               source
-            }
+            }            
+            add_ons {
+              status
+              add_on_data {
+            	add_on_id
+            	add_on_qty
+              	add_on_price
+              	add_on_metadata {
+              	  add_on_note {
+					is_custom_note
+					to
+					from
+					notes
+				  }
+              	}
+              }
+              add_on_button {
+                title
+                description
+                left_icon_url
+                right_icon_url
+                action
+              }
+              add_on_bottomsheet {
+                header_title
+                description
+                products {
+			      product_name
+			      product_image_url
+			    }
+			    ticker {
+				  text
+			    }
+              }
+            }            
           }
         }
         toko_cabang {
@@ -260,7 +294,41 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
         warehouse {
           warehouse_id
           is_fulfillment
-        }
+        }        
+        add_ons {
+          status
+          add_on_data {
+            add_on_id
+            add_on_qty
+            add_on_price
+            add_on_metadata {
+              add_on_note {
+			    is_custom_note
+				to
+				from
+				notes
+			  }
+            }
+          }
+          add_on_button {
+            title
+            description
+            left_icon_url
+            right_icon_url
+            action
+          }
+          add_on_bottomsheet {
+          	header_title
+            description
+            products {
+			  product_name
+			  product_image_url
+			}
+			ticker {
+			  text
+			}
+          }
+        }        
       }
       profile {
         address {
@@ -598,6 +666,18 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
           action
           color
         }
+      }
+      pop_up {
+        title
+        description
+        button {
+          text
+        }
+      }
+      add_on_wording {
+        packaging_and_greeting_card
+        only_greeting_card
+        invoice_not_sent_to_recipient
       }
       total_product_price
     }

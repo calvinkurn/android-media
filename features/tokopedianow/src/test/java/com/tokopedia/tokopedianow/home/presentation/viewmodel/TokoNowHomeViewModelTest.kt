@@ -340,7 +340,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val model = TokoNowCategoryGridUiModel(
                 id="11111",
                 title="Category Tokonow",
-                categoryList = emptyList(),
+                categoryListUiModel = null,
                 state= TokoNowLayoutState.SHOW
         )
 
@@ -350,19 +350,14 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val expectedResponse = TokoNowCategoryGridUiModel(
             id = "11111",
             title = "Category Tokonow",
-            categoryList = listOf(
-                TokoNowCategoryItemUiModel(
-                    id="",
-                    title="",
-                    imageUrl=null,
-                    appLink="tokopedia-android-internal://now/category-list?warehouse_id={warehouse_id}",
-                    warehouseId="1"
-                ),
-                TokoNowCategoryItemUiModel(
-                    id = "1",
-                    title = "Category 1",
-                    imageUrl = "tokopedia://",
-                    appLink = "tokoepdia://"
+            categoryListUiModel = TokoNowCategoryListUiModel(
+                categoryList = listOf(
+                    TokoNowCategoryItemUiModel(
+                        id = "1",
+                        title = "Category 1",
+                        imageUrl = "tokopedia://",
+                        appLink = "tokoepdia://"
+                    )
                 )
             ),
             state = TokoNowLayoutState.SHOW
@@ -393,7 +388,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val model = TokoNowCategoryGridUiModel(
                 id="11111",
                 title="Category Tokonow",
-                categoryList = emptyList(),
+                categoryListUiModel = null,
                 state= TokoNowLayoutState.SHOW
         )
 
@@ -403,7 +398,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val expectedResponse = TokoNowCategoryGridUiModel(
             id = "11111",
             title = "Category Tokonow",
-            categoryList = null,
+            categoryListUiModel = null,
             state = TokoNowLayoutState.HIDE
         )
 
@@ -615,7 +610,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 TokoNowCategoryGridUiModel(
                     id = "11111",
                     title = "Category Tokonow",
-                    categoryList = null,
+                    categoryListUiModel = null,
                     state = TokoNowLayoutState.HIDE
                 ),
                 createSliderBannerDataModel(
@@ -2181,37 +2176,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.onScrollTokoMartHome(1, LocalCacheModel(), listOf())
 
         verifyGetHomeLayoutDataUseCaseCalled(times = 2)
-    }
-
-    @Test
-    fun `given load more error when scroll tokomart home should set result fail`() {
-        val homeLayoutResponse = listOf(
-            HomeLayoutResponse(
-                id = "12345",
-                layout = "tokonow_share",
-                header = Header(
-                    name = "Education",
-                    serverTimeUnix = 0
-                ),
-                token = "==abcd" // dummy token
-            )
-        )
-
-        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
-
-        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
-
-        val loadMoreError = NullPointerException()
-
-        onGetHomeLayoutData_thenReturn(loadMoreError)
-
-        viewModel.onScrollTokoMartHome(0, LocalCacheModel(), listOf())
-
-        verifyGetHomeLayoutDataUseCaseCalled(times = 2)
-
-        viewModel.homeLayoutList
-            .verifyErrorEquals(Fail(loadMoreError))
     }
 
     @Test

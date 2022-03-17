@@ -40,6 +40,8 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
+import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
 import com.tokopedia.checkout.domain.model.checkout.Prompt;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
@@ -78,7 +80,6 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddressTokoNow;
-import com.tokopedia.logisticCommon.data.entity.address.WarehouseDataModel;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet;
@@ -103,11 +104,19 @@ import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnaly
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
 import com.tokopedia.purchase_platform.common.constant.EmbraceConstant;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AvailableBottomSheetData;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.UnavailableBottomSheetData;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest;
@@ -147,7 +156,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import kotlin.Unit;
-import kotlin.jvm.functions.Function0;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -172,6 +180,8 @@ import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.E
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.KERO_TOKEN;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_CHECKOUT;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_DEFAULT;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_ADD_ON_PRODUCT_LEVEL_BOTTOMSHEET;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_CHOSEN_ADDRESS;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_FINISH_ERROR;
@@ -192,6 +202,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private static final int REQUEST_CODE_EDIT_ADDRESS = 11;
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
     private static final int REQUEST_CODE_PROMO = 954;
+    private static final int ADD_ON_STATUS_ACTIVE = 1;
+    private static final int ADD_ON_STATUS_DISABLE = 2;
 
     private static final String SHIPMENT_TRACE = "mp_shipment";
 
@@ -1202,6 +1214,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             onResultFromSetTradeInPinpoint(data);
         } else if (requestCode == REQUEST_CODE_PROMO) {
             onResultFromPromo(resultCode, data);
+        } else if (requestCode == REQUEST_ADD_ON_PRODUCT_LEVEL_BOTTOMSHEET) {
+            onUpdateResultAddOnProductLevelBottomSheet(data);
+        } else if (requestCode == REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET) {
+            onUpdateResultAddOnOrderLevelBottomSheet(data);
         }
     }
 
@@ -2857,6 +2873,20 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
+    private void onUpdateResultAddOnProductLevelBottomSheet(Intent data) {
+        if (data != null) {
+            SaveAddOnStateResult saveAddOnStateResult = data.getParcelableExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA_RESULT);
+            shipmentPresenter.updateAddOnProductLevelDataBottomSheet(saveAddOnStateResult);
+        }
+    }
+
+    private void onUpdateResultAddOnOrderLevelBottomSheet(Intent data) {
+        if (data != null) {
+            SaveAddOnStateResult saveAddOnStateResult = data.getParcelableExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA_RESULT);
+            shipmentPresenter.updateAddOnOrderLevelDataBottomSheet(saveAddOnStateResult);
+        }
+    }
+
     @Override
     public boolean isTradeInByDropOff() {
         RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
@@ -3288,6 +3318,76 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
+    @Override
+    public void openAddOnProductLevelBottomSheet(CartItemModel cartItemModel, AddOnWordingModel addOnWordingModel) {
+        if (getActivity() != null) {
+            AddOnsDataModel addOnsDataModel = cartItemModel.getAddOnProductLevelModel();
+            AddOnBottomSheetModel addOnBottomSheetModel = addOnsDataModel.getAddOnsBottomSheetModel();
+
+            AvailableBottomSheetData availableBottomSheetData = new AvailableBottomSheetData();
+            UnavailableBottomSheetData unavailableBottomSheetData = new UnavailableBottomSheetData();
+
+            if (addOnsDataModel.getStatus() == ADD_ON_STATUS_DISABLE) {
+                unavailableBottomSheetData = ShipmentAddOnMapper.INSTANCE.mapUnavailableBottomSheetProductLevelData(addOnBottomSheetModel, cartItemModel);
+            }
+
+            if (cartItemModel.getAddOnProductLevelModel().getStatus() == ADD_ON_STATUS_ACTIVE) {
+                availableBottomSheetData = ShipmentAddOnMapper.INSTANCE.mapAvailableBottomSheetProductLevelData(addOnWordingModel, cartItemModel);
+            }
+
+            AddOnProductData addOnProductData = ShipmentAddOnMapper.INSTANCE.mapAddOnBottomSheetParam(addOnsDataModel, availableBottomSheetData, unavailableBottomSheetData);
+
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.ADD_ON_GIFTING);
+            intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, addOnProductData);
+            intent.putExtra(AddOnConstant.EXTRA_ADD_ON_SOURCE, AddOnConstant.ADD_ON_SOURCE_CHECKOUT);
+            startActivityForResult(intent, REQUEST_ADD_ON_PRODUCT_LEVEL_BOTTOMSHEET);
+            checkoutAnalyticsCourierSelection.eventClickAddOnsDetail(String.valueOf(cartItemModel.getProductId()));
+        }
+    }
+
+    @Override
+    public void openAddOnOrderLevelBottomSheet(ShipmentCartItemModel shipmentCartItemModel, AddOnWordingModel addOnWordingModel) {
+        if (getActivity() != null && shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
+            AddOnsDataModel addOnsDataModel = shipmentCartItemModel.getAddOnsOrderLevelModel();
+            AddOnBottomSheetModel addOnBottomSheetModel = addOnsDataModel.getAddOnsBottomSheetModel();
+
+            AvailableBottomSheetData availableBottomSheetData = new AvailableBottomSheetData();
+            UnavailableBottomSheetData unavailableBottomSheetData = new UnavailableBottomSheetData();
+
+            if (addOnsDataModel.getStatus() == ADD_ON_STATUS_DISABLE) {
+                unavailableBottomSheetData = ShipmentAddOnMapper.INSTANCE.mapUnavailableBottomSheetOrderLevelData(addOnBottomSheetModel, shipmentCartItemModel);
+            }
+
+            if (addOnsDataModel.getStatus() == ADD_ON_STATUS_ACTIVE) {
+                availableBottomSheetData = ShipmentAddOnMapper.INSTANCE.mapAvailableBottomSheetOrderLevelData(addOnWordingModel, shipmentCartItemModel);
+            }
+
+            AddOnProductData addOnProductData = ShipmentAddOnMapper.INSTANCE.mapAddOnBottomSheetParam(addOnsDataModel, availableBottomSheetData, unavailableBottomSheetData);
+
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.ADD_ON_GIFTING);
+            intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, addOnProductData);
+            startActivityForResult(intent, REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET);
+
+            if (shipmentCartItemModel.getCartString() != null) {
+                checkoutAnalyticsCourierSelection.eventClickAddOnsDetail(shipmentCartItemModel.getCartString());
+            }
+        }
+    }
+
+    @Override
+    public void addOnProductLevelImpression(String productId) {
+        checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(productId);
+    }
+
+    @Override
+    public void addOnOrderLevelImpression(List<CartItemModel> cartItemModelList) {
+        ArrayList<String> listCartString = new ArrayList<>();
+        for (CartItemModel cartItemModel : cartItemModelList) {
+            listCartString.add(cartItemModel.getCartString());
+        }
+        checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(listCartString.toString());
+    }
+
     private void updateLocalCacheAddressData(SaveAddressDataModel saveAddressDataModel) {
         Activity activity = getActivity();
         if (activity != null) {
@@ -3326,4 +3426,31 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         CheckoutLogger.INSTANCE.logOnErrorCheckout(throwable, request, isOneClickShipment(), isTradeIn(), isTradeInByDropOff());
     }
 
+    @Override
+    public void showPopUp(PopUpData popUpData) {
+        if (getActivity() != null) {
+            DialogUnify popUpDialog = new DialogUnify(getActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
+            popUpDialog.setTitle(popUpData.getTitle());
+            popUpDialog.setDescription(popUpData.getDescription());
+            popUpDialog.setPrimaryCTAText(popUpData.getButton().getText());
+            popUpDialog.setPrimaryCTAClickListener(() -> {
+                popUpDialog.dismiss();
+                return Unit.INSTANCE;
+            });
+
+            popUpDialog.show();
+        }
+    }
+
+    @Override
+    public void updateAddOnsData(AddOnsDataModel addOnsDataModel, int identifier) {
+        // identifier : 0 = product level, 1  = order level
+        if (identifier == 0) {
+            shipmentAdapter.notifyItemChanged(shipmentAdapter.getAddOnProductLevelPosition());
+        } else {
+            shipmentAdapter.notifyItemChanged(shipmentAdapter.getAddOnOrderLevelPosition());
+        }
+        shipmentAdapter.updateShipmentCostModel();
+        onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
+    }
 }

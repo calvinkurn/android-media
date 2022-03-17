@@ -78,50 +78,123 @@ class PlaySocketResponseBuilder {
 
     private val productTag = """
         {
-           "type":"PRODUCT_TAG",
-           "data":{
-              "is_show_product_tagging":true,
-              "products":[
-                 {
-                    "id":"1722121446",
-                    "name":"L'Oreal Professionnel Serioxyl Denser Hair Serum Rambut Rontok",
-                    "image_url":"https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2021/8/16/3b692b82-f077-4b25-b148-54b7ba54a60e.jpg",
-                    "shop_id":"11104475",
-                    "original_price":508000,
-                    "original_price_formatted":"Rp 508.000",
-                    "discount":25,
-                    "price":381000,
-                    "price_formatted":"Rp 381.000",
-                    "quantity":185,
-                    "is_variant":false,
-                    "is_available":true,
-                    "order":0,
-                    "app_link":"tokopedia://product/1722121446",
-                    "web_link":"https://www.tokopedia.com/lorealprofessionnel/l-oreal-professionnel-serioxyl-denser-hair-serum-rambut-rontok",
-                    "min_quantity":1,
-                    "is_free_shipping":false
-                 },
-                 {
-                    "id":"1722127217",
-                    "name":"L'Oreal Professionnel Mythic Oil Hair Serum Untuk Rambut Lebih Halus",
-                    "image_url":"https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2021/8/16/f7d92c01-5dc0-433a-8b16-d423147ea552.jpg",
-                    "shop_id":"11104475",
-                    "original_price":293000,
-                    "original_price_formatted":"Rp 293.000",
-                    "discount":35,
-                    "price":190450,
-                    "price_formatted":"Rp 190.450",
-                    "quantity":437,
-                    "is_variant":false,
-                    "is_available":true,
-                    "order":1,
-                    "app_link":"tokopedia://product/1722127217",
-                    "web_link":"https://www.tokopedia.com/lorealprofessionnel/l-oreal-professionnel-mythic-oil-hair-serum-untuk-rambut-lebih-halus",
-                    "min_quantity":1,
-                    "is_free_shipping":false
-                 }
-              ]
-           }
+            "type": "PRODUCT_TAG_UPDATE",
+            "data": {
+                "sections": [
+                    {
+                        "type": "active",
+                        "title": "Pembasmi Lapar!",
+                        "countdown": {
+                            "copy": "Berakhir dalam"
+                        },
+                        "background": {
+                            "gradient": [
+                                "#ff23de",
+                                "#2244aa"
+                            ],
+                            "image_url": "https://via.placeholder.com/150"
+                        },
+                        "start_time": "2022-01-02T15:04:05Z07:00",
+                        "end_time": "2022-01-02T16:04:05Z07:00",
+                        "server_time": "2022-01-02T15:14:05Z07:00",
+                        "products": [
+                            {
+                                "id": "15240013",
+                                "name": "Indomie Soto Lamongan",
+                                "image_url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/7/3/5511658/5511658_081f12a8-2229-4062-87d6-a405f17d5c90_500_500.jpg",
+                                "shop_id": "479887",
+                                "original_price": 60000,
+                                "original_price_formatted": "Rp 60.000",
+                                "discount": 0,
+                                "price": 0,
+                                "price_formatted": "",
+                                "quantity": 9988,
+                                "is_variant": false,
+                                "is_available": false,
+                                "order": 0,
+                                "app_link": "tokopedia://product/15240013",
+                                "web_link": "https://staging.tokopedia.com/hahastag/indomie-soto-lamongan",
+                                "min_quantity": 1,
+                                "is_free_shipping": true
+                            }
+                        ]
+                    },
+                    {
+                        "type": "other",
+                        "title": "Produk Lainnya",
+                        "countdown": {
+                            "copy": ""
+                        },
+                        "background": {
+                            "gradient": [],
+                            "image_url": ""
+                        },
+                        "start_time": "",
+                        "end_time": "",
+                        "server_time": "",
+                        "products": [
+                            {
+                                "id": "15240013",
+                                "name": "Indomie Soto Lamongan",
+                                "image_url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/7/3/5511658/5511658_081f12a8-2229-4062-87d6-a405f17d5c90_500_500.jpg",
+                                "shop_id": "479887",
+                                "original_price": 60000,
+                                "original_price_formatted": "Rp 60.000",
+                                "discount": 0,
+                                "price": 0,
+                                "price_formatted": "",
+                                "quantity": 9988,
+                                "is_variant": false,
+                                "is_available": false,
+                                "order": 0,
+                                "app_link": "tokopedia://product/15240013",
+                                "web_link": "https://staging.tokopedia.com/hahastag/indomie-soto-lamongan",
+                                "min_quantity": 1,
+                                "is_free_shipping": true
+                            }
+                        ]
+                    },
+                    {
+                        "type": "other",
+                        "title": "Produk Habis",
+                        "countdown": {
+                            "copy": ""
+                        },
+                        "background": {
+                            "gradient": [],
+                            "image_url": ""
+                        },
+                        "start_time": "",
+                        "end_time": "",
+                        "server_time": "",
+                        "products": [
+                            {
+                                "id": "15240013",
+                                "name": "Indomie Soto Lamongan",
+                                "image_url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/7/3/5511658/5511658_081f12a8-2229-4062-87d6-a405f17d5c90_500_500.jpg",
+                                "shop_id": "479887",
+                                "original_price": 60000,
+                                "original_price_formatted": "Rp 60.000",
+                                "discount": 0,
+                                "price": 0,
+                                "price_formatted": "",
+                                "quantity": 9988,
+                                "is_variant": false,
+                                "is_available": false,
+                                "order": 0,
+                                "app_link": "tokopedia://product/15240013",
+                                "web_link": "https://staging.tokopedia.com/hahastag/indomie-soto-lamongan",
+                                "min_quantity": 1,
+                                "is_free_shipping": true
+                            }
+                        ]
+                    }
+                ],
+                "config" : {
+                    "peek_product_count" : 15,
+                    "title_bottomsheet": "Promo dan Produk Lainnya"
+                }
+            }
         }
     """.trimIndent()
 
