@@ -52,7 +52,6 @@ public class PackageViewCheckBox extends EditShippingCourierView<Service,
         serviceCheckbox.setText(service.name);
         serviceCheckbox.setChecked(service.getActive());
         this.serviceIndex = serviceIndex;
-        mainView.showCoachmarkGocarInstan(serviceCheckbox);
         serviceCheckbox.setCompoundDrawablesWithIntrinsicBounds(0, 0, com.tokopedia.design.R.drawable.info_icon, 0);
         serviceCheckbox.setOnTouchListener(onDescriptionTouchedListener(serviceCheckbox,
                 service.description, service.name));
