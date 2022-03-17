@@ -10,6 +10,8 @@ import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.internal.ParamObject.AUTO_BID_STATE
+import com.tokopedia.topads.common.data.internal.ParamObject.STRATEGIES
 import com.tokopedia.topads.common.data.model.DashGroupListResponse
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.model.GroupListDataItem
@@ -138,6 +140,18 @@ class GroupDetailViewModel @Inject constructor(
             { throwable ->
                 throwable.printStackTrace()
             })
+    }
+
+    fun changeBidState(isAutomatic: Boolean,groupId: Int) {
+        val dataGrp = hashMapOf<String,Any?>(
+            ParamObject.ACTION_TYPE to ParamObject.ACTION_EDIT,
+            ParamObject.GROUPID to  groupId
+        )
+        val dataKey = hashMapOf<String,Any?>(
+            STRATEGIES to  if(isAutomatic) arrayListOf(AUTO_BID_STATE) else arrayListOf()
+        )
+
+        topAdsCreated(dataGrp, dataKey,{},{})
     }
 
     fun topAdsCreated(dataGrp: HashMap<String, Any?>,dataKey: HashMap<String,Any?>, onSuccess: (() -> Unit), onError: ((error: String?) -> Unit)) {

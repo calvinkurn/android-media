@@ -95,6 +95,7 @@ object ParamObject {
     const val ADDED_PRODUCTS = "addedProducts"
     const val DELETED_PRODUCTS = "deletedProducts"
 
+    const val AUTO_BID_STATE = "auto_bid"
     const val ACTIVE = "active"
     const val KEYWORD_TYPE_PHRASE = 11
     const val KEYWORD_TYPE_EXACT = 21

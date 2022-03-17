@@ -322,7 +322,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     private fun setClick() {
         switchAutoBidLayout?.let {
             it.onCheckBoxStateChanged = { isAutomatic ->
-
+                viewModel.changeBidState(isAutomatic, groupId ?: 0)
             }
 
             it.onInfoClicked = {
@@ -445,6 +445,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         }
         if(data.strategies.isNotEmpty()) {
             autoBidStatus = data.strategies[0]
+            switchAutoBidLayout.switchBidEditKeyword?.isChecked = true
             perClick.visibility = View.GONE
             perClickRekomendasi.visibility = View.GONE
             editPancarianBudget.visibility = View.GONE
@@ -452,6 +453,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             budgetPerClick.text = getString(com.tokopedia.topads.common.R.string.group_detail_bid_otomatis)
             budgetperclickRekomendasi.text = getString(com.tokopedia.topads.common.R.string.group_detail_bid_otomatis)
         } else {
+            switchAutoBidLayout.switchBidEditKeyword?.isChecked = false
             editPancarianBudget.visibility = View.VISIBLE
             autoBidStatus = ""
             perClick.visibility = View.VISIBLE
