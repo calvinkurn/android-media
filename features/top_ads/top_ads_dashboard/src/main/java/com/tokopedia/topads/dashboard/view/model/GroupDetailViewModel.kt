@@ -15,10 +15,7 @@ import com.tokopedia.topads.common.data.internal.ParamObject.STRATEGIES
 import com.tokopedia.topads.common.data.model.DashGroupListResponse
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.model.GroupListDataItem
-import com.tokopedia.topads.common.data.response.FinalAdResponse
-import com.tokopedia.topads.common.data.response.GroupInfoResponse
-import com.tokopedia.topads.common.data.response.HeadlineInfoResponse
-import com.tokopedia.topads.common.data.response.TopadsBidInfo
+import com.tokopedia.topads.common.data.response.*
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
@@ -142,15 +139,22 @@ class GroupDetailViewModel @Inject constructor(
             })
     }
 
-    fun changeBidState(isAutomatic: Boolean,groupId: Int) {
+    fun changeBidState(isAutomatic: Boolean,groupId: Int,suggestBidPerClick: Float, bidPencarian: Float, bidRecomendasi: Float) {
         val dataGrp = hashMapOf<String,Any?>(
             ParamObject.ACTION_TYPE to ParamObject.ACTION_EDIT,
             ParamObject.GROUPID to  groupId
         )
         val dataKey = hashMapOf<String,Any?>(
-            STRATEGIES to  if(isAutomatic) arrayListOf(AUTO_BID_STATE) else arrayListOf()
+            STRATEGIES to  if(isAutomatic) arrayListOf(AUTO_BID_STATE) else arrayListOf(),
+            ParamObject.SUGGESTION_BID_SETTINGS to listOf(
+                GroupEditInput.Group.TopadsSuggestionBidSetting(ParamObject.PRODUCT_SEARCH, suggestBidPerClick),
+                GroupEditInput.Group.TopadsSuggestionBidSetting(ParamObject.PRODUCT_BROWSE, suggestBidPerClick)
+            ),
+            ParamObject.BID_TYPE to listOf(
+                TopAdsBidSettingsModel(ParamObject.PRODUCT_SEARCH,bidPencarian),
+                TopAdsBidSettingsModel(ParamObject.PRODUCT_BROWSE,bidRecomendasi),
+            )
         )
-
         topAdsCreated(dataGrp, dataKey,{},{})
     }
 

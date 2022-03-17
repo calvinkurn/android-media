@@ -320,9 +320,10 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
 
     private fun setClick() {
+        //dummy value passed , need to update it
         switchAutoBidLayout?.let {
             it.onCheckBoxStateChanged = { isAutomatic ->
-                viewModel.changeBidState(isAutomatic, groupId ?: 0)
+                viewModel.changeBidState(isAutomatic, groupId ?: 0, 1.1f, 1.0f, 2.2f)
             }
 
             it.onInfoClicked = {
