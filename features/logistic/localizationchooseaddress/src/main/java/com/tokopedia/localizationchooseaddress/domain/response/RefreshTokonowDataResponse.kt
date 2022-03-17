@@ -43,11 +43,11 @@ data class RefreshTokonowDataResponse(
             data class RefreshTokonowDataSuccess(
 
                 @Expose
-                @SerializedName("shop_id")
+                @SerializedName("shopID")
                 val shopId: String = "",
 
                 @Expose
-                @SerializedName("service_type")
+                @SerializedName("serviceType")
                 val serviceType: String = "",
 
                 @Expose
@@ -60,17 +60,17 @@ data class RefreshTokonowDataResponse(
                 val warehouses: List<WarehouseItem> = emptyList(),
 
                 @Expose
-                @SerializedName("warehouse_id")
+                @SerializedName("warehouseID")
                 val warehouseId: String = ""
             ) {
                 data class WarehouseItem(
 
                     @Expose
-                    @SerializedName("service_type")
+                    @SerializedName("serviceType")
                     val serviceType: String = "",
 
                     @Expose
-                    @SerializedName("warehouse_id")
+                    @SerializedName("warehouseID")
                     val warehouseId: String = ""
                 )
             }

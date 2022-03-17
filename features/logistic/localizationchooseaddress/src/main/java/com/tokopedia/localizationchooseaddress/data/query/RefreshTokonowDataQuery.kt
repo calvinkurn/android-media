@@ -9,14 +9,14 @@ object RefreshTokonowDataQuery : GqlQueryInterface {
 
     override fun getQuery(): String {
         return """
-    query RefreshTokonowData(${'$'}tokonowLastUpdate:String!, ${'$'}districtId:String!, ${'$'}latitude:String!, ${'$'}longitude:String!, ${'$'}shopId:String!, ${'$'}warehouseId:String!, ${'$'}serviceType:String!, ${'$'}warehouses:[WarehouseUserPreference!]!){
+    query RefreshTokonowData(${'$'}tokonowLastUpdate:String!, ${'$'}districtID:String!, ${'$'}latitude:String!, ${'$'}longitude:String!, ${'$'}shopID:String!, ${'$'}warehouseID:String!, ${'$'}serviceType:String!, ${'$'}warehouses:[WarehouseUserPreference!]!){
       RefreshTokonowData(
         tokonowLastUpdate: ${'$'}tokonowLastUpdate,
-        districtID: ${'$'}districtId, 
+        districtID: ${'$'}districtID, 
         latitude: ${'$'}latitude, 
         longitude: ${'$'}longitude,
-        shopID: ${'$'}shopId, 
-        warehouseID: ${'$'}warehouseId, 
+        shopID: ${'$'}shopID, 
+        warehouseID: ${'$'}warehouseID, 
         serviceType: ${'$'}serviceType, 
         warehouses: ${'$'}warehouses
       ) {
