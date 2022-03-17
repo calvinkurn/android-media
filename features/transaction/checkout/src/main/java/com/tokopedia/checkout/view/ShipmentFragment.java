@@ -3324,6 +3324,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             AddOnsDataModel addOnsDataModel = cartItemModel.getAddOnProductLevelModel();
             AddOnBottomSheetModel addOnBottomSheetModel = addOnsDataModel.getAddOnsBottomSheetModel();
 
+            // No need to open add on bottom sheet if action = 0
+            if (addOnsDataModel.getAddOnsButtonModel().getAction() == 0) return;
+
             AvailableBottomSheetData availableBottomSheetData = new AvailableBottomSheetData();
             UnavailableBottomSheetData unavailableBottomSheetData = new UnavailableBottomSheetData();
 
@@ -3350,6 +3353,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (getActivity() != null && shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
             AddOnsDataModel addOnsDataModel = shipmentCartItemModel.getAddOnsOrderLevelModel();
             AddOnBottomSheetModel addOnBottomSheetModel = addOnsDataModel.getAddOnsBottomSheetModel();
+
+            // No need to open add on bottom sheet if action = 0
+            if (addOnsDataModel.getAddOnsButtonModel().getAction() == 0) return;
 
             AvailableBottomSheetData availableBottomSheetData = new AvailableBottomSheetData();
             UnavailableBottomSheetData unavailableBottomSheetData = new UnavailableBottomSheetData();
