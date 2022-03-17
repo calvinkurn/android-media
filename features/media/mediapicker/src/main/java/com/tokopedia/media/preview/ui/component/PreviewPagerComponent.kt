@@ -42,10 +42,11 @@ class PreviewPagerComponent(
         adapter.remove(element)
     }
 
-    fun moveToOf(media: MediaUiModel) {
+    fun moveToOf(media: MediaUiModel) : Int{
         val element = getData(media)
         val index = medias.indexOf(element)
         viewPager.setCurrentItem(index, false)
+        return index
     }
 
     override fun release() {

@@ -62,6 +62,10 @@ class ThumbnailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         }
     }
 
+    fun setThumbnailSelected(isSelected: Boolean){
+        binding?.imgThumbnail?.setThumbnailSelected(isSelected)
+    }
+
     companion object {
         @LayoutRes val LAYOUT = R.layout.view_item_selection_thumbnail
 
