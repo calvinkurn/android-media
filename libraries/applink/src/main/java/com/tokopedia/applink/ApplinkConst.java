@@ -183,6 +183,8 @@ public interface ApplinkConst {
     String HOWTOPAY = "tokopedia://howtopay";
     String GOLD_MERCHANT_STATISTIC_DASHBOARD = "tokopedia://gold-merchant-statistic-dashboard";
     String SHOP_SCORE_DETAIL = "tokopedia://shop-score-detail";
+    String ADMIN_INVITATION_CONFIRMATION = "tokopedia://admin-invitation-confirmation";
+    String ADMIN_INVITATION_ACCEPTED = "tokopedia://admin-invitation-accepted";
     String SHOP_SCORE_DETAIL_ACKNOWLEDGE_INTERRUPT = "tokopedia://shop-score-detail/acknowledge-interrupt";
 
     String EVENTS = "tokopedia://events";
@@ -519,6 +521,8 @@ public interface ApplinkConst {
         String TOPADS_CREATE_MANUAL_ADS = "tokopedia://topads/create-manual-ads";
         String REVIEW_REMINDER = "sellerapp://review-reminder";
         String SHOP_SCORE_DETAIL = "sellerapp://shop-score-detail";
+        String ADMIN_INVITATION_CONFIRMATION = "sellerapp://admin-invitation-confirmation";
+        String ADMIN_INVITATION_ACCEPTED = "sellerapp://admin-invitation-accepted";
     }
 
     interface TokopediaNow {

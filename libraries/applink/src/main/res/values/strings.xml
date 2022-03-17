@@ -153,4 +153,6 @@
     <!-- Buyer Order Request Cancel -->
     <string name="title_buyer_request_cancel">Ajukan Pembatalan</string>
 
+    <!-- Shop Admin -->
+    <string name="title_shop_admin">Shop Admin</string>
 </resources>

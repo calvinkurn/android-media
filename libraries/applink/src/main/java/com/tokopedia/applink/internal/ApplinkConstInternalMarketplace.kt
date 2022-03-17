@@ -199,9 +199,13 @@ object ApplinkConstInternalMarketplace {
 
     const val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
 
-    //ShopAdminConfirmInvitation
+    //AdminInvitationConfirmationActivity
     @JvmField
-    val ADMIN_CONFIRM_INVITATION = "$INTERNAL_MARKETPLACE/admin-confirm-invitation"
+    val ADMIN_INVITATION_CONFIRMATION = "$INTERNAL_MARKETPLACE/admin-invitation-confirmation"
+
+    //AdminInvitationAcceptedActivity
+    @JvmField
+    val ADMIN_INVITATION_ACCEPTED = "$INTERNAL_MARKETPLACE/admin-invitation-accepted"
 
     //ShopScorePerformanceActivity
     @JvmField

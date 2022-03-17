@@ -587,6 +587,17 @@ object DeeplinkDFMapper : CoroutineScope {
                     }, DF_BASE, R.string.title_revamped_buyer_order_detail)
             )
 
+            // Shop Admin
+            add(DFP({ it.startsWith(ApplinkConstInternalMarketplace.ADMIN_INVITATION_ACCEPTED) ||
+                    it.startsWith(ApplinkConstInternalMarketplace.ADMIN_INVITATION_CONFIRMATION) ||
+                    it.startsWith(ADMIN_INVITATION_CONFIRMATION) ||
+                    it.startsWith(ADMIN_INVITATION_ACCEPTED) ||
+                    it.startsWith(SellerApp.ADMIN_INVITATION_CONFIRMATION) ||
+                    it.startsWith(SellerApp.ADMIN_INVITATION_ACCEPTED)
+                }, DF_BASE, R.string.title_shop_admin)
+            )
+
+
             // Tokopedia NOW!
             add(DFP({
                 it.startsWith(TokopediaNow.HOME) ||

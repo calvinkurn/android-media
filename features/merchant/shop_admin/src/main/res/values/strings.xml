@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Shop Admin</string>
+    <string name="title_shop_admin">Shop Admin</string>
+    <string name="title_admin_invitation_confirmation">Admin Invitation Confirmation</string>
+    <string name="title_admin_invitation_accepted">Admin Invitation Accepted</string>
+
     <string name="title_invitation_expires">Oops, undangan akses admin sudah tidak berlaku</string>
     <string name="desc_invitation_expires">Kamu telah melewati batas waktu yang ditentukan untuk menerima undangan akses. Hubungi pemilik toko untuk mengirimnya lagi, ya.</string>
 
@@ -22,5 +25,23 @@
     <string name="title_admin_success_invitation_accepted">Hi %1s, kamu berhasil menjadi admin di %2s!</string>
     <string name="label_admin_feature_detail">Detail fitur yang bisa kamu akses:</string>
 
+    <string name="label_tnc_invitation_accepted">Saya setuju dengan &lt;a href="#"&gt;S&amp;K&lt;/a&gt; yang berlaku.</string>
+    <string name="title_not_yet_checked_tnc">Kamu belum menyetujui S&amp;K yang berlaku.</string>
+    <string name="action_not_yet_checked_tnc">Oke</string>
     <string name="btn_go_to_shop">Masuk Toko</string>
+
+    <string-array name="tnc_summary_array">
+        <item>7 Hari Terakhir</item>
+    </string-array>
+    
+    <string name="title_tnc_header">Syarat dan Ketentuan Admin</string>
+    <string name="title_tnc_summary">Ringkasan Syarat dan Ketentuan</string>
+
+
+    <!-- Invitation Confirmation Reject-->
+    <string name="title_admin_confirmation_reject">Yakin tolak akses admin?</string>
+    <string name="desc_admin_confirmation_reject">Jika kamu menolak, penolakan akses admin tidak dapat dibatalkan.</string>
+    <string name="primary_btn_admin_confirmation_reject">Ya, Tolak</string>
+    <string name="secondary_btn_admin_confirmation_reject">Tidak</string>
+
 </resources>
