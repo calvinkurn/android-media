@@ -38,7 +38,7 @@ import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.uimodel.*
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.SingleProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
@@ -176,7 +176,7 @@ open class TopChatTypeFactoryImpl constructor(
         return TopchatBannedProductAttachmentViewHolder.LAYOUT
     }
 
-    override fun type(productBundlingUiModel: ProductBundlingUiModel): Int {
+    override fun type(singleProductBundlingUiModel: SingleProductBundlingUiModel): Int {
         return SingleProductBundlingViewHolder.LAYOUT
     }
 

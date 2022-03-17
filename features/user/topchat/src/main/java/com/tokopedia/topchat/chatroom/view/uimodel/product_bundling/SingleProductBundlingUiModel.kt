@@ -4,10 +4,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundlingData
-import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundlingPojo
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 
-class MultipleProductBundlingUiModel constructor(
+class SingleProductBundlingUiModel constructor(
     builder: Builder
 ) : SendableUiModel(builder), Visitable<TopChatTypeFactory>, DeferredAttachment {
 
@@ -15,13 +14,11 @@ class MultipleProductBundlingUiModel constructor(
     override var isError: Boolean = false
     override val id: String = attachmentId
 
-    var listBundling: ArrayList<ProductBundlingData> = builder.listProductBundling
+    var productBundling: ProductBundlingData = builder.productBundling
         private set
 
     override fun updateData(attribute: Any?) {
-        if (attribute is ProductBundlingPojo) {
-            this.listBundling = attribute.listProductBundling
-        }
+        TODO("Not yet implemented")
     }
 
     override fun syncError() {
@@ -38,15 +35,16 @@ class MultipleProductBundlingUiModel constructor(
         return typeFactory.type(this)
     }
 
-    open class Builder : SendableUiModel.Builder<Builder, MultipleProductBundlingUiModel>() {
-        internal var listProductBundling: ArrayList<ProductBundlingData> = arrayListOf()
+    open class Builder : SendableUiModel.Builder<Builder, SingleProductBundlingUiModel>() {
 
-        override fun build(): MultipleProductBundlingUiModel {
-            return MultipleProductBundlingUiModel(this)
+        internal var productBundling: ProductBundlingData = ProductBundlingData()
+
+        override fun build(): SingleProductBundlingUiModel {
+            return SingleProductBundlingUiModel(this)
         }
 
-        fun withProductBundlingResponse(listProductBundling: List<ProductBundlingData>): Builder {
-            this.listProductBundling.addAll(listProductBundling)
+        fun withProductBundling(productBundling: ProductBundlingData): Builder {
+            this.productBundling = productBundling
             return self()
         }
     }

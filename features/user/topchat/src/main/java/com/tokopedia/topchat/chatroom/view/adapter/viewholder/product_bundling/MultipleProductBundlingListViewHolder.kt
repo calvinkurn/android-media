@@ -4,7 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
+import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.BundleItem
 import com.tokopedia.topchat.databinding.ItemTopchatListProductBundlingBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -14,16 +14,16 @@ class MultipleProductBundlingListViewHolder(
 
     private var binding: ItemTopchatListProductBundlingBinding? by viewBinding()
 
-    fun bind(data: MultipleProductBundlingUiModel.Bundling) {
+    fun bind(data: BundleItem) {
         bindBundlingName(data)
         bindImage(data)
     }
 
-    private fun bindBundlingName(data: MultipleProductBundlingUiModel.Bundling) {
-        binding?.tvProductBundling?.text = data.bundlingName
+    private fun bindBundlingName(data: BundleItem) {
+        binding?.tvProductBundling?.text = data.name
     }
 
-    private fun bindImage(data: MultipleProductBundlingUiModel.Bundling) {
+    private fun bindImage(data: BundleItem) {
         binding?.ivProductBundlingThumbnail?.loadImage(data.imageUrl)
     }
 

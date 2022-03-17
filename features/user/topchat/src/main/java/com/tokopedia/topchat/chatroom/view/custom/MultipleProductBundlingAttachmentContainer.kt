@@ -19,16 +19,16 @@ import com.tokopedia.topchat.chatroom.view.adapter.MultipleProductBundlingAdapte
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
+import com.tokopedia.topchat.common.util.SpaceItemDecoration
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class MultipleProductBundlingAttachmentContainer : ConstraintLayout {
 
-    private var regularPrice: Typography? = null
-    private var textSave: Typography? = null
-    private var savePrice: Typography? = null
-    private var mainPrice: Typography? = null
+    private var originalPrice: Typography? = null
+    private var totalDiscount: Typography? = null
+    private var bundlePrice: Typography? = null
     private var button: UnifyButton? = null
 
     private var listener: ProductBundlingListener? = null
@@ -110,7 +110,6 @@ class MultipleProductBundlingAttachmentContainer : ConstraintLayout {
     init {
         initLayoutView()
         initBindView()
-        initBundlingRecyclerView()
     }
 
     private fun initLayoutView() {
@@ -118,20 +117,11 @@ class MultipleProductBundlingAttachmentContainer : ConstraintLayout {
     }
 
     private fun initBindView() {
-        regularPrice = findViewById(R.id.tv_regular_price)
-        textSave = findViewById(R.id.tv_save)
-        savePrice = findViewById(R.id.tv_save_price)
-        mainPrice = findViewById(R.id.tv_main_price)
+        originalPrice = findViewById(R.id.tv_original_price)
+        totalDiscount = findViewById(R.id.tv_total_discount)
+        bundlePrice = findViewById(R.id.tv_bundle_price)
         button = findViewById(R.id.button_open_package)
         recyclerView = findViewById(R.id.rv_product_bundle)
-    }
-
-    private fun initBundlingRecyclerView() {
-        recyclerView?.let {
-            it.layoutManager = SpanningLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            it.adapter = adapter
-            it.setHasFixedSize(true)
-        }
     }
 
     private fun initAttr(context: Context?, attrs: AttributeSet?) {
@@ -162,9 +152,8 @@ class MultipleProductBundlingAttachmentContainer : ConstraintLayout {
         listener: ProductBundlingListener,
         adapterListener: AdapterListener
     ) {
-        this.adapterPosition = adapterPosition
-        this.listener = listener
-        this.adapterListener = adapterListener
+        initBundlingRecyclerView(adapterPosition)
+        bindListener(listener, adapterListener)
         bindLayoutGravity(element)
 //        if (element.isLoading && !element.isError) {
 //            bindIsLoading(product)
@@ -176,6 +165,21 @@ class MultipleProductBundlingAttachmentContainer : ConstraintLayout {
         bindCtaClick(element)
     }
 
+    private fun initBundlingRecyclerView(adapterPosition: Int) {
+        this.adapterPosition = adapterPosition
+        recyclerView?.let {
+            it.adapter = adapter
+            it.setHasFixedSize(true)
+            it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            it.addItemDecoration(SpaceItemDecoration(7, 7))
+        }
+    }
+
+    private fun bindListener(listener: ProductBundlingListener, adapterListener: AdapterListener) {
+        this.listener = listener
+        this.adapterListener = adapterListener
+    }
+
     private fun bindLayoutGravity(element: MultipleProductBundlingUiModel) {
         if (element.isSender) {
             gravityRight()
@@ -185,22 +189,24 @@ class MultipleProductBundlingAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindProductBundlingList(element: MultipleProductBundlingUiModel) {
-        adapter.bundlingList = element.listBundling
+        adapter.bundlingList = element.listBundling.first().bundleItem
     }
 
     private fun bindPrice(element: MultipleProductBundlingUiModel) {
-        regularPrice?.let {
+        originalPrice?.let {
             it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            it.text = element.productPrice
+            it.text = element.listBundling.first().originalPrice
         }
-        savePrice?.text = element.discountAmount
-        textSave?.text = element.discountText
-        mainPrice?.text = element.discountPrice
+        totalDiscount?.text = element.listBundling.first().totalDiscount
+        bundlePrice?.text = element.listBundling.first().bundlePrice
     }
 
     private fun bindCtaClick(element: MultipleProductBundlingUiModel) {
-        button?.setOnClickListener {
-            listener?.onClickCtaMultipleProductBundling(element)
+        button?.let {
+            it.text = element.listBundling.first().buttonText
+            it.setOnClickListener {
+                listener?.onClickCtaMultipleProductBundling(element)
+            }
         }
     }
 

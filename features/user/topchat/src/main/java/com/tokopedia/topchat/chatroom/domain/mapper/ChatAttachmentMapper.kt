@@ -10,6 +10,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.preattach.PreAttachPayloadResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundlingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.review.ReviewReminderAttribute
 import javax.inject.Inject
 
@@ -55,6 +56,9 @@ class ChatAttachmentMapper @Inject constructor() {
             AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT.toInt() -> {
                 convertToImageAnnouncementAttachment(attachment)
             }
+            AttachmentType.Companion.TYPE_PRODUCT_BUNDLING.toInt() -> {
+                convertToProductBundlingPojo(attachment)
+            }
             else -> null
         }
     }
@@ -78,6 +82,10 @@ class ChatAttachmentMapper @Inject constructor() {
                 attachment.attributes,
                 ReviewReminderAttribute::class.java
         )
+    }
+
+    private fun convertToProductBundlingPojo(attachment: Attachment): ProductBundlingPojo {
+        return CommonUtil.fromJson(attachment.attributes, ProductBundlingPojo::class.java)
     }
 
 }

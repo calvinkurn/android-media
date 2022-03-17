@@ -11,7 +11,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselLis
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.uimodel.*
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.SingleProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
@@ -52,6 +52,6 @@ interface TopChatTypeFactory {
     fun type(srwBubbleUiModel: SrwBubbleUiModel): Int
     fun type(getReminderTickerUiModel: ReminderTickerUiModel): Int
 
-    fun type(productBundlingUiModel: ProductBundlingUiModel): Int
+    fun type(singleProductBundlingUiModel: SingleProductBundlingUiModel): Int
     fun type(multiPleProductBundlingUiModel: MultipleProductBundlingUiModel): Int
 }

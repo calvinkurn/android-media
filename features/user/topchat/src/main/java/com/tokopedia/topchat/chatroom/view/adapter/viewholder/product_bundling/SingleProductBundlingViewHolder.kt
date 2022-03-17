@@ -7,7 +7,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBu
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
-import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.SingleProductBundlingUiModel
 import com.tokopedia.topchat.databinding.ItemTopchatSingleProductBundlingBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -15,11 +15,11 @@ class SingleProductBundlingViewHolder(
     itemView: View?,
     private val listener: ProductBundlingListener,
     private val adapterListener: AdapterListener
-) : BaseChatViewHolder<ProductBundlingUiModel>(itemView) {
+) : BaseChatViewHolder<SingleProductBundlingUiModel>(itemView) {
 
     private val binding: ItemTopchatSingleProductBundlingBinding? by viewBinding()
 
-    override fun bind(element: ProductBundlingUiModel, payloads: MutableList<Any>) {
+    override fun bind(element: SingleProductBundlingUiModel, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
         when (payloads.first()) {
             Payload.REBIND -> bind(element)
@@ -27,7 +27,7 @@ class SingleProductBundlingViewHolder(
         }
     }
 
-    override fun bind(element: ProductBundlingUiModel) {
+    override fun bind(element: SingleProductBundlingUiModel) {
         binding?.containerBundlingAttachment?.bindData(
             element, adapterPosition, listener, adapterListener)
     }

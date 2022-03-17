@@ -14,9 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.BundleItem
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
-import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.SingleProductBundlingUiModel
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
@@ -28,10 +29,9 @@ class SingleProductBundlingAttachmentContainer : ConstraintLayout {
     private var image: ImageUnify? = null
     private var label: Label? = null
     private var bundlingName: Typography? = null
-    private var regularPrice: Typography? = null
-    private var textSave: Typography? = null
-    private var savePrice: Typography? = null
-    private var mainPrice: Typography? = null
+    private var originalPrice: Typography? = null
+    private var totalDiscount: Typography? = null
+    private var bundlePrice: Typography? = null
     private var button: UnifyButton? = null
 
     private var listener: ProductBundlingListener? = null
@@ -121,10 +121,9 @@ class SingleProductBundlingAttachmentContainer : ConstraintLayout {
         image = findViewById(R.id.iv_single_product_thumbnail)
         label = findViewById(R.id.label_package)
         bundlingName = findViewById(R.id.tv_product_bundling_name)
-        regularPrice = findViewById(R.id.tv_regular_price)
-        textSave = findViewById(R.id.tv_save)
-        savePrice = findViewById(R.id.tv_save_price)
-        mainPrice = findViewById(R.id.tv_main_price)
+        originalPrice = findViewById(R.id.tv_original_price)
+        totalDiscount = findViewById(R.id.tv_total_discount)
+        bundlePrice = findViewById(R.id.tv_bundle_price)
         button = findViewById(R.id.button_open_package)
     }
 
@@ -151,28 +150,32 @@ class SingleProductBundlingAttachmentContainer : ConstraintLayout {
     }
 
     fun bindData(
-        element: ProductBundlingUiModel,
+        element: SingleProductBundlingUiModel,
         adapterPosition: Int,
         listener: ProductBundlingListener,
         adapterListener: AdapterListener
     ) {
         this.adapterPosition = adapterPosition
-        this.listener = listener
-        this.adapterListener = adapterListener
+        bindListener(listener, adapterListener)
         bindLayoutGravity(element)
 //        if (element.isLoading && !element.isError) {
 //            bindIsLoading(product)
 //        } else {
         bindBackground(element)
         bindMargin(element)
-        bindImage(element)
-        bindLabel(element)
-        bindBundlingName(element)
+        bindImage(element.productBundling.bundleItem.first())
+        bindLabel(element.productBundling.bundleItem.first())
+        bindBundlingName(element.productBundling.bundleItem.first())
         bindPrice(element)
         bindCtaClick(element)
     }
 
-    private fun bindLayoutGravity(element: ProductBundlingUiModel) {
+    private fun bindListener(listener: ProductBundlingListener, adapterListener: AdapterListener) {
+        this.listener = listener
+        this.adapterListener = adapterListener
+    }
+
+    private fun bindLayoutGravity(element: SingleProductBundlingUiModel) {
         if (element.isSender) {
             gravityRight()
         } else {
@@ -180,40 +183,42 @@ class SingleProductBundlingAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindImage(element: ProductBundlingUiModel) {
-        image?.setImageUrl(element.imageUrl)
+    private fun bindImage(item: BundleItem) {
+        image?.setImageUrl(item.imageUrl)
     }
 
-    private fun bindLabel(element: ProductBundlingUiModel) {
-        label?.text = element.labelDesc
+    private fun bindLabel(item: BundleItem) {
+        label?.text = "Paket isi ${item.quantity}"
     }
 
-    private fun bindBundlingName(element: ProductBundlingUiModel) {
-        bundlingName?.text = element.bundlingName
+    private fun bindBundlingName(item: BundleItem) {
+        bundlingName?.text = item.name
     }
 
-    private fun bindPrice(element: ProductBundlingUiModel) {
-        regularPrice?.let {
+    private fun bindPrice(element: SingleProductBundlingUiModel) {
+        originalPrice?.let {
             it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            it.text = element.productPrice
+            it.text = element.productBundling.originalPrice
         }
-        savePrice?.text = element.discountAmount
-        textSave?.text = element.discountText
-        mainPrice?.text = element.discountPrice
+        totalDiscount?.text = element.productBundling.totalDiscount
+        bundlePrice?.text = element.productBundling.bundlePrice
     }
 
-    private fun bindCtaClick(element: ProductBundlingUiModel) {
-        button?.setOnClickListener {
-            listener?.onClickCtaProductBundling(element)
+    private fun bindCtaClick(element: SingleProductBundlingUiModel) {
+        button?.let {
+            it.text = element.productBundling.buttonText
+            it.setOnClickListener {
+                listener?.onClickCtaProductBundling(element)
+            }
         }
     }
 
     //TODO: Implement search listener
 
-    private fun bindMargin(product: ProductBundlingUiModel) {
+    private fun bindMargin(singleProduct: SingleProductBundlingUiModel) {
         val lp = layoutParams
         if (lp is LinearLayout.LayoutParams) {
-            if (isNextItemOppositeFrom(product)) {
+            if (isNextItemOppositeFrom(singleProduct)) {
                 setMargin(
                     defaultMarginLeft,
                     bottomMarginOpposite,
@@ -231,11 +236,11 @@ class SingleProductBundlingAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun isNextItemOppositeFrom(product: ProductBundlingUiModel): Boolean {
-        return adapterListener?.isOpposite(adapterPosition, product.isSender) == true
+    private fun isNextItemOppositeFrom(singleProduct: SingleProductBundlingUiModel): Boolean {
+        return adapterListener?.isOpposite(adapterPosition, singleProduct.isSender) == true
     }
 
-    private fun bindBackground(element: ProductBundlingUiModel) {
+    private fun bindBackground(element: SingleProductBundlingUiModel) {
         background = if (element.isSender) {
             bgSender
         } else {
