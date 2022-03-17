@@ -361,6 +361,7 @@
 
 /buildconfig/                                           @tokopedia/android-core-dev
 /dynamic-features/                                      @tokopedia/android-core-dev
+/dynamic-features-customerapp_pro/                      @tokopedia/android-core-dev
 /dynamic-features-sellerapp/                            @tokopedia/android-core-dev
 /tools/                                                 @tokopedia/android-core-dev
 
