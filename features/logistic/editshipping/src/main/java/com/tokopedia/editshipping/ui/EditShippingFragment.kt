@@ -472,8 +472,8 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
             coachMarkItem.add(
                 CoachMark2Item(
                     view,
-                    "Sekarang, kamu bisa pakai motor atau mobil untuk kurir instan GoSend!",
-                    "Aktifkan layanan ini untuk mengaktifkan kurir motor / mobil instan GoSend (maks. 100kg)."
+                    getString(R.string.gocar_instan_title_coachmark),
+                    getString(R.string.gocar_instan_description_coachmark)
                 )
             )
             coachMark.showCoachMark(coachMarkItem, null)
