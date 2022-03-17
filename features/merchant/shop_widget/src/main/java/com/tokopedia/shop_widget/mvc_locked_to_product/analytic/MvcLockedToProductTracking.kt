@@ -5,7 +5,9 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Key.KEY_BUSINESS_UNIT
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Key.KEY_CATEGORY_ID
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Key.KEY_CURRENT_SITE
+import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Key.KEY_DIMENSION_40
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Key.KEY_DIMENSION_45
+import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Key.KEY_DIMENSION_87
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Key.KEY_EVENT
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Key.KEY_EVENT_ACTION
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Key.KEY_EVENT_CATEGORY
@@ -40,9 +42,13 @@ import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProdu
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.CLICK_TRASH_BUTTON
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.EVENT_OPEN_SCREEN
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.LOGIN
+import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.MVC_LOCKED_TO_PRODUCT_LIST_GENERAL_MODULE
+import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.MVC_LOCKED_TO_PRODUCT_LIST_NAME
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.MVC_LOCKED_TO_PRODUCT_PAGE_SOURCE
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.MVC_LOCKED_TO_PRODUCT_PAGE_TYPE
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.MVC_LOCKED_TO_PRODUCT_SCREEN_NAME
+import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.MVC_LOCKED_TO_PRODUCT_VBS_IMPRESSION_ACTION
+import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.MVC_LOCKED_TO_PRODUCT_VIEW_PG_IRIS
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.MVC_PRODUCT_ITEM_LIST
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.NON_LOGIN
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.MvcLockedToProductTrackingConstant.Value.PHYSICAL_GOODS
@@ -168,6 +174,7 @@ class MvcLockedToProductTracking @Inject constructor() {
         voucherId: String
     ): Bundle {
         return Bundle().apply {
+            putString(KEY_DIMENSION_87, MVC_LOCKED_TO_PRODUCT_LIST_GENERAL_MODULE)
             putInt(KEY_INDEX, position)
             putString(KEY_ITEM_BRAND, "")
             putString(KEY_ITEM_CATEGORY, "")
@@ -227,6 +234,8 @@ class MvcLockedToProductTracking @Inject constructor() {
         return Bundle().apply {
             putString(KEY_CATEGORY_ID, "")
             putString(KEY_DIMENSION_45, cartId)
+            putString(KEY_DIMENSION_40, MVC_LOCKED_TO_PRODUCT_LIST_NAME)
+            putString(KEY_DIMENSION_87, MVC_LOCKED_TO_PRODUCT_LIST_GENERAL_MODULE)
             putString(KEY_ITEM_BRAND, "")
             putString(KEY_ITEM_CATEGORY, "")
             putString(KEY_ITEM_ID, productId)
@@ -287,6 +296,20 @@ class MvcLockedToProductTracking @Inject constructor() {
             KEY_BUSINESS_UNIT to PHYSICAL_GOODS,
             KEY_CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
             KEY_PRODUCT_ID to productId,
+            KEY_SHOP_ID to shopId,
+            KEY_USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
+
+    fun sendVbsImpressionTracker(shopId: String, userId: String, isSellerView: Boolean) {
+        val eventMap = mapOf(
+            KEY_EVENT to MVC_LOCKED_TO_PRODUCT_VIEW_PG_IRIS,
+            KEY_EVENT_ACTION to MVC_LOCKED_TO_PRODUCT_VBS_IMPRESSION_ACTION,
+            KEY_EVENT_CATEGORY to getShopPageEventCategory(isSellerView),
+            KEY_EVENT_LABEL to "",
+            KEY_BUSINESS_UNIT to PHYSICAL_GOODS,
+            KEY_CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
             KEY_SHOP_ID to shopId,
             KEY_USER_ID to userId
         )

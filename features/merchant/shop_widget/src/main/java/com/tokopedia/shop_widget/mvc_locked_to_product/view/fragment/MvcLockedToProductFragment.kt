@@ -661,6 +661,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
                         dismissAfterTransaction = false,
                         startActivitResult = this::startActivityForResult
                     )
+                    tracking.sendVbsImpressionTracker(shopId, userId, isSellerView)
                 } else {
                     handleAtcFlow(uiModel.productID, Int.ONE, shopId)
                 }
