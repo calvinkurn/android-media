@@ -50,4 +50,18 @@ interface PlayWidgetInListLargeAnalyticListener {
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
     ) {}
+
+    fun onLabelPromoClicked(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean,
+    ) {}
+
+    fun onLabelPromoImpressed(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean,
+    ) {}
 }
