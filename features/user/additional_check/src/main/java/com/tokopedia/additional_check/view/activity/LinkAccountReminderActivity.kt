@@ -43,7 +43,7 @@ class LinkAccountReminderActivity: BaseActivity() {
         try {
             val contentView = View.inflate(this, com.tokopedia.additional_check.R.layout.bottom_sheet_link_account_reminder, null)
             val imgView = contentView.findViewById<ImageUnify>(R.id.link_account_bs_reminder_image)
-            ImageUtils.loadImage(imgView, LINK_ACC_MAIN_IMG, R.drawable.img_link_acc_reminder)
+            ImageUtils.loadImageWithoutPlaceholderAndError(imgView, LINK_ACC_MAIN_IMG)
             val bottomSheetUnify = BottomSheetUnify().apply {
                 val btn = contentView.findViewById<UnifyButton>(R.id.link_account_bs_reminder_primary_btn)
                 btn.setOnClickListener {

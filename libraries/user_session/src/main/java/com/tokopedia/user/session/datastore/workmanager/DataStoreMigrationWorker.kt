@@ -6,11 +6,10 @@ import android.util.Log
 import androidx.work.*
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.datastore.DataStoreMigrationHelper
+import com.tokopedia.user.session.datastore.UserSessionAbTestPlatform
 import com.tokopedia.user.session.datastore.UserSessionDataStoreClient
-import com.tokopedia.user.session.datastore.UserSessionDataStoreImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
@@ -27,14 +26,7 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
 
     private fun isNeedMigration(): Boolean = !getDataStoreMigrationPreference(applicationContext).getBoolean(KEY_MIGRATION_STATUS, false)
 
-    private fun isEnableDataStore(): Boolean {
-	return try {
-	    val config = RemoteConfigInstance.getInstance().abTestPlatform
-	    config.getString(UserSessionDataStoreImpl.USER_SESSION_AB_TEST_KEY).isNotEmpty()
-	} catch (e: Exception) {
-	    false
-	}
-    }
+    private fun isEnableDataStore(): Boolean = UserSessionAbTestPlatform.isDataStoreEnable(applicationContext)
 
     override suspend fun doWork(): Result {
 	if(isEnableDataStore()) {

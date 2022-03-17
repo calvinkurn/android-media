@@ -5,10 +5,9 @@ import android.util.Log
 import android.util.Pair
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.user.session.datastore.UserSessionAbTestPlatform
 import com.tokopedia.user.session.datastore.UserSessionDataStore
 import com.tokopedia.user.session.datastore.UserSessionDataStoreClient
-import com.tokopedia.user.session.datastore.UserSessionDataStoreImpl.Companion.USER_SESSION_AB_TEST_KEY
 import com.tokopedia.user.session.datastore.UserSessionKeyMapper
 import com.tokopedia.user.session.util.EncoderDecoder
 
@@ -19,12 +18,10 @@ open class MigratedUserSession(var context: Context?) {
     	get() = UserSessionDataStoreClient.getInstance(context!!)
 
     private fun isEnableDataStore(): Boolean {
-	return try {
-	    val config = RemoteConfigInstance.getInstance().abTestPlatform
-	    config.getString(USER_SESSION_AB_TEST_KEY).isNotEmpty()
-	} catch (e: Exception) {
-	    false
+        if(context != null) {
+            return UserSessionAbTestPlatform.isDataStoreEnable(context!!)
 	}
+	return false
     }
 
     protected fun getLong(prefName: String?, keyName: String?, defValue: Long): Long {
