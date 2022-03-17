@@ -32,10 +32,10 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
 
     val observer = Observer<ScrollData> { data ->
         data?.let {
-            if (::viewModel.isInitialized) {
-                if (viewModel.pauseDispatchChanges && !data.isAutoScroll) {
+            if(::viewModel.isInitialized){
+                if (viewModel.pauseDispatchChanges) {
                     viewModel.pauseDispatchChanges = false
-                    viewModel.updateSelectedSection(viewModel.selectedSectionId, false)
+                    viewModel.updateSelectedSection(viewModel.selectedSectionId,false)
                 }
             }
         }

@@ -18,7 +18,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
-import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -113,6 +112,7 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import kotlinx.android.synthetic.main.sticky_header_recycler_view.view.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import com.tokopedia.unifyprinciples.R as RUnify
@@ -139,7 +139,6 @@ class DiscoveryFragment :
     PermissionListener,
     MiniCartWidgetListener {
 
-    private var autoScrollSectionID: String? = null
     private var anchorViewHolder: AnchorTabsViewHolder? = null
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
@@ -162,7 +161,6 @@ class DiscoveryFragment :
     private var miniCartWidget: MiniCartWidget? = null
     private var miniCartData:MiniCartSimplifiedData? = null
     private var miniCartInitialized:Boolean = false
-    private var userPressed: Boolean = false
 
     private val analytics: BaseDiscoveryAnalytics by lazy {
         (context as DiscoveryActivity).getAnalytics()
@@ -333,9 +331,7 @@ class DiscoveryFragment :
                     chooseAddressWidgetDivider?.hide()
                     shouldShowChooseAddressWidget = false
                     scrollDist = 0
-                    discoveryViewModel.updateScroll(dx, dy, newState, userPressed)
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE)
-                        scrollToLastSection()
+                    discoveryViewModel.updateScroll(dx, dy, newState)
                 } else if (scrollDist < -MINIMUM) {
                     if (discoveryViewModel.getAddressVisibilityValue()) {
                         chooseAddressWidget?.show()
@@ -343,39 +339,13 @@ class DiscoveryFragment :
                         shouldShowChooseAddressWidget = true
                     }
                     scrollDist = 0
-                    discoveryViewModel.updateScroll(dx, dy, newState, userPressed)
-                    if(mAnchorHeaderView.childCount == 0){
+                    discoveryViewModel.updateScroll(dx, dy, newState)
+                    if(mAnchorHeaderView.childCount == 0 && !stickyHeaderShowing){
                         setupObserveAndShowAnchor()
                     }
                 }
             }
         })
-        recyclerView.setOnTouchListenerRecyclerView{ v, event ->
-            userPressed = true
-            if(event.actionMasked == MotionEvent.ACTION_UP)
-                v.performClick()
-            false
-        }
-        recyclerView.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener{
-            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                userPressed = true
-                return false
-            }
-
-            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
-                userPressed = true
-            }
-
-            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
-                userPressed = true
-            }
-        } )
-    }
-
-    private fun scrollToLastSection() {
-        if(!userPressed && !autoScrollSectionID.isNullOrEmpty()){
-            scrollToSection(autoScrollSectionID!!)
-        }
     }
 
     private fun calculateScrollDepth(recyclerView: RecyclerView) {
@@ -531,9 +501,6 @@ class DiscoveryFragment :
                     }
                     mProgressBar.hide()
                     stopDiscoveryPagePerformanceMonitoring()
-                    recyclerView.post {
-                        scrollToLastSection()
-                    }
                 }
                 is Fail -> {
                     mProgressBar.hide()
@@ -704,18 +671,15 @@ class DiscoveryFragment :
     }
 
     private fun setupObserveAndShowAnchor() {
-        if (!stickyHeaderShowing)
-            anchorViewHolder?.let {
-                if (!it.viewModel.getCarouselItemsListData().hasActiveObservers())
-                    anchorViewHolder?.setUpObservers(viewLifecycleOwner)
-                if (mAnchorHeaderView.findViewById<RecyclerView>(R.id.anchor_rv) == null) {
-                    mAnchorHeaderView.removeAllViews()
-                    (anchorViewHolder?.itemView?.parent as? FrameLayout)?.removeView(
-                        anchorViewHolder?.itemView
-                    )
-                    mAnchorHeaderView.addView(it.itemView)
-                }
+        anchorViewHolder?.let {
+            if (!it.viewModel.getCarouselItemsListData().hasActiveObservers())
+                anchorViewHolder?.setUpObservers(viewLifecycleOwner)
+            if (mAnchorHeaderView.findViewById<RecyclerView>(R.id.anchor_rv) == null) {
+                mAnchorHeaderView.removeAllViews()
+                (anchorViewHolder?.itemView?.parent as? FrameLayout)?.removeView(anchorViewHolder?.itemView)
+                mAnchorHeaderView.addView(it.itemView)
             }
+        }
     }
 
     private fun showToaster(message: String, duration: Int = Toaster.LENGTH_SHORT, type: Int) {
@@ -1045,7 +1009,6 @@ class DiscoveryFragment :
             if (!pinnedComponentId.isNullOrEmpty()) {
                 val position = discoveryViewModel.scrollToPinnedComponent(listComponent, pinnedComponentId)
                 if (position >= 0) {
-                    userPressed = true
                     recyclerView.smoothScrollToPosition(position)
                     isManualScroll = false
                 }
@@ -1253,7 +1216,6 @@ class DiscoveryFragment :
     override fun onClick(view: View?) {
         when (view) {
             ivToTop -> {
-                userPressed = true
                 recyclerView.smoothScrollToPosition(DEFAULT_SCROLL_POSITION)
                 ivToTop.hide()
             }
@@ -1583,21 +1545,12 @@ class DiscoveryFragment :
         }
     }
 
-    fun scrollToSection(sectionID: String) {
-        autoScrollSectionID = sectionID
+    fun scrollToSection(sectionID: String, parentPosition: Int) {
         getSectionPositionMap(pageEndPoint)?.let {
             it[sectionID]?.let { position ->
                 if (position >= 0) {
-                    userPressed = false
-                    anchorViewHolder?.viewModel?.updateSelectedSection(sectionID, true)
-                    val smoothScroller: RecyclerView.SmoothScroller =
-                        object : LinearSmoothScroller(context) {
-                            override fun getVerticalSnapPreference(): Int {
-                                return SNAP_TO_START
-                            }
-                        }
-                    smoothScroller.targetPosition = position
-                    staggeredGridLayoutManager?.startSmoothScroll(smoothScroller)
+                    anchorViewHolder?.viewModel?.updateSelectedSection(sectionID,true)
+                    recyclerView.smoothScrollToPosition(position)
                 }
             }
         }
