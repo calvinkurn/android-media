@@ -28,14 +28,10 @@ class PickerPreviewActivity : BaseActivity()
     , NavToolbarComponent.Listener
     , DrawerSelectionWidget.Listener {
 
-    @Inject lateinit var cacheManager: ParamCacheManager
+    @Inject lateinit var param: ParamCacheManager
 
     private val binding: ActivityPreviewBinding? by viewBinding()
     private val uiModel = arrayListOf<MediaUiModel>()
-
-    private val param by lazy {
-        cacheManager.getParam()
-    }
 
     private val navToolbar by uiComponent {
         NavToolbarComponent(
@@ -80,7 +76,7 @@ class PickerPreviewActivity : BaseActivity()
         uiModel.map { it.path }.let {
             val result = ArrayList(it)
 
-            if (param.withEditor()) {
+            if (param.get().withEditor()) {
                 onEditorIntent(result)
             } else {
                 onFinishIntent(result)
@@ -123,6 +119,8 @@ class PickerPreviewActivity : BaseActivity()
 
             if (items.isNotEmpty()) {
                 setUiModelData(items)
+            } else {
+                finish()
             }
         }
 
@@ -145,13 +143,14 @@ class PickerPreviewActivity : BaseActivity()
         setTitle(getString(R.string.picker_toolbar_preview_title))
         showContinueButtonAs(true)
         onToolbarThemeChanged(ToolbarTheme.Solid)
-        if (param.withEditor()) {
-            navToolbar.setContinueTitle(getString(R.string.picker_toolbar_upload))
+
+        if (param.get().withEditor()) {
+            navToolbar.setContinueTitle(getString(R.string.picker_button_upload))
         }
     }
 
     private fun setupSelectionDrawerOrActionButton() {
-        if (cacheManager.getParam().isMultipleSelectionType()) {
+        if (param.get().isMultipleSelectionType()) {
             binding?.drawerSelector?.setMaxAdapterSize(uiModel.size)
             binding?.drawerSelector?.addAllData(uiModel)
             binding?.drawerSelector?.show()

@@ -16,5 +16,6 @@ enum class PickerPageSource(val value: String) {
     INBOX_DETAIL_PAGE("Inbox Detail"),
     ACCOUNT_DOCUMENT_SETTING_BANK("Account Document Setting Bank"),
     UPLOAD_PROOF_PAYMENT_PAGE("Upload Proof Payment"),
-    FLIGHT_CANCELLATION_REASON_PAGE("Flight Cancellation Reason")
+    FLIGHT_CANCELLATION_REASON_PAGE("Flight Cancellation Reason"),
+    UNKNOWN("")
 }

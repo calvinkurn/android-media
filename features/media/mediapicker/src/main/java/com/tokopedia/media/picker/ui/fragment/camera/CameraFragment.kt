@@ -44,7 +44,7 @@ open class CameraFragment : BaseDaggerFragment()
     , CameraPreviewComponent.Listener {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
-    @Inject lateinit var cacheManager: ParamCacheManager
+    @Inject lateinit var param: ParamCacheManager
 
     private val binding: FragmentCameraBinding? by viewBinding()
     private var listener: PickerActivityListener? = null
@@ -62,11 +62,11 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     private val preview by uiComponent {
-        CameraPreviewComponent(cacheManager.getParam(), this, it)
+        CameraPreviewComponent(param.get(), this, it)
     }
 
     private val controller by uiComponent {
-        CameraControllerComponent(cacheManager.getParam(), this, it)
+        CameraControllerComponent(param.get(), this, it)
     }
 
     val gestureDetector by lazy {
@@ -113,7 +113,9 @@ open class CameraFragment : BaseDaggerFragment()
         isTakingPictureMode = mode == CameraControllerComponent.PHOTO_MODE
     }
 
-    override fun onImageThumbnailClicked() {}
+    override fun onImageThumbnailClicked() {
+        listener?.onPreviewItemSelected(medias)
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -231,13 +233,17 @@ open class CameraFragment : BaseDaggerFragment()
                     }
                 }
             ) {
-                if (medias.isNotEmpty()) {
-                    val lastMedia = medias.last()
-                    controller.setThumbnailPreview(lastMedia)
-                } else {
-                    controller.removeThumbnailPreview()
-                }
+                onShowThumbnailPreview()
             }
+        }
+    }
+
+    private fun onShowThumbnailPreview() {
+        if (medias.isNotEmpty()) {
+            val lastMedia = medias.last()
+            controller.setThumbnailPreview(lastMedia)
+        } else {
+            controller.removeThumbnailPreview()
         }
     }
 

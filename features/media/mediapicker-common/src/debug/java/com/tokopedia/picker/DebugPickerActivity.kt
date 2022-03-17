@@ -46,7 +46,7 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_PICKER_CODE && resultCode == Activity.RESULT_OK) {
-            val elements = intent?.getStringArrayListExtra(RESULT_PICKER)?: return
+            val elements = data?.getStringArrayListExtra(RESULT_PICKER)?: arrayListOf()
             val uiModels = elements.map { File(it).toUiModel() }
             binding?.drawerSelector?.addAllData(uiModels)
         }

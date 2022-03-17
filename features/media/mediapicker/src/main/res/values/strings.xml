@@ -17,7 +17,7 @@
 
 <!--    action button -->
     <string name="picker_title_all_media">Semua Media</string>
-    <string name="picker_toolbar_upload">Upload</string>
+    <string name="picker_button_upload">Upload</string>
     <string name="picker_button_cancel">Batal</string>
     <string name="picker_button_retake_common">Pilih Ulang</string>
     <string name="picker_button_retake_video">Rekam Video Ulang</string>
@@ -35,6 +35,8 @@
     <string name="picker_permission_gallery">Aktifkan akses gallery</string>
 
 <!--    message-->
+    <string name="picker_page_source_not_found">[Dev] PageSource tidak ditemukan, silahkan tambahkan di PickerParam builder.</string>
+
     <string name="picker_deletion_message">Kalau dihapus, media yang kamu ambil akan hilang karena belum disimpan di hp-mu.</string>
 
     <string name="picker_message_camera_photo_permission">Biar kamu bisa ambil foto atau rekam video, kamu perlu aktifkan akses kamera HP-mu.</string>

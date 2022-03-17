@@ -36,7 +36,7 @@ open class PermissionFragment : BaseDaggerFragment() {
     }
 
     private val mAdapter by lazy { PermissionAdapter(permissionList) }
-    private val param by lazy { cacheManager.getParam() }
+    private val param by lazy { cacheManager.get() }
 
     private var isPermissionRationale = false
     private var mTitle = ""

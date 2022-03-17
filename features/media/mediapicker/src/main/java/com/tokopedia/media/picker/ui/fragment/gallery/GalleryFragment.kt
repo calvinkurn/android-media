@@ -38,7 +38,7 @@ import javax.inject.Inject
 open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listener {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
-    @Inject lateinit var cacheManager: ParamCacheManager
+    @Inject lateinit var param: ParamCacheManager
 
     private val binding: FragmentGalleryBinding? by viewBinding()
     private var listener: PickerActivityListener? = null
@@ -94,7 +94,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
             binding?.albumSelector?.txtName?.text = bucketName
 
             // fetch album by bucket id
-            viewModel.fetch(bucketId, cacheManager.getParam())
+            viewModel.fetch(bucketId, param.get())
 
             // force and scroll to up if the bucketId is "recent medias / all media"
             if (bucketId == -1L) {
@@ -152,7 +152,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     private fun initView() {
         setupRecyclerView()
 
-        viewModel.fetch(RECENT_ALBUM_ID, cacheManager.getParam())
+        viewModel.fetch(RECENT_ALBUM_ID, param.get())
     }
 
     private fun hasMediaList(isShown: Boolean) {
@@ -162,10 +162,10 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     }
 
     private fun setupSelectionDrawerWidget(isShown: Boolean) {
-        val isMultipleSelectionType = cacheManager.getParam().isMultipleSelectionType()
+        val isMultipleSelectionType = param.get().isMultipleSelectionType()
 
         if (isMultipleSelectionType) {
-            binding?.drawerSelector?.setMaxAdapterSize(cacheManager.getParam().maxMediaAmount())
+            binding?.drawerSelector?.setMaxAdapterSize(param.get().maxMediaAmount())
             binding?.drawerSelector?.showWithCondition(isShown)
         }
     }
@@ -200,7 +200,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     }
 
     private fun selectMedia(media: MediaUiModel, isSelected: Boolean): Boolean {
-        if (cacheManager.getParam().isMultipleSelectionType()) {
+        if (param.get().isMultipleSelectionType()) {
             if (!isSelected && media.isVideo()) {
                 // video validation
                 if (listener?.hasVideoLimitReached() == true) {
@@ -234,7 +234,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
                 listener?.onShowMediaLimitReachedToast()
                 return false
             }
-        } else if (!cacheManager.getParam().isMultipleSelectionType()) {
+        } else if (!param.get().isMultipleSelectionType()) {
             if (listener?.mediaSelected()?.isNotEmpty() == true || adapter.selectedMedias.isNotEmpty()) {
                 adapter.removeAllSelectedSingleClick()
             }

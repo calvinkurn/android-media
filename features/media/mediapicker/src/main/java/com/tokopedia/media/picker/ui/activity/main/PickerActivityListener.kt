@@ -4,6 +4,7 @@ import com.tokopedia.picker.common.uimodel.MediaUiModel
 
 interface PickerActivityListener {
     fun tabVisibility(isShown: Boolean)
+    fun onPreviewItemSelected(medias: List<MediaUiModel>)
 
     fun mediaSelected(): List<MediaUiModel>
     fun hasVideoLimitReached(): Boolean

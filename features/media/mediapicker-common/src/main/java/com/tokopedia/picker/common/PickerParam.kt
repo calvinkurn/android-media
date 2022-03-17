@@ -18,17 +18,19 @@ data class PickerParam(
     private var maxVideoSize: Long = 250_000_000, // 250 mb
     private var minVideoDuration: Int = 3000, // equals 3 sec
     private var maxVideoDuration: Int = 30000, // equals 30 sec
-    private var maxImageSize: Long = 1_000_000, // 10 mb
+    private var maxImageSize: Long = 10_000_000, // 10 mb
     private var minImageResolution: Int = 300, // px
     private var maxImageResolution: Int = 20000, // px
     private var isIncludeAnimation: Boolean = false,
     private var withEditor: Boolean = false,
+    private var pageSource: PickerPageSource = PickerPageSource.UNKNOWN,
     private var includeMedias: List<File> = emptyList(),
     private var excludedMedias: List<File> = emptyList(),
 ) : Parcelable {
 
     // getter
     fun pageType() = pageType
+    fun pageSourceName() = pageSource.value
     fun isImageModeOnly() = modeType == ModeType.IMAGE_ONLY
     fun isCommonPageType() = pageType == PageType.COMMON
     fun ratioIsSquare() = cameraRatio == CameraRatio.Square
@@ -49,6 +51,7 @@ data class PickerParam(
     fun withEditor() = withEditor
 
     // setter
+    fun pageSource(value: PickerPageSource) = apply { pageSource = value }
     fun cameraRatio(value: CameraRatio) = apply { cameraRatio = value }
     fun maxMediaSize(value: Int) = apply { maxMediaSize = value }
     fun maxVideoSize(value: Int) = apply { maxVideo = value }

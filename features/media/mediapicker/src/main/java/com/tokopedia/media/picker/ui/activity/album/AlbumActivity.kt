@@ -24,7 +24,7 @@ import javax.inject.Inject
 class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
-    @Inject lateinit var cacheManager: ParamCacheManager
+    @Inject lateinit var param: ParamCacheManager
 
     private val binding: ActivityAlbumBinding? by viewBinding()
 
@@ -79,7 +79,7 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
         navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
 
         // fetch the album list
-        viewModel.fetch(cacheManager.getParam())
+        viewModel.fetch(param.get())
     }
 
     private fun setupRecyclerView() {
