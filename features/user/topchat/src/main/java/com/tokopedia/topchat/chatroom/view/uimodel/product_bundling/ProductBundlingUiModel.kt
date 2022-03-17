@@ -1,14 +1,12 @@
 package com.tokopedia.topchat.chatroom.view.uimodel.product_bundling
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundlingData
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 
-class SingleProductBundlingUiModel constructor(
+class ProductBundlingUiModel constructor(
     builder: Builder
-) : SendableUiModel(builder), Visitable<TopChatTypeFactory>, DeferredAttachment {
+) : SendableUiModel(builder), DeferredAttachment {
 
     override var isLoading: Boolean = true
     override var isError: Boolean = false
@@ -31,16 +29,12 @@ class SingleProductBundlingUiModel constructor(
         isError = false
     }
 
-    override fun type(typeFactory: TopChatTypeFactory): Int {
-        return typeFactory.type(this)
-    }
-
-    open class Builder : SendableUiModel.Builder<Builder, SingleProductBundlingUiModel>() {
+    open class Builder : SendableUiModel.Builder<Builder, ProductBundlingUiModel>() {
 
         internal var productBundling: ProductBundlingData = ProductBundlingData()
 
-        override fun build(): SingleProductBundlingUiModel {
-            return SingleProductBundlingUiModel(this)
+        override fun build(): ProductBundlingUiModel {
+            return ProductBundlingUiModel(this)
         }
 
         fun withProductBundling(productBundling: ProductBundlingData): Builder {

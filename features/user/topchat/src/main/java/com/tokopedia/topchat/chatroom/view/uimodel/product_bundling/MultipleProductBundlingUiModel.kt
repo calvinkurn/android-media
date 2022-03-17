@@ -8,19 +8,20 @@ import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundli
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 
 class MultipleProductBundlingUiModel constructor(
-    builder: Builder
+    private val builder: Builder
 ) : SendableUiModel(builder), Visitable<TopChatTypeFactory>, DeferredAttachment {
 
     override var isLoading: Boolean = true
     override var isError: Boolean = false
     override val id: String = attachmentId
 
-    var listBundling: ArrayList<ProductBundlingData> = builder.listProductBundling
+    var listBundling: ArrayList<ProductBundlingUiModel> = builder.listProductBundling
         private set
 
     override fun updateData(attribute: Any?) {
         if (attribute is ProductBundlingPojo) {
-            this.listBundling = attribute.listProductBundling
+            val result = builder.mapToSingleProductBundling(attribute.listProductBundling)
+            this.listBundling.addAll(result)
         }
     }
 
@@ -39,15 +40,29 @@ class MultipleProductBundlingUiModel constructor(
     }
 
     open class Builder : SendableUiModel.Builder<Builder, MultipleProductBundlingUiModel>() {
-        internal var listProductBundling: ArrayList<ProductBundlingData> = arrayListOf()
+        internal var listProductBundling: ArrayList<ProductBundlingUiModel> = arrayListOf()
 
         override fun build(): MultipleProductBundlingUiModel {
             return MultipleProductBundlingUiModel(this)
         }
 
         fun withProductBundlingResponse(listProductBundling: List<ProductBundlingData>): Builder {
-            this.listProductBundling.addAll(listProductBundling)
+            val result = mapToSingleProductBundling(listProductBundling)
+            this.listProductBundling.addAll(result)
             return self()
+        }
+
+        fun mapToSingleProductBundling(
+            listProductBundling: List<ProductBundlingData>
+        ): List<ProductBundlingUiModel> {
+            val listResult = arrayListOf<ProductBundlingUiModel>()
+            for (i in listProductBundling.indices) {
+                val singleProductBundling = ProductBundlingUiModel.Builder()
+                    .withProductBundling(listProductBundling[i])
+                    .build()
+                listResult.add(singleProductBundling)
+            }
+            return listResult
         }
     }
 }

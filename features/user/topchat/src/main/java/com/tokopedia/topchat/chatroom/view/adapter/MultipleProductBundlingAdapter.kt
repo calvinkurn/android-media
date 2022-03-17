@@ -3,12 +3,17 @@ package com.tokopedia.topchat.chatroom.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.BundleItem
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.MultipleProductBundlingListViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCardViewHolder
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
 
-class MultipleProductBundlingAdapter: RecyclerView.Adapter<MultipleProductBundlingListViewHolder>() {
+class MultipleProductBundlingAdapter(
+    private val listener: ProductBundlingListener,
+    private val adapterListener: AdapterListener
+) : RecyclerView.Adapter<ProductBundlingCardViewHolder>() {
 
-    var bundlingList: List<BundleItem> = emptyList()
+    var carousel: MultipleProductBundlingUiModel? = null
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -17,15 +22,23 @@ class MultipleProductBundlingAdapter: RecyclerView.Adapter<MultipleProductBundli
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): MultipleProductBundlingListViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(MultipleProductBundlingListViewHolder.LAYOUT, parent, false)
-        return MultipleProductBundlingListViewHolder(view)
+    ): ProductBundlingCardViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+        return ProductBundlingCardViewHolder(view, listener, adapterListener)
     }
 
-    override fun onBindViewHolder(holder: MultipleProductBundlingListViewHolder, position: Int) {
-        holder.bind(bundlingList[position])
+    override fun onBindViewHolder(holder: ProductBundlingCardViewHolder, position: Int) {
+        carousel?.listBundling?.get(position)?.let {
+            holder.bind(it)
+        }
     }
 
-    override fun getItemCount(): Int = bundlingList.size
+    override fun getItemCount(): Int = carousel?.listBundling?.size ?: 0
+
+    override fun getItemViewType(position: Int): Int {
+        return when(carousel?.listBundling?.size?: 0) {
+            1 -> ProductBundlingCardViewHolder.LAYOUT_SINGLE
+            else -> ProductBundlingCardViewHolder.LAYOUT_CAROUSEL
+        }
+    }
 }

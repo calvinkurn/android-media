@@ -27,8 +27,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewH
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.MultipleProductBundlingViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.SingleProductBundlingViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCarouselViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.BannedChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.ChatMessageUnifyViewHolder
@@ -38,7 +37,6 @@ import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.uimodel.*
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.SingleProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
@@ -176,12 +174,9 @@ open class TopChatTypeFactoryImpl constructor(
         return TopchatBannedProductAttachmentViewHolder.LAYOUT
     }
 
-    override fun type(singleProductBundlingUiModel: SingleProductBundlingUiModel): Int {
-        return SingleProductBundlingViewHolder.LAYOUT
-    }
-
-    override fun type(multiPleProductBundlingUiModel: MultipleProductBundlingUiModel): Int {
-        return MultipleProductBundlingViewHolder.LAYOUT
+    override fun type(multipleProductBundlingUiModel: MultipleProductBundlingUiModel): Int {
+//        return MultipleProductBundlingViewHolder.LAYOUT
+        return ProductBundlingCarouselViewHolder.LAYOUT
     }
 
     // Check if chat bubble first, if not return default ViewHolder
@@ -237,10 +232,7 @@ open class TopChatTypeFactoryImpl constructor(
             SrwBubbleViewHolder.LAYOUT -> SrwBubbleViewHolder(
                 parent, srwBubbleListener, adapterListener
             )
-            SingleProductBundlingViewHolder.LAYOUT -> SingleProductBundlingViewHolder(
-                parent, productBundlingListener, adapterListener
-            )
-            MultipleProductBundlingViewHolder.LAYOUT -> MultipleProductBundlingViewHolder(
+            ProductBundlingCarouselViewHolder.LAYOUT -> ProductBundlingCarouselViewHolder(
                 parent, productBundlingListener, adapterListener
             )
             else -> createViewHolder(parent, type)

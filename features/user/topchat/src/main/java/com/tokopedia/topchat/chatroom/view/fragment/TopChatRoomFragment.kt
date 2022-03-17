@@ -153,7 +153,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundli
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundlingPojo
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.SingleProductBundlingUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 
 /**
@@ -2961,11 +2961,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun onClickCtaProductBundling(element: SingleProductBundlingUiModel) {
+    override fun onClickCtaProductBundling(element: ProductBundlingUiModel) {
         Log.d("PRODBUNDLING", element.productBundling.buttonAndroidLink)
     }
 
-    override fun onSeenProductBundling(element: SingleProductBundlingUiModel) {
+    override fun onSeenProductBundling(element: ProductBundlingUiModel) {
     }
 
     override fun onClickCtaMultipleProductBundling(element: MultipleProductBundlingUiModel) {
@@ -2998,6 +2998,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                         BundleItem(
                             productId = "2147811665",
                             name = "test product 1",
+                            imageUrl = "https://images.tokopedia.net/img/cache/300/default_picture_user/default_toped-17.jpg",
+                            status = "1",
+                            quantity = "1"
+                        ),
+                        BundleItem(
+                            productId = "2147811695",
+                            name = "test product 2",
                             imageUrl = "https://images.tokopedia.net/img/cache/300/default_picture_user/default_toped-17.jpg",
                             status = "1",
                             quantity = "1"
@@ -3066,6 +3073,81 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             this.listProductBundling = arrayListOf(productBundlingData)
         }
 
+        val multiThree = MultipleProductBundlingUiModel.Builder()
+            .withProductBundlingResponse(dummySingleThree.listProductBundling)
+            .build()
+        adapter.addElement(multiThree)
+
+        val dummySingleTwo = ProductBundlingPojo().apply {
+            this.listProductBundling = arrayListOf(
+                ProductBundlingData(
+                    bundleId = "43",
+                    bundleType = 2,
+                    bundleTitle = "Home Care Ramadhan",
+                    bundleStatus = 1,
+                    originalPrice = "Rp28.000",
+                    originalPriceFloat = "28000.0",
+                    bundlePrice = "Rp26.000",
+                    bundlePriceFloat = "26000.0",
+                    totalDiscount = "Rp2.000",
+                    totalDiscountFloat = "2000.0",
+                    buttonText = "Lihat Paket",
+                    buttonDesktopLink = "",
+                    buttonMobileLink = "",
+                    buttonAndroidLink = "tokopedia://product-bundle/<selected_product_on_pdp>?bundleId=<bundle_id>&selectedProductIds=<selectedvariant>",
+                    buttonIOSLink = "tokopedia://product-bundle/<selected_product_on_pdp>?bundleId=<bundle_id>&selectedProductIds=<selectedvariant>",
+                    bundleItem = listOf(
+                        BundleItem(
+                            productId = "2147811665",
+                            name = "test product 1",
+                            imageUrl = "https://images.tokopedia.net/img/cache/300/default_picture_user/default_toped-17.jpg",
+                            status = "1",
+                            quantity = "1"
+                        )
+                    )
+                ),
+                ProductBundlingData(
+                    bundleId = "43",
+                    bundleType = 2,
+                    bundleTitle = "Home Care Ramadhan",
+                    bundleStatus = 1,
+                    originalPrice = "Rp28.000",
+                    originalPriceFloat = "28000.0",
+                    bundlePrice = "Rp26.000",
+                    bundlePriceFloat = "26000.0",
+                    totalDiscount = "Rp2.000",
+                    totalDiscountFloat = "2000.0",
+                    buttonText = "Lihat Paket",
+                    buttonDesktopLink = "",
+                    buttonMobileLink = "",
+                    buttonAndroidLink = "tokopedia://product-bundle/<selected_product_on_pdp>?bundleId=<bundle_id>&selectedProductIds=<selectedvariant>",
+                    buttonIOSLink = "tokopedia://product-bundle/<selected_product_on_pdp>?bundleId=<bundle_id>&selectedProductIds=<selectedvariant>",
+                    bundleItem = listOf(
+                        BundleItem(
+                            productId = "2147811665",
+                            name = "test product 1",
+                            imageUrl = "https://images.tokopedia.net/img/cache/300/default_picture_user/default_toped-17.jpg",
+                            status = "1",
+                            quantity = "1"
+                        ),
+                        BundleItem(
+                            productId = "2147811695",
+                            name = "test product 2",
+                            imageUrl = "https://images.tokopedia.net/img/cache/300/default_picture_user/default_toped-17.jpg",
+                            status = "1",
+                            quantity = "1"
+                        ),
+                    )
+                ),
+            )
+        }
+
+        val multiTwo = MultipleProductBundlingUiModel.Builder()
+            .withProductBundlingResponse(dummySingleTwo.listProductBundling)
+            .build()
+
+        adapter.addElement(multiTwo)
+
         val multi = MultipleProductBundlingUiModel.Builder()
             .withProductBundlingResponse(dummy.listProductBundling)
             .build()
@@ -3118,5 +3200,48 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             .build()
 
         adapter.addElement(multi)
+    }
+
+    private fun setupAnotherDummy() {
+        val dummySingleOne = ProductBundlingPojo().apply {
+            this.listProductBundling = arrayListOf(
+                ProductBundlingData(
+                    bundleId = "43",
+                    bundleType = 2,
+                    bundleTitle = "Home Care Ramadhan",
+                    bundleStatus = 1,
+                    originalPrice = "Rp28.000",
+                    originalPriceFloat = "28000.0",
+                    bundlePrice = "Rp26.000",
+                    bundlePriceFloat = "26000.0",
+                    totalDiscount = "Rp2.000",
+                    totalDiscountFloat = "2000.0",
+                    buttonText = "Lihat Paket",
+                    buttonDesktopLink = "",
+                    buttonMobileLink = "",
+                    buttonAndroidLink = "tokopedia://product-bundle/<selected_product_on_pdp>?bundleId=<bundle_id>&selectedProductIds=<selectedvariant>",
+                    buttonIOSLink = "tokopedia://product-bundle/<selected_product_on_pdp>?bundleId=<bundle_id>&selectedProductIds=<selectedvariant>",
+                    bundleItem = listOf(
+                        BundleItem(
+                            productId = "2147811665",
+                            name = "test product 1",
+                            imageUrl = "https://images.tokopedia.net/img/cache/300/default_picture_user/default_toped-17.jpg",
+                            status = "1",
+                            quantity = "1"
+                        )
+                    )
+                )
+            )
+        }
+        val singleProductBundlingOne = MultipleProductBundlingUiModel.Builder()
+            .withProductBundlingResponse(dummySingleOne.listProductBundling)
+            .build()
+        adapter.addElement(singleProductBundlingOne)
+
+        val dummySingleZero = ProductBundlingPojo()
+        val errorProductBundling = MultipleProductBundlingUiModel.Builder()
+            .withProductBundlingResponse(dummySingleZero.listProductBundling)
+            .build()
+        adapter.addElement(errorProductBundling)
     }
 }

@@ -8,7 +8,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.BundleItem
 import com.tokopedia.topchat.databinding.ItemTopchatListProductBundlingBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
-class MultipleProductBundlingListViewHolder(
+class MultipleBundlingItemViewHolder(
     itemView: View
 ): RecyclerView.ViewHolder(itemView) {
 

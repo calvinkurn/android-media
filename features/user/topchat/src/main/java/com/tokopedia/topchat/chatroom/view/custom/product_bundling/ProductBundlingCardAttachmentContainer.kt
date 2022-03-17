@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.custom
+package com.tokopedia.topchat.chatroom.view.custom.product_bundling
 
 import android.content.Context
 import android.graphics.Paint
@@ -13,19 +13,28 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.adapter.MultipleProductBundlingAdapter
+import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.BundleItem
+import com.tokopedia.topchat.chatroom.view.adapter.MultipleBundlingItemAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
-import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
-import com.tokopedia.topchat.common.util.SpaceItemDecoration
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.common.util.ViewUtil
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
-class MultipleProductBundlingAttachmentContainer : ConstraintLayout {
+class ProductBundlingCardAttachmentContainer : ConstraintLayout {
 
+    private var singleBundlingLayout: ConstraintLayout? = null
+    private var image: ImageUnify? = null
+    private var label: Label? = null
+    private var bundlingName: Typography? = null
     private var originalPrice: Typography? = null
     private var totalDiscount: Typography? = null
     private var bundlePrice: Typography? = null
@@ -36,7 +45,8 @@ class MultipleProductBundlingAttachmentContainer : ConstraintLayout {
     private var adapterPosition: Int = RecyclerView.NO_POSITION
 
     private var recyclerView: RecyclerView? = null
-    private val adapter = MultipleProductBundlingAdapter()
+    private val adapter = MultipleBundlingItemAdapter()
+    private val itemDecoration = BundleSpaceItemDecoration(SPACE)
 
     private val bgOpposite: Drawable? by lazy(LazyThreadSafetyMode.NONE) {
         ViewUtil.generateBackgroundWithShadow(
@@ -55,19 +65,19 @@ class MultipleProductBundlingAttachmentContainer : ConstraintLayout {
 
     private val bgSender: Drawable? by lazy(LazyThreadSafetyMode.NONE) {
         ViewUtil.generateBackgroundWithShadow(
-            this,
-            com.tokopedia.unifyprinciples.R.color.Unify_Background,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_topchat_2,
-            R.dimen.dp_topchat_1,
-            Gravity.CENTER,
-            com.tokopedia.unifyprinciples.R.color.Unify_G200,
-            getStrokeWidthSenderDimenRes()
-        )
+                this,
+                com.tokopedia.unifyprinciples.R.color.Unify_Background,
+                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+                com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+                R.dimen.dp_topchat_2,
+                R.dimen.dp_topchat_1,
+                Gravity.CENTER,
+                com.tokopedia.unifyprinciples.R.color.Unify_G200,
+                getStrokeWidthSenderDimenRes()
+            )
     }
 
     private val defaultMarginLeft: Int by lazy(LazyThreadSafetyMode.NONE) {
@@ -86,26 +96,15 @@ class MultipleProductBundlingAttachmentContainer : ConstraintLayout {
     private var widthMultiplier = DEFAULT_WIDTH_MULTIPLIER
     private val bottomMarginOpposite = getOppositeMargin(context).toInt()
 
-    constructor(context: Context?) : super(context) {
-        initAttr(context, null)
-    }
-
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
-        initAttr(context, attrs)
-    }
-
+    constructor(context: Context?) : super(context)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(
         context: Context?, attrs: AttributeSet?, defStyleAttr: Int
-    ) : super(context, attrs, defStyleAttr) {
-        initAttr(context, attrs)
-    }
-
+    ) : super(context, attrs, defStyleAttr)
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(
         context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int
-    ) : super(context, attrs, defStyleAttr, defStyleRes) {
-        initAttr(context, attrs)
-    }
+    ) : super(context, attrs, defStyleAttr, defStyleRes)
 
     init {
         initLayoutView()
@@ -117,27 +116,15 @@ class MultipleProductBundlingAttachmentContainer : ConstraintLayout {
     }
 
     private fun initBindView() {
+        singleBundlingLayout = findViewById(R.id.single_bundling_layout)
+        image = findViewById(R.id.iv_single_product_thumbnail)
+        label = findViewById(R.id.label_package)
+        bundlingName = findViewById(R.id.tv_product_bundling_name)
         originalPrice = findViewById(R.id.tv_original_price)
         totalDiscount = findViewById(R.id.tv_total_discount)
         bundlePrice = findViewById(R.id.tv_bundle_price)
         button = findViewById(R.id.button_open_package)
         recyclerView = findViewById(R.id.rv_product_bundle)
-    }
-
-    private fun initAttr(context: Context?, attrs: AttributeSet?) {
-        if (context == null || attrs == null) return
-        context.theme.obtainStyledAttributes(
-            attrs, R.styleable.SingleProductAttachmentContainer, 0, 0
-        ).apply {
-            try {
-                widthMultiplier = getFloat(
-                    R.styleable.SingleProductAttachmentContainer_widthMultiplier,
-                    DEFAULT_WIDTH_MULTIPLIER
-                )
-            } finally {
-                recycle()
-            }
-        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -147,12 +134,12 @@ class MultipleProductBundlingAttachmentContainer : ConstraintLayout {
     }
 
     fun bindData(
-        element: MultipleProductBundlingUiModel,
+        element: ProductBundlingUiModel,
         adapterPosition: Int,
         listener: ProductBundlingListener,
         adapterListener: AdapterListener
     ) {
-        initBundlingRecyclerView(adapterPosition)
+        this.adapterPosition = adapterPosition
         bindListener(listener, adapterListener)
         bindLayoutGravity(element)
 //        if (element.isLoading && !element.isError) {
@@ -160,19 +147,54 @@ class MultipleProductBundlingAttachmentContainer : ConstraintLayout {
 //        } else {
         bindBackground(element)
         bindMargin(element)
-        bindProductBundlingList(element)
+        bindLayoutStyle(element)
         bindPrice(element)
         bindCtaClick(element)
     }
 
-    private fun initBundlingRecyclerView(adapterPosition: Int) {
-        this.adapterPosition = adapterPosition
+    private fun bindLayoutStyle(element: ProductBundlingUiModel) {
+        if (element.productBundling.bundleItem.size > 1) {
+            initRecyclerView(element)
+            showRecyclerView()
+        } else {
+            bindImage(element.productBundling.bundleItem.first())
+            bindLabel(element.productBundling.bundleItem.first())
+            bindBundlingName(element.productBundling.bundleItem.first())
+            hideRecyclerView()
+        }
+    }
+
+    private fun hideRecyclerView() {
+        singleBundlingLayout?.show()
+        recyclerView?.hide()
+    }
+
+    private fun showRecyclerView() {
+        singleBundlingLayout?.hide()
+        recyclerView?.show()
+    }
+
+    private fun initRecyclerView(element: ProductBundlingUiModel) {
         recyclerView?.let {
             it.adapter = adapter
+            bindBundleItemList(element.productBundling.bundleItem)
             it.setHasFixedSize(true)
-            it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            it.addItemDecoration(SpaceItemDecoration(7, 7))
+            it.layoutManager = LinearLayoutManager(
+                context, LinearLayoutManager.HORIZONTAL, false)
+            addItemDecoration()
         }
+    }
+
+    private fun bindBundleItemList(list : List<BundleItem>) {
+        adapter.bundlingList = list
+    }
+
+    private fun addItemDecoration() {
+        val counter = recyclerView?.itemDecorationCount ?: 0
+        for (i in 0 until counter) {
+            recyclerView?.removeItemDecorationAt(i)
+        }
+        recyclerView?.addItemDecoration(itemDecoration)
     }
 
     private fun bindListener(listener: ProductBundlingListener, adapterListener: AdapterListener) {
@@ -180,7 +202,7 @@ class MultipleProductBundlingAttachmentContainer : ConstraintLayout {
         this.adapterListener = adapterListener
     }
 
-    private fun bindLayoutGravity(element: MultipleProductBundlingUiModel) {
+    private fun bindLayoutGravity(element: ProductBundlingUiModel) {
         if (element.isSender) {
             gravityRight()
         } else {
@@ -188,31 +210,47 @@ class MultipleProductBundlingAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindProductBundlingList(element: MultipleProductBundlingUiModel) {
-        adapter.bundlingList = element.listBundling.first().bundleItem
+    private fun bindIsLoading(product: ProductAttachmentUiModel) {
+        if (product.isLoading) {
+//            loadView?.show()
+        } else {
+//            loadView?.hide()
+        }
     }
 
-    private fun bindPrice(element: MultipleProductBundlingUiModel) {
+    private fun bindImage(item: BundleItem) {
+        image?.setImageUrl(item.imageUrl)
+    }
+
+    private fun bindLabel(item: BundleItem) {
+        label?.text = "Paket isi ${item.quantity}"
+    }
+
+    private fun bindBundlingName(item: BundleItem) {
+        bundlingName?.text = item.name
+    }
+
+    private fun bindPrice(element: ProductBundlingUiModel) {
         originalPrice?.let {
             it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            it.text = element.listBundling.first().originalPrice
+            it.text = element.productBundling.originalPrice
         }
-        totalDiscount?.text = element.listBundling.first().totalDiscount
-        bundlePrice?.text = element.listBundling.first().bundlePrice
+        totalDiscount?.text = element.productBundling.totalDiscount
+        bundlePrice?.text = element.productBundling.bundlePrice
     }
 
-    private fun bindCtaClick(element: MultipleProductBundlingUiModel) {
+    private fun bindCtaClick(element: ProductBundlingUiModel) {
         button?.let {
-            it.text = element.listBundling.first().buttonText
+            it.text = element.productBundling.buttonText
             it.setOnClickListener {
-                listener?.onClickCtaMultipleProductBundling(element)
+                listener?.onClickCtaProductBundling(element)
             }
         }
     }
 
     //TODO: Implement search listener
 
-    private fun bindMargin(product: MultipleProductBundlingUiModel) {
+    private fun bindMargin(product: ProductBundlingUiModel) {
         val lp = layoutParams
         if (lp is LinearLayout.LayoutParams) {
             if (isNextItemOppositeFrom(product)) {
@@ -233,11 +271,11 @@ class MultipleProductBundlingAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun isNextItemOppositeFrom(product: MultipleProductBundlingUiModel): Boolean {
+    private fun isNextItemOppositeFrom(product: ProductBundlingUiModel): Boolean {
         return adapterListener?.isOpposite(adapterPosition, product.isSender) == true
     }
 
-    private fun bindBackground(element: MultipleProductBundlingUiModel) {
+    private fun bindBackground(element: ProductBundlingUiModel) {
         background = if (element.isSender) {
             bgSender
         } else {
@@ -260,7 +298,8 @@ class MultipleProductBundlingAttachmentContainer : ConstraintLayout {
     }
 
     companion object {
+        private const val SPACE = 15
         private const val DEFAULT_WIDTH_MULTIPLIER = 0.75f
-        private val LAYOUT = R.layout.item_topchat_multiple_product_bundling_card
+        private val LAYOUT = R.layout.item_topchat_product_bundling_card
     }
 }
