@@ -84,6 +84,7 @@
 /features/merchant/product_bundle/                      @tokopedia/android-minionken-dev
 /features/merchant/shop_widget/                         @tokopedia/android-minionken-dev
 /features/merchant/campaign_list/                       @tokopedia/android-minionken-dev
+/dynamic-features-customerapp_pro/merchant/df_merchant_product_service_widget/ @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_free_claim/                   @tokopedia/android-minionsolo-dev
