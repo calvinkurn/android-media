@@ -24,7 +24,7 @@ import org.mockito.Matchers.anyString
  */
 
 @ExperimentalCoroutinesApi
-class GetShopInfoUseCaseTest {
+class GetShopCreatedInfoUseCaseTest {
 
     companion object {
         private const val SUCCESS_RESPONSE = "json/get_shop_info_success_response.json"

@@ -1,7 +1,7 @@
 package com.tokopedia.shop.score.stub.performance.domain.usecase
 
 import com.tokopedia.gm.common.data.source.cloud.model.ShopInfoPeriodWrapperResponse
-import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
+import com.tokopedia.gm.common.domain.interactor.GetShopCreatedInfoUseCase
 import com.tokopedia.gm.common.domain.mapper.ShopScoreCommonMapper
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.shop.score.stub.common.graphql.repository.GraphqlRepositoryStub
@@ -9,10 +9,10 @@ import com.tokopedia.shop.score.stub.performance.domain.response.ShopInfoPeriodR
 import java.io.IOException
 import java.lang.Exception
 
-class GetShopInfoPeriodUseCaseStub(
+class GetShopCreatedInfoUseCaseStub(
     private val graphqlRepositoryStub: GraphqlRepositoryStub,
     private val shopScoreCommonMapper: ShopScoreCommonMapper
-) : GetShopInfoPeriodUseCase(graphqlRepositoryStub, shopScoreCommonMapper) {
+) : GetShopCreatedInfoUseCase(graphqlRepositoryStub, shopScoreCommonMapper) {
 
     var responseStub: Any = ShopInfoPeriodResponseStub()
         set(value) {
@@ -29,8 +29,7 @@ class GetShopInfoPeriodUseCaseStub(
         }
         val shopInfoPeriodResponseStub = responseStub as ShopInfoPeriodResponseStub
         val shopScoreWrapperResponse = ShopInfoPeriodWrapperResponse(
-            shopInfoByIDResponse = shopInfoPeriodResponseStub.shopInfoByIDResponse,
-            goldGetPMSettingInfo = shopInfoPeriodResponseStub.goldGetPMSettingInfo
+            shopInfoByIDResponse = shopInfoPeriodResponseStub.shopInfoByIDResponse
         )
         return shopScoreCommonMapper.mapToGetShopInfo(shopScoreWrapperResponse)
 
