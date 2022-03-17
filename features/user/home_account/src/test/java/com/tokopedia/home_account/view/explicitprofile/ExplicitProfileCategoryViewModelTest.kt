@@ -6,6 +6,7 @@ import com.tokopedia.home_account.explicitprofile.data.ExplicitprofileGetQuestio
 import com.tokopedia.home_account.explicitprofile.domain.GetQuestionsUseCase
 import com.tokopedia.home_account.explicitprofile.features.categories.CategoryViewModel
 import com.tokopedia.home_account.explicitprofile.wrapper.ExplicitProfileResult
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -28,7 +29,7 @@ class ExplicitProfileCategoryViewModelTest {
     private val observerQuestions = mockk<Observer<ExplicitProfileResult<ExplicitprofileGetQuestion>>>(relaxed = true)
 
     private val paramTemplate = "template"
-    private val mockThrowable = Throwable("Opps!")
+    private val mockThrowable = MessageErrorException("Opps!")
     private val mockResponse = ExplicitprofileGetQuestion()
 
     @Before
@@ -69,12 +70,6 @@ class ExplicitProfileCategoryViewModelTest {
         } throws mockThrowable
 
         viewModel?.getQuestion(paramTemplate)
-
-        coVerify {
-            observerQuestions.onChanged(
-                ExplicitProfileResult.Failure(mockThrowable)
-            )
-        }
 
         val result = viewModel?.questions?.value
         assert(result is ExplicitProfileResult.Failure)

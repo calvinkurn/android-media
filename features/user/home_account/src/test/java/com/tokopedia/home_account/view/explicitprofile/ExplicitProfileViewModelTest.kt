@@ -7,6 +7,7 @@ import com.tokopedia.home_account.explicitprofile.domain.GetCategoriesUseCase
 import com.tokopedia.home_account.explicitprofile.domain.SaveMultipleAnswersUseCase
 import com.tokopedia.home_account.explicitprofile.features.ExplicitProfileViewModel
 import com.tokopedia.home_account.explicitprofile.wrapper.ExplicitProfileResult
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -31,7 +32,7 @@ class ExplicitProfileViewModelTest {
     private val observerSaveAnswers = mockk<Observer<ExplicitProfileResult<ExplicitProfileSaveMultiAnswers>>>(relaxed = true)
 
     private val mockStringValue = "Mock Value"
-    private val mockThrowable = Throwable("Opps!")
+    private val mockThrowable = MessageErrorException("Opps!")
 
     private val mockDefaultTemplateData = mutableListOf(
         TemplateDataModel(id = 1, sections = mutableListOf(
@@ -114,11 +115,6 @@ class ExplicitProfileViewModelTest {
 
         viewModel?.getAllCategories()
 
-        coVerify {
-            observerExplicitCategories.onChanged(
-                ExplicitProfileResult.Failure(mockThrowable)
-            )
-        }
         val result = viewModel?.explicitCategories?.value
         assert(result is ExplicitProfileResult.Failure)
     }
@@ -181,12 +177,6 @@ class ExplicitProfileViewModelTest {
         } throws  mockThrowable
 
         viewModel?.saveShoppingPreferences(mockDefaultTemplateData)
-
-        coVerify {
-            observerSaveAnswers.onChanged(
-                ExplicitProfileResult.Failure(mockThrowable)
-            )
-        }
 
         val result = viewModel?.saveAnswers?.value
         assert(result is ExplicitProfileResult.Failure)
