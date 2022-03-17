@@ -424,11 +424,11 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
                     if (it.data.mvcLockedToProductErrorUiModel.errorTitle.isNotEmpty()) {
                         showErrorView(it.data.mvcLockedToProductErrorUiModel)
                     } else {
+                        initMiniCart(adapter.getVoucherUiModel())
                         setVoucherSectionData(it.data.mvcLockedToProductVoucherUiModel)
                         setTotalProductAndSortSectionData(it.data.mvcLockedToProductTotalProductAndSortUiModel)
                         setProductListSectionData(it.data.mvcLockedToProductListGridProductUiModel)
                     }
-                    initMiniCart(adapter.getVoucherUiModel())
                 }
                 is Fail -> {
                     val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
