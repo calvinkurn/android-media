@@ -37,6 +37,8 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        hideViewGroup()
+        setupActionButton()
     }
 
     override fun initInjector() {
@@ -67,6 +69,17 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun setupActionButton() {
+        binding?.btnGoToShop?.setOnClickListener {
+            val isChecked = binding?.cbTnc?.isChecked == true
+            if (isChecked) {
+                goToPlayStoreOrSellerApp()
+            } else {
+                showRequiredTncToaster()
+            }
+        }
+    }
+
     private fun showRequiredTncToaster() {
         view?.let {
             Toaster.build(
@@ -77,6 +90,10 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
                 actionText = getString(R.string.action_not_yet_checked_tnc)
             ).show()
         }
+    }
+
+    private fun hideViewGroup() {
+        binding?.visibleViewGroup?.hide()
     }
 
     private fun showLoading() {

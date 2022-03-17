@@ -101,6 +101,12 @@
         app:layout_constraintTop_toTopOf="@id/cbTnc"
         app:layout_constraintBottom_toBottomOf="@id/cbTnc"/>
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/visibleViewGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="btnGoToShop, imgHeaderInvitationAccepted, cbTnc, tvTnc, cardFeatureAccess, tvAdminFeatureDetailLabel, tvAdminSuccessInvitation"/>
+
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderInvitationAccepted"
         android:layout_width="48dp"
