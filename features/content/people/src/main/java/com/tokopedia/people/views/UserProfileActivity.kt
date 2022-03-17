@@ -30,8 +30,10 @@ class UserProfileActivity : BaseSimpleActivity() {
                 bundle
             )
         }
+        if(intent.data?.pathSegments?.isNotEmpty() == true){
+            bundle?.putString(EXTRA_USERNAME, intent.data?.pathSegments?.get(0))
+        }
 
-        bundle?.putString(EXTRA_USERNAME, intent.data?.pathSegments?.get(0))
     }
 
     override fun getNewFragment(): Fragment? {
