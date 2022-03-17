@@ -275,7 +275,7 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     override fun onTitleAreaHasFocus() {
-        analytic.clickAddTitle()
+
     }
 
     override fun onViewDestroyed(view: CoverSetupViewComponent) {
