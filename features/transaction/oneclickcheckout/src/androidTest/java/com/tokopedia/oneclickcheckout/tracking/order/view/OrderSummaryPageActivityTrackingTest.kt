@@ -30,6 +30,7 @@ class OrderSummaryPageActivityTrackingTest {
 
     companion object {
         private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/one_click_checkout_order_summary.json"
+        private const val ANALYTIC_VALIDATOR_PROMO_RED_STATE_QUERY_FILE_NAME = "tracker/transaction/one_click_checkout_order_summary_promo_red_state.json"
     }
 
     @get:Rule
@@ -57,16 +58,17 @@ class OrderSummaryPageActivityTrackingTest {
         OneClickCheckoutInterceptor.setupGraphqlMockResponse(context)
         idlingResource = OccIdlingResource.getIdlingResource()
         IdlingRegistry.getInstance().register(idlingResource)
+        Intents.init()
     }
 
     @After
     fun cleanup() {
+        Intents.release()
         IdlingRegistry.getInstance().unregister(idlingResource)
     }
 
     @Test
     fun performOrderSummaryPageTrackingActions() {
-        Intents.init()
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_MANY_PROFILE_REVAMP_RESPONSE_PATH
         activityRule.launchActivity(null)
 
@@ -106,13 +108,16 @@ class OrderSummaryPageActivityTrackingTest {
             pay()
         }
 
+        assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
+        activityRule.activity.finishAndRemoveTask()
+    }
+
+    @Test
+    fun performOrderSummaryPagePromoRedStateTrackingActions() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_LAST_APPLY_WITH_LOW_MAXIMUM_PAYMENT_REVAMP_RESPONSE_PATH
         promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_CASHBACK_FULL_APPLIED_RESPONSE
-        Intents.release()
-        activityRule.activity.finishAndRemoveTask()
-
-        Intents.init()
         activityRule.launchActivity(null)
+        performOrderSummaryPageBackAction()
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
@@ -131,8 +136,7 @@ class OrderSummaryPageActivityTrackingTest {
             clickButtonContinueWithRedPromo()
         }
 
-        assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
-        Intents.release()
+        assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_PROMO_RED_STATE_QUERY_FILE_NAME), hasAllSuccess())
         activityRule.activity.finishAndRemoveTask()
     }
 
