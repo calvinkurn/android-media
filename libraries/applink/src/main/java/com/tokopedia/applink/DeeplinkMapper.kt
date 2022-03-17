@@ -541,6 +541,7 @@ object DeeplinkMapper {
             deeplink.startsWith(ApplinkConstInternalGlobal.GENERAL_SETTING) -> DeeplinkMapperUser.getRegisteredNavigationUser(context, deeplink)
             deeplink.startsWith(ApplinkConsInternalHome.HOME_WISHLIST) -> DeeplinkMapperPurchasePlatform.getRegisteredNavigationWishlist(context)
             deeplink.startsWith(ApplinkConstInternalMarketplace.ADD_ON_GIFTING) -> getRegisteredNavigationMarketplace(context, deeplink)
+            deeplink.startsWith(ApplinkConst.PROFILE) -> DeeplinkMapperContent.getRegisteredNavigation(deeplink)
             else -> return ""
         }
     }
