@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    app:card_type="border"
+    android:layout_marginHorizontal="16dp"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/container_shop"
+        android:foreground="?android:attr/selectableItemBackground"
+        >
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/shimmer_shop_info"
+            android:layout_width="156dp"
+            android:layout_height="12dp"
+            android:visibility="visible"
+            android:layout_marginStart="12dp"
+            android:layout_marginVertical="14dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:visibility="visible"
+            app:loader_type="line" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/usr_shop_avatar"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:scaleType="fitCenter"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/usr_shop_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/account_header_store_title"
+            android:visibility="gone"
+            android:layout_marginStart="14dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:typographyType="body_3"
+            android:lines="1"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/usr_shop_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:layout_marginVertical="12dp"
+            android:visibility="visible"
+            app:layout_goneMarginStart="14dp"
+            app:layout_constraintStart_toEndOf="@id/usr_shop_title"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/usr_shop_notif"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            android:ellipsize="end"
+            android:lines="1"
+            tools:text="toko kamu dwwdwad wadwa dwadwa dwad awd wad aw"
+            />
+
+        <com.tokopedia.unifycomponents.NotificationUnify
+            android:id="@+id/usr_shop_notif"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/user_shop_notif_margin_start"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_marginEnd="9dp"
+            app:layout_constraintTop_toTopOf="@id/usr_shop_info"
+            app:layout_constraintBottom_toBottomOf="@id/usr_shop_info"
+            app:layout_constraintEnd_toStartOf="@id/image_arrow_right"
+            app:notificationColor="color_primary"
+            app:notificationType="counter_type" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/btn_try_again_shop_info"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:layout_constraintTop_toTopOf="@id/usr_shop_info"
+            app:layout_constraintBottom_toBottomOf="@id/usr_shop_info"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="14dp"
+            app:cardCornerRadius="12dp"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:cardElevation="1dp"
+            >
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/image_try_again_shop"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:contentDescription="@string/account_header_store_title"
+                app:icon_name="RELOAD"
+                android:layout_gravity="center"
+                />
+
+        </androidx.cardview.widget.CardView>
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/shimmer_btn_try_again"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:visibility="visible"
+            android:layout_marginEnd="14dp"
+            app:layout_constraintTop_toTopOf="@id/usr_shop_info"
+            app:layout_constraintBottom_toBottomOf="@id/usr_shop_info"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:visibility="gone"
+            app:loader_type="circle" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/image_arrow_right"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:contentDescription="@string/account_header_store_title"
+            android:visibility="gone"
+            android:layout_marginEnd="8dp"
+            app:icon_name="CHEVRON_RIGHT"
+            android:layout_gravity="center"
+            app:layout_constraintEnd_toStartOf="@id/btn_try_again_shop_info"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:visibility="visible" />
+
+        <androidx.constraintlayout.widget.Barrier
+            tools:visibility="gone"
+            android:id="@+id/section_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:barrierDirection="start"
+            app:constraint_referenced_ids="btn_try_again_shop_info, usr_shop_notif" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify2>
