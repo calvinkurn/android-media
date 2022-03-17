@@ -2,6 +2,7 @@ package com.tokopedia.localizationchooseaddress.ui.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -81,6 +82,7 @@ class ChooseAddressWidget : ConstraintLayout,
 
     private fun initObservers() {
         val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
+        Log.i("asdfgh", "initobserver")
         if (fragment != null) {
             viewModel.getChosenAddress.observe(fragment.viewLifecycleOwner, {
                 when (it) {
@@ -130,10 +132,12 @@ class ChooseAddressWidget : ConstraintLayout,
                 }
             })
             viewModel.tokonowData.observe(fragment.viewLifecycleOwner, {
+
                 when (it) {
                     is Success -> {
                             val data = it.data
-                            ChooseAddressUtils.refreshTokonowData(
+                        Log.i("asdfgh", "tokonowData.observe data = ${it.data}")
+                        ChooseAddressUtils.refreshTokonowData(
                                 context = context,
                                 warehouses = TokonowWarehouseMapper.mapWarehouseItemToLocal(data.warehouses),
                                 warehouseId = data.warehouseId,
@@ -142,12 +146,16 @@ class ChooseAddressWidget : ConstraintLayout,
                                 shopId = data.shopId
                             )
                             // trigger home to refresh data
+                        Log.i("asdfgh", "viewModel.isFirstLoad: ${viewModel.isFirstLoad}")
+                        if (viewModel.isFirstLoad) {
                             chooseAddressWidgetListener?.onTokonowDataRefreshed()
+                        }
                     }
                     is Fail -> {
                         // do nothing
                     }
                 }
+                viewModel.isFirstLoad = false
             })
         }
     }
@@ -184,14 +192,22 @@ class ChooseAddressWidget : ConstraintLayout,
     private fun initChooseAddressFlow() {
         val localData = ChooseAddressUtils.getLocalizingAddressData(context)
         updateWidget()
-        if (chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && viewModel.isFirstLoad) {
-            viewModel.getTokonowData(localData)
-        }
-        if (localData.address_id.isEmpty()) {
-            chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
-                ?.let { viewModel.getStateChosenAddress(it, isSupportWarehouseLoc) }
+        if ((chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && viewModel.isFirstLoad) || localData.address_id.isEmpty()) {
             initObservers()
+            if (chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && viewModel.isFirstLoad) {
+                Log.i("asdfgh", "hit tokonow data")
+                viewModel.getTokonowData(localData)
+                // todo need to solve so observer not listening twice
+
+            }
+            if (localData.address_id.isEmpty()) {
+                chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
+                    ?.let { viewModel.getStateChosenAddress(it, isSupportWarehouseLoc) }
+//                initObservers()
+            }
         }
+
+
     }
 
     fun bindChooseAddress(listener: ChooseAddressWidgetListener) {
