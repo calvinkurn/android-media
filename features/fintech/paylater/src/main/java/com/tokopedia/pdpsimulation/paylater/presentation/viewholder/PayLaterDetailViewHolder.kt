@@ -14,6 +14,7 @@ import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteraction
 import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
@@ -48,11 +49,13 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             )
             itemView.tvRecommendationTitle.visible()
             itemView.tvRecommendationTitle.text = element.recommendationDetail.text
+            itemView.payLaterPartnerCard.cardType = CardUnify.TYPE_SHADOW
 
         } else {
 
             itemView.clDetailParent.background = null
             itemView.clPartnerCard.background = null
+            itemView.payLaterPartnerCard.cardType = CardUnify.TYPE_BORDER
 
             itemView.tvRecommendationTitle.gone()
         }

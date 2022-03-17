@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter
 import com.tokopedia.pdp.fintech.analytics.FintechWidgetAnalyticsEvent
 import com.tokopedia.pdp.fintech.analytics.PdpFintechWidgetAnalytics
@@ -63,7 +65,6 @@ class PdpFintechWidget @JvmOverloads constructor(
     private  var instanceProductUpdateListner: ProductUpdateListner? = null
     private lateinit var fintechWidgetViewModel: FintechWidgetViewModel
 
-    private var counter = 0
 
 
     init {
@@ -133,7 +134,6 @@ class PdpFintechWidget @JvmOverloads constructor(
             override fun clickedWidget(
                 fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass
             ) {
-                fintechRedirectionWidgetDataClass.productUrl = idToPriceUrlMap[productID]?.url
                 customRouter(
                     fintechRedirectionWidgetDataClass
                 )
@@ -149,9 +149,9 @@ class PdpFintechWidget @JvmOverloads constructor(
             val rediretionLink = fintechRedirectionWidgetDataClass.redirectionUrl +
                     "?productID=${this.productID}" +
                     "&tenure=${fintechRedirectionWidgetDataClass.tenure}" +
-                    "&productURL=${fintechRedirectionWidgetDataClass.productUrl}" +
                     "&gatewayCode=${fintechRedirectionWidgetDataClass.gatewayCode}" +
                     "&gatewayID=${fintechRedirectionWidgetDataClass.gatewayId}"
+            "&productURL=${setProductUrl()}"
 
             if (fintechRedirectionWidgetDataClass.cta == ACTIVATION_LINKINING_FLOW &&
                 fintechRedirectionWidgetDataClass.widgetBottomSheet?.show == false
@@ -170,6 +170,11 @@ class PdpFintechWidget @JvmOverloads constructor(
 
             }
         }
+    }
+
+
+    private fun setProductUrl(): String {
+        return UriUtil.buildUri(ApplinkConst.PRODUCT_INFO, this.productID).encodeToUtf8()
     }
 
 
@@ -197,25 +202,15 @@ class PdpFintechWidget @JvmOverloads constructor(
         fintechWidgetViewHolder: ProductUpdateListner
     ) {
         try {
+            fintechWidgetViewHolder.removeWidget()
             this.productID = productID
             this.instanceProductUpdateListner = fintechWidgetViewHolder
-            if (counter == 0) {
-                counter++
-                categoryId?.let {
-                    fintechWidgetViewModel.getWidgetData(
-                        it,
-                        idToPriceUrlMap
-                    )
-                }
-            } else {
-                if (priceToChip.size != 0)
-                    getChipDataAndUpdate(idToPriceUrlMap[productID]?.price)
-                else
-                    categoryId?.let {
-                        fintechWidgetViewModel.getWidgetData(it, idToPriceUrlMap)
-                    }
+            categoryId?.let {
+                fintechWidgetViewModel.getWidgetData(
+                    it,
+                    idToPriceUrlMap
+                )
             }
-
         } catch (e: Exception) {
             instanceProductUpdateListner?.removeWidget()
         }
@@ -273,6 +268,5 @@ class PdpFintechWidget @JvmOverloads constructor(
 }
 
 data class FintechPriceUrlDataModel(
-    var url: String? = null,
     var price: String? = null
 )

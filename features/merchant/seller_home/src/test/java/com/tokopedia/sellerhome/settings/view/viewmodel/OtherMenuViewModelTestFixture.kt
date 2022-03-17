@@ -2,7 +2,7 @@ package com.tokopedia.sellerhome.settings.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
+import com.tokopedia.gm.common.domain.interactor.GetShopCreatedInfoUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.seller.menu.common.domain.usecase.*
 import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
@@ -27,7 +27,7 @@ abstract class OtherMenuViewModelTestFixture {
     lateinit var getShopOperationalUseCase: GetShopOperationalUseCase
 
     @RelaxedMockK
-    lateinit var getShopInfoPeriodUseCase: GetShopInfoPeriodUseCase
+    lateinit var getShopCreatedInfoUseCase: GetShopCreatedInfoUseCase
 
     @RelaxedMockK
     lateinit var balanceInfoUseCase: BalanceInfoUseCase
@@ -79,7 +79,7 @@ abstract class OtherMenuViewModelTestFixture {
                 coroutineTestRule.dispatchers,
                 getShopFreeShippingInfoUseCase,
                 getShopOperationalUseCase,
-                getShopInfoPeriodUseCase,
+                getShopCreatedInfoUseCase,
                 balanceInfoUseCase,
                 getShopBadgeUseCase,
                 getShopTotalFollowersUseCase,

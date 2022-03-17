@@ -214,6 +214,7 @@ class BrandlistPageFragment :
             }
 
             isChipSelected = false
+            selectedChip = DEFAULT_SELECTED_CHIPS
             viewModel.resetAllBrandRequestParameter()
             adapter?.notifyDataSetChanged()
             adapter?.initAdapter(recyclerViewLastState)
