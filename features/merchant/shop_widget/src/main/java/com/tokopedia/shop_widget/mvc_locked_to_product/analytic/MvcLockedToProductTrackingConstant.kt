@@ -29,6 +29,8 @@ object MvcLockedToProductTrackingConstant {
         const val KEY_DIMENSION_45 = "dimension45"
         const val KEY_QUANTITY = "quantity"
         const val KEY_SHOP_UNDERSCORE_ID = "shop_id"
+        const val KEY_DIMENSION_40 = "dimension40"
+        const val KEY_DIMENSION_87 = "dimension87"
     }
 
     object Value {
@@ -40,7 +42,7 @@ object MvcLockedToProductTrackingConstant {
         const val CLICK_ATC_ON_MVC_PRODUCT_CARD = "click atc on mvc product card"
         const val SELECT_CONTENT = "select content"
         const val ADD_TO_CART = "add_to_cart"
-        const val MVC_PRODUCT_ITEM_LIST = "/shopmvcproductpage - %1s"
+        const val MVC_PRODUCT_ITEM_LIST = "/shoppage - productmvc - %1s"
         const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
         const val PHYSICAL_GOODS = "Physical Goods"
         const val EVENT_OPEN_SCREEN = "openScreen"
@@ -54,7 +56,10 @@ object MvcLockedToProductTrackingConstant {
         const val MVC_LOCKED_TO_PRODUCT_PAGE_TYPE = "/shopmvcproductpage"
         const val MVC_LOCKED_TO_PRODUCT_PAGE_SOURCE = "shop mvc product page - %1s - %2s"
         const val MVC_LOCKED_TO_PRODUCT_SCREEN_NAME = "$MVC_LOCKED_TO_PRODUCT_PAGE_TYPE - %1s"
-        const val INCREASE_DECREASE_PRODUCT_QUANTITY = "Physical Goods"
+        const val MVC_LOCKED_TO_PRODUCT_LIST_NAME = "/shoppage - productmvc"
+        const val MVC_LOCKED_TO_PRODUCT_LIST_GENERAL_MODULE = "shop page"
+        const val MVC_LOCKED_TO_PRODUCT_VIEW_PG_IRIS = "viewPGIris"
+        const val MVC_LOCKED_TO_PRODUCT_VBS_IMPRESSION_ACTION = "mvc product variant bottom sheet impression"
     }
 
 }
