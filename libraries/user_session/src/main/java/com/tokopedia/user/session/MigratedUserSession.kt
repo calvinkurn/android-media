@@ -112,18 +112,7 @@ open class MigratedUserSession(var context: Context?) {
 	editor?.remove(keyName)?.apply()
     }
 
-    protected fun nullString(prefName: String?, keyName: String?) {
-//	var prefName = prefName
-//	var keyName = keyName
-//	val newKeys = convertToNewKey(prefName, keyName)
-//	prefName = newKeys.first
-//	keyName = newKeys.second
-//	UserSessionMap.map[Pair(prefName, keyName)] = null
-//	internalSetString(prefName, keyName, null)
-    }
-
     private fun internalGetString(prefName: String?, keyName: String?, defValue: String): String? {
-
 	val sharedPrefs = context?.getSharedPreferences(prefName, Context.MODE_PRIVATE)
 	return sharedPrefs?.getString(keyName, defValue)
     }
