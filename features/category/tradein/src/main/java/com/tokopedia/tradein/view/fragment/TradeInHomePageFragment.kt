@@ -485,7 +485,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             findViewById<Label>(R.id.label_discount).text = logistic.discountPercentageFmt
             findViewById<TimerUnifySingle>(R.id.tradein_count_down).let { countDownView ->
                 if (showTimer && logistic.expiryTime.isNotEmpty()) {
-                    findViewById<UnifyButton>(R.id.btn_continue).isEnabled = !TradeInUtils.isExpiryTimeOver(logistic.expiryTime)
+//                    findViewById<UnifyButton>(R.id.btn_continue).isEnabled = !TradeInUtils.isExpiryTimeOver(logistic.expiryTime)
                     TradeInUtils.parseData(logistic.expiryTime)?.let { parsedDate ->
                         countDownView?.show()
                         findViewById<Typography>(R.id.tradein_timer_text).show()
