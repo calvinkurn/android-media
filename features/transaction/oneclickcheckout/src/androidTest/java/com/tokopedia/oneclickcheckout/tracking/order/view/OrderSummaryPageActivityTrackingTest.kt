@@ -6,12 +6,10 @@ import android.content.Intent
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
-import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
