@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant
+import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
 import com.tokopedia.vouchercreation.product.create.data.request.GenerateImageParams
 import com.tokopedia.vouchercreation.product.create.data.response.GetProductsByProductIdResponse
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
@@ -31,8 +32,8 @@ class UpdateCouponFacadeUseCase @Inject constructor(
 ) {
 
     companion object {
-        private const val SECOND_IMAGE_URL = 1
-        private const val THIRD_IMAGE_URL = 2
+        private const val SECOND_IMAGE_URL_INDEX = 1
+        private const val THIRD_IMAGE_URL_INDEX = 2
         private const val IS_UPDATE_MODE = true
         private const val IS_TO_CREATE_NEW_COUPON = false
         private const val EMPTY_STRING = ""
@@ -154,33 +155,33 @@ class UpdateCouponFacadeUseCase @Inject constructor(
         )
 
         val requestParams = arrayListOf(
-            GenerateImageParams("platform", imageParams.platform),
-            GenerateImageParams("is_public", imageParams.isPublic),
-            GenerateImageParams("voucher_benefit_type", imageParams.voucherBenefitType),
-            GenerateImageParams("voucher_cashback_type", imageParams.voucherCashbackType),
-            GenerateImageParams("voucher_cashback_percentage", imageParams.voucherCashbackPercentage),
-            GenerateImageParams("voucher_nominal_amount", imageParams.voucherNominalAmount),
-            GenerateImageParams("voucher_nominal_symbol", imageParams.voucherNominalSymbol),
-            GenerateImageParams("shop_logo", imageParams.shopLogo),
-            GenerateImageParams("shop_name", imageParams.shopName),
-            GenerateImageParams("voucher_code", imageParams.voucherCode),
-            GenerateImageParams("voucher_start_time", imageParams.voucherStartTime),
-            GenerateImageParams("voucher_finish_time", imageParams.voucherFinishTime),
-            GenerateImageParams("product_count", imageParams.productCount),
-            GenerateImageParams("audience_target", imageParams.audienceTarget)
+            GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_PLATFORM, imageParams.platform),
+            GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_IS_PUBLIC, imageParams.isPublic),
+            GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_VOUCHER_BENEFIT_TYPE, imageParams.voucherBenefitType),
+            GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_VOUCHER_CASHBACK_TYPE, imageParams.voucherCashbackType),
+            GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_VOUCHER_CASHBACK_PERCENTAGE, imageParams.voucherCashbackPercentage),
+            GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_VOUCHER_NOMINAL_AMOUNT, imageParams.voucherNominalAmount),
+            GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_VOUCHER_NOMINAL_SYMBOL, imageParams.voucherNominalSymbol),
+            GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_SHOP_LOGO, imageParams.shopLogo),
+            GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_SHOP_NAME, imageParams.shopName),
+            GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_VOUCHER_CODE, imageParams.voucherCode),
+            GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_VOUCHER_START_TIME, imageParams.voucherStartTime),
+            GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_VOUCHER_FINISH_TIME, imageParams.voucherFinishTime),
+            GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_PRODUCT_COUNT, imageParams.productCount),
+            GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_AUDIENCE_TARGET, imageParams.audienceTarget)
         )
 
 
         if (parentProductsImageUrls.isNotEmpty()) {
-            requestParams.add(GenerateImageParams("product_image_1", imageParams.productImage1),)
+            requestParams.add(GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_FIRST_PRODUCT_IMAGE, imageParams.productImage1))
         }
 
-        if (parentProductsImageUrls.size >= SECOND_IMAGE_URL) {
-            requestParams.add(GenerateImageParams("product_image_2", imageParams.productImage2),)
+        if (parentProductsImageUrls.size >= SECOND_IMAGE_URL_INDEX) {
+            requestParams.add(GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_SECOND_PRODUCT_IMAGE, imageParams.productImage2))
         }
 
-        if (parentProductsImageUrls.size >= THIRD_IMAGE_URL) {
-            requestParams.add(GenerateImageParams("product_image_3", imageParams.productImage3))
+        if (parentProductsImageUrls.size >= THIRD_IMAGE_URL_INDEX) {
+            requestParams.add(GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_THIRD_PRODUCT_IMAGE, imageParams.productImage3))
         }
 
         val modifiedParams = arrayListOf<GenerateImageParams>()

@@ -28,9 +28,9 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
 
     companion object {
         private const val EMPTY_STRING = ""
-        private const val FIRST_IMAGE_URL = 0
-        private const val SECOND_IMAGE_URL = 1
-        private const val THIRD_IMAGE_URL = 2
+        private const val FIRST_IMAGE_URL_INDEX = 0
+        private const val SECOND_IMAGE_URL_INDEX = 1
+        private const val THIRD_IMAGE_URL_INDEX = 2
         private const val THOUSAND  = 1_000f
         private const val MILLION = 1_000_000f
     }
@@ -140,9 +140,9 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
             couponInformation.code.uppercase()
         }
 
-        val firstProductImageUrl = topProductImageUrls.getIndexAtOrEmpty(FIRST_IMAGE_URL)
-        val secondProductImageUrl = topProductImageUrls.getIndexAtOrEmpty(SECOND_IMAGE_URL)
-        val thirdProductImageUrl = topProductImageUrls.getIndexAtOrEmpty(THIRD_IMAGE_URL)
+        val firstProductImageUrl = topProductImageUrls.getIndexAtOrEmpty(FIRST_IMAGE_URL_INDEX)
+        val secondProductImageUrl = topProductImageUrls.getIndexAtOrEmpty(SECOND_IMAGE_URL_INDEX)
+        val thirdProductImageUrl = topProductImageUrls.getIndexAtOrEmpty(THIRD_IMAGE_URL_INDEX)
 
         val secondProduct = if (secondProductImageUrl.isNotEmpty()) secondProductImageUrl else null
         val thirdProduct = if (thirdProductImageUrl.isNotEmpty()) thirdProductImageUrl else null

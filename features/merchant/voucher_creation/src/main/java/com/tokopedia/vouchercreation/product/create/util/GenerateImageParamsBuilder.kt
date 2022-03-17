@@ -12,9 +12,9 @@ class GenerateImageParamsBuilder @Inject constructor() {
         private const val EMPTY_STRING = ""
         private const val THOUSAND = 1_000f
         private const val MILLION = 1_000_000f
-        private const val FIRST_IMAGE_URL = 0
-        private const val SECOND_IMAGE_URL = 1
-        private const val THIRD_IMAGE_URL = 2
+        private const val FIRST_IMAGE_URL_INDEX = 0
+        private const val SECOND_IMAGE_URL_INDEX = 1
+        private const val THIRD_IMAGE_URL_INDEX = 2
     }
 
     fun build(
@@ -94,9 +94,9 @@ class GenerateImageParamsBuilder @Inject constructor() {
             startTime,
             endTime,
             parentProductImageUrls.size.toString(),
-            parentProductImageUrls.getIndexAtOrEmpty(FIRST_IMAGE_URL),
-            parentProductImageUrls.getIndexAtOrEmpty(SECOND_IMAGE_URL),
-            parentProductImageUrls.getIndexAtOrEmpty(THIRD_IMAGE_URL),
+            parentProductImageUrls.getIndexAtOrEmpty(FIRST_IMAGE_URL_INDEX),
+            parentProductImageUrls.getIndexAtOrEmpty(SECOND_IMAGE_URL_INDEX),
+            parentProductImageUrls.getIndexAtOrEmpty(THIRD_IMAGE_URL_INDEX),
             audienceTarget
         )
     }
