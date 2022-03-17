@@ -20,6 +20,7 @@ import com.tokopedia.topads.common.data.response.KeySharedModel
 import com.tokopedia.topads.common.data.response.TopAdsBidSettingsModel
 import com.tokopedia.topads.common.view.TopadsAutoBidSwitchPartialLayout
 import com.tokopedia.topads.common.view.adapter.viewpager.KeywordEditPagerAdapter
+import com.tokopedia.topads.common.view.sheet.BidInfoBottomSheet
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
@@ -37,7 +38,6 @@ import com.tokopedia.topads.edit.utils.Constants.POSITIVE_EDIT
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_KEYWORD_ALL
 import com.tokopedia.topads.edit.utils.Constants.STRATEGIES
 import com.tokopedia.topads.edit.view.activity.SaveButtonStateCallBack
-import com.tokopedia.topads.edit.view.sheet.BidInfoBottomSheet
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
