@@ -15,20 +15,20 @@ import com.tokopedia.home_recom.util.RecomPageConstant.TEXT_ERROR
 import com.tokopedia.home_recom.util.RecomPageConstant.X_SOURCE_RECOM
 import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcher
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Lazy
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -55,11 +55,11 @@ class InfiniteRecomViewModel @Inject constructor(
     val recommendationWidgetData: LiveData<RecommendationWidget> get() = _recommendationWidgetData
     private val _recommendationWidgetData = MutableLiveData<RecommendationWidget>()
 
-    val miniCartData: LiveData<MutableMap<String, MiniCartItem>> get() = _miniCartData
-    private val _miniCartData = MutableLiveData<MutableMap<String, MiniCartItem>>()
+    val miniCartData: LiveData<MutableMap<MiniCartItemKey, MiniCartItem2>> get() = _miniCartData
+    private val _miniCartData = MutableLiveData<MutableMap<MiniCartItemKey, MiniCartItem2>>()
 
-    val minicartWidgetUpdater: SingleLiveEvent<MiniCartSimplifiedData> get() = _minicartWidgetUpdater
-    private val _minicartWidgetUpdater = SingleLiveEvent<MiniCartSimplifiedData>()
+    val minicartWidgetUpdater: SingleLiveEvent<MiniCartSimplifiedData2> get() = _minicartWidgetUpdater
+    private val _minicartWidgetUpdater = SingleLiveEvent<MiniCartSimplifiedData2>()
 
     val errorGetRecomData: LiveData<RecomErrorResponse> get() = _errorGetRecomData
     private val _errorGetRecomData = MutableLiveData<RecomErrorResponse>()
@@ -153,14 +153,15 @@ class InfiniteRecomViewModel @Inject constructor(
             miniCartData.value?.let {
                 if (item.isProductHasParentID()) {
                     var variantTotalItems = 0
-                    it.values.forEach { miniCartItem ->
-                        if (miniCartItem.productParentId == item.parentID.toString()) {
-                            variantTotalItems += miniCartItem.quantity
-                        }
-                    }
+                    variantTotalItems += it.getMiniCartItemParentProduct(item.parentID.toString())?.totalQuantity ?: 0
+//                    it.values.forEach { miniCartItem ->
+//                        if (miniCartItem.productParentId == item.parentID.toString()) {
+//                            variantTotalItems += miniCartItem.quantity
+//                        }
+//                    }
                     item.updateItemCurrentStock(variantTotalItems)
                 } else {
-                    item.updateItemCurrentStock(it[item.productId.toString()]?.quantity
+                    item.updateItemCurrentStock(it.getMiniCartItemProduct(item.productId.toString())?.quantity
                             ?: 0)
                 }
             }
@@ -173,10 +174,10 @@ class InfiniteRecomViewModel @Inject constructor(
         launchCatchError(dispatcher.getIODispatcher(), block = {
             miniCartListSimplifiedUseCase.get().setParams(listOf(shopId))
             val result = miniCartListSimplifiedUseCase.get().executeOnBackground()
-            val data = result.miniCartItems.associateBy({ it.productId }) {
-                it
-            }
-            _miniCartData.postValue(data.toMutableMap())
+//            val data = result.miniCartItems.associateBy({ it.productId }) {
+//                it
+//            }
+            _miniCartData.postValue(result.miniCartItems.toMutableMap())
             _minicartWidgetUpdater.postValue(result)
         }) {
             _minicartError.postValue(it)
@@ -187,7 +188,7 @@ class InfiniteRecomViewModel @Inject constructor(
             _atcRecomTokonowNonLogin.value = recomItem
         } else {
             if (recomItem.quantity == quantity) return
-            val miniCartItem = miniCartData.value?.get(recomItem.productId.toString())
+            val miniCartItem = miniCartData.value?.getMiniCartItemProduct(recomItem.productId.toString())
             if (quantity == 0) {
                 deleteRecomItemFromCart(recomItem, miniCartItem)
             } else if (recomItem.quantity == 0) {
@@ -198,7 +199,7 @@ class InfiniteRecomViewModel @Inject constructor(
         }
     }
 
-    fun deleteRecomItemFromCart(recomItem: RecommendationItem, miniCartItem: MiniCartItem?) {
+    fun deleteRecomItemFromCart(recomItem: RecommendationItem, miniCartItem: MiniCartItem2.MiniCartItemProduct?) {
         launchCatchError(block = {
             miniCartItem?.let {
                 deleteCartUseCase.get().setParams(listOf(miniCartItem.cartId))
@@ -245,7 +246,7 @@ class InfiniteRecomViewModel @Inject constructor(
         }
     }
 
-    fun updateRecomCartNonVariant(recomItem: RecommendationItem, quantity: Int, miniCartItem: MiniCartItem?) {
+    fun updateRecomCartNonVariant(recomItem: RecommendationItem, quantity: Int, miniCartItem: MiniCartItem2.MiniCartItemProduct?) {
         launchCatchError(block = {
             miniCartItem?.let {
                 val copyOfMiniCartItem = UpdateCartRequest(cartId = it.cartId, quantity = quantity, notes = it.notes)
