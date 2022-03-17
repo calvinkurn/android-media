@@ -28,6 +28,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_ATC
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_COMMUNICATION
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOKOPEDIA_NOW
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOP_NAV_TOKOPEDIA_NOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_PG
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_PRODUCT_CLICK
@@ -36,6 +37,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_ITEM
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_ITEM_LIST
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_PG_IRIS
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_TOKONOW_IRIS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ACTION_FIELD
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ADD
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_AFFINITY_LABEL
@@ -85,7 +87,10 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENCY_CODE_IDR
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.DEFAULT_CATEGORY_ID
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.DEFAULT_NULL_VALUE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.LIST_HOME_PAGE_PAST_PURCHASE_WIDGET
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.PAGE_NAME_TOKOPEDIA_NOW
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_ATC_PAST_PURCHASE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_ALL_PRODUCT_RECOM
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_ALL_PRODUCT_RECOM_OOC
@@ -124,7 +129,6 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTIO
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_PRODUCT_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_QUEST_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_USP_WIDGET
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.DEFAULT_CATEGORY_ID
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOME_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.ITEM_LIST_LEFT_CAROUSEL
 import com.tokopedia.track.TrackApp
@@ -191,7 +195,6 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         const val HOMEPAGE_TOKONOW = "homepage tokonow"
         const val ITEM_LIST_LEFT_CAROUSEL = "/tokonow - left carousel - carousel"
         const val HOME_WIDGET = "homewidget"
-        const val DEFAULT_CATEGORY_ID = "0"
     }
 
     fun onClickSearchBar() {
@@ -670,13 +673,38 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         getTracker().sendEnhanceEcommerceEvent(EVENT_CLICK_PG, dataLayer)
     }
 
-    fun trackClickShareButtonWidget() {
-        val label = "$HOME_WIDGET - $DEFAULT_CATEGORY_ID - " +
-            "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
+    /* Thanos : https://mynakama.tokopedia.com/datatracker/requestdetail/1963 */
+
+    // - 1
+    fun trackClickShareButtonTopNav() {
+        val label = "$DEFAULT_CATEGORY_ID - " +
+                "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
+
+        val pageSource = "$PAGE_NAME_TOKOPEDIA_NOW.$DEFAULT_NULL_VALUE.$DEFAULT_NULL_VALUE.$DEFAULT_NULL_VALUE"
 
         val dataLayer = getDataLayer(
             EVENT_CLICK_COMMUNICATION,
             EVENT_ACTION_CLICK_SHARE_WIDGET_BUTTON,
+            EVENT_CATEGORY_TOP_NAV_TOKOPEDIA_NOW,
+            label
+        )
+
+        dataLayer[KEY_PAGE_SOURCE] = pageSource
+        dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
+        dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
+        dataLayer[KEY_USER_ID] = userSession.userId
+
+        getTracker().sendGeneralEvent(dataLayer)
+    }
+
+    // - 2
+    fun trackClickCloseShareBottomSheet() {
+        val label = "$DEFAULT_CATEGORY_ID - " +
+                "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
+
+        val dataLayer = getDataLayer(
+            EVENT_CLICK_COMMUNICATION,
+            EVENT_ACTION_CLICK_CLOSE_SHARE_BOTTOM_SHEET,
             EVENT_CATEGORY_TOKOPEDIA_NOW,
             label
         )
@@ -688,8 +716,104 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         getTracker().sendGeneralEvent(dataLayer)
     }
 
+    // - 3
+    fun trackClickChannelShareBottomSheet(channel: String) {
+        val label = "$channel - $DEFAULT_CATEGORY_ID - " +
+                "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
+
+        val dataLayer = getDataLayer(
+            EVENT_CLICK_TOKONOW,
+            EVENT_ACTION_CLICK_SHARING_CHANNEL,
+            EVENT_CATEGORY_TOKOPEDIA_NOW,
+            label
+        )
+
+        dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
+        dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
+        dataLayer[KEY_USER_ID] = userSession.userId
+
+        getTracker().sendGeneralEvent(dataLayer)
+    }
+
+    // - 4
+    fun trackImpressChannelShareBottomSheet() {
+        val label = "$DEFAULT_CATEGORY_ID - " +
+                "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
+
+        val dataLayer = getDataLayer(
+            EVENT_VIEW_TOKONOW_IRIS,
+            EVENT_ACTION_IMPRESSION_SHARING_CHANNEL,
+            EVENT_CATEGORY_TOKOPEDIA_NOW,
+            label
+        )
+
+        dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
+        dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
+        dataLayer[KEY_USER_ID] = userSession.userId
+
+        getTracker().sendGeneralEvent(dataLayer)
+    }
+
+    // - 5
+    fun trackImpressChannelShareBottomSheetScreenShot() {
+        val label = "$DEFAULT_CATEGORY_ID - " +
+                "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
+
+        val dataLayer = getDataLayer(
+            EVENT_VIEW_TOKONOW_IRIS,
+            EVENT_ACTION_IMPRESSION_CHANNEL_SHARE_BOTTOM_SHEET_SCREENSHOT,
+            EVENT_CATEGORY_TOKOPEDIA_NOW,
+            label
+        )
+
+        dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
+        dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
+        dataLayer[KEY_USER_ID] = userSession.userId
+
+        getTracker().sendGeneralEvent(dataLayer)
+    }
+
+    // - 6
+    fun trackClickCloseScreenShotShareBottomSheet() {
+        val label = "$DEFAULT_CATEGORY_ID - " +
+                "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
+
+        val dataLayer = getDataLayer(
+            EVENT_CLICK_TOKONOW,
+            EVENT_ACTION_CLICK_CLOSE_SCREENSHOT_SHARE_BOTTOM_SHEET,
+            EVENT_CATEGORY_TOKOPEDIA_NOW,
+            label
+        )
+
+        dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
+        dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
+        dataLayer[KEY_USER_ID] = userSession.userId
+
+        getTracker().sendGeneralEvent(dataLayer)
+    }
+
+    // - 7
+    fun trackClickChannelShareBottomSheetScreenshot(channel: String) {
+        val label = "$channel - $DEFAULT_CATEGORY_ID - " +
+                "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
+
+        val dataLayer = getDataLayer(
+            EVENT_CLICK_TOKONOW,
+            EVENT_ACTION_CLICK_CHANNEL_SHARE_BOTTOM_SHEET_SCREENSHOT,
+            EVENT_CATEGORY_TOKOPEDIA_NOW,
+            label
+        )
+
+        dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
+        dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
+        dataLayer[KEY_USER_ID] = userSession.userId
+
+        getTracker().sendGeneralEvent(dataLayer)
+    }
+
+    // - 8
     fun trackClickAccessMediaAndFiles(accessText: String) {
-        val label = "$accessText- $DEFAULT_CATEGORY_ID - " +
+        val label = "$accessText - $DEFAULT_CATEGORY_ID - " +
                 "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
 
         val dataLayer = getDataLayer(
@@ -706,103 +830,14 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         getTracker().sendGeneralEvent(dataLayer)
     }
 
-    fun trackClickChannelShareBottomSheetScreenshot(accessText: String) {
-        val label = "$accessText- $DEFAULT_CATEGORY_ID - " +
-                "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
+    // - 9
+    fun trackClickShareButtonWidget() {
+        val label = "$HOME_WIDGET - $DEFAULT_CATEGORY_ID - " +
+            "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
 
         val dataLayer = getDataLayer(
             EVENT_CLICK_COMMUNICATION,
-            EVENT_ACTION_CLICK_CHANNEL_SHARE_BOTTOM_SHEET_SCREENSHOT,
-            EVENT_CATEGORY_TOKOPEDIA_NOW,
-            label
-        )
-
-        dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
-        dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[KEY_USER_ID] = userSession.userId
-
-        getTracker().sendGeneralEvent(dataLayer)
-    }
-
-    fun trackClickCloseScreenShotShareBottomSheet() {
-        val label = "$DEFAULT_CATEGORY_ID - " +
-                "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
-
-        val dataLayer = getDataLayer(
-            EVENT_CLICK_COMMUNICATION,
-            EVENT_ACTION_CLICK_CLOSE_SCREENSHOT_SHARE_BOTTOM_SHEET,
-            EVENT_CATEGORY_TOKOPEDIA_NOW,
-            label
-        )
-
-        dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
-        dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[KEY_USER_ID] = userSession.userId
-
-        getTracker().sendGeneralEvent(dataLayer)
-    }
-
-    fun trackImpressChannelShareBottomSheetScreenShot() {
-        val label = "$DEFAULT_CATEGORY_ID - " +
-                "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
-
-        val dataLayer = getDataLayer(
-            EVENT_CLICK_COMMUNICATION,
-            EVENT_ACTION_IMPRESSION_CHANNEL_SHARE_BOTTOM_SHEET_SCREENSHOT,
-            EVENT_CATEGORY_TOKOPEDIA_NOW,
-            label
-        )
-
-        dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
-        dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[KEY_USER_ID] = userSession.userId
-
-        getTracker().sendGeneralEvent(dataLayer)
-    }
-
-    fun trackImpressChannelSharingChannel() {
-        val label = "$DEFAULT_CATEGORY_ID - " +
-                "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
-
-        val dataLayer = getDataLayer(
-            EVENT_CLICK_COMMUNICATION,
-            EVENT_ACTION_IMPRESSION_SHARING_CHANNEL,
-            EVENT_CATEGORY_TOKOPEDIA_NOW,
-            label
-        )
-
-        dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
-        dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[KEY_USER_ID] = userSession.userId
-
-        getTracker().sendGeneralEvent(dataLayer)
-    }
-
-    fun trackClickSharingChannel(channelName: String) {
-        val label = "$channelName- $DEFAULT_CATEGORY_ID - " +
-                "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
-
-        val dataLayer = getDataLayer(
-            EVENT_CLICK_COMMUNICATION,
-            EVENT_ACTION_CLICK_SHARING_CHANNEL,
-            EVENT_CATEGORY_TOKOPEDIA_NOW,
-            label
-        )
-
-        dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
-        dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[KEY_USER_ID] = userSession.userId
-
-        getTracker().sendGeneralEvent(dataLayer)
-    }
-
-    fun trackClickCloseShareBottomSheet() {
-        val label = "$DEFAULT_CATEGORY_ID - " +
-                "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
-
-        val dataLayer = getDataLayer(
-            EVENT_CLICK_COMMUNICATION,
-            EVENT_ACTION_CLICK_CLOSE_SHARE_BOTTOM_SHEET,
+            EVENT_ACTION_CLICK_SHARE_WIDGET_BUTTON,
             EVENT_CATEGORY_TOKOPEDIA_NOW,
             label
         )

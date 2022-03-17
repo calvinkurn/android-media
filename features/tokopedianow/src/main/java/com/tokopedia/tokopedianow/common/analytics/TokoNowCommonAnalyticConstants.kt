@@ -21,6 +21,7 @@ object TokoNowCommonAnalyticConstants {
     object CATEGORY{
         const val EVENT_CATEGORY_TOP_NAV = "tokonow - top nav"
         const val EVENT_CATEGORY_TOKOPEDIA_NOW = "tokopedia now"
+        const val EVENT_CATEGORY_TOP_NAV_TOKOPEDIA_NOW = "top nav - tokopedia now"
     }
 
     object KEY {
@@ -80,6 +81,9 @@ object TokoNowCommonAnalyticConstants {
         const val LIST_HOME_PAGE_PAST_PURCHASE_WIDGET = "/tokonow - homepage - past_purchase_widget"
         const val CURRENCY_CODE_IDR = "IDR"
         const val SCREEN_NAME_TOKONOW_OOC = "tokonow ooc - "
+        const val PAGE_NAME_TOKOPEDIA_NOW = "tokopedia now"
+        const val DEFAULT_NULL_VALUE = "null"
+        const val DEFAULT_CATEGORY_ID = "0"
     }
 
     object ACTION{

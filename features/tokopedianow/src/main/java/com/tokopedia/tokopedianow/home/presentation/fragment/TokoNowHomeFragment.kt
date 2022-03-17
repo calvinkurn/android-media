@@ -232,7 +232,7 @@ class TokoNowHomeFragment: Fragment(),
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var movingPosition = 0
     private var isRefreshed = true
-    private var shareHomeTokonow: ShareHomeTokonow = createShareHomeTokonow()
+    private var shareHomeTokonow: ShareHomeTokonow? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector : ScreenshotDetector? = null
     private var carouselScrollState = mutableMapOf<Int, Parcelable?>()
@@ -261,6 +261,7 @@ class TokoNowHomeFragment: Fragment(),
         initPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         val firebaseRemoteConfig = FirebaseRemoteConfigImpl(activity)
+        shareHomeTokonow = createShareHomeTokonow()
         firebaseRemoteConfig.let {
             isShowFirstInstallSearch = it.getBoolean(REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH, false)
             durationAutoTransition = it.getLong(REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH, DEFAULT_INTERVAL_HINT)
@@ -285,7 +286,13 @@ class TokoNowHomeFragment: Fragment(),
 
         loadLayout()
         context?.let {
-            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this)
+            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+                context = it,
+                screenShotListener = this,
+                fragment = this,
+                addFragmentLifecycleObserver = true,
+                permissionListener = this
+            )
         }
     }
 
@@ -758,7 +765,7 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun setIconNewTopNavigation() {
         val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                .addIcon(IconList.ID_SHARE, onClick = ::onClickShareButton)
+                .addIcon(IconList.ID_SHARE, onClick = ::onClickShareButton, disableDefaultGtmTracker = true)
                 .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
                 .addIcon(IconList.ID_NAV_GLOBAL) {}
         navToolbar?.setIcon(icons)
@@ -766,7 +773,7 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun setIconOldTopNavigation() {
         val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                .addIcon(IconList.ID_SHARE, onClick = ::onClickShareButton)
+                .addIcon(IconList.ID_SHARE, onClick = ::onClickShareButton, disableDefaultGtmTracker = true)
                 .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
         navToolbar?.setIcon(icons)
     }
@@ -783,13 +790,13 @@ class TokoNowHomeFragment: Fragment(),
         )
 
         shareClicked(shareHomeTokonow)
-        analytics.onClickShareButton()
+        analytics.trackClickShareButtonTopNav()
     }
 
     private fun updateShareHomeData(pageIdConstituents: List<String>, isScreenShot: Boolean, thumbNailTitle: String) {
-        shareHomeTokonow.pageIdConstituents = pageIdConstituents
-        shareHomeTokonow.isScreenShot = isScreenShot
-        shareHomeTokonow.thumbNailTitle = thumbNailTitle
+        shareHomeTokonow?.pageIdConstituents = pageIdConstituents
+        shareHomeTokonow?.isScreenShot = isScreenShot
+        shareHomeTokonow?.thumbNailTitle = thumbNailTitle
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
@@ -1429,7 +1436,7 @@ class TokoNowHomeFragment: Fragment(),
         if (shareHomeTokonow?.isScreenShot == true) {
             analytics.trackImpressChannelShareBottomSheetScreenShot()
         } else {
-            analytics.trackImpressChannelSharingChannel()
+            analytics.trackImpressChannelShareBottomSheet()
         }
         universalShareBottomSheet?.show(childFragmentManager, this, screenshotDetector)
     }
@@ -1485,10 +1492,10 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
-        if (shareHomeTokonow.isScreenShot) {
+        if (shareHomeTokonow?.isScreenShot == true) {
             analytics.trackClickChannelShareBottomSheetScreenshot(shareModel.channel.orEmpty())
         } else {
-            analytics.trackClickSharingChannel(shareModel.channel.orEmpty())
+            analytics.trackClickChannelShareBottomSheet(shareModel.channel.orEmpty())
         }
 
         shareOptionRequest(
@@ -1503,7 +1510,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     override fun onCloseOptionClicked() {
-        if (shareHomeTokonow.isScreenShot) {
+        if (shareHomeTokonow?.isScreenShot == true) {
             analytics.trackClickCloseScreenShotShareBottomSheet()
         } else {
             analytics.trackClickCloseShareBottomSheet()
