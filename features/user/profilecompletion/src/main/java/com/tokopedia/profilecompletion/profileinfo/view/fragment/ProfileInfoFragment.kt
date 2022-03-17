@@ -133,7 +133,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 				tracker.trackOnChangeProfilePictureClick("${ProfileInfoTracker.LABEL_FAILED} - ${it.errorMsg}")
 				showToasterError(it.errorMsg ?: "")
 			}
-			is ProfileInfoError.ErrorOthers -> {
+			is ProfileInfoError.GeneralError -> {
 				showToasterError(it.errorMsg ?: "")
 			}
 		}

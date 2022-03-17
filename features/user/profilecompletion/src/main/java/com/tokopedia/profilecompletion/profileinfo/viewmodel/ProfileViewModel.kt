@@ -52,7 +52,7 @@ class ProfileViewModel @Inject constructor(
                     profileFeed.await().profileFeedData
                 )
             } catch (e: Exception) {
-                mutableErrorMessage.value = ProfileInfoError.ErrorOthers(e.message)
+                mutableErrorMessage.value = ProfileInfoError.GeneralError(e.message)
             }
         }
     }
@@ -64,10 +64,10 @@ class ProfileViewModel @Inject constructor(
                 val param = uploader.createParams(filePath = image, sourceId = SOURCE_ID)
                 when (val result = uploader(param)) {
                     is UploadResult.Success -> saveProfilePicture(result.uploadId)
-                    is UploadResult.Error -> mutableErrorMessage.value = ProfileInfoError.ErrorOthers(result.message)
+                    is UploadResult.Error -> mutableErrorMessage.value = ProfileInfoError.GeneralError(result.message)
                 }
             } catch (e: Exception) {
-                mutableErrorMessage.value = ProfileInfoError.ErrorOthers(e.message)
+                mutableErrorMessage.value = ProfileInfoError.GeneralError(e.message)
             }
         }
     }
