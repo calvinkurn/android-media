@@ -5,15 +5,25 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperProductModel
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class ShipperProductItemAdapter : RecyclerView.Adapter<ShipperProductItemAdapter.ShipperProductOnDemandViewHolder>() {
+class ShipperProductItemAdapter(private var listener: ShipperProductItemListener) :
+    RecyclerView.Adapter<ShipperProductItemAdapter.ShipperProductOnDemandViewHolder>() {
+
+    interface ShipperProductItemListener {
+        fun onClickInfoIcon()
+        fun showCoachMarkOnInfoIcon(icon: IconUnify)
+    }
 
     private var shipperProduct = mutableListOf<ShipperProductModel>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShipperProductOnDemandViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): ShipperProductOnDemandViewHolder {
         return ShipperProductOnDemandViewHolder(parent.inflateLayout(R.layout.item_shipper_product_name))
     }
 
@@ -43,10 +53,13 @@ class ShipperProductItemAdapter : RecyclerView.Adapter<ShipperProductItemAdapter
         notifyDataSetChanged()
     }
 
-    inner class ShipperProductOnDemandViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        private val shipperProductName = itemView.findViewById<Typography>(R.id.shipper_product_name)
+    inner class ShipperProductOnDemandViewHolder(itemView: View) :
+        RecyclerView.ViewHolder(itemView) {
+        private val shipperProductName =
+            itemView.findViewById<Typography>(R.id.shipper_product_name)
         val shipperProductCb = itemView.findViewById<CheckboxUnify>(R.id.shipper_product_cb)
         private val divider = itemView.findViewById<View>(R.id.divider_shipment)
+        private val infoIcon = itemView.findViewById<IconUnify>(R.id.shipper_product_info_icon)
 
         fun bindData(data: ShipperProductModel) {
             setItemData(data)
@@ -56,7 +69,7 @@ class ShipperProductItemAdapter : RecyclerView.Adapter<ShipperProductItemAdapter
             val lastItem = shipperProduct.last()
             shipperProductName.text = data.shipperProductName
             shipperProductCb.isChecked = data.isActive
-
+            shouldShowInfoIcon(data)
             if (data == lastItem) {
                 divider.visibility = View.GONE
             }
@@ -65,5 +78,26 @@ class ShipperProductItemAdapter : RecyclerView.Adapter<ShipperProductItemAdapter
                 data.isActive = isChecked
             }
         }
+
+        private fun shouldShowInfoIcon(data: ShipperProductModel) {
+            if (data.shipperId == GOCAR_SHIPPER_ID && data.shipperProductId.equals(
+                    GOCAR_SHIPPER_PRODUCT_ID,
+                    ignoreCase = true
+                )
+            ) {
+                infoIcon.visibility = View.VISIBLE
+                listener.showCoachMarkOnInfoIcon(infoIcon)
+                infoIcon.setOnClickListener {
+                    listener.onClickInfoIcon()
+                }
+            }
+        }
+    }
+
+    companion object {
+        private const val GOCAR_SHIPPER_ID: Long = 10
+        private const val GOCAR_SHIPPER_NAME = "GoSend"
+        private const val GOCAR_SHIPPER_PRODUCT_ID = "28"
+        private const val GOCAR_SHIPPER_PRODUCT_NAME = "Instant"
     }
 }

@@ -2,11 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/shipper_product_name"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:ellipsize="end"
@@ -15,7 +16,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
-        app:typographyWeight="bold"/>
+        app:typographyWeight="bold"
+        tools:text="GOSENDDDD"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/shipper_product_info_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:icon_name="INFORMATION"
+        app:layout_constraintStart_toEndOf="@id/shipper_product_name"
+        app:layout_constraintTop_toTopOf="@id/shipper_product_name"
+        app:layout_constraintBottom_toBottomOf="@id/shipper_product_name"
+        tools:visibility="visible"/>
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/shipper_product_cb"

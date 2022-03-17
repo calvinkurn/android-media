@@ -23,7 +23,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 
-class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConventionalListener) : RecyclerView.Adapter<ShippingEditorConventionalAdapter.ShippingEditorConventionalViewHolder>(){
+class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConventionalListener, private val productItemListener: ShipperProductItemAdapter.ShipperProductItemListener) : RecyclerView.Adapter<ShippingEditorConventionalAdapter.ShippingEditorConventionalViewHolder>(){
 
     private var shipperConventionalModel = mutableListOf<ConventionalModel>()
 
@@ -33,7 +33,7 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShippingEditorConventionalViewHolder {
-        return ShippingEditorConventionalViewHolder(parent.inflateLayout(R.layout.item_shipping_editor_card), listener)
+        return ShippingEditorConventionalViewHolder(parent.inflateLayout(R.layout.item_shipping_editor_card), productItemListener)
     }
 
     override fun getItemCount(): Int {
@@ -75,9 +75,9 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
         return activatedListIds
     }
 
-    inner class ShippingEditorConventionalViewHolder(itemView: View, private val listener: ShippingEditorConventionalListener) : RecyclerView.ViewHolder(itemView) {
+    inner class ShippingEditorConventionalViewHolder(itemView: View, private val productItemListener: ShipperProductItemAdapter.ShipperProductItemListener) : RecyclerView.ViewHolder(itemView) {
         lateinit var conventionalModel: ConventionalModel
-        private val productItemAdapter = ShipperProductItemAdapter()
+        private val productItemAdapter = ShipperProductItemAdapter(productItemListener)
         private val featureItemAdapter = ShipperFeatureAdapter()
         private val shipmentItemImage = itemView.findViewById<ImageView>(R.id.img_shipment_item)
         private val shipmentName = itemView.findViewById<Typography>(R.id.shipment_name)

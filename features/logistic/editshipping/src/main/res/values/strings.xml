@@ -87,4 +87,7 @@
     <string name="title_activity_cpl">Pengiriman Per Produk</string>
     <string name="toaster_cpl_error">Harap pilih min. 1 layanan pengiriman untuk produk ini.</string>
     <string name="antar_ke_agen">Antar ke Kantor Agen</string>
+    <string name="description_gocar_instan"><![CDATA[Sekarang, kamu bisa pakai kurir mobil atau motor dari GoSend ketika mengaktifkan kurir instan. Perhatikan poin berikut, ya:\n\n1.Kurir instan GoSend saat ini bisa melayani pengiriman hingga 100kg.\n2.Secara tampilan, GoSend Car & GoSend Bike tidak ditampilkan karena sudah otomatis masuk dalam pilihan kurir ketika kamu mengaktifkan kurir instan GoSend.]]></string>
+    <string name="button_info_gocar">Mengerti</string>
+    <string name="gocar_info_bottomsheet_title"><![CDATA[GoSend Car & GoSend Bike]]></string>
 </resources>

@@ -76,6 +76,7 @@ public class PackageViewCheckBox extends EditShippingCourierView<Service,
             public boolean onTouch(View v, MotionEvent motionEvent) {
                 if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     if (motionEvent.getRawX() >= checkBox.getRight() - checkBox.getTotalPaddingRight()) {
+                        // todo on touch nya disini
                         mainView.showInfoBottomSheet(description, serviceName);
                         return true;
                     }

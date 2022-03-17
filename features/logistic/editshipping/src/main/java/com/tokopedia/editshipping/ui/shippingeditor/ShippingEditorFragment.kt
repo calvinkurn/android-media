@@ -11,8 +11,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,16 +26,21 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.abstraction.common.utils.view.MethodChecker.getColor
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.editshipping.R
+import com.tokopedia.editshipping.data.preference.GocarInstanCoachMarkSharePref
 import com.tokopedia.editshipping.di.shippingeditor.DaggerShippingEditorComponent
 import com.tokopedia.editshipping.di.shippingeditor.ShippingEditorComponent
 import com.tokopedia.editshipping.domain.model.shippingEditor.*
 import com.tokopedia.editshipping.ui.EditShippingActivity
+import com.tokopedia.editshipping.ui.bottomsheet.GocarInfoBottomSheet
 import com.tokopedia.editshipping.ui.bottomsheet.ShipperDetailBottomSheet
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.*
 import com.tokopedia.editshipping.util.EditShippingConstant
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.*
@@ -47,7 +54,10 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAdapter.ShippingEditorItemAdapterListener, ShippingEditorConventionalAdapter.ShippingEditorConventionalListener {
+class ShippingEditorFragment : BaseDaggerFragment(),
+    ShippingEditorOnDemandItemAdapter.ShippingEditorItemAdapterListener,
+    ShippingEditorConventionalAdapter.ShippingEditorConventionalListener,
+    ShipperProductItemAdapter.ShipperProductItemListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -104,8 +114,8 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var globalErrorLayout: GlobalError? = null
 
-    private var shippingEditorOnDemandAdapter = ShippingEditorOnDemandItemAdapter(this)
-    private var shippingEditorConventionalAdapter = ShippingEditorConventionalAdapter(this)
+    private var shippingEditorOnDemandAdapter = ShippingEditorOnDemandItemAdapter(this, this)
+    private var shippingEditorConventionalAdapter = ShippingEditorConventionalAdapter(this, this)
 
     override fun getScreenName(): String = ""
 
@@ -718,6 +728,27 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         bottomSheetCourierInactiveState = BOTTOMSHEET_SHIPPER_WAREHOUSE_INACTIVE_STATE
         bottomSheetCourierInactiveAdapter.setData(data.warehouseModel)
         context?.let { openBottomSheetWarehouseInactive(it, data.warehouseModel, data.shipperName) }
+    }
+
+    override fun onClickInfoIcon() {
+        GocarInfoBottomSheet().show(parentFragmentManager)
+    }
+
+    override fun showCoachMarkOnInfoIcon(icon: IconUnify) {
+        val sharedPref = GocarInstanCoachMarkSharePref(requireContext())
+        if (sharedPref.getCoachMarkState() == true) {
+            val coachMarkItem = ArrayList<CoachMark2Item>()
+            val coachMark = CoachMark2(requireContext())
+            coachMarkItem.add(
+                CoachMark2Item(
+                    icon,
+                    "Sekarang, kamu bisa pakai motor atau mobil untuk kurir instan GoSend!",
+                    "Aktifkan layanan ini untuk mengaktifkan kurir motor / mobil instan GoSend (maks. 100kg)."
+                )
+            )
+            coachMark.showCoachMark(coachMarkItem, null)
+            sharedPref.setCoachMarkState(false)
+        }
     }
 
     override fun onFeatureInfoOnDemandClicked(data: List<FeatureInfoModel>) {

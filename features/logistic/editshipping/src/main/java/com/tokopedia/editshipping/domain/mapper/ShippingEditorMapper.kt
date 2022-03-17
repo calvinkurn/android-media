@@ -38,7 +38,7 @@ class ShippingEditorMapper @Inject constructor() {
                 textPromo = data.textPromo
                 image = data.image
                 featureInfo = mapFeatureInfo(data.featureInfo)
-                shipperProduct = mapShipperProduct(data.shipperProduct)
+                shipperProduct = mapShipperProduct(data.shipperName, data.shipperId, data.shipperProduct)
             }
             onDemandModelList.add(onDemandUiModel)
         }
@@ -55,7 +55,7 @@ class ShippingEditorMapper @Inject constructor() {
                 textPromo = data.textPromo
                 image = data.image
                 featureInfo = mapFeatureInfo(data.featureInfo)
-                shipperProduct = mapShipperProduct(data.shipperProduct)
+                shipperProduct = mapShipperProduct(data.shipperName, data.shipperId, data.shipperProduct)
             }
             conventionalModelList.add(conventionalUiModel)
         }
@@ -71,12 +71,14 @@ class ShippingEditorMapper @Inject constructor() {
        }
     }
 
-    private fun mapShipperProduct(response: List<ShipperProduct>): List<ShipperProductModel> {
+    private fun mapShipperProduct(shipperName: String, shipperId: Long, response: List<ShipperProduct>): List<ShipperProductModel> {
         return response.map {
             ShipperProductModel(
-                    it.shipperProductId,
-                    it.shipperProductName,
-                    it.isActive
+                    shipperProductId = it.shipperProductId,
+                    shipperProductName = it.shipperProductName,
+                    isActive = it.isActive,
+                    shipperId = shipperId,
+                    shipperName = shipperName
             )
         }
     }

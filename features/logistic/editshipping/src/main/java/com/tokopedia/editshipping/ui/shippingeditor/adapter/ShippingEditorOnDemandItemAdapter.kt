@@ -25,7 +25,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 
-class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItemAdapterListener): RecyclerView.Adapter<ShippingEditorOnDemandItemAdapter.ShippingEditorOnDemandViewHolder>() {
+class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItemAdapterListener, private val productItemListener: ShipperProductItemAdapter.ShipperProductItemListener): RecyclerView.Adapter<ShippingEditorOnDemandItemAdapter.ShippingEditorOnDemandViewHolder>() {
 
     var shipperOnDemandModel = mutableListOf<OnDemandModel>()
 
@@ -35,7 +35,7 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShippingEditorOnDemandViewHolder {
-        return ShippingEditorOnDemandViewHolder(parent.inflateLayout(R.layout.item_shipping_editor_card), listener)
+        return ShippingEditorOnDemandViewHolder(parent.inflateLayout(R.layout.item_shipping_editor_card), productItemListener)
     }
 
     override fun getItemCount(): Int {
@@ -77,9 +77,9 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
         return activatedListIds
     }
 
-    inner class ShippingEditorOnDemandViewHolder(itemView: View, private val listener: ShippingEditorItemAdapterListener): RecyclerView.ViewHolder(itemView) {
+    inner class ShippingEditorOnDemandViewHolder(itemView: View, private val productItemListener: ShipperProductItemAdapter.ShipperProductItemListener): RecyclerView.ViewHolder(itemView) {
         lateinit var onDemandModel: OnDemandModel
-        private val productItemAdapter = ShipperProductItemAdapter()
+        private val productItemAdapter = ShipperProductItemAdapter(productItemListener)
         private val featureItemAdapter = ShipperFeatureAdapter()
         private val shipmentItemImage = itemView.findViewById<ImageView>(R.id.img_shipment_item)
         private val shipmentName = itemView.findViewById<Typography>(R.id.shipment_name)
