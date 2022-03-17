@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import com.tokopedia.editshipping.R;
 import com.tokopedia.editshipping.domain.model.editshipping.Service;
 import com.tokopedia.editshipping.ui.EditShippingViewListener;
+import com.tokopedia.editshipping.util.EditShippingConstant;
 
 /**
  * Created by kris on 8/23/16. Tokopedia
@@ -51,7 +52,19 @@ public class PackageViewCheckBox extends EditShippingCourierView<Service,
         serviceCheckbox.setText(service.name);
         serviceCheckbox.setChecked(service.getActive());
         this.serviceIndex = serviceIndex;
+        mainView.showCoachmarkGocarInstan(serviceCheckbox);
+        serviceCheckbox.setCompoundDrawablesWithIntrinsicBounds(0, 0, com.tokopedia.design.R.drawable.info_icon, 0);
+        serviceCheckbox.setOnTouchListener(onDescriptionTouchedListener(serviceCheckbox,
+                service.description, service.name));
+    }
 
+    public void renderData(@NonNull Service service, @NonNull String courierId, int serviceIndex) {
+        serviceCheckbox.setText(service.name);
+        serviceCheckbox.setChecked(service.getActive());
+        this.serviceIndex = serviceIndex;
+        if (courierId.equals(EditShippingConstant.GOCAR_SHIPPER_ID) && service.id.equals(EditShippingConstant.GOCAR_SHIPPER_PRODUCT_ID)) {
+            mainView.showCoachmarkGocarInstan(serviceCheckbox);
+        }
         serviceCheckbox.setCompoundDrawablesWithIntrinsicBounds(0, 0, com.tokopedia.design.R.drawable.info_icon, 0);
         serviceCheckbox.setOnTouchListener(onDescriptionTouchedListener(serviceCheckbox,
                 service.description, service.name));

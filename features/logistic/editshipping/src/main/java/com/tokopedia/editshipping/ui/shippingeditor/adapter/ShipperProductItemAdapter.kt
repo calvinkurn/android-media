@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperProductModel
+import com.tokopedia.editshipping.util.EditShippingConstant.GOCAR_SHIPPER_ID
+import com.tokopedia.editshipping.util.EditShippingConstant.GOCAR_SHIPPER_PRODUCT_ID
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -80,7 +82,7 @@ class ShipperProductItemAdapter(private var listener: ShipperProductItemListener
         }
 
         private fun shouldShowInfoIcon(data: ShipperProductModel) {
-            if (data.shipperId == GOCAR_SHIPPER_ID && data.shipperProductId.equals(
+            if (data.shipperId.toString() == GOCAR_SHIPPER_ID && data.shipperProductId.equals(
                     GOCAR_SHIPPER_PRODUCT_ID,
                     ignoreCase = true
                 )
@@ -92,12 +94,5 @@ class ShipperProductItemAdapter(private var listener: ShipperProductItemListener
                 }
             }
         }
-    }
-
-    companion object {
-        private const val GOCAR_SHIPPER_ID: Long = 10
-        private const val GOCAR_SHIPPER_NAME = "GoSend"
-        private const val GOCAR_SHIPPER_PRODUCT_ID = "28"
-        private const val GOCAR_SHIPPER_PRODUCT_NAME = "Instant"
     }
 }

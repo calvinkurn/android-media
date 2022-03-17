@@ -49,7 +49,7 @@ public class PackageView extends EditShippingCourierView<Courier,
         for(int serviceIndex = 0; serviceIndex < courier.services.size(); serviceIndex++){
             PackageViewCheckBox packageCheckBox = new PackageViewCheckBox(getContext());
             packageCheckBox.setViewListener(mainView);
-            packageCheckBox.renderData(courier.services.get(serviceIndex), serviceIndex);
+            packageCheckBox.renderData(courier.services.get(serviceIndex), courier.id, serviceIndex);
             packageCheckBox.setServiceCheckBoxListener(courierIndex);
             checkBoxHolder.addView(packageCheckBox);
         }

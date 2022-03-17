@@ -18,8 +18,11 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.analytics.EditShippingAnalytics
+import com.tokopedia.editshipping.data.preference.GocarInstanCoachMarkSharePref
 import com.tokopedia.editshipping.domain.model.ValidateShippingModel
 import com.tokopedia.editshipping.domain.model.editshipping.Courier
 import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping
@@ -459,6 +462,23 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     override fun refreshLocationViewListener(address: DistrictRecommendationAddress?) {
         refreshView()
         
+    }
+
+    override fun showCoachmarkGocarInstan(view: View) {
+        val sharedPref = GocarInstanCoachMarkSharePref(requireContext())
+        if (sharedPref.getCoachMarkState() == true) {
+            val coachMarkItem = ArrayList<CoachMark2Item>()
+            val coachMark = CoachMark2(requireContext())
+            coachMarkItem.add(
+                CoachMark2Item(
+                    view,
+                    "Sekarang, kamu bisa pakai motor atau mobil untuk kurir instan GoSend!",
+                    "Aktifkan layanan ini untuk mengaktifkan kurir motor / mobil instan GoSend (maks. 100kg)."
+                )
+            )
+            coachMark.showCoachMark(coachMarkItem, null)
+            sharedPref.setCoachMarkState(false)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
