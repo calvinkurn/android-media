@@ -109,6 +109,7 @@ class OrderSummaryPageActivityTrackingTest {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_LAST_APPLY_WITH_LOW_MAXIMUM_PAYMENT_REVAMP_RESPONSE_PATH
         promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_CASHBACK_FULL_APPLIED_RESPONSE
         Intents.release()
+        activityRule.activity.finishAndRemoveTask()
         activityRule.launchActivity(null)
 
         Intents.init()
@@ -132,6 +133,7 @@ class OrderSummaryPageActivityTrackingTest {
 
         assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
         Intents.release()
+        activityRule.activity.finishAndRemoveTask()
     }
 
     private fun performOrderSummaryPageBackAction() {
