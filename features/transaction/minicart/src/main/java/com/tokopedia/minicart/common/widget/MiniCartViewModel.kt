@@ -32,8 +32,8 @@ import com.tokopedia.minicart.common.data.response.minicartlist.BeliButtonConfig
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartABTestData
 import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
 import java.text.NumberFormat
@@ -75,8 +75,8 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     val globalEvent: LiveData<GlobalEvent>
         get() = _globalEvent
 
-    private val _miniCartSimplifiedData = MutableLiveData<MiniCartSimplifiedData>()
-    val miniCartSimplifiedData: LiveData<MiniCartSimplifiedData>
+    private val _miniCartSimplifiedData = MutableLiveData<MiniCartSimplifiedData2>()
+    val miniCartSimplifiedData: LiveData<MiniCartSimplifiedData2>
         get() = _miniCartSimplifiedData
 
     // Bottom Sheet Data
@@ -102,7 +102,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
 
     // Used for mocking _miniCartSimplifiedData value.
     // Should only be called from unit test.
-    fun setMiniCartSimplifiedData(miniCartSimplifiedData: MiniCartSimplifiedData) {
+    fun setMiniCartSimplifiedData(miniCartSimplifiedData: MiniCartSimplifiedData2) {
         _miniCartSimplifiedData.value = miniCartSimplifiedData
     }
 
@@ -127,12 +127,12 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         _globalEvent.value = GlobalEvent()
     }
 
-    fun updateMiniCartSimplifiedData(miniCartSimplifiedData: MiniCartSimplifiedData) {
+    fun updateMiniCartSimplifiedData(miniCartSimplifiedData: MiniCartSimplifiedData2) {
         _miniCartSimplifiedData.value = miniCartSimplifiedData
     }
 
-    fun getLatestMiniCartData(): MiniCartSimplifiedData {
-        return miniCartListUiModelMapper.reverseMapUiModel(miniCartListBottomSheetUiModel.value, tmpHiddenUnavailableItems)
+    fun getLatestMiniCartData(): MiniCartSimplifiedData2 {
+        return miniCartListUiModelMapper.reverseMapUiModel2(miniCartListBottomSheetUiModel.value, tmpHiddenUnavailableItems)
     }
 
     fun resetTemporaryHiddenUnavailableItems() {
@@ -147,8 +147,9 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         return currentShopIds.value ?: emptyList()
     }
 
-    private fun getMiniCartItems(): List<MiniCartItem> {
-        return miniCartSimplifiedData.value?.miniCartItems ?: emptyList()
+    private fun getMiniCartItems(): List<MiniCartItem2> {
+//        return miniCartSimplifiedData.value?.miniCartItems ?: emptyList()
+        return miniCartSimplifiedData.value?.miniCartItems?.values?.toList() ?: emptyList()
     }
 
     private fun updateVisitables(visitables: MutableList<Visitable<*>>) {
@@ -190,7 +191,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                     if (miniCartSimplifiedData.value != null) {
                         _miniCartSimplifiedData.value = miniCartSimplifiedData.value
                     } else {
-                        _miniCartSimplifiedData.value = MiniCartSimplifiedData()
+                        _miniCartSimplifiedData.value = MiniCartSimplifiedData2()
                     }
                 })
     }
@@ -406,7 +407,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
             val updateCartRequests = mutableListOf<UpdateCartRequest>()
             val allMiniCartItem = getMiniCartItems()
             allMiniCartItem.forEach {
-                if (!it.isError) {
+                if (it is MiniCartItem2.MiniCartItemProduct && !it.isError) {
                     updateCartRequests.add(
                             UpdateCartRequest(
                                     cartId = it.cartId,
@@ -474,7 +475,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         if (observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
             val addToCartParams = mutableListOf<AddToCartOccMultiCartParam>()
             getMiniCartItems().forEach { miniCartItem ->
-                if (!miniCartItem.isError) {
+                if (miniCartItem is MiniCartItem2.MiniCartItemProduct && !miniCartItem.isError) {
                     addToCartParams.add(
                             AddToCartOccMultiCartParam(
                                     cartId = miniCartItem.cartId,
@@ -567,7 +568,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
 
         val cartItems = getMiniCartItems()
         loop@ for (cartItem in cartItems) {
-            if (cartItem.productId == productId && !cartItem.isError) {
+            if (cartItem is MiniCartItem2.MiniCartItemProduct && cartItem.productId == productId && !cartItem.isError) {
                 cartItem.quantity = newQty
                 break@loop
             }
@@ -585,7 +586,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
 
         val cartItems = getMiniCartItems()
         loop@ for (cartItem in cartItems) {
-            if (cartItem.productId == productId && !cartItem.isError) {
+            if (cartItem is MiniCartItem2.MiniCartItemProduct && cartItem.productId == productId && !cartItem.isError) {
                 cartItem.notes = newNotes
                 break@loop
             }

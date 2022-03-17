@@ -2,11 +2,10 @@ package com.tokopedia.minicart.common.analytics
 
 import android.os.Bundle
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItem2
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
 import javax.inject.Inject
 
 class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterface) {
@@ -161,7 +160,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         }
     }
 
-    private fun getBundleProduct(product: MiniCartItem): Bundle {
+    private fun getBundleProduct(product: MiniCartItem2.MiniCartItemProduct): Bundle {
         return Bundle().apply {
             putString(DIMENSION_104, product.campaignId.toEnhancedEcommerceDefaultValueIfEmpty())
             putString(DIMENSION_38, product.attribution.toEnhancedEcommerceDefaultValueIfEmpty())
@@ -335,7 +334,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
 
     // 10, 11, 12 Widget - DONE
     @JvmName("eventClickBuyFromWidget")
-    fun eventClickBuy(page: Page, products: List<MiniCartItem>, isOCCFlow: Boolean) {
+    fun eventClickBuy(page: Page, products: List<MiniCartItem2>, isOCCFlow: Boolean) {
         var eventAction = ""
         var eventCategory = ""
         when (page) {
@@ -373,8 +372,10 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
             putString(KEY_CHECKOUT_STEP, VALUE_CHECKOUT_STEP_ONE)
             val items = ArrayList<Bundle>()
             products.forEach { product ->
-                val bundle = getBundleProduct(product)
-                items.add(bundle)
+                if (product is MiniCartItem2.MiniCartItemProduct && !product.isError) {
+                    val bundle = getBundleProduct(product)
+                    items.add(bundle)
+                }
             }
             putParcelableArrayList(KEY_ITEMS, items)
         }

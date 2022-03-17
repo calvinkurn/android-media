@@ -124,6 +124,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                 resetObserver()
                 bottomSheetListener?.onMiniCartListBottomSheetDismissed()
                 this@MiniCartListBottomSheet.viewBinding = null
+                this@MiniCartListBottomSheet.bottomSheet = null
             }
             setChild(viewBinding.root)
             show(fragmentManager, this.javaClass.simpleName)

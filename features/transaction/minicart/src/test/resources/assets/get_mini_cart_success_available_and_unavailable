@@ -110,7 +110,7 @@
                   "product_max_order": 30000,
                   "product_invenage_value": 1,
                   "product_switch_invenage": 1,
-                  "parent_id": 1920777155,
+                  "parent_id": 0,
                   "wholesale_price": [],
                   "campaign_id": 0,
                   "product_tracker_data": {

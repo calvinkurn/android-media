@@ -24,8 +24,16 @@ data class MiniCartSimplifiedData2(
         var isShowMiniCartWidget: Boolean = false
 ) {
 
-    fun a() {
-        miniCartItems[MiniCartItemKey("2234", isBundle = true)]
+    fun getMiniCartItemProductByProductId(productId: String): MiniCartItem2.MiniCartItemProduct? {
+        return miniCartItems[MiniCartItemKey(productId)] as? MiniCartItem2.MiniCartItemProduct
+    }
+
+    fun getMiniCartItemBundleByProductId(bundleId: String): MiniCartItem2.MiniCartItemProduct? {
+        return miniCartItems[MiniCartItemKey(bundleId, MiniCartItemType.BUNDLE)] as? MiniCartItem2.MiniCartItemProduct
+    }
+
+    fun getMiniCartItemParentProductByProductId(bundleId: String): MiniCartItem2.MiniCartItemParentProduct? {
+        return miniCartItems[MiniCartItemKey(bundleId, MiniCartItemType.PARENT)] as? MiniCartItem2.MiniCartItemParentProduct
     }
 }
 
@@ -64,10 +72,16 @@ data class MiniCartItem(
         var productPrice: Long = 0L
 )
 
-class MiniCartItemKey(
+data class MiniCartItemKey(
         var id: String,
-        var isBundle: Boolean = false
+        var type: MiniCartItemType = MiniCartItemType.PRODUCT,
 )
+
+sealed class MiniCartItemType {
+    object PRODUCT: MiniCartItemType()
+    object BUNDLE: MiniCartItemType()
+    object PARENT: MiniCartItemType()
+}
 
 sealed class MiniCartItem2 {
     data class MiniCartItemBundle(
@@ -82,7 +96,7 @@ sealed class MiniCartItem2 {
             var editBundleApplink: String = "",
             var bundleIconUrl: String = "",
             var bundleLabelQuantity: Int = 0,
-            var products: List<MiniCartItemProduct> = emptyList()
+            var products: Map<MiniCartItemKey, MiniCartItemProduct> = emptyMap()
     ): MiniCartItem2()
 
     data class MiniCartItemProduct(
@@ -95,19 +109,25 @@ sealed class MiniCartItem2 {
             var cartString: String = "",
 
             // Fields below are for analytics & atc occ purpose only
-            var campaignId: String = "",
-            var attribution: String = "",
-            var productWeight: Int = 0,
-            var productSlashPriceLabel: String = "",
-            var warehouseId: String = "",
-            var shopId: String = "",
-            var shopName: String = "",
-            var shopType: String = "",
-            var categoryId: String = "",
-            var freeShippingType: String = "",
-            var category: String = "",
-            var productName: String = "",
-            var productVariantName: String = "",
-            var productPrice: Long = 0L
+            internal var campaignId: String = "",
+            internal var attribution: String = "",
+            internal var productWeight: Int = 0,
+            internal var productSlashPriceLabel: String = "",
+            internal var warehouseId: String = "",
+            internal var shopId: String = "",
+            internal var shopName: String = "",
+            internal var shopType: String = "",
+            internal var categoryId: String = "",
+            internal var freeShippingType: String = "",
+            internal var category: String = "",
+            internal var productName: String = "",
+            internal var productVariantName: String = "",
+            internal var productPrice: Long = 0L
+    ): MiniCartItem2()
+
+    data class MiniCartItemParentProduct(
+            var parentId: String = "",
+            var totalQuantity: Int = 0,
+            var products: Map<MiniCartItemKey, MiniCartItemProduct> = emptyMap(),
     ): MiniCartItem2()
 }

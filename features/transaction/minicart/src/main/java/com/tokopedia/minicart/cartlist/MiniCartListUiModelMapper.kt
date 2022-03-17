@@ -3,13 +3,28 @@ package com.tokopedia.minicart.cartlist
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
-import com.tokopedia.minicart.cartlist.uimodel.*
-import com.tokopedia.minicart.common.data.response.minicartlist.*
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartSeparatorUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartShopUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerErrorUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerWarningUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableHeaderUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableReasonUiModel
+import com.tokopedia.minicart.common.data.response.minicartlist.Action
 import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_SHOWLESS
 import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_SHOWMORE
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.data.response.minicartlist.BeliButtonConfig
+import com.tokopedia.minicart.common.data.response.minicartlist.CartDetail
+import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
+import com.tokopedia.minicart.common.data.response.minicartlist.ShipmentInformation
+import com.tokopedia.minicart.common.data.response.minicartlist.Shop
+import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
+import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
@@ -307,12 +322,27 @@ class MiniCartListUiModelMapper @Inject constructor() {
         }
     }
 
-    fun reverseMapUiModel(miniCartListUiModel: MiniCartListUiModel?, tmpHiddenUnavailableItems: List<Visitable<*>>?): MiniCartSimplifiedData {
+//    fun reverseMapUiModel(miniCartListUiModel: MiniCartListUiModel?, tmpHiddenUnavailableItems: List<Visitable<*>>?): MiniCartSimplifiedData {
+//        if (miniCartListUiModel == null) {
+//            return MiniCartSimplifiedData()
+//        } else {
+//            return MiniCartSimplifiedData().apply {
+//                val miniCartItemsMapResult = mapMiniCartItems(miniCartListUiModel.visitables, tmpHiddenUnavailableItems)
+//                miniCartItems = miniCartItemsMapResult.first
+//                isShowMiniCartWidget = miniCartItems.isNotEmpty()
+//                miniCartWidgetData = miniCartListUiModel.miniCartWidgetUiModel
+//                miniCartWidgetData.containsOnlyUnavailableItems = miniCartItemsMapResult.second
+//                miniCartWidgetData.unavailableItemsCount = miniCartItemsMapResult.third
+//            }
+//        }
+//    }
+
+    fun reverseMapUiModel2(miniCartListUiModel: MiniCartListUiModel?, tmpHiddenUnavailableItems: List<Visitable<*>>?): MiniCartSimplifiedData2 {
         if (miniCartListUiModel == null) {
-            return MiniCartSimplifiedData()
+            return MiniCartSimplifiedData2()
         } else {
-            return MiniCartSimplifiedData().apply {
-                val miniCartItemsMapResult = mapMiniCartItems(miniCartListUiModel.visitables, tmpHiddenUnavailableItems)
+            return MiniCartSimplifiedData2().apply {
+                val miniCartItemsMapResult = mapMiniCartItems2(miniCartListUiModel.visitables, tmpHiddenUnavailableItems)
                 miniCartItems = miniCartItemsMapResult.first
                 isShowMiniCartWidget = miniCartItems.isNotEmpty()
                 miniCartWidgetData = miniCartListUiModel.miniCartWidgetUiModel
@@ -322,7 +352,57 @@ class MiniCartListUiModelMapper @Inject constructor() {
         }
     }
 
-    private fun mapMiniCartItems(visitables: List<Visitable<*>>, tmpHiddenUnavailableItems: List<Visitable<*>>?): Triple<List<MiniCartItem>, Boolean, Int> {
+//    private fun mapMiniCartItems(visitables: List<Visitable<*>>, tmpHiddenUnavailableItems: List<Visitable<*>>?): Triple<List<MiniCartItem>, Boolean, Int> {
+//        val tmpVisitables = mutableListOf<Visitable<*>>()
+//        tmpVisitables.addAll(visitables)
+//        if (tmpHiddenUnavailableItems != null) {
+//            tmpVisitables.addAll(tmpHiddenUnavailableItems)
+//        }
+//        var hasAvailableItem = false
+//        var unavailableItemCount = 0
+//        val miniCartItems = mutableListOf<MiniCartItem>()
+//        tmpVisitables.forEach { visitable ->
+//            if (visitable is MiniCartProductUiModel) {
+//                val miniCartItem = MiniCartItem().apply {
+//                    isError = visitable.isProductDisabled
+//                    cartId = visitable.cartId
+//                    productId = visitable.productId
+//                    productParentId = visitable.parentId
+//                    quantity = visitable.productQty
+//                    notes = visitable.productNotes
+//                    campaignId = visitable.campaignId
+//                    attribution = visitable.attribution
+//                    productWeight = visitable.productWeight
+//                    productSlashPriceLabel = visitable.productSlashPriceLabel
+//                    warehouseId = visitable.warehouseId
+//                    shopId = visitable.shopId
+//                    shopName = visitable.shopName
+//                    shopType = visitable.shopType
+//                    categoryId = visitable.categoryId
+//                    freeShippingType = visitable.freeShippingType
+//                    category = visitable.category
+//                    productName = visitable.productName
+//                    productVariantName = visitable.productVariantName
+//                    productPrice = visitable.productPrice
+//                }
+//                miniCartItems.add(miniCartItem)
+//
+//                if (miniCartItem.isError) {
+//                    unavailableItemCount++
+//                }
+//
+//                if (!hasAvailableItem && !miniCartItem.isError) {
+//                    hasAvailableItem = true
+//                }
+//            }
+//        }
+//
+//        val isShowMiniCartWidget = miniCartItems.isNotEmpty()
+//        val containsOnlyUnavailableItems = isShowMiniCartWidget && !hasAvailableItem
+//        return Triple(miniCartItems, containsOnlyUnavailableItems, unavailableItemCount)
+//    }
+
+    private fun mapMiniCartItems2(visitables: List<Visitable<*>>, tmpHiddenUnavailableItems: List<Visitable<*>>?): Triple<Map<MiniCartItemKey, MiniCartItem2>, Boolean, Int> {
         val tmpVisitables = mutableListOf<Visitable<*>>()
         tmpVisitables.addAll(visitables)
         if (tmpHiddenUnavailableItems != null) {
@@ -330,10 +410,11 @@ class MiniCartListUiModelMapper @Inject constructor() {
         }
         var hasAvailableItem = false
         var unavailableItemCount = 0
-        val miniCartItems = mutableListOf<MiniCartItem>()
+        val miniCartItems = hashMapOf<MiniCartItemKey, MiniCartItem2>()
         tmpVisitables.forEach { visitable ->
             if (visitable is MiniCartProductUiModel) {
-                val miniCartItem = MiniCartItem().apply {
+                val key = MiniCartItemKey(visitable.productId)
+                val miniCartItem = MiniCartItem2.MiniCartItemProduct().apply {
                     isError = visitable.isProductDisabled
                     cartId = visitable.cartId
                     productId = visitable.productId
@@ -355,10 +436,29 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     productVariantName = visitable.productVariantName
                     productPrice = visitable.productPrice
                 }
-                miniCartItems.add(miniCartItem)
 
                 if (miniCartItem.isError) {
                     unavailableItemCount++
+                    if (!miniCartItems.contains(key)) {
+                        miniCartItems[key] = miniCartItem
+                    }
+                } else {
+                    miniCartItems[key] = miniCartItem
+                }
+
+                if (miniCartItem.productParentId.isNotBlankOrZero()) {
+                    val parentKey = MiniCartItemKey(miniCartItem.productParentId)
+                    if (!miniCartItems.contains(parentKey)) {
+                        miniCartItems[parentKey] = miniCartItem
+                    } else {
+                        val currentParentItem = miniCartItems[parentKey] as MiniCartItem2.MiniCartItemParentProduct
+                        val products = HashMap(currentParentItem.products)
+                        products[key] = miniCartItem
+                        val totalQuantity = currentParentItem.totalQuantity + miniCartItem.quantity
+                        miniCartItems[parentKey] = MiniCartItem2.MiniCartItemParentProduct(
+                                miniCartItem.productParentId, totalQuantity, products
+                        )
+                    }
                 }
 
                 if (!hasAvailableItem && !miniCartItem.isError) {

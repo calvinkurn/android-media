@@ -6,7 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
 import com.tokopedia.minicart.common.domain.mapper.MiniCartSimplifiedMapper
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
                                                            private val miniCartSimplifiedMapper: MiniCartSimplifiedMapper,
-                                                           private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<MiniCartSimplifiedData>() {
+                                                           private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<MiniCartSimplifiedData2>() {
 
     private var params: Map<String, Any>? = null
 
@@ -28,7 +28,7 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
         )
     }
 
-    override suspend fun executeOnBackground(): MiniCartSimplifiedData {
+    override suspend fun executeOnBackground(): MiniCartSimplifiedData2 {
         if (params == null) {
             throw RuntimeException("Parameter is null!")
         }
@@ -37,7 +37,8 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
         val response = graphqlRepository.response(listOf(request)).getSuccessData<MiniCartGqlResponse>()
 
         if (response.miniCart.status == "OK") {
-            return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(response.miniCart)
+//            return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(response.miniCart)
+            return miniCartSimplifiedMapper.mapMiniCartSimplifiedData2(response.miniCart)
         } else {
             throw ResponseErrorException(response.miniCart.errorMessage.joinToString(", "))
         }

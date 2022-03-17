@@ -1,6 +1,6 @@
 package com.tokopedia.minicart.common.widget
 
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
 
 interface MiniCartWidgetListener {
 
@@ -10,6 +10,6 @@ interface MiniCartWidgetListener {
     * Holder fragment need to update product card state based on provided data, especially quantity editor / `+ Keranjang` button.
     * Holder fragment need to hide / set MiniCartWidget to gone as well if value `miniCartSimplifiedData.isShowMiniCartWidget` is false.
     * */
-    fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData)
+    fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData2)
 
 }

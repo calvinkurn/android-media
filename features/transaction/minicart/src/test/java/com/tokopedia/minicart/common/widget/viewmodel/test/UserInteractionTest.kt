@@ -73,7 +73,7 @@ class UserInteractionTest {
         viewModel.updateProductQty(productId, newQty)
 
         //then
-        assert(viewModel.miniCartSimplifiedData.value?.getMiniCartItemByProductId(productId)?.quantity ?: 0 == newQty)
+        assert(viewModel.miniCartSimplifiedData.value?.getMiniCartItemProductByProductId(productId)?.quantity ?: 0 == newQty)
     }
 
     @Test
@@ -107,7 +107,7 @@ class UserInteractionTest {
         viewModel.updateProductNotes(productId, newNotes)
 
         //then
-        assert(viewModel.miniCartSimplifiedData.value?.getMiniCartItemByProductId(productId)?.notes ?: 0 == newNotes)
+        assert(viewModel.miniCartSimplifiedData.value?.getMiniCartItemProductByProductId(productId)?.notes ?: 0 == newNotes)
     }
 
     @Test
@@ -148,8 +148,8 @@ class UserInteractionTest {
         viewModel.setMiniCartListUiModel(miniCartListUiModels)
         val unavailableItem = MiniCartProductUiModel()
         viewModel.tmpHiddenUnavailableItems.clear()
-        viewModel.tmpHiddenUnavailableItems.add(unavailableItem)
-        viewModel.tmpHiddenUnavailableItems.add(unavailableItem)
+        viewModel.tmpHiddenUnavailableItems.add(unavailableItem.copy(productId = "1"))
+        viewModel.tmpHiddenUnavailableItems.add(unavailableItem.copy(productId = "2"))
 
         val expectedSize = 7
 
