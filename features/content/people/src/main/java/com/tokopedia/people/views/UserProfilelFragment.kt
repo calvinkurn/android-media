@@ -104,7 +104,10 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         UserPostBaseAdapter(
             mPresenter,
             this,
-            userName
+            userName,
+            userProfileTracker,
+            profileUserId,
+            userId
         )
     }
 
@@ -647,6 +650,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     }
 
     private fun setProfileImg(profile: Profile) {
+        mAdapter.activityId = profile.liveplaychannel.liveplaychannelid
 
         if (profile == null
             || profile.liveplaychannel == null

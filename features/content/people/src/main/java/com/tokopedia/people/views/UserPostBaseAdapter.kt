@@ -8,11 +8,6 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.people.model.PlayPostContentItem
-import com.tokopedia.people.model.UserPostModel
-import com.tokopedia.people.viewmodels.UserProfileViewModel
-import com.tokopedia.people.views.UserProfileFragment.Companion.VAL_FEEDS_PROFILE
-import com.tokopedia.people.views.UserProfileFragment.Companion.VAL_SOURCE_BUYER
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
@@ -21,18 +16,26 @@ import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.library.baseadapter.BaseItem
 import com.tokopedia.people.R
+import com.tokopedia.people.model.PlayPostContentItem
+import com.tokopedia.people.model.UserPostModel
+import com.tokopedia.people.viewmodels.UserProfileViewModel
+import com.tokopedia.people.views.UserProfileFragment.Companion.VAL_FEEDS_PROFILE
+import com.tokopedia.people.views.UserProfileFragment.Companion.VAL_SOURCE_BUYER
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
-import java.lang.Exception
 
 open class UserPostBaseAdapter(
     val viewModel: UserProfileViewModel,
     val callback: AdapterCallback,
-    private var userName: String = ""
-) : BaseAdapter<PlayPostContentItem>(callback) {
+    private var userName: String = "",
+    val userProfileTracker: UserProfileTracker?,
+    val profileUserId: String,
+    val userId: String
+    ) : BaseAdapter<PlayPostContentItem>(callback) {
 
+    var activityId = ""
     protected var cList: MutableList<BaseItem>? = null
     private var cursor: String = ""
 
@@ -206,6 +209,7 @@ open class UserPostBaseAdapter(
         }
 
         holder.itemView.setOnClickListener { v ->
+            userProfileTracker?.clickVideo(userId = userId, self = userId == profileUserId, live = item.isLive, activityId = activityId, imageUrl = item.webLink,  videoPosition = position)
             RouteManager.route(itemContext, item.appLink)
         }
     }
@@ -244,6 +248,7 @@ open class UserPostBaseAdapter(
         if (vh is ViewHolder) {
             val holder = vh as ViewHolder
             val data = items[holder.adapterPosition] ?: return
+            userProfileTracker?.impressionVideo(userId = userId, self = userId == profileUserId, live = data.isLive, activityId = activityId, imageUrl = data.webLink,  videoPosition = vh.adapterPosition)
         }
     }
 
