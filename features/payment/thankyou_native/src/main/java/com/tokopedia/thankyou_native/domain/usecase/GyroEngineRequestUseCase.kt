@@ -101,17 +101,17 @@ class GyroEngineRequestUseCase @Inject constructor(
 
     private fun isMarketplace(thanksPageData: ThanksPageData) =
         thanksPageData.shopOrder.any {
-            it.storeType == StoreItemKey.MARKETPLACE
+            it.storeType == StoreItemKey.MARKETPLACE || it.storeType == StoreItemKey.MARKETPLACE_ALTERNATE
         }
 
     private fun isGoldMerchant(thanksPageData: ThanksPageData) =
         thanksPageData.shopOrder.any {
-            it.storeType == StoreItemKey.GOLD_MERCHANT
+            it.storeType == StoreItemKey.GOLD_MERCHANT || it.storeType == StoreItemKey.GOLD_MERCHANT_ALTERNATE
         }
 
     private fun isOfficialStore(thanksPageData: ThanksPageData) =
         thanksPageData.shopOrder.any {
-            it.storeType == StoreItemKey.OFFICIAL_STORE
+            it.storeType == StoreItemKey.OFFICIAL_STORE || it.storeType == StoreItemKey.OFFICIAL_STORE_ALTERNATE
         }
 
     companion object {
