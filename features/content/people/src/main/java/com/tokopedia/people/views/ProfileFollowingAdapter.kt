@@ -196,7 +196,6 @@ open class ProfileFollowingAdapter(
         if (vh is ViewHolder) {
             val holder = vh as ViewHolder
             val data = items[holder.adapterPosition] ?: return
-            //listener.shopProductImpressed(holder.adapterPosition, data)
         }
     }
 }

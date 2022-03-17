@@ -63,7 +63,7 @@
                         android:id="@+id/img_profile_image"
                         android:layout_width="@dimen/unify_space_64"
                         android:layout_height="@dimen/unify_space_64"
-                        android:layout_margin="@dimen/cp_dp_6"
+                        android:layout_margin="@dimen/unify_space_6"
                         app:layout_constraintBottom_toBottomOf="@+id/view_profile_outer_ring"
                         app:layout_constraintEnd_toEndOf="@+id/view_profile_outer_ring"
                         app:layout_constraintLeft_toLeftOf="@+id/view_profile_outer_ring"
