@@ -83,6 +83,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.mvcwidget.AnimatedInfos
@@ -159,7 +160,7 @@ class DiscoveryFragment :
     private lateinit var parentLayout: FrameLayout
     private var pageInfoHolder:PageInfo? = null
     private var miniCartWidget: MiniCartWidget? = null
-    private var miniCartData:MiniCartSimplifiedData? = null
+    private var miniCartData:MiniCartSimplifiedData2? = null
     private var miniCartInitialized:Boolean = false
 
     private val analytics: BaseDiscoveryAnalytics by lazy {
@@ -1458,7 +1459,7 @@ class DiscoveryFragment :
         )
     }
 
-    private fun setupMiniCart(data: MiniCartSimplifiedData) {
+    private fun setupMiniCart(data: MiniCartSimplifiedData2) {
         if(data.isShowMiniCartWidget) {
             val shopIds = listOf(userAddressData?.shop_id.orEmpty())
             if (!miniCartInitialized) {
@@ -1479,7 +1480,7 @@ class DiscoveryFragment :
         syncWithCart(data)
     }
 
-    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
+    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData2) {
         if (!miniCartSimplifiedData.isShowMiniCartWidget) {
             miniCartWidget?.hide()
         }
@@ -1487,17 +1488,17 @@ class DiscoveryFragment :
         syncWithCart(miniCartSimplifiedData)
     }
 
-    private fun syncWithCart(data:MiniCartSimplifiedData){
-        val map = HashMap<String,MiniCartItem>()
-        data.miniCartItems.associateByTo (map,{ it.productId })
-        val variantMap = data.miniCartItems.groupBy { it.productParentId }
-        for((parentProductId,list) in variantMap){
-            if(parentProductId.isNotEmpty() && parentProductId!="0"){
-                val quantity = list.sumOf { it.quantity }
-                map[parentProductId] = MiniCartItem(productParentId = parentProductId,quantity = quantity)
-            }
-        }
-        setCartData(map,pageEndPoint)
+    private fun syncWithCart(data:MiniCartSimplifiedData2){
+//        val map = HashMap<String,MiniCartItem>()
+//        data.miniCartItems.associateByTo (map,{ it.productId })
+//        val variantMap = data.miniCartItems.groupBy { it.productParentId }
+//        for((parentProductId,list) in variantMap){
+//            if(parentProductId.isNotEmpty() && parentProductId!="0"){
+//                val quantity = list.sumOf { it.quantity }
+//                map[parentProductId] = MiniCartItem(productParentId = parentProductId,quantity = quantity)
+//            }
+//        }
+        setCartData(data.miniCartItems,pageEndPoint)
         miniCartData = data
         reSync()
     }

@@ -21,7 +21,11 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.AutoPlayController
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.MiniCartItemType
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 
 
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
@@ -422,18 +426,18 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
         }
     }
 
-    private fun updateWithCart(list: List<ComponentsItem>, map: Map<String, MiniCartItem>?) : Boolean {
+    private fun updateWithCart(list: List<ComponentsItem>, map: Map<MiniCartItemKey, MiniCartItem2>?) : Boolean {
         var shouldRefresh = false
         if (map == null) return shouldRefresh
         list.forEach { item ->
             item.data?.firstOrNull()?.let { dataItem ->
-                if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(dataItem.parentProductId)) {
-                    map[dataItem.parentProductId]?.quantity?.let { quantity ->
+                if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(MiniCartItemKey(dataItem.parentProductId ?: "", type = MiniCartItemType.PARENT))) {
+                    map.getMiniCartItemParentProduct(dataItem.parentProductId ?: "")?.totalQuantity?.let { quantity ->
                         if(updateQuantity(quantity, item))
                             shouldRefresh = true
                     }
-                } else if (dataItem.hasATC && !dataItem.productId.isNullOrEmpty() && map.containsKey(dataItem.productId)) {
-                    map[dataItem.productId]?.quantity?.let { quantity ->
+                } else if (dataItem.hasATC && !dataItem.productId.isNullOrEmpty() && map.containsKey(MiniCartItemKey(dataItem.productId ?: ""))) {
+                    map.getMiniCartItemProduct(dataItem.productId ?: "")?.quantity?.let { quantity ->
                         if(updateQuantity(quantity, item))
                             shouldRefresh = true
                     }
@@ -494,14 +498,14 @@ fun setComponent(componentId: String, pageName: String, componentsItem: Componen
     }
 }
 
-fun getCartData(pageName: String):MutableMap<String,MiniCartItem>?{
+fun getCartData(pageName: String):Map<MiniCartItemKey, MiniCartItem2>?{
     discoveryPageData[pageName]?.let {
         return it.cartMap
     }
     return null
 }
 
-fun setCartData(cartMap:MutableMap<String,MiniCartItem>,pageName: String){
+fun setCartData(cartMap:Map<MiniCartItemKey, MiniCartItem2>, pageName: String){
     discoveryPageData[pageName]?.let {
         it.cartMap = cartMap
     }

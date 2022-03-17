@@ -3,7 +3,11 @@ package com.tokopedia.discovery2
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.*
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.Color
+import android.graphics.Outline
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Build
 import android.text.Html
@@ -20,7 +24,11 @@ import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.MiniCartItemType
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.user.session.UserSession
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -368,16 +376,16 @@ class Utils {
         }
 
         fun updateProductAddedInCart(products:List<ComponentsItem>,
-                                             map: Map<String, MiniCartItem>?) {
+                                             map: Map<MiniCartItemKey, MiniCartItem2>?) {
             if (map == null) return
             products.forEach { componentsItem ->
                 componentsItem.data?.firstOrNull()?.let { dataItem ->
-                    if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(dataItem.parentProductId)) {
-                        map[dataItem.parentProductId]?.quantity?.let { quantity ->
+                    if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(MiniCartItemKey(dataItem.parentProductId ?: "", type = MiniCartItemType.PARENT))) {
+                        map.getMiniCartItemParentProduct(dataItem.parentProductId ?: "")?.totalQuantity?.let { quantity ->
                             dataItem.quantity = quantity
                         }
-                    }else if (dataItem.hasATC && !dataItem.productId.isNullOrEmpty() && map.containsKey(dataItem.productId)) {
-                        map[dataItem.productId]?.quantity?.let { quantity ->
+                    }else if (dataItem.hasATC && !dataItem.productId.isNullOrEmpty() && map.containsKey(MiniCartItemKey(dataItem.productId ?: ""))) {
+                        map.getMiniCartItemProduct(dataItem.productId ?: "")?.quantity?.let { quantity ->
                             dataItem.quantity = quantity
                         }
                     }
