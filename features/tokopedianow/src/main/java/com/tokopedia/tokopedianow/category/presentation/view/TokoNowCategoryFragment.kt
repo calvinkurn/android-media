@@ -92,6 +92,9 @@ class TokoNowCategoryFragment:
 
     override val toolbarPageName = "TokoNow Category"
 
+    override val disableDefaultShareTracker: Boolean
+        get() = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
