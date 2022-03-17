@@ -83,6 +83,14 @@ class PlayWidgetJumboView : FrameLayout, IPlayWidgetView {
             )
         }
 
+        override fun onLabelPromoChannelClicked(item: PlayWidgetChannelUiModel, position: Int) {
+            mAnalyticListener?.onLabelPromoClicked(this@PlayWidgetJumboView, item, position, mIsAutoPlay)
+        }
+
+        override fun onLabelPromoChannelImpressed(item: PlayWidgetChannelUiModel, position: Int) {
+            mAnalyticListener?.onLabelPromoImpressed(this@PlayWidgetJumboView, item, position, mIsAutoPlay)
+        }
+
     }
 
     private val adapter = PlayWidgetJumboAdapter(

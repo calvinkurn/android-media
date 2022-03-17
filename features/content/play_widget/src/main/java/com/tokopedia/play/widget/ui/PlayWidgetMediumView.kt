@@ -128,6 +128,14 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             mAnalyticListener?.onClickMenuActionChannel(this@PlayWidgetMediumView, item, position)
             mWidgetListener?.onMenuActionButtonClicked(this@PlayWidgetMediumView, item, position)
         }
+
+        override fun onLabelPromoChannelClicked(item: PlayWidgetChannelUiModel, position: Int) {
+            mAnalyticListener?.onLabelPromoClicked(this@PlayWidgetMediumView, item, position, mIsAutoPlay)
+        }
+
+        override fun onLabelPromoChannelImpressed(item: PlayWidgetChannelUiModel, position: Int) {
+            mAnalyticListener?.onLabelPromoImpressed(this@PlayWidgetMediumView, item, position, mIsAutoPlay)
+        }
     }
 
     private val cardBannerListener = object : PlayWidgetMediumViewHolder.Banner.Listener {
