@@ -25,6 +25,7 @@ class TopupBillsAutoCompleteAdapter(
     @get:JvmName("getContext_") val context: Context,
     private val textViewResourceId: Int,
     private var items: MutableList<TopupBillsAutoComplete>,
+    private var emptyStateUnitTxt: String,
     var listener: ContactArrayListener
 ): ArrayAdapter<TopupBillsAutoComplete>(context, textViewResourceId, items) {
 
@@ -59,7 +60,12 @@ class TopupBillsAutoCompleteAdapter(
     }
 
     private fun getAutoCompleteEmptyView(view: View?, inflater: LayoutInflater): View {
-        return inflater.inflate(R.layout.item_topup_bills_autocomplete_empty, null)
+        val tempView = inflater.inflate(R.layout.item_topup_bills_autocomplete_empty, null)
+
+        val tvDesc: TextView = tempView.findViewById(R.id.common_topup_bills_autocomplete_empty_desc)
+        tvDesc.text = context.getString(R.string.common_topup_autocomplete_empty_desc, emptyStateUnitTxt)
+
+        return tempView
     }
 
     private fun getAutoCompleteHeaderView(view: View?, inflater: LayoutInflater): View {
@@ -221,6 +227,25 @@ class TopupBillsAutoCompleteAdapter(
             secondLine.text = txt2
             secondLine.show()
             firstLine.gravity = Gravity.BOTTOM
+        }
+
+        fun requestLayout() {
+            container.requestLayout()
+        }
+    }
+
+    inner class AutoCompleteEmptyViewHolder(
+        private var container: ConstraintLayout,
+        private var title: TextView,
+        private var desc: TextView
+    ) {
+
+        fun setTitle(text: String) {
+            title.text = text
+        }
+
+        fun setDesc(text: String) {
+            desc.text = text
         }
 
         fun requestLayout() {

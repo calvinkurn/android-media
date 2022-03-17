@@ -63,7 +63,6 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
     init {
         initInputField()
         initSortFilterChip()
-        initAutoComplete()
     }
 
     private fun initInputField() {
@@ -135,11 +134,12 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
             context,
             R.layout.item_recharge_client_number_auto_complete,
             mutableListOf(),
+            context.getString(com.tokopedia.common.topupbills.R.string.common_topup_autocomplete_unit_nomor_meter),
             object : TopupBillsAutoCompleteAdapter.ContactArrayListener {
                 override fun getFilterText(): String {
                     return binding.clientNumberWidgetBase.clientNumberWidgetInputField.editText.text.toString()
                 }
-            }
+            },
         )
 
         binding.clientNumberWidgetBase.clientNumberWidgetInputField.editText.run {
@@ -221,6 +221,7 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
                 }
             }
         }
+        initAutoComplete()
     }
 
     fun setInputFieldStaticLabel(label: String) {
