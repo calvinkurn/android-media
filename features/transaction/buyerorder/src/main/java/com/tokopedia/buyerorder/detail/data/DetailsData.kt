@@ -1,15 +1,10 @@
-package com.tokopedia.buyerorder.detail.data;
+package com.tokopedia.buyerorder.detail.data
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
+import com.google.gson.annotations.Expose
 
-public class DetailsData {
+data class DetailsData(
     @SerializedName("orderDetails")
     @Expose
-
-    private OrderDetails orderDetails;
-
-    public OrderDetails  orderDetails() {
-        return orderDetails;
-    }
-}
+    val orderDetails: OrderDetails = OrderDetails()
+)
