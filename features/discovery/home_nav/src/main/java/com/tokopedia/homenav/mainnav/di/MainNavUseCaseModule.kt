@@ -140,6 +140,12 @@ class MainNavUseCaseModule {
 
     @MainNavScope
     @Provides
+    fun provideGetAffiliateUserUseCase(graphqlRepository: GraphqlRepository): GetAffiliateUserUseCase{
+        return GetAffiliateUserUseCase(graphqlRepository)
+    }
+
+    @MainNavScope
+    @Provides
     fun provideGetProfileDataUseCase(
             accountHeaderMapper: AccountHeaderMapper,
             userInfoUseCase: GetUserInfoUseCase,
