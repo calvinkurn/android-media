@@ -11,6 +11,7 @@ import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.ActivityTestRule
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
@@ -32,7 +33,7 @@ class OrderSummaryPageActivityTrackingTest {
     }
 
     @get:Rule
-    var activityRule = IntentsTestRule(OrderSummaryPageActivity::class.java, false, false)
+    var activityRule = ActivityTestRule(OrderSummaryPageActivity::class.java, false, false)
 
     @get:Rule
     val freshIdlingResourceTestRule = FreshIdlingResourceTestRule()
@@ -65,6 +66,7 @@ class OrderSummaryPageActivityTrackingTest {
 
     @Test
     fun performOrderSummaryPageTrackingActions() {
+        Intents.init()
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_MANY_PROFILE_REVAMP_RESPONSE_PATH
         activityRule.launchActivity(null)
 
@@ -109,6 +111,7 @@ class OrderSummaryPageActivityTrackingTest {
         Intents.release()
         activityRule.launchActivity(null)
 
+        Intents.init()
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
@@ -128,6 +131,7 @@ class OrderSummaryPageActivityTrackingTest {
         }
 
         assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
+        Intents.release()
     }
 
     private fun performOrderSummaryPageBackAction() {
