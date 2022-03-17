@@ -37,11 +37,13 @@ import com.tokopedia.product.detail.view.viewholder.ProductDiscussionQuestionVie
 import com.tokopedia.test.application.espresso_component.CommonActions.clickChildViewWithId
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.variant_common.view.holder.VariantChipViewHolder
 import com.tokopedia.variant_common.view.holder.VariantContainerViewHolder
 import com.tokopedia.variant_common.view.holder.VariantImageViewHolder
 import org.hamcrest.core.AllOf.allOf
 import org.junit.After
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -109,6 +111,7 @@ class ProductDetailActivityTest {
             fakeLogin()
 
         } assertTest {
+            assertIsLoggedIn(true)
             waitForTrackerSent()
             performClose(activityRule)
 
@@ -124,6 +127,7 @@ class ProductDetailActivityTest {
             clickVariantTest()
             clickBuyNow()
         } assertTest {
+            assertIsLoggedIn(true)
             waitForTrackerSent()
             performClose(activityRule)
             validate(gtmLogDBSource, targetContext, BUTTON_BUY_LOGIN_PATH)
@@ -138,6 +142,7 @@ class ProductDetailActivityTest {
             clickVariantTest()
             clickAddToCart()
         } assertTest {
+            assertIsLoggedIn(true)
             if (addToCartBottomSheetIsVisible() == true) {
                 performClose(activityRule)
                 waitForTrackerSent()
@@ -153,10 +158,11 @@ class ProductDetailActivityTest {
     fun validateClickBuyIsNonLogin() {
         actionTest {
             clearLogin()
-            Thread.sleep(1000)
+            Thread.sleep(500L)
             clickVariantTest()
             clickBuyNow()
         } assertTest {
+            assertIsLoggedIn(false)
             performClose(activityRule)
             waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, BUTTON_BUY_NON_LOGIN_PATH)
@@ -168,10 +174,11 @@ class ProductDetailActivityTest {
     fun validateClickAddToCartIsNonLogin() {
         actionTest {
             clearLogin()
-            Thread.sleep(1000)
+            Thread.sleep(500L)
             clickVariantTest()
             clickAddToCart()
         } assertTest {
+            assertIsLoggedIn(false)
             performClose(activityRule)
             waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, ADD_TO_CART_NON_LOGIN_PATH)
@@ -197,6 +204,7 @@ class ProductDetailActivityTest {
             fakeLogin()
             clickTabDiscussion()
         } assertTest {
+            assertIsLoggedIn(true)
             performClose(activityRule)
             waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, DISCUSSION_PRODUCT_TAB_PATH)
@@ -210,6 +218,7 @@ class ProductDetailActivityTest {
             fakeLogin()
             clickSeeAllDiscussion()
         } assertTest {
+            assertIsLoggedIn(true)
             performClose(activityRule)
             waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, SEE_ALL_ON_LATEST_DISCUSSION_PATH)
@@ -223,6 +232,7 @@ class ProductDetailActivityTest {
             fakeLogin()
             clickThreadDetailDiscussion()
         } assertTest {
+            assertIsLoggedIn(true)
             performClose(activityRule)
             waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, THREAD_DETAIL_ON_DISCUSSION_PATH)
@@ -280,7 +290,7 @@ class ProductDetailActivityTest {
     }
 
     private fun waitForTrackerSent() {
-        Thread.sleep(4000L)
+        Thread.sleep(500L)
     }
 
     private fun fakeLogin() {
@@ -295,8 +305,13 @@ class ProductDetailActivityTest {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
-    private fun assertThanos(trackerId:String) {
+    private fun assertThanos(trackerId: String) {
         assertThat(cassavaTestRule.validate(trackerId), hasAllSuccess())
+    }
+
+    private fun assertIsLoggedIn(actualIsLoggedIn: Boolean) {
+        val userSession = UserSession(targetContext)
+        Assert.assertEquals(userSession.isLoggedIn, actualIsLoggedIn)
     }
 
     companion object {
