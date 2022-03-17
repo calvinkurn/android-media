@@ -17,7 +17,6 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
             const val SHOP_DETAIL = "shop detail"
             const val CREATIVE_NAME_FORMAT = "%s - %s"
             const val ITEM_CATEGORY_PRODUCT_DETAIL_FORMAT = "%s / %s / %s"
-            const val DIMENSION_38_FORMAT = "%s_%s_%s_%s_%s_%s"
             const val CLICK_VIEW_ALL = "click view all"
             const val ITEM_ID_FORMAT = "%s_%s"
             const val MERCHANT_VOUCHER_MULTIPLE = "merchant_voucher_multiple"
@@ -90,14 +89,6 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
         )
 
         val item = Bundle()
-        item.putString(Items.DIMENSION_38, CustomAction.DIMENSION_38_FORMAT.format(
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-        ))
         item.putString(Items.INDEX, (horizontalPosition + 1).toString())
         item.putString(Items.ITEM_BRAND, CustomAction.DEFAULT_VALUE)
         val itemCategory = CustomAction.ITEM_CATEGORY_PRODUCT_DETAIL_FORMAT.format(
