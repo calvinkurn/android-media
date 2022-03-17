@@ -735,6 +735,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
             action = VoucherCreationAnalyticConstant.EventAction.Click.FAILED_POP_UP_TRY_AGAIN,
             userId = userSession.userId
         )
+
         createCouponErrorNotice.dismiss()
         createCoupon()
     }
