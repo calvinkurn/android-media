@@ -12,11 +12,11 @@ data class ActionButton(
 
     @SerializedName("label")
     @Expose
-    var label: String = "",
+    val label: String = "",
 
     @SerializedName("uri")
     @Expose
-    var uri:String = "",
+    val uri:String = "",
 
     @SerializedName("control")
     @Expose
@@ -24,7 +24,7 @@ data class ActionButton(
 
     @SerializedName("name")
     @Expose
-    var name: String = "",
+    val name: String = "",
 
     @SerializedName("buttonType")
     @Expose

@@ -7,15 +7,15 @@ import java.io.Serializable
 data class Items(
     @SerializedName("categoryID")
     @Expose
-    var categoryID: Int = 0,
+    val categoryID: Int = 0,
 
     @SerializedName("title")
     @Expose
-    var title: String = "",
+    val title: String = "",
 
     @SerializedName("category")
     @Expose
-    var category: String = "",
+    val category: String = "",
 
     @SerializedName("tapActions")
     @Expose
@@ -23,15 +23,15 @@ data class Items(
 
     @SerializedName("price")
     @Expose
-    var price: String = "",
+    val price: String = "",
 
     @SerializedName("imageUrl")
     @Expose
-    var imageUrl: String = "",
+    val imageUrl: String = "",
 
     @SerializedName("quantity")
     @Expose
-    var quantity: Int = 0,
+    val quantity: Int = 0,
 
     @SerializedName("actionButtons")
     @Expose
@@ -39,19 +39,19 @@ data class Items(
 
     @SerializedName("metaData")
     @Expose
-    var metaData: String = "",
+    val metaData: String = "",
 
     @SerializedName("totalPrice")
     @Expose
-    var totalPrice: String = "",
+    val totalPrice: String = "",
 
     @SerializedName("trackingNumber")
     @Expose
-    var trackingNumber: String = "",
+    val trackingNumber: String = "",
 
     @SerializedName("invoiceID")
     @Expose
-    var invoiceId: String = "",
+    val invoiceId: String = "",
 
     var isTapActionsLoaded: Boolean = false,
 
