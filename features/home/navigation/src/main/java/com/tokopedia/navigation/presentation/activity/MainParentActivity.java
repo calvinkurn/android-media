@@ -315,7 +315,6 @@ public class MainParentActivity extends BaseActivity implements
         moduleNameList.add(DeeplinkDFMapper.DF_ENTERTAINMENT);
         moduleNameList.add(DeeplinkDFMapper.DF_TOKOPEDIA_NOW);
         moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_REVIEW);
-        moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_PRODUCT_SERVICE_WIDGET);
         if (BuildConfig.VERSION_NAME.endsWith(SUFFIX_ALPHA) && remoteConfig.get().getBoolean(RemoteConfigKey.ENABLE_APLHA_OBSERVER, true)) {
             moduleNameList.add(DeeplinkDFMapper.DF_ALPHA_TESTING);
         }

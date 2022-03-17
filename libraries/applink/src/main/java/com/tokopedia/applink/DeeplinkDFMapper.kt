@@ -192,7 +192,6 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_CONTENT_AFFILIATE = "df_content_affiliate"
     const val DF_MERCHANT_SELLER = "df_merchant_seller"
     const val DF_MERCHANT_REVIEW = "df_merchant_review"
-    const val DF_MERCHANT_PRODUCT_SERVICE_WIDGET = "df_merchant_product_service_widget"
     const val DF_OPERATIONAL_CONTACT_US = "df_operational_contact_us"
     const val DF_SALAM_UMRAH = "df_salam_umrah"
     const val DF_TRAVEL = "df_travel"
@@ -316,8 +315,8 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Merchant
             add(DFP({ it.startsWith(OPEN_SHOP) }, DF_BASE, R.string.title_open_shop))
-            add(DFP({ it.startsWithPattern(MERCHANT_PRODUCT_BUNDLE) }, DF_MERCHANT_PRODUCT_SERVICE_WIDGET, R.string.title_bundling_selection_page ))
-            add(DFP({ it.startsWithPattern(MERCHANT_GIFTING) }, DF_MERCHANT_PRODUCT_SERVICE_WIDGET, R.string.title_gifting_bottomsheet ))
+            add(DFP({ it.startsWithPattern(MERCHANT_PRODUCT_BUNDLE) }, DF_MERCHANT_REVIEW, R.string.title_bundling_selection_page ))
+            add(DFP({ it.startsWithPattern(MERCHANT_GIFTING) }, DF_MERCHANT_REVIEW, R.string.title_gifting_bottomsheet ))
 
             add(DFP({ it.startsWith(FAVORITE) }, DF_MERCHANT_LOGIN, R.string.favorite_shop, { DFWebviewFallbackUrl.FAVORITE_SHOP }))
             add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DF_MERCHANT_LOGIN, R.string.applink_report_title, ::getDefaultFallbackUrl))
