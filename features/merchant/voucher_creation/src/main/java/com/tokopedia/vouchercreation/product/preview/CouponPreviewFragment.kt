@@ -263,6 +263,8 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
                     displayToasterIfDuplicateMode()
                     showContent()
+
+                    viewModel.validateCoupon(pageMode, couponInformation, couponSettings, couponProducts)
                 }
                 is Fail -> {
                     hideContent()
@@ -389,7 +391,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         couponInformation?.let { coupon -> refreshCouponInformationSection(coupon) }
         couponSettings?.let { coupon -> refreshCouponSettingsSection(coupon) }
         refreshProductsSection(selectedProductCount)
-        viewModel.validateCoupon(pageMode, couponSettings, couponInformation, couponProducts)
+        viewModel.validateCoupon(pageMode, couponInformation, couponSettings, couponProducts)
         hideLoading()
         showContent()
     }
@@ -701,23 +703,28 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         binding.btnCreateCoupon.loadingText = getString(R.string.mvc_please_wait)
 
         val isCreateMode = viewModel.isCreateMode(pageMode)
+        val parentProductIds = viewModel.getParentProductIds(selectedProducts, selectedProductIds)
+
         viewModel.createCoupon(
             isCreateMode,
             couponInformation ?: return,
             couponSettings ?: return,
-            couponProducts
+            couponProducts,
+            parentProductIds
         )
     }
 
     private fun updateCoupon(couponId : Long) {
         binding.btnCreateCoupon.isLoading = true
         binding.btnCreateCoupon.loadingText = getString(R.string.mvc_please_wait)
+        val parentProductIds = viewModel.getParentProductIds(selectedProducts, selectedProductIds)
 
         viewModel.updateCoupon(
             couponId,
             couponInformation ?: return,
             couponSettings ?: return,
-            couponProducts
+            couponProducts,
+            parentProductIds
         )
     }
 
@@ -728,6 +735,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
             action = VoucherCreationAnalyticConstant.EventAction.Click.FAILED_POP_UP_TRY_AGAIN,
             userId = userSession.userId
         )
+
         createCouponErrorNotice.dismiss()
         createCoupon()
     }
@@ -753,14 +761,14 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     }
 
     private fun displayCouponPreviewBottomSheet() {
-        val imageUrls = viewModel.findMostSoldProductImageUrls(couponProducts)
         val isCreateMode = viewModel.isCreateMode(pageMode)
+        val parentProductIds = viewModel.getParentProductIds(selectedProducts, selectedProductIds)
+
         val bottomSheet = CouponImagePreviewBottomSheet.newInstance(
             isCreateMode,
             couponInformation ?: return,
             couponSettings ?: return,
-            couponProducts.size,
-            imageUrls
+            parentProductIds
         )
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
