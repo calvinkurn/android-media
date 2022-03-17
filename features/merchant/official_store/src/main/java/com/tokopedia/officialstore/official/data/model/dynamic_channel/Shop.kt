@@ -13,9 +13,6 @@ data class Shop(
     @SerializedName("shopID")
     val shopId: String = "",
     @Expose
-    @SerializedName("city")
-    val city: String = "",
-    @Expose
     @SerializedName("name")
     val name: String = "",
     @Expose
@@ -25,13 +22,11 @@ data class Shop(
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
-        parcel.readString() ?: "",
         parcel.readString() ?: ""
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(shopId)
-        parcel.writeString(city)
         parcel.writeString(name)
         parcel.writeString(applink)
     }

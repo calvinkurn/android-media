@@ -97,13 +97,11 @@ object OfficialStoreDynamicChannelComponentMapper {
                             },
                             shop =  ChannelShop(
                                     id = it.shop?.shopId?: "",
-                                    shopLocation = it.shop?.city?: "",
                                     shopName = it.shop?.name?: "",
                                     shopApplink = it.shop?.applink?: ""
                             ),
                             badges = it.badges?.map { badge ->
                                 ChannelGridBadges(
-                                        title = badge.title,
                                         imageUrl = badge.imageUrl
                                 )
                             } ?: listOf(),

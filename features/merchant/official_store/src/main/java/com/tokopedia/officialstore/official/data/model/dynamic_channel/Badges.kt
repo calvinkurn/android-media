@@ -10,19 +10,14 @@ import com.google.gson.annotations.SerializedName
  */
 data class Badges(
             @Expose
-            @SerializedName("title")
-            val title: String = "",
-            @Expose
             @SerializedName("image_url")
             val imageUrl: String = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readString() ?: "",
         parcel.readString() ?: ""
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(title)
         parcel.writeString(imageUrl)
     }
 

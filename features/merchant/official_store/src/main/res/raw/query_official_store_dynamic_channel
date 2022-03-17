@@ -73,7 +73,6 @@ query dynamicHomeChannel($type: String, $location: String) {
                     value
                 }
                 badges{
-                    title
                     image_url
                 }
             }
