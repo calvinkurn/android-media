@@ -42,12 +42,6 @@ fun clickOnEachItemRecyclerViewMerchantVoucher(view: View, recyclerViewId: Int, 
                     clickOnViewChild(R.id.container_product)
                 )
             )
-            Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                    i,
-                    clickOnViewChild(R.id.container_image_product)
-                )
-            )
         } catch (e: PerformException) {
             e.printStackTrace()
         }
