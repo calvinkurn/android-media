@@ -39,7 +39,9 @@ data class Laku6DeviceModel(
     @SerializedName("tokopedia_test_type")
     var tokopediaTestType: String,
     @SerializedName("trace_id")
-    var traceId: String
+    var traceId: String,
+    @SerializedName("unique_code")
+    var uniqueCode: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
@@ -57,6 +59,7 @@ data class Laku6DeviceModel(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readByte() != 0.toByte(),
+        parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: ""
     ) {
@@ -80,6 +83,7 @@ data class Laku6DeviceModel(
         parcel.writeByte(if (skipCheckingPrice) 1 else 0)
         parcel.writeString(tokopediaTestType)
         parcel.writeString(traceId)
+        parcel.writeString(uniqueCode)
     }
 
     override fun describeContents(): Int {

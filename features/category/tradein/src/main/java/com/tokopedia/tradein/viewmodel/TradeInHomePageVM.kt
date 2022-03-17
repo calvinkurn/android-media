@@ -24,16 +24,20 @@ import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TradeInHomePageVM @Inject constructor(
     private val userSession: UserSessionInterface,
     private val insertLogisticPreferenceUseCase: InsertLogisticPreferenceUseCase,
-    private val addToCartOcsUseCase: AddToCartOcsUseCase
+    private val addToCartOcsUseCase: AddToCartOcsUseCase,
 ) : BaseTradeInViewModel(), CoroutineScope {
 
     var data: TradeInPDPData? = null
+    private val dispatcher : CoroutineDispatcher = Dispatchers.IO
 
     val askUserLogin = MutableLiveData<Int>()
     val laku6DeviceModel = MutableLiveData<Laku6DeviceModel>()
@@ -79,6 +83,7 @@ class TradeInHomePageVM @Inject constructor(
     fun getDeviceModel() {
         laku6DeviceModel.value =
             Gson().fromJson(laku6TradeIn?.deviceModel.toString(), Laku6DeviceModel::class.java)
+        tradeInUniqueCode = laku6DeviceModel.value?.uniqueCode ?: ""
     }
 
     fun getDiagnosticData(intent: Intent): DeviceDiagnostics {
@@ -179,7 +184,9 @@ class TradeInHomePageVM @Inject constructor(
         launchCatchError(block = {
             val requestParams = RequestParams.create()
             requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartOcsRequestParams)
-            val result = addToCartOcsUseCase.createObservable(requestParams).toBlocking().single()
+            val result = withContext(dispatcher) {
+                addToCartOcsUseCase.createObservable(requestParams).toBlocking().single()
+            }
             if (result.isDataError()) {
                 val errorMessage = result.errorMessage.firstOrNull() ?: ""
                 if (errorMessage.isNotBlank()) {
