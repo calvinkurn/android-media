@@ -38,6 +38,8 @@ import com.tokopedia.topads.common.view.sheet.TopAdsEditKeywordBidSheet
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_BROWSE
 import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_SEARCH
+import com.tokopedia.topads.common.view.TopadsAutoBidSwitchPartialLayout
+import com.tokopedia.topads.common.view.sheet.BidInfoBottomSheet
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_ACTIVATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DEACTIVATE
@@ -99,6 +101,8 @@ private const val CLICK_TAB_NEG_KATA_KUNCI = "click - tab kata kunci negatif"
 private const val CLICK_GROUP_EDIT_ICON = "click - edit form"
 class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<TopAdsDashboardComponent>, CompoundButton.OnCheckedChangeListener, ChangePlacementFilter {
 
+    private var switchAutoBidLayout : TopadsAutoBidSwitchPartialLayout ?= null
+
     private var dataStatistic: DataStatistic? = null
     private var selectedStatisticType: Int = 0
     private var groupId: Int? = 0
@@ -153,8 +157,6 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
 
     private var priceDaily = 0.0F
     private var groupTotal = 0
-    private val ACTIVE = "1"
-    private val TIDAK_TAMPIL = "2"
     private var mCurrentState = TopAdsProductIklanFragment.State.IDLE
 
     @Inject
@@ -204,6 +206,10 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
+
+        initView()
+        setClick()
+
         selectedStatisticType = TopAdsStatisticsType.PRODUCT_ADS
         getBundleArguments()
         loadData()
@@ -289,6 +295,22 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
                 }
             }
         })
+    }
+
+    private fun setClick() {
+        switchAutoBidLayout?.let {
+            it.onCheckBoxStateChanged = { isAutomatic ->
+
+            }
+
+            it.onInfoClicked = {
+                BidInfoBottomSheet().show(supportFragmentManager, "")
+            }
+        }
+    }
+
+    private fun initView() {
+        switchAutoBidLayout = findViewById(R.id.switchAutoBidLayout)
     }
 
     private fun saveBidData(bid: String, bidType: String) {
