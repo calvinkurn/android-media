@@ -110,9 +110,9 @@ class OrderSummaryPageActivityTrackingTest {
         promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_CASHBACK_FULL_APPLIED_RESPONSE
         Intents.release()
         activityRule.activity.finishAndRemoveTask()
-        activityRule.launchActivity(null)
 
         Intents.init()
+        activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
