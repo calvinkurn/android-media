@@ -52,4 +52,8 @@ class ChooseAddressWidgetCallback(
     override fun onTokonowDataRefreshed() {
         homeCategoryListener.onChooseAddressUpdated()
     }
+
+    override fun isNeedToRefreshTokonowData(): Boolean {
+        return true
+    }
 }

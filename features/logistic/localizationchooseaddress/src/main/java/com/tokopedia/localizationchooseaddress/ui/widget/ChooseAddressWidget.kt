@@ -184,7 +184,7 @@ class ChooseAddressWidget : ConstraintLayout,
     private fun initChooseAddressFlow() {
         val localData = ChooseAddressUtils.getLocalizingAddressData(context)
         updateWidget()
-        if (getLocalizingAddressHostSourceBottomSheet().equals("home", ignoreCase = true) && viewModel.isFirstLoad) {
+        if (chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && viewModel.isFirstLoad) {
             viewModel.getTokonowData(localData)
         }
         if (localData.address_id.isEmpty()) {
@@ -367,6 +367,14 @@ class ChooseAddressWidget : ConstraintLayout,
         fun isSupportWarehouseLoc(): Boolean {
             return true
         }
+
+        /**
+         * To differentiate feature that need to refresh tokonow data or not
+         */
+        fun isNeedToRefreshTokonowData(): Boolean {
+            return false
+        }
+
         /**
          * To trigger UI refresh after getting new tokonow warehouse data
          */
