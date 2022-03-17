@@ -37,6 +37,7 @@
         android:layout_height="36dp"
         android:layout_marginTop="24dp"
         android:adjustViewBounds="true"
+        app:unify_image_corner_radius="18"
         app:layout_constraintHorizontal_bias="0.2"
         app:layout_constraintEnd_toEndOf="@id/tvAdminConfirmationTitle"
         app:layout_constraintStart_toStartOf="@id/tvAdminConfirmationTitle"
@@ -137,7 +138,6 @@
         app:layout_constraintTop_toBottomOf="@id/barrierAdminInvitationLabelSection"
         app:layout_constraintStart_toEndOf="@id/guidelineButton"
         app:layout_constraintEnd_toEndOf="parent"/>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

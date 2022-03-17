@@ -1,4 +1,4 @@
-package com.tokopedia.shopadmin.acceptinvitation.presentation
+package com.tokopedia.shopadmin.invitationaccepted.presentation.model
 
 data class FeatureAccessUiModel(
     val iconUrl: String = "",
