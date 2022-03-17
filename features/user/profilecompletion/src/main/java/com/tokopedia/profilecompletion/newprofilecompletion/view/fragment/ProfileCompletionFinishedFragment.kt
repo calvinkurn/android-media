@@ -5,12 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.image.ImageUtils
 
 /**
  * Created by stevenfredian on 7/3/17.
@@ -29,6 +31,8 @@ class ProfileCompletionFinishedFragment : BaseDaggerFragment() {
 
     private fun initView(view: View) {
         txtDone = view.findViewById(R.id.txt_done)
+        val img = view.findViewById<ImageView>(R.id.rg_gender)
+        ImageUtils.loadImageWithoutPlaceholderAndError(img, MAIN_IMG)
     }
 
     private fun setViewListener() {
@@ -53,6 +57,7 @@ class ProfileCompletionFinishedFragment : BaseDaggerFragment() {
 
     companion object {
         const val TAG = "finished"
+        const val MAIN_IMG = "https://images.tokopedia.net/img/android/user/profilecompletion/profilecompletion_akun_terverifikasi.png"
 
         fun createInstance(): ProfileCompletionFinishedFragment {
             return ProfileCompletionFinishedFragment()
