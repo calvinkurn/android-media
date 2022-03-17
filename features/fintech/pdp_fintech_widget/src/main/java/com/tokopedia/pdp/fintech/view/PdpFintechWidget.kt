@@ -141,8 +141,8 @@ class PdpFintechWidget @JvmOverloads constructor(
                 "?productID=${this.productID}" +
                 "&tenure=${fintechRedirectionWidgetDataClass.tenure}" +
                 "&gatewayCode=${fintechRedirectionWidgetDataClass.gatewayCode}" +
-                "&gatewayID=${fintechRedirectionWidgetDataClass.gatewayId}"
-        "&productURL=${setProductUrl()}"
+                "&gatewayID=${fintechRedirectionWidgetDataClass.gatewayId}" +
+                "&productURL=${setProductUrl()}"
         instanceProductUpdateListner?.fintechChipClicked(fintechRedirectionWidgetDataClass,rediretionLink)
     }
 
