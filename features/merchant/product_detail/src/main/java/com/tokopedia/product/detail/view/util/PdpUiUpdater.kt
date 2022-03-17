@@ -6,6 +6,10 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.pdp.fintech.view.FintechPriceUrlDataModel
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.product.detail.R
@@ -18,34 +22,7 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCat
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
-import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
-import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
-import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
-import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
-import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
-import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
-import com.tokopedia.product.detail.data.model.datamodel.UpcomingNplDataModel
-import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
@@ -750,7 +727,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateRecomTokonowQuantityData(miniCart: MutableMap<String, MiniCartItem>?) {
+    fun updateRecomTokonowQuantityData(miniCart: MutableMap<MiniCartItemKey, MiniCartItem2>?) {
         mapOfData.filterValues { it is ProductRecommendationDataModel }.keys.forEach { key ->
             val productRecom = (mapOfData[key] as ProductRecommendationDataModel).copy()
             productRecom.recomWidgetData?.let { recomData ->
@@ -761,7 +738,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun updateRecomWidgetQtyDataFromMiniCart(recomWidget: RecommendationWidget, miniCart: MutableMap<String, MiniCartItem>?, key: String) {
+    private fun updateRecomWidgetQtyDataFromMiniCart(recomWidget: RecommendationWidget, miniCart: MutableMap<MiniCartItemKey, MiniCartItem2>?, key: String) {
         val dataList = recomWidget.copyRecomItemList()
         dataList.forEach { recomItem ->
             //update data based on tokonow cart
@@ -770,10 +747,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 miniCart?.let { cartData ->
                     recomItem.updateItemCurrentStock(when {
                         recomItem.isProductHasParentID() -> {
-                            getTotalQuantityVariantBasedOnParentID(recomItem, miniCart)
+                            cartData.getMiniCartItemParentProduct(recomItem.parentID.toString())?.totalQuantity ?: 0
+//                            getTotalQuantityVariantBasedOnParentID(recomItem, miniCart)
                         }
-                        cartData.containsKey(recomItem.productId.toString()) -> {
-                            cartData[recomItem.productId.toString()]?.quantity ?: 0
+                        cartData.containsKey(MiniCartItemKey(recomItem.productId.toString())) -> {
+                            cartData.getMiniCartItemProduct(recomItem.productId.toString())?.quantity ?: 0
                         }
                         else -> 0
                     })

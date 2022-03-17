@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItem2
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
@@ -142,7 +143,7 @@ class PartialButtonActionView private constructor(val view: View,
         } else {
             showViewTokoNowNonVar()
             renderTokoNowNonVar(tokonowButtonData?.selectedMiniCart
-                    ?: MiniCartItem(), tokonowButtonData?.minQuantity ?: DEFAULT_MIN_QTY,
+                    ?: MiniCartItem2.MiniCartItemProduct(), tokonowButtonData?.minQuantity ?: DEFAULT_MIN_QTY,
                     tokonowButtonData?.maxQuantity ?: DEFAULT_ATC_MAX_ORDER)
         }
 
@@ -227,7 +228,7 @@ class PartialButtonActionView private constructor(val view: View,
         btnAddToCart.generateTheme(availableButton.getOrNull(1)?.color ?: "")
     }
 
-    private fun renderTokoNowNonVar(selectedMiniCart: MiniCartItem, minQuantity: Int, maxQuantity: Int) = with(view) {
+    private fun renderTokoNowNonVar(selectedMiniCart: MiniCartItem2.MiniCartItemProduct, minQuantity: Int, maxQuantity: Int) = with(view) {
         localQuantity = selectedMiniCart.quantity
         qtyButtonPdp?.run {
             minValue = minQuantity
@@ -251,7 +252,7 @@ class PartialButtonActionView private constructor(val view: View,
         }
     }
 
-    private fun initTextWatcherDebouncer(minQuantity: Int, maxQuantity: Int, selectedMiniCart: MiniCartItem) {
+    private fun initTextWatcherDebouncer(minQuantity: Int, maxQuantity: Int, selectedMiniCart: MiniCartItem2.MiniCartItemProduct) {
         quantityDebounceSubscription = Observable.create(
                 Observable.OnSubscribe<Int> { subscriber ->
                     textWatcher = object : TextWatcher {
@@ -295,7 +296,7 @@ class PartialButtonActionView private constructor(val view: View,
         buttonListener.getRxCompositeSubcription().add(quantityDebounceSubscription)
     }
 
-    private fun onNextValueQuantity(quantity: Int, minQuantity: Int, maxQuantity: Int, selectedMiniCart: MiniCartItem) {
+    private fun onNextValueQuantity(quantity: Int, minQuantity: Int, maxQuantity: Int, selectedMiniCart: MiniCartItem2.MiniCartItemProduct) {
         qtyButtonPdp?.run {
             if (quantity < minQuantity) {
                 setValue(minQuantity)
@@ -467,5 +468,5 @@ data class TokoNowButtonData(
         //non var
         val minQuantity: Int = DEFAULT_MIN_QTY,
         val maxQuantity: Int = DEFAULT_ATC_MAX_ORDER,
-        val selectedMiniCart: MiniCartItem? = null
+        val selectedMiniCart: MiniCartItem2.MiniCartItemProduct? = null
 )

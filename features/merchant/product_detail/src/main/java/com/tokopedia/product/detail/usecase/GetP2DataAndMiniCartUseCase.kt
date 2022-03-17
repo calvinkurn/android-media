@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.util.OnErrorLog
@@ -59,18 +59,14 @@ class GetP2DataAndMiniCartUseCase @Inject constructor(private val dispatcher: Co
 
         val p2Data = result.firstOrNull() as? ProductInfoP2UiData ?: ProductInfoP2UiData()
 
-        val miniCartData = (result.getOrNull(1) as? MiniCartSimplifiedData)?.miniCartItems?.associateBy({
-            it.productId
-        }) {
-            it
-        }
+        val miniCartData = (result.getOrNull(1) as? MiniCartSimplifiedData2)?.miniCartItems
 
         p2Data.miniCart = miniCartData?.toMutableMap()
         return p2Data
     }
 
 
-    private fun executeMiniCart(): Deferred<MiniCartSimplifiedData?> {
+    private fun executeMiniCart(): Deferred<MiniCartSimplifiedData2?> {
         return asyncCatchError(dispatcher.io, block = {
             getMiniCartListSimplifiedUseCase.setParams(listOf(shopId))
             getMiniCartListSimplifiedUseCase.executeOnBackground()
