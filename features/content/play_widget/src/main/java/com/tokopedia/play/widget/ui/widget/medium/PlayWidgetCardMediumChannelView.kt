@@ -13,6 +13,7 @@ import android.widget.TextView
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -139,6 +140,14 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
         ivAction.setOnClickListener {
             mListener?.onMenuActionButtonClicked(this, data)
         }
+
+        ivPromoLabel.setOnClickListener {
+            mListener?.onLabelPromoClicked(this, data)
+        }
+
+        ivPromoLabel.addOnImpressionListener(data.impressHolder){
+            mListener?.onLabelPromoImpressed(this, data)
+        }
     }
 
     private fun setActiveModel(model: PlayWidgetChannelUiModel) {
@@ -264,5 +273,14 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
             view: View,
             item: PlayWidgetChannelUiModel
         ) {}
+        fun onLabelPromoClicked(
+            view: View,
+            item: PlayWidgetChannelUiModel
+        )
+
+        fun onLabelPromoImpressed(
+            view: View,
+            item: PlayWidgetChannelUiModel
+        )
     }
 }

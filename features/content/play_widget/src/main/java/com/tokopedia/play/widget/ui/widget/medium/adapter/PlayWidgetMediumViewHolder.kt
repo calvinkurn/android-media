@@ -120,6 +120,14 @@ class PlayWidgetMediumViewHolder private constructor() {
             override fun onMenuActionButtonClicked(view: View, item: PlayWidgetChannelUiModel) {
                 listener.onMenuActionButtonClicked(view, item, adapterPosition)
             }
+
+            override fun onLabelPromoClicked(view: View, item: PlayWidgetChannelUiModel) {
+                listener.onLabelPromoChannelClicked(item, adapterPosition)
+            }
+
+            override fun onLabelPromoImpressed(view: View, item: PlayWidgetChannelUiModel) {
+                listener.onLabelPromoChannelImpressed(item, adapterPosition)
+            }
         }
 
         init {
@@ -165,6 +173,16 @@ class PlayWidgetMediumViewHolder private constructor() {
 
             fun onMenuActionButtonClicked(
                 view: View,
+                item: PlayWidgetChannelUiModel,
+                position: Int
+            )
+
+            fun onLabelPromoChannelClicked(
+                item: PlayWidgetChannelUiModel,
+                position: Int
+            )
+
+            fun onLabelPromoChannelImpressed(
                 item: PlayWidgetChannelUiModel,
                 position: Int
             )

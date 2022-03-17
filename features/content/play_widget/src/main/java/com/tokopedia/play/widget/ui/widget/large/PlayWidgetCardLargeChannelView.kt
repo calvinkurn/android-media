@@ -10,10 +10,7 @@ import android.widget.TextView
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.widget.R
 import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.play.widget.player.PlayVideoPlayer
@@ -129,6 +126,14 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
         setOnClickListener {
             mListener?.onChannelClicked(it, model)
         }
+
+        ivPromoLabel.setOnClickListener {
+            mListener?.onLabelPromoClicked(this, model)
+        }
+
+        ivPromoLabel.addOnImpressionListener(model.impressHolder){
+            mListener?.onLabelPromoImpressed(this, model)
+        }
     }
 
     private fun setActiveModel(model: PlayWidgetChannelUiModel) {
@@ -218,6 +223,15 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
         fun onToggleReminderChannelClicked(
             item: PlayWidgetChannelUiModel,
             reminderType: PlayWidgetReminderType
+        )
+        fun onLabelPromoClicked(
+            view: View,
+            item: PlayWidgetChannelUiModel
+        )
+
+        fun onLabelPromoImpressed(
+            view: View,
+            item: PlayWidgetChannelUiModel
         )
     }
 }
