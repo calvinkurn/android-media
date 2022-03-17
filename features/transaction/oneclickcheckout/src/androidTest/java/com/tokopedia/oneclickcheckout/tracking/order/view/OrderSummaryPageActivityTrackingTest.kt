@@ -34,7 +34,7 @@ class OrderSummaryPageActivityTrackingTest {
     }
 
     @get:Rule
-    var activityRule = ActivityTestRule(OrderSummaryPageActivity::class.java, false, false)
+    var activityRule = IntentsTestRule(OrderSummaryPageActivity::class.java, false, false)
 
     @get:Rule
     val freshIdlingResourceTestRule = FreshIdlingResourceTestRule()
@@ -58,12 +58,10 @@ class OrderSummaryPageActivityTrackingTest {
         OneClickCheckoutInterceptor.setupGraphqlMockResponse(context)
         idlingResource = OccIdlingResource.getIdlingResource()
         IdlingRegistry.getInstance().register(idlingResource)
-        Intents.init()
     }
 
     @After
     fun cleanup() {
-        Intents.release()
         IdlingRegistry.getInstance().unregister(idlingResource)
     }
 
