@@ -4,5 +4,10 @@
 
     <application>
 
+        <activity
+            android:name="com.tokopedia.minicart.ExampleActivity"
+            android:label="Mini Cart Example"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify"/>
     </application>
 </manifest>
