@@ -37,6 +37,18 @@ data class MiniCartSimplifiedData2(
     }
 }
 
+fun Map<MiniCartItemKey, MiniCartItem2>.getMiniCartItemProduct(productId: String): MiniCartItem2.MiniCartItemProduct? {
+    return get(MiniCartItemKey(productId)) as? MiniCartItem2.MiniCartItemProduct
+}
+
+fun Map<MiniCartItemKey, MiniCartItem2>.getMiniCartItemBundle(bundleId: String): MiniCartItem2.MiniCartItemBundle? {
+    return get(MiniCartItemKey(bundleId, MiniCartItemType.BUNDLE)) as? MiniCartItem2.MiniCartItemBundle
+}
+
+fun Map<MiniCartItemKey, MiniCartItem2>.getMiniCartItemParentProduct(parentId: String): MiniCartItem2.MiniCartItemParentProduct? {
+    return get(MiniCartItemKey(parentId, MiniCartItemType.PARENT)) as? MiniCartItem2.MiniCartItemParentProduct
+}
+
 data class MiniCartWidgetData(
         var totalProductCount: Int = 0,
         var totalProductPrice: Long = 0,

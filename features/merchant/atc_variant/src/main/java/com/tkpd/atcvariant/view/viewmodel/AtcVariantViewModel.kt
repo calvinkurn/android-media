@@ -25,9 +25,10 @@ import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.AtcVariantMapper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
@@ -68,7 +69,7 @@ class AtcVariantViewModel @Inject constructor(
 
     //This livedata is only for access variant, cartRedirection, and warehouse locally in viewmodel
     private var aggregatorData: ProductVariantAggregatorUiData? = null
-    private var minicartData: MutableMap<String, MiniCartItem>? = null
+    private var minicartData: MutableMap<MiniCartItemKey, MiniCartItem2>? = null
     private var variantActivityResult: ProductVariantResult = ProductVariantResult()
     private var localQuantityData: MutableMap<String, Int> = mutableMapOf()
 
@@ -138,7 +139,7 @@ class AtcVariantViewModel @Inject constructor(
 
             val selectedVariantChild = getVariantData()?.getChildByOptionId(selectedVariantIds?.values?.toList()
                     ?: listOf())
-            val selectedMiniCart = minicartData?.get(selectedVariantChild?.productId ?: "")
+            val selectedMiniCart = minicartData?.get(MiniCartItemKey(selectedVariantChild?.productId ?: ""))
             val shouldShowDeleteButton = selectedMiniCart != null
             val cartData = AtcCommonMapper.mapToCartRedirectionData(selectedVariantChild, aggregatorData?.cardRedirection, isShopOwner, selectedMiniCart != null, aggregatorData?.alternateCopy)
 
@@ -236,7 +237,7 @@ class AtcVariantViewModel @Inject constructor(
             val selectedChild = getVariantData()?.autoSelectIfParent(aggregatorParams.productId)
 
             //Get cart redirection , and warehouse by selected product id to render button and toko cabang
-            val selectedMiniCart = minicartData?.get(selectedChild?.productId ?: "")
+            val selectedMiniCart = minicartData?.get(MiniCartItemKey(selectedChild?.productId ?: ""))
             val cartData = AtcCommonMapper.mapToCartRedirectionData(selectedChild, aggregatorData?.cardRedirection, isShopOwner, selectedMiniCart != null, aggregatorData?.alternateCopy)
             val selectedWarehouse = getSelectedWarehouse(selectedChild?.productId ?: "")
 
@@ -246,7 +247,7 @@ class AtcVariantViewModel @Inject constructor(
 
             assignLocalQuantityWithMiniCartQuantity(minicartData?.values?.toList())
             val selectedQuantity = getSelectedQuantity(selectedChild?.productId ?: "")
-            val shouldShowDeleteButton = minicartData?.get(selectedChild?.productId ?: "") != null
+            val shouldShowDeleteButton = minicartData?.get(MiniCartItemKey(selectedChild?.productId ?: "")) != null
 
             //Generate visitables
             val visitables = AtcCommonMapper.mapToVisitable(
@@ -313,10 +314,12 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
-    private fun assignLocalQuantityWithMiniCartQuantity(miniCart: List<MiniCartItem>?) {
+    private fun assignLocalQuantityWithMiniCartQuantity(miniCart: List<MiniCartItem2>?) {
         if (miniCart == null) return
         miniCart.forEach {
-            localQuantityData[it.productId] = it.quantity
+            if (it is MiniCartItem2.MiniCartItemProduct) {
+                localQuantityData[it.productId] = it.quantity
+            }
         }
     }
 
@@ -380,7 +383,7 @@ class AtcVariantViewModel @Inject constructor(
     }
 
     private fun updateMiniCartAndButtonAfterDelete(productId: String) {
-        minicartData?.remove(productId)
+        minicartData?.remove(MiniCartItemKey(productId))
 
         //we dont want to use alternate tokonow, use cart redir button instead
         val generateCartRedir = AtcCommonMapper.mapToCartRedirectionData(getVariantData()?.getChildByProductId(productId), aggregatorData?.cardRedirection, isShopOwner, false, aggregatorData?.alternateCopy)
@@ -389,17 +392,17 @@ class AtcVariantViewModel @Inject constructor(
 
     private fun updateMiniCartAndButtonData(productId: String, quantity: Int, isTokoNow: Boolean, cartId: String = "", notes: String = "") {
         if (!isTokoNow) return
-        val selectedMiniCartData = minicartData?.get(productId)
+        val selectedMiniCartData = minicartData?.get(MiniCartItemKey(productId))
 
         if (selectedMiniCartData == null) {
-            minicartData?.set(productId, MiniCartItem(
+            minicartData?.set(MiniCartItemKey(productId), MiniCartItem2.MiniCartItemProduct(
                     cartId = cartId,
                     productId = productId,
                     quantity = quantity,
                     notes = notes
             ))
         } else {
-            minicartData?.get(productId)?.quantity = quantity
+            minicartData?.getMiniCartItemProduct(productId)?.quantity = quantity
         }
 
         val generateCartRedir = AtcCommonMapper.mapToCartRedirectionData(getVariantData()?.getChildByProductId(productId), aggregatorData?.cardRedirection, isShopOwner, true, aggregatorData?.alternateCopy)
@@ -487,7 +490,7 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
-    private fun getUpdateCartUseCase(params: MiniCartItem, updatedQuantity: Int, isTokoNow: Boolean) {
+    private fun getUpdateCartUseCase(params: MiniCartItem2.MiniCartItemProduct, updatedQuantity: Int, isTokoNow: Boolean) {
         viewModelScope.launchCatchError(block = {
             val copyOfMiniCartItem = params.copy(quantity = updatedQuantity)
             val updateCartRequest = UpdateCartRequest(
@@ -585,7 +588,7 @@ class AtcVariantViewModel @Inject constructor(
         return aggregatorData?.nearestWarehouse?.get(productId)
     }
 
-    private fun getSelectedMiniCartItem(productId: String): MiniCartItem? {
-        return minicartData?.get(productId)
+    private fun getSelectedMiniCartItem(productId: String): MiniCartItem2.MiniCartItemProduct? {
+        return minicartData?.getMiniCartItemProduct(productId)
     }
 }
