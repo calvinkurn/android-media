@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.analytics
 
 import android.app.Activity
 import android.app.Instrumentation
-import android.content.Intent
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +15,10 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
@@ -84,6 +86,7 @@ class ProductDetailActivityTest {
         clearLogin()
         gtmLogDBSource.deleteAll().toBlocking().first()
 
+        fakeLogin()
         val intent = ProductDetailActivity.createIntent(targetContext, PRODUCT_ID)
         activityRule.launchActivity(intent)
 
@@ -149,6 +152,8 @@ class ProductDetailActivityTest {
     @Test
     fun validateClickBuyIsNonLogin() {
         actionTest {
+            clearLogin()
+            Thread.sleep(1000)
             clickVariantTest()
             clickBuyNow()
         } assertTest {
@@ -162,6 +167,8 @@ class ProductDetailActivityTest {
     @Test
     fun validateClickAddToCartIsNonLogin() {
         actionTest {
+            clearLogin()
+            Thread.sleep(1000)
             clickVariantTest()
             clickAddToCart()
         } assertTest {
@@ -213,7 +220,7 @@ class ProductDetailActivityTest {
     @Test
     fun validateClickThreadDetail() {
         actionTest {
-            InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
+            fakeLogin()
             clickThreadDetailDiscussion()
         } assertTest {
             performClose(activityRule)
@@ -248,13 +255,6 @@ class ProductDetailActivityTest {
         IdlingPolicies.setIdlingResourceTimeout(5, TimeUnit.MINUTES)
         IdlingRegistry.getInstance().register(idlingResource)
 
-    }
-
-    private fun getPositionViewHolderByName(name: String): Int {
-        val fragment = activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as DynamicProductDetailFragment
-        return fragment.productAdapter?.currentList?.indexOfFirst {
-            it.name() == name
-        } ?: 0
     }
 
     private fun finishTest() {
