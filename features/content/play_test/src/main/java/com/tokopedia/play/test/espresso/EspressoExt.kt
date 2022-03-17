@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.helper
+package com.tokopedia.play.test.espresso
 
 import android.view.View
 import androidx.test.espresso.Espresso
@@ -9,9 +9,9 @@ import androidx.test.espresso.matcher.ViewMatchers
 import org.hamcrest.Matcher
 
 /**
- * Created by kenny.hadisaputra on 02/03/22
+ * Created by kenny.hadisaputra on 17/03/22
  */
-internal fun waitFor(delay: Long): ViewAction {
+fun waitFor(delay: Long): ViewAction {
     return object : ViewAction {
         override fun getConstraints(): Matcher<View> = ViewMatchers.isRoot()
         override fun getDescription(): String = "wait for $delay milliseconds"
@@ -21,11 +21,11 @@ internal fun waitFor(delay: Long): ViewAction {
     }
 }
 
-internal fun delay(delayInMillis: Long = 500) {
+fun delay(delayInMillis: Long = 500) {
     Espresso.onView(ViewMatchers.isRoot()).perform(waitFor(delayInMillis))
 }
 
-internal fun clickOnViewChild(viewId: Int) = object : ViewAction {
+fun clickOnViewChild(viewId: Int) = object : ViewAction {
     override fun getConstraints() = null
 
     override fun getDescription() = "Click on a child view with specified id."

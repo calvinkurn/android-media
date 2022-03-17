@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.helper
+package com.tokopedia.play.test
 
 import android.os.Environment
 import androidx.test.platform.app.InstrumentationRegistry
@@ -7,7 +7,7 @@ import java.io.File
 import java.io.FileOutputStream
 
 /**
- * Created by kenny.hadisaputra on 23/02/22
+ * Created by kenny.hadisaputra on 17/03/22
  */
 class FileWriter {
 
