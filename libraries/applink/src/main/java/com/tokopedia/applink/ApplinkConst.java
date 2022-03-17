@@ -466,7 +466,7 @@ public interface ApplinkConst {
 
     String MONEYIN = "tokopedia://money_in/device_validation";
     String IMAGE_PICKER_V2 = "tokopedia://image-picker/v2";
-    String USER_PROFILE_LANDING = "tokopedia://people/";
+    String USER_PROFILE_LANDING = "tokopedia://people";
     String USER_PROFILE_FOLLOWERS = "tokopedia://people/followers";
 
     interface WebViewUrl {

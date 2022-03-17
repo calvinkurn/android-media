@@ -4,7 +4,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalFeed.INTERNAL_FEED_DETAILS
 
 object DeepLinkMapperUserProfile {
-    fun getRegisteredUserProfile(deepLink: String): String {
+    fun  getRegisteredUserProfile(deepLink: String): String {
         if (deepLink.startsWith(ApplinkConst.USER_PROFILE_LANDING)) {
             return deepLink.replace(ApplinkConst.USER_PROFILE_LANDING, INTERNAL_FEED_DETAILS)
         }
