@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:paddingStart="@dimen/video_tab_slot_margin_dp_12"
     android:paddingTop="@dimen/spacing_lvl3"
+    android:paddingEnd="@dimen/spacing_lvl4"
     android:paddingBottom="@dimen/spacing_lvl3"
     >
 

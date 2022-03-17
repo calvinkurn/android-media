@@ -6,7 +6,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     app:centerText="true"
-    app:chipSize="medium"
+    app:chipSize="small"
     tools:chipText="Sample"
     android:layout_marginStart="@dimen/spacing_lvl3"
     />

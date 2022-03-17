@@ -24,6 +24,7 @@
     <string name="path_normal_checkout" translatable="false">/normal-checkout</string>
     <string name="path_checkout_address_selection" translatable="false">/checkout-address-selection</string>
     <string name="path_one_click_checkout" translatable="false">/one-click-checkout</string>
+    <string name="path_add_on_gifting" translatable="false">/add-on-gifting</string>
 
     <string name="path_gold_merchant_statistic_dashboard" translatable="false">/gold-merchant-statistic-dashboard</string>
     <string name="path_gold_merchant_subscribe_dashboard" translatable="false">/gold-merchant-subscribe-dashboard</string>
@@ -90,8 +91,10 @@
     <string name="path_shop_penalty" translatable="false">/shop-penalty</string>
     <string name="path_shop_penalty_detail" translatable="false">/shop-penalty-detail</string>
     <string name="path_shop_edit_schedule" translatable="false">/shop-settings-edit-schedule</string>
+    <string name="path_shop_settings_operational_hours" translatable="false">/shop-settings-operational-hours</string>
     <string name="path_shop_page_setting" translatable="false">/shop-page-setting</string>
     <string name="path_shop_operational_hour_bottom_sheet" translatable="false">/shop/widget/operational-hour/.*\\/</string>
+    <string name="path_shop_mvc_choose_product" translatable="false">/shop/widget/voucher/shop_id/.*\\/.*\\/</string>
 
     <string name="path_seller_review_detail" translatable="false">/seller-review-detail</string>
 

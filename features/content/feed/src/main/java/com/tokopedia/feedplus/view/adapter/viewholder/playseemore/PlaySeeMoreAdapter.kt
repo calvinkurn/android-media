@@ -34,7 +34,7 @@ class PlaySeeMoreAdapter(coordinator: PlayWidgetCoordinatorVideoTab
     }
     fun getPositionInList(channelId: String, positionOfItem: Int): Int {
         itemList.forEachIndexed { index, playFeedUiModel ->
-            if (playFeedUiModel is PlayWidgetLargeUiModel) {
+            if (playFeedUiModel is PlayWidgetLargeUiModel && playFeedUiModel.model.items.size > positionOfItem) {
                 val item = playFeedUiModel.model.items[positionOfItem]
                 if (item is PlayWidgetChannelUiModel) {
                     if (channelId == item.channelId)

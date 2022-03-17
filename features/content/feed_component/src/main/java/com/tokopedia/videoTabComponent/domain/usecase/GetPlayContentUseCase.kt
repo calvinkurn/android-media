@@ -1,5 +1,8 @@
 package com.tokopedia.videoTabComponent.domain.usecase
 
+import android.content.Context
+import android.net.wifi.WifiManager
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -127,21 +130,26 @@ private const val IS_WIFI = "is_wifi"
 private const val GROUP_VALUE = "feeds_channels"
 
 @GqlQuery("GetPlayContentUseCaseQuery", GQL_QUERY)
-class GetPlayContentUseCase @Inject constructor(graphqlRepository: GraphqlRepository)
+class GetPlayContentUseCase @Inject constructor(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<ContentSlotResponse>(graphqlRepository) {
 
+    var context: Context? = null
+
     init {
+        this.context = context
         setTypeClass(ContentSlotResponse::class.java)
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build())
         setGraphqlQuery(GetPlayContentUseCaseQuery.GQL_QUERY)
     }
 
     fun setParams(videoPageParams: VideoPageParams) {
+        val isWifi = context?.let { isWifiEnabled(it) } ?: false
         val queryMap = mutableMapOf(
                 CURSOR to videoPageParams.cursor,
                 SOURCE_TYPE to videoPageParams.sourceType,
                 GROUP to videoPageParams.group,
-                SOURCE_ID to videoPageParams.sourceId
+                SOURCE_ID to videoPageParams.sourceId,
+                IS_WIFI to isWifi
         )
         val map = mutableMapOf("req" to queryMap)
         setRequestParams(map)
@@ -152,4 +160,9 @@ class GetPlayContentUseCase @Inject constructor(graphqlRepository: GraphqlReposi
         this.setParams(videoPageParams)
         return executeOnBackground()
     }
+    private fun isWifiEnabled(context: Context) : Boolean {
+        val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        return wifiManager.isWifiEnabled
+    }
+
 }

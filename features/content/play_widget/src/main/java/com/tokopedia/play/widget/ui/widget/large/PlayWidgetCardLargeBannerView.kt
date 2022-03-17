@@ -6,9 +6,9 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
-import com.tokopedia.play_common.view.loadImage
 
 /**
  * Created by meyta.taliti on 29/01/22.

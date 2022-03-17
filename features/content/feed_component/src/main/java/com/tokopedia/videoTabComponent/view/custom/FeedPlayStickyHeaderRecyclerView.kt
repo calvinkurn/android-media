@@ -12,10 +12,12 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.util.util.scrollLayout
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.videoTabComponent.viewmodel.VideoTabAdapter
-import kotlinx.coroutines.*
-import java.lang.Runnable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+
 
 class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
     constructor(context: Context?) : super(context)
@@ -29,6 +31,7 @@ class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
     private var headerItemDecoration: FeedHeaderItemDecoration? = null
     private val scope = CoroutineScope(Dispatchers.Main)
     private var shouldShowStickyHeader = false
+    private var isSLideDownAnimationEnabled = false
     private var handlerView: Handler? = Handler(Looper.getMainLooper())
     private val runnable by lazy { getRunnableForHeaderVisibility() }
 
@@ -53,16 +56,37 @@ class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
     }
 
     fun setHeaderViewVisibility(shouldShow: Boolean){
-        if (shouldShow)
-            headerRecyclerView.visible()
-        else
-            headerRecyclerView.gone()
+        if (shouldShow) {
+            isSLideDownAnimationEnabled = true
+            slideDown(headerRecyclerView)
+        } else {
+            if (isSLideDownAnimationEnabled)
+                slideUp(headerRecyclerView)
+            else
+                headerRecyclerView.gone()
+        }
+
+
+    }
+    private fun slideDown(view: View) {
+        view.visible()
+        view.animate().translationY(0f).setDuration(100L).start()
+
+    }
+    private fun slideUp(view: View) {
+        if (!view.isVisible) {
+            return
+        }
+        view.visible()
+        view.animate().translationY((headerRecyclerView.height.toFloat())*-1).setDuration(100L).withEndAction { headerRecyclerView.gone() }.start()
+
 
     }
 
+
     private fun getRunnableForHeaderVisibility() = Runnable {
             if (recyclerView.scrollState == RecyclerView.SCROLL_STATE_IDLE)
-                headerRecyclerView.visible()
+                slideDown(headerRecyclerView)
     }
 
     fun scrollToPosition(position: Int) {
@@ -99,8 +123,9 @@ class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
     }
     fun removeHeaderRecyclerView() {
         shouldShowStickyHeader = false
+        isSLideDownAnimationEnabled = false
         if (headerRecyclerView.childCount > 0) {
-            headerRecyclerView.animate().translationY(headerRecyclerView.height.toFloat());
+            headerRecyclerView.animate().translationY(headerRecyclerView.height.toFloat())
             headerRecyclerView.removeAllViews()
             headerRecyclerView.animate().translationY(0f);
 
@@ -111,6 +136,7 @@ class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
     }
     fun getLayoutManager() = recyclerView.layoutManager
 
+    fun getViewHolderAtPosition(position: Int) =  recyclerView.findViewHolderForAdapterPosition(position)
 
     fun smoothScrollToPosition(position: Int = 0) {
         if (position == 0) {

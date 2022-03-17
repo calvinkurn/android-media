@@ -1,6 +1,13 @@
 <resources>
 
+    <!-- general -->
+    <string name="colored_asterisk"><![CDATA[<font color=\'#D6001C\'>&#160;*</font>]]></string>
+    <string name="label_asterisk">&#160;*</string>
+    <string name="action_continue">Lanjut</string>
+    <string name="primary">Utama</string>
+
     <!-- add edit product screen name -->
+    <string name="product_add_edit_preview">Informasi Produk</string>
     <string name="product_add_edit_detail">Detail Produk</string>
     <string name="label_title_add_product">Tambah Produk</string>
     <string name="label_title_edit_product">Ubah Produk</string>
@@ -24,6 +31,7 @@
     <string name="action_add">Tambah</string>
     <string name="action_done">Selesai</string>
     <string name="action_save">Simpan</string>
+    <string name="action_learn">Pelajari Selengkapnya</string>
     <string name="action_oke">Oke</string>
 
     <!-- add edit product photo -->
@@ -148,11 +156,6 @@
     <string name="product_sku_description">SKU (Stock Keeping Unit)</string>
     <string name="label_add_product_sku_tips">Gunakan kode unik SKU jika kamu ingin bisa melacak produk dengan mudah</string>
     <string name="error_product_sku_space_exist">SKU produk tidak boleh mengandung spasi</string>
-
-    <string name="label_asterisk">&#160;*</string>
-    <string name="action_continue">Lanjut</string>
-    <string name="product_label_catalog">Katalog</string>
-    <string name="primary">Utama</string>
 
     <!-- add edit product showcase -->
     <string name="label_product_showcase">Etalase</string>
@@ -406,11 +409,19 @@
     <string name="label_specification_info_title_points">Mengapa perlu tambah Spesifikasi?</string>
     <string name="label_specification_info_point1">Semakin besar kemungkinan produkmu muncul dalam hasil pencarian.</string>
     <string name="label_specification_info_point2">Produk dengan Spesifikasi yang lengkap akan lebih disukai pembeli.</string>
+    <string name="label_specification_item_imei_required">Isi status sinyal sesuai kondisi saat ini. Pengisian yang tidak sesuai bisa menimbulkan kendala bagi pembeli. <![CDATA[<font color=\'#42b549\'><b>Pelajari Selengkapnya</b></font>.]]></string>
+    <string name="label_specification_signal_status_required">Isi status sinyal pada spesifikasi produkmu, ya.</string>
+    <string name="label_specification_signal_status_bottomsheet">Apa saja status sinyal?</string>
+    <string name="label_specification_signal_status_tips1"><![CDATA[<b>Sinyal Aktif</b><br/>]]>Perangkat elektronik yang bisa terhubung ke jaringan operator di Indonesia. <![CDATA[<b>Jika terjadi kendala</b>]]>, pembelimu bisa mengajukan refund atau retur melalui Tokopedia Care.</string>
+    <string name="label_specification_signal_status_tips2"><![CDATA[<b>Sinyal Belum Aktif</b><br/>]]>Perangkat elektronik yang belum dipastikan bisa terhubung ke jaringan operator di Indonesia. Pastikan kamu sudah mengingatkan calon pembeli.</string>
     <string name="action_specification_save">Simpan</string>
+    <string name="action_specification_learn">Pelajari Selengkapnya</string>
     <string name="action_specification_add">Tambah</string>
     <string name="action_specification_change">Ubah</string>
     <string name="action_specification_refresh">Muat Ulang</string>
     <string name="action_specification_counter">, +%1$d lainnya</string>
+    <string name="error_specification_signal_status_empty">Status sinyal wajib diisi, ya.</string>
+    <string name="error_specification_signal_status_empty_red"><![CDATA[<font color=\'#D6001C\'>Status sinyal belum terisi.</font>.]]></string>
 
     <!-- Product Limitation -->
     <string name="label_product_limitation_start_date">10 Mei 2021</string>
@@ -436,6 +447,9 @@
     <string name="label_product_limitation_bottomsheet_button_draft">Simpan Sebagai Draft</string>
     <string name="title_product_limitation_cant_add_product">Tidak bisa menambahkan produk</string>
     <string name="title_product_limitation_add_product_rules">Aturan jumlah produk toko</string>
+    <string name="title_product_limitation_add_product_rules_nodata">Aturan jumlah produk yang dapat ditambahkan</string>
+    <string name="title_product_limitation_add_product_rules_nodata_wide">Aturan jumlah produk yang dapat ditambahkan di tokomu</string>
+    <string name="title_product_limitation_bottomsheet_info_nodata">Kamu bisa menambahkan produk di tokomu  maksimal hingga %1d produk. Jumlah maksimal produk didasarkan oleh tipe seller.</string>
 
     <!-- Title Validation -->
     <string name="title_product_title_validation_bottomsheet">Tips menamakan produk</string>

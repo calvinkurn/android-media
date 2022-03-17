@@ -1,12 +1,15 @@
 package com.tokopedia.videoTabComponent.view.coordinator
 
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.analytic.impression.ImpressionHelper
 import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
+import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -24,6 +27,21 @@ class PlayWidgetCoordinatorVideoTab(
     private var mListener: PlayWidgetListener? = null
     private var mAnalyticListener: PlayWidgetAnalyticListener? = null
 
+    private val autoPlayCoordinator = PlayFeedWidgetAutoPlayCoordinator(scope, mainCoroutineDispatcher)
+
+    private val mWidgetInternalListener = object : PlayWidgetInternalListener {
+        /**
+         * works for medium & small type only
+         */
+        override fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView) {
+            autoPlayCoordinator.onWidgetCardsScrollChanged(widgetCardsContainer)
+        }
+
+        override fun onWidgetDetached(widget: View) {
+            autoPlayCoordinator.onWidgetDetached(widget)
+        }
+    }
+
     private val impressionHelper = ImpressionHelper()
 
     init {
@@ -33,28 +51,38 @@ class PlayWidgetCoordinatorVideoTab(
     fun controlWidget(widget: PlayWidgetMediumView) {
         widget.setWidgetListener(mListener)
         widget.setAnalyticListener(mAnalyticListener)
+        widget.setWidgetInternalListener(mWidgetInternalListener)
     }
 
     fun controlWidget(widget: PlayWidgetLargeView) {
         widget.setWidgetListener(mListener)
         widget.setAnalyticListener(mAnalyticListener)
+        widget.setWidgetInternalListener(mWidgetInternalListener)
     }
 
     fun controlWidget(widget: PlayWidgetJumboView) {
         widget.setWidgetListener(mListener)
         widget.setAnalyticListener(mAnalyticListener)
+        widget.setWidgetInternalListener(mWidgetInternalListener)
     }
+    fun configureAutoplayForLargeAndJumboWidget(widgetCardsContainer: RecyclerView){
+        autoPlayCoordinator.configureLargeOrJumboWidgetAutoplay(widgetCardsContainer)
+    }
+
 
     fun connect(widget: PlayWidgetMediumView, model: PlayWidgetUiModel) {
         widget.setData(model)
+        autoPlayCoordinator.configureAutoPlay(widget.context, model.config)
     }
 
     fun connect(widget: PlayWidgetLargeView, model: PlayWidgetUiModel) {
         widget.setData(model)
+        autoPlayCoordinator.configureAutoPlay(widget.context, model.config)
     }
 
     fun connect(widget: PlayWidgetJumboView, model: PlayWidgetUiModel) {
         widget.setData(model)
+        autoPlayCoordinator.configureAutoPlay(widget.context, model.config)
     }
 
     fun setListener(listener: PlayWidgetListener?) {
@@ -71,15 +99,18 @@ class PlayWidgetCoordinatorVideoTab(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
+        autoPlayCoordinator.onPause()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
+        autoPlayCoordinator.onResume()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         scope.coroutineContext.cancelChildren()
+        autoPlayCoordinator.onDestroy()
     }
 
     private fun configureLifecycle(lifecycleOwner: LifecycleOwner) {

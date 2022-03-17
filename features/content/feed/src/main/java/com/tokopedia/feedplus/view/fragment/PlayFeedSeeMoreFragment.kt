@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.view.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalFeed
 import com.tokopedia.feedplus.R
@@ -29,7 +31,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.videoTabComponent.analytics.PlayWidgetAnalyticsListenerImp
 import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker
 import com.tokopedia.videoTabComponent.domain.mapper.FeedPlayVideoTabMapper
 import com.tokopedia.videoTabComponent.domain.model.data.*
@@ -128,6 +129,11 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
                 }
             })
 
+            playWidgetReminderEvent.observe(viewLifecycleOwner, Observer {
+                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME)
+            })
+
+
 
         }
     }
@@ -141,10 +147,19 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sendAnalyticsForLehatSemua()
         setupView(view)
         setUpShopDataHeader()
         playFeedVideoTabViewModel.getLivePlayData(widgetType, sourceId, sourceType)
     }
+
+    private fun sendAnalyticsForLehatSemua() {
+        if (widgetType == WIDGET_LIVE)
+            analyticListener.clickOnSeeAllOnLagiLiveCarousel()
+        else
+            analyticListener.clickOnSeeAllOnUpcomingCarousel(if(filterCategory.isNotEmpty()) filterCategory else DEFAULT_FILTER_CATEGORY)
+    }
+
     private fun setupView(view: View) {
         adapter = PlaySeeMoreAdapter(
                 coordinator = playWidgetCoordinator
@@ -180,20 +195,13 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
         }
     }
 
-    override fun onAttachFragment(childFragment: Fragment) {
-        super.onAttachFragment(childFragment)
-        if (widgetType == WIDGET_LIVE)
-        analyticListener.clickOnSeeAllOnLagiLiveCarousel()
-        else
-        analyticListener.clickOnSeeAllOnUpcomingCarousel(filterCategory)
-
-    }
-
     companion object{
         const val WIDGET_LIVE ="live"
         const val WIDGET_UPCOMING ="upcoming"
         const val ENTRY_POINT_WIDGET_LIVE = "lagi live"
         const val ENTRY_POINT_WIDGET_UPCOMING = "upcoming"
+        const val DEFAULT_FILTER_CATEGORY = "Untukmu"
+        private const val REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME = 258
 
 
         fun createInstance(bundle: Bundle) : Fragment {
@@ -232,5 +240,15 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
         val adapterPositionForItem = adapter.getPositionInList(playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.itemPosition)
         adapter.updateItemInList(adapterPositionForItem, playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.reminderType)
 
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+           REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME -> if (resultCode == Activity.RESULT_OK) {
+                val playWidgetFeedReminderInfoData = playFeedVideoTabViewModel.playWidgetReminderEvent.value
+                if (playWidgetFeedReminderInfoData != null) playFeedVideoTabViewModel.updatePlayWidgetToggleReminder(playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.reminderType, playWidgetFeedReminderInfoData.itemPosition)
+            }
+
+        }
     }
 }

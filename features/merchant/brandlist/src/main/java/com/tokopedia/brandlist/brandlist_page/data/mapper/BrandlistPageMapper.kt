@@ -68,14 +68,23 @@ class BrandlistPageMapper {
             }
         }
 
+        fun resetAllBrandData(adapter: BrandlistPageAdapter?) {
+            adapter?.let {
+                if (it.lastIndex >= ALL_BRAND_POSITION) {
+                    it.getVisitables().subList((ALL_BRAND_POSITION-1), adapter.lastIndex).clear()
+                    it.notifyItemRangeRemoved(ALL_BRAND_POSITION, adapter.lastIndex)
+                }
+            }
+        }
+
         fun mappingBrandNotFound(
                 allBrand: OfficialStoreAllBrands,
                 isLoadMore: Boolean,
                 adapter: BrandlistPageAdapter?
         ) {
             val totalBrands: Int = allBrand.brands.size
-
-            if (!isLoadMore && totalBrands == 0) {
+            adapter?.hideLoading()
+            if (!isLoadMore && totalBrands == 0 && adapter?.getVisitables()?.find { it is AllbrandNotFoundUiModel } == null) {
                 adapter?.getVisitables()?.add(ALL_BRAND_POSITION, AllbrandNotFoundUiModel())
                 adapter?.notifyItemChanged(ALL_BRAND_POSITION, AllbrandNotFoundUiModel())
             }
