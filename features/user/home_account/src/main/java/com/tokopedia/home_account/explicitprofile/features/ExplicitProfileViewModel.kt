@@ -13,6 +13,7 @@ import com.tokopedia.home_account.explicitprofile.domain.GetCategoriesUseCase
 import com.tokopedia.home_account.explicitprofile.domain.SaveMultipleAnswersUseCase
 import com.tokopedia.home_account.explicitprofile.wrapper.ExplicitProfileResult
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import javax.inject.Inject
 
 class ExplicitProfileViewModel @Inject constructor(
@@ -38,7 +39,7 @@ class ExplicitProfileViewModel @Inject constructor(
 
             _explicitCategories.value = ExplicitProfileResult.Success(response)
         }, {
-            _explicitCategories.value = ExplicitProfileResult.Failure(it)
+            _explicitCategories.value = ExplicitProfileResult.Failure(MessageErrorException(it.message))
         })
     }
 
@@ -85,7 +86,7 @@ class ExplicitProfileViewModel @Inject constructor(
             _saveAnswers.value = ExplicitProfileResult.Success(result)
 
         }, {
-            _saveAnswers.value = ExplicitProfileResult.Failure(it)
+            _saveAnswers.value = ExplicitProfileResult.Failure(MessageErrorException(it.message))
         })
     }
 

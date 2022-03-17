@@ -21,6 +21,7 @@ import com.tokopedia.home_account.explicitprofile.di.component.ExplicitProfileCo
 import com.tokopedia.home_account.explicitprofile.trackers.ExplicitProfileAnalytics
 import com.tokopedia.home_account.explicitprofile.wrapper.ExplicitProfileResult
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -104,8 +105,6 @@ class ExplicitProfileFragment : BaseDaggerFragment() {
                 }
                 is ExplicitProfileResult.Success -> {
                     tracker.onSavePreference(true)
-
-                    showLoading(false)
                     successSaveShoppingPreference(true)
                 }
             }
@@ -249,9 +248,9 @@ class ExplicitProfileFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onError(throwable: Throwable) {
+    private fun onError(error: MessageErrorException) {
         view?.let {
-            Toaster.build(it, ErrorHandler.getErrorMessage(context, throwable), Toaster.LENGTH_LONG).show()
+            Toaster.build(it, ErrorHandler.getErrorMessage(context, error), Toaster.LENGTH_LONG).show()
         }
     }
 

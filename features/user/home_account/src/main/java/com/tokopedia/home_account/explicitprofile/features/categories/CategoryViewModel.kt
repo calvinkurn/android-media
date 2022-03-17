@@ -8,6 +8,7 @@ import com.tokopedia.home_account.explicitprofile.data.ExplicitprofileGetQuestio
 import com.tokopedia.home_account.explicitprofile.domain.GetQuestionsUseCase
 import com.tokopedia.home_account.explicitprofile.wrapper.ExplicitProfileResult
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import javax.inject.Inject
 
 class CategoryViewModel @Inject constructor(
@@ -32,7 +33,7 @@ class CategoryViewModel @Inject constructor(
 
             _questions.value = ExplicitProfileResult.Success(response)
         }, {
-            _questions.value = ExplicitProfileResult.Failure(it)
+            _questions.value = ExplicitProfileResult.Failure(MessageErrorException(it.message))
         })
     }
 }

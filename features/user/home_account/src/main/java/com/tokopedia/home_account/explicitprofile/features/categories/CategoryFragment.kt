@@ -25,6 +25,7 @@ import com.tokopedia.home_account.explicitprofile.wrapper.ExplicitProfileResult
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -132,10 +133,10 @@ class CategoryFragment: BaseDaggerFragment(), SectionViewHolder.SectionListener 
         adapterQuestion.notifyDataSetChanged()
     }
 
-    private fun onError(throwable: Throwable) {
+    private fun onError(error: MessageErrorException) {
         view?.let {
             showMainView(false)
-            Toaster.build(it, ErrorHandler.getErrorMessage(context, throwable), Toaster.LENGTH_LONG).show()
+            Toaster.build(it, ErrorHandler.getErrorMessage(context, error), Toaster.LENGTH_LONG).show()
         }
     }
 
