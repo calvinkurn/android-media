@@ -49,6 +49,15 @@ class ExplicitProfileSharedViewModelTest {
     }
 
     @Test
+    fun setDefaultData() {
+        mockDefaultTemplateData.forEach {
+            viewModel?.setDefaultTemplatesData(it)
+        }
+
+        assert(viewModel?.isAnswersSameWithDefault() == true)
+    }
+
+    @Test
     fun isAnswersSameWithDefault() {
         assert(viewModel?.isAnswersSameWithDefault() == true)
     }
