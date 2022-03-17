@@ -88,6 +88,10 @@ class AdminInvitationConfirmationFragment: BaseDaggerFragment() {
         }
     }
 
+    private fun hideLoadingDialog() {
+        confirmRejectDialog?.getDialog()?.dialogPrimaryCTA.isLoading = false
+    }
+
     private fun showRejectConfirmationDialog() {
         confirmRejectDialog = getInstanceDialog().value
         confirmRejectDialog?.getDialog()?.run {

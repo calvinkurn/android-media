@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -15,8 +16,13 @@ import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.SELLER_MIGRATION_KEY_AUTO_LOGIN
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_PLAYSTORE
 import com.tokopedia.shopadmin.R
+import com.tokopedia.shopadmin.common.constants.AdminImageUrl
+import com.tokopedia.shopadmin.common.utils.setTextMakeHyperlink
 import com.tokopedia.shopadmin.databinding.FragmentAdminInvitationAcceptedBinding
 import com.tokopedia.shopadmin.invitationaccepted.di.component.AdminInvitationAcceptedComponent
+import com.tokopedia.shopadmin.invitationaccepted.presentation.adapter.ItemFeatureAccessAdapter
+import com.tokopedia.shopadmin.invitationaccepted.presentation.model.AdminInfoUiModel
+import com.tokopedia.shopadmin.invitationaccepted.presentation.model.FeatureAccessUiModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -45,9 +51,37 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
         getComponent(AdminInvitationAcceptedComponent::class.java).inject(this)
     }
 
+    private fun setupViews(item: AdminInfoUiModel) {
+        binding?.run {
+            showViewGroup()
+            imgHeaderInvitationAccepted.setImageUrl(AdminImageUrl.IL_WELCOME_INVITATION_ACCEPTED)
+            tvAdminSuccessInvitation.text = getString(
+                R.string.title_admin_success_invitation_accepted,
+                item.adminName, item.shopName
+            )
+            tvTnc.setTextMakeHyperlink(getString(R.string.label_tnc_invitation_accepted)) {
+                showTncBottomSheet()
+            }
+        }
+    }
+
+    private fun showTncBottomSheet() {
+
+    }
+
+    private fun setupFeatureAccessList(featureAccessList: List<FeatureAccessUiModel>) {
+        binding?.rvFeatureAccess?.run {
+            layoutManager = GridLayoutManager(
+                context, COLUMN_TWO,
+                GridLayoutManager.VERTICAL, false
+            )
+            adapter = ItemFeatureAccessAdapter(featureAccessList)
+        }
+    }
+
     private fun goToPlayStoreOrSellerApp() {
         try {
-            val intent = context?.packageManager?.getLaunchIntentForPackage(PACKAGE_SELLER_APP)
+            val intent = activity?.packageManager?.getLaunchIntentForPackage(PACKAGE_SELLER_APP)
             if (intent != null) {
                 intent.putExtra(SELLER_MIGRATION_KEY_AUTO_LOGIN, true)
                 activity?.startActivity(intent)
@@ -59,7 +93,7 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
                     )
                 )
             }
-        } catch (anfe: ActivityNotFoundException) {
+        } catch (e: ActivityNotFoundException) {
             activity?.startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
@@ -96,6 +130,10 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
         binding?.visibleViewGroup?.hide()
     }
 
+    private fun showViewGroup() {
+        binding?.visibleViewGroup?.show()
+    }
+
     private fun showLoading() {
         binding?.loaderInvitationAccepted?.show()
     }
@@ -105,8 +143,11 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
     }
 
     companion object {
+
         fun newInstance(): AdminInvitationAcceptedFragment {
             return AdminInvitationAcceptedFragment()
         }
+
+        const val COLUMN_TWO = 2
     }
 }

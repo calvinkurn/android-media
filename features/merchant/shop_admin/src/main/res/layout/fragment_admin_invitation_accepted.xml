@@ -45,7 +45,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvAdminSuccessInvitation"
         app:typographyType="body_2"
-        tools:text="@string/label_admin_feature_detail" />
+        android:text="@string/label_admin_feature_detail" />
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/cardFeatureAccess"

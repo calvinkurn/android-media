@@ -9,7 +9,7 @@ import com.tokopedia.shopadmin.invitationconfirmation.presentation.fragment.Admi
 
 class AdminInvitationConfirmationActivity: BaseSimpleActivity(), HasComponent<AdminInvitationConfirmationComponent> {
 
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         return AdminInvitationConfirmationFragment.newInstance()
     }
 
