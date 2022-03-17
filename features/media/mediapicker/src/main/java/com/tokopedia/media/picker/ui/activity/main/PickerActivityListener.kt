@@ -23,4 +23,5 @@ interface PickerActivityListener {
     fun onShowImageMinResToast()
     fun onShowImageMaxResToast()
     fun onShowImageMaxFileSizeToast()
+    fun onGalleryEmptyNavigation()
 }

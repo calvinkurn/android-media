@@ -61,6 +61,8 @@ data class PickerParam(
 
     fun withEditor() = withEditor
 
+    fun pageType() = pageType
+
 }
 
 enum class CameraRatio(val value: Int) {
