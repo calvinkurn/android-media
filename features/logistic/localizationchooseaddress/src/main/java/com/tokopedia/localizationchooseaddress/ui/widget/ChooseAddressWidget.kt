@@ -82,7 +82,6 @@ class ChooseAddressWidget : ConstraintLayout,
 
     private fun initObservers() {
         val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
-        Log.i("asdfgh", "initobserver")
         if (fragment != null) {
             viewModel.getChosenAddress.observe(fragment.viewLifecycleOwner, {
                 when (it) {
@@ -135,8 +134,7 @@ class ChooseAddressWidget : ConstraintLayout,
 
                 when (it) {
                     is Success -> {
-                            val data = it.data
-                        Log.i("asdfgh", "tokonowData.observe data = ${it.data}")
+                        val data = it.data
                         ChooseAddressUtils.refreshTokonowData(
                                 context = context,
                                 warehouses = TokonowWarehouseMapper.mapWarehouseItemToLocal(data.warehouses),
@@ -145,8 +143,7 @@ class ChooseAddressWidget : ConstraintLayout,
                                 lastUpdate = data.lastUpdate,
                                 shopId = data.shopId
                             )
-                            // trigger home to refresh data
-                        Log.i("asdfgh", "viewModel.isFirstLoad: ${viewModel.isFirstLoad}")
+                        // trigger home to refresh data
                         if (viewModel.isFirstLoad) {
                             chooseAddressWidgetListener?.onTokonowDataRefreshed()
                         }
@@ -195,15 +192,11 @@ class ChooseAddressWidget : ConstraintLayout,
         if ((chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && viewModel.isFirstLoad) || localData.address_id.isEmpty()) {
             initObservers()
             if (chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && viewModel.isFirstLoad) {
-                Log.i("asdfgh", "hit tokonow data")
                 viewModel.getTokonowData(localData)
-                // todo need to solve so observer not listening twice
-
             }
             if (localData.address_id.isEmpty()) {
                 chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
                     ?.let { viewModel.getStateChosenAddress(it, isSupportWarehouseLoc) }
-//                initObservers()
             }
         }
 

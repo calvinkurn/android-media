@@ -1,7 +1,6 @@
 package com.tokopedia.localizationchooseaddress.ui.bottomsheet
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -99,9 +98,7 @@ class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: 
 
     fun getTokonowData(localCacheModel: LocalCacheModel) {
         viewModelScope.launch(onErrorRefreshTokonow) {
-//            isFirstLoad = false
             val data = refreshTokonowDataUsecase.execute(localCacheModel)
-            Log.i("asdfgh", "viewmodel.getTokonowData")
             _tokonowData.value = Success(data.refreshTokonowData.data)
         }
     }
