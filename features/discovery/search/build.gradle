@@ -122,6 +122,7 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.exoPlayer
 
     implementation rootProject.ext.dbDependencies.sqliteFramework
 

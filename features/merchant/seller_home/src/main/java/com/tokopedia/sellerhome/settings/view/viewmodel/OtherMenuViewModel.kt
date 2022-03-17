@@ -5,7 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
+import com.tokopedia.gm.common.domain.interactor.GetShopCreatedInfoUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.*
@@ -14,7 +14,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.domain.usecase.*
-import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.*
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
@@ -39,7 +38,7 @@ class OtherMenuViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val getShopFreeShippingInfoUseCase: GetShopFreeShippingInfoUseCase,
     private val getShopOperationalUseCase: GetShopOperationalUseCase,
-    private val getShopInfoPeriodUseCase: GetShopInfoPeriodUseCase,
+    private val getShopCreatedInfoUseCase: GetShopCreatedInfoUseCase,
     private val balanceInfoUseCase: BalanceInfoUseCase,
     private val getShopBadgeUseCase: GetShopBadgeUseCase,
     private val getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase,
@@ -222,9 +221,9 @@ class OtherMenuViewModel @Inject constructor(
     fun getShopPeriodType() {
         launchCatchError(block = {
             val periodData = withContext(dispatcher.io) {
-                getShopInfoPeriodUseCase.requestParams =
-                    GetShopInfoPeriodUseCase.createParams(userSession.shopId.toLongOrZero())
-                getShopInfoPeriodUseCase.executeOnBackground()
+                getShopCreatedInfoUseCase.requestParams =
+                    GetShopCreatedInfoUseCase.createParams(userSession.shopId.toLongOrZero())
+                getShopCreatedInfoUseCase.executeOnBackground()
             }
             _shopPeriodType.value = Success(periodData)
         }, onError = {

@@ -37,11 +37,12 @@ import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
+import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.CoreMatchers.not
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-
+@UiTest
 class LoginNormalCase : LoginBase() {
 
     /* Go to verification page if phone exist */

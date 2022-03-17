@@ -28,7 +28,7 @@ class OrderShopCard(private val binding: CardOrderShopBinding,
             if (shop.shopBadge.isNotEmpty()) {
                 ivShopBadge.setImageUrl(shop.shopBadge)
                 ivShopBadge.visible()
-                ivShopBadge.contentDescription = root.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, orderShop.shopTypeName.toLowerCase(Locale.ROOT))
+                ivShopBadge.contentDescription = root.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, orderShop.shopTypeName.lowercase())
             } else {
                 ivShopBadge.gone()
             }

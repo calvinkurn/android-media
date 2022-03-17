@@ -53,6 +53,8 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM_CLOSE = "trac
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_RECHARGE = "tracker/home/reminder_widget_recharge.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM = "tracker/home/reminder_widget_salam.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BANNER_CAROUSEL = "tracker/home/banner_carousel.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MERCHANT_VOUCHER = "tracker/home/merchant_voucher_widget.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_SPECIAL_RELEASE = "tracker/home/special_release.json"
 
 private const val CHOOSE_ADDRESS_PREFERENCE_NAME = "coahmark_choose_address"
 private const val CHOOSE_ADDRESS_EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
@@ -170,7 +172,37 @@ fun clickOnLegoBannerSection(viewHolder: RecyclerView.ViewHolder, itemPosition: 
 fun clickOnRecommendationFeedSection(viewHolder: RecyclerView.ViewHolder) {
     waitForData()
     clickRecommendationFeedTab()
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_feed_fragment_recycler_view, 0)
+    val recyclerView: RecyclerView = viewHolder.itemView.findViewById(R.id.home_feed_fragment_recycler_view)
+    val rvCount = recyclerView.adapter!!.itemCount
+    for (i in 0 until rvCount) {
+        try {
+            Espresso.onView(firstView(ViewMatchers.withId(R.id.home_feed_fragment_recycler_view)))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickHomeRecommendationItem()))
+        } catch (e: PerformException) {
+            e.printStackTrace()
+        }
+    }
+}
+
+fun clickHomeRecommendationItem(): ViewAction? {
+    return object : ViewAction {
+        override fun getConstraints(): Matcher<View>? {
+            return null
+        }
+
+        override fun getDescription(): String {
+            return "Click home recommendation item"
+        }
+
+        override fun perform(uiController: UiController?, view: View) {
+            val bannerView: View? = view.findViewById(R.id.bannerImageView)
+            if (bannerView != null) {
+                bannerView.performClick()
+            } else {
+                view.performClick()
+            }
+        }
+    }
 }
 
 fun clickCloseOnReminderWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int, homeRecyclerView: RecyclerView){
@@ -220,6 +252,42 @@ fun actionOnBannerCarouselWidget(viewHolder: RecyclerView.ViewHolder, itemPositi
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_banner, 0)
 }
 
+fun actionOnMerchantVoucherWidget(viewHolder: RecyclerView.ViewHolder) {
+    clickOnEachItemRecyclerViewMerchantVoucher(viewHolder.itemView, R.id.home_component_mvc_rv, 0)
+}
+
+fun clickOnEachItemRecyclerViewMerchantVoucher(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
+    val childRecyclerView: RecyclerView = view.findViewById(recyclerViewId)
+
+    var childItemCountExcludeViewAllCard = (childRecyclerView.adapter?.itemCount?: 0) - 1
+    if (fixedItemPositionLimit > 0) {
+        childItemCountExcludeViewAllCard = fixedItemPositionLimit
+    }
+    for (i in 0 until childItemCountExcludeViewAllCard) {
+        try {
+            Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickOnViewChild(R.id.container_shop))
+            )
+            Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickOnViewChild(R.id.container_product))
+            )
+        } catch (e: PerformException) {
+            e.printStackTrace()
+        }
+    }
+    Espresso.onView(
+        allOf(
+            ViewMatchers.withId(recyclerViewId)
+        )
+    )
+        .perform(
+            actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                childItemCountExcludeViewAllCard,
+                ViewActions.click()
+            )
+        )
+}
+
 fun checkRechargeBUWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int){
     clickEmptyBannerRechargeBUWidget()
     impressionRechargeBUWidget()
@@ -247,6 +315,12 @@ private fun clickProductRechargeBUWidget(){
         e.printStackTrace()
     }
 }
+
+fun actionOnSpecialReleaseWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
+    clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_special_release_rv, 0)
+}
+
 
 private fun clickAllProductCardRechargeBUWidget(){
     waitForData()

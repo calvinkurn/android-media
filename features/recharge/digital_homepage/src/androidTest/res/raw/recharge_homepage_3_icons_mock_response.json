@@ -1,0 +1,81 @@
+[
+  {
+    "data": {
+      "rechargeGetDynamicPage": {
+        "sections": [
+          {
+            "id": 158,
+            "object_id": "",
+            "title": "Testing 3_Banner",
+            "sub_title": "",
+            "template": "3_ICONS",
+            "app_link": "tokopedia://recharge/home?platform_id=31",
+            "text_link": "",
+            "media_url": "",
+            "label_1": "",
+            "tracking": [],
+            "items": [
+              {
+                "id": 747,
+                "object_id": "",
+                "title": "Nggak perlu antri",
+                "sub_title": "",
+                "tracking": [],
+                "content": "",
+                "app_link": "",
+                "web_link": "",
+                "text_link": "",
+                "media_url": "https://images-staging.tokopedia.net/img/AtBaCW/2022/1/24/2ea55d9d-fe76-405e-81b2-58f189d3a7ac.png",
+                "template": "",
+                "button_type": "",
+                "label_1": "",
+                "label_2": "",
+                "label_3": "",
+                "server_date": "",
+                "due_date": ""
+              },
+              {
+                "id": 748,
+                "object_id": "",
+                "title": "2000+ mitra produk digital",
+                "sub_title": "",
+                "tracking": [],
+                "content": "",
+                "app_link": "",
+                "web_link": "",
+                "text_link": "",
+                "media_url": "https://images-staging.tokopedia.net/img/AtBaCW/2022/1/24/44bb9991-5e21-4cf4-acb2-d3bbe9c8eee6.png",
+                "template": "",
+                "button_type": "",
+                "label_1": "",
+                "label_2": "",
+                "label_3": "",
+                "server_date": "",
+                "due_date": ""
+              },
+              {
+                "id": 749,
+                "object_id": "",
+                "title": "40+ metode pembayaran",
+                "sub_title": "",
+                "tracking": [],
+                "content": "",
+                "app_link": "",
+                "web_link": "",
+                "text_link": "",
+                "media_url": "https://images-staging.tokopedia.net/img/AtBaCW/2022/1/24/6db52340-53f6-4300-b007-6b8bc57ed349.png",
+                "template": "",
+                "button_type": "",
+                "label_1": "",
+                "label_2": "",
+                "label_3": "",
+                "server_date": "",
+                "due_date": ""
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

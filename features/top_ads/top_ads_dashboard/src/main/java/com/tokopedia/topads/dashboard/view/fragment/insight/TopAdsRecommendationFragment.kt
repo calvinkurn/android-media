@@ -276,12 +276,12 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
                     CONST_1
             }
             if (page == CONST_2) {
-                if (checkFragmentPosition(CONST_0, KATA_KUNCI))
-                    index = CONST_0
-                index = if (checkFragmentPosition(CONST_1, KATA_KUNCI))
-                    CONST_1
-                else
-                    CONST_2
+                index = when {
+                    checkFragmentPosition(CONST_0, KATA_KUNCI) -> CONST_0
+                    checkFragmentPosition(CONST_1, KATA_KUNCI) -> CONST_1
+                    checkFragmentPosition(CONST_2, KATA_KUNCI) -> CONST_2
+                    else -> CONST_2
+                }
             }
         }
         view_pager?.currentItem = index
@@ -325,7 +325,9 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     }
 
     private fun checkFragmentPosition(index: Int, value: String): Boolean {
-        return topAdsInsightTabAdapter?.getTab()?.get(index)?.contains(value) == true
+        val tabs = topAdsInsightTabAdapter?.getTab()
+        return if (tabs.isNullOrEmpty() || index < tabs.size) false
+        else tabs.get(index).contains(value)
     }
 
     private fun isProductAvailable(): Boolean {
