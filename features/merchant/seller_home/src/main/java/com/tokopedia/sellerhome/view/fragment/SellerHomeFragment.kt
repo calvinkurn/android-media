@@ -272,7 +272,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeShopShareTracker()
 
         context?.let { UpdateShopActiveWorker.execute(it) }
-        setupPMShopScoreInterrupt()
     }
 
     override fun onResume() {
@@ -288,7 +287,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onDestroy() {
         super.onDestroy()
-        pmShopScoreInterruptHelper.destroy()
         shopShareHelper.removeTemporaryShopImage(shopImageFilePath)
     }
 
@@ -767,6 +765,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     val calendarWidget = it.apply calendarWidget@{
                         data = null
                         filter = getAppliedDateFilter(filter, startDate, endData, dateFilter.type)
+                        impressHolder = ImpressHolder()
                     }.copyWidget()
                     calendarWidgets.add(calendarWidget)
                     return@map calendarWidget
@@ -2020,12 +2019,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun BaseWidgetUiModel<*>.isNeedToLoad(): Boolean {
         return !isLoaded && this !is SectionWidgetUiModel && this !is TickerWidgetUiModel &&
                 this !is DescriptionWidgetUiModel && this !is WhiteSpaceUiModel
-    }
-
-    private fun setupPMShopScoreInterrupt() {
-        activity?.let {
-            pmShopScoreInterruptHelper.showInterrupt(it, viewLifecycleOwner, childFragmentManager)
-        }
     }
 
     private fun setRecommendationCoachMarkEligibility() {

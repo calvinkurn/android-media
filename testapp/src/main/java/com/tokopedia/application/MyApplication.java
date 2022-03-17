@@ -38,7 +38,7 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.tkpd.ActivityFrameMetrics;
-import com.tokopedia.tkpd.GqlActivityCallback;
+import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.track.TrackApp;
