@@ -48,12 +48,12 @@ class RefreshTokonowDataUsecase @Inject constructor(private val useCase: Graphql
     }
 
     companion object {
-        private const val PARAM_LAST_UPDATE = "lastUpdate"
-        private const val PARAM_DISTRICT_ID = "districtId"
+        private const val PARAM_LAST_UPDATE = "tokonowLastUpdate"
+        private const val PARAM_DISTRICT_ID = "districtID"
         private const val PARAM_LATITUDE = "latitude"
         private const val PARAM_LONGITUDE = "longitude"
-        private const val PARAM_SHOP_ID = "shopId"
-        private const val PARAM_WAREHOUSE_ID = "warehouseId"
+        private const val PARAM_SHOP_ID = "shopID"
+        private const val PARAM_WAREHOUSE_ID = "warehouseID"
         private const val PARAM_SERVICE_TYPE = "serviceType"
         private const val PARAM_WAREHOUSES = "warehouses"
     }

@@ -51,7 +51,7 @@ data class RefreshTokonowDataResponse(
                 val serviceType: String = "",
 
                 @Expose
-                @SerializedName("last_update")
+                @SerializedName("tokonowLastUpdate")
                 val lastUpdate: String = "",
 
 

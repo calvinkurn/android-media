@@ -9,9 +9,9 @@ object RefreshTokonowDataQuery : GqlQueryInterface {
 
     override fun getQuery(): String {
         return """
-    query RefreshTokonowData(${'$'}lastUpdate:String!, ${'$'}districtId:String!, ${'$'}latitude:String!, ${'$'}longitude:String!, ${'$'}shopId:String!, ${'$'}warehouseId:String!, ${'$'}serviceType:String!, ${'$'}warehouses:[WarehouseUserPreference!]!){
+    query RefreshTokonowData(${'$'}tokonowLastUpdate:String!, ${'$'}districtId:String!, ${'$'}latitude:String!, ${'$'}longitude:String!, ${'$'}shopId:String!, ${'$'}warehouseId:String!, ${'$'}serviceType:String!, ${'$'}warehouses:[WarehouseUserPreference!]!){
       RefreshTokonowData(
-        lastUpdate: ${'$'}lastUpdate,
+        tokonowLastUpdate: ${'$'}tokonowLastUpdate,
         districtID: ${'$'}districtId, 
         latitude: ${'$'}latitude, 
         longitude: ${'$'}longitude,
@@ -26,7 +26,7 @@ object RefreshTokonowDataQuery : GqlQueryInterface {
           error_code
         }
         data {
-          lastUpdate
+          tokonowLastUpdate
           warehouseID
           shopID
           serviceType
