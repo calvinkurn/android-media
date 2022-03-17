@@ -21,7 +21,7 @@ import javax.inject.Inject
 class GetCouponImagePreviewFacadeUseCase @Inject constructor(
     private val getShopBasicDataUseCase: ShopBasicDataUseCase,
     private val initiateCouponUseCase: InitiateCouponUseCase,
-    private val getProductsUseCase: GetProductsUseCase,
+    private val getMostSoldProductsUseCase: GetMostSoldProductsUseCase,
     private val userSession: UserSessionInterface,
     private val remoteDataSource: ImageGeneratorRemoteDataSource
 ) {
@@ -44,7 +44,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
         imageRatio: ImageRatio
     ): ByteArray {
         val initiateCoupon = scope.async { initiateCoupon() }
-        val topProductsDeferred = scope.async { getTopProducts(parentProductId) }
+        val topProductsDeferred = scope.async { getMostSoldProducts(parentProductId) }
         val shopDeferred = scope.async { getShopBasicDataUseCase.executeOnBackground() }
 
         val shop = shopDeferred.await()
@@ -171,9 +171,9 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
         )
     }
 
-    private suspend fun getTopProducts(productIds: List<Long>): GetProductsByProductIdResponse.GetProductListData {
-        getProductsUseCase.params = GetProductsUseCase.createParams(userSession.shopId, productIds)
-        return getProductsUseCase.executeOnBackground()
+    private suspend fun getMostSoldProducts(productIds: List<Long>): GetProductsByProductIdResponse.GetProductListData {
+        getMostSoldProductsUseCase.params = GetMostSoldProductsUseCase.createParams(userSession.shopId, productIds)
+        return getMostSoldProductsUseCase.executeOnBackground()
     }
 
     private suspend fun initiateCoupon(): InitiateVoucherUiModel {

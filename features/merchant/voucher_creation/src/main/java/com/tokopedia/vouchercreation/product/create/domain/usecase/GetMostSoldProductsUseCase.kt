@@ -8,7 +8,7 @@ import com.tokopedia.vouchercreation.product.create.data.response.GetProductsByP
 import javax.inject.Inject
 
 
-class GetProductsUseCase @Inject constructor(
+class GetMostSoldProductsUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository
 ) : UseCase<GetProductsByProductIdResponse.GetProductListData>() {
 
@@ -68,6 +68,7 @@ class GetProductsUseCase @Inject constructor(
         private const val PARAMS_INPUT_PRODUCT_ID = "productIDInclude"
 
         private const val PARAMS_INPUT_SOLD = "SOLD"
+        private const val PARAMS_SORT_DESC = "DESC"
 
         fun createParams(
             shopId: String,
@@ -80,7 +81,10 @@ class GetProductsUseCase @Inject constructor(
                     PARAMS_VALUE to populateProductId(productIds)
                 )
             ),
-            PARAMS_SORT to mapOf(PARAMS_INPUT_SOLD to "DESC")
+            PARAMS_SORT to mapOf(
+                PARAMS_ID to PARAMS_INPUT_SOLD,
+                PARAMS_VALUE to PARAMS_SORT_DESC
+            )
         )
 
         private fun populateProductId(productIds: List<Long>): List<String> {

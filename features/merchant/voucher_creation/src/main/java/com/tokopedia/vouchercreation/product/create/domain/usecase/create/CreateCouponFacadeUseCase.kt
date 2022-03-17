@@ -11,7 +11,7 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.entity.ImageRatio
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GenerateImageUseCase
-import com.tokopedia.vouchercreation.product.create.domain.usecase.GetProductsUseCase
+import com.tokopedia.vouchercreation.product.create.domain.usecase.GetMostSoldProductsUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.InitiateCouponUseCase
 import com.tokopedia.vouchercreation.product.create.util.GenerateImageParamsBuilder
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.InitiateVoucherUiModel
@@ -26,7 +26,7 @@ class CreateCouponFacadeUseCase @Inject constructor(
     private val initiateCouponUseCase: InitiateCouponUseCase,
     private val getShopBasicDataUseCase: ShopBasicDataUseCase,
     private val imageBuilder: GenerateImageParamsBuilder,
-    private val getProductsUseCase: GetProductsUseCase,
+    private val getMostSoldProductsUseCase: GetMostSoldProductsUseCase,
     private val userSession: UserSessionInterface
 ) {
 
@@ -49,7 +49,7 @@ class CreateCouponFacadeUseCase @Inject constructor(
     ): Int {
         val initiateCouponDeferred = scope.async { initiateCoupon(IS_UPDATE_MODE) }
         val shopDeferred = scope.async { getShopBasicDataUseCase.executeOnBackground() }
-        val topProductsDeferred = scope.async { getTopProducts(parentProductId) }
+        val topProductsDeferred = scope.async { getMostSoldProducts(parentProductId) }
 
         val shop = shopDeferred.await()
         val coupon = initiateCouponDeferred.await()
@@ -208,9 +208,9 @@ class CreateCouponFacadeUseCase @Inject constructor(
         return initiateCouponUseCase.executeOnBackground()
     }
 
-    private suspend fun getTopProducts(productIds: List<Long>): GetProductsByProductIdResponse.GetProductListData {
-        getProductsUseCase.params = GetProductsUseCase.createParams(userSession.shopId, productIds)
-        return getProductsUseCase.executeOnBackground()
+    private suspend fun getMostSoldProducts(productIds: List<Long>): GetProductsByProductIdResponse.GetProductListData {
+        getMostSoldProductsUseCase.params = GetMostSoldProductsUseCase.createParams(userSession.shopId, productIds)
+        return getMostSoldProductsUseCase.executeOnBackground()
     }
 
     private fun getImageUrlOrEmpty(pictures : List<GetProductsByProductIdResponse.Picture>): String {
