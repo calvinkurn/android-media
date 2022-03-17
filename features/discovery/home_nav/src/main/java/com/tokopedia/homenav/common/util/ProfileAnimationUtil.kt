@@ -16,9 +16,8 @@ fun TextView.animateProfileName(text: String, duration: Long = 300, completion: 
     }
 }
 
-fun ImageView.animateProfileBadge(imageUrl: String, duration: Long = 300, completion: (() -> Unit)? = null) {
+fun TextView.animateProfileBadge(duration: Long = 300, completion: (() -> Unit)? = null) {
     shrinkToCenter(duration) {
-        loadImage(imageUrl)
         expandFromCenter(duration) {
             completion?.let {
                 it()

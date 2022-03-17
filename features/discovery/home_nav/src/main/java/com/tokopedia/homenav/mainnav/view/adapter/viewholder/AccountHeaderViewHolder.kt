@@ -60,15 +60,12 @@ class AccountHeaderViewHolder(itemView: View,
         private const val GREETINGS_16_21 =  "Nyantai sambil belanja, yuk~"
         private const val GREETINGS_22_5 =  " Lagi cari apa nih kamu?"
 
-        private const val HOURS_0 = 0
         private const val HOURS_5 = 5
         private const val HOURS_9 = 9
         private const val HOURS_10 = 10
         private const val HOURS_15 = 15
         private const val HOURS_16 = 16
         private const val HOURS_21 = 21
-        private const val HOURS_22 = 22
-        private const val HOURS_23 = 23
 
         private const val ANIMATION_DURATION_MS: Long = 300
         private const val GREETINGS_DELAY = 1000L
@@ -112,7 +109,7 @@ class AccountHeaderViewHolder(itemView: View,
     private fun renderLoginState(element: AccountHeaderDataModel) {
         layoutLogin.visibility = View.VISIBLE
         val userImage: ImageUnify = layoutLoginHeader.findViewById(R.id.img_user_login)
-        val usrBadge: ImageUnify = layoutLoginHeader.findViewById(R.id.usr_badge)
+        val usrBadge: Typography = layoutLoginHeader.findViewById(R.id.usr_badge)
         val usrOvoBadge: ImageUnify = layoutLoginHeader.findViewById(R.id.usr_ovo_badge)
         val btnSettings: IconUnify = layoutLoginHeader.findViewById(R.id.btn_settings)
         val btnTryAgain: CardView = layoutLoginHeader.findViewById(R.id.btn_try_again)
@@ -187,7 +184,7 @@ class AccountHeaderViewHolder(itemView: View,
                     getCurrentGreetings(),
                     profileData.userName,
                     usrBadge,
-                    getCurrentGreetingsIconStringUrl(),
+                    getCurrentGreetingsIconStringEmoji(),
                     element.profileMembershipDataModel.badge
                 )
             }
@@ -411,14 +408,12 @@ class AccountHeaderViewHolder(itemView: View,
         }
     }
 
-    private fun getCurrentGreetingsIconStringUrl() : String {
+    private fun getCurrentGreetingsIconStringEmoji() : String {
         return when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-            in HOURS_5..HOURS_10 -> "https://images.tokopedia.net/img/android/navigation/bread.png"
-            in HOURS_10..HOURS_16 -> "https://images.tokopedia.net/img/android/navigation/hands.png"
-            in HOURS_16..HOURS_21 -> "https://images.tokopedia.net/img/android/navigation/bag.png"
-            in HOURS_22..HOURS_23 -> "https://images.tokopedia.net/img/android/navigation/emoji.png"
-            in HOURS_0..HOURS_5 -> "https://images.tokopedia.net/img/android/navigation/emoji.png"
-            else -> "https://images.tokopedia.net/img/android/navigation/bag.png"
+            in HOURS_5..HOURS_9 -> "\uD83C\uDF5E"
+            in HOURS_10..HOURS_15 -> "\uD83D\uDE4C"
+            in HOURS_16..HOURS_21 -> "\uD83D\uDECD️"
+            else -> "\uD83E\uDD14"
         }
     }
 
@@ -433,21 +428,20 @@ class AccountHeaderViewHolder(itemView: View,
 
     private var needToSwitchText: Boolean = isFirstTimeUserSeeNameAnimationOnSession()
 
-    private fun configureNameAndBadgeSwitcher(tvName: Typography, greetingString: String, nameString: String, ivBadge: ImageView, badgeGreetingsUrl: String, badgeUrl: String) {
+    private fun configureNameAndBadgeSwitcher(tvName: Typography, greetingString: String, nameString: String, tvBadge: Typography, badgeEmojiString: String, badgeUrl: String) {
         if (needToSwitchText) {
             tvName.text = greetingString
-            ivBadge.visible()
-            ivBadge.loadImage(badgeGreetingsUrl)
+            tvBadge.visible()
+            tvBadge.text = badgeEmojiString
             launch {
                 delay(GREETINGS_DELAY)
                 tvName.animateProfileName(nameString, ANIMATION_DURATION_MS)
-                ivBadge.animateProfileBadge(badgeUrl, ANIMATION_DURATION_MS)
+                tvBadge.animateProfileBadge(ANIMATION_DURATION_MS)
                 setFirstTimeUserSeeNameAnimationOnSession(false)
             }
         } else {
             tvName.text = nameString
-            ivBadge.visible()
-            ivBadge.loadImage(badgeUrl)
+            tvBadge.visible()
         }
     }
 

@@ -5,10 +5,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/usr_badge"
-        android:layout_width="14dp"
-        android:layout_height="14dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="1dp"
         android:scaleType="fitCenter"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_name"
@@ -16,6 +17,7 @@
         android:clickable="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
+        tools:text="🍞"
         />
 
     <com.tokopedia.unifyprinciples.Typography
