@@ -234,25 +234,6 @@ class TopupBillsAutoCompleteAdapter(
         }
     }
 
-    inner class AutoCompleteEmptyViewHolder(
-        private var container: ConstraintLayout,
-        private var title: TextView,
-        private var desc: TextView
-    ) {
-
-        fun setTitle(text: String) {
-            title.text = text
-        }
-
-        fun setDesc(text: String) {
-            desc.text = text
-        }
-
-        fun requestLayout() {
-            container.requestLayout()
-        }
-    }
-
     interface ContactArrayListener {
         fun getFilterText(): String
     }
