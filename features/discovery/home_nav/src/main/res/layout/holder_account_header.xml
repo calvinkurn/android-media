@@ -179,6 +179,15 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_shop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_login_header"
+            />
+
         <include
             android:id="@+id/section_header_shop"
             layout="@layout/holder_account_header_user_shop"
@@ -189,7 +198,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_login_header"
+            app:layout_constraintTop_toBottomOf="@id/recycler_shop"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

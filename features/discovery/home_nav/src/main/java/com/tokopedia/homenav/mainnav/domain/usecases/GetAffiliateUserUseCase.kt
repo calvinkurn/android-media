@@ -6,13 +6,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.homenav.mainnav.domain.model.AffiliateUserDetailData
 import com.tokopedia.homenav.mainnav.domain.usecases.query.AffiliateUserDetailQuery
-import com.tokopedia.navigation_common.model.wallet.WalletStatus
-import com.tokopedia.navigation_common.usecase.pojo.eligibility.WalletAppEligibility
-import com.tokopedia.navigation_common.usecase.query.QueryHomeWallet
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
