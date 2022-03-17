@@ -500,7 +500,7 @@ class TokoNowHomeFragment: Fragment(),
 
     override fun onShareBtnSharingEducationClicked() {
         shareClicked(shareHomeTokonow())
-        analytics.onClickShareToOthers()
+        analytics.trackClickShareButtonWidget()
     }
 
     override fun onCloseBtnSharingEducationClicked(id: String) {
@@ -1084,7 +1084,6 @@ class TokoNowHomeFragment: Fragment(),
             TokoNowLayoutState.SHOW -> onShowHomeLayout(data)
             TokoNowLayoutState.HIDE -> onHideHomeLayout(data)
             TokoNowLayoutState.LOADING -> onLoadingHomeLayout(data)
-            TokoNowLayoutState.LOADED -> getProductAddToCartQuantity()
             else -> showHomeLayout(data)
         }
     }
@@ -1121,9 +1120,15 @@ class TokoNowHomeFragment: Fragment(),
         showHomeLayout(data)
         showHeaderBackground()
         stickyLoginLoadContent()
-        getProductAddToCartQuantity()
         showSwitcherCoachMark()
+        getLayoutComponentData()
         stopRenderPerformanceMonitoring()
+    }
+
+    private fun getLayoutComponentData() {
+        localCacheModel?.let {
+            viewModelTokoNow.getLayoutComponentData(it.warehouse_id)
+        }
     }
 
     private fun showSwitcherCoachMark() {
@@ -1227,12 +1232,6 @@ class TokoNowHomeFragment: Fragment(),
         val shopId = listOf(localCacheModel?.shop_id.orEmpty())
         val warehouseId = localCacheModel?.warehouse_id
         viewModelTokoNow.getMiniCart(shopId, warehouseId)
-    }
-
-    private fun getProductAddToCartQuantity()  {
-        val shopId = listOf(localCacheModel?.shop_id.orEmpty())
-        val warehouseId = localCacheModel?.warehouse_id
-        viewModelTokoNow.getProductAddToCartQuantity(shopId, warehouseId)
     }
 
     private fun loadLayout() {

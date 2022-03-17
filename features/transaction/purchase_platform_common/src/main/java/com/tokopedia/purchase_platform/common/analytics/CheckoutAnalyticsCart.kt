@@ -916,4 +916,57 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         )
     }
 
+    // Bo Affordability
+    // TrackerId: 26977
+    fun eventClickArrowInBoTickerToReachShopPage(cartIds: String, shopId: String) {
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.CLICK_PP,
+            ConstantTransactionAnalytics.EventCategory.CART,
+            ConstantTransactionAnalytics.EventAction.CLICK_ARROW_IN_BO_TICKER_TO_REACH_SHOP_PAGE,
+            "$cartIds - $shopId"
+        )
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        sendGeneralEvent(gtmData)
+    }
+
+    // TrackerId: 27029
+    fun eventViewBoTickerWording(isAfford: Boolean, cartIds: String, shopId: String) {
+        val fulfillLabel = if (isAfford) ConstantTransactionAnalytics.EventLabel.BO_FULFILL else ConstantTransactionAnalytics.EventLabel.BO_UNFULFILL
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.VIEW_PP_IRIS,
+            ConstantTransactionAnalytics.EventCategory.CART,
+            ConstantTransactionAnalytics.EventAction.VIEW_BO_TICKER_WORDING,
+            "$fulfillLabel - $cartIds - $shopId"
+        )
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        sendGeneralEvent(gtmData)
+    }
+    // gifting
+    // tracker id : 28310
+    fun eventViewAddOnsWidget(productId: String) {
+        val gtmData = getGtmData(
+                ConstantTransactionAnalytics.EventName.VIEW_PP_IRIS,
+                ConstantTransactionAnalytics.EventCategory.CART,
+                ConstantTransactionAnalytics.EventAction.VIEW_ADD_ONS_WIDGET,
+                productId
+        )
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        sendGeneralEvent(gtmData)
+    }
+
+    // tracker id : 28311
+    fun eventClickAddOnsWidget(productId: String) {
+        val gtmData = getGtmData(
+                ConstantTransactionAnalytics.EventName.CLICK_PP,
+                ConstantTransactionAnalytics.EventCategory.CART,
+                ConstantTransactionAnalytics.EventAction.CLICK_ADD_ONS_DETAIL,
+                productId
+        )
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        sendGeneralEvent(gtmData)
+    }
 }

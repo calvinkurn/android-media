@@ -37,6 +37,9 @@ import javax.inject.Inject
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLHandshakeException
 
+
+
+
 class GraphqlCloudDataStore @Inject constructor(
     private val api: GraphqlApiSuspend,
     val cacheManager: GraphqlCacheManager,
@@ -77,10 +80,19 @@ class GraphqlCloudDataStore @Inject constructor(
             }
             header[QUERY_HASHING_HEADER] = queryHashingHeaderValue.toString()
         }
-        val url = requests[0].url
+        var url = requests[0].url
+        if(url.isNullOrEmpty()){
+            var opName: String? = requests[0].operationName
+            if (TextUtils.isEmpty(opName)) {
+                opName = CacheHelper.getQueryName(requests[0].query)
+            }
+            url = CommonUtils.getGraphqlUrlAppend(opName)
+        }
         return if(!url.isNullOrEmpty()){
             api.getResponseSuspendWithPath(url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
-        } else api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
+        } else {
+            api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
+        }
     }
 
     private fun putAkamaiHeader(header: MutableMap<String, String>, requests: List<GraphqlRequest>) {
@@ -201,22 +213,18 @@ class GraphqlCloudDataStore @Inject constructor(
                                     "hash" to queryHashValues.toString()
                                 )
                             )
-                            val reqUrl = requests[0].url
-                            if (!reqUrl.isNullOrEmpty()) {
-                                api.getResponseSuspendWithPath(
-                                    reqUrl,
-                                    requests.toMutableList(),
-                                    header,
-                                    FingerprintManager.getQueryDigest(requests),
-                                    FingerprintManager.getQueryDigest(requests)
-                                )
+                            var url = requests[0].url
+                            if(url.isNullOrEmpty()){
+                                var opName: String? = requests[0].operationName
+                                if (TextUtils.isEmpty(opName)) {
+                                    opName = CacheHelper.getQueryName(requests[0].query)
+                                }
+                                url = CommonUtils.getGraphqlUrlAppend(opName)
+                            }
+                            if(!url.isNullOrEmpty()){
+                                api.getResponseSuspendWithPath(url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
                             } else {
-                                api.getResponseSuspend(
-                                    requests.toMutableList(),
-                                    header,
-                                    FingerprintManager.getQueryDigest(requests),
-                                    FingerprintManager.getQueryDigest(requests)
-                                )
+                                api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
                             }
                         }
                         if (result.code() != Const.GQL_RESPONSE_HTTP_OK) {

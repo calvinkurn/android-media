@@ -27,6 +27,8 @@ object ProductDetailCommonConstant {
     const val SHOP_ID_PARAM = "shopId"
     const val FIELDS_PARAM = "fields"
     const val PRODUCT_ID_PARAM = "productId"
+    const val GIFTABLE_PARAM = "isGiftable"
+    const val PARENT_ID_PARAM = "parentId"
 
 
     //notify me (teaser campaign)
@@ -59,6 +61,7 @@ object ProductDetailCommonConstant {
     const val KEY_OCC_BUTTON = "occ"
     const val KEY_SAVE_BUNDLING_BUTTON = "save_bundling"
     const val KEY_SAVE_TRADEIN_BUTTON = "save_tradein"
+    const val KEY_DEFAULT_CHOOSE_VARIANT = "default_choose_variant"
     const val KEY_CHAT = "chat"
     const val KEY_REMIND_ME = "remind_me"
     const val KEY_DEFAULT_OOS = "default-oos"

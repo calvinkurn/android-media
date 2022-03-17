@@ -6,6 +6,7 @@ apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'robust'
 apply plugin: 'io.hansel.preprocessor'
 apply plugin: 'newrelic'
+apply plugin: 'embrace-swazzler'
 
 apply from: "$rootDir/buildconfig/aar/local-aar.gradle"
 apply from: '../tools/dynamic_feature_inclusion.gradle'
@@ -39,6 +40,7 @@ buildscript {
     dependencies {
         classpath rootProject.ext.gradlePlugin.crashlytics
         classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.miscDependencies.embraceSwazzler
         classpath rootProject.ext.gradlePlugin.googleServices
     }
 }
@@ -241,6 +243,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.logout)
     implementation projectOrAar(rootProject.ext.features.userIdentificationCommon)
     implementation projectOrAar(rootProject.ext.features.saldodetails)
+    implementation projectOrAar(rootProject.ext.features.pdpPaylaterWidget)
     implementation projectOrAar(rootProject.ext.features.homecredit)
     implementation projectOrAar(rootProject.ext.libraries.imageuploader)
     implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
@@ -308,6 +311,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation rootProject.ext.miscDependencies.newRelic
+    // Embrace
+    implementation rootProject.ext.miscDependencies.embraceSdk
 
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.debugToolsDependencies.chuck
@@ -363,7 +368,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.gson
-    implementation rootProject.ext.miscDependencies.robust
     implementation rootProject.ext.miscDependencies.autopatchbase
     implementation projectOrAar(rootProject.ext.libraries.keys)
 
@@ -411,6 +415,8 @@ dependencies {
 
     //Adding this to df_base_sellerapp/build.gradle was giving error - https://github.com/Meituan-Dianping/Robust/issues/444
     implementation projectOrAar(rootProject.ext.libraries.imagePickerInsta)
+
+    debugImplementation rootProject.ext.testDependencies.fragmentTest
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -64,6 +64,7 @@ dependencies {
 
     implementation rootProject.ext.debugToolsDependencies.chuck
 
+    implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
 
