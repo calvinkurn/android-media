@@ -203,36 +203,38 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     }
 
     private fun checkAbTestRollenceVariant() {
-        shopAbTestPlatform = ShopAbTestPlatform(requireContext()).apply {
-            requestParams = ShopAbTestPlatform.createRequestParam(
-                    listExperimentName = listOf(AB_TEST_OPERATIONAL_HOURS_KEY),
-                    shopId = userSession.shopId
-            )
-            fetch(object : RemoteConfig.Listener {
-                override fun onComplete(remoteConfig: RemoteConfig?) {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        val variantType = getString(AB_TEST_OPERATIONAL_HOURS_KEY, AB_TEST_OPERATIONAL_HOURS_NO_KEY)
-                        if (variantType == AB_TEST_OPERATIONAL_HOURS_NO_KEY) {
-                            // no experiment / successfully deleted, by default render new page
-                            getInitialData()
-                        }
-                        else {
-                            if (variantType.isEmpty() || variantType != AB_TEST_OPERATIONAL_HOURS_KEY) {
-                                // user not get the experiment yet,
-                                // redirect to old shop ops hour settings
-                                RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
-                                activity?.finish()
+        context?.let { ctx ->
+            shopAbTestPlatform = ShopAbTestPlatform(ctx).apply {
+                requestParams = ShopAbTestPlatform.createRequestParam(
+                        listExperimentName = listOf(AB_TEST_OPERATIONAL_HOURS_KEY),
+                        shopId = userSession.shopId
+                )
+                fetch(object : RemoteConfig.Listener {
+                    override fun onComplete(remoteConfig: RemoteConfig?) {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            val variantType = getString(AB_TEST_OPERATIONAL_HOURS_KEY, AB_TEST_OPERATIONAL_HOURS_NO_KEY)
+                            if (variantType == AB_TEST_OPERATIONAL_HOURS_NO_KEY) {
+                                // no experiment / successfully deleted, by default render new page
+                                getInitialData()
                             }
                             else {
-                                // user get new experiment
-                                getInitialData()
+                                if (variantType.isEmpty() || variantType != AB_TEST_OPERATIONAL_HOURS_KEY) {
+                                    // user not get the experiment yet,
+                                    // redirect to old shop ops hour settings
+                                    RouteManager.route(ctx, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
+                                    activity?.finish()
+                                }
+                                else {
+                                    // user get new experiment
+                                    getInitialData()
+                                }
                             }
                         }
                     }
-                }
 
-                override fun onError(e: Exception?) {}
-            })
+                    override fun onError(e: Exception?) {}
+                })
+            }
         }
     }
 
