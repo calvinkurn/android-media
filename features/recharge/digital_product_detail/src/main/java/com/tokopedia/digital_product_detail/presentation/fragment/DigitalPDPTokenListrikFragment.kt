@@ -292,7 +292,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                         userSession.userId,
                         atcData.data.cartId,
                         viewModel.digitalCheckoutPassData.productId.toString(),
-                        viewModel.operatorData.attributes.name,
+                        viewModel.selectedGridProduct.denomData.title,
                         atcData.data.priceProduct
                     )
                     navigateToCart(atcData.data.categoryId)

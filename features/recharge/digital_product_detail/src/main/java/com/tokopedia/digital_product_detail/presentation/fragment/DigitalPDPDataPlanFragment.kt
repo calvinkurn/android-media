@@ -404,7 +404,7 @@ class DigitalPDPDataPlanFragment :
                         userSession.userId,
                         atcData.data.cartId,
                         viewModel.digitalCheckoutPassData.productId.toString(),
-                        operator.attributes.name,
+                        viewModel.selectedFullProduct.denomData.title,
                         atcData.data.priceProduct
                     )
                     navigateToCart(atcData.data.categoryId)
