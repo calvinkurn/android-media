@@ -175,7 +175,7 @@ object DeviceConnectionInfo {
                         Pair(getCarrierName(context), "")
                     }
                 } else {
-                    return null
+                    return Pair(getCarrierName(context), "")
                 }
             } else {
                 return Pair(getCarrierName(context), "")
