@@ -21,13 +21,10 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.ShopStatusWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
 
-class ShopStatusViewHolder(
-    itemView: View?,
-    private val onGoToPowerMerchant: (String?, Boolean) -> Unit,
-    private val onErrorClicked: () -> Unit,
-    private val onShopStatusImpression: (ShopType) -> Unit
-) :
-    AbstractViewHolder<ShopStatusWidgetUiModel>(itemView) {
+class ShopStatusViewHolder(itemView: View?,
+                           private val onGoToPowerMerchant: (String?, Boolean) -> Unit,
+                           private val onErrorClicked: () -> Unit,
+                           private val onShopStatusImpression: (ShopType) -> Unit) : AbstractViewHolder<ShopStatusWidgetUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -59,7 +56,7 @@ class ShopStatusViewHolder(
     private var onItemViewClicked: () -> Unit = {}
 
     override fun bind(element: ShopStatusWidgetUiModel) {
-        when (val state = element.state) {
+        when(val state = element.state) {
             is SettingResponseState.SettingSuccess -> {
                 itemView.addOnImpressionListener(element.impressHolder) {
                     onShopStatusImpression(state.data)
@@ -73,8 +70,8 @@ class ShopStatusViewHolder(
 
     private fun setShopStatusSuccessLayout(
         shopType: ShopType,
-        userShopInfoUiModel: UserShopInfoWrapper.UserShopInfoUiModel?
-    ) {
+        userShopInfoUiModel: UserShopInfoWrapper.UserShopInfoUiModel?) {
+
         shopStatusDescTextView?.run {
             setOnClickListener(null)
             isClickable = false
