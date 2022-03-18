@@ -66,6 +66,7 @@
             android:maxLines="2"
             android:textColor="@color/Unify_Static_White"
             app:layout_constraintBottom_toTopOf="@+id/subtitle_textview"
+            app:layout_goneMarginBottom="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:typographyType="body_3"
