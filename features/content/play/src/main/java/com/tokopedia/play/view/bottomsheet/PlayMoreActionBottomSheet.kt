@@ -317,7 +317,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
         actionClickListener: View.OnClickListener = View.OnClickListener {}
     ) {
         Toaster.build(
-            view = requireView(),
+            view = requireView().rootView,
             text = message,
             type = toasterType,
             actionText = actionText,
