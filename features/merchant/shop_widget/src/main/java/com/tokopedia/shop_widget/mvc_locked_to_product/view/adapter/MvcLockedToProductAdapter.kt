@@ -192,7 +192,7 @@ class MvcLockedToProductAdapter(
         newList.filterIsInstance<MvcLockedToProductGridProductUiModel>().forEach { productUiModel ->
             val matchedMiniCartItem = getMatchedMiniCartItem(productUiModel, data)
             val position = visitables.indexOf(productUiModel)
-            if(matchedMiniCartItem != null){
+            if(matchedMiniCartItem != null && !matchedMiniCartItem.isError){
                 val miniCartProductId = matchedMiniCartItem.productId
                 val quantity =  matchedMiniCartItem.quantity
                 newList.setElement(
