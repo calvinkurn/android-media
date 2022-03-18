@@ -4,13 +4,13 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.MotionEvent
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -312,10 +312,7 @@ open class PickerActivity : BaseActivity()
         val toolbarBackground: Drawable? = if(toolbarTheme == ToolbarTheme.Solid){
             null
         } else {
-            val gradientColor = IntArray(2)
-            gradientColor[0] = Color.parseColor("#99424242")
-            gradientColor[1] = Color.parseColor("#00424242")
-            GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, gradientColor)
+            MethodChecker.getDrawable(this, R.drawable.bg_gradient_nav_toolbar)
         }
 
         binding?.toolbarContainer?.background = toolbarBackground
