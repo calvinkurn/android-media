@@ -64,10 +64,10 @@ class ProfileViewModel @Inject constructor(
                 val param = uploader.createParams(filePath = image, sourceId = SOURCE_ID)
                 when (val result = uploader(param)) {
                     is UploadResult.Success -> saveProfilePicture(result.uploadId)
-                    is UploadResult.Error -> mutableErrorMessage.value = ProfileInfoError.GeneralError(result.message)
+                    is UploadResult.Error -> mutableErrorMessage.value = ProfileInfoError.ErrorSavePhoto(result.message)
                 }
             } catch (e: Exception) {
-                mutableErrorMessage.value = ProfileInfoError.GeneralError(e.message)
+                mutableErrorMessage.value = ProfileInfoError.ErrorSavePhoto(e.message)
             }
         }
     }

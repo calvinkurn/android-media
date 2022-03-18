@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -210,6 +211,7 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
                     view, errorMsg,
                     Toaster.LENGTH_LONG, Toaster.TYPE_ERROR
                 )
+                setInvalidInputUsername(errorMsg)
                 tracker.trackOnBtnSimpanUsernameFailed(errorMsg)
             }
         }
@@ -319,6 +321,9 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
         binding?.stubField?.etUsername?.setCounter(maxChar)
         binding?.stubField?.etUsername?.icon1?.hide()
         binding?.stubField?.etUsername?.visibility = View.VISIBLE
+        if (data.username.isNotBlank()) {
+            binding?.stubField?.etUsername?.setMessage(getString(R.string.description_textfield_username))
+        }
         setEditTextUsernameListener()
     }
 
@@ -328,7 +333,6 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
                 (it as ChangeBioUsernameActivity).supportActionBar?.title =
                     getString(R.string.title_toolbar_edit_username)
             }
-            binding?.stubField?.etUsername?.setMessage(getString(R.string.description_textfield_username))
         } else {
             activity?.let {
                 (it as ChangeBioUsernameActivity).supportActionBar?.title =
@@ -366,6 +370,7 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
         binding?.btnSubmit?.setOnClickListener {
             tracker.trackOnBtnSimpanUsernameClick()
             showLoading()
+            viewModel.cancelValidation()
             viewModel.submitUsername(binding?.stubField?.etUsername?.editText?.text.toString())
         }
 
@@ -448,8 +453,11 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
     private fun setValidInput() {
         binding?.btnSubmit?.isEnabled = true
         binding?.stubField?.etUsername?.icon1?.show()
-        binding?.stubField?.etUsername?.setMessage(getString(R.string.description_textfield_username))
-        binding?.stubField?.etUsername?.setMessage(getString(R.string.description_textfield_username))
+        if (profileFeed?.username?.isBlank() == false) {
+            binding?.stubField?.etUsername?.setMessage(getString(R.string.description_textfield_username))
+        } else {
+            binding?.stubField?.etUsername?.setMessage("")
+        }
         binding?.stubField?.etUsername?.isInputError = false
     }
 
