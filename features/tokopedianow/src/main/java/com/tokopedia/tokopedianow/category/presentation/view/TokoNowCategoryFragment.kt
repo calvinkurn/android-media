@@ -385,7 +385,13 @@ class TokoNowCategoryFragment:
     }
 
     override fun onCategoryFilterChipClick(option: Option, isSelected: Boolean) {
-        categoryIdLvl2 = option.value
+        categoryIdLvl2 = if (isSelected) {
+            categoryIdLvl3 = DEFAULT_CATEGORY_ID
+            option.value
+        } else {
+            categoryIdLvl3 = DEFAULT_CATEGORY_ID
+            DEFAULT_CATEGORY_ID
+        }
         CategoryTracking.sendApplyCategoryL2FilterEvent(getViewModel().categoryL1, option.value)
 
         super.onCategoryFilterChipClick(option, isSelected)
@@ -414,7 +420,11 @@ class TokoNowCategoryFragment:
     }
 
     override fun onApplyCategory(selectedOption: Option) {
-        categoryIdLvl3 = selectedOption.value
+        categoryIdLvl3 = if (SearchApiConst.SC == selectedOption.key) {
+            selectedOption.value
+        } else {
+            DEFAULT_CATEGORY_ID
+        }
         CategoryTracking.sendApplyCategoryL3FilterEvent(getViewModel().categoryL1, selectedOption.value)
 
         super.onApplyCategory(selectedOption)
