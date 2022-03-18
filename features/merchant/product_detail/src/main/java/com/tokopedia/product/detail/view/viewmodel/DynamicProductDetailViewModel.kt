@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.view.viewmodel
 
-import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
@@ -63,29 +62,27 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PRICE_MINIMUM_SHIPPING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_3
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_K2K
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
+import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_BE_ERROR
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_HIT_DYNAMIC_SLOTTING
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_TIMEOUT_EXCEEDED
-import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
 import com.tokopedia.product.detail.usecase.GetP2DataAndMiniCartUseCase
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
 import com.tokopedia.product.detail.usecase.GetProductInfoP2DataUseCase
 import com.tokopedia.product.detail.usecase.GetProductInfoP2LoginUseCase
 import com.tokopedia.product.detail.usecase.GetProductInfoP2OtherUseCase
+import com.tokopedia.product.detail.usecase.GetProductRecommendationUseCase
 import com.tokopedia.product.detail.usecase.ToggleNotifyMeUseCase
 import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
+import com.tokopedia.product.detail.view.util.ProductRecommendationMapper
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
-import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -134,8 +131,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val toggleFavoriteUseCase: Lazy<ToggleFavoriteUseCase>,
                                                              private val removeWishlistUseCase: Lazy<RemoveWishListUseCase>,
                                                              private val addWishListUseCase: Lazy<AddWishListUseCase>,
+                                                             private val getProductRecommendationUseCase: Lazy<GetProductRecommendationUseCase>,
                                                              private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
-                                                             private val getRecommendationFilterChips: Lazy<GetRecommendationFilterChips>,
                                                              private val trackAffiliateUseCase: Lazy<TrackAffiliateUseCase>,
                                                              private val updateCartCounterUseCase: Lazy<UpdateCartCounterUseCase>,
                                                              private val addToCartUseCase: Lazy<AddToCartUseCase>,
@@ -270,7 +267,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     var videoTrackerData: Pair<Long, Long>? = null
 
-    var notifyMeAction: String = ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
     var tradeInParams: TradeInParams = TradeInParams()
     var variantData: ProductVariant? = null
@@ -378,24 +374,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 emit((result.data.message).asSuccess())
             }
         }
-    }
-
-    override fun flush() {
-        super.flush()
-        getPdpLayoutUseCase.get().cancelJobs()
-        getProductInfoP2LoginUseCase.get().cancelJobs()
-        getProductInfoP2OtherUseCase.get().cancelJobs()
-        toggleFavoriteUseCase.get().cancelJobs()
-        trackAffiliateUseCase.get().cancelJobs()
-        getRecommendationUseCase.get().unsubscribe()
-        removeWishlistUseCase.get().unsubscribe()
-        updateCartCounterSubscription?.unsubscribe()
-        addToCartUseCase.get().unsubscribe()
-        deleteCartUseCase.get().cancelJobs()
-        addToCartOcsUseCase.get().unsubscribe()
-        toggleNotifyMeUseCase.get().cancelJobs()
-        discussionMostHelpfulUseCase.get().cancelJobs()
-        getTopadsIsAdsUseCase.get().cancelJobs()
     }
 
     fun getUserLocationCache(): LocalCacheModel {
@@ -768,109 +746,81 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         })
     }
 
-    fun loadRecommendation(pageName: String) {
-        launch(dispatcher.main) {
-            if (!GlobalConfig.isSellerApp()) {
+    fun loadRecommendation(pageName: String,
+                           productId: String,
+                           isTokoNow: Boolean,
+                           miniCart: MutableMap<String, MiniCartItem>?) {
+        if (GlobalConfig.isSellerApp()) {
+            return
+        }
 
-                if (!alreadyHitRecom.contains(pageName)) {
-                    alreadyHitRecom.add(pageName)
-                } else {
-                    return@launch
-                }
+        if (!alreadyHitRecom.contains(pageName)) {
+            alreadyHitRecom.add(pageName)
+        } else {
+            return
+        }
 
-                try {
-                    val recomData = withContext(dispatcher.io) {
-                        var recomWidget = RecommendationWidget()
+        launchCatchError(dispatcher.main, block = {
+            val response = getProductRecommendationUseCase.get().executeOnBackground(
+                    GetProductRecommendationUseCase.createParams(
+                            productId = productId,
+                            pageName = pageName,
+                            isTokoNow = isTokoNow,
+                            miniCartData = miniCart
+                    )
+            )
 
-                        val productIds = arrayListOf(getDynamicProductInfoP1?.basic?.productID
-                                ?: "")
-                        val productIdsString = TextUtils.join(",", productIds) ?: ""
-                        val recomFilterList = mutableListOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
-                        if (pageName == PDP_3 || pageName == PDP_K2K) {
-                            getRecommendationFilterChips.get().setParams(
-                                    userId = if (userSessionInterface.userId.isEmpty()) 0 else userSessionInterface.userId.toInt(),
-                                    pageName = pageName,
-                                    productIDs = productIdsString,
-                                    xSource = ProductDetailConstant.DEFAULT_X_SOURCE,
-                                    isTokonow = getDynamicProductInfoP1?.basic?.isTokoNow ?: false
-                            )
-                            recomFilterList.addAll(getRecommendationFilterChips.get().executeOnBackground().filterChip)
-                        }
-
-                        val recomData = getRecommendationUseCase.get().createObservable(getRecommendationUseCase.get().getRecomTokonowParams(
-                                pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
-                                pageName = pageName,
-                                productIds = productIds,
-                                isTokonow = getDynamicProductInfoP1?.basic?.isTokoNow ?: false
-                        )).toBlocking().first()
-
-                        if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
-                            recomWidget = recomData.first().copy(
-                                    recommendationFilterChips = recomFilterList,
-                                    pageName = pageName
-                            )
-                            if (recomWidget.layoutType == LAYOUTTYPE_HORIZONTAL_ATC) {
-                                recomWidget.recommendationItemList.forEach { item ->
-                                    _p2Data.value?.miniCart?.let {
-                                        if (item.isProductHasParentID()) {
-                                            var variantTotalItems = 0
-                                            it.values.forEach { miniCartItem ->
-                                                if (miniCartItem.productParentId == item.parentID.toString()) {
-                                                    variantTotalItems += miniCartItem.quantity
-                                                }
-                                            }
-                                            item.updateItemCurrentStock(variantTotalItems)
-                                        } else {
-                                            item.updateItemCurrentStock(it[item.productId.toString()]?.quantity
-                                                    ?: 0)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        recomWidget
-                    }
-                    //since there is posibility gql return empty page name and recom list
-                    //we append UI Page Name to be validated
-                    recomData.recomUiPageName = pageName
-                    _loadTopAdsProduct.value = recomData.asSuccess()
-                } catch (e: Throwable) {
-                    _loadTopAdsProduct.value = Throwable(pageName).asFail()
-                }
-            }
+            _loadTopAdsProduct.value = response.asSuccess()
+        }) {
+            _loadTopAdsProduct.value = Throwable(pageName).asFail()
         }
     }
 
-    fun getRecommendation(recommendationDataModel: ProductRecommendationDataModel, annotationChip: AnnotationChip, position: Int, filterPosition: Int) {
+    fun recommendationChipClicked(recommendationDataModel: ProductRecommendationDataModel,
+                                  annotationChip: AnnotationChip,
+                                  productId: String) {
         launchCatchError(dispatcher.io, block = {
             if (!GlobalConfig.isSellerApp()) {
-                val recomData = getRecommendationUseCase.get().createObservable(getRecommendationUseCase.get().getRecomParams(
+                val requestParams = GetRecommendationRequestParam(
                         pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
                         pageName = recommendationDataModel.recomWidgetData?.pageName ?: "",
                         queryParam = if (annotationChip.recommendationFilterChip.isActivated) annotationChip.recommendationFilterChip.value else "",
-                        productIds = arrayListOf(getDynamicProductInfoP1?.basic?.productID ?: "")
-                )).toBlocking().first()
-                if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
-                    val newRecommendation = recomData.first()
-                    _filterTopAdsProduct.postValue(recommendationDataModel.copy(
-                            recomWidgetData = newRecommendation,
-                            filterData = selectOrDeselectAnnotationChip(recommendationDataModel.filterData, annotationChip.recommendationFilterChip.name, annotationChip.recommendationFilterChip.isActivated)
-                    ))
-                    _statusFilterTopAdsProduct.postValue(true.asSuccess())
+                        productIds = arrayListOf(productId)
+                )
+                val recommendationResponse = getRecommendationUseCase.get().getData(requestParams)
+                val updatedData = if (recommendationResponse.isNotEmpty()
+                        && recommendationResponse.first().recommendationItemList.isNotEmpty()) {
+                    recommendationResponse.first()
                 } else {
-                    _filterTopAdsProduct.postValue(recommendationDataModel.copy(
-                            filterData = selectOrDeselectAnnotationChip(recommendationDataModel.filterData, annotationChip.recommendationFilterChip.name, annotationChip.recommendationFilterChip.isActivated)
-                    ))
-                    _statusFilterTopAdsProduct.postValue(false.asSuccess())
+                    null
                 }
+
+                updateFilterTopadsProduct(
+                        updatedData,
+                        recommendationDataModel,
+                        annotationChip
+                )
             }
         }) { throwable ->
-            _filterTopAdsProduct.postValue(recommendationDataModel.copy(
-                    filterData = selectOrDeselectAnnotationChip(recommendationDataModel.filterData, annotationChip.recommendationFilterChip.name, annotationChip.recommendationFilterChip.isActivated)
-            ))
+            updateFilterTopadsProduct(
+                    null,
+                    recommendationDataModel,
+                    annotationChip
+            )
             _statusFilterTopAdsProduct.postValue(throwable.asFail())
         }
+    }
+
+    private fun updateFilterTopadsProduct(updatedData: RecommendationWidget?,
+                                          recommendationDataModel: ProductRecommendationDataModel,
+                                          annotationChip: AnnotationChip) {
+        _filterTopAdsProduct.postValue(recommendationDataModel.copy(
+                recomWidgetData = updatedData ?: recommendationDataModel.recomWidgetData,
+                filterData = ProductRecommendationMapper.selectOrDeselectAnnotationChip(
+                        filterData = recommendationDataModel.filterData,
+                        name = annotationChip.recommendationFilterChip.name,
+                        isActivated = annotationChip.recommendationFilterChip.isActivated)
+        ))
     }
 
     fun getProductTopadsStatus(
@@ -924,18 +874,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 //nothing to do since fire and forget
             }
         }
-    }
-
-    private fun selectOrDeselectAnnotationChip(filterData: List<AnnotationChip>?, name: String, isActivated: Boolean): List<AnnotationChip> {
-        return filterData?.map {
-            it.copy(
-                    recommendationFilterChip = it.recommendationFilterChip.copy(
-                            isActivated =
-                            name == it.recommendationFilterChip.name
-                                    && isActivated
-                    )
-            )
-        } ?: listOf()
     }
 
     fun getMiniCart(shopId: String) {
@@ -1199,7 +1137,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         ProductDetailLogger.logThrowable(throwable, P2_DATA_ERROR_TYPE, productId, deviceId, extras)
     }
 
-    private fun updateNotifyMeData(productId:String) {
+    private fun updateNotifyMeData(productId: String) {
         val selectedUpcoming = p2Data.value?.upcomingCampaigns?.get(productId)
         p2Data.value?.upcomingCampaigns?.get(productId)?.notifyMe = selectedUpcoming?.notifyMe != true
     }
@@ -1214,7 +1152,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             } ?: emptyList()
 
             val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(
-                productIds, categoryIds
+                    productIds, categoryIds
             )
             val response = playWidgetTools.getWidgetFromNetwork(widgetType)
             val uiModel = playWidgetTools.mapWidgetToModel(response)
@@ -1225,13 +1163,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun updatePlayWidgetToggleReminder(
-        playWidgetState: PlayWidgetState,
-        channelId: String,
-        reminderType: PlayWidgetReminderType
+            playWidgetState: PlayWidgetState,
+            channelId: String,
+            reminderType: PlayWidgetReminderType
     ) {
         launchCatchError(block = {
             val updatedUi = playWidgetTools.updateActionReminder(
-                playWidgetState, channelId, reminderType
+                    playWidgetState, channelId, reminderType
             )
             _playWidgetModel.value = Success(updatedUi)
 
@@ -1240,14 +1178,14 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 _playWidgetReminderSwitch.value = Success(reminderType)
             } else {
                 val reversedToggleUi = playWidgetTools.updateActionReminder(
-                    playWidgetState, channelId, reminderType.switch()
+                        playWidgetState, channelId, reminderType.switch()
                 )
                 _playWidgetModel.value = Success(reversedToggleUi)
                 _playWidgetReminderSwitch.value = Fail(Throwable())
             }
         }, onError = {
             val reversedToggleUi = playWidgetTools.updateActionReminder(
-                playWidgetState, channelId, reminderType.switch()
+                    playWidgetState, channelId, reminderType.switch()
             )
             _playWidgetModel.value = Success(reversedToggleUi)
             _playWidgetReminderSwitch.value = Fail(it)
