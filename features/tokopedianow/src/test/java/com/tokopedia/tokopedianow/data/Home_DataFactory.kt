@@ -10,18 +10,38 @@ import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.response.Tokonow
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.MiniCartItemType
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
-import com.tokopedia.tokopedianow.common.model.*
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryListUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
-import com.tokopedia.tokopedianow.home.domain.model.*
-import com.tokopedia.tokopedianow.home.presentation.uimodel.*
+import com.tokopedia.tokopedianow.home.domain.model.Data
+import com.tokopedia.tokopedianow.home.domain.model.GetQuestListResponse
+import com.tokopedia.tokopedianow.home.domain.model.Header
+import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
+import com.tokopedia.tokopedianow.home.domain.model.KeywordSearchData
+import com.tokopedia.tokopedianow.home.domain.model.QuestList
+import com.tokopedia.tokopedianow.home.domain.model.QuestListResponse
+import com.tokopedia.tokopedianow.home.domain.model.QuestUser
+import com.tokopedia.tokopedianow.home.domain.model.ResultStatus
+import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
+import com.tokopedia.tokopedianow.home.domain.model.Ticker
+import com.tokopedia.tokopedianow.home.domain.model.TickerResponse
+import com.tokopedia.tokopedianow.home.domain.model.Tickers
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.fragment.TokoNowRepurchaseFragment
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -237,21 +257,25 @@ fun createChooseAddress(): GetStateChosenAddressQglResponse {
     )
 }
 
-fun createMiniCartSimplifier(): MiniCartSimplifiedData {
-    return MiniCartSimplifiedData(
+fun createMiniCartSimplifier(): MiniCartSimplifiedData2 {
+    return MiniCartSimplifiedData2(
             miniCartWidgetData = MiniCartWidgetData(
                     totalProductCount = 1,
                     totalProductPrice = 100
             ),
-            miniCartItems = listOf(
-                    MiniCartItem(
+            miniCartItems = mapOf(
+                    MiniCartItemKey("125") to MiniCartItem2.MiniCartItemProduct(
                             isError = false,
                             cartId = "123",
                             productId = "125",
                             productParentId = "126",
                             quantity = 12,
                             notes = "Hai"
-                    )
+                    ),
+                    MiniCartItemKey("126", type = MiniCartItemType.PARENT) to MiniCartItem2.MiniCartItemParentProduct(
+                            parentId = "126",
+                            totalQuantity = 12,
+                    ),
             ),
             isShowMiniCartWidget = true
     )

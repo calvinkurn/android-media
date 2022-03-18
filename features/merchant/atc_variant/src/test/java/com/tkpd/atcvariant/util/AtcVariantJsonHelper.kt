@@ -2,9 +2,13 @@ package com.tkpd.atcvariant.util
 
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
 import com.tokopedia.minicart.common.domain.mapper.MiniCartSimplifiedMapper
-import com.tokopedia.product.detail.common.data.model.aggregator.*
+import com.tokopedia.product.detail.common.data.model.aggregator.AggregatorMiniCartUiModel
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregator
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorResponse
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import java.io.File
 import java.lang.reflect.Type
 
@@ -19,7 +23,7 @@ object AtcVariantJsonHelper {
     fun generateAggregatorData(isTokoNow: Boolean): AggregatorMiniCartUiModel {
         val mockResponse = mockAggregatorMiniCart()
 
-        return AggregatorMiniCartUiModel(mockResponse.first, if (!isTokoNow) null else mockResponse.second.miniCartItems.associateBy({ it.productId }, { it }))
+        return AggregatorMiniCartUiModel(mockResponse.first, if (!isTokoNow) null else mockResponse.second.miniCartItems)
     }
 
     fun generateParamsVariantFulfilled(productId: String, isTokoNow: Boolean, emptyMiniCart: Boolean = false): ProductVariantBottomSheetParams {
@@ -30,7 +34,7 @@ object AtcVariantJsonHelper {
                 pageSource = "product detail page",
                 isTokoNow = isTokoNow,
                 variantAggregator = mockResponse.first,
-                miniCartData = if (!isTokoNow || emptyMiniCart) null else mockResponse.second.miniCartItems.associateBy({ it.productId }, { it })
+                miniCartData = if (!isTokoNow || emptyMiniCart) null else mockResponse.second.miniCartItems
         )
     }
 
@@ -42,12 +46,12 @@ object AtcVariantJsonHelper {
         )
     }
 
-    private fun mockAggregatorMiniCart(): Pair<ProductVariantAggregatorUiData, MiniCartSimplifiedData> {
+    private fun mockAggregatorMiniCart(): Pair<ProductVariantAggregatorUiData, MiniCartSimplifiedData2> {
         val variantAggregatorResponse: ProductVariantAggregatorResponse = createMockGraphqlSuccessResponse(GQL_VARIANT_AGGREGATOR_RESPONSE_JSON, ProductVariantAggregatorResponse::class.java)
         val miniCartResponse: MiniCartGqlResponse = createMockGraphqlSuccessResponse(GQL_MINI_CART_RESPONSE_JSON, MiniCartGqlResponse::class.java)
 
         val variantAggregator = mapVariantAggregator(variantAggregatorResponse.response)
-        val miniCart = MiniCartSimplifiedMapper().mapMiniCartSimplifiedData(miniCartResponse.miniCart)
+        val miniCart = MiniCartSimplifiedMapper().mapMiniCartSimplifiedData2(miniCartResponse.miniCart)
 
         return variantAggregator to miniCart
     }

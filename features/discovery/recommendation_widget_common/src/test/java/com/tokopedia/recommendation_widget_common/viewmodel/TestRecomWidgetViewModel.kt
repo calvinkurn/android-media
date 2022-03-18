@@ -10,8 +10,10 @@ import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
@@ -27,8 +29,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.mockk
 import io.mockk.every
+import io.mockk.mockk
 import io.mockk.mockkStatic
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
@@ -81,9 +83,10 @@ class TestRecomWidgetViewModel {
         mockRecomFilterChip
     )
     private val mockPageNameTokonow = "tokonow"
-    private val miniCartItem = MiniCartItem(productId = "Sukses")
-    private val mockMiniCartWithPageData = MiniCartSimplifiedData(
-        miniCartItems = listOf(miniCartItem)
+    private val miniCartItemKey = MiniCartItemKey("Sukses")
+    private val miniCartItem = MiniCartItem2.MiniCartItemProduct(productId = "Sukses")
+    private val mockMiniCartWithPageData = MiniCartSimplifiedData2(
+        miniCartItems = mapOf(miniCartItemKey to miniCartItem)
     )
     private val mockUserLoggedIn = true
     private val mockUserNonLoggedIn = false
@@ -101,8 +104,9 @@ class TestRecomWidgetViewModel {
     )
     private val timeOut = "Time out"
     private val mockThrowableTimeOut = Throwable(timeOut)
-    val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
-    val miniCartSimplifiedDataMock = MiniCartSimplifiedData(miniCartItems = listOf(miniCart))
+    val miniCartKey = MiniCartItemKey(recomItem.productId.toString())
+    val miniCart = MiniCartItem2.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
+    val miniCartSimplifiedDataMock = MiniCartSimplifiedData2(miniCartItems = mapOf(miniCartKey to miniCart))
 
     private val recomItemForAtc = RecommendationItem(
         productId = 1234,
@@ -271,7 +275,7 @@ class TestRecomWidgetViewModel {
         viewModel.updateMiniCartWithPageData(mockMiniCartWithPageData)
 
         Assert.assertTrue(!mockAtcResponseSuccess.isStatusError())
-        Assert.assertNotNull(viewModel.miniCartData.value?.get(miniCartItem.productId))
+        Assert.assertNotNull(viewModel.miniCartData.value?.getMiniCartItemProduct(miniCartItem.productId))
     }
 
     @Test

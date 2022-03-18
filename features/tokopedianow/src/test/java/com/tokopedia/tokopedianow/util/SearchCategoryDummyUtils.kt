@@ -1,8 +1,10 @@
 package com.tokopedia.tokopedianow.util
 
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.MiniCartItemType
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 
 object SearchCategoryDummyUtils {
@@ -12,20 +14,22 @@ object SearchCategoryDummyUtils {
             totalProductPrice = 1000000,
     )
 
-    val miniCartItems get() = listOf(
-            MiniCartItem(productId = "574261655", productParentId = "0", quantity = 10),
+    val miniCartItems get() = mapOf(
+            MiniCartItemKey("574261655") to MiniCartItem2.MiniCartItemProduct(productId = "574261655", productParentId = "0", quantity = 10),
 
-            MiniCartItem(productId = "574261652", productParentId = "0", quantity = 3),
+            MiniCartItemKey("574261652") to MiniCartItem2.MiniCartItemProduct(productId = "574261652", productParentId = "0", quantity = 3),
 
-            MiniCartItem(productId = "576261652", productParentId = "1682734974", quantity = 2),
-            MiniCartItem(productId = "576261651", productParentId = "1682734974", quantity = 6),
-            MiniCartItem(productId = "576261653", productParentId = "1682734974", quantity = 7),
+            MiniCartItemKey("576261652") to MiniCartItem2.MiniCartItemProduct(productId = "576261652", productParentId = "1682734974", quantity = 2),
+            MiniCartItemKey("576261651") to MiniCartItem2.MiniCartItemProduct(productId = "576261651", productParentId = "1682734974", quantity = 6),
+            MiniCartItemKey("576261653") to MiniCartItem2.MiniCartItemProduct(productId = "576261653", productParentId = "1682734974", quantity = 7),
+            MiniCartItemKey("1682734974", type = MiniCartItemType.PARENT) to MiniCartItem2.MiniCartItemParentProduct(parentId = "1682734974", totalQuantity = 15),
 
-            MiniCartItem(productId = "576861653", productParentId = "2682234972", quantity = 1),
-            MiniCartItem(productId = "576861652", productParentId = "2682234972", quantity = 5),
+            MiniCartItemKey("576861653") to MiniCartItem2.MiniCartItemProduct(productId = "576861653", productParentId = "2682234972", quantity = 1),
+            MiniCartItemKey("576861652") to MiniCartItem2.MiniCartItemProduct(productId = "576861652", productParentId = "2682234972", quantity = 5),
+            MiniCartItemKey("2682234972", type = MiniCartItemType.PARENT) to MiniCartItem2.MiniCartItemParentProduct(parentId = "2682234972", totalQuantity = 6),
     )
 
-    val miniCartSimplifiedData get() = MiniCartSimplifiedData(
+    val miniCartSimplifiedData get() = MiniCartSimplifiedData2(
             miniCartWidgetData = miniCartWidgetData,
             miniCartItems = miniCartItems,
             isShowMiniCartWidget = true,

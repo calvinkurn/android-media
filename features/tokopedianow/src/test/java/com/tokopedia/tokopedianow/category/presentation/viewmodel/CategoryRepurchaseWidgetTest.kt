@@ -2,8 +2,10 @@ package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
@@ -95,12 +97,12 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
     }
 
     private fun `Given get mini cart simplified use case will be successful`(
-        miniCartSimplifiedData: MiniCartSimplifiedData
+        miniCartSimplifiedData: MiniCartSimplifiedData2
     ) {
         every {
             getMiniCartListSimplifiedUseCase.execute(any(), any())
         } answers {
-            firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(miniCartSimplifiedData)
+            firstArg<(MiniCartSimplifiedData2) -> Unit>().invoke(miniCartSimplifiedData)
         }
     }
 
@@ -110,7 +112,7 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
 
     private fun `Then assert repurchase widget product quantity`(
         visitableList: List<Visitable<*>>,
-        miniCartSimplifiedData: MiniCartSimplifiedData,
+        miniCartSimplifiedData: MiniCartSimplifiedData2,
     ) {
         val repurchaseWidgetUiModel = visitableList.getRepurchaseWidgetUiModel()
         val repurchaseProductList = repurchaseWidgetUiModel.productList
@@ -124,12 +126,13 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
         find { it is TokoNowRepurchaseUiModel } as TokoNowRepurchaseUiModel
 
     private fun `Then verify non variant product quantity`(
-        miniCartItems: List<MiniCartItem>,
-        repurchaseProductList: List<TokoNowProductCardUiModel>,
+            miniCartItems: Map<MiniCartItemKey, MiniCartItem2>,
+            repurchaseProductList: List<TokoNowProductCardUiModel>,
     ) {
         val miniCartItemsNonVariant = miniCartItems.filter {
-            it.productParentId == NO_VARIANT_PARENT_PRODUCT_ID
-        }
+            val value = it.value
+            value is MiniCartItem2.MiniCartItemProduct && value.productParentId == NO_VARIANT_PARENT_PRODUCT_ID
+        }.map { it.value as MiniCartItem2.MiniCartItemProduct }
 
         miniCartItemsNonVariant.forEach { miniCartItem ->
             val productItem = repurchaseProductList.find {
@@ -144,22 +147,22 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
         }
     }
 
-    private fun createInvalidNonVariantQtyReason(miniCartItem: MiniCartItem) =
+    private fun createInvalidNonVariantQtyReason(miniCartItem: MiniCartItem2.MiniCartItemProduct) =
         "Product \"${miniCartItem.productId}\" non variant quantity is invalid."
 
     private fun `Then verify product variant quantity`(
-        miniCartItems: List<MiniCartItem>,
+        miniCartItems: Map<MiniCartItemKey, MiniCartItem2>,
         repurchaseProductList: List<TokoNowProductCardUiModel>,
     ) {
-        val miniCartItemsVariant = miniCartItems.filter {
-            it.productParentId != NO_VARIANT_PARENT_PRODUCT_ID
+        val miniCartItemsVariant = miniCartItems.mapNotNull {
+            if (it.value is MiniCartItem2.MiniCartItemParentProduct) it.value as MiniCartItem2.MiniCartItemParentProduct else null
         }
-        val miniCartItemsVariantGroup = miniCartItemsVariant.groupBy { it.productParentId }
+//        val miniCartItemsVariantGroup = miniCartItemsVariant.groupBy { it.productParentId }
 
-        miniCartItemsVariantGroup.forEach { miniCartItemGroup ->
-            val totalQuantity = miniCartItemGroup.value.sumOf { it.quantity }
+        miniCartItemsVariant.forEach { miniCartItemGroup ->
+            val totalQuantity = miniCartItemGroup.totalQuantity
             val productItem = repurchaseProductList.find {
-                it.parentId == miniCartItemGroup.key
+                it.parentId == miniCartItemGroup.parentId
             } ?: return@forEach
             val parentProductId = productItem.productId
             val productId = productItem.productId
@@ -328,9 +331,7 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
 
     private fun AddToCartNonVariantTestHelper.`update repurchase widget product`() {
         val productIdToATC = PRODUCT_ID_NON_VARIANT_ATC
-        val productInMiniCart = SearchCategoryDummyUtils.miniCartItems.find {
-            it.productId == productIdToATC
-        }!!
+        val productInMiniCart = SearchCategoryDummyUtils.miniCartItems.getMiniCartItemProduct(productIdToATC)!!
         val productUpdatedQuantity = productInMiniCart.quantity - 3
 
         `Given view setup to update quantity`(productIdToATC, productUpdatedQuantity)
