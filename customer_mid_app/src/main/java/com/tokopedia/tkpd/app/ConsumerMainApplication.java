@@ -31,6 +31,7 @@ import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
+import com.tokopedia.device.info.DeviceConnectionInfo;
 import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -122,6 +123,8 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
     private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
     private final boolean LEAK_CANARY_DEFAULT_TOGGLE = true;
+    private final String EMBRACE_PRIMARY_CARRIER_KEY = "operatorNameMain";
+    private final String EMBRACE_SECONDARY_CARRIER_KEY = "operatorNameSecondary";
 
     GratificationSubscriber gratificationSubscriber;
 
@@ -153,6 +156,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         if (getUserSession().isLoggedIn()) {
             Embrace.getInstance().setUserIdentifier(getUserSession().getUserId());
         }
+        setEmbraceCarrierProperties();
     }
 
     private void checkAppPackageNameAsync() {
@@ -430,6 +434,16 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         }
     }
 
+    private void setEmbraceCarrierProperties() {
+        Pair<String, String> carriersName = DeviceConnectionInfo.getDualSimCarrierNames(this);
+        if (carriersName != null) {
+            Embrace.getInstance().addSessionProperty(EMBRACE_PRIMARY_CARRIER_KEY,
+                    carriersName.component1(), false);
+            Embrace.getInstance().addSessionProperty(EMBRACE_SECONDARY_CARRIER_KEY,
+                    carriersName.component2(), false);
+        }
+    }
+
     private void openShakeDetectCampaignPage(boolean isLongShake) {
         Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConstInternalPromo.PROMO_CAMPAIGN_SHAKE_LANDING, Boolean.toString(isLongShake));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -504,7 +518,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         RemoteConfigInstance.initAbTestPlatform(this);
     }
 
-    private void createAndCallFetchAbTest(){
+    private void createAndCallFetchAbTest() {
         //don't convert to lambda does not work in kit kat
         WeaveInterface weave = new WeaveInterface() {
             @NotNull

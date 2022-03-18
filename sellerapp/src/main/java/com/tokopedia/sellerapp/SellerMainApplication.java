@@ -23,6 +23,7 @@ import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.device.info.DeviceConnectionInfo;
 import com.tokopedia.encryption.security.AESEncryptorECB;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.util.GqlActivityCallback;
@@ -77,6 +78,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
     private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_sellerapp_log_config_new_relic";
     private static final String REMOTE_CONFIG_EMBRACE_KEY_LOG = "android_sellerapp_log_config_embrace";
     private static final String PARSER_SCALYR_SA = "android-seller-app-p%s";
+    private final String EMBRACE_PRIMARY_CARRIER_KEY = "operatorNameMain";
+    private final String EMBRACE_SECONDARY_CARRIER_KEY = "operatorNameSecondary";
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -130,6 +133,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
 
         Loader.init(this);
         setEmbraceUserId();
+        setEmbraceCarrierProperties();
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
@@ -326,6 +330,16 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
     private void setEmbraceUserId() {
         if (getUserSession().isLoggedIn()) {
             Embrace.getInstance().setUserIdentifier(getUserSession().getUserId());
+        }
+    }
+
+    private void setEmbraceCarrierProperties() {
+        Pair<String, String> carriersName = DeviceConnectionInfo.getDualSimCarrierNames(this);
+        if (carriersName != null) {
+            Embrace.getInstance().addSessionProperty(EMBRACE_PRIMARY_CARRIER_KEY,
+                    carriersName.component1(), false);
+            Embrace.getInstance().addSessionProperty(EMBRACE_SECONDARY_CARRIER_KEY,
+                    carriersName.component2(), false);
         }
     }
 
