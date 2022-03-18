@@ -153,6 +153,7 @@ object ShopPageTrackingConstant {
     const val SINGLE_BUNDLE_WIDGET = "single bundling widget"
     const val PRODUCT_BUNDLING = "product bundling"
     const val MULTIPLE_TYPE = "multiple"
+    const val SINGLE_TYPE = "single"
     const val BUNDLE_ADD_TO_CART = "add to cart"
 
     //label

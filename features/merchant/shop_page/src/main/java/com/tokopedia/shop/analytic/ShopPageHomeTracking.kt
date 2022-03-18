@@ -139,6 +139,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SELECT_CONTENT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SINGLE_BUNDLE_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SINGLE_TYPE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_PRODUCT_CARD_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_PRODUCT_CARD_IMPRESSION
@@ -2118,11 +2119,12 @@ class ShopPageHomeTracking(
             bundleId: String,
             bundleName: String,
             bundlePriceCut: String,
+            bundlePrice: Long,
             selectedPackage: String,
             productId: String
     ) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
-                EVENT to CLICK_PG,
+                EVENT to ADD_TO_CART,
                 EVENT_ACTION to joinDash(CLICK, SINGLE_BUNDLE_WIDGET, BUNDLE_ADD_TO_CART),
                 EVENT_CATEGORY to SHOP_PAGE_BUYER,
                 EVENT_LABEL to joinDash(bundleId, bundleName, bundlePriceCut, selectedPackage),
@@ -2131,6 +2133,25 @@ class ShopPageHomeTracking(
                 PRODUCT_ID to productId,
                 SHOP_ID to shopId,
                 USER_ID to userId
+        )
+        eventMap[ECOMMERCE] = mutableMapOf(
+                CURRENCY_CODE to IDR,
+                ADD to mutableMapOf(
+                        PRODUCTS to mutableListOf(mutableMapOf(
+                                CATEGORY_ID to NONE,
+                                DIMENSION_117 to SINGLE_BUNDLE_WIDGET,
+                                DIMENSION_118 to bundleId,
+                                DIMENSION_40 to joinDash(SHOPPAGE, PRODUCT_BUNDLING, SINGLE_TYPE),
+                                DIMENSION_87 to SHOP_PAGE,
+                                BRAND to NONE,
+                                CATEGORY to NONE,
+                                VARIANT to NONE,
+                                NAME to bundleName,
+                                ID to bundleId,
+                                PRICE to bundlePrice,
+                                QUANTITY to ShopHomeProductBundleItemUiModel.DEFAULT_BUNDLE_QUANTITY,
+                        ))
+                )
         )
         sendDataLayerEvent(eventMap)
     }
