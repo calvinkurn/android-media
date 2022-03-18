@@ -31,7 +31,6 @@ import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
-import com.tokopedia.device.info.DeviceConnectionInfo;
 import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -123,8 +122,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
     private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
     private final boolean LEAK_CANARY_DEFAULT_TOGGLE = true;
-    private final String EMBRACE_PRIMARY_CARRIER_KEY = "operatorNameMain";
-    private final String EMBRACE_SECONDARY_CARRIER_KEY = "operatorNameSecondary";
 
     GratificationSubscriber gratificationSubscriber;
 
@@ -156,7 +153,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         if (getUserSession().isLoggedIn()) {
             Embrace.getInstance().setUserIdentifier(getUserSession().getUserId());
         }
-        setEmbraceCarrierProperties();
+        EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
     }
 
     private void checkAppPackageNameAsync() {
@@ -431,16 +428,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
             EmbraceMonitoring.INSTANCE.getALLOW_EMBRACE_MOMENTS().clear();
             EmbraceMonitoring.INSTANCE.getALLOW_EMBRACE_MOMENTS().addAll(dataLogConfigEmbrace.getAllowedMoments());
-        }
-    }
-
-    private void setEmbraceCarrierProperties() {
-        Pair<String, String> carriersName = DeviceConnectionInfo.getDualSimCarrierNames(this);
-        if (carriersName != null) {
-            Embrace.getInstance().addSessionProperty(EMBRACE_PRIMARY_CARRIER_KEY,
-                    carriersName.component1(), false);
-            Embrace.getInstance().addSessionProperty(EMBRACE_SECONDARY_CARRIER_KEY,
-                    carriersName.component2(), false);
         }
     }
 

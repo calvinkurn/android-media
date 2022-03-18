@@ -15,6 +15,7 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
@@ -23,7 +24,6 @@ import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.device.info.DeviceInfo;
-import com.tokopedia.device.info.DeviceConnectionInfo;
 import com.tokopedia.encryption.security.AESEncryptorECB;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.util.GqlActivityCallback;
@@ -133,7 +133,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
 
         Loader.init(this);
         setEmbraceUserId();
-        setEmbraceCarrierProperties();
+        EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
@@ -330,16 +330,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
     private void setEmbraceUserId() {
         if (getUserSession().isLoggedIn()) {
             Embrace.getInstance().setUserIdentifier(getUserSession().getUserId());
-        }
-    }
-
-    private void setEmbraceCarrierProperties() {
-        Pair<String, String> carriersName = DeviceConnectionInfo.getDualSimCarrierNames(this);
-        if (carriersName != null) {
-            Embrace.getInstance().addSessionProperty(EMBRACE_PRIMARY_CARRIER_KEY,
-                    carriersName.component1(), false);
-            Embrace.getInstance().addSessionProperty(EMBRACE_SECONDARY_CARRIER_KEY,
-                    carriersName.component2(), false);
         }
     }
 

@@ -1,5 +1,7 @@
 package com.tokopedia.analytics.performance.util
 
+import android.content.Context
+import com.tokopedia.device.info.DeviceConnectionInfo
 import io.embrace.android.embracesdk.Embrace
 
 object EmbraceMonitoring {
@@ -13,6 +15,9 @@ object EmbraceMonitoring {
         "act_buy",
         "discovery_result_trace"
     )
+
+    private const val EMBRACE_PRIMARY_CARRIER_KEY = "operatorNameMain"
+    private const val EMBRACE_SECONDARY_CARRIER_KEY = "operatorNameSecondary"
 
     fun startMoments(
         eventName: String,
@@ -44,5 +49,21 @@ object EmbraceMonitoring {
 
     fun logBreadcrumb(message: String) {
         Embrace.getInstance().logBreadcrumb(message)
+    }
+
+    fun setCarrierProperties(context: Context) {
+        val carriersName: Pair<String, String>? =
+            DeviceConnectionInfo.getDualSimCarrierNames(context)
+
+        carriersName?.let {
+            Embrace.getInstance().addSessionProperty(
+                EMBRACE_PRIMARY_CARRIER_KEY,
+                it.first, false
+            )
+            Embrace.getInstance().addSessionProperty(
+                EMBRACE_SECONDARY_CARRIER_KEY,
+                it.second, false
+            )
+        }
     }
 }
