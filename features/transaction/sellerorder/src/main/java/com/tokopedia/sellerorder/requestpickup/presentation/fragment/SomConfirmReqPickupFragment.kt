@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.sellerorder.R
@@ -38,6 +40,8 @@ import com.tokopedia.sellerorder.requestpickup.util.DateMapper
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -290,6 +294,28 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
 
             } else {
                 rlSchedulePickup.visibility = View.GONE
+            }
+
+            if (confirmReqPickupResponse.dataSuccess.ticker.text.isNotEmpty()) {
+                val tickerData = confirmReqPickupResponse.dataSuccess.ticker
+                tickerInfoCourier.run {
+                    val formattedDesc = String.format("%s <a href=\"%s\">%s</a>", tickerData.text, tickerData.urlDetail, tickerData.urlText)
+                    setHtmlDescription(formattedDesc)
+                    tickerType = Utils.mapStringTickerTypeToUnifyTickerType(tickerData.type)
+                    tickerShape = Ticker.SHAPE_LOOSE
+                    setDescriptionClickEvent(object: TickerCallback {
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                        }
+
+                        override fun onDismiss() {
+                            //no-op
+                        }
+
+                    })
+                }
+            } else {
+                tickerInfoCourier.visibility = View.GONE
             }
 
             btnReqPickup.setOnClickListener {

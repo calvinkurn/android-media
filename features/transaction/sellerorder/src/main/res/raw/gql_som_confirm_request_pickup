@@ -37,6 +37,13 @@ mutation MpLogisticPreShipInfo($input: MpLogisticPreShipInfoInputs!)
             end
           }
         }
+        ticker {
+         text
+         url_text
+         url_detail
+         action_key
+         type
+        }
     }
 
   }
