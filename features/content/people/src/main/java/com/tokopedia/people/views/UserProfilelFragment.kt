@@ -909,13 +909,13 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         if (desc.isBlank()) {
             desc = "Lihat foto & video menarik dari Tokopedia Merchandise, yuk! \uD83D\uDE0D"
         } else {
-            desc = "Lihat foto & video menarik dari Tokopedia $displayName ($userName), yuk! 😍"
+            desc = "Lihat foto & video menarik dari Tokopedia $displayName @($userName), yuk! 😍"
         }
 
         val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
             type = LinkerData.USER_PROFILE_SOCIAL
             uri = userWebLink
-            id = userId //todo lavekush
+            id = userId
             //set and share in the Linker Data
             feature = shareModel.feature
             channel = shareModel.channel
@@ -931,7 +931,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
                     context?.let {
 
-                        var shareString = desc + " " + linkerShareData?.shareUri
+                        var shareString = desc + "\n" + linkerShareData?.shareUri
                         SharingUtil.executeShareIntent(
                             shareModel,
                             linkerShareData,
