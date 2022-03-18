@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -198,15 +199,7 @@ open class PickerActivity : BaseActivity()
     private fun setupParamQueryAndDataIntent() {
         val pickerParam = PickerIntent.get(intent)
 
-        if (pickerParam.pageSourceName().isEmpty()) {
-            Toast.makeText(
-                applicationContext,
-                getString(R.string.picker_page_source_not_found),
-                Toast.LENGTH_SHORT
-            ).show()
-
-            finish()
-        }
+        onPageSourceNotFound(pickerParam)
 
         // get data from uri query parameter
         intent?.data?.let {
@@ -341,6 +334,20 @@ open class PickerActivity : BaseActivity()
 
         val marginBottom = dimensionPixelOffsetOf(R.dimen.picker_page_margin_bottom)
         binding?.container?.setBottomMargin(marginBottom)
+    }
+
+    private fun onPageSourceNotFound(param: PickerParam) {
+        if (GlobalConfig.isAllowDebuggingTools()) return
+
+        if (param.pageSourceName().isEmpty()) {
+            Toast.makeText(
+                applicationContext,
+                getString(R.string.picker_page_source_not_found),
+                Toast.LENGTH_SHORT
+            ).show()
+
+            finish()
+        }
     }
 
     private fun onFinishIntent(path: ArrayList<String>) {

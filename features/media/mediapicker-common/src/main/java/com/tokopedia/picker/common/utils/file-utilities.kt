@@ -77,7 +77,7 @@ fun extractVideoDuration(context: Context?, filePath: String): Long? {
     )
 }
 
-fun Long?.toVideoDurationFormat(): String {
+fun Long?.videoFormat(): String {
     val duration = this?: 0L
 
     if (duration == 0L) return DEFAULT_DURATION_LABEL

@@ -58,7 +58,7 @@ class CameraPreviewComponent(
 
         cameraView.takeVideoSnapshot(
             FileGenerator.createFileVideoRecorder(),
-            param.maxVideoDuration()
+            param.maxVideoDuration().toInt()
         )
     }
 
