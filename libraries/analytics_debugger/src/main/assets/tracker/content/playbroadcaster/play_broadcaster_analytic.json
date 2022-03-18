@@ -681,7 +681,7 @@
       "businessUnit": "play"
     },
     {
-      "eventAction": "click add schedule",
+      "eventAction": "click - post to shop page",
       "event": "clickSellerBroadcast",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
@@ -692,7 +692,7 @@
       "businessUnit": "play"
     },
     {
-      "eventAction": "click edit schedule",
+      "eventAction": "click - post video now",
       "event": "clickSellerBroadcast",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
@@ -703,10 +703,10 @@
       "businessUnit": "play"
     },
     {
-      "eventAction": "click simpan jadwal",
+      "eventAction": "click - content tag",
       "event": "clickSellerBroadcast",
       "eventCategory": "seller broadcast",
-      "eventLabel": "\\d+",
+      "eventLabel": "\\d+ - .*",
       "sessionIris": ".*",
       "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
@@ -714,21 +714,10 @@
       "businessUnit": "play"
     },
     {
-      "eventAction": "view bottom sheet schedule",
-      "event": "viewSellerBroadcastIris",
+      "eventAction": "click - cover image on report page",
+      "event": "clickSellerBroadcast",
       "eventCategory": "seller broadcast",
-      "eventLabel": "\\d+",
-      "sessionIris": ".*",
-      "currentSite": "(tokopediamarketplace|tokopediaseller)",
-      "shopId": ".*",
-      "userId": ".*",
-      "businessUnit": "play"
-    },
-    {
-      "eventAction": "view pop up delete confirmation",
-      "event": "viewSellerBroadcastIris",
-      "eventCategory": "seller broadcast",
-      "eventLabel": "\\d+",
+      "eventLabel": "\\d+ - \\d+ - .*",
       "sessionIris": ".*",
       "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
