@@ -1297,25 +1297,28 @@ class DigitalPDPDataPlanFragment :
     }
 
     override fun onDenomFullImpression(
-        listDenomFull: List<DenomData>,
+        denomFull: DenomData,
         layoutType: DenomWidgetEnum,
+        position: Int
     ) {
-        if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE) {
+        if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE){
             digitalPDPAnalytics.impressionProductMCCM(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
-                listDenomFull,
+                denomFull,
                 layoutType,
+                position
             )
-        } else if (layoutType == DenomWidgetEnum.FULL_TYPE) {
+        } else if (layoutType == DenomWidgetEnum.FULL_TYPE){
             digitalPDPAnalytics.impressionProductCluster(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
-                listDenomFull,
+                denomFull,
+                position
             )
         }
     }

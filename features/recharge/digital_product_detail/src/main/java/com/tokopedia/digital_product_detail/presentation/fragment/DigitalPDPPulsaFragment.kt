@@ -1098,26 +1098,25 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onDenomGridImpression(
-        listDenomGrid: List<DenomData>,
-        layoutType: DenomWidgetEnum,
-    ) {
-        if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE) {
+    override fun onDenomGridImpression(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int) {
+        if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE){
             digitalPDPAnalytics.impressionProductMCCM(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
-                listDenomGrid,
-                layoutType
+                denomGrid,
+                layoutType,
+                position
             )
-        } else if (layoutType == DenomWidgetEnum.GRID_TYPE) {
+        } else if (layoutType == DenomWidgetEnum.GRID_TYPE){
             digitalPDPAnalytics.impressionProductCluster(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
-                listDenomGrid
+                denomGrid,
+                position
             )
         }
     }
