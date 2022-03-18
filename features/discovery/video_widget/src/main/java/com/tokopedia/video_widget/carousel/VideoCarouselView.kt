@@ -106,4 +106,9 @@ class VideoCarouselView : BaseCustomView {
     fun setWidgetInternalListener(internalListener: VideoCarouselInternalListener?) {
         this.internalListener = internalListener
     }
+
+    override fun onDetachedFromWindow() {
+        internalListener?.onWidgetDetached(this)
+        super.onDetachedFromWindow()
+    }
 }
