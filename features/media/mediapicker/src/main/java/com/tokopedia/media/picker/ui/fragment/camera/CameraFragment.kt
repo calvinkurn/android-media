@@ -332,9 +332,7 @@ open class CameraFragment : BaseDaggerFragment()
 
     companion object {
         private const val OVERLAY_SHUTTER_DELAY = 100L
-
         private const val COUNTDOWN_INTERVAL = 1000L
-        private const val COUNTDOWN_PERIOD = 1L
     }
 
 }
