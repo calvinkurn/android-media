@@ -1,4 +1,4 @@
-package com.tokopedia.test.application
+package com.tokopedia.graphql.util
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -6,6 +6,9 @@ import android.app.Application
 import android.os.Bundle
 import com.tokopedia.graphql.data.GraphqlClient
 
+/**
+ * Created by devarafikry on 09/03/2022
+ */
 @SuppressLint("NewApi")
 class GqlActivityCallback : Application.ActivityLifecycleCallbacks {
     companion object {

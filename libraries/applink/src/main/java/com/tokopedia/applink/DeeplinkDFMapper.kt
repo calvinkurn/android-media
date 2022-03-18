@@ -315,8 +315,8 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Merchant
             add(DFP({ it.startsWith(OPEN_SHOP) }, DF_BASE, R.string.title_open_shop))
-            add(DFP({ it.startsWith(MERCHANT_PRODUCT_BUNDLE) }, DF_BASE, R.string.title_bundling_selection_page ))
-            add(DFP({ it.startsWith(MERCHANT_GIFTING) }, DF_BASE, R.string.title_gifting_bottomsheet ))
+            add(DFP({ it.startsWithPattern(MERCHANT_PRODUCT_BUNDLE) }, DF_MERCHANT_REVIEW, R.string.title_bundling_selection_page ))
+            add(DFP({ it.startsWithPattern(MERCHANT_GIFTING) }, DF_MERCHANT_REVIEW, R.string.title_gifting_bottomsheet ))
 
             add(DFP({ it.startsWith(FAVORITE) }, DF_MERCHANT_LOGIN, R.string.favorite_shop, { DFWebviewFallbackUrl.FAVORITE_SHOP }))
             add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DF_MERCHANT_LOGIN, R.string.applink_report_title, ::getDefaultFallbackUrl))
@@ -531,7 +531,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(ADD_TALK) }, DF_BASE, R.string.talk_title))
 
             add(DFP({ it.startsWith(ADD_FINGERPRINT_ONBOARDING) }, DF_BASE, R.string.fingerprint_onboarding))
-            add(DFP({ it.startsWith(LIVENESS_DETECTION) }, DF_USER_LIVENESS, R.string.applink_liveness_detection))
+            add(DFP({ it.startsWithPattern(LIVENESS_DETECTION) }, DF_USER_LIVENESS, R.string.applink_liveness_detection))
             add(DFP({
                     it.startsWith(ApplinkConstInternalUserPlatform.VERIFY_BIOMETRIC) ||
                     it.startsWith(ApplinkConstInternalUserPlatform.BIOMETRIC_SETTING)
