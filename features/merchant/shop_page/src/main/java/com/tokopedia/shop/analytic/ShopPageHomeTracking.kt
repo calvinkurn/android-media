@@ -64,6 +64,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_80
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_81
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_82
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_83
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_87
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DISPLAY_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ECOMMERCE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ETALASE_WIDGET
@@ -131,7 +132,9 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_SHOP_DECOR_CLI
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_SHOP_DECOR_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_DONATION_BY_SELLER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.MULTIPLE_BUNDLE_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.MULTIPLE_TYPE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_BUNDLING
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SELECT_CONTENT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE
@@ -178,6 +181,7 @@ import com.tokopedia.shop.common.constant.RATING_PARAM_KEY
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.view.model.NotifyMeAction
@@ -2073,10 +2077,11 @@ class ShopPageHomeTracking(
             userId: String,
             bundleId: String,
             bundleName: String,
-            bundlePriceCut: String
+            bundlePriceCut: String,
+            bundlePrice: Long
     ) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
-                EVENT to CLICK_PG,
+                EVENT to ADD_TO_CART,
                 EVENT_ACTION to joinDash(CLICK, MULTIPLE_BUNDLE_WIDGET, BUNDLE_ADD_TO_CART),
                 EVENT_CATEGORY to SHOP_PAGE_BUYER,
                 EVENT_LABEL to joinDash(bundleId, bundleName, bundlePriceCut),
@@ -2084,6 +2089,25 @@ class ShopPageHomeTracking(
                 CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
                 SHOP_ID to shopId,
                 USER_ID to userId
+        )
+        eventMap[ECOMMERCE] = mutableMapOf(
+                CURRENCY_CODE to IDR,
+                ADD to mutableMapOf(
+                        PRODUCTS to mutableListOf(mutableMapOf(
+                                CATEGORY_ID to NONE,
+                                DIMENSION_117 to MULTIPLE_BUNDLE_WIDGET,
+                                DIMENSION_118 to bundleId,
+                                DIMENSION_40 to joinDash(SHOPPAGE, PRODUCT_BUNDLING, MULTIPLE_TYPE),
+                                DIMENSION_87 to SHOP_PAGE,
+                                BRAND to NONE,
+                                CATEGORY to NONE,
+                                VARIANT to NONE,
+                                NAME to bundleName,
+                                ID to bundleId,
+                                PRICE to bundlePrice,
+                                QUANTITY to ShopHomeProductBundleItemUiModel.DEFAULT_BUNDLE_QUANTITY,
+                        ))
+                )
         )
         sendDataLayerEvent(eventMap)
     }

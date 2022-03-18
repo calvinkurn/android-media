@@ -1554,7 +1554,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 userId = userId,
                 bundleId = selectedMultipleBundle.bundleId,
                 bundleName = bundleName,
-                bundlePriceCut = selectedMultipleBundle.discountPercentage.toString()
+                bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
+                bundlePrice = selectedMultipleBundle.displayPriceRaw
         )
     }
 

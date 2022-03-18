@@ -151,6 +151,8 @@ object ShopPageTrackingConstant {
     const val CLICK_BACK_BUTTON = "click back button"
     const val MULTIPLE_BUNDLE_WIDGET = "multiple bundling widget"
     const val SINGLE_BUNDLE_WIDGET = "single bundling widget"
+    const val PRODUCT_BUNDLING = "product bundling"
+    const val MULTIPLE_TYPE = "multiple"
     const val BUNDLE_ADD_TO_CART = "add to cart"
 
     //label
@@ -328,6 +330,7 @@ object ShopPageTrackingConstant {
     const val DIMENSION_38 = "dimension38"
     const val DIMENSION_40 = "dimension40"
     const val DIMENSION_83 = "dimension83"
+    const val DIMENSION_87 = "dimension87"
     const val DIMENSION_117 = "dimension117"
     const val DIMENSION_118 = "dimension118"
     const val DIMENSION_61 = "dimension61"
