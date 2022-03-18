@@ -21,10 +21,12 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.ShopStatusWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
 
-class ShopStatusViewHolder(itemView: View?,
-                           private val onGoToPowerMerchant: (String?, Boolean) -> Unit,
-                           private val onErrorClicked: () -> Unit,
-                           private val onShopStatusImpression: (ShopType) -> Unit) :
+class ShopStatusViewHolder(
+    itemView: View?,
+    private val onGoToPowerMerchant: (String?, Boolean) -> Unit,
+    private val onErrorClicked: () -> Unit,
+    private val onShopStatusImpression: (ShopType) -> Unit
+) :
     AbstractViewHolder<ShopStatusWidgetUiModel>(itemView) {
 
     companion object {
@@ -57,7 +59,7 @@ class ShopStatusViewHolder(itemView: View?,
     private var onItemViewClicked: () -> Unit = {}
 
     override fun bind(element: ShopStatusWidgetUiModel) {
-        when(val state = element.state) {
+        when (val state = element.state) {
             is SettingResponseState.SettingSuccess -> {
                 itemView.addOnImpressionListener(element.impressHolder) {
                     onShopStatusImpression(state.data)
@@ -69,8 +71,10 @@ class ShopStatusViewHolder(itemView: View?,
         }
     }
 
-    private fun setShopStatusSuccessLayout(shopType: ShopType,
-                                           userShopInfoUiModel: UserShopInfoWrapper.UserShopInfoUiModel?) {
+    private fun setShopStatusSuccessLayout(
+        shopType: ShopType,
+        userShopInfoUiModel: UserShopInfoWrapper.UserShopInfoUiModel?
+    ) {
         shopStatusDescTextView?.run {
             setOnClickListener(null)
             isClickable = false
@@ -92,29 +96,25 @@ class ShopStatusViewHolder(itemView: View?,
         errorLayout?.gone()
     }
 
-    private fun setRegularMerchantLayout(regularMerchant: RegularMerchant,
-                                         userShopInfoUiModel: UserShopInfoWrapper.UserShopInfoUiModel?) {
+    private fun setRegularMerchantLayout(
+        regularMerchant: RegularMerchant,
+        userShopInfoUiModel: UserShopInfoWrapper.UserShopInfoUiModel?
+    ) {
 
         setTitle(com.tokopedia.seller.menu.common.R.string.regular_merchant)
 
         val pmProEligibleIcon = userShopInfoUiModel?.getPowerMerchantProEligibleIcon()
         val pmEligibleIcon = userShopInfoUiModel?.getPowerMerchantEligibleIcon()
 
-        when {
-            pmProEligibleIcon != null -> {
-                when (regularMerchant) {
-                    is RegularMerchant.Verified -> setRegularMerchantVerification(pmProEligibleIcon)
-                    is RegularMerchant.Pending -> setRegularMerchantPending(pmProEligibleIcon)
-                    else -> setRegularMerchantNeedUpgrade()
+        when (regularMerchant) {
+            is RegularMerchant.Verified -> {
+                when {
+                    pmProEligibleIcon != null -> setRegularMerchantVerification(pmProEligibleIcon)
+                    pmEligibleIcon != null -> setRegularMerchantVerification(pmEligibleIcon)
+                    else -> setRegularMerchantVerification()
                 }
             }
-            pmEligibleIcon != null -> {
-                when (regularMerchant) {
-                    is RegularMerchant.Verified -> setRegularMerchantVerification(pmEligibleIcon)
-                    is RegularMerchant.Pending -> setRegularMerchantPending(pmEligibleIcon)
-                    else -> setRegularMerchantNeedUpgrade()
-                }
-            }
+            is RegularMerchant.Pending -> setRegularMerchantPending()
             else -> setRegularMerchantNeedUpgrade()
         }
 
@@ -123,14 +123,21 @@ class ShopStatusViewHolder(itemView: View?,
         warningIcon?.gone()
         successOsLayout?.gone()
 
-        onItemViewClicked = {
-            onGoToPowerMerchant(TAB_PM, false)
+        onItemViewClicked = if (regularMerchant is RegularMerchant.Verified &&
+            pmProEligibleIcon != null) {
+            {
+                onGoToPowerMerchant(TAB_PM_PRO, false)
+            }
+        } else {
+            {
+                onGoToPowerMerchant(TAB_PM, false)
+            }
         }
     }
 
-    private fun setRegularMerchantVerification(icon: Int) {
+    private fun setRegularMerchantVerification(icon: Int? = null) {
         shopStatusEligiblePmIcon?.run {
-            show()
+            if (icon == null) hide() else show()
             setImage(icon)
         }
 
@@ -140,11 +147,8 @@ class ShopStatusViewHolder(itemView: View?,
         )
     }
 
-    private fun setRegularMerchantPending(icon: Int) {
-        shopStatusEligiblePmIcon?.run {
-            show()
-            setImage(icon)
-        }
+    private fun setRegularMerchantPending() {
+        shopStatusEligiblePmIcon?.hide()
 
         shopStatusDescTextView?.isClickable = false
         setDescription(
@@ -253,7 +257,8 @@ class ShopStatusViewHolder(itemView: View?,
 
     private fun setDescription(
         @StringRes descStringRes: Int,
-        @ColorRes descColorRes: Int) {
+        @ColorRes descColorRes: Int
+    ) {
         shopStatusDescTextView?.run {
             text = getString(descStringRes)
             setTextColor(

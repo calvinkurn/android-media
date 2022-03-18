@@ -225,6 +225,7 @@ class ShopInfoViewHolder(
 
     private fun setShopStatusType(shopStatusUiModel: ShopStatusUiModel) {
         val shopType = shopStatusUiModel.userShopInfoWrapper.shopType
+        val pmProEligibleIcon = shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel?.getPowerMerchantProEligibleIcon()
         val itemView: View? = shopType?.shopTypeLayoutRes?.let {
             LayoutInflater.from(context).inflate(it, null, false)
         }
@@ -241,6 +242,11 @@ class ShopInfoViewHolder(
                     )
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM)
+                        if (shopType is RegularMerchant.Verified && pmProEligibleIcon != null) {
+                            goToPowerMerchantSubscribe(TAB_PM_PRO)
+                        } else {
+                            goToPowerMerchantSubscribe(TAB_PM)
+                        }
                         sellerMenuTracker?.sendEventClickShopSettingNew()
                     }
                 }
@@ -366,44 +372,33 @@ class ShopInfoViewHolder(
         val pmProEligibleIcon = userShopInfoUiModel?.getPowerMerchantProEligibleIcon()
         val pmEligibleIcon = userShopInfoUiModel?.getPowerMerchantEligibleIcon()
 
-        when {
-            pmProEligibleIcon != null -> {
-                when (regularMerchant) {
-                    is RegularMerchant.Verified -> setRegularMerchantVerification(
-                        regularMerchantStatus,
-                        eligiblePmIconView,
-                        pmProEligibleIcon
-                    )
-                    is RegularMerchant.Pending -> setRegularMerchantPending(
-                        regularMerchantStatus,
-                        eligiblePmIconView,
-                        pmProEligibleIcon
-                    )
-                    is RegularMerchant.NeedUpgrade -> setRegularMerchantNeedUpgrade(
-                        regularMerchantStatus,
-                        eligiblePmIconView
-                    )
+        when (regularMerchant) {
+            is RegularMerchant.Verified -> {
+                when {
+                    pmProEligibleIcon != null -> {
+                        setRegularMerchantVerification(
+                            regularMerchantStatus,
+                            eligiblePmIconView,
+                            pmProEligibleIcon
+                        )
+                    }
+                    pmEligibleIcon != null -> {
+                        setRegularMerchantVerification(
+                            regularMerchantStatus,
+                            eligiblePmIconView,
+                            pmEligibleIcon
+                        )
+                    }
                 }
             }
-            pmEligibleIcon != null -> {
-                when (regularMerchant) {
-                    is RegularMerchant.Verified -> setRegularMerchantVerification(
-                        regularMerchantStatus,
-                        eligiblePmIconView,
-                        pmEligibleIcon
-                    )
-                    is RegularMerchant.Pending -> setRegularMerchantPending(
-                        regularMerchantStatus,
-                        eligiblePmIconView,
-                        pmEligibleIcon
-                    )
-                    is RegularMerchant.NeedUpgrade -> setRegularMerchantNeedUpgrade(
-                        regularMerchantStatus,
-                        eligiblePmIconView
-                    )
-                }
-            }
-            else -> setRegularMerchantNeedUpgrade(regularMerchantStatus, eligiblePmIconView)
+            is RegularMerchant.Pending -> setRegularMerchantPending(
+                regularMerchantStatus,
+                eligiblePmIconView
+            )
+            is RegularMerchant.NeedUpgrade -> setRegularMerchantNeedUpgrade(
+                regularMerchantStatus,
+                eligiblePmIconView
+            )
         }
 
         setupTransactionSection(userShopInfoUiModel)
@@ -428,13 +423,9 @@ class ShopInfoViewHolder(
 
     private fun setRegularMerchantPending(
         regularMerchantStatus: Typography,
-        eligiblePmIconView: IconUnify,
-        pmIcon: Int
+        eligiblePmIconView: IconUnify
     ) {
-        eligiblePmIconView.run {
-            show()
-            setImage(pmIcon)
-        }
+        eligiblePmIconView.hide()
         regularMerchantStatus.run {
             text = context.resources.getString(R.string.setting_verified)
             setTextColor(
