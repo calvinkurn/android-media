@@ -3,6 +3,7 @@
 package com.tokopedia.media.picker.analytics.camera
 
 import com.tokopedia.media.picker.analytics.*
+import com.tokopedia.picker.common.PickerPageSource
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -18,42 +19,54 @@ class CameraAnalyticsImpl @Inject constructor(
         get() = userSession.shopId?: ""
 
     override fun visitCameraPage(
-        entryPoint: String,
+        entryPoint: PickerPageSource,
         pagePath: String,
         pageType: String
     ) {
-        sendCompleteGeneralEvent(
+        sendGeneralEvent(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_VISIT_CAMERA,
             eventCategory = CATEGORY_MEDIA_CAMERA,
-            eventLabel = "$entryPoint - $userId - $shopId"
+            eventLabel = "${entryPoint.value} - $userId - $shopId",
+            additionalEvent = mapOf(
+                KEY_PAGE_PATH to "",
+                KEY_PAGE_TYPE to ""
+            )
         )
     }
 
-    override fun clickRecord(entryPoint: String) {
-        sendCompleteGeneralEvent(
+    override fun clickRecord(entryPoint: PickerPageSource) {
+        sendGeneralEvent(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_CLICK_RECORD,
             eventCategory = CATEGORY_MEDIA_CAMERA,
-            eventLabel = "$entryPoint - $userId - $shopId"        )
+            eventLabel = "${entryPoint.value} - $userId - $shopId"
+        )
     }
 
-    private fun sendCompleteGeneralEvent(
+    private fun sendGeneralEvent(
         event: String,
         eventCategory: String,
         eventAction: String,
-        eventLabel: String
+        eventLabel: String,
+        additionalEvent: Map<String, String> = mapOf()
     ) {
+        val generalEvent = mutableMapOf(
+            KEY_EVENT to event,
+            KEY_EVENT_CATEGORY to eventCategory,
+            KEY_EVENT_ACTION to eventAction,
+            KEY_EVENT_LABEL to eventLabel,
+            KEY_BUSINESS_UNIT to BUSINESS_UNIT,
+            KEY_CURRENT_SITE to CURRENT_SITE,
+            KEY_USER_ID to userId,
+        )
+
+        if (additionalEvent.isNotEmpty()) {
+            generalEvent.putAll(additionalEvent)
+        }
+
         TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                KEY_EVENT to event,
-                KEY_EVENT_CATEGORY to eventCategory,
-                KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_LABEL to eventLabel,
-                KEY_USER_ID to userId,
-                KEY_CURRENT_SITE to CURRENT_SITE,
-                KEY_BUSINESS_UNIT to BUSINESS_UNIT
-            )
+            generalEvent.toMap()
         )
     }
 

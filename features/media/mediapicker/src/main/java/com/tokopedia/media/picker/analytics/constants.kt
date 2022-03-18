@@ -8,6 +8,8 @@ const val KEY_EVENT_LABEL = "eventLabel"
 const val KEY_CURRENT_SITE = "currentSite"
 const val KEY_USER_ID = "userId"
 const val KEY_BUSINESS_UNIT = "businessUnit"
+const val KEY_PAGE_PATH = "pagePath"
+const val KEY_PAGE_TYPE = "pageType"
 
 // event
 const val EVENT_CLICK_COMMUNICATION = "clickCommunication"
