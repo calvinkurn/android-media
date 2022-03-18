@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.databinding.ViewItemSelectionThumbnailBinding
@@ -17,8 +18,14 @@ class ThumbnailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val binding: ViewItemSelectionThumbnailBinding? by viewBinding()
     private val context by lazy { itemView.context }
 
-    fun bind(media: MediaUiModel, onClicked: () -> Unit = {}, onRemoved: () -> Unit = {}) {
+    fun bind(
+        media: MediaUiModel,
+        isDraggable: Boolean,
+        onClicked: () -> Unit = {},
+        onRemoved: () -> Unit = {}
+    ) {
         binding?.imgThumbnail?.smallThumbnail(media)
+        binding?.btnDrag?.showWithCondition(isDraggable)
 
         binding?.imgThumbnail?.setOnClickListener {
             onClicked()

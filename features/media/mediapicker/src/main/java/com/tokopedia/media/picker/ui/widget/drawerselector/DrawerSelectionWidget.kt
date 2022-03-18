@@ -20,7 +20,7 @@ class DrawerSelectionWidget : FrameLayout {
     private var adapter: DrawerSelectionAdapter? = null
     private var placeHolderBackgroundColor: Int? = null
     private var placeholderPreview: Int? = null
-    private var canReorder: Boolean = false
+    private var isDraggable: Boolean = false
     private var maxVideo: Int = 1
 
     private var binding: WidgetSelectionBottomNavBinding? =
@@ -82,7 +82,7 @@ class DrawerSelectionWidget : FrameLayout {
             adapter?.placeholderPreview = it
         }
 
-        adapter?.canReorder = canReorder
+        adapter?.isDraggable = isDraggable
     }
 
     private fun setAttribute(attrs: AttributeSet?) {
@@ -100,8 +100,8 @@ class DrawerSelectionWidget : FrameLayout {
             defaultColor
         )
 
-        canReorder = typedArray.getBoolean(
-            R.styleable.MediaPickerPreviewWidget_canReorder,
+        isDraggable = typedArray.getBoolean(
+            R.styleable.MediaPickerPreviewWidget_draggable,
             false
         )
 
@@ -117,7 +117,7 @@ class DrawerSelectionWidget : FrameLayout {
     }
 
     fun isAbleToReorder(canReorder: Boolean) {
-        adapter?.canReorder = canReorder
+        adapter?.isDraggable = canReorder
     }
 
     fun removeData(media: MediaUiModel) {
