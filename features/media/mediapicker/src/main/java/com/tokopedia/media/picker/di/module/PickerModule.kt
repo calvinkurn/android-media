@@ -11,6 +11,8 @@ import com.tokopedia.media.picker.data.repository.AlbumRepositoryImpl
 import com.tokopedia.media.picker.data.repository.MediaRepository
 import com.tokopedia.media.picker.data.repository.MediaRepositoryImpl
 import com.tokopedia.media.picker.di.scope.PickerScope
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
@@ -19,8 +21,18 @@ class PickerModule {
 
     @Provides
     @PickerScope
-    fun providePickerAnalytics() = PickerAnalytics(
-        CameraAnalyticsImpl(),
+    fun provideUserSession(
+        @ApplicationContext context: Context
+    ): UserSessionInterface {
+        return UserSession(context)
+    }
+
+    @Provides
+    @PickerScope
+    fun providePickerAnalytics(
+        userSession: UserSessionInterface
+    ) = PickerAnalytics(
+        CameraAnalyticsImpl(userSession),
         GalleryAnalyticsImpl()
     )
 
