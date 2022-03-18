@@ -68,7 +68,8 @@ class TokoNowCategoryFragment:
     companion object {
         const val PAGE_SHARE_NAME = "Tokonow"
         const val SHARE = "share"
-        const val PAGE_TYPE_CATEGORY = "cat[%s]"
+        const val PAGE_TYPE_CATEGORY = "cat%s"
+        const val URL_PARAM = "?exclude_sc=%s&sc=%s"
         const val DEFAULT_CATEGORY_ID = "0"
         const val CATEGORY_LVL_1 = 1
         const val CATEGORY_LVL_2 = 2
@@ -255,9 +256,12 @@ class TokoNowCategoryFragment:
     }
 
     private fun setCategorySharingModel(model: CategorySharingModel) {
+        categoryIdLvl2 = model.categoryIdLvl2
+        categoryIdLvl3 = model.categoryIdLvl3
+
         shareHomeTokonow?.apply {
             sharingText = resources.getString(R.string.tokopedianow_category_share_main_text, model.name)
-            sharingUrl = model.url
+            sharingUrl = model.url + String.format(URL_PARAM, categoryIdLvl2, categoryIdLvl3)
             pageIdConstituents = listOf(String.format(PAGE_TYPE_CATEGORY, getLevelCategory().first), getLevelCategory().second)
             specificPageName = resources.getString(R.string.tokopedianow_category_share_title, model.name)
             specificPageDescription = resources.getString(R.string.tokopedianow_category_share_desc, model.name)

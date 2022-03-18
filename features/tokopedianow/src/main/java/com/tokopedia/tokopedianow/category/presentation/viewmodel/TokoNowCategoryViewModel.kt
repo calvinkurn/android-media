@@ -21,6 +21,7 @@ import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail.NavigationItem
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemDataView
+import com.tokopedia.tokopedianow.category.presentation.view.TokoNowCategoryFragment.Companion.DEFAULT_CATEGORY_ID
 import com.tokopedia.tokopedianow.category.utils.CATEGORY_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokopedianow.category.utils.CATEGORY_LOAD_MORE_PAGE_USE_CASE
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L1
@@ -289,10 +290,21 @@ class TokoNowCategoryViewModel @Inject constructor (
     }
 
     private fun setSharingModel(categoryModel: CategoryModel) {
+        var categoryIdLvl2 = DEFAULT_CATEGORY_ID
+        var categoryIdLvl3 = DEFAULT_CATEGORY_ID
+
+        queryParam.forEach {
+            when (it.key) {
+                "${OptionHelper.EXCLUDE_PREFIX}${SearchApiConst.SC}" -> categoryIdLvl2 = it.value
+                SearchApiConst.SC -> categoryIdLvl3 = it.value
+            }
+        }
+
         sharingMutableLiveData.value = CategorySharingModel(
+            categoryIdLvl2 = categoryIdLvl2,
+            categoryIdLvl3 = categoryIdLvl3,
             name = categoryModel.categoryDetail.data.name,
-            url = categoryModel.categoryDetail.data.url,
-            id = categoryModel.categoryDetail.data.id
+            url = categoryModel.categoryDetail.data.url
         )
     }
 
