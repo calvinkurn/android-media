@@ -3,6 +3,7 @@ package com.tokopedia.unifyorderhistory.view.adapter.viewholder
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyorderhistory.data.model.PmsNotification
 import com.tokopedia.unifyorderhistory.data.model.UohTypeData
 import com.tokopedia.unifyorderhistory.databinding.UohPmsButtonItemBinding
@@ -15,10 +16,10 @@ class UohPmsButtonViewHolder(private val binding: UohPmsButtonItemBinding, priva
             actionListener?.onImpressionPmsButton()
             val counter = item.dataObject.notifications.buyerOrderStatus.paymentStatus
             if (counter > 0) {
-                binding.labelCounter.setLabel(counter.toString())
-                binding.labelCounter.show()
+                binding.notificationCounter.setNotification(counter.toString(), NotificationUnify.COUNTER_TYPE, NotificationUnify.COLOR_PRIMARY)
+                binding.notificationCounter.show()
             } else {
-                binding.labelCounter.gone()
+                binding.notificationCounter.gone()
             }
             itemView.setOnClickListener {
                 actionListener?.onPmsButtonClicked()
