@@ -757,7 +757,7 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     private fun observeUiEvent(){
-            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewLifecycleOwner.lifecycleScope.launchWhenResumed {
                 playViewModel.uiEvent.collect { event ->
                     when (event) {
                         is ShowInfoEvent -> {

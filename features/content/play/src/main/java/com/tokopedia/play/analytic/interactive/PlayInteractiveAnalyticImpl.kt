@@ -96,7 +96,7 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_VIEW_TOP_ADS,
-                KEY_EVENT_ACTION to KEY_TRACK_UPCOMING_REMINDER,
+                KEY_EVENT_ACTION to "impression - $KEY_TRACK_UPCOMING_REMINDER",
                 KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                 KEY_EVENT_LABEL to "$channelId - ${channelType.value} - ${sectionInfo.id}",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
