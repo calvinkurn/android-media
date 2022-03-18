@@ -2,7 +2,9 @@ package com.tokopedia.play.view.fragment
 
 import android.content.Intent
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +12,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.exoplayer2.ui.PlayerView
+import com.google.firebase.BuildConfig
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
@@ -56,6 +59,7 @@ import com.tokopedia.play.view.uimodel.PlayCastState
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayerType
 import com.tokopedia.play.view.uimodel.recom.isCasting
+import com.tokopedia.play_common.util.PlayConnectionCommon
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
@@ -501,6 +505,10 @@ class PlayVideoFragment @Inject constructor(
             videoLoadingView.showCasting()
             return
         }
+       val a =  (BuildConfig.VERSION_CODE.toString() +
+                Build.VERSION.SDK_INT.toString() + Build.MANUFACTURER+ Build.MODEL)
+        Log.d("SUKSES" , a)
+        PlayConnectionCommon.isConnectCellular(context = requireContext())
 
         when (state) {
             PlayViewerVideoState.Waiting -> videoLoadingView.showWaitingState()

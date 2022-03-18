@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.util.Log
 import java.lang.Exception
 
 object PlayConnectionCommon {
@@ -32,6 +33,8 @@ object PlayConnectionCommon {
                 val networkCapabilities = connectivityManager.activeNetwork ?: return false
                 val actNw =
                     connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+                Log.d("sukses",actNw.linkUpstreamBandwidthKbps.toString())
+                Log.d("sukses",actNw.linkDownstreamBandwidthKbps.toString())
                 when {
                     checkWifi -> return actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
                     checkCellular -> return actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)

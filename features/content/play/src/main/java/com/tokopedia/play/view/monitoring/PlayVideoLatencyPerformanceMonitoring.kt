@@ -1,6 +1,8 @@
 package com.tokopedia.play.view.monitoring
 
+import android.util.Log
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.play_common.util.PlayConnectionCommon
 import javax.inject.Inject
 
 
@@ -23,6 +25,7 @@ class PlayVideoLatencyPerformanceMonitoring @Inject constructor() {
         reset()
 
         mTotalDuration = System.currentTimeMillis()
+        Log.d("SUKSES", mTotalDuration.toString())
         mPerformanceMonitoring = PerformanceMonitoring.start(PLAY_VIDEO_LATENCY_TRACE)
         mHasStarted = true
     }
