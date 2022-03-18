@@ -4,7 +4,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.common.mapper.CouponMapper
 import com.tokopedia.vouchercreation.product.create.data.response.GetProductsByProductIdResponse
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponUiModel
-import com.tokopedia.vouchercreation.product.create.domain.usecase.GetProductsUseCase
+import com.tokopedia.vouchercreation.product.create.domain.usecase.GetMostSoldProductsUseCase
 import com.tokopedia.vouchercreation.product.share.domain.entity.ShopWithTopProducts
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.usecase.ShopBasicDataUseCase
 import kotlinx.coroutines.CoroutineScope
@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 class GetShopAndTopProductsUseCase @Inject constructor(
     private val getShopBasicDataUseCase: ShopBasicDataUseCase,
-    private val getProductsUseCase: GetProductsUseCase,
+    private val getMostSoldProductsUseCase: GetMostSoldProductsUseCase,
     private val userSession: UserSessionInterface,
     private val mapper : CouponMapper
 ) {
@@ -33,7 +33,7 @@ class GetShopAndTopProductsUseCase @Inject constructor(
         val shop = shopDeferred.await()
 
         val productIds = coupon.productIds.map { it.parentProductId }
-        val productsDeferred = scope.async { getProducts(productIds) }
+        val productsDeferred = scope.async { getMostSoldProducts(productIds) }
         val products = productsDeferred.await()
 
         val productImageUrls = products.data.map {
@@ -43,9 +43,9 @@ class GetShopAndTopProductsUseCase @Inject constructor(
         return ShopWithTopProducts(productImageUrls, shop)
     }
 
-    private suspend fun getProducts(productIds: List<Long>): GetProductsByProductIdResponse.GetProductListData {
-        getProductsUseCase.params = GetProductsUseCase.createParams(userSession.shopId, productIds)
-        return getProductsUseCase.executeOnBackground()
+    private suspend fun getMostSoldProducts(productIds: List<Long>): GetProductsByProductIdResponse.GetProductListData {
+        getMostSoldProductsUseCase.params = GetMostSoldProductsUseCase.createParams(userSession.shopId, productIds)
+        return getMostSoldProductsUseCase.executeOnBackground()
     }
 
 
