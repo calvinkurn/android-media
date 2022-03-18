@@ -2046,7 +2046,7 @@ class PlayViewModel @AssistedInject constructor(
             playAnalytic.clickUpcomingReminder(selectedUpcomingCampaign, channelId, channelType)
             val data = repo.subscribeUpcomingCampaign(campaignId = selectedUpcomingCampaign.id.toLongOrZero(), reminderType = selectedUpcomingCampaign.config.reminder)
             val message = if(data.first) {
-                updateReminderUi(selectedUpcomingCampaign.config.reminder.reversed(selectedUpcomingCampaign.id.toLongOrZero()))
+                updateReminderUi(selectedUpcomingCampaign.config.reminder.reversed(selectedUpcomingCampaign.id.toLongOrZero()), selectedUpcomingCampaign.id)
                 if(data.second.isNotEmpty()) UiString.Text(data.second) else UiString.Resource(R.string.play_product_upcoming_reminder_success)
             } else {
                 if(data.second.isNotEmpty()) UiString.Text(data.second) else UiString.Resource(R.string.play_product_upcoming_reminder_error)
@@ -2060,18 +2060,18 @@ class PlayViewModel @AssistedInject constructor(
     private fun checkUpcomingCampaignSub(productUiModel: ProductSectionUiModel.Section){
         viewModelScope.launchCatchError(block = {
             val data = repo.checkUpcomingCampaign(campaignId = productUiModel.id.toLongOrZero())
-            if (data) updateReminderUi(productUiModel.config.reminder.reversed(productUiModel.id.toLongOrZero()))
+            if (data) updateReminderUi(productUiModel.config.reminder.reversed(productUiModel.id.toLongOrZero()), productUiModel.id)
         }){
         }
     }
 
-    private fun updateReminderUi(reminderType: PlayUpcomingBellStatus){
+    private fun updateReminderUi(reminderType: PlayUpcomingBellStatus, campaignId: String){
         _tagItems.update { tagItemUiModel ->
             tagItemUiModel.copy(
                 product = tagItemUiModel.product.copy(
                     productSectionList = tagItemUiModel.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().
                            map { item ->
-                               if(item.id == selectedUpcomingCampaign.id) item.copy(config = item.config.copy(reminder = reminderType))
+                               if(item.id == campaignId) item.copy(config = item.config.copy(reminder = reminderType))
                                else item
                             }
                 )
