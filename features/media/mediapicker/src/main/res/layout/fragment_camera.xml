@@ -20,9 +20,11 @@
         tools:visibility="visible"/>
 
     <RelativeLayout
+        android:background="@drawable/bg_gradient_camera_control"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/picker_page_margin_bottom"
+        android:paddingTop="@dimen/picker_page_margin_top"
+        android:paddingBottom="@dimen/picker_page_margin_bottom"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">

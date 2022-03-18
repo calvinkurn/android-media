@@ -35,8 +35,10 @@ class CameraControllerComponent(
     , ViewTreeObserver.OnScrollChangedListener
     , CameraSliderAdapter.Listener {
 
+    private val adapterData = CameraSelectionUiModel.create()
+
     private val adapter by lazy {
-        CameraSliderAdapter(CameraSelectionUiModel.create(), this)
+        CameraSliderAdapter(adapterData, this)
     }
 
     // camera mode slider
@@ -83,9 +85,8 @@ class CameraControllerComponent(
     }
 
     override fun onCameraSliderItemClicked(view: View) {
-        lstCameraMode.smoothScrollToPosition(
-            lstCameraMode.getChildLayoutPosition(view)
-        )
+        val targetIndex = lstCameraMode.getChildLayoutPosition(view)
+        lstCameraMode.smoothScrollToPosition(targetIndex)
     }
 
     override fun onScrollChanged() {
@@ -252,11 +253,20 @@ class CameraControllerComponent(
     }
 
     private fun photoModeButtonState() {
+        setCameraModeSelected(PHOTO_MODE)
         btnTakeCamera.setBackgroundResource(R.drawable.bg_picker_camera_take_photo)
     }
 
     private fun videoModeButtonState() {
+        setCameraModeSelected(VIDEO_MODE)
         btnTakeCamera.setBackgroundResource(R.drawable.bg_picker_camera_take_video)
+    }
+
+    private fun setCameraModeSelected(index: Int){
+        val prevIndex = if(index == PHOTO_MODE) VIDEO_MODE else PHOTO_MODE
+        adapterData[index].isSelected = true
+        adapterData[prevIndex].isSelected = false
+        adapter.notifyDataSetChanged()
     }
 
     private fun getActiveCameraMode()

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="dms_bg_gradient_start_color_camera_control">#4D424242</color>
+    <color name="dms_bg_gradient_end_color_camera_control">#00424242</color>
+</resources>

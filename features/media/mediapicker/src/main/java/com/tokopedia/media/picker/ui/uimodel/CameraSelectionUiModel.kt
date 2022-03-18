@@ -9,7 +9,7 @@ data class CameraSelectionUiModel(
 ) {
     companion object {
         fun create() = mutableListOf(
-            CameraSelectionUiModel(R.string.picker_camera_picture_mode, false),
+            CameraSelectionUiModel(R.string.picker_camera_picture_mode, true),
             CameraSelectionUiModel(R.string.picker_camera_video_mode, false),
         )
     }
