@@ -3,7 +3,6 @@
 package com.tokopedia.media.picker.analytics.camera
 
 import com.tokopedia.media.picker.analytics.*
-import com.tokopedia.picker.common.PickerPageSource
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -19,7 +18,7 @@ class CameraAnalyticsImpl @Inject constructor(
         get() = userSession.shopId?: ""
 
     override fun visitCameraPage(
-        entryPoint: PickerPageSource,
+        entryPoint: String,
         pagePath: String,
         pageType: String
     ) {
@@ -27,7 +26,7 @@ class CameraAnalyticsImpl @Inject constructor(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_VISIT_CAMERA,
             eventCategory = CATEGORY_MEDIA_CAMERA,
-            eventLabel = "${entryPoint.value} - $userId - $shopId",
+            eventLabel = "$entryPoint - $userId - $shopId",
             additionalEvent = mapOf(
                 KEY_PAGE_PATH to "",
                 KEY_PAGE_TYPE to ""
@@ -35,12 +34,12 @@ class CameraAnalyticsImpl @Inject constructor(
         )
     }
 
-    override fun clickRecord(entryPoint: PickerPageSource) {
+    override fun clickRecord(entryPoint: String) {
         sendGeneralEvent(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_CLICK_RECORD,
             eventCategory = CATEGORY_MEDIA_CAMERA,
-            eventLabel = "${entryPoint.value} - $userId - $shopId"
+            eventLabel = "$entryPoint - $userId - $shopId"
         )
     }
 
