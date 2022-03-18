@@ -9,6 +9,7 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.minicart.chatlist.MiniCartChatListUiModelMapper
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
@@ -73,7 +74,7 @@ class UserInteractionTest {
         viewModel.updateProductQty(productId, newQty)
 
         //then
-        assert(viewModel.miniCartSimplifiedData.value?.getMiniCartItemProductByProductId(productId)?.quantity ?: 0 == newQty)
+        assert(viewModel.miniCartSimplifiedData.value?.miniCartItems?.getMiniCartItemProduct(productId)?.quantity ?: 0 == newQty)
     }
 
     @Test
@@ -107,7 +108,7 @@ class UserInteractionTest {
         viewModel.updateProductNotes(productId, newNotes)
 
         //then
-        assert(viewModel.miniCartSimplifiedData.value?.getMiniCartItemProductByProductId(productId)?.notes ?: 0 == newNotes)
+        assert(viewModel.miniCartSimplifiedData.value?.miniCartItems?.getMiniCartItemProduct(productId)?.notes ?: 0 == newNotes)
     }
 
     @Test
