@@ -206,7 +206,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
         if (getIntent() == null) super.updateTitle(title);
         else {
             String modifiedTitle = getIntent().getStringExtra(EXTRA_UPDATED_TITLE);
-            if (!modifiedTitle.isEmpty()) {
+            if (modifiedTitle != null && !modifiedTitle.isEmpty()) {
                 super.updateTitle(modifiedTitle);
             } else super.updateTitle(title);
         }
