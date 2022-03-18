@@ -38,6 +38,20 @@ fun getBitmapOptions(filePath: String): BitmapFactory.Options {
     return bitmapOptions
 }
 
+fun isMaxImageRes(path: String, value: Int): Boolean {
+    val bitmapOptions = getBitmapOptions(path)
+    val width = bitmapOptions.outWidth
+    val height = bitmapOptions.outHeight
+    return width > value && height > value
+}
+
+fun isMinImageRes(path: String, value: Int): Boolean {
+    val bitmapOptions = getBitmapOptions(path)
+    val width = bitmapOptions.outWidth
+    val height = bitmapOptions.outHeight
+    return width < value && height < value
+}
+
 fun isGifFormat(path: String): Boolean {
     val extension = fileExtension(path)
     return extension.equals("gif", ignoreCase = true)

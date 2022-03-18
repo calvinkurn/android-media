@@ -379,11 +379,11 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun isMinVideoDuration(model: MediaUiModel): Boolean {
-        return model.getVideoDuration(applicationContext) <= param.get().minVideoDuration()
+        return model.videoDuration(applicationContext) <= param.get().minVideoDuration()
     }
 
     override fun isMaxVideoDuration(model: MediaUiModel): Boolean {
-        return model.getVideoDuration(applicationContext) > param.get().maxVideoDuration()
+        return model.videoDuration(applicationContext) > param.get().maxVideoDuration()
     }
 
     override fun isMaxVideoSize(model: MediaUiModel): Boolean {

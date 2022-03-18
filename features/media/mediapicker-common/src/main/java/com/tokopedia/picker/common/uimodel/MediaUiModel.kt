@@ -4,7 +4,8 @@ import android.content.Context
 import android.net.Uri
 import android.os.Parcelable
 import com.tokopedia.picker.common.utils.extractVideoDuration
-import com.tokopedia.picker.common.utils.getBitmapOptions
+import com.tokopedia.picker.common.utils.isMaxImageRes
+import com.tokopedia.picker.common.utils.isMinImageRes
 import com.tokopedia.picker.common.utils.isVideoFormat
 import kotlinx.parcelize.Parcelize
 import java.io.File
@@ -25,22 +26,16 @@ open class MediaUiModel(
 
     fun isVideo() = isVideoFormat(path)
 
-    fun getVideoDuration(context: Context): Long {
+    fun videoDuration(context: Context): Long {
         return extractVideoDuration(context, path) ?: 0
     }
 
     fun isMaxImageRes(value: Int): Boolean {
-        val bitmapOptions = getBitmapOptions(path)
-        val width = bitmapOptions.outWidth
-        val height = bitmapOptions.outHeight
-        return width > value && height > value
+        return isMaxImageRes(path, value)
     }
 
     fun isMinImageRes(value: Int): Boolean {
-        val bitmapOptions = getBitmapOptions(path)
-        val width = bitmapOptions.outWidth
-        val height = bitmapOptions.outHeight
-        return width < value && height < value
+        return isMinImageRes(path, value)
     }
 
     fun isMaxFileSize(maxSizeInBytes: Long): Boolean {
