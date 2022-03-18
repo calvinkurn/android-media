@@ -356,7 +356,8 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
                     activity,
                     ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM,
                     projectId.toString(),
-                    kycType
+                    kycType,
+                    redirectUrl
             )
             intent.putExtra(ALLOW_SELFIE_FLOW_EXTRA, allowedSelfie)
             startActivityForResult(intent, FLAG_ACTIVITY_KYC_FORM)
