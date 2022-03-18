@@ -42,7 +42,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareRequest
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
-import com.tokopedia.tokopedianow.home.domain.model.ShareHomeTokonow
+import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
@@ -69,8 +69,10 @@ class TokoNowCategoryFragment:
         const val PAGE_SHARE_NAME = "Tokonow"
         const val SHARE = "share"
         const val PAGE_TYPE_CATEGORY = "cat%s"
-        const val URL_PARAM = "?exclude_sc=%s&sc=%s"
+        const val URL_PARAM_LVL_2 = "?exclude_sc=%s"
+        const val URL_PARAM_LVL_3 = "&sc=%s"
         const val DEFAULT_CATEGORY_ID = "0"
+        const val DEFAULT_DEEPLINK_PARAM = "category"
         const val CATEGORY_LVL_1 = 1
         const val CATEGORY_LVL_2 = 2
         const val CATEGORY_LVL_3 = 3
@@ -86,7 +88,7 @@ class TokoNowCategoryFragment:
     private lateinit var tokoNowCategoryViewModel: TokoNowCategoryViewModel
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector : ScreenshotDetector? = null
-    private var shareHomeTokonow: ShareHomeTokonow? = null
+    private var shareCategoryTokonow: ShareTokonow? = null
     private var categoryIdLvl2 = ""
     private var categoryIdLvl3 = ""
 
@@ -99,7 +101,7 @@ class TokoNowCategoryFragment:
         super.onCreate(savedInstanceState)
 
         initViewModel()
-        shareHomeTokonow = createShareHomeTokonow()
+        shareCategoryTokonow = createShareHomeTokonow()
     }
 
     override fun onResume() {
@@ -219,11 +221,11 @@ class TokoNowCategoryFragment:
             thumbNailTitle = resources.getString(R.string.tokopedianow_home_share_thumbnail_title_ss)
         )
 
-        showUniversalShareBottomSheet(shareHomeTokonow)
+        showUniversalShareBottomSheet(shareCategoryTokonow)
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
-        if (shareHomeTokonow?.isScreenShot == true) {
+        if (shareCategoryTokonow?.isScreenShot == true) {
             CategoryTracking.trackClickChannelShareBottomSheetScreenshot(shareModel.channel.orEmpty(),
                 userId = userSession.userId,
                 categoryIdLvl1 = tokoNowCategoryViewModel.categoryL1,
@@ -241,7 +243,7 @@ class TokoNowCategoryFragment:
 
         TokoNowUniversalShareUtil.shareOptionRequest(
             shareModel = shareModel,
-            shareHomeTokonow = shareHomeTokonow,
+            shareHomeTokonow = shareCategoryTokonow,
             activity = activity,
             view = view,
             onSuccess = {
@@ -251,39 +253,71 @@ class TokoNowCategoryFragment:
     }
 
     private fun updateShareHomeData(isScreenShot: Boolean, thumbNailTitle: String) {
-        shareHomeTokonow?.isScreenShot = isScreenShot
-        shareHomeTokonow?.thumbNailTitle = thumbNailTitle
+        shareCategoryTokonow?.isScreenShot = isScreenShot
+        shareCategoryTokonow?.thumbNailTitle = thumbNailTitle
     }
 
     private fun setCategorySharingModel(model: CategorySharingModel) {
         categoryIdLvl2 = model.categoryIdLvl2
         categoryIdLvl3 = model.categoryIdLvl3
 
-        shareHomeTokonow?.apply {
+        constructCategoryLink(model.url)
+        setLvlCategory()
+
+        shareCategoryTokonow?.apply {
             sharingText = resources.getString(R.string.tokopedianow_category_share_main_text, model.name)
-            sharingUrl = model.url + String.format(URL_PARAM, categoryIdLvl2, categoryIdLvl3)
-            pageIdConstituents = listOf(String.format(PAGE_TYPE_CATEGORY, getLevelCategory().first), getLevelCategory().second)
             specificPageName = resources.getString(R.string.tokopedianow_category_share_title, model.name)
             specificPageDescription = resources.getString(R.string.tokopedianow_category_share_desc, model.name)
         }
     }
 
-    private fun createShareHomeTokonow(): ShareHomeTokonow{
-        return ShareHomeTokonow(
+    private fun createShareHomeTokonow(): ShareTokonow {
+        return ShareTokonow(
             userId = userSession.userId,
             thumbNailImage = TokoNowHomeFragment.THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
             ogImageUrl = TokoNowHomeFragment.THUMBNAIL_AND_OG_IMAGE_SHARE_URL
         )
     }
 
-    private fun getLevelCategory(): Pair<Int, String> = when {
-        categoryIdLvl3.isNotBlank() && categoryIdLvl3 != DEFAULT_CATEGORY_ID -> Pair(CATEGORY_LVL_3, categoryIdLvl3)
-        categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID -> Pair(CATEGORY_LVL_2, categoryIdLvl2)
-        else -> Pair(CATEGORY_LVL_1, tokoNowCategoryViewModel.categoryL1)
+    private fun constructCategoryLink(categoryUrl: String) {
+        val deeplinkParam = "$DEFAULT_DEEPLINK_PARAM/${tokoNowCategoryViewModel.categoryL1}"
+
+        if (categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID) {
+            deeplinkParam.plus("/$categoryIdLvl2")
+            categoryUrl.plus(String.format(URL_PARAM_LVL_2, categoryIdLvl2))
+
+            if (categoryIdLvl3.isNotBlank() && categoryIdLvl3 != DEFAULT_CATEGORY_ID) {
+                deeplinkParam.plus("/$categoryIdLvl3")
+                categoryUrl.plus(String.format(URL_PARAM_LVL_3, categoryIdLvl3))
+            }
+        }
+
+        shareCategoryTokonow?.id = deeplinkParam
+        shareCategoryTokonow?.sharingUrl = categoryUrl
+    }
+
+    private fun setLvlCategory() {
+        val categoryId: String
+        val categoryLvl: Int
+        when {
+            categoryIdLvl3.isNotBlank() && categoryIdLvl3 != DEFAULT_CATEGORY_ID -> {
+                categoryLvl = CATEGORY_LVL_3
+                categoryId = categoryIdLvl3
+            }
+            categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID -> {
+                categoryLvl = CATEGORY_LVL_2
+                categoryId = categoryIdLvl2
+            }
+            else -> {
+                categoryLvl = CATEGORY_LVL_1
+                categoryId = tokoNowCategoryViewModel.categoryL1
+            }
+        }
+        shareCategoryTokonow?.pageIdConstituents = listOf(String.format(PAGE_TYPE_CATEGORY, categoryLvl), categoryId)
     }
 
     override fun onCloseOptionClicked() {
-        if (shareHomeTokonow?.isScreenShot == true) {
+        if (shareCategoryTokonow?.isScreenShot == true) {
             CategoryTracking.trackClickCloseScreenShotShareBottomSheet(
                 userId = userSession.userId,
                 categoryIdLvl1 = tokoNowCategoryViewModel.categoryL1,
@@ -312,10 +346,10 @@ class TokoNowCategoryFragment:
             categoryIdLvl2 = categoryIdLvl2,
             categoryIdLvl3 = categoryIdLvl3
         )
-        shareClicked(shareHomeTokonow)
+        shareClicked(shareCategoryTokonow)
     }
 
-    private fun shareClicked(shareHomeTokonow: ShareHomeTokonow?){
+    private fun shareClicked(shareHomeTokonow: ShareTokonow?){
         if(UniversalShareBottomSheet.isCustomSharingEnabled(context)){
             showUniversalShareBottomSheet(shareHomeTokonow)
         } else {
@@ -323,7 +357,7 @@ class TokoNowCategoryFragment:
         }
     }
 
-    private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareHomeTokonow?) {
+    private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareTokonow?) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@TokoNowCategoryFragment)
             setUtmCampaignData(

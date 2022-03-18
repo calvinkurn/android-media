@@ -84,7 +84,7 @@ import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMP
 import com.tokopedia.tokopedianow.home.di.component.DaggerHomeComponent
 import com.tokopedia.tokopedianow.home.domain.model.Data
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
-import com.tokopedia.tokopedianow.home.domain.model.ShareHomeTokonow
+import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
@@ -232,7 +232,7 @@ class TokoNowHomeFragment: Fragment(),
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var movingPosition = 0
     private var isRefreshed = true
-    private var shareHomeTokonow: ShareHomeTokonow? = null
+    private var shareHomeTokonow: ShareTokonow? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector : ScreenshotDetector? = null
     private var carouselScrollState = mutableMapOf<Int, Parcelable?>()
@@ -1408,7 +1408,7 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    private fun shareClicked(shareHomeTokonow: ShareHomeTokonow?){
+    private fun shareClicked(shareHomeTokonow: ShareTokonow?){
         if(UniversalShareBottomSheet.isCustomSharingEnabled(context)){
             showUniversalShareBottomSheet(shareHomeTokonow)
         } else {
@@ -1416,7 +1416,7 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareHomeTokonow?) {
+    private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareTokonow?) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@TokoNowHomeFragment)
             setUtmCampaignData(
@@ -1441,8 +1441,8 @@ class TokoNowHomeFragment: Fragment(),
         universalShareBottomSheet?.show(childFragmentManager, this, screenshotDetector)
     }
 
-    private fun createShareHomeTokonow(): ShareHomeTokonow{
-        return ShareHomeTokonow(
+    private fun createShareHomeTokonow(): ShareTokonow {
+        return ShareTokonow(
                 sharingText = resources.getString(R.string.tokopedianow_home_share_main_text),
                 sharingUrl = SHARE_URL,
                 userId = userSession.userId,

@@ -1,6 +1,7 @@
-package com.tokopedia.tokopedianow.home.domain.model
+package com.tokopedia.tokopedianow.common.model
 
-data class ShareHomeTokonow(
+data class ShareTokonow(
+        var id: String = "",
         var sharingText: String = "",
         var sharingUrl: String = "",
         var userId: String = "",

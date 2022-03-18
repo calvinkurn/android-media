@@ -12,13 +12,14 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.requests.LinkerShareRequest
-import com.tokopedia.tokopedianow.home.domain.model.ShareHomeTokonow
+import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.model.ShareModel
 
 object TokoNowUniversalShareUtil {
-    private fun linkerDataMapper(shareHomeTokonow: ShareHomeTokonow?): LinkerShareData {
+    private fun linkerDataMapper(shareHomeTokonow: ShareTokonow?): LinkerShareData {
         val linkerData = LinkerData()
+        linkerData.id = shareHomeTokonow?.id.orEmpty()
         linkerData.name = shareHomeTokonow?.specificPageName.orEmpty()
         linkerData.uri = shareHomeTokonow?.sharingUrl.orEmpty()
         linkerData.description = shareHomeTokonow?.specificPageDescription.orEmpty()
@@ -35,7 +36,7 @@ object TokoNowUniversalShareUtil {
         context?.startActivity(Intent.createChooser(share, shareTxt))
     }
 
-    fun shareRequest(context: Context?, shareHomeTokonow: ShareHomeTokonow?): LinkerShareRequest<*>? {
+    fun shareRequest(context: Context?, shareHomeTokonow: ShareTokonow?): LinkerShareRequest<*>? {
         return LinkerUtils.createShareRequest(0, linkerDataMapper(shareHomeTokonow), object : ShareCallback {
             override fun urlCreated(linkerShareData: LinkerShareResult) {
                 if (linkerShareData.url != null) {
@@ -57,7 +58,7 @@ object TokoNowUniversalShareUtil {
         })
     }
 
-    fun shareOptionRequest(shareModel: ShareModel, shareHomeTokonow: ShareHomeTokonow?, activity: Activity?, view: View?, onSuccess: () -> Unit = {}, onError: () -> Unit = {}) {
+    fun shareOptionRequest(shareModel: ShareModel, shareHomeTokonow: ShareTokonow?, activity: Activity?, view: View?, onSuccess: () -> Unit = {}, onError: () -> Unit = {}) {
         val linkerShareData = linkerDataMapper(shareHomeTokonow)
         linkerShareData.linkerData.apply {
             feature = shareModel.feature
