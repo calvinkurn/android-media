@@ -9,6 +9,7 @@ import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.model.PlayProductTagsModelBuilder
 import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.type.PlayUpcomingBellStatus
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.type.ProductSectionType
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
@@ -48,7 +49,7 @@ class PlayBottomSheetViewModelTest {
     private val mockProductVariantResponse: GetProductVariantResponse = modelBuilder.buildProductVariant()
     private val sectionMockData: ProductSectionUiModel.Section = UiModelBuilder.get().buildProductSection(
                                 productList = listOf(productModelBuilder.buildProductLine()),
-                                config = UiModelBuilder.get().buildSectionConfig(type = ProductSectionType.Active),
+                                config = UiModelBuilder.get().buildSectionConfig(type = ProductSectionType.Active, reminderStatus = PlayUpcomingBellStatus.Off(0L)),
                                 id = "")
 
     private lateinit var playBottomSheetViewModel: PlayBottomSheetViewModel
@@ -315,37 +316,5 @@ class PlayBottomSheetViewModelTest {
         Assertions
             .assertThat((actualValue as PlayResult.Success).data.reasoningList)
             .isEqualTo(expectedResult)
-    }
-
-    @Test
-    fun `when logged in, should be allowed to send upcoming reminder`() {
-        val eventSendUpcomingReminder = InteractionEvent.SendUpcomingReminder(
-            sectionInfo = sectionMockData
-        )
-
-        coEvery { userSession.isLoggedIn } returns true
-
-        val expectedResult = Event(LoginStateEvent.InteractionAllowed(eventSendUpcomingReminder))
-
-        playBottomSheetViewModel.doInteractionEvent(eventSendUpcomingReminder)
-
-        Assertions.assertThat(playBottomSheetViewModel.observableLoggedInInteractionEvent.getOrAwaitValue())
-            .isEqualToComparingFieldByFieldRecursively(expectedResult)
-    }
-
-    @Test
-    fun `when not logged in, should not be allowed to send upcoming reminder`() {
-        val eventSendUpcomingReminder = InteractionEvent.SendUpcomingReminder(
-            sectionInfo = sectionMockData
-        )
-
-        coEvery { userSession.isLoggedIn } returns false
-
-        val expectedResult = Event(LoginStateEvent.NeedLoggedIn(eventSendUpcomingReminder))
-
-        playBottomSheetViewModel.doInteractionEvent(eventSendUpcomingReminder)
-
-        Assertions.assertThat(playBottomSheetViewModel.observableLoggedInInteractionEvent.getOrAwaitValue())
-            .isEqualToComparingFieldByFieldRecursively(expectedResult)
     }
 }

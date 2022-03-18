@@ -49,8 +49,7 @@ class ProductSectionViewHolder(
         itemView.viewTreeObserver.addOnScrollChangedListener (object : ViewTreeObserver.OnScrollChangedListener {
             override fun onScrollChanged() {
                 itemView.isVisibleOnTheScreen(onViewVisible = {
-                    listener.onProductImpressed(getVisibleProducts(layoutManagerProductList(sectionInfo)), sectionInfo)
-                    if(btnReminder.isVisible) listener.onReminderImpressed(sectionInfo) } ,
+                    listener.onProductImpressed(getVisibleProducts(layoutManagerProductList(sectionInfo)), sectionInfo)} ,
                     onViewNotVisible = {
                         itemView.viewTreeObserver.removeOnScrollChangedListener(this)
                     })
@@ -62,7 +61,6 @@ class ProductSectionViewHolder(
         override fun onLayoutCompleted(state: RecyclerView.State?) {
             super.onLayoutCompleted(state)
             listener.onProductImpressed(getVisibleProducts(this), sectionInfo)
-            if(btnReminder.isVisible) listener.onReminderImpressed(sectionInfo)
         }
     }
 
@@ -126,6 +124,10 @@ class ProductSectionViewHolder(
 
         btnReminder.setOnClickListener {
             listener.onReminderClicked(item)
+        }
+
+        btnReminder.addOnImpressionListener(item.impressHolder){
+            listener.onReminderImpressed(item)
         }
     }
 

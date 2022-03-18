@@ -1,6 +1,8 @@
 package com.tokopedia.play.view.uimodel.recom.tagitem
 
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.play.analytic.TrackingField
 import com.tokopedia.play.view.type.PlayUpcomingBellStatus
 import com.tokopedia.play.view.type.ProductSectionType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
@@ -49,6 +51,7 @@ sealed class ProductSectionUiModel {
         val productList: List<PlayProductUiModel.Product>,
         val config: ConfigUiModel,
         val id: String,
+        @TrackingField val impressHolder: ImpressHolder = ImpressHolder(),
     ) : ProductSectionUiModel() {
 
         data class ConfigUiModel(
