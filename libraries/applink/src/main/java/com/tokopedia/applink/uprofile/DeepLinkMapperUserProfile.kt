@@ -1,12 +1,14 @@
 package com.tokopedia.applink.uprofile
 
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalFeed
 import com.tokopedia.applink.internal.ApplinkConstInternalFeed.INTERNAL_FEED_DETAILS
 
 object DeepLinkMapperUserProfile {
     fun  getRegisteredUserProfile(deepLink: String): String {
         if (deepLink.startsWith(ApplinkConst.USER_PROFILE_LANDING)) {
-            return deepLink.replace(ApplinkConst.USER_PROFILE_LANDING, INTERNAL_FEED_DETAILS)
+            val regexExp = "${ApplinkConst.USER_PROFILE_LANDING}/?".toRegex()
+            return deepLink.replace(regexExp, ApplinkConstInternalFeed.USER_PROFILE_LANDING)
         }
         return deepLink
     }
