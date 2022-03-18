@@ -138,6 +138,8 @@ class PlayViewModel @AssistedInject constructor(
         get() = _observableUserReportReasoning
     val observableUserReportSubmission : LiveData<PlayResult<Event<Unit>>>
         get() = _observableUserReportSubmission
+    val observableKebabMenuSheet: LiveData<Map<KebabMenuType, BottomInsetsState>>
+        get() = _observableKebabSheets
 
 
     /**
@@ -411,6 +413,7 @@ class PlayViewModel @AssistedInject constructor(
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
     private val _observableVideoMeta = MutableLiveData<PlayVideoMetaInfoUiModel>() /**Changed**/
     private val _observableBottomInsetsState = MutableLiveData<Map<BottomInsetsType, BottomInsetsState>>()
+    private val _observableKebabSheets = MutableLiveData<Map<KebabMenuType, BottomInsetsState>>()
     private val _observableNewChat = MediatorLiveData<Event<PlayChatUiModel>>().apply {
         addSource(_observableChatList) { chatList ->
             chatList.lastOrNull()?.let { value = Event(it) }
@@ -654,7 +657,7 @@ class PlayViewModel @AssistedInject constructor(
                 isPreviousStateSame = insetsMap[KebabMenuType.ThreeDots]?.isShown == true
             )
 
-        _kebabBottomSheet.value = insetsMap
+        _observableKebabSheets.value = insetsMap
     }
 
     fun hideKebabMenuSheet() {
@@ -665,7 +668,7 @@ class PlayViewModel @AssistedInject constructor(
                 isPreviousStateSame = insetsMap[KebabMenuType.ThreeDots]?.isHidden == true
             )
 
-        _kebabBottomSheet.value = insetsMap
+        _observableKebabSheets.value = insetsMap
     }
 
     fun showCouponSheet(estimatedHeight: Int) {
@@ -700,7 +703,7 @@ class PlayViewModel @AssistedInject constructor(
                 isPreviousStateSame = insetsMap[KebabMenuType.UserReportList]?.isShown == true
             )
 
-        _kebabBottomSheet.value = insetsMap
+        _observableKebabSheets.value = insetsMap
     }
 
     fun hideUserReportSheet() {
@@ -711,7 +714,7 @@ class PlayViewModel @AssistedInject constructor(
                 isPreviousStateSame = insetsMap[KebabMenuType.UserReportList]?.isHidden == true
             )
 
-        _kebabBottomSheet.value = insetsMap
+        _observableKebabSheets.value = insetsMap
     }
 
     fun onShowUserReportSubmissionSheet(estimatedSheetHeight: Int) {
@@ -723,7 +726,7 @@ class PlayViewModel @AssistedInject constructor(
                 isPreviousStateSame = insetsMap[KebabMenuType.UserReportSubmission]?.isShown == true
             )
 
-        _kebabBottomSheet.value = insetsMap
+        _observableKebabSheets.value = insetsMap
     }
 
     fun hideUserReportSubmissionSheet() {
@@ -734,7 +737,7 @@ class PlayViewModel @AssistedInject constructor(
                 isPreviousStateSame = insetsMap[KebabMenuType.UserReportSubmission]?.isHidden == true
             )
 
-        _kebabBottomSheet.value = insetsMap
+        _observableKebabSheets.value = insetsMap
     }
 
     fun hideInsets(isKeyboardHandled: Boolean) {
@@ -759,23 +762,23 @@ class PlayViewModel @AssistedInject constructor(
 
 
     private fun getLatestInset(): Map<KebabMenuType, BottomInsetsState> {
-        val currentValue = _kebabBottomSheet.value
-        currentValue.values.forEach {
+        val currentValue = _observableKebabSheets.value
+        currentValue?.values?.forEach {
             it.isPreviousStateSame = true
             if (it is BottomInsetsState.Shown) it.deepLevel += 1
         }
-        return currentValue
+        return currentValue ?: getDefaultKebabInsets()
     }
 
     fun hideThreeDotsSheet(){
-        _kebabBottomSheet.value = getDefaultKebabInsets()
+        _observableKebabSheets.value = getDefaultKebabInsets()
     }
 
     private fun getDefaultKebabInsets(): Map<KebabMenuType, BottomInsetsState> {
-        val currentValue = _kebabBottomSheet.value
-        val defaultThreeDotsState = currentValue[KebabMenuType.ThreeDots]?.isHidden ?: true
-        val defaultUserReportListState = currentValue[KebabMenuType.UserReportList]?.isHidden ?: true
-        val defaultUserReportSubmissionState = currentValue[KebabMenuType.UserReportSubmission]?.isHidden ?: true
+        val currentValue = _observableKebabSheets.value
+        val defaultThreeDotsState = currentValue?.get(KebabMenuType.ThreeDots)?.isHidden ?: true
+        val defaultUserReportListState = currentValue?.get(KebabMenuType.UserReportList)?.isHidden ?: true
+        val defaultUserReportSubmissionState = currentValue?.get(KebabMenuType.UserReportSubmission)?.isHidden ?: true
         return mapOf(
             KebabMenuType.ThreeDots to BottomInsetsState.Hidden(defaultThreeDotsState),
             KebabMenuType.UserReportList to BottomInsetsState.Hidden(defaultUserReportListState),

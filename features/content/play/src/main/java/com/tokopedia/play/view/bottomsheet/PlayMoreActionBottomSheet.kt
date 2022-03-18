@@ -14,7 +14,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.util.observer.DistinctObserver
-import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.type.BottomInsetsState
@@ -37,7 +36,6 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toDate
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import java.lang.Exception
 import java.net.ConnectException
 import java.net.UnknownHostException
@@ -139,35 +137,31 @@ class PlayMoreActionBottomSheet @Inject constructor(
     }
 
     private fun observeBottomInsets() {
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            playViewModel.uiState.withCache().collectLatest { (_, type) ->
-                with(type.playKebabMenuBottomSheetUiState){
-                    kebabMenuType[KebabMenuType.ThreeDots]?.let { it ->
-                        if (it is BottomInsetsState.Shown) {
-                            customPeekHeight = kebabMenuSheetHeight
-                            kebabMenuSheetView.showWithHeight(customPeekHeight)
-                        }
-                        else kebabMenuSheetView.hide()
-                    }
-
-                    kebabMenuType[KebabMenuType.UserReportList]?.let { state ->
-                        if (state is BottomInsetsState.Shown) {
-                            customPeekHeight = userReportSheetHeight
-                            userReportSheetView.showWithHeight(customPeekHeight)
-                        }
-                        else userReportSheetView.hide()
-                    }
-
-                    kebabMenuType[KebabMenuType.UserReportSubmission]?.let { state ->
-                        if (state is BottomInsetsState.Shown) {
-                            customPeekHeight = userReportSheetHeight
-                            userReportSubmissionSheetView.showWithHeight(customPeekHeight)
-                        }
-                        else userReportSubmissionSheetView.hide()
-                    }
+        playViewModel.observableKebabMenuSheet.observe(viewLifecycleOwner, DistinctObserver { kebabMenuType ->
+            kebabMenuType[KebabMenuType.ThreeDots]?.let { it ->
+                if (it is BottomInsetsState.Shown) {
+                    customPeekHeight = kebabMenuSheetHeight
+                    kebabMenuSheetView.showWithHeight(customPeekHeight)
                 }
+                else kebabMenuSheetView.hide()
             }
-        }
+
+            kebabMenuType[KebabMenuType.UserReportList]?.let { state ->
+                if (state is BottomInsetsState.Shown) {
+                    customPeekHeight = userReportSheetHeight
+                    userReportSheetView.showWithHeight(customPeekHeight)
+                }
+                else userReportSheetView.hide()
+            }
+
+            kebabMenuType[KebabMenuType.UserReportSubmission]?.let { state ->
+                if (state is BottomInsetsState.Shown) {
+                    customPeekHeight = userReportSheetHeight
+                    userReportSubmissionSheetView.showWithHeight(customPeekHeight)
+                }
+                else userReportSubmissionSheetView.hide()
+            }
+        })
     }
 
     private fun observeUserReport() {
