@@ -31,6 +31,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselLis
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ReviewViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCarouselViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
@@ -47,10 +48,13 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 class TopChatRoomAdapter constructor(
     private val context: Context?,
     private val adapterTypeFactory: TopChatTypeFactoryImpl
-) : BaseChatAdapter(adapterTypeFactory), ProductCarouselListAttachmentViewHolder.Listener,
+) : BaseChatAdapter(adapterTypeFactory),
+    ProductCarouselListAttachmentViewHolder.Listener,
+    ProductBundlingCarouselViewHolder.Listener,
     AdapterListener {
 
     private val productCarouselState: ArrayMap<Int, Parcelable> = ArrayMap()
+    private val productBundlingCarouselState: ArrayMap<Int, Parcelable> = ArrayMap()
     private var bottomMostHeaderDate: HeaderDateUiModel? = null
     private var topMostHeaderDate: HeaderDateUiModel? = null
     private var topMostHeaderDateIndex: Int? = null
@@ -126,7 +130,8 @@ class TopChatRoomAdapter constructor(
         parent: ViewGroup,
         viewType: Int
     ): AbstractViewHolder<out Visitable<*>> {
-        return adapterTypeFactory.createViewHolder(parent, viewType, this, this)
+        return adapterTypeFactory.createViewHolder(
+            parent, viewType, this, this, this)
     }
 
     override fun saveProductCarouselState(position: Int, state: Parcelable?) {
@@ -689,5 +694,15 @@ class TopChatRoomAdapter constructor(
         }
         val updatePosition = visitables.indexOf(element)
         return Pair(updatePosition, visitables.getOrNull(updatePosition) as? T)
+    }
+
+    override fun saveProductBundlingCarouselState(position: Int, state: Parcelable?) {
+        state?.let {
+            productBundlingCarouselState[position] = it
+        }
+    }
+
+    override fun getProductBundlingCarouselState(position: Int): Parcelable? {
+        return productBundlingCarouselState[position]
     }
 }

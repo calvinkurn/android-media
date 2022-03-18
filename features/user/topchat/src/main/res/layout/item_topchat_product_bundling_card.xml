@@ -22,7 +22,8 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:visibility="gone">
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/iv_single_product_thumbnail"
@@ -71,7 +72,8 @@
             tools:orientation="horizontal"
             tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_topchat_list_product_bundling"
-            tools:itemCount="3"/>
+            tools:itemCount="3"
+            tools:visibility="gone"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -151,6 +153,18 @@
         android:layout_marginStart="12dp"
         android:layout_marginEnd="12dp"
         app:unifyButtonSize="small"
+        app:layout_constraintVertical_bias="1"
         tools:text="@string/action_open_package"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_product_bundling"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="rect"
+        tools:visibility="gone" />
 
 </merge>

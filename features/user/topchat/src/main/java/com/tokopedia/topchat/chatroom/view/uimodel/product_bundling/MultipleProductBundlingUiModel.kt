@@ -18,9 +18,15 @@ class MultipleProductBundlingUiModel constructor(
     var listBundling: ArrayList<ProductBundlingUiModel> = builder.listProductBundling
         private set
 
+    init {
+        if (!builder.needSync) {
+            finishLoading()
+        }
+    }
+
     override fun updateData(attribute: Any?) {
         if (attribute is ProductBundlingPojo) {
-            val result = builder.mapToSingleProductBundling(attribute.listProductBundling)
+            val result = builder.mapToListProductBundling(attribute.listProductBundling)
             this.listBundling.addAll(result)
         }
     }
@@ -41,26 +47,30 @@ class MultipleProductBundlingUiModel constructor(
 
     open class Builder : SendableUiModel.Builder<Builder, MultipleProductBundlingUiModel>() {
         internal var listProductBundling: ArrayList<ProductBundlingUiModel> = arrayListOf()
+        internal var needSync: Boolean = false
 
         override fun build(): MultipleProductBundlingUiModel {
             return MultipleProductBundlingUiModel(this)
         }
 
         fun withProductBundlingResponse(listProductBundling: List<ProductBundlingData>): Builder {
-            val result = mapToSingleProductBundling(listProductBundling)
+            val result = mapToListProductBundling(listProductBundling)
             this.listProductBundling.addAll(result)
             return self()
         }
 
-        fun mapToSingleProductBundling(
-            listProductBundling: List<ProductBundlingData>
-        ): List<ProductBundlingUiModel> {
+        fun withNeedSync(needSync: Boolean): Builder {
+            this.needSync = needSync
+            return self()
+        }
+
+        fun mapToListProductBundling(listProductBundling: List<ProductBundlingData>): List<ProductBundlingUiModel> {
             val listResult = arrayListOf<ProductBundlingUiModel>()
             for (i in listProductBundling.indices) {
-                val singleProductBundling = ProductBundlingUiModel.Builder()
+                val productBundling = ProductBundlingUiModel.Builder()
                     .withProductBundling(listProductBundling[i])
                     .build()
-                listResult.add(singleProductBundling)
+                listResult.add(productBundling)
             }
             return listResult
         }

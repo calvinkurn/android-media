@@ -175,7 +175,6 @@ open class TopChatTypeFactoryImpl constructor(
     }
 
     override fun type(multipleProductBundlingUiModel: MultipleProductBundlingUiModel): Int {
-//        return MultipleProductBundlingViewHolder.LAYOUT
         return ProductBundlingCarouselViewHolder.LAYOUT
     }
 
@@ -184,6 +183,7 @@ open class TopChatTypeFactoryImpl constructor(
         parent: ViewGroup,
         type: Int,
         productCarouselListListener: ProductCarouselListAttachmentViewHolder.Listener,
+        productBundlingCarouselListener: ProductBundlingCarouselViewHolder.Listener,
         adapterListener: AdapterListener
     ): AbstractViewHolder<*> {
         val layoutRes = when (type) {
@@ -191,13 +191,20 @@ open class TopChatTypeFactoryImpl constructor(
             else -> type
         }
         val view = LayoutInflater.from(parent.context).inflate(layoutRes, parent, false)
-        return createViewHolder(view, layoutRes, productCarouselListListener, adapterListener)
+        return createViewHolder(
+            view,
+            layoutRes,
+            productCarouselListListener,
+            productBundlingCarouselListener,
+            adapterListener
+        )
     }
 
     private fun createViewHolder(
         parent: View,
         type: Int,
         productCarouselListListener: ProductCarouselListAttachmentViewHolder.Listener,
+        productBundlingCarouselListener: ProductBundlingCarouselViewHolder.Listener,
         adapterListener: AdapterListener
     ): AbstractViewHolder<*> {
         return when (type) {
@@ -233,7 +240,8 @@ open class TopChatTypeFactoryImpl constructor(
                 parent, srwBubbleListener, adapterListener
             )
             ProductBundlingCarouselViewHolder.LAYOUT -> ProductBundlingCarouselViewHolder(
-                parent, productBundlingListener, adapterListener
+                parent, productBundlingListener, adapterListener, productBundlingCarouselListener,
+                deferredAttachment, searchListener, commonListener
             )
             else -> createViewHolder(parent, type)
         }

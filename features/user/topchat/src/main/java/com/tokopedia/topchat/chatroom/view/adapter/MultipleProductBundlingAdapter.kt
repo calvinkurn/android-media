@@ -4,13 +4,19 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCardViewHolder
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
 
 class MultipleProductBundlingAdapter(
     private val listener: ProductBundlingListener,
-    private val adapterListener: AdapterListener
+    private val adapterListener: AdapterListener,
+    private val deferredAttachment: DeferredViewHolderAttachment,
+    private val searchListener: SearchListener,
+    private val commonListener: CommonViewHolderListener,
 ) : RecyclerView.Adapter<ProductBundlingCardViewHolder>() {
 
     var carousel: MultipleProductBundlingUiModel? = null
@@ -24,7 +30,8 @@ class MultipleProductBundlingAdapter(
         viewType: Int
     ): ProductBundlingCardViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        return ProductBundlingCardViewHolder(view, listener, adapterListener)
+        return ProductBundlingCardViewHolder(view, listener, adapterListener,
+            deferredAttachment, searchListener, commonListener)
     }
 
     override fun onBindViewHolder(holder: ProductBundlingCardViewHolder, position: Int) {

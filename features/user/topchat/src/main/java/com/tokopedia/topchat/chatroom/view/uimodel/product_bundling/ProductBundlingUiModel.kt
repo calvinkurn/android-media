@@ -15,8 +15,16 @@ class ProductBundlingUiModel constructor(
     var productBundling: ProductBundlingData = builder.productBundling
         private set
 
+    init {
+        if (!builder.needSync) {
+            finishLoading()
+        }
+    }
+
     override fun updateData(attribute: Any?) {
-        TODO("Not yet implemented")
+        if (attribute is ProductBundlingData) {
+            this.productBundling = attribute
+        }
     }
 
     override fun syncError() {
@@ -32,6 +40,7 @@ class ProductBundlingUiModel constructor(
     open class Builder : SendableUiModel.Builder<Builder, ProductBundlingUiModel>() {
 
         internal var productBundling: ProductBundlingData = ProductBundlingData()
+        internal var needSync: Boolean = false
 
         override fun build(): ProductBundlingUiModel {
             return ProductBundlingUiModel(this)

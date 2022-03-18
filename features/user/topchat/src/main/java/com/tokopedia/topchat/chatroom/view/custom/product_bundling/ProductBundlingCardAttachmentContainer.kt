@@ -4,6 +4,9 @@ import android.content.Context
 import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.BackgroundColorSpan
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
@@ -13,19 +16,21 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
-import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.BundleItem
 import com.tokopedia.topchat.chatroom.view.adapter.MultipleBundlingItemAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
+import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
@@ -39,10 +44,14 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     private var totalDiscount: Typography? = null
     private var bundlePrice: Typography? = null
     private var button: UnifyButton? = null
+    private var loader: LoaderUnify? = null
 
     private var listener: ProductBundlingListener? = null
     private var adapterListener: AdapterListener? = null
     private var adapterPosition: Int = RecyclerView.NO_POSITION
+    private var deferredAttachment: DeferredViewHolderAttachment? = null
+    private var searchListener: SearchListener? = null
+    private var commonListener: CommonViewHolderListener? = null
 
     private var recyclerView: RecyclerView? = null
     private val adapter = MultipleBundlingItemAdapter()
@@ -125,6 +134,7 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         bundlePrice = findViewById(R.id.tv_bundle_price)
         button = findViewById(R.id.button_open_package)
         recyclerView = findViewById(R.id.rv_product_bundle)
+        loader = findViewById(R.id.loader_product_bundling)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -137,23 +147,27 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         element: ProductBundlingUiModel,
         adapterPosition: Int,
         listener: ProductBundlingListener,
-        adapterListener: AdapterListener
+        adapterListener: AdapterListener,
+        deferredAttachment: DeferredViewHolderAttachment,
+        searchListener: SearchListener,
+        commonListener: CommonViewHolderListener,
     ) {
         this.adapterPosition = adapterPosition
-        bindListener(listener, adapterListener)
+        bindListener(listener, adapterListener, deferredAttachment, searchListener, commonListener)
         bindLayoutGravity(element)
-//        if (element.isLoading && !element.isError) {
-//            bindIsLoading(product)
-//        } else {
         bindBackground(element)
         bindMargin(element)
-        bindLayoutStyle(element)
-        bindPrice(element)
-        bindCtaClick(element)
+        bindSyncProductBundling(element)
+        bindIsLoading(element)
+        if (!element.isLoading && !element.isError) {
+            bindLayoutStyle(element)
+            bindPrice(element)
+            bindCtaClick(element)
+        }
     }
 
     private fun bindLayoutStyle(element: ProductBundlingUiModel) {
-        if (element.productBundling.bundleItem.size > 1) {
+        if (isCarousel(element)) {
             initRecyclerView(element)
             showRecyclerView()
         } else {
@@ -162,6 +176,10 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
             bindBundlingName(element.productBundling.bundleItem.first())
             hideRecyclerView()
         }
+    }
+
+    private fun isCarousel(element: ProductBundlingUiModel) : Boolean {
+        return element.productBundling.bundleItem.size > 1
     }
 
     private fun hideRecyclerView() {
@@ -197,9 +215,18 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         recyclerView?.addItemDecoration(itemDecoration)
     }
 
-    private fun bindListener(listener: ProductBundlingListener, adapterListener: AdapterListener) {
+    private fun bindListener(
+        listener: ProductBundlingListener,
+        adapterListener: AdapterListener,
+        deferredAttachment: DeferredViewHolderAttachment,
+        searchListener: SearchListener,
+        commonListener: CommonViewHolderListener,
+    ) {
         this.listener = listener
         this.adapterListener = adapterListener
+        this.deferredAttachment = deferredAttachment
+        this.searchListener = searchListener
+        this.commonListener = commonListener
     }
 
     private fun bindLayoutGravity(element: ProductBundlingUiModel) {
@@ -210,11 +237,22 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindIsLoading(product: ProductAttachmentUiModel) {
-        if (product.isLoading) {
-//            loadView?.show()
+    private fun bindIsLoading(element: ProductBundlingUiModel) {
+        if (element.isLoading) {
+            loader?.show()
         } else {
-//            loadView?.hide()
+            loader?.hide()
+        }
+    }
+
+    private fun bindSyncProductBundling(element: ProductBundlingUiModel) {
+        if (!element.isLoading) return
+        val chatAttachments = deferredAttachment?.getLoadedChatAttachments() ?: return
+        val attachment = chatAttachments[element.attachmentId] ?: return
+        if (attachment is ErrorAttachment) {
+            element.syncError()
+        } else {
+            element.updateData(attachment.parsedAttributes)
         }
     }
 
@@ -227,7 +265,22 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindBundlingName(item: BundleItem) {
-        bundlingName?.text = item.name
+        val query = searchListener?.getSearchQuery() ?: ""
+        val spanText = SpannableString(item.name)
+        if (query.isNotEmpty()) {
+            val color = Constant.searchTextBackgroundColor
+            val index = spanText.indexOf(query, ignoreCase = true)
+            if (index != -1) {
+                var lastIndex = index + query.length
+                if (lastIndex > spanText.lastIndex) {
+                    lastIndex = spanText.lastIndex
+                }
+                if (index < spanText.length && spanText.length >= lastIndex) {
+                    spanText.setSpan(BackgroundColorSpan(color), index, lastIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
+            }
+        }
+        bundlingName?.text = spanText
     }
 
     private fun bindPrice(element: ProductBundlingUiModel) {
@@ -241,14 +294,17 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
 
     private fun bindCtaClick(element: ProductBundlingUiModel) {
         button?.let {
-            it.text = element.productBundling.buttonText
-            it.setOnClickListener {
-                listener?.onClickCtaProductBundling(element)
+            if (commonListener?.isSeller() == true) {
+                it.hide()
+            } else {
+                it.text = element.productBundling.buttonText
+                it.setOnClickListener {
+                    listener?.onClickCtaProductBundling(element)
+                }
+                it.show()
             }
         }
     }
-
-    //TODO: Implement search listener
 
     private fun bindMargin(product: ProductBundlingUiModel) {
         val lp = layoutParams
