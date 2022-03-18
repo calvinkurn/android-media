@@ -263,13 +263,13 @@ class TokoNowCategoryFragment:
         categoryIdLvl2 = model.categoryIdLvl2
         categoryIdLvl3 = model.categoryIdLvl3
 
-        constructCategoryLink(model.url)
-        setLvlCategory()
-
         shareCategoryTokonow?.apply {
-            sharingText = resources.getString(R.string.tokopedianow_category_share_main_text, model.name)
-            specificPageName = resources.getString(R.string.tokopedianow_category_share_title, model.name)
-            specificPageDescription = resources.getString(R.string.tokopedianow_category_share_desc, model.name)
+            id = model.deeplinkParam
+            sharingUrl = model.url
+            pageIdConstituents = model.utmCampaignList
+            sharingText = resources.getString(R.string.tokopedianow_category_share_main_text, model.title)
+            specificPageName = resources.getString(R.string.tokopedianow_category_share_title, model.title)
+            specificPageDescription = resources.getString(R.string.tokopedianow_category_share_desc, model.title)
         }
     }
 
@@ -280,43 +280,6 @@ class TokoNowCategoryFragment:
             ogImageUrl = TokoNowHomeFragment.THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
             linkerType = NOW_TYPE
         )
-    }
-
-    private fun constructCategoryLink(categoryUrl: String) {
-        var deeplinkParam = "/$DEFAULT_DEEPLINK_PARAM/${tokoNowCategoryViewModel.categoryL1}"
-        var url = categoryUrl
-        if (categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID) {
-            deeplinkParam += "/$categoryIdLvl2"
-            url += String.format(URL_PARAM_LVL_2, categoryIdLvl2)
-
-            if (categoryIdLvl3.isNotBlank() && categoryIdLvl3 != DEFAULT_CATEGORY_ID) {
-                deeplinkParam += String.format(DEEPLINK_PARAM_LVL_3, categoryIdLvl3)
-                url += String.format(URL_PARAM_LVL_3, categoryIdLvl3)
-            }
-        }
-
-        shareCategoryTokonow?.id = deeplinkParam
-        shareCategoryTokonow?.sharingUrl = url
-    }
-
-    private fun setLvlCategory() {
-        val categoryId: String
-        val categoryLvl: Int
-        when {
-            categoryIdLvl3.isNotBlank() && categoryIdLvl3 != DEFAULT_CATEGORY_ID -> {
-                categoryLvl = CATEGORY_LVL_3
-                categoryId = categoryIdLvl3
-            }
-            categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID -> {
-                categoryLvl = CATEGORY_LVL_2
-                categoryId = categoryIdLvl2
-            }
-            else -> {
-                categoryLvl = CATEGORY_LVL_1
-                categoryId = tokoNowCategoryViewModel.categoryL1
-            }
-        }
-        shareCategoryTokonow?.pageIdConstituents = listOf(String.format(PAGE_TYPE_CATEGORY, categoryLvl), categoryId)
     }
 
     override fun onCloseOptionClicked() {

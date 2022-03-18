@@ -21,6 +21,7 @@ import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail.NavigationItem
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemDataView
+import com.tokopedia.tokopedianow.category.presentation.view.TokoNowCategoryFragment
 import com.tokopedia.tokopedianow.category.presentation.view.TokoNowCategoryFragment.Companion.DEFAULT_CATEGORY_ID
 import com.tokopedia.tokopedianow.category.utils.CATEGORY_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokopedianow.category.utils.CATEGORY_LOAD_MORE_PAGE_USE_CASE
@@ -300,12 +301,61 @@ class TokoNowCategoryViewModel @Inject constructor (
             }
         }
 
+        val title = getTitleCategory(categoryIdLvl2, categoryModel)
+        val constructedLink = getConstructedLink(categoryModel.categoryDetail.data.url, categoryIdLvl2, categoryIdLvl3)
+        val utmCampaignList = getUtmCampaignList(categoryIdLvl2, categoryIdLvl3)
+
         sharingMutableLiveData.value = CategorySharingModel(
             categoryIdLvl2 = categoryIdLvl2,
             categoryIdLvl3 = categoryIdLvl3,
-            name = categoryModel.categoryDetail.data.name,
-            url = categoryModel.categoryDetail.data.url
+            title = title,
+            deeplinkParam = constructedLink.first,
+            url = constructedLink.second,
+            utmCampaignList = utmCampaignList
         )
+    }
+
+    private fun getTitleCategory(categoryIdLvl2: String, categoryModel: CategoryModel): String {
+        return if (categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID) {
+            categoryModel.quickFilter.filter.firstOrNull()?.title.orEmpty()
+        } else {
+            categoryModel.categoryDetail.data.name
+        }
+    }
+
+    private fun getConstructedLink(categoryUrl: String, categoryIdLvl2: String, categoryIdLvl3: String): Pair<String, String> {
+        var deeplinkParam = "/${TokoNowCategoryFragment.DEFAULT_DEEPLINK_PARAM}/${categoryL1}"
+        var url = categoryUrl
+        if (categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID) {
+            deeplinkParam += "/$categoryIdLvl2"
+            url += String.format(TokoNowCategoryFragment.URL_PARAM_LVL_2, categoryIdLvl2)
+
+            if (categoryIdLvl3.isNotBlank() && categoryIdLvl3 != DEFAULT_CATEGORY_ID) {
+                deeplinkParam += String.format(TokoNowCategoryFragment.DEEPLINK_PARAM_LVL_3, categoryIdLvl3)
+                url += String.format(TokoNowCategoryFragment.URL_PARAM_LVL_3, categoryIdLvl3)
+            }
+        }
+        return Pair(deeplinkParam, url)
+    }
+
+    private fun getUtmCampaignList(categoryIdLvl2: String, categoryIdLvl3: String): List<String> {
+        val categoryId: String
+        val categoryLvl: Int
+        when {
+            categoryIdLvl3.isNotBlank() && categoryIdLvl3 != DEFAULT_CATEGORY_ID -> {
+                categoryLvl = TokoNowCategoryFragment.CATEGORY_LVL_3
+                categoryId = categoryIdLvl3
+            }
+            categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID -> {
+                categoryLvl = TokoNowCategoryFragment.CATEGORY_LVL_2
+                categoryId = categoryIdLvl2
+            }
+            else -> {
+                categoryLvl = TokoNowCategoryFragment.CATEGORY_LVL_1
+                categoryId = categoryL1
+            }
+        }
+        return listOf(String.format(TokoNowCategoryFragment.PAGE_TYPE_CATEGORY, categoryLvl), categoryId)
     }
 
     override fun executeLoadMore() {
