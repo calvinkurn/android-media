@@ -3,7 +3,6 @@ package com.tokopedia.home_recom.util
 import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItem2
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
@@ -83,13 +82,13 @@ class RecomPageUiUpdater(var dataList: MutableList<HomeRecommendationDataModel>)
         dataList = newDataList
     }
 
-    private fun getTotalQuantityVariantBasedOnParentID(recomItem: RecommendationItem, miniCart: MutableMap<String, MiniCartItem>): Int {
-        var variantTotalItems = 0
-        miniCart.values.forEach { miniCartItem ->
-            if (miniCartItem.productParentId == recomItem.parentID.toString()) {
-                variantTotalItems += miniCartItem.quantity
-            }
-        }
-        return variantTotalItems
-    }
+//    private fun getTotalQuantityVariantBasedOnParentID(recomItem: RecommendationItem, miniCart: MutableMap<String, MiniCartItem>): Int {
+//        var variantTotalItems = 0
+//        miniCart.values.forEach { miniCartItem ->
+//            if (miniCartItem.productParentId == recomItem.parentID.toString()) {
+//                variantTotalItems += miniCartItem.quantity
+//            }
+//        }
+//        return variantTotalItems
+//    }
 }

@@ -7,7 +7,6 @@ import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItem2
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
@@ -35,8 +34,8 @@ open class CartService @Inject constructor (
 //            cartItemsPartition.second.groupBy { it.productParentId }
     }
 
-    private fun splitCartItemsVariantAndNonVariant(miniCartItems: List<MiniCartItem>) =
-        miniCartItems.partition { it.productParentId == NO_VARIANT_PARENT_PRODUCT_ID }
+//    private fun splitCartItemsVariantAndNonVariant(miniCartItems: List<MiniCartItem>) =
+//        miniCartItems.partition { it.productParentId == NO_VARIANT_PARENT_PRODUCT_ID }
 
     open fun getProductQuantity(
         productId: String,

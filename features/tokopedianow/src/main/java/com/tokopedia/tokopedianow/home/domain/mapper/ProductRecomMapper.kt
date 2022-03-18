@@ -4,7 +4,7 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -18,7 +18,7 @@ object ProductRecomMapper {
     fun mapProductRecomDataModel(
         response: HomeLayoutResponse,
         state: HomeLayoutItemState,
-        miniCartData: MiniCartSimplifiedData? = null
+        miniCartData: MiniCartSimplifiedData2? = null
     ): HomeLayoutItemUiModel {
         val channelModel = ChannelMapper.mapToChannelModel(response)
         val recomWidget = mapChannelToRecommendationWidget(channelModel, miniCartData)
@@ -28,7 +28,7 @@ object ProductRecomMapper {
 
     private fun mapChannelToRecommendationWidget(
         channel: ChannelModel,
-        miniCartData: MiniCartSimplifiedData? = null
+        miniCartData: MiniCartSimplifiedData2? = null
     ): RecommendationWidget {
         return RecommendationWidget(
             title = channel.channelHeader.name,
@@ -46,7 +46,7 @@ object ProductRecomMapper {
     private fun mapChannelGridToRecommendationItem(
         channelGrids: List<ChannelGrid>,
         pageName: String,
-        miniCartData: MiniCartSimplifiedData? = null
+        miniCartData: MiniCartSimplifiedData2? = null
     ): List<RecommendationItem> {
         val recommendationItems = mutableListOf<RecommendationItem>()
         channelGrids.forEach { grid ->
