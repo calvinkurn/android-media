@@ -72,6 +72,7 @@ class TokoNowCategoryFragment:
         const val PAGE_TYPE_CATEGORY = "cat%s"
         const val URL_PARAM_LVL_2 = "?exclude_sc=%s"
         const val URL_PARAM_LVL_3 = "&sc=%s"
+        const val DEEPLINK_PARAM_LVL_3 = "?sc=%s"
         const val DEFAULT_CATEGORY_ID = "0"
         const val DEFAULT_DEEPLINK_PARAM = "category"
         const val CATEGORY_LVL_1 = 1
@@ -289,13 +290,13 @@ class TokoNowCategoryFragment:
             url += String.format(URL_PARAM_LVL_2, categoryIdLvl2)
 
             if (categoryIdLvl3.isNotBlank() && categoryIdLvl3 != DEFAULT_CATEGORY_ID) {
-                deeplinkParam +="/$categoryIdLvl3"
+                deeplinkParam += String.format(DEEPLINK_PARAM_LVL_3, categoryIdLvl3)
                 url += String.format(URL_PARAM_LVL_3, categoryIdLvl3)
             }
         }
 
         shareCategoryTokonow?.id = deeplinkParam
-        shareCategoryTokonow?.sharingUrl = categoryUrl
+        shareCategoryTokonow?.sharingUrl = url
     }
 
     private fun setLvlCategory() {
