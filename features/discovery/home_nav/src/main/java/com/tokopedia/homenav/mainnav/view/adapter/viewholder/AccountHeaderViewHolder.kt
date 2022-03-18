@@ -109,7 +109,8 @@ class AccountHeaderViewHolder(itemView: View,
     private fun renderLoginState(element: AccountHeaderDataModel) {
         layoutLogin.visibility = View.VISIBLE
         val userImage: ImageUnify = layoutLoginHeader.findViewById(R.id.img_user_login)
-        val usrBadge: Typography = layoutLoginHeader.findViewById(R.id.usr_badge)
+        val usrBadge: ImageUnify = layoutLoginHeader.findViewById(R.id.usr_badge)
+        val usrEmoji: Typography = layoutLoginHeader.findViewById(R.id.usr_emoji)
         val usrOvoBadge: ImageUnify = layoutLoginHeader.findViewById(R.id.usr_ovo_badge)
         val btnSettings: IconUnify = layoutLoginHeader.findViewById(R.id.btn_settings)
         val btnTryAgain: CardView = layoutLoginHeader.findViewById(R.id.btn_try_again)
@@ -183,9 +184,10 @@ class AccountHeaderViewHolder(itemView: View,
                     tvName,
                     getCurrentGreetings(),
                     profileData.userName,
-                    usrBadge,
+                    usrEmoji,
                     getCurrentGreetingsIconStringEmoji(),
-                    element.profileMembershipDataModel.badge
+                    element.profileMembershipDataModel.badge,
+                    usrBadge
                 )
             }
         }
@@ -428,20 +430,33 @@ class AccountHeaderViewHolder(itemView: View,
 
     private var needToSwitchText: Boolean = isFirstTimeUserSeeNameAnimationOnSession()
 
-    private fun configureNameAndBadgeSwitcher(tvName: Typography, greetingString: String, nameString: String, tvBadge: Typography, badgeEmojiString: String, badgeUrl: String) {
+    private fun configureNameAndBadgeSwitcher(
+        tvName: Typography,
+        greetingString: String,
+        nameString: String,
+        tvBadge: Typography,
+        badgeEmojiString: String,
+        badgeUrl: String,
+        imgBadge: ImageUnify
+    ) {
         if (needToSwitchText) {
             tvName.text = greetingString
             tvBadge.visible()
+            imgBadge.invisible()
             tvBadge.text = badgeEmojiString
             launch {
                 delay(GREETINGS_DELAY)
+                tvBadge.invisible()
+                imgBadge.visible()
                 tvName.animateProfileName(nameString, ANIMATION_DURATION_MS)
-                tvBadge.animateProfileBadge(ANIMATION_DURATION_MS)
+                imgBadge.animateProfileBadge(badgeUrl, ANIMATION_DURATION_MS)
                 setFirstTimeUserSeeNameAnimationOnSession(false)
             }
         } else {
             tvName.text = nameString
-            tvBadge.visible()
+            tvBadge.invisible()
+            imgBadge.visible()
+            imgBadge.loadImage(badgeUrl)
         }
     }
 
