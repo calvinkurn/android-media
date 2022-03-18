@@ -119,48 +119,60 @@ class MiniCartSimplifiedWidget : BaseCustomView {
         viewModel?.miniCartSimplifiedState?.observe(fragment.viewLifecycleOwner) { state ->
             when (state.state) {
                 MiniCartSimplifiedState.STATE_FAILED_VALIDATE_USE -> {
-                    setTotalAmountLoading(false)
-                    promoProgressBar.visibility = View.GONE
-                    binding.miniCartSimplifiedTotalAmount.hideTopContent()
-                    showToasterError(fragment, state.throwable)
+                    onFailedValidateUseMvc(fragment, state)
                 }
-
                 MiniCartSimplifiedState.STATE_FAILED_VALIDATE_USE_MOVE_TO_CART -> {
-                    setTotalAmountLoading(false)
-                    promoProgressBar.visibility = View.GONE
-                    binding.miniCartSimplifiedTotalAmount.hideTopContent()
-                    val throwable = state.throwable
-                    val currentTime = SystemClock.elapsedRealtime()
-                    if (throwable is MessageErrorException && throwable.message == lastFailedValidateMoveToCartMessage) {
-                        if (lastFailedValidateMoveToCart > FAILED_VALIDATE_MOVE_TO_CART_DEFAULT && currentTime - lastFailedValidateMoveToCart < FAILED_VALIDATE_MOVE_TO_CART_LIMIT) {
-                            RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
-                            lastFailedValidateMoveToCart = FAILED_VALIDATE_MOVE_TO_CART_DEFAULT
-                        } else {
-                            lastFailedValidateMoveToCart = currentTime
-                            lastFailedValidateMoveToCartMessage = throwable.message ?: ""
-                        }
-                    } else {
-                        lastFailedValidateMoveToCart = currentTime
-                        lastFailedValidateMoveToCartMessage = throwable?.message ?: ""
-                        showToasterError(fragment, throwable)
-                    }
+                    onFailedValidateUseMvcMoveToCart(fragment, state)
                 }
-
                 MiniCartSimplifiedState.STATE_FAILED_MINICART -> {
-                    setTotalAmountLoading(false)
-                    showToasterError(fragment, state.throwable)
+                    onFailedGetMiniCart(fragment, state)
                 }
-
                 MiniCartSimplifiedState.STATE_MOVE_TO_CART -> {
-                    setTotalAmountLoading(false)
-                    RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
+                    onMoveToCart()
                 }
-
                 else -> {
                     /* no-op */
                 }
             }
         }
+    }
+
+    private fun onFailedValidateUseMvc(fragment: Fragment, state: MiniCartSimplifiedState) {
+        setTotalAmountLoading(false)
+        promoProgressBar.visibility = GONE
+        binding.miniCartSimplifiedTotalAmount.hideTopContent()
+        showToasterError(fragment, state.throwable)
+    }
+
+    private fun onFailedValidateUseMvcMoveToCart(fragment: Fragment, state: MiniCartSimplifiedState) {
+        setTotalAmountLoading(false)
+        promoProgressBar.visibility = GONE
+        binding.miniCartSimplifiedTotalAmount.hideTopContent()
+        val throwable = state.throwable
+        val currentTime = SystemClock.elapsedRealtime()
+        if (throwable is MessageErrorException && throwable.message == lastFailedValidateMoveToCartMessage) {
+            if (lastFailedValidateMoveToCart > FAILED_VALIDATE_MOVE_TO_CART_DEFAULT && currentTime - lastFailedValidateMoveToCart < FAILED_VALIDATE_MOVE_TO_CART_LIMIT) {
+                RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
+                lastFailedValidateMoveToCart = FAILED_VALIDATE_MOVE_TO_CART_DEFAULT
+            } else {
+                lastFailedValidateMoveToCart = currentTime
+                lastFailedValidateMoveToCartMessage = throwable.message ?: ""
+            }
+        } else {
+            lastFailedValidateMoveToCart = currentTime
+            lastFailedValidateMoveToCartMessage = throwable?.message ?: ""
+            showToasterError(fragment, throwable)
+        }
+    }
+
+    private fun onFailedGetMiniCart(fragment: Fragment, state: MiniCartSimplifiedState) {
+        setTotalAmountLoading(false)
+        showToasterError(fragment, state.throwable)
+    }
+
+    private fun onMoveToCart() {
+        setTotalAmountLoading(false)
+        RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
     }
 
     private fun observeMiniCartWidgetUiModel(fragment: Fragment) {
@@ -268,7 +280,7 @@ class MiniCartSimplifiedWidget : BaseCustomView {
         val miniCartSimplifiedData = viewModel?.miniCartSimplifiedData?.value ?: return
         val validateUseMvcData = viewModel?.validateUseMvcData?.value ?: return
         analytics.eventClickCheckCart(
-                basketSize = CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartSimplifiedData.miniCartWidgetData.totalProductPrice, false).removeDecimalSuffix(),
+                basketSize = miniCartSimplifiedData.miniCartWidgetData.totalProductPrice.toString(),
                 isFulfilled = validateUseMvcData.progressPercentage >= 100,
                 shopId = viewModel?.currentShopIds?.joinToString() ?: "",
                 pageSource = viewModel?.currentPageSource,
@@ -283,7 +295,7 @@ class MiniCartSimplifiedWidget : BaseCustomView {
             val miniCartSimplifiedData = viewModel?.miniCartSimplifiedData?.value ?: return
             val validateUseMvcData = viewModel?.validateUseMvcData?.value ?: return
             analytics.eventMvcProgressBarImpression(
-                    basketSize = CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartSimplifiedData.miniCartWidgetData.totalProductPrice, false).removeDecimalSuffix(),
+                    basketSize = miniCartSimplifiedData.miniCartWidgetData.totalProductPrice.toString(),
                     promoPercentage = validateUseMvcData.progressPercentage.toString(),
                     shopId = viewModel?.currentShopIds?.joinToString() ?: "",
                     businessUnit = viewModel?.currentBusinessUnit ?: "",

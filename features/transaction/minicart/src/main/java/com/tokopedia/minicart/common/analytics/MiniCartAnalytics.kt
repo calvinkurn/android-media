@@ -590,7 +590,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     fun eventMvcProgressBarImpression(basketSize: String, promoPercentage: String, shopId: String,
                                       businessUnit: String, currentSite: String) {
         val trackingData = TrackAppUtils.gtmData(EVENT_NAME_VIEW_PG_IRIS, EVENT_CATEGORY_SHOP_PAGE_BUYER,
-                EVENT_ACTION_MVC_PROGRESS_BAR_IMPRESSION, "$basketSize - $promoPercentage%")
+                EVENT_ACTION_MVC_PROGRESS_BAR_IMPRESSION, "$basketSize - $promoPercentage")
         trackingData[KEY_BUSINESS_UNIT] = businessUnit
         trackingData[KEY_CURRENT_SITE] = currentSite
         trackingData[KEY_SHOP_ID] = shopId
