@@ -139,7 +139,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
     }
 
     private fun observeBottomInsets() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             playViewModel.uiState.withCache().collectLatest { (_, type) ->
                 with(type.playKebabMenuBottomSheetUiState){
                     kebabMenuType[KebabMenuType.ThreeDots]?.let { it ->
@@ -199,7 +199,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
     }
 
     private fun observeEvent(){
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             playViewModel.uiEvent.collect { event ->
                 when (event) {
                     OpenUserReportEvent -> doActionUserReport()
