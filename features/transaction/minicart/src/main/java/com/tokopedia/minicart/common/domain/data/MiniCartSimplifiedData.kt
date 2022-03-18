@@ -22,20 +22,7 @@ data class MiniCartSimplifiedData2(
         var miniCartWidgetData: MiniCartWidgetData = MiniCartWidgetData(),
         var miniCartItems: Map<MiniCartItemKey, MiniCartItem2> = emptyMap(),
         var isShowMiniCartWidget: Boolean = false
-) {
-
-    fun getMiniCartItemProductByProductId(productId: String): MiniCartItem2.MiniCartItemProduct? {
-        return miniCartItems[MiniCartItemKey(productId)] as? MiniCartItem2.MiniCartItemProduct
-    }
-
-    fun getMiniCartItemBundleByProductId(bundleId: String): MiniCartItem2.MiniCartItemProduct? {
-        return miniCartItems[MiniCartItemKey(bundleId, MiniCartItemType.BUNDLE)] as? MiniCartItem2.MiniCartItemProduct
-    }
-
-    fun getMiniCartItemParentProductByProductId(bundleId: String): MiniCartItem2.MiniCartItemParentProduct? {
-        return miniCartItems[MiniCartItemKey(bundleId, MiniCartItemType.PARENT)] as? MiniCartItem2.MiniCartItemParentProduct
-    }
-}
+)
 
 fun Map<MiniCartItemKey, MiniCartItem2>.getMiniCartItemProduct(productId: String): MiniCartItem2.MiniCartItemProduct? {
     return get(MiniCartItemKey(productId)) as? MiniCartItem2.MiniCartItemProduct
