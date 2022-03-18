@@ -21,6 +21,7 @@ import com.tokopedia.shopadmin.common.utils.setTextMakeHyperlink
 import com.tokopedia.shopadmin.databinding.FragmentAdminInvitationAcceptedBinding
 import com.tokopedia.shopadmin.invitationaccepted.di.component.AdminInvitationAcceptedComponent
 import com.tokopedia.shopadmin.invitationaccepted.presentation.adapter.ItemFeatureAccessAdapter
+import com.tokopedia.shopadmin.invitationaccepted.presentation.bottomsheet.TncAdminBottomSheet
 import com.tokopedia.shopadmin.invitationaccepted.presentation.model.AdminInfoUiModel
 import com.tokopedia.shopadmin.invitationaccepted.presentation.model.FeatureAccessUiModel
 import com.tokopedia.unifycomponents.Toaster
@@ -66,7 +67,8 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
     }
 
     private fun showTncBottomSheet() {
-
+        val tncAdminBottomSheet = TncAdminBottomSheet()
+        tncAdminBottomSheet.show(childFragmentManager)
     }
 
     private fun setupFeatureAccessList(featureAccessList: List<FeatureAccessUiModel>) {
