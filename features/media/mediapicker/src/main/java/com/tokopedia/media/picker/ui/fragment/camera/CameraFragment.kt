@@ -301,7 +301,8 @@ open class CameraFragment : BaseDaggerFragment()
             COUNTDOWN_INTERVAL
         ) {
             override fun onTick(milis: Long) {
-                controller.setVideoDuration(milis.videoFormat())
+                val time = maxDuration - milis
+                controller.setVideoDuration(time.videoFormat())
             }
 
             override fun onFinish() {
