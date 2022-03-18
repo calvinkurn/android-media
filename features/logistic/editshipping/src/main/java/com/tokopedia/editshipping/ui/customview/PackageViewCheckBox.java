@@ -52,12 +52,16 @@ public class PackageViewCheckBox extends EditShippingCourierView<Service,
         serviceCheckbox.setText(service.name);
         serviceCheckbox.setChecked(service.getActive());
         this.serviceIndex = serviceIndex;
-        if (service.id.equals(EditShippingConstant.GOCAR_SHIPPER_PRODUCT_ID)) {
+        if (needToShowCoachmarkGocarInstan(service)) {
             mainView.showCoachmarkGocarInstan(serviceCheckbox);
         }
         serviceCheckbox.setCompoundDrawablesWithIntrinsicBounds(0, 0, com.tokopedia.design.R.drawable.info_icon, 0);
         serviceCheckbox.setOnTouchListener(onDescriptionTouchedListener(serviceCheckbox,
                 service.description, service.name));
+    }
+
+    private boolean needToShowCoachmarkGocarInstan(@NonNull Service service) {
+        return service.id.equals(EditShippingConstant.GOCAR_SHIPPER_PRODUCT_ID);
     }
 
     public void setServiceCheckBoxListener(final int courierIndex){
@@ -79,7 +83,6 @@ public class PackageViewCheckBox extends EditShippingCourierView<Service,
             public boolean onTouch(View v, MotionEvent motionEvent) {
                 if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     if (motionEvent.getRawX() >= checkBox.getRight() - checkBox.getTotalPaddingRight()) {
-                        // todo on touch nya disini
                         mainView.showInfoBottomSheet(description, serviceName);
                         return true;
                     }
