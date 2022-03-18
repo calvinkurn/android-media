@@ -20,6 +20,8 @@ public interface LinkerConstants {
     String GROUPCHAT = "tokopedia://groupchat/{channel_id}";
     String PROMO_DETAIL = "tokopedia://promo/{slug}";
     String PLAY = "tokopedia://play/{channel_id}";
+    String NOW = "tokopedia://now{content}";
+    String WEBVIEW = "tokopedia://webview{content}";
     String APPLINKS = "tokopedia";
     String WEB_DOMAIN = "https://www.tokopedia.com/";
     String MOBILE_DOMAIN = "https://m.tokopedia.com/";

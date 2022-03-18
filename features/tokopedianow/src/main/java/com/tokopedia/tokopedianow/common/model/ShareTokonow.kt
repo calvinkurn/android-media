@@ -11,5 +11,6 @@ data class ShareTokonow(
         var ogImageUrl: String = "",
         var specificPageName: String = "",
         var specificPageDescription: String = "",
-        var isScreenShot: Boolean = false
+        var isScreenShot: Boolean = false,
+        var linkerType: String = ""
 )

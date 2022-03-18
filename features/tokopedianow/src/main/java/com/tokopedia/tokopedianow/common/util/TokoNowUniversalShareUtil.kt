@@ -24,6 +24,7 @@ object TokoNowUniversalShareUtil {
         linkerData.uri = shareHomeTokonow?.sharingUrl.orEmpty()
         linkerData.description = shareHomeTokonow?.specificPageDescription.orEmpty()
         linkerData.isThrowOnError = true
+        linkerData.type = shareHomeTokonow?.linkerType.orEmpty()
         val linkerShareData = LinkerShareData()
         linkerShareData.linkerData = linkerData
         return linkerShareData

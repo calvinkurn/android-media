@@ -12,6 +12,7 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.model.LinkerData.NOW_TYPE
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
@@ -275,20 +276,21 @@ class TokoNowCategoryFragment:
         return ShareTokonow(
             userId = userSession.userId,
             thumbNailImage = TokoNowHomeFragment.THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
-            ogImageUrl = TokoNowHomeFragment.THUMBNAIL_AND_OG_IMAGE_SHARE_URL
+            ogImageUrl = TokoNowHomeFragment.THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
+            linkerType = NOW_TYPE
         )
     }
 
     private fun constructCategoryLink(categoryUrl: String) {
-        val deeplinkParam = "$DEFAULT_DEEPLINK_PARAM/${tokoNowCategoryViewModel.categoryL1}"
-
+        var deeplinkParam = "/$DEFAULT_DEEPLINK_PARAM/${tokoNowCategoryViewModel.categoryL1}"
+        var url = categoryUrl
         if (categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID) {
-            deeplinkParam.plus("/$categoryIdLvl2")
-            categoryUrl.plus(String.format(URL_PARAM_LVL_2, categoryIdLvl2))
+            deeplinkParam += "/$categoryIdLvl2"
+            url += String.format(URL_PARAM_LVL_2, categoryIdLvl2)
 
             if (categoryIdLvl3.isNotBlank() && categoryIdLvl3 != DEFAULT_CATEGORY_ID) {
-                deeplinkParam.plus("/$categoryIdLvl3")
-                categoryUrl.plus(String.format(URL_PARAM_LVL_3, categoryIdLvl3))
+                deeplinkParam +="/$categoryIdLvl3"
+                url += String.format(URL_PARAM_LVL_3, categoryIdLvl3)
             }
         }
 

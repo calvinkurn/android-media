@@ -32,6 +32,8 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.model.LinkerData.NOW_TYPE
+import com.tokopedia.linker.model.LinkerData.WEBVIEW_TYPE
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
@@ -170,7 +172,9 @@ class TokoNowHomeFragment: Fragment(),
         const val SOURCE = "tokonow"
         const val SOURCE_TRACKING = "tokonow page"
         const val DEFAULT_QUANTITY = 0
-        const val SHARE_URL = "https://www.tokopedia.com/now"
+        const val SHARE_HOME_URL = "https://www.tokopedia.com/now"
+        const val SHARE_QUEST_URL = "https://www.tokopedia.com/now/quest-channel"
+        const val DEEPLINK_SHARE_QUEST_PATH = "?url=https://www.tokopedia.com/now/quest-channel"
         const val THUMBNAIL_AND_OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/now/PN-RICH.jpg"
         const val PAGE_SHARE_NAME = "Tokonow"
         const val SHARE = "share"
@@ -361,7 +365,8 @@ class TokoNowHomeFragment: Fragment(),
         updateShareHomeData(
             pageIdConstituents = listOf(PAGE_TYPE_HOME),
             isScreenShot = true,
-            thumbNailTitle = resources.getString(R.string.tokopedianow_home_share_thumbnail_title_ss)
+            thumbNailTitle = resources.getString(R.string.tokopedianow_home_share_thumbnail_title_ss),
+            linkerType = NOW_TYPE
         )
 
         showUniversalShareBottomSheet(shareHomeTokonow)
@@ -512,7 +517,8 @@ class TokoNowHomeFragment: Fragment(),
         updateShareHomeData(
             pageIdConstituents = listOf(PAGE_TYPE_QUEST),
             isScreenShot = false,
-            thumbNailTitle = resources.getString(R.string.tokopedianow_home_share_thumbnail_title)
+            thumbNailTitle = resources.getString(R.string.tokopedianow_home_share_thumbnail_title),
+            linkerType = WEBVIEW_TYPE
         )
 
         shareClicked(shareHomeTokonow)
@@ -786,17 +792,21 @@ class TokoNowHomeFragment: Fragment(),
         updateShareHomeData(
             pageIdConstituents = listOf(PAGE_TYPE_HOME),
             isScreenShot = false,
-            thumbNailTitle = resources.getString(R.string.tokopedianow_home_share_thumbnail_title)
+            thumbNailTitle = resources.getString(R.string.tokopedianow_home_share_thumbnail_title),
+            linkerType = NOW_TYPE
         )
 
         shareClicked(shareHomeTokonow)
         analytics.trackClickShareButtonTopNav()
     }
 
-    private fun updateShareHomeData(pageIdConstituents: List<String>, isScreenShot: Boolean, thumbNailTitle: String) {
+    private fun updateShareHomeData(pageIdConstituents: List<String>, isScreenShot: Boolean, thumbNailTitle: String, linkerType: String) {
         shareHomeTokonow?.pageIdConstituents = pageIdConstituents
         shareHomeTokonow?.isScreenShot = isScreenShot
         shareHomeTokonow?.thumbNailTitle = thumbNailTitle
+        shareHomeTokonow?.linkerType = linkerType
+        shareHomeTokonow?.id = if(linkerType == NOW_TYPE) "" else DEEPLINK_SHARE_QUEST_PATH
+        shareHomeTokonow?.sharingUrl = if (linkerType == NOW_TYPE) SHARE_HOME_URL else SHARE_QUEST_URL
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
@@ -1444,7 +1454,6 @@ class TokoNowHomeFragment: Fragment(),
     private fun createShareHomeTokonow(): ShareTokonow {
         return ShareTokonow(
                 sharingText = resources.getString(R.string.tokopedianow_home_share_main_text),
-                sharingUrl = SHARE_URL,
                 userId = userSession.userId,
                 thumbNailImage = THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
                 ogImageUrl = THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
