@@ -8,6 +8,6 @@ data class VideoCarouselConfigUiModel(
     companion object {
         private const val DEFAULT_IS_AUTO_PLAY = true
         private const val DEFAULT_AUTO_PLAY_AMOUNT = 5
-        private const val DEFAULT_AUTO_PLAY_DURATION = 5
+        private const val DEFAULT_AUTO_PLAY_DURATION = 5 // in second
     }
 }

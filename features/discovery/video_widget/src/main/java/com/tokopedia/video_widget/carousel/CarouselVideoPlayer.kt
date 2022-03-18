@@ -2,7 +2,6 @@ package com.tokopedia.video_widget.carousel
 
 import android.content.Context
 import android.net.Uri
-import android.os.CountDownTimer
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
@@ -23,19 +22,19 @@ import java.lang.ref.WeakReference
 class CarouselVideoPlayer(context: Context) {
     companion object {
         private const val DEFAULT_CLIP_DURATION = 5_000_000L // 5 second in microsecond
+        private const val ONE_MICRO_SECOND = 1_000_000L // 1 second in microsecond
     }
 
     private val contextReference = WeakReference(context)
     private val context: Context?
         get() = contextReference.get()
     private val exoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(context).build()
-    private var autoStopTimer: CountDownTimer? = null
 
     var listener: VideoPlayerListener? = null
     var videoUrl: String? = null
     var shouldCache: Boolean = false
 
-    var maxDurationCellularInSeconds: Int? = null
+    private var maxDuration : Long = DEFAULT_CLIP_DURATION
 
     init {
         exoPlayer.volume = 0F
@@ -46,13 +45,7 @@ class CarouselVideoPlayer(context: Context) {
                     Player.STATE_ENDED -> if (DeviceConnectionInfo.isConnectCellular(context)) whenIsPlayingChanged(
                         isPlaying = false
                     )
-                    Player.STATE_READY -> {
-                        if (playWhenReady && DeviceConnectionInfo.isConnectCellular(context)) {
-                            configureAutoStop(maxDurationCellularInSeconds)
-                        }
-
-                        whenIsPlayingChanged(isPlaying = true)
-                    }
+                    Player.STATE_READY -> whenIsPlayingChanged(isPlaying = true)
                     else -> whenIsPlayingChanged(isPlaying = false)
                 }
             }
@@ -74,7 +67,6 @@ class CarouselVideoPlayer(context: Context) {
     }
 
     fun stop() {
-        autoStopTimer?.cancel()
         exoPlayer.stop()
     }
 
@@ -89,6 +81,16 @@ class CarouselVideoPlayer(context: Context) {
         }
     }
 
+    fun setMaxDurationInMicroSecond(duration: Long) {
+        val newDuration = if(duration > 0L) duration else 0L
+        this.maxDuration = newDuration
+    }
+
+    fun setMaxDurationInSecond(duration: Int) {
+        val newDuration = if(duration > 0) duration else 0
+        this.maxDuration = newDuration * ONE_MICRO_SECOND
+    }
+
     fun getPlayer(): ExoPlayer = exoPlayer
 
     interface VideoPlayerListener {
@@ -98,8 +100,7 @@ class CarouselVideoPlayer(context: Context) {
     private fun getMediaSourceBySource(
         context: Context,
         uri: Uri,
-        shouldCache: Boolean,
-        duration: Long = DEFAULT_CLIP_DURATION
+        shouldCache: Boolean
     ): MediaSource {
         val defaultDataSourceFactory =
             DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))
@@ -114,28 +115,10 @@ class CarouselVideoPlayer(context: Context) {
             else -> throw IllegalStateException("Unsupported type: $type")
         }
         val mediaSource = mediaSourceFactory.createMediaSource(uri)
-        return if (duration != 0L) {
-            ClippingMediaSource(mediaSource, duration)
+        return if (maxDuration != 0L) {
+            ClippingMediaSource(mediaSource, maxDuration)
         } else {
             mediaSource
-        }
-    }
-
-    private fun configureAutoStop(durationLimit: Int?) {
-        if (durationLimit == null) return
-
-        autoStopTimer?.cancel()
-        autoStopTimer = createStopTimer(durationLimit)
-        autoStopTimer?.start()
-    }
-
-    private fun createStopTimer(durationLimit: Int): CountDownTimer {
-        return object : CountDownTimer(durationLimit.toLong() * 1000, 1000) {
-            override fun onFinish() {
-                exoPlayer.stop()
-            }
-
-            override fun onTick(millisUntilFinished: Long) {}
         }
     }
 }

@@ -67,6 +67,10 @@ class VideoCarouselAutoPlayCoordinator(
                 val lastVideoPlayer = videoPlayerMap.keys.lastOrNull()
                 lastVideoPlayer?.stop()
             }
+
+            videoPlayerMap.keys.forEach {
+                it.setMaxDurationInSecond(config.maxAutoPlayWifiDuration)
+            }
         }
 
     private fun startAutoPlay(widgetCardsContainer: RecyclerView) {
