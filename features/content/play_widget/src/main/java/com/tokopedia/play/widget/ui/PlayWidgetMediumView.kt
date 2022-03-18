@@ -232,7 +232,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         val prevModel = mModel
         mModel = data
 
-        topContainer.shouldShowWithAction(data.title.isNotEmpty() && data.isActionVisible) {
+        topContainer.shouldShowWithAction(data.title.isNotEmpty() || data.isActionVisible) {
             title.text = data.title
             actionTitle.text = data.actionTitle
             actionTitle.setOnClickListener {
