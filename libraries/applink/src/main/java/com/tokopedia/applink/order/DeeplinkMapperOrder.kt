@@ -10,6 +10,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceScreenInfo
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import java.net.URLDecoder
 
 /**
  * Created by fwidjaja on 2020-01-26.
@@ -211,6 +213,21 @@ object DeeplinkMapperOrder {
         } catch (e: Exception) {
             url
         }
+    }
+
+    fun getRegisteredNavigationSnapshotFromBranchLink(uri: Uri): String {
+        try {
+            val decodedUrl = URLDecoder.decode(uri.toString(), Charsets.UTF_8.name())
+            val pattern = "(?<==).*?/snapshot_product\\?dtl_id=.*?&order_id=.*?[^&]*".toRegex()
+            val result = pattern.find(decodedUrl)
+            val matches = result?.groupValues
+            if (!matches.isNullOrEmpty()) {
+                return mapSnapShotAppLinkFromHttp(matches.first())
+            }
+        } catch (e: Exception) {
+            return String.EMPTY
+        }
+        return String.EMPTY
     }
 
     fun getBuyerCancellationRequestInternalAppLink(): String {

@@ -239,6 +239,11 @@ object DeeplinkMapper {
             return applinkFind
         }
 
+        val appLinkSnapshot = DeeplinkMapperOrder.getRegisteredNavigationSnapshotFromBranchLink(uri)
+        if (appLinkSnapshot.isNotBlank()) {
+            return appLinkSnapshot
+        }
+
         if (pathSize >= 1 && uri.pathSegments[0] == "qrcode-login") {
             return DeeplinkMapperAccount.getLoginByQr(uri)
         }
