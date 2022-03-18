@@ -35,10 +35,10 @@ import com.tokopedia.picker.common.ParamCacheManager
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.cameraToUiModel
-import com.tokopedia.picker.common.utils.FileGenerator
+import com.tokopedia.picker.common.utils.FileCamera
+import com.tokopedia.picker.common.utils.safeFileDelete
 import com.tokopedia.picker.common.utils.videoFormat
 import com.tokopedia.utils.view.binding.viewBinding
-import java.io.File
 import javax.inject.Inject
 
 open class CameraFragment : BaseDaggerFragment()
@@ -206,8 +206,8 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     override fun onPictureTaken(result: PictureResult) {
-        FileGenerator.createFileCameraCapture(preview.pictureSize(), result.data) {
-            if (it == null) return@createFileCameraCapture
+        FileCamera.createPhoto(preview.pictureSize(), result.data) {
+            if (it == null) return@createPhoto
             val fileToModel = it.cameraToUiModel()
 
             onShowMediaThumbnail(fileToModel)
@@ -265,19 +265,11 @@ open class CameraFragment : BaseDaggerFragment()
     private fun isMinVideoDuration(model: MediaUiModel): Boolean {
         if (listener?.isMinVideoDuration(model) == true) {
             listener?.onShowVideoMinDurationToast()
-            deleteFile(model.path)
+            safeFileDelete(model.path)
             return true
         }
 
         return false
-    }
-
-    private fun deleteFile(path: String) {
-        val file = File(path)
-
-        if (file.exists()) {
-            file.delete()
-        }
     }
 
     private fun showShutterEffect(action: () -> Unit) {

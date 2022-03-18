@@ -8,10 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
-import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.databinding.ViewItemSelectionThumbnailBinding
+import com.tokopedia.picker.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.utils.safeFileDelete
 import com.tokopedia.utils.view.binding.viewBinding
-import java.io.File
 
 class ThumbnailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -49,7 +49,7 @@ class ThumbnailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         dialog.setSecondaryCTAText(context.getString(R.string.picker_button_cancel))
 
         dialog.setPrimaryCTAClickListener {
-            deleteFile(path)
+            safeFileDelete(path)
             onRemoved()
             dialog.dismiss()
         }
@@ -59,14 +59,6 @@ class ThumbnailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         }
 
         dialog.show()
-    }
-
-    private fun deleteFile(path: String) {
-        val file = File(path)
-
-        if (file.exists()) {
-            file.delete()
-        }
     }
 
     fun setThumbnailSelected(isSelected: Boolean){

@@ -12,6 +12,14 @@ import java.net.URLConnection
 
 const val DEFAULT_DURATION_LABEL = "00:00"
 
+fun safeFileDelete(path: String) {
+    val file = File(path)
+
+    if (file.exists()) {
+        file.delete()
+    }
+}
+
 private fun fileExtension(path: String): String {
     val extension = MimeTypeMap.getFileExtensionFromUrl(path)
     if (!extension.isNullOrEmpty()) return extension

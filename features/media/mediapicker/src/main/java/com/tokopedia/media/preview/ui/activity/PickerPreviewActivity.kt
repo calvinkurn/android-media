@@ -20,8 +20,8 @@ import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
 import com.tokopedia.picker.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.utils.safeFileDelete
 import com.tokopedia.utils.view.binding.viewBinding
-import java.io.File
 import javax.inject.Inject
 
 class PickerPreviewActivity : BaseActivity()
@@ -191,18 +191,8 @@ class PickerPreviewActivity : BaseActivity()
     }
 
     private fun onCancelOrRetakeMedia(media: MediaUiModel) {
-        deleteLocalCameraMedia(media)
+        if (media.isFromPickerCamera) safeFileDelete(media.path)
         cancelIntent()
-    }
-
-    private fun deleteLocalCameraMedia(media: MediaUiModel) {
-        if (media.isFromPickerCamera) {
-            val file = File(media.path)
-
-            if (file.exists()) {
-                file.delete()
-            }
-        }
     }
 
     private fun setUiModelData(elements: List<MediaUiModel>) {

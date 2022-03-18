@@ -7,9 +7,9 @@ import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
 
-object FileGenerator {
+object FileCamera {
 
-    fun createFileVideoRecorder(): File {
+    fun createVideo(): File {
         val uniqueFileName = FileUtil.generateUniqueFileName()
         val currentTimeInMillis = System.currentTimeMillis()
 
@@ -23,7 +23,7 @@ object FileGenerator {
         )
     }
 
-    fun createFileCameraCapture(captureSize: Size?, byteArray: ByteArray, invoke: (File?) -> Unit) {
+    fun createPhoto(captureSize: Size?, byteArray: ByteArray, invoke: (File?) -> Unit) {
         val compressFormat = Bitmap.CompressFormat.JPEG
         val nativeCaptureSize = captureSize?: return
 

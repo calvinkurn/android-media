@@ -13,14 +13,13 @@ import com.otaliastudios.cameraview.controls.Mode
 import com.otaliastudios.cameraview.gesture.Gesture
 import com.otaliastudios.cameraview.gesture.GestureAction
 import com.otaliastudios.cameraview.size.AspectRatio
-import com.otaliastudios.cameraview.size.Size
 import com.otaliastudios.cameraview.size.SizeSelectors
 import com.tokopedia.picker.common.basecomponent.UiComponent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
 import com.tokopedia.picker.common.PickerParam
-import com.tokopedia.picker.common.utils.FileGenerator
+import com.tokopedia.picker.common.utils.FileCamera
 import com.tokopedia.media.picker.utils.exceptionHandler
 
 class CameraPreviewComponent(
@@ -57,7 +56,7 @@ class CameraPreviewComponent(
         cameraView.set(Audio.ON)
 
         cameraView.takeVideoSnapshot(
-            FileGenerator.createFileVideoRecorder(),
+            FileCamera.createVideo(),
             param.maxVideoDuration().toInt()
         )
     }
@@ -82,25 +81,21 @@ class CameraPreviewComponent(
         cameraView.stopVideo()
     }
 
-    fun isFacingCameraIsFront() : Boolean {
-        return cameraView.facing == Facing.FRONT
+    fun enableFlashTorch() {
+        if (hasFlashFeatureOnCamera() && listener.isCameraFlashOn()) {
+            cameraView.flash = Flash.TORCH
+        }
     }
 
-    fun pictureSize(): Size? {
-        return cameraView.pictureSize
-    }
+    fun isFacingCameraIsFront() = cameraView.facing == Facing.FRONT
+
+    fun pictureSize() = cameraView.pictureSize
 
     fun isVideoMode() = cameraView.mode == Mode.VIDEO
 
     fun isTakingPicture() = cameraView.isTakingPicture
 
     fun isTakingVideo() = cameraView.isTakingVideo
-
-    fun enableFlashTorch() {
-        if (hasFlashFeatureOnCamera() && listener.isCameraFlashOn()) {
-            cameraView.flash = Flash.TORCH
-        }
-    }
 
     fun hasFrontCamera() = cameraView
         .cameraOptions
