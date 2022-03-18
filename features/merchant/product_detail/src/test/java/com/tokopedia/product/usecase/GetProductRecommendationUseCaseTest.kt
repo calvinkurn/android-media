@@ -1,6 +1,8 @@
 package com.tokopedia.product.usecase
 
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.MiniCartItemType
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.usecase.GetProductRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
@@ -176,11 +178,15 @@ class GetProductRecommendationUseCaseTest {
                 getRecommendationUseCase.getData(any())
             } returns listOf(mockResponse)
 
-            val mockMiniCart = mutableMapOf("1" to MiniCartItem(
-                    productId = "1",
-                    productParentId = "11",
-                    quantity = 10
-            ))
+            val mockMiniCart = mutableMapOf(
+                    MiniCartItemKey("1") to MiniCartItem2.MiniCartItemProduct(
+                            productId = "1",
+                            productParentId = "11",
+                            quantity = 10),
+                    MiniCartItemKey("11", type = MiniCartItemType.PARENT) to MiniCartItem2.MiniCartItemParentProduct(
+                            parentId = "11", totalQuantity = 10
+                    )
+            )
 
             val mockRequestParams = GetProductRecommendationUseCase.createParams(
                     productId = "1",

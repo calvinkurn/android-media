@@ -22,7 +22,6 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.globalerror.showUnifyError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItem2
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.productcard.ProductCardModel

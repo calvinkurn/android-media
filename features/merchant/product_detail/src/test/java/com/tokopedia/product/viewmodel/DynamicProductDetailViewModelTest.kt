@@ -7,14 +7,15 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
-import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
@@ -44,6 +45,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDa
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteDiscussion
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
 import com.tokopedia.product.util.ProductDetailTestUtil
 import com.tokopedia.product.util.ProductDetailTestUtil.generateMiniCartMock
@@ -260,7 +262,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     //region getMiniCart
     @Test
     fun `success get minicart`() {
-        val data = MiniCartSimplifiedData(miniCartItems = listOf(MiniCartItem(productId = "123", quantity = 2)))
+        val data = MiniCartSimplifiedData2(miniCartItems = mapOf(MiniCartItemKey("123") to MiniCartItem2.MiniCartItemProduct(productId = "123", quantity = 2)))
         val shopIdSlot = slot<List<String>>()
 
         `on success get product info login`()
@@ -285,9 +287,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val p2MiniCart = viewModel.p2Data.value?.miniCart
         Assert.assertNotNull(p2MiniCart)
         Assert.assertTrue(p2MiniCart?.isNotEmpty() == true)
-        Assert.assertTrue(p2MiniCart?.get("123") != null)
-        Assert.assertEquals(p2MiniCart?.get("123")?.productId ?: "", "123")
-        Assert.assertEquals(p2MiniCart?.get("123")?.quantity ?: "", 2)
+        Assert.assertTrue(p2MiniCart?.getMiniCartItemProduct("123") != null)
+        Assert.assertEquals(p2MiniCart?.getMiniCartItemProduct("123")?.productId ?: "", "123")
+        Assert.assertEquals(p2MiniCart?.getMiniCartItemProduct("123")?.quantity ?: "", 2)
     }
     //endregion
 
@@ -443,7 +445,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertNotNull((viewModel.deleteCartLiveData.value as Success).data, "sukses delete cart")
 
         //after delete cart success, assert p2 minicart is deleted
-        Assert.assertNull(viewModel.p2Data.value?.miniCart?.get("518076293"))
+        Assert.assertNull(viewModel.p2Data.value?.miniCart?.getMiniCartItemProduct("518076293"))
     }
 
     @Test
@@ -469,14 +471,14 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertNotNull((viewModel.deleteCartLiveData.value as Fail).throwable.message, "sukses delete cart")
 
         //after delete cart fail, assert p2 minicart still exist
-        Assert.assertNotNull(viewModel.p2Data.value?.miniCart?.get("518076293"))
+        Assert.assertNotNull(viewModel.p2Data.value?.miniCart?.getMiniCartItemProduct("518076293"))
     }
 
     @Test
     fun `on success update cart tokonow with minicart data`() = runBlockingTest {
         `on success get product info login`()
         val mockData = UpdateCartV2Data(data = Data(message = "sukses update cart"))
-        val currentMiniCartMock = MiniCartItem(productId = "518076293", quantity = 10)
+        val currentMiniCartMock = MiniCartItem2.MiniCartItemProduct(productId = "518076293", quantity = 10)
         val updatedQuantity = 5
 
         coEvery {
@@ -486,7 +488,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.updateQuantity(updatedQuantity, currentMiniCartMock)
 
         val result = (viewModel.updateCartLiveData.getOrAwaitValue() as Success).data
-        val selectedMiniCart = viewModel.p2Data.value?.miniCart?.get("518076293")
+        val selectedMiniCart = viewModel.p2Data.value?.miniCart?.getMiniCartItemProduct("518076293")
 
         Assert.assertEquals(result, "sukses update cart")
         Assert.assertTrue(viewModel.p2Data.value != null)
@@ -499,7 +501,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         //fulfil empty data minicart
         `on success get product info non login`()
         val mockData = UpdateCartV2Data(data = Data(message = "sukses update cart"))
-        val currentMiniCartMock = MiniCartItem(productId = "518076293", quantity = 10)
+        val currentMiniCartMock = MiniCartItem2.MiniCartItemProduct(productId = "518076293", quantity = 10)
         val updatedQuantity = 5
 
         coEvery {
@@ -509,7 +511,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.updateQuantity(updatedQuantity, currentMiniCartMock)
 
         val result = (viewModel.updateCartLiveData.getOrAwaitValue() as Success).data
-        val selectedMiniCart = viewModel.p2Data.value?.miniCart?.get("518076293")
+        val selectedMiniCart = viewModel.p2Data.value?.miniCart?.getMiniCartItemProduct("518076293")
 
         Assert.assertEquals(result, "sukses update cart")
         Assert.assertTrue(viewModel.p2Data.value != null)
@@ -522,7 +524,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         //fulfil empty data minicart
         `on success get product info non login`()
         val mockData = UpdateCartV2Data(error = listOf("error gan"), data = Data(message = "sukses update cart"))
-        val currentMiniCartMock = MiniCartItem(productId = "518076293", quantity = 10)
+        val currentMiniCartMock = MiniCartItem2.MiniCartItemProduct(productId = "518076293", quantity = 10)
         val updatedQuantity = 5
 
         coEvery {
@@ -532,7 +534,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.updateQuantity(updatedQuantity, currentMiniCartMock)
 
         val result = viewModel.updateCartLiveData.getOrAwaitValue()
-        val selectedMiniCart = viewModel.p2Data.value?.miniCart?.get("518076293")
+        val selectedMiniCart = viewModel.p2Data.value?.miniCart?.getMiniCartItemProduct("518076293")
 
         Assert.assertTrue(result is Fail)
         Assert.assertTrue(viewModel.p2Data.value != null)
@@ -543,7 +545,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     fun `on fail update cart throwable tokonow`() = runBlockingTest {
         //fulfil empty data minicart
         `on success get product info non login`()
-        val currentMiniCartMock = MiniCartItem(productId = "518076293", quantity = 10)
+        val currentMiniCartMock = MiniCartItem2.MiniCartItemProduct(productId = "518076293", quantity = 10)
         val updatedQuantity = 5
 
         coEvery {
@@ -553,7 +555,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.updateQuantity(updatedQuantity, currentMiniCartMock)
 
         val result = viewModel.updateCartLiveData.getOrAwaitValue()
-        val selectedMiniCart = viewModel.p2Data.value?.miniCart?.get("518076293")
+        val selectedMiniCart = viewModel.p2Data.value?.miniCart?.getMiniCartItemProduct("518076293")
 
         Assert.assertTrue(result is Fail)
         Assert.assertTrue(viewModel.p2Data.value != null)
@@ -590,9 +592,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val p2MiniCart = viewModel.p2Data?.value?.miniCart
         Assert.assertNotNull(p2MiniCart)
         Assert.assertEquals(p2MiniCart?.size ?: 0, 2)
-        Assert.assertNotNull(p2MiniCart?.get("1234"))
-        Assert.assertEquals(p2MiniCart?.get("1234")?.quantity ?: 0, 4)
-        Assert.assertEquals(p2MiniCart?.get("1234")?.cartId ?: "", "111")
+        Assert.assertNotNull(p2MiniCart?.getMiniCartItemProduct("1234"))
+        Assert.assertEquals(p2MiniCart?.getMiniCartItemProduct("1234")?.quantity ?: 0, 4)
+        Assert.assertEquals(p2MiniCart?.getMiniCartItemProduct("1234")?.cartId ?: "", "111")
     }
 
 
@@ -766,7 +768,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.loadRecommendation("pdp_10",
                 "123",
                 true,
-                mutableMapOf("123" to MiniCartItem())
+                mutableMapOf(MiniCartItemKey("123") to MiniCartItem2.MiniCartItemProduct())
         )
 
         val requestParamsSlot = slot<RequestParams>()
@@ -778,7 +780,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertEquals(requestParams.getString("productID", ""), "123")
         Assert.assertEquals(requestParams.getString("pageName", ""), "pdp_10")
         Assert.assertEquals(requestParams.getBoolean("tokonow", false), true)
-        val miniCart = requestParams.getObject("minicart") as MutableMap<String, MiniCartItem>?
+        val miniCart = requestParams.getObject("minicart") as MutableMap<MiniCartItemKey, MiniCartItem2>?
         Assert.assertEquals(miniCart!!.isNotEmpty(), true)
     }
 
@@ -803,7 +805,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertEquals(requestParams.getString("productID", ""), "123")
         Assert.assertEquals(requestParams.getString("pageName", ""), "pdp_10")
         Assert.assertEquals(requestParams.getBoolean("tokonow", false), false)
-        val miniCart = requestParams.getObject("minicart") as MutableMap<String, MiniCartItem>?
+        val miniCart = requestParams.getObject("minicart") as MutableMap<MiniCartItemKey, MiniCartItem2>?
         Assert.assertNull(miniCart)
     }
 
@@ -1159,7 +1161,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(viewModel.productLayout.value is Success)
         Assert.assertNotNull(viewModel.p2Data.value)
         Assert.assertTrue(viewModel.p2Data.value?.miniCart?.any {
-            it.key == "518076293"
+            it.key == MiniCartItemKey("518076293")
         } ?: false)
         Assert.assertNotNull(viewModel.p2Other.value)
         Assert.assertNotNull(viewModel.p2Login.value)
@@ -1713,7 +1715,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `test update cart non variant then return success cart data`() = runBlockingTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
-        val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
+        val miniCart = MiniCartItem2.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
         val quantity = 11
         val response = UpdateCartV2Data(data = Data(message = "sukses update cart"))
         coEvery {
@@ -1734,7 +1736,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `test update cart non variant then return failed with message`() = runBlockingTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
-        val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
+        val miniCart = MiniCartItem2.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
         val quantity = 11
         val response = UpdateCartV2Data(error = listOf("error nih gan"))
         coEvery {
@@ -1752,7 +1754,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `test update cart non variant then return error throwable`() = runBlockingTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
-        val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
+        val miniCart = MiniCartItem2.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
         val quantity = 11
         coEvery {
             updateCartUseCase.executeOnBackground()
@@ -1769,7 +1771,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `test delete cart non variant then return success cart data`() = runBlockingTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
-        val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
+        val miniCart = MiniCartItem2.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
         val response = RemoveFromCartData(status = "OK", data = com.tokopedia.cartcommon.data.response.deletecart.Data(message = listOf("sukses delete cart"), success = 1))
         coEvery {
             deleteCartUseCase.executeOnBackground()
@@ -1789,7 +1791,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `test delete cart non variant then return failed with message`() = runBlockingTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
-        val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
+        val miniCart = MiniCartItem2.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
         val response = RemoveFromCartData(status = "ERROR", data = com.tokopedia.cartcommon.data.response.deletecart.Data(success = 0))
         coEvery {
             deleteCartUseCase.executeOnBackground()
@@ -1806,7 +1808,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `test delete cart non variant then return error throwable`() = runBlockingTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
-        val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
+        val miniCart = MiniCartItem2.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
         coEvery {
             deleteCartUseCase.executeOnBackground()
         } throws Throwable()

@@ -5,7 +5,6 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItem2
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
@@ -763,15 +762,15 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun getTotalQuantityVariantBasedOnParentID(recomItem: RecommendationItem, miniCart: MutableMap<String, MiniCartItem>): Int {
-        var variantTotalItems = 0
-        miniCart.values.forEach { miniCartItem ->
-            if (miniCartItem.productParentId == recomItem.parentID.toString()) {
-                variantTotalItems += miniCartItem.quantity
-            }
-        }
-        return variantTotalItems
-    }
+//    private fun getTotalQuantityVariantBasedOnParentID(recomItem: RecommendationItem, miniCart: MutableMap<String, MiniCartItem>): Int {
+//        var variantTotalItems = 0
+//        miniCart.values.forEach { miniCartItem ->
+//            if (miniCartItem.productParentId == recomItem.parentID.toString()) {
+//                variantTotalItems += miniCartItem.quantity
+//            }
+//        }
+//        return variantTotalItems
+//    }
 
     fun updateCurrentQuantityRecomItem(recommendationItem: RecommendationItem) {
         val key = recommendationItem.pageName

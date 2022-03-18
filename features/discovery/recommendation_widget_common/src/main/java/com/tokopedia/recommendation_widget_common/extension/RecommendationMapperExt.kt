@@ -1,6 +1,5 @@
 package com.tokopedia.recommendation_widget_common.extension
 
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItem2
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
@@ -203,6 +202,6 @@ fun mappingMiniCartDataToRecommendation(recomWidget: RecommendationWidget, miniC
     recomWidget.recommendationItemList = recomItemList
 }
 
-fun List<MiniCartItem>.convertMiniCartToProductIdMap() : MutableMap<String, MiniCartItem> {
-    return this.associateBy({it.productId}) {it}.toMutableMap()
-}
+//fun List<MiniCartItem>.convertMiniCartToProductIdMap() : MutableMap<String, MiniCartItem> {
+//    return this.associateBy({it.productId}) {it}.toMutableMap()
+//}
