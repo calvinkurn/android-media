@@ -192,7 +192,7 @@ object DeeplinkMapperOrder {
      * Url = https://www.tokopedia.com/snapshot_product?order_id=1149427127&dtl_id=2141552099
      * AppLink = tokopedia-android-internal://snapshot/order?order_id=1149427127&order_detail_id=2141552099
      * */
-    fun mapSnapShootAppLinkFromHttp(url: String): String {
+    fun mapSnapShotAppLinkFromHttp(url: String): String {
         return try {
             val uri = Uri.parse(url)
             val orderId = uri.getQueryParameter(QUERY_PARAM_ORDER_ID)

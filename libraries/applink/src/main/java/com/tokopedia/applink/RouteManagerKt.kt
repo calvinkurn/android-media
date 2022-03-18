@@ -116,9 +116,9 @@ object RouteManagerKt {
             DeepLinkChecker.SALDO_DEPOSIT -> {
                 return RouteManager.route(activity, ApplinkConst.SALDO)
             }
-            DeepLinkChecker.SNAPSHOOT -> {
-                val snapShootOrderAppLink = DeeplinkMapperOrder.mapSnapShootAppLinkFromHttp(url)
-                return RouteManager.route(activity, snapShootOrderAppLink)
+            DeepLinkChecker.SNAPSHOT -> {
+                val snapShotOrderAppLink = DeeplinkMapperOrder.mapSnapShotAppLinkFromHttp(url)
+                return RouteManager.route(activity, snapShotOrderAppLink)
             }
         }
         return false
