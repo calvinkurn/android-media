@@ -15,22 +15,26 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
             const val CLICK_PRODUCT_DETAIL = "click product detail"
             const val CLICK_SHOP = "click shop"
             const val SHOP_DETAIL = "shop detail"
-            const val CREATIVE_NAME_FORMAT = "%s - %s"
+            const val CREATIVE_NAME_FORMAT = "%s - %s - %s"
             const val ITEM_CATEGORY_PRODUCT_DETAIL_FORMAT = "%s / %s / %s"
             const val CLICK_VIEW_ALL = "click view all"
             const val ITEM_ID_FORMAT = "%s_%s"
             const val MERCHANT_VOUCHER_MULTIPLE = "merchant_voucher_multiple"
-            const val ITEM_LIST_PRODUCT_DETAIL_FORMAT = "/official-store/%s - $MERCHANT_VOUCHER_MULTIPLE - %s - %s"
+            const val ITEM_LIST_PRODUCT_DETAIL_FORMAT =
+                "/official-store/%s - $MERCHANT_VOUCHER_MULTIPLE - %s - %s"
             const val ITEM_NAME_FORMAT = "/official-store/%s - $MERCHANT_VOUCHER_MULTIPLE - %s"
             const val DEFAULT_VALUE = ""
             const val VIEW_COUPON = "view coupon"
             const val CREATIVE_NAME_VIEW_COUPON_FORMAT = "%s - %s - %s"
-            const val CLICK_VOUCHER_DETAIL = "click voucher detail"
-            const val CREATIVE_NAME_VOUCHER_DETAIL_FORMAT = "voucher detail - %s - %s - %s"
+            const val LABEL_FORMAT_2_VALUE = "%s - %s"
         }
     }
 
-    fun getShopClicked(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int, categoryName: String): Pair<String, Bundle> {
+    fun getShopClicked(
+        element: CarouselMerchantVoucherDataModel,
+        horizontalPosition: Int,
+        categoryName: String
+    ): Pair<String, Bundle> {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
         bundle.putString(
@@ -38,29 +42,48 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
             CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.CLICK_SHOP)
         )
         bundle.putString(Category.KEY, OfficialStoreTracking.OS_MICROSITE_SINGLE)
-        bundle.putString(Label.KEY, element.shopId)
+        bundle.putString(
+            Label.KEY,
+            CustomAction.LABEL_FORMAT_2_VALUE.format(element.shopId, categoryName)
+        )
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
 
         val promotion = Bundle()
         promotion.putString(
             Promotion.CREATIVE_NAME,
-            CustomAction.CREATIVE_NAME_FORMAT.format(CustomAction.SHOP_DETAIL, element.shopName)
+            CustomAction.LABEL_FORMAT_2_VALUE.format(CustomAction.SHOP_DETAIL, element.shopName)
         )
         promotion.putString(Promotion.CREATIVE_SLOT, (horizontalPosition + 1).toString())
-        promotion.putString(Promotion.ITEM_ID, CustomAction.ITEM_ID_FORMAT.format(element.bannerId, element.shopId))
-        promotion.putString(Promotion.ITEM_NAME, CustomAction.ITEM_NAME_FORMAT.format(categoryName, element.headerName))
+        promotion.putString(
+            Promotion.ITEM_ID,
+            CustomAction.ITEM_ID_FORMAT.format(element.bannerId, element.shopId)
+        )
+        promotion.putString(
+            Promotion.ITEM_NAME,
+            CustomAction.ITEM_NAME_FORMAT.format(categoryName, element.headerName)
+        )
         bundle.putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
         bundle.putString(UserId.KEY, element.userId)
         return Pair(Ecommerce.PROMO_CLICK, bundle)
     }
 
-    fun getClickViewAll(headerName: String, userId: String): Pair<String, Bundle> {
+    fun getClickViewAll(
+        headerName: String,
+        userId: String,
+        categoryName: String
+    ): Pair<String, Bundle> {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
-        bundle.putString(Action.KEY, CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.CLICK_VIEW_ALL) )
+        bundle.putString(
+            Action.KEY,
+            CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.CLICK_VIEW_ALL)
+        )
         bundle.putString(Category.KEY, OfficialStoreTracking.OS_MICROSITE_SINGLE)
-        bundle.putString(Label.KEY, headerName)
+        bundle.putString(
+            Label.KEY,
+            CustomAction.LABEL_FORMAT_2_VALUE.format(headerName, categoryName)
+        )
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
         bundle.putString(UserId.KEY, userId)
@@ -68,7 +91,11 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
         return Pair(Event.CLICK_HOMEPAGE, bundle)
     }
 
-    fun getClickProduct(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int, categoryName: String): Pair<String, Bundle> {
+    fun getClickProduct(
+        element: CarouselMerchantVoucherDataModel,
+        horizontalPosition: Int,
+        categoryName: String
+    ): Pair<String, Bundle> {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
         bundle.putString(
@@ -76,7 +103,14 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
             CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.CLICK_PRODUCT_DETAIL)
         )
         bundle.putString(Category.KEY, OfficialStoreTracking.OS_MICROSITE_SINGLE)
-        bundle.putString(Label.KEY, CustomAction.CREATIVE_NAME_FORMAT.format(element.productId, element.shopId))
+        bundle.putString(
+            Label.KEY,
+            CustomAction.CREATIVE_NAME_FORMAT.format(
+                element.productId,
+                element.shopId,
+                categoryName
+            )
+        )
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
         bundle.putString(
@@ -108,7 +142,11 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
         return Pair(Ecommerce.PRODUCT_CLICK, bundle)
     }
 
-    fun getMerchantVoucherView(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int, categoryName: String) : Map<String, Any> {
+    fun getMerchantVoucherView(
+        element: CarouselMerchantVoucherDataModel,
+        horizontalPosition: Int,
+        categoryName: String
+    ): Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         val creativeName = CustomAction.CREATIVE_NAME_VIEW_COUPON_FORMAT.format(
             CustomAction.DEFAULT_VALUE,
@@ -131,14 +169,15 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
             )
         )
         return trackingBuilder.constructBasicPromotionView(
-                event = Event.PROMO_VIEW,
-                eventCategory = OfficialStoreTracking.OS_MICROSITE_SINGLE,
-                eventAction = CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.VIEW_COUPON),
-                eventLabel = Label.NONE,
-                promotions = listPromotions)
-                .appendBusinessUnit(BusinessUnit.DEFAULT)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(element.userId)
-                .build()
+            event = Event.PROMO_VIEW,
+            eventCategory = OfficialStoreTracking.OS_MICROSITE_SINGLE,
+            eventAction = CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.VIEW_COUPON),
+            eventLabel = categoryName,
+            promotions = listPromotions
+        )
+            .appendBusinessUnit(BusinessUnit.DEFAULT)
+            .appendCurrentSite(CurrentSite.DEFAULT)
+            .appendUserId(element.userId)
+            .build()
     }
 }
