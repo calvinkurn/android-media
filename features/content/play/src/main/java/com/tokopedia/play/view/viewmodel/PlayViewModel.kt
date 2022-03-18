@@ -2069,11 +2069,12 @@ class PlayViewModel @AssistedInject constructor(
         _tagItems.update { tagItemUiModel ->
             tagItemUiModel.copy(
                 product = tagItemUiModel.product.copy(
-                    productSectionList = tagItemUiModel.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().map {
-                        it.copy(
-                            config = it.config.copy(reminder = reminderType)
-                        )
-                    }
+                    productSectionList = tagItemUiModel.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().
+                            filter {
+                                it.id == selectedUpcomingCampaign.id
+                            }.map {
+                                it.copy(config = it.config.copy(reminder = reminderType))
+                            }
                 )
             )
         }
