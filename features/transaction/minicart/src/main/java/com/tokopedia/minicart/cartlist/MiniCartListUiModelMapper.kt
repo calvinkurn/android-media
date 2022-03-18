@@ -22,6 +22,7 @@ import com.tokopedia.minicart.common.data.response.minicartlist.ShipmentInformat
 import com.tokopedia.minicart.common.data.response.minicartlist.Shop
 import com.tokopedia.minicart.common.domain.data.MiniCartItem2
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.MiniCartItemType
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
@@ -447,9 +448,13 @@ class MiniCartListUiModelMapper @Inject constructor() {
                 }
 
                 if (miniCartItem.productParentId.isNotBlankOrZero()) {
-                    val parentKey = MiniCartItemKey(miniCartItem.productParentId)
+                    val parentKey = MiniCartItemKey(miniCartItem.productParentId, type = MiniCartItemType.PARENT)
                     if (!miniCartItems.contains(parentKey)) {
-                        miniCartItems[parentKey] = miniCartItem
+                        miniCartItems[parentKey] = MiniCartItem2.MiniCartItemParentProduct(
+                                parentId = miniCartItem.productParentId,
+                                totalQuantity = miniCartItem.quantity,
+                                products = hashMapOf(key to miniCartItem)
+                        )
                     } else {
                         val currentParentItem = miniCartItems[parentKey] as MiniCartItem2.MiniCartItemParentProduct
                         val products = HashMap(currentParentItem.products)

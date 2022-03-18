@@ -5,6 +5,7 @@ import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItem2
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.MiniCartItemType
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
@@ -164,9 +165,13 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                 miniCartSimplifiedDataList[key] = item
 
                 if (item.productParentId.isNotBlankOrZero()) {
-                    val parentKey = MiniCartItemKey(cartDetail.product.parentId)
+                    val parentKey = MiniCartItemKey(cartDetail.product.parentId, type = MiniCartItemType.PARENT)
                     if (!miniCartSimplifiedDataList.contains(parentKey)) {
-                        miniCartSimplifiedDataList[parentKey] = item
+                        miniCartSimplifiedDataList[parentKey] = MiniCartItem2.MiniCartItemParentProduct(
+                                parentId = cartDetail.product.parentId,
+                                totalQuantity = item.quantity,
+                                products = hashMapOf(key to item)
+                        )
                     } else {
                         val currentParentItem = miniCartSimplifiedDataList[parentKey] as MiniCartItem2.MiniCartItemParentProduct
                         val products = HashMap(currentParentItem.products)
@@ -200,9 +205,13 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                         miniCartSimplifiedDataList[key] = item
                     }
                     if (item.productParentId.isNotBlankOrZero()) {
-                        val parentKey = MiniCartItemKey(cartDetail.product.parentId)
+                        val parentKey = MiniCartItemKey(cartDetail.product.parentId, type = MiniCartItemType.PARENT)
                         if (!miniCartSimplifiedDataList.contains(parentKey)) {
-                            miniCartSimplifiedDataList[parentKey] = item
+                            miniCartSimplifiedDataList[parentKey] = MiniCartItem2.MiniCartItemParentProduct(
+                                    parentId = cartDetail.product.parentId,
+                                    totalQuantity = item.quantity,
+                                    products = hashMapOf(key to item)
+                            )
                         } else {
                             val currentParentItem = miniCartSimplifiedDataList[parentKey] as MiniCartItem2.MiniCartItemParentProduct
                             val products = HashMap(currentParentItem.products)
