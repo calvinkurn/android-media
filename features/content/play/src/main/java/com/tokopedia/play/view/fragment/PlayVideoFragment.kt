@@ -518,7 +518,7 @@ class PlayVideoFragment @Inject constructor(
         }
     }
 
-    private fun overlayVideoViewOnStateChanged(VideoTabFragment
+    private fun overlayVideoViewOnStateChanged(
             state: PlayViewerVideoState = playViewModel.viewerVideoState,
             channelType: PlayChannelType = playViewModel.channelType,
     ) {
