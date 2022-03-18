@@ -619,12 +619,23 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         })
     }
 
+    private fun isProfileButtonVisible() : Boolean{
+        return false
+    }
+
     private fun setActionButton(followProfile: UserProfileIsFollow) {
 
         if (!userSession?.userId.isNullOrBlank() && followProfile.profileHeader.items[0].userID == userSession?.userId) {
             btnAction?.text = getString(com.tokopedia.people.R.string.up_btn_profile)
             btnAction?.buttonVariant = UnifyButton.Variant.GHOST
             btnAction?.buttonType = UnifyButton.Type.ALTERNATE
+
+            if(isProfileButtonVisible()){
+                btnAction?.show()
+            } else {
+                btnAction?.hide()
+            }
+
 
             btnAction?.setOnClickListener(
                 addProfileClickListener(

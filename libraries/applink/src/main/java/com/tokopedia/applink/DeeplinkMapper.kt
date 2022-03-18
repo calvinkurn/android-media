@@ -462,7 +462,6 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.REVIEW_REMINDER_PREVIOUS, ApplinkConstInternalSellerapp.REVIEW_REMINDER),
             DLP.matchPattern(ApplinkConst.IMAGE_PICKER_V2) { _, _, deeplink, _ -> DeeplinkMapperImagePicker.getImagePickerV2Deeplink(deeplink) },
             DLP.matchPattern( ApplinkConst.PROFILE) { _, _, deeplink, _ -> DeepLinkMapperUserProfile.getRegisteredUserProfile(deeplink) },
-            DLP.matchPattern(ApplinkConst.USER_PROFILE_LANDING) { _, _, deeplink, _ -> DeepLinkMapperUserProfile.getRegisteredUserProfile(deeplink) },
             DLP(DLPLogic { _, uri, _ -> DeeplinkMapperFintech.isHomeCreditRegister(uri) },
                 targetDeeplink = { _, uri, _, _ -> DeeplinkMapperFintech.getRegisteredNavigationForHomeCreditRegister(uri) }),
             DLP.host(ApplinkConst.HOST_OVOUPGRADE) { _, _, _, _ -> ApplinkConstInternalOvo.OVO_UPGRADE },
