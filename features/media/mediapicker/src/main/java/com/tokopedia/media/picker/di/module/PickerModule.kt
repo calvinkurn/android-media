@@ -2,6 +2,9 @@ package com.tokopedia.media.picker.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.media.picker.analytics.PickerAnalytics
+import com.tokopedia.media.picker.analytics.camera.CameraAnalyticsImpl
+import com.tokopedia.media.picker.analytics.gallery.GalleryAnalyticsImpl
 import com.tokopedia.picker.common.ParamCacheManager
 import com.tokopedia.media.picker.data.repository.AlbumRepository
 import com.tokopedia.media.picker.data.repository.AlbumRepositoryImpl
@@ -13,6 +16,13 @@ import dagger.Provides
 
 @Module
 class PickerModule {
+
+    @Provides
+    @PickerScope
+    fun providePickerAnalytics() = PickerAnalytics(
+        CameraAnalyticsImpl(),
+        GalleryAnalyticsImpl()
+    )
 
     @Provides
     @PickerScope
