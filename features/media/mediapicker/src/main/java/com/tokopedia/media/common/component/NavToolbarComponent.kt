@@ -30,7 +30,7 @@ class NavToolbarComponent(
     private val btnDone = findViewById<UnifyButton>(R.id.btn_done)
 
     init {
-        setActionColor()
+        setActionColor(false)
 
         btnAction.setOnClickListener {
             listener.onCloseClicked()
@@ -50,6 +50,7 @@ class NavToolbarComponent(
 
         setCloseActionColor(isTransparent)
         setTitleColor(isTransparent)
+        setActionColor(isTransparent)
     }
 
     fun showContinueButtonAs(visibility: Boolean) {
@@ -64,11 +65,15 @@ class NavToolbarComponent(
         btnDone.hide()
     }
 
-    private fun setActionColor() {
-        btnDone.setTextColor(ContextCompat.getColor(
-            context,
-            Unify_G500
-        ))
+    private fun setActionColor(isTransparent: Boolean) {
+        toolbarThemeCondition(isTransparent,
+        transparentMode = {
+            btnDone.setTextColor(colorForTransparentMode())
+        },
+        solidMode = {
+            btnDone.setTextColor(colorActionSolidMode())
+        })
+
     }
 
     private fun setTitleColor(isTransparent: Boolean) {
@@ -124,6 +129,9 @@ class NavToolbarComponent(
 
     private fun colorForTransparentMode()
         = ContextCompat.getColor(context, Unify_Static_White)
+
+    private fun colorActionSolidMode()
+        = ContextCompat.getColor(context, Unify_G500)
 
     override fun release() {}
 

@@ -3,6 +3,8 @@ package com.tokopedia.media.picker.ui.activity.main
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.MotionEvent
 import androidx.lifecycle.ViewModelProvider
@@ -217,7 +219,7 @@ open class PickerActivity : BaseActivity()
         if (hasPermissionGranted) {
             navigateByPageType()
         } else {
-            navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
+            setToolbarTheme(ToolbarTheme.Solid)
             navigator?.start(PickerFragmentType.PERMISSION)
         }
     }
@@ -254,15 +256,15 @@ open class PickerActivity : BaseActivity()
     private fun navigateByPageType() {
         when (PickerUiConfig.pageType) {
             PickerPageType.CAMERA -> {
-                navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
+                setToolbarTheme(ToolbarTheme.Transparent)
                 navigator?.start(PickerFragmentType.CAMERA)
             }
             PickerPageType.GALLERY -> {
-                navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
+                setToolbarTheme(ToolbarTheme.Solid)
                 navigator?.start(PickerFragmentType.GALLERY)
             }
             else -> {
-                navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
+                setToolbarTheme(ToolbarTheme.Transparent)
 
                 // show camera as initial page
                 navigator?.start(PickerFragmentType.CAMERA)
@@ -293,7 +295,7 @@ open class PickerActivity : BaseActivity()
 
     private fun onCameraTabSelected() {
         navigator?.onPageSelected(PickerFragmentType.CAMERA)
-        navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
+        setToolbarTheme(ToolbarTheme.Transparent)
         binding?.container?.setMargin(0, 0, 0, 0)
     }
 
@@ -301,9 +303,23 @@ open class PickerActivity : BaseActivity()
         val marginBottom = dimensionPixelOffsetOf(R.dimen.picker_page_margin_bottom)
 
         navigator?.onPageSelected(PickerFragmentType.GALLERY)
-        navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
+        setToolbarTheme(ToolbarTheme.Solid)
 
         binding?.container?.setMargin(0, 0, 0, marginBottom)
+    }
+
+    private fun setToolbarTheme(toolbarTheme: ToolbarTheme){
+        val toolbarBackground: Drawable? = if(toolbarTheme == ToolbarTheme.Solid){
+            null
+        } else {
+            val gradientColor = IntArray(2)
+            gradientColor[0] = Color.parseColor("#99424242")
+            gradientColor[1] = Color.parseColor("#00424242")
+            GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, gradientColor)
+        }
+
+        binding?.toolbarContainer?.background = toolbarBackground
+        navToolbar.onToolbarThemeChanged(toolbarTheme)
     }
 
     protected open fun createFragmentFactory(): PickerFragmentFactory {
