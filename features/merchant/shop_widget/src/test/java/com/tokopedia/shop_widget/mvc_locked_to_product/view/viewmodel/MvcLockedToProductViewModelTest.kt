@@ -139,11 +139,7 @@ class MvcLockedToProductViewModelTest {
         val isProductVariantExists = data.mvcLockedToProductListGridProductUiModel.any {
             it.isVariant
         }
-        val isProductNonVariantExists = data.mvcLockedToProductListGridProductUiModel.any {
-            it.productCardModel.nonVariant != null
-        }
         assert(isProductVariantExists)
-        assert(isProductNonVariantExists)
     }
 
     @Test
@@ -201,11 +197,7 @@ class MvcLockedToProductViewModelTest {
         val isProductVariantExists = productListData.data.any {
             it.isVariant
         }
-        val isProductNonVariantExists = productListData.data.any {
-            it.productCardModel.nonVariant != null
-        }
         assert(isProductVariantExists)
-        assert(isProductNonVariantExists)
     }
 
     @Test
