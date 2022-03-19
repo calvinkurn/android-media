@@ -23,6 +23,24 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_tokofood"
+                    android:path="@string/path_tokofood_purchase"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
