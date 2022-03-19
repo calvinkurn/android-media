@@ -4,15 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/ticker_general"
+    <com.tokopedia.totalamount.TotalAmount
+        android:id="@+id/total_amount_purchase"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="-12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tickerType="announcement" />
-
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

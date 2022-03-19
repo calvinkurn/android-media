@@ -65,6 +65,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.unifyDependencies.list
     implementation rootProject.ext.unifyDependencies.dateFilter
+    implementation rootProject.ext.unifyDependencies.explore_promo
+    implementation rootProject.ext.unifyDependencies.total_amount
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
