@@ -42,6 +42,8 @@ import com.tokopedia.picker.common.types.FragmentType
 import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
+import com.tokopedia.picker.common.utils.toMb
+import com.tokopedia.picker.common.utils.toSec
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
 import com.tokopedia.utils.image.ImageProcessingUtil
@@ -403,35 +405,59 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun onShowMediaLimitReachedToast() {
-        onShowValidationToaster(R.string.picker_selection_limit_message, param.get().maxMediaAmount())
+        onShowValidationToaster(
+            R.string.picker_selection_limit_message,
+            param.get().maxMediaAmount()
+        )
     }
 
     override fun onShowVideoLimitReachedToast() {
-        onShowValidationToaster(R.string.picker_selection_limit_video, param.get().maxVideoCount())
+        onShowValidationToaster(
+            R.string.picker_selection_limit_video,
+            param.get().maxVideoCount()
+        )
     }
 
     override fun onShowVideoMinDurationToast() {
-        onShowValidationToaster(R.string.picker_video_duration_min_limit, param.get().minVideoDuration())
+        onShowValidationToaster(
+            R.string.picker_video_duration_min_limit,
+            param.get().minVideoDuration().toSec()
+        )
     }
 
     override fun onShowVideoMaxDurationToast() {
-        onShowValidationToaster(R.string.picker_video_duration_max_limit, param.get().maxVideoDuration())
+        onShowValidationToaster(
+            R.string.picker_video_duration_max_limit,
+            param.get().maxVideoDuration().toSec()
+        )
     }
 
     override fun onShowVideoMaxFileSizeToast() {
-        onShowValidationToaster(R.string.picker_video_max_size, param.get().maxVideoSize())
-    }
-
-    override fun onShowImageMinResToast() {
-        onShowValidationToaster(R.string.picker_image_res_min_limit, param.get().maxImageResolution())
-    }
-
-    override fun onShowImageMaxResToast() {
-        onShowValidationToaster(R.string.picker_image_res_max_limit, param.get().minImageResolution())
+        onShowValidationToaster(
+            R.string.picker_video_max_size,
+            param.get().maxVideoSize().toMb()
+        )
     }
 
     override fun onShowImageMaxFileSizeToast() {
-        onShowValidationToaster(R.string.picker_image_max_size, param.get().maxImageSize())
+        onShowValidationToaster(
+            R.string.picker_image_max_size,
+            param.get().maxImageSize().toMb()
+        )
+    }
+
+    override fun onShowImageMinResToast() {
+        onShowValidationToaster(
+            R.string.picker_image_res_min_limit,
+            param.get().maxImageResolution()
+        )
+    }
+
+    override fun onShowImageMaxResToast() {
+        onShowValidationToaster(
+            R.string.picker_image_res_max_limit,
+            param.get().minImageResolution()
+        )
     }
 
     private fun onShowValidationToaster(messageId: Int, param: Number) {
