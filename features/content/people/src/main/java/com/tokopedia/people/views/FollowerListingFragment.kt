@@ -46,22 +46,18 @@ class FollowerListingFragment : BaseDaggerFragment(), AdapterCallback {
         UserSession(context)
     }
 
-    private val mPresenter: FollowerFollowingViewModel by lazy {
+    private val viewModel: FollowerFollowingViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(FollowerFollowingViewModel::class.java)
     }
 
 
     private val mAdapter: ProfileFollowersAdapter by lazy {
         ProfileFollowersAdapter(
-            mPresenter,
+            viewModel,
             this,
             userSessionInterface,
             this
         )
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -108,7 +104,7 @@ class FollowerListingFragment : BaseDaggerFragment(), AdapterCallback {
     }
 
     private fun addListObserver() =
-        mPresenter.profileFollowersListLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.profileFollowersListLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 when (it) {
                     is Loading -> {
@@ -136,7 +132,7 @@ class FollowerListingFragment : BaseDaggerFragment(), AdapterCallback {
         })
 
     private fun addFollowersErrorObserver() =
-        mPresenter.followersErrorLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.followersErrorLiveData.observe(viewLifecycleOwner, Observer {
             if (isSwipeRefresh == true) {
                 view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing =
                     false
@@ -192,12 +188,8 @@ class FollowerListingFragment : BaseDaggerFragment(), AdapterCallback {
             }
         })
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
     override fun getScreenName(): String {
-        TODO("Not yet implemented")
+        return ""
     }
 
     override fun onResume() {

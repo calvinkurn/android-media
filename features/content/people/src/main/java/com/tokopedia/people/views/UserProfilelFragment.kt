@@ -111,10 +111,6 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         )
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -742,16 +738,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         }
     }
 
-    private fun showLoader() {
-
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
     override fun getScreenName(): String {
-        TODO("Not yet implemented")
+        return ""
     }
 
     override fun onResume() {
@@ -859,10 +847,10 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             init(this@UserProfileFragment)
             userSession?.userId?.ifEmpty { "0" }?.let {
                 setUtmCampaignData(
-                    "Profile",
+                    PAGE_NAME_PROFILE,
                     it,
                     userName,
-                    "share"
+                    FEATURE_SHARE
                 )
             }
             setMetaData(
@@ -875,6 +863,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     }
 
     companion object {
+        const val PAGE_NAME_PROFILE = "Profile"
+        const val FEATURE_SHARE = "share"
         const val VAL_FEEDS_PROFILE = "feeds-profile"
         const val VAL_SOURCE_BUYER = "buyer"
         const val EXTRA_DISPLAY_NAME = "display_name"

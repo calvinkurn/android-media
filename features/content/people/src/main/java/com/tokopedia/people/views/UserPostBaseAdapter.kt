@@ -33,7 +33,7 @@ open class UserPostBaseAdapter(
     val userProfileTracker: UserProfileTracker?,
     val profileUserId: String,
     val userId: String
-    ) : BaseAdapter<PlayPostContentItem>(callback) {
+) : BaseAdapter<PlayPostContentItem>(callback) {
 
     var activityId = ""
     protected var cList: MutableList<BaseItem>? = null
@@ -109,15 +109,12 @@ open class UserPostBaseAdapter(
         holder.imgCover.setImageUrl(item.coverUrl)
         holder.textName.text = item.title
 
-        try {
-            if (item.stats.view.formatted.toInt() == 0) {
-                holder.textLiveCount.hide()
-            } else {
-                holder.textLiveCount.show()
-                holder.textLiveCount.text = item.stats.view.formatted
-            }
-        } catch (e: Exception) {
-
+        val lFormatVal = item.stats.view.formatted.toIntOrNull()
+        if (lFormatVal == null || lFormatVal == 0) {
+            holder.textLiveCount.hide()
+        } else {
+            holder.textLiveCount.show()
+            holder.textLiveCount.text = item.stats.view.formatted
         }
 
         if (item.startTime.isNullOrBlank()) {
@@ -209,7 +206,14 @@ open class UserPostBaseAdapter(
         }
 
         holder.itemView.setOnClickListener { v ->
-            userProfileTracker?.clickVideo(userId = userId, self = userId == profileUserId, live = item.isLive, activityId = activityId, imageUrl = item.webLink,  videoPosition = position)
+            userProfileTracker?.clickVideo(
+                userId = userId,
+                self = userId == profileUserId,
+                live = item.isLive,
+                activityId = activityId,
+                imageUrl = item.webLink,
+                videoPosition = position
+            )
             RouteManager.route(itemContext, item.appLink)
         }
     }
@@ -245,7 +249,14 @@ open class UserPostBaseAdapter(
         if (vh is ViewHolder) {
             val holder = vh as ViewHolder
             val data = items[holder.adapterPosition] ?: return
-            userProfileTracker?.impressionVideo(userId = userId, self = userId == profileUserId, live = data.isLive, activityId = activityId, imageUrl = data.webLink,  videoPosition = vh.adapterPosition)
+            userProfileTracker?.impressionVideo(
+                userId = userId,
+                self = userId == profileUserId,
+                live = data.isLive,
+                activityId = activityId,
+                imageUrl = data.webLink,
+                videoPosition = vh.adapterPosition
+            )
         }
     }
 

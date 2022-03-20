@@ -9,8 +9,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_banner"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="@dimen/unify_space_0"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -72,7 +72,7 @@
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/text_special_label"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/unify_space_8"
         app:labelType="highlight_dark_green"
@@ -83,7 +83,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_date"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/unify_space_8"
         android:textColor="@color/Unify_Y300"
@@ -96,7 +96,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_display_name"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/unify_space_8"
         android:textColor="@color/Unify_N0"
@@ -109,7 +109,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_user_name"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_8"
         android:layout_marginTop="@dimen/unify_space_2"

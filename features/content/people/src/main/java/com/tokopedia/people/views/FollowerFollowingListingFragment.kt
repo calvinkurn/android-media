@@ -65,20 +65,27 @@ class FollowerFollowingListingFragment : BaseDaggerFragment() {
             )
         }
 
-        initViewPager(ffViewPager!!)
+        initViewPager(ffViewPager)
 
-        tabLayout?.setupWithViewPager(ffViewPager!!)
-        tabLayout?.getUnifyTabLayout()?.setupWithViewPager(ffViewPager!!)
+        ffViewPager?.apply {
+            tabLayout?.setupWithViewPager(this)
+            tabLayout?.getUnifyTabLayout()?.setupWithViewPager(this)
+        }
 
-        if (isFollowersTab) {
-            tabLayout?.getUnifyTabLayout()?.getTabAt(0)?.select()
-        } else {
-            tabLayout?.getUnifyTabLayout()?.getTabAt(1)?.select()
+        if(tabLayout != null
+            && tabLayout?.getUnifyTabLayout() != null
+            && tabLayout?.getUnifyTabLayout()?.tabCount!! >= 2
+        ) {
+            if (isFollowersTab) {
+                tabLayout?.getUnifyTabLayout()?.getTabAt(0)?.select()
+            } else {
+                tabLayout?.getUnifyTabLayout()?.getTabAt(1)?.select()
+            }
         }
     }
 
     var adapter: ProfileFollowUnfollowViewPagerAdapter? = null
-    private fun initViewPager(viewPager: ViewPager) {
+    private fun initViewPager(viewPager: ViewPager?) {
         adapter = ProfileFollowUnfollowViewPagerAdapter(requireFragmentManager())
 
         arguments?.let { FollowerListingFragment.newInstance(it) }?.let {
@@ -100,9 +107,9 @@ class FollowerFollowingListingFragment : BaseDaggerFragment() {
         }
 
         // setting adapter to view pager.
-        viewPager.adapter = adapter
+        viewPager?.adapter = adapter
 
-        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        viewPager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(
                 position: Int,
                 positionOffset: Float,
@@ -140,17 +147,10 @@ class FollowerFollowingListingFragment : BaseDaggerFragment() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
     override fun getScreenName(): String {
-        TODO("Not yet implemented")
+        return ""
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
 
     override fun initInjector() {
         DaggerUserProfileComponent.builder()

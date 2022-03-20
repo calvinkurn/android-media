@@ -57,7 +57,12 @@ open class ProfileFollowingAdapter(
 
     override fun loadData(pageNumber: Int, vararg args: String?) {
         super.loadData(pageNumber, *args)
-        args[0]?.let { viewModel.getFollowings(it, cursor, 20) }
+
+        if (args == null || args.isEmpty()) {
+            return
+        }
+
+        args[0]?.let { viewModel.getFollowings(it, cursor, PAGE_COUNT) }
     }
 
     fun onSuccess(data: ProfileFollowingListBase) {
@@ -192,5 +197,10 @@ open class ProfileFollowingAdapter(
             val data = items[holder.adapterPosition] ?: return
         }
     }
+
+    companion object {
+        const val PAGE_COUNT = 20
+    }
+
 }
 

@@ -1,9 +1,11 @@
 package com.tokopedia.people.views
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -57,7 +59,11 @@ open class ProfileFollowersAdapter(
 
     override fun loadData(pageNumber: Int, vararg args: String?) {
         super.loadData(pageNumber, *args)
-        args[0]?.let { viewModel.getFollowers(it, cursor, 20) }
+        if (args == null || args.isEmpty()) {
+           return
+        }
+
+        args[0]?.let { viewModel.getFollowers(it, cursor, PAGE_COUNT) }
     }
 
     fun onSuccess(data: ProfileFollowerListBase) {
@@ -185,6 +191,10 @@ open class ProfileFollowersAdapter(
             val data = items[holder.adapterPosition] ?: return
             //listener.shopProductImpressed(holder.adapterPosition, data)
         }
+    }
+
+    companion object {
+        const val PAGE_COUNT = 20
     }
 
 }
