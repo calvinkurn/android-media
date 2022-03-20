@@ -395,7 +395,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             listOf(binding?.rechargePdpTokenListrikClientNumberWidget?.getInputNumber() ?: "")
         viewModel.setRecommendationLoading()
         viewModel.cancelRecommendationJob()
-        viewModel.getRecommendations(clientNumbers, listOf(categoryId))
+        viewModel.getRecommendations(clientNumbers, listOf(categoryId), listOf(operatorId.toInt()))
     }
 
     private fun getCatalogMenuDetail() {
