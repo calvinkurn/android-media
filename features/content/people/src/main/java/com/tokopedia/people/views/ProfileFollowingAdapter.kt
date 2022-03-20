@@ -102,10 +102,7 @@ open class ProfileFollowingAdapter(
 
                 holder.btnAction.setOnClickListener { v ->
                     if (!DeviceConnectionInfo.isInternetAvailable(
-                            itemContext.applicationContext,
-                            checkWifi = true,
-                            checkCellular = true,
-                            checkEthernet = true
+                            itemContext.applicationContext
                         )
                     ) {
 
@@ -138,10 +135,7 @@ open class ProfileFollowingAdapter(
 
                 holder.btnAction.setOnClickListener { v ->
                     if (!DeviceConnectionInfo.isInternetAvailable(
-                            itemContext.applicationContext,
-                            checkWifi = true,
-                            checkCellular = true,
-                            checkEthernet = true
+                            itemContext.applicationContext
                         )
                     ) {
 

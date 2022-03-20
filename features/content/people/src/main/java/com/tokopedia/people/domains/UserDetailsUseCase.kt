@@ -1,5 +1,6 @@
 package com.tokopedia.people.domains
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -7,24 +8,56 @@ import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.model.UserProfileIsFollow
 import javax.inject.Inject
 
+const val USER_DETAILS = """
+    query ProfileHeader(\${'$'}userName: String!) {
+                feedXProfileHeader(username:\${'$'}userName) {
+                  profile {
+                    userID
+                    encryptedUserID
+                    imageCover
+                    name
+                    username
+                    biography
+                    sharelink {
+                      weblink
+                      applink
+                    }
+                    badges
+                    liveplaychannel {
+                      islive
+                      liveplaychannelid
+                      liveplaychannellink {
+                        applink
+                        weblink
+                      }
+                    }
+                  }
+                  stats {
+                    totalPost
+                    totalPostFmt
+                    totalFollower
+                    totalFollowerFmt
+                    totalFollowing
+                    totalFollowingFmt
+                  }
+                  hasAcceptTnC
+                  shouldSeoIndex
+                }
+                }
+"""
+
+@GqlQuery("UserDetails", USER_DETAILS)
 class UserDetailsUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
 
     suspend fun getUserProfileDetail(userName: String, profileId: MutableList<String>): GraphqlResponse {
         val request = GraphqlRequest(
-            getQuery(),
+            UserDetails.GQL_QUERY,
             ProfileHeaderBase::class.java,
             getRequestParams(userName)
         )
 
-        val request2 = GraphqlRequest(
-            getQueryTheyFollowed(),
-            UserProfileIsFollow::class.java,
-            getRequestParams(profileId)
-        )
-
         useCase.clearRequest()
         useCase.addRequest(request)
-        useCase.addRequest(request2)
         return useCase.executeOnBackground()
     }
 
@@ -45,52 +78,6 @@ class UserDetailsUseCase @Inject constructor(val useCase: MultiRequestGraphqlUse
     }
 
     private fun getQuery(): String {
-        return "query ProfileHeader(\$userName: String!) {\n" +
-                "  feedXProfileHeader(username:\$userName) {\n" +
-                "    profile {\n" +
-                "      userID\n" +
-                "      encryptedUserID\n" +
-                "      imageCover\n" +
-                "      name\n" +
-                "      username\n" +
-                "      biography\n" +
-                "      sharelink {\n" +
-                "        weblink\n" +
-                "        applink\n" +
-                "      }\n" +
-                "      badges\n" +
-                "      liveplaychannel {\n" +
-                "        islive\n" +
-                "        liveplaychannelid\n" +
-                "        liveplaychannellink {\n" +
-                "          applink\n" +
-                "          weblink\n" +
-                "        }\n" +
-                "      }\n" +
-                "    }\n" +
-                "    stats {\n" +
-                "      totalPost\n" +
-                "      totalPostFmt\n" +
-                "      totalFollower\n" +
-                "      totalFollowerFmt\n" +
-                "      totalFollowing\n" +
-                "      totalFollowingFmt\n" +
-                "    }\n" +
-                "    hasAcceptTnC\n" +
-                "    shouldSeoIndex\n" +
-                "  }\n" +
-                "}"
-    }
-
-    private fun getQueryTheyFollowed(): String {
-        return "query ProfileIsFollowing(\$userIds: [String!]!) {\n" +
-                "  feedXProfileIsFollowing(followingUserIDs: \$userIds) {\n" +
-                "    isUserFollowing {\n" +
-                "      userID\n" +
-                "      encryptedUserID\n" +
-                "      status\n" +
-                "    }\n" +
-                "  }\n" +
-                "}\n"
+        return ""
     }
 }

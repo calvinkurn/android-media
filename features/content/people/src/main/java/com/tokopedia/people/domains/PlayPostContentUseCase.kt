@@ -1,15 +1,72 @@
 package com.tokopedia.people.domains
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import javax.inject.Inject
 
+const val PLAY_VIDEO_QUERY = """
+    query playGetContentSlot(${'$'}group: String, ${'$'}cursor: String, ${'$'}source_type: String, ${'$'}source_id: String) {
+                playGetContentSlot(req: {group:${'$'}group, cursor: ${'$'}cursor, source_type: ${'$'}source_type, source_id: \${'$'}source_id}) {
+                  data {
+                    id
+                    title
+                    type
+                    items {
+                      ... on PlayChannelDetails {
+                        id
+                        title
+                        start_time
+                        description
+                        air_time
+                        is_live
+                        cover_url
+                        video {
+                          id
+                          orientation
+                          type
+                          cover_url
+                          autoplay
+                        }
+                        stats {
+                          view {
+                            value
+                            formatted
+                          }
+                        }
+                        configurations {
+                          has_promo
+                          reminder {
+                            is_set
+                          }
+                          promo_labels {
+                            text
+                          }
+                        }
+                        app_link
+                        web_link
+                        display_type
+                      }
+                    }
+                    hash
+                  }
+                  meta {
+                    next_cursor
+                    is_autoplay
+                    max_autoplay_in_cell
+                  }
+                }
+                }
+                
+"""
+
+@GqlQuery("PlayVOD", PLAY_VIDEO_QUERY)
 class PlayPostContentUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
 
     suspend fun getPlayPost(group: String, cursor: String, sourceType: String, sourceId: String): UserPostModel {
         val request = GraphqlRequest(
-            getPlayQuery(),
+            PlayVOD.GQL_QUERY,
             UserPostModel::class.java,
             getRequestParams(group,cursor,sourceType,sourceId)
         )
@@ -34,59 +91,5 @@ class PlayPostContentUseCase @Inject constructor(val useCase: MultiRequestGraphq
         const val KEY_CURSOR = "cursor"
         const val KEY_SOURCE_TYPE = "source_type"
         const val KEY_SOURCE_ID = "source_id"
-    }
-
-    private fun getPlayQuery(): String {
-        return "query playGetContentSlot(\$group: String, \$cursor: String, \$source_type: String, \$source_id: String) {\n" +
-                "  playGetContentSlot(req: {group:\$group, cursor: \$cursor, source_type: \$source_type, source_id: \$source_id}) {\n" +
-                "    data {\n" +
-                "      id\n" +
-                "      title\n" +
-                "      type\n" +
-                "      items {\n" +
-                "        ... on PlayChannelDetails {\n" +
-                "          id\n" +
-                "          title\n" +
-                "          start_time\n" +
-                "          description\n" +
-                "          air_time\n" +
-                "          is_live\n" +
-                "          cover_url\n" +
-                "          video {\n" +
-                "            id\n" +
-                "            orientation\n" +
-                "            type\n" +
-                "            cover_url\n" +
-                "            autoplay\n" +
-                "          }\n" +
-                "          stats {\n" +
-                "            view {\n" +
-                "              value\n" +
-                "              formatted\n" +
-                "            }\n" +
-                "          }\n" +
-                "          configurations {\n" +
-                "            has_promo\n" +
-                "            reminder {\n" +
-                "              is_set\n" +
-                "            }\n" +
-                "            promo_labels {\n" +
-                "              text\n" +
-                "            }\n" +
-                "          }\n" +
-                "          app_link\n" +
-                "          web_link\n" +
-                "          display_type\n" +
-                "        }\n" +
-                "      }\n" +
-                "      hash\n" +
-                "    }\n" +
-                "    meta {\n" +
-                "      next_cursor\n" +
-                "      is_autoplay\n" +
-                "      max_autoplay_in_cell\n" +
-                "    }\n" +
-                "  }\n" +
-                "}\n"
     }
 }

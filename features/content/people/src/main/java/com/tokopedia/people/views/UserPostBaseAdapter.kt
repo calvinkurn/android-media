@@ -222,10 +222,7 @@ open class UserPostBaseAdapter(
     ) =
         View.OnClickListener {
             if (!DeviceConnectionInfo.isInternetAvailable(
-                    item.context,
-                    checkWifi = true,
-                    checkCellular = true,
-                    checkEthernet = true
+                    item.context
                 )
             ) {
                 Toaster.build(

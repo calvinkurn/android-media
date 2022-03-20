@@ -105,10 +105,7 @@ open class ProfileFollowersAdapter(
                 updateToFollowUi(holder.btnAction)
 
                 holder.btnAction.setOnClickListener { v ->
-                    if(!DeviceConnectionInfo.isInternetAvailable(itemContext.applicationContext,
-                            checkWifi = true,
-                            checkCellular = true,
-                            checkEthernet = true)){
+                    if(!DeviceConnectionInfo.isInternetAvailable(itemContext.applicationContext)){
 
                         val snackBar = Toaster.build(
                             holder.btnAction as View,
@@ -138,10 +135,7 @@ open class ProfileFollowersAdapter(
                 updateToUnFollowUi(holder.btnAction)
 
                 holder.btnAction.setOnClickListener { v ->
-                    if(!DeviceConnectionInfo.isInternetAvailable(itemContext.applicationContext,
-                        checkWifi = true,
-                        checkCellular = true,
-                        checkEthernet = true)){
+                    if(!DeviceConnectionInfo.isInternetAvailable(itemContext.applicationContext)){
 
                         val snackBar = Toaster.build(
                             holder.btnAction as View,

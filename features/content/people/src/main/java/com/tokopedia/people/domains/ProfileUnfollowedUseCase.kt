@@ -1,14 +1,28 @@
 package com.tokopedia.people.domains
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.people.model.ProfileDoUnFollowModelBase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import javax.inject.Inject
 
+const val DO_UNFOLLOW_NEW = """
+    mutation SocialNetworkUnfollow(\${'$'}userIDEnc: String) {
+                SocialNetworkUnfollow(userIDEnc: \${'$'}userIDEnc) {
+                  data {
+                    is_success
+                  }
+                  messages
+                  error_code
+                }
+                }
+"""
+
+@GqlQuery("DoUnFollowNew", DO_UNFOLLOW_NEW)
 class ProfileUnfollowedUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
 
     suspend fun doUnfollow(unFollowingUserIdEnc: String): ProfileDoUnFollowModelBase {
         val request = GraphqlRequest(
-            getQuery(),
+            DoUnFollowNew.GQL_QUERY,
             ProfileDoUnFollowModelBase::class.java,
             getRequestParams(unFollowingUserIdEnc)
         )
@@ -27,17 +41,5 @@ class ProfileUnfollowedUseCase @Inject constructor(val useCase: MultiRequestGrap
 
     companion object {
         const val KEY_FOLLOWING_USERID_ENC = "userIDEnc"
-    }
-
-    private fun getQuery(): String {
-        return "mutation SocialNetworkUnfollow(\$userIDEnc: String) {\n" +
-                "  SocialNetworkUnfollow(userIDEnc: \$userIDEnc) {\n" +
-                "    data {\n" +
-                "      is_success\n" +
-                "    }\n" +
-                "    messages\n" +
-                "    error_code\n" +
-                "  }\n" +
-                "}"
     }
 }
