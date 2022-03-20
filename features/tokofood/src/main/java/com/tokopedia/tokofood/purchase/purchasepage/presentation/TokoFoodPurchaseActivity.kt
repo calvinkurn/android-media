@@ -2,11 +2,14 @@ package com.tokopedia.tokofood.purchase.purchasepage.presentation
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.localizationchooseaddress.common.ChosenAddress
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.di.DaggerTokoFoodPurchaseComponent
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.di.TokoFoodPurchaseComponent
 
-class TokoFoodPurchaseActivity: BaseSimpleActivity() {
+class TokoFoodPurchaseActivity: BaseSimpleActivity(), HasComponent<TokoFoodPurchaseComponent> {
 
     lateinit var fragment: TokoFoodPurchaseFragment
 
@@ -30,5 +33,12 @@ class TokoFoodPurchaseActivity: BaseSimpleActivity() {
         } else {
             super.onBackPressed()
         }
+    }
+
+    override fun getComponent(): TokoFoodPurchaseComponent {
+        return DaggerTokoFoodPurchaseComponent
+                .builder()
+                .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
     }
 }

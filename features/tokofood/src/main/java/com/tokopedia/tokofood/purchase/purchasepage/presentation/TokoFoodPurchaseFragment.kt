@@ -14,6 +14,7 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.FragmentPurchaseBinding
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapter
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapterTypeFactory
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.di.TokoFoodPurchaseComponent
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.toolbar.TokoFoodPurchaseToolbar
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.toolbar.TokoFoodPurchaseToolbarListener
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -61,7 +62,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     override fun getRecyclerViewResourceId() = R.id.recycler_view_purchase
 
     override fun initInjector() {
-
+        getComponent(TokoFoodPurchaseComponent::class.java).inject(this)
     }
 
     override fun loadData(page: Int) {
