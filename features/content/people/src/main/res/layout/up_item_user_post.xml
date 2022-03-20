@@ -115,7 +115,7 @@
         android:layout_marginTop="@dimen/unify_space_2"
         android:layout_marginEnd="@dimen/unify_space_8"
         android:layout_marginBottom="@dimen/unify_space_8"
-        android:textColor="@color/Unify_N0_68"
+        android:textColor="@color/up_color_channel_name"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -124,5 +124,24 @@
         app:layout_constraintWidth_default="spread"
         app:typographyType="body_3"
         tools:text="john.doe" />
+
+    <View
+        android:id="@+id/placeholder"
+        android:layout_width="@dimen/unify_space_2"
+        android:layout_height="@dimen/unify_space_2"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="@dimen/unify_space_0"
+        android:background="@drawable/up_bg_gradient"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/placeholder" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
