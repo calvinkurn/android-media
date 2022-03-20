@@ -4,7 +4,15 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapterTypeFactory
 
 data class TokoFoodPurchaseProductUiModel(
-        var a: Any // temporary
+        var isDisabled: Boolean = false,
+        var name: String = "",
+        var imageUrl: String = "",
+        var addOns: List<String> = emptyList(),
+        var originalPrice: Long = 0L,
+        var price: Long = 0L,
+        var discountPercentage: String = "",
+        var notes: String = "",
+        var quantity: Int = 0
 ) : Visitable<TokoFoodPurchaseAdapterTypeFactory> {
 
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {

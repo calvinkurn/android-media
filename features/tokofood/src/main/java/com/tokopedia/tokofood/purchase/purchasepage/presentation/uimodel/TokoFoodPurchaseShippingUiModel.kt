@@ -4,7 +4,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapterTypeFactory
 
 data class TokoFoodPurchaseShippingUiModel(
-        var a: Any // temporary
+        var shippingCourierName: String = "",
+        var shippingEta: String = "",
+        var shippingLogoUrl: String = ""
 ) : Visitable<TokoFoodPurchaseAdapterTypeFactory> {
 
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {
