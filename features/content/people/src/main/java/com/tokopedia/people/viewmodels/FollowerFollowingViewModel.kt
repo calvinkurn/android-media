@@ -1,5 +1,6 @@
 package com.tokopedia.people.viewmodels
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.people.Resources
@@ -21,11 +22,20 @@ class FollowerFollowingViewModel @Inject constructor(
     private val useCaseDoUnFollow: ProfileUnfollowedUseCase,
 ) : BaseViewModel(Dispatchers.Main) {
 
-    val profileFollowersListLiveData = MutableLiveData<Resources<ProfileFollowerListBase>>()
-    val profileFollowingsListLiveData = MutableLiveData<Resources<ProfileFollowingListBase>>()
-    val profileDoFollowLiveData = MutableLiveData<Resources<ProfileDoFollowModelBase>>()
-    val profileDoUnFollowLiveData = MutableLiveData<Resources<ProfileDoUnFollowModelBase>>()
-    val followersErrorLiveData = MutableLiveData<Throwable>()
+    private val profileFollowers = MutableLiveData<Resources<ProfileFollowerListBase>>()
+    val profileFollowersListLiveData: LiveData<Resources<ProfileFollowerListBase>> get() = profileFollowers
+
+    private val profileFollowingsList = MutableLiveData<Resources<ProfileFollowingListBase>>()
+    val profileFollowingsListLiveData: LiveData<Resources<ProfileFollowingListBase>> get() = profileFollowingsList
+
+    private val profileDoFollow = MutableLiveData<Resources<ProfileDoFollowModelBase>>()
+    val profileDoFollowLiveData: LiveData<Resources<ProfileDoFollowModelBase>> get() = profileDoFollow
+
+    private val profileDoUnFollow = MutableLiveData<Resources<ProfileDoUnFollowModelBase>>()
+    val profileDoUnFollowLiveData: LiveData<Resources<ProfileDoUnFollowModelBase>> get() = profileDoUnFollow
+
+    private val followersError = MutableLiveData<Throwable>()
+    val followersErrorLiveData: LiveData<Throwable> get() = followersError
 
     fun getFollowers(
         userName: String,
@@ -35,10 +45,10 @@ class FollowerFollowingViewModel @Inject constructor(
         launchCatchError(block = {
             val data = useCaseFollowersList.getProfileFollowerList(userName, cursor, limit)
             if (data != null) {
-                profileFollowersListLiveData.value = Success(data)
+                profileFollowers.value = Success(data)
             } else throw NullPointerException("data is null")
         }, onError = {
-            followersErrorLiveData.value = it
+            followersError.value = it
         })
     }
 
@@ -50,10 +60,10 @@ class FollowerFollowingViewModel @Inject constructor(
         launchCatchError(block = {
             val data = useCaseFollowingList.getProfileFollowingList(userName, cursor, limit)
             if (data != null) {
-                profileFollowingsListLiveData.value = Success(data)
+                profileFollowingsList.value = Success(data)
             } else throw NullPointerException("data is null")
         }, onError = {
-            followersErrorLiveData.value = it
+            followersError.value = it
         })
     }
 
@@ -61,7 +71,7 @@ class FollowerFollowingViewModel @Inject constructor(
         launchCatchError(block = {
             val data = useCaseDoFollow.doFollow(followingUserIdEnc)
             if (data != null) {
-                profileDoFollowLiveData.value = Success(data)
+                profileDoFollow.value = Success(data)
             } else throw NullPointerException("data is null")
         }) {
         }
@@ -71,7 +81,7 @@ class FollowerFollowingViewModel @Inject constructor(
         launchCatchError(block = {
             val data = useCaseDoUnFollow.doUnfollow(unFollowingUserIdEnc)
             if (data != null) {
-                profileDoUnFollowLiveData.value = Success(data)
+                profileDoUnFollow.value = Success(data)
             } else throw NullPointerException("data is null")
         }) {
         }

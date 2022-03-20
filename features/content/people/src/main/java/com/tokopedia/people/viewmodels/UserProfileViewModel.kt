@@ -1,5 +1,6 @@
 package com.tokopedia.people.viewmodels
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.people.Resources
@@ -23,27 +24,48 @@ class UserProfileViewModel @Inject constructor(
     private val videoPostReminderUseCase: VideoPostReminderUseCase
 ) : BaseViewModel(Dispatchers.Main) {
 
-    public val userDetailsLiveData = MutableLiveData<Resources<ProfileHeaderBase>>()
-    public val userPostLiveData = MutableLiveData<Boolean>()
-    public val playPostContentLiveData = MutableLiveData<Resources<UserPostModel>>()
-    public val profileDoFollowLiveData = MutableLiveData<Resources<ProfileDoFollowModelBase>>()
-    public val profileDoUnFollowLiveData = MutableLiveData<Resources<ProfileDoUnFollowModelBase>>()
-    public val profileTheyFollowLiveData = MutableLiveData<Resources<UserProfileIsFollow>>()
-    public var profileHeaderErrorMessageLiveData = MutableLiveData<Throwable>()
-    public var followErrorMessageLiveData = MutableLiveData<Throwable>()
-    public var unFollowErrorMessageLiveData = MutableLiveData<Throwable>()
-    public var userPostErrorLiveData = MutableLiveData<Throwable>()
-    public var postReminderLiveData = MutableLiveData<Resources<VideoPostReimderModel>>()
+    private val userDetails = MutableLiveData<Resources<ProfileHeaderBase>>()
+    val userDetailsLiveData : LiveData<Resources<ProfileHeaderBase>> get() = userDetails
+
+    private val userPost = MutableLiveData<Boolean>()
+    val userPostLiveData : LiveData<Boolean> get() = userPost
+
+    private val playPostContent = MutableLiveData<Resources<UserPostModel>>()
+    val playPostContentLiveData : LiveData<Resources<UserPostModel>> get() = playPostContent
+
+    private val profileDoFollow = MutableLiveData<Resources<ProfileDoFollowModelBase>>()
+    val profileDoFollowLiveData : LiveData<Resources<ProfileDoFollowModelBase>> get() = profileDoFollow
+
+    private val profileDoUnFollow = MutableLiveData<Resources<ProfileDoUnFollowModelBase>>()
+    val profileDoUnFollowLiveData : LiveData<Resources<ProfileDoUnFollowModelBase>> get() = profileDoUnFollow
+
+    private val profileTheyFollow = MutableLiveData<Resources<UserProfileIsFollow>>()
+    val profileTheyFollowLiveData : LiveData<Resources<UserProfileIsFollow>> get() = profileTheyFollow
+
+    private var profileHeaderErrorMessage = MutableLiveData<Throwable>()
+    val profileHeaderErrorMessageLiveData : LiveData<Throwable> get() = profileHeaderErrorMessage
+
+    private var followErrorMessage = MutableLiveData<Throwable>()
+    val followErrorMessageLiveData : LiveData<Throwable> get() = followErrorMessage
+
+    private var unFollowErrorMessage = MutableLiveData<Throwable>()
+    val unFollowErrorMessageLiveData : LiveData<Throwable> get() = unFollowErrorMessage
+
+    private var userPostError = MutableLiveData<Throwable>()
+    val userPostErrorLiveData : LiveData<Throwable> get() = userPostError
+
+    private var postReminder = MutableLiveData<Resources<VideoPostReimderModel>>()
+    val postReminderLiveData : LiveData<Resources<VideoPostReimderModel>> get() = postReminder
 
     public fun getUserDetails(userName: String, isRefreshPost: Boolean = false) {
         launchCatchError(block = {
             val data = userDetailsUseCase.getUserProfileDetail(userName, mutableListOf(userName))
             if (data != null) {
-                userDetailsLiveData.value = Success(data.getData(ProfileHeaderBase::class.java))
-                userPostLiveData.value = isRefreshPost
+                userDetails.value = Success(data.getData(ProfileHeaderBase::class.java))
+                userPost.value = isRefreshPost
             } else throw NullPointerException("data is null")
         }, onError = {
-            profileHeaderErrorMessageLiveData.value = it
+            profileHeaderErrorMessage.value = it
         })
     }
 
@@ -51,11 +73,11 @@ class UserProfileViewModel @Inject constructor(
         launchCatchError(block = {
             val data = playVodUseCase.getPlayPost(group, cursor, sourceType, sourceId)
             if (data != null) {
-                playPostContentLiveData.value = Success(data)
+                playPostContent.value = Success(data)
 
             } else throw NullPointerException("data is null")
         }, onError = {
-            userPostErrorLiveData.value = it
+            userPostError.value = it
         })
     }
 
@@ -63,10 +85,10 @@ class UserProfileViewModel @Inject constructor(
         launchCatchError(block = {
             val data = useCaseDoFollow.doFollow(followingUserIdEnc)
             if (data != null) {
-                profileDoFollowLiveData.value = Success(data)
+                profileDoFollow.value = Success(data)
             } else throw NullPointerException("data is null")
         }, onError = {
-            followErrorMessageLiveData.value = it
+            followErrorMessage.value = it
         })
     }
 
@@ -74,10 +96,10 @@ class UserProfileViewModel @Inject constructor(
         launchCatchError(block = {
             val data = useCaseDoUnFollow.doUnfollow(unFollowingUserIdEnc)
             if (data != null) {
-                profileDoUnFollowLiveData.value = Success(data)
+                profileDoUnFollow.value = Success(data)
             } else throw NullPointerException("data is null")
         }, onError = {
-            unFollowErrorMessageLiveData.value = it
+            unFollowErrorMessage.value = it
         })
     }
 
@@ -85,7 +107,7 @@ class UserProfileViewModel @Inject constructor(
         launchCatchError(block = {
             val data = profileIsFollowing.profileIsFollowing(profileIds)
             if (data != null) {
-                profileTheyFollowLiveData.value = Success(data)
+                profileTheyFollow.value = Success(data)
             } else throw NullPointerException("data is null")
         }, onError = {
         })
@@ -95,7 +117,7 @@ class UserProfileViewModel @Inject constructor(
         launchCatchError(block = {
             val data = videoPostReminderUseCase.updateReminder(channelId, isActive)
             if (data != null) {
-                postReminderLiveData.value = Success(data)
+                postReminder.value = Success(data)
             } else throw NullPointerException("data is null")
         }, onError = {
         })

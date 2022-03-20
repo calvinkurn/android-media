@@ -188,6 +188,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         }
         recyclerviewPost?.adapter = mAdapter
         mAdapter.resetAdapter()
+        mAdapter.cursor = ""
         mAdapter.startDataLoading(userId)
     }
 
@@ -390,7 +391,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
                         globalErrorPost?.refreshBtn?.setOnClickListener {
                             userPostContainer?.displayedChild = PAGE_LOADING
-                            landedUserName?.let { it1 -> initUserPost(it1) }
+                            userId?.let { it1 -> initUserPost(it1) }
                         }
                     }
                     is IllegalStateException -> {
@@ -398,7 +399,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
                         globalErrorPost?.refreshBtn?.setOnClickListener {
                             userPostContainer?.displayedChild = PAGE_LOADING
-                            landedUserName?.let { it1 -> initUserPost(it1) }
+                            userId?.let { it1 -> initUserPost(it1) }
                         }
                     }
                     is RuntimeException -> {
@@ -408,7 +409,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
                                 globalErrorPost?.refreshBtn?.setOnClickListener {
                                     userPostContainer?.displayedChild = PAGE_LOADING
-                                    landedUserName?.let { it1 -> initUserPost(it1) }
+                                    userId?.let { it1 -> initUserPost(it1) }
                                 }
                             }
                             ReponseStatus.INTERNAL_SERVER_ERROR -> {
@@ -416,7 +417,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
                                 globalErrorPost?.refreshBtn?.setOnClickListener {
                                     userPostContainer?.displayedChild = PAGE_LOADING
-                                    landedUserName?.let { it1 -> initUserPost(it1) }
+                                    userId?.let { it1 -> initUserPost(it1) }
                                 }
                             }
                             else -> {
@@ -424,7 +425,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
                                 globalErrorPost?.refreshBtn?.setOnClickListener {
                                     userPostContainer?.displayedChild = PAGE_LOADING
-                                    landedUserName?.let { it1 -> initUserPost(it1) }
+                                    userId?.let { it1 -> initUserPost(it1) }
                                 }
                             }
                         }
