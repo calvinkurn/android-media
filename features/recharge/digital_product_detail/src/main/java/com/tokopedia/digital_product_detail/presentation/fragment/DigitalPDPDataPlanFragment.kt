@@ -638,15 +638,6 @@ class DigitalPDPDataPlanFragment :
                     }
 
                     indicatorCounter = selectedChipsCounter
-
-                    view?.let {
-                        Toaster.build(
-                            it,
-                            "mccm visibility : ${binding?.rechargePdpPaketDataPromoWidget?.isVisible}",
-                            Toaster.LENGTH_LONG,
-                            Toaster.TYPE_ERROR
-                        ).show()
-                    }
                 }
             }
         }
