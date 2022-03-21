@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -24,9 +25,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.clearImage
-import com.tokopedia.kotlin.extensions.view.toFloatOrZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.DAILY_BUDGET
@@ -328,10 +327,15 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     private fun setClick() {
         switchAutoBidLayout?.let {
             it.onCheckBoxStateChanged = { isAutomatic ->
-                if (isAutomatic)
+                if (isAutomatic) {
                     viewModel.changeBidState(isAutomatic, groupId ?: 0)
-                else
+                    updateUiAfterBidStateChanges(true)
+                }
+                else {
+                    //changing switch state to true(otomatic), will be changing to false if user saves bid in bottom sheet
+                    switchAutoBidLayout.switchBidEditKeyword?.isChecked = true
                     bidSwitchManualBottomSheet.show(supportFragmentManager, "")
+                }
             }
 
             it.onInfoClicked = {
@@ -340,12 +344,32 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         }
     }
 
-    private fun onSaveClickedInManualBottomSheet(bidPencarian: Float, bidRecomendasi: Float) {
+    private fun updateUiAfterBidStateChanges(isAutomatic: Boolean,bidPencarian: String = "", bidRecomendasi: String = "") {
+        if (isAutomatic) {
+            perClick.hide()
+            perClickRekomendasi.hide()
+            editPancarianBudget.hide()
+            editRekomendasiBudget.hide()
+            budgetPerClick.text = getString(com.tokopedia.topads.common.R.string.group_detail_bid_otomatis)
+            budgetperclickRekomendasi.text = getString(com.tokopedia.topads.common.R.string.group_detail_bid_otomatis)
+        } else {
+            perClick.show()
+            perClickRekomendasi.show()
+            editPancarianBudget.show()
+            editRekomendasiBudget.show()
+            budgetPerClick.text = String.format(getString(com.tokopedia.topads.common.R.string.topads_common_rp),bidPencarian)
+            budgetperclickRekomendasi.text = String.format(getString(com.tokopedia.topads.common.R.string.topads_common_rp),bidRecomendasi)
+        }
+    }
+
+    private fun onSaveClickedInManualBottomSheet(bidPencarian: String, bidRecomendasi: String) {
+        switchAutoBidLayout.switchBidEditKeyword?.isChecked = false
         viewModel.changeBidState(false,
             groupId ?: 0,
             suggestedBid.toFloatOrZero(),
-            bidPencarian,
-            bidRecomendasi)
+            bidPencarian.toFloatOrZero(),
+            bidRecomendasi.toFloatOrZero())
+        updateUiAfterBidStateChanges(false,bidPencarian,bidRecomendasi)
     }
 
     private fun initView() {

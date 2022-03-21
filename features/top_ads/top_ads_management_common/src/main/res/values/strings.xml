@@ -227,6 +227,7 @@
         <item>Harga Terendah</item>
     </string-array>
 
+    <string name="topads_common_rp">Rp %s</string>
     <string name="topads_common_keyword_recommended_budget">•Rekomendasi Rp%s</string>
     <string name="topads_common_iklan_recommendasi_title">Biaya iklan di Rekomendasi</string>
     <string name="topads_common_iklan_pencarian_title">Biaya iklan di Pencarian</string>

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.topads.common.data.util.Utils.addBidValidationListener
+import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
@@ -14,7 +15,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 
 class BidSwitchManualBudgetBottomSheet(
     private val maxBid: String, private val minBid: String, private val suggestedBid: String,
-    private val onSaveClicked: (Float, Float) -> Unit,
+    private val onSaveClicked: (String, String) -> Unit,
 ) : BottomSheetUnify() {
 
     private var tfPencarian: TextFieldUnify? = null
@@ -34,8 +35,8 @@ class BidSwitchManualBudgetBottomSheet(
     private fun setUpListeners() {
         btnSave?.setOnClickListener {
             onSaveClicked(
-                (tfPencarian?.textFieldInput?.text ?: "0").toString().toFloatOrZero(),
-                (tfRecommendasi?.textFieldInput?.text ?: "0").toString().toFloatOrZero()
+                tfPencarian?.textFieldInput?.text.toString().removeCommaRawString(),
+                tfRecommendasi?.textFieldInput?.text.toString().removeCommaRawString()
             )
             dismiss()
         }
