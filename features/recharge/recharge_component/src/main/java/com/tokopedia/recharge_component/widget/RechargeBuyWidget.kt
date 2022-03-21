@@ -23,7 +23,6 @@ class RechargeBuyWidget @JvmOverloads constructor(@NotNull context: Context, att
 
     fun showBuyWidget(denom: DenomData, listener: RechargeBuyWidgetListener){
         with(rechargeBuyWidgetBinding){
-            root.show()
             tgBuyWidgetTotalPrice.run {
                 text = denom.price
                 if (denom.slashPrice.isNullOrEmpty()){
@@ -65,12 +64,6 @@ class RechargeBuyWidget @JvmOverloads constructor(@NotNull context: Context, att
             btnBuyWidget.setOnClickListener {
                 listener.onClickedButtonLanjutkan(denom)
             }
-        }
-    }
-
-    fun hideBuyWidget(){
-        with(rechargeBuyWidgetBinding){
-            root.hide()
         }
     }
 

@@ -19,7 +19,6 @@ class RechargeSimplifyBuyWidget @JvmOverloads constructor(@NotNull context: Cont
 
     fun showSimplifyBuyWidget(listener: RechargeSimplifyWidgetListener){
         with(rechargeSimplifyBuyWidgetBinding){
-            root.show()
             btnSimplifyBuyWidget.setOnClickListener {
                 listener.onClickedButton()
             }

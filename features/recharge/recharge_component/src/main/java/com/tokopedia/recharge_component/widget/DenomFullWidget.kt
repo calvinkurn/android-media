@@ -32,53 +32,45 @@ class DenomFullWidget @JvmOverloads constructor(
         denomData: DenomWidgetModel,
         selectedProductPosition: Int? = null
     ) {
-        if (!denomData.listDenomData.isNullOrEmpty()) {
-            with(rechargeDenomFullWidgetBinding) {
-                root.show()
-                denomFullShimmering.root.hide()
-                tgDenomFullWidgetTitle.run {
-                    show()
-                    text = denomData.mainTitle
-                }
-                rvDenomFullCard.run {
-                    show()
-                    with(adapterDenomFull) {
-                        clearDenomFullData()
-                        setDenomFullList(denomData.listDenomData)
-                        listener = denomFullListener
-                        productTitleList = denomData.mainTitle
-                        selectedProductIndex = selectedProductPosition
-                        denomWidgetType = DenomWidgetEnum.FULL_TYPE
-                        adapter = adapterDenomFull
-                        layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-                    }
-                    trackFirstVisibleItemToUser(this, denomFullListener, denomData.listDenomData)
-                    clearOnScrollListeners()
-                    addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                            super.onScrollStateChanged(recyclerView, newState)
-                            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                                calculateProductItemVisibleItemTracking(this@run, denomFullListener,
-                                    denomData.listDenomData)
-                            }
-                        }
-                    })
-                }
+        with(rechargeDenomFullWidgetBinding) {
+            denomFullShimmering.root.hide()
+            tgDenomFullWidgetTitle.run {
+                show()
+                text = denomData.mainTitle
             }
-        } else renderFailDenomFull()
+            rvDenomFullCard.run {
+                show()
+                with(adapterDenomFull) {
+                    clearDenomFullData()
+                    setDenomFullList(denomData.listDenomData)
+                    listener = denomFullListener
+                    productTitleList = denomData.mainTitle
+                    selectedProductIndex = selectedProductPosition
+                    denomWidgetType = DenomWidgetEnum.FULL_TYPE
+                    adapter = adapterDenomFull
+                    layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+                }
+                trackFirstVisibleItemToUser(this, denomFullListener, denomData.listDenomData)
+                clearOnScrollListeners()
+                addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                        super.onScrollStateChanged(recyclerView, newState)
+                        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                            calculateProductItemVisibleItemTracking(this@run, denomFullListener,
+                                denomData.listDenomData)
+                        }
+                    }
+                })
+            }
+        }
     }
 
     fun renderDenomFullShimmering() {
         with(rechargeDenomFullWidgetBinding) {
-            root.show()
             tgDenomFullWidgetTitle.hide()
             denomFullShimmering.root.show()
             rvDenomFullCard.hide()
         }
-    }
-
-    fun renderFailDenomFull() {
-        rechargeDenomFullWidgetBinding.root.hide()
     }
 
     fun clearSelectedProduct(){
