@@ -1019,10 +1019,10 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun checkReminderStatus(){
         if(userSession.isLoggedIn)
-            _tagItems.value.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>()
-                .filter { it.config.type == ProductSectionType.Upcoming }
+            _tagItems.value.product.productSectionList.
+            filter { it is ProductSectionUiModel.Section && it.config.type == ProductSectionType.Upcoming }
                 .forEach { campaign ->
-                    checkUpcomingCampaignSub(campaign)
+                    checkUpcomingCampaignSub(campaign as ProductSectionUiModel.Section)
                 }
     }
 
