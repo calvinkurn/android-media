@@ -354,6 +354,21 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         })
     }
 
+    private fun goToEditAddress(eligibleForEditRevamp: Boolean, data: RecipientAddressModel) {
+        if (eligibleForEditRevamp) {
+            val intent = RouteManager.getIntent(context, "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP}${data.id}")
+            val mapper = AddressModelMapper()
+            startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
+        } else {
+            val token = viewModel.token
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V1)
+            val mapper = AddressModelMapper()
+            intent.putExtra(EDIT_PARAM, mapper.transform(data))
+            intent.putExtra(KERO_TOKEN, token)
+            startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
+        }
+    }
+
     private fun initScrollListener() {
         binding?.addressList?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -484,12 +499,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         if (data == null) {
             viewModel.checkUserEligibilityForAnaRevamp()
         } else {
-            val token = viewModel.token
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V1)
-            val mapper = AddressModelMapper()
-            intent.putExtra(EDIT_PARAM, mapper.transform(data))
-            intent.putExtra(KERO_TOKEN, token)
-            startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
+            goToEditAddress(true, data)
         }
     }
 
