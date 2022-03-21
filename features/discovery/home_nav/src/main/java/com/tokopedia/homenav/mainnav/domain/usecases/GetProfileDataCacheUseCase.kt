@@ -7,7 +7,9 @@ import com.tokopedia.homenav.mainnav.data.mapper.AccountHeaderMapper
 import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
+import com.tokopedia.homenav.mainnav.domain.model.AffiliateUserDetailData
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -22,6 +24,7 @@ class GetProfileDataCacheUseCase @Inject constructor(
         private val getUserMembershipUseCase: GetUserMembershipUseCase,
         private val getShopInfoUseCase: GetShopInfoUseCase,
         private val userSession: UserSessionInterface,
+        private val getAffiliateUserUseCase: GetAffiliateUserUseCase,
         @ApplicationContext private val context: Context
 ): UseCase<AccountHeaderDataModel>() {
 
@@ -34,6 +37,7 @@ class GetProfileDataCacheUseCase @Inject constructor(
             var userInfoData: UserPojo? = null
             var userMembershipData: MembershipPojo? = null
             var shopData: ShopData? = null
+            var affiliateData: AffiliateUserDetailData? = null
 
             val getUserInfoCall = async {
                 getUserInfoUseCase.executeOnBackground()
@@ -43,11 +47,14 @@ class GetProfileDataCacheUseCase @Inject constructor(
             }
             val getShopInfoCall = async {
                 getShopInfoUseCase.executeOnBackground()
-
+            }
+            val getAffiliateData = async {
+                getAffiliateUserUseCase.executeOnBackground()
             }
             userInfoData = (getUserInfoCall.await().takeIf { it is Success } as? Success<UserPojo>)?.data
             userMembershipData = (getUserMembershipCall.await().takeIf { it is Success } as? Success<MembershipPojo>)?.data
             shopData = (getShopInfoCall.await().takeIf { it is Success } as? Success<ShopData>)?.data
+            affiliateData = (getAffiliateData.await().takeIf { it is Success } as? Success<AffiliateUserDetailData>)?.data
 
             accountHeaderMapper.mapToHeaderModel(
                     userInfoData,
@@ -56,6 +63,7 @@ class GetProfileDataCacheUseCase @Inject constructor(
                     userMembershipData,
                     shopData?.userShopInfo,
                     shopData?.notifications,
+                    affiliateData,
                     true
             )
         }

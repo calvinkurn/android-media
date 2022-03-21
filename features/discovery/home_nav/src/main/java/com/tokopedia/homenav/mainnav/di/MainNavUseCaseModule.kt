@@ -177,6 +177,7 @@ class MainNavUseCaseModule {
             getUserMembershipUseCase: GetUserMembershipUseCase,
             getShopInfoUseCase: GetShopInfoUseCase,
             userSession: UserSessionInterface,
+            getAffiliateUserUseCase: GetAffiliateUserUseCase,
             @ApplicationContext context: Context
     ): GetProfileDataCacheUseCase {
         return GetProfileDataCacheUseCase(
@@ -185,6 +186,7 @@ class MainNavUseCaseModule {
                 getUserMembershipUseCase = getUserMembershipUseCase,
                 getShopInfoUseCase = getShopInfoUseCase,
                 userSession = userSession,
+                getAffiliateUserUseCase = getAffiliateUserUseCase,
                 context = context
         )
     }

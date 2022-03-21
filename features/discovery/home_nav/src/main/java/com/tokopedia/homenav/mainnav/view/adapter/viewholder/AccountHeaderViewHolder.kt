@@ -332,15 +332,6 @@ class AccountHeaderViewHolder(itemView: View,
         recyclerSeller.adapter = adapter
     }
 
-    private fun shopClicked(profileSeller: ProfileSellerDataModel, context: Context) {
-        if (profileSeller.hasShop)
-            onShopClicked(profileSeller.canGoToSellerAccount)
-        else {
-            RouteManager.route(context, ApplinkConst.CREATE_SHOP)
-            TrackingProfileSection.onClickOpenShopSection(mainNavListener.getUserId())
-        }
-    }
-
     private fun renderNonLoginState() {
         layoutNonLogin.visibility = View.VISIBLE
         val btnLogin: UnifyButton = layoutNonLogin.findViewById(R.id.btn_login)
@@ -372,15 +363,6 @@ class AccountHeaderViewHolder(itemView: View,
             in HOURS_10..HOURS_15 -> "\uD83D\uDE4C"
             in HOURS_16..HOURS_21 -> "\uD83D\uDECD️"
             else -> "\uD83E\uDD14"
-        }
-    }
-
-    private fun onShopClicked(canGoToSellerMenu: Boolean) {
-        TrackingProfileSection.onClickShopProfileSection(userSession.userId)
-        if (canGoToSellerMenu) {
-            RouteManager.route(itemView.context, ApplinkConstInternalSellerapp.SELLER_MENU)
-        } else {
-            LocationAdminDialog(itemView.context).show()
         }
     }
 

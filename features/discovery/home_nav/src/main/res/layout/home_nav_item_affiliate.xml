@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/container_shop"
+        android:id="@+id/container_affiliate"
         android:foreground="?android:attr/selectableItemBackground"
         >
 
@@ -61,7 +61,7 @@
             />
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/btn_try_again_shop_info"
+            android:id="@+id/btn_try_again_affiliate_info"
             android:layout_width="24dp"
             android:layout_height="24dp"
             app:layout_constraintTop_toTopOf="@id/usr_affiliate_info"
@@ -100,12 +100,12 @@
             android:id="@+id/image_arrow_right"
             android:layout_width="17dp"
             android:layout_height="17dp"
-            android:contentDescription="@string/account_header_store_title"
+            android:contentDescription="@string/content_desc_affiliate"
             android:visibility="gone"
             android:layout_marginEnd="8dp"
             app:icon_name="CHEVRON_RIGHT"
             android:layout_gravity="center"
-            app:layout_constraintEnd_toStartOf="@id/btn_try_again_shop_info"
+            app:layout_constraintEnd_toStartOf="@id/btn_try_again_affiliate_info"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:visibility="visible" />
@@ -117,7 +117,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:barrierDirection="start"
-            app:constraint_referenced_ids="btn_try_again_shop_info" />
+            app:constraint_referenced_ids="btn_try_again_affiliate_info" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify2>
