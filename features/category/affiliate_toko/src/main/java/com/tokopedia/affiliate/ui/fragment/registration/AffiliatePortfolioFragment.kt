@@ -196,12 +196,11 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
     }
 
     override fun onNextKeyPressed(position: Int, b: Boolean) {
-        affiliateAdapter.notifyItemChanged(position)
         affiliatePortfolioViewModel.affiliatePortfolioData.value?.let {
             if(position + 1 < it.size &&
                     it[position + 1] is AffiliatePortfolioUrlModel) {
                 affiliatePortfolioViewModel.updateFocus(position + 1, b)
-                affiliateAdapter.notifyItemChanged(position + 1)
+                affiliatePortfolioViewModel.updateFocus(position,false)
             }
         }
     }
@@ -215,9 +214,10 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
         updateList.add(AffiliateHeaderModel(AffiliateHeaderItemData(userSessionInterface.name,true)))
         for (item in checkedSocialList){
             val portfolioDataItemText = affiliatePortfolioViewModel.finEditTextModelWithId(item.id)?.text
+            val firstItem = affiliatePortfolioViewModel.finEditTextModelWithId(item.id)?.firstTime
             if(portfolioDataItemText?.isNotBlank() == true){
                 updateList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(item.id,item.serviceFormat,"${getString(com.tokopedia.affiliate_toko.R.string.affiliate_link)} ${item.name}",
-                        portfolioDataItemText,item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false,regex = item.regex )))
+                        portfolioDataItemText,item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false,regex = item.regex ,firstTime = firstItem)))
             }else {
                 updateList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(item.id,item.serviceFormat,"${getString(com.tokopedia.affiliate_toko.R.string.affiliate_link)} ${item.name}",
                         item.defaultText,item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false,regex = item.regex,firstTime = true)))

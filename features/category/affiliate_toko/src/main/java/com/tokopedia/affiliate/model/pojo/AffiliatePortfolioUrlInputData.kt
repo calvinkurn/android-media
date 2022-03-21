@@ -11,5 +11,4 @@ class AffiliatePortfolioUrlInputData (
     var isFocus : Boolean ? = false,
     var regex : String? = null,
     var firstTime : Boolean? = true,
-    var defaultText : String = ""
     )
