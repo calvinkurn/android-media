@@ -21,6 +21,7 @@ data class AccountHeaderDataModel(
     var profileMembershipDataModel: ProfileMembershipDataModel = ProfileMembershipDataModel(),
     var profileSaldoDataModel: ProfileSaldoDataModel = ProfileSaldoDataModel(),
     var profileSellerDataModel: ProfileSellerDataModel = ProfileSellerDataModel(),
+    var profileAffiliateDataModel: ProfileAffiliateDataModel = ProfileAffiliateDataModel(),
     var profileWalletAppDataModel: ProfileWalletAppDataModel = ProfileWalletAppDataModel()
 ) : MainNavVisitable, ImpressHolder() {
     override fun id(): Any = id

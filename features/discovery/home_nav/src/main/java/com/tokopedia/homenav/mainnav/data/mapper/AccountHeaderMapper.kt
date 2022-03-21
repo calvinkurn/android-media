@@ -35,7 +35,6 @@ class AccountHeaderMapper(
         when (val loginState = getLoginState()) {
             AccountHeaderDataModel.LOGIN_STATE_LOGIN -> {
                 val data = AccountHeaderDataModel()
-                val profileShopData = ProfileAffiliateDataModel()
                 if(userPojo == null) {
                     data.setProfileData(
                         userName = "",
@@ -100,6 +99,10 @@ class AccountHeaderMapper(
             }
         }
         return accountModel
+    }
+
+    private fun showSellerData() {
+
     }
 
     private fun getTotalOrderCount(notificationPojo: ShopData.NotificationPojo?): Int {

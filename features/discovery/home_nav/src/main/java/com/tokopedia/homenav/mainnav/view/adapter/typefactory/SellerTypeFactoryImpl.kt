@@ -4,6 +4,8 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.AffiliateViewHolder
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.SellerViewHolder
 import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileAffiliateDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileSellerDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderNavVisitable
@@ -13,16 +15,21 @@ import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderNavVisitable
  */
 class SellerTypeFactoryImpl : BaseAdapterTypeFactory(), SellerTypeFactory {
     override fun type(profileSellerDataModel: ProfileSellerDataModel): Int {
-        return 0
+        return SellerViewHolder.LAYOUT
     }
 
     override fun type(profileAffiliateDataModel: ProfileAffiliateDataModel): Int {
-        return 0
+        return AffiliateViewHolder.LAYOUT
     }
 
-    override fun createViewHolder(view: View?, viewType: Int): AbstractViewHolder<out Visitable<*>> {
+    override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<out Visitable<*>> {
         return when (viewType) {
-
+            SellerViewHolder.LAYOUT -> {
+                SellerViewHolder(view)
+            }
+            AffiliateViewHolder.LAYOUT -> {
+                AffiliateViewHolder(view)
+            }
             else -> super.createViewHolder(view, viewType)
         } as AbstractViewHolder<OrderNavVisitable>
     }
