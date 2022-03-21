@@ -139,18 +139,18 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
 
                 when {
                     // if user has 0-3 products, recom widget is at the bottom of the page (vertical/infinite scroll)
-                    wishlistV2Response.totalData < recommPosition -> {
+                    wishlistV2Response.items.size < recommPosition -> {
                         listData = mapToRecommendation(0, listData)
                     }
 
                     // if user has 4 products, banner ads is after 4th of products, and recom widget is after TDN (at the bottom of the page)
-                    wishlistV2Response.totalData == recommPosition -> {
+                    wishlistV2Response.items.size == recommPosition -> {
                         mapToTopads(0, listData)
                         mapToRecommendation(0, listData)
                     }
 
                     // if user has > 4 products, banner ads is after 4th of products, while recom widget is always at the bottom of the page
-                    wishlistV2Response.totalData > recommPosition -> {
+                    wishlistV2Response.items.size > recommPosition -> {
                         mapToTopads(recommPosition, listData)
                         mapToRecommendation(0, listData)
                     }

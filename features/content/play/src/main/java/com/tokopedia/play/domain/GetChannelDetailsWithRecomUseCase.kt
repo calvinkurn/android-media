@@ -125,10 +125,6 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                       content_id
                       like_type
                     }
-                    pinned_product_config{
-                      pin_title
-                      bottom_sheet_title
-                    }
                     room_background{
                       image_url
                     }
