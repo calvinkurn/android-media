@@ -1,13 +1,7 @@
 package com.tokopedia.searchbar.navigation_component
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.ObjectAnimator
-import android.animation.PropertyValuesHolder
-import android.os.Build
 import android.text.TextUtils
 import android.view.View
-import android.view.View.FOCUSABLE
 import android.view.View.VISIBLE
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -25,11 +19,11 @@ import com.tokopedia.searchbar.helper.EasingInterpolator
 import com.tokopedia.searchbar.navigation_component.analytics.NavToolbarTracking
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentListener
-import com.tokopedia.searchbar.util.NavUtil
-import com.tokopedia.unifycomponents.SearchBarUnify
-import com.tokopedia.unifycomponents.setImage
-import kotlinx.android.synthetic.main.nav_main_toolbar.view.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 class NavSearchbarController(val view: View,
@@ -58,13 +52,19 @@ class NavSearchbarController(val view: View,
     }
 
     private lateinit var animationJob: Job
-    var etSearch: EditText? = null
-    var iconClear: IconUnify? = null
+    val etSearch : EditText by lazy(LazyThreadSafetyMode.NONE) {
+        view.findViewById(R.id.et_search)
+    }
+    private val iconClear: IconUnify by lazy {
+        view.findViewById(R.id.icon_clear)
+    }
+    
+    private val layoutSearch: View by lazy(LazyThreadSafetyMode.NONE) {
+        view.findViewById(R.id.layout_search)
+    }
 
     init {
-        view.layout_search.visibility = VISIBLE
-        etSearch = view.et_search
-        iconClear = view.findViewById(R.id.icon_clear)
+        layoutSearch.visibility = VISIBLE
     }
 
     override val coroutineContext: CoroutineContext
@@ -75,8 +75,8 @@ class NavSearchbarController(val view: View,
             isShowTransition: Boolean,
             durationAutoTransition: Long
     ) {
-        iconClear?.gone()
-        etSearch?.visible()
+        iconClear.gone()
+        etSearch.visible()
         if (::animationJob.isInitialized) {
             animationJob.cancel()
         }
@@ -85,8 +85,8 @@ class NavSearchbarController(val view: View,
         } else {
             setHintSingle(hints[0])
         }
-        etSearch?.setSingleLine()
-        etSearch?.ellipsize = TextUtils.TruncateAt.END
+        etSearch.setSingleLine()
+        etSearch.ellipsize = TextUtils.TruncateAt.END
     }
 
     fun startHintAnimation() {
@@ -103,58 +103,58 @@ class NavSearchbarController(val view: View,
 
     fun setEditableSearchbar(hint: String) {
         setEditorActionListener()
-        etSearch?.visible()
-        etSearch?.hint = hint
-        iconClear?.clearAnimation()
-        iconClear?.animate()?.scaleX(HIDE_SCALE)?.scaleY(HIDE_SCALE)?.setDuration(INITIAL_ANIMATION_DURATION)?.start()
+        etSearch.visible()
+        etSearch.hint = hint
+        iconClear.clearAnimation()
+        iconClear.animate()?.scaleX(HIDE_SCALE)?.scaleY(HIDE_SCALE)?.setDuration(INITIAL_ANIMATION_DURATION)?.start()
 
-        etSearch?.addTextChangedListener(
+        etSearch.addTextChangedListener(
             onTextChanged = { text, start, count, after ->
                 navSearchbarInterface?.invoke(
                     text, start, count, after
                 )
 
-                iconClear?.visible()
+                iconClear.visible()
                 if(TextUtils.isEmpty(text)) {
-                    iconClear?.clearAnimation()
-                    iconClear?.animate()?.scaleX(HIDE_SCALE)?.scaleY(HIDE_SCALE)?.setDuration(CLEAR_ICON_ANIM_DURATION)?.start()
+                    iconClear.clearAnimation()
+                    iconClear.animate()?.scaleX(HIDE_SCALE)?.scaleY(HIDE_SCALE)?.setDuration(CLEAR_ICON_ANIM_DURATION)?.start()
                 } else {
-                    iconClear?.clearAnimation()
-                    iconClear?.animate()?.scaleX(SHOW_SCALE)?.scaleY(SHOW_SCALE)?.setDuration(CLEAR_ICON_ANIM_DURATION)?.start()
+                    iconClear.clearAnimation()
+                    iconClear.animate()?.scaleX(SHOW_SCALE)?.scaleY(SHOW_SCALE)?.setDuration(CLEAR_ICON_ANIM_DURATION)?.start()
                 }
             }
         )
     }
 
     private fun setEditorActionListener() {
-        etSearch?.isFocusableInTouchMode = true;
-        etSearch?.isFocusable = true;
-        etSearch?.imeOptions = EditorInfo.IME_ACTION_SEARCH
-        etSearch?.setOnFocusChangeListener { v, hasFocus ->
+        etSearch.isFocusableInTouchMode = true;
+        etSearch.isFocusable = true;
+        etSearch.imeOptions = EditorInfo.IME_ACTION_SEARCH
+        etSearch.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 NavToolbarTracking.clickNavToolbarComponent(
                     pageName = topNavComponentListener.getPageName(),
                     componentName = IconList.NAME_SEARCH_BAR,
                     userId = topNavComponentListener.getUserId(),
-                    keyword = etSearch?.text.toString()
+                    keyword = etSearch.text.toString()
                 )
             }
         }
-        iconClear?.setOnClickListener {
-            etSearch?.text?.clear()
+        iconClear.setOnClickListener {
+            etSearch.text?.clear()
             editorActionCallback?.invoke("")
         }
-        etSearch?.setOnEditorActionListener { _, actionId, _ ->
+        etSearch.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                editorActionCallback?.invoke(etSearch?.text.toString())
+                editorActionCallback?.invoke(etSearch.text.toString())
                 true
             } else false
         }
     }
 
     private fun setHintSingle(hint: HintData) {
-        etSearch?.hint = if (hint.placeholder.isEmpty()) view.context.getString(R.string.search_tokopedia) else hint.placeholder
-        etSearch?.setOnClickListener {
+        etSearch.hint = if (hint.placeholder.isEmpty()) view.context.getString(R.string.search_tokopedia) else hint.placeholder
+        etSearch.setOnClickListener {
             if (!disableDefaultGtmTracker) {
                 NavToolbarTracking.clickNavToolbarComponent(
                         pageName = topNavComponentListener.getPageName(),
@@ -198,15 +198,15 @@ class NavSearchbarController(val view: View,
                             hint = placeholder.placeholder
                             keyword = placeholder.keyword
                         }
-                        etSearch?.hint = hint
-                        etSearch?.startAnimation(slideUpIn)
+                        etSearch.hint = hint
+                        etSearch.startAnimation(slideUpIn)
                         searchbarImpressionCallback?.invoke(hint)
                     }
 
                     override fun onAnimationStart(animation: Animation?) {}
                 })
-                etSearch?.startAnimation(slideOutUp)
-                etSearch?.setOnClickListener {
+                etSearch.startAnimation(slideOutUp)
+                etSearch.setOnClickListener {
                     if (!disableDefaultGtmTracker) {
                         NavToolbarTracking.clickNavToolbarComponent(
                                 pageName = topNavComponentListener.getPageName(),
