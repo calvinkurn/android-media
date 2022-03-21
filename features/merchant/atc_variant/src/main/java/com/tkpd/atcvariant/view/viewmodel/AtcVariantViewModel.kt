@@ -27,12 +27,12 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.AtcVariantMapper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
@@ -111,6 +111,10 @@ class AtcVariantViewModel @Inject constructor(
     private val _stockCopy = MutableLiveData<String>()
     val stockCopy: LiveData<String>
         get() = _stockCopy
+
+    private val _variantImagesData = MutableLiveData<ProductDetailGallery>()
+    val variantImagesData: LiveData<ProductDetailGallery>
+        get() = _variantImagesData
 
     private var isShopOwner: Boolean = false
 
@@ -588,5 +592,35 @@ class AtcVariantViewModel @Inject constructor(
 
     private fun getSelectedMiniCartItem(productId: String): MiniCartItem? {
         return minicartData?.get(productId)
+    }
+
+    fun onVariantImageClicked(
+        imageUrl: String,
+        productId: String,
+        mainImageTag: String
+    ) {
+        val selectedChild = getVariantData()?.getChildByProductId(productId)
+        val selectedOptionId = selectedChild?.optionIds?.firstOrNull()
+
+        val variantAggregatorData = getVariantAggregatorData()
+
+        val mainImage = variantAggregatorData?.simpleBasicInfo?.defaultMediaURL
+        val defaultImage = if (mainImage?.isNotEmpty() == true)
+            mainImage
+        else imageUrl
+
+        val variantGalleryItems = variantAggregatorData?.getVariantGalleryItems()
+
+        val productDetailGalleryData = ProductDetailGallery(
+            defaultItem = ProductDetailGallery.Item(
+                "",
+                defaultImage,
+                tag = mainImageTag
+            ),
+            items = variantGalleryItems ?: emptyList(),
+            selectedId = selectedOptionId
+        )
+
+        _variantImagesData.postValue(productDetailGalleryData)
     }
 }

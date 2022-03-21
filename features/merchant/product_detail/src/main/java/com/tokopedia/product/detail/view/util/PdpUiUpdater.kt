@@ -267,7 +267,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     fun updateInitialMedia(media: List<Media>) {
         updateData(ProductDetailConstant.MEDIA, true) {
             mediaMap?.run {
-                //todo add logic to search option id
                 initialScrollPosition = if (initialScrollPosition == -1) -1 else 0
                 listOfMedia = DynamicProductDetailMapper.convertMediaToDataModel(
                         media.toMutableList()
@@ -278,8 +277,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     fun updateMediaScrollPosition(selectedOptionId: String?) {
         if (selectedOptionId == null) return
-        updateData(ProductDetailConstant.MEDIA, true) {
-            mediaMap?.run {
+        updateData(ProductDetailConstant.MEDIA) {
+            mediaMap?.apply {
                 this.variantOptionIdScrollAnchor = selectedOptionId
             }
         }
@@ -674,13 +673,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 cardModel = data.recomWidgetData?.recommendationItemList?.toProductCardModels(hasThreeDots = true)
                         ?: listOf()
             }
-        }
-    }
-
-    fun updateImageAfterClickVariant(it: MutableList<Media>) {
-        updateData(ProductDetailConstant.MEDIA) {
-            //todo scroll to position
-            mediaMap?.listOfMedia = DynamicProductDetailMapper.convertMediaToDataModel(it)
         }
     }
 

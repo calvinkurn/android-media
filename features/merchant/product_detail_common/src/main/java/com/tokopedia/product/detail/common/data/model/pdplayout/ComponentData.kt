@@ -161,6 +161,27 @@ data class ComponentData(
             }
         })
     }
+
+    fun getGalleryItems(): List<ProductDetailGallery.Item> {
+        return media.mapIndexed { index, media ->
+            val url: String
+            val thumbnailUrl: String
+            if (media.type == PRODUCT_IMAGE_TYPE) {
+                url = media.uRLOriginal
+                thumbnailUrl = media.uRLOriginal
+            } else{
+                url = media.videoURLAndroid
+                thumbnailUrl = media.uRLThumbnail
+            }
+
+            ProductDetailGallery.Item(
+                id = index.toString(),
+                url = url,
+                thumbnailUrl = thumbnailUrl,
+                tag = media.description.takeIf { media.variantOptionId != "0" }
+            )
+        }
+    }
 }
 
 data class CategoryCarousel(

@@ -18,16 +18,22 @@ class ProductMediaViewHolder(private val view: View,
     companion object {
         val LAYOUT = R.layout.item_dynamic_product_media
     }
-
     private val binding = ItemDynamicProductMediaBinding.bind(view).also { measureScreenHeight(it) }
 
     override fun bind(element: ProductMediaDataModel) {
         with(binding) {
+
+            val optionIdAnchor = element.variantOptionIdScrollAnchor
+            val scrollPosition = if (optionIdAnchor.isNotEmpty()) {
+                element.listOfMedia.indexOfFirst {
+                    it.variantOptionId == optionIdAnchor
+                }.takeIf { it > -1 } ?: 0
+            } else element.initialScrollPosition
+
             viewMediaPager.setup(element.listOfMedia,
                     listener,
-                    element.initialScrollPosition,
+                    scrollPosition,
                     getComponentTrackData(element))
-            element.initialScrollPosition = -1
 
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))
@@ -43,7 +49,10 @@ class ProductMediaViewHolder(private val view: View,
 
         when (payloads[0] as Int) {
             ProductDetailConstant.PAYLOAD_SCROLL_IMAGE_VARIANT -> {
-                binding.viewMediaPager.scrollToPosition(element.initialScrollPosition)
+                val index = element.listOfMedia.indexOfFirst {
+                    it.variantOptionId == element.variantOptionIdScrollAnchor
+                }.takeIf { it > -1 } ?: 0
+                binding.viewMediaPager.scrollToPosition(index, true)
             }
         }
     }

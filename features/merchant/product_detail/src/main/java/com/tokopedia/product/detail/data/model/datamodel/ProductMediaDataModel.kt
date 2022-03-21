@@ -10,8 +10,7 @@ data class ProductMediaDataModel(
         val name: String = "",
         var listOfMedia: List<MediaDataModel> = listOf(),
         var initialScrollPosition: Int = -1,
-        //todo implement this
-        var variantOptionIdScrollAnchor: String = "-1"
+        var variantOptionIdScrollAnchor: String = ""
 ) : DynamicPdpDataModel {
     companion object {
         const val VIDEO_TYPE = "video"
@@ -70,7 +69,8 @@ data class MediaDataModel(
         val urlThumbnail: String = "",
         val mediaDescription: String = "",
         val videoUrl: String = "",
-        val isAutoPlay: Boolean = false
+        val isAutoPlay: Boolean = false,
+        val variantOptionId: String = ""
 ) {
     fun isVideoType(): Boolean = type == ProductMediaDataModel.VIDEO_TYPE
 }

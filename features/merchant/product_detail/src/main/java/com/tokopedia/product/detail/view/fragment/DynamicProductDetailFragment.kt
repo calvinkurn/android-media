@@ -111,6 +111,7 @@ import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.constant.TopAdsShopCategoryTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
@@ -123,6 +124,7 @@ import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.common.view.ProductDetailCoachMarkHelper
 import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
+import com.tokopedia.product.detail.common.view.ProductDetailGalleryActivity
 import com.tokopedia.product.detail.common.view.ProductDetailRestrictionHelper
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
@@ -1324,20 +1326,17 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun onImageClicked(position: Int) {
-        val isWishlisted = pdpUiUpdater?.basicContentMap?.isWishlisted ?: false
         val dynamicProductInfoData = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
 
         activity?.let {
-            val images = dynamicProductInfoData.data.getImagePathExceptVideo() ?: return@let
-            val intent = ImagePreviewPdpActivity.createIntent(it,
-                    shopId = dynamicProductInfoData.basic.shopID,
-                    productId = dynamicProductInfoData.basic.productID,
-                    isWishlisted = isWishlisted,
-                    imageUris = images,
-                    imageDesc = null,
-                    position = position,
-                    disableDownload = true)
-            startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_IMAGE_PREVIEW)
+            val intent = ProductDetailGalleryActivity.createIntent(
+                context = it,
+                productDetailGallery = ProductDetailGallery(
+                    items = dynamicProductInfoData.data.getGalleryItems(),
+                    selectedId = position.toString()
+                )
+            )
+            startActivity(intent)
         }
     }
 
@@ -1663,14 +1662,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun observeImageVariantPartialyChanged() {
         viewLifecycleOwner.observe(viewModel.updatedImageVariant) {
-            val mediaList = it.second.toMutableList()
-
             pdpUiUpdater?.updateVariantData(it.first)
-
-            if (it.second.isNotEmpty()) {
-                pdpUiUpdater?.updateImageAfterClickVariant(mediaList)
-                viewModel.updateDynamicProductInfoData(VariantMapper.updateMediaToCurrentP1Data(viewModel.getDynamicProductInfoP1, mediaList))
-            }
+            pdpUiUpdater?.updateMediaScrollPosition(it.second)
             updateUi()
         }
     }
@@ -2415,9 +2408,13 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         pdpUiUpdater?.updateVariantSelected(variantOptions.variantId, variantOptions.variantCategoryKey)
         val isPartialySelected = pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()
                 ?: false
-
-        viewModel.onVariantClicked(viewModel.variantData, pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant, isPartialySelected, variantOptions.level,
-                variantOptions.imageOriginal)
+        viewModel.onVariantClicked(
+            viewModel.variantData,
+            pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant,
+            isPartialySelected,
+            variantOptions.level,
+            variantOptions.variantId
+        )
     }
 
     private fun goToAtcVariant(customCartRedirection: Map<String, CartTypeData>? = null) {

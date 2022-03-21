@@ -60,11 +60,11 @@ class VideoPictureView @JvmOverloads constructor(
         videoPictureAdapter?.submitList(mediaList)
     }
 
-    fun scrollToPosition(position: Int) {
+    fun scrollToPosition(position: Int, smoothScroll: Boolean = false) {
         if (position == -1) {
             return
         }
-        binding.pdpViewPager.setCurrentItem(position, false)
+        binding.pdpViewPager.setCurrentItem(position, smoothScroll)
         binding.imageSliderPageControl.setCurrentIndicator(position)
     }
 
@@ -125,7 +125,7 @@ class VideoPictureView @JvmOverloads constructor(
             binding.imageSliderPageControl.activeColor = ContextCompat.getColor(context, R.color.product_detail_dms_page_control)
         }
         binding.imageSliderPageControl.inactiveColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400_68)
-        binding.imageSliderPageControl.setCurrentIndicator(initialScrollPosition)
+        binding.imageSliderPageControl.setCurrentIndicator(initialScrollPosition.takeIf { it > -1 } ?: 0)
     }
 
     private fun processMedia(media: List<MediaDataModel>?): List<MediaDataModel> {
