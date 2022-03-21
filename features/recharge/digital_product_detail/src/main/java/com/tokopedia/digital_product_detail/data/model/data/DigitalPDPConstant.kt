@@ -35,4 +35,5 @@ object DigitalPDPConstant {
     const val DELAY_AUTOCOMPLETE = 500L
 
     const val CHECKOUT_NO_PROMO = "0"
+    const val LOADER_DIALOG_TEXT = ""
 }
