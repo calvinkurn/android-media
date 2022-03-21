@@ -20,8 +20,8 @@ import dagger.Provides
 class PlayWidgetModule {
 
     @Provides
-    fun provideWidgetMapper(userSession: UserSessionInterface): PlayWidgetUiMapper {
-        return PlayWidgetUiMapper(userSession)
+    fun provideWidgetMapper(userSession: UserSessionInterface, playWidgetPreference: PlayWidgetPreference): PlayWidgetUiMapper {
+        return PlayWidgetUiMapper(userSession, playWidgetPreference)
     }
 
     @Provides
