@@ -58,14 +58,17 @@ interface TagItemBuilder {
         config: ProductSectionUiModel.Section.ConfigUiModel = ProductSectionUiModel.Section.ConfigUiModel(
             type = ProductSectionType.Unknown,
             title = "", timerInfo = "", serverTime = "", startTime = "", endTime = "",
-            background = ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(), imageUrl = "")
+            background = ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(), imageUrl = ""),
+            reminder = PlayUpcomingBellStatus.On(3L)
         ),
-        id: String = ""
+        id: String = "",
     ): ProductSectionUiModel.Section
 
     fun buildSectionConfig(type: ProductSectionType = ProductSectionType.Unknown,
                            title: String = "", timerInfo: String = "", serverTime: String = "",
                            startTime: String = "", endTime: String = "",
-                           background: ProductSectionUiModel.Section.BackgroundUiModel = ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(), imageUrl = "")
+                           background: ProductSectionUiModel.Section.BackgroundUiModel =
+                               ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(), imageUrl = ""),
+                           reminderStatus: PlayUpcomingBellStatus
     ): ProductSectionUiModel.Section.ConfigUiModel
 }
