@@ -7,13 +7,7 @@ import java.util.*
 
 const val DECIMAL_FORMAT_PATTERN = "#,###,###"
 
-fun Int.splitByThousand() : String {
-    val symbol = DecimalFormatSymbols(LocaleConstant.INDONESIA)
-    val formatter = DecimalFormat(DECIMAL_FORMAT_PATTERN, symbol)
-    return formatter.format(this)
-}
-
-fun Int.splitByThousand(locale : Locale) : String {
+fun Int.splitByThousand(locale : Locale = LocaleConstant.INDONESIA) : String {
     val symbol = DecimalFormatSymbols(locale)
     val formatter = DecimalFormat(DECIMAL_FORMAT_PATTERN, symbol)
     return formatter.format(this)
