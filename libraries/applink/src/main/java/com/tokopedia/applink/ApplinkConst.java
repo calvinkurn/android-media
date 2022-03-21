@@ -19,6 +19,7 @@ public interface ApplinkConst {
     String AMP_FIND = "tokopedia://amp/find";
     String FEED_HASHTAG = "tokopedia://feed/hashtag/{hashtag}";
     String FEED_DETAILS = "tokopedia://feedcommunicationdetail";
+    String FEED_PlAY_LIVE_DETAIL = "tokopedia://feedplaylivedetail";
     String HOME_CATEGORY = "tokopedia://home/category";
     String HOME_HOT_HOST = "hot";
     String HOME_HOTLIST = "tokopedia://hot";
@@ -34,6 +35,7 @@ public interface ApplinkConst {
     String SHOP_TALK = "tokopedia://shop/{shop_id}/talk";
     String SHOP_ETALASE_WITH_KEYWORD_AND_SORT = "tokopedia://shop/{shop_id}/etalase/{etalase_id}/?search={search}&sort={sort}";
     String PRODUCT_BUNDLE = "tokopedia://product-bundle/{product_id}";
+    String GIFTING = "tokopedia://gifting/{addon_id}";
     String SHOP_REVIEW = "tokopedia://shop/{shop_id}/review";
     String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";
     String SHOP_INFO = "tokopedia://shop/{shop_id}/info";
@@ -456,6 +458,7 @@ public interface ApplinkConst {
         String CATALOG_DETAIL_NEW = "kupon/detail";
         String CATALOG_LIST_NEW = "kupon";
         String CATALOG_LIST_VALUE = "tukar-point";
+        String COUPON_LIST = "kupon-saya";
         String HISTORY = "tokopedia://tokopoints/history";
     }
 

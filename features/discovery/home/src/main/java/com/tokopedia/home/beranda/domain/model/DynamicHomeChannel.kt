@@ -37,6 +37,9 @@ data class DynamicHomeChannel(
             @SerializedName("layout")
             val layout: String = "",
             @Expose
+            @SerializedName("campaignType")
+            val campaignType: Int = -1,
+            @Expose
             @SerializedName("name")
             val name: String = "",
             @Expose
@@ -318,7 +321,9 @@ data class DynamicHomeChannel(
             const val LAYOUT_LEGO_6_AUTO: String = "6_image_auto"
             const val LAYOUT_QUESTWIDGET = "quest_widget"
             const val LAYOUT_CAMPAIGN_WIDGET: String = "campaign_widget"
+            const val LAYOUT_CAMPAIGN_FEATURING: String = "campaign_featuring"
             const val LAYOUT_CM_HOME_TO_DO: String = "home_todo"
+            const val LAYOUT_MERCHANT_VOUCHER: String = "merchant_voucher"
             const val LAYOUT_PAYLATER_CICIL: String = "gpl_cicil"
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"
@@ -444,7 +449,10 @@ data class DynamicHomeChannel(
             val campaignCode: String = "",
             @Expose
             @SerializedName("badges")
-            val badges: Array<HomeBadges> = arrayOf()
+            val badges: Array<HomeBadges> = arrayOf(),
+            @Expose
+            @SerializedName("expiredTime")
+            val expiredTime: String = ""
     )
 
     data class HomeBadges(
@@ -575,6 +583,18 @@ data class DynamicHomeChannel(
         val shopId: String = "",
         @Expose
         @SerializedName("city")
-        val city: String = ""
+        val city: String = "",
+        @Expose
+        @SerializedName("name")
+        val name: String = "",
+        @Expose
+        @SerializedName("imageUrl")
+        val imageUrl: String = "",
+        @Expose
+        @SerializedName("url")
+        val url: String = "",
+        @Expose
+        @SerializedName("applink")
+        val applink: String = ""
     )
 }

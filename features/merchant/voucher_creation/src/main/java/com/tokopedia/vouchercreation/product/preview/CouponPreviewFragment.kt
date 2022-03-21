@@ -74,7 +74,8 @@ class CouponPreviewFragment: BaseDaggerFragment() {
             onUpdateCouponSuccess: () -> Unit,
             onDuplicateCouponSuccess: () -> Unit,
             couponId: Long,
-            mode : Mode
+            mode : Mode,
+            blockAddProduct: Boolean = false
         ): CouponPreviewFragment {
 
             val fragment = CouponPreviewFragment().apply {
@@ -87,6 +88,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
                 this.onDuplicateCouponSuccess = onDuplicateCouponSuccess
                 this.pageMode = mode
                 this.couponId = couponId
+                this.blockAddProduct = blockAddProduct
             }
 
             return fragment
@@ -126,6 +128,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     private var maxAllowedProduct = 0
     private var showCouponDuplicatedToaster : () -> Unit = {}
     private var selectedProductCount = 0
+    private var blockAddProduct = false
 
     private val createCouponErrorNotice by lazy {
         CreateProductCouponFailedDialog(requireActivity(), ::onRetryCreateCoupon, ::onRequestHelp)
@@ -293,6 +296,9 @@ class CouponPreviewFragment: BaseDaggerFragment() {
             tracker.sendChangeCouponSettingClickEvent()
             onNavigateToCouponSettingsPage()
         }
+
+        // Quick fix for issue https://tokopedia.atlassian.net/browse/AN-34843
+        if (blockAddProduct) binding.tpgAddProduct.hide()
         binding.tpgAddProduct.setOnClickListener {
             tracker.sendAddProductClickEvent()
             navigateToAddProductPage()
