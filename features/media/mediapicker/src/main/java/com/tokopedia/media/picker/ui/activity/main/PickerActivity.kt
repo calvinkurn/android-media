@@ -219,7 +219,7 @@ open class PickerActivity : BaseActivity()
         if (hasPermissionGranted) {
             navigateByPageType()
         } else {
-            setToolbarTheme(ToolbarTheme.Solid)
+            navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
             navigator?.start(PickerFragmentType.PERMISSION)
         }
     }
@@ -256,15 +256,15 @@ open class PickerActivity : BaseActivity()
     private fun navigateByPageType() {
         when (PickerUiConfig.pageType) {
             PickerPageType.CAMERA -> {
-                setToolbarTheme(ToolbarTheme.Transparent)
+                navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
                 navigator?.start(PickerFragmentType.CAMERA)
             }
             PickerPageType.GALLERY -> {
-                setToolbarTheme(ToolbarTheme.Solid)
+                navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
                 navigator?.start(PickerFragmentType.GALLERY)
             }
             else -> {
-                setToolbarTheme(ToolbarTheme.Transparent)
+                navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
 
                 // show camera as initial page
                 navigator?.start(PickerFragmentType.CAMERA)
@@ -295,7 +295,7 @@ open class PickerActivity : BaseActivity()
 
     private fun onCameraTabSelected() {
         navigator?.onPageSelected(PickerFragmentType.CAMERA)
-        setToolbarTheme(ToolbarTheme.Transparent)
+        navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
         binding?.container?.setMargin(0, 0, 0, 0)
     }
 
@@ -303,20 +303,9 @@ open class PickerActivity : BaseActivity()
         val marginBottom = dimensionPixelOffsetOf(R.dimen.picker_page_margin_bottom)
 
         navigator?.onPageSelected(PickerFragmentType.GALLERY)
-        setToolbarTheme(ToolbarTheme.Solid)
+        navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
 
         binding?.container?.setMargin(0, 0, 0, marginBottom)
-    }
-
-    private fun setToolbarTheme(toolbarTheme: ToolbarTheme){
-        val toolbarBackground: Drawable? = if(toolbarTheme == ToolbarTheme.Solid){
-            null
-        } else {
-            MethodChecker.getDrawable(this, R.drawable.bg_gradient_nav_toolbar)
-        }
-
-        binding?.toolbarContainer?.background = toolbarBackground
-        navToolbar.onToolbarThemeChanged(toolbarTheme)
     }
 
     protected open fun createFragmentFactory(): PickerFragmentFactory {

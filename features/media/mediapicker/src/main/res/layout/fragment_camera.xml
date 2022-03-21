@@ -8,6 +8,15 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
+    <View
+        android:id="@+id/toolbar_background"
+        android:background="@drawable/bg_gradient_nav_toolbar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:elevation="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"/>
+
     <include layout="@layout/ui_component_camera_preview"/>
 
     <View
