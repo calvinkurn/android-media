@@ -144,7 +144,9 @@ class EditProductInputMapper @Inject constructor() {
                 it.status,
                 it.stock,
                 it.isPrimary,
-                mapPictureVariant(productPicture)
+                mapPictureVariant(productPicture),
+                it.weight,
+                it.weightUnit
         )
     }
 

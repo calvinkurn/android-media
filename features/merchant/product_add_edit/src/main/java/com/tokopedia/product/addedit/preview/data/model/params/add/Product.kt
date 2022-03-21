@@ -30,5 +30,11 @@ data class Product (
         var isPrimary: Boolean = false,
         @SerializedName("pictures")
         @Expose
-        var pictures: List<Picture> = emptyList()
+        var pictures: List<Picture> = emptyList(),
+        @SerializedName("weight")
+        @Expose
+        var weight: Int = 0,
+        @SerializedName("weightUnit")
+        @Expose
+        var weightUnit: String = ""
 ) : Parcelable

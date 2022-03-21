@@ -119,7 +119,9 @@ class AddProductInputMapper @Inject constructor() {
                 it.status,
                 it.stock,
                 it.isPrimary,
-                mapPictureVariant(it.pictures)
+                mapPictureVariant(it.pictures),
+                it.weight,
+                it.weightUnit
         )
     }
 
