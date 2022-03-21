@@ -43,7 +43,7 @@ buildscript {
         classpath rootProject.ext.gradlePlugin.crashlytics
         classpath "com.vanniktech:gradle-code-quality-tools-plugin:0.17.0"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7.1"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10"
         classpath 'com.tokopedia.patch:preprocessor:2.0.6'
         classpath 'com.tokopedia.patch:core:1.0.0'
         classpath 'org.javassist:javassist:3.20.0-GA'

@@ -234,6 +234,7 @@ ext {
             oneclickcheckout                : ":features:transaction:oneclickcheckout",
             unifyorderhistory               : ":features:transaction:unifyorderhistory",
             wishlist                        : ":features:transaction:wishlist",
+            wishlistcommon                  : ":features:transaction:wishlist_common",
             snapshot                        : ":features:ordermanagement:snapshot",
             ordermanagementhistory          : ":features:ordermanagement:orderhistory",
             buyerorderdetail                : ":features:ordermanagement:buyer_order_detail",

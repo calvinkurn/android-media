@@ -1,4 +1,4 @@
-package com.tokopedia.wishlist.domain
+package com.tokopedia.wishlistcommon.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -7,8 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlist.data.model.response.DeleteWishlistV2Response
-import com.tokopedia.wishlist.util.WishlistV2Consts
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import javax.inject.Inject
 
 class DeleteWishlistV2UseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) {
@@ -24,11 +23,13 @@ class DeleteWishlistV2UseCase @Inject constructor(@ApplicationContext private va
 
     private fun generateParam(productId: String, userId: String): Map<String, Any?> {
         return mapOf(
-                WishlistV2Consts.PRODUCT_ID to productId,
-                WishlistV2Consts.USER_ID to userId)
+                PRODUCT_ID to productId,
+                USER_ID to userId)
     }
 
     companion object {
+        const val PRODUCT_ID = "productID"
+        const val USER_ID = "userID"
         val QUERY = """
             mutation WishlistRemoveV2(${'$'}productID: SuperInteger, ${'$'}userID: SuperInteger) {
               wishlist_remove_v2(productID:${'$'}productID, userID:${'$'}userID) {

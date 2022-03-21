@@ -1,4 +1,4 @@
-package com.tokopedia.wishlist.data.model.response
+package com.tokopedia.wishlistcommon.data.response
 
 import com.google.gson.annotations.SerializedName
 

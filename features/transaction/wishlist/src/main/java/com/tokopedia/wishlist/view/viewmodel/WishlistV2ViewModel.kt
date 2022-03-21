@@ -18,12 +18,12 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.data.model.response.BulkDeleteWishlistV2Response
-import com.tokopedia.wishlist.data.model.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlist.data.model.WishlistV2Params
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.domain.BulkDeleteWishlistV2UseCase
 import com.tokopedia.wishlist.data.model.*
-import com.tokopedia.wishlist.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlist.domain.WishlistV2UseCase
 import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_CAROUSEL
@@ -38,12 +38,12 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
-                                            private val wishlistV2UseCase: WishlistV2UseCase,
-                                            private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
-                                            private val bulkDeleteWishlistV2UseCase: BulkDeleteWishlistV2UseCase,
-                                            private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-                                            private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
-                                            private val atcUseCase: AddToCartUseCase) : BaseViewModel(dispatcher.main) {
+                                              private val wishlistV2UseCase: WishlistV2UseCase,
+                                              private val deleteWishlistV2UseCase: com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase,
+                                              private val bulkDeleteWishlistV2UseCase: BulkDeleteWishlistV2UseCase,
+                                              private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
+                                              private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
+                                              private val atcUseCase: AddToCartUseCase) : BaseViewModel(dispatcher.main) {
 
     private val _wishlistV2 = MutableLiveData<Result<WishlistV2Response.Data.WishlistV2>>()
     val wishlistV2: LiveData<Result<WishlistV2Response.Data.WishlistV2>>
@@ -54,8 +54,8 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         get() = _wishlistV2Data
 
     private val _deleteWishlistV2Result =
-        MutableLiveData<Result<DeleteWishlistV2Response.Data.WishlistRemoveV2>>()
-    val deleteWishlistV2Result: LiveData<Result<DeleteWishlistV2Response.Data.WishlistRemoveV2>>
+        MutableLiveData<Result<com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response.Data.WishlistRemoveV2>>()
+    val deleteWishlistV2Result: LiveData<Result<com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response.Data.WishlistRemoveV2>>
         get() = _deleteWishlistV2Result
 
     private val _bulkDeleteWishlistV2Result = MutableLiveData<Result<BulkDeleteWishlistV2Response.Data.WishlistBulkRemoveV2>>()
