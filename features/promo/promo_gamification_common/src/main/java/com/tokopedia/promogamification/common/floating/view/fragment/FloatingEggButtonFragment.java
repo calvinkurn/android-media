@@ -27,7 +27,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -51,6 +50,7 @@ import com.tokopedia.promogamification.common.floating.listener.OnDragTouchListe
 import com.tokopedia.promogamification.common.floating.view.contract.FloatingEggContract;
 import com.tokopedia.promogamification.common.floating.view.presenter.FloatingEggPresenter;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.unifycomponents.ImageUnify;
 import javax.inject.Inject;
 import dagger.Lazy;
 import timber.log.Timber;
@@ -83,7 +83,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
     private View vgRoot;
     private View vgFloatingEgg;
-    private ImageView ivFloatingEgg;
+    private ImageUnify ivFloatingEgg;
     private TextView tvFloatingCounter;
     private TextView tvFloatingTimer;
 
@@ -101,7 +101,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     private boolean isHideAnimating;
     private boolean needHideFloatingToken = true;
     private OnDragListener onDragListener;
-    private ImageView minimizeButtonLeft;
+    private ImageUnify minimizeButtonLeft;
     private float newAngleOfMinimizeBtn = 180;
     private float oldAngleOfMinimizeBtn = 0;
     private boolean isMinimized;
@@ -527,10 +527,10 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         }
 
-
-        if (!TextUtils.isEmpty(imageUrl)) {
+        if (!TextUtils.isEmpty(imageUrl) && !(requireActivity()).isFinishing()) {
+            try {
             if (imageUrl.endsWith(".gif")) {
-                Glide.with(getContext())
+                Glide.with(requireActivity())
                         .asGif()
                         .load(imageUrl)
                         .diskCacheStrategy(DiskCacheStrategy.DATA)
@@ -545,7 +545,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                             }
                         });
             } else {
-                Glide.with(getContext())
+                Glide.with(requireActivity())
                         .asBitmap()
                         .load(imageUrl)
                         .diskCacheStrategy(DiskCacheStrategy.DATA)
@@ -561,6 +561,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
                             }
                         });
+            }
+            } catch (Exception e) {
+                Timber.e(e);
             }
         }
     }
