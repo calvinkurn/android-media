@@ -32,7 +32,7 @@ class SellerTypeFactoryImpl(private val mainNavListener: MainNavListener,
                 SellerViewHolder(view, mainNavListener, userSession)
             }
             AffiliateViewHolder.LAYOUT -> {
-                AffiliateViewHolder(view)
+                AffiliateViewHolder(view, mainNavListener, userSession)
             }
             else -> super.createViewHolder(view, viewType)
         } as AbstractViewHolder<OrderNavVisitable>

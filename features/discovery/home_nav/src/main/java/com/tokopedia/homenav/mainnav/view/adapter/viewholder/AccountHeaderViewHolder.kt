@@ -322,10 +322,23 @@ class AccountHeaderViewHolder(itemView: View,
         recyclerSeller.layoutManager = layoutManager
     }
 
+    private fun setPositionSellerAndAffiliate(
+        element: AccountHeaderDataModel,
+        listSellers: MutableList<Visitable<*>>
+    ) {
+        if(element.profileAffiliateDataModel.isRegister && !element.profileSellerDataModel.hasShop) {
+            listSellers.add(element.profileAffiliateDataModel)
+            listSellers.add(element.profileSellerDataModel)
+        }
+        else {
+            listSellers.add(element.profileSellerDataModel)
+            listSellers.add(element.profileAffiliateDataModel)
+        }
+    }
+
     private fun setSellerAndAffiliate(element: AccountHeaderDataModel, recyclerSeller: RecyclerView) {
         val listSellers = mutableListOf<Visitable<*>>()
-        listSellers.add(element.profileSellerDataModel)
-        listSellers.add(element.profileAffiliateDataModel)
+        setPositionSellerAndAffiliate(element, listSellers)
         valuateRecyclerViewDecoration(recyclerSeller)
         val typeFactoryImpl = SellerTypeFactoryImpl(mainNavListener, userSession)
         adapter = SellerAdapter(listSellers, typeFactoryImpl)

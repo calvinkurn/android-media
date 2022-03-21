@@ -13,17 +13,21 @@ import com.tokopedia.homenav.databinding.HomeNavItemAffiliateBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
 import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileAffiliateDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileSellerDataModel
+import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by dhaba
  */
 class AffiliateViewHolder (
-    itemView: View
+    itemView: View,
+    private val mainNavListener: MainNavListener,
+    private val userSession: UserSessionInterface
 ) : AbstractViewHolder<ProfileAffiliateDataModel>(itemView){
 
    private val binding: HomeNavItemAffiliateBinding? by viewBinding()
@@ -64,7 +68,9 @@ class AffiliateViewHolder (
 
     override fun bind(element: ProfileAffiliateDataModel) {
         binding?.run {
+            btnTryAgainAffiliateInfo.setOnClickListener{mainNavListener.onErrorAffiliateInfoRefreshClicked(adapterPosition)}
             if (element.isGetAffiliateLoading) {
+                imageAffiliate.gone()
                 usrAffiliateInfo.gone()
                 btnTryAgainAffiliateInfo.gone()
                 imageArrowRight.gone()
@@ -72,6 +78,7 @@ class AffiliateViewHolder (
                 shimmerBtnTryAgain.visible()
             } else if (element.isGetAffiliateError) {
                 setShopInfoBold()
+                imageAffiliate.gone()
                 btnTryAgainAffiliateInfo.visible()
                 usrAffiliateInfo.visible()
                 shimmerShopInfo.gone()
@@ -80,6 +87,7 @@ class AffiliateViewHolder (
                 shimmerBtnTryAgain.gone()
                 usrAffiliateInfo.text = getString(R.string.error_state_shop_info)
             } else if (!element.isGetAffiliateError) {
+                imageAffiliate.visible()
                 btnTryAgainAffiliateInfo.gone()
                 shimmerShopInfo.gone()
                 btnTryAgainAffiliateInfo.gone()
