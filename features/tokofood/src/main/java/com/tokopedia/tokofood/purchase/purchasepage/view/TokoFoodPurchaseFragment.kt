@@ -12,11 +12,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.tokofood.R
-import com.tokopedia.tokofood.databinding.FragmentPurchaseBinding
+import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
 import com.tokopedia.tokofood.purchase.purchasepage.view.adapter.TokoFoodPurchaseAdapter
 import com.tokopedia.tokofood.purchase.purchasepage.view.adapter.TokoFoodPurchaseAdapterTypeFactory
 import com.tokopedia.tokofood.purchase.purchasepage.view.di.DaggerTokoFoodPurchaseComponent
-import com.tokopedia.tokofood.purchase.purchasepage.view.di.TokoFoodPurchaseComponent
 import com.tokopedia.tokofood.purchase.purchasepage.view.toolbar.TokoFoodPurchaseToolbar
 import com.tokopedia.tokofood.purchase.purchasepage.view.toolbar.TokoFoodPurchaseToolbarListener
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -24,7 +23,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchaseAdapterTypeFactory>(),
         TokoFoodPurchaseActionListener, TokoFoodPurchaseToolbarListener {
 
-    private var viewBinding by autoClearedNullable<FragmentPurchaseBinding>()
+    private var viewBinding by autoClearedNullable<LayoutFragmentPurchaseBinding>()
     private var toolbar: TokoFoodPurchaseToolbar? = null
     private var recyclerView: RecyclerView? = null
     private lateinit var adapter: TokoFoodPurchaseAdapter
@@ -39,7 +38,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewBinding = FragmentPurchaseBinding.inflate(inflater, container, false)
+        viewBinding = LayoutFragmentPurchaseBinding.inflate(inflater, container, false)
         val view = viewBinding?.root
         recyclerView = getRecyclerView(view)
         (recyclerView?.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
