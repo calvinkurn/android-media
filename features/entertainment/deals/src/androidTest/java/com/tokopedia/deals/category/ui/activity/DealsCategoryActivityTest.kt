@@ -10,19 +10,16 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.deals.DealsDummyResponseString
-import com.tokopedia.deals.DealsDummyResponseString.DUMMY_FILTER_CHIPS_ONE
-import com.tokopedia.deals.DealsDummyResponseString.DUMMY_FILTER_CHIPS_TWO
-import com.tokopedia.deals.DealsDummyResponseString.DUMMY_RESPONSE_FIRST_CATEGORY_TITLE
 import com.tokopedia.deals.DealsDummyResponseString.DUMMY_RESPONSE_SECOND_CATEGORY_TITLE
-import com.tokopedia.deals.DealsDummyResponseString.FILTERS_CHIP_TITLE
 import com.tokopedia.deals.R
 import com.tokopedia.deals.category.ui.activity.mock.DealsCategoryMockResponse
 import com.tokopedia.test.application.espresso_component.CommonActions
@@ -31,7 +28,6 @@ import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagSt
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.core.AllOf
 import org.junit.After
-import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 
@@ -43,6 +39,9 @@ class DealsCategoryActivityTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
     private lateinit var localCacheHandler: LocalCacheHandler
+
+    @get:Rule
+    val cassavaTestRule = CassavaTestRule(sendValidationResult = false)
 
     @get:Rule
     var activityRule: IntentsTestRule<DealsCategoryActivity> = object : IntentsTestRule<DealsCategoryActivity>(DealsCategoryActivity::class.java) {
@@ -73,8 +72,7 @@ class DealsCategoryActivityTest {
         clickOnSearchBar()
         actionOnBrandViewHolder()
 
-        Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_DEALS_CATEGORY_PAGE),
-                hasAllSuccess())
+        assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_DEALS_CATEGORY_PAGE), hasAllSuccess())
     }
 
     private fun actionOnBrandViewHolder() {
