@@ -25,6 +25,7 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.clearImage
+import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
@@ -74,6 +75,7 @@ import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapt
 import com.tokopedia.topads.dashboard.view.fragment.*
 import com.tokopedia.topads.dashboard.view.interfaces.ChangePlacementFilter
 import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
+import com.tokopedia.topads.dashboard.view.sheet.BidSwitchManualBudgetBottomSheet
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -141,6 +143,10 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     private var rekommendedBid: Float? = 0.0F
     private var bidTypeData: ArrayList<TopAdsBidSettingsModel>? = arrayListOf()
     private var placementType: Int = 0
+    private val bidSwitchManualBottomSheet by lazy(LazyThreadSafetyMode.NONE) {
+        BidSwitchManualBudgetBottomSheet(maxSuggestKeyword,minSuggestKeyword,suggestedBid,::onSaveClickedInManualBottomSheet)
+    }
+    private val bidInfoBottomSheet by lazy(LazyThreadSafetyMode.NONE) { BidInfoBottomSheet() }
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -320,16 +326,26 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
 
     private fun setClick() {
-        //dummy value passed , need to update it
         switchAutoBidLayout?.let {
             it.onCheckBoxStateChanged = { isAutomatic ->
-                viewModel.changeBidState(isAutomatic, groupId ?: 0, 1.1f, 1.0f, 2.2f)
+                if (isAutomatic)
+                    viewModel.changeBidState(isAutomatic, groupId ?: 0)
+                else
+                    bidSwitchManualBottomSheet.show(supportFragmentManager, "")
             }
 
             it.onInfoClicked = {
-                BidInfoBottomSheet().show(supportFragmentManager, "")
+                bidInfoBottomSheet.show(supportFragmentManager, "")
             }
         }
+    }
+
+    private fun onSaveClickedInManualBottomSheet(bidPencarian: Float, bidRecomendasi: Float) {
+        viewModel.changeBidState(false,
+            groupId ?: 0,
+            suggestedBid.toFloatOrZero(),
+            bidPencarian,
+            bidRecomendasi)
     }
 
     private fun initView() {

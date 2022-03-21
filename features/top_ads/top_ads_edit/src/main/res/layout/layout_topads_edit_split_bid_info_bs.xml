@@ -17,7 +17,7 @@
         android:layout_marginTop="@dimen/unify_space_12"
         android:layout_marginBottom="@dimen/spacing_lvl2"
         app:typographyType="heading_5"
-        android:text="@string/topads_edit_iklan_pencarian_title"/>
+        android:text="@string/topads_common_iklan_pencarian_title"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
@@ -31,7 +31,7 @@
         android:layout_marginTop="@dimen/unify_space_12"
         android:layout_marginBottom="@dimen/spacing_lvl2"
         app:typographyType="heading_5"
-        android:text="@string/topads_edit_iklan_recommendasi_title"/>
+        android:text="@string/topads_common_iklan_recommendasi_title"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"

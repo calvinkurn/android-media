@@ -139,23 +139,32 @@ class GroupDetailViewModel @Inject constructor(
             })
     }
 
-    fun changeBidState(isAutomatic: Boolean,groupId: Int,suggestBidPerClick: Float, bidPencarian: Float, bidRecomendasi: Float) {
-        val dataGrp = hashMapOf<String,Any?>(
+    fun changeBidState(
+        isAutomatic: Boolean, groupId: Int,
+        suggestBidPerClick: Float = 0f, bidPencarian: Float = 0f, bidRecomendasi: Float = 0f
+    ) {
+        val dataGrp = hashMapOf<String, Any?>(
             ParamObject.ACTION_TYPE to ParamObject.ACTION_EDIT,
-            ParamObject.GROUPID to  groupId
+            ParamObject.GROUPID to groupId
         )
-        val dataKey = hashMapOf<String,Any?>(
-            STRATEGIES to  if(isAutomatic) arrayListOf(AUTO_BID_STATE) else arrayListOf(),
-            ParamObject.SUGGESTION_BID_SETTINGS to listOf(
-                GroupEditInput.Group.TopadsSuggestionBidSetting(ParamObject.PRODUCT_SEARCH, suggestBidPerClick),
-                GroupEditInput.Group.TopadsSuggestionBidSetting(ParamObject.PRODUCT_BROWSE, suggestBidPerClick)
-            ),
-            ParamObject.BID_TYPE to listOf(
-                TopAdsBidSettingsModel(ParamObject.PRODUCT_SEARCH,bidPencarian),
-                TopAdsBidSettingsModel(ParamObject.PRODUCT_BROWSE,bidRecomendasi),
+        val dataKey = hashMapOf<String, Any?>()
+        if (isAutomatic) {
+            dataKey[STRATEGIES] = arrayListOf(AUTO_BID_STATE)
+        } else {
+            dataKey[STRATEGIES] = arrayListOf<String>()
+            dataKey[ParamObject.SUGGESTION_BID_SETTINGS] = listOf(
+                GroupEditInput.Group.TopadsSuggestionBidSetting(ParamObject.PRODUCT_SEARCH,
+                    suggestBidPerClick),
+                GroupEditInput.Group.TopadsSuggestionBidSetting(ParamObject.PRODUCT_BROWSE,
+                    suggestBidPerClick)
             )
-        )
-        topAdsCreated(dataGrp, dataKey,{},{})
+            dataKey[ParamObject.BID_TYPE] = listOf(
+                TopAdsBidSettingsModel(ParamObject.PRODUCT_SEARCH, bidPencarian),
+                TopAdsBidSettingsModel(ParamObject.PRODUCT_BROWSE, bidRecomendasi),
+            )
+        }
+
+        topAdsCreated(dataGrp, dataKey, {}, {})
     }
 
     fun topAdsCreated(dataGrp: HashMap<String, Any?>,dataKey: HashMap<String,Any?>, onSuccess: (() -> Unit), onError: ((error: String?) -> Unit)) {
