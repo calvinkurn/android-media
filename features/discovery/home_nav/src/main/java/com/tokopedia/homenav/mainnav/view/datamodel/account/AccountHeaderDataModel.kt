@@ -104,6 +104,18 @@ data class AccountHeaderDataModel(
 
     }
 
+    fun setAffiliate(
+        isRegistered: Boolean,
+        affiliateName: String,
+        affiliateAppLink: String,
+        isLoading: Boolean
+    ) {
+        this.profileAffiliateDataModel.isRegister = isRegistered
+        this.profileAffiliateDataModel.affiliateName = affiliateName
+        this.profileAffiliateDataModel.affiliateAppLink = affiliateAppLink
+        this.profileAffiliateDataModel.isGetAffiliateLoading = isLoading
+    }
+
     fun setAdminData(adminRoleText: String?, canGoToSellerAccount: Boolean) {
         this.profileSellerDataModel.adminRoleText = adminRoleText
         this.profileSellerDataModel.canGoToSellerAccount = canGoToSellerAccount

@@ -154,7 +154,8 @@ class MainNavUseCaseModule {
             getTokopointStatusFiltered: GetTokopointStatusFiltered,
             getShopInfoUseCase: GetShopInfoUseCase,
             getWalletEligibilityUseCase: GetWalletEligibilityUseCase,
-            getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase
+            getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase,
+            getAffiliateUserUseCase: GetAffiliateUserUseCase
     ): GetProfileDataUseCase {
         return GetProfileDataUseCase(
                 accountHeaderMapper = accountHeaderMapper,
@@ -164,7 +165,8 @@ class MainNavUseCaseModule {
                 getTokopointStatusFiltered = getTokopointStatusFiltered,
                 getShopInfoUseCase = getShopInfoUseCase,
                 getWalletEligibilityUseCase = getWalletEligibilityUseCase,
-                getWalletAppBalanceUseCase = getWalletAppBalanceUseCase
+                getWalletAppBalanceUseCase = getWalletAppBalanceUseCase,
+                getAffiliateUserUseCase = getAffiliateUserUseCase
         )
     }
     @MainNavScope

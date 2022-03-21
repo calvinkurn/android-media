@@ -6,6 +6,7 @@ import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.data.pojo.tokopoint.TokopointsStatusFilteredPojo
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
+import com.tokopedia.homenav.mainnav.domain.model.AffiliateUserDetailData
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileAffiliateDataModel
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -22,13 +23,15 @@ class AccountHeaderMapper(
                          userMembershipPojo: MembershipPojo?,
                          shopInfoPojo: ShopData.ShopInfoPojo?,
                          notificationPojo: ShopData.NotificationPojo?,
+                         affiliatePojo: AffiliateUserDetailData?,
                          isCache: Boolean,
                          walletAppData: WalletAppData? = null,
                          isWalletAppError: Boolean = false,
                          isEligibleForWalletApp: Boolean = false,
                          isSaldoError: Boolean = false,
                          isShopDataError: Boolean = false,
-                         isGetTokopointsError: Boolean = false
+                         isGetTokopointsError: Boolean = false,
+                         isAffiliateError: Boolean = false
     ): AccountHeaderDataModel {
         var accountModel = AccountHeaderDataModel()
 
@@ -82,10 +85,20 @@ class AccountHeaderMapper(
                     )
                 }
 
+                affiliatePojo?.let {
+                    data.setAffiliate(
+                        isRegistered = it.affiliateUserDetail.isRegistered,
+                        affiliateName = it.affiliateUserDetail.title,
+                        affiliateAppLink = it.affiliateUserDetail.redirection.android,
+                        isLoading = false
+                    )
+                }
+
                 data.profileWalletAppDataModel.isWalletAppFailed = isWalletAppError
                 data.profileWalletAppDataModel.isEligibleForWalletApp = isEligibleForWalletApp
                 data.profileSaldoDataModel.isGetSaldoError = isSaldoError
                 data.profileSellerDataModel.isGetShopError = isShopDataError
+                data.profileAffiliateDataModel.isGetAffiliateError = isAffiliateError
                 data.profileMembershipDataModel.isGetUserMembershipError = isGetTokopointsError
                 // extra case when tokopoint null and ab is false
                 if(data.profileMembershipDataModel.isTokopointExternalAmountError){
@@ -99,10 +112,6 @@ class AccountHeaderMapper(
             }
         }
         return accountModel
-    }
-
-    private fun showSellerData() {
-
     }
 
     private fun getTotalOrderCount(notificationPojo: ShopData.NotificationPojo?): Int {

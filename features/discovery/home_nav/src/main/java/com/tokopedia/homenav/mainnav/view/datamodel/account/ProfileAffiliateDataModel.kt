@@ -7,21 +7,15 @@ import com.tokopedia.homenav.mainnav.view.adapter.typefactory.SellerTypeFactory
  * Created by dhaba
  */
 data class ProfileAffiliateDataModel (
-    var isAffiliate: Boolean = false,
-    var hasShop: Boolean = false,
-    var shopName: String = "",
-    var shopId: String = "",
-    var shopOrderCount: Int = 0,
-    var shopNotifCount: String = "",
-    var shopApplink: String = "",
-    var adminRoleText: String? = null,
-    var canGoToSellerAccount: Boolean = true,
+    var isRegister: Boolean = false,
+    var affiliateName: String = "",
+    var affiliateAppLink: String = "",
 
     /**
      * Status
      */
-    var isGetShopLoading: Boolean = false,
-    var isGetShopError: Boolean = false
+    var isGetAffiliateLoading: Boolean = false,
+    var isGetAffiliateError: Boolean = false
 ) : Visitable<SellerTypeFactory> {
     override fun type(typeFactory: SellerTypeFactory): Int {
         return typeFactory.type(this)

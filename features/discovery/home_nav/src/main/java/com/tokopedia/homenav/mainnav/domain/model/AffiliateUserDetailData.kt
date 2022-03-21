@@ -27,5 +27,5 @@ data class AffiliateUserDetail(
 data class Redirection(
     @Expose
     @SerializedName("Android")
-    private val android: String = ""
+    val android: String = ""
 )
