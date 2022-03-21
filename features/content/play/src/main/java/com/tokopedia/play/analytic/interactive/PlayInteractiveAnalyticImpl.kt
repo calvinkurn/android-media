@@ -71,39 +71,4 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
                 )
         )
     }
-
-    override fun clickUpcomingReminder(sectionInfo: ProductSectionUiModel.Section, channelId: String, channelType: PlayChannelType){
-        val eventAction = if(sectionInfo.config.reminder is PlayUpcomingBellStatus.On) "remove $KEY_TRACK_UPCOMING_REMINDER" else KEY_TRACK_UPCOMING_REMINDER
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_TOP_ADS,
-                KEY_EVENT_ACTION to "$KEY_TRACK_CLICK - $eventAction",
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_LABEL to "$channelId - ${channelType.value} - ${sectionInfo.id}",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId
-            )
-        )
-    }
-
-    override fun impressUpcomingReminder(
-        sectionInfo: ProductSectionUiModel.Section,
-        channelId: String,
-        channelType: PlayChannelType
-    ) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                KEY_EVENT to KEY_TRACK_VIEW_TOP_ADS,
-                KEY_EVENT_ACTION to "impression - $KEY_TRACK_UPCOMING_REMINDER",
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_LABEL to "$channelId - ${channelType.value} - ${sectionInfo.id}",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId
-            )
-        )
-    }
 }
