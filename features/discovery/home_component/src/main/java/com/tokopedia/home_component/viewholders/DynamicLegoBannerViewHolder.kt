@@ -27,6 +27,7 @@ import com.tokopedia.home_component.util.FPM_DYNAMIC_LEGO_BANNER
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.DividerUnify
 
 /**
@@ -176,7 +177,11 @@ class DynamicLegoBannerViewHolder(itemView: View,
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LegoItemViewHolder {
             val v = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-            return LegoItemViewHolder(v)
+            val viewHolder = LegoItemViewHolder(v)
+            if(viewType == LEGO_LANDSCAPE){
+                viewHolder.cardUnify.animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+            }
+            return viewHolder
         }
 
         override fun getItemViewType(position: Int): Int {
@@ -232,7 +237,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
         }
 
         private fun setLegoClickListener(holder: LegoItemViewHolder, grid: ChannelGrid, position: Int) {
-            holder.imageView.setOnClickListener {
+            holder.itemView.setOnClickListener{
                 when (layout) {
                     DynamicChannelLayout.LAYOUT_6_IMAGE -> {
                         listener?.onClickGridSixImage(channel, grid, position, parentPosition)
@@ -256,6 +261,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
     }
 
     class LegoItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val cardUnify: CardUnify2 by lazy { view.findViewById(R.id.item_lego_card) }
         val imageView: ShimmeringImageView = view.findViewById(R.id.image)
         val context: Context
             get() = itemView.context

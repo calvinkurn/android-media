@@ -18,6 +18,7 @@ import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
 import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.Typography
 import java.util.HashMap
 
@@ -84,7 +85,12 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryWidgetItemViewHolder {
             val layout = R.layout.home_dc_category_widget_v2_item
             val v = LayoutInflater.from(parent.context).inflate(layout, parent, false)
-            return CategoryWidgetItemViewHolder(v)
+            val viewHolder = CategoryWidgetItemViewHolder(v)
+            viewHolder.cardUnify.apply {
+                cardType = CardUnify2.TYPE_BORDER
+                animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+            }
+            return viewHolder
         }
 
         override fun getItemCount(): Int {
@@ -111,6 +117,7 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
     }
 
     class CategoryWidgetItemViewHolder(view: View): RecyclerView.ViewHolder(view) {
+        val cardUnify: CardUnify2 = view.findViewById(R.id.item_cat_card)
         val categoryImageView: ImageView = view.findViewById(R.id.category_image)
         val categoryName: Typography = view.findViewById(R.id.category_item_name)
         val categoryContainer: View = view.findViewById(R.id.card_container)

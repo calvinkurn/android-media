@@ -11,6 +11,7 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselFe
 import com.tokopedia.home_component.util.loadImageNoRounded
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -28,8 +29,18 @@ class CarouselFeaturedShopViewHolder (
     }
 
     override fun bind(element: CarouselFeaturedShopCardDataModel) {
+        setCardProperties()
         setLayout(element)
         setListener(element)
+    }
+
+    private fun setCardProperties(){
+        binding?.run {
+            itemFeaturedShopCard.apply {
+                cardType = CardUnify2.TYPE_SHADOW
+                animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+            }
+        }
     }
 
     private fun setLayout(element: CarouselFeaturedShopCardDataModel){
