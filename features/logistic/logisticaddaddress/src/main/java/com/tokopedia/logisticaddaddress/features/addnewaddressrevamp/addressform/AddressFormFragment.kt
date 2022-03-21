@@ -842,6 +842,16 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     putParcelable(EXTRA_SAVE_DATA_UI_MODEL, extra.getParcelable(EXTRA_SAVE_DATA_UI_MODEL))
                     putBoolean(EXTRA_IS_POSITIVE_FLOW, extra.getBoolean(EXTRA_IS_POSITIVE_FLOW))
                     putString(EXTRA_KOTA_KECAMATAN, extra.getString(EXTRA_KOTA_KECAMATAN))
+                    putBoolean(EXTRA_IS_EDIT, false)
+                }
+            }
+        }
+
+        fun newInstance(addressId: String?): AddressFormFragment {
+            return AddressFormFragment().apply {
+                arguments = Bundle().apply {
+                    putString(EXTRA_ADDRESS_ID, addressId)
+                    putBoolean(EXTRA_IS_EDIT, true)
                 }
             }
         }

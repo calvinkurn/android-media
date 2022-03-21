@@ -30,7 +30,11 @@ class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressReva
 
     override fun getNewFragment(): Fragment? {
         var fragment: AddressFormFragment? = null
-        if (intent.extras != null) {
+        if (intent.data?.lastPathSegment != null) {
+            val addressId = intent.data?.lastPathSegment
+            fragment = AddressFormFragment.newInstance(addressId = addressId)
+        }
+        else if (intent.extras != null) {
             val bundle = intent.extras
             isPositiveFlow = bundle?.getBoolean(EXTRA_IS_POSITIVE_FLOW)
             fragment = AddressFormFragment.newInstance(bundle?: Bundle())

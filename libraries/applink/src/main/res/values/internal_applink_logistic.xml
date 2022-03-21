@@ -6,6 +6,7 @@
     <string name="path_add_address_v1" translatable="false">/addaddress/v1/.*\\/</string>
     <string name="path_add_address_v2" translatable="false">/addaddress/v2/</string>
     <string name="path_add_address_v3" translatable="false">/addaddress/v3/</string>
+    <string name="path_edit_address_revamp" translatable="false">/editaddressrevamp/.*</string>
     <string name="path_edit_shop_address" translatable="false">/editaddress/</string>
     <string name="path_custom_product_logistic" translatable="false">/customproductlogistic</string>
 
