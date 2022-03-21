@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
@@ -37,8 +36,6 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -137,15 +134,8 @@ class AccountHeaderViewHolder(itemView: View,
         val tvSaldo: Typography = layoutLoginHeader.findViewById(R.id.tv_saldo)
         val usrSaldoBadgeShimmer: View = layoutLoginHeader.findViewById(R.id.usr_saldo_badge_shimmer)
         val usrOvoBadgeShimmer: View = layoutLoginHeader.findViewById(R.id.usr_ovo_badge_shimmer)
+
         //shop
-        val tvShopInfo: Typography = layoutLogin.findViewById(R.id.usr_shop_info)
-        val tvShopTitle: Typography = layoutLogin.findViewById(R.id.usr_shop_title)
-        val tvShopNotif: NotificationUnify = layoutLogin.findViewById(R.id.usr_shop_notif)
-        val shimmerShopInfo: LoaderUnify = layoutLogin.findViewById(R.id.shimmer_shop_info)
-        val btnTryAgainShopInfo: CardView = layoutLogin.findViewById(R.id.btn_try_again_shop_info)
-        val shimmerTryAgainShopInfo: LoaderUnify = layoutLogin.findViewById(R.id.shimmer_btn_try_again)
-        val arrowRight : IconUnify = layoutLogin.findViewById(R.id.image_arrow_right)
-        val containerShop : ConstraintLayout = layoutLogin.findViewById(R.id.container_shop)
         val recyclerSeller : RecyclerView = layoutLogin.findViewById(R.id.recycler_seller)
 
         val sectionSaldo: View = layoutLoginHeader.findViewById(R.id.section_header_saldo)
@@ -168,10 +158,7 @@ class AccountHeaderViewHolder(itemView: View,
         /**
          * Reset button state for error handling
          */
-        btnTryAgainShopInfo.gone()
         btnTryAgain.gone()
-        shimmerShopInfo.gone()
-        shimmerTryAgainShopInfo.gone()
 
         if (
             !element.isCacheData && (element.profileDataModel.isGetUserNameError ||
@@ -185,8 +172,6 @@ class AccountHeaderViewHolder(itemView: View,
          * Button for error handling
          */
         btnTryAgain.setOnClickListener{mainNavListener.onErrorProfileRefreshClicked(adapterPosition)}
-
-        btnTryAgainShopInfo.setOnClickListener{mainNavListener.onErrorShopInfoRefreshClicked(adapterPosition)}
 
         /**
          * Set user profile data
@@ -335,67 +320,6 @@ class AccountHeaderViewHolder(itemView: View,
          * Handling seller and affiliate info value
          */
         setSellerAndAffiliate(element, recyclerSeller)
-
-        /**
-         * Handling seller info value
-         */
-        element.profileSellerDataModel.let { profileSeller ->
-            if (profileSeller.isGetShopLoading) {
-                tvShopInfo.gone()
-                tvShopTitle.gone()
-                btnTryAgainShopInfo.gone()
-                tvShopNotif.gone()
-                arrowRight.gone()
-                shimmerShopInfo.visible()
-                shimmerTryAgainShopInfo.visible()
-            } else if (profileSeller.isGetShopError) {
-                btnTryAgainShopInfo.visible()
-                tvShopInfo.visible()
-                tvShopTitle.gone()
-                shimmerShopInfo.gone()
-                shimmerTryAgainShopInfo.gone()
-                tvShopNotif.gone()
-                arrowRight.gone()
-                tvShopInfo.text = getString(R.string.error_state_shop_info)
-            } else if (!profileSeller.isGetShopError) {
-                btnTryAgainShopInfo.gone()
-                shimmerShopInfo.gone()
-                shimmerTryAgainShopInfo.gone()
-                tvShopInfo.visible()
-                tvShopTitle.visible()
-                tvShopNotif.visible()
-                arrowRight.visible()
-
-                val shopTitle: String
-                val shopInfo: CharSequence
-                if (!profileSeller.hasShop){
-                    shopTitle = itemView.context?.getString(R.string.account_header_store_empty_shop).orEmpty()
-                    shopInfo = MethodChecker.fromHtml(profileSeller.shopName)
-                } else {
-                    shopTitle = ""
-                    shopInfo = MethodChecker.fromHtml(profileSeller.shopName)
-                }
-                tvShopTitle.run {
-                    visible()
-                    text = shopTitle
-                }
-                tvShopInfo.run {
-                    visible()
-                    text = shopInfo
-                }
-                containerShop.setOnClickListener {
-                    shopClicked(profileSeller, it.context)
-                }
-                tvShopInfo.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
-                tvShopInfo.setWeight(Typography.BOLD)
-                if (profileSeller.shopOrderCount > 0) {
-                    tvShopNotif.visible()
-                    tvShopNotif.setNotification(profileSeller.shopOrderCount.toString(), NotificationUnify.COUNTER_TYPE, NotificationUnify.COLOR_PRIMARY)
-                } else {
-                    tvShopNotif.gone()
-                }
-            }
-        }
     }
 
     private fun valuateRecyclerViewDecoration(recyclerSeller: RecyclerView) {
