@@ -1,11 +1,15 @@
 package com.tokopedia.logger.datasource.cloud
 
 import com.google.gson.Gson
+import com.newrelic.agent.android.NewRelic
+import com.tokopedia.logger.model.newrelic.NewRelicBody
 import com.tokopedia.logger.model.newrelic.NewRelicConfig
 import com.tokopedia.logger.utils.Constants
+import io.embrace.android.embracesdk.Embrace
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
+import java.lang.Exception
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.zip.GZIPOutputStream
@@ -16,16 +20,27 @@ class LoggerCloudNewRelicDataSource : LoggerCloudNewRelicImpl {
         val gson = Gson()
     }
 
-    override suspend fun sendToLogServer(newRelicConfig: NewRelicConfig, message: List<String>): Boolean {
+    override suspend fun sendToLogServer(newRelicConfig: NewRelicConfig, newRelicBodyList: List<NewRelicBody>): Boolean {
         var errCode = Constants.LOG_DEFAULT_ERROR_CODE
-        withContext(Dispatchers.IO) {
+//        withContext(Dispatchers.IO) {
+//            try {
+//                errCode = openURL(newRelicConfig, message)
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
+//        }
+//        return errCode == Constants.RESPONSE_SUCCESS_CODE
+        return withContext(Dispatchers.IO) {
             try {
-                errCode = openURL(newRelicConfig, message)
+                for (newRelic in newRelicBodyList) {
+                    NewRelic.recordCustomEvent(newRelic.eventType, newRelic.attributes)
+                }
+                true
             } catch (e: Exception) {
                 e.printStackTrace()
+                false
             }
         }
-        return errCode == Constants.RESPONSE_SUCCESS_CODE
     }
 
     private fun openURL(newRelicConfig: NewRelicConfig, message: List<String>): Int {

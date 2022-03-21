@@ -10,6 +10,7 @@ import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerDao
 import com.tokopedia.logger.model.embrace.EmbraceBody
 import com.tokopedia.logger.model.LoggerCloudModelWrapper
+import com.tokopedia.logger.model.newrelic.NewRelicBody
 import com.tokopedia.logger.model.newrelic.NewRelicConfig
 import com.tokopedia.logger.model.scalyr.ScalyrConfig
 import com.tokopedia.logger.model.scalyr.ScalyrEvent
@@ -147,7 +148,7 @@ class LoggerRepository(
 
     private fun mapLogs(logs: List<Logger>): LoggerCloudModelWrapper {
         val scalyrEventList = mutableListOf<ScalyrEvent>()
-        val messageNewRelicList = mutableListOf<String>()
+        val messageNewRelicList = mutableListOf<NewRelicBody>()
         val messageEmbraceList = mutableListOf<EmbraceBody>()
         //make the timestamp equals to timestamp when hit the api
         //convert the milli to nano, based on scalyr requirement.
@@ -180,13 +181,15 @@ class LoggerRepository(
             }
             LoggerReporting.getInstance().tagMapsNewRelic[tagMapsValue]?.let {
                 if (priorityName == LoggerReporting.SF) {
-                    messageNewRelicList.add(addEventNewRelicSF(message))
+//                    messageNewRelicList.add(addEventNewRelicSF(message))
+                    messageNewRelicList.add(NewRelicBody(Constants.EVENT_ANDROID_SF_NEW_RELIC, jsonToMap(message)))
                 } else {
-                    messageNewRelicList.add(addEventNewRelic(message))
+//                    messageNewRelicList.add(addEventNewRelic(message))
+                    messageNewRelicList.add(NewRelicBody(Constants.EVENT_ANDROID_NEW_RELIC, jsonToMap(message)))
                 }
             }
             LoggerReporting.getInstance().tagMapsEmbrace[tagMapsValue]?.let {
-                messageEmbraceList.add(EmbraceBody(tagValue, jsonToMapEmbrace(message)))
+                messageEmbraceList.add(EmbraceBody(tagValue, jsonToMap(message)))
             }
         }
         return LoggerCloudModelWrapper(scalyrEventList, messageNewRelicList, messageEmbraceList)
@@ -195,7 +198,7 @@ class LoggerRepository(
     private suspend fun sendNewRelicLogToServer(
         config: NewRelicConfig,
         logs: List<Logger>,
-        messageList: List<String>
+        messageList: List<NewRelicBody>
     ): Boolean {
         if (logs.isEmpty()) {
             return false
@@ -235,7 +238,7 @@ class LoggerRepository(
         }
     }
 
-    private fun jsonToMapEmbrace(message: String): HashMap<String, Any> {
+    private fun jsonToMap(message: String): HashMap<String, Any> {
         return Gson().fromJson(message, object : TypeToken<HashMap<String, Any>>() {}.type)
     }
 
