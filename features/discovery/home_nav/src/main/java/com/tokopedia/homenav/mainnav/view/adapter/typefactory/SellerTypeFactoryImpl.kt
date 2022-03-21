@@ -9,11 +9,15 @@ import com.tokopedia.homenav.mainnav.view.adapter.viewholder.SellerViewHolder
 import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileAffiliateDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileSellerDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderNavVisitable
+import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
+import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * Created by dhaba
  */
-class SellerTypeFactoryImpl : BaseAdapterTypeFactory(), SellerTypeFactory {
+class SellerTypeFactoryImpl(private val mainNavListener: MainNavListener,
+                            private val userSession: UserSessionInterface
+) : BaseAdapterTypeFactory(), SellerTypeFactory {
     override fun type(profileSellerDataModel: ProfileSellerDataModel): Int {
         return SellerViewHolder.LAYOUT
     }
@@ -25,7 +29,7 @@ class SellerTypeFactoryImpl : BaseAdapterTypeFactory(), SellerTypeFactory {
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<out Visitable<*>> {
         return when (viewType) {
             SellerViewHolder.LAYOUT -> {
-                SellerViewHolder(view)
+                SellerViewHolder(view, mainNavListener, userSession)
             }
             AffiliateViewHolder.LAYOUT -> {
                 AffiliateViewHolder(view)

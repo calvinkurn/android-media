@@ -411,7 +411,7 @@ class AccountHeaderViewHolder(itemView: View,
         listSellers.add(element.profileSellerDataModel)
         listSellers.add(element.profileAffiliateDataModel)
         valuateRecyclerViewDecoration(recyclerSeller)
-        val typeFactoryImpl = SellerTypeFactoryImpl()
+        val typeFactoryImpl = SellerTypeFactoryImpl(mainNavListener, userSession)
         adapter = SellerAdapter(listSellers, typeFactoryImpl)
         recyclerSeller.adapter = adapter
     }
