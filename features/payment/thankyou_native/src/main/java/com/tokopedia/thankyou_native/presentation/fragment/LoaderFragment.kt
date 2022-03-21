@@ -2,7 +2,6 @@ package com.tokopedia.thankyou_native.presentation.fragment
 
 import android.content.Context
 import android.os.*
-import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -152,7 +151,6 @@ class LoaderFragment : BaseDaggerFragment() {
         lottieAnimationView.gone()
         tvWaitForMinute.hide()
         tvProcessingPayment.hide()
-        lottieAnimationView.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
         triggerHaptics()
     }
 
