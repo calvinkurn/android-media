@@ -9,22 +9,20 @@
         android:id="@+id/tv_unit_value_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="20dp"
+        android:layout_marginStart="16dp"
         android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/fontSize_lvl3"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_goneMarginTop="20dp"
-        tools:text="S" />
+        tools:text="Variant Dummy" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
         android:id="@+id/su_variant_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toBottomOf="@id/tv_unit_value_label"
         app:layout_constraintRight_toRightOf="parent" />
 
@@ -32,18 +30,14 @@
         android:id="@+id/tfu_price_field"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginRight="12dp"
-        app:layout_constraintHorizontal_weight="6"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/tfu_stock_field"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_unit_value_label"
         app:text_field_input_type="number"
         app:text_field_label="@string/label_variant_price"
-        app:text_field_label_static="true"
         app:text_field_prepend_text="Rp" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify
@@ -51,29 +45,45 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        app:layout_constraintHorizontal_weight="4"
-        app:layout_constraintLeft_toRightOf="@id/tfu_price_field"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_unit_value_label"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="3.6"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/tv_unit_value_label"
         app:text_field_input_type="number"
-        app:text_field_label="@string/label_variant_stock"
-        app:text_field_label_static="true" />
+        app:text_field_label="@string/label_variant_stock" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/tfu_sku_field"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tfu_stock_field"
-        app:text_field_label="@string/label_variant_sku_long"
-        app:text_field_label_static="true"
-        app:text_field_placeholder="@string/label_variant_sku" />
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tfu_stock_field"
+        app:text_field_label="@string/label_variant_sku" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/tfu_weight_field"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/tfu_stock_field"
+        app:text_field_input_type="number"
+        app:text_field_label="@string/label_variant_weight" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.64" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

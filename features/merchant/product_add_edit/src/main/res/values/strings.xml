@@ -328,10 +328,10 @@
     <string name="label_add_sku">Tambah SKU</string>
     <string name="label_optional">(Opsional)</string>
     <string name="label_variant_list">Daftar Varian</string>
-    <string name="label_variant_price">Harga</string>
-    <string name="label_variant_stock">Stok</string>
-    <string name="label_variant_sku">SKU</string>
-    <string name="label_variant_sku_long">SKU (Stock Keeping Unit)</string>
+    <string name="label_variant_price">Harga*</string>
+    <string name="label_variant_stock">Stok*</string>
+    <string name="label_variant_weight">Berat*</string>
+    <string name="label_variant_sku">SKU (Stock Keeping Unit)</string>
     <string name="label_rupiah">Rp</string>
     <string name="label_variant_multiple_price">Harga</string>
     <string name="label_variant_multiple_stock">Stok</string>
