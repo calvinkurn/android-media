@@ -162,7 +162,7 @@ class LoaderFragment : BaseDaggerFragment() {
             } else {
                 vibrationService.vibrate(VIBRATION_MILLIS)
             }
-        } catch(e: Exception) { }
+        } catch(ignore: Exception) { }
     }
 
     private fun prepareLoaderLottieTask(): LottieTask<LottieComposition>? {
