@@ -178,7 +178,9 @@ class ManageProductViewModel @Inject constructor(
                     sku = "SKU : " + data.sku,
                     price = data.price.toString(),
                     priceTxt = data.priceFormat,
-                    soldNStock = "Terjual " + sold.toString() + " | " + "Stok " + data.stock.toString()
+                    soldNStock = "Terjual " + sold.toString() + " | " + "Stok " + data.stock.toString(),
+                    isError = !data.is_eligible,
+                    errorMessage = data.reason
             )
         }
     }
