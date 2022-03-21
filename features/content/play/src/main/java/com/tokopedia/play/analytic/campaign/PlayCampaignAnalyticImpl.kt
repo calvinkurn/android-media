@@ -24,7 +24,7 @@ class PlayCampaignAnalyticImpl @Inject constructor(
         channelType: PlayChannelType
     ) {
         val eventAction =
-            if (sectionInfo.config.reminder is PlayUpcomingBellStatus.On) "remove $KEY_TRACK_UPCOMING_REMINDER" else KEY_TRACK_UPCOMING_REMINDER
+            if (sectionInfo.config.reminder is PlayUpcomingBellStatus.On) "remove ${Companion.KEY_TRACK_UPCOMING_REMINDER}" else Companion.KEY_TRACK_UPCOMING_REMINDER
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_CLICK_TOP_ADS,
@@ -47,7 +47,7 @@ class PlayCampaignAnalyticImpl @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_VIEW_TOP_ADS,
-                KEY_EVENT_ACTION to "impression - $KEY_TRACK_UPCOMING_REMINDER",
+                KEY_EVENT_ACTION to "impression - ${Companion.KEY_TRACK_UPCOMING_REMINDER}",
                 KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                 KEY_EVENT_LABEL to "$channelId - ${channelType.value} - ${sectionInfo.id}",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
@@ -56,5 +56,9 @@ class PlayCampaignAnalyticImpl @Inject constructor(
                 KEY_USER_ID to userId
             )
         )
+    }
+
+    companion object {
+        private const val KEY_TRACK_UPCOMING_REMINDER = "remind me in upcoming section"
     }
 }

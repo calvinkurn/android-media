@@ -32,5 +32,3 @@ const val KEY_SESSION_IRIS = "sessionIris"
 
 const val KEY_IS_LOGGED_IN_STATUS = "isLoggedInStatus"
 const val KEY_CHANNEL = "channel"
-
-const val KEY_TRACK_UPCOMING_REMINDER = "remind me in upcoming section"

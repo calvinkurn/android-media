@@ -110,24 +110,16 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
     }
 
     override suspend fun checkUpcomingCampaign(campaignId: Long): Boolean = withContext(dispatchers.io){
-        try {
-            val response = checkUpcomingCampaignReminderUseCase.apply {
+        val response = checkUpcomingCampaignReminderUseCase.apply {
                 setRequestParams(CheckUpcomingCampaignReminderUseCase.createParam(campaignId).parameters)
-            }.executeOnBackground()
-            return@withContext response.response.isAvailable
-        } catch (e: Exception){
-            throw e
-        }
+        }.executeOnBackground()
+        return@withContext response.response.isAvailable
     }
 
     override suspend fun subscribeUpcomingCampaign(campaignId: Long, reminderType: PlayUpcomingBellStatus): Pair<Boolean, String> = withContext(dispatchers.io)  {
-        try {
-            val response = postUpcomingCampaignReminderUseCase.apply {
+        val response = postUpcomingCampaignReminderUseCase.apply {
                 setRequestParams(PostUpcomingCampaignReminderUseCase.createParam(campaignId, reminderType).parameters)
-            }.executeOnBackground()
-            return@withContext Pair(response.response.success, if(response.response.errorMessage.isNotEmpty()) response.response.errorMessage else response.response.message)
-        } catch (e: Exception){
-            throw e
-        }
+        }.executeOnBackground()
+        return@withContext Pair(response.response.success, if(response.response.errorMessage.isNotEmpty()) response.response.errorMessage else response.response.message)
     }
 }
