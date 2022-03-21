@@ -120,7 +120,6 @@ class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: 
     }
 
     private val onErrorRefreshTokonow = CoroutineExceptionHandler{ _, e ->
-//        isFirstLoad = false
         _tokonowData.value = Fail(e)
     }
 

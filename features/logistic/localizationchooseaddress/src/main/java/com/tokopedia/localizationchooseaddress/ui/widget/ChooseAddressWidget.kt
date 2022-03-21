@@ -130,7 +130,6 @@ class ChooseAddressWidget : ConstraintLayout,
                 }
             })
             viewModel.tokonowData.observe(fragment.viewLifecycleOwner, {
-
                 when (it) {
                     is Success -> {
                         val data = it.data
