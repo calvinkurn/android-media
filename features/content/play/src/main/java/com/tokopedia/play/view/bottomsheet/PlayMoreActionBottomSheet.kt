@@ -122,7 +122,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
         setCloseClickListener {
             hideSheets()
         }
-        overlayClickDismiss = false
     }
 
     /***
@@ -213,7 +212,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
      */
 
     private fun hideSheets(){
-        this.dismiss()
+        (requireParentFragment() as PlayUserInteractionFragment).hideBottomSheet()
         playViewModel.hideThreeDotsSheet()
     }
 

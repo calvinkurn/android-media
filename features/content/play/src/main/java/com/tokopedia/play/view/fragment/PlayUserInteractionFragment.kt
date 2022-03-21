@@ -916,7 +916,10 @@ class PlayUserInteractionFragment @Inject constructor(
                             actionText = getString(R.string.play_sharing_refresh),
                         )
                     }
-                    OpenKebabEvent -> showMoreActionBottomSheet()
+                    OpenKebabEvent -> {
+                        playViewModel.onShowKebabMenuSheet(bottomSheetMenuMaxHeight)
+                        showMoreActionBottomSheet()
+                    }
                 }
             }
         }
@@ -1053,7 +1056,11 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun showMoreActionBottomSheet() {
-        if(!getBottomSheetInstance().isVisible) getBottomSheetInstance().show(childFragmentManager)
+        val fragmentFactory = childFragmentManager.fragmentFactory
+        val sheet = fragmentFactory.instantiate(
+            requireActivity().classLoader,
+            PlayMoreActionBottomSheet::class.java.name) as PlayMoreActionBottomSheet
+        sheet.show(childFragmentManager)
     }
 
     private fun doClickChatBox() {
@@ -1115,7 +1122,7 @@ class PlayUserInteractionFragment @Inject constructor(
         return bottomSheet
     }
 
-    private fun hideBottomSheet() {
+    fun hideBottomSheet() {
         val bottomSheet = getBottomSheetInstance()
         if (bottomSheet.isVisible) bottomSheet.dismiss()
     }
@@ -1573,7 +1580,6 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun renderKebabView(playKebabMenuBottomSheetUiState: PlayKebabMenuBottomSheetUiState){
-        playViewModel.onShowKebabMenuSheet(estimatedSheetHeight = bottomSheetMenuMaxHeight)
     }
 
     private fun castViewOnStateChanged(
