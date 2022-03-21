@@ -6,9 +6,9 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ProductDetailGallery(
-    private val defaultItem: Item? = null,
-    private val items: List<Item>,
-    private val selectedId: String? = null
+    val defaultItem: Item? = null,
+    val items: List<Item>,
+    val selectedId: String? = null
 ) : Parcelable {
 
     /**
