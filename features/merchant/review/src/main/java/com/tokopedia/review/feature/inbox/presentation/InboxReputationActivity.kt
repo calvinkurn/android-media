@@ -202,7 +202,7 @@ open class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputatio
         setupToolbar()
         createRatingProductFragment()
         val reviewSellerBundle = Bundle()
-        reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, isGoToReputationHistoryTab())
+        reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, !isGoToReputationHistoryTab())
         reviewSellerFragment?.arguments = reviewSellerBundle
         inboxReviewFragment = InboxReviewFragment.createInstance()
         sellerReputationPenaltyFragment = newInstance()
