@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -29,6 +31,8 @@ class TooltipBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private val impressionHolder = ImpressHolder()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(DialogFragment.STYLE_NO_FRAME, com.tokopedia.unifycomponents.R.style.UnifyBottomSheetNotOverlapStyle)
@@ -47,6 +51,12 @@ class TooltipBottomSheet : BottomSheetUnify() {
         customPeekHeight = child.measuredHeight
         setShowListener {
             bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+    }
+
+    fun setOnShowListener(action: () -> Unit) {
+        view?.addOnImpressionListener(impressionHolder) {
+            action()
         }
     }
 }

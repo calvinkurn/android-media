@@ -22,6 +22,7 @@ import com.tokopedia.statistic.analytics.performance.StatisticIdlingResourceList
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoring
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringInterface
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringListener
+import com.tokopedia.statistic.common.Const
 import com.tokopedia.statistic.common.StatisticPageHelper
 import com.tokopedia.statistic.common.utils.StatisticAppLinkHandler
 import com.tokopedia.statistic.common.utils.logger.StatisticLogger
@@ -295,10 +296,36 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
             coachMark.setStepListener(object : CoachMark2.OnStepListener {
                 override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                     coachMarkHelper.saveCoachMarkHasShownByTitle(coachMarkItem.title.toString())
+                    sendCoachMarkImpressionTracker(coachMarkItem.title.toString())
                 }
             })
+            coachMark.onFinishListener = {
+                sendCoachMarkClickTracker()
+            }
             val title = coachMarkItems.firstOrNull()?.title?.toString().orEmpty()
             coachMarkHelper.saveCoachMarkHasShownByTitle(title)
+        }
+    }
+
+    private fun sendCoachMarkClickTracker() {
+        val item = coachMark.coachMarkItem.lastOrNull()
+        item?.let {
+            val title = it.title.toString()
+            if (coachMarkHelper.getIsTrafficInsightTab(title)) {
+                StatisticTracker.sendTrafficInsightCoachMarkCtaClickEvent(
+                    Const.PageSource.TRAFFIC_INSIGHT,
+                    title
+                )
+            }
+        }
+    }
+
+    private fun sendCoachMarkImpressionTracker(title: String) {
+        if (coachMarkHelper.getIsTrafficInsightTab(title)) {
+            StatisticTracker.sendTrafficInsightImpressionCoachMarkEvent(
+                Const.PageSource.TRAFFIC_INSIGHT,
+                title
+            )
         }
     }
 
