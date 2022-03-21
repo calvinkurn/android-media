@@ -273,11 +273,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/unify_space_2"
+            android:layout_marginRight="@dimen/unify_space_8"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintBottom_toBottomOf="@id/dgu_price_value"
             app:layout_constraintLeft_toRightOf="@id/dgu_price_value"
+            app:layout_constraintRight_toRightOf="parent"
             app:typographyType="body_3"
             tools:text="/qty"
             tools:visibility="visible" />
