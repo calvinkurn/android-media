@@ -32,7 +32,7 @@ class ShippingDurationConverter @Inject constructor() {
                     ratesData.ratesDetailData.services.isNotEmpty()) {
 
                 // Setting up for Logistic Promo
-                shippingRecommendationData.logisticPromo = convertToPromoModel(ratesData.ratesDetailData.promoStacking, true)
+                shippingRecommendationData.logisticPromo = convertToPromoModel(ratesData.ratesDetailData.listPromoStacking.firstOrNull(), true)
 
                 // Setting up for List of Logistic Promo
                 shippingRecommendationData.listLogisticPromo = ratesData.ratesDetailData.listPromoStacking.mapIndexedNotNull { index, promo -> convertToPromoModel(promo, index == 0) }
