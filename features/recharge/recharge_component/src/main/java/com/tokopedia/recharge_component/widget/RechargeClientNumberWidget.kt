@@ -58,6 +58,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     private var textFieldStaticLabel: String = ""
 
     private var isClearableState = false
+    private var inputFieldType: InputFieldType? = null
 
     // this custom formatter will be used when user call getInputNumber & setInputNumber
     private var customInputNumberFormatter: ((String) -> String)? = null
@@ -65,7 +66,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     init {
         initInputField()
         initSortFilterChip()
-        initAutoComplete()
     }
 
     private fun initInputField() {
@@ -127,10 +127,17 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
             }
         }
 
+        val emptyStateUnitRes = when (inputFieldType) {
+            InputFieldType.Listrik -> com.tokopedia.common.topupbills.R.string.common_topup_autocomplete_unit_nomor_meter
+            InputFieldType.Telco -> com.tokopedia.common.topupbills.R.string.common_topup_autocomplete_unit_nomor_hp
+            else -> com.tokopedia.common.topupbills.R.string.common_topup_autocomplete_unit_nomor_hp
+        }
+
         autoCompleteAdapter = TopupBillsAutoCompleteAdapter(
             context,
             R.layout.item_recharge_client_number_auto_complete,
             mutableListOf(),
+            context.getString(emptyStateUnitRes),
             object : TopupBillsAutoCompleteAdapter.ContactArrayListener {
                 override fun getFilterText(): String {
                     return binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.editText.text.toString()
@@ -212,6 +219,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
 
     fun setInputFieldType(type: InputFieldType) {
         with(binding) {
+            inputFieldType = type
             clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.run {
                 editText.inputType = type.inputType
                 icon1.run {
@@ -224,6 +232,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                 }
             }
         }
+        initAutoComplete()
     }
 
     fun setInputFieldStaticLabel(label: String) {

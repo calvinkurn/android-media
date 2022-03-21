@@ -225,7 +225,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     fun getRecommendations(clientNumbers: List<String>, dgCategoryIds: List<Int>) {
         recommendationJob = viewModelScope.launchCatchError(dispatchers.main, block = {
             delay(DELAY_MULTI_TAB)
-            val recommendations = repo.getRecommendations(clientNumbers, dgCategoryIds, true)
+            val recommendations = repo.getRecommendations(clientNumbers, dgCategoryIds, emptyList(), true)
             _recommendationData.value = RechargeNetworkResult.Success(recommendations)
         }) {
             _recommendationData.value = RechargeNetworkResult.Fail(it)
