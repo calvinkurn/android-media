@@ -1,13 +1,9 @@
 package com.tokopedia.play.broadcaster.view.custom.preparation
 
 import android.content.Context
-import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.play.broadcaster.databinding.ViewPlayBroPreparationCoverFormBinding
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updateMargins
@@ -64,17 +60,15 @@ class CoverFormView : ConstraintLayout {
     }
 
     fun setCover(imageUrl: String) {
-        binding.ivCoverImagePlaceholder.visibility = View.GONE
-        binding.ivCoverFormPreview.setImageUrl(imageUrl)
-        isCoverAvailable = true
+        binding.clCoverFormPreview.setCover(imageUrl)
     }
 
     fun setTitle(title: String) {
-        binding.tvCoverFormTitle.text = title
+        binding.clCoverFormPreview.setTitle(title)
     }
 
     fun setShopName(shopName: String) {
-        binding.tvCoverFormShopName.text = shopName
+        binding.clCoverFormPreview.setShopName(shopName)
     }
 
     fun setListener(listener: Listener) {

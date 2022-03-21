@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.content.Context
+import android.net.Network
 import android.os.Handler
 import androidx.lifecycle.*
 import com.google.gson.Gson
@@ -156,6 +157,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     val productSectionList: List<ProductTagSectionUiModel>
         get() = _productSectionList.value
+
+    val summaryLeaderboardInfo: SummaryLeaderboardInfo
+        get() = SummaryLeaderboardInfo(
+            _observableLeaderboardInfo.value != null,
+            if(_observableLeaderboardInfo.value is NetworkResult.Success) {
+                (_observableLeaderboardInfo.value as NetworkResult.Success).data.totalParticipant
+            }
+            else "0"
+        )
+
 
     private val _observableConfigInfo = MutableLiveData<NetworkResult<ConfigurationUiModel>>()
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
@@ -564,8 +575,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         return remainingLiveDuration > durationInMs + delayGqlDuration
     }
 
-    fun getLeaderboardData() {
-        viewModelScope.launch { getLeaderboardInfo() }
+    fun getLeaderboardData(channelId: String) {
+        viewModelScope.launch { getLeaderboardInfo(channelId) }
     }
 
     private fun getInteractiveConfig() {
@@ -627,7 +638,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private suspend fun onInteractiveFinished() {
         _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.Loading)
         delay(INTERACTIVE_GQL_LEADERBOARD_DELAY)
-        val err = getLeaderboardInfo()
+        val err = getLeaderboardInfo(channelId)
         if (err == null && _observableLeaderboardInfo.value is NetworkResult.Success) {
             val leaderboard = (_observableLeaderboardInfo.value as NetworkResult.Success).data
             val coachMark = if (leaderboard.leaderboardWinners.firstOrNull()?.winners.isNullOrEmpty()) BroadcastInteractiveCoachMark.NoCoachMark else BroadcastInteractiveCoachMark.HasCoachMark(
@@ -640,7 +651,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun getLeaderboardInfo(): Throwable? {
+    private suspend fun getLeaderboardInfo(channelId: String): Throwable? {
         _observableLeaderboardInfo.value = NetworkResult.Loading
         return try {
             val leaderboard = repo.getInteractiveLeaderboard(channelId) {
