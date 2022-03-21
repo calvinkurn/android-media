@@ -30,7 +30,7 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                element?.portfolioItm?.firstTime = false
+               if(s.toString() != element?.portfolioItm?.defaultText) element?.portfolioItm?.firstTime = false
                 portfolioUrlTextUpdateInterface?.onUrlUpdate(adapterPosition,
                     s.toString())
 
