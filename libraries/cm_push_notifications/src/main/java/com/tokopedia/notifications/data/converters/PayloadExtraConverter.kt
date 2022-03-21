@@ -9,7 +9,7 @@ class PayloadExtraConverter {
     @TypeConverter
     fun toJsonObject(value: String?): PayloadExtra? {
         return try {
-            if (value.isNullOrBlank())
+            if (!value.isNullOrBlank())
                 Gson().fromJson(value, PayloadExtra::class.java)
              else null
         } catch (e: JSONException) {
