@@ -225,11 +225,12 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(playFeedVideoTabViewModel.currentCursor.isNotEmpty())
         adapter.setItemsAndAnimateChanges(
-                FeedPlayVideoTabMapper.map(
-                        playDataResponse.data,
-                        playDataResponse.meta,
-                        shopId = userSession.shopId
-                )
+            FeedPlayVideoTabMapper.map(
+                playDataResponse.data,
+                playDataResponse.meta,
+                shopId = userSession.shopId,
+                context = requireContext(),
+            )
         )
     }
     private fun onSuccessPlayTabData(playDataResponse: PlayGetContentSlotResponse) {
@@ -241,7 +242,8 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
             FeedPlayVideoTabMapper.map(
                 playDataResponse.data,
                 playDataResponse.meta,
-                shopId = userSession.shopId
+                shopId = userSession.shopId,
+                context = requireContext(),
             )
         )
 
@@ -252,7 +254,12 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     ) {
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(playFeedVideoTabViewModel.currentCursor.isNotEmpty())
-        val mappedData = FeedPlayVideoTabMapper.map(playDataResponse.data, playDataResponse.meta, shopId = userSession.shopId)
+        val mappedData = FeedPlayVideoTabMapper.map(
+            playDataResponse.data,
+            playDataResponse.meta,
+            shopId = userSession.shopId,
+            context = requireContext()
+        )
 
         adapter.updateList(mappedData, playFeedVideoTabViewModel.currentSourceId, playFeedVideoTabViewModel.currentSourceType, playWidgetAnalyticsListenerImp.filterCategory)
 

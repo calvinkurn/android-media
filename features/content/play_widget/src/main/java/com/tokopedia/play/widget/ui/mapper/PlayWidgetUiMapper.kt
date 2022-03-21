@@ -1,5 +1,6 @@
 package com.tokopedia.play.widget.ui.mapper
 
+import android.content.Context
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetItem
 import com.tokopedia.play.widget.data.PlayWidgetItemPartner
@@ -35,7 +36,7 @@ import javax.inject.Inject
 
 class PlayWidgetUiMapper @Inject constructor(
     private val userSession: UserSessionInterface,
-    private val playWidgetPreference: PlayWidgetPreference,
+    private val context: Context,
 ) {
 
     private val htmlTextTransformer = DefaultHtmlTextTransformer()
@@ -57,7 +58,7 @@ class PlayWidgetUiMapper @Inject constructor(
     }
 
     private fun mapWidgetConfig(data: PlayWidget): PlayWidgetConfigUiModel = PlayWidgetConfigUiModel(
-        autoPlay = if(playWidgetPreference.getAutoPlay()) data.meta.autoplay else false,
+        autoPlay = PlayWidgetPreference.getAutoPlay(context, data.meta.autoplay),
         autoPlayAmount = data.meta.autoplayAmount,
         autoRefresh = data.meta.autoRefresh,
         autoRefreshTimer = data.meta.autoRefreshTimer,

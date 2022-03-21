@@ -1,17 +1,19 @@
 package com.tokopedia.play.widget.pref
 
-import android.content.SharedPreferences
-import javax.inject.Inject
+import android.content.Context
+import android.preference.PreferenceManager
 
 /**
  * Created By : Jonathan Darwin on January 19, 2022
  */
-class PlayWidgetPreference @Inject constructor(
-    private val sharedPreferences: SharedPreferences
-){
-    fun getAutoPlay(): Boolean = sharedPreferences.getBoolean(KEY_PLAY_WIDGET_AUTOPLAY, true)
+object PlayWidgetPreference {
 
-    companion object {
-        const val KEY_PLAY_WIDGET_AUTOPLAY = "play_widget_autoplay"
+    private const val KEY_PLAY_WIDGET_AUTOPLAY = "play_widget_autoplay"
+
+    fun getAutoPlay(context: Context, isAutoPlayFromBE: Boolean): Boolean {
+        val isAutoPlayFromSettings = PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
+            .getBoolean(KEY_PLAY_WIDGET_AUTOPLAY, true)
+
+        return if(isAutoPlayFromSettings) isAutoPlayFromBE else false
     }
 }

@@ -1,8 +1,10 @@
 package com.tokopedia.videoTabComponent.domain.mapper
 
+import android.content.Context
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalFeed
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.play.widget.pref.PlayWidgetPreference
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
@@ -40,7 +42,8 @@ object FeedPlayVideoTabMapper {
         playSlotList: List<PlaySlot>,
         meta: PlayPagingProperties,
         position: Int = 0,
-        shopId: String
+        shopId: String,
+        context: Context,
     ): List<PlayFeedUiModel> {
 
         val list = mutableListOf<PlayFeedUiModel>()
@@ -51,14 +54,14 @@ object FeedPlayVideoTabMapper {
                 FEED_TYPE_PINNED_FEEDS -> {
                     list.add(
                         PlayWidgetJumboUiModel(
-                            getWidgetUiModel(playSlot, meta, shopId)
+                            getWidgetUiModel(playSlot, meta, shopId, context)
                         )
                     )
                 }
                 FEED_TYPE_CHANNEL_BLOCK -> {
                     list.add(
                         PlayWidgetLargeUiModel(
-                            getWidgetUiModel(playSlot, meta, shopId)
+                            getWidgetUiModel(playSlot, meta, shopId, context)
                         )
                     )
                 }
@@ -78,7 +81,7 @@ object FeedPlayVideoTabMapper {
                 FEED_TYPE_CHANNEL_RECOM -> {
                     list.add(
                         PlayWidgetLargeUiModel(
-                            getWidgetUiModel(playSlot, meta, shopId)
+                            getWidgetUiModel(playSlot, meta, shopId, context)
                         )
 
                     )
@@ -86,7 +89,7 @@ object FeedPlayVideoTabMapper {
                 FEED_TYPE_CHANNEL_HIGHLIGHT -> {
                     list.add(
                         PlayWidgetMediumUiModel(
-                            getWidgetUiModel(playSlot, meta, shopId)
+                            getWidgetUiModel(playSlot, meta, shopId, context)
                         )
 
                     )
@@ -99,7 +102,8 @@ object FeedPlayVideoTabMapper {
 
     private fun getWidgetUiModel(
         playSlot: PlaySlot, meta: PlayPagingProperties,
-        shopId: String
+        shopId: String,
+        context: Context,
     ): PlayWidgetUiModel {
 
         val item = playSlot.items.firstOrNull() ?: return PlayWidgetUiModel.Empty
@@ -121,7 +125,7 @@ object FeedPlayVideoTabMapper {
             actionAppLink = actionLink,
             isActionVisible = playSlot.lihat_semua.show,
             config = PlayWidgetConfigUiModel(
-                autoRefresh, autoRefreshTimer, meta.is_autoplay, autoPlayAmount,
+                autoRefresh, autoRefreshTimer, PlayWidgetPreference.getAutoPlay(context, meta.is_autoplay), autoPlayAmount,
                 meta.max_autoplay_in_cell, maxAutoPlayWifiDuration, businessWidgetPosition
             ),
             background = PlayWidgetBackgroundUiModel(

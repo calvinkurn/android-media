@@ -20,17 +20,12 @@ import dagger.Provides
 class PlayWidgetModule {
 
     @Provides
-    fun provideWidgetMapper(userSession: UserSessionInterface, playWidgetPreference: PlayWidgetPreference): PlayWidgetUiMapper {
-        return PlayWidgetUiMapper(userSession, playWidgetPreference)
+    fun provideWidgetMapper(userSession: UserSessionInterface, @ApplicationContext context: Context): PlayWidgetUiMapper {
+        return PlayWidgetUiMapper(userSession, context.applicationContext)
     }
 
     @Provides
     fun providePlayWidgetUpdateChannelUseCase(graphqlRepository: GraphqlRepository): PlayWidgetUpdateChannelUseCase {
         return PlayWidgetUpdateChannelUseCase(graphqlRepository)
-    }
-
-    @Provides
-    fun provideSharedPreference(@ApplicationContext context: Context): SharedPreferences {
-        return PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
     }
 }

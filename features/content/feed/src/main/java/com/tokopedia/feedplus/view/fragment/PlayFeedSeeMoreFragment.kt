@@ -140,7 +140,14 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
     private fun onSuccessPlayTabData(playDataResponse: PlayGetContentSlotResponse) {
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(playFeedVideoTabViewModel.currentLivePageCursor.isNotEmpty())
-        adapter.addItemsAndAnimateChanges(FeedPlayVideoTabMapper.map(playDataResponse.data, playDataResponse.meta, shopId = userSession.shopId))
+        adapter.addItemsAndAnimateChanges(
+            FeedPlayVideoTabMapper.map(
+                playDataResponse.data,
+                playDataResponse.meta,
+                shopId = userSession.shopId,
+                context = requireContext()
+            )
+        )
 
     }
 
