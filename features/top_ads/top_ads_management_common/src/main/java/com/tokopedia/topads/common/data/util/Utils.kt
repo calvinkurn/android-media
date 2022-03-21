@@ -1,15 +1,19 @@
 package com.tokopedia.topads.common.data.util
 
 import android.content.Context
+import android.content.res.Resources
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.constant.Constants
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.utils.text.currency.NumberTextWatcher
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -24,6 +28,33 @@ object Utils {
 
     var locale = Locale("in", "ID")
     const val KALI = " kali"
+
+    fun TextFieldUnify.addBidValidationListener(resources: Resources, minBid: Double, maxBid: Double) {
+        textFieldInput.addTextChangedListener(
+            object : NumberTextWatcher(textFieldInput, "0") {
+                override fun onNumberChanged(number: Double) {
+                    super.onNumberChanged(number)
+                    val result = number.toInt()
+                    this@addBidValidationListener.setError(true)
+                    when {
+                        result < minBid -> {
+                            this@addBidValidationListener.setMessage(MethodChecker.fromHtml(String.format(resources.getString(R.string.min_bid_error_new), minBid)))
+                        }
+                        result > maxBid -> {
+                            this@addBidValidationListener.setMessage(MethodChecker.fromHtml(String.format(resources.getString(R.string.max_bid_error_new),maxBid)))
+                        }
+                        result % 50 != 0 -> {
+                            this@addBidValidationListener.setMessage(MethodChecker.fromHtml(String.format(resources.getString(R.string.topads_common_error_multiple_50),"50")))
+                        }
+                        else -> {
+                            this@addBidValidationListener.setError(false)
+                            this@addBidValidationListener.setMessage("")
+                        }
+                    }
+                }
+            }
+        )
+    }
 
     @JvmStatic
     @Throws(JSONException::class)
