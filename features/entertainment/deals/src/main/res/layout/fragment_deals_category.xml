@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -8,14 +9,25 @@
         android:id="@+id/deals_category_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:clipToPadding="false"
         android:paddingBottom="@dimen/layout_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/container" />
+
+    <include
+        android:id="@+id/container"
+        layout="@layout/item_deals_chips_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <include
         android:id="@+id/one_row_shimmering"
         layout="@layout/item_deals_brand_populars_shimmering"
+        app:layout_constraintTop_toBottomOf="@id/container"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
