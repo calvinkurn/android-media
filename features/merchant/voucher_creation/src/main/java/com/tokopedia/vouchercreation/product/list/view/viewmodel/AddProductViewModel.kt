@@ -189,7 +189,7 @@ class AddProductViewModel @Inject constructor(
                     id = productData.id,
                     productName = productData.name,
                     sku = getFormattedSku(productData.sku),
-                    price = productData.price.max.splitByThousand(),
+                    price =  getFormattedProductPrice(productData.price.max),
                     sold = productData.txStats.sold,
                     soldNStock = getFormattedStatisticText(productData.txStats.sold, productData.stock),
                     hasVariant = productData.isVariant
@@ -206,6 +206,10 @@ class AddProductViewModel @Inject constructor(
         val formattedSoldCount = sold.thousandFormatted(PRODUCT_SOLD_COUNT_LAST_DIGIT_TO_DISPLAY)
         val statisticTemplate = resourceProvider.getFormattedProductStatistic()
         return statisticTemplate.format(formattedSoldCount, stock.splitByThousand(Locale.ENGLISH))
+    }
+
+    private fun getFormattedProductPrice(productPrice: Long): String {
+        return String.format(resourceProvider.getProductPrice(), productPrice.splitByThousand())
     }
 
     fun mapWarehouseLocationToSelections(warehouses: List<Warehouses>,
