@@ -21,7 +21,9 @@ data class ProductVariantInputModel(
         var sku: String = "",
         var status: String = "",
         var stock: Int = 0,
-        var isPrimary: Boolean = false
+        var isPrimary: Boolean = false,
+        var weight: Int = 0,
+        var weightUnit: String = ""
 ) : Parcelable
 
 @Parcelize

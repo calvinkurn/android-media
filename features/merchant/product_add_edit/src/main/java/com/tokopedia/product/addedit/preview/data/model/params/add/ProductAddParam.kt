@@ -1,12 +1,14 @@
 package com.tokopedia.product.addedit.preview.data.model.params.add
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.math.BigInteger
 
 @Parcelize
+@SuppressLint("Invalid Data Type")
 data class ProductAddParam (
         @SerializedName("productName")
         @Expose

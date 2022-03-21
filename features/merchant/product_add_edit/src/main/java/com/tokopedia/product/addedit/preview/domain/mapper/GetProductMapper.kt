@@ -68,7 +68,9 @@ class GetProductMapper @Inject constructor() {
                     it.sku,
                     it.status,
                     it.stock,
-                    it.isPrimary
+                    it.isPrimary,
+                    it.weight,
+                    it.weightUnit
             )
         }
         return ArrayList(variantCombination)

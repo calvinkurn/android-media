@@ -173,7 +173,7 @@ class EditProductInputMapper @Inject constructor() {
         )
     }
 
-    private fun mapSizeChart(sizecharts: PictureVariantInputModel): List<Picture>? {
+    private fun mapSizeChart(sizecharts: PictureVariantInputModel): List<Picture> {
         return if (sizecharts.urlOriginal.isEmpty() && sizecharts.uploadId.isEmpty()) {
             emptyList()
         } else {
@@ -192,7 +192,7 @@ class EditProductInputMapper @Inject constructor() {
         }
     }
 
-    private fun mapWholesaleParam(wholesaleList: List<WholeSaleInputModel>): Wholesales? {
+    private fun mapWholesaleParam(wholesaleList: List<WholeSaleInputModel>): Wholesales {
         val data: ArrayList<Wholesale> = ArrayList()
         wholesaleList.forEach {
             val quantity = it.quantity.replace(".", "").toIntOrZero()
@@ -208,11 +208,11 @@ class EditProductInputMapper @Inject constructor() {
         return Wholesales(data)
     }
 
-    private fun mapShipmentUnit(weightUnit: Int): String? {
+    private fun mapShipmentUnit(weightUnit: Int): String {
         return if (weightUnit == 0) UNIT_GRAM else UNIT_KILOGRAM
     }
 
-    private fun mapVideoParam(videoLinkList: List<VideoLinkModel>): Videos? {
+    private fun mapVideoParam(videoLinkList: List<VideoLinkModel>): Videos {
         val data: ArrayList<Video> = ArrayList()
         videoLinkList.forEach {
             if (it.inputUrl.isNotEmpty()) {

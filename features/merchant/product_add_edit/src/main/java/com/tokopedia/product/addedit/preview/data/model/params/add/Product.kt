@@ -1,14 +1,15 @@
 package com.tokopedia.product.addedit.preview.data.model.params.add
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.math.BigInteger
 
 @Parcelize
+@SuppressLint("Invalid Data Type")
 data class Product (
-
         @SerializedName("combination")
         @Expose
         var combination: List<Int> = emptyList(),
@@ -30,5 +31,4 @@ data class Product (
         @SerializedName("pictures")
         @Expose
         var pictures: List<Picture> = emptyList()
-
 ) : Parcelable

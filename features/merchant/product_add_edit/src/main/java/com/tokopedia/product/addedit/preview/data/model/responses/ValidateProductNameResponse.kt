@@ -22,9 +22,9 @@ data class ProductValidateV3 (
 )
 
 data class ProductValidateData (
-    @SerializedName("productName")
-    @Expose
-    var validationResults: List<String> = emptyList()
+        @SerializedName("productName")
+        @Expose
+        var validationResults: List<String> = emptyList()
 )
 
 data class ProductValidateHeader (
