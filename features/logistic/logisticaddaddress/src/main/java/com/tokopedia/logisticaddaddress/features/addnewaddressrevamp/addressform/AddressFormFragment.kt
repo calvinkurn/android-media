@@ -254,6 +254,36 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             }
         })
 
+        viewModel.editAddress.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.isSuccess == 1) {
+//                        saveDataModel?.id = it.data.addrId
+//                        saveDataModel?.warehouseId = it.data.tokonow.warehouseId
+//                        saveDataModel?.shopId = it.data.tokonow.shopId
+//                        saveDataModel?.warehouses = AddAddressMapper.mapWarehouses(it.data.tokonow.warehouses)
+//                        saveDataModel?.serviceType = it.data.tokonow.serviceType
+//                        if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickSimpanPositive(userSession.userId, SUCCESS)
+//                        else AddNewAddressRevampAnalytics.onClickSimpanNegative(userSession.userId, SUCCESS)
+                        onSuccessAddAddress()
+                    }
+                }
+
+                is Fail -> {
+//                    if (isPositiveFlow) {
+//                        AddNewAddressRevampAnalytics.onClickSimpanErrorPositive(userSession.userId, "")
+//                        AddNewAddressRevampAnalytics.onClickSimpanPositive(userSession.userId, NOT_SUCCESS)
+//                    }
+//                    else {
+//                        AddNewAddressRevampAnalytics.onClickSimpanErrorNegative(userSession.userId, "")
+//                        AddNewAddressRevampAnalytics.onClickSimpanNegative(userSession.userId, NOT_SUCCESS)
+//                    }
+                    val msg = it.throwable.message.toString()
+                    view?.let { view -> Toaster.build(view, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                }
+            }
+        })
+
         viewModel.defaultAddress.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
