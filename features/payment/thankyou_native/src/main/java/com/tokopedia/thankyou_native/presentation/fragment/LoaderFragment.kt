@@ -155,12 +155,14 @@ class LoaderFragment : BaseDaggerFragment() {
     }
 
     private fun triggerHaptics() {
-        val vibrationService = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrationService.vibrate(VibrationEffect.createOneShot(VIBRATION_MILLIS, VibrationEffect.DEFAULT_AMPLITUDE))
-        } else {
-            vibrationService.vibrate(VIBRATION_MILLIS)
-        }
+        try {
+            val vibrationService = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrationService.vibrate(VibrationEffect.createOneShot(VIBRATION_MILLIS, VibrationEffect.DEFAULT_AMPLITUDE))
+            } else {
+                vibrationService.vibrate(VIBRATION_MILLIS)
+            }
+        } catch(e: Exception) { }
     }
 
     private fun prepareLoaderLottieTask(): LottieTask<LottieComposition>? {
