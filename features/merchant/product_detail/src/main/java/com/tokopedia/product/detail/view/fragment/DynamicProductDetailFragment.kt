@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -196,7 +197,6 @@ import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
-import com.tokopedia.purchase_platform.common.constant.EmbraceConstant
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -3249,7 +3249,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun hitAtc(actionButton: Int) {
         if (actionButton == ProductDetailCommonConstant.ATC_BUTTON) {
-            EmbraceMonitoring.startMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_ADD_TO_CART)
+            EmbraceMonitoring.startMoments(EmbraceKey.KEY_ACT_ADD_TO_CART)
         }
 
         val selectedWarehouseId = viewModel.getMultiOriginByProductId().id.toIntOrZero()
