@@ -567,7 +567,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         type: String,
         isFollowed: Boolean,
         shopId: String,
-        isVideo: Boolean,
+        mediaType: String,
         isCaption: Boolean
     ) {}
 
@@ -594,7 +594,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean, isFollowed: Boolean, id: String, authorType: String, postType: String, isVideo: Boolean, caption: String, playChannelId: String) {
+    override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean, isFollowed: Boolean, id: String, authorType: String, postType: String, mediaType: String, caption: String, playChannelId: String) {
         context?.let {
             val menus =
                 createBottomMenu(it, deletable, reportable, editable, object : PostMenuListener {
@@ -622,17 +622,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         onGoToLink(redirectUrl)
     }
 
-    override fun onLikeClick(
-        positionInFeed: Int,
-        id: Int,
-        isLiked: Boolean,
-        postType: String,
-        isFollowed: Boolean,
-        type: Boolean,
-        shopId: String,
-        isVideo: Boolean,
-        playChannelId: String
-    ) {
+    override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean, postType: String, isFollowed: Boolean, type: Boolean, shopId: String, mediaType: String?, playChannelId: String) {
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id, false, "")
         } else {
@@ -640,7 +630,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onCommentClick(positionInFeed: Int, id: Int, authorType: String, type: String, isFollowed: Boolean, isVideo: Boolean, shopId: String, playChannelId: String, onClickIcon: Boolean) {
+    override fun onCommentClick(positionInFeed: Int, id: Int, authorType: String, type: String, isFollowed: Boolean, mediaType: String, shopId: String, playChannelId: String, isVideo: Boolean) {
         onGoToKolComment(positionInFeed, id, false, "")
     }
 
@@ -655,7 +645,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         type: String,
         isFollowed: Boolean,
         shopId: String,
-        video: Boolean,
+        mediaType: String,
         isTopads: Boolean,
         playChannelId: String
     ) {
@@ -684,7 +674,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         onGoToLink(redirectUrl)
     }
 
-    override fun onPostTagItemBSClick(positionInFeed: Int, redirectUrl: String, postTagItem: FeedXProduct, itemPosition: Int) {
+    override fun onPostTagItemBSClick(positionInFeed: Int, redirectUrl: String, postTagItem: FeedXProduct, itemPosition: Int, mediaType: String) {
     }
 
     override fun onFullScreenCLick(feedXCard: FeedXCard,positionInFeed: Int, redirectUrl: String, currentTime: Long, shouldTrack: Boolean, isFullScreen: Boolean) {
@@ -700,16 +690,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         postTagItem: FeedXProduct,
         adClickUrl: String
     ) {
-        TODO("Not yet implemented")
     }
 
-    override fun onPostTagItemBSImpression(
-        activityId: String,
-        postTagItemList: List<FeedXProduct>,
-        type: String,
-        shopId: String,
-        isFollowed: Boolean,
-    ) {
+    override fun onPostTagItemBSImpression(activityId: String, postTagItemList: List<FeedXProduct>, type: String, shopId: String, isFollowed: Boolean, mediaType: String) {
     }
 
     override fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean) {
@@ -885,7 +868,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         redirectUrl: String,
         authorId: String,
         authorType: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        startTime: Long
     ) {
         onGoToLink(redirectUrl)
         if (adapter.data[positionInFeed] is DynamicPostViewModel) {
@@ -928,25 +912,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         shopId: String,
         type: String,
         isFollowed: Boolean,
-        isVideo: Boolean
+        mediaType: String
     ) {
     }
 
     override fun onImageClicked(activityId: String, type: String, isFollowed: Boolean, shopId: String) {
     }
 
-    override fun onTagClicked(
-        postId: Int,
-        products: List<FeedXProduct>,
-        listener: DynamicPostViewHolder.DynamicPostListener,
-        id: String,
-        type: String,
-        isFollowed: Boolean,
-        isVideo: Boolean,
-        positionInFeed: Int,
-        playChannelId: String,
-        shopName: String
-    ) {
+    override fun onTagClicked(postId: Int, products: List<FeedXProduct>, listener: DynamicPostViewHolder.DynamicPostListener, id: String, type: String, isFollowed: Boolean, mediaType: String, positionInFeed: Int, playChannelId: String, shopName: String) {
     }
 
     override fun onBottomSheetMenuClicked(
@@ -956,7 +929,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     ) {
     }
 
-    override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean,  isVOD: Boolean) {
+    override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean, isVOD: Boolean, mediaType: String) {
     }
 
     override fun onImpressionTracking(feedXCard: FeedXCard, positionInFeed: Int) {

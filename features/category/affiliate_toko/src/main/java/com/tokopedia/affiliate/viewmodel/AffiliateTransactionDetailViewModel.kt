@@ -36,7 +36,7 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
         })
     }
 
-    private fun getDetailListOrganize(detail: List<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data.Detail?>?): ArrayList<Visitable<AffiliateAdapterTypeFactory>> {
+     fun getDetailListOrganize(detail: List<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data.Detail?>?): ArrayList<Visitable<AffiliateAdapterTypeFactory>> {
             var tempList = ArrayList<Visitable<AffiliateAdapterTypeFactory>>()
             detail?.forEach {
                 if(it?.detailType != TYPE_DIVIDER)

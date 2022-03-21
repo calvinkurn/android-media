@@ -19,6 +19,7 @@ public interface ApplinkConst {
     String AMP_FIND = "tokopedia://amp/find";
     String FEED_HASHTAG = "tokopedia://feed/hashtag/{hashtag}";
     String FEED_DETAILS = "tokopedia://feedcommunicationdetail";
+    String FEED_PlAY_LIVE_DETAIL = "tokopedia://feedplaylivedetail";
     String HOME_CATEGORY = "tokopedia://home/category";
     String HOME_HOT_HOST = "hot";
     String HOME_HOTLIST = "tokopedia://hot";
@@ -34,6 +35,7 @@ public interface ApplinkConst {
     String SHOP_TALK = "tokopedia://shop/{shop_id}/talk";
     String SHOP_ETALASE_WITH_KEYWORD_AND_SORT = "tokopedia://shop/{shop_id}/etalase/{etalase_id}/?search={search}&sort={sort}";
     String PRODUCT_BUNDLE = "tokopedia://product-bundle/{product_id}";
+    String GIFTING = "tokopedia://gifting/{addon_id}";
     String SHOP_REVIEW = "tokopedia://shop/{shop_id}/review";
     String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";
     String SHOP_INFO = "tokopedia://shop/{shop_id}/info";
@@ -46,7 +48,9 @@ public interface ApplinkConst {
     String SHOP_PENALTY_DETAIL = "tokopedia://shop-penalty-detail";
     String SHOP_FOLLOWER_LIST = "tokopedia://shop/{shop_id}/follower";
     String SHOP_SETTINGS_CUSTOMER_APP = "tokopedia://shop/{shop_id}/settings";
+    //shop widget
     String SHOP_OPERATIONAL_HOUR = "tokopedia://shop/{shop_id}/operational-hour";
+    String SHOP_MVC_LOCKED_TO_PRODUCT = "tokopedia://shop/{shop_id}/voucher/{voucher_id}";
 
     String SHOP_SETTINGS_NOTE = "tokopedia://setting/shop/note";
     String SHOP_SETTINGS_INFO = "tokopedia://setting/shop/info";
@@ -271,6 +275,7 @@ public interface ApplinkConst {
     String SETTING_ACCOUNT = "tokopedia://setting/account";
     String SETTING_PASSWORD = "tokopedia://setting/password";
     String SETTING_PROFILE = "tokopedia://setting/profile";
+    String SETTING_ADDRESS = "tokopedia://setting/address";
 
     String NOTIFICATION = "tokopedia://notification";
     String NOTIFICATION_TROUBLESHOOTER = "tokopedia://notification-troubleshooter";
@@ -348,7 +353,7 @@ public interface ApplinkConst {
     String KYC_FORM_NO_PARAM = "tokopedia://kyc-form";
     String KYC_FORM = "tokopedia://kyc-form?projectId={projectId}";
     String KYC_FORM_ONLY_NO_PARAM = "tokopedia://user-identification-only";
-    String KYC_FORM_ONLY = "tokopedia://user-identification-only?projectId={projectId}&showIntro={showIntro}&redirectUrl={redirectUrl}";
+    String KYC_FORM_ONLY = "tokopedia://user-identification-only?projectId={projectId}&showIntro={showIntro}&redirectUrl={redirectUrl}&type={type}";
 
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
 
@@ -361,6 +366,7 @@ public interface ApplinkConst {
     String HOME_CREDIT_SELFIE_WITHOUT_TYPE = "tokopedia://fintech/home-credit/selfie";
     String HOME_CREDIT_SELFIE_WITH_TYPE = "tokopedia://fintech/home-credit/selfie/{type}";
     String PAYLATER = "tokopedia://fintech/paylater";
+    String OPTIMIZED_CHECKOUT = "tokopedia://fintech/opt-checkout";
     String INBOX_HOST = "inbox";
     String INBOX = "tokopedia://inbox";
 
@@ -470,6 +476,7 @@ public interface ApplinkConst {
     }
 
     interface SellerApp {
+        String SELLER_ONBOARDING = "sellerapp://welcome";
         String PRODUCT_ADD = "sellerapp://product/add";
         String SHOP_PAGE_PRODUCTS_CREATE_SHOWCASE = "sellerapp://shop/showcase-create";
         String TOPADS_CREDIT = "sellerapp://topads/buy";
@@ -484,6 +491,7 @@ public interface ApplinkConst {
         String TOPADS_EDIT_AUTO_ADS = "sellerapp://topads/edit-autoads";
         String TOPADS_CREDIT_HISTORY = "sellerapp://topads/history-credit";
         String TOPADS_CREATE_CHOOSER = "sellerapp://topads/ad-picker";
+        String TOPADS_ONBOARDING = "sellerapp://topads/topads-onboarding";
         String GOLD_MERCHANT = "sellerapp://gold";
         String SELLER_APP_HOME = "sellerapp://home";
         String TOPADS_DASHBOARD = "sellerapp://topads";
@@ -494,9 +502,12 @@ public interface ApplinkConst {
         String VOUCHER_LIST = "sellerapp://voucher-list";
         String VOUCHER_ACTIVE = "sellerapp://voucher-list/active";
         String VOUCHER_HISTORY = "sellerapp://voucher-list/history";
+        String VOUCHER_PRODUCT_LIST = "sellerapp://voucher-product-list";
         String VOUCHER_DETAIL = "sellerapp://voucher-detail";
+        String VOUCHER_PRODUCT_DETAIL = "sellerapp://voucher-product-detail";
         String CAMPAIGN_LIST = "sellerapp://campaign-list";
         String CREATE_VOUCHER = "sellerapp://create-voucher";
+        String CREATE_VOUCHER_PRODUCT = "sellerapp://create-voucher-product";
         String SELLER_SEARCH = "sellerapp://seller-search";
         String PLAY_BROADCASTER = "sellerapp://play-broadcaster";
         String CENTRALIZED_PROMO = "sellerapp://centralized-promo";
@@ -507,6 +518,7 @@ public interface ApplinkConst {
         String SHOP_SETTINGS_SELLER_APP = "sellerapp://shop/{shop_id}/settings";
         String TOPADS_CREATE_MANUAL_ADS = "tokopedia://topads/create-manual-ads";
         String REVIEW_REMINDER = "sellerapp://review-reminder";
+        String SHOP_SCORE_DETAIL = "sellerapp://shop-score-detail";
     }
 
     interface TokopediaNow {

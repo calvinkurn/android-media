@@ -33,13 +33,13 @@ import com.tokopedia.review.databinding.FragmentSellerReviewReplyBinding
 import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.review.feature.reviewreply.analytics.SellerReviewReplyTracking
 import com.tokopedia.review.feature.reviewreply.di.component.ReviewReplyComponent
+import com.tokopedia.review.feature.reviewreply.insert.presentation.model.ReviewReplyInsertUiModel
+import com.tokopedia.review.feature.reviewreply.update.presenter.model.ReviewReplyUpdateUiModel
 import com.tokopedia.review.feature.reviewreply.util.mapper.SellerReviewReplyMapper
 import com.tokopedia.review.feature.reviewreply.view.adapter.ReviewTemplateListAdapter
 import com.tokopedia.review.feature.reviewreply.view.bottomsheet.AddTemplateBottomSheet
-import com.tokopedia.review.feature.reviewreply.view.model.InsertReplyResponseUiModel
 import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
 import com.tokopedia.review.feature.reviewreply.view.model.ReplyTemplateUiModel
-import com.tokopedia.review.feature.reviewreply.view.model.UpdateReplyResponseUiModel
 import com.tokopedia.review.feature.reviewreply.view.viewholder.ReviewTemplateListViewHolder
 import com.tokopedia.review.feature.reviewreply.view.viewmodel.SellerReviewReplyViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -63,7 +63,6 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
         const val IS_EMPTY_REPLY_REVIEW = "IS_EMPTY_REPLY_REVIEW"
         const val DATE_REVIEW_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
         const val TEMPLATE_MAX = 6
-        const val IS_SUCCESS_REPLY = 1L
         const val POSITION_REPORT = 0
     }
 
@@ -178,9 +177,9 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
 
     override fun onDestroy() {
         viewModelReviewReply?.reviewTemplate?.removeObservers(this)
-        viewModelReviewReply?.insertReviewReply?.removeObservers(this)
         viewModelReviewReply?.updateReviewReply?.removeObservers(this)
         viewModelReviewReply?.insertTemplateReply?.removeObservers(this)
+        viewModelReviewReply?.insertReviewReply?.removeObservers(this)
         super.onDestroy()
     }
 
@@ -333,8 +332,6 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
                     if (isEmptyReply) {
                         viewModelReviewReply?.insertReviewReply(
                             feedbackUiModel?.feedbackID ?: "",
-                            productReplyUiModel?.productID ?: "",
-                            shopId,
                             getText()
                         )
                     } else {
@@ -348,8 +345,8 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun insertReviewReplySuccess(data: InsertReplyResponseUiModel) {
-        if (data.isSuccess == IS_SUCCESS_REPLY) {
+    private fun insertReviewReplySuccess(data: ReviewReplyInsertUiModel) {
+        if (data.success) {
             activity?.let { KeyboardHandler.showSoftKeyboard(it) }
             binding?.reviewReplyTextBoxWidget?.hide()
             binding?.feedbackItemReplyWidget?.apply {
@@ -364,11 +361,11 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
         } else {
             activity?.setResult(Activity.RESULT_CANCELED)
         }
-        KeyboardHandler.hideSoftKeyboard(requireActivity())
+        KeyboardHandler.DropKeyboard(requireContext(), binding?.reviewReplyTextBoxWidget)
     }
 
-    private fun updateReviewReplySuccess(data: UpdateReplyResponseUiModel) {
-        if (data.isSuccess) {
+    private fun updateReviewReplySuccess(data: ReviewReplyUpdateUiModel) {
+        if (data.success) {
             activity?.let { KeyboardHandler.showSoftKeyboard(it) }
             binding?.reviewReplyTextBoxWidget?.hide()
             binding?.reviewReplyTextBoxWidget?.clearEditText()
@@ -382,7 +379,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
         } else {
             activity?.setResult(Activity.RESULT_CANCELED)
         }
-        KeyboardHandler.hideSoftKeyboard(requireActivity())
+        KeyboardHandler.DropKeyboard(requireContext(), binding?.reviewReplyTextBoxWidget)
     }
 
     private fun showData() {

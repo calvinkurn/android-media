@@ -64,7 +64,7 @@ class TopAdsCreditHistoryViewModelTest {
 
     @Test
     fun `auto topup status pass`() {
-        viewModel.getAutoTopUpStatus("")
+        viewModel.getAutoTopUpStatus()
         verify {
             autoTopUpUSeCase.execute(any(), any())
         }

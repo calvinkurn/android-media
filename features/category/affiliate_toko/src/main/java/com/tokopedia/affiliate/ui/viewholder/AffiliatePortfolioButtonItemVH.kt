@@ -25,11 +25,7 @@ class AffiliatePortfolioButtonItemVH(itemView: View,
             buttonType = element?.buttonData?.buttonType ?: UnifyButton.Type.MAIN
             buttonVariant = element?.buttonData?.buttonVariant ?: UnifyButton.Variant.FILLED
 
-            if(element?.buttonData?.isSaveSocial == true){
-                setOnClickListener {
-                    portfolioClickInterface?.nextButtonClicked()
-                }
-            }else {
+            if(element?.buttonData?.isSaveSocial == false){
                 setOnClickListener {
                     portfolioClickInterface?.addSocialMediaButtonClicked()
                 }

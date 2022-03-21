@@ -115,6 +115,16 @@ class StatisticUseCaseModule {
 
     @StatisticScope
     @Provides
+    fun provideGetAnnouncementDataUseCase(
+            gqlRepository: GraphqlRepository,
+            mapper: AnnouncementMapper,
+            dispatchers: CoroutineDispatchers
+    ): GetAnnouncementDataUseCase {
+        return GetAnnouncementDataUseCase(gqlRepository, mapper, dispatchers)
+    }
+
+    @StatisticScope
+    @Provides
     fun provideGetTickerUseCase(
             gqlRepository: GraphqlRepository,
             mapper: TickerMapper,

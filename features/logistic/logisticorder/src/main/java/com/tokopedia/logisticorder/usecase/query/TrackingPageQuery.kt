@@ -43,6 +43,7 @@ object TrackingPageQuery {
                   time
                   proof {
                     image_id
+                    copy_writing_disclaimer
                   }
                   partner_name
                 }
@@ -61,6 +62,13 @@ object TrackingPageQuery {
                   url_detail
                   url_text
                 }
+              }
+              last_driver {
+                photo
+                name
+                phone
+                license_number
+                is_changed
               }
               tipping {
                 status

@@ -13,7 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
@@ -26,13 +30,19 @@ import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_ORDER
 import com.tokopedia.sellerorder.common.util.StatusBarColorUtil
 import com.tokopedia.sellerorder.common.util.Utils.copyInt
 import com.tokopedia.sellerorder.common.util.Utils.copyListParcelable
+import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
 import com.tokopedia.sellerorder.filter.di.DaggerSomFilterComponent
 import com.tokopedia.sellerorder.filter.di.SomFilterComponent
 import com.tokopedia.sellerorder.filter.presentation.activity.SomSubFilterActivity
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterAdapter
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterAdapterTypeFactory
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterListener
-import com.tokopedia.sellerorder.filter.presentation.model.*
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterCancelWrapper
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterEmptyUiModel
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModelWrapper
+import com.tokopedia.sellerorder.filter.presentation.model.SomSubFilterListWrapper
 import com.tokopedia.sellerorder.filter.presentation.viewmodel.SomFilterViewModel
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -214,6 +224,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     override fun onResume() {
         super.onResume()
         dialog?.window?.setWindowAnimations(-1)
+        updateShopActive()
     }
 
     override fun onDestroy() {

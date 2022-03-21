@@ -8,12 +8,15 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
 import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView
-import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterItemDataView
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceOptionViewModel
 import com.tokopedia.filter.bottomsheet.sort.SortItemViewModel
 import com.tokopedia.filter.bottomsheet.sort.SortViewModel
-import com.tokopedia.filter.common.data.*
+import com.tokopedia.filter.common.data.DataValue
+import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.filter.common.helper.toMapParam
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
@@ -320,8 +323,6 @@ internal class SortFilterBottomSheetViewModel {
 
     fun onOptionClick(filterViewModel: FilterViewModel, optionViewModel: OptionViewModel) {
         applyFilter(filterViewModel, optionViewModel)
-
-        notifyViewOnApplyFilter(filterViewModel)
     }
 
     private fun applyFilter(filterViewModel: FilterViewModel, optionViewModel: OptionViewModel) {
@@ -330,11 +331,29 @@ internal class SortFilterBottomSheetViewModel {
         if (isCleanUpExistingFilterWithSameKey)
             filterViewModel.optionViewModelList.unSelectNotClickedOption(optionViewModel)
 
-        optionViewModel.isSelected = !optionViewModel.isSelected
-        optionViewModel.option.inputState = optionViewModel.isSelected.toString()
-
-        filterController.setFilter(optionViewModel.option, optionViewModel.isSelected, isCleanUpExistingFilterWithSameKey)
+        val isSelected = !optionViewModel.isSelected
+        filterController.setFilter(optionViewModel.option, isSelected, isCleanUpExistingFilterWithSameKey)
+        val sortFilterIndexSet : MutableSet<Int> = mutableSetOf()
+        updateSortFilterList(listOf(optionViewModel.option), sortFilterIndexSet)
         refreshMapParameter()
+        notifyViewOnApplyFilter(sortFilterIndexSet.toList())
+    }
+
+    private fun updateSortFilterList(
+        filterOptionList: List<Option>,
+        sortFilterIndexSet: MutableSet<Int>
+    ) {
+        sortFilterList.forEachIndexed { index, visitable ->
+            if(visitable is FilterViewModel && visitable.filter.options.isNotEmpty()) {
+                val needUpdate = visitable.filter.getFlattenedOptions().any { option ->
+                    option in filterOptionList
+                }
+                if(needUpdate) {
+                    visitable.refreshOptionList()
+                    sortFilterIndexSet.add(index)
+                }
+            }
+        }
     }
 
     private fun refreshMapParameter() {
@@ -348,11 +367,17 @@ internal class SortFilterBottomSheetViewModel {
         filter { it != clickedOptionViewModel && it.isSelected }.map { it.isSelected = false }
     }
 
-    private fun notifyViewOnApplyFilter(visitable: Visitable<*>) {
-        updateViewInPositionEventMutableLiveData.value = Event(sortFilterList.indexOf(visitable))
+    private fun notifyViewOnApplyFilter(visitableIndexList: List<Int>) {
+        visitableIndexList.forEach { index ->
+            updateViewInPositionEventMutableLiveData.value = Event(index)
+        }
         isLoadingMutableLiveData.value = getIsLoading()
         isButtonResetVisibleMutableLiveData.value = isButtonResetVisible()
         isViewExpandedMutableLiveData.value = true
+    }
+
+    private fun notifyViewOnApplyFilter(visitable: Visitable<*>) {
+        notifyViewOnApplyFilter(listOf(sortFilterList.indexOf(visitable)))
     }
 
     private fun getIsLoading() = isFilterChanged() || isSortChanged() || isKeywordChanged()
@@ -628,17 +653,16 @@ internal class SortFilterBottomSheetViewModel {
         optionList ?: return
 
         applyFilterFromDetailPage(filterViewModel, optionList)
-
-        notifyViewOnApplyFilter(filterViewModel)
     }
 
     private fun applyFilterFromDetailPage(filterViewModel: FilterViewModel, optionList: List<Option>) {
         filterViewModel.filter.options = optionList
 
         filterController.setFilter(filterViewModel.filter.options)
+        val sortFilterIndexSet = mutableSetOf<Int>()
+        updateSortFilterList(optionList, sortFilterIndexSet)
         refreshMapParameter()
-
-        filterViewModel.refreshOptionList()
+        notifyViewOnApplyFilter(sortFilterIndexSet.toList())
     }
 
     private fun FilterViewModel.refreshOptionList() {

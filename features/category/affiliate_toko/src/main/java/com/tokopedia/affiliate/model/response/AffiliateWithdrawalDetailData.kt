@@ -16,7 +16,7 @@ data class WithdrawalInfoData(
         @SerializedName("Status")
         val isSuccess: Int,
         @SerializedName("Error")
-        val error: Error,
+        val error: Error?,
         @SerializedName("withdrawal_id")
     val withdrawalId: String?,
         @SerializedName("Label")

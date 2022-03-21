@@ -471,7 +471,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         activity?.let {
             if (filterMenu.isAdded) return@let
             val itemMenus = ArrayList<TopchatItemMenu>()
-            val arrayFilterString = chatItemListViewModel.getFilterTittles(it, isTabSeller())
+            val arrayFilterString = chatItemListViewModel.getFilterTitles(it, isTabSeller())
 
             for ((index, title) in arrayFilterString.withIndex()) {
                 if (index == filterChecked) itemMenus.add(TopchatItemMenu(title, hasCheck = true))

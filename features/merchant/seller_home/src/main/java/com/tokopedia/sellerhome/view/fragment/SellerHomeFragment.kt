@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.empty_state.EmptyStateUnify
@@ -29,10 +30,11 @@ import com.tokopedia.gm.common.utils.PMShopScoreInterruptHelper
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringActivity
-import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.NavigationSearchTracking
@@ -70,6 +72,7 @@ import com.tokopedia.sellerhome.view.viewhelper.SellerHomeLayoutManager
 import com.tokopedia.sellerhome.view.viewhelper.ShopShareHelper
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
+import com.tokopedia.sellerhomecommon.common.DateFilterUtil
 import com.tokopedia.sellerhomecommon.common.EmptyLayoutException
 import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
@@ -77,8 +80,10 @@ import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.CalendarWidgetDateFilterBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.WidgetFilterBottomSheet
+import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -99,6 +104,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -123,9 +129,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val ERROR_WIDGET = "Error get widget data."
         private const val ERROR_TICKER = "Error get ticker data."
         private const val TOAST_DURATION = 5000L
+        private const val SHORT_TOAST_DURATION = 2000L
         private const val DEFAULT_HEIGHT_DP = 720f
         private const val RV_TOP_POSITION = 0
         private const val TICKER_FIRST_INDEX = 0
+
+        private const val GRADIENT_LEFT_URL =
+            "https://images.tokopedia.net/img/android/others/ic_sah_ramadhan_gradient_left.png"
+        private const val GRADIENT_RIGHT_URL =
+            "https://images.tokopedia.net/img/android/others/ic_sah_ramadhan_gradient_right.png"
     }
 
     @Inject
@@ -171,6 +183,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var notifCenterCount = 0
     private var isFirstLoad = true
     private var isErrorToastShown = false
+    private var isReloading = false
+    private var shouldShowSuccessToaster: Boolean = false
 
     private var performanceMonitoringSellerHomePltCompleted = false
     private var performanceMonitoringSellerHomePlt: HomeLayoutLoadTimeMonitoring? = null
@@ -251,13 +265,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeWidgetData(sellerHomeViewModel.announcementWidgetData, WidgetType.ANNOUNCEMENT)
         observeWidgetData(sellerHomeViewModel.recommendationWidgetData, WidgetType.RECOMMENDATION)
         observeWidgetData(sellerHomeViewModel.milestoneWidgetData, WidgetType.MILESTONE)
+        observeWidgetData(sellerHomeViewModel.calendarWidgetData, WidgetType.CALENDAR)
         observeTickerLiveData()
         observeCustomTracePerformanceMonitoring()
         observeShopShareData()
         observeShopShareTracker()
 
-        context?.let { UpdateShopActiveService.startService(it) }
-        setupPMShopScoreInterrupt()
+        context?.let { UpdateShopActiveWorker.execute(it) }
     }
 
     override fun onResume() {
@@ -273,7 +287,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onDestroy() {
         super.onDestroy()
-        pmShopScoreInterruptHelper.destroy()
         shopShareHelper.removeTemporaryShopImage(shopImageFilePath)
     }
 
@@ -318,7 +331,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             RouteManager.route(requireContext(), ApplinkConst.SELLER_INFO)
             NavigationTracking.sendClickNotificationEvent()
         } else if (item.itemId == SEARCH_MENU_ID) {
-            RouteManager.route(requireContext(), ApplinkConst.SellerApp.SELLER_SEARCH)
+            RouteManager.route(requireContext(), ApplinkConstInternalSellerapp.SELLER_SEARCH)
             NavigationSearchTracking.sendClickSearchMenuEvent(userSession.userId.orEmpty())
         }
         return super.onOptionsItemSelected(item)
@@ -502,12 +515,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             com.tokopedia.sellerhomecommon.R.string.shc_select_statistic_data,
             element.tableFilters
         ) {
+            SellerHomeTracking.sendTableFilterClickEvent(element)
             recyclerView?.post {
                 val copiedWidget = element.copy().apply { data = null }
                 notifyWidgetChanged(copiedWidget)
                 getTableData(listOf(element))
             }
-            SellerHomeTracking.sendTableFilterClickEvent(element)
         }.show(childFragmentManager, WidgetFilterBottomSheet.TABLE_FILTER_TAG)
     }
 
@@ -521,7 +534,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 when (mission.missionButton.urlType) {
                     BaseMilestoneMissionUiModel.UrlType.REDIRECT -> {
                         activity?.let {
-                            RouteManager.route(it, mission.missionButton.appLink)
+                            val mIntent = RouteManager.getIntent(it, mission.missionButton.appLink)
+                            it.startActivityForResult(mIntent, REQ_CODE_MILESTONE_WIDGET)
                         }
                     }
                     BaseMilestoneMissionUiModel.UrlType.SHARE -> {
@@ -670,6 +684,57 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendMilestoneWidgetMinimizeClickEvent()
     }
 
+    override fun onReloadWidget(widget: BaseWidgetUiModel<*>) {
+        isReloading = true
+        shouldShowSuccessToaster = true
+        refreshSimilarWidgets(widget)
+    }
+
+    override fun showCalendarWidgetDateFilter(element: CalendarWidgetUiModel) {
+        if (!isAdded) {
+            return
+        }
+
+        val perWeekSelectedDate = Date(
+            DateTimeUtil.getTimeInMillis(
+                element.filter.perWeek.startDate,
+                DateTimeUtil.FORMAT_DD_MM_YYYY
+            )
+        )
+        val perMontSelectedDate = Date(
+            DateTimeUtil.getTimeInMillis(
+                element.filter.perMonth.startDate,
+                DateTimeUtil.FORMAT_DD_MM_YYYY
+            )
+        )
+
+        val prevSelectedFilterType = element.filter.filterType
+        val dateFilters = DateFilterUtil.FilterList
+            .getCalendarPickerFilterList(
+                requireContext(),
+                perWeekSelectedDate,
+                perMontSelectedDate,
+                prevSelectedFilterType
+            )
+
+        CalendarWidgetDateFilterBottomSheet.newInstance(dateFilters)
+            .setOnApplyChanges { dateFilter ->
+                applyCalendarFilter(element, dateFilter)
+            }
+            .show(childFragmentManager)
+    }
+
+    override fun sendCalendarImpressionEvent(element: CalendarWidgetUiModel) {
+        SellerHomeTracking.sendCalendarImpressionEvent(element)
+    }
+
+    override fun sendCalendarItemClickEvent(
+        element: CalendarWidgetUiModel,
+        event: CalendarEventUiModel
+    ) {
+        SellerHomeTracking.sendCalendarItemClickEvent(element, event)
+    }
+
     fun setNavigationOtherMenuView(view: View?) {
         if (navigationOtherMenuView == null) {
             navigationOtherMenuView = view
@@ -687,6 +752,72 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
         }, NOTIFICATION_BADGE_DELAY)
+    }
+
+    private fun applyCalendarFilter(element: CalendarWidgetUiModel, dateFilter: DateFilterItem) {
+        SellerHomeTracking.sendCalendarFilterClickEvent(element, dateFilter)
+        val calendarWidgets = mutableListOf<BaseWidgetUiModel<*>>()
+        val widgets = adapter.data.map {
+            if (it.dataKey == element.dataKey && it is CalendarWidgetUiModel) {
+                val startDate = dateFilter.startDate
+                val endData = dateFilter.endDate
+                if (startDate != null && endData != null) {
+                    val calendarWidget = it.apply calendarWidget@{
+                        data = null
+                        filter = getAppliedDateFilter(filter, startDate, endData, dateFilter.type)
+                        impressHolder = ImpressHolder()
+                    }.copyWidget()
+                    calendarWidgets.add(calendarWidget)
+                    return@map calendarWidget
+                } else {
+                    return@map it
+                }
+            } else {
+                return@map it
+            }
+        }
+
+        getWidgetsData(calendarWidgets)
+
+        notifyWidgetWithSdkChecking {
+            updateWidgets(widgets)
+        }
+    }
+
+    private fun getAppliedDateFilter(
+        filter: CalendarFilterDataKeyUiModel,
+        startDate: Date,
+        endData: Date,
+        filterType: Int
+    ): CalendarFilterDataKeyUiModel {
+        val startDateStr = DateTimeUtil.format(
+            startDate.time,
+            DateTimeUtil.FORMAT_DD_MM_YYYY
+        )
+        val endDateStr = DateTimeUtil.format(
+            endData.time,
+            DateTimeUtil.FORMAT_DD_MM_YYYY
+        )
+        return when (filterType) {
+            DateFilterItem.TYPE_PER_MONTH -> {
+                filter.copy(
+                    perMonth = CalendarFilterDataKeyUiModel.DateRange(
+                        startDate = startDateStr,
+                        endDate = endDateStr
+                    ),
+                    filterType = filterType
+                )
+            }
+            else -> {
+                filter.copy(
+                    perWeek = CalendarFilterDataKeyUiModel.DateRange(
+                        startDate = startDateStr,
+                        endDate = endDateStr
+                    ),
+                    filterType = filterType
+                )
+            }
+        }
     }
 
     private fun initPltPerformanceMonitoring() {
@@ -751,8 +882,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
 
         setRecyclerViewLayoutAnimation()
-
-        setViewBackground()
+        setupRamadhanBackgroundGradient()
     }
 
     /**
@@ -780,6 +910,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun reloadPage() = binding?.run {
+        isReloading = true
         val isAdapterNotEmpty = adapter.data.isNotEmpty()
         setProgressBarVisibility(!isAdapterNotEmpty)
         swipeRefreshLayout.isRefreshing = isAdapterNotEmpty
@@ -895,6 +1026,16 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val dataKeys = Utils.getWidgetDataKeys<MilestoneWidgetUiModel>(widgets)
         startCustomMetric(SELLER_HOME_MILESTONE_TRACE)
         sellerHomeViewModel.getMilestoneWidgetData(dataKeys)
+    }
+
+    private fun getCalendarData(widgets: List<BaseWidgetUiModel<*>>) {
+        startCustomMetric(SELLER_HOME_MILESTONE_TRACE)
+        widgets.setLoading()
+        val dataKeys = widgets.filterIsInstance<CalendarWidgetUiModel>()
+            .map {
+                it.filter
+            }
+        sellerHomeViewModel.getCalendarWidgetData(dataKeys)
     }
 
     private fun setupShopSharing() {
@@ -1078,6 +1219,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     @Suppress("UNCHECKED_CAST")
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
+        isReloading = false
         binding?.sahGlobalError?.gone()
         emptyState?.gone()
         recyclerView?.visible()
@@ -1118,8 +1260,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                             newWidgets.add(newWidget)
                         } else {
                             if (oldWidget.isFromCache && !oldWidget.needToRefreshData(newWidget as BaseWidgetUiModel<BaseDataUiModel>)) {
+                                val newData = newWidget.data as? LastUpdatedDataInterface
                                 newWidget.apply {
-                                    data = oldWidget.data
+                                    data = oldWidget.data.also {
+                                        if (it is LastUpdatedDataInterface && newData != null) {
+                                            it.lastUpdated.lastUpdatedInMillis = newData.lastUpdated.lastUpdatedInMillis
+                                            it.lastUpdated.needToUpdated = newData.lastUpdated.needToUpdated
+                                        }
+                                    }
                                     isLoaded = oldWidget.isLoaded
                                     isLoading = oldWidget.isLoading
                                 }
@@ -1133,7 +1281,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                                 }
                             } else {
                                 newWidgets.add(newWidget)
-                                Unit
                             }
                         }
                         recyclerView?.post {
@@ -1195,12 +1342,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         groupedWidgets[WidgetType.MULTI_LINE_GRAPH]?.run { getMultiLineGraphData(this) }
         groupedWidgets[WidgetType.RECOMMENDATION]?.run { getRecommendationData(this) }
         groupedWidgets[WidgetType.MILESTONE]?.run { getMilestoneData(this) }
+        groupedWidgets[WidgetType.CALENDAR]?.run { getCalendarData(this) }
         groupedWidgets[WidgetType.SECTION]?.run {
             recyclerView?.post {
                 val newWidgetList = adapter.data.toMutableList()
                 forEach { section ->
                     newWidgetList.indexOf(section).takeIf { it > -1 }?.let { index ->
-                        newWidgetList[index] = section.copy().apply { isLoaded = true }
+                        newWidgetList[index] = section.copyWidget().apply { isLoaded = true }
                     }
                 }
                 updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
@@ -1213,9 +1361,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         if (adapter.data.isEmpty()) {
             showErrorViewByException(throwable)
         } else {
-            throwable.showErrorToaster()
+            if (isReloading) {
+                throwable.showErrorToaster()
+            }
             sahGlobalError.gone()
             emptyState?.gone()
+            showWidgetRefreshButton()
         }
         swipeRefreshLayout.isRefreshing = false
         setProgressBarVisibility(false)
@@ -1230,6 +1381,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             errorType = SellerHomeErrorHandler.ErrorType.ERROR_LAYOUT,
             deviceId = userSession.deviceId.orEmpty()
         )
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun showWidgetRefreshButton() {
+        val widgets = adapter.data.map { widget ->
+            val copiedWidget = widget.copyWidget() as BaseWidgetUiModel<BaseDataUiModel>
+            (copiedWidget.data as? LastUpdatedDataInterface)?.lastUpdated?.needToUpdated = true
+            copiedWidget
+        }
+        notifyWidgetWithSdkChecking {
+            updateWidgets(widgets)
+        }
     }
 
     private fun showErrorViewByException(throwable: Throwable) = binding?.run {
@@ -1405,16 +1568,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun setViewBackground() = binding?.run {
-        val isOfficialStore = userSession.isShopOfficialStore
-        val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
-        when {
-            isOfficialStore -> viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_official_store)
-            isPowerMerchant -> viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_power_merchant)
-            else -> viewBgShopStatus.setBackgroundColor(root.context.getResColor(android.R.color.transparent))
-        }
-    }
-
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(
         liveData: LiveData<Result<List<D>>>,
         type: String
@@ -1486,11 +1639,31 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState(
         widgetType: String
     ) {
+        isReloading = false
         val isFromCache = firstOrNull()?.isFromCache == true
         stopSellerHomeFragmentWidgetPerformanceMonitoring(widgetType, isFromCache)
         stopPltMonitoringIfNotCompleted(isFromCache)
+
+        mergedWidgetAndData(this, widgetType)
+
+        binding?.root?.addOneTimeGlobalLayoutListener {
+            recyclerView?.post {
+                checkLoadingWidgets()
+                requestVisibleWidgetsData()
+            }
+        }
+        if (!isFromCache) {
+            showWidgetSuccessToaster()
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> mergedWidgetAndData(
+        widgetDataList: List<D>,
+        widgetType: String
+    ) {
         val newWidgetList = adapter.data.toMutableList()
-        forEach { widgetData ->
+        widgetDataList.forEach { widgetData ->
             newWidgetList.indexOfFirst {
                 it.dataKey == widgetData.dataKey && it.widgetType == widgetType
             }.takeIf { it > RecyclerView.NO_POSITION }?.let { index ->
@@ -1500,9 +1673,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         newWidgetList.removeAt(index)
                         removeEmptySections(newWidgetList, index)
                     } else {
-                        val copiedWidget = widget.copy()
+                        val copiedWidget = widget.copyWidget()
                         copiedWidget.data = widgetData
-                        copiedWidget.isLoading = widget.data?.isFromCache ?: false
+                        copiedWidget.isLoading = widget.data?.isFromCache.orFalse()
+                        copiedWidget.showLoadingState = false
 
                         handleShopShareMilestoneWidget(copiedWidget)
 
@@ -1511,15 +1685,21 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
         }
+
         notifyWidgetWithSdkChecking {
             updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
         }
-        binding?.root?.addOneTimeGlobalLayoutListener {
-            recyclerView?.post {
-                checkLoadingWidgets()
-                requestVisibleWidgetsData()
+    }
+
+    private fun showWidgetSuccessToaster() {
+        if (shouldShowSuccessToaster) {
+            binding?.let {
+                val message = getString(R.string.sah_widget_success_toaster)
+                Toaster.build(it.root, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                    .show()
             }
         }
+        shouldShowSuccessToaster = false
     }
 
     private fun <D : BaseDataUiModel> handleShopShareMilestoneWidget(widget: BaseWidgetUiModel<D>) {
@@ -1539,7 +1719,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         widget: BaseWidgetUiModel<*>,
         widgetData: BaseDataUiModel
     ): Boolean {
-        return !widget.isFromCache && !widgetData.isFromCache && (!widgetData.showWidget || (!widget.isShowEmpty && widgetData.shouldRemove()))
+        return !widget.isFromCache && !widgetData.isFromCache && (!widgetData.showWidget || (!widget.isShowEmpty && widgetData.isWidgetEmpty()))
     }
 
     private fun removeEmptySections(
@@ -1557,21 +1737,88 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private inline fun <reified D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> Throwable.setOnErrorWidgetState(
         widgetType: String
     ) {
-        val message = this.message.orEmpty()
+        val errorMessage = this.message.orEmpty()
+        var isAnyWidgetNeedToUpdated = false
         val newWidgetList = adapter.data.map { widget ->
             val isSameWidgetType = widget.widgetType == widgetType
-            if (widget is W && widget.data == null && widget.isLoaded && isSameWidgetType) {
-                widget.copy().apply {
+            val shouldShowErrorState = widget.data == null && widget.isLoaded && isSameWidgetType
+            val shouldShowExistingData = widget is W && widget.data != null && isSameWidgetType
+            val newWidget = if (widget is W && shouldShowErrorState) {
+                widget.copyWidget().apply {
                     data = D::class.java.newInstance().apply {
-                        error = message
+                        error = errorMessage
                     }
                     isLoading = widget.data?.isFromCache ?: false
                 }
+            } else if (shouldShowExistingData) {
+                isAnyWidgetNeedToUpdated = true
+                copyExistingWidget(widget)
             } else {
                 widget
             }
+
+            return@map newWidget.apply {
+                showLoadingState = false
+            }
         }
 
+        logWidgetException(widgetType, this)
+
+        notifyWidgetWithSdkChecking {
+            updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        }
+
+        if (isAnyWidgetNeedToUpdated && !isReloading) {
+            showWidgetLastUpdatedWarningToaster()
+        } else {
+            showErrorToaster()
+        }
+
+        view?.addOneTimeGlobalLayoutListener {
+            requestVisibleWidgetsData()
+            checkLoadingWidgets()
+        }
+        isReloading = false
+    }
+
+    private fun showWidgetLastUpdatedWarningToaster() {
+        binding?.run {
+            if (isErrorToastShown) return
+            isErrorToastShown = true
+
+            val message = getString(R.string.sah_some_widgets_need_to_be_refreshed)
+            Toaster.build(
+                this.root, message,
+                Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, getString(R.string.sah_reload)
+            ) {
+                reloadNotUpdatedWidgets()
+            }.show()
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                isErrorToastShown = false
+            }, SHORT_TOAST_DURATION)
+        }
+    }
+
+    private fun reloadNotUpdatedWidgets() {
+        val widgets = adapter.data.filter {
+            //filter all widgets that the data still from cache
+            it.data?.isFromCache.orFalse()
+        }
+        getWidgetsData(widgets)
+    }
+
+    private fun copyExistingWidget(widget: BaseWidgetUiModel<*>): BaseWidgetUiModel<*> {
+        val tempWidget = widget.copyWidget()
+        widget.data = null
+        val widgetData = tempWidget.data
+        if (widgetData is LastUpdatedDataInterface) {
+            widgetData.lastUpdated.needToUpdated = true
+        }
+        return tempWidget
+    }
+
+    private fun logWidgetException(widgetType: String, throwable: Throwable) {
         // Log error to crashlytics and scalyr.
         // We define layoutId value as joined list of error layout id. Ex: (100, 150)
         // The extras will be defined as widget type + layout id as JSON object.
@@ -1584,26 +1831,17 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             SellerHomeErrorHandler.LAYOUT_ID_KEY to layoutId
         )
         SellerHomeErrorHandler.logException(
-            throwable = this,
+            throwable = throwable,
             message = "$ERROR_WIDGET $widgetType"
         )
 
         SellerHomeErrorHandler.logExceptionToServer(
             errorTag = SellerHomeErrorHandler.SELLER_HOME_TAG,
-            throwable = this,
+            throwable = throwable,
             errorType = SellerHomeErrorHandler.ErrorType.ERROR_WIDGET,
             deviceId = userSession.deviceId.orEmpty(),
             extras = widgetErrorExtraMap
         )
-
-        notifyWidgetWithSdkChecking {
-            updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
-        }
-        showErrorToaster()
-        view?.addOneTimeGlobalLayoutListener {
-            requestVisibleWidgetsData()
-            checkLoadingWidgets()
-        }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -1706,7 +1944,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 !is TickerWidgetUiModel,
                 !is WhiteSpaceUiModel -> {
                     if (isInvoked) {
-                        widget.copy().apply { impressHolder = ImpressHolder() }
+                        widget.copyWidget().apply { impressHolder = ImpressHolder() }
                     } else {
                         widget
                     }
@@ -1720,18 +1958,20 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         checkLoadingWidgets()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Suppress("UNCHECKED_CAST")
-    private fun updateWidgets(newWidgets: List<BaseWidgetUiModel<BaseDataUiModel>>) {
+    private fun updateWidgets(newWidgets: List<BaseWidgetUiModel<*>>) {
         try {
             val diffUtilCallback = SellerHomeDiffUtilCallback(
                 adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>,
-                newWidgets
+                newWidgets as List<BaseWidgetUiModel<BaseDataUiModel>>
             )
             val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
             adapter.data.clear()
             adapter.data.addAll(newWidgets)
             diffUtilResult.dispatchUpdatesTo(adapter)
         } catch (e: Exception) {
+            adapter.notifyDataSetChanged()
             SellerHomeErrorHandler.logException(e, SellerHomeErrorHandler.UPDATE_WIDGET_ERROR)
         }
     }
@@ -1779,12 +2019,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun BaseWidgetUiModel<*>.isNeedToLoad(): Boolean {
         return !isLoaded && this !is SectionWidgetUiModel && this !is TickerWidgetUiModel &&
                 this !is DescriptionWidgetUiModel && this !is WhiteSpaceUiModel
-    }
-
-    private fun setupPMShopScoreInterrupt() {
-        activity?.let {
-            pmShopScoreInterruptHelper.showInterrupt(it, viewLifecycleOwner, childFragmentManager)
-        }
     }
 
     private fun setRecommendationCoachMarkEligibility() {
@@ -1869,6 +2103,31 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 val milestoneWidgets = adapter.data.filterIsInstance<MilestoneWidgetUiModel>()
                 getMilestoneData(milestoneWidgets)
             }
+        }
+    }
+
+    private fun refreshSimilarWidgets(widget: BaseWidgetUiModel<*>) {
+        val similarWidget = mutableListOf<BaseWidgetUiModel<*>>()
+        val widgets = adapter.data.map {
+            val isTheSameWidget = it.widgetType == widget.widgetType
+            val tempWidget = if (isTheSameWidget) {
+                similarWidget.add(it)
+                it.copyWidget().apply {
+                    showLoadingState = true
+                }
+            } else {
+                it
+            }
+            return@map tempWidget
+        }
+        updateWidgets(widgets)
+        getWidgetsData(similarWidget)
+    }
+
+    private fun setupRamadhanBackgroundGradient() {
+        binding?.run {
+            ivSahRamadhanBgLeft.loadImageWithoutPlaceholder(GRADIENT_LEFT_URL)
+            ivSahRamadhanBgRight.loadImageWithoutPlaceholder(GRADIENT_RIGHT_URL)
         }
     }
 

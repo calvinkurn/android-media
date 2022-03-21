@@ -58,8 +58,9 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     private var collapseStateCallBack: TopAdsHeadlineBaseFragment.AppBarActionHeadline? = null
     private var isAdTypeProdukSelected = true
     private val adTypeList by lazy { getAdsTypeList() }
-    private val adsTypeBottomSheet
-            by lazy { TopAdsInsightAdsTypeBottomSheet.getInstance(adTypeList, this::onAdTypeChanged) }
+    private val adsTypeBottomSheet by lazy {
+        TopAdsInsightAdsTypeBottomSheet.getInstance(adTypeList, this::onAdTypeChanged)
+    }
     private var productRecommendData: ProductRecommendationData? = null
     private var keywordRecommendData: InsightKeyData? = null
     private var dailyBudgetRecommendData: TopadsGetDailyBudgetRecommendation? = null
@@ -133,7 +134,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initListener()
-        setupSelectAdsTypeView(adTypeList[if(isAdTypeProdukSelected) ADTYPE_PRODUK else ADTYPE_TOKO])
+        setupSelectAdsTypeView(adTypeList[if (isAdTypeProdukSelected) ADTYPE_PRODUK else ADTYPE_TOKO])
         observeLiveData()
         app_bar_layout?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
             when {
@@ -218,7 +219,9 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
             showViews()
             initInsightTabAdapter()
             renderViewPager()
-            topAdsInsightTabAdapter?.setTabTitles(resources, countProduct, countBid, countKey,isAdTypeProdukSelected)
+            topAdsInsightTabAdapter?.setTabTitles(
+                resources, countProduct, countBid, countKey, isAdTypeProdukSelected
+            )
         }
     }
 
@@ -239,7 +242,8 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     private fun initInsightTabAdapter() {
         val tabLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         rvTabInsight.layoutManager = tabLayoutManager
-        topAdsInsightTabAdapter?.setListener(object : TopAdsInsightTabAdapter.OnRecyclerTabItemClick {
+        topAdsInsightTabAdapter?.setListener(object :
+            TopAdsInsightTabAdapter.OnRecyclerTabItemClick {
             override fun onTabItemClick(position: Int) {
                 if (position == 0 && checkFragmentPosition(CONST_0, PRODUK)) {
                     TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_PRODUK_BERPOTENSI, userSession.userId, userSession.userId)
@@ -259,7 +263,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     }
 
     private fun renderViewPager() {
-        loderRecom?.visibility = View.GONE
+        loderRecom.visibility = View.GONE
         view_pager.adapter = getViewPagerAdapter()
         val page = arguments?.getInt(PARAM_CURRENT_TAB)
         if (ifPageAvailable(page)) {
@@ -272,12 +276,12 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
                     CONST_1
             }
             if (page == CONST_2) {
-                if (checkFragmentPosition(CONST_0, KATA_KUNCI))
-                    index = CONST_0
-                index = if (checkFragmentPosition(CONST_1, KATA_KUNCI))
-                    CONST_1
-                else
-                    CONST_2
+                index = when {
+                    checkFragmentPosition(CONST_0, KATA_KUNCI) -> CONST_0
+                    checkFragmentPosition(CONST_1, KATA_KUNCI) -> CONST_1
+                    checkFragmentPosition(CONST_2, KATA_KUNCI) -> CONST_2
+                    else -> CONST_2
+                }
             }
         }
         view_pager?.currentItem = index
@@ -301,7 +305,8 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
                     checkFragmentPosition(CONST_0, KATA_KUNCI)
                 }
                 CONST_2 -> {
-                    return !(!checkFragmentPosition(CONST_0, KATA_KUNCI) && !checkFragmentPosition(CONST_1, KATA_KUNCI))
+                    return !(!checkFragmentPosition(CONST_0, KATA_KUNCI) &&
+                            !checkFragmentPosition(CONST_1, KATA_KUNCI))
                 }
                 else -> true
             }
@@ -313,13 +318,16 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
             return if (topAdsInsightTabAdapter?.itemCount == CONST_1) {
                 checkFragmentPosition(CONST_0, DAILY_BUDGET)
             } else {
-                !(!checkFragmentPosition(CONST_0, DAILY_BUDGET) && !checkFragmentPosition(CONST_1, DAILY_BUDGET))
+                !(!checkFragmentPosition(CONST_0, DAILY_BUDGET)
+                        && !checkFragmentPosition(CONST_1, DAILY_BUDGET))
             }
         return false
     }
 
     private fun checkFragmentPosition(index: Int, value: String): Boolean {
-        return topAdsInsightTabAdapter?.getTab()?.get(index)?.contains(value) == true
+        val tabs = topAdsInsightTabAdapter?.getTab()
+        return if (tabs.isNullOrEmpty() || index < tabs.size) false
+        else tabs.get(index).contains(value)
     }
 
     private fun isProductAvailable(): Boolean {
@@ -336,7 +344,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun getViewPagerAdapter(): TopAdsDashboardBasePagerAdapter? {
+    private fun getViewPagerAdapter(): TopAdsDashboardBasePagerAdapter {
         val list: ArrayList<FragmentTabItem> = arrayListOf()
         if (countProduct != 0) {
             val bundle = Bundle()
@@ -369,7 +377,11 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
             for (frag in fragments) {
                 when (frag.fragment) {
                     is TopAdsInsightBaseProductFragment -> {
-                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_IKLANKAN, "", userSession.userId)
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(
+                            CLICK_IKLANKAN,
+                            "",
+                            userSession.userId
+                        )
                         (frag.fragment as TopAdsInsightBaseProductFragment).openBottomSheet()
                     }
                     is TopAdsInsightShopKeywordRecommendationFragment -> {
@@ -399,6 +411,9 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         adsTypeBottomSheet.dismiss()
         val produkSelected = position == ADTYPE_PRODUK
         if (produkSelected == isAdTypeProdukSelected) return
+        countKey = 0
+        countProduct = 0
+        countBid = 0
 
         (activity as? TopAdsDashboardActivity)?.toggleMultiActionButton(false)
         isAdTypeProdukSelected = produkSelected

@@ -1,7 +1,7 @@
 package com.tokopedia.test.application.environment.interceptor.size
 
 import com.tokopedia.analytics.performance.util.NetworkData
-import com.tokopedia.network.BuildConfig
+import com.tokopedia.instrumentation.test.BuildConfig
 import com.tokopedia.test.application.util.parserule.ParserRuleProvider
 import okhttp3.Interceptor
 import okhttp3.Request

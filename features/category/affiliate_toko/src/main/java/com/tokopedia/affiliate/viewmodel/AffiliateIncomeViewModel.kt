@@ -28,11 +28,12 @@ class AffiliateIncomeViewModel : BaseViewModel(){
     private var errorMessage = MutableLiveData<Throwable>()
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var rangeChanged = MutableLiveData<Boolean>()
+    private var isUserBlackListed : Boolean = false
     var hasNext = true
 
-    private val affiliateBalanceDataUseCase = AffiliateBalanceDataUseCase(AffiliateRepository())
-    private val affiliateTransactionHistoryUseCase = AffiliateTransactionHistoryUseCase(AffiliateRepository())
-    private val affiliatKycHistoryUseCase = AffiliateKycUseCase(AffiliateRepository())
+     val affiliateBalanceDataUseCase = AffiliateBalanceDataUseCase(AffiliateRepository())
+     val affiliateTransactionHistoryUseCase = AffiliateTransactionHistoryUseCase(AffiliateRepository())
+     val affiliatKycHistoryUseCase = AffiliateKycUseCase(AffiliateRepository())
 
 
     fun getAffiliateBalance() {
@@ -75,9 +76,9 @@ class AffiliateIncomeViewModel : BaseViewModel(){
         })
     }
 
-    private fun convertDataToVisitables(data: AffiliateTransactionHistoryData.GetAffiliateTransactionHistory.Data): ArrayList<Visitable<AffiliateAdapterTypeFactory>>? {
+     fun convertDataToVisitables(data: AffiliateTransactionHistoryData.GetAffiliateTransactionHistory.Data?): ArrayList<Visitable<AffiliateAdapterTypeFactory>>? {
         val tempList: ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
-        data.transaction?.let { items ->
+        data?.transaction?.let { items ->
             for (transaction in items) {
                 transaction.let {
                     tempList.add(AffiliateTransactionHistoryItemModel(transaction))
@@ -87,8 +88,8 @@ class AffiliateIncomeViewModel : BaseViewModel(){
         }
         return null
     }
-    private var selectedDateRange = AffiliateBottomDatePicker.SEVEN_DAYS
-    private var selectedDateValue = "7"
+    private var selectedDateRange = AffiliateBottomDatePicker.THIRTY_DAYS
+    private var selectedDateValue = "30"
     fun getSelectedDate(): String {
         return selectedDateRange
     }
@@ -99,6 +100,12 @@ class AffiliateIncomeViewModel : BaseViewModel(){
             selectedDateValue = range.value
             rangeChanged.value = true
         }
+    }
+    fun setBlacklisted(isBlackListed: Boolean){
+        isUserBlackListed = isBlackListed
+    }
+    fun getIsBlackListed(): Boolean{
+        return isUserBlackListed
     }
     fun getAffiliateBalanceData(): LiveData<AffiliateBalance.AffiliateBalance.Data> = affiliateBalanceData
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility

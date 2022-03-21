@@ -33,7 +33,6 @@ import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import dagger.Lazy
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -219,12 +218,18 @@ open class RecomWidgetViewModel @Inject constructor(
             _atcRecomTokonowNonLogin.value = recomItem
         } else {
             if (recomItem.quantity == quantity) return
-            if (quantity == 0) {
-                deleteRecomItemFromCart(recomItem)
-            } else if (recomItem.quantity == 0) {
-                atcRecomNonVariant(recomItem, quantity)
-            } else {
-                updateRecomCartNonVariant(recomItem, quantity)
+            else {
+                when {
+                    quantity == 0 -> {
+                        deleteRecomItemFromCart(recomItem)
+                    }
+                    recomItem.quantity == 0 -> {
+                        atcRecomNonVariant(recomItem, quantity)
+                    }
+                    else -> {
+                        updateRecomCartNonVariant(recomItem, quantity)
+                    }
+                }
             }
         }
     }
@@ -232,12 +237,8 @@ open class RecomWidgetViewModel @Inject constructor(
 
 
     private fun getQueryParamBasedOnChips(queryParams: String, annotationChip: AnnotationChip): String {
-        var newQueryParams = ""
-        if (queryParams.isNotEmpty()) {
-            newQueryParams = queryParams
-        }
+        var newQueryParams = queryParams
         if (annotationChip.recommendationFilterChip.isActivated) {
-            if (newQueryParams.isNotEmpty()) newQueryParams += "&"
             newQueryParams = annotationChip.recommendationFilterChip.value
         }
         return newQueryParams
@@ -326,8 +327,7 @@ open class RecomWidgetViewModel @Inject constructor(
                 if (result.error.isNotEmpty()) {
                     onFailedATCRecomTokonow(
                         MessageErrorException(
-                            result.error.firstOrNull()
-                                ?: ""
+                            result.error.first()
                         ), recomItem
                     )
                 } else {
@@ -346,7 +346,7 @@ open class RecomWidgetViewModel @Inject constructor(
         message: String,
         isAtc: Boolean = false,
         isDeleteCart: Boolean = false,
-        recomItem: RecommendationItem = RecommendationItem()
+        recomItem: RecommendationItem
     ) {
         if (isAtc) {
             _atcRecomTokonowSendTracker.postValue(recomItem.asSuccess())

@@ -26,7 +26,6 @@ class ToolbarViewComponent(
     private val clPartner = findViewById<ConstraintLayout>(R.id.cl_partner)
     private val groupFollowable = findViewById<Group>(R.id.group_followable)
     private val ivMore = findViewById<ImageView>(R.id.iv_more)
-    private val ivCopyLink = findViewById<ImageView>(R.id.iv_copy_link)
 
     init {
         findViewById<ImageView>(R.id.iv_back)
@@ -44,10 +43,6 @@ class ToolbarViewComponent(
 
         tvPartnerName.setOnClickListener {
             listener.onPartnerNameClicked(this)
-        }
-
-        ivCopyLink.setOnClickListener {
-            listener.onCopyButtonClicked(this)
         }
     }
 
@@ -75,15 +70,10 @@ class ToolbarViewComponent(
         }
     }
 
-    fun setIsShareable(isShow: Boolean) {
-        if (isShow) ivCopyLink.show() else ivCopyLink.hide()
-    }
-
     interface Listener {
         fun onBackButtonClicked(view: ToolbarViewComponent)
         fun onMoreButtonClicked(view: ToolbarViewComponent)
         fun onFollowButtonClicked(view: ToolbarViewComponent)
         fun onPartnerNameClicked(view: ToolbarViewComponent)
-        fun onCopyButtonClicked(view: ToolbarViewComponent)
     }
 }

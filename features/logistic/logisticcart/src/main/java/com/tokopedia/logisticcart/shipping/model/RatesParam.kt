@@ -4,6 +4,7 @@ import com.tokopedia.logisticcart.utils.RatesParamHelper
 
 private const val VALUE_ANDROID = "android"
 private const val VALUE_CLIENT = "client"
+private const val VALUE_CARTAPP = "cartapp"
 private const val VALUE_LANG_ID = "id"
 
 data class RatesParam(
@@ -107,6 +108,26 @@ data class RatesParam(
             "po_time" to po_time,
             "is_fulfillment" to is_fulfillment,
             "bo_metadata" to bo_metadata
+    )
+
+    fun toBoAffordabilityMap(appVersion: String): Map<String, Any?> = mapOf(
+            "origin" to origin,
+            "destination" to destination,
+            "source" to VALUE_CARTAPP,
+            "type" to type,
+            "device_version" to "$VALUE_ANDROID-$appVersion",
+            "weight" to weight,
+            "actual_weight" to actualWeight,
+            "order_value" to order_value,
+            "spids" to spids,
+            "shop_id" to shop_id,
+            "shop_tier" to shop_tier,
+            "user_history" to user_history,
+            "is_fulfillment" to is_fulfillment,
+            "bo_metadata" to bo_metadata,
+            "products" to products,
+            "psl_code" to psl_code,
+            "unique_id" to unique_id,
     )
 
     class Builder(val shopShipments: List<ShopShipment>, val shipping: ShippingParam) {

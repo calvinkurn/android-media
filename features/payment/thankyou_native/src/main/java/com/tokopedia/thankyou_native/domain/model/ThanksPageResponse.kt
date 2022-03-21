@@ -88,11 +88,32 @@ data class ThanksPageData(
         val gatewayAdditionalDataList: ArrayList<GatewayAdditionalData>?,
         @SerializedName("fee_details")
         val feeDetailList : ArrayList<FeeDetail>?,
+        @SerializedName("thanks_summaries")
+        val thanksSummaryInfo: ArrayList<ThanksSummaryInfo>?,
         //created and used locally
         var paymentMethodCount: Int,
         // parse config flag json
         var configFlagData: ConfigFlag? = null,
         ) : Parcelable
+
+@Parcelize
+data class ThanksSummaryInfo(
+    @SerializedName("key")
+    val key: String?,
+    @SerializedName("description")
+    val desctiption: String?,
+    @SerializedName("message")
+    val message: String?,
+    @SerializedName("is_cta")
+    val isCta: Boolean?,
+    @SerializedName("cta_link")
+    val ctaLink: String?,
+    @SerializedName("cta_applink")
+    val ctaApplink: String?,
+    @SerializedName("cta_text")
+    val ctaText: String?,
+
+): Parcelable
 
 @Parcelize
 data class FeeDetail (
@@ -192,6 +213,8 @@ data class ShopOrder(
         val storeName: String?,
         @SerializedName("item_list")
         val purchaseItemList: ArrayList<PurchaseItem>,
+        @SerializedName("addon_item")
+        val addOnItemList : ArrayList<AddOnItem>,
         @SerializedName("bundle_group_data")
         val bundleGroupList: ArrayList<BundleGroupItem>,
         @SerializedName("shipping_amount")
@@ -268,6 +291,7 @@ data class PromoData(
     }
 }
 
+@Parcelize
 data class PurchaseItem(
         @SerializedName("product_id")
         val productId: String,
@@ -307,66 +331,20 @@ data class PurchaseItem(
         @SerializedName("category_id")
         val categoryId: String,
         @SerializedName("bundle_group_id")
-        val bundleGroupId: String
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readDouble(),
-            parcel.readString() ?: "",
-            parcel.readInt(),
-            parcel.readFloat(),
-            parcel.readString() ?: "",
-            parcel.readFloat(),
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readDouble(),
-            parcel.readString() ?: "",
-            parcel.readByte() == 1.toByte(),
-            parcel.readString() ?: "",
-        parcel.readString() ?: ""
-    )
+        val bundleGroupId: String,
+        @SerializedName("addon_item")
+        val addOnList: ArrayList<AddOnItem>
+) : Parcelable
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(productId)
-        parcel.writeString(productName)
-        parcel.writeString(productBrand)
-        parcel.writeDouble(price)
-        parcel.writeString(priceStr)
-        parcel.writeInt(quantity)
-        parcel.writeFloat(weight)
-        parcel.writeString(weightUnit)
-        parcel.writeFloat(totalPrice)
-        parcel.writeString(totalPriceStr)
-        parcel.writeString(promoCode)
-        parcel.writeString(category)
-        parcel.writeString(variant)
-        parcel.writeString(thumbnailProduct)
-        parcel.writeDouble(productPlanProtection)
-        parcel.writeString(bebasOngkirDimension)
-        parcel.writeByte(if (isBBIProduct) 1 else 0)
-        parcel.writeString(categoryId)
-        parcel.writeString(bundleGroupId)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<PurchaseItem> {
-        override fun createFromParcel(parcel: Parcel): PurchaseItem {
-            return PurchaseItem(parcel)
-        }
-
-        override fun newArray(size: Int): Array<PurchaseItem?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+@Parcelize
+data class AddOnItem(
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("quantity")
+    val quantity: Int,
+    @SerializedName("price_str")
+    val addOnPrice: String
+): Parcelable
 
 data class BundleGroupItem(
     @SerializedName("group_id")

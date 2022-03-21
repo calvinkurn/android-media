@@ -290,6 +290,9 @@ class FirebaseDLWrapper {
             LinkerData.PLAY_BROADCASTER.equals(data.type, ignoreCase = true) -> {
                 deeplinkPath = data.uri
             }
+            LinkerData.PLAY_VIEWER.equals(data.type, ignoreCase = true) -> {
+                deeplinkPath = getApplinkPath(LinkerConstants.PLAY, data.id) //"play/" + data.getId();
+            }
             LinkerData.MERCHANT_VOUCHER.equals(data.type, ignoreCase = true) -> {
                 deeplinkPath = data.deepLink
             }

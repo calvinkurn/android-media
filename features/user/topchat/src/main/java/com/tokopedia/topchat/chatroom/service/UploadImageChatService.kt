@@ -108,14 +108,15 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
     ) {
         launchCatchError(block = {
             withContext(dispatcher.io) {
-                val result = replyChatGQLUseCase.replyMessage(
+                val param = ReplyChatGQLUseCase.Param(
                     msgId = msgId,
                     msg = msg,
                     filePath = filePath,
                     source = dummyMessage.source,
                     parentReply = dummyMessage.parentReply
                 )
-                if(result.data.attachment.attributes.isNotEmpty()) {
+                val response = replyChatGQLUseCase(param)
+                if(response.data.attachment.attributes.isNotEmpty()) {
                     removeDummyOnList(dummyMessage)
                     sendSuccessBroadcast()
                 }

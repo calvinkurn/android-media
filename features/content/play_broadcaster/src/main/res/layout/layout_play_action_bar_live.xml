@@ -5,7 +5,7 @@
     android:id="@+id/cl_actionbar_live"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:background="@color/black">
+    tools:background="@color/Unify_Static_Black">
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_bro_end_stream"
@@ -26,7 +26,7 @@
         app:layout_constraintBottom_toBottomOf="@id/ic_bro_end_stream"
         app:layout_constraintStart_toEndOf="@id/ic_bro_end_stream"
         app:layout_constraintTop_toTopOf="@id/ic_bro_end_stream"
-        app:unify_image_placeholder="@color/background_apps"
+        app:unify_image_placeholder="@color/Unify_N50"
         app:unify_image_type="circle" />
 
     <com.tokopedia.unifyprinciples.Typography

@@ -1,10 +1,10 @@
 <resources>
-    <string name="title_attachvoucher">Lampirkan Voucher Toko</string>
+    <string name="title_attachvoucher">Lampirkan Kupon Toko</string>
     <string name="title_attachvoucher_button_attach">Lampirkan</string>
-    <string name="desc_attachvoucher_status">Berlaku hingga: %1$s</string>
-    <string name="title_attachvoucher_empty">Kamu belum punya \nVoucher Toko</string>
-    <string name="desc_attachvoucher_empty">Silakan atur Voucher Toko \ndi Tokopedia versi desktop</string>
-    <string name="action_attachvoucher_create_voucher">Buat Voucher</string>
+    <string name="desc_attachvoucher_status">Berlaku hingga: %1$s | Tersisa : %2$d</string>
+    <string name="title_attachvoucher_empty">Kamu belum punya \nKupon Toko</string>
+    <string name="desc_attachvoucher_empty">Silakan atur Kupon Toko \ndi Tokopedia versi desktop</string>
+    <string name="action_attachvoucher_create_voucher">Buat Kupon</string>
     <string name="title_attachvoucher_free_ongkir">Gratis Ongkir</string>
     <string name="title_attachvoucher_cashback">Cashback</string>
 </resources>

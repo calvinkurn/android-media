@@ -14,7 +14,9 @@ public class Constant {
     public static final int HALF_CONTRAST_RANGE = 100;
 
     public static final int TYPE_WATERMARK_TOPED = 123;
-    public static final int TYPE_WATERMARK_USER_INFO = 456;
-    public static final int TYPE_WATERMARK_BOTH = 789;
     public static final int TYPE_WATERMARK_CENTER_TOPED = 321;
+
+    public static final int TYPE_REMOVE_BG_NORMAL = 456;
+    public static final int TYPE_REMOVE_BG_WHITE = 567;
+    public static final int TYPE_REMOVE_BG_BLACK = 789;
 }

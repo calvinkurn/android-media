@@ -8,6 +8,7 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.filter.testutils.jsonToObject
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 internal class OnOptionClickTest: SortFilterBottomSheetViewModelTestFixtures() {
@@ -28,11 +29,21 @@ internal class OnOptionClickTest: SortFilterBottomSheetViewModelTestFixtures() {
 
         `When an Option is Clicked And Applied`(filterViewModel, clickedOptionViewModel)
 
-        `Then assert option selected state`(clickedOptionViewModel, true)
+        val selectedOptionViewModel = getSelectedOptionViewModel(filterViewModel, clickedOptionViewModel)
+        `Then assert option selected state`(selectedOptionViewModel, true)
         `Then assert sort filter view is updated`(sortFilterList.indexOf(filterViewModel))
-        `Then assert map parameter values contains the clicked option`(existingMapParameter, clickedOptionViewModel)
+        `Then assert map parameter values contains the clicked option`(existingMapParameter, selectedOptionViewModel)
         `Then assert map parameter contains origin_filter=filter`()
-        `Then assert ACTIVE filter map parameter contains the clicked option`(clickedOptionViewModel)
+        `Then assert ACTIVE filter map parameter contains the clicked option`(selectedOptionViewModel)
+    }
+
+    private fun getSelectedOptionViewModel(
+        filterViewModel: FilterViewModel,
+        clickedOptionViewModel: OptionViewModel
+    ) : OptionViewModel {
+        return filterViewModel.optionViewModelList.first { optionVM ->
+            optionVM.option == clickedOptionViewModel.option
+        }
     }
 
     private fun `When an Option is Clicked And Applied`(filterViewModel: FilterViewModel, clickedOptionViewModel: OptionViewModel) {
@@ -120,11 +131,12 @@ internal class OnOptionClickTest: SortFilterBottomSheetViewModelTestFixtures() {
 
         `When an Option is Clicked And Applied`(filterViewModel, clickedOptionViewModel)
 
-        `Then assert option selected state`(clickedOptionViewModel, false)
+        val selectedOptionViewModel = getSelectedOptionViewModel(filterViewModel, clickedOptionViewModel)
+        `Then assert option selected state`(selectedOptionViewModel, false)
         `Then assert sort filter view is updated`(sortFilterList.indexOf(filterViewModel))
-        `Then assert map parameter values does NOT contain the clicked option`(existingMapParameter, clickedOptionViewModel)
+        `Then assert map parameter values does NOT contain the clicked option`(existingMapParameter, selectedOptionViewModel)
         `Then assert map parameter contains origin_filter=filter`()
-        `Then assert ACTIVE filter map parameter does NOT contain the clicked option`(clickedOptionViewModel)
+        `Then assert ACTIVE filter map parameter does NOT contain the clicked option`(selectedOptionViewModel)
     }
 
     private fun `Then assert map parameter values does NOT contain the clicked option`(
@@ -170,12 +182,13 @@ internal class OnOptionClickTest: SortFilterBottomSheetViewModelTestFixtures() {
 
         `When an Option is Clicked And Applied`(filterViewModel, clickedOptionViewModel)
 
+        val selectedOptionViewModel = getSelectedOptionViewModel(filterViewModel, clickedOptionViewModel)
         `Then assert ONLY one OptionViewModel isSelected`(filterViewModel)
-        `Then assert option selected state`(clickedOptionViewModel, true)
+        `Then assert option selected state`(selectedOptionViewModel, true)
         `Then assert sort filter view is updated`(sortFilterList.indexOf(filterViewModel))
-        `Then assert map parameter values ONLY contains the clicked option`(existingMapParameter, clickedOptionViewModel)
+        `Then assert map parameter values ONLY contains the clicked option`(existingMapParameter, selectedOptionViewModel)
         `Then assert map parameter contains origin_filter=filter`()
-        `Then assert ACTIVE filter map parameter ONLY contains the clicked option`(clickedOptionViewModel)
+        `Then assert ACTIVE filter map parameter ONLY contains the clicked option`(selectedOptionViewModel)
     }
 
     private fun createMapParameterWithCategoryFilter(categoryOption: Option): Map<String, String> {
@@ -232,11 +245,12 @@ internal class OnOptionClickTest: SortFilterBottomSheetViewModelTestFixtures() {
 
         `When an Option is Clicked And Applied`(filterViewModel, clickedOptionViewModel)
 
-        `Then assert option selected state`(clickedOptionViewModel, false)
+        val selectedOptionViewModel = getSelectedOptionViewModel(filterViewModel, clickedOptionViewModel)
+        `Then assert option selected state`(selectedOptionViewModel, false)
         `Then assert sort filter view is updated`(sortFilterList.indexOf(filterViewModel))
-        `Then assert map parameter values does NOT contain the clicked option`(existingMapParameter, clickedOptionViewModel)
+        `Then assert map parameter values does NOT contain the clicked option`(existingMapParameter, selectedOptionViewModel)
         `Then assert map parameter contains origin_filter=filter`()
-        `Then assert ACTIVE filter map parameter does NOT contain the clicked option`(clickedOptionViewModel)
+        `Then assert ACTIVE filter map parameter does NOT contain the clicked option`(selectedOptionViewModel)
     }
 
     @Test
@@ -255,12 +269,13 @@ internal class OnOptionClickTest: SortFilterBottomSheetViewModelTestFixtures() {
 
         `When an Option is Clicked And Applied`(filterViewModel, clickedOptionViewModel)
 
+        val selectedOptionViewModel = getSelectedOptionViewModel(filterViewModel, clickedOptionViewModel)
         `Then assert ONLY one OptionViewModel isSelected`(filterViewModel)
-        `Then assert option selected state`(clickedOptionViewModel, true)
+        `Then assert option selected state`(selectedOptionViewModel, true)
         `Then assert sort filter view is updated`(sortFilterList.indexOf(filterViewModel))
-        `Then assert map parameter values ONLY contains the clicked option`(existingMapParameter, clickedOptionViewModel)
+        `Then assert map parameter values ONLY contains the clicked option`(existingMapParameter, selectedOptionViewModel)
         `Then assert map parameter contains origin_filter=filter`()
-        `Then assert ACTIVE filter map parameter ONLY contains the clicked option`(clickedOptionViewModel)
+        `Then assert ACTIVE filter map parameter ONLY contains the clicked option`(selectedOptionViewModel)
     }
 
     private fun DynamicFilterModel.getRadioTypeFilter(): Filter {
@@ -292,11 +307,12 @@ internal class OnOptionClickTest: SortFilterBottomSheetViewModelTestFixtures() {
 
         `When an Option is Clicked And Applied`(filterViewModel, clickedOptionViewModel)
 
-        `Then assert option selected state`(clickedOptionViewModel, false)
+        val selectedOptionViewModel = getSelectedOptionViewModel(filterViewModel, clickedOptionViewModel)
+        `Then assert option selected state`(selectedOptionViewModel, false)
         `Then assert sort filter view is updated`(sortFilterList.indexOf(filterViewModel))
-        `Then assert map parameter values does NOT contain the clicked option`(existingMapParameter, clickedOptionViewModel)
+        `Then assert map parameter values does NOT contain the clicked option`(existingMapParameter, selectedOptionViewModel)
         `Then assert map parameter contains origin_filter=filter`()
-        `Then assert ACTIVE filter map parameter does NOT contain the clicked option`(clickedOptionViewModel)
+        `Then assert ACTIVE filter map parameter does NOT contain the clicked option`(selectedOptionViewModel)
     }
 
     @Test
@@ -363,8 +379,35 @@ internal class OnOptionClickTest: SortFilterBottomSheetViewModelTestFixtures() {
         val filterViewModel = this.sortFilterList!!.findFilterViewModel(dynamicFilterModel.data.filter[0])!!
         val clickedOptionViewModel = filterViewModel.getAnyUnselectedFilter()
         sortFilterBottomSheetViewModel.onOptionClick(filterViewModel, clickedOptionViewModel)
-        sortFilterBottomSheetViewModel.onOptionClick(filterViewModel, clickedOptionViewModel)
+        val selectedOptionViewModel = getSelectedOptionViewModel(filterViewModel, clickedOptionViewModel)
+        sortFilterBottomSheetViewModel.onOptionClick(filterViewModel, selectedOptionViewModel)
 
         `Then assert button apply is not shown`()
+    }
+
+    @Test
+    fun `onOptionClick will also select option on other filter sections`() {
+        val dynamicFilterModel = "dynamic-filter-model-offering.json".jsonToObject<DynamicFilterModel>()
+        val selectedFilter = dynamicFilterModel.data.filter.find { it.title == "Bebas Ongkir" }!!
+        `Given SortFilterBottomSheet view is already created`(mapOf(), dynamicFilterModel)
+
+        val filterViewModel = sortFilterList!!.findFilterViewModel(selectedFilter)
+        val clickedOptionViewModel = filterViewModel!!.optionViewModelList[0]
+        `When an Option is Clicked And Applied`(filterViewModel, clickedOptionViewModel)
+
+        `Then assert the option is selected in other Filter section`(clickedOptionViewModel.option)
+    }
+
+    private fun `Then assert the option is selected in other Filter section`(clickedOption: Option) {
+        val allOptionViewModelList = sortFilterList!!
+            .filterIsInstance<FilterViewModel>()
+            .filter { filterViewModel -> clickedOption in filterViewModel.filter.options }
+            .map { filterViewModel ->
+                filterViewModel.optionViewModelList.first { it.option == clickedOption }
+            }
+        assertTrue(allOptionViewModelList.isNotEmpty())
+        val allOptionViewModelListIsSelected = allOptionViewModelList
+            .all { it.isSelected }
+        assertTrue(allOptionViewModelListIsSelected)
     }
 }

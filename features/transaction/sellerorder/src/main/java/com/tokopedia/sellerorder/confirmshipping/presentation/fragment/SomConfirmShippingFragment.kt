@@ -32,6 +32,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
+import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomCourierList
 import com.tokopedia.sellerorder.confirmshipping.di.SomConfirmShippingComponent
 import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
@@ -118,6 +119,11 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         setupListeners()
         observingCourierList()
         observingChangeCourier()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateShopActive()
     }
 
     override fun onPause() {

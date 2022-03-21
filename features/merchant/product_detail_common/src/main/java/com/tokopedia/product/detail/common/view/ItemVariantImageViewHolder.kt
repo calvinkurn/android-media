@@ -39,11 +39,9 @@ class ItemVariantImageViewHolder(val view: View,
 
     private fun setState(element: VariantOptionWithAttribute) = with(view) {
         setViewListener(element, VariantConstant.IGNORE_STATE)
-        if (element.flashSale) {
-            promoVariantImage.show()
-        } else {
-            promoVariantImage.hide()
-        }
+        val shouldShowFlashSale = element.currentState != VariantConstant.STATE_EMPTY
+                && element.currentState != VariantConstant.STATE_SELECTED_EMPTY
+        renderFlashSale(shouldShowFlashSale, element.flashSale)
 
         view.setOnClickListener {
             listener.onVariantClicked(element)
@@ -74,6 +72,14 @@ class ItemVariantImageViewHolder(val view: View,
                 overlayVariantImgContainer.hide()
                 imgContainerVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_atc_variant_img_unselected)
             }
+        }
+    }
+
+    private fun renderFlashSale(shouldShow: Boolean, isCampaignActive: Boolean) {
+        if (shouldShow && isCampaignActive) {
+            promoVariantImage.show()
+        } else {
+            promoVariantImage.hide()
         }
     }
 

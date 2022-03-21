@@ -11,6 +11,7 @@ import com.tokopedia.play.ui.productfeatured.adapter.ProductFeaturedAdapter
 import com.tokopedia.play.ui.productfeatured.itemdecoration.ProductFeaturedItemDecoration
 import com.tokopedia.play.view.custom.ProductFeaturedRecyclerView
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
@@ -22,7 +23,6 @@ class ProductFeaturedViewComponent(
 ) : ViewComponent(container, R.id.view_product_featured) {
 
     private val rvProductFeatured: ProductFeaturedRecyclerView = findViewById(R.id.rv_product_featured)
-    private val featuredProduct = mutableListOf<PlayProductUiModel>()
 
     private val adapter = ProductFeaturedAdapter(
         productFeaturedListener = object : ProductBasicViewHolder.Listener {
@@ -57,35 +57,25 @@ class ProductFeaturedViewComponent(
         rvProductFeatured.addOnScrollListener(scrollListener)
     }
 
-    fun setFeaturedProducts(products: List<PlayProductUiModel>, maxProducts: Int) {
-        if (products != adapter.getItems()) {
-            try {
-                rvProductFeatured.post {
-                    rvProductFeatured.invalidateItemDecorations()
-                }
-            } catch (ignored: IllegalStateException) {}
-        }
+    fun setFeaturedProducts(products: List<ProductSectionUiModel>, maxProducts: Int) {
+        if (products != adapter.getItems()) invalidateItemDecorations()
 
         val featuredItems = getFinalFeaturedItems(products, maxProducts)
         adapter.setItemsAndAnimateChanges(featuredItems)
-
-        if (featuredItems.isEmpty()) hide()
-        else show()
-
-        featuredProduct.clear()
-        featuredProduct.addAll(featuredItems)
 
         sendImpression()
     }
 
     fun showIfNotEmpty() {
-        if (adapter.itemCount != 0 &&
-                adapter.getItem(0) !is PlayProductUiModel.Placeholder) show()
+        if (adapter.itemCount != 0) show()
         else hide()
     }
 
-    fun showPlaceholder() {
-        setFeaturedProducts(getPlaceholder(), TOTAL_PLACEHOLDER)
+    fun setPlaceholder() {
+        val placeholders = getPlaceholder()
+        if (placeholders != adapter.getItems()) invalidateItemDecorations()
+
+        adapter.setItemsAndAnimateChanges(getPlaceholder())
     }
 
     fun setFadingEndBounds(width: Int) {
@@ -96,8 +86,19 @@ class ProductFeaturedViewComponent(
         rvProductFeatured.setFadingEndBounds(width)
     }
 
-    private fun getFinalFeaturedItems(products: List<PlayProductUiModel>, maxProducts: Int): List<PlayProductUiModel> {
-        return products.take(maxProducts)
+    private fun invalidateItemDecorations() {
+        try {
+            rvProductFeatured.post {
+                rvProductFeatured.invalidateItemDecorations()
+            }
+        } catch (ignored: IllegalStateException) {}
+    }
+
+    private fun getFinalFeaturedItems(products: List<ProductSectionUiModel>, maxProducts: Int): List<PlayProductUiModel> {
+        return products
+            .filterIsInstance<ProductSectionUiModel.Section>()
+            .flatMap { it.productList }
+            .take(maxProducts)
     }
 
     private fun getPlaceholder() = List(TOTAL_PLACEHOLDER) { PlayProductUiModel.Placeholder }

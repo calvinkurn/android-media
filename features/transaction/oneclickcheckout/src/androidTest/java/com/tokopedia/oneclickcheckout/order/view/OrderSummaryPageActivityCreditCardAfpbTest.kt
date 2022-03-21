@@ -14,6 +14,7 @@ import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_CREDI
 import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.junit.After
 import org.junit.Before
@@ -21,6 +22,7 @@ import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
 
+@UiTest
 class OrderSummaryPageActivityCreditCardAfpbTest {
 
     @get:Rule
@@ -67,6 +69,7 @@ class OrderSummaryPageActivityCreditCardAfpbTest {
                 assertSummary(
                         productPrice = "Rp500.000",
                         shippingPrice = "Rp16.000",
+                        insurancePrice = "Rp0",
                         totalPrice = "Rp516.000"
                 )
                 closeBottomSheet()
@@ -103,6 +106,7 @@ class OrderSummaryPageActivityCreditCardAfpbTest {
                 assertSummary(
                         productPrice = "Rp500.000",
                         shippingPrice = "Rp16.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.899",
                         totalPrice = "Rp517.899"
                 )
@@ -143,6 +147,7 @@ class OrderSummaryPageActivityCreditCardAfpbTest {
                 assertSummary(
                         productPrice = "Rp1.000.000",
                         shippingPrice = "Rp16.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp4.599",
                         totalPrice = "Rp1.020.599"
                 )
@@ -189,6 +194,7 @@ class OrderSummaryPageActivityCreditCardAfpbTest {
                 assertSummary(
                         productPrice = "Rp1.000.000",
                         shippingPrice = "Rp16.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp4.599",
                         totalPrice = "Rp1.020.599"
                 )

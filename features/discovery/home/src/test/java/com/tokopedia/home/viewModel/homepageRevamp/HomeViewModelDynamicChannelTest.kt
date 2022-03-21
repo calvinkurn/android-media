@@ -1,17 +1,16 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
-import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetDynamicChannelsUseCase
-import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
+import com.tokopedia.home.beranda.helper.Result
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelLoadingModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelRetryModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
+import com.tokopedia.home.ext.observeOnce
 import com.tokopedia.home_component.model.ChannelModel
-import io.mockk.confirmVerified
+import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import io.mockk.mockk
-import io.mockk.verifyOrder
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
 import org.junit.Rule
@@ -22,159 +21,193 @@ class HomeViewModelDynamicChannelTest{
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val getDynamicChannelsUseCase = mockk<GetDynamicChannelsUseCase>(relaxed = true)
-    private val getHomeUseCase = mockk<HomeRevampUseCase>(relaxed = true)
+    private val getHomeUseCase = mockk<HomeDynamicChannelUseCase>(relaxed = true)
     private lateinit var homeViewModel: HomeRevampViewModel
 
+    private val mockExpiredChannelModel = ChannelModel(id = "1", groupId = "1")
+    private val mockExpiredVisitable = DynamicLegoBannerDataModel(mockExpiredChannelModel)
+
+    private val mockInitialVisitableList = HomeDynamicChannelModel(list = listOf(
+        mockExpiredVisitable
+    ))
+
+    private val mockNewVisitableList = listOf(
+            DynamicLegoBannerDataModel(ChannelModel(id = "2", groupId = "2")),
+            DynamicLegoBannerDataModel(ChannelModel(id = "3", groupId = "3")),
+            DynamicLegoBannerDataModel(ChannelModel(id = "4", groupId = "4"))
+    )
+
+    @ExperimentalCoroutinesApi
     @Test
-    fun `Get dynamic channel data success with single data`() {
-        val dataModel = DynamicChannelDataModel()
-        dataModel.channel = DynamicHomeChannel.Channels(id = "1")
-        val dynamicChannel = DynamicHomeChannel.Channels(id = "2")
-        val dynamicChannelViewModel = DynamicChannelDataModel()
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
-        dynamicChannelViewModel.channel = dynamicChannel
-        // dynamic banner almost expired time
-        getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
-                        list = listOf(dataModel)
-                )
+    fun `When dynamic channel usecase return another list on onDynamicChannelExpired then homeDataModel should contains new data`(){
+        getHomeUseCase.givenGetHomeDataReturn(mockInitialVisitableList)
+        getHomeUseCase.givenOnDynamicChannelExpiredReturns(mockNewVisitableList)
+
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        homeViewModel.getDynamicChannelDataOnExpired(mockExpiredVisitable, mockExpiredChannelModel, 0)
+        Assert.assertTrue(
+                homeViewModel.homeDataModel.list.size == mockNewVisitableList.size
         )
+    }
 
-        // dynamic data returns success
-        getHomeUseCase.givenGetDynamicChannelsUseCase(
-                dynamicChannelDataModels = listOf(dynamicChannelViewModel)
-        )
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `When dynamic channel usecase return empty list on onDynamicChannelExpired then homeDataModel should not contains any data`(){
+        getHomeUseCase.givenGetHomeDataReturn(mockInitialVisitableList)
+        getHomeUseCase.givenOnDynamicChannelExpiredReturns(listOf())
 
-        homeViewModel = createHomeViewModel( getHomeUseCase = getHomeUseCase)
-        homeViewModel.homeLiveData.observeForever(observerHome)
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        homeViewModel.getDynamicChannelDataOnExpired(mockExpiredVisitable, mockExpiredChannelModel, 0)
+        Assert.assertTrue(homeViewModel.homeDataModel.list.isEmpty())
+    }
 
-        // viewModel load request update dynamic channel data
-        homeViewModel.getDynamicChannelData(dataModel, 0)
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `When dynamic channel usecase throws error on onDynamicChannelExpired then homeDataModel should not contains any data`(){
+        getHomeUseCase.givenGetHomeDataReturn(mockInitialVisitableList)
+        getHomeUseCase.givenOnDynamicChannelExpiredError()
 
-        homeViewModel.homeDataModel.findWidgetList<DynamicChannelDataModel> {
-            Assert.assertEquals(it.size, 1)
-            Assert.assertEquals("2", it[0].channel!!.id)
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        homeViewModel.getDynamicChannelDataOnExpired(mockExpiredVisitable, mockExpiredChannelModel, 0)
+        Assert.assertTrue(homeViewModel.homeDataModel.list.isEmpty())
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `When dynamic channel usecase throws error on updateHomeData then updateNetworkLiveData should triggered with exception`(){
+        getHomeUseCase.givenGetHomeDataError()
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        homeViewModel.updateNetworkLiveData.observeOnce {
+            Assert.assertTrue(it.error is Throwable)
         }
     }
 
+    @ExperimentalCoroutinesApi
     @Test
-    fun `Get dynamic channel data success with multiple data`() {
-        val dataModel = DynamicChannelDataModel()
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
-        dataModel.channel = DynamicHomeChannel.Channels(id = "1")
-        val dynamicChannel = DynamicHomeChannel.Channels(id = "2")
-        val dynamicChannel2 = DynamicHomeChannel.Channels(id = "3")
-        val dynamicChannelViewModel1 = DynamicChannelDataModel()
-        val dynamicChannelViewModel2 = DynamicChannelDataModel()
-        dynamicChannelViewModel1.channel = dynamicChannel
-        dynamicChannelViewModel2.channel = dynamicChannel2
-
-        // dynamic banner almost expired time
-        getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
-                        list = listOf(dataModel)
-                )
-        )
-
-        // dynamic data returns success
-        getHomeUseCase.givenGetDynamicChannelsUseCase(
-                dynamicChannelDataModels = listOf(dynamicChannelViewModel1, dynamicChannelViewModel2)
-        )
-
+    fun `When homeDataModel contains DynamicChannelLoadingModel and error pagination on updateHomeData then homeDataModel should contains DynamicChannelRetryModel with state not loading`(){
+        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(
+                DynamicChannelLoadingModel()
+        )))
+        getHomeUseCase.givenUpdateHomeDataReturn(Result.errorPagination(error = Throwable()))
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.homeLiveData.observeForever(observerHome)
+        homeViewModel.refreshHomeData()
+        homeViewModel.homeDataModel.findWidget<DynamicChannelRetryModel>(
+                actionOnFound = { model, index ->
+                    Assert.assertTrue(!model.isLoading)
+                },
+                actionOnNotFound = {
+                    Assert.assertTrue(true)
+                }
+        )
+    }
 
-        // viewModel load request update dynamic channel data") {
-        homeViewModel.getDynamicChannelData(dataModel, 0)
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `When homeDataModel contains DynamicChannelRetryModel and error pagination on updateHomeData then homeDataModel should contains DynamicChannelRetryModel with state not loading`(){
+        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(
+                DynamicChannelRetryModel(true)
+        )))
+        getHomeUseCase.givenUpdateHomeDataReturn(Result.errorPagination(error = Throwable()))
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        homeViewModel.refreshHomeData()
+        homeViewModel.homeDataModel.findWidget<DynamicChannelRetryModel>(
+                actionOnFound = { model, index ->
+                    Assert.assertTrue(!model.isLoading)
+                },
+                actionOnNotFound = {
+                    Assert.assertTrue(true)
+                }
+        )
+    }
 
-        homeViewModel.homeDataModel.findWidgetList<DynamicChannelDataModel> {
-            Assert.assertEquals(2, it.size)
-            Assert.assertEquals("2", it[0].channel!!.id)
-            Assert.assertEquals("3", it[1].channel!!.id)
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `When catch error on updateHomeData then homeDataModel should contains DynamicChannelRetryModel with state not loading`(){
+        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(
+                DynamicChannelRetryModel(true)
+        )))
+        getHomeUseCase.givenUpdateHomeDataError()
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        homeViewModel.refreshHomeData()
+        homeViewModel.updateNetworkLiveData.observeOnce {
+            Assert.assertTrue(it.error is Throwable)
         }
     }
 
+    @ExperimentalCoroutinesApi
     @Test
-    fun `Get dynamic channel data success with empty data`() {
-        val dataModel = DynamicChannelDataModel()
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
-        dataModel.channel = DynamicHomeChannel.Channels(id = "1")
-
-        // dynamic banner almost expired time
-        getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
-                        list = listOf(dataModel)
-                )
-        )
-
-        // dynamic data returns success
-        getHomeUseCase.givenGetDynamicChannelsUseCase(
-                dynamicChannelDataModels = listOf()
-        )
-
+    fun `When catch error null message on updateHomeData then homeDataModel should contains DynamicChannelRetryModel with state not loading`(){
+        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(
+            DynamicChannelRetryModel(true)
+        )))
+        getHomeUseCase.givenUpdateHomeDataErrorNullMessage()
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.homeLiveData.observeForever(observerHome)
-
-        // viewModel load request update dynamic channel data
-        homeViewModel.getDynamicChannelData(dataModel, 0)
-
-        assert(homeViewModel.homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} == null)
-    }
-
-    @Test
-    fun `Get dynamic channel data with visitable but data empty`() {
-        val dataModel = DynamicChannelDataModel()
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
-        dataModel.channel = DynamicHomeChannel.Channels(id = "1")
-
-        // dynamic banner almost expired time
-        getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
-                        list = listOf(dataModel)
-                )
-        )
-
-        // dynamic data returns success
-        getHomeUseCase.givenGetDynamicChannelsUseCase(
-                dynamicChannelDataModels = listOf()
-        )
-
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.homeLiveData.observeForever(observerHome)
-
-        // viewModel load request update dynamic channel data
-        homeViewModel.homeLiveData.value?.list?.find { it::class.java == dataModel::class.java }?.let {
-            homeViewModel.getDynamicChannelData(it, ChannelModel(groupId = "1", id="1"), 0)
+        homeViewModel.refreshHomeData()
+        homeViewModel.updateNetworkLiveData.observeOnce {
+            Assert.assertTrue(it.error is Throwable)
         }
-
-        assert(homeViewModel.homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} == null)
     }
 
+    @ExperimentalCoroutinesApi
     @Test
-    fun `Get dynamic channel data error`() {
-        val dataModel = DynamicChannelDataModel()
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
-        dataModel.channel = DynamicHomeChannel.Channels(id = "1")
-
-        // dynamic banner almost expired time
-        getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
-                        list = listOf(dataModel)
+    fun `When selected position = 0 on removeViewHolderAtPosition then homeDataModel should remove model on position 0`(){
+        val selectedPosition = 0
+        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(
+                list = listOf(
+                        DynamicLegoBannerDataModel(channelModel = ChannelModel(id = "0", groupId = "")),
+                        DynamicLegoBannerDataModel(channelModel = ChannelModel(id = "1", groupId = "")),
+                        DynamicLegoBannerDataModel(channelModel = ChannelModel(id = "2", groupId = ""))
                 )
-        )
-
-        // dynamic data returns success
-        getDynamicChannelsUseCase.givenGetDynamicChannelsUseCaseThrowReturn()
+        ))
 
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.homeLiveData.observeForever(observerHome)
+        homeViewModel.removeViewHolderAtPosition(selectedPosition)
+        homeViewModel.homeDataModel.findWidget<DynamicLegoBannerDataModel>(
+                predicate = {
+                            it?.channelModel?.id == selectedPosition.toString()
+                },
+                actionOnFound = { model, index ->
+                    Assert.assertTrue(false)
+                },
+                actionOnNotFound = {
+                    Assert.assertTrue(true)
+                }
+        )
+    }
 
-        // viewModel load request update dynamic channel data
-        homeViewModel.getDynamicChannelData(dataModel, 0)
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `When selected position = -1 on removeViewHolderAtPosition then homeDataModel should not changed`(){
+        val selectedPosition = -1
+        val mockList = listOf(
+                DynamicLegoBannerDataModel(channelModel = ChannelModel(id = "0", groupId = "")),
+                DynamicLegoBannerDataModel(channelModel = ChannelModel(id = "1", groupId = "")),
+                DynamicLegoBannerDataModel(channelModel = ChannelModel(id = "2", groupId = ""))
+        )
+        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(
+                list = mockList
+        ))
 
-        homeViewModel.trackingLiveData.observeForever { assert(it != null) }
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        homeViewModel.removeViewHolderAtPosition(selectedPosition)
+        Assert.assertTrue(homeViewModel.homeDataModel.list.size == mockList.size)
+    }
 
-        assert(homeViewModel.homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} == null)
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `When selected position more than mockSizeList on removeViewHolderAtPosition then homeDataModel should not changed`(){
+        val selectedPosition = 4
+        val mockList = listOf(
+                DynamicLegoBannerDataModel(channelModel = ChannelModel(id = "0", groupId = "")),
+                DynamicLegoBannerDataModel(channelModel = ChannelModel(id = "1", groupId = "")),
+                DynamicLegoBannerDataModel(channelModel = ChannelModel(id = "2", groupId = ""))
+        )
+        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(
+                list = mockList
+        ))
+
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        homeViewModel.removeViewHolderAtPosition(selectedPosition)
+        Assert.assertTrue(homeViewModel.homeDataModel.list.size == mockList.size)
     }
 }

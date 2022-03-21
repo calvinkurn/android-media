@@ -366,7 +366,15 @@ class SearchProductFirstPageGqlUseCase(
                             url
                             color
                             applink
+                            component_id
+                            filters {
+                              title
+                              key
+                              name
+                              value
+                            }
                         }
+                        tracking_option
                     }
                 }
             }

@@ -2,4 +2,36 @@
 <resources>
     <dimen name="bu_widget_progress_fire_icon_width">12dp</dimen>
     <dimen name="bu_widget_progress_fire_icon_height">13dp</dimen>
+    <dimen name="widget_view_separator_recommendation_big_card_height">20dp</dimen>
+    <dimen name="widget_recommendation_small_card_height">60dp</dimen>
+    <dimen name="widget_recommendation_single_card_shimmering_height">80dp</dimen>
+    <dimen name="widget_recommendation_single_card_height">80dp</dimen>
+    <dimen name="widget_recommendation_big_card_height">96dp</dimen>
+    <dimen name="widget_recommendation_card_shimmering_width">240dp</dimen>
+    <dimen name="widget_recommendation_card_shimmering_price_width">140dp</dimen>
+    <dimen name="widget_recommendation_card_width">280dp</dimen>
+    <dimen name="widget_denom_flash_sale_image_width">10dp</dimen>
+    <dimen name="widget_denom_label_percentage_margin">10dp</dimen>
+    <dimen name="widget_denom_flash_sale_image_height">14dp</dimen>
+    <dimen name="widget_denom_margin">22dp</dimen>
+    <dimen name="widget_denom_grid_title_shimmering_width">72dp</dimen>
+    <dimen name="widget_denom_grid_desc_shimmering_width">117dp</dimen>
+    <dimen name="widget_denom_grid_height">120dp</dimen>
+    <dimen name="widget_denom_grid_width">158dp</dimen>
+    <dimen name="widget_denom_full_progress_bar_flash_sale_width">204dp</dimen>
+    <dimen name="widget_denom_full_price_shimmering_width">117dp</dimen>
+    <dimen name="widget_denom_full_progress_bar_shimmering_width">135dp</dimen>
+    <dimen name="widget_denom_full_desc_shimmering_width">260dp</dimen>
+    <dimen name="widget_denom_full_height">144dp</dimen>
+    <dimen name="widget_denom_full_height_countdown">178dp</dimen>
+    <dimen name="widget_denom_full_width">280dp</dimen>
+    <dimen name="widget_banner_height">105dp</dimen>
+    <dimen name="digital_card_progress_fire_icon_width">12dp</dimen>
+    <dimen name="digital_card_progress_fire_icon_height">13dp</dimen>
+    <dimen name="digital_unify_card_width">136dp</dimen>
+    <dimen name="digital_unify_card_minimum_height">159dp</dimen>
+    <dimen name="digital_unify_card_item_top_background_height">88dp</dimen>
+    <dimen name="digital_unify_card_floating_icon_background_size">46dp</dimen>
+    <dimen name="digital_unify_card_campaign_height">20dp</dimen>
+    <dimen name="widget_client_number_inquiry_width">120dp</dimen>
 </resources>

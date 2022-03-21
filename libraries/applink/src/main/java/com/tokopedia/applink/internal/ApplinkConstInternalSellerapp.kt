@@ -20,6 +20,9 @@ object ApplinkConstInternalSellerapp {
     //SellerHomeActivity
     const val SELLER_HOME = "$INTERNAL_SELLERAPP/sellerhome"
 
+    //InitialSearchActivity
+    const val SELLER_SEARCH = "$INTERNAL_SELLERAPP/seller-search"
+
     const val SELLER_HOME_PRODUCT_MANAGE_LIST = "$INTERNAL_SELLERAPP/sellerhome-product-list"
 
     const val SELLER_HOME_CHAT = "$INTERNAL_SELLERAPP/sellerhome-chat"
@@ -43,6 +46,8 @@ object ApplinkConstInternalSellerapp {
 
     //CentralizedPromoActivity
     const val CENTRALIZED_PROMO = "$INTERNAL_SELLERAPP/centralized-promo"
+
+    //FirstVoucherActivity
     const val CENTRALIZED_PROMO_FIRST_VOUCHER = "$INTERNAL_SELLERAPP/first-voucher-centralized-promo"
 
     //MenuSettingActivity
@@ -51,25 +56,25 @@ object ApplinkConstInternalSellerapp {
     //SellerSeamlessLoginFragment
     const val SEAMLESS_CHOOSE_ACCOUNT = "$INTERNAL_SELLERAPP/login-seamless-choose-account"
 
-
     //CreateMerchantVoucherStepsActivity
     const val CREATE_VOUCHER = "$INTERNAL_SELLERAPP/create-voucher"
+    const val CREATE_VOUCHER_PRODUCT = "$INTERNAL_SELLERAPP/create-voucher-product/{product_id}/"
 
     //VoucherListActivity
     const val VOUCHER_LIST = "$INTERNAL_SELLERAPP/voucher-list"
     const val VOUCHER_ACTIVE = "$INTERNAL_SELLERAPP/voucher-list/active"
     const val VOUCHER_HISTORY = "$INTERNAL_SELLERAPP/voucher-list/history"
+    const val VOUCHER_PRODUCT_LIST = "$INTERNAL_SELLERAPP/voucher-product-list/{mode}/"
 
+    //VoucherDetailActivity
     const val VOUCHER_DETAIL = "$INTERNAL_SELLERAPP/voucher-detail"
+    const val VOUCHER_PRODUCT_DETAIL = "$INTERNAL_SELLERAPP/voucher-product-detail/{voucher_id}/"
 
     // CampaignListActivity
     const val CAMPAIGN_LIST = "$INTERNAL_SELLERAPP/campaign-list"
 
     //SellerMenuActivity
     const val SELLER_MENU = "$INTERNAL_SELLERAPP/seller-menu"
-
-    // SellerActionActivity
-    const val SELLER_ACTION = "$INTERNAL_SELLERAPP/seller-action"
 
     // SellerSettingsActivity
     const val SELLER_SETTINGS = "$INTERNAL_SELLERAPP/seller-settings"

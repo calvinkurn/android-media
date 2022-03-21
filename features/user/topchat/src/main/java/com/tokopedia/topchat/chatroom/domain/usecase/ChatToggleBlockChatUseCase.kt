@@ -9,7 +9,7 @@ import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import javax.inject.Inject
 
-class ChatToggleBlockChatUseCase @Inject constructor(
+open class ChatToggleBlockChatUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ): CoroutineUseCase<ChatToggleBlockChatUseCase.Param, ChatSettingsResponse>(dispatcher.io) {

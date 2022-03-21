@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -200,6 +201,7 @@ class InboxReputationDetailItemViewHolder(
                 element,
                 sellerAddReplyEditText?.text.toString()
             )
+            KeyboardHandler.DropKeyboard(itemView.context, sellerAddReplyEditText)
         }
     }
 

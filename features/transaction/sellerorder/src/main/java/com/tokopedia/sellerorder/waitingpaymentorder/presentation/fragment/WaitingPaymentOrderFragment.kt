@@ -29,6 +29,7 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCheckAndSetStockButton
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
+import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
 import com.tokopedia.sellerorder.databinding.FragmentWaitingPaymentOrderBinding
 import com.tokopedia.sellerorder.waitingpaymentorder.di.DaggerWaitingPaymentOrderComponent
 import com.tokopedia.sellerorder.waitingpaymentorder.domain.model.WaitingPaymentOrderRequestParam
@@ -86,6 +87,11 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         observeWaitingPaymentOrderResult()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateShopActive()
     }
 
     override fun onPause() {

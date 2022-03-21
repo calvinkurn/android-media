@@ -3,11 +3,11 @@ package com.tokopedia.product.addedit.specification.presentation.activity
 import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.product.addedit.common.TabletAdaptiveActivity
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.specification.presentation.fragment.AddEditProductSpecificationFragment
 
-class AddEditProductSpecificationActivity: BaseSimpleActivity() {
+class AddEditProductSpecificationActivity: TabletAdaptiveActivity() {
 
     companion object {
         fun createInstance(context: Context?, cacheManagerId: String?): Intent =

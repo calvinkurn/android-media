@@ -33,10 +33,21 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/view_upcoming_share_experience"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/view_upcoming_share_experience"
+        layout="@layout/view_share_experience"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toTopOf="@id/view_toolbar"
+        app:layout_constraintBottom_toBottomOf="@id/view_toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/view_toolbar"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_upcoming_title"

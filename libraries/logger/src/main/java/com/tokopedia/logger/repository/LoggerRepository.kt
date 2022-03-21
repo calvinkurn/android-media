@@ -8,7 +8,7 @@ import com.tokopedia.logger.datasource.cloud.LoggerCloudEmbraceImpl
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicImpl
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerDao
-import com.tokopedia.logger.model.EmbraceBody
+import com.tokopedia.logger.model.embrace.EmbraceBody
 import com.tokopedia.logger.model.LoggerCloudModelWrapper
 import com.tokopedia.logger.model.newrelic.NewRelicConfig
 import com.tokopedia.logger.model.scalyr.ScalyrConfig
@@ -19,6 +19,7 @@ import com.tokopedia.logger.utils.LoggerReporting
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import kotlin.coroutines.CoroutineContext
+import kotlin.math.log
 
 class LoggerRepository(
     private val logDao: LoggerDao,
@@ -28,7 +29,7 @@ class LoggerRepository(
     private val scalyrConfigs: List<ScalyrConfig>,
     private val newRelicConfig: NewRelicConfig,
     private val encrypt: ((String) -> (String))? = null,
-    private val decrypt: ((String) -> (String))? = null
+    val decrypt: ((String) -> (String))? = null
 ) : LoggerRepositoryContract, CoroutineScope {
 
     override suspend fun insert(logger: Logger) {
@@ -72,6 +73,23 @@ class LoggerRepository(
             logDao.getServerChannel(LoggerReporting.P2, queryLimits[1])
         )
     }
+
+    //start region for view server logger in developer options
+    override suspend fun getLoggerList(
+        serverChannel: String,
+        limit: Int,
+        offset: Int
+    ): List<Logger> {
+        return if (serverChannel.isBlank()) logDao.getLoggerList(
+            limit,
+            offset
+        ) else logDao.getLoggerListFilter(serverChannel, limit, offset)
+    }
+
+    override suspend fun deleteAll() {
+        logDao.deleteAll()
+    }
+    //end region for view server logger in developer options
 
     private suspend fun sendLogToServer(priorityScalyr: Int, logs: List<Logger>) {
         val priorityScalyrIndex = priorityScalyr - 1
