@@ -62,7 +62,7 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
 
         listSetting.add(
             CommonDataView(id = AccountConstants.SettingCode.SETTING_PLAY_WIDGET_AUTOPLAY, title = context?.getString(R.string.menu_account_title_play_widget_autoplay), body = context?.getString(R.string.menu_account_desc_play_widget_autoplay),
-                type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.IMAGE,
+                type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.VIDEO,
                 isChecked = accountPref.isItemSelected(AccountConstants.KEY.KEY_PREF_PLAY_WIDGET_AUTOPLAY, true))
         )
 
