@@ -4,12 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.vouchercreation.common.extension.splitByThousand
-import com.tokopedia.vouchercreation.common.utils.CompactNumberFormatter
 import com.tokopedia.vouchercreation.common.utils.ResourceProvider
 import com.tokopedia.vouchercreation.product.create.data.response.ProductId
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
@@ -28,9 +28,12 @@ class ManageProductViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getProductListUseCase: GetProductListUseCase,
     private val validateVoucherUseCase: ValidateVoucherUseCase,
-    private val resourceProvider: ResourceProvider,
-    private val compactNumberFormatter: CompactNumberFormatter
+    private val resourceProvider: ResourceProvider
 ) : BaseViewModel(dispatchers.main) {
+
+    companion object {
+        private const val PRODUCT_SOLD_COUNT_LAST_DIGIT_TO_DISPLAY = 1
+    }
 
     // PRODUCT SELECTIONS
     var isSelectAllMode = true
@@ -337,7 +340,7 @@ class ManageProductViewModel @Inject constructor(
     }
 
     private fun getFormattedStatisticText(sold: Int, stock: Int): String {
-        val formattedSoldCount = compactNumberFormatter.format(sold)
+        val formattedSoldCount = sold.thousandFormatted(PRODUCT_SOLD_COUNT_LAST_DIGIT_TO_DISPLAY)
         val statisticTemplate = resourceProvider.getFormattedProductStatistic()
         return statisticTemplate.format(formattedSoldCount, stock.splitByThousand(Locale.ENGLISH))
     }

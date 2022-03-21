@@ -5,12 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.removeFirst
+import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.vouchercreation.common.extension.splitByThousand
-import com.tokopedia.vouchercreation.common.utils.CompactNumberFormatter
 import com.tokopedia.vouchercreation.common.utils.ResourceProvider
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
@@ -33,8 +33,7 @@ class AddProductViewModel @Inject constructor(
         private val validateVoucherUseCase: ValidateVoucherUseCase,
         private val getWarehouseLocationsUseCase: GetWarehouseLocationsUseCase,
         private val getShowCasesByIdUseCase: GetShowCasesByIdUseCase,
-        private val getProductListMetaDataUseCase: GetProductListMetaDataUseCase,
-        private val compactNumberFormatter: CompactNumberFormatter
+        private val getProductListMetaDataUseCase: GetProductListMetaDataUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -47,6 +46,7 @@ class AddProductViewModel @Inject constructor(
         const val COUPON_TYPE_CASHBACK = "cashback"
         const val COUPON_TYPE_SHIPPING = "shipping"
         const val SORT_DEFAULT = "DEFAULT"
+        private const val PRODUCT_SOLD_COUNT_LAST_DIGIT_TO_DISPLAY = 1
     }
 
     private var productUiModels: List<ProductUiModel> = listOf()
@@ -203,7 +203,7 @@ class AddProductViewModel @Inject constructor(
     }
 
     private fun getFormattedStatisticText(sold: Int, stock: Int): String {
-        val formattedSoldCount = compactNumberFormatter.format(sold)
+        val formattedSoldCount = sold.thousandFormatted(PRODUCT_SOLD_COUNT_LAST_DIGIT_TO_DISPLAY)
         val statisticTemplate = resourceProvider.getFormattedProductStatistic()
         return statisticTemplate.format(formattedSoldCount, stock.splitByThousand(Locale.ENGLISH))
     }
