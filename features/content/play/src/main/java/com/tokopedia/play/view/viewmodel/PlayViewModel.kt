@@ -762,12 +762,12 @@ class PlayViewModel @AssistedInject constructor(
 
 
     private fun getLatestInset(): Map<KebabMenuType, BottomInsetsState> {
-        val currentValue = _observableKebabSheets.value
-        currentValue?.values?.forEach {
+        val currentValue = _observableKebabSheets.value ?: return getDefaultKebabInsets()
+        currentValue.values.forEach {
             it.isPreviousStateSame = true
             if (it is BottomInsetsState.Shown) it.deepLevel += 1
         }
-        return currentValue ?: getDefaultKebabInsets()
+        return currentValue
     }
 
     fun hideThreeDotsSheet(){
