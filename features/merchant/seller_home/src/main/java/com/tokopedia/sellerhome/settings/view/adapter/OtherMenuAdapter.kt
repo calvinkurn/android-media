@@ -4,14 +4,20 @@ import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
-import com.tokopedia.seller.menu.common.view.uimodel.*
+import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.PrintingMenuItemUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.R
@@ -69,7 +75,10 @@ class OtherMenuAdapter(
         MenuItemUiModel(
             title = context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_review)
                 .orEmpty(),
-            clickApplink = ApplinkConst.REPUTATION,
+            clickApplink = UriUtil.buildUriAppendParam(
+                ApplinkConst.REPUTATION,
+                mapOf(ReviewApplinkConst.PARAM_TAB to ReviewApplinkConst.BUYER_REVIEW_TAB)
+            ),
             eventActionSuffix = SettingTrackingConstant.REVIEW,
             iconUnify = IconUnify.STAR
         ),
