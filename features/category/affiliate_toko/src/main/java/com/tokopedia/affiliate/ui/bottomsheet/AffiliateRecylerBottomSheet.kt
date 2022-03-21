@@ -84,7 +84,7 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
     }
 
     private fun initDivider() {
-        if((listItem as? List<Any>)?.isNotEmpty() == true && type == TYPE_HOME) {
+        if((listItem as? List<Any>)?.isNotEmpty() == true && type == TYPE_HOME && viewModel?.isFeatureWhiteListed() == true) {
             contentView?.findViewById<DividerUnify>(R.id.divider_2)?.show()
         }else{
             contentView?.findViewById<DividerUnify>(R.id.divider_2)?.gone()
