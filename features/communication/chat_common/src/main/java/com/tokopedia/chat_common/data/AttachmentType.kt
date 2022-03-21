@@ -19,7 +19,7 @@ class AttachmentType {
         const val TYPE_IMAGE_CAROUSEL = "991"
         const val TYPE_MESSAGE = "0"
         const val TYPE_CTA_HEADER_MSG = "27"
-        const val TYPE_PRODUCT_BUNDLING = "31"
+        const val TYPE_PRODUCT_BUNDLING = "32"
 
         //CHATBOT
         const val TYPE_INVOICES_SELECTION = "6"

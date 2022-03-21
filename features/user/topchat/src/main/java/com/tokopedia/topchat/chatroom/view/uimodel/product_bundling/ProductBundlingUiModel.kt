@@ -51,4 +51,9 @@ class ProductBundlingUiModel constructor(
             return self()
         }
     }
+
+    companion object {
+        const val STATUS_ACTIVE = 1
+        const val STATUS_UPCOMING = 2
+    }
 }

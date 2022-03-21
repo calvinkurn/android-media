@@ -26,6 +26,8 @@ import com.tokopedia.topchat.chatroom.view.adapter.MultipleBundlingItemAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel.Companion.STATUS_ACTIVE
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel.Companion.STATUS_UPCOMING
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.ImageUnify
@@ -297,13 +299,31 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
             if (commonListener?.isSeller() == true) {
                 it.hide()
             } else {
-                it.text = element.productBundling.buttonText
-                it.setOnClickListener {
-                    listener?.onClickCtaProductBundling(element)
-                }
+                bindButton(it, element)
                 it.show()
             }
         }
+    }
+
+    private fun bindButton(button: UnifyButton, element: ProductBundlingUiModel) {
+        button.text = element.productBundling.buttonText
+        button.buttonType = UnifyButton.Type.MAIN
+        when(element.productBundling.bundleStatus) {
+            STATUS_ACTIVE -> bindActiveButton(button, element)
+            STATUS_UPCOMING -> bindActiveButton(button, element)
+            else -> bindDisabledButton(button)
+        }
+    }
+
+    private fun bindActiveButton(button: UnifyButton, element: ProductBundlingUiModel) {
+        button.isEnabled = true
+        button.setOnClickListener {
+            listener?.onClickCtaProductBundling(element)
+        }
+    }
+
+    private fun bindDisabledButton(button: UnifyButton) {
+        button.isEnabled = false
     }
 
     private fun bindMargin(product: ProductBundlingUiModel) {
