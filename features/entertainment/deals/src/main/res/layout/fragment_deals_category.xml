@@ -8,7 +8,6 @@
         android:id="@+id/deals_category_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginTop="@dimen/spacing_lvl3"
         android:clipToPadding="false"
         android:paddingBottom="@dimen/layout_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
