@@ -44,6 +44,13 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         return gql.getResponse(request)
     }
 
+    suspend fun getAddressDetail(addressId: String): KeroGetAddressResponse.Data {
+        val param = mapOf("input" to mapOf("addr_ids" to addressId))
+        val request = GraphqlRequest(KeroLogisticQuery.kero_get_address_detail,
+                KeroGetAddressResponse.Data::class.java, param)
+        return gql.getResponse(request)
+    }
+
     suspend fun getAddress(): AddressResponse {
         val param = mapOf(
                 "input" to mapOf(
