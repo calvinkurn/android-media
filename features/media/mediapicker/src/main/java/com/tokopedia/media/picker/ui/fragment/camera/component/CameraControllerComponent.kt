@@ -62,6 +62,9 @@ class CameraControllerComponent(
 
     private var videoDurationTimer: CountDownTimer? = null
 
+    // index of camera mode based on rv position
+    private var cameraModeIndex = 0
+
     init {
         setMaxDuration()
 
@@ -87,6 +90,7 @@ class CameraControllerComponent(
     override fun onCameraSliderItemClicked(view: View) {
         val targetIndex = lstCameraMode.getChildLayoutPosition(view)
         lstCameraMode.smoothScrollToPosition(targetIndex)
+        setCameraModeSelected(targetIndex)
     }
 
     override fun onScrollChanged() {
@@ -98,8 +102,10 @@ class CameraControllerComponent(
 
         if (isPhotoMode()) {
             photoModeButtonState()
+            setCameraModeSelected(PHOTO_MODE)
         } else if (isVideoMode()) {
             videoModeButtonState()
+            setCameraModeSelected(VIDEO_MODE)
         }
     }
 
@@ -253,20 +259,23 @@ class CameraControllerComponent(
     }
 
     private fun photoModeButtonState() {
-        setCameraModeSelected(PHOTO_MODE)
         btnTakeCamera.setBackgroundResource(R.drawable.bg_picker_camera_take_photo)
     }
 
     private fun videoModeButtonState() {
-        setCameraModeSelected(VIDEO_MODE)
         btnTakeCamera.setBackgroundResource(R.drawable.bg_picker_camera_take_video)
     }
 
     private fun setCameraModeSelected(index: Int){
-        val prevIndex = if(index == PHOTO_MODE) VIDEO_MODE else PHOTO_MODE
-        adapterData[index].isSelected = true
-        adapterData[prevIndex].isSelected = false
-        adapter.notifyDataSetChanged()
+        if(index == cameraModeIndex) return
+        updateCameraModeRecyclerItem(cameraModeIndex, false)
+        cameraModeIndex = index
+        updateCameraModeRecyclerItem(cameraModeIndex, true)
+    }
+
+    private fun updateCameraModeRecyclerItem(index: Int, recyclerItemState: Boolean){
+        adapterData[index].isSelected = recyclerItemState
+        adapter.notifyItemChanged(index)
     }
 
     private fun getActiveCameraMode()
