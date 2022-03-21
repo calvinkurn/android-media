@@ -48,19 +48,16 @@
             tools:src="@color/Unify_G500"
             tools:visibility="visible" />
 
-        <com.tokopedia.unifyprinciples.Typography
+        <com.tokopedia.unifycomponents.Label
             android:id="@+id/dgu_label_on_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/unify_space_4"
             android:layout_marginBottom="@dimen/unify_space_4"
-            android:background="@drawable/bg_dgu_label_on_image"
             android:elevation="@dimen/unify_space_8"
-            android:textColor="#FFFFFF"
+            app:labelType="highlight_dark_image_label"
             app:layout_constraintBottom_toBottomOf="@id/dgu_media_image"
             app:layout_constraintLeft_toLeftOf="@id/dgu_media_image"
-            app:typographyType="small"
-            app:typographyWeight="bold"
             tools:text="Label on Image" />
 
         <androidx.cardview.widget.CardView
@@ -321,7 +318,7 @@
             android:textColor="@color/Unify_NN600"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dgu_discount_slash_price"
+            app:layout_constraintTop_toBottomOf="@id/dgu_discount_label"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="Terjual 1111" />

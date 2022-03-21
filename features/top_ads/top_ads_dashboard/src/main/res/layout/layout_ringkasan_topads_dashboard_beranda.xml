@@ -81,7 +81,7 @@
                 tools:listitem="@layout/item_rv_ringkasan" />
 
             <FrameLayout
-                android:id="@+id/graph_layout"
+                android:id="@+id/graph_layout_beranda"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl3"

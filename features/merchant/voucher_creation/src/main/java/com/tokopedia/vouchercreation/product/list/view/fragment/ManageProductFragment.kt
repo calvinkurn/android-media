@@ -49,6 +49,9 @@ class ManageProductFragment : BaseDaggerFragment(),
         const val BUNDLE_KEY_SELECTED_PRODUCT_IDS = "selectedProductIds"
         const val BUNDLE_KEY_SELECTED_WAREHOUSE_ID = "selectedWarehouseId"
 
+        // Quick fix for issue https://tokopedia.atlassian.net/browse/AN-34843
+        const val BUNDLE_KEY_BLOCK_ADD_PRODUCT = "blockAddProduct"
+
         @JvmStatic
         fun createInstance(
                 isViewing: Boolean,
@@ -58,6 +61,10 @@ class ManageProductFragment : BaseDaggerFragment(),
                 selectedProducts: ArrayList<ProductUiModel>?,
                 selectedProductIds: ArrayList<ProductId>?,
                 selectedWarehouseId: String?,
+
+                // Quick fix for issue https://tokopedia.atlassian.net/browse/AN-34843
+                blockAddProduct: Boolean
+
         ) = ManageProductFragment().apply {
             this.arguments = Bundle().apply {
                 putBoolean(BUNDLE_KEY_IS_VIEWING, isViewing)
@@ -67,6 +74,7 @@ class ManageProductFragment : BaseDaggerFragment(),
                 putParcelableArrayList(BUNDLE_KEY_SELECTED_PRODUCTS, selectedProducts)
                 putParcelableArrayList(BUNDLE_KEY_SELECTED_PRODUCT_IDS, selectedProductIds)
                 putString(BUNDLE_KEY_SELECTED_WAREHOUSE_ID,selectedWarehouseId)
+                putBoolean(BUNDLE_KEY_BLOCK_ADD_PRODUCT, blockAddProduct)
             }
         }
     }
@@ -198,6 +206,12 @@ class ManageProductFragment : BaseDaggerFragment(),
 
     private fun setupAddProductButton(binding: FragmentMvcManageProductBinding?) {
         binding?.tpgAddProduct?.isVisible = viewModel.getIsEditing()
+
+        val blockAddProduct = arguments?.getBoolean(BUNDLE_KEY_BLOCK_ADD_PRODUCT)
+        blockAddProduct?.run {
+            if (this) binding?.tpgAddProduct?.hide()
+        }
+
         binding?.tpgAddProduct?.setOnClickListener {
             navigateToAddProductPage()
         }

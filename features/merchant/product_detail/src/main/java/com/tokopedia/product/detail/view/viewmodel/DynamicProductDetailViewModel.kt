@@ -871,6 +871,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                         isSuccess = false,
                         errorMessage = it.message,
                 )
+                ProductTopAdsLogger.logServer(
+                    tag = TOPADS_PDP_GENERAL_ERROR,
+                    throwable = it,
+                    productId = productId
+                )
                 //nothing to do since fire and forget
             }
         }
