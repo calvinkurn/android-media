@@ -48,6 +48,9 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
                     isChecked = permissionChecker.hasLocationPermission()),
             CommonDataView(id = AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID, title = context?.getString(R.string.menu_account_title_safe_mode), body = context?.getString(R.string.menu_account_desc_safe_mode), type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.PROTECTION,
                     isChecked = accountPref.isItemSelected(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, false)),
+            CommonDataView(id = AccountConstants.SettingCode.SETTING_PLAY_WIDGET_AUTOPLAY, title = context?.getString(R.string.menu_account_title_play_widget_autoplay), body = context?.getString(R.string.menu_account_desc_play_widget_autoplay),
+                type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.VIDEO,
+                isChecked = accountPref.isItemSelected(AccountConstants.KEY.KEY_PREF_PLAY_WIDGET_AUTOPLAY, true)),
         )
 
         if(showDarkModeToggle) {
@@ -59,12 +62,6 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
                     isChecked = accountPref.isItemSelected(TkpdCache.Key.KEY_DARK_MODE, false),
                     labelText = getLabelText(R.string.new_home_account_label_beta)))
         }
-
-        listSetting.add(
-            CommonDataView(id = AccountConstants.SettingCode.SETTING_PLAY_WIDGET_AUTOPLAY, title = context?.getString(R.string.menu_account_title_play_widget_autoplay), body = context?.getString(R.string.menu_account_desc_play_widget_autoplay),
-                type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.VIDEO,
-                isChecked = accountPref.isItemSelected(AccountConstants.KEY.KEY_PREF_PLAY_WIDGET_AUTOPLAY, true))
-        )
 
         listSetting.addAll(mutableListOf(
                 CommonDataView(id = AccountConstants.SettingCode.SETTING_QUALITY_SETTING, title = context?.getString(R.string.menu_account_title_quality_setting), body = context?.getString(R.string.menu_account_desc_quality_setting), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.IMAGE),
