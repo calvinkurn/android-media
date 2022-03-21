@@ -67,6 +67,13 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         return gql.getResponse(request)
     }
 
+    suspend fun getDistrictCenter(districtId: Long): KeroAddrGetDistrictCenterResponse.Data {
+        val param = mapOf("districtId" to districtId)
+        val request = GraphqlRequest(KeroLogisticQuery.kero_addr_get_district_center,
+                KeroAddrGetDistrictCenterResponse.Data::class.java, param)
+        return gql.getResponse(request)
+    }
+
     suspend fun getDistrictGeocode(latlong: String?): AutoFillResponse {
         val param = mapOf("latlng" to latlong)
         val request = GraphqlRequest(KeroLogisticQuery.keroMapsAutofill,

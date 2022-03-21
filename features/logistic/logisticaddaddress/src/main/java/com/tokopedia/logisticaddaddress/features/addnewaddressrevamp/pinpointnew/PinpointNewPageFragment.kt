@@ -55,6 +55,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtil
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.DistrictCenterUiModel
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.IMAGE_OUTSIDE_INDONESIA
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FOUND
@@ -293,7 +294,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                         updateGetDistrictBottomSheet(it)
                     }
                 } else {
-                    currentDistrictName?.let { viewModel.getAutoComplete(it) }
+//                    currentDistrictName?.let { viewModel.getAutoComplete(it) }
+                    districtId?.let { viewModel.getDistrictCenter(it) }
                 }
 
             }
@@ -343,6 +345,15 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                             showNotFoundLocation()
                         }
                     }
+                }
+            }
+        })
+
+        viewModel.districtCenter.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    moveMap(getLatLng(it.data.latitude, it.data.longitude), ZOOM_LEVEL)
+                    viewModel.getDistrictData(it.data.latitude, it.data.longitude)
                 }
             }
         })

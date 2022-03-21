@@ -277,4 +277,16 @@ object KeroLogisticQuery {
           }
       }
     """.trimIndent()
+
+    val kero_addr_get_district_center = """
+        query kero_addr_get_district_center(${'$'}districtId: Int!) {
+            kero_addr_get_district_center(districtId:${'$'}districtId) {
+                district {
+                    district_id
+                    latitude
+                    longitude
+                }
+            }
+        }
+    """.trimIndent()
 }
