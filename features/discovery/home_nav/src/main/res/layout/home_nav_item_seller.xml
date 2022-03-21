@@ -29,17 +29,6 @@
             tools:visibility="visible"
             app:loader_type="line" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/usr_shop_avatar"
-            android:layout_width="14dp"
-            android:layout_height="14dp"
-            android:scaleType="fitCenter"
-            android:visibility="invisible"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
-
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/usr_shop_info"
             android:layout_width="0dp"
