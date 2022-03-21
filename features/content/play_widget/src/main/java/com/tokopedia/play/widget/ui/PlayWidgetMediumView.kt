@@ -233,7 +233,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             title.text = data.title
         }
 
-        actionTitle.shouldShowWithAction(data.isActionVisible){
+        actionTitle.shouldShowWithAction(data.isActionVisible && data.actionAppLink.isNotEmpty()){
             actionTitle.text = data.actionTitle
             actionTitle.setOnClickListener {
                 mAnalyticListener?.onClickViewAll(this)
