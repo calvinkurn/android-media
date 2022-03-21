@@ -4,7 +4,7 @@
 
     <application android:hasCode="true">
         <activity
-            android:name=".invitationconfirmation.presentation.activity.AdminInvitationConfirmationActivity"
+            android:name="com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.activity.AdminInvitationConfirmationActivity"
             android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait"
             android:label="@string/title_shop_admin"
@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".invitationaccepted.presentation.activity.AdminInvitationAcceptedActivity"
+            android:name="com.tokopedia.shopadmin.feature.invitationaccepted.presentation.activity.AdminInvitationAcceptedActivity"
             android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait"
             android:label="@string/title_admin_invitation_accepted"

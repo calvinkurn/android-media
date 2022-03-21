@@ -43,5 +43,7 @@
     <string name="desc_admin_confirmation_reject">Jika kamu menolak, penolakan akses admin tidak dapat dibatalkan.</string>
     <string name="primary_btn_admin_confirmation_reject">Ya, Tolak</string>
     <string name="secondary_btn_admin_confirmation_reject">Tidak</string>
+    <string name="error_message_confirmation_accepted">Akses gagal diterima. Coba lagi, ya.</string>
+    <string name="error_message_confirmation_rejected">Akses gagal ditolak. Coba lagi, ya.</string>
 
 </resources>

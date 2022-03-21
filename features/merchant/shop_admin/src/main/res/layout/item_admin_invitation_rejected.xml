@@ -45,7 +45,7 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btnInvitationExpires"
+        android:id="@+id/btnInvitationRejected"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
