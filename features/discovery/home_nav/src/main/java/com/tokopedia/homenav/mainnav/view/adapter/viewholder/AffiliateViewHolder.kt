@@ -1,13 +1,18 @@
 package com.tokopedia.homenav.mainnav.view.adapter.viewholder
 
+import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HomeNavItemAffiliateBinding
+import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
 import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileAffiliateDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileSellerDataModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.NotificationUnify
@@ -46,6 +51,15 @@ class AffiliateViewHolder (
             )
         )
         binding?.usrAffiliateInfo?.setWeight(Typography.REGULAR)
+    }
+
+    private fun affiliateClicked(profileAffiliate: ProfileAffiliateDataModel, context: Context) {
+        if (profileAffiliate.isRegister)
+//            onShopClicked(profileSeller.canGoToSellerAccount)
+        else {
+            RouteManager.route(context, profileAffiliate.affiliateAppLink)
+//            TrackingProfileSection.onClickOpenShopSection(mainNavListener.getUserId())
+        }
     }
 
     override fun bind(element: ProfileAffiliateDataModel) {
@@ -89,7 +103,7 @@ class AffiliateViewHolder (
                     text = affiliateInfo
                 }
                 containerAffiliate.setOnClickListener {
-//                    shopClicked(element, it.context)
+                    affiliateClicked(element, it.context)
                 }
             }
         }
