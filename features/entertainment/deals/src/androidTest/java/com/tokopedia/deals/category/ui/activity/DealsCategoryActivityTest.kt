@@ -15,7 +15,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.deals.DealsDummyResponseString
@@ -27,7 +26,6 @@ import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.core.AllOf
-import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 
@@ -37,8 +35,6 @@ import org.junit.Test
 class DealsCategoryActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
-    private lateinit var localCacheHandler: LocalCacheHandler
 
     @get:Rule
     val cassavaTestRule = CassavaTestRule(sendValidationResult = false)
@@ -47,12 +43,11 @@ class DealsCategoryActivityTest {
     var activityRule: IntentsTestRule<DealsCategoryActivity> = object : IntentsTestRule<DealsCategoryActivity>(DealsCategoryActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            gtmLogDBSource.deleteAll().subscribe()
-            localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
-            localCacheHandler.apply {
+
+            LocalCacheHandler(context, PREFERENCES_NAME).apply {
                 putBoolean(SHOW_COACH_MARK_KEY, false)
-                applyEditor()
-            }
+            }.also { it.applyEditor() }
+
             setupGraphqlMockResponse(DealsCategoryMockResponse())
         }
 
@@ -117,11 +112,6 @@ class DealsCategoryActivityTest {
         onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click())
         Thread.sleep(2000)
         onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click())
-    }
-
-    @After
-    fun tearDown() {
-        gtmLogDBSource.deleteAll().subscribe()
     }
 
     companion object {
