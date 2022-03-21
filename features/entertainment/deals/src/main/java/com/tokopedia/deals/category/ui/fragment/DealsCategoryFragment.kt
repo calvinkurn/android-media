@@ -24,27 +24,31 @@ import com.tokopedia.deals.category.ui.activity.DealsCategoryActivity
 import com.tokopedia.deals.category.ui.adapter.DealsCategoryAdapter
 import com.tokopedia.deals.category.ui.viewmodel.DealCategoryViewModel
 import com.tokopedia.deals.common.analytics.DealsAnalytics
-import com.tokopedia.deals.common.listener.*
+import com.tokopedia.deals.common.listener.DealChipsListActionListener
+import com.tokopedia.deals.common.listener.DealsBrandActionListener
+import com.tokopedia.deals.common.listener.EmptyStateListener
+import com.tokopedia.deals.common.listener.OnBaseLocationActionListener
+import com.tokopedia.deals.common.listener.ProductCardListener
+import com.tokopedia.deals.common.listener.SearchBarActionListener
 import com.tokopedia.deals.common.model.LoadingMoreUnifyModel
 import com.tokopedia.deals.common.ui.activity.DealsBaseActivity
-import com.tokopedia.deals.common.ui.dataview.*
+import com.tokopedia.deals.common.ui.dataview.ChipDataView
+import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
+import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
+import com.tokopedia.deals.common.ui.dataview.DealsChipsDataView
+import com.tokopedia.deals.common.ui.dataview.ProductCardDataView
 import com.tokopedia.deals.common.ui.fragment.DealsBaseFragment
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
 import com.tokopedia.deals.common.utils.DealsLocationUtils
-import com.tokopedia.deals.databinding.FragmentDealsBrandBinding
 import com.tokopedia.deals.databinding.FragmentDealsCategoryBinding
 import com.tokopedia.deals.home.ui.fragment.DealsHomeFragment
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.ui.activity.DealsSearchActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
-
 
 class DealsCategoryFragment : DealsBaseFragment(),
         OnBaseLocationActionListener, SearchBarActionListener,
@@ -68,6 +72,8 @@ class DealsCategoryFragment : DealsBaseFragment(),
     private lateinit var baseViewModel: DealsBaseViewModel
 
     private var filterBottomSheet: DealsCategoryFilterBottomSheet? = null
+
+    private var chips: List<ChipDataView> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,7 +121,6 @@ class DealsCategoryFragment : DealsBaseFragment(),
 
         dealCategoryViewModel.observableChips.observe(viewLifecycleOwner, Observer {
             chips = it
-            renderChips()
         })
 
         baseViewModel.observableCurrentLocation.observe(viewLifecycleOwner, Observer {
@@ -247,97 +252,8 @@ class DealsCategoryFragment : DealsBaseFragment(),
         getComponent(DealsCategoryComponent::class.java).inject(this)
     }
 
-    private var chips: List<ChipDataView> = listOf()
-
-    private fun renderChips() {
-        binding.container.filterShimmering.root.hide()
-        binding.container.sortFilterDealsCategory.visible()
-
-        val filterItems = arrayListOf<SortFilterItem>()
-        try {
-            val showingChips = if (chips.size > 5) {
-                chips.subList(0, 4)
-            } else {
-                chips
-            }
-            showingChips.forEach {
-                val item = SortFilterItem(it.title)
-                filterItems.add(item)
-            }
-        } catch (e: Exception) { }
-
-        for (chip in chips) {
-            if (chip.id == categoryID) chip.isSelected = true
-        }
-
-        binding.container.sortFilterDealsCategory.run {
-            var selectedChips = 0
-            filterItems.forEachIndexed { index, sortFilterItem ->
-                if (chips[index].isSelected) {
-                    selectedChips++
-                    sortFilterItem.type = ChipsUnify.TYPE_SELECTED
-                }
-
-                sortFilterItem.listener = {
-                    sortFilterItem.toggle()
-
-                    val mutableChipList = chips.toMutableList()
-                    val chipItem = mutableChipList[index]
-
-                    val isItemSelected = filterItems[index].type == ChipsUnify.TYPE_SELECTED
-                    mutableChipList[index] = chipItem.copy(isSelected = isItemSelected)
-                    chips = mutableChipList
-
-                    onChipClicked(mutableChipList)
-                }
-            }
-
-            addItem(filterItems)
-
-            if (chips.size <= 5) {
-                sortFilterPrefix.hide()
-            } else {
-                sortFilterPrefix.setOnClickListener {
-                    onFilterChipClicked(chips)
-                }
-            }
-            indicatorCounter = selectedChips
-            selectFilterFromChipsData()
-        }
-    }
-
     override fun getInitialLayout(): Int = R.layout.fragment_deals_category
     override fun getRecyclerView(view: View): RecyclerView = view.findViewById(R.id.deals_category_recycler_view)
-
-    private var additionalSelectedFilterCount = 0
-
-    private fun selectFilterFromChipsData() {
-        binding.container.sortFilterDealsCategory.let { sortFilter ->
-            sortFilter.chipItems?.let { chipItems ->
-                for ((i, item) in chipItems.withIndex()) {
-                    if (chips[i].isSelected) item.type = ChipsUnify.TYPE_SELECTED
-                    else item.type = ChipsUnify.TYPE_NORMAL
-                }
-
-                sortFilter.indicatorCounter -= additionalSelectedFilterCount
-                additionalSelectedFilterCount = 0
-                if (chips.size > chipItems.size) {
-                    for (i in chipItems.size until chips.size) {
-                        if (chips[i].isSelected) additionalSelectedFilterCount++
-                    }
-                }
-                sortFilter.indicatorCounter += additionalSelectedFilterCount
-            }
-        }
-    }
-
-    private fun SortFilterItem.toggle() {
-        type = if (type == ChipsUnify.TYPE_NORMAL) {
-            ChipsUnify.TYPE_SELECTED
-        } else {
-            ChipsUnify.TYPE_NORMAL
-        }
-    }
 
     /** DealsBrandActionListener **/
     override fun onClickBrand(brand: DealsBrandsDataView.Brand, position: Int) {
@@ -369,7 +285,6 @@ class DealsCategoryFragment : DealsBaseFragment(),
     override fun onFilterApplied(chips: DealsChipsDataView) {
         analytics.eventApplyChipsCategory(chips)
         this.chips = chips.chipList
-        selectFilterFromChipsData()
 
         applyFilter()
     }
@@ -433,7 +348,6 @@ class DealsCategoryFragment : DealsBaseFragment(),
 
     override fun resetFilter() {
         chips.forEach { it.isSelected = false }
-        selectFilterFromChipsData()
         dealCategoryViewModel.updateChips(getCurrentLocation(), categoryID, false)
     }
 
