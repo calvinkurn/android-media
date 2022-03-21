@@ -29,46 +29,6 @@ import dagger.Module
 @Module
 abstract class PlayBindModule {
 
-    @Binds
-    @PlayScope
-    abstract fun bindInteractiveRepository(repo: PlayViewerInteractiveRepositoryImpl): PlayViewerInteractiveRepository
-
-    @Binds
-    @PlayScope
-    abstract fun bindInteractiveStorage(storage: PlayInteractiveStorageImpl): PlayInteractiveStorage
-
-    @Binds
-    @PlayScope
-    abstract fun bindPartnerRepository(repo: PlayViewerPartnerRepositoryImpl): PlayViewerPartnerRepository
-
-    @Binds
-    @PlayScope
-    abstract fun bindLikeRepository(repo: PlayViewerLikeRepositoryImpl): PlayViewerLikeRepository
-
-    @Binds
-    @PlayScope
-    abstract fun bindCartRepository(repo: PlayViewerChannelRepositoryImpl): PlayViewerChannelRepository
-
-    @Binds
-    @PlayScope
-    abstract fun bindChannelRepository(repo: PlayViewerCartRepositoryImpl): PlayViewerCartRepository
-
-    @Binds
-    @PlayScope
-    abstract fun bindTagItemRepository(repo: PlayViewerTagItemRepositoryImpl): PlayViewerTagItemRepository
-
-    @Binds
-    @PlayScope
-    abstract fun bindBroTrackerRepository(repo: PlayViewerBroTrackerRepositoryImpl): PlayViewerBroTrackerRepository
-
-    @Binds
-    @PlayScope
-    abstract fun bindUserReportRepository(repo: PlayViewerUserReportRepositoryImpl): PlayViewerUserReportRepository
-
-    @Binds
-    @PlayScope
-    abstract fun bindRepository(repo: PlayViewerRepositoryImpl): PlayViewerRepository
-
     /**
      * Analytic
      */

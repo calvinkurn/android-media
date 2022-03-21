@@ -18,8 +18,6 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.factory.PlayBroTestFragmentFactory
-import com.tokopedia.play.broadcaster.helper.PrintCondition
-import com.tokopedia.play.broadcaster.helper.ViewHierarchyPrinter
 import com.tokopedia.play.broadcaster.setup.product.analytic.EtalaseListAnalyticManager
 import com.tokopedia.play.broadcaster.setup.product.analytic.ProductChooserAnalyticManager
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
@@ -40,6 +38,8 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.play.test.FileWriter
+import com.tokopedia.play.test.PrintCondition
+import com.tokopedia.play.test.ViewHierarchyPrinter
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.hamcrest.Matcher
