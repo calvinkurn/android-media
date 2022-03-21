@@ -100,30 +100,6 @@
         }
       ],
       "item_list" : "/deals"
-    }, {
-      "event" : "clickDeals",
-      "eventCategory" : "digital - deals",
-      "eventAction" : "click on chips - category page",
-      "eventLabel" : "-",
-      "screenName" : "/deals/",
-      "category" : "deals",
-      "currentSite" : "tokopediadigitaldeals",
-      "clientId" : ".+",
-      "sessionIris" : ".+",
-      "userId" : ".*",
-      "businessUnit" : "travel & entertainment"
-    }, {
-      "event" : "clickDeals",
-      "eventCategory" : "digital - deals",
-      "eventAction" : "apply filter - category page",
-      "eventLabel" : "deals - filter  - .+",
-      "screenName" : "/deals/",
-      "category" : "deals",
-      "currentSite" : "tokopediadigitaldeals",
-      "clientId" : ".+",
-      "sessionIris" : ".+",
-      "userId" : ".*",
-      "businessUnit" : "travel & entertainment"
     }
   ]
 }

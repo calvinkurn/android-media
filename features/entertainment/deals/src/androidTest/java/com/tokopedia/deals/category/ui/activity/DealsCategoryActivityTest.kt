@@ -72,7 +72,6 @@ class DealsCategoryActivityTest {
         swipeUpOnCategoryTab()
         clickOnSearchBar()
         actionOnBrandViewHolder()
-        filterProducts()
 
         Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_DEALS_CATEGORY_PAGE),
                 hasAllSuccess())
@@ -91,23 +90,6 @@ class DealsCategoryActivityTest {
         val childRv = onView(AllOf.allOf(withId(R.id.rv_brands), withTagStringValue("24")))
         childRv.perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
                 CommonActions.clickChildViewWithId(R.id.brand_view_holder_layout)))
-    }
-
-    private fun filterProducts() {
-        Thread.sleep(5000)
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText(DUMMY_RESPONSE_FIRST_CATEGORY_TITLE))).perform(click())
-
-        Thread.sleep(3000)
-        onView(CommonMatcher.firstView(withText(DUMMY_FILTER_CHIPS_ONE))).perform(click())
-
-        Thread.sleep(2000)
-        onView(CommonMatcher.firstView(withText(FILTERS_CHIP_TITLE))).perform(click())
-        Thread.sleep(1000)
-        onView(CommonMatcher.firstView(withText(DUMMY_FILTER_CHIPS_TWO))).perform(click())
-        Thread.sleep(1000)
-        onView(CommonMatcher.firstView(withText(context.getString(R.string.deals_filter_submit)))).perform(click())
-
-        Thread.sleep(1000)
     }
 
     private fun onChangeLocation() {
