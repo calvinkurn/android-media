@@ -229,9 +229,11 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         val prevModel = mModel
         mModel = data
 
-        actionTitle.showWithCondition(data.isActionVisible)
         topContainer.shouldShowWithAction(data.title.isNotEmpty() || (data.isActionVisible && data.actionAppLink.isNotEmpty())) {
             title.text = data.title
+        }
+
+        actionTitle.shouldShowWithAction(data.isActionVisible){
             actionTitle.text = data.actionTitle
             actionTitle.setOnClickListener {
                 mAnalyticListener?.onClickViewAll(this)
