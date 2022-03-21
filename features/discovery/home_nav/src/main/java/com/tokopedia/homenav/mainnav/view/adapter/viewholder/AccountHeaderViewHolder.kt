@@ -11,15 +11,21 @@ import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.homenav.R
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.seller.SellerAdapter
 import com.tokopedia.homenav.common.util.animateProfileBadge
 import com.tokopedia.homenav.common.util.animateProfileName
 import com.tokopedia.homenav.mainnav.MainNavConst
+import com.tokopedia.homenav.mainnav.view.adapter.typefactory.SellerTypeFactoryImpl
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.seller.SellerSpacingDecoration
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_LOADING
@@ -51,6 +57,7 @@ class AccountHeaderViewHolder(itemView: View,
     private lateinit var layoutNonLogin: ConstraintLayout
     private lateinit var layoutLoginHeader: ConstraintLayout
     private lateinit var layoutLogin: ConstraintLayout
+    private var adapter: SellerAdapter? = null
 
     companion object {
         @LayoutRes
@@ -82,6 +89,7 @@ class AccountHeaderViewHolder(itemView: View,
 
         private const val DEFAULT_BALANCE_VALUE = "Rp0"
         private const val DEFAULT_BALANCE_POINTS_VALUE = "0 Coins"
+        private const val TOTAL_GRID_SELLER = 2
     }
 
     override fun bind(element: AccountHeaderDataModel, payloads: MutableList<Any>) {
@@ -138,6 +146,7 @@ class AccountHeaderViewHolder(itemView: View,
         val shimmerTryAgainShopInfo: LoaderUnify = layoutLogin.findViewById(R.id.shimmer_btn_try_again)
         val arrowRight : IconUnify = layoutLogin.findViewById(R.id.image_arrow_right)
         val containerShop : ConstraintLayout = layoutLogin.findViewById(R.id.container_shop)
+        val recyclerSeller : RecyclerView = layoutLogin.findViewById(R.id.recycler_seller)
 
         val sectionSaldo: View = layoutLoginHeader.findViewById(R.id.section_header_saldo)
         val sectionWallet: View = layoutLoginHeader.findViewById(R.id.section_header_wallet)
@@ -323,6 +332,11 @@ class AccountHeaderViewHolder(itemView: View,
         }
 
         /**
+         * Handling seller and affiliate info value
+         */
+        setSellerAndAffiliate(element, recyclerSeller)
+
+        /**
          * Handling seller info value
          */
         element.profileSellerDataModel.let { profileSeller ->
@@ -382,6 +396,24 @@ class AccountHeaderViewHolder(itemView: View,
                 }
             }
         }
+    }
+
+    private fun valuateRecyclerViewDecoration(recyclerSeller: RecyclerView) {
+        if (recyclerSeller.itemDecorationCount == 0) recyclerSeller.addItemDecoration(
+            SellerSpacingDecoration()
+        )
+        val layoutManager = GridLayoutManager(itemView.context, TOTAL_GRID_SELLER)
+        recyclerSeller.layoutManager = layoutManager
+    }
+
+    private fun setSellerAndAffiliate(element: AccountHeaderDataModel, recyclerSeller: RecyclerView) {
+        val listSellers = mutableListOf<Visitable<*>>()
+        listSellers.add(element.profileSellerDataModel)
+        listSellers.add(element.profileAffiliateDataModel)
+        valuateRecyclerViewDecoration(recyclerSeller)
+        val typeFactoryImpl = SellerTypeFactoryImpl()
+        adapter = SellerAdapter(listSellers, typeFactoryImpl)
+        recyclerSeller.adapter = adapter
     }
 
     private fun shopClicked(profileSeller: ProfileSellerDataModel, context: Context) {

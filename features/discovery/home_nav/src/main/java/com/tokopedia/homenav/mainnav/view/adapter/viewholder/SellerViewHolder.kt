@@ -4,7 +4,9 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.homenav.R
+import com.tokopedia.homenav.databinding.HomeNavItemSellerBinding
 import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileSellerDataModel
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by dhaba
@@ -12,6 +14,8 @@ import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileSellerDataMod
 class SellerViewHolder (
     itemView: View
 ) : AbstractViewHolder<ProfileSellerDataModel>(itemView){
+
+    private val binding: HomeNavItemSellerBinding? by viewBinding()
 
     companion object {
         @LayoutRes

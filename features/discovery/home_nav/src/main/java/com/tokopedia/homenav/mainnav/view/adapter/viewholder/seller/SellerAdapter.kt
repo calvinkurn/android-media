@@ -1,4 +1,4 @@
-package com.tokopedia.homenav.base.diffutil
+package com.tokopedia.homenav.mainnav.view.adapter.viewholder.seller
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
