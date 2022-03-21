@@ -920,7 +920,11 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private fun doSaveAddress() {
         setSaveAddressDataModel()
         saveDataModel?.let {
-            viewModel.saveAddress(it)
+            if (isEdit) {
+                viewModel.saveEditAddress(it)
+            } else {
+                viewModel.saveAddress(it)
+            }
         }
     }
 

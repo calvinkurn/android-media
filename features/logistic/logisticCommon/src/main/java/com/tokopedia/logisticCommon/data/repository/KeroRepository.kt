@@ -8,6 +8,7 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.response.AutoFillResponse
 import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
 import com.tokopedia.logisticCommon.data.request.AddAddressParam
+import com.tokopedia.logisticCommon.data.request.EditAddressParam
 import com.tokopedia.logisticCommon.data.response.*
 import com.tokopedia.logisticCommon.data.utils.getResponse
 import javax.inject.Inject
@@ -96,6 +97,27 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         val gqlParam = mapOf("input" to param.toMap())
         val request = GraphqlRequest(KeroLogisticQuery.kero_add_address_query,
                 AddAddressResponse::class.java, gqlParam)
+        return gql.getResponse(request)
+
+    }
+
+    suspend fun editAddress(model: SaveAddressDataModel): KeroEditAddressResponse.Data {
+        val param = EditAddressParam(
+            addressId = model.id,
+            addressName = model.addressName,
+            receiverName = model.receiverName,
+            address1 = model.address1,
+            postalCode = model.postalCode,
+            district = model.districtId.toString(),
+            city = model.districtId.toString(),
+            province = model.provinceId.toString(),
+            phone = model.phone,
+            latitude = model.latitude,
+            longitude = model.longitude
+        )
+        val gqlParam = mapOf("input" to param.toMap())
+        val request = GraphqlRequest(KeroLogisticQuery.kero_edit_address,
+                KeroEditAddressResponse.Data::class.java, gqlParam)
         return gql.getResponse(request)
 
     }

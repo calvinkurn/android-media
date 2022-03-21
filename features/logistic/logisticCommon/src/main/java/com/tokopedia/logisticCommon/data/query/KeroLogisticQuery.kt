@@ -289,6 +289,8 @@ object KeroLogisticQuery {
             }
         }
     """.trimIndent()
+
+
     val kero_get_address_detail = """
         query getAddressDetail(${'$'}input: KeroGetAddressInput!){
             kero_get_address(input: ${'$'}input) {
@@ -318,6 +320,19 @@ object KeroLogisticQuery {
                 server_process_time
                 config
             }
+        }
+    """.trimIndent()
+
+    val kero_edit_address = """
+        mutation editAddress(${'$'}input:KeroAddressInput!) {
+          kero_edit_address(input:${'$'}input) {
+            data{
+              is_success
+            }
+            status
+            config
+            server_process_time
+          }
         }
     """.trimIndent()
 }
