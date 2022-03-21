@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.common.view
 
-import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -14,8 +13,6 @@ import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.unifycomponents.ImageUnify
 
 class ProductDetailGalleryActivity : AppCompatActivity() {
-    
-    // TODO vindo - please evaluate the perfomance
 
     private var data: ProductDetailGallery? = null
 
