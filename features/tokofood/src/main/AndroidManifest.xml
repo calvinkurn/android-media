@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseActivity"
+            android:name="com.tokopedia.tokofood.purchase.purchasepage.view.TokoFoodPurchaseActivity"
             android:label=""
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
