@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">wishlist_common</string>
+    <string name="on_success_add_to_wishlist_msg">Barang berhasil disimpan di Wishlist!</string>
+    <string name="on_success_remove_from_wishlist_msg">Barang telah dihapus dari Wishlist.</string>
+    <string name="cta_success_add_to_wishlist">Lihat</string>
+    <string name="cta_success_remove_from_wishlist">Oke</string>
+</resources>

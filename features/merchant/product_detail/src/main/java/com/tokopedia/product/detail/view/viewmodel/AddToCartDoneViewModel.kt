@@ -21,17 +21,16 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
 class AddToCartDoneViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
-        private val addWishListUseCase: AddWishListUseCase,
-        private val removeWishlistUseCase: RemoveWishListUseCase,
+        private val addWishListUseCase: AddToWishlistV2UseCase,
+        private val removeWishlistUseCase: DeleteWishlistV2UseCase,
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val addToCartUseCase: AddToCartUseCase,
         val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.main) {
@@ -76,45 +75,15 @@ class AddToCartDoneViewModel @Inject constructor(
     }
 
     fun addWishList(productId: String, callback: (Boolean, Throwable?) -> Unit) {
-        addWishListUseCase.createObservable(productId,
-                userSessionInterface.userId, object : WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                callback.invoke(false, Throwable(errorMessage))
-            }
-
-            override fun onSuccessAddWishlist(productId: String?) {
-                callback.invoke(true, null)
-            }
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                // no op
-            }
-
-            override fun onSuccessRemoveWishlist(productId: String?) {
-                // no op
-            }
-        })
+        addWishListUseCase.setParams(productId, userSessionInterface.userId)
+        addWishListUseCase.execute(onSuccess = { callback.invoke(true, null) },
+                onError = { callback.invoke(false, it) })
     }
 
     fun removeWishList(productId: String, callback: (Boolean, Throwable?) -> Unit) {
-        removeWishlistUseCase.createObservable(productId,
-                userSessionInterface.userId, object : WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                // no op
-            }
-
-            override fun onSuccessAddWishlist(productId: String?) {
-                // no op
-            }
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                callback.invoke(false, Throwable(errorMessage))
-            }
-
-            override fun onSuccessRemoveWishlist(productId: String?) {
-                callback.invoke(true, null)
-            }
-        })
+        removeWishlistUseCase.setParams(productId, userSessionInterface.userId)
+        removeWishlistUseCase.execute(onSuccess = { callback.invoke(true, null) },
+                onError = { callback.invoke(false, it) })
     }
 
     fun isLoggedIn(): Boolean = userSessionInterface.isLoggedIn

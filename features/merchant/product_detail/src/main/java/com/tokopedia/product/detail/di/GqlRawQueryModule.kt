@@ -19,7 +19,7 @@ class GqlRawQueryModule {
     @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_WISHLIST_STATUS)
     fun provideRawWishlistQuery(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, com.tokopedia.wishlist.common.R.raw.gql_get_is_wishlisted)
+            GraphqlHelper.loadRawString(context.resources, com.tokopedia.wishlist_common.R.raw.gql_get_is_wishlisted)
 
     @ProductDetailScope
     @Provides

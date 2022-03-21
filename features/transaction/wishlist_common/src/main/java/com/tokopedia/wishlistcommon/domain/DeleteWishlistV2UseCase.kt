@@ -7,13 +7,15 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import javax.inject.Inject
 
-class DeleteWishlistV2UseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) {
-    suspend fun executeSuspend(productId: String, userId: String): Result<DeleteWishlistV2Response.Data.WishlistRemoveV2> {
+class DeleteWishlistV2UseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) : UseCase<Result<DeleteWishlistV2Response.Data.WishlistRemoveV2>>() {
+    private var params: Map<String, Any?>? = null
+    override suspend fun executeOnBackground(): Result<DeleteWishlistV2Response.Data.WishlistRemoveV2> {
         return try {
-            val request = GraphqlRequest(QUERY, DeleteWishlistV2Response.Data::class.java, generateParam(productId, userId))
+            val request = GraphqlRequest(QUERY, DeleteWishlistV2Response.Data::class.java, params)
             val response = gqlRepository.response(listOf(request)).getSuccessData<DeleteWishlistV2Response.Data>()
             Success(response.wishlistRemoveV2)
         } catch (e: Exception) {
@@ -21,8 +23,8 @@ class DeleteWishlistV2UseCase @Inject constructor(@ApplicationContext private va
         }
     }
 
-    private fun generateParam(productId: String, userId: String): Map<String, Any?> {
-        return mapOf(
+    fun setParams(productId: String, userId: String) {
+        params = mapOf(
                 PRODUCT_ID to productId,
                 USER_ID to userId)
     }

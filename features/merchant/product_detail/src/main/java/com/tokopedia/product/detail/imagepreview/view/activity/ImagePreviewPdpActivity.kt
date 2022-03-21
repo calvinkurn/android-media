@@ -180,7 +180,9 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
                 },
                 onErrorAddWishList = {
                     hideLoading()
-                    onErrorAddWishlist(Throwable(it))
+                    it?.let {
+                        onErrorAddWishlist(it)
+                    }
                 }
         )
     }

@@ -18,12 +18,10 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.data.model.response.BulkDeleteWishlistV2Response
-import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlist.data.model.WishlistV2Params
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.domain.BulkDeleteWishlistV2UseCase
 import com.tokopedia.wishlist.data.model.*
-import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlist.domain.WishlistV2UseCase
 import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_CAROUSEL
@@ -96,8 +94,9 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
 
     fun deleteWishlistV2(productId: String, userId: String) {
         launch {
+            deleteWishlistV2UseCase.setParams(productId, userId)
             _deleteWishlistV2Result.value =
-                deleteWishlistV2UseCase.executeSuspend(productId, userId)
+                deleteWishlistV2UseCase.executeOnBackground()
         }
     }
 

@@ -1362,7 +1362,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
             } else {
                 productInfo?.basic?.productID?.let {
-                    toasterWishlistText = if (isProductOos()) getString(R.string.toaster_success_add_wishlist_from_fab) else getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist)
+                    toasterWishlistText = if (isProductOos()) getString(R.string.toaster_success_add_wishlist_from_fab) else getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
                     addWishList()
                     productInfo.let {
                         DynamicProductDetailTracking.Moengage.eventPDPWishlistAppsFyler(it)
@@ -2824,15 +2824,15 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    private fun onErrorRemoveWishList(errorMessage: String?) {
-        view?.showToasterError(getErrorMessage(errorMessage),
+    private fun onErrorRemoveWishList(throwable: Throwable) {
+        view?.showToasterError(getErrorMessage(throwable),
                 ctaText = getString(com.tokopedia.design.R.string.oke))
     }
 
     private fun onSuccessAddWishlist(productId: String?) {
         view?.showToasterSuccess(
                 message = toasterWishlistText,
-                ctaText = getString(com.tokopedia.wishlist.common.R.string.lihat_label),
+                ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
                 ctaListener = {
                     goToWishlist()
                 }
@@ -2847,8 +2847,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    private fun onErrorAddWishList(errorMessage: String?) {
-        view?.showToasterError(getErrorMessage(errorMessage),
+    private fun onErrorAddWishList(throwable: Throwable) {
+        view?.showToasterError(getErrorMessage(throwable),
                 ctaText = getString(com.tokopedia.design.R.string.oke))
     }
 
