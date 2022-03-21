@@ -454,10 +454,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onFailedRecommendation() {
-        binding?.rechargePdpPulsaRecommendationWidget?.hide()
-    }
-
     private fun onSuccessGetFavoriteNumber(favoriteNumber: List<TopupBillsPersoFavNumberItem>) {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             setFilterChipShimmer(false, favoriteNumber.isEmpty())
@@ -504,7 +500,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 getCatalogMenuDetail()
             }
         }
-        onFailedRecommendation()
     }
 
     private fun onFailedGetFavoriteNumber(throwable: Throwable) {
