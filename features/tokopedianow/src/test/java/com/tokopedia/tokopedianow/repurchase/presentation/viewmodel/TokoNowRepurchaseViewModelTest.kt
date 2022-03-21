@@ -809,7 +809,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
         )
 
         val addToCartResponse = AddToCartDataModel()
-        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem2.MiniCartItemProduct(productId = "5", quantity = 1))
+        val miniCartItems = mapOf(MiniCartItemKey("5") to MiniCartItem2.MiniCartItemProduct(productId = "5", quantity = 1))
         val miniCartResponse = MiniCartSimplifiedData2(miniCartItems = miniCartItems)
 
         onGetUserLoggedIn_thenReturn(isLoggedIn = true)
