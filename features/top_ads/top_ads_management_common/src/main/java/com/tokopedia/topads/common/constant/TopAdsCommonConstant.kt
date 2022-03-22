@@ -23,6 +23,11 @@ object TopAdsCommonConstant {
     const val ERROR_INVALID_KEYWORD = "INVALID_KEYWORD_TAG"
     const val EROOR_GROUP_NAME_EXIST = "GRUP_NAME_ALREADY_EXIST"
 
+    const val TOPADS_CREATE_TIPS1 =
+        "https://images.tokopedia.net/img/android/res/singleDpi/topads_create_tips1.png"
+    const val TOPADS_CREATE_TIPS2 =
+        "https://images.tokopedia.net/img/android/res/singleDpi/topads_create_tips2.png"
+
     /*keyword specific*/
     const val BROAD_TYPE = "Luas"
     const val EXACT_POSITIVE = 21

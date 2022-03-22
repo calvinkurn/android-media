@@ -227,6 +227,9 @@
         <item>Harga Terendah</item>
     </string-array>
 
+    <string name="topads_common_iklan_pencarian_description">Biaya yang dikenakan jika iklanmu diklik di halaman Pencarian.</string>
+    <string name="topads_common_iklan_recommendasi_description">Biaya yang dikenakan jika iklanmu diklik di bagian Rekomendasi di halaman home, kategori, dan halaman-halaman strategis lainnya.</string>
+    <string name="topads_common_iklan_dasar_description">Terbagi menjadi 2, yaitu biaya iklan di Pencarian dan biaya iklan di Rekomendasi:</string>
     <string name="topads_common_rp">Rp %s</string>
     <string name="topads_common_keyword_recommended_budget">•Rekomendasi Rp%s</string>
     <string name="topads_common_iklan_recommendasi_title">Biaya iklan di Rekomendasi</string>

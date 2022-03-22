@@ -71,9 +71,6 @@
         <item>Harga Terendah</item>
     </string-array>
 
-    <string name="topads_edit_iklan_recommendasi_description">Biaya yang dikenakan jika iklanmu diklik di bagian Rekomendasi di halaman home, kategori, dan halaman-halaman strategis lainnya.</string>
-    <string name="topads_edit_iklan_pencarian_description">Biaya yang dikenakan jika iklanmu diklik di halaman Pencarian.</string>
-    <string name="topads_edit_iklan_dasar_description">Terbagi menjadi 2, yaitu biaya iklan di Pencarian dan biaya iklan di Rekomendasi:</string>
     <string name="topads_edit_keyword_title">Biaya Iklan dan Kata Kunci</string>
     <string name="topads_edit_auto_bid_ticker_title"><![CDATA[Biaya iklan dan kata kunci pada grup iklan ini akan diatur oleh TopAds untuk memaksimalkan penjualanmu. <font color = "#03AC0E"><a href="">Pelajari Selengkapnya</a></font>]]></string>
 

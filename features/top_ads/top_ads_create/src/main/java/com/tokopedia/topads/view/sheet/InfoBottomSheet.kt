@@ -4,16 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.create.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.topads_info_bs.*
-
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 
 const val TYPE_DASAR = 0
 class InfoBottomSheet : BottomSheetUnify(){
-    private var contentView: View? = null
+
+    private var infoDesc : Typography ?= null
+    private var image : ImageUnify ?= null
     private var bottomSheetType : Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -22,8 +24,11 @@ class InfoBottomSheet : BottomSheetUnify(){
     }
 
     private fun initChildLayout() {
-        contentView = View.inflate(context, R.layout.topads_info_bs, null)
+        val contentView = View.inflate(context, com.tokopedia.topads.common.R.layout.topads_common_info_bs, null)
         setChild(contentView)
+        infoDesc = contentView.findViewById(R.id.infoDesc)
+        image = contentView.findViewById(R.id.image)
+
         showKnob = true
         isDragable = true
         isHideable = true
@@ -44,11 +49,11 @@ class InfoBottomSheet : BottomSheetUnify(){
         context?.let {
             if(bottomSheetType == TYPE_DASAR){
                 infoDesc?.text = getString(R.string.topads_create_bs_desc2)
-                image?.setImageDrawable(AppCompatResources.getDrawable(it, R.drawable.topads_create_tips2))
+                image?.setImageUrl(TopAdsCommonConstant.TOPADS_CREATE_TIPS2)
             }
             else {
                 infoDesc?.text = getString(R.string.topads_create_bs_desc1)
-                image?.setImageDrawable(AppCompatResources.getDrawable(it, R.drawable.topads_create_tips1))
+                image?.setImageUrl(TopAdsCommonConstant.TOPADS_CREATE_TIPS1)
             }
         }
     }
