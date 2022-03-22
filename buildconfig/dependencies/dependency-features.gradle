@@ -203,6 +203,8 @@ ext {
             promoUiCommon                   : ":features:promo:promo_ui_common",
             promoMvcWidget                  : ":features:promo:mvc_widget",
             questWidget                     : ":features:promo:quest_widget",
+            tokomemberSellerDashboard       : ":features:promo:tokomember_seller_dashboard",
+            tokomemberUiCommon              : ":features:promo:tokomember_common_widget",
 
             topAdsDashboard                 : ":features:top_ads:top_ads_dashboard",
             topAdsFreeClaim                 : ":features:top_ads:top_ads_free_claim",

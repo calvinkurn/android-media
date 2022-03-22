@@ -118,6 +118,8 @@ includeIfEnabled("features:promo:promo_checkout")
 includeIfEnabled("features:promo:promo_checkout_common")
 includeIfEnabled("features:promo:promo_ui_common")
 includeIfEnabled("features:promo:mvc_widget")
+includeIfEnabled("features:promo:tokomember_seller_dashboard")
+includeIfEnabled("features:promo:tokomember_common_widget")
 
 includeIfEnabled("features:top_ads:top_ads_dashboard")
 includeIfEnabled("features:top_ads:top_ads_management")
