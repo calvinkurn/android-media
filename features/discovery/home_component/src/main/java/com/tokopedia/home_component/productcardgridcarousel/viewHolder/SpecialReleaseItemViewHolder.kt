@@ -10,6 +10,7 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSp
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSpecialReleaseDataModel.Companion.CAROUEL_ITEM_SPECIAL_RELEASE_TIMER_BIND
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
@@ -66,10 +67,16 @@ class SpecialReleaseItemViewHolder(
                 url = element.grid.shop.shopProfileUrl
             )
 
-            element.grid.badges.firstOrNull()?.let {
+            val badgeImageUrl = element.grid.badges.firstOrNull()?.imageUrl?:""
+            if (badgeImageUrl.isNotEmpty()) {
                 binding?.specialReleaseShopBadge?.loadImage(
-                    url = it.imageUrl
+                    url = badgeImageUrl
                 )
+                binding?.specialReleaseShopBadge?.visible()
+                binding?.specialReleaseShopBadgeBorder?.visible()
+            } else {
+                binding?.specialReleaseShopBadge?.invisible()
+                binding?.specialReleaseShopBadgeBorder?.invisible()
             }
 
             binding?.specialReleaseBrandCard?.loadImage(

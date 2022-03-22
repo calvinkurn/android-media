@@ -217,6 +217,7 @@ class DenomFullViewHolder(
                 } else hide()
 
                 setOnClickListener {
+                    if (denomFull.status != DenomConst.DENOM_STATUS_OUT_OF_STOCK)
                     denomFullListener.onChevronDenomClicked(denomFull, position, denomType)
                 }
             }

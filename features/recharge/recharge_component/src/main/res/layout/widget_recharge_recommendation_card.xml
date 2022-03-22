@@ -10,6 +10,7 @@
         android:id="@+id/tg_recharge_recommendation_card_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginLeft="@dimen/widget_denom_margin"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:textColor="@color/Unify_N700_96"

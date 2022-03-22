@@ -8,6 +8,7 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -37,6 +38,7 @@ import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FAVNUM_PERMISSION_CHECKER_IS_DENIED
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FIXED_PADDING_ADJUSTMENT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INPUT_ACTION_TRACKING_DELAY
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MAXIMUM_VALID_NUMBER_LENGTH
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MINIMUM_OPERATOR_PREFIX
@@ -59,11 +61,11 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWa
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicScrollListener
 import com.tokopedia.digital_product_detail.presentation.utils.toggle
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
-import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
@@ -95,7 +97,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 
 /**
  * @author by firmanda on 04/01/21
@@ -167,6 +168,7 @@ class DigitalPDPDataPlanFragment :
         getDataFromBundle()
         setupKeyboardWatcher()
         setupDynamicScrollListener()
+        setupDynamicScrollViewPadding()
         initClientNumberWidget()
         observeData()
         getCatalogMenuDetail()
@@ -545,10 +547,8 @@ class DigitalPDPDataPlanFragment :
             if (favoriteNumber.isNotEmpty()) {
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
-
-                val extendedPadding = getDimens(unifyDimens.layout_lvl8)
-                binding?.rechargePdpPaketDataSvContainer?.setPadding(0, extendedPadding, 0, 0)
             }
+            setupDynamicScrollViewPadding(FIXED_PADDING_ADJUSTMENT)
         }
     }
 
@@ -561,9 +561,8 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun onFailedGetFavoriteNumber(throwable: Throwable) {
-        binding?.run {
-            rechargePdpPaketDataClientNumberWidget.setFilterChipShimmer(false, true)
-        }
+        binding?.rechargePdpPaketDataClientNumberWidget?.setFilterChipShimmer(false, true)
+        setupDynamicScrollViewPadding()
     }
 
     private fun onSuccessGetPrefixOperator() {
@@ -871,8 +870,9 @@ class DigitalPDPDataPlanFragment :
     private fun showGlobalErrorState() {
         binding?.globalErrorPaketData?.run {
             show()
-            errorTitle.text = getString(R.string.empty_state_paket_data_title)
-            errorDescription.text = getString(R.string.empty_state_paket_data_desc)
+            val categoryName = DigitalPDPCategoryUtil.getCategoryName(categoryId)
+            errorTitle.text = getString(R.string.empty_state_paket_data_title, categoryName)
+            errorDescription.text = getString(R.string.empty_state_paket_data_desc, categoryName)
             errorAction.hide()
         }
     }
@@ -1055,6 +1055,20 @@ class DigitalPDPDataPlanFragment :
     private fun navigateToLoginPage(requestCode: Int = REQUEST_CODE_LOGIN) {
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
         startActivityForResult(intent, requestCode)
+    }
+
+    private fun setupDynamicScrollViewPadding(extraPadding: Int = 0) {
+        binding?.rechargePdpPaketDataClientNumberWidget
+            ?.viewTreeObserver?.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    binding?.rechargePdpPaketDataClientNumberWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    binding?.run {
+                        val dynamicPadding = rechargePdpPaketDataClientNumberWidget.height.pxToDp(
+                            resources.displayMetrics) + extraPadding
+                        rechargePdpPaketDataSvContainer.setPadding(0, dynamicPadding, 0, 0)
+                    }
+                }
+            })
     }
 
     //region ClientNumberInputFieldListener
