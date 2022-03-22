@@ -107,15 +107,6 @@
                         android:layout_marginStart="@dimen/spacing_lvl2"
                         android:layout_gravity="center_vertical"
                         app:icon_name="COPY"/>
-
-                    <!-- TODO: will be delete  -->
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/lihat"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/lihat_text"
-                        android:textColor="@color/Unify_G400"
-                        android:visibility="gone"/>
                 </LinearLayout>
             </LinearLayout>
 

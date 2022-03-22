@@ -1,8 +1,12 @@
 package com.tokopedia.buyerorder.detail.view.fragment;
 
+import static android.content.Context.CLIPBOARD_SERVICE;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -75,6 +79,7 @@ import com.tokopedia.buyerorder.recharge.data.response.AdditionalTickerInfo;
 import com.tokopedia.coachmark.CoachMark;
 import com.tokopedia.coachmark.CoachMarkBuilder;
 import com.tokopedia.coachmark.CoachMarkItem;
+import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.kotlin.util.DownloadHelper;
 import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.Toaster;
@@ -133,7 +138,6 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     private TextView conditionalInfoText;
     private LinearLayout statusDetail;
     private TextView invoiceView;
-    private TextView lihat;
     private TextView detailLabel;
     private LinearLayout detailsLayout;
     private TextView infoLabel;
@@ -162,6 +166,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     private Ticker tickerDetail;
     private NestedScrollView parentScroll;
     private Boolean _isDownloadable;
+    private IconUnify icCopyInvoice;
 
     private LocalCacheHandler localCacheHandler;
 
@@ -196,7 +201,6 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         conditionalInfoText = view.findViewById(R.id.conditional_info);
         statusDetail = view.findViewById(R.id.status_detail);
         invoiceView = view.findViewById(R.id.invoice);
-        lihat = view.findViewById(R.id.lihat);
         detailLabel = view.findViewById(R.id.detail_label);
         detailsLayout = view.findViewById(R.id.details_section);
         infoLabel = view.findViewById(R.id.info_label);
@@ -225,6 +229,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         parentScroll = view.findViewById(R.id.parentScroll);
         tickerStatus = view.findViewById(R.id.ticker_status);
         tickerDetail = view.findViewById(R.id.ticker_detail_order);
+        icCopyInvoice = view.findViewById(R.id.ic_copy);
 
         localCacheHandler = new LocalCacheHandler(getContext(),PREFERENCES_NAME);
 
@@ -379,13 +384,11 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void setInvoice(final Invoice invoice) {
         invoiceView.setText(invoice.getInvoiceRefNum());
-        if (!BuyerUtils.isValidUrl(invoice.getInvoiceUrl())) {
-            lihat.setVisibility(View.GONE);
-        }
-        lihat.setOnClickListener(new View.OnClickListener() {
+
+        icCopyInvoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, invoice.getInvoiceUrl());
+                copyInvoice(view, invoiceView.getText().toString());
             }
         });
     }
@@ -999,5 +1002,13 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void setActionButtonText(String txt) {
         actionButtonText.setText(txt);
+    }
+
+    private void copyInvoice(View view, String invoice){
+        ClipData myClip;
+        ClipboardManager myClipboard = (ClipboardManager) getContext().getSystemService(CLIPBOARD_SERVICE);
+        myClip = ClipData.newPlainText(KEY_TEXT, invoice);
+        myClipboard.setPrimaryClip(myClip);
+        Toaster.build(view, getString(R.string.deals_order_detail_copied_message), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "", v1 -> { }).show();
     }
 }
