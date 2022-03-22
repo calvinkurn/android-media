@@ -5,7 +5,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.domain.model.AffiliateUserDetailData
 import com.tokopedia.homenav.mainnav.domain.usecases.query.AffiliateUserDetailQuery
 import com.tokopedia.usecase.RequestParams

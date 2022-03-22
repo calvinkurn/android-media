@@ -1,5 +1,6 @@
 package com.tokopedia.homenav.mainnav.interactor
 
+import android.accounts.NetworkErrorException
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -10,13 +11,10 @@ import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.mainnav.MainNavConst
-import com.tokopedia.homenav.mainnav.domain.model.NavPaymentOrder
-import com.tokopedia.homenav.mainnav.domain.model.NavProductOrder
-import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
-import com.tokopedia.homenav.mainnav.domain.model.MainNavProfileCache
+import com.tokopedia.homenav.mainnav.domain.model.*
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.*
@@ -28,6 +26,8 @@ import com.tokopedia.sessioncommon.data.admin.AdminDetailInformation
 import com.tokopedia.sessioncommon.data.admin.AdminRoleType
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
 import com.tokopedia.sessioncommon.domain.usecase.RefreshShopBasicDataUseCase
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
@@ -528,6 +528,122 @@ class TestMainNavViewModel {
                 && accountHeaderViewModel.profileSellerDataModel.shopId == newShopId
                 && accountHeaderViewModel.profileSellerDataModel.shopName.isNotEmpty()
                 && accountHeaderViewModel.profileSellerDataModel.shopName == newShopName)
+    }
+
+    @Test
+    fun `given failed affiliate data when refresh data affiliate then affiliate data not error in header`() {
+        val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
+        val getAffiliateUserUseCase = mockk<GetAffiliateUserUseCase>()
+        val affiliateUserDetailData = AffiliateUserDetailData()
+        val mockAffiliateSuccess = Success(affiliateUserDetailData)
+        coEvery {
+            getAffiliateUserUseCase.executeOnBackground()
+        } returns mockAffiliateSuccess
+
+        coEvery {
+            getProfileDataUseCase.executeOnBackground()
+        } returns AccountHeaderDataModel(
+            profileDataModel = ProfileDataModel(
+                userName = "Joko",
+                userImage = "Tingkir"
+            ),
+            profileMembershipDataModel = ProfileMembershipDataModel(
+                badge = "kucing"
+            ),
+            profileSellerDataModel = ProfileSellerDataModel(
+                shopName = "binatang",
+                hasShop = true,
+                shopId = "1234"
+            ),
+            profileAffiliateDataModel = ProfileAffiliateDataModel(isGetAffiliateError = true)
+            )
+
+        viewModel = createViewModel(
+            getProfileDataUseCase = getProfileDataUseCase,
+            getAffiliateUserUseCase = getAffiliateUserUseCase)
+        viewModel.getMainNavData(true)
+        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val accountHeaderViewModel = visitableList.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
+        Assert.assertTrue(accountHeaderViewModel.profileAffiliateDataModel.isGetAffiliateError)
+
+        viewModel.refreshUserAffiliateData()
+        Assert.assertTrue(!accountHeaderViewModel.profileAffiliateDataModel.isGetAffiliateError)
+    }
+
+    @Test
+    fun `given failed affiliate data when refresh data affiliate with network error then affiliate data still error in header`() {
+        val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
+        val getAffiliateUserUseCase = mockk<GetAffiliateUserUseCase>()
+        coEvery {
+            getAffiliateUserUseCase.executeOnBackground()
+        } throws NetworkErrorException()
+
+        coEvery {
+            getProfileDataUseCase.executeOnBackground()
+        } returns AccountHeaderDataModel(
+            profileDataModel = ProfileDataModel(
+                userName = "Joko",
+                userImage = "Tingkir"
+            ),
+            profileMembershipDataModel = ProfileMembershipDataModel(
+                badge = "kucing"
+            ),
+            profileSellerDataModel = ProfileSellerDataModel(
+                shopName = "binatang",
+                hasShop = true,
+                shopId = "1234"
+            ),
+            profileAffiliateDataModel = ProfileAffiliateDataModel(isGetAffiliateError = true)
+            )
+
+        viewModel = createViewModel(
+            getProfileDataUseCase = getProfileDataUseCase,
+            getAffiliateUserUseCase = getAffiliateUserUseCase)
+        viewModel.getMainNavData(true)
+        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val accountHeaderViewModel = visitableList.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
+        Assert.assertTrue(accountHeaderViewModel.profileAffiliateDataModel.isGetAffiliateError)
+
+        viewModel.refreshUserAffiliateData()
+        Assert.assertTrue(accountHeaderViewModel.profileAffiliateDataModel.isGetAffiliateError)
+    }
+
+    @Test
+    fun `given failed affiliate data when refresh data affiliate with failed data then affiliate data still error in header`() {
+        val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
+        val getAffiliateUserUseCase = mockk<GetAffiliateUserUseCase>()
+        coEvery {
+            getAffiliateUserUseCase.executeOnBackground()
+        } returns Fail(MessageErrorException())
+
+        coEvery {
+            getProfileDataUseCase.executeOnBackground()
+        } returns AccountHeaderDataModel(
+            profileDataModel = ProfileDataModel(
+                userName = "Joko",
+                userImage = "Tingkir"
+            ),
+            profileMembershipDataModel = ProfileMembershipDataModel(
+                badge = "kucing"
+            ),
+            profileSellerDataModel = ProfileSellerDataModel(
+                shopName = "binatang",
+                hasShop = true,
+                shopId = "1234"
+            ),
+            profileAffiliateDataModel = ProfileAffiliateDataModel(isGetAffiliateError = true)
+            )
+
+        viewModel = createViewModel(
+            getProfileDataUseCase = getProfileDataUseCase,
+            getAffiliateUserUseCase = getAffiliateUserUseCase)
+        viewModel.getMainNavData(true)
+        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val accountHeaderViewModel = visitableList.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
+        Assert.assertTrue(accountHeaderViewModel.profileAffiliateDataModel.isGetAffiliateError)
+
+        viewModel.refreshUserAffiliateData()
+        Assert.assertTrue(accountHeaderViewModel.profileAffiliateDataModel.isGetAffiliateError)
     }
 
     @Test
