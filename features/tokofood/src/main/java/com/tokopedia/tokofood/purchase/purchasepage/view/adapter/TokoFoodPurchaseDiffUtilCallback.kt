@@ -36,7 +36,6 @@ class TokoFoodPurchaseDiffUtilCallback(private val oldList: List<Any>,
             oldItem is TokoFoodPurchaseAddressUiModel && newItem is TokoFoodPurchaseAddressUiModel -> oldItem == newItem
             oldItem is TokoFoodPurchaseDividerUiModel && newItem is TokoFoodPurchaseDividerUiModel -> oldItem == newItem
             oldItem is TokoFoodPurchaseGeneralTickerUiModel && newItem is TokoFoodPurchaseGeneralTickerUiModel -> oldItem == newItem
-            oldItem is TokoFoodPurchaseGlobalErrorTickerUiModel && newItem is TokoFoodPurchaseGlobalErrorTickerUiModel -> oldItem == newItem
             oldItem is TokoFoodPurchaseProductListHeaderUiModel && newItem is TokoFoodPurchaseProductListHeaderUiModel -> oldItem == newItem
             oldItem is TokoFoodPurchaseProductUiModel && newItem is TokoFoodPurchaseProductUiModel -> oldItem == newItem
             oldItem is TokoFoodPurchaseProductUnavailableReasonUiModel && newItem is TokoFoodPurchaseProductUnavailableReasonUiModel -> oldItem == newItem

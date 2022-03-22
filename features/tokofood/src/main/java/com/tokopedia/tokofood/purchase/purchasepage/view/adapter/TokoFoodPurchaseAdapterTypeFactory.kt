@@ -31,10 +31,6 @@ class TokoFoodPurchaseAdapterTypeFactory(private val listener: TokoFoodPurchaseA
         return TokoFoodPurchaseGeneralTickerViewHolder.LAYOUT
     }
 
-    override fun type(uiModel: TokoFoodPurchaseGlobalErrorTickerUiModel): Int {
-        return TokoFoodPurchaseGlobalErrorTickerViewHolder.LAYOUT
-    }
-
     override fun type(uiModel: TokoFoodPurchaseProductListHeaderUiModel): Int {
         return TokoFoodPurchaseProductListHeaderViewHolder.LAYOUT
     }
@@ -88,10 +84,6 @@ class TokoFoodPurchaseAdapterTypeFactory(private val listener: TokoFoodPurchaseA
             TokoFoodPurchaseGeneralTickerViewHolder.LAYOUT -> {
                 val viewBinding = ItemPurchaseGeneralTickerBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
                 TokoFoodPurchaseGeneralTickerViewHolder(viewBinding, listener)
-            }
-            TokoFoodPurchaseGlobalErrorTickerViewHolder.LAYOUT -> {
-                val viewBinding = ItemPurchaseGlobalErrorTickerBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
-                TokoFoodPurchaseGlobalErrorTickerViewHolder(viewBinding, listener)
             }
             TokoFoodPurchaseProductListHeaderViewHolder.LAYOUT -> {
                 val viewBinding = ItemPurchaseProductListHeaderBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)

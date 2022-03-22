@@ -5,6 +5,8 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseTotalAmountBinding
 import com.tokopedia.tokofood.purchase.purchasepage.view.TokoFoodPurchaseActionListener
 import com.tokopedia.tokofood.purchase.purchasepage.view.uimodel.TokoFoodPurchaseTotalAmountUiModel
+import com.tokopedia.tokofood.purchase.removeDecimalSuffix
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class TokoFoodPurchaseTotalAmountViewHolder(private val viewBinding: ItemPurchaseTotalAmountBinding,
                                             private val listener: TokoFoodPurchaseActionListener)
@@ -16,7 +18,18 @@ class TokoFoodPurchaseTotalAmountViewHolder(private val viewBinding: ItemPurchas
 
     override fun bind(element: TokoFoodPurchaseTotalAmountUiModel) {
         with(viewBinding) {
-
+            if (element.isDisabled) {
+                totalAmountPurchase.amountCtaView.isEnabled = false
+                totalAmountPurchase.setCtaText("Pilih Pembayaran")
+                totalAmountPurchase.setLabelTitle("Total Tagihan")
+                totalAmountPurchase.setAmount("-")
+            } else {
+                totalAmountPurchase.amountCtaView.isEnabled = true
+                totalAmountPurchase.setCtaText("Pilih Pembayaran")
+                totalAmountPurchase.setLabelTitle("Total Tagihan")
+                val totalAmountString = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.totalAmount, false).removeDecimalSuffix()
+                totalAmountPurchase.setAmount(totalAmountString)
+            }
         }
     }
 

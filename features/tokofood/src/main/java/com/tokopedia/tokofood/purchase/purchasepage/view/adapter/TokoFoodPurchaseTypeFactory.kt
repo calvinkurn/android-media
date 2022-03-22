@@ -14,8 +14,6 @@ interface TokoFoodPurchaseTypeFactory {
 
     fun type(uiModel: TokoFoodPurchaseGeneralTickerUiModel): Int
 
-    fun type(uiModel: TokoFoodPurchaseGlobalErrorTickerUiModel): Int
-
     fun type(uiModel: TokoFoodPurchaseProductListHeaderUiModel): Int
 
     fun type(uiModel: TokoFoodPurchaseProductUiModel): Int

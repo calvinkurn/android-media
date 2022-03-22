@@ -85,6 +85,21 @@ object TokoFoodPurchaseUiModelMapper {
                                 title = "Total Harga (3 item)",
                                 value = 75000,
                                 defaultValueForZero = TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_ZERO
+                        ),
+                        TokoFoodPurchaseSummaryTransactionUiModel.Transaction(
+                                title = "Biaya Bungkus dari Restoran",
+                                value = 6000,
+                                defaultValueForZero = TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_ZERO
+                        ),
+                        TokoFoodPurchaseSummaryTransactionUiModel.Transaction(
+                                title = "Ongkir",
+                                value = 0,
+                                defaultValueForZero = TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_FREE
+                        ),
+                        TokoFoodPurchaseSummaryTransactionUiModel.Transaction(
+                                title = "Biaya Jasa Aplikasi",
+                                value = 4000,
+                                defaultValueForZero = TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_ZERO
                         )
                 )
         )
