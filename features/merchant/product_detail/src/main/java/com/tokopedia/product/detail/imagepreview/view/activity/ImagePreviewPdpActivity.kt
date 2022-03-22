@@ -218,12 +218,12 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
 
     override fun onSuccessAddWishlist() {
         isWishlisted = true
-        showMessage(resources.getString(R.string.image_preview_add_wishlist_success))
+        showMessage(resources.getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg))
     }
 
     override fun onSuccessRemoveWishlist() {
         isWishlisted = false
-        showMessage(resources.getString(R.string.image_preview_remove_wishlist_success))
+        showMessage(resources.getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg))
     }
 
     override fun onErrorAddWishlist(throwable: Throwable) {

@@ -58,12 +58,12 @@ class AddToCartDoneRecommendationProductViewHolder(
                         if (element.recommendationItem.isWishlist) {
                             showSuccessAddWishlist(
                                     itemView,
-                                    getString(com.tokopedia.topads.sdk.R.string.msg_success_add_wishlist)
+                                    getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
                             )
                         } else {
                             showSuccessRemoveWishlist(
                                     itemView,
-                                    getString(com.tokopedia.topads.sdk.R.string.msg_success_remove_wishlist)
+                                    getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg)
                             )
                         }
                     } else {

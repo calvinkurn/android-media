@@ -39,7 +39,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.applink)
-    implementation projectOrAar(rootProject.ext.features.wishlistCommon)
+    implementation projectOrAar(rootProject.ext.features.wishlistcommon)
     implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.graphql)

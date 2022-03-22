@@ -41,7 +41,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.dynamicFeatures)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
-    implementation projectOrAar(rootProject.ext.features.wishlistCommon)
+    implementation projectOrAar(rootProject.ext.features.wishlistcommon)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.analytics)

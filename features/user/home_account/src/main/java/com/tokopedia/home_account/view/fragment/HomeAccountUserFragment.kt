@@ -1457,7 +1457,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         view?.let {
             Toaster.make(
                 it,
-                getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist),
+                getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,
                 getString(R.string.new_home_account_go_to_wishlist),
@@ -1535,7 +1535,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         view?.let {
             Toaster.make(
                 it,
-                getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist),
+                getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_NORMAL
             )

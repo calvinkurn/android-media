@@ -40,9 +40,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -54,9 +53,9 @@ class OfficialStoreHomeViewModel @Inject constructor(
         private val getOfficialStoreDynamicChannelUseCase: GetOfficialStoreDynamicChannelUseCase,
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val userSessionInterface: UserSessionInterface,
-        private val addWishListUseCase: AddWishListUseCase,
+        private val addWishListUseCase: AddToWishlistV2UseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
-        private val removeWishListUseCase: RemoveWishListUseCase,
+        private val removeWishListUseCase: DeleteWishlistV2UseCase,
         private val getDisplayHeadlineAds: GetDisplayHeadlineAds,
         private val getRecommendationUseCaseCoroutine: com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase,
         private val bestSellerMapper: BestSellerMapper,
@@ -307,37 +306,21 @@ class OfficialStoreHomeViewModel @Inject constructor(
                 callback.invoke(false, it)
             }
         } else {
-            addWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                    callback.invoke(false, Throwable(errorMessage))
-                }
-
-                override fun onSuccessAddWishlist(productId: String?) {
-                    callback.invoke(true, null)
-                }
-
-                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
-
-                override fun onSuccessRemoveWishlist(productId: String?) {}
-
-            })
+            addWishListUseCase.setParams(model.productId.toString(), userSessionInterface.userId)
+            addWishListUseCase.execute(
+                    onSuccess = {
+                        callback.invoke(true, null)},
+                    onError = {
+                        callback.invoke(false, it)
+                    })
         }
     }
 
     fun removeWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
-        removeWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object : WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
-
-            override fun onSuccessAddWishlist(productId: String?) {}
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                callback.invoke(false, Throwable(errorMessage))
-            }
-
-            override fun onSuccessRemoveWishlist(productId: String?) {
-                callback.invoke(true, null)
-            }
-        })
+        removeWishListUseCase.setParams(model.productId.toString(), userSessionInterface.userId)
+        removeWishListUseCase.execute(
+                onSuccess = { callback.invoke(true, null) },
+                onError = { callback.invoke(false, it) })
     }
 
     private fun getDisplayTopAdsHeader(featuredShopDataModel: FeaturedShopDataModel){
@@ -394,9 +377,9 @@ class OfficialStoreHomeViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         getRecommendationUseCase.unsubscribe()
-        addWishListUseCase.unsubscribe()
+        addWishListUseCase.cancelJobs()
         topAdsWishlishedUseCase.unsubscribe()
-        removeWishListUseCase.unsubscribe()
+        removeWishListUseCase.cancelJobs()
         getDisplayHeadlineAds.cancelJobs()
     }
 

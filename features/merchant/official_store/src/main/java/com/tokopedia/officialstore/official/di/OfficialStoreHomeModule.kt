@@ -18,8 +18,8 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -87,11 +87,11 @@ class OfficialStoreHomeModule {
 
     @OfficialStoreHomeScope
     @Provides
-    fun provideAddWishlistUseCase(@ApplicationContext context: Context): AddWishListUseCase = AddWishListUseCase(context)
+    fun provideAddWishlistUseCase(@ApplicationContext context: Context): AddToWishlistV2UseCase = AddToWishlistV2UseCase(provideGraphqlRepository())
 
     @OfficialStoreHomeScope
     @Provides
-    fun provideRemoveWishlistUseCase(@ApplicationContext context: Context): RemoveWishListUseCase = RemoveWishListUseCase(context)
+    fun provideRemoveWishlistUseCase(@ApplicationContext context: Context): DeleteWishlistV2UseCase = DeleteWishlistV2UseCase(provideGraphqlRepository())
 
     @OfficialStoreHomeScope
     @Provides

@@ -26,10 +26,9 @@ import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import rx.Subscriber
 import java.util.ArrayList
 import javax.inject.Inject
@@ -43,8 +42,8 @@ class InboxPresenter @Inject constructor(
     private val getNotificationUseCase: GetDrawerNotificationUseCase,
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val userSessionInterface: UserSessionInterface,
-    private val addWishListUseCase: AddWishListUseCase,
-    private val removeWishListUseCase: RemoveWishListUseCase,
+    private val addWishListUseCase: AddToWishlistV2UseCase,
+    private val removeWishListUseCase: DeleteWishlistV2UseCase,
     private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase
 ) : BaseDaggerPresenter<CustomerView>() {
 
@@ -190,26 +189,13 @@ class InboxPresenter @Inject constructor(
                 }
             })
         } else {
-            addWishListUseCase.createObservable(
-                model.productId.toString(),
-                userSessionInterface.userId,
-                object : WishListActionListener {
-                    override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                        callback.invoke(false, Throwable(errorMessage))
-                    }
-
-                    override fun onSuccessAddWishlist(productId: String?) {
-                        callback.invoke(true, null)
-                    }
-
-                    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                        // do nothing
-                    }
-
-                    override fun onSuccessRemoveWishlist(productId: String?) {
-                        // do nothing
-                    }
-                })
+            addWishListUseCase.setParams(model.productId.toString(), userSessionInterface.userId)
+            addWishListUseCase.execute(
+                    onSuccess = {
+                        callback.invoke(true, null)},
+                    onError = {
+                        callback.invoke(false, it)
+                    })
         }
     }
 
@@ -217,26 +203,10 @@ class InboxPresenter @Inject constructor(
         model: RecommendationItem,
         wishlistCallback: (((Boolean, Throwable?) -> Unit))
     ) {
-        removeWishListUseCase.createObservable(
-            model.productId.toString(),
-            userSessionInterface.userId,
-            object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                    // do nothing
-                }
-
-                override fun onSuccessAddWishlist(productId: String?) {
-                    // do nothing
-                }
-
-                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                    wishlistCallback.invoke(false, Throwable(errorMessage))
-                }
-
-                override fun onSuccessRemoveWishlist(productId: String?) {
-                    wishlistCallback.invoke(true, null)
-                }
-            })
+        removeWishListUseCase.setParams(model.productId.toString(), userSessionInterface.userId)
+        removeWishListUseCase.execute(
+                onSuccess = { wishlistCallback.invoke(true, null) },
+                onError = { wishlistCallback.invoke(false, it) })
     }
 
     fun isLoggedIn() = userSessionInterface.isLoggedIn

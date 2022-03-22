@@ -72,7 +72,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.stickyLogin)
     implementation projectOrAar(rootProject.ext.features.tokopointsNotification)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
-    implementation projectOrAar(rootProject.ext.features.wishlistCommon)
+    implementation projectOrAar(rootProject.ext.features.wishlistcommon)
     implementation projectOrAar(rootProject.ext.features.homeNav)
     implementation projectOrAar(rootProject.ext.features.playCommon)
     implementation projectOrAar(rootProject.ext.features.playWidget)

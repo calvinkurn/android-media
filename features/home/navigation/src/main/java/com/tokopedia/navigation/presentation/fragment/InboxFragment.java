@@ -194,7 +194,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         if (getActivity() == null) return;
 
         View view = getActivity().findViewById(android.R.id.content);
-        String message = getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist);
+        String message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg);
 
         if (view == null) return;
 
@@ -208,7 +208,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         if (getActivity() == null) return;
 
         View view = getActivity().findViewById(android.R.id.content);
-        String message = getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist);
+        String message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg);
 
         if (view == null) return;
 

@@ -94,7 +94,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.searchbar)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
-    implementation projectOrAar(rootProject.ext.features.wishlistCommon)
+    implementation projectOrAar(rootProject.ext.features.wishlistcommon)
 
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     testImplementation rootProject.ext.testDependencies.junit
