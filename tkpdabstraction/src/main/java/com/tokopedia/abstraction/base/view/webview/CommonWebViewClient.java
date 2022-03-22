@@ -1,18 +1,23 @@
 package com.tokopedia.abstraction.base.view.webview;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import androidx.fragment.app.Fragment;
+import android.util.Log;
 import android.view.View;
+import android.webkit.ConsoleMessage;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
-import static android.app.Activity.RESULT_OK;
+import androidx.fragment.app.Fragment;
+
 @Deprecated
 public class CommonWebViewClient extends WebChromeClient {
 
@@ -32,6 +37,24 @@ public class CommonWebViewClient extends WebChromeClient {
             throw new RuntimeException("Should be instance of Activity or Fragmant");
         }
 
+    }
+
+    @Override
+    public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+        ConsoleMessage.MessageLevel msgType = consoleMessage.messageLevel();
+        Log.w("CONSOLE", consoleMessage.message());
+        switch (msgType) {
+            case WARNING:
+            case ERROR:
+                Toast.makeText(context, "onConsoleMessage" + consoleMessage.message(), Toast.LENGTH_SHORT).show();
+               /* Map<String, String> map = new HashMap<>();
+                map.put("type", msgType.name());
+                map.put("desc", consoleMessage.message());
+
+                ServerLogger.log(Priority.P1, "WEBVIEW_ERROR", map);*/
+                break;
+        }
+        return true;
     }
 
 
