@@ -20,10 +20,7 @@ data class GetAdminManagementInfoListResponse(
             val iconURL: String = "",
             @SerializedName("permissionName")
             @Expose
-            val permissionName: String = "",
-            @SerializedName("resourcetype")
-            @Expose
-            val resourceType: String = ""
+            val permissionName: String = ""
         )
     }
 }

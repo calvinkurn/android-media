@@ -11,7 +11,6 @@ object GetAdminManagementInfoListQuery: GqlQueryInterface {
                   allPermissionList {               
                     permissionName
                     iconURL
-                    resourcetype
                   }
                 }
             }
