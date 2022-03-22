@@ -57,7 +57,7 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvInboxReview"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clipChildren="false"
                 android:clipToPadding="false"
@@ -67,7 +67,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:listitem="@layout/item_inbox_review"/>
+                tools:listitem="@layout/item_inbox_review" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

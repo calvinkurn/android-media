@@ -17,6 +17,9 @@ import com.tokopedia.review.feature.inboxreview.presentation.model.SortFilterInb
 import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.review.feature.reviewdetail.view.model.RatingBarUiModel
 import com.tokopedia.review.feature.reviewdetail.view.model.SortFilterItemWrapper
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.user.session.UserSessionInterface
@@ -56,9 +59,21 @@ object InboxReviewMapper {
                     )
                 )
             }
+            val mappedReviewMediaThumbnail = ReviewMediaThumbnailUiModel(
+                mediaThumbnails = it.attachments.mapNotNull { attachment ->
+                    attachment.thumbnailURL?.let { url ->
+                        ReviewMediaImageThumbnailUiModel(
+                            uiState = ReviewMediaImageThumbnailUiState.Showing(
+                                uri = attachment.thumbnailURL, removable = false
+                            )
+                        )
+                    }
+                }
+            )
             feedbackListUiModel.add(
                 FeedbackInboxUiModel(
                     attachments = mapAttachment,
+                    reviewMediaThumbnail = mappedReviewMediaThumbnail,
                     isAutoReply = it.isAutoReply ?: false,
                     feedbackId = it.feedbackID,
                     rating = it.rating.orZero(),
@@ -145,18 +160,6 @@ object InboxReviewMapper {
         return itemUnifyList
     }
 
-    fun mapToItemImageSlider(attachmentList: List<FeedbackInboxUiModel.Attachment>?): Pair<List<String>, List<String>> {
-        val imageSlider = arrayListOf<String>()
-        val thumbnailSlider = arrayListOf<String>()
-
-        attachmentList?.map {
-            thumbnailSlider.add(it.thumbnailURL)
-            imageSlider.add(it.fullSizeURL)
-        }
-
-        return Pair(thumbnailSlider, imageSlider)
-    }
-
     fun mapFeedbackInboxToFeedbackUiModel(data: FeedbackInboxUiModel): FeedbackUiModel {
         val mapAttachment = mutableListOf<FeedbackUiModel.Attachment>()
         data.attachments.map { attachment ->
@@ -167,8 +170,18 @@ object InboxReviewMapper {
                 )
             )
         }
+        val mappedReviewMediaThumbnail = ReviewMediaThumbnailUiModel(
+            mediaThumbnails = data.attachments.map { attachment ->
+                ReviewMediaImageThumbnailUiModel(
+                    uiState = ReviewMediaImageThumbnailUiState.Showing(
+                        uri = attachment.thumbnailURL, removable = false
+                    )
+                )
+            }
+        )
         return FeedbackUiModel(
             attachments = mapAttachment,
+            reviewMediaThumbnail = mappedReviewMediaThumbnail,
             autoReply = data.isAutoReply,
             feedbackID = data.feedbackId,
             rating = data.rating,

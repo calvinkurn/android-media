@@ -89,19 +89,13 @@
         app:typographyType="body_3"
         tools:text="Udah nyari Nike Air Force 1 Low White Red Casual Shoes ini akhirnya dapet juga di toko ini, thanks banget gan! barang dijamin ori sesuai deskripsi, kualitas mantap, kemasannya rapih, pengirimannya tepat waktu, recommended seller deh pokoknya gak akan kapok belanja kemari gan! next nya gw cari sepatu rare lagi."/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvItemAttachmentFeedback"
-        android:layout_width="0dp"
+    <com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
+        android:id="@+id/review_media_thumbnails"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:paddingStart="@dimen/spacing_lvl4"
-        android:paddingLeft="@dimen/spacing_lvl4"
-        android:paddingEnd="@dimen/spacing_lvl4"
-        android:paddingRight="@dimen/spacing_lvl4"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvFeedbackReview" />
 
@@ -111,14 +105,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback" />
+        app:layout_constraintTop_toBottomOf="@id/review_media_thumbnails" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/product_feedback_detail_barrier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="badRatingReasonReview, rvItemAttachmentFeedback, tvFeedbackReview"/>
+        app:constraint_referenced_ids="badRatingReasonReview, review_media_thumbnails, tvFeedbackReview"/>
 
     <View
         android:id="@+id/replyFeedbackState"

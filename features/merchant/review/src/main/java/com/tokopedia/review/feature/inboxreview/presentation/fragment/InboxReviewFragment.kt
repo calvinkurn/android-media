@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
@@ -118,7 +117,6 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     private var itemSortFilterList = ArrayList<SortFilterItem>()
 
-    private var cacheManager: SaveInstanceCacheManager? = null
     private var bottomSheet: FilterRatingBottomSheet? = null
 
     private var feedbackInboxList: MutableList<FeedbackInboxUiModel>? = null
@@ -251,15 +249,9 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         val feedbackReplyUiModel = ProductReplyUiModel(data.productID, data.productImageUrl, data.productName, data.variantName)
         val mapFeedbackData = InboxReviewMapper.mapFeedbackInboxToFeedbackUiModel(data)
 
-        cacheManager = context?.let {
-            SaveInstanceCacheManager(it, true).apply {
-                put(SellerReviewReplyFragment.EXTRA_FEEDBACK_DATA, mapFeedbackData)
-                put(SellerReviewReplyFragment.EXTRA_PRODUCT_DATA, feedbackReplyUiModel)
-            }
-        }
-
         startActivityForResult(Intent(context, SellerReviewReplyActivity::class.java).apply {
-            putExtra(SellerReviewReplyFragment.CACHE_OBJECT_ID, cacheManager?.id)
+            putExtra(SellerReviewReplyFragment.EXTRA_FEEDBACK_DATA, mapFeedbackData)
+            putExtra(SellerReviewReplyFragment.EXTRA_PRODUCT_DATA, feedbackReplyUiModel)
             putExtra(SellerReviewReplyFragment.EXTRA_SHOP_ID, inboxReviewViewModel.userSession.shopId.orEmpty())
             putExtra(SellerReviewReplyFragment.IS_EMPTY_REPLY_REVIEW, isEmptyReply)
         }, RESULT_INTENT_REVIEW_REPLY)

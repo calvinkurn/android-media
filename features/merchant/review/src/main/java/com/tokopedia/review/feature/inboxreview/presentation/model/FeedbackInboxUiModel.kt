@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.inboxreview.presentation.model
 
 import com.tokopedia.review.feature.inboxreview.presentation.adapter.BaseInboxReview
 import com.tokopedia.review.feature.inboxreview.presentation.adapter.InboxReviewAdapterTypeFactory
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 
 data class FeedbackInboxUiModel(
         var feedbackId: String = "",
@@ -13,6 +14,7 @@ data class FeedbackInboxUiModel(
         var productImageUrl: String = "",
         var productVariant: String = "",
         var attachments: List<Attachment> = mutableListOf(),
+        var reviewMediaThumbnail: ReviewMediaThumbnailUiModel = ReviewMediaThumbnailUiModel(listOf()),
         var variantID: String = "",
         var variantName: String = "",
         var invoiceID: String = "",

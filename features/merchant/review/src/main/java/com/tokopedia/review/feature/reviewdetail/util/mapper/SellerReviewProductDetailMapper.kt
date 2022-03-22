@@ -16,6 +16,9 @@ import com.tokopedia.review.feature.reviewdetail.view.model.RatingBarUiModel
 import com.tokopedia.review.feature.reviewdetail.view.model.SortFilterItemWrapper
 import com.tokopedia.review.feature.reviewdetail.view.model.SortItemUiModel
 import com.tokopedia.review.feature.reviewdetail.view.model.TopicUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
@@ -95,9 +98,21 @@ object SellerReviewProductDetailMapper {
                     )
                 )
             }
+            val mappedReviewMediaThumbnail = ReviewMediaThumbnailUiModel(
+                mediaThumbnails = it.attachments.mapNotNull { attachment ->
+                    attachment.thumbnailURL?.let { url ->
+                        ReviewMediaImageThumbnailUiModel(
+                            uiState = ReviewMediaImageThumbnailUiState.Showing(
+                                uri = url, removable = false
+                            )
+                        )
+                    }
+                }
+            )
             feedbackListUiModel.add(
                 FeedbackUiModel(
                     attachments = mapAttachment,
+                    reviewMediaThumbnail = mappedReviewMediaThumbnail,
                     autoReply = it.autoReply,
                     feedbackID = it.feedbackID,
                     rating = it.rating,

@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -82,8 +81,6 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
     private var feedbackUiModel: FeedbackUiModel? = null
     private var productReplyUiModel: ProductReplyUiModel? = null
 
-    private var cacheManager: SaveInstanceCacheManager? = null
-
     private var bottomSheetAddTemplate: AddTemplateBottomSheet? = null
 
     private val reviewTemplateListAdapter by lazy {
@@ -108,9 +105,6 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         initData(savedInstanceState)
         super.onCreate(savedInstanceState)
-        activity?.let {
-            cacheManager = SaveInstanceCacheManager(it, savedInstanceState)
-        }
         viewModelReviewReply =
             ViewModelProvider(this, viewModelFactory).get(SellerReviewReplyViewModel::class.java)
     }
@@ -406,15 +400,8 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
             activity?.intent?.run {
                 shopId = getStringExtra(EXTRA_SHOP_ID) ?: ""
                 isEmptyReply = getBooleanExtra(IS_EMPTY_REPLY_REVIEW, false)
-                val objectId = getStringExtra(CACHE_OBJECT_ID)
-                val manager = if (savedInstanceState == null) {
-                    SaveInstanceCacheManager(it, objectId)
-                } else {
-                    cacheManager
-                }
-                feedbackUiModel = manager?.get(EXTRA_FEEDBACK_DATA, FeedbackUiModel::class.java)
-                productReplyUiModel =
-                    manager?.get(EXTRA_PRODUCT_DATA, ProductReplyUiModel::class.java)
+                feedbackUiModel = getParcelableExtra(EXTRA_FEEDBACK_DATA) as? FeedbackUiModel
+                productReplyUiModel = getParcelableExtra(EXTRA_PRODUCT_DATA) as? ProductReplyUiModel
             }
         }
     }

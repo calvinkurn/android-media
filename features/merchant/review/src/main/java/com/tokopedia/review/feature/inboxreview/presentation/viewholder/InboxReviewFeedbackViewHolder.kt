@@ -2,7 +2,6 @@ package com.tokopedia.review.feature.inboxreview.presentation.viewholder
 
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -12,18 +11,20 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.review.R
-import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.common.util.toRelativeDate
 import com.tokopedia.review.common.util.toReviewDescriptionFormatted
 import com.tokopedia.review.databinding.ItemInboxReviewBinding
 import com.tokopedia.review.feature.inboxreview.presentation.adapter.FeedbackInboxReviewListener
-import com.tokopedia.review.feature.inboxreview.presentation.adapter.InboxReviewFeedbackImageAdapter
 import com.tokopedia.review.feature.inboxreview.presentation.model.FeedbackInboxUiModel
 import com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder.ProductFeedbackDetailViewHolder
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
 
-class InboxReviewFeedbackViewHolder(view: View,
-                                    private val feedbackInboxReviewListener: FeedbackInboxReviewListener): AbstractViewHolder<FeedbackInboxUiModel>(view) {
+class InboxReviewFeedbackViewHolder(
+    view: View,
+    private val feedbackInboxReviewListener: FeedbackInboxReviewListener
+) : AbstractViewHolder<FeedbackInboxUiModel>(view) {
 
     companion object {
         val LAYOUT = com.tokopedia.review.R.layout.item_inbox_review
@@ -31,12 +32,13 @@ class InboxReviewFeedbackViewHolder(view: View,
         const val FEEDBACK_MAX_CHAR = 150
     }
 
-    private var reviewInboxFeedbackImageAdapter: InboxReviewFeedbackImageAdapter? = null
+    private var element: FeedbackInboxUiModel? = null
     private val impressHolder = ImpressHolder()
     private val binding = ItemInboxReviewBinding.bind(view)
+    private val reviewMediaThumbnailListener = ReviewMediaThumbnailListener()
 
     override fun bind(element: FeedbackInboxUiModel) {
-        reviewInboxFeedbackImageAdapter = InboxReviewFeedbackImageAdapter(feedbackInboxReviewListener)
+        this.element = element
         with(binding) {
             if(adapterPosition == 0) {
                 feedbackInboxReviewListener.onBackgroundMarginIsReplied(element.replyText.isBlank())
@@ -127,23 +129,14 @@ class InboxReviewFeedbackViewHolder(view: View,
 
     private fun setImageAttachment(element: FeedbackInboxUiModel) {
         with(binding) {
-            val linearLayoutManager = LinearLayoutManager(root.context, LinearLayoutManager.HORIZONTAL, false)
-            rvItemAttachmentFeedback.apply {
-                layoutManager = linearLayoutManager
-                if (itemDecorationCount == 0) {
-                    addItemDecoration(PaddingItemDecoratingReview())
-                }
-                adapter = reviewInboxFeedbackImageAdapter
+            reviewMediaThumbnails.apply {
+                setData(element.reviewMediaThumbnail)
+                setListener(reviewMediaThumbnailListener)
             }
-            if (element.attachments.isEmpty()) {
-                rvItemAttachmentFeedback.hide()
+            if (element.reviewMediaThumbnail.mediaThumbnails.isEmpty()) {
+                reviewMediaThumbnails.hide()
             } else {
-                reviewInboxFeedbackImageAdapter?.setAttachmentUiData(element.attachments)
-                reviewInboxFeedbackImageAdapter?.setFeedbackId(element.feedbackId)
-                reviewInboxFeedbackImageAdapter?.setTitleProduct(element.productName)
-                reviewInboxFeedbackImageAdapter?.setProductId(element.productID)
-                reviewInboxFeedbackImageAdapter?.submitList(element.attachments)
-                rvItemAttachmentFeedback.show()
+                reviewMediaThumbnails.show()
             }
         }
     }
@@ -199,4 +192,25 @@ class InboxReviewFeedbackViewHolder(view: View,
         binding.badRatingReasonDisclaimer.setDisclaimer(disclaimer)
     }
 
+    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnail.Listener {
+        override fun onMediaItemClicked(mediaItem: ReviewMediaThumbnailVisitable, position: Int) {
+            element?.let {
+                feedbackInboxReviewListener.onImageItemClicked(
+                    it.productName,
+                    it.attachments.map { it.fullSizeURL },
+                    it.attachments.map { it.thumbnailURL },
+                    it.feedbackId,
+                    it.productID,
+                    position
+                )
+            }
+        }
+
+        override fun onRemoveMediaItemClicked(
+            mediaItem: ReviewMediaThumbnailVisitable,
+            position: Int
+        ) {
+            // noop
+        }
+    }
 }

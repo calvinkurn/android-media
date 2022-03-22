@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
@@ -13,14 +12,14 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
-import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.common.util.toRelativeDate
 import com.tokopedia.review.databinding.WidgetReplyFeedbackItemBinding
 import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
-import com.tokopedia.review.feature.reviewreply.view.adapter.ReviewReplyFeedbackImageAdapter
 import com.tokopedia.review.feature.reviewreply.view.adapter.ReviewReplyListener
 import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
 import com.tokopedia.unifyprinciples.Typography
 
 class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
@@ -30,22 +29,23 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
         private const val isAutoReply = false
     }
 
-    private val replyReviewFeedbackImageAdapter by lazy {
-        ReviewReplyFeedbackImageAdapter(this)
-    }
-
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     private val binding = WidgetReplyFeedbackItemBinding.inflate(LayoutInflater.from(context), this, true)
+    private val reviewMediaThumbnailListener = ReviewMediaThumbnailListener()
+    private var element: FeedbackUiModel? = null
+    private var productReplyUiModel: ProductReplyUiModel? = null
 
     fun setData(data: FeedbackUiModel, productReplyUiModel: ProductReplyUiModel) {
+        this.element = data
+        this.productReplyUiModel = productReplyUiModel
         binding.ivRatingFeedback.setImageResource(getReviewStar(data.rating.orZero()))
         binding.tvFeedbackUser.text = MethodChecker.fromHtml(String.format(context.getString(R.string.label_name_reviewer_builder), data.reviewerName.orEmpty()))
         binding.tvFeedbackDate.text = data.reviewTime.orEmpty() toRelativeDate  (DATE_REVIEW_FORMAT)
         setupFeedbackReview(data.reviewText.orEmpty())
-        setImageAttachment(data, productReplyUiModel)
+        setImageAttachment(data)
         setReplyView(data)
         showKejarUlasanLabel(data.isKejarUlasan)
         setBadRatingReason(data.badRatingReason)
@@ -75,23 +75,15 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
         }
     }
 
-    private fun setImageAttachment(element: FeedbackUiModel, productReply: ProductReplyUiModel) {
-        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        binding.rvItemAttachmentFeedback.apply {
-            layoutManager = linearLayoutManager
-            if (itemDecorationCount == 0) {
-                addItemDecoration(PaddingItemDecoratingReview())
-            }
-            adapter = replyReviewFeedbackImageAdapter
+    private fun setImageAttachment(element: FeedbackUiModel) {
+        binding.reviewMediaThumbnails.apply {
+            setData(element.reviewMediaThumbnail)
+            setListener(reviewMediaThumbnailListener)
         }
-        if (element.attachments.isEmpty()) {
-            binding.rvItemAttachmentFeedback.hide()
+        if (element.reviewMediaThumbnail.mediaThumbnails.isEmpty()) {
+            binding.reviewMediaThumbnails.hide()
         } else {
-            replyReviewFeedbackImageAdapter.setAttachmentUiData(element.attachments)
-            replyReviewFeedbackImageAdapter.setFeedbackId(element.feedbackID)
-            replyReviewFeedbackImageAdapter.setProductTitle(productReply.productName.toString())
-            replyReviewFeedbackImageAdapter.submitList(element.attachments)
-            binding.rvItemAttachmentFeedback.show()
+            binding.reviewMediaThumbnails.show()
         }
     }
 
@@ -142,5 +134,28 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
 
     fun setReplyComment(comment: String) {
         binding.tvReplyComment.text = comment
+    }
+
+    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnail.Listener {
+        override fun onMediaItemClicked(mediaItem: ReviewMediaThumbnailVisitable, position: Int) {
+            val element = element
+            val productReplyUiModel = productReplyUiModel
+            if (element != null && productReplyUiModel != null) {
+                onImageItemClicked(
+                    element.attachments.mapNotNull { it.fullSizeURL },
+                    element.attachments.mapNotNull { it.thumbnailURL },
+                    productReplyUiModel.productName.orEmpty(),
+                    element.feedbackID,
+                    position
+                )
+            }
+        }
+
+        override fun onRemoveMediaItemClicked(
+            mediaItem: ReviewMediaThumbnailVisitable,
+            position: Int
+        ) {
+            // noop
+        }
     }
 }

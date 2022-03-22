@@ -2,7 +2,6 @@ package com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder
 
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
@@ -11,18 +10,20 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
-import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.common.util.toRelativeDate
 import com.tokopedia.review.common.util.toReviewDescriptionFormatted
 import com.tokopedia.review.databinding.ItemProductFeedbackDetailBinding
 import com.tokopedia.review.feature.reviewdetail.util.mapper.SellerReviewProductDetailMapper
 import com.tokopedia.review.feature.reviewdetail.view.adapter.ProductFeedbackDetailListener
-import com.tokopedia.review.feature.reviewdetail.view.adapter.ReviewDetailFeedbackImageAdapter
 import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
 
-class ProductFeedbackDetailViewHolder(private val view: View,
-                                      private val productFeedbackDetailListener: ProductFeedbackDetailListener) : AbstractViewHolder<FeedbackUiModel>(view) {
+class ProductFeedbackDetailViewHolder(
+    private val view: View,
+    private val productFeedbackDetailListener: ProductFeedbackDetailListener
+) : AbstractViewHolder<FeedbackUiModel>(view) {
 
     companion object {
         @JvmStatic
@@ -33,13 +34,14 @@ class ProductFeedbackDetailViewHolder(private val view: View,
         const val DATE_REVIEW_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
     }
 
-    private var reviewDetailFeedbackImageAdapter: ReviewDetailFeedbackImageAdapter? = null
+    private var element: FeedbackUiModel? = null
     private val badRatingReason: ReviewBadRatingReasonWidget = view.findViewById(R.id.badRatingReasonReview)
+    private val reviewMediaThumbnailListener = ReviewMediaThumbnailListener()
 
     private val binding = ItemProductFeedbackDetailBinding.bind(view)
 
     override fun bind(element: FeedbackUiModel) {
-        reviewDetailFeedbackImageAdapter = ReviewDetailFeedbackImageAdapter(productFeedbackDetailListener)
+        this.element = element
         with(binding) {
             ivRatingFeedback.setImageResource(getReviewStar(element.rating.orZero()))
             ivOptionReviewFeedback.setOnClickListener {
@@ -117,22 +119,15 @@ class ProductFeedbackDetailViewHolder(private val view: View,
     }
 
     private fun setImageAttachment(element: FeedbackUiModel) {
-        val linearLayoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
         with(binding) {
-            rvItemAttachmentFeedback.apply {
-                layoutManager = linearLayoutManager
-                if (itemDecorationCount == 0) {
-                    addItemDecoration(PaddingItemDecoratingReview())
-                }
-                adapter = reviewDetailFeedbackImageAdapter
+            reviewMediaThumbnails.apply {
+                setData(element.reviewMediaThumbnail)
+                setListener(reviewMediaThumbnailListener)
             }
-            if (element.attachments.isEmpty()) {
-                rvItemAttachmentFeedback.hide()
+            if (element.reviewMediaThumbnail.mediaThumbnails.isEmpty()) {
+                reviewMediaThumbnails.hide()
             } else {
-                reviewDetailFeedbackImageAdapter?.setAttachmentUiData(element.attachments)
-                reviewDetailFeedbackImageAdapter?.setFeedbackId(element.feedbackID)
-                reviewDetailFeedbackImageAdapter?.submitList(element.attachments)
-                rvItemAttachmentFeedback.show()
+                reviewMediaThumbnails.show()
             }
         }
     }
@@ -171,5 +166,25 @@ class ProductFeedbackDetailViewHolder(private val view: View,
 
     private fun setBadRatingReason(reason: String) {
         badRatingReason.showBadRatingReason(reason)
+    }
+
+    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnail.Listener {
+        override fun onMediaItemClicked(mediaItem: ReviewMediaThumbnailVisitable, position: Int) {
+            element?.let {
+                productFeedbackDetailListener.onImageItemClicked(
+                    it.attachments.mapNotNull { it.fullSizeURL },
+                    it.attachments.mapNotNull { it.thumbnailURL },
+                    it.feedbackID,
+                    position
+                )
+            }
+        }
+
+        override fun onRemoveMediaItemClicked(
+            mediaItem: ReviewMediaThumbnailVisitable,
+            position: Int
+        ) {
+            // noop
+        }
     }
 }

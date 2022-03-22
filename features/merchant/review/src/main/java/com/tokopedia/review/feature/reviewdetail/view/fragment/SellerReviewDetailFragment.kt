@@ -24,7 +24,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -105,8 +104,6 @@ class SellerReviewDetailFragment :
 
     @Inject
     lateinit var tracking: ProductReviewDetailTracking
-
-    private var cacheManager: SaveInstanceCacheManager? = null
 
     private var linearLayoutManager: LinearLayoutManager? = null
     private val reviewSellerDetailAdapter by lazy {
@@ -610,15 +607,6 @@ class SellerReviewDetailFragment :
         optionDetailListItemUnify: ArrayList<ListItemUnify>, isEmptyReply: Boolean
     ) {
         this.variantName = data.variantName.orEmpty()
-        val feedbackReplyUiModel =
-            ProductReplyUiModel(productID, productImageUrl, productName, variantName)
-
-        cacheManager = context?.let {
-            SaveInstanceCacheManager(it, true).apply {
-                put(SellerReviewReplyFragment.EXTRA_FEEDBACK_DATA, data)
-                put(SellerReviewReplyFragment.EXTRA_PRODUCT_DATA, feedbackReplyUiModel)
-            }
-        }
 
         tracking.eventClickOptionFeedbackReview(
             userSession.shopId.orEmpty(),
@@ -659,8 +647,12 @@ class SellerReviewDetailFragment :
                                     SellerReviewReplyActivity::class.java
                                 ).apply {
                                     putExtra(
-                                        SellerReviewReplyFragment.CACHE_OBJECT_ID,
-                                        cacheManager?.id
+                                        SellerReviewReplyFragment.EXTRA_FEEDBACK_DATA,
+                                        data
+                                    )
+                                    putExtra(
+                                        SellerReviewReplyFragment.EXTRA_PRODUCT_DATA,
+                                        ProductReplyUiModel(productID, productImageUrl, productName, variantName)
                                     )
                                     putExtra(
                                         SellerReviewReplyFragment.EXTRA_SHOP_ID,

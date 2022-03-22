@@ -2,7 +2,9 @@ package com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel
 
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class ReviewMediaVideoThumbnailUiModel(
     val uiState: ReviewMediaVideoThumbnailUiState
 ) : ReviewMediaThumbnailVisitable {
