@@ -14,30 +14,35 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.tokopedia.unifycomponents.ticker.Ticker
-                android:id="@+id/tickerCategory"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/categoryContentLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:tickerShapeType="full"
-                app:tickerType="announcement"
-                app:closeButtonVisibility="gone"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                android:layout_height="match_parent">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/questionsList"
-                android:layout_width="@dimen/layout_lvl0"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                android:overScrollMode="never"
-                android:paddingBottom="@dimen/layout_lvl3"
-                app:layout_constraintTop_toBottomOf="@id/tickerCategory"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                tools:listitem="@layout/layout_explicit_profile_question_section"
-                tools:itemCount="1"/>
+                <com.tokopedia.unifycomponents.ticker.Ticker
+                    android:id="@+id/tickerCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:tickerShapeType="full"
+                    app:tickerType="announcement"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/questionsList"
+                    android:layout_width="@dimen/layout_lvl0"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never"
+                    android:paddingBottom="@dimen/layout_lvl3"
+                    app:layout_constraintTop_toBottomOf="@id/tickerCategory"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:listitem="@layout/layout_explicit_profile_question_section"
+                    tools:itemCount="1"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <include
                 android:id="@+id/emptyLayout"
@@ -48,22 +53,14 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loading"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/layout_lvl2"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
         android:visibility="gone"
-        android:background="@color/Unify_Background">
-
-        <com.tokopedia.unifycomponents.LoaderUnify
-            android:layout_width="@dimen/layout_lvl6"
-            android:layout_height="@dimen/layout_lvl6"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

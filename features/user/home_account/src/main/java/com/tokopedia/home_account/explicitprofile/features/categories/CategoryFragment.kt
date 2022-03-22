@@ -84,6 +84,7 @@ class CategoryFragment: BaseDaggerFragment(), SectionViewHolder.SectionListener 
         super.onViewCreated(view, savedInstanceState)
         initObservers()
         initViews()
+        showMainView(false)
         if (templateName.isNotEmpty()) {
             viewModel?.getQuestion(templateName)
         }
@@ -120,17 +121,20 @@ class CategoryFragment: BaseDaggerFragment(), SectionViewHolder.SectionListener 
     }
 
     private fun onSuccessGetQuestions(explicitProfileGetQuestionDataModel: ExplicitProfileGetQuestionDataModel) {
-        templeDataModel = explicitProfileGetQuestionDataModel.template
+        explicitProfileGetQuestionDataModel.template.let {
+            templeDataModel = it
+            showMainView(it.sections.isNotEmpty())
 
-        viewBinding?.apply {
-            tickerCategory.setHtmlDescription(explicitProfileGetQuestionDataModel.template.description)
+            viewBinding?.apply {
+                tickerCategory.setHtmlDescription(it.description)
+            }
+
+            viewModelShared?.setDefaultTemplatesData(it)
+
+            adapterQuestion.clearAllItems()
+            adapterQuestion.setItems(it.sections)
+            adapterQuestion.notifyDataSetChanged()
         }
-
-        viewModelShared?.setDefaultTemplatesData(explicitProfileGetQuestionDataModel.template)
-
-        adapterQuestion.clearAllItems()
-        adapterQuestion.setItems(explicitProfileGetQuestionDataModel.template.sections)
-        adapterQuestion.notifyDataSetChanged()
     }
 
     private fun onError(error: MessageErrorException) {
@@ -185,8 +189,7 @@ class CategoryFragment: BaseDaggerFragment(), SectionViewHolder.SectionListener 
 
     private fun showMainView(isShow: Boolean) {
         viewBinding?.apply {
-            tickerCategory.visibility = if (isShow) View.VISIBLE else View.GONE
-            questionsList.visibility = if (isShow) View.VISIBLE else View.GONE
+            categoryContentLayout.visibility = if (isShow) View.VISIBLE else View.GONE
         }
     }
 
