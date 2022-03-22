@@ -8,6 +8,8 @@ data class MixLeft(
     var bannerImageUrlMobile: String? = null,
     @SerializedName("banner_image_url_desktop")
     var bannerImageUrlDesktop: String? = null,
+    @SerializedName("banner_supergraphic_image_url")
+    var bannerSuperGraphicImage: String? = null,
     @SerializedName("background_image_url")
     var backgroundImageUrl: String? = null,
     @SerializedName("background_color")

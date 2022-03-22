@@ -38,6 +38,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     private var carouselEmptyState: LocalLoad? = null
     private var errorHolder: FrameLayout = itemView.findViewById(R.id.filter_error_view)
     private var mixLeftBanner: ImageView = itemView.findViewById(R.id.parallax_image)
+    private var mixLeftBannerBG: ImageView = itemView.findViewById(R.id.banner_background_image)
     private var mixLeftBannerCard: CardView = itemView.findViewById(R.id.parallax_image_card)
     private var backgroundImage: ImageView = itemView.findViewById(R.id.background_image)
 
@@ -92,19 +93,19 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
                             val distanceFromLeft = it.left
                             val translateX = distanceFromLeft * 0.2f
                             if (translateX <= 0) {
-                                mixLeftBanner.translationX = -translateX
+                                mixLeftBannerCard.translationX = -translateX
                                 val itemSize = it.width.toFloat()
                                 val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.85f)
-                                mixLeftBanner.alpha = 1 - alpha
-                                mixLeftBanner.scaleY = 1 - alpha
+                                mixLeftBannerCard.alpha = 1 - alpha
+                                mixLeftBannerCard.scaleY = 1 - alpha
                             } else {
-                                mixLeftBanner.translationX = 0f
-                                mixLeftBanner.alpha = 1f
-                                mixLeftBanner.scaleY = 1f
+                                mixLeftBannerCard.translationX = 0f
+                                mixLeftBannerCard.alpha = 1f
+                                mixLeftBannerCard.scaleY = 1f
                             }
                         }
                     } else if (linearLayoutManager.findFirstVisibleItemPosition() > 0 && dx != 0) {
-                        mixLeftBanner.alpha = 0f
+                        mixLeftBannerCard.alpha = 0f
                     }
                 }
             }
@@ -170,14 +171,18 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     }
 
     private fun setupBackgroundData(mixLeft: MixLeft?) {
-        mixLeft?.let {
-            if (!it.backgroundImageUrl.isNullOrEmpty()) {
-                backgroundImage.loadImageWithoutPlaceholder(it.backgroundImageUrl)
-                backgroundImage.show()
-            }else{
-                backgroundImage.hide()
+        if (mixLeftData != null && !(mixLeftData?.backgroundImageUrl.isNullOrEmpty())) {
+            mixLeft?.let {
+                try {
+                    backgroundImage.loadImageWithoutPlaceholder(it.backgroundImageUrl)
+                    if (!it.backgroundColor.isNullOrEmpty())
+                        backgroundImage.setColorFilter(Color.parseColor(it.backgroundColor))
+                    backgroundImage.show()
+                }catch (e:Exception){
+                    backgroundImage.hide()
+                }
             }
-        }?: kotlin.run {
+        }else {
             backgroundImage.hide()
         }
     }
@@ -185,18 +190,29 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     private fun setupMixLeft(item: ArrayList<ComponentsItem>) {
         if (item.isNotEmpty() && mixLeftData != null && !(mixLeftData?.bannerImageUrlMobile.isNullOrEmpty())) {
             mixLeftData?.let {
-                try {
-                    if (!it.backgroundColor.isNullOrEmpty())
-                        mixLeftBanner.setBackgroundColor(Color.parseColor(it.backgroundColor))
-                    if (!it.bannerImageUrlMobile.isNullOrEmpty())
-                        mixLeftBanner.loadImageWithoutPlaceholder(it.bannerImageUrlMobile)
-                    mixLeftBannerCard.show()
-                } catch (e: Exception) {
-                    mixLeftBannerCard.hide()
-                }
+                setupMixLeftBannerBG(it.backgroundColor, it.bannerSuperGraphicImage)
+                if (!it.bannerImageUrlMobile.isNullOrEmpty())
+                    mixLeftBanner.loadImageWithoutPlaceholder(it.bannerImageUrlMobile)
+                mixLeftBannerCard.show()
             }
         } else {
             mixLeftBannerCard.hide()
+        }
+    }
+
+    private fun setupMixLeftBannerBG(backgroundColor:String?,bannerSuperGraphicImage:String?){
+        if(backgroundColor.isNullOrEmpty() && bannerSuperGraphicImage.isNullOrEmpty()){
+            mixLeftBannerBG.hide()
+            return
+        }
+        try {
+            if (!backgroundColor.isNullOrEmpty())
+                mixLeftBannerBG.setBackgroundColor(Color.parseColor(backgroundColor))
+            if (!bannerSuperGraphicImage.isNullOrEmpty())
+                mixLeftBannerBG.loadImageWithoutPlaceholder(bannerSuperGraphicImage)
+            mixLeftBannerBG.show()
+        }catch (e:Exception){
+            mixLeftBannerBG.hide()
         }
     }
 

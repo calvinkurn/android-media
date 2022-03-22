@@ -34,6 +34,7 @@
             app:cardCornerRadius="8dp"
             android:id="@+id/parallax_image_card"
             app:layout_constrainedHeight="true"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -43,6 +44,15 @@
             android:layout_marginBottom="6dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp">
+            <ImageView
+                android:id="@+id/banner_background_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:clickable="true"
+                android:focusable="true" />
             <ImageView
                 android:id="@+id/parallax_image"
                 android:layout_width="match_parent"
