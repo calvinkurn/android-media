@@ -33,7 +33,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.logisticCommon.data.constant.LogisticConstant
+import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_EDIT_ADDRESS
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.mapper.AddAddressMapper
 import com.tokopedia.logisticCommon.data.response.DistrictItem
@@ -265,7 +265,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 //                        saveDataModel?.serviceType = it.data.tokonow.serviceType
 //                        if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickSimpanPositive(userSession.userId, SUCCESS)
 //                        else AddNewAddressRevampAnalytics.onClickSimpanNegative(userSession.userId, SUCCESS)
-                        onSuccessAddAddress()
+                        onSuccessEditAddress()
                     }
                 }
 
@@ -992,6 +992,15 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(EXTRA_ADDRESS_NEW, saveDataModel)
+            })
+            finish()
+        }
+    }
+
+    private fun onSuccessEditAddress() {
+        activity?.run {
+            setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(EXTRA_EDIT_ADDRESS, saveDataModel)
             })
             finish()
         }

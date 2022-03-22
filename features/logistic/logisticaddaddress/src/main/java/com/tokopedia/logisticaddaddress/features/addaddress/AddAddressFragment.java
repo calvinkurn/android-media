@@ -62,8 +62,8 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
+import static com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_EDIT_ADDRESS;
 import static com.tokopedia.logisticaddaddress.common.AddressConstants.EDIT_PARAM;
-import static com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS;
 import static com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_INSTANCE_TYPE;
 import static com.tokopedia.logisticaddaddress.common.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT;
 import static com.tokopedia.logisticaddaddress.common.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS;
@@ -294,7 +294,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void finishActivity() {
         Intent intent = getActivity().getIntent();
-        intent.putExtra(EXTRA_ADDRESS, address);
+        intent.putExtra(EXTRA_EDIT_ADDRESS, address);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }

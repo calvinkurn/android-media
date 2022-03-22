@@ -28,6 +28,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_EDIT_ADDRESS
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.manageaddress.R
@@ -144,6 +145,12 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             performSearch(binding?.searchInputView?.searchBarTextField?.text?.toString() ?: "", null)
             viewModel.getStateChosenAddress("address")
             setButtonEnabled(true)
+            val addressData = data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_EDIT_ADDRESS)
+            if (addressData != null) {
+                view?.let {
+                    Toaster.build(it, "Alamat berhasil disimpan!", Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show()
+                }
+            }
         }
     }
 
