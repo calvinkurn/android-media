@@ -15,6 +15,7 @@ interface PickerActivityListener {
     fun isMinImageResolution(model: MediaUiModel): Boolean
     fun isMaxImageResolution(model: MediaUiModel): Boolean
     fun isMaxImageSize(model: MediaUiModel): Boolean
+    fun isMinStorageThreshold(): Boolean
 
     fun onShowMediaLimitReachedToast()
     fun onShowVideoLimitReachedToast()
@@ -24,4 +25,5 @@ interface PickerActivityListener {
     fun onShowImageMinResToast()
     fun onShowImageMaxResToast()
     fun onShowImageMaxFileSizeToast()
+    fun onShowMinStorageThresholdToast()
 }

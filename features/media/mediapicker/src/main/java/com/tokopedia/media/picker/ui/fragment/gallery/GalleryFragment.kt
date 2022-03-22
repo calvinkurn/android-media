@@ -167,7 +167,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         val isMultipleSelectionType = param.get().isMultipleSelectionType()
 
         if (isMultipleSelectionType) {
-            binding?.drawerSelector?.setMaxAdapterSize(param.get().maxMediaAmount())
+            binding?.drawerSelector?.setMaxAdapterSize(param.get().maxMediaTotal())
             binding?.drawerSelector?.showWithCondition(isShown)
         }
     }

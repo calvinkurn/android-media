@@ -157,6 +157,11 @@ open class CameraFragment : BaseDaggerFragment()
             return
         }
 
+        if (preview.isVideoMode() && listener?.isMinStorageThreshold() == true) {
+            listener?.onShowMinStorageThresholdToast()
+            return
+        }
+
         preview.enableFlashTorch()
 
         showShutterEffect {

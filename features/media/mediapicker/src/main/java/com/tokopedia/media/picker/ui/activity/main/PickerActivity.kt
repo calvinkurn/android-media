@@ -383,7 +383,7 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun hasMediaLimitReached(): Boolean {
-        return medias.size == param.get().maxMediaAmount()
+        return medias.size == param.get().maxMediaTotal()
     }
 
     override fun isMinVideoDuration(model: MediaUiModel): Boolean {
@@ -395,7 +395,7 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun isMaxVideoSize(model: MediaUiModel): Boolean {
-        return model.isMaxFileSize(param.get().maxVideoSize())
+        return model.isMaxFileSize(param.get().maxVideoFileSize())
     }
 
     override fun isMinImageResolution(model: MediaUiModel): Boolean {
@@ -407,13 +407,17 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun isMaxImageSize(model: MediaUiModel): Boolean {
-        return model.isMaxFileSize(param.get().maxImageSize())
+        return model.isMaxFileSize(param.get().maxImageFileSize())
+    }
+
+    override fun isMinStorageThreshold(): Boolean {
+        return viewModel.isDeviceStorageFull()
     }
 
     override fun onShowMediaLimitReachedToast() {
         onShowValidationToaster(
             R.string.picker_selection_limit_message,
-            param.get().maxMediaAmount()
+            param.get().maxMediaTotal()
         )
     }
 
@@ -441,14 +445,14 @@ open class PickerActivity : BaseActivity()
     override fun onShowVideoMaxFileSizeToast() {
         onShowValidationToaster(
             R.string.picker_video_max_size,
-            param.get().maxVideoSize().toMb()
+            param.get().maxVideoFileSize().toMb()
         )
     }
 
     override fun onShowImageMaxFileSizeToast() {
         onShowValidationToaster(
             R.string.picker_image_max_size,
-            param.get().maxImageSize().toMb()
+            param.get().maxImageFileSize().toMb()
         )
     }
 
@@ -463,6 +467,13 @@ open class PickerActivity : BaseActivity()
         onShowValidationToaster(
             R.string.picker_image_res_max_limit,
             param.get().minImageResolution()
+        )
+    }
+
+    override fun onShowMinStorageThresholdToast() {
+        onShowValidationToaster(
+            R.string.picker_storage_threshold_message,
+            param.get().minStorageThreshold().toMb()
         )
     }
 
