@@ -9,6 +9,8 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.stub.data.UserSessionStub
+import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPref
+import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -46,6 +48,18 @@ class SellerHomeModuleStub {
     @Provides
     fun provideSellerHomeRemoteConfig(remoteConfig: FirebaseRemoteConfigImpl): SellerHomeRemoteConfig {
         return SellerHomeRemoteConfig(remoteConfig)
+    }
+
+    @SellerHomeScope
+    @Provides
+    fun provideWidgetLastUpdatePref(@ApplicationContext context: Context): WidgetLastUpdatedSharedPrefInterface {
+        return WidgetLastUpdatedSharedPref(context)
+    }
+
+    @SellerHomeScope
+    @Provides
+    fun provideLastUpdatedInfoEnabled(): Boolean {
+        return true
     }
 
     @SellerHomeScope

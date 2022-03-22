@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelStore
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.mvcwidget.trackers.MvcSource
+import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
@@ -90,6 +91,14 @@ interface DynamicProductDetailListener {
      * ProductMerchantVoucherViewHolder
      */
     fun isOwner(): Boolean
+
+    /**
+     * FintechWidgetViewHolder
+     */
+    fun fintechRedirection(
+        fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass,
+        redirectionUrl: String
+    )
 
     /**
      * ProductShopCredibilityViewHolder
