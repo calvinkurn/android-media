@@ -23,4 +23,5 @@ data class Channel(
         @Expose @SerializedName("category_persona") val categoryPersona: String = "",
         @Expose @SerializedName("brand_id") val brandId: String = "",
         @Expose @SerializedName("pageName") val pageName: String = "",
+        @Expose @SerializedName("viewAllCard") val viewAllCard: ViewAllCard = ViewAllCard(),
 ) : Parcelable

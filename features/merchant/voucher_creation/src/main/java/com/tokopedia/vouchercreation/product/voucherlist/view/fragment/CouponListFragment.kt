@@ -332,6 +332,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
     private fun onCouponIconCopyClicked(couponCode: String) {
         context?.let { SharingUtil.copyTextToClipboard(it, couponCode, couponCode) }
+        toaster(getString(R.string.coupon_code_copied_to_clipboard))
     }
 
     private fun onCouponOptionClicked(coupon: VoucherUiModel) {
