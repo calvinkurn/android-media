@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
@@ -43,7 +44,7 @@ class SomDetailProductBundlingAdapter(
         fun bind(product: SomDetailOrder.Data.GetSomDetail.Details.Product) {
             binding?.run {
                 root.setOnClickListener {
-                    actionListener?.onClickProduct(product.orderDetailId.toIntOrZero())
+                    actionListener?.onClickProduct(product.orderDetailId.toLongOrZero())
                 }
                 imgSomBundleProduct.loadImage(product.thumbnail)
                 tvSomBundleProductName.text = product.name
