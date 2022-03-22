@@ -205,4 +205,5 @@
     <string name="field_nomor_hp">nomor hp</string>
 
     <string name="postal_code_field_error">Kode pos terlalu pendek, min. 5 karakter</string>
+    <string name="edit_address_revamp_change_pinpoint_positive_button_text">Ubah</string>
 </resources>

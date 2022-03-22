@@ -174,6 +174,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 saveDataModel = addressDataFromPinpoint
                 currentKotaKecamatan = data?.getStringExtra(EXTRA_KOTA_KECAMATAN)
                 binding?.formAddressNegative?.etKotaKecamatan?.textFieldInput?.setText(currentKotaKecamatan)
+                binding?.cardAddress?.addressDistrict?.text = currentKotaKecamatan
                 saveDataModel?.let {
                     if (it.latitude.isNotEmpty() || it.longitude.isNotEmpty()) {
                         // todo add is edit flag here (D7)
@@ -508,6 +509,10 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             binding?.run {
                 formattedAddress = "${data.districtName}, ${data.cityName}, ${data.provinceName}"
                 cardAddress.root.visible()
+                cardAddress.btnChange.visibility = View.VISIBLE
+                cardAddress.btnChange.setOnClickListener {
+                    goToPinpointPage()
+                }
                 formAddress.root.visible()
                 formAddressNegative.root.gone()
                 cardAddressNegative.root.gone()
@@ -708,13 +713,15 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         val bundle = Bundle()
         bundle.putDouble(EXTRA_LAT, currentLat)
         bundle.putDouble(EXTRA_LONG, currentLong)
-        bundle.putBoolean(EXTRA_IS_POSITIVE_FLOW, false)
+//        bundle.putBoolean(EXTRA_IS_POSITIVE_FLOW, false)
+        bundle.putBoolean(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
         bundle.putString(EXTRA_DISTRICT_NAME, currentDistrictName)
         bundle.putString(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
         bundle.putParcelable(EXTRA_SAVE_DATA_UI_MODEL, saveDataModel)
         bundle.putBoolean(EXTRA_FROM_ADDRESS_FORM, true)
+        bundle.putBoolean(EXTRA_IS_EDIT, isEdit)
         bundle.putString(EXTRA_POSTAL_CODE, currentPostalCode)
-        if (!isPositiveFlow) bundle.putBoolean(EXTRA_IS_POLYGON, true)
+        if (!isPositiveFlow && !isEdit) bundle.putBoolean(EXTRA_IS_POLYGON, true)
         startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, REQUEST_PINPONT_PAGE)
     }
 

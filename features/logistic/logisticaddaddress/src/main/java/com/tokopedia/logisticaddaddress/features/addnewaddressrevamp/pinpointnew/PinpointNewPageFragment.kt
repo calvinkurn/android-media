@@ -106,6 +106,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private var showIllustrationMap: Boolean = false
 
     private var isFromAddressForm: Boolean = false
+    private var isEdit: Boolean = false
     private var districtId: Long? = null
     private var currentKotaKecamatan: String? = ""
     private var currentPostalCode: String? = ""
@@ -274,6 +275,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             currentKotaKecamatan = it.getString(EXTRA_KOTA_KECAMATAN)
             currentPostalCode = it.getString(EXTRA_POSTAL_CODE)
             isFromAddressForm = it.getBoolean(EXTRA_FROM_ADDRESS_FORM)
+            isEdit = it.getBoolean(EXTRA_IS_EDIT)
         }
 
         if (!currentPlaceId.isNullOrEmpty()) {
@@ -734,6 +736,11 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 viewModel.setAddress(saveAddress)
                 updateGetDistrictBottomSheet(saveAddress)
             }
+        } else {
+            currentKotaKecamatan = "${data.provinceName}, ${data.cityName}, ${data.districtName}"
+            binding?.bottomsheetLocation?.btnPrimary?.setOnClickListener {
+                setResultAddressFormNegative()
+            }
         }
 
         val saveAddress = saveAddressMapper.map(data, zipCodes)
@@ -799,10 +806,19 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
     private fun goToAddressForm() {
         val saveModel = viewModel.getAddress()
-        Intent(context, AddressFormActivity::class.java).apply {
-            putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveModel)
-            putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
-            startActivityForResult(this, REQUEST_ADDRESS_FORM_PAGE)
+        if (!isEdit) {
+            Intent(context, AddressFormActivity::class.java).apply {
+                putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveModel)
+                putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
+                startActivityForResult(this, REQUEST_ADDRESS_FORM_PAGE)
+            }
+        } else {
+            activity?.run {
+                setResult(Activity.RESULT_OK, Intent().apply {
+                    putExtra(EXTRA_IS_EDIT, true)
+                })
+                finish()
+            }
         }
     }
 
@@ -814,6 +830,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 putExtra(EXTRA_NEGATIVE_FULL_FLOW, false)
                 putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
                 putExtra(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
+                putExtra(EXTRA_IS_EDIT, isEdit)
             })
             finish()
         }
@@ -847,6 +864,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                     putParcelable(EXTRA_SAVE_DATA_UI_MODEL, extra.getParcelable(EXTRA_SAVE_DATA_UI_MODEL))
                     putString(EXTRA_KOTA_KECAMATAN, extra.getString(EXTRA_KOTA_KECAMATAN))
                     putBoolean(EXTRA_FROM_ADDRESS_FORM, extra.getBoolean(EXTRA_FROM_ADDRESS_FORM))
+                    putBoolean(EXTRA_IS_EDIT, extra.getBoolean(EXTRA_IS_EDIT))
                     putInt(EXTRA_DISTRICT_ID, extra.getInt(EXTRA_DISTRICT_ID))
                     putString(EXTRA_POSTAL_CODE, extra.getString(EXTRA_POSTAL_CODE))
                 }

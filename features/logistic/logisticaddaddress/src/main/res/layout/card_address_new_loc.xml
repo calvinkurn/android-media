@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     app:cardCornerRadius="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -34,8 +35,23 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/ic_location"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_change"
             app:typographyType="body_1" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/btn_change"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/address_district"
+            android:textColor="@color/Unify_G500"
+            app:typographyType="heading_6"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:text="@string/edit_address_revamp_change_pinpoint_positive_button_text" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

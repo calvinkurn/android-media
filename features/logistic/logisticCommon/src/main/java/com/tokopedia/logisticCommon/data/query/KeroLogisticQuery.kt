@@ -130,8 +130,10 @@ object KeroLogisticQuery {
               formatted_address
               city_id
               province_id
+              province_name
               district_id
               district_name
+              city_name
               postal_code
               latitude
               longitude

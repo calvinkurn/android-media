@@ -25,6 +25,8 @@ object AddAddressMapper {
                 districtId = it.district,
                 latitude = it.latitude,
                 longitude = it.longitude,
+                selectedDistrict = "${it.provinceName}, ${it.cityName}, ${it.districtName}",
+                formattedAddress = "${it.districtName}, ${it.cityName}, ${it.provinceName}"
             )
         }
     }
