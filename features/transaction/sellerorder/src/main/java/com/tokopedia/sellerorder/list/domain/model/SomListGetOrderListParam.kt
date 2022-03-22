@@ -33,7 +33,7 @@ data class SomListGetOrderListParam(
         var orderTypeList: MutableSet<Long> = mutableSetOf(),
         @SerializedName("sort_by")
         @Expose
-        var sortBy: Int = SomConsts.SORT_BY_PAYMENT_DATE_DESCENDING,
+        var sortBy: Long = SomConsts.SORT_BY_PAYMENT_DATE_DESCENDING,
         @SerializedName("is_mobile")
         @Expose
         var isMobile: Boolean = true,
@@ -51,7 +51,7 @@ data class SomListGetOrderListParam(
         var batchPage: Int = 0,
         @SerializedName("is_shipping_printed")
         @Expose
-        var isShippingPrinted: Int = 0,
+        var isShippingPrinted: Long = 0,
         @SerializedName("deadline")
         @Expose
         var deadline: Int = 0,
