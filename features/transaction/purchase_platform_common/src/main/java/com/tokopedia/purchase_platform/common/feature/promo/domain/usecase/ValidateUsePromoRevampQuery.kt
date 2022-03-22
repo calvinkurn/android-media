@@ -187,6 +187,7 @@ val VALIDATE_USE_QUERY = """
                  sp_id
                }
              }
+             poml_auto_applied
            }
          }
       }

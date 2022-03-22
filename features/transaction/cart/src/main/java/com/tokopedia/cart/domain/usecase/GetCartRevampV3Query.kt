@@ -638,20 +638,20 @@ fun getQueryCartRevampV3(): String {
                   checkbox_state
                 }
               }
-              total_product_price,
-              total_product_count,
-              total_product_error,
+              total_product_price
+              total_product_count
+              total_product_error
               global_coupon_attr {
-                description, 
+                description 
                 quantity_label
-              },
-              global_checkbox_state,
+              }
+              global_checkbox_state
               tickers {
                 id
                 message
                 page
-              },
-              hashed_email,
+              }
+              hashed_email
               promo {
                 last_apply {
                   data {
@@ -765,6 +765,7 @@ fun getQueryCartRevampV3(): String {
                         amount
                       }
                       sp_ids
+                      poml_auto_applied
                     }
                   }
                   code

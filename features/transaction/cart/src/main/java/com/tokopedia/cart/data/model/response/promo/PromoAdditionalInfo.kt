@@ -13,4 +13,8 @@ data class PromoAdditionalInfo (
         var errorDetail: PromoErrorDetail = PromoErrorDetail(),
 
         @SerializedName("empty_cart_info")
-        var emptyCartInfo: PromoEmptyCartInfo = PromoEmptyCartInfo())
+        var emptyCartInfo: PromoEmptyCartInfo = PromoEmptyCartInfo(),
+
+        @SerializedName("poml_auto_applied")
+        var pomlAutoApplied: Boolean = false,
+)
