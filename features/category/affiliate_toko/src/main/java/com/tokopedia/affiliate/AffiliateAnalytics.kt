@@ -140,6 +140,7 @@ object AffiliateAnalytics {
             const val VIEW_ITEM = "view_item"
             const val VIEW_ITEM_LIST = "view_item_list"
             const val ITEM_LIST = "item_list"
+            const val CLICK_CONTENT = "clickContent"
             const val INDEX = "index"
         }
     }
@@ -219,6 +220,8 @@ object AffiliateAnalytics {
             const val IMPRESSION_PRODUCT_PERNAH_DILIHAT = "impression - product - pernah dilihat"
             const val PROMISIKAN_PERNAH_DIBELI = "click - promosikan - pernah dibeli"
             const val PROMOSIKAN_PERNAH_DILIHAT = "click - promosikan - pernah dilihat"
+            const val CLICK_TOTAL_KOMISI_CARD = "click - total komisi card"
+            const val CLICK_KLIK_CARD= "click - klik card"
         }
     }
 

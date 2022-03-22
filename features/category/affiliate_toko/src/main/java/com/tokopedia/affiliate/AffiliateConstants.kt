@@ -91,3 +91,7 @@ const val TWENTY_NINE = 29
 const val TRAFFIC_TYPE = "TRAFFIC"
 
 const val TYPE_DIVIDER = "divider"
+
+const val CLICK_TYPE = "click"
+
+const val COMMISSION_TYPE = "commission"
