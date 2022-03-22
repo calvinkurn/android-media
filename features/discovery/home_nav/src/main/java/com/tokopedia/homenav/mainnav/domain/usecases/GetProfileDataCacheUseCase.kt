@@ -1,18 +1,13 @@
 package com.tokopedia.homenav.mainnav.domain.usecases
 
-import android.content.Context
-import android.content.SharedPreferences
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.homenav.mainnav.data.mapper.AccountHeaderMapper
 import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.domain.model.AffiliateUserDetailData
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -23,9 +18,7 @@ class GetProfileDataCacheUseCase @Inject constructor(
         private val getUserInfoUseCase: GetUserInfoUseCase,
         private val getUserMembershipUseCase: GetUserMembershipUseCase,
         private val getShopInfoUseCase: GetShopInfoUseCase,
-        private val userSession: UserSessionInterface,
-        private val getAffiliateUserUseCase: GetAffiliateUserUseCase,
-        @ApplicationContext private val context: Context
+        private val getAffiliateUserUseCase: GetAffiliateUserUseCase
 ): UseCase<AccountHeaderDataModel>() {
 
     override suspend fun executeOnBackground(): AccountHeaderDataModel {
@@ -68,21 +61,5 @@ class GetProfileDataCacheUseCase @Inject constructor(
                     true
             )
         }
-    }
-
-    private fun getLoginState(): Int {
-        return when {
-            userSession.isLoggedIn -> AccountHeaderDataModel.LOGIN_STATE_LOGIN
-            else -> AccountHeaderDataModel.LOGIN_STATE_NON_LOGIN
-        }
-    }
-
-    private fun haveUserLogoutData(): Boolean {
-        val name = getSharedPreference().getString(AccountHeaderDataModel.KEY_USER_NAME, "") ?: ""
-        return name.isNotEmpty()
-    }
-
-    private fun getSharedPreference(): SharedPreferences {
-        return context.getSharedPreferences(AccountHeaderDataModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
     }
 }

@@ -6,19 +6,15 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HomeNavItemAffiliateBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
 import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileAffiliateDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileSellerDataModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -26,8 +22,7 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class AffiliateViewHolder (
     itemView: View,
-    private val mainNavListener: MainNavListener,
-    private val userSession: UserSessionInterface
+    private val mainNavListener: MainNavListener
 ) : AbstractViewHolder<ProfileAffiliateDataModel>(itemView){
 
    private val binding: HomeNavItemAffiliateBinding? by viewBinding()

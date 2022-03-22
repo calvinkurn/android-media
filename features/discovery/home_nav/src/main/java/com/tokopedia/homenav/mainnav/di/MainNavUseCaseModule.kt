@@ -1,7 +1,5 @@
 package com.tokopedia.homenav.mainnav.di
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -176,18 +174,14 @@ class MainNavUseCaseModule {
             userInfoUseCase: GetUserInfoUseCase,
             getUserMembershipUseCase: GetUserMembershipUseCase,
             getShopInfoUseCase: GetShopInfoUseCase,
-            userSession: UserSessionInterface,
-            getAffiliateUserUseCase: GetAffiliateUserUseCase,
-            @ApplicationContext context: Context
+            getAffiliateUserUseCase: GetAffiliateUserUseCase
     ): GetProfileDataCacheUseCase {
         return GetProfileDataCacheUseCase(
                 accountHeaderMapper = accountHeaderMapper,
                 getUserInfoUseCase = userInfoUseCase,
                 getUserMembershipUseCase = getUserMembershipUseCase,
                 getShopInfoUseCase = getShopInfoUseCase,
-                userSession = userSession,
-                getAffiliateUserUseCase = getAffiliateUserUseCase,
-                context = context
+                getAffiliateUserUseCase = getAffiliateUserUseCase
         )
     }
 }
