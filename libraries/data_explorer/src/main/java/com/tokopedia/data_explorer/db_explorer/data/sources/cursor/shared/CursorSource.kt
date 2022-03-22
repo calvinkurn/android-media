@@ -1,12 +1,12 @@
 package com.tokopedia.data_explorer.db_explorer.data.sources.cursor.shared
 
 import android.database.Cursor
+import android.util.Log
 import com.tokopedia.data_explorer.db_explorer.data.models.cursor.input.Query
 import com.tokopedia.data_explorer.db_explorer.data.models.cursor.output.Field
 import com.tokopedia.data_explorer.db_explorer.data.models.cursor.output.FieldType
 import com.tokopedia.data_explorer.db_explorer.data.models.cursor.output.QueryResult
 import com.tokopedia.data_explorer.db_explorer.data.models.cursor.output.Row
-import timber.log.Timber
 
 internal open class CursorSource {
 
@@ -24,7 +24,7 @@ internal open class CursorSource {
     internal fun runQuery(query: Query): Cursor? =
         query.database?.rawQuery(
             query.statement.also {
-                Timber.i(it)
+                Log.i("DB_QUERY", it)
             },
             null
         )
