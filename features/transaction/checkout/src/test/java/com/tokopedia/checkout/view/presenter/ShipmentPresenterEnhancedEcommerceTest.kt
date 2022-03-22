@@ -6,7 +6,11 @@ import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutReques
 import com.tokopedia.checkout.data.model.request.checkout.old.ProductDataCheckoutRequest
 import com.tokopedia.checkout.data.model.request.checkout.old.ShopProductCheckoutRequest
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
-import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
@@ -27,6 +31,11 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData.Companion.VALUE_BEBAS_ONGKIR_EXTRA
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.AdditionalInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -286,7 +295,99 @@ class ShipmentPresenterEnhancedEcommerceTest {
         // Then
         verify {
             shipmentAnalyticsActionListener.sendEnhancedEcommerceAnalyticsCheckout(
-                    any(), tradeInCustomDimension, transactionId, eventCategory, eventAction, eventLabel
+                    any(), tradeInCustomDimension, transactionId, "", false, eventCategory, eventAction, eventLabel
+            )
+        }
+    }
+
+    @Test
+    fun `WHEN send enhance ecommerce with step 2 THEN should trigger enhanced ecommerce analytic with promo flag from last apply`() {
+        // Given
+        val tradeInCustomDimension = emptyMap<String, String>()
+        val transactionId = "1"
+        val eventCategory = "eventCategory"
+        val eventAction = "eventAction"
+        val eventLabel = "eventLabel"
+        val step = "2"
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
+            cartItemModels = listOf(CartItemModel())
+        })
+        presenter.setCheckoutData(CheckoutData(transactionId = transactionId))
+        presenter.listShipmentCrossSellModel = arrayListOf()
+        val pomlAutoApplied = true
+        presenter.lastApplyData = LastApplyUiModel(
+                additionalInfo = LastApplyAdditionalInfoUiModel(pomlAutoApplied = pomlAutoApplied)
+        )
+
+        // When
+        presenter.triggerSendEnhancedEcommerceCheckoutAnalytics(listOf(dataCheckoutRequest), tradeInCustomDimension, step, eventCategory, eventAction, eventLabel, "", "")
+
+        // Then
+        verify {
+            shipmentAnalyticsActionListener.sendEnhancedEcommerceAnalyticsCheckout(
+                    any(), tradeInCustomDimension, transactionId, "", pomlAutoApplied, eventCategory, eventAction, eventLabel
+            )
+        }
+    }
+
+    @Test
+    fun `WHEN send enhance ecommerce with step 2 without last apply data THEN should trigger enhanced ecommerce analytic with promo flag false`() {
+        // Given
+        val tradeInCustomDimension = emptyMap<String, String>()
+        val transactionId = "1"
+        val eventCategory = "eventCategory"
+        val eventAction = "eventAction"
+        val eventLabel = "eventLabel"
+        val step = "2"
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
+            cartItemModels = listOf(CartItemModel())
+        })
+        presenter.setCheckoutData(CheckoutData(transactionId = transactionId))
+        presenter.listShipmentCrossSellModel = arrayListOf()
+
+        // When
+        presenter.triggerSendEnhancedEcommerceCheckoutAnalytics(listOf(dataCheckoutRequest), tradeInCustomDimension, step, eventCategory, eventAction, eventLabel, "", "")
+
+        // Then
+        verify {
+            shipmentAnalyticsActionListener.sendEnhancedEcommerceAnalyticsCheckout(
+                    any(), tradeInCustomDimension, transactionId, "", false, eventCategory, eventAction, eventLabel
+            )
+        }
+    }
+
+    @Test
+    fun `WHEN send enhance ecommerce with step 4 THEN should trigger enhanced ecommerce analytic with promo flag from validate use`() {
+        // Given
+        val tradeInCustomDimension = emptyMap<String, String>()
+        val transactionId = "1"
+        val eventCategory = "eventCategory"
+        val eventAction = "eventAction"
+        val eventLabel = "eventLabel"
+        val step = "4"
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
+            cartItemModels = listOf(CartItemModel())
+        })
+        presenter.setCheckoutData(CheckoutData(transactionId = transactionId))
+        presenter.listShipmentCrossSellModel = arrayListOf()
+        val pomlAutoApplied = true
+        presenter.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+                PromoUiModel(additionalInfoUiModel = AdditionalInfoUiModel(pomlAutoApplied = pomlAutoApplied))
+        )
+
+        // When
+        presenter.triggerSendEnhancedEcommerceCheckoutAnalytics(listOf(dataCheckoutRequest), tradeInCustomDimension, step, eventCategory, eventAction, eventLabel, "", "")
+
+        // Then
+        verify {
+            shipmentAnalyticsActionListener.sendEnhancedEcommerceAnalyticsCheckout(
+                    any(), tradeInCustomDimension, transactionId, "", pomlAutoApplied, eventCategory, eventAction, eventLabel
             )
         }
     }
