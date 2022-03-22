@@ -367,11 +367,11 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun sendTableImpressionEvent(
         model: TableWidgetUiModel,
+        position: Int,
         slidePosition: Int,
         maxSlidePosition: Int,
         isSlideEmpty: Boolean
     ) {
-        val position = adapter.data.indexOf(model)
         StatisticTracker.sendTableImpressionEvent(model, position, slidePosition, isSlideEmpty)
         getCategoryPage()?.let { categoryPage ->
             StatisticTracker.sendTableSlideEvent(categoryPage, slidePosition.plus(Int.ONE), maxSlidePosition)
@@ -459,6 +459,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             }
             sendSelectedFilterClickEvent(filter)
         }.show(childFragmentManager, WidgetFilterBottomSheet.TABLE_FILTER_TAG)
+
+        statisticPage?.let {
+            StatisticTracker.sendShowTableTableFilterClickEvent(it, element)
+        }
     }
 
     fun setSelectedWidget(widget: String) {

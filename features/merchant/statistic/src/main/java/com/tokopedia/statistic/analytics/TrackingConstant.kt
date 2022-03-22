@@ -70,6 +70,7 @@ object TrackingConstant {
     const val CLICK_TICKER_CTA = "click pelajari selengkapnya"
     const val CLICK_TRAFFIC_COACH_MARK_CTA = "click onboarding popup - complete"
     const val CLICK_TOP_ADS_CROSS_SELLING = "click topads cross selling"
+    const val CLICK_TABLE_WIDGET_SORT = "click widget accordion table - sort"
     const val IMPRESSION_WIDGET_CARD = "impression widget card"
     const val IMPRESSION_WIDGET_LINE_GRAPH = "impression widget trend line"
     const val IMPRESSION_WIDGET_DESCRIPTION = "impression widget description"

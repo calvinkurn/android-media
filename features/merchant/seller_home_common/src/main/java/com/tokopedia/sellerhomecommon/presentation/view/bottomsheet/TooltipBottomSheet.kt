@@ -31,7 +31,7 @@ class TooltipBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private val impressionHolder = ImpressHolder()
+    private var tooltipShowLister: (() -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,12 +51,11 @@ class TooltipBottomSheet : BottomSheetUnify() {
         customPeekHeight = child.measuredHeight
         setShowListener {
             bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+            tooltipShowLister?.invoke()
         }
     }
 
     fun setOnShowListener(action: () -> Unit) {
-        view?.addOnImpressionListener(impressionHolder) {
-            action()
-        }
+        tooltipShowLister = action
     }
 }

@@ -680,6 +680,25 @@ object StatisticTracker {
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
+    fun sendShowTableTableFilterClickEvent(
+        page: StatisticPageUiModel,
+        element: TableWidgetUiModel
+    ) {
+        val isEmpty = element.data?.dataSet?.all { it.rows.isEmpty() }.orFalse()
+        val label = arrayOf(
+            element.data,
+            if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY,
+            element.title
+        ).joinToString(" - ")
+        val eventMap = createEventMap(
+            event = TrackingConstant.CLICK_PG,
+            action = TrackingConstant.CLICK_TABLE_WIDGET_SORT,
+            category = page.pageSource.replace("-", " "),
+            label = label
+        )
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
     fun sendScreen(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }

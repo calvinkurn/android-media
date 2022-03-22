@@ -297,18 +297,16 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
                 override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                     coachMarkHelper.saveCoachMarkHasShownByTitle(coachMarkItem.title.toString())
                     sendCoachMarkImpressionTracker(coachMarkItem.title.toString())
+                    sendCoachMarkClickTracker(currentIndex)
                 }
             })
-            coachMark.onFinishListener = {
-                sendCoachMarkClickTracker()
-            }
             val title = coachMarkItems.firstOrNull()?.title?.toString().orEmpty()
             coachMarkHelper.saveCoachMarkHasShownByTitle(title)
         }
     }
 
-    private fun sendCoachMarkClickTracker() {
-        val item = coachMark.coachMarkItem.lastOrNull()
+    private fun sendCoachMarkClickTracker(currentIndex: Int) {
+        val item = coachMark.coachMarkItem.getOrNull(currentIndex.minus(Int.ONE))
         item?.let {
             val title = it.title.toString()
             if (coachMarkHelper.getIsTrafficInsightTab(title)) {
