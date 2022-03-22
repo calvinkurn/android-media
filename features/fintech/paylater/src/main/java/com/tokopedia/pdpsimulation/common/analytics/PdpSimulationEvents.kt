@@ -1,5 +1,8 @@
 package com.tokopedia.pdpsimulation.common.analytics
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
 sealed class PdpSimulationEvent {
 
     data class OccImpressionEvent(
@@ -73,4 +76,10 @@ class PayLaterCtaClick : PayLaterAnalyticsBase() {
     var limit: String = ""
     var redirectLink: String = ""
     var ctaWording: String = ""
+}
+
+@Parcelize
+ class PayLaterBottomSheetImpression: PayLaterAnalyticsBase(), Parcelable {
+    var limit: String = ""
+    var emiAmount: String = ""
 }

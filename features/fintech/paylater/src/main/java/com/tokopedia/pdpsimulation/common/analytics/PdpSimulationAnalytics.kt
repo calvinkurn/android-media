@@ -16,8 +16,30 @@ class PdpSimulationAnalytics @Inject constructor(
     fun sendPayLaterSimulationEvent(event: PayLaterAnalyticsBase) {
         when (event) {
             is PayLaterCtaClick -> sendClickCtaEvent(event)
+            is PayLaterBottomSheetImpression -> sendInstallmentBottomSheet(event)
             else -> sendPayLaterImpressionEvent(event)
         }
+    }
+
+    private fun sendInstallmentBottomSheet(event: PayLaterBottomSheetImpression) {
+
+        val label = computeLabel(
+            event.productId,
+            userSession.get().userId,
+            event.userStatus,
+            event.tenureOption.toString(),
+            event.emiAmount,
+            event.limit,
+            event.payLaterPartnerName,
+        )
+        val map = TrackAppUtils.gtmData(
+            IRIS_EVENT_NAME_FIN_TECH_V3,
+            EVENT_CATEGORY_FIN_TECH,
+            event.action,
+            label
+        )
+        sendGeneralEvent(map)
+
     }
 
     private fun sendPayLaterImpressionEvent(event: PayLaterAnalyticsBase) {
@@ -249,6 +271,7 @@ class PdpSimulationAnalytics @Inject constructor(
         const val OCC_CHANGE_PARTNER_ACTION = "change partner cta - clicked activated buyer"
         const val BOTTOMSHEET_CHANGE_PARTNER_CLICK_ACTION =
             "partner option cta - click activated buyer"
+        const val BOTTOMSHEET_INSTALLMENT_ACTION="open simulation bottom sheet - impression"
         const val OCC_EVENT_CATEGORY = "fin - optimize occ page"
         const val CTA_CHECKOUT_CLICKED_ACTION = "CTA beli langsung - click activated buyers"
         const val CTA_CHECKOUT_EVENT_CATEGORY = "fin - occ page"
