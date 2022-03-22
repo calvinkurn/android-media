@@ -155,12 +155,15 @@
                 app:typographyType="body_2"
                 tools:text="Mantap-mantap" />
 
-            <com.tokopedia.review.common.presentation.widget.ReviewAttachedImages
-                android:id="@+id/reviewDetailAttachedImages"
+            <com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
+                android:id="@+id/reviewDetailAttachedMedia"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="8dp"
                 android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/reviewDetailContent" />
 
             <com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
@@ -168,7 +171,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/reviewDetailAttachedImages" />
+                app:layout_constraintTop_toBottomOf="@id/reviewDetailAttachedMedia" />
 
             <com.tokopedia.review.common.presentation.widget.ReviewBadRatingDisclaimerWidget
                 android:id="@+id/review_detail_bad_rating_disclaimer_widget"
@@ -196,7 +199,7 @@
                 android:layout_height="wrap_content"
                 app:barrierDirection="bottom"
                 app:barrierMargin="@dimen/layout_lvl2"
-                app:constraint_referenced_ids="reviewDetailAttachedImages, reviewDetailResponse, reviewDetailContent, review_detail_bad_rating_reason" />
+                app:constraint_referenced_ids="reviewDetailAttachedMedia, reviewDetailResponse, reviewDetailContent, review_detail_bad_rating_reason" />
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/review_history_detail_divider"

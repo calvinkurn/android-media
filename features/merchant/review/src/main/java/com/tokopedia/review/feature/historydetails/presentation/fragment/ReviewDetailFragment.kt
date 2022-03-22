@@ -33,6 +33,7 @@ import com.tokopedia.review.common.data.ProductrevGetReviewDetailProduct
 import com.tokopedia.review.common.data.ProductrevGetReviewDetailReputation
 import com.tokopedia.review.common.data.ProductrevGetReviewDetailResponse
 import com.tokopedia.review.common.data.ProductrevGetReviewDetailReview
+import com.tokopedia.review.common.data.ReviewViewState
 import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
 import com.tokopedia.review.common.util.OnBackPressedListener
@@ -44,6 +45,11 @@ import com.tokopedia.review.feature.historydetails.analytics.ReviewDetailTrackin
 import com.tokopedia.review.feature.historydetails.di.DaggerReviewDetailComponent
 import com.tokopedia.review.feature.historydetails.di.ReviewDetailComponent
 import com.tokopedia.review.feature.historydetails.presentation.viewmodel.ReviewDetailViewModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -79,6 +85,8 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     private var reviewConnectionErrorRetryButton: UnifyButton? = null
 
     private var binding by autoClearedNullable<FragmentReviewDetailBinding>()
+
+    private val reviewMediaThumbnailListener = ReviewMediaThumbnailListener()
 
     override fun stopPreparePerfomancePageMonitoring() {
         reviewPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
@@ -329,12 +337,20 @@ class ReviewDetailFragment : BaseDaggerFragment(),
             }
             addHeaderIcons(editable)
             if (attachments.isNotEmpty()) {
-                binding?.reviewDetailAttachedImages?.apply {
-                    setImages(attachments, productName, this@ReviewDetailFragment)
+                binding?.reviewDetailAttachedMedia?.apply {
+                    val mappedAttachment = attachments.map {
+                        ReviewMediaImageThumbnailUiModel(
+                            uiState = ReviewMediaImageThumbnailUiState.Showing(
+                                uri = it.fullSize, removable = false
+                            )
+                        )
+                    }
+                    setData(ReviewMediaThumbnailUiModel(mappedAttachment))
+                    setListener(reviewMediaThumbnailListener)
                     show()
                 }
             } else {
-                binding?.reviewDetailAttachedImages?.hide()
+                binding?.reviewDetailAttachedMedia?.hide()
             }
             binding?.reviewDetailDate?.setTextAndCheckShow(
                 getString(
@@ -596,6 +612,27 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                 Toaster.TYPE_ERROR,
                 getString(R.string.review_oke)
             ).show()
+        }
+    }
+
+    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnail.Listener {
+        override fun onMediaItemClicked(mediaItem: ReviewMediaThumbnailVisitable, position: Int) {
+            viewModel.reviewDetails.value?.let { reviewDetailsResult ->
+                if (reviewDetailsResult is Success) {
+                    onAttachedImagesClicked(
+                        reviewDetailsResult.data.product.productName,
+                        reviewDetailsResult.data.review.attachments.map { it.fullSize },
+                        position
+                    )
+                }
+            }
+        }
+
+        override fun onRemoveMediaItemClicked(
+            mediaItem: ReviewMediaThumbnailVisitable,
+            position: Int
+        ) {
+            // noop
         }
     }
 }
