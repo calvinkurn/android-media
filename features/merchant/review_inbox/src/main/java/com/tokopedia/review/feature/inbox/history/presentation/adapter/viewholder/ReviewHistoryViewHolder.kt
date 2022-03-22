@@ -2,21 +2,26 @@ package com.tokopedia.review.feature.inbox.history.presentation.adapter.viewhold
 
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.review.common.data.ProductrevReviewAttachment
 import com.tokopedia.review.common.util.ReviewAttachedImagesClickListener
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.uimodel.ReviewHistoryUiModel
 import com.tokopedia.review.feature.inbox.history.presentation.util.ReviewHistoryItemListener
 import com.tokopedia.review.inbox.R
 import com.tokopedia.review.inbox.databinding.ItemReviewHistoryBinding
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
 
-class ReviewHistoryViewHolder(view: View,
-                              private val reviewAttachedImagesClickListener: ReviewAttachedImagesClickListener,
-                              private val reviewHistoryItemListener: ReviewHistoryItemListener
+class ReviewHistoryViewHolder(
+    view: View,
+    private val reviewAttachedImagesClickListener: ReviewAttachedImagesClickListener,
+    private val reviewHistoryItemListener: ReviewHistoryItemListener,
+    reviewMediaTemplateRecycledViewPool: RecyclerView.RecycledViewPool
 ) : AbstractViewHolder<ReviewHistoryUiModel>(view) {
 
     companion object {
@@ -24,8 +29,15 @@ class ReviewHistoryViewHolder(view: View,
     }
 
     private val binding = ItemReviewHistoryBinding.bind(view)
+    private val reviewMediaThumbnailListener = ReviewMediaThumbnailListener()
+    private var element: ReviewHistoryUiModel? = null
+
+    init {
+        binding.reviewDetailAttachedMedia.setRecyclerViewPool(reviewMediaTemplateRecycledViewPool)
+    }
 
     override fun bind(element: ReviewHistoryUiModel) {
+        this.element = element
         with(element.productrevFeedbackHistory) {
             with(product) {
                 showProductName(productName)
@@ -33,7 +45,7 @@ class ReviewHistoryViewHolder(view: View,
             }
             with(review) {
                 showDescription(reviewText)
-                showAttachedImages(attachments, product.productName, product.productId, feedbackId)
+                showAttachedImages(element.attachedMediaThumbnail)
                 setupStarRatings(rating)
                 showBadRatingReason(badRatingReason)
             }
@@ -57,13 +69,14 @@ class ReviewHistoryViewHolder(view: View,
         }
     }
 
-    private fun showAttachedImages(attachedImages: List<ProductrevReviewAttachment>, productName: String, productId: String, feedbackId: String) {
-        if(attachedImages.isEmpty()) {
-            binding.reviewHistoryAttachedImages.hide()
+    private fun showAttachedImages(attachedMediaThumbnail: ReviewMediaThumbnailUiModel) {
+        if(attachedMediaThumbnail.mediaThumbnails.isEmpty()) {
+            binding.reviewDetailAttachedMedia.hide()
             return
         }
-        binding.reviewHistoryAttachedImages.apply {
-            setImages(attachedImages, productName, reviewAttachedImagesClickListener, reviewHistoryItemListener, productId, feedbackId)
+        binding.reviewDetailAttachedMedia.apply {
+            setData(attachedMediaThumbnail)
+            setListener(reviewMediaThumbnailListener)
             show()
         }
     }
@@ -114,5 +127,28 @@ class ReviewHistoryViewHolder(view: View,
 
     private fun showBadRatingReason(badRatingReason: String) {
         binding.reviewHistoryBadRatingReason.showBadRatingReason(badRatingReason)
+    }
+
+    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnail.Listener {
+        override fun onMediaItemClicked(mediaItem: ReviewMediaThumbnailVisitable, position: Int) {
+            element?.let {
+                reviewHistoryItemListener.trackAttachedImageClicked(
+                    it.productrevFeedbackHistory.product.productId,
+                    it.productrevFeedbackHistory.review.feedbackId
+                )
+                reviewAttachedImagesClickListener.onAttachedImagesClicked(
+                    it.productrevFeedbackHistory.product.productName,
+                    it.productrevFeedbackHistory.review.attachments.map { it.fullSize },
+                    position
+                )
+            }
+        }
+
+        override fun onRemoveMediaItemClicked(
+            mediaItem: ReviewMediaThumbnailVisitable,
+            position: Int
+        ) {
+            // noop
+        }
     }
 }

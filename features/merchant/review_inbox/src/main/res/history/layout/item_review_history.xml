@@ -87,30 +87,30 @@
             tools:text="asdasdasdadadsadsadasdsadasdasdsadasdasdsadsadsadsadsadsadasdsadsadsadsa"
             tools:visibility="visible" />
 
-        <com.tokopedia.review.common.presentation.widget.ReviewAttachedImages
-            android:id="@+id/reviewHistoryAttachedImages"
-            android:layout_width="wrap_content"
+        <com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
+            android:id="@+id/reviewDetailAttachedMedia"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
-            android:orientation="horizontal"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginTop="6dp"
             android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/reviewHistoryDescription"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toBottomOf="@id/reviewHistoryDescription" />
 
         <com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
             android:id="@+id/review_history_bad_rating_reason"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/reviewHistoryAttachedImages" />
+            app:layout_constraintTop_toBottomOf="@id/reviewDetailAttachedMedia" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/review_history_image_barrier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="reviewHistoryAttachedImages, reviewHistoryDescription, review_history_bad_rating_reason"
+            app:constraint_referenced_ids="reviewDetailAttachedMedia, reviewHistoryDescription, review_history_bad_rating_reason"
             tools:visibility="gone" />
 
         <com.tokopedia.unifyprinciples.Typography

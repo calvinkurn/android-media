@@ -37,6 +37,9 @@ import com.tokopedia.review.feature.inbox.history.presentation.util.SearchTextWa
 import com.tokopedia.review.feature.inbox.history.presentation.viewmodel.ReviewHistoryViewModel
 import com.tokopedia.review.inbox.R
 import com.tokopedia.review.inbox.databinding.FragmentReviewHistoryBinding
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -89,7 +92,11 @@ class ReviewHistoryFragment :
     }
 
     override fun getAdapterTypeFactory(): ReviewHistoryAdapterTypeFactory {
-        return ReviewHistoryAdapterTypeFactory(this, this)
+        return ReviewHistoryAdapterTypeFactory(
+            imagesClickListener = this,
+            reviewHistoryItemListener = this,
+            reviewMediaTemplateRecycledViewPool = RecyclerView.RecycledViewPool()
+        )
     }
 
     override fun getScreenName(): String {
@@ -207,7 +214,18 @@ class ReviewHistoryFragment :
                         return@Observer
                     }
                     renderReviewData(
-                        it.data.list.map { history -> ReviewHistoryUiModel(history) },
+                        it.data.list.map { history ->
+                            val mappedMediaThumbnail = ReviewMediaThumbnailUiModel(
+                                mediaThumbnails = history.review.attachments.map {
+                                    ReviewMediaImageThumbnailUiModel(
+                                        uiState = ReviewMediaImageThumbnailUiState.Showing(
+                                            uri = it.fullSize, removable = false
+                                        )
+                                    )
+                                }
+                            )
+                            ReviewHistoryUiModel(history, mappedMediaThumbnail)
+                        },
                         it.data.hasNext
                     )
                 }
