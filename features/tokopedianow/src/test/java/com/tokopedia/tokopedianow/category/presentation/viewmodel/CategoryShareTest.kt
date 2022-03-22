@@ -144,7 +144,6 @@ class CategoryShareTest : CategoryTestFixtures() {
         `Then assert share live data`(sharingModel)
     }
 
-
     private fun getConstructedLink(categoryUrl: String, categoryIdLvl2: String, categoryIdLvl3: String): Pair<String, String> {
         var deeplinkParam = "/${TokoNowCategoryFragment.DEFAULT_DEEPLINK_PARAM}/${tokoNowCategoryViewModel.categoryL1}"
         var url = categoryUrl
