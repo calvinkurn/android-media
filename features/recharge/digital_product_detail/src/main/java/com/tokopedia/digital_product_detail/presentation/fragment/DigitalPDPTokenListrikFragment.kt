@@ -8,6 +8,7 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -37,6 +38,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_QR_PARAM
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_UPDATED_TITLE
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.LOADER_DIALOG_TEXT
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FIXED_PADDING_ADJUSTMENT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.PARAM_NEED_RESULT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN_ALT
@@ -52,10 +54,10 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalyti
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPTokenListrikViewModel
-import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loaderdialog.LoaderDialog
@@ -86,7 +88,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 
 class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     RechargeDenomGridListener,
@@ -153,6 +154,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         getDataFromBundle()
         setupKeyboardWatcher()
+        setupDynamicScrollViewPadding()
         initClientNumberWidget()
         observeData()
         getCatalogMenuDetail()
@@ -295,7 +297,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                         userSession.userId,
                         atcData.data.cartId,
                         viewModel.digitalCheckoutPassData.productId.toString(),
-                        viewModel.operatorData.attributes.name,
+                        viewModel.selectedGridProduct.denomData.title,
                         atcData.data.priceProduct
                     )
                     navigateToCart(atcData.data.categoryId)
@@ -398,7 +400,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             listOf(binding?.rechargePdpTokenListrikClientNumberWidget?.getInputNumber() ?: "")
         viewModel.setRecommendationLoading()
         viewModel.cancelRecommendationJob()
-        viewModel.getRecommendations(clientNumbers, listOf(categoryId))
+        viewModel.getRecommendations(clientNumbers, listOf(categoryId), listOf(operatorId.toInt()))
     }
 
     private fun getCatalogMenuDetail() {
@@ -557,10 +559,8 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             if (favoriteNumber.isNotEmpty()) {
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
-
-                val extendedPadding = getDimens(unifyDimens.layout_lvl8)
-                binding?.rechargePdpTokenListrikSvContainer?.setPadding(0, extendedPadding, 0, 0)
             }
+            setupDynamicScrollViewPadding(FIXED_PADDING_ADJUSTMENT)
         }
     }
 
@@ -573,9 +573,8 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     }
 
     private fun onFailedGetFavoriteNumber(throwable: Throwable) {
-        binding?.run {
-            rechargePdpTokenListrikClientNumberWidget.setFilterChipShimmer(false, true)
-        }
+        binding?.rechargePdpTokenListrikClientNumberWidget?.setFilterChipShimmer(false, true)
+        setupDynamicScrollViewPadding()
     }
 
     private fun onSuccessGetOperatorSelectGroup() {
@@ -758,6 +757,20 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     private fun navigateToLoginPage(requestCode: Int = REQUEST_CODE_LOGIN) {
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
         startActivityForResult(intent, requestCode)
+    }
+
+    private fun setupDynamicScrollViewPadding(extraPadding: Int = 0) {
+        binding?.rechargePdpTokenListrikClientNumberWidget
+            ?.viewTreeObserver?.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    binding?.rechargePdpTokenListrikClientNumberWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    binding?.run {
+                        val dynamicPadding = rechargePdpTokenListrikClientNumberWidget.height.pxToDp(
+                            resources.displayMetrics) + extraPadding
+                        rechargePdpTokenListrikSvContainer.setPadding(0, dynamicPadding, 0, 0)
+                    }
+                }
+            })
     }
 
     private fun handleCallbackSavedNumber(
@@ -979,17 +992,15 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onDenomGridImpression(
-        listDenomGrid: List<DenomData>,
-        layoutType: DenomWidgetEnum
-    ) {
-        if (layoutType == DenomWidgetEnum.GRID_TYPE) {
+    override fun onDenomGridImpression(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int) {
+        if (layoutType == DenomWidgetEnum.GRID_TYPE){
             digitalPDPAnalytics.impressionProductCluster(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 DigitalPDPCategoryUtil.getOperatorName(operatorId),
                 loyaltyStatus,
                 userSession.userId,
-                listDenomGrid
+                denomGrid,
+                position
             )
         }
     }

@@ -8,6 +8,7 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -38,6 +39,7 @@ import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DEFAULT_ICON_RES
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_PARAM
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FAVNUM_PERMISSION_CHECKER_IS_DENIED
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FIXED_PADDING_ADJUSTMENT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INPUT_ACTION_TRACKING_DELAY
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.LOADER_DIALOG_TEXT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MAXIMUM_VALID_NUMBER_LENGTH
@@ -57,11 +59,11 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalyti
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicScrollListener
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
-import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loaderdialog.LoaderDialog
@@ -92,7 +94,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 
 /**
  * @author by firmanda on 04/01/21
@@ -165,6 +166,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         getDataFromBundle()
         setupKeyboardWatcher()
         setupDynamicScrollListener()
+        setupDynamicScrollViewPadding()
         initClientNumberWidget()
         observeData()
         getCatalogMenuDetail()
@@ -355,7 +357,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                         userSession.userId,
                         atcData.data.cartId,
                         viewModel.digitalCheckoutPassData.productId.toString(),
-                        operator.attributes.name,
+                        viewModel.selectedGridProduct.denomData.title,
                         atcData.data.priceProduct
                     )
                     navigateToCart(atcData.data.categoryId)
@@ -467,10 +469,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             if (favoriteNumber.isNotEmpty()) {
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
-
-                val extendedPadding = getDimens(unifyDimens.layout_lvl8)
-                binding?.rechargePdpPulsaSvContainer?.setPadding(0, extendedPadding, 0, 0)
             }
+            setupDynamicScrollViewPadding(FIXED_PADDING_ADJUSTMENT)
         }
     }
 
@@ -511,9 +511,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun onFailedGetFavoriteNumber(throwable: Throwable) {
-        binding?.run {
-            rechargePdpPulsaClientNumberWidget.setFilterChipShimmer(false, true)
-        }
+        binding?.rechargePdpPulsaClientNumberWidget?.setFilterChipShimmer(false, true)
+        setupDynamicScrollViewPadding()
     }
 
     private fun onFailedGetPrefixOperator(throwable: Throwable) {
@@ -757,7 +756,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private fun showEmptyState(isHideIndicatorIcon: Boolean = true) {
         binding?.run {
             if (!rechargePdpPulsaEmptyStateWidget.isVisible) {
-                /** hide empty state when imageUrl is empty*/
+                /** hide empty state when imageUrl is empty */
                 if (rechargePdpPulsaEmptyStateWidget.imageUrl.isNotEmpty()) {
                     rechargePdpPulsaEmptyStateWidget.show()
                     digitalPDPAnalytics.impressionBannerEmptyState(
@@ -933,6 +932,20 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         startActivityForResult(intent, requestCode)
     }
 
+    private fun setupDynamicScrollViewPadding(extraPadding: Int = 0) {
+        binding?.rechargePdpPulsaClientNumberWidget
+            ?.viewTreeObserver?.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    binding?.rechargePdpPulsaClientNumberWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    binding?.run {
+                        val dynamicPadding = rechargePdpPulsaClientNumberWidget.height.pxToDp(
+                            resources.displayMetrics) + extraPadding
+                        rechargePdpPulsaSvContainer.setPadding(0, dynamicPadding, 0, 0)
+                    }
+                }
+            })
+    }
+
     //region ClientNumberInputFieldListener
     override fun onRenderOperator(isDelayed: Boolean, isManualInput: Boolean) {
         viewModel.operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty().let {
@@ -1106,26 +1119,25 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onDenomGridImpression(
-        listDenomGrid: List<DenomData>,
-        layoutType: DenomWidgetEnum,
-    ) {
-        if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE) {
+    override fun onDenomGridImpression(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int) {
+        if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE){
             digitalPDPAnalytics.impressionProductMCCM(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
-                listDenomGrid,
-                layoutType
+                denomGrid,
+                layoutType,
+                position
             )
-        } else if (layoutType == DenomWidgetEnum.GRID_TYPE) {
+        } else if (layoutType == DenomWidgetEnum.GRID_TYPE){
             digitalPDPAnalytics.impressionProductCluster(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
-                listDenomGrid
+                denomGrid,
+                position
             )
         }
     }

@@ -76,52 +76,60 @@
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="@dimen/layout_lvl0"
                 android:layout_marginStart="@dimen/shc_dimen_12dp"
-                android:layout_marginLeft="@dimen/shc_dimen_12dp"
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:layout_marginEnd="@dimen/shc_dimen_12dp"
-                android:layout_marginRight="@dimen/shc_dimen_12dp"
                 android:layout_marginBottom="@dimen/layout_lvl2"
-                app:layout_constraintBottom_toTopOf="@+id/btnShcBarChartMore"
+                app:layout_constraintBottom_toTopOf="@+id/barrierShcBarChart"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvShcBarChartSubValue"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintVertical_bias="0.0"
+                tools:layout_constraintBottom_toTopOf="@+id/btnShcBarChartMore" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrierShcBarChart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="top"
+                app:constraint_referenced_ids="btnShcBarChartMore, luvShcBarChart" />
+
+            <View
+                android:id="@+id/horLineShcBarChartBtm"
+                android:layout_width="0dp"
+                android:layout_height="0.1dp"
+                android:layout_marginBottom="24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <com.tokopedia.sellerhomecommon.presentation.view.customview.LastUpdatedView
+                android:id="@+id/luvShcBarChart"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/horLineShcBarChartBtm"
+                app:layout_constraintEnd_toStartOf="@+id/btnShcBarChartMore"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/horLineShcBarChartBtm" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/btnShcBarChartMore"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/layout_lvl2"
-                android:layout_marginLeft="@dimen/layout_lvl2"
-                android:layout_marginTop="@dimen/layout_lvl2"
-                android:layout_marginBottom="@dimen/layout_lvl2"
                 android:gravity="end"
                 android:paddingStart="@dimen/layout_lvl0"
-                android:paddingLeft="@dimen/layout_lvl0"
                 android:paddingEnd="@dimen/spacing_lvl2"
-                android:paddingRight="@dimen/spacing_lvl2"
                 android:textColor="@color/Unify_G500"
                 android:textSize="@dimen/fontSize_lvl3"
                 android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btnShcBarChartNext"
-                app:layout_constraintStart_toStartOf="parent"
-                app:typographyType="body_2"
-                app:typographyWeight="reguler" />
-
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/btnShcBarChartNext"
-                android:layout_width="@dimen/layout_lvl2"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl1"
-                android:layout_marginEnd="@dimen/layout_lvl2"
-                android:layout_marginRight="@dimen/layout_lvl2"
-                android:contentDescription="@string/shc_content_desc_button_lihat_selengkapnya"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="@id/btnShcBarChartMore"
+                app:layout_constraintBottom_toBottomOf="@+id/horLineShcBarChartBtm"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/btnShcBarChartMore"
-                app:srcCompat="@drawable/ic_arrow_right_default" />
+                app:layout_constraintTop_toTopOf="@+id/horLineShcBarChartBtm"
+                app:typographyType="body_2"
+                app:typographyWeight="reguler"
+                tools:text="Lihat Selengkapnya"
+                tools:visibility="visible" />
 
             <include
                 android:id="@+id/shcBarChartErrorState"

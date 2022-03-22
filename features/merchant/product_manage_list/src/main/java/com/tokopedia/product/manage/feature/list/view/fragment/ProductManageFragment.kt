@@ -1034,7 +1034,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, ProductManageAdapterFactoryImpl> {
-        return ProductManageListAdapter(adapterTypeFactory)
+        return ProductManageListAdapter(adapterTypeFactory, userSession.deviceId.orEmpty())
     }
 
     override fun getAdapterTypeFactory(): ProductManageAdapterFactoryImpl {

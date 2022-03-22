@@ -1,14 +1,4 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="32dp"
-    android:height="32dp"
-    android:viewportWidth="32"
-    android:viewportHeight="32">
-  <path
-      android:pathData="M16,0L16,0A16,16 0,0 1,32 16L32,16A16,16 0,0 1,16 32L16,32A16,16 0,0 1,0 16L0,16A16,16 0,0 1,16 0z"
-      android:fillColor="@color/Unify_NN900"
-      android:fillAlpha="0.9"/>
-  <path
-      android:pathData="M20.1666,15.1666C20.1666,15.6666 20.5,16 21,16C21.4166,16 21.8333,15.6666 21.8333,15.1666V11.8333C21.8333,10.8333 21.1666,10.1666 20.1666,10.1666H16.8333C16.3333,10.1666 16,10.5 16,11C16,11.5 16.3333,11.8333 16.8333,11.8333H20.1666V15.1666ZM11.8333,21.8333H15.1666C15.5833,21.8333 16,21.5 16,21C16,20.5 15.6666,20.1666 15.1666,20.1666H11.8333V16.8333C11.8333,16.3333 11.5,16 11,16C10.5,16 10.1666,16.3333 10.1666,16.8333V20.1666C10.1666,21.1666 10.8333,21.8333 11.8333,21.8333Z"
-      android:fillColor="#ffffff"
-      android:fillType="evenOdd"/>
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="32dp" android:height="32dp" android:viewportWidth="32" android:viewportHeight="32">
+    <path android:pathData="M16 0a16 16 0 0 1 16 16 16 16 0 0 1-16 16A16 16 0 0 1 0 16 16 16 0 0 1 16 0z" android:fillColor="@color/Unify_NN900" android:fillAlpha="0.9"/>
+    <path android:pathData="M20.167 15.167C20.167 15.667 20.5 16 21 16c0.417 0 0.833-0.333 0.833-0.833v-3.334c0-1-0.666-1.666-1.666-1.666h-3.334C16.333 10.167 16 10.5 16 11c0 0.5 0.333 0.833 0.833 0.833h3.334v3.334zm-8.334 6.666h3.334C15.583 21.833 16 21.5 16 21c0-0.5-0.333-0.833-0.833-0.833h-3.334v-3.334C11.833 16.333 11.5 16 11 16c-0.5 0-0.833 0.333-0.833 0.833v3.334c0 1 0.666 1.666 1.666 1.666z" android:fillColor="#ffffff" android:fillType="evenOdd"/>
 </vector>

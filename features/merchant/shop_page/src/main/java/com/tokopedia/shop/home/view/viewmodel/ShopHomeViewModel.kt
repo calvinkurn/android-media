@@ -279,7 +279,7 @@ class ShopHomeViewModel @Inject constructor(
             productDetails: List<ShopHomeBundleProductUiModel>,
             onFinishAddToCart: (atcBundleModel: AddToCartBundleModel) -> Unit,
             onErrorAddBundleToCart: (exception: Throwable) -> Unit,
-            bundleQuantity: Int
+            productQuantity: Int
     ) {
 
         launchCatchError(block = {
@@ -287,7 +287,7 @@ class ShopHomeViewModel @Inject constructor(
             val bundleProductDetails = productDetails.map {
                 ProductDetail(
                         productId = it.productId,
-                        quantity = bundleQuantity,
+                        quantity = productQuantity,
                         shopId = shopId,
                         customerId = userId
                 )
@@ -296,7 +296,7 @@ class ShopHomeViewModel @Inject constructor(
             val atcBundleParams = AddToCartBundleRequestParams(
                     shopId = shopId,
                     bundleId = bundleId,
-                    bundleQty = bundleQuantity,
+                    bundleQty = ShopHomeProductBundleItemUiModel.DEFAULT_BUNDLE_QUANTITY,
                     selectedProductPdp = ShopHomeProductBundleItemUiModel.DEFAULT_BUNDLE_PRODUCT_PARENT_ID,
                     productDetails = bundleProductDetails
             )

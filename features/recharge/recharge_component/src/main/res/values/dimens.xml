@@ -14,6 +14,7 @@
     <dimen name="widget_denom_label_percentage_margin">10dp</dimen>
     <dimen name="widget_denom_flash_sale_image_height">14dp</dimen>
     <dimen name="widget_denom_margin">22dp</dimen>
+    <dimen name="widget_denom_grid_margin_price">36dp</dimen>
     <dimen name="widget_denom_grid_title_shimmering_width">72dp</dimen>
     <dimen name="widget_denom_grid_desc_shimmering_width">117dp</dimen>
     <dimen name="widget_denom_grid_height">120dp</dimen>
