@@ -291,7 +291,7 @@ class MainNavViewModel @Inject constructor(
         })
     }
 
-    fun getProfileDataCached() {
+    private fun getProfileDataCached() {
         try {
             mainNavProfileCache?.let {
                 val accountHeaderModel = AccountHeaderDataModel(
@@ -318,7 +318,7 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    suspend fun updateProfileData() {
+    private suspend fun updateProfileData() {
         try {
             val accountHeaderModel = async { getProfileDataUseCase.get().executeOnBackground() }
             val adminData = async { getAdminData() }

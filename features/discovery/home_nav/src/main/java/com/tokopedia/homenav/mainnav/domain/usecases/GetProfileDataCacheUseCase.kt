@@ -32,6 +32,7 @@ class GetProfileDataCacheUseCase @Inject constructor(
         getUserInfoUseCase.setStrategyCache()
         getUserMembershipUseCase.setStrategyCache()
         getShopInfoUseCase.setStrategyCache()
+        getAffiliateUserUseCase.setStrategyCache()
         return withContext(coroutineContext){
 
             var userInfoData: UserPojo? = null

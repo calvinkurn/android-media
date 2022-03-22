@@ -35,6 +35,7 @@ class GetProfileDataUseCase @Inject constructor(
     override suspend fun executeOnBackground(): AccountHeaderDataModel {
         getUserInfoUseCase.setStrategyCloudThenCache()
         getShopInfoUseCase.setStrategyCloudThenCache()
+        getAffiliateUserUseCase.setStrategyCloudThenCache()
         getUserMembershipUseCase.setStrategyCloudThenCache()
 
         return withContext(coroutineContext) {
