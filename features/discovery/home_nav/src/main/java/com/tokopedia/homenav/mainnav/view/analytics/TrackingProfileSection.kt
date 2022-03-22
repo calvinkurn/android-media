@@ -16,6 +16,7 @@ object TrackingProfileSection: BaseTrackerConst() {
     private const val CLICK_SHOP_ACCOUNT = "shop account"
     private const val CLICK_OPEN_SHOP = "open shop"
     private const val CLICK_ON_SHOP_BUTTON = "click on shop button"
+    private const val CLICK_ON_AFFILIATE_BUTTON = "click on affiliate button"
     private const val EVENT_LABEL_SHOP_FORMAT = "%s - %s"
     private const val DEFAULT_VALUE = ""
 
@@ -88,6 +89,24 @@ object TrackingProfileSection: BaseTrackerConst() {
         bundle.putString(
             Label.KEY,
             EVENT_LABEL_SHOP_FORMAT.format(DEFAULT_VALUE, DEFAULT_VALUE)
+        )
+        bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
+        bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+
+        getTracker().sendEnhanceEcommerceEvent(Event.CLICK_HOMEPAGE, bundle)
+    }
+
+    fun onClickRegisterAffiliate() {
+        val bundle = Bundle()
+        bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
+        bundle.putString(
+            Action.KEY,
+            CLICK_ON_AFFILIATE_BUTTON
+        )
+        bundle.putString(Category.KEY, GLOBAL_MENU)
+        bundle.putString(
+            Label.KEY,
+            DEFAULT_VALUE
         )
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)

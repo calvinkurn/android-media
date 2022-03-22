@@ -59,10 +59,10 @@ class AffiliateViewHolder (
 
     private fun affiliateClicked(profileAffiliate: ProfileAffiliateDataModel, context: Context) {
         if (profileAffiliate.isRegister)
-//            onShopClicked(profileSeller.canGoToSellerAccount)
+            RouteManager.route(context, profileAffiliate.affiliateAppLink)
         else {
             RouteManager.route(context, profileAffiliate.affiliateAppLink)
-//            TrackingProfileSection.onClickOpenShopSection(mainNavListener.getUserId())
+            TrackingProfileSection.onClickRegisterAffiliate()
         }
     }
 
