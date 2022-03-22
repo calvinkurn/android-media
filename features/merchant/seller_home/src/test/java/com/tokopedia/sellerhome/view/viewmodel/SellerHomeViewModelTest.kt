@@ -148,6 +148,7 @@ class SellerHomeViewModelTest {
             { getRecommendationDataUseCase },
             { getMilestoneDataUseCase },
             { getCalendarDataUseCase },
+            { remoteConfig },
             coroutineTestRule.dispatchers
         )
 
@@ -270,6 +271,7 @@ class SellerHomeViewModelTest {
         val shopId = "123456"
         val page = "seller-home"
         val widgetHeightInDp = 0f
+        val isCachingEnabled = true
 
         val cardData = CardDataUiModel(DATA_KEY_CARD, showWidget = true)
         val lineGraphDataUiModel = LineGraphDataUiModel(DATA_KEY_LINE_GRAPH, showWidget = true)
@@ -334,7 +336,7 @@ class SellerHomeViewModelTest {
 
         coVerify {
             getLayoutUseCase.executeOnBackground()
-            sellerHomeLayoutHelper.getInitialWidget(layoutList, widgetHeightInDp)
+            sellerHomeLayoutHelper.getInitialWidget(layoutList, widgetHeightInDp, isCachingEnabled)
         }
 
         val successLayoutList = layoutList.map {
@@ -1181,6 +1183,186 @@ class SellerHomeViewModelTest {
 
             val expected = Success(result)
             viewModel.milestoneWidgetData.verifySuccessEquals(expected)
+        }
+    }
+
+    @Test
+    fun `when new caching enabled, on first load and cache enabled should success when get milestone widget data`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(MilestoneDataUiModel())
+            val isCachingEnabled = true
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getMilestoneDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<MilestoneDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            every {
+                getMilestoneDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getMilestoneWidgetData(dataKeys)
+
+            coVerify {
+                getMilestoneDataUseCase.executeOnBackground(
+                    any(),
+                    isFirstLoad && isCachingEnabled
+                )
+            }
+
+            coVerify {
+                getMilestoneDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.milestoneWidgetData.value)
+        }
+    }
+
+    @Test
+    fun `when new caching enabled, on first load and cache disabled should success when get milestone widget data`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(MilestoneDataUiModel())
+            val isCachingEnabled = false
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getMilestoneDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<MilestoneDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            every {
+                getMilestoneDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getMilestoneWidgetData(dataKeys)
+
+            coVerify {
+                getMilestoneDataUseCase.executeOnBackground(
+                    any(),
+                    isFirstLoad && isCachingEnabled
+                )
+            }
+
+            coVerify {
+                getMilestoneDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.milestoneWidgetData.value)
+        }
+    }
+
+    @Test
+    fun `when new caching enabled, not first load and cache disabled should success when get milestone widget data`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(MilestoneDataUiModel())
+            val isCachingEnabled = false
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getMilestoneDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<MilestoneDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            every {
+                getMilestoneDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getMilestoneWidgetData(dataKeys)
+
+            coVerify {
+                getMilestoneDataUseCase.executeOnBackground(
+                    any(),
+                    isFirstLoad && isCachingEnabled
+                )
+            }
+
+            coVerify {
+                getMilestoneDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.milestoneWidgetData.value)
+        }
+    }
+
+    @Test
+    fun `when new caching enabled, not first load and cache enabled should success when get milestone widget data`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(MilestoneDataUiModel())
+            val isCachingEnabled = true
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getMilestoneDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<MilestoneDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            every {
+                getMilestoneDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getMilestoneWidgetData(dataKeys)
+
+            coVerify {
+                getMilestoneDataUseCase.executeOnBackground(
+                    any(),
+                    isFirstLoad && isCachingEnabled
+                )
+            }
+
+            coVerify {
+                getMilestoneDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.milestoneWidgetData.value)
         }
     }
 
@@ -3710,6 +3892,182 @@ class SellerHomeViewModelTest {
     }
 
     @Test
+    fun `given new caching enabled, on first load and cache enabled should success when get recommendation widget data`() =
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(RecommendationDataUiModel())
+            val isCachingEnabled = true
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getRecommendationDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<RecommendationDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            every {
+                getRecommendationDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getRecommendationWidgetData(dataKeys)
+
+            coVerify {
+                getRecommendationDataUseCase.executeOnBackground(
+                    any(),
+                    isFirstLoad && isCachingEnabled
+                )
+            }
+
+            coVerify {
+                getRecommendationDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.recommendationWidgetData.value)
+        }
+
+    @Test
+    fun `given new caching enabled, on first load and cache disabled should success when get recommendation widget data`() =
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(RecommendationDataUiModel())
+            val isCachingEnabled = false
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getRecommendationDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<RecommendationDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            every {
+                getRecommendationDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getRecommendationWidgetData(dataKeys)
+
+            coVerify {
+                getRecommendationDataUseCase.executeOnBackground(
+                    any(),
+                    isFirstLoad && isCachingEnabled
+                )
+            }
+
+            coVerify {
+                getRecommendationDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.recommendationWidgetData.value)
+        }
+
+    @Test
+    fun `given new caching enabled, on second load and cache disabled should success when get recommendation widget data`() =
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(RecommendationDataUiModel())
+            val isCachingEnabled = false
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getRecommendationDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<RecommendationDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            every {
+                getRecommendationDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getRecommendationWidgetData(dataKeys)
+
+            coVerify {
+                getRecommendationDataUseCase.executeOnBackground(
+                    any(),
+                    isFirstLoad && isCachingEnabled
+                )
+            }
+
+            coVerify {
+                getRecommendationDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.recommendationWidgetData.value)
+        }
+
+    @Test
+    fun `given new caching enabled, on second load and cache enabled should success when get recommendation widget data`() =
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(RecommendationDataUiModel())
+            val isCachingEnabled = true
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getRecommendationDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<RecommendationDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            every {
+                getRecommendationDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getRecommendationWidgetData(dataKeys)
+
+            coVerify {
+                getRecommendationDataUseCase.executeOnBackground(
+                    any(),
+                    isFirstLoad && isCachingEnabled
+                )
+            }
+
+            coVerify {
+                getRecommendationDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.recommendationWidgetData.value)
+        }
+
+    @Test
     fun `should failed when get recommendation widget data`() = runBlocking {
         val dataKeys = listOf(anyString(), anyString())
 
@@ -3756,14 +4114,10 @@ class SellerHomeViewModelTest {
         viewModel.getCardWidgetData(dataKeys)
 
         verify(exactly = 1) {
-            getCardDataUseCase.setUseCache(true)
-        }
-
-        verify(exactly = 1) {
             getCardDataUseCase.setUseCache(false)
         }
 
-        coVerify(exactly = 2) {
+        coVerify(exactly = 1) {
             getCardDataUseCase.executeOnBackground()
         }
 

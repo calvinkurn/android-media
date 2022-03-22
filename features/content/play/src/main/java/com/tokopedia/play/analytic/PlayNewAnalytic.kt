@@ -1,5 +1,6 @@
 package com.tokopedia.play.analytic
 
+import com.tokopedia.play.analytic.campaign.PlayCampaignAnalytic
 import com.tokopedia.play.analytic.interactive.PlayInteractiveAnalytic
 import com.tokopedia.play.analytic.like.PlayLikeAnalytic
 import com.tokopedia.play.analytic.partner.PlayPartnerAnalytic
@@ -18,9 +19,11 @@ class PlayNewAnalytic @Inject constructor(
         socketAnalytic: PlaySocketAnalytic,
         upcomingAnalytic: PlayUpcomingAnalytic,
         shareExperienceAnalytic: PlayShareExperienceAnalytic,
+        campaignAnalytic: PlayCampaignAnalytic,
 ) : PlayPartnerAnalytic by partnerAnalytic,
         PlayInteractiveAnalytic by interactiveAnalytic,
         PlayLikeAnalytic by likeAnalytic,
         PlaySocketAnalytic by socketAnalytic,
         PlayUpcomingAnalytic by upcomingAnalytic,
-        PlayShareExperienceAnalytic by shareExperienceAnalytic
+        PlayShareExperienceAnalytic by shareExperienceAnalytic,
+        PlayCampaignAnalytic by campaignAnalytic

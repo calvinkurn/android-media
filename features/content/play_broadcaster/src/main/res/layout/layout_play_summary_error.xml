@@ -10,7 +10,6 @@
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:gravity="center"
         android:text="@string/play_summary_error_title"
-        android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toTopOf="@id/tv_error_desc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,7 +20,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/play_summary_error_desc"
-        android:textColor="@color/play_dms_white_68"
         app:layout_constraintBottom_toTopOf="@id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
