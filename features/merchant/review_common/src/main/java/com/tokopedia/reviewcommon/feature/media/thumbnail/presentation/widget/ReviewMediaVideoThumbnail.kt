@@ -99,6 +99,20 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
     ) {
         groupReviewMediaVideoThumbnailUploading.gone()
         groupReviewMediaVideoThumbnailUploadFailed.gone()
+        groupReviewMediaVideoThumbnailSeeMore.gone()
+        setupVideoThumbnail(uiState)
+    }
+
+    private fun WidgetReviewMediaVideoThumbnailBinding.showVideoThumbnailSeeMore(
+        uiState: ReviewMediaVideoThumbnailUiState.ShowingSeeMore
+    ) {
+        groupReviewMediaVideoThumbnailUploading.gone()
+        groupReviewMediaVideoThumbnailUploadFailed.gone()
+        groupReviewMediaVideoThumbnailSeeMore.show()
+        tvReviewMediaVideoThumbnailSeeMore.text = buildString {
+            append("+")
+            append(uiState.totalImageCount)
+        }
         setupVideoThumbnail(uiState)
     }
 
@@ -106,6 +120,7 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
         uiState: ReviewMediaVideoThumbnailUiState.Uploading
     ) {
         groupReviewMediaVideoThumbnailUploadFailed.gone()
+        groupReviewMediaVideoThumbnailSeeMore.gone()
         groupReviewMediaVideoThumbnailUploading.show()
         setupVideoThumbnail(uiState)
     }
@@ -114,6 +129,7 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
         uiState: ReviewMediaVideoThumbnailUiState.UploadFailed
     ) {
         groupReviewMediaVideoThumbnailUploading.gone()
+        groupReviewMediaVideoThumbnailSeeMore.gone()
         groupReviewMediaVideoThumbnailUploadFailed.show()
         setupVideoThumbnail(uiState)
     }
@@ -123,6 +139,9 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
         when (uiState) {
             is ReviewMediaVideoThumbnailUiState.Showing -> {
                 binding.showVideoThumbnail(uiState)
+            }
+            is ReviewMediaVideoThumbnailUiState.ShowingSeeMore -> {
+                binding.showVideoThumbnailSeeMore(uiState)
             }
             is ReviewMediaVideoThumbnailUiState.Uploading -> {
                 binding.showVideoThumbnailUploadingState(uiState)

@@ -26,6 +26,37 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_review_media_image_thumbnail_see_more"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                app:constraint_referenced_ids="view_review_media_image_thumbnail_overlay_see_more,tv_review_media_image_thumbnail_see_more" />
+
+            <View
+                android:id="@+id/view_review_media_image_thumbnail_overlay_see_more"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:alpha="0.5"
+                android:background="@color/Unify_NN900"
+                app:layout_constraintBottom_toBottomOf="@id/iv_review_media_image_thumbnail"
+                app:layout_constraintEnd_toEndOf="@id/iv_review_media_image_thumbnail"
+                app:layout_constraintStart_toStartOf="@id/iv_review_media_image_thumbnail"
+                app:layout_constraintTop_toTopOf="@id/iv_review_media_image_thumbnail" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_review_media_image_thumbnail_see_more"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:padding="4dp"
+                android:textColor="@color/Unify_Static_White"
+                app:layout_constraintBottom_toBottomOf="@id/iv_review_media_image_thumbnail"
+                app:layout_constraintEnd_toEndOf="@id/iv_review_media_image_thumbnail"
+                app:layout_constraintStart_toStartOf="@id/iv_review_media_image_thumbnail"
+                app:layout_constraintTop_toTopOf="@id/iv_review_media_image_thumbnail"
+                app:typographyType="body_3"
+                app:typographyWeight="bold" />
+
+            <androidx.constraintlayout.widget.Group
                 android:id="@+id/group_review_media_image_thumbnail_uploading"
                 android:layout_width="1dp"
                 android:layout_height="1dp"

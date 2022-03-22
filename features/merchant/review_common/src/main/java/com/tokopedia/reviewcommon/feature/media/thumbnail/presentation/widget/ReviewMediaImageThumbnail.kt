@@ -46,6 +46,20 @@ class ReviewMediaImageThumbnail @JvmOverloads constructor(
     ) {
         groupReviewMediaImageThumbnailUploading.gone()
         groupReviewMediaImageThumbnailUploadFailed.gone()
+        groupReviewMediaImageThumbnailSeeMore.gone()
+        setupImageThumbnail(uiState)
+    }
+
+    private fun WidgetReviewMediaImageThumbnailBinding.showImageThumbnailSeeMore(
+        uiState: ReviewMediaImageThumbnailUiState.ShowingSeeMore
+    ) {
+        groupReviewMediaImageThumbnailUploading.gone()
+        groupReviewMediaImageThumbnailUploadFailed.gone()
+        groupReviewMediaImageThumbnailSeeMore.show()
+        tvReviewMediaImageThumbnailSeeMore.text = buildString {
+            append("+")
+            append(uiState.totalImageCount)
+        }
         setupImageThumbnail(uiState)
     }
 
@@ -53,6 +67,7 @@ class ReviewMediaImageThumbnail @JvmOverloads constructor(
         uiState: ReviewMediaImageThumbnailUiState.Uploading
     ) {
         groupReviewMediaImageThumbnailUploadFailed.gone()
+        groupReviewMediaImageThumbnailSeeMore.gone()
         groupReviewMediaImageThumbnailUploading.show()
         setupImageThumbnail(uiState)
     }
@@ -61,6 +76,7 @@ class ReviewMediaImageThumbnail @JvmOverloads constructor(
         uiState: ReviewMediaImageThumbnailUiState.UploadFailed
     ) {
         groupReviewMediaImageThumbnailUploading.gone()
+        groupReviewMediaImageThumbnailSeeMore.gone()
         groupReviewMediaImageThumbnailUploadFailed.show()
         setupImageThumbnail(uiState)
     }
@@ -71,6 +87,9 @@ class ReviewMediaImageThumbnail @JvmOverloads constructor(
         when(uiState) {
             is ReviewMediaImageThumbnailUiState.Showing -> {
                 binding.showImageThumbnail(uiState)
+            }
+            is ReviewMediaImageThumbnailUiState.ShowingSeeMore -> {
+                binding.showImageThumbnailSeeMore(uiState)
             }
             is ReviewMediaImageThumbnailUiState.Uploading -> {
                 binding.showImageThumbnailUploadingState(uiState)

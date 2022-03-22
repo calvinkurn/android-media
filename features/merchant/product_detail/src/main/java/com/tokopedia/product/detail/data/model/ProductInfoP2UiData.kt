@@ -20,6 +20,7 @@ import com.tokopedia.product.detail.data.model.ticker.ProductTicker
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 
@@ -50,6 +51,7 @@ data class ProductInfoP2UiData(
         var uspImageUrl: String = "",
         var merchantVoucherSummary: MerchantVoucherSummary = MerchantVoucherSummary(),
         var imageReviews: ImageReview? = null,
+        var reviewMediaThumbnails: ReviewMediaThumbnailUiModel? = null,
         var helpfulReviews: List<Review>? = null,
         var miniCart: MutableMap<String, MiniCartItem>? = null,
         var alternateCopy: List<AlternateCopy> = listOf(),

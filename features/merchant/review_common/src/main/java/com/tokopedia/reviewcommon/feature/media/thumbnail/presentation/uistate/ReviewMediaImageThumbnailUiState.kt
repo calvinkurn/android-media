@@ -9,6 +9,12 @@ sealed interface ReviewMediaImageThumbnailUiState {
         override val removable: Boolean
     ) : ReviewMediaImageThumbnailUiState
 
+    data class ShowingSeeMore(
+        override val uri: String,
+        override val removable: Boolean,
+        val totalImageCount: Int
+    ) : ReviewMediaImageThumbnailUiState
+
     data class Uploading(
         override val uri: String,
         override val removable: Boolean

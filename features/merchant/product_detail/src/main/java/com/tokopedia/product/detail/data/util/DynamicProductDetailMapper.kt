@@ -57,6 +57,9 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONO
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
 import com.tokopedia.product.detail.view.util.checkIfNumber
 import com.tokopedia.product.share.ProductData
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
@@ -351,6 +354,33 @@ object DynamicProductDetailMapper {
         }
 
         return ImageReview(result, data.detail?.imageCount ?: "")
+    }
+
+    fun generateReviewMediaThumbnails(data: ImageReviewGqlResponse.ProductReviewImageListQuery): ReviewMediaThumbnailUiModel {
+        val mappedThumbnails = data.detail?.images?.let { images ->
+            val hasNext = data.isHasNext
+            images.mapIndexedNotNull { index, image ->
+                image.uriLarge?.let { uri ->
+                    val lastItem = index == images.size - 1
+                    if (lastItem && hasNext) {
+                        ReviewMediaImageThumbnailUiModel(
+                            uiState = ReviewMediaImageThumbnailUiState.ShowingSeeMore(
+                                uri = uri,
+                                removable = false,
+                                totalImageCount = data.detail ?.imageCount.toIntOrZero()
+                            )
+                        )
+                    } else {
+                        ReviewMediaImageThumbnailUiModel(
+                            uiState = ReviewMediaImageThumbnailUiState.Showing(
+                                uri = uri, removable = false
+                            )
+                        )
+                    }
+                }
+            }
+        }.orEmpty()
+        return ReviewMediaThumbnailUiModel(mappedThumbnails)
     }
 
     fun generateProductInfoParcel(productInfoP1: DynamicProductInfoP1?, variantGuideLine: String, productInfoContent: List<ProductDetailInfoContent>, forceRefresh: Boolean): ProductInfoParcelData {

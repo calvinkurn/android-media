@@ -12,6 +12,14 @@ sealed interface ReviewMediaVideoThumbnailUiState {
         override val showDuration: Boolean
     ) : ReviewMediaVideoThumbnailUiState
 
+    data class ShowingSeeMore(
+        val playable: Boolean,
+        val totalImageCount: Int,
+        override val uri: String,
+        override val removable: Boolean,
+        override val showDuration: Boolean
+    ) : ReviewMediaVideoThumbnailUiState
+
     data class Uploading(
         override val uri: String,
         override val removable: Boolean,
