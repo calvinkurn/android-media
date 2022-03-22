@@ -1,7 +1,6 @@
 package com.tokopedia.buyerorder.detail.view.customview
 
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.tokopedia.buyerorder.databinding.LayoutHorizontalTextViewBinding
@@ -17,8 +16,6 @@ class HorizontalCoupleTextView constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0) : BaseCustomView(context, attrs, defStyleAttr){
-
-    private lateinit var color: String
 
     private var binding: LayoutHorizontalTextViewBinding =
         LayoutHorizontalTextViewBinding.inflate(LayoutInflater.from(context), this, true)
