@@ -1,17 +1,5 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-android:width="42dp"
-android:height="42dp"
-android:viewportWidth="42"
-android:viewportHeight="42">
-<path
-    android:pathData="M21,21m-21,0a21,21 0,1 1,42 0a21,21 0,1 1,-42 0"
-    android:fillColor="#C4C4C4"
-    android:fillAlpha="0.2"/>
-<path
-    android:pathData="M21,20m-20,0a20,20 0,1 1,40 0a20,20 0,1 1,-40 0"
-    android:fillColor="@color/disco_lihat_bg"/>
-<path
-    android:pathData="M25.2424,21.1437L18.793,27.5158C18.3828,27.9214 17.7176,27.9214 17.3076,27.5158C16.8975,27.1106 16.8975,26.4534 17.3076,26.0483L23.0142,20.4099L17.3077,14.7717C16.8976,14.3663 16.8976,13.7092 17.3077,13.304C17.7178,12.8987 18.383,12.8987 18.7932,13.304L25.2425,19.6763C25.4476,19.879 25.55,20.1444 25.55,20.4099C25.55,20.6755 25.4474,20.9411 25.2424,21.1437Z"
-    android:fillColor="@color/disco_lihat_clr_arrow"/>
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="42dp" android:height="42dp" android:viewportWidth="42" android:viewportHeight="42">
+    <path android:pathData="M0 21a21 21 0 1 1 42 0 21 21 0 1 1-42 0" android:fillColor="#C4C4C4" android:fillAlpha="0.2"/>
+    <path android:pathData="M1 20a20 20 0 1 1 40 0 20 20 0 1 1-40 0" android:fillColor="@color/disco_lihat_bg"/>
+    <path android:pathData="M25.242 21.144l-6.449 6.372c-0.41 0.405-1.075 0.405-1.485 0-0.41-0.405-0.41-1.063 0-1.468l5.706-5.638-5.706-5.638c-0.41-0.406-0.41-1.063 0-1.468s1.075-0.405 1.485 0l6.45 6.372c0.205 0.203 0.307 0.468 0.307 0.734 0 0.265-0.103 0.531-0.308 0.734z" android:fillColor="@color/disco_lihat_clr_arrow"/>
 </vector>
-

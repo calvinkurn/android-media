@@ -75,13 +75,15 @@ class SmartBillsViewModel @Inject constructor(
         }
     }
 
-    fun getStatementBills(mapParams: Map<String, Any>) {
+    fun getStatementBills(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(
                     SmartBillsQueries.STATEMENT_BILLS_QUERY_CLUSTERING,
                     RechargeListSmartBills.Response::class.java, mapParams
             )
-            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(
+                    if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
+            ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
             val response = withContext(dispatcher.io) {
                 graphqlRepository.response(listOf(graphqlRequest), graphqlCacheStrategy)
             }

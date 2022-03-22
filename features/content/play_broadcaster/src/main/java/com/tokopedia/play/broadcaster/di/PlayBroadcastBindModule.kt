@@ -10,8 +10,8 @@ import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProduct
 import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalyticImpl
-import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
-import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalyticImpl
+import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
+import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalyticImpl
 import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherCountUpTimerImpl
 import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherTimer
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
@@ -47,10 +47,6 @@ abstract class PlayBroadcastBindModule {
      */
     @Binds
     @ActivityRetainedScope
-    abstract fun bindContentTaggingAnalytic(contentTaggingAnalytic: PlayBroadcastContentTaggingAnalyticImpl): PlayBroadcastContentTaggingAnalytic
-
-    @Binds
-    @ActivityRetainedScope
     abstract fun bindInteractiveAnalytic(interactiveAnalytic: PlayBroadcastInteractiveAnalyticImpl): PlayBroadcastInteractiveAnalytic
 
     @Binds
@@ -69,6 +65,9 @@ abstract class PlayBroadcastBindModule {
     @ActivityRetainedScope
     abstract fun bindSetupProductAnalytic(setupProductAnalytic: PlayBroSetupProductAnalyticImpl): PlayBroSetupProductAnalytic
 
+    @Binds
+    @ActivityRetainedScope
+    abstract fun bindSummaryAnalytic(summaryAnalytic: PlayBroadcastSummaryAnalyticImpl): PlayBroadcastSummaryAnalytic
 
     @ActivityRetainedScope
     @Binds

@@ -47,6 +47,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_PROCES
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_SENT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_WAITING_CONFIRMATION
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
@@ -566,6 +567,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
         setInitialValue()
         loadOrderHistoryList("")
+        if (!paramUohOrder.hasActiveFilter()) {
+            uohListViewModel.loadPmsCounter()
+        }
     }
 
     private fun setInitialValue() {
@@ -585,6 +589,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         observingFlightResendEmail()
         observingTrainResendEmail()
         observeTdnBanner()
+        observeUohPmsCounter()
     }
 
     private fun observeTdnBanner() {
@@ -594,6 +599,19 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     tdnBanner = it.data
                 }
                 is Fail -> {
+                }
+            }
+        })
+    }
+
+    private fun observeUohPmsCounter() {
+        uohListViewModel.getUohPmsCounterResult.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    if (!paramUohOrder.hasActiveFilter()) {
+                        val data = UohTypeData(dataObject = it.data, typeLayout = UohConsts.TYPE_PMS_BUTTON)
+                        uohItemAdapter.appendPmsButton(data)
+                    }
                 }
             }
         })
@@ -1483,6 +1501,17 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         if (!onLoadMore) {
             uohItemAdapter.addList(listOrder)
             scrollRecommendationListener.resetState()
+
+            if (!paramUohOrder.hasActiveFilter()) {
+                uohListViewModel.getUohPmsCounterResult.value?.let {
+                    if (it is Success) {
+                        val data = UohTypeData(dataObject = it.data, typeLayout = UohConsts.TYPE_PMS_BUTTON)
+                        uohItemAdapter.appendPmsButton(data)
+                    }
+                }
+            } else {
+                uohItemAdapter.removePmsButton()
+            }
         } else {
             uohItemAdapter.appendList(listOrder)
             scrollRecommendationListener.updateStateAfterGetData()
@@ -1957,6 +1986,17 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
         userSession.userId?.let { UohAnalytics.productAtcRecommendation(userId = it, listProduct = arrayListProduct, isTopads = isTopAds) }
         if (isTopAds) activity?.let { TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
+    }
+
+    override fun onImpressionPmsButton() {
+        UohAnalytics.impressionMenungguPembayaran()
+    }
+
+    override fun onPmsButtonClicked() {
+        activity?.let {
+            UohAnalytics.clickMenungguPembayaran()
+            RouteManager.route(it, ApplinkConstInternalPayment.PMS_PAYMENT_LIST)
+        }
     }
 
     private fun doChatSeller(appUrl: String, order: UohListOrder.Data.UohOrders.Order) {
