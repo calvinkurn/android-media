@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.data.util
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.product.detail.common.AtcVariantMapper
@@ -19,7 +20,11 @@ import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateUIIDRequest
+import com.tokopedia.product.detail.data.model.affiliate.AffiliateCookieRequest
+import com.tokopedia.product.detail.data.model.affiliate.AffiliateProductDetail
+import com.tokopedia.product.detail.data.model.affiliate.AffiliateRequestDetail
+import com.tokopedia.product.detail.data.model.affiliate.AffiliateRequestHeader
+import com.tokopedia.product.detail.data.model.affiliate.AffiliateShopDetail
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
@@ -384,10 +389,6 @@ object DynamicProductDetailMapper {
         return "${localData.district_id}|${localData.postal_code}|${latlong}"
     }
 
-    fun getAffiliateUIID(affiliateUniqueString: String, uuid: String): AffiliateUIIDRequest? {
-        return if (affiliateUniqueString.isNotBlank()) AffiliateUIIDRequest(trackerID = uuid, uuid = affiliateUniqueString, irisSessionID = TrackApp.getInstance().gtm.irisSessionId) else null
-    }
-
     fun determineSelectedOptionIds(variantData: ProductVariant,
                                    selectedChild: VariantChild?): MutableMap<String, String> {
         return AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(
@@ -429,6 +430,32 @@ object DynamicProductDetailMapper {
                         isOS = productInfo.data.isOS,
                         isPM = productInfo.data.isPowerMerchant,
                         shopStatus = shopInfo?.statusInfo?.shopStatus
+                )
+        )
+    }
+
+    fun generateAffiliateCookieRequest(productInfo: DynamicProductInfoP1,
+                                       affiliateUuid: String,
+                                       deviceId: String,
+                                       uuid: String): AffiliateCookieRequest {
+        val categoryId = productInfo.basic.category.detail.lastOrNull()?.id ?: ""
+        return AffiliateCookieRequest(
+                header = AffiliateRequestHeader(
+                        uuid = uuid,
+                        deviceId = deviceId,
+                        irisSessionId = TrackApp.getInstance().gtm.irisSessionId
+                ),
+                affiliateDetail = AffiliateRequestDetail(
+                        affiliateUniqueId = affiliateUuid
+                ),
+                affiliateProductDetail = AffiliateProductDetail(
+                        productId = productInfo.basic.productID,
+                        categoryId = categoryId,
+                        isVariant = productInfo.isProductVariant(),
+                        stockQty = productInfo.getFinalStock().toDoubleOrZero()
+                ),
+                affiliateShopDetail = AffiliateShopDetail(
+                        shopId = productInfo.basic.shopID
                 )
         )
     }

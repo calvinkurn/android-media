@@ -229,7 +229,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import rx.subscriptions.CompositeSubscription
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -440,6 +441,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         observeTopAdsIsChargeData()
         observeDeleteCart()
         observePlayWidget()
+        observeAffiliateCookie()
     }
 
     override fun loadData(forceRefresh: Boolean) {
@@ -1535,6 +1537,21 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
+    private fun observeAffiliateCookie() {
+        viewModel.affiliateCookie.observe(viewLifecycleOwner) {
+            it.doSuccessOrFail({
+                ProductDetailServerLogger.logBreadCrumbAffiliateCookie(
+                        isSuccess = true
+                )
+            }) { throwable ->
+                ProductDetailServerLogger.logBreadCrumbAffiliateCookie(
+                        isSuccess = false,
+                        errorMessage = throwable.message ?: ""
+                )
+            }
+        }
+    }
+
     private fun observePlayWidget() {
         viewModel.playWidgetModel.observe(viewLifecycleOwner, {
             when (it) {
@@ -1929,6 +1946,13 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         p1.basic.shopID,
                         p1.shopTypeString,
                         p1.basic.productID)
+
+                viewModel.hitAffiliateCookie(
+                        productInfo = p1,
+                        deviceId = viewModel.deviceId,
+                        affiliateUuid = affiliateUniqueId,
+                        uuid = uuid
+                )
             }
 
             onSuccessGetDataP2(it, boeData, ratesData)
