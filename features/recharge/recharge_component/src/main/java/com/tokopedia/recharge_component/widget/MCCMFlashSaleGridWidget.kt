@@ -16,7 +16,6 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.R
-import com.tokopedia.recharge_component.databinding.ViewRechargeDenomFullBinding
 import com.tokopedia.recharge_component.databinding.ViewRechargeDenomGridBinding
 import com.tokopedia.recharge_component.databinding.WidgetRechargeMccmGridBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
@@ -27,7 +26,6 @@ import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.presentation.adapter.DenomGridAdapter
-import com.tokopedia.recharge_component.presentation.adapter.viewholder.denom.DenomFullViewHolder
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.denom.DenomGridViewHolder
 import com.tokopedia.unifycomponents.BaseCustomView
 import org.jetbrains.annotations.NotNull
@@ -99,8 +97,8 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
 
     private fun renderAdapter(denomGridListener: RechargeDenomGridListener, denomListTitle: String, listDenomGrid: List<DenomData>, denomType: DenomWidgetEnum, selectedProduct: Int? = null){
         with(widgetRechargeMCCMFlashSaleGridWidget){
-            val possibleHeighestDenomCard = getHeighestItem(listDenomGrid)
-            populateHeighestItemToContainer(possibleHeighestDenomCard, denomType)
+            val possiblehighestDenomCard = getHighestCard(listDenomGrid)
+            populateHighestItemToContainer(possiblehighestDenomCard, denomType)
             rvMccmGrid.apply {
                 show()
                 adapterDenomGrid.clearDenomGridData()
@@ -126,9 +124,11 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
         }
     }
 
-    private fun getHeighestItem(listDenomFull: List<DenomData>): DenomData {
-        var heighestDenom = listDenomFull[0]
-        var heighestCount = 0
+    /** Give the recyclerview the information of the possible highest item card.
+     * This logic needs to be updated if there are changes in view positioning */
+    private fun getHighestCard(listDenomFull: List<DenomData>): DenomData {
+        var highestDenom = listDenomFull[0]
+        var highestCount = 0
         var attrCount = 0
         for (denom in listDenomFull) {
             if (denom.title.isNotEmpty()) attrCount += 1
@@ -139,20 +139,22 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
             if (denom.flashSaleLabel.isNotEmpty()) attrCount += 1
             if (denom.flashSalePercentage.isMoreThanZero()) attrCount += 1
 
-            if (attrCount > heighestCount) {
-                heighestCount = attrCount
-                heighestDenom = denom
-            } else if (attrCount == heighestCount && heighestDenom.title.length < denom.title.length) {
-                heighestCount = attrCount
-                heighestDenom = denom
+            if (attrCount > highestCount) {
+                highestCount = attrCount
+                highestDenom = denom
+            } else if (attrCount == highestCount && highestDenom.title.length < denom.title.length) {
+                highestCount = attrCount
+                highestDenom = denom
             }
 
             attrCount = 0
         }
-        return heighestDenom
+        return highestDenom
     }
 
-    private fun populateHeighestItemToContainer(denomData: DenomData, denomWidgetType: DenomWidgetEnum) {
+    /** Create invisible siblings next to recyclerview, so that recyclerview will have the same
+     * height as the highest/tallest card. */
+    private fun populateHighestItemToContainer(denomData: DenomData, denomWidgetType: DenomWidgetEnum) {
         widgetRechargeMCCMFlashSaleGridWidget.containerMccmGrid.apply {
             val layoutInflater = LayoutInflater.from(context)
             val view = ViewRechargeDenomGridBinding.inflate(layoutInflater)

@@ -2,7 +2,6 @@ package com.tokopedia.recharge_component.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -118,8 +117,8 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
         selectedProduct: Int? = null
     ) {
         with(widgetRechargeMCCMFlashSaleFullWidget){
-            val possibleHeighestDenomCard = getHeighestItem(listDenomFull)
-            populateHeighestItemToContainer(possibleHeighestDenomCard, denomType)
+            val possiblehighestDenomCard = getHighestCard(listDenomFull)
+            populateHighestItemToContainer(possiblehighestDenomCard, denomType)
             rvMccmFull.run {
                 show()
                 with(adapterDenomFull){
@@ -147,9 +146,11 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
         }
     }
 
-    private fun getHeighestItem(listDenomFull: List<DenomData>): DenomData {
-        var heighestDenom = listDenomFull[0]
-        var heighestCount = 0
+    /** Give the recyclerview the information of the possible highest item card.
+     * This logic needs to be updated if there are changes in view positioning */
+    private fun getHighestCard(listDenomFull: List<DenomData>): DenomData {
+        var highestDenom = listDenomFull[0]
+        var highestCount = 0
         var attrCount = 0
         for (denom in listDenomFull) {
             if (denom.title.isNotEmpty()) attrCount += 1
@@ -160,20 +161,22 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
             if (denom.flashSaleLabel.isNotEmpty()) attrCount += 1
             if (denom.flashSalePercentage.isMoreThanZero()) attrCount += 1
 
-            if (attrCount > heighestCount) {
-                heighestCount = attrCount
-                heighestDenom = denom
-            } else if (attrCount == heighestCount && heighestDenom.title.length < denom.title.length) {
-                heighestCount = attrCount
-                heighestDenom = denom
+            if (attrCount > highestCount) {
+                highestCount = attrCount
+                highestDenom = denom
+            } else if (attrCount == highestCount && highestDenom.title.length < denom.title.length) {
+                highestCount = attrCount
+                highestDenom = denom
             }
 
             attrCount = 0
         }
-        return heighestDenom
+        return highestDenom
     }
 
-    private fun populateHeighestItemToContainer(denomData: DenomData, denomWidgetType: DenomWidgetEnum) {
+    /** Create invisible siblings next to recyclerview, so that recyclerview will have the same
+     * height as the highest/tallest card. */
+    private fun populateHighestItemToContainer(denomData: DenomData, denomWidgetType: DenomWidgetEnum) {
         widgetRechargeMCCMFlashSaleFullWidget.containerMccmFull.apply {
             val layoutInflater = LayoutInflater.from(context)
             val view = ViewRechargeDenomFullBinding.inflate(layoutInflater)
