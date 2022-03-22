@@ -143,7 +143,7 @@ class ShippingDurationConverter @Inject constructor() {
                 promo.promoTncHtml, applied, promo.imageUrl, promo.discontedRate,
                 promo.shippingRate, promo.benefitAmount, promo.isDisabled, promo.isHideShipperName,
                 promo.cod, promo.eta, promo.texts.bottomSheet, promo.texts.chosenCourier,
-                promo.texts.tickerCourier, promo.isBebasOngkirExtra)
+                promo.texts.tickerCourier, promo.isBebasOngkirExtra, promo.texts.bottomSheetDescription)
     }
 
     private fun convertToPreOrderModel(preOrder: PreOrder?): PreOrderModel? {

@@ -17,7 +17,8 @@ class AffiliateAdapterFactory(
         private var onFocusChangeInterface: PortfolioUrlTextUpdateInterface? = null,
         private var onDateRangeClickInterface: AffiliateDatePickerRangeChangeInterface? = null,
         private var onPerformaGridClick: AffiliatePerformaClickInterfaces? = null,
-        private var bottomNavBarClickListener : AffiliateBottomNavBarInterface? = null
+        private var bottomNavBarClickListener : AffiliateBottomNavBarInterface? = null,
+        private var affiliateInfoClickInterfaces: AffiliateInfoClickInterfaces? = null
 )
     : BaseAdapterTypeFactory(), AffiliateAdapterTypeFactory {
 
@@ -36,6 +37,9 @@ class AffiliateAdapterFactory(
             AffiliateTermsAndConditionVH.LAYOUT -> AffiliateTermsAndConditionVH(parent)
             AffiliateStaggeredShimmerCardItemVH.LAYOUT -> AffiliateStaggeredShimmerCardItemVH(parent)
             AffiliateStaggeredPromotionCardItemVH.LAYOUT -> AffiliateStaggeredPromotionCardItemVH(parent,promotionClickInterface)
+            AffiliateTransactionHistoryItemVH.LAYOUT -> AffiliateTransactionHistoryItemVH(parent)
+            AffiliateCommissionDetailsItemVH.LAYOUT -> AffiliateCommissionDetailsItemVH(parent,affiliateInfoClickInterfaces)
+            AffiliateCommisionDivderItemVH.LAYOUT -> AffiliateCommisionDivderItemVH(parent)
             AffiliateHomeUserDataVH.LAYOUT -> AffiliateHomeUserDataVH(parent, onPerformaGridClick)
             AffiliateHomeUserListDataVH.LAYOUT -> AffiliateHomeUserListDataVH(parent, onPerformaGridClick)
             AffiliateDateFilterVH.LAYOUT -> AffiliateDateFilterVH(parent,onDateRangeClickInterface)
@@ -102,6 +106,18 @@ class AffiliateAdapterFactory(
 
     override fun type(viewModel: AffiliateStaggeredPromotionCardModel): Int {
         return AffiliateStaggeredPromotionCardItemVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateTransactionHistoryItemModel): Int {
+        return AffiliateTransactionHistoryItemVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateCommissionItemModel): Int {
+        return AffiliateCommissionDetailsItemVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateCommisionDividerItemModel): Int {
+        return AffiliateCommisionDivderItemVH.LAYOUT
     }
 
     override fun type(viewModel: AffiliateNoPromoItemFoundModel): Int {

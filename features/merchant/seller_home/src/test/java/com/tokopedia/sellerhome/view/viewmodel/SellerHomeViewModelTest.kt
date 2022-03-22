@@ -109,6 +109,9 @@ class SellerHomeViewModelTest {
     lateinit var getMilestoneDataUseCase: GetMilestoneDataUseCase
 
     @RelaxedMockK
+    lateinit var getCalendarDataUseCase: GetCalendarDataUseCase
+
+    @RelaxedMockK
     lateinit var getShopInfoByIdUseCase: GetShopInfoByIdUseCase
 
     @RelaxedMockK
@@ -144,6 +147,8 @@ class SellerHomeViewModelTest {
             { getAnnouncementDataUseCase },
             { getRecommendationDataUseCase },
             { getMilestoneDataUseCase },
+            { getCalendarDataUseCase },
+            { remoteConfig },
             coroutineTestRule.dispatchers
         )
 
@@ -164,6 +169,7 @@ class SellerHomeViewModelTest {
             { getAnnouncementDataUseCase },
             { getRecommendationDataUseCase },
             { getMilestoneDataUseCase },
+            { getCalendarDataUseCase },
             { getShopInfoByIdUseCase },
             { shopQuestGeneralTrackerUseCase },
             { sellerHomeLayoutHelper },
@@ -265,6 +271,7 @@ class SellerHomeViewModelTest {
         val shopId = "123456"
         val page = "seller-home"
         val widgetHeightInDp = 0f
+        val isCachingEnabled = true
 
         val cardData = CardDataUiModel(DATA_KEY_CARD, showWidget = true)
         val lineGraphDataUiModel = LineGraphDataUiModel(DATA_KEY_LINE_GRAPH, showWidget = true)
@@ -329,7 +336,7 @@ class SellerHomeViewModelTest {
 
         coVerify {
             getLayoutUseCase.executeOnBackground()
-            sellerHomeLayoutHelper.getInitialWidget(layoutList, widgetHeightInDp)
+            sellerHomeLayoutHelper.getInitialWidget(layoutList, widgetHeightInDp, isCachingEnabled)
         }
 
         val successLayoutList = layoutList.map {
@@ -1180,6 +1187,186 @@ class SellerHomeViewModelTest {
     }
 
     @Test
+    fun `when new caching enabled, on first load and cache enabled should success when get milestone widget data`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(MilestoneDataUiModel())
+            val isCachingEnabled = true
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getMilestoneDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<MilestoneDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            every {
+                getMilestoneDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getMilestoneWidgetData(dataKeys)
+
+            coVerify {
+                getMilestoneDataUseCase.executeOnBackground(
+                    any(),
+                    isFirstLoad && isCachingEnabled
+                )
+            }
+
+            coVerify {
+                getMilestoneDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.milestoneWidgetData.value)
+        }
+    }
+
+    @Test
+    fun `when new caching enabled, on first load and cache disabled should success when get milestone widget data`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(MilestoneDataUiModel())
+            val isCachingEnabled = false
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getMilestoneDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<MilestoneDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            every {
+                getMilestoneDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getMilestoneWidgetData(dataKeys)
+
+            coVerify {
+                getMilestoneDataUseCase.executeOnBackground(
+                    any(),
+                    isFirstLoad && isCachingEnabled
+                )
+            }
+
+            coVerify {
+                getMilestoneDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.milestoneWidgetData.value)
+        }
+    }
+
+    @Test
+    fun `when new caching enabled, not first load and cache disabled should success when get milestone widget data`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(MilestoneDataUiModel())
+            val isCachingEnabled = false
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getMilestoneDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<MilestoneDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            every {
+                getMilestoneDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getMilestoneWidgetData(dataKeys)
+
+            coVerify {
+                getMilestoneDataUseCase.executeOnBackground(
+                    any(),
+                    isFirstLoad && isCachingEnabled
+                )
+            }
+
+            coVerify {
+                getMilestoneDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.milestoneWidgetData.value)
+        }
+    }
+
+    @Test
+    fun `when new caching enabled, not first load and cache enabled should success when get milestone widget data`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(MilestoneDataUiModel())
+            val isCachingEnabled = true
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getMilestoneDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<MilestoneDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            every {
+                getMilestoneDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getMilestoneWidgetData(dataKeys)
+
+            coVerify {
+                getMilestoneDataUseCase.executeOnBackground(
+                    any(),
+                    isFirstLoad && isCachingEnabled
+                )
+            }
+
+            coVerify {
+                getMilestoneDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.milestoneWidgetData.value)
+        }
+    }
+
+    @Test
     fun `when get milestone widget data then throw exception`() {
         coroutineTestRule.runBlockingTest {
             val dataKeys = listOf(anyString())
@@ -1610,6 +1797,255 @@ class SellerHomeViewModelTest {
         }
 
         assert(viewModel.lineGraphWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `get calendar widget data then returns success result`() = runBlocking {
+        val dataKeys = listOf(CalendarFilterDataKeyUiModel("x"))
+
+        val result = listOf(CalendarDataUiModel())
+        getCalendarDataUseCase.params = GetCalendarDataUseCase.createParams(dataKeys)
+
+        coEvery {
+            getCalendarDataUseCase.executeOnBackground()
+        } returns result
+
+        viewModel.getCalendarWidgetData(dataKeys)
+
+        coVerify {
+            getCalendarDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Success(result)
+        Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
+        Assertions.assertEquals(expectedResult, viewModel.calendarWidgetData.value)
+    }
+
+    @Test
+    fun `get calendar widget data when new cache enabled, on second load and cache disabled then returns success result`() {
+        runBlocking {
+            val dataKeys = listOf(CalendarFilterDataKeyUiModel("x"))
+            val result = listOf(CalendarDataUiModel())
+            val isCacheEnabled = false
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getCalendarDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getCalendarDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<CalendarDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            viewModel.getCalendarWidgetData(dataKeys)
+
+            coVerify {
+                getCalendarDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getCalendarDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
+            viewModel.calendarWidgetData.verifySuccessEquals(expectedResult)
+        }
+    }
+
+    @Test
+    fun `get calendar widget data when new cache enabled, on second load and cache enabled then returns success result`() {
+        runBlocking {
+            val dataKeys = listOf(CalendarFilterDataKeyUiModel("x"))
+            val result = listOf(CalendarDataUiModel())
+            val isCacheEnabled = true
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getCalendarDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getCalendarDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<CalendarDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            viewModel.getCalendarWidgetData(dataKeys)
+
+            coVerify {
+                getCalendarDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getCalendarDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
+            viewModel.calendarWidgetData.verifySuccessEquals(expectedResult)
+        }
+    }
+
+    @Test
+    fun `get calendar widget data when new cache enabled, on first load and cache disabled then returns success result`() {
+        runBlocking {
+            val dataKeys = listOf(CalendarFilterDataKeyUiModel("x"))
+            val result = listOf(CalendarDataUiModel())
+            val isCacheEnabled = false
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getCalendarDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getCalendarDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<CalendarDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            viewModel.getCalendarWidgetData(dataKeys)
+
+            coVerify {
+                getCalendarDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getCalendarDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
+            viewModel.calendarWidgetData.verifySuccessEquals(expectedResult)
+        }
+    }
+
+    @Test
+    fun `get calendar widget data when new cache enabled, on first load and cache enabled then returns success result`() {
+        runBlocking {
+            val dataKeys = listOf(CalendarFilterDataKeyUiModel("x"))
+            val result = listOf(CalendarDataUiModel())
+            val isCacheEnabled = true
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getCalendarDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getCalendarDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<CalendarDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            viewModel.getCalendarWidgetData(dataKeys)
+
+            coVerify {
+                getCalendarDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getCalendarDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
+            viewModel.calendarWidgetData.verifySuccessEquals(expectedResult)
+        }
+    }
+
+    @Test
+    fun `get calendar widget data when new cache enabled, on second load and cache disabled then throw exception should return failed result`() {
+        runBlocking {
+            val dataKeys = listOf(CalendarFilterDataKeyUiModel("x"))
+            val throwable = Throwable()
+            val isCacheEnabled = false
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getCalendarDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getCalendarDataUseCase.getResultFlow()
+            } throws throwable
+
+            viewModel.getCalendarWidgetData(dataKeys)
+
+            coVerify {
+                getCalendarDataUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getCalendarDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Fail(throwable)
+            viewModel.calendarWidgetData.verifyErrorEquals(expectedResult)
+        }
+    }
+
+    @Test
+    fun `get calendar widget data then returns failed result`() = runBlocking {
+        val dataKeys = listOf(CalendarFilterDataKeyUiModel("x"))
+
+        val throwable = MessageErrorException("error message")
+        getCalendarDataUseCase.params = GetCalendarDataUseCase.createParams(dataKeys)
+
+        coEvery {
+            getCalendarDataUseCase.executeOnBackground()
+        } throws throwable
+
+        viewModel.getCalendarWidgetData(dataKeys)
+
+        coVerify {
+            getCalendarDataUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.calendarWidgetData.value is Fail)
     }
 
     @Test
@@ -3456,6 +3892,182 @@ class SellerHomeViewModelTest {
     }
 
     @Test
+    fun `given new caching enabled, on first load and cache enabled should success when get recommendation widget data`() =
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(RecommendationDataUiModel())
+            val isCachingEnabled = true
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getRecommendationDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<RecommendationDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            every {
+                getRecommendationDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getRecommendationWidgetData(dataKeys)
+
+            coVerify {
+                getRecommendationDataUseCase.executeOnBackground(
+                    any(),
+                    isFirstLoad && isCachingEnabled
+                )
+            }
+
+            coVerify {
+                getRecommendationDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.recommendationWidgetData.value)
+        }
+
+    @Test
+    fun `given new caching enabled, on first load and cache disabled should success when get recommendation widget data`() =
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(RecommendationDataUiModel())
+            val isCachingEnabled = false
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getRecommendationDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<RecommendationDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            every {
+                getRecommendationDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getRecommendationWidgetData(dataKeys)
+
+            coVerify {
+                getRecommendationDataUseCase.executeOnBackground(
+                    any(),
+                    isFirstLoad && isCachingEnabled
+                )
+            }
+
+            coVerify {
+                getRecommendationDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.recommendationWidgetData.value)
+        }
+
+    @Test
+    fun `given new caching enabled, on second load and cache disabled should success when get recommendation widget data`() =
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(RecommendationDataUiModel())
+            val isCachingEnabled = false
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getRecommendationDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<RecommendationDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            every {
+                getRecommendationDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getRecommendationWidgetData(dataKeys)
+
+            coVerify {
+                getRecommendationDataUseCase.executeOnBackground(
+                    any(),
+                    isFirstLoad && isCachingEnabled
+                )
+            }
+
+            coVerify {
+                getRecommendationDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.recommendationWidgetData.value)
+        }
+
+    @Test
+    fun `given new caching enabled, on second load and cache enabled should success when get recommendation widget data`() =
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(RecommendationDataUiModel())
+            val isCachingEnabled = true
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getRecommendationDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<RecommendationDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            every {
+                getRecommendationDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getRecommendationWidgetData(dataKeys)
+
+            coVerify {
+                getRecommendationDataUseCase.executeOnBackground(
+                    any(),
+                    isFirstLoad && isCachingEnabled
+                )
+            }
+
+            coVerify {
+                getRecommendationDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.recommendationWidgetData.value)
+        }
+
+    @Test
     fun `should failed when get recommendation widget data`() = runBlocking {
         val dataKeys = listOf(anyString(), anyString())
 
@@ -3502,14 +4114,10 @@ class SellerHomeViewModelTest {
         viewModel.getCardWidgetData(dataKeys)
 
         verify(exactly = 1) {
-            getCardDataUseCase.setUseCache(true)
-        }
-
-        verify(exactly = 1) {
             getCardDataUseCase.setUseCache(false)
         }
 
-        coVerify(exactly = 2) {
+        coVerify(exactly = 1) {
             getCardDataUseCase.executeOnBackground()
         }
 
@@ -3992,7 +4600,8 @@ class SellerHomeViewModelTest {
                     isLoading = false,
                     isFromCache = false,
                     isNeedToBeRemoved = false,
-                    emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+                    emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
+                    gridSize = 4
                 ),
                 CardWidgetUiModel(
                     id = DATA_KEY_CARD,
@@ -4004,6 +4613,7 @@ class SellerHomeViewModelTest {
                     appLink = "",
                     dataKey = DATA_KEY_CARD,
                     ctaText = "",
+                    gridSize = 2,
                     isShowEmpty = true,
                     data = null,
                     isLoaded = false,
@@ -4022,6 +4632,7 @@ class SellerHomeViewModelTest {
                     appLink = "",
                     dataKey = DATA_KEY_CARD,
                     ctaText = "",
+                    gridSize = 2,
                     isShowEmpty = true,
                     data = null,
                     isLoaded = false,
@@ -4040,6 +4651,7 @@ class SellerHomeViewModelTest {
                     appLink = "",
                     dataKey = DATA_KEY_CARD,
                     ctaText = "",
+                    gridSize = 2,
                     isShowEmpty = true,
                     data = null,
                     isLoaded = false,
@@ -4091,6 +4703,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = "section",
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -4109,6 +4722,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_ANNOUNCEMENT,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -4127,6 +4741,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = "section_other",
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -4145,6 +4760,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_CAROUSEL,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = false,
                 data = null,
                 isLoaded = false,
@@ -4163,6 +4779,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_POST_LIST,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -4184,6 +4801,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = "section_other2",
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -4202,6 +4820,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_PROGRESS,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = false,
                 data = null,
                 isLoaded = false,
@@ -4270,6 +4889,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_PROGRESS,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = false,
                 data = null,
                 isLoaded = false,
@@ -4288,6 +4908,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_ANNOUNCEMENT,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = false,
                 data = null,
                 isLoaded = false,
@@ -4343,6 +4964,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_PROGRESS,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -4393,6 +5015,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_PROGRESS,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -4443,6 +5066,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_PROGRESS,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = false,
                 data = null,
                 isLoaded = false,
@@ -4493,6 +5117,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_PROGRESS,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = false,
                 data = null,
                 isLoaded = false,
@@ -4544,6 +5169,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_POST_LIST,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -4602,6 +5228,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_TABLE,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -4723,6 +5350,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_CARD,
                 ctaText = "",
+                gridSize = 2,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -4741,6 +5369,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_PROGRESS,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -4759,6 +5388,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_LINE_GRAPH,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -4777,6 +5407,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_ANNOUNCEMENT,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -4795,6 +5426,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_CAROUSEL,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -4813,6 +5445,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_POST_LIST,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -4834,6 +5467,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_TABLE,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -4865,6 +5499,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_PIE_CHART,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -4883,6 +5518,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_BAR_CHART,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -4901,6 +5537,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_MULTI_LINE,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -4920,6 +5557,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_RECOMMENDATION,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -4938,6 +5576,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_MILESTONE,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,

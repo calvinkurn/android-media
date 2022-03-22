@@ -1,5 +1,6 @@
 package com.tokopedia.statistic.view.fragment
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -10,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.google.android.gms.common.util.DeviceProperties
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -19,6 +21,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
+import com.tokopedia.sellerhomecommon.common.const.WidgetGridSize
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.*
@@ -29,6 +32,7 @@ import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
 import com.tokopedia.statistic.analytics.TrackingHelper
+import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.ANNOUNCEMENT_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.BAR_CHART_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.CARD_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.CAROUSEL_WIDGET_TRACE
@@ -46,7 +50,6 @@ import com.tokopedia.statistic.databinding.FragmentStcStatisticBinding
 import com.tokopedia.statistic.di.StatisticComponent
 import com.tokopedia.statistic.view.bottomsheet.ActionMenuBottomSheet
 import com.tokopedia.statistic.view.bottomsheet.DateFilterBottomSheet
-import com.tokopedia.statistic.view.model.DateFilterItem
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
 import com.tokopedia.statistic.view.viewhelper.FragmentListener
 import com.tokopedia.statistic.view.viewhelper.StatisticItemDecoration
@@ -107,9 +110,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private val mViewModel: StatisticViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(StatisticViewModel::class.java)
     }
-    private val mLayoutManager by lazy { StatisticLayoutManager(context, spanCount = 2) }
+    private var mLayoutManager: StatisticLayoutManager? = null
     private val recyclerView by lazy { super.getRecyclerView(view) }
-    private var dateFilterBottomSheet: DateFilterBottomSheet? = null
     private val defaultStartDate by lazy {
         val defaultStartDate = if (StatisticPageHelper.getRegularMerchantStatus(userSession) ||
             statisticPage?.pageTitle != getString(R.string.stc_shop)
@@ -149,16 +151,18 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private var performanceMonitoringTableWidget: PerformanceMonitoring? = null
     private var performanceMonitoringPieChartWidget: PerformanceMonitoring? = null
     private var performanceMonitoringBarChartWidget: PerformanceMonitoring? = null
+    private var performanceMonitoringAnnouncementWidget: PerformanceMonitoring? = null
 
     private var binding by autoClearedNullable<FragmentStcStatisticBinding>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         statisticPage = getPageFromArgs()
-        loadInitialLayoutData {
+        loadInitialLayoutData(savedInstanceState) {
             statisticPage?.let { page ->
                 startLayoutNetworkPerformanceMonitoring()
                 mViewModel.getWidgetLayout(page.pageSource)
+                mViewModel.getTickers(page.tickerPageName)
             }
         }
     }
@@ -190,14 +194,16 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         observeWidgetData(mViewModel.tableWidgetData, WidgetType.TABLE)
         observeWidgetData(mViewModel.pieChartWidgetData, WidgetType.PIE_CHART)
         observeWidgetData(mViewModel.barChartWidgetData, WidgetType.BAR_CHART)
+        observeWidgetData(mViewModel.announcementWidgetData, WidgetType.ANNOUNCEMENT)
         observeTickers()
     }
 
     override fun onResume() {
         super.onResume()
         setHeaderSubTitle(headerSubTitle)
-        if (userVisibleHint)
+        if (userVisibleHint) {
             StatisticTracker.sendScreen(screenName)
+        }
     }
 
     override fun onPause() {
@@ -206,11 +212,23 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         hideMonthPickerIfExist()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mLayoutManager = null
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        initDateFilterBottomSheet()
 
         inflater.inflate(R.menu.menu_stc_action_calendar, menu)
+
+        for (i in Int.ZERO until menu.size()) {
+            menu.getItem(i)?.let { menuItem ->
+                menuItem.actionView?.setOnClickListener {
+                    onOptionsItemSelected(menuItem)
+                }
+            }
+        }
 
         setMenuItemVisibility(menu)
         sendActionBarMenuImpressionEvent(menu)
@@ -418,10 +436,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
-    private fun loadInitialLayoutData(action: () -> Unit) {
+    private fun loadInitialLayoutData(savedInstanceState: Bundle?, action: () -> Unit) {
         val shouldLoadDataOnCreate = arguments?.getBoolean(KEY_SHOULD_LOAD_DATA_ON_CREATE).orFalse()
         if (shouldLoadDataOnCreate) {
-            action()
+            if (savedInstanceState == null) {
+                action()
+            }
         } else {
             lifecycleScope.launchWhenResumed {
                 if (isVisible && isFirstLoad) {
@@ -508,15 +528,13 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun setupRecyclerView() = binding?.run {
-        with(mLayoutManager) {
+        val statisticSpanCount = getWidgetSpanCountByDeviceType()
+        val isTablet = (statisticSpanCount == WidgetGridSize.GRID_SIZE_4)
+        mLayoutManager = StatisticLayoutManager(context, statisticSpanCount)
+        mLayoutManager?.run {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
-                    return try {
-                        val isCardWidget = adapter.data[position].widgetType == WidgetType.CARD
-                        if (isCardWidget) 1 else spanCount
-                    } catch (e: IndexOutOfBoundsException) {
-                        spanCount
-                    }
+                    return getWidgetSpanSize(position, isTablet, spanCount)
                 }
             }
 
@@ -529,6 +547,46 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             addItemDecoration(StatisticItemDecoration())
             layoutManager = mLayoutManager
             (itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+        }
+    }
+
+    private fun getWidgetSpanSize(
+        position: Int,
+        isTablet: Boolean,
+        defaultSpanCount: Int
+    ): Int {
+        return try {
+            val widget = adapter.data[position]
+            return if (isTablet) {
+                val orientation = resources.configuration.orientation
+                val isPortrait = orientation == Configuration.ORIENTATION_PORTRAIT
+                if (isPortrait) {
+                    when (widget) {
+                        is CardWidgetUiModel -> WidgetGridSize.GRID_SIZE_2
+                        is PieChartWidgetUiModel -> widget.gridSize
+                        else -> defaultSpanCount
+                    }
+                } else {
+                    when (widget) {
+                        is CardWidgetUiModel -> WidgetGridSize.GRID_SIZE_1
+                        is SectionWidgetUiModel -> defaultSpanCount
+                        else -> widget.gridSize
+                    }
+                }
+            } else {
+                val isCardWidget = widget.widgetType == WidgetType.CARD
+                if (isCardWidget) WidgetGridSize.GRID_SIZE_1 else defaultSpanCount
+            }
+        } catch (e: IndexOutOfBoundsException) {
+            defaultSpanCount
+        }
+    }
+
+    private fun getWidgetSpanCountByDeviceType(): Int {
+        return if (DeviceProperties.isTablet(requireActivity().resources)) {
+            WidgetGridSize.GRID_SIZE_4
+        } else {
+            WidgetGridSize.GRID_SIZE_2
         }
     }
 
@@ -613,13 +671,27 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         mViewModel.getBarChartWidgetData(dataKeys)
     }
 
+    private fun fetchAnnouncementData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.forEach { it.isLoaded = true }
+        val dataKeys: List<String> = Utils.getWidgetDataKeys<AnnouncementWidgetUiModel>(widgets)
+        performanceMonitoringAnnouncementWidget =
+            PerformanceMonitoring.start(ANNOUNCEMENT_WIDGET_TRACE)
+        mViewModel.getAnnouncementWidgetData(dataKeys)
+    }
+
     private fun selectDateRange() {
         if (!isAdded || context == null) return
         StatisticTracker.sendDateFilterEvent(userSession)
-        dateFilterBottomSheet?.setFragmentManager(childFragmentManager)?.setOnApplyChanges {
-            setHeaderSubTitle(it.getHeaderSubTitle(requireContext()))
-            applyDateRange(it)
-        }?.show()
+
+        val dateFilters: List<DateFilterItem> = statisticPage?.dateFilters.orEmpty()
+        val identifierDescription = statisticPage?.exclusiveIdentifierDateFilterDesc.orEmpty()
+        DateFilterBottomSheet.newInstance(
+            dateFilters, identifierDescription
+        )
+            .setOnApplyChanges {
+                setHeaderSubTitle(it.getHeaderSubTitle(requireContext()))
+                applyDateRange(it)
+            }.show(childFragmentManager)
 
         val tabName = statisticPage?.pageTitle.orEmpty()
         StatisticTracker.sendCalendarClickEvent(userSession.userId, tabName, headerSubTitle)
@@ -651,17 +723,19 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun requestVisibleWidgetsData() {
-        val firstVisible: Int = mLayoutManager.findFirstVisibleItemPosition()
-        val lastVisible: Int = mLayoutManager.findLastVisibleItemPosition()
-        lifecycleScope.launch(Dispatchers.Unconfined) {
-            val visibleWidgets = mutableListOf<BaseWidgetUiModel<*>>()
-            adapter.data.forEachIndexed { index, widget ->
-                if (index in firstVisible..lastVisible && !widget.isLoaded) {
-                    visibleWidgets.add(widget)
+        mLayoutManager?.let {
+            val firstVisible: Int = it.findFirstVisibleItemPosition()
+            val lastVisible: Int = it.findLastVisibleItemPosition()
+            lifecycleScope.launch(Dispatchers.Unconfined) {
+                val visibleWidgets = mutableListOf<BaseWidgetUiModel<*>>()
+                adapter.data.forEachIndexed { index, widget ->
+                    if (index in firstVisible..lastVisible && !widget.isLoaded) {
+                        visibleWidgets.add(widget)
+                    }
                 }
-            }
 
-            if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
+                if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
+            }
         }
     }
 
@@ -701,7 +775,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             if (index != invalidIndex) {
                 recyclerView?.post {
                     val offset = 0
-                    mLayoutManager.scrollToPositionWithOffset(index, offset)
+                    mLayoutManager?.scrollToPositionWithOffset(index, offset)
                 }
             }
         } catch (e: StringIndexOutOfBoundsException) {
@@ -723,6 +797,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         groupedWidgets[WidgetType.TABLE]?.run { fetchTableData(this) }
         groupedWidgets[WidgetType.PIE_CHART]?.run { fetchPieChartData(this) }
         groupedWidgets[WidgetType.BAR_CHART]?.run { fetchBarChartData(this) }
+        groupedWidgets[WidgetType.ANNOUNCEMENT]?.run { fetchAnnouncementData(this) }
     }
 
     private fun setOnErrorGetLayout(throwable: Throwable) = view?.run {
@@ -805,16 +880,15 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         widgetType: String
     ) {
         val message = this.message.orEmpty()
-        adapter.data.filter { it.widgetType == widgetType }
-            .forEach { widget ->
-                if (widget is W) {
-                    val widgetData = D::class.java.newInstance().apply {
-                        error = message
-                    }
-                    widget.data = widgetData
-                    notifyWidgetChanged(widget)
+        adapter.data.forEach { widget ->
+            if (widget is W && widget.widgetType == widgetType) {
+                val widgetData = D::class.java.newInstance().apply {
+                    error = message
                 }
+                widget.data = widgetData
+                notifyWidgetChanged(widget)
             }
+        }
 
         showErrorToaster()
         recyclerView?.post {
@@ -868,9 +942,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun observeTickers() {
-        statisticPage?.let {
-            mViewModel.getTickers(it.tickerPageName)
-        }
         mViewModel.tickers.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> showTickers(it.data)
@@ -931,15 +1002,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         )
     }
 
-    private fun initDateFilterBottomSheet() {
-        if (dateFilterBottomSheet == null) {
-            val dateFilters: List<DateFilterItem> = statisticPage?.dateFilters.orEmpty()
-            val identifierDescription = statisticPage?.exclusiveIdentifierDateFilterDesc.orEmpty()
-            dateFilterBottomSheet =
-                DateFilterBottomSheet.newInstance(dateFilters, identifierDescription)
-        }
-    }
-
     private fun setMenuItemVisibility(menu: Menu) {
         val shouldShowActionMenu = !statisticPage?.actionMenu.isNullOrEmpty()
         menu.findItem(R.id.actionStcOtherMenu)?.isVisible = shouldShowActionMenu
@@ -992,6 +1054,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             WidgetType.TABLE -> performanceMonitoringTableWidget?.stopTrace()
             WidgetType.PIE_CHART -> performanceMonitoringPieChartWidget?.stopTrace()
             WidgetType.BAR_CHART -> performanceMonitoringBarChartWidget?.stopTrace()
+            WidgetType.ANNOUNCEMENT -> performanceMonitoringAnnouncementWidget?.stopTrace()
         }
     }
 

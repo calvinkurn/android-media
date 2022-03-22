@@ -33,6 +33,11 @@ object FragmentDFMapper {
                     MODULE_NAME_RESOURCE_ID
                ))
              */
+            add(FragmentDFPattern(
+                    {it == FragmentConst.SHOP_SHOWCASE_TAB_FRAGMENT_CLASS_PATH},
+                    DeeplinkDFMapper.DF_BASE,
+                    R.string.shop_showcase_tab
+            ))
         }
     }
 
@@ -47,6 +52,11 @@ object FragmentDFMapper {
             MODULE_NAME_RESOURCE_ID
             ))
              */
+            add(FragmentDFPattern(
+                {it == FragmentConst.SHOP_SHOWCASE_TAB_FRAGMENT_CLASS_PATH},
+                DeeplinkDFMapper.DF_BASE_SELLER_APP,
+                R.string.shop_showcase_tab
+            ))
         }
     }
 

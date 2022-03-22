@@ -25,8 +25,10 @@ class CalendarWidgetItemViewModel(
     private val pushBannerSubscription: MutableLiveData<Boolean> = MutableLiveData()
     private val pushBannerStatus: MutableLiveData<Pair<Boolean, String>> = MutableLiveData()
     private val showLogin: MutableLiveData<Boolean> = MutableLiveData()
+    private val showErrorToast: MutableLiveData<String> = MutableLiveData()
 
     fun getShowLoginData(): LiveData<Boolean> = showLogin
+    fun getShowErrorToastData(): LiveData<String> = showErrorToast
     fun getPushBannerSubscriptionData(): LiveData<Boolean> = pushBannerSubscription
     fun getPushBannerStatusData(): LiveData<Pair<Boolean, String>> = pushBannerStatus
 
@@ -54,6 +56,7 @@ class CalendarWidgetItemViewModel(
                 }
             }, onError = {
                 it.printStackTrace()
+                showErrorToast.value = application.getString(R.string.discovery_calendar_push_error)
             })
         } else {
             showLogin.value = true
@@ -69,6 +72,7 @@ class CalendarWidgetItemViewModel(
                 }
             }, onError = {
                 it.printStackTrace()
+                showErrorToast.value = application.getString(R.string.discovery_calendar_push_error)
             })
         } else {
             showLogin.value = true

@@ -42,6 +42,8 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
         every { searchProductFirstPageUseCase.execute(any(), any()) } answers {
             secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
         }
+
+        `Given top ads headline helper will process headline ads`(searchProductModel)
     }
 
     private fun `Given visitable list will be captured`() {
@@ -87,9 +89,8 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
         `When load data`()
 
         val expectedCpmModel = searchProductModel.cpmModel
-        val expectedCpmData = expectedCpmModel.data[1]
         `Then verify CPM at the second top of list`(expectedCpmModel, expectedCpmModel.data.first())
-        `Then verify CPM after last product cards`(expectedCpmModel, expectedCpmData)
+        `Then verify CPM after last product cards`(expectedCpmModel, expectedCpmModel.data[1])
     }
 
     private fun `Then verify CPM after last product cards`(
@@ -109,9 +110,9 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
         val searchProductModelPage2 = headlineAdsMultipleSecondPage.jsonToObject<SearchProductModel>()
 
         `Given search product API will return search product model`(searchProductModel)
-        `Given search product load more API will return search product model`(searchProductModelPage2)
         `Given visitable list will be captured`()
         `Given view already load data`()
+        `Given search product load more API will return search product model`(searchProductModelPage2)
 
         `When load more data`()
 
@@ -126,6 +127,8 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
         every { searchProductLoadMoreUseCase.execute(any(), any()) } answers {
             secondArg<Subscriber<SearchProductModel>>().complete(searchModelPage2)
         }
+
+        `Given top ads headline helper will process headline ads`(searchModelPage2, 2)
     }
 
     private fun `Given view already load data`() {

@@ -59,7 +59,7 @@ open class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageA
         )
     }
 
-    protected val penaltyPageAdapter by lazy { PenaltyPageAdapter(penaltyPageAdapterFactory) }
+    open val penaltyPageAdapter by lazy { PenaltyPageAdapter(penaltyPageAdapterFactory) }
 
     private val binding: FragmentPenaltyPageBinding? by viewBinding()
 

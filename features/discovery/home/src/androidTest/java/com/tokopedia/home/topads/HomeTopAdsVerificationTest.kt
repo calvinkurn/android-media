@@ -14,7 +14,6 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.R
@@ -34,6 +33,7 @@ import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
+import com.tokopedia.test.application.annotations.TopAdsTest
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
@@ -48,9 +48,13 @@ import org.junit.*
  *
  * @see [Testing documentation](http://d.android.com/tools/testing)
  */
+@TopAdsTest
 class HomeTopAdsVerificationTest {
     companion object {
         private const val LIMIT_COUNT_TO_IDLE = 10
+
+        // min item 3 : blank space item, product item, and see all card item
+        private const val MIX_LEFT_ITEM_COUNT_THRESHOLD = 3
     }
 
     private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
@@ -151,7 +155,11 @@ class HomeTopAdsVerificationTest {
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
             }
             is MixLeftComponentViewHolder -> {
-                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
+                val childRecyclerView: RecyclerView = viewHolder.itemView.findViewById(R.id.rv_product)
+                val childItemCount = childRecyclerView.adapter?.itemCount?:0
+                if (childItemCount >= MIX_LEFT_ITEM_COUNT_THRESHOLD) {
+                    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
+                }
             }
             is DynamicChannelSprintViewHolder -> {
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)

@@ -7,7 +7,6 @@
     <string name="shop_page_showcase_product_count_text">%1$s Produk</string>
     <string name="shop_page_showcase_npl_text">Rilisan Spesial</string>
     <string name="shop_page_showcase_flash_sale_text">Flash Sale</string>
-    <string name="shop_page_showcase_thematic_text">Promo</string>
     <string name="shop_page_showcase_setting_text">Atur Etalase</string>
     <string name="shop_page_showcase_reorder_text">Susun</string>
 
@@ -28,4 +27,9 @@
     <string name="move_the_item">Move The Item</string>
     <string name="settings_of_the_item">Settings Of The Item</string>
     <string name="show_bottomsheet">Show BottomSheet</string>
+
+    <!-- product bundle -->
+    <string name="shop_page_product_bundle_atc_button_text">+ Keranjang</string>
+    <string name="shop_page_product_bundle_preorder_button_text">PreOrder</string>
+    <string name="shop_page_product_single_bundle_package_text">Paket:</string>
 </resources>

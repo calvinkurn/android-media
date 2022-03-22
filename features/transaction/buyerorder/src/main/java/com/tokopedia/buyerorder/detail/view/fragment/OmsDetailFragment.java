@@ -278,7 +278,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         setPaymentData(details.paymentData(), isCategoryEvent);
         setContactUs(details.contactUs(), details.getHelpLink());
 
-        if (details.getItems() != null && details.getItems().size() > 0 && details.getItems().get(0).getCategory().equalsIgnoreCase(OrderCategory.EVENT)) {
+        if (details.getItems() != null && details.getItems().size() > 0
+                && (details.getItems().get(0).getCategory().equalsIgnoreCase(OrderCategory.EVENT)
+                || details.getItems().get(0).getCategory().equalsIgnoreCase(OrderCategory.DEALS))) {
             setActionButtonsVisibility(View.GONE, View.GONE);
         } else {
             if (details.actionButtons().size() == 2) {
@@ -522,7 +524,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             }
         }
         if (itemsList.size() > 0 && !metadataEmpty) {
-            recyclerView.setAdapter(new ItemsAdapter(getContext(), items, false, presenter, OmsDetailFragment.this, getArguments().getString(KEY_ORDER_ID), orderDetails));
+            recyclerView.setAdapter(new ItemsAdapter(getContext(), items, false, presenter, OmsDetailFragment.this, getArguments().getString(KEY_ORDER_ID), orderDetails, getArguments().getString(KEY_UPSTREAM)));
         } else {
             detailsLayout.setVisibility(View.GONE);
             dividerInfoLabel.setVisibility(View.GONE);
@@ -591,23 +593,28 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void askPermission(String uri, Boolean isDownloadable, String downloadFileName) {
-        permissionCheckerHelper = new PermissionCheckerHelper();
-        permissionCheckerHelper.checkPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, new PermissionCheckerHelper.PermissionCheckListener() {
-            @Override
-            public void onPermissionDenied(@NotNull String permissionText) {
+        if (getActivity() != null) {
+            String[] permissionList = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+            permissionCheckerHelper = new PermissionCheckerHelper();
+            permissionCheckerHelper.checkPermissions(getActivity(), permissionList, new PermissionCheckerHelper.PermissionCheckListener() {
+                @Override
+                public void onPermissionDenied(@NotNull String permissionText) {
 
-            }
+                }
 
-            @Override
-            public void onNeverAskAgain(@NotNull String permissionText) {
+                @Override
+                public void onNeverAskAgain(@NotNull String permissionText) {
 
-            }
+                }
 
-            @Override
-            public void onPermissionGranted() {
-                permissionGrantedContinueDownload(uri, downloadFileName, isDownloadable);
-            }
-        }, "");
+                @Override
+                public void onPermissionGranted() {
+                    if (isDownloadable && !uri.isEmpty() && !downloadFileName.isEmpty()) {
+                        permissionGrantedContinueDownload(uri, downloadFileName, isDownloadable);
+                    }
+                }
+            }, "");
+        }
     }
 
     @Override
@@ -626,6 +633,11 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), metaDataInfo.getEntityBrandName(), (String) getArguments().get(KEY_ORDER_ID), categoryType, paymentMethod, paymentStatus);
             }
         }
+    }
+
+    @Override
+    public void sendOpenScreenDeals(Boolean isOmp){
+        orderListAnalytics.sendOpenScreenDeals(isOmp);
     }
 
     @Override

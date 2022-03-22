@@ -39,7 +39,6 @@ import com.tokopedia.profilecompletion.common.webview.ProfileSettingWebViewActiv
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileCompletionData
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileRoleData
-import com.tokopedia.profilecompletion.settingprofile.data.UploadProfilePictureResult
 import com.tokopedia.profilecompletion.settingprofile.domain.UrlSettingProfileConst
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileInfoViewModel
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileRoleViewModel
@@ -180,17 +179,17 @@ class SettingProfileFragment : BaseDaggerFragment() {
             }
         })
 
-        profileInfoViewModel.uploadProfilePictureResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessUploadProfilePicture(it.data)
-                is Fail -> onErrorUploadProfilePicture(it.throwable)
-            }
-        })
-
         profileRoleViewModel.userProfileRole.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetProfileRole(it.data)
                 is Fail -> onErrorGetProfileRole(it.throwable)
+            }
+        })
+
+        profileInfoViewModel.saveImageProfileResponse.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> onSuccessUploadProfilePicture(it.data)
+                is Fail -> onErrorUploadProfilePicture(it.throwable)
             }
         })
     }
@@ -205,21 +204,13 @@ class SettingProfileFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onSuccessUploadProfilePicture(result: UploadProfilePictureResult) {
+    private fun onSuccessUploadProfilePicture(imgPath: String) {
         dismissLoading()
-
-        if (result.uploadProfileImageModel.data.filePath.isNotBlank()) {
-            userSession.profilePicture = result.uploadProfileImageModel.data.filePath
-
-            view?.run {
-                Toaster.showNormal(this, getString(R.string.success_change_profile_picture), Snackbar.LENGTH_LONG)
-            }
-            ImageHandler.loadImageCircle2(context, profilePhoto,
-                    result.uploadProfileImageModel.data.filePath)
-        } else {
-            onErrorUploadProfilePicture(MessageErrorException(getString(R.string.failed_to_upload_picture)))
+        view?.run {
+            Toaster.build(this, getString(R.string.success_change_profile_picture), Snackbar.LENGTH_LONG).show()
         }
-
+        userSession.profilePicture = imgPath
+        ImageHandler.loadImageCircle2(context, profilePhoto, imgPath)
     }
 
     private fun initSettingProfileData() {
@@ -357,7 +348,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     onErrorGetProfilePhoto(MessageErrorException(getString(R.string.failed_to_get_picture)))
                 } else {
                     showLoading(true)
-                    profileInfoViewModel.uploadProfilePicture(requireContext(), savedLocalImageUrl)
+                    profileInfoViewModel.uploadPicture(file)
                 }
 
             } else {

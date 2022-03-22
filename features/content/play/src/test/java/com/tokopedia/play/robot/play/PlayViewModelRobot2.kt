@@ -2,12 +2,13 @@ package com.tokopedia.play.robot.play
 
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.play.analytic.PlayNewAnalytic
-import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.helper.ClassBuilder
+import com.tokopedia.play.model.PlayMapperBuilder
 import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
+import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.util.timer.TimerFactory
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
@@ -22,6 +23,7 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.PlayChannelSSE
 import com.tokopedia.play_common.util.PlayPreference
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
@@ -36,43 +38,38 @@ import java.io.Closeable
  * Created by jegul on 10/02/21
  */
 class PlayViewModelRobot2(
+    channelId: String,
     playVideoBuilder: PlayVideoWrapper.Builder,
     videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
     channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
     videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
-    getChannelStatusUseCase: GetChannelStatusUseCase,
     getSocketCredentialUseCase: GetSocketCredentialUseCase,
     getReportSummariesUseCase: GetReportSummariesUseCase,
-    getProductTagItemsUseCase: GetProductTagItemsUseCase,
-    trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
     trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
-    playSocketToModelMapper: PlaySocketToModelMapper,
-    playUiModelMapper: PlayUiModelMapper,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineTestDispatchers,
     remoteConfig: RemoteConfig,
     playPreference: PlayPreference,
     videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
-    playChannelWebSocket: PlayChannelWebSocket,
+    playChannelWebSocket: PlayWebSocket,
     repo: PlayViewerRepository,
     playAnalytic: PlayNewAnalytic,
     timerFactory: TimerFactory,
-    castPlayerHelper: CastPlayerHelper
+    castPlayerHelper: CastPlayerHelper,
+    playShareExperience: PlayShareExperience,
 ) : Closeable {
 
     val viewModel: PlayViewModel = PlayViewModel(
+        channelId,
         playVideoBuilder,
         videoStateProcessorFactory,
         channelStateProcessorFactory,
         videoBufferGovernorFactory,
-        getChannelStatusUseCase,
         getSocketCredentialUseCase,
         getReportSummariesUseCase,
-        getProductTagItemsUseCase,
-        trackProductTagBroadcasterUseCase,
         trackVisitChannelBroadcasterUseCase,
-        playSocketToModelMapper,
-        playUiModelMapper,
+        PlayMapperBuilder().buildSocketMapper(),
+        ClassBuilder().getPlayUiModelMapper(),
         userSession,
         dispatchers,
         remoteConfig,
@@ -82,7 +79,8 @@ class PlayViewModelRobot2(
         repo,
         playAnalytic,
         timerFactory,
-        castPlayerHelper
+        castPlayerHelper,
+        playShareExperience
     )
 
     fun createPage(channelData: PlayChannelData) {
@@ -168,43 +166,36 @@ class PlayViewModelRobot2(
 }
 
 fun createPlayViewModelRobot(
+    channelId: String = "1",
     dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
     playVideoBuilder: PlayVideoWrapper.Builder = mockk(relaxed = true),
     videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory = mockk(relaxed = true),
     channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory = mockk(relaxed = true),
     videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory = mockk(relaxed = true),
-    getChannelStatusUseCase: GetChannelStatusUseCase = mockk(relaxed = true),
     getSocketCredentialUseCase: GetSocketCredentialUseCase = mockk(relaxed = true),
     getReportSummariesUseCase: GetReportSummariesUseCase = mockk(relaxed = true),
-    getProductTagItemsUseCase: GetProductTagItemsUseCase = mockk(relaxed = true),
-    trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase = mockk(relaxed = true),
     trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase = mockk(relaxed = true),
-    playSocketToModelMapper: PlaySocketToModelMapper = mockk(relaxed = true),
-    playUiModelMapper: PlayUiModelMapper = ClassBuilder().getPlayUiModelMapper(),
     userSession: UserSessionInterface = mockk(relaxed = true),
     remoteConfig: RemoteConfig = mockk(relaxed = true),
     playPreference: PlayPreference = mockk(relaxed = true),
     videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring = mockk(relaxed = true),
-    playChannelWebSocket: PlayChannelWebSocket = mockk(relaxed = true),
+    playChannelWebSocket: PlayWebSocket = mockk(relaxed = true),
     repo: PlayViewerRepository = mockk(relaxed = true),
     playAnalytic: PlayNewAnalytic = mockk(relaxed = true),
     timerFactory: TimerFactory = mockk(relaxed = true),
     castPlayerHelper: CastPlayerHelper = mockk(relaxed = true),
+    playShareExperience: PlayShareExperience = mockk(relaxed = true),
     fn: PlayViewModelRobot2.() -> Unit = {}
 ): PlayViewModelRobot2 {
     return PlayViewModelRobot2(
+        channelId = channelId,
         playVideoBuilder = playVideoBuilder,
         videoStateProcessorFactory = videoStateProcessorFactory,
         channelStateProcessorFactory = channelStateProcessorFactory,
         videoBufferGovernorFactory = videoBufferGovernorFactory,
-        getChannelStatusUseCase = getChannelStatusUseCase,
         getSocketCredentialUseCase = getSocketCredentialUseCase,
         getReportSummariesUseCase = getReportSummariesUseCase,
-        getProductTagItemsUseCase = getProductTagItemsUseCase,
-        trackProductTagBroadcasterUseCase = trackProductTagBroadcasterUseCase,
         trackVisitChannelBroadcasterUseCase = trackVisitChannelBroadcasterUseCase,
-        playSocketToModelMapper = playSocketToModelMapper,
-        playUiModelMapper = playUiModelMapper,
         userSession = userSession,
         dispatchers = dispatchers,
         remoteConfig = remoteConfig,
@@ -214,6 +205,7 @@ fun createPlayViewModelRobot(
         repo = repo,
         playAnalytic = playAnalytic,
         timerFactory = timerFactory,
-        castPlayerHelper = castPlayerHelper
+        castPlayerHelper = castPlayerHelper,
+        playShareExperience = playShareExperience,
     ).apply(fn)
 }

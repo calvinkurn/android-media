@@ -1,7 +1,7 @@
 package com.tokopedia.review.feature.imagepreview.presentation.viewmodel
 
+import com.tokopedia.review.common.data.ProductrevLikeReview
 import com.tokopedia.review.common.data.ToggleLikeReviewResponse
-import com.tokopedia.review.common.data.ToggleProductReviewLike
 import com.tokopedia.review.feature.gallery.data.ProductrevGetReviewImage
 import com.tokopedia.review.feature.gallery.data.ProductrevGetReviewImageResponse
 import com.tokopedia.unit.test.ext.verifyErrorEquals
@@ -19,30 +19,26 @@ class ReviewImagePreviewViewModelTest : ReviewImagePreviewViewModelTestFixture()
     @Test
     fun `when toggleLike should call toggleLikeReviewUseCase and return expected results`() {
         val reviewId = ArgumentMatchers.anyString()
-        val shopId = ArgumentMatchers.anyString()
         val likeStatus = ArgumentMatchers.anyInt()
-        val productId = ArgumentMatchers.anyString()
         val expectedResponse = ToggleLikeReviewResponse()
 
         onToggleLikeReviewSuccess_thenReturn(expectedResponse)
 
-        viewModel.toggleLikeReview(reviewId, shopId, productId, likeStatus)
+        viewModel.toggleLikeReview(reviewId, likeStatus)
 
         verifyToggleLikeDislikeUseCaseExecuted()
-        verifyToggleLikeReviewSuccessEquals(Success(expectedResponse.toggleProductReviewLike))
+        verifyToggleLikeReviewSuccessEquals(Success(expectedResponse.productrevLikeReview))
     }
 
     @Test
     fun `when toggleLike should call toggleLikeReviewUseCase and return expected error`() {
         val reviewId = ArgumentMatchers.anyString()
-        val shopId = ArgumentMatchers.anyString()
-        val productId = ArgumentMatchers.anyString()
         val likeStatus = ArgumentMatchers.anyInt()
         val expectedResponse = Throwable()
 
         onToggleLikeReviewFail_thenReturn(expectedResponse)
 
-        viewModel.toggleLikeReview(reviewId, shopId, productId, likeStatus)
+        viewModel.toggleLikeReview(reviewId, likeStatus)
 
         verifyToggleLikeDislikeUseCaseExecuted()
         verifyToggleLikeReviewErrorEquals(Fail(expectedResponse))
@@ -116,12 +112,12 @@ class ReviewImagePreviewViewModelTest : ReviewImagePreviewViewModelTestFixture()
         coVerify { getReviewImagesUseCase.executeOnBackground() }
     }
 
-    private fun verifyToggleLikeReviewSuccessEquals(expectedSuccessValue: Success<ToggleProductReviewLike>) {
-        viewModel.toggleLikeReview.verifySuccessEquals(expectedSuccessValue)
+    private fun verifyToggleLikeReviewSuccessEquals(expectedSuccessValue: Success<ProductrevLikeReview>) {
+        viewModel.toggleLikeReviewReview.verifySuccessEquals(expectedSuccessValue)
     }
 
     private fun verifyToggleLikeReviewErrorEquals(expectedErrorValue: Fail) {
-        viewModel.toggleLikeReview.verifyErrorEquals(expectedErrorValue)
+        viewModel.toggleLikeReviewReview.verifyErrorEquals(expectedErrorValue)
     }
 
     private fun verifyReviewImagesSuccessEquals(expectedSuccessValue: Success<ProductrevGetReviewImage>) {

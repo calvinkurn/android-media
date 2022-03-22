@@ -13,10 +13,8 @@ import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.changeColor
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.combineBitmapTopDown
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.combineBitmapWithPadding
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.downscaleToAllowedDimension
-import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.isDark
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.resizeBitmap
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.textAsBitmap
-import timber.log.Timber
 import java.lang.IllegalArgumentException
 import android.graphics.Bitmap.createBitmap as createBitmap
 
@@ -27,18 +25,16 @@ data class Watermark(
     var watermarkText: TextUIModel? = null,
     var watermarkTextAndImage: TextAndImageUIModel? = null,
     var outputImage: Bitmap? = null,
-    var canvasBitmap: Bitmap? = null,
     var watermarkBitmap: Bitmap? = null,
     var scaledWatermarkBitmap: Bitmap? = null,
     var isTitleMode: Boolean,
     var isCombine: Boolean,
     var onlyWatermark: Boolean,
     var type: Int,
+    var isDark: Boolean
 ) {
 
     init {
-        canvasBitmap = backgroundImg
-        outputImage = backgroundImg
         watermarkTextAndImage?.textShadowColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N100)
 
         if (!isCombine) {
@@ -79,10 +75,12 @@ data class Watermark(
             }
         }
 
-        createScaledWatermark(
+        createConfigWatermark(
             bitmap = combinedBitmap,
             config = watermark
         )
+        logoBitmap.recycle()
+        textBitmap.recycle()
     }
 
     /**
@@ -137,7 +135,7 @@ data class Watermark(
         )
     }
 
-    private fun createScaledWatermark(
+    private fun createConfigWatermark(
         bitmap: Bitmap,
         config: BaseWatermark?
     ) {
@@ -163,17 +161,14 @@ data class Watermark(
 
             alpha = bitmapAlpha
         }
-
         watermarkBitmap = bitmap
 
-        Canvas(
-            createBitmap(bitmap.width, bitmap.height, bitmap.config)
-        ).apply {
-            drawBitmap(bitmap, 0f, 0f, paint)
+        if (!isDark) {
+            watermarkBitmap = watermarkBitmap!!
+                .changeColor(MethodChecker.getColor(context, R.color.dms_green_neutral_30))
         }
 
         scaledWatermarkBitmap().apply {
-            canvasBitmap = this
             outputImage = this
         }
     }
@@ -198,8 +193,6 @@ data class Watermark(
             val newBitmap = createBitmap(it.width, it.height, it.config)
             val canvas = Canvas(newBitmap)
 
-            canvas.drawBitmap(canvasBitmap!!, 0f, 0f, null)
-
             if (isTitleMode) {
                 paint.shader = BitmapShader(
                     watermarkBitmap!!,
@@ -217,7 +210,6 @@ data class Watermark(
                 )
             }
 
-            canvasBitmap = newBitmap
             outputImage = newBitmap
         }
     }
@@ -226,13 +218,11 @@ data class Watermark(
         scaledWatermarkBitmap =
                 watermarkBitmap!!.downscaleToAllowedDimension(this.type)
 
-        if (!backgroundImg!!.isDark()) {
-            scaledWatermarkBitmap = scaledWatermarkBitmap!!
-                .changeColor(MethodChecker.getColor(context, R.color.green_neutral_30))
-        }
-
         // merge the main bitmap with scaled watermark bitmap
         outputImage = mapWatermarkType(this.type)
+
+        watermarkBitmap?.recycle()
+        scaledWatermarkBitmap?.recycle()
 
         return outputImage!!
     }
@@ -275,21 +265,20 @@ data class Watermark(
     }
 
     private fun mapWatermarkType(type: Int): Bitmap {
-        val widthMainBitmap = backgroundImg!!.width
-        val heightMainBitmap = backgroundImg!!.height
-        val resultBitmap = createBitmap(
-            widthMainBitmap,
-            heightMainBitmap,
-            backgroundImg!!.config
-        )
-        return when (type) {
-            Constant.TYPE_WATERMARK_TOPED -> {
-                tileWatermarkBitmap(resultBitmap)
+        try {
+            val resultBitmap = backgroundImg!!.copy(Bitmap.Config.RGB_565, true)
+            return when (type) {
+                Constant.TYPE_WATERMARK_TOPED -> {
+                    tileWatermarkBitmap(resultBitmap)
+                }
+                Constant.TYPE_WATERMARK_CENTER_TOPED -> {
+                    centerWatermarkBitmap(resultBitmap)
+                }
+                else -> throw IllegalArgumentException()
             }
-            Constant.TYPE_WATERMARK_CENTER_TOPED -> {
-                centerWatermarkBitmap(resultBitmap)
-            }
-            else -> throw IllegalArgumentException()
+        } catch (e: Throwable) {
+            return backgroundImg!!
         }
+
     }
 }

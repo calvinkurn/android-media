@@ -14,10 +14,8 @@ class PlayPinnedModelBuilder {
 
     fun buildInfo(
         pinnedMessage: PinnedMessageUiModel = buildPinnedMessage(),
-        pinnedProduct: PinnedProductUiModel = buildPinnedProduct()
     ) = PlayPinnedInfoUiModel(
         pinnedMessage = pinnedMessage,
-        pinnedProduct = pinnedProduct
     )
 
     fun buildPinnedMessage(

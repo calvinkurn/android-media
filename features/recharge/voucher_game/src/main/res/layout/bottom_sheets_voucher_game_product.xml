@@ -12,9 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/unify_space_4"
-        android:text="@string/vg_product_detail_title"
+        tools:text="Product Title"
         android:textColor="@color/Unify_N700_96"
-        app:typographyType="heading_3" />
+        app:typographyType="heading_4" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/detail_desc"
@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/unify_space_4"
         android:textColor="@color/Unify_N700_96"
-        app:typographyType="body_1"
+        app:typographyType="body_2"
         tools:text="Nomor User ID dan Server ID Dapat dilihat di halaman ini." />
 
     <com.tokopedia.unifyprinciples.Typography

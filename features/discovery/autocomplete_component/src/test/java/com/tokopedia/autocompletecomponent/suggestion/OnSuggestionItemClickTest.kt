@@ -1,6 +1,7 @@
 package com.tokopedia.autocompletecomponent.suggestion
 
 import com.tokopedia.autocompletecomponent.suggestion.domain.suggestiontracker.SuggestionTrackerUseCase
+import com.tokopedia.autocompletecomponent.suggestion.doubleline.SuggestionDoubleLineDataDataView
 import com.tokopedia.autocompletecomponent.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.usecase.RequestParams
@@ -8,6 +9,7 @@ import io.mockk.*
 import org.junit.Test
 
 private const val suggestionCommonResponse = "autocomplete/suggestion/suggestion-common-response.json"
+private const val suggestionShopAdsResponse = "autocomplete/suggestion/shopads/suggestion-shop-ads-response.json"
 
 internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
 
@@ -369,6 +371,31 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
                 item,
             )
             suggestionView.onClickSuggestion(item.applink)
+        }
+    }
+
+    @Test
+    fun `tracking click shop ads`() {
+        `Given View already load data`(suggestionShopAdsResponse, searchParameter)
+
+        val item = visitableList.findShopAds()
+
+        `when suggestion item clicked`(item.data)
+
+        `Then verify shop ads click`(item)
+    }
+
+    private fun `Then verify shop ads click`(item: SuggestionDoubleLineDataDataView) {
+        val shopAdsDataView = item.data.shopAdsDataView!!
+
+        verify {
+            topAdsUrlHitter.hitClickUrl(
+                suggestionView.className,
+                shopAdsDataView.clickUrl,
+                any(),
+                any(),
+                shopAdsDataView.imageUrl,
+            )
         }
     }
 }

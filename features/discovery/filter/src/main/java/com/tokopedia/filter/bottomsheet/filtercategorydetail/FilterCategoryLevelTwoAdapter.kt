@@ -9,9 +9,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.filter.R
 import com.tokopedia.filter.common.helper.addItemDecorationIfNotExists
-import com.tokopedia.filter.common.helper.createFilterDividerItemDecoration
+import com.tokopedia.filter.common.helper.createFilterChildDividerItemDecoration
+import com.tokopedia.filter.databinding.FilterCategoryDetailLevelTwoViewHolderBinding
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import kotlinx.android.synthetic.main.filter_category_detail_level_two_view_holder.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 internal class FilterCategoryLevelTwoAdapter(
         private val callback: FilterCategoryDetailCallback
@@ -44,13 +45,17 @@ internal class FilterCategoryLevelTwoAdapter(
 
     inner class FilterCategoryLevelTwoViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
+        private val binding: FilterCategoryDetailLevelTwoViewHolderBinding? by viewBinding()
+
         fun bind(filterCategoryLevelTwoViewModel: FilterCategoryLevelTwoViewModel) {
-            itemView.filterCategoryDetailLevelTwoTitle?.text = filterCategoryLevelTwoViewModel.levelTwoCategory.name
-            itemView.filterCategoryDetailLevelTwoFoldIcon?.showWithCondition(filterCategoryLevelTwoViewModel.isExpandable)
-            itemView.filterCategoryDetailLevelTwoRadioButton?.showWithCondition(!filterCategoryLevelTwoViewModel.isExpandable)
+            val binding = binding ?: return
+
+            binding.filterCategoryDetailLevelTwoTitle.text = filterCategoryLevelTwoViewModel.levelTwoCategory.name
+            binding.filterCategoryDetailLevelTwoFoldIcon.showWithCondition(filterCategoryLevelTwoViewModel.isExpandable)
+            binding.filterCategoryDetailLevelTwoRadioButton.showWithCondition(!filterCategoryLevelTwoViewModel.isExpandable)
 
             val shouldShowLevelThreeCategory = filterCategoryLevelTwoViewModel.isExpandable && filterCategoryLevelTwoViewModel.isSelectedOrExpanded
-            itemView.filterCategoryDetailLevelThreeRecyclerView?.showWithCondition(shouldShowLevelThreeCategory)
+            binding.filterCategoryDetailLevelThreeRecyclerView.showWithCondition(shouldShowLevelThreeCategory)
 
             if (filterCategoryLevelTwoViewModel.isExpandable) {
                 bindContainerExpandable(filterCategoryLevelTwoViewModel)
@@ -64,16 +69,17 @@ internal class FilterCategoryLevelTwoAdapter(
         }
 
         private fun bindContainerExpandable(filterCategoryLevelTwoViewModel: FilterCategoryLevelTwoViewModel) {
-            itemView.filterCategoryDetailLevelTwoContainer?.setOnClickListener {
+            val binding = binding ?: return
+            binding.filterCategoryDetailLevelTwoContainer.setOnClickListener {
                 filterCategoryLevelTwoViewModel.isSelectedOrExpanded = !filterCategoryLevelTwoViewModel.isSelectedOrExpanded
                 bindFoldableIcon(filterCategoryLevelTwoViewModel)
-                itemView.filterCategoryDetailLevelThreeRecyclerView?.showWithCondition(filterCategoryLevelTwoViewModel.isSelectedOrExpanded)
+                binding.filterCategoryDetailLevelThreeRecyclerView.showWithCondition(filterCategoryLevelTwoViewModel.isSelectedOrExpanded)
             }
         }
 
         private fun bindFoldableIcon(filterCategoryLevelTwoViewModel: FilterCategoryLevelTwoViewModel) {
             val foldImageDrawable = getFoldImageDrawable(filterCategoryLevelTwoViewModel.isSelectedOrExpanded)
-            itemView.filterCategoryDetailLevelTwoFoldIcon?.setImageDrawable(foldImageDrawable)
+            binding?.filterCategoryDetailLevelTwoFoldIcon?.setImageDrawable(foldImageDrawable)
         }
 
         private fun getFoldImageDrawable(isExpanded: Boolean): Drawable? {
@@ -82,12 +88,14 @@ internal class FilterCategoryLevelTwoAdapter(
         }
 
         private fun bindLevelThreeCategoryRecyclerView(filterCategoryLevelTwoViewModel: FilterCategoryLevelTwoViewModel) {
-            val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.VERTICAL, false)
-            val itemDecoration = createFilterDividerItemDecoration(itemView.context, layoutManager.orientation, 0)
+            binding?.filterCategoryDetailLevelThreeRecyclerView?.let {
+                val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.VERTICAL, false)
+                val itemDecoration = createFilterChildDividerItemDecoration(itemView.context, layoutManager.orientation, 0)
 
-            itemView.filterCategoryDetailLevelThreeRecyclerView?.adapter = createLevelThreeCategoryAdapter(filterCategoryLevelTwoViewModel)
-            itemView.filterCategoryDetailLevelThreeRecyclerView?.layoutManager = layoutManager
-            itemView.filterCategoryDetailLevelThreeRecyclerView?.addItemDecorationIfNotExists(itemDecoration)
+                it.adapter = createLevelThreeCategoryAdapter(filterCategoryLevelTwoViewModel)
+                it.layoutManager = layoutManager
+                it.addItemDecorationIfNotExists(itemDecoration)
+            }
         }
 
         private fun createLevelThreeCategoryAdapter(filterCategoryLevelTwoViewModel: FilterCategoryLevelTwoViewModel): FilterCategoryLevelThreeAdapter {
@@ -95,16 +103,19 @@ internal class FilterCategoryLevelTwoAdapter(
         }
 
         private fun bindContainerCheckBox() {
-            itemView.filterCategoryDetailLevelTwoContainer?.setOnClickListener {
-                itemView.filterCategoryDetailLevelTwoRadioButton?.isChecked = itemView.filterCategoryDetailLevelTwoRadioButton?.isChecked != true
+            val binding = binding ?: return
+
+            binding.filterCategoryDetailLevelTwoContainer.setOnClickListener {
+                binding.filterCategoryDetailLevelTwoRadioButton.isChecked = binding.filterCategoryDetailLevelTwoRadioButton.isChecked != true
             }
         }
 
         private fun bindCheckbox(filterCategoryLevelTwoViewModel: FilterCategoryLevelTwoViewModel) {
-            itemView.filterCategoryDetailLevelTwoRadioButton?.setOnCheckedChangeListener(null)
-            itemView.filterCategoryDetailLevelTwoRadioButton?.isChecked = filterCategoryLevelTwoViewModel.isSelectedOrExpanded
-            itemView.filterCategoryDetailLevelTwoRadioButton?.setOnCheckedChangeListener { _, isChecked ->
-                callback.onLevelTwoCategoryClicked(filterCategoryLevelTwoViewModel, isChecked)
+            val binding = binding ?: return
+            binding.filterCategoryDetailLevelTwoRadioButton.setOnCheckedChangeListener(null)
+            binding.filterCategoryDetailLevelTwoRadioButton.isChecked = filterCategoryLevelTwoViewModel.isSelectedOrExpanded
+            binding.filterCategoryDetailLevelTwoRadioButton.setOnCheckedChangeListener { _, _ ->
+                callback.onLevelTwoCategoryClicked(filterCategoryLevelTwoViewModel)
             }
         }
     }

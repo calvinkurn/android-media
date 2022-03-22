@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.URLUtil
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -17,6 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
@@ -25,13 +27,18 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.common.payment.utils.LINK_ACCOUNT_BACK_BUTTON_APPLINK
+import com.tokopedia.common.payment.utils.LINK_ACCOUNT_SOURCE_PAYMENT
+import com.tokopedia.common.payment.utils.LinkStatusMatcher
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.Companion.EXTRA_IS_FULL_FLOW
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.Companion.EXTRA_IS_LOGISTIC_LABEL
@@ -43,7 +50,6 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.logisticCommon.util.LogisticCommonUtil
 import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheet
 import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.ShippingDurationOccBottomSheet
@@ -62,22 +68,31 @@ import com.tokopedia.oneclickcheckout.common.view.utils.animateGone
 import com.tokopedia.oneclickcheckout.common.view.utils.animateShow
 import com.tokopedia.oneclickcheckout.databinding.FragmentOrderSummaryPageBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
+import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.PurchaseProtectionInfoBottomsheet
-import com.tokopedia.oneclickcheckout.order.view.card.*
+import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderPreferenceCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderPromoCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderShopCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderTotalPaymentCard
+import com.tokopedia.oneclickcheckout.order.view.mapper.AddOnMapper
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE
-import com.tokopedia.oneclickcheckout.payment.activation.OvoActivationWebViewBottomSheet
+import com.tokopedia.oneclickcheckout.payment.activation.PaymentActivationWebViewBottomSheet
 import com.tokopedia.oneclickcheckout.payment.creditcard.CreditCardPickerActivity
 import com.tokopedia.oneclickcheckout.payment.creditcard.CreditCardPickerFragment
-import com.tokopedia.oneclickcheckout.payment.creditcard.installment.InstallmentDetailBottomSheet
+import com.tokopedia.oneclickcheckout.payment.creditcard.installment.CreditCardInstallmentDetailBottomSheet
+import com.tokopedia.oneclickcheckout.payment.installment.GoCicilInstallmentDetailBottomSheet
 import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
-import com.tokopedia.oneclickcheckout.payment.topup.view.OvoTopUpWebViewActivity
+import com.tokopedia.oneclickcheckout.payment.topup.view.PaymentTopUpWebViewActivity
 import com.tokopedia.purchase_platform.common.constant.*
-import com.tokopedia.purchase_platform.common.constant.OccConstant.SOURCE_MINICART
-import com.tokopedia.purchase_platform.common.constant.OccConstant.SOURCE_PDP
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -120,7 +135,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     }
 
     private var orderProfile: OrderProfile? = null
-    private var creditCardTenorListData: CreditCardTenorListData? = null
 
     private lateinit var adapter: OrderSummaryPageAdapter
 
@@ -133,6 +147,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     private val lastPurchaseProtectionCheckStates: HashMap<Long, Int> = HashMap()
 
     private var source: String = SOURCE_OTHERS
+    private var tenor: Int = 0
+    private var gatewayCode: String = ""
     private var shouldShowToaster: Boolean = false
 
     private var binding by autoCleared<FragmentOrderSummaryPageBinding> {
@@ -167,10 +183,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             PaymentConstant.REQUEST_CODE -> onResultFromPayment(resultCode)
             REQUEST_CODE_CREDIT_CARD -> onResultFromCreditCardPicker(data)
             REQUEST_CODE_CREDIT_CARD_ERROR -> refresh()
-            REQUEST_CODE_OVO_TOP_UP -> refresh()
+            REQUEST_CODE_PAYMENT_TOP_UP -> refresh()
             REQUEST_CODE_EDIT_PAYMENT -> onResultFromEditPayment(data)
             REQUEST_CODE_OPEN_ADDRESS_LIST -> onResultFromAddressList(resultCode)
             REQUEST_CODE_ADD_NEW_ADDRESS -> onResultFromAddNewAddress(resultCode, data)
+            REQUEST_CODE_LINK_ACCOUNT -> onResultFromLinkAccount(resultCode, data)
+            REQUEST_CODE_WALLET_ACTIVATION -> refresh()
+            REQUEST_CODE_ADD_ON -> onResultFromAddOn(resultCode, data)
         }
     }
 
@@ -259,6 +278,29 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun onResultFromLinkAccount(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            val status = data?.getStringExtra(ApplinkConstInternalGlobal.PARAM_STATUS) ?: ""
+            if (status.isNotEmpty()) {
+                val message = LinkStatusMatcher.getStatus(status)
+                val v = view
+                if (message.isNotEmpty() && v != null) {
+                    Toaster.build(v, message, Toaster.LENGTH_LONG).show()
+                }
+            }
+        }
+        refresh()
+    }
+
+    private fun onResultFromAddOn(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            val result = data.getParcelableExtra<SaveAddOnStateResult>(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA_RESULT)
+            result?.let {
+                viewModel.updateAddOn(it)
+            }
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentOrderSummaryPageBinding.inflate(inflater, container, false)
         return binding.root
@@ -329,14 +371,50 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         observeGlobalEvent()
 
+        observeEligibilityForAnaRevamp()
+
         // first load
         if (viewModel.orderProducts.value.isEmpty()) {
-            val productId = arguments?.getString(QUERY_PRODUCT_ID)
-            if (productId.isNullOrBlank() || savedInstanceState?.getBoolean(SAVE_HAS_DONE_ATC) == true) {
+            val productIds = arguments?.getString(QUERY_PRODUCT_ID)
+            if (productIds.isNullOrBlank() || savedInstanceState?.getBoolean(SAVE_HAS_DONE_ATC) == true) {
                 setSourceFromPDP()
+                setAdditionalParams()
                 refresh()
             } else {
-                atcOcc(productId)
+                atcOcc(productIds)
+            }
+        }
+    }
+
+    private fun observeEligibilityForAnaRevamp() {
+        viewModel.eligibleForAnaRevamp.observe(viewLifecycleOwner) {
+            when (it) {
+                is OccState.Success -> {
+                    if (it.data.eligibleForAddressFeatureData.eligibleForRevampAna.eligible) {
+                        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
+                            putExtra(EXTRA_IS_FULL_FLOW, true)
+                            putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+                            putExtra(CheckoutConstant.KERO_TOKEN, it.data.token)
+                        }, REQUEST_CODE_ADD_NEW_ADDRESS)
+                    } else {
+                        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
+                            putExtra(EXTRA_IS_FULL_FLOW, true)
+                            putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+                            putExtra(CheckoutConstant.KERO_TOKEN, it.data.token)
+                        }, REQUEST_CODE_ADD_NEW_ADDRESS)
+                    }
+                }
+
+                is OccState.Failed -> {
+                    view?.let { view ->
+                        Toaster.build(view, it.getFailure()?.throwable?.message
+                                ?: getString(R.string.default_osp_error_message), Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+                    }
+                }
+
+                else -> {
+                    /* no-op */
+                }
             }
         }
     }
@@ -540,7 +618,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         }
                         source = SOURCE_OTHERS
                         shouldShowToaster = false
-                        refresh(isFullRefresh = it.isFullRefresh, uiMessage = it.uiMessage)
+                        refresh(uiMessage = it.uiMessage)
                     }
                 }
                 is OccGlobalEvent.Error -> {
@@ -651,17 +729,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
                     }
                 }
+                is OccGlobalEvent.ToasterInfo -> {
+                    progressDialog?.dismiss()
+                    view?.let { v ->
+                        Toaster.build(v, it.message).show()
+                    }
+                }
+                is OccGlobalEvent.PopUp -> {
+                    showPopUpDialog(it.popUp)
+                }
             }
         }
     }
 
     private fun validateAddressState(addressState: AddressState) {
-        if (addressState.popupMessage.isNotBlank()) {
-            view?.let {
-                Toaster.build(it, addressState.popupMessage).show()
-            }
-        }
-
         when (addressState.errorCode) {
             AddressState.ERROR_CODE_OPEN_ADDRESS_LIST -> {
                 val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
@@ -690,7 +771,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     label = String.format("%s %s", addressModel.addressName, addressModel.receiverName),
                     postalCode = addressModel.postalCode,
                     shopId = addressModel.tokonowModel.shopId.toString(),
-                    warehouseId = addressModel.tokonowModel.warehouseId.toString())
+                    warehouseId = addressModel.tokonowModel.warehouseId.toString(),
+                    warehouses = TokonowWarehouseMapper.mapWarehousesModelToLocal(addressModel.tokonowModel.warehouses),
+                    serviceType = addressModel.tokonowModel.serviceType)
         }
     }
 
@@ -706,7 +789,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     label = String.format("%s %s", addressModel.addressName, addressModel.receiverName),
                     postalCode = addressModel.postalCode,
                     shopId = addressModel.shopId.toString(),
-                    warehouseId = addressModel.warehouseId.toString())
+                    warehouseId = addressModel.warehouseId.toString(),
+                    warehouses = TokonowWarehouseMapper.mapWarehousesAddAddressModelToLocal(addressModel.warehouses),
+                    serviceType = addressModel.serviceType)
         }
     }
 
@@ -714,8 +799,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         if (addressModel.addressId > 0) {
             activity?.let {
                 val localCache = ChooseAddressUtils.getLocalizingAddressData(it)
+                val newTokoNowData = addressModel.tokoNow
+                val shouldUpdateTokoNowData = newTokoNowData.isModified
                 if (addressModel.state == OrderProfileAddress.STATE_OCC_ADDRESS_ID_NOT_MATCH
-                        || localCache?.address_id.isNullOrEmpty() || localCache?.address_id == "0") {
+                        || localCache.address_id.isEmpty() || localCache.address_id == "0") {
                     ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                             context = it,
                             addressId = addressModel.addressId.toString(),
@@ -725,8 +812,18 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                             long = addressModel.longitude,
                             label = String.format("%s %s", addressModel.addressName, addressModel.receiverName),
                             postalCode = addressModel.postalCode,
-                            shopId = addressModel.tokoNowShopId,
-                            warehouseId = addressModel.tokoNowWarehouseId)
+                            shopId = if (shouldUpdateTokoNowData) addressModel.tokoNow.shopId else localCache.shop_id,
+                            warehouseId = if (shouldUpdateTokoNowData) addressModel.tokoNow.warehouseId else localCache.warehouse_id,
+                            warehouses = if (shouldUpdateTokoNowData) TokonowWarehouseMapper.mapWarehousesResponseToLocal(addressModel.tokoNow.warehouses) else localCache.warehouses,
+                            serviceType = if (shouldUpdateTokoNowData) addressModel.tokoNow.serviceType else localCache.service_type)
+                } else if (shouldUpdateTokoNowData) {
+                    ChooseAddressUtils.updateTokoNowData(
+                            context = it,
+                            shopId = addressModel.tokoNow.shopId,
+                            warehouseId = addressModel.tokoNow.warehouseId,
+                            warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(addressModel.tokoNow.warehouses),
+                            serviceType = addressModel.tokoNow.serviceType
+                    )
                 }
             }
         }
@@ -737,17 +834,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         binding.layoutNoAddress.iuNoAddress.setImageUrl(NO_ADDRESS_IMAGE)
         binding.layoutNoAddress.descNoAddress.text = getString(R.string.occ_lbl_desc_no_address)
         binding.layoutNoAddress.btnOccAddNewAddress.setOnClickListener {
-            if (LogisticCommonUtil.isRollOutUserANARevamp()) {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
-                    putExtra(EXTRA_IS_FULL_FLOW, true)
-                    putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                }, REQUEST_CODE_ADD_NEW_ADDRESS)
-            } else {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
-                    putExtra(EXTRA_IS_FULL_FLOW, true)
-                    putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                }, REQUEST_CODE_ADD_NEW_ADDRESS)
-            }
+            viewModel.checkUserEligibilityForAnaRevamp()
         }
     }
 
@@ -910,8 +997,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         } else {
             binding.globalError.setType(GlobalError.SERVER_ERROR)
             binding.globalError.setActionClickListener {
-                arguments?.getString(QUERY_PRODUCT_ID)?.let { productId ->
-                    atcOcc(productId)
+                arguments?.getString(QUERY_PRODUCT_ID)?.let { productIds ->
+                    atcOcc(productIds)
                 }
             }
             if (atcError.errorMessage.isNotBlank()) {
@@ -933,8 +1020,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     private fun showAtcGlobalError(type: Int) {
         binding.globalError.setType(type)
         binding.globalError.setActionClickListener {
-            arguments?.getString(QUERY_PRODUCT_ID)?.let { productId ->
-                atcOcc(productId)
+            arguments?.getString(QUERY_PRODUCT_ID)?.let { productIds ->
+                atcOcc(productIds)
             }
         }
         binding.globalError.errorAction.text = context?.getString(R.string.lbl_try_again)
@@ -953,22 +1040,38 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         viewModel.atcOcc(productIds)
     }
 
-    private fun refresh(shouldHideAll: Boolean = true, isFullRefresh: Boolean = true, uiMessage: OccUIMessage? = null) {
-        if (shouldHideAll) {
-            binding.rvOrderSummaryPage.gone()
-            binding.layoutNoAddress.root.animateGone()
-            binding.globalError.animateGone()
-            binding.loaderContent.animateShow()
-        }
-        viewModel.getOccCart(isFullRefresh, source, uiMessage)
+    private fun refresh(uiMessage: OccUIMessage? = null) {
+        binding.rvOrderSummaryPage.gone()
+        binding.layoutNoAddress.root.animateGone()
+        binding.globalError.animateGone()
+        binding.loaderContent.animateShow()
+        viewModel.getOccCart(source, uiMessage, gatewayCode, tenor)
     }
 
     private fun setSourceFromPDP() {
         var sourceArgs = arguments?.getString(QUERY_SOURCE, SOURCE_PDP)
-        if (sourceArgs != SOURCE_PDP && sourceArgs != SOURCE_MINICART) {
+        if (sourceArgs != SOURCE_PDP && sourceArgs != SOURCE_MINICART && sourceArgs != SOURCE_FINTECH) {
             sourceArgs = SOURCE_PDP
         }
         source = sourceArgs
+    }
+
+    private fun setAdditionalParams() {
+        tenor = arguments?.getString(QUERY_TENURE_TYPE, "").toIntOrZero()
+        gatewayCode = arguments?.getString(QUERY_GATEWAY_CODE, "") ?: ""
+    }
+
+    private fun resetAdditionalParams() {
+        // overwrite arguments
+        arguments?.putString(QUERY_TENURE_TYPE, "")
+        arguments?.putString(QUERY_GATEWAY_CODE, "")
+
+        // overwrite field
+        tenor = 0
+        gatewayCode = ""
+        if (source == SOURCE_FINTECH) {
+            source = SOURCE_OTHERS
+        }
     }
 
     private fun showToasterSuccess() {
@@ -1005,6 +1108,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             } else {
                 binding.rvOrderSummaryPage.gone()
             }
+            resetAdditionalParams()
         }
     }
 
@@ -1122,6 +1226,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun showPopUpDialog(popUpData: PopUpData) {
+        activity?.let {
+            DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(popUpData.title)
+                setDescription(popUpData.description)
+                setPrimaryCTAText(popUpData.button.text)
+                setPrimaryCTAClickListener {
+                    dismiss()
+                }
+                show()
+            }
+        }
+    }
+
     private fun getOrderShopCardListener(): OrderShopCard.OrderShopCardListener = object : OrderShopCard.OrderShopCardListener {
         override fun onClickLihatProductError(index: Int) {
             binding.rvOrderSummaryPage.layoutManager?.let {
@@ -1163,6 +1281,18 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             return lastPurchaseProtectionCheckStates[productId]
                     ?: PurchaseProtectionPlanData.STATE_EMPTY
         }
+
+        override fun onClickAddOnButton(addOnButtonType: Int, addOn: AddOnsDataModel, product: OrderProduct, shop: OrderShop) {
+            // No need to open add on bottom sheet if action = 0
+            if (addOn.addOnsButtonModel.action != 0) {
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
+                intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA,
+                        AddOnMapper.mapAddOnBottomSheetParam(addOnButtonType, addOn, product, shop, viewModel.orderCart, viewModel.addressState.value.address, userSession.get().name)
+                )
+                intent.putExtra(AddOnConstant.EXTRA_ADD_ON_SOURCE, AddOnConstant.ADD_ON_SOURCE_OCC)
+                startActivityForResult(intent, REQUEST_CODE_ADD_ON)
+            }
+        }
     }
 
     private fun getOrderPreferenceCardListener(): OrderPreferenceCard.OrderPreferenceCardListener = object : OrderPreferenceCard.OrderPreferenceCardListener {
@@ -1187,19 +1317,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     }
 
                     override fun onAddAddress(token: Token?) {
-                        if (LogisticCommonUtil.isRollOutUserANARevamp()) {
-                            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
-                                putExtra(EXTRA_IS_FULL_FLOW, true)
-                                putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                                putExtra(CheckoutConstant.KERO_TOKEN, token)
-                            }, REQUEST_CODE_ADD_ADDRESS)
-                        } else {
-                            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
-                                putExtra(EXTRA_IS_FULL_FLOW, true)
-                                putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                                putExtra(CheckoutConstant.KERO_TOKEN, token)
-                            }, REQUEST_CODE_ADD_ADDRESS)
-                        }
+                        viewModel.checkUserEligibilityForAnaRevamp(token)
                     }
                 }).show(this@OrderSummaryPageFragment, currentAddressId, viewModel.addressState.value.address.state)
             }
@@ -1250,21 +1368,25 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             orderSummaryAnalytics.eventClickArrowToChangePaymentOption(currentGatewayCode, userSession.get().userId)
             val intent = Intent(context, PaymentListingActivity::class.java).apply {
                 putExtra(PaymentListingActivity.EXTRA_ADDRESS_ID, profile.address.addressId.toString())
-                putExtra(PaymentListingActivity.EXTRA_PAYMENT_PROFILE, viewModel.getPaymentProfile())
+                putExtra(PaymentListingActivity.EXTRA_PAYMENT_PROFILE, payment.creditCard.additionalData.profileCode)
+                putExtra(PaymentListingActivity.EXTRA_PAYMENT_MERCHANT, payment.creditCard.additionalData.merchantCode)
                 val orderCost = viewModel.orderTotal.value.orderCost
-                val priceWithoutPaymentFee = orderCost.totalPrice - orderCost.paymentFee
-                putExtra(PaymentListingActivity.EXTRA_PAYMENT_AMOUNT, priceWithoutPaymentFee)
+                putExtra(PaymentListingActivity.EXTRA_PAYMENT_AMOUNT, orderCost.totalPriceWithoutPaymentFees)
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_BID, payment.bid)
+                putExtra(PaymentListingActivity.EXTRA_ORDER_METADATA, GoCicilInstallmentRequest(
+                        merchantType = viewModel.orderCart.shop.merchantType,
+                        paymentAmount = orderCost.totalPriceWithoutPaymentFees
+                ).orderMetadata)
             }
             startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)
         }
 
-        override fun onInstallmentDetailClicked(creditCard: OrderPaymentCreditCard) {
+        override fun onCreditCardInstallmentDetailClicked(creditCard: OrderPaymentCreditCard) {
             val orderTotal = viewModel.orderTotal.value
             if (orderTotal.buttonState != OccButtonState.LOADING) {
-                InstallmentDetailBottomSheet(viewModel.paymentProcessor.get()).show(this@OrderSummaryPageFragment, creditCard, creditCardTenorListData,
+                CreditCardInstallmentDetailBottomSheet(viewModel.paymentProcessor.get()).show(this@OrderSummaryPageFragment, creditCard,
                         viewModel.orderCart, orderTotal.orderCost, userSession.get().userId,
-                        object : InstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+                        object : CreditCardInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
                             override fun onSelectInstallment(selectedInstallment: OrderPaymentInstallmentTerm, installmentList: List<OrderPaymentInstallmentTerm>) {
                                 viewModel.chooseInstallment(selectedInstallment, installmentList)
                             }
@@ -1275,6 +1397,27 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                                 }
                             }
                         })
+                orderSummaryAnalytics.eventClickTenureOptionsBottomSheet()
+            }
+        }
+
+        override fun onGopayInstallmentDetailClicked() {
+            val orderTotal = viewModel.orderTotal.value
+            if (orderTotal.buttonState != OccButtonState.LOADING) {
+                GoCicilInstallmentDetailBottomSheet(viewModel.paymentProcessor.get()).show(this@OrderSummaryPageFragment,
+                        viewModel.orderCart, viewModel.orderPayment.value, orderTotal.orderCost, userSession.get().userId,
+                        object : GoCicilInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+                            override fun onSelectInstallment(selectedInstallment: OrderPaymentGoCicilTerms, installmentList: List<OrderPaymentGoCicilTerms>, isSilent: Boolean) {
+                                viewModel.chooseInstallment(selectedInstallment, installmentList, isSilent)
+                            }
+
+                            override fun onFailedLoadInstallment() {
+                                view?.let { v ->
+                                    Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
+                                }
+                            }
+                        })
+                orderSummaryAnalytics.eventClickTenureOptionsBottomSheet()
             }
         }
 
@@ -1285,9 +1428,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
 
         override fun onOvoActivateClicked(callbackUrl: String) {
-            OvoActivationWebViewBottomSheet(ovoActivationUrl.get(), callbackUrl,
-                    getString(R.string.lbl_activate_ovo_now),
-                    object : OvoActivationWebViewBottomSheet.OvoActivationWebViewBottomSheetListener {
+            PaymentActivationWebViewBottomSheet(ovoActivationUrl.get(), callbackUrl,
+                    getString(R.string.lbl_activate_ovo_now), true,
+                    object : PaymentActivationWebViewBottomSheet.PaymentActivationWebViewBottomSheetListener {
                         override fun onActivationResult(isSuccess: Boolean) {
                             view?.let {
                                 it.post {
@@ -1306,23 +1449,47 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
 
         override fun onWalletActivateClicked(headerTitle: String, activationUrl: String, callbackUrl: String) {
-            OvoActivationWebViewBottomSheet(activationUrl, callbackUrl, headerTitle,
-                    object : OvoActivationWebViewBottomSheet.OvoActivationWebViewBottomSheetListener {
-                        override fun onActivationResult(isSuccess: Boolean) {
-                            view?.let {
-                                it.post {
-                                    source = SOURCE_OTHERS
-                                    shouldShowToaster = true
-                                    refresh()
-                                }
-                            }
+            context?.let { ctx ->
+                if (!URLUtil.isNetworkUrl(activationUrl) && RouteManager.isSupportApplink(ctx, activationUrl)) {
+                    if (activationUrl.startsWith(ApplinkConst.LINK_ACCOUNT)) {
+                        val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW).apply {
+                            putExtra(ApplinkConstInternalGlobal.PARAM_LD, LINK_ACCOUNT_BACK_BUTTON_APPLINK)
+                            putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, LINK_ACCOUNT_SOURCE_PAYMENT)
                         }
-                    }).show(this@OrderSummaryPageFragment, userSession.get())
+                        startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
+                    } else {
+                        val intent = RouteManager.getIntentNoFallback(ctx, activationUrl) ?: return
+                        startActivityForResult(intent, REQUEST_CODE_WALLET_ACTIVATION)
+                    }
+                } else {
+                    PaymentActivationWebViewBottomSheet(activationUrl, callbackUrl, headerTitle, false,
+                            object : PaymentActivationWebViewBottomSheet.PaymentActivationWebViewBottomSheetListener {
+                                override fun onActivationResult(isSuccess: Boolean) {
+                                    view?.let {
+                                        it.post {
+                                            source = SOURCE_OTHERS
+                                            shouldShowToaster = true
+                                            refresh()
+                                        }
+                                    }
+                                }
+                            }).show(this@OrderSummaryPageFragment, userSession.get())
+                }
+            }
         }
 
         override fun onOvoTopUpClicked(callbackUrl: String, isHideDigital: Int, customerData: OrderPaymentOvoCustomerData) {
             context?.let {
-                startActivityForResult(OvoTopUpWebViewActivity.createIntent(it, callbackUrl, isHideDigital, customerData), REQUEST_CODE_OVO_TOP_UP)
+                startActivityForResult(PaymentTopUpWebViewActivity.createIntent(it, it.getString(R.string.title_one_click_checkout_top_up_ovo), redirectUrl = callbackUrl, isHideDigital = isHideDigital, customerData = customerData), REQUEST_CODE_PAYMENT_TOP_UP)
+            }
+        }
+
+        override fun onWalletTopUpClicked(walletType: Int, url: String, callbackUrl: String, isHideDigital: Int, title: String) {
+            context?.let {
+                startActivityForResult(PaymentTopUpWebViewActivity.createIntent(it, title, url = url, redirectUrl = callbackUrl, isHideDigital = isHideDigital), REQUEST_CODE_PAYMENT_TOP_UP)
+                if (walletType == OrderPaymentWalletAdditionalData.WALLET_TYPE_GOPAY) {
+                    orderSummaryAnalytics.eventClickTopUpGoPayButton()
+                }
             }
         }
     }
@@ -1400,7 +1567,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_CREDIT_CARD = 15
         const val REQUEST_CODE_CREDIT_CARD_ERROR = 16
 
-        const val REQUEST_CODE_OVO_TOP_UP = 17
+        const val REQUEST_CODE_PAYMENT_TOP_UP = 17
 
         const val REQUEST_CODE_ADD_ADDRESS = 18
 
@@ -1410,20 +1577,33 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         const val REQUEST_CODE_ADD_NEW_ADDRESS = 21
 
+        const val REQUEST_CODE_LINK_ACCOUNT = 22
+        const val REQUEST_CODE_WALLET_ACTIVATION = 23
+
+        const val REQUEST_CODE_ADD_ON = 24
+
         const val QUERY_PRODUCT_ID = "product_id"
         const val QUERY_SOURCE = "source"
+        const val QUERY_GATEWAY_CODE = "gateway_code"
+        const val QUERY_TENURE_TYPE = "tenure_type"
 
         private const val NO_ADDRESS_IMAGE = "https://images.tokopedia.net/img/android/cart/ic_occ_no_address.png"
 
         private const val SOURCE_OTHERS = "others"
+        private const val SOURCE_PDP = "pdp"
+        private const val SOURCE_MINICART = "minicart"
+        private const val SOURCE_FINTECH = "fintech"
 
         private const val SAVE_HAS_DONE_ATC = "has_done_atc"
 
         @JvmStatic
-        fun newInstance(productId: String?, source: String?): OrderSummaryPageFragment {
+        fun newInstance(productId: String?, gatewayCode: String?,
+                        tenureType: String?, source: String?): OrderSummaryPageFragment {
             return OrderSummaryPageFragment().apply {
                 arguments = Bundle().apply {
                     putString(QUERY_PRODUCT_ID, productId)
+                    putString(QUERY_GATEWAY_CODE, gatewayCode)
+                    putString(QUERY_TENURE_TYPE, tenureType)
                     putString(QUERY_SOURCE, source)
                 }
             }

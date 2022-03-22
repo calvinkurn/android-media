@@ -45,7 +45,7 @@ object BestSellerWidgetTracker : BaseTracking(){
         return {
             String.format(
                     LIST_BEST_SELLER,
-                    position,
+                    position + 1,
                     if (it.isTopAds == true) TOPADS else NONTOPADS,
                     CAROUSEL,
                     it.recommendationType,
@@ -60,7 +60,7 @@ object BestSellerWidgetTracker : BaseTracking(){
     private fun getCustomListBestSellerString(recommendationItem: RecommendationItem, position: Int, bestSellerDataModel: BestSellerDataModel): String {
         return String.format(
             LIST_BEST_SELLER,
-            position,
+            position + 1,
             if (recommendationItem.isTopAds) TOPADS else NONTOPADS,
             CAROUSEL,
             recommendationItem.recommendationType,

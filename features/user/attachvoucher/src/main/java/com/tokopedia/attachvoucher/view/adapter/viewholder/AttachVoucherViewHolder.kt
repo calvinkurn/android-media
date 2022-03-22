@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.attachvoucher.R
 import com.tokopedia.attachvoucher.data.VoucherUiModel
 import com.tokopedia.attachvoucher.databinding.ItemAttachVoucherBinding
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class AttachVoucherViewHolder(itemView: View?, val listener: Listener) : AbstractViewHolder<VoucherUiModel>(itemView) {
@@ -27,6 +26,7 @@ class AttachVoucherViewHolder(itemView: View?, val listener: Listener) : Abstrac
         bindVoucherStatus(voucher)
         bindVoucherView(voucher)
         bindClick(voucher)
+        bindPublicityStatus(voucher)
     }
 
     override fun bind(element: VoucherUiModel?, payloads: MutableList<Any>) {
@@ -52,13 +52,14 @@ class AttachVoucherViewHolder(itemView: View?, val listener: Listener) : Abstrac
 
     private fun bindVoucherStatus(voucher: VoucherUiModel) {
         val validDate = DateFormatUtils.getFormattedDate(voucher.validThru, "dd MMM yyyy")
-        val status = itemView.context?.getString(R.string.desc_attachvoucher_status, validDate)
+        val status = itemView.context?.getString(
+            R.string.desc_attachvoucher_status, validDate, voucher.remainingQuota)
 
         binding?.validStatus?.text = status
     }
 
     private fun bindVoucherView(voucher: VoucherUiModel) {
-        val voucherModel = MerchantVoucherViewModel(voucher)
+        val voucherModel = voucher.getMerchantVoucherViewModel()
         binding?.voucher?.setData(voucherModel, hasActionButton = false)
     }
 
@@ -66,6 +67,13 @@ class AttachVoucherViewHolder(itemView: View?, val listener: Listener) : Abstrac
         binding?.clContainer?.setOnClickListener {
             toggle(voucher)
         }
+    }
+
+    private fun bindPublicityStatus(voucher: VoucherUiModel) {
+        val status = if (voucher.isPublic == 1) {
+            STATUS_PUBLIC
+        } else STATUS_PRIVATE
+        binding?.voucherPublicityStatus?.setLabel(status)
     }
 
     private fun toggle(voucher: VoucherUiModel) {
@@ -103,5 +111,7 @@ class AttachVoucherViewHolder(itemView: View?, val listener: Listener) : Abstrac
         val LAYOUT = R.layout.item_attach_voucher
 
         const val PAYLOAD_UNCHECK = "uncheck"
+        private const val STATUS_PUBLIC = "Publik"
+        private const val STATUS_PRIVATE = "Khusus"
     }
 }

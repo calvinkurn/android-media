@@ -17,7 +17,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.analyticsdebugger.cassava.validator.Utils
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
@@ -31,7 +30,6 @@ import io.mockk.mockkStatic
 import junit.framework.Assert.assertTrue
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert
-import org.json.JSONObject
 
 class SellerHomeRobot {
 
@@ -43,28 +41,34 @@ class SellerHomeRobot {
         queriesToValidate.clear()
     }
 
-    fun addQueriesToValidate(context: Context, vararg queries: String) {
-        queriesToValidate.addAll(queries.map {
-            Utils.getJsonDataFromAsset(context, it)
-                    ?: throw AssertionError("Validator Query not found")
-        })
+    fun addQueriesToValidate(vararg queries: String) {
+        queriesToValidate.addAll(queries)
     }
 
-    fun validate(gtmLogDbSource: GtmLogDBSource, vararg expectedMatcheCount: Int) {
-        val errorMessage = queriesToValidate.mapIndexed { index, query ->
-            val validationData = query.replace("\n", "")
-            val jsonValidationData = JSONObject(validationData)
+    fun validate(
+        context: Context,
+        gtmLogDbSource: GtmLogDBSource,
+        vararg expectedMatchesCount: Int
+    ) {
+        val errorMessage = queriesToValidate.mapIndexed { index, queryFileName ->
             try {
-                val analyticsQuery = getAnalyticsWithQuery(gtmLogDbSource, query)
+                val analyticsQuery = getAnalyticsWithQuery(gtmLogDbSource, context, queryFileName)
                 MatcherAssert.assertThat(analyticsQuery, hasAllSuccess())
                 val resultMatchCount = analyticsQuery.first().matches.size.orZero()
-                if (expectedMatcheCount.getOrNull(index) == 0 || resultMatchCount == expectedMatcheCount.getOrNull(index)) {
+                if (expectedMatchesCount.getOrNull(index) == 0 || resultMatchCount == expectedMatchesCount.getOrNull(
+                        index
+                    )
+                ) {
                     ""
                 } else {
-                    "\n${jsonValidationData.get("readme")}\n must match exactly ${expectedMatcheCount.getOrNull(index).orZero()} times, but it match for $resultMatchCount times"
+                    "\n must match exactly ${
+                        expectedMatchesCount.getOrNull(
+                            index
+                        ).orZero()
+                    } times, but it match for $resultMatchCount times"
                 }
             } catch (e: AssertionError) {
-                "\n${jsonValidationData.get("readme")}\n${e.localizedMessage.orEmpty().replace(Regex("\\s{2,}"), " ").replace("\n", "")}"
+                "\n${e.localizedMessage.orEmpty().replace(Regex("\\s{2,}"), " ").replace("\n", "")}"
             }
         }.joinToString("")
 
@@ -72,7 +76,8 @@ class SellerHomeRobot {
     }
 
     fun blockAllIntent() {
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
     fun mockRouteManager(callback: (() -> Any)? = null) {
@@ -86,17 +91,30 @@ class SellerHomeRobot {
     }
 
     fun dismissTooltipBottomSheet(activity: FragmentActivity) {
-        activity.supportFragmentManager.fragments.find { it is SellerHomeFragment }?.let { sellerHomeFragment ->
-            // BottomSheetUnify is a BottomSheetDialogFragment and BottomSheetDialogFragment is a DialogFragment
-            (sellerHomeFragment.childFragmentManager.findFragmentByTag("seller_home_tooltip") as? DialogFragment)?.dismiss()
-        }
+        activity.supportFragmentManager.fragments.find { it is SellerHomeFragment }
+            ?.let { sellerHomeFragment ->
+                // BottomSheetUnify is a BottomSheetDialogFragment and BottomSheetDialogFragment is a DialogFragment
+                (sellerHomeFragment.childFragmentManager.findFragmentByTag("seller_home_tooltip") as? DialogFragment)?.dismiss()
+            }
     }
 
     fun scrollThrough(activity: Activity, recyclerViewId: Int) {
         val recyclerView = activity.findViewById<RecyclerView>(recyclerViewId)
         while (recyclerView.canScrollVertically(1)) {
-            onView(allOf(withId(recyclerViewId), isAssignableFrom(RecyclerView::class.java), isDisplayed()))
-                    .perform(GeneralSwipeAction(Swipe.SLOW, GeneralLocation.BOTTOM_CENTER, GeneralLocation.TOP_CENTER, Press.FINGER))
+            onView(
+                allOf(
+                    withId(recyclerViewId),
+                    isAssignableFrom(RecyclerView::class.java),
+                    isDisplayed()
+                )
+            ).perform(
+                GeneralSwipeAction(
+                    Swipe.SLOW,
+                    GeneralLocation.BOTTOM_CENTER,
+                    GeneralLocation.TOP_CENTER,
+                    Press.FINGER
+                )
+            )
             Thread.sleep(2500)
         }
     }
@@ -111,19 +129,50 @@ class SellerHomeRobot {
             var firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
             var lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
 
-            clickAllVisibleWidgets<W>(firstVisiblePosition, lastVisiblePosition, data, activity, layoutManager)
+            clickAllVisibleWidgets<W>(
+                firstVisiblePosition,
+                lastVisiblePosition,
+                data,
+                activity,
+                layoutManager
+            )
             while (recyclerView.canScrollVertically(1)) {
-                onView(allOf(withId(recyclerViewId), isAssignableFrom(RecyclerView::class.java), isDisplayed()))
-                        .perform(GeneralSwipeAction(Swipe.SLOW, GeneralLocation.BOTTOM_CENTER, GeneralLocation.TOP_CENTER, Press.FINGER))
+                onView(
+                    allOf(
+                        withId(recyclerViewId),
+                        isAssignableFrom(RecyclerView::class.java),
+                        isDisplayed()
+                    )
+                )
+                    .perform(
+                        GeneralSwipeAction(
+                            Swipe.SLOW,
+                            GeneralLocation.BOTTOM_CENTER,
+                            GeneralLocation.TOP_CENTER,
+                            Press.FINGER
+                        )
+                    )
                 Thread.sleep(2500)
                 firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
                 lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
-                clickAllVisibleWidgets<W>(firstVisiblePosition, lastVisiblePosition, data, activity, layoutManager)
+                clickAllVisibleWidgets<W>(
+                    firstVisiblePosition,
+                    lastVisiblePosition,
+                    data,
+                    activity,
+                    layoutManager
+                )
             }
         }
     }
 
-    inline fun <reified W> clickAllVisibleWidgets(from: Int, to: Int, data: List<Any>, activity: Activity, layoutManager: RecyclerView.LayoutManager) {
+    inline fun <reified W> clickAllVisibleWidgets(
+        from: Int,
+        to: Int,
+        data: List<Any>,
+        activity: Activity,
+        layoutManager: RecyclerView.LayoutManager
+    ) {
         for (i in from..to) {
             val view = layoutManager.findViewByPosition(i)
             if (data.getOrNull(i) is W && view != null) {
@@ -135,7 +184,11 @@ class SellerHomeRobot {
         }
     }
 
-    inline fun <reified W> clickAllWidgetCtaWithType(activity: Activity, recyclerViewId: Int, ctaId: Int) {
+    inline fun <reified W> clickAllWidgetCtaWithType(
+        activity: Activity,
+        recyclerViewId: Int,
+        ctaId: Int
+    ) {
         val recyclerView = activity.findViewById<RecyclerView>(recyclerViewId)
         val layoutManager = recyclerView.layoutManager
         if (layoutManager is LinearLayoutManager) {
@@ -143,19 +196,53 @@ class SellerHomeRobot {
             var firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
             var lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
 
-            clickAllVisibleCta<W>(firstVisiblePosition, lastVisiblePosition, data, activity, layoutManager, ctaId)
+            clickAllVisibleCta<W>(
+                firstVisiblePosition,
+                lastVisiblePosition,
+                data,
+                activity,
+                layoutManager,
+                ctaId
+            )
             while (recyclerView.canScrollVertically(1)) {
-                onView(allOf(withId(recyclerViewId), isAssignableFrom(RecyclerView::class.java), isDisplayed()))
-                        .perform(GeneralSwipeAction(Swipe.SLOW, GeneralLocation.BOTTOM_CENTER, GeneralLocation.TOP_CENTER, Press.FINGER))
+                onView(
+                    allOf(
+                        withId(recyclerViewId),
+                        isAssignableFrom(RecyclerView::class.java),
+                        isDisplayed()
+                    )
+                )
+                    .perform(
+                        GeneralSwipeAction(
+                            Swipe.SLOW,
+                            GeneralLocation.BOTTOM_CENTER,
+                            GeneralLocation.TOP_CENTER,
+                            Press.FINGER
+                        )
+                    )
                 Thread.sleep(2500)
                 firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
                 lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
-                clickAllVisibleCta<W>(firstVisiblePosition, lastVisiblePosition, data, activity, layoutManager, ctaId)
+                clickAllVisibleCta<W>(
+                    firstVisiblePosition,
+                    lastVisiblePosition,
+                    data,
+                    activity,
+                    layoutManager,
+                    ctaId
+                )
             }
         }
     }
 
-    inline fun <reified W> clickAllVisibleCta(from: Int, to: Int, data: List<Any>, activity: Activity, layoutManager: RecyclerView.LayoutManager, ctaId: Int) {
+    inline fun <reified W> clickAllVisibleCta(
+        from: Int,
+        to: Int,
+        data: List<Any>,
+        activity: Activity,
+        layoutManager: RecyclerView.LayoutManager,
+        ctaId: Int
+    ) {
         for (i in from..to) {
             val ctaView = layoutManager.findViewByPosition(i)?.findViewById<View>(ctaId)
             if (data.getOrNull(i) is W && ctaView?.isVisible == true) {
@@ -167,7 +254,11 @@ class SellerHomeRobot {
         }
     }
 
-    inline fun <reified W, reified R> clickAllItemInChildRecyclerView(activity: Activity, recyclerViewId: Int, childRecyclerViewId: Int) {
+    inline fun <reified W, reified R> clickAllItemInChildRecyclerView(
+        activity: Activity,
+        recyclerViewId: Int,
+        childRecyclerViewId: Int
+    ) {
         val recyclerView = activity.findViewById<RecyclerView>(recyclerViewId)
         val layoutManager = recyclerView.layoutManager
         if (layoutManager is LinearLayoutManager) {
@@ -175,19 +266,50 @@ class SellerHomeRobot {
             var firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
             var lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
 
-            clickAllItem<W, R>(firstVisiblePosition, lastVisiblePosition, data, activity, childRecyclerViewId)
+            clickAllItem<W, R>(
+                firstVisiblePosition,
+                lastVisiblePosition,
+                data,
+                activity,
+                childRecyclerViewId
+            )
             while (recyclerView.canScrollVertically(1)) {
-                onView(allOf(withId(recyclerViewId), isAssignableFrom(RecyclerView::class.java), isDisplayed()))
-                        .perform(GeneralSwipeAction(Swipe.SLOW, GeneralLocation.BOTTOM_CENTER, GeneralLocation.TOP_CENTER, Press.FINGER))
+                onView(
+                    allOf(
+                        withId(recyclerViewId),
+                        isAssignableFrom(RecyclerView::class.java),
+                        isDisplayed()
+                    )
+                )
+                    .perform(
+                        GeneralSwipeAction(
+                            Swipe.SLOW,
+                            GeneralLocation.BOTTOM_CENTER,
+                            GeneralLocation.TOP_CENTER,
+                            Press.FINGER
+                        )
+                    )
                 Thread.sleep(2500)
                 firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
                 lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
-                clickAllItem<W, R>(firstVisiblePosition, lastVisiblePosition, data, activity, childRecyclerViewId)
+                clickAllItem<W, R>(
+                    firstVisiblePosition,
+                    lastVisiblePosition,
+                    data,
+                    activity,
+                    childRecyclerViewId
+                )
             }
         }
     }
 
-    inline fun <reified W, reified R> clickAllItem(from: Int, to: Int, data: List<Any>, activity: Activity, childRecyclerViewId: Int) {
+    inline fun <reified W, reified R> clickAllItem(
+        from: Int,
+        to: Int,
+        data: List<Any>,
+        activity: Activity,
+        childRecyclerViewId: Int
+    ) {
         for (i in from..to) {
             if (data.getOrNull(i) is W) {
                 clickAllWidgetsWithType<R>(activity, childRecyclerViewId)
@@ -203,19 +325,50 @@ class SellerHomeRobot {
             var firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
             var lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
 
-            clickAllBannerItem(firstVisiblePosition, lastVisiblePosition, data, activity, childRecyclerViewId)
+            clickAllBannerItem(
+                firstVisiblePosition,
+                lastVisiblePosition,
+                data,
+                activity,
+                childRecyclerViewId
+            )
             while (recyclerView.canScrollVertically(1)) {
-                onView(allOf(withId(recyclerViewId), isAssignableFrom(RecyclerView::class.java), isDisplayed()))
-                        .perform(GeneralSwipeAction(Swipe.SLOW, GeneralLocation.BOTTOM_CENTER, GeneralLocation.TOP_CENTER, Press.FINGER))
+                onView(
+                    allOf(
+                        withId(recyclerViewId),
+                        isAssignableFrom(RecyclerView::class.java),
+                        isDisplayed()
+                    )
+                )
+                    .perform(
+                        GeneralSwipeAction(
+                            Swipe.SLOW,
+                            GeneralLocation.BOTTOM_CENTER,
+                            GeneralLocation.TOP_CENTER,
+                            Press.FINGER
+                        )
+                    )
                 Thread.sleep(2500)
                 firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
                 lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
-                clickAllBannerItem(firstVisiblePosition, lastVisiblePosition, data, activity, childRecyclerViewId)
+                clickAllBannerItem(
+                    firstVisiblePosition,
+                    lastVisiblePosition,
+                    data,
+                    activity,
+                    childRecyclerViewId
+                )
             }
         }
     }
 
-    private fun clickAllBannerItem(from: Int, to: Int, data: List<Any>, activity: Activity, childRecyclerViewId: Int) {
+    private fun clickAllBannerItem(
+        from: Int,
+        to: Int,
+        data: List<Any>,
+        activity: Activity,
+        childRecyclerViewId: Int
+    ) {
         for (i in from..to) {
             if (data.getOrNull(i) is CarouselWidgetUiModel) {
                 val recyclerView = activity.findViewById<RecyclerView>(childRecyclerViewId)

@@ -1,6 +1,6 @@
 package com.tokopedia.analyticsdebugger.debugger.domain.model
 
-import com.tokopedia.analyticsdebugger.AnalyticsSource
+import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource
 
 /**
  * @author okasurya on 5/16/18.

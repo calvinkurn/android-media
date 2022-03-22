@@ -1,6 +1,8 @@
 package com.tokopedia.weaver
 
 import android.content.Context
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
 class Weaver{
@@ -20,7 +22,15 @@ class Weaver{
         }
 
         fun <KEY_TYPE, ACS_HLPR, DEF_VAL> executeWeaveCoRoutine(weaverInterface: WeaveInterface, weaverConditionCheckProvider: WeaverConditionCheckProvider<KEY_TYPE, ACS_HLPR, DEF_VAL>) {
-            executeWeave(weaverInterface, weaverConditionCheckProvider, getasyncWeaveProvider())
+            try {
+                executeWeave(weaverInterface, weaverConditionCheckProvider, getasyncWeaveProvider())
+            }catch (ex: Exception){
+                weaverInterface.execute()
+                if(ex.localizedMessage != null) {
+                    val errorMap = mapOf("type" to "crashLog", "reason" to (ex.localizedMessage))
+                    logError(errorMap)
+                }
+            }
         }
 
         fun executeWeaveCoRoutineWithFirebase(weaverInterface: WeaveInterface, remoteConfigKey: String, context: Context?,
@@ -42,6 +52,10 @@ class Weaver{
 
         fun getasyncWeaveProvider() : WeaveAsyncProvider{
             return CoRoutineAsyncWeave()
+        }
+
+        private fun logError(messageMap: Map<String, String>){
+            ServerLogger.log(Priority.P1, "WEAVER_CRASH", messageMap)
         }
     }
 }

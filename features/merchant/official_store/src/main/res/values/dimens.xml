@@ -2,6 +2,6 @@
 <resources>
     <dimen name="os_tab_min_height">44dp</dimen>
     <dimen name="os_tab_max_height">75dp</dimen>
-    <dimen name="product_card_carousel_item_width">144dp</dimen>
+    <dimen name="product_card_carousel_item_width">140dp</dimen>
     <dimen name="transparent_product_card_carousel_item_width">150dp</dimen>
 </resources>

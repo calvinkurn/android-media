@@ -2,107 +2,117 @@ package com.tokopedia.topchat.chattemplate.domain.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository
-import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
+import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
+import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateDataWrapper
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
-import io.mockk.every
-import io.mockk.impl.annotations.MockK
-import io.mockk.mockk
+import io.mockk.coEvery
+import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.runBlocking
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
+import org.junit.jupiter.api.assertThrows
 
 class GetTemplateUseCaseTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    @MockK
+    @RelaxedMockK
     private lateinit var templateRepository: TemplateRepository
 
     private lateinit var getTemplateUseCase: GetTemplateUseCase
 
+    private val testTemplate = arrayListOf("template1, template2, template3")
+    private val testException = Exception("Oops!")
+
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        getTemplateUseCase = GetTemplateUseCase(templateRepository)
+        getTemplateUseCase = GetTemplateUseCase(
+            templateRepository, CoroutineTestDispatchersProvider)
     }
 
     @Test
-    fun `get template buyer data`() {
-        val expectedResult = mockk<GetTemplateUiModel>(relaxed = true).apply {
-            isEnabled = true
-            isSuccess = true
+    fun should_get_template_data_when_success_get_template_buyer() {
+        //Given
+        val expectedResponse = TemplateDataWrapper(
+            data = TemplateData().also {
+                it.isIsEnable = true
+                it.isSuccess = true
+                it.templates = testTemplate
+            }
+        )
+        coEvery {
+            templateRepository.getTemplateSuspend(any())
+        } returns expectedResponse.data
+
+        runBlocking {
+            //When
+            val result = getTemplateUseCase.getTemplate(false)
+
+            //Then
+            Assert.assertEquals(
+                expectedResponse.data,
+                result
+            )
         }
-
-        every {
-            templateRepository.getTemplate(GetTemplateUseCase.generateParam(false).parameters)
-        } returns Observable.just(expectedResult)
-
-        val testSubscriber: TestSubscriber<GetTemplateUiModel> = TestSubscriber()
-
-        val observable: Observable<GetTemplateUiModel> = getTemplateUseCase.getExecuteObservable(GetTemplateUseCase.generateParam(false))
-
-        observable.subscribe(testSubscriber)
-
-        testSubscriber.assertValue(expectedResult)
-        testSubscriber.assertNoErrors()
-        testSubscriber.assertCompleted()
     }
 
     @Test
-    fun `get template seller data`() {
-        val expectedResult = mockk<GetTemplateUiModel>(relaxed = true).apply {
-            isEnabled = true
-            isSuccess = true
+    fun should_get_template_data_when_success_get_template_seller() {
+        //Given
+        val expectedResponse = TemplateDataWrapper(
+            data = TemplateData().also {
+                it.isIsEnable = true
+                it.isSuccess = true
+                it.templates = testTemplate
+            }
+        )
+        coEvery {
+            templateRepository.getTemplateSuspend(any())
+        } returns expectedResponse.data
+
+        runBlocking {
+            //When
+            val result = getTemplateUseCase.getTemplate(true)
+
+            //Then
+            Assert.assertEquals(
+                expectedResponse.data,
+                result
+            )
         }
-
-        every {
-            templateRepository.getTemplate(GetTemplateUseCase.generateParam(true).parameters)
-        } returns Observable.just(expectedResult)
-
-        val testSubscriber: TestSubscriber<GetTemplateUiModel> = TestSubscriber()
-
-        val observable: Observable<GetTemplateUiModel> = getTemplateUseCase.getExecuteObservable(GetTemplateUseCase.generateParam(true))
-
-        observable.subscribe(testSubscriber)
-
-        testSubscriber.assertValue(expectedResult)
-        testSubscriber.assertNoErrors()
-        testSubscriber.assertCompleted()
     }
 
     @Test
-    fun `get error template buyer data`() {
-        val expectedError = mockk<Throwable>(relaxed = true)
-        val testSubscriber: TestSubscriber<GetTemplateUiModel> = TestSubscriber()
+    fun should_get_error_when_fail_to_get_template_buyer() {
+        //Given
+        coEvery {
+            templateRepository.getTemplateSuspend(any())
+        } throws testException
 
-        every {
-            templateRepository.getTemplate(GetTemplateUseCase.generateParam(false).parameters)
-        } returns Observable.error(expectedError)
-
-        val observable: Observable<GetTemplateUiModel> = getTemplateUseCase.getExecuteObservable(GetTemplateUseCase.generateParam(false))
-
-        observable.subscribe(testSubscriber)
-
-        testSubscriber.assertError(expectedError)
-        testSubscriber.assertNotCompleted()
+        //Then
+        assertThrows<Exception> {
+            runBlocking {
+                getTemplateUseCase.getTemplate(false)
+            }
+        }
     }
 
     @Test
-    fun `get error template seller data`() {
-        val expectedError = mockk<Throwable>(relaxed = true)
-        val testSubscriber: TestSubscriber<GetTemplateUiModel> = TestSubscriber()
+    fun should_get_error_when_fail_to_get_template_seller() {
+        //Given
+        coEvery {
+            templateRepository.getTemplateSuspend(any())
+        } throws testException
 
-        every {
-            templateRepository.getTemplate(GetTemplateUseCase.generateParam(true).parameters)
-        } returns Observable.error(expectedError)
-
-        val observable: Observable<GetTemplateUiModel> = getTemplateUseCase.getExecuteObservable(GetTemplateUseCase.generateParam(true))
-
-        observable.subscribe(testSubscriber)
-
-        testSubscriber.assertError(expectedError)
-        testSubscriber.assertNotCompleted()
+        //Then
+        assertThrows<Exception> {
+            runBlocking {
+                getTemplateUseCase.getTemplate(true)
+            }
+        }
     }
 }

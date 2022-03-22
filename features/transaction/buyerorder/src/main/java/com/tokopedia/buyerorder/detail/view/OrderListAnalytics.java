@@ -54,6 +54,8 @@ public class OrderListAnalytics {
     private static final String KEY_ACTION_FIELD = "actionField";
     private static final String DEALS_SCREEN_NAME = "/digital/deals/thanks";
     private static final String Events_SCREEN_NAME = "/digital/events/thanks";
+    private static final String DEALS_SCREEN_NAME_OMP = "/digital/omp/order-detail";
+    private static final String DEALS_SCREEN_NAME_OMS = "/digital/oms/order-detail";
     public static String DIGITAL_EVENT = "digital - event";
 
     private static final String PRODUCT_CLICK = "productClick";
@@ -75,6 +77,8 @@ public class OrderListAnalytics {
 
     private static final String BUSINESS_UNIT = "businessUnit";
     private static final String CURRENT_SITE = "currentSite";
+    private static final String BUSINESS_UNIT_DEALS = "travel & entertainment";
+    private static final String CURRENT_SITE_DEALS = "tokopediadigitaldeals";
     private static final String USER_ID = "userId";
     private static final String IS_LOGIN_STATUS = "isLoggedInStatus";
 
@@ -142,6 +146,18 @@ public class OrderListAnalytics {
         } else{
             TrackApp.getInstance().getGTM().sendScreenAuthenticated(Events_SCREEN_NAME);
         }
+    }
+
+    public void sendOpenScreenDeals(Boolean isOMP){
+        HashMap<String, String> map = new HashMap<>();
+        map.put(BUSINESS_UNIT, BUSINESS_UNIT_DEALS);
+        map.put(CURRENT_SITE, CURRENT_SITE_DEALS);
+        String screenName = DEALS_SCREEN_NAME_OMS;
+        if (isOMP){
+            screenName = DEALS_SCREEN_NAME_OMP;
+        }
+
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName, map);
     }
 
     public static void eventWidgetListView(@NotNull com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationItem contentItemTab, int position) {

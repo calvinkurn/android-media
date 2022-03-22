@@ -4,7 +4,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.interactive.PostInteractiveTapResponse
 import com.tokopedia.play.data.repository.PlayViewerInteractiveRepositoryImpl
-import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play.domain.interactive.PostInteractiveTapUseCase
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
@@ -23,6 +22,7 @@ import com.tokopedia.play.view.uimodel.action.InteractiveTapTapAction
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.coEvery
 import io.mockk.every
@@ -57,7 +57,7 @@ class PlayTapInteractiveTest {
                     socketResponseBuilder.buildChannelInteractiveResponse(isExist = true)
             )
     )
-    private val socket: PlayChannelWebSocket = mockk(relaxed = true)
+    private val socket: PlayWebSocket = mockk(relaxed = true)
     private val mockMapper: PlayUiModelMapper = mockk(relaxed = true)
     private val mockInteractiveStorage = object : PlayInteractiveStorage {
         private var hasJoined = false

@@ -44,6 +44,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LANDING_SHOP_CREATION
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_EMAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_GOOGLE
 import com.tokopedia.config.GlobalConfig
@@ -52,7 +53,10 @@ import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
@@ -313,10 +317,22 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         return view
     }
 
+    /*
+    * check for savedInstanceState, to prevent clearData() being called when user low on memory
+    * when the device is on low memory the system will kill the background activity/page,
+    * when activity is killed by the system it will called onViewCreated when user back to login page after finishing otp flow and the token will be cleared using clearData() method
+    * it means previous token we got from choose account/otp will be erased, and user will get 401 when hit get user info api.
+    * to prevent this when user back to login page it will check whether savedInstanceState is null or not,
+    * if null it means the activity is first launch, and if it isn't null it means activity is resuming.
+    * we only clear the data when activity is resuming after only being killed by system
+    * */
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         fetchRemoteConfig()
-        clearData()
+        if(savedInstanceState == null) {
+            clearData()
+        }
         initObserver()
         prepareView()
         prepareArgData()
@@ -510,7 +526,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun gotoVerifyFingerprint() {
-        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.VERIFY_BIOMETRIC)
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.VERIFY_BIOMETRIC)
         startActivityForResult(intent, LoginConstants.Request.REQUEST_VERIFY_BIOMETRIC)
     }
 
@@ -646,7 +662,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             val email = emailPhoneEditText?.text.toString()
             onChangeButtonClicked()
             emailPhoneEditText?.setText(email)
-            emailPhoneEditText?.setSelection(emailPhoneEditText?.text?.length.orZero())
         }
 
         activity?.let { it ->
@@ -1567,7 +1582,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             onChangeButtonClicked()
             emailPhoneEditText?.let {
                 it.setText(email)
-                it.setSelection(it.text.length)
             }
         } else if (activity != null) {
             activity?.finish()
@@ -1631,13 +1645,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             colorTickerDefault() -> Ticker.TYPE_ANNOUNCEMENT
             colorTickerWarning() -> Ticker.TYPE_WARNING
             else -> Ticker.TYPE_ANNOUNCEMENT
-        }
-    }
-
-    override fun goToFingerprintRegisterPage() {
-        context?.run {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_FINGERPRINT_ONBOARDING)
-            startActivity(intent)
         }
     }
 

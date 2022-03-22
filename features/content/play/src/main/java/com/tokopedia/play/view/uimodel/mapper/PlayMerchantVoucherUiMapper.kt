@@ -29,7 +29,9 @@ class PlayMerchantVoucherUiMapper @Inject constructor() {
                 },
                 code = input.code,
                 copyable = input.isCopyable,
-                highlighted = input.isHighlighted
+                highlighted = input.isHighlighted,
+                expiredDate = input.finishTime,
+                voucherStock = input.quota
         )
     }
 }

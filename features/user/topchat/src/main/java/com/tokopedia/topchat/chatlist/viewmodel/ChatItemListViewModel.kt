@@ -9,7 +9,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
@@ -20,15 +19,12 @@ import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_TOPBOT
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREPLIED
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_MESSAGE_ID
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_MESSAGE_IDS
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_SELLER
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_USER
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_BLAST_SELLER_METADATA
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_DELETE_CHAT_MESSAGE
 import com.tokopedia.topchat.chatlist.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.pojo.ChatDelete
-import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.pojo.chatblastseller.BlastSellerMetaDataResponse
 import com.tokopedia.topchat.chatlist.pojo.chatblastseller.ChatBlastSellerMetadata
@@ -154,7 +150,7 @@ class ChatItemListViewModel @Inject constructor(
         )
     }
 
-    private fun whenChatAdminAuthorized(tab: String, action: () -> Unit) {
+    fun whenChatAdminAuthorized(tab: String, action: () -> Unit) {
         val isTabUser = tab == PARAM_TAB_USER
         _isChatAdminEligible.value.let { result ->
             when {
@@ -204,7 +200,7 @@ class ChatItemListViewModel @Inject constructor(
     override fun chatMoveToTrash(messageId: String) {
         launch {
             try {
-                val result = moveChatToTrashUseCase.execute(messageId)
+                val result = moveChatToTrashUseCase(messageId)
                 if(result.chatMoveToTrash.list.isNotEmpty()) {
                     val deletedChat = result.chatMoveToTrash.list.first()
                     if(deletedChat.isSuccess == Constant.INT_STATUS_TRUE) {
@@ -341,7 +337,7 @@ class ChatItemListViewModel @Inject constructor(
         throwable.printStackTrace()
     }
 
-    fun getFilterTittles(context: Context, isTabSeller: Boolean): List<String> {
+    fun getFilterTitles(context: Context, isTabSeller: Boolean): List<String> {
         val filters = arrayListOf(
                 context.getString(R.string.filter_chat_all),
                 context.getString(R.string.filter_chat_unread),

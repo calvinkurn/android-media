@@ -9,6 +9,9 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.search.R
+import com.tokopedia.search.utils.BASE_RADIUS_AREA
+import com.tokopedia.search.utils.CORNER_RADIUS_DEGREE
+import com.tokopedia.search.utils.VERTICAL_SHADOW_MULTIPLIER
 import java.util.*
 import kotlin.math.cos
 import kotlin.math.roundToInt
@@ -86,8 +89,13 @@ class ProductItemDecoration(private val spacing: Int) : ItemDecoration() {
         return getHorizontalOffset(maxElevation, radius)
     }
 
+    /**
+     * shadow calculation formula (include the const value) based on CardView shadow formula
+     * https://developer.android.com/reference/kotlin/androidx/cardview/widget/CardView
+     */
+    @Suppress("MagicNumber")
     private fun getHorizontalOffset(maxElevation: Float, radius: Float): Int {
-        return (maxElevation + (1 - cos(45.0)) * radius).toFloat().roundToInt() / 2
+        return (maxElevation + (BASE_RADIUS_AREA - cos(CORNER_RADIUS_DEGREE)) * radius).toFloat().roundToInt() / 2
     }
 
     private fun getHorizontalOffsetForCardView(cardView: CardView): Int {
@@ -111,8 +119,14 @@ class ProductItemDecoration(private val spacing: Int) : ItemDecoration() {
         return getVerticalOffset(maxElevation, radius)
     }
 
+    /**
+     * shadow calculation formula (include the const value) based on CardView shadow formula
+     * https://developer.android.com/reference/kotlin/androidx/cardview/widget/CardView
+     */
+    @Suppress("MagicNumber")
     private fun getVerticalOffset(maxElevation: Float, radius: Float): Int {
-        return (maxElevation * 1.5 + (1 - cos(45.0)) * radius).toFloat().roundToInt() / 2
+        return (maxElevation * VERTICAL_SHADOW_MULTIPLIER + (BASE_RADIUS_AREA - cos(
+            CORNER_RADIUS_DEGREE)) * radius).toFloat().roundToInt() / 2
     }
 
     private fun getVerticalOffsetForCardView(cardView: CardView): Int {
@@ -128,7 +142,7 @@ class ProductItemDecoration(private val spacing: Int) : ItemDecoration() {
 
     private fun getLeftOffsetFirstInRow() = spacing - horizontalCardViewOffset
 
-    private fun getLeftOffsetNotFirstInRow() = spacing / 4 - horizontalCardViewOffset
+    private fun getLeftOffsetNotFirstInRow() = spacing / LEFT_OFFSET_NOT_FIRST_ITEM_DIVISOR - horizontalCardViewOffset
 
     private fun getTopOffset(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Int {
         return if (isTopProductItem(parent, absolutePos, relativePos, totalSpanCount))
@@ -139,7 +153,7 @@ class ProductItemDecoration(private val spacing: Int) : ItemDecoration() {
 
     private fun getTopOffsetTopItem() = spacing / 2 - verticalCardViewOffset
 
-    private fun getTopOffsetNotTopItem() = spacing / 4 - verticalCardViewOffset
+    private fun getTopOffsetNotTopItem() = spacing / TOP_OFFSET_NOT_TOP_ITEM_DIVISOR - verticalCardViewOffset
 
     private fun getRightOffset(relativePos: Int, totalSpanCount: Int): Int {
         return if (isLastInRow(relativePos, totalSpanCount)) getRightOffsetLastInRow() else getRightOffsetNotLastInRow()
@@ -147,20 +161,12 @@ class ProductItemDecoration(private val spacing: Int) : ItemDecoration() {
 
     private fun getRightOffsetLastInRow() = spacing - horizontalCardViewOffset
 
-    private fun getRightOffsetNotLastInRow() = spacing / 4 - horizontalCardViewOffset
+    private fun getRightOffsetNotLastInRow() = spacing / RIGHT_OFFSET_NOT_LAST_ITEM_DIVISOR - horizontalCardViewOffset
 
-    private fun getBottomOffset(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Int {
-        return if (isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount)) spacing else getBottomOffsetNotBottomItem()
-    }
-
-    private fun getBottomOffsetNotBottomItem() = spacing / 4 - verticalCardViewOffset
+    private fun getBottomOffsetNotBottomItem() = spacing / BOTTOM_OFFSET_NOT_BOTTOM_ITEM_DIVISOR - verticalCardViewOffset
 
     private fun isTopProductItem(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Boolean {
         return !isProductItem(parent, absolutePos - relativePos % totalSpanCount - 1)
-    }
-
-    private fun isBottomProductItem(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Boolean {
-        return !isProductItem(parent, absolutePos + totalSpanCount - relativePos % totalSpanCount)
     }
 
     private fun isFirstInRow(relativePos: Int, spanCount: Int): Boolean {
@@ -181,5 +187,12 @@ class ProductItemDecoration(private val spacing: Int) : ItemDecoration() {
         val isInvalidPosition = viewPosition < 0 || viewPosition > adapter.itemCount - 1
 
         return if (isInvalidPosition) -1 else adapter.getItemViewType(viewPosition)
+    }
+
+    companion object{
+        private const val RIGHT_OFFSET_NOT_LAST_ITEM_DIVISOR = 4
+        private const val TOP_OFFSET_NOT_TOP_ITEM_DIVISOR = 4
+        private const val LEFT_OFFSET_NOT_FIRST_ITEM_DIVISOR = 4
+        private const val BOTTOM_OFFSET_NOT_BOTTOM_ITEM_DIVISOR = 4
     }
 }

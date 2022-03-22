@@ -37,6 +37,8 @@ data class MerchantVoucherModel(
         @Expose
         @SerializedName("voucher_discount_type_formatted")
         val discountTypeFormatted: String = "",
+        @SerializedName("voucher_discount_type")
+        val discountType: Int = 0,
         @Expose
         @SerializedName("voucher_finish_time")
         val finishTime: String = "",
@@ -49,6 +51,9 @@ data class MerchantVoucherModel(
         @Expose
         @SerializedName("voucher_image_square")
         val imageSquare: String = "",
+        @Expose
+        @SerializedName("voucher_image_portrait")
+        val imagePortrait: String = "",
         @Expose
         @SerializedName("voucher_minimum_amt")
         val voucherMinimumAmt: Int = 0,
@@ -69,5 +74,17 @@ data class MerchantVoucherModel(
         val voucherType: Int = 0,
         @Expose
         @SerializedName("voucher_type_formatted")
-        val voucherTypeFormatted: String = ""
+        val voucherTypeFormatted: String = "",
+        @Expose
+        @SerializedName("is_vps")
+        val isVps: Int = 0,
+        @Expose
+        @SerializedName("package_name")
+        val packageName: String = "",
+        @Expose
+        @SerializedName("is_subsidy")
+        val isSubsidy: Int = 0,
+        @Expose
+        @SerializedName("tnc")
+        val tnc: String = "",
 )

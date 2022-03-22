@@ -7,4 +7,5 @@ package com.tokopedia.buyerorder.detail.data;
 public class OrderCategory {
     public static final String DIGITAL = "DIGITAL";
     public static final String EVENT = "EVENT";
+    public static final String DEALS = "Food & Voucher";
 }

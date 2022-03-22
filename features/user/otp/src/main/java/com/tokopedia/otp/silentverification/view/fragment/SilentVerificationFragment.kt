@@ -39,11 +39,8 @@ import com.tokopedia.sessioncommon.util.ConnectivityUtils
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.view.binding.noreflection.viewBinding
-import okhttp3.*
-import java.io.IOException
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.URLDecoder
-import java.util.*
 import javax.inject.Inject
 
 
@@ -65,7 +62,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     private var isFirstTry = true
 
     private lateinit var viewModel: SilentVerificationViewModel
-    private val binding by viewBinding(FragmentSilentVerificationBinding::bind)
+    private var binding by autoClearedNullable<FragmentSilentVerificationBinding>()
     private var otpData: OtpData? = null
     private var modeListData: ModeListData? = null
     private var lottieTaskList: ArrayList<LottieTask<LottieComposition>> = arrayListOf()
@@ -82,8 +79,20 @@ class SilentVerificationFragment: BaseDaggerFragment() {
             viewModelFactory
         ).get(SilentVerificationViewModel::class.java)
 
-        otpData = arguments?.getParcelable(OtpConstant.OTP_DATA_EXTRA) ?: OtpData()
-        modeListData = arguments?.getParcelable(OtpConstant.OTP_MODE_EXTRA) ?: ModeListData()
+        if(savedInstanceState != null) {
+            if(savedInstanceState.containsKey(KEY_OTP_DATA)) {
+                otpData = savedInstanceState.getParcelable(KEY_OTP_DATA)
+            }
+            if(savedInstanceState.containsKey(KEY_MODE_LIST_DATA)) {
+                modeListData = savedInstanceState.getParcelable(KEY_MODE_LIST_DATA)
+            }
+            if(savedInstanceState.containsKey(KEY_TOKEN_ID)) {
+                tokenId = savedInstanceState.getString(KEY_TOKEN_ID) ?: ""
+            }
+        } else {
+            otpData = arguments?.getParcelable(OtpConstant.OTP_DATA_EXTRA) ?: OtpData()
+            modeListData = arguments?.getParcelable(OtpConstant.OTP_MODE_EXTRA) ?: ModeListData()
+        }
     }
 
     override fun onCreateView(
@@ -91,7 +100,8 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_silent_verification, container, false)
+        binding = FragmentSilentVerificationBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -142,33 +152,35 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     }
 
     private fun initObserver() {
-        viewModel.requestSilentVerificationResponse.observe(viewLifecycleOwner, {
-            when(it) {
+        viewModel.requestSilentVerificationResponse.observe(viewLifecycleOwner) {
+            when (it) {
                 is Success -> onRequestSuccess(it.data)
                 is Fail -> onRequestFailed(it.throwable)
             }
-        })
+        }
 
-        viewModel.bokuVerificationResponse.observe(viewLifecycleOwner, {
-            when(it) {
+        viewModel.bokuVerificationResponse.observe(viewLifecycleOwner) {
+            when (it) {
                 is Success -> handleBokuResult(it.data)
-                is Fail -> onValidateFailed(it.throwable)
+                is Fail ->  {
+                    onBokuResultFailed(it.throwable)
+                }
             }
-        })
+        }
 
-        viewModel.validationResponse.observe(viewLifecycleOwner, {
-            when(it) {
-                is Success ->  {
+        viewModel.validationResponse.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
                     onValidateSuccess(it.data)
                 }
-                is Fail ->  {
-                    if(otpData != null && modeListData != null) {
-                        analytics.trackAutoSubmitVerification(otpData!!, modeListData!!, false)
+                is Fail -> {
+                    if (otpData != null && modeListData != null) {
+                        analytics.trackAutoSubmitSilentVerificationOtpValidate(otpData!!, modeListData!!, false, tokenId)
                     }
                     onValidateFailed(it.throwable)
                 }
             }
-        })
+        }
     }
 
     private fun onRequestFailed(throwable: Throwable) {
@@ -302,18 +314,18 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     }
 
     private fun onValidateSuccess(data: OtpValidateData) {
-        tokenId = ""
         if(data.success) {
             if(otpData != null && modeListData != null) {
-                analytics.trackAutoSubmitVerification(otpData!!, modeListData!!, true)
+                analytics.trackAutoSubmitSilentVerificationOtpValidate(otpData!!, modeListData!!, true, tokenId)
             }
             renderSuccessPage(data)
         } else {
             if(otpData != null && modeListData != null) {
-                analytics.trackAutoSubmitVerification(otpData!!, modeListData!!, false)
+                analytics.trackAutoSubmitSilentVerificationOtpValidate(otpData!!, modeListData!!, false, tokenId)
             }
             onValidateFailed(Throwable(message = "$LABEL_SUCCESS - ${data.success}"))
         }
+        tokenId = ""
     }
 
     private fun onRequestSuccess(data: RequestSilentVerificationResult) {
@@ -321,10 +333,10 @@ class SilentVerificationFragment: BaseDaggerFragment() {
             if (data.evUrl.isNotEmpty() && data.tokenId.isNotEmpty() && data.errorCode.isEmpty()) {
                 if(isFirstTry) {
                     analytics.trackSilentVerificationRequestSuccess(otpData?.otpType
-                            ?: OTP_TYPE_SILENT_VERIF, modeListData?.modeText ?: "")
+                            ?: OTP_TYPE_SILENT_VERIF, modeListData?.modeText ?: "", data.tokenId)
                 } else {
                     analytics.trackSilentVerifTryAgainSuccess(otpData?.otpType
-                            ?: OTP_TYPE_SILENT_VERIF, modeListData?.modeText ?: "")
+                            ?: OTP_TYPE_SILENT_VERIF, modeListData?.modeText ?: "", data.tokenId)
                 }
                 tokenId = data.tokenId
                 verify(data.evUrl)
@@ -346,9 +358,17 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         }
     }
 
+    private fun onBokuResultFailed(throwable: Throwable) {
+        analytics.trackAutoSubmitSilentVerificationEvUrl(otpData!!, modeListData!!, false, correlationId = tokenId, message = throwable.message ?: "")
+        renderValidateFailView()
+    }
+
     private fun onValidateFailed(throwable: Throwable) {
         analytics.trackAutoSubmitVerification(otpData!!, modeListData!!, false, "${throwable.message}")
+        renderValidateFailView()
+    }
 
+    private fun renderValidateFailView() {
         binding?.fragmentSilentVerifTitle?.show()
         binding?.fragmentSilentVerifSubtitle?.show()
         binding?.fragmentSilentVerifTryAgainBtn?.show()
@@ -400,12 +420,13 @@ class SilentVerificationFragment: BaseDaggerFragment() {
             if (result[KEY_ERROR_CODE] == ERROR_CODE_ZERO &&
                 result[KEY_ERROR_DESC].equals(VALUE_SUCCESS, true)
             ) {
+                analytics.trackAutoSubmitSilentVerificationEvUrl(otpData!!, modeListData!!, true, correlationId = tokenId, message = resultCode)
                 onSuccessBokuVerification()
             } else {
-                onValidateFailed(Throwable(resultCode))
+                onBokuResultFailed(Throwable(resultCode))
             }
         }catch (e: Exception) {
-            onValidateFailed(e)
+            onBokuResultFailed(e)
         }
     }
 
@@ -434,63 +455,42 @@ class SilentVerificationFragment: BaseDaggerFragment() {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     fun verify(url: String) {
-        // for testing purpose only, please use later merhod
-//        verifyWithoutSwitching(url)
-
-        // Main method to switch between wifi & cellular data
         context?.run {
             networkClientHelper.makeNetworkRequest(this, object: NetworkRequestListener {
                 override fun onSuccess(network: Network) {
                     viewModel.verifyBoku(network, url)
                 }
                 override fun onError(throwable: Throwable) {
-                    onValidateFailed(throwable)
+                    activity?.runOnUiThread {
+                        onValidateFailed(throwable)
+                    }
                 }
             })
         }
     }
 
-    // to be deleted, for testing purpose only
-    private fun verifyWithoutSwitching(url: String) {
-        try {
-            val okHttpClient =
-                OkHttpClient.Builder().build()
-            val request: Request = Request.Builder()
-                .url(url)
-                .build()
-            okHttpClient.newCall(request).enqueue(object: Callback {
-                override fun onResponse(call: Call, response: Response) {
-                    val result = response.body()?.string()
-                    println("verify:onResponse:$result")
-                    activity?.runOnUiThread {
-                        handleBokuResult(result ?: "")
-                    }
-                }
-
-                override fun onFailure(call: Call, e: IOException) {
-                    println("verify:onResponse:${e.message}")
-                    e.printStackTrace()
-                    activity?.runOnUiThread {
-                        onValidateFailed(e)
-                    }
-                }
-            })
-        } catch (ex: Exception) {
-            onValidateFailed(ex)
-            ex.printStackTrace()
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        if(tokenId.isNotEmpty()) {
+            outState.putString(KEY_TOKEN_ID, tokenId)
         }
+        outState.putParcelable(KEY_OTP_DATA, otpData)
+        outState.putParcelable(KEY_MODE_LIST_DATA, modeListData)
     }
 
     companion object {
         private const val KEY_ERROR_CODE = "ErrorCode"
         private const val KEY_ERROR_DESC = "ErrorDescription"
-        private const val KEY_CARRIER = "Carrier"
 
         private const val VALUE_SUCCESS = "Success"
         private const val ERROR_CODE_ZERO = "0"
 
         private const val ERROR_LIMIT_CODE = "110001"
         private const val ERROR_GENERAL = "110002"
+
+        private const val KEY_TOKEN_ID = "token-id-silent-verif"
+        private const val KEY_OTP_DATA = "otp-data-silent-verif"
+        private const val KEY_MODE_LIST_DATA = "mode-list-data-silent-verif"
 
         private const val LOTTIE_SUCCESS_ANIMATION = "https://assets.tokopedia.net/asts/android/user/silent_verification/silent_verif_success.json"
         private const val LOTTIE_BG_ANIMATION = "https://assets.tokopedia.net/asts/android/user/silent_verification/silent_verif_animation_bg_small.json"

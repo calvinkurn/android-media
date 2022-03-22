@@ -25,7 +25,6 @@ import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewItem
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewAttachedImages
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewProductInfo
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewSellerResponse
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class ReadReviewViewHolder(view: View,
@@ -45,7 +44,7 @@ class ReadReviewViewHolder(view: View,
     private var productInfo: ReadReviewProductInfo? = null
     private var basicInfo: ReviewBasicInfoWidget? = null
     private var reportOption: IconUnify? = null
-    private var likeImage: ImageUnify? = null
+    private var likeImage: IconUnify? = null
     private var likeCount: Typography? = null
     private var variantLabel: Typography? = null
     private var reviewMessage: Typography? = null
@@ -90,7 +89,7 @@ class ReadReviewViewHolder(view: View,
             setReview(message, feedbackID, element.productId)
             showAttachedImages(imageAttachments, this, element.shopId)
             if (isProductReview)
-                setLikeButton(feedbackID, element.shopId, likeDislike)
+                setLikeButton(feedbackID, likeDislike)
             else
                 setShopReviewLikeButton(feedbackID, element.shopId, element.productId, likeDislike)
             setReply(element.shopName, reviewResponse, feedbackID, element.productId)
@@ -214,16 +213,20 @@ class ReadReviewViewHolder(view: View,
         }
     }
 
-    private fun setLikeButton(reviewId: String, shopId: String, likeDislike: LikeDislike) {
+    private fun setLikeButton(reviewId: String, likeDislike: LikeDislike) {
         if (likeDislike.isLiked()) {
-            likeImage?.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_read_review_liked))
+            setThumbLike(true)
             likeCount?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
         } else {
-            likeImage?.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_read_review_like))
+            setThumbLike(false)
             likeCount?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
         }
         likeImage?.setOnClickListener {
-            readReviewItemListener.onLikeButtonClicked(reviewId, shopId, likeDislike.likeStatus, adapterPosition)
+            readReviewItemListener.onLikeButtonClicked(
+                reviewId,
+                likeDislike.likeStatus,
+                adapterPosition
+            )
         }
         likeCount?.apply {
             text = if (likeDislike.totalLike == 0) {
@@ -232,17 +235,21 @@ class ReadReviewViewHolder(view: View,
                 String.format(getString(R.string.review_reading_like_count), likeDislike.totalLike)
             }
             setOnClickListener {
-                readReviewItemListener.onLikeButtonClicked(reviewId, shopId, likeDislike.likeStatus, adapterPosition)
+                readReviewItemListener.onLikeButtonClicked(
+                    reviewId,
+                    likeDislike.likeStatus,
+                    adapterPosition
+                )
             }
         }
     }
 
     private fun setShopReviewLikeButton(reviewId: String, shopId: String, productId: String, likeDislike: LikeDislike) {
         if (likeDislike.isLiked()) {
-            likeImage?.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_read_review_liked))
+            setThumbLike(true)
             likeCount?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
         } else {
-            likeImage?.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_read_review_like))
+            setThumbLike(false)
             likeCount?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
         }
         likeImage?.setOnClickListener {
@@ -323,5 +330,19 @@ class ReadReviewViewHolder(view: View,
 
     private fun showBadRatingReason(reason: String) {
         badRatingReason?.showBadRatingReason(reason)
+    }
+
+    private fun setThumbLike(isLiked: Boolean) {
+        if (isLiked) {
+            itemView.context?.let {
+                val greenColor = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                likeImage?.setImage(IconUnify.THUMB_FILLED, greenColor)
+            }
+        } else {
+            itemView.context?.let {
+                val greyColor = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+                likeImage?.setImage(IconUnify.THUMB, greyColor)
+            }
+        }
     }
 }

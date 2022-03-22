@@ -222,5 +222,5 @@
     <string name="image_quality_setting_subtitle">Pilihanmu akan menentukan kejelasan gambar yang kamu lihat di berbagai halaman Tokopedia.</string>
     <string name="message_success_change_profile">Sukses mengubah profil</string>
     <string name="message_success_change_password">Kata sandi berhasil diubah</string>
-
+    <string name="label_failed_register_biometric_offering">Ada kendala waktu aktifkan fitur ini, coba lagi nanti ya.</string>
 </resources>

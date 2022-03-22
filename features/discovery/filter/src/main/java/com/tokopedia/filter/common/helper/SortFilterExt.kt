@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.InsetDrawable
 import android.os.Build
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration as TkpdAbstractionDividerItemDecoration
 
 internal fun <T: Parcelable> T.copyParcelable(): T? {
     var parcel: Parcel? = null
@@ -77,13 +79,28 @@ internal fun View.setMargin(marginLeft: Int = -1, marginTop: Int = -1, marginRig
 }
 
 internal fun createFilterDividerItemDecoration(context: Context, orientation: Int, leftMargin: Int): RecyclerView.ItemDecoration {
-    val itemDecoration = DividerItemDecoration(context, orientation)
+    return DividerItemDecoration(context, orientation).apply {
+        val insetDrawable = createFilterItemDividerDrawable(drawable, leftMargin)
+        setDrawable(insetDrawable)
+    }
+}
 
-    val itemDecorationDrawable = itemDecoration.drawable
-    val insetDrawable = InsetDrawable(itemDecorationDrawable, leftMargin, 0, 0, 0)
-    itemDecoration.setDrawable(insetDrawable)
+private fun createFilterItemDividerDrawable(itemDecorationDrawable: Drawable?, leftMargin: Int) : Drawable {
+    return InsetDrawable(itemDecorationDrawable, leftMargin, 0, 0, 0)
+}
 
-    return itemDecoration
+internal fun createFilterChildDividerItemDecoration(
+    context: Context,
+    orientation: Int,
+    leftMargin: Int
+): RecyclerView.ItemDecoration {
+    val insetDrawable = createFilterItemDividerDrawable(
+        context.getDrawable(com.tokopedia.abstraction.R.drawable.bg_line_separator_thin),
+        leftMargin
+    )
+    return TkpdAbstractionDividerItemDecoration(orientation, insetDrawable).apply {
+        setUsePaddingLeft(false)
+    }
 }
 
 internal fun RecyclerView.addItemDecorationIfNotExists(itemDecoration: RecyclerView.ItemDecoration) {

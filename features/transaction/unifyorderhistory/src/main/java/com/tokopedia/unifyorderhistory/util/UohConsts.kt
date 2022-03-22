@@ -52,12 +52,14 @@ object UohConsts {
     const val PAGE_NAME = "bom_empty"
 
     const val TYPE_LOADER = "loader"
+    const val TYPE_LOADER_PMS_BUTTON = "loader_pms_button"
     const val TYPE_TICKER = "ticker"
     const val TYPE_ORDER_LIST = "list"
     const val TYPE_EMPTY = "empty"
     const val TYPE_RECOMMENDATION_TITLE = "recommendation_title"
     const val TYPE_RECOMMENDATION_ITEM = "recommendation"
     const val TDN_BANNER = "tdn"
+    const val TYPE_PMS_BUTTON = "pms_button"
 
     const val TYPE_ACTION_BUTTON_LINK = "link"
     const val TYPE_ACTION_CANCEL_ORDER = "cancelOrder"

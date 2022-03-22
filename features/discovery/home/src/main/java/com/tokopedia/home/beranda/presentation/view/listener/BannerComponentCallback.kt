@@ -39,7 +39,7 @@ class BannerComponentCallback (val context: Context?,
     }
 
     override fun onPromoAllClick(channelModel: ChannelModel) {
-        BannerCarouselTracking.sendBannerCarouselSeeAllClick(channelModel, homeCategoryListener.userId)
+        BannerCarouselTracking.sendBannerCarouselSeeAllClick()
         RouteManager.route(context,
                 if (channelModel.channelHeader.applink.isNotEmpty())
                     channelModel.channelHeader.applink else channelModel.channelHeader.url)

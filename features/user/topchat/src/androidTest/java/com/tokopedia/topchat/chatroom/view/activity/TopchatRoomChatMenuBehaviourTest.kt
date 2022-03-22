@@ -240,17 +240,4 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         DrawableMatcher.compareDrawable(R.id.send_but, R.drawable.bg_topchat_send_btn_disabled)
     }
 
-    @Test
-    fun test_msg_sent_error_empty_text_click() {
-        //Given
-        getChatUseCase.response = firstPageChatAsSeller
-        chatAttachmentUseCase.response = chatAttachmentResponse
-        launchChatRoomActivity()
-
-        //When
-        onView(withId(R.id.send_but)).perform(click())
-
-        //Then
-        assertSnackbarText(context.getString(R.string.topchat_desc_empty_text_box))
-    }
 }

@@ -84,6 +84,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     companion object {
         private const val TAB_PM_PARAM = "tab"
 
+        private const val SHOW_FULL_SCREEN_BOTTOM_SHEET = "FullScreenBottomSheet"
         private const val TOKOPEDIA_SUFFIX = "| Tokopedia"
         private const val DELIMITER = " - "
 
@@ -131,6 +132,12 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(OtherMenuViewModel::class.java)
+    }
+
+    private val kreditTopadsClickedBundle by lazy {
+        Bundle().also {
+            it.putBoolean(SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
+        }
     }
 
     private val topAdsBottomSheet by lazy {
@@ -300,7 +307,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             bottomSheet.dismiss()
             RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTO_TOPUP)
         } else {
-            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_CREDIT)
+            RouteManager.route(context,kreditTopadsClickedBundle, ApplinkConst.SellerApp.TOPADS_CREDIT)
         }
         NewOtherMenuTracking.sendEventClickTopadsBalance()
     }
@@ -314,7 +321,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     override fun onShopOperationalClicked() {
-        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
+        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS)
     }
 
     override fun onGoToPowerMerchantSubscribe(tab: String?, isUpdate: Boolean) {
@@ -732,6 +739,14 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             context?.getString(R.string.setting_header_error_message,
                 errorType
             ).orEmpty()
+        )
+        SellerHomeErrorHandler.logExceptionToServer(
+            errorTag = SellerHomeErrorHandler.OTHER_MENU,
+            throwable = throwable,
+            errorType = context?.getString(R.string.setting_header_error_message,
+                errorType
+            ).orEmpty(),
+            deviceId = userSession.deviceId.orEmpty()
         )
     }
 

@@ -49,7 +49,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ivIconDigitalRecommendation"
             app:typographyType="body_3"
-            tools:text="Indosat Combo 10GB Internet + 5GB Xtra" />
+            tools:text="Indosat Combo 10GB Internet + 5GB Xtra\nMau bayar lagi?" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tgDiscountPercentageDigitalRecommendation"

@@ -5,9 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -15,10 +17,10 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -28,6 +30,7 @@ import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShowcasePickerType
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
@@ -45,6 +48,7 @@ import com.tokopedia.shop_showcase.shop_showcase_management.di.ShopShowcaseManag
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.activity.ShopShowcaseListActivity
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.adapter.ShopShowcasePickerAdapter
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmodel.ShopShowcasePickerViewModel
+import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.model.GetProductListFilter
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -83,11 +87,6 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
             fragment.arguments = extraData
             return fragment
         }
-
-        private const val DEFAULT_SHOWCASE_PAGE = 1
-        private const val DEFAULT_SHOWCASE_NAME = "etalase"
-        private const val DEFAULT_SHOWCASE_SORT = 1
-
     }
 
     private val rvScrollListener by lazy {
@@ -207,7 +206,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     override fun onDestroy() {
         super.onDestroy()
         removeObservers(shopShowcasePickerViewModel.getListSellerShopShowcaseResponse)
-        removeObservers(shopShowcasePickerViewModel.getShopProductResponse)
+        removeObservers(shopShowcasePickerViewModel.shopTotalProduct)
         removeObservers(shopShowcasePickerViewModel.createShopShowcase)
     }
 
@@ -362,11 +361,32 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
             setChild(bottomSheetBinding.root)
             setOnDismissListener {
                 activity?.let {
+                    textFieldAddShowcaseBottomSheet?.clearFocus()
                     KeyboardHandler.hideSoftKeyboard(it)
                 }
             }
+            setShowListener {
+                bottomSheet.addBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback(){
+                    override fun onStateChanged(bottomSheet: View, newState: Int) {
+                        if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                            alignBottomSheetToBottom(this@apply.view)
+                        }
+                    }
+
+                    override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                    }
+
+                })
+            }
             isKeyboardOverlap = false
         }
+    }
+
+    private fun alignBottomSheetToBottom(view: View?) {
+        val bottomSheetLayout = view as? LinearLayout
+        bottomSheetLayout?.setMargin(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
+        (bottomSheetLayout?.layoutParams as FrameLayout.LayoutParams).gravity = Gravity.BOTTOM
+        bottomSheetLayout.requestLayout()
     }
 
     private fun showAddShowcaseBottomSheet(showcaseNameHint: String = "") {
@@ -390,9 +410,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
             }
             fragmentManager?.let {
                 addShowcaseBottomSheet?.show(it, "")
-                activity?.let { activity ->
-                    KeyboardHandler.showSoftKeyboard(activity)
-                }
+                textFieldAddShowcaseBottomSheet?.requestFocus()
             }
         }
     }
@@ -422,13 +440,9 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
 
     private fun checkTotalProduct() {
         showLoading(true)
-        shopShowcasePickerViewModel.getTotalProduct(
+        shopShowcasePickerViewModel.getTotalProducts(
                 shopId,
-                DEFAULT_SHOWCASE_PAGE,
-                DEFAULT_SHOWCASE_PAGE,
-                DEFAULT_SHOWCASE_SORT,
-                DEFAULT_SHOWCASE_NAME,
-                ""
+                GetProductListFilter(perPage = 1)
         )
     }
 
@@ -513,22 +527,15 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     }
 
     private fun observeGetTotalProduct() {
-        observe(shopShowcasePickerViewModel.getShopProductResponse) {
+        observe(shopShowcasePickerViewModel.shopTotalProduct) {
             when (it) {
                 is Success -> {
-                    val error = it.data.getShopProduct.errors
-                    val totalProduct = it.data.getShopProduct.totalData
-
-                    if (error.isNotEmpty()) {
-                        showLoading(false)
-                        showToaster(error, Toaster.TYPE_ERROR)
+                    val totalProduct = it.data
+                    if (totalProduct.isMoreThanZero()) {
+                        goToAddShowcase()
                     } else {
-                        if (totalProduct.isMoreThanZero()) {
-                            goToAddShowcase()
-                        } else {
-                            showLoading(false)
-                            showToaster(getString(R.string.error_product_less_than_one), Toaster.TYPE_ERROR)
-                        }
+                        showLoading(false)
+                        showToaster(getString(R.string.error_product_less_than_one), Toaster.TYPE_ERROR)
                     }
                 }
                 is Fail -> {
@@ -574,7 +581,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
 
     private fun showSearchEmptyStateRadioPicker(state: Boolean) {
         if(state) {
-            ImageHandler.loadImage(context, emptyStateImage, ImageAssets.SEARCH_SHOWCASE_NOT_FOUND, null)
+            emptyStateImage?.loadImage(ImageAssets.SEARCH_SHOWCASE_NOT_FOUND)
             emptyStateShowcasePicker?.visible()
             rvPicker?.gone()
         } else {

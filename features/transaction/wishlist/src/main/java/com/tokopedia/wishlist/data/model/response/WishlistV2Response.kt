@@ -25,7 +25,7 @@ data class WishlistV2Response(
 				val query: String = "",
 
 				@SerializedName("sort_filters")
-				val sortFilters: List<SortFiltersItem> = listOf(),
+				val sortFilters: List<SortFiltersItem> = emptyList(),
 
 				@SerializedName("limit")
 				val limit: Int = -1,
@@ -40,7 +40,7 @@ data class WishlistV2Response(
 				val page: Int = -1,
 
 				@SerializedName("items")
-				val items: List<Item> = listOf(),
+				val items: List<Item> = emptyList(),
 
 				@SerializedName("empty_state")
 				val emptyState: EmptyState = EmptyState()
@@ -51,7 +51,7 @@ data class WishlistV2Response(
 					val originalPrice: String = "",
 
 					@SerializedName("label_group")
-					val labelGroup: List<LabelGroupItem> = listOf(),
+					val labelGroup: List<LabelGroupItem> = emptyList(),
 
 					@SerializedName("shop")
 					val shop: Shop = Shop(),
@@ -79,7 +79,7 @@ data class WishlistV2Response(
 					val price: String = "",
 
 					@SerializedName("wholesale_price")
-					val wholesalePrice: List<WholesalePriceItem> = listOf(),
+					val wholesalePrice: List<WholesalePriceItem> = emptyList(),
 
 					@SerializedName("id")
 					val id: String = "",
@@ -109,10 +109,10 @@ data class WishlistV2Response(
 					val labelStatus: String = "",
 
 					@SerializedName("labels")
-					val labels: List<String> = listOf(),
+					val labels: List<String> = emptyList(),
 
 					@SerializedName("badges")
-					val badges: List<BadgesItem> = listOf(),
+					val badges: List<BadgesItem> = emptyList(),
 
 					@SerializedName("name")
 					val name: String = "",
@@ -124,7 +124,7 @@ data class WishlistV2Response(
 					val bebasOngkir: BebasOngkir = BebasOngkir(),
 
 					@SerializedName("category")
-					val category: List<CategoryItem> = listOf(),
+					val category: List<CategoryItem> = emptyList(),
 
 					@SerializedName("preorder")
 					val preorder: Boolean = false,
@@ -221,7 +221,7 @@ data class WishlistV2Response(
 				data class Buttons(
 
 						@SerializedName("additional_buttons")
-						val additionalButtons: List<AdditionalButtonsItem> = listOf(),
+						val additionalButtons: List<AdditionalButtonsItem> = emptyList(),
 
 						@SerializedName("primary_button")
 						val primaryButton: PrimaryButton = PrimaryButton()
@@ -258,7 +258,7 @@ data class WishlistV2Response(
 					val button: Button = Button(),
 
 					@SerializedName("messages")
-					val messages: List<Any> = listOf(),
+					val messages: List<Any> = emptyList(),
 
 					@SerializedName("type")
 					val type: String = ""
@@ -288,7 +288,7 @@ data class WishlistV2Response(
 					val name: String = "",
 
 					@SerializedName("options")
-					val options: List<OptionsItem> = listOf(),
+					val options: List<OptionsItem> = emptyList(),
 
 					@SuppressLint("Invalid Data Type")
 					@SerializedName("id")

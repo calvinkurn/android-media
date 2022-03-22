@@ -53,6 +53,10 @@ abstract class BaseInactivePhoneSuccessFragment : BaseDaggerFragment() {
         viewBinding?.textTitle?.text = title()
     }
 
+    open fun setImageHeader(url: String) {
+        viewBinding?.imgHeader?.setImageUrl(url, isSkipCache = true)
+    }
+
     open fun gotoHome() {
         activity?.let {
             val intent = RouteManager.getIntent(context, ApplinkConst.HOME)

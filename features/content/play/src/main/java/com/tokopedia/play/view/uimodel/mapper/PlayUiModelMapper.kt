@@ -4,7 +4,8 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
-import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.domain.model.interactive.GetInteractiveLeaderboardResponse
@@ -25,11 +26,12 @@ class PlayUiModelMapper @Inject constructor(
         private val channelStatusMapper: PlayChannelStatusMapper,
         private val channelInteractiveMapper: PlayChannelInteractiveMapper,
         private val interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper,
+        private val playUserReportMapper: PlayUserReportReasoningMapper,
         private val cartMapper: PlayCartMapper,
 ) {
 
-    fun mapProductTags(input: List<Product>): List<PlayProductUiModel> {
-        return input.map(productTagMapper::mapProductTag)
+    fun mapProductSection(input: List<Section>): List<ProductSectionUiModel> {
+        return input.map(productTagMapper::mapSection)
     }
 
     fun mapMerchantVouchers(input: List<Voucher>): List<MerchantVoucherUiModel> {
@@ -62,5 +64,13 @@ class PlayUiModelMapper @Inject constructor(
 
     fun mapAddToCartFeedback(input: AddToCartDataModel): CartFeedbackResponseModel {
         return cartMapper.mapCartFeedbackResponse(input)
+    }
+
+    fun mapUserReport(input: List<UserReportOptions>): List<PlayUserReportReasoningUiModel> {
+        return input.map(playUserReportMapper::mapUserReportReasoning)
+    }
+
+    fun mapUserReportSubmission(input: UserReportSubmissionResponse.Result): Boolean{
+        return input.status == "success"
     }
 }

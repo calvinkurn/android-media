@@ -694,7 +694,7 @@ public class AddAddressFragment extends BaseDaggerFragment
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mProgressBar = view.findViewById(R.id.logistic_spinner);
-        new LogisticUserConsentHelper().displayUserConsent(requireContext(), tvUserConsent, getString(R.string.title_save));
+        LogisticUserConsentHelper.INSTANCE.displayUserConsent(requireContext(), userSession.getUserId(), tvUserConsent, getString(R.string.title_save), isEdit() ? LogisticUserConsentHelper.EDIT_ADDRESS : "");
 
     }
 

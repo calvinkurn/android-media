@@ -3,7 +3,8 @@ package com.tokopedia.play.domain
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
-import com.tokopedia.play.util.exception.DefaultErrorException
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import java.lang.IllegalArgumentException
 import javax.inject.Inject
@@ -25,8 +26,9 @@ class PostAddToCartUseCase @Inject constructor(
             addToCartUseCase.setParams(parameters)
             addToCartUseCase.executeOnBackground()
         } catch (exception: Exception) {
-            throw DefaultErrorException(exception)
+            if (exception is ResponseErrorException)
+                throw MessageErrorException(exception.message)
+            else throw exception
         }
     }
-
 }

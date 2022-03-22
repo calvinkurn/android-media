@@ -47,8 +47,10 @@ class DeveloperOptionAdapter(
         const val KEYWORD_ENABLE_LEAK_CANARY = "Enable Leak Canary"
         const val KEYWORD_REMOTE_CONFIG_EDITOR = "Remote Config Editor"
         const val KEYWORD_ROUTE_MANAGER = "Try RouteManager.route"
+        const val KEYWORD_VIEW_APPLINK_LIST = "View Applink List"
         const val KEYWORD_LOGGING_TO_SERVER = "Logging To Server"
         const val KEYWORD_SEND_LOG_TO_SERVER = "Send Log To Server"
+        const val KEYWORD_VIEW_SERVER_LOGGER = "View Server Logger"
         const val KEYWORD_SHARED_PREFERENCES_EDITOR = "Shared Preferences Editor"
         const val KEYWORD_APP_VERSION = "Version change is for api purpose - api kill will change back"
         const val KEYWORD_CHOOSE_URL_ENVIRONMENT = "Choose URL Environment"
@@ -66,6 +68,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_OLD_CART_CHECKOUT = "Old Cart Checkout"
         const val KEYWORD_NEW_CART_CHECKOUT = "New Cart Checkout Bundling"
         const val KEYWORD_ROLLENCE_AB_TESTING_MANUAL_SWITCHER = "Rollence AB Testing Manual Switcher"
+        const val KEYWORD_LIST_AB_TEST_ROLLENCE_KEYS = "List AB Test Rollence Keys"
         const val KEYWORD_REQUEST_NEW_FCM_TOKEN = "Request New FCM Token"
         const val KEYWORD_RESET_ONBOARDING_NAVIGATION = "Reset OnBoarding Navigation"
         const val KEYWORD_TRANSLATOR = "Translator (ON/OFF)"
@@ -119,10 +122,12 @@ class DeveloperOptionAdapter(
         )),
         LeakCanaryUiModel(listOf(KEYWORD_ENABLE_LEAK_CANARY)),
         RemoteConfigEditorUiModel(listOf(KEYWORD_REMOTE_CONFIG_EDITOR)),
-        RouteManagerUiModel(listOf(KEYWORD_ROUTE_MANAGER)),
+        RouteManagerUiModel(listOf(KEYWORD_ROUTE_MANAGER, KEYWORD_VIEW_APPLINK_LIST)),
         LoggingToServerUiModel(listOf(
             KEYWORD_LOGGING_TO_SERVER,
-            KEYWORD_SEND_LOG_TO_SERVER)
+            KEYWORD_SEND_LOG_TO_SERVER,
+            KEYWORD_VIEW_SERVER_LOGGER
+        )
         ),
         SellerAppReviewDebuggingUiModel(listOf(KEYWORD_ENABLE_SELLER_APP_REVIEW_DEBUGGING)),
         SharedPreferencesEditorUiModel(listOf(KEYWORD_SHARED_PREFERENCES_EDITOR)),
@@ -142,7 +147,10 @@ class DeveloperOptionAdapter(
         )),
         RequestNewFcmTokenUiModel(listOf(KEYWORD_REQUEST_NEW_FCM_TOKEN)),
         ResetOnBoardingNavigationUiModel(listOf(KEYWORD_RESET_ONBOARDING_NAVIGATION)),
-        RollenceAbTestingManualSwitcherUiModel(listOf(KEYWORD_ROLLENCE_AB_TESTING_MANUAL_SWITCHER)),
+        RollenceAbTestingManualSwitcherUiModel(listOf(
+            KEYWORD_ROLLENCE_AB_TESTING_MANUAL_SWITCHER,
+            KEYWORD_LIST_AB_TEST_ROLLENCE_KEYS)
+        ),
         HomeAndNavigationRevampSwitcherUiModel(listOf(
             KEYWORD_TRANSLATOR,
             KEYWORD_HOME_AND_NAVIGATION_REVAMP_SWITCHER,

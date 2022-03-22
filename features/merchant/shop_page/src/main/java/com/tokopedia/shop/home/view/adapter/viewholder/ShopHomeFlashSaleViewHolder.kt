@@ -115,6 +115,7 @@ class ShopHomeFlashSaleViewHolder(
 
     private fun setupProductCardCarouselView(productCarouselView: RecyclerView?) {
         itemView.context?.run {
+            productCarouselView?.isNestedScrollingEnabled = false
             productCarouselView?.adapter = productCarouselAdapter
             productCarouselView?.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         }
@@ -158,8 +159,8 @@ class ShopHomeFlashSaleViewHolder(
                 val timeDescription = model.data?.firstOrNull()?.timeDescription ?: ""
                 val timeCounter = model.data?.firstOrNull()?.timeCounter ?: ""
                 timerDescriptionView?.text = timeDescription
+                countDownLayout?.show()
                 if (timeCounter.toLong() != 0L) {
-                    countDownLayout?.show()
                     when {
                         isStatusCampaignUpcoming(statusCampaign) -> {
                             val startDate = DateHelper.getDateFromString(model.data?.firstOrNull()?.startDate ?: "").time

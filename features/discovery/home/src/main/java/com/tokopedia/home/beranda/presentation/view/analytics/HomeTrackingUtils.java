@@ -8,7 +8,6 @@ import com.tokopedia.analytics.firebase.FirebaseParams;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,9 +20,6 @@ import java.util.Map;
 public class HomeTrackingUtils {
 
     private static String SLIDINGBANNER ="sliding baaner";
-    private static String HOMERECOMMENDATION ="Home page recommendation";
-    private static String PRODUCTDETAILSSCREEN ="Product details screen";
-    private static String DISCOVERYWIDGET ="Discovery Widget";
 
     public static void homeSlidingBannerImpression(Context context,
                                                    BannerSlidesModel bannerSlidesModel,
@@ -84,45 +80,6 @@ public class HomeTrackingUtils {
                 FirebaseEvent.Home.HOMEPAGE_USED_CASE_CLICK, map);
     }
 
-
-    public static void homeSprintSaleImpression(Context context,
-                                                DynamicHomeChannel.Grid[] grids ,
-                                                String category) {
-        Map<String, Object> map = new HashMap<>();
-        for (int i = 0; i < grids.length; i++) {
-            map.put(FirebaseParams.Home.PRODUCT_ID,grids[i].getId());
-            map.put(FirebaseParams.Home.PRODUCT_NAME, grids[i].getLabel());
-            map.put(FirebaseParams.Home.PRODUCT_CATEGORY, category);
-        }
-        sendEventToAnalytics(context,
-                FirebaseEvent.Home.HOMEPAGE_SPRINT_SALE_IMPRESSION, map);
-    }
-
-
-    public static void homeSprintSaleViewAll(Context context,
-                                             String landingScreen) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        sendEventToAnalytics(context,
-                FirebaseEvent.Home.HOMEPAGE_SPRINT_SALE_VIEW_ALL_CLICK, map);
-    }
-
-
-    public static void homeSprintSaleClick(Context context,
-                                           int position,
-                                           DynamicHomeChannel.Channels channel,
-                                           DynamicHomeChannel.Grid grid,
-                                           String landingScreen) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(FirebaseParams.Home.PRODUCT_ID, grid.getId());
-        map.put(FirebaseParams.Home.PRODUCT_NAME, grid.getLabel());
-        map.put(FirebaseParams.Home.PRODUCT_CATEGORY, channel.getType());
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        sendEventToAnalytics(context,
-                FirebaseEvent.Home.HOMEPAGE_SPRINT_SALE_CLICK + "_" + position, map);
-    }
-
-
     public static void homeDiscoveryWidgetImpression(Context context,
                                                      int position,
                                                      DynamicHomeChannel.Channels channel) {
@@ -140,24 +97,6 @@ public class HomeTrackingUtils {
                 map);
     }
 
-
-    public static void homeDiscoveryWidgetClick(Context context,
-                                                int position,
-                                                DynamicHomeChannel.Grid grid,
-                                                String landingScreen,
-                                                String category) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(FirebaseParams.Home.PRODUCT_ID, grid.getId());
-        map.put(FirebaseParams.Home.PRODUCT_NAME, grid.getLabel());
-        map.put(FirebaseParams.Home.PRODUCT_CATEGORY, category);
-        map.put(FirebaseParams.Home.PRODUCT_LIST_NAME, DISCOVERYWIDGET);
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        sendEventToAnalytics(context,
-                FirebaseEvent.Home.HOMEPAGE_DISCOVERY_WIDGET_CLICK + "_" + position,
-                map);
-    }
-
-
     public static void homeDiscoveryWidgetViewAll(Context context,
                                                   String landingScreen) {
         Map<String, Object> map = new HashMap<>();
@@ -166,60 +105,6 @@ public class HomeTrackingUtils {
                 FirebaseEvent.Home.HOMEPAGE_DISCOVERY_WIDGET_VIEW_ALL_CLICK,
                 map);
     }
-
-
-    public static void homeNavTopHomeClick(Context context, String landingScreen) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        sendEventToAnalytics(context,
-                FirebaseEvent.Home.HOMEPAGE_TOP_NAV_HOME_CLICKED, map);
-    }
-
-
-    public static void homeNavTopHotlistClick(Context context, String landingScreen) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        sendEventToAnalytics(context,
-                FirebaseEvent.Home.HOMEPAGE_TOP_NAV_HOTLIST_CLICKED, map);
-    }
-
-
-    public static void homeNavTopFeedClick(Context context,
-                                           String landingScreen) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        sendEventToAnalytics(context,
-                FirebaseEvent.Home.HOMEPAGE_TOP_NAV_FEED_CLICKED, map);
-    }
-
-
-    public static void homeNavTopFavoriteClick(Context context,
-                                               String landingScreen) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        sendEventToAnalytics(context,
-                FirebaseEvent.Home.HOMEPAGE_TOP_NAV_FAVORIT_CLICKED, map);
-    }
-
-    public static void cartIconClicked(Context context,
-                                       String landingScreen) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        sendEventToAnalytics(context, FirebaseEvent.Home.CART_ICON_CLICKED, map);
-    }
-
-    public static void homeSearchIconClicked(Context context,
-                                             String landingScreen) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        sendEventToAnalytics(context, FirebaseEvent.Home.HOMEPAGE_SEARCH_ICON_CLICKED, map);
-    }
-
-    public static void homepageHamburgerClick(Context context) {
-        Map<String, Object> map = new HashMap<>();
-        sendEventToAnalytics(context, FirebaseEvent.Home.HOMEPAGE_HAMBURGER_CLICK, map);
-    }
-
 
     public static void sendEventToAnalytics(Context context, String eventName, Map<String, Object> data) {
         TrackAnalytics.sendEvent(eventName, data, context);

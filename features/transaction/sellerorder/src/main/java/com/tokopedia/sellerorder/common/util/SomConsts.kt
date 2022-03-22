@@ -33,6 +33,7 @@ object SomConsts {
     const val DETAIL_PRODUCTS_TYPE = "products"
     const val DETAIL_SHIPPING_TYPE = "shipping"
     const val DETAIL_PAYMENT_TYPE = "payment"
+    const val DETAIL_MVC_USAGE_TYPE = "mvc_usage"
 
     const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
     const val EXTRA_USER_MODE = "EXTRA_USER_MODE"
@@ -96,6 +97,9 @@ object SomConsts {
     const val STATUS_CODE_ORDER_ORDER_CONFIRMED = 400
     const val STATUS_CODE_ORDER_DELIVERED = 600
     const val STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT = 699
+    const val STATUS_CODE_WAITING_PICKUP = 450
+    const val STATUS_CODE_READY_TO_SEND = 520
+    const val STATUS_CODE_RECEIPT_CHANGED = 530
 
     const val SORT_ASCENDING = 0
     const val SORT_DESCENDING = 2

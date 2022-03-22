@@ -28,7 +28,7 @@ open class WebsocketAttachmentData (
     private fun createProductExtrasAttachments(attachments: List<SendablePreview>): JsonElement {
         val extrasProducts = JsonArray()
         attachments.forEach { attachment ->
-            if (attachment is SendableProductPreview) {
+            if (attachment is TopchatProductAttachmentPreviewUiModel) {
                 val product = JsonObject().apply {
                     addProperty("url", attachment.productUrl)
                     addProperty("product_id", attachment.productId.toLongOrZero())

@@ -41,6 +41,7 @@ import java.lang.reflect.Type
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.collections.HashMap
 
 /**
  * Created by Pika on 7/6/20.
@@ -129,7 +130,7 @@ class GroupDetailViewModel @Inject constructor(
     }
 
     fun getBidInfo(suggestions: List<DataSuggestions>, sourceValue: String, onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit) {
-        bidInfoUseCase.setParams(suggestions, ParamObject.PRODUCT, sourceValue)
+        bidInfoUseCase.setParams(suggestions, ParamObject.GROUP, sourceValue)
         bidInfoUseCase.executeQuerySafeMode(
             {
                 onSuccess(it.topadsBidInfo.data)
@@ -139,10 +140,9 @@ class GroupDetailViewModel @Inject constructor(
             })
     }
 
-    fun topAdsCreated(dataGrp: HashMap<String, Any?>, onSuccess: (() -> Unit), onError: ((error: String?) -> Unit)) {
+    fun topAdsCreated(dataGrp: HashMap<String, Any?>,dataKey: HashMap<String,Any?>, onSuccess: (() -> Unit), onError: ((error: String?) -> Unit)) {
         val productBundle = Bundle()
-        val dataMap = HashMap<String, Any?>()
-        val param = topAdsCreateUseCase.setParam(ParamObject.EDIT_PAGE, productBundle, dataMap, dataGrp)
+        val param = topAdsCreateUseCase.setParam(ParamObject.EDIT_PAGE, productBundle, dataKey, dataGrp)
         topAdsCreateUseCase.execute(param, object : Subscriber<Map<Type, RestResponse>>() {
             override fun onNext(typeResponse: Map<Type, RestResponse>) {
                 val token = object : TypeToken<DataResponse<FinalAdResponse?>>() {}.type
