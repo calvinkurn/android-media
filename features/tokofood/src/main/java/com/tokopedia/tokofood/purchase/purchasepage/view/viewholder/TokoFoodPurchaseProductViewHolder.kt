@@ -35,6 +35,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
     }
 
     override fun bind(element: TokoFoodPurchaseProductUiModel) {
+        renderAlpha(element)
         renderTopDivider(viewBinding, element)
         renderProductBasicInformation(viewBinding, element)
         renderProductAddOn(viewBinding, element)
@@ -42,6 +43,14 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
         renderProductNotes(viewBinding, element)
         renderProductQuantity(viewBinding, element)
         renderDelete(viewBinding, element)
+    }
+
+    private fun renderAlpha(element: TokoFoodPurchaseProductUiModel) {
+        if (element.isDisabled) {
+            itemView.alpha = 0.5f
+        } else {
+            itemView.alpha = 1.0f
+        }
     }
 
     private fun renderTopDivider(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductUiModel) {
@@ -101,6 +110,12 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
 
     private fun renderProductNotes(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductUiModel) {
         with(viewBinding) {
+            if (element.isDisabled) {
+                textNotes.gone()
+                textNotesOrVariantAction.gone()
+                return
+            }
+
             if (element.notes.isNotBlank()) {
                 textNotes.text = element.notes
                 textNotes.show()
@@ -123,6 +138,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
                     listener.onTextChangeNotesClicked()
                 }
             }
+            textNotesOrVariantAction.show()
 
             setNotesConstraint(viewBinding, element)
         }
@@ -130,21 +146,27 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
 
     private fun setNotesConstraint(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductUiModel) {
         with(viewBinding) {
-                val constraintSet = ConstraintSet()
-                constraintSet.clone(containerPurchaseProduct)
-                if (element.addOns.isNotEmpty()) {
-                    constraintSet.connect(R.id.text_notes, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0)
-                    constraintSet.connect(R.id.text_notes, ConstraintSet.TOP, R.id.container_product_price, ConstraintSet.BOTTOM, 16.dpToPx(itemView.resources.displayMetrics))
-                } else {
-                    constraintSet.connect(R.id.text_notes, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0)
-                    constraintSet.connect(R.id.text_notes, ConstraintSet.TOP, R.id.image_product, ConstraintSet.BOTTOM, 16.dpToPx(itemView.resources.displayMetrics))
-                }
-                constraintSet.applyTo(containerPurchaseProduct)
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(containerPurchaseProduct)
+            if (element.addOns.isNotEmpty()) {
+                constraintSet.connect(R.id.text_notes, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0)
+                constraintSet.connect(R.id.text_notes, ConstraintSet.TOP, R.id.container_product_price, ConstraintSet.BOTTOM, 16.dpToPx(itemView.resources.displayMetrics))
+            } else {
+                constraintSet.connect(R.id.text_notes, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0)
+                constraintSet.connect(R.id.text_notes, ConstraintSet.TOP, R.id.image_product, ConstraintSet.BOTTOM, 16.dpToPx(itemView.resources.displayMetrics))
+            }
+            constraintSet.applyTo(containerPurchaseProduct)
         }
     }
 
     private fun renderProductQuantity(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductUiModel) {
         with(viewBinding) {
+            if (element.isDisabled) {
+                qtyEditorProduct.gone()
+                return
+            }
+
+            qtyEditorProduct.show()
             qtyEditorProduct.minValue = element.minQuantity
             qtyEditorProduct.maxValue = element.maxQuantity
             qtyEditorProduct.setValue(element.quantity)
@@ -167,6 +189,12 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
 
     private fun renderDelete(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductUiModel) {
         with(viewBinding) {
+            if (element.isDisabled) {
+                buttonDeleteProduct.gone()
+                return
+            }
+
+            buttonDeleteProduct.show()
             buttonDeleteProduct.setOnClickListener {
                 listener.onIconDeleteProductClicked()
             }

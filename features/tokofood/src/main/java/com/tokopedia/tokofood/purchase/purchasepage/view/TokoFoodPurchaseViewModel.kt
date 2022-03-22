@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.tokofood.purchase.purchasepage.view.mapper.TokoFoodPurchaseUiModelMapper
+import com.tokopedia.tokofood.purchase.purchasepage.view.uimodel.TokoFoodPurchaseAccordionUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.view.uimodel.TokoFoodPurchaseDividerUiModel
 import javax.inject.Inject
 
@@ -36,6 +37,14 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(false))
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(false))
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(false))
+        tmpData.add(TokoFoodPurchaseDividerUiModel())
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductListHeaderUiModel(true))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUnavailableReasonUiModel())
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(true))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(true))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(true))
+        tmpData.add(TokoFoodPurchaseDividerUiModel())
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapAccordionUiModel())
         tmpData.add(TokoFoodPurchaseDividerUiModel())
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapPromoUiModel())
         tmpData.add(TokoFoodPurchaseDividerUiModel())

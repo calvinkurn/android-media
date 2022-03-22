@@ -205,4 +205,10 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         }
     }
 
+    override fun onToggleShowHideUnavailableItemsClicked() {
+        view?.let {
+            Toaster.build(it, "onToggleShowHideUnavailableItemsClicked", Toaster.LENGTH_SHORT).show()
+        }
+    }
+
 }

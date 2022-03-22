@@ -96,4 +96,12 @@ object TokoFoodPurchaseUiModelMapper {
         )
     }
 
+    fun mapAccordionUiModel(): TokoFoodPurchaseAccordionUiModel {
+        return TokoFoodPurchaseAccordionUiModel(
+                isCollapsed = false,
+                showMoreWording = "Tampilkan Lebih Banyak",
+                showLessWording = "Tampilkan Lebih Sedikit"
+        )
+    }
+
 }

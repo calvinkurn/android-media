@@ -1,6 +1,8 @@
 package com.tokopedia.tokofood.purchase.purchasepage.view.viewholder
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseProductUnavailableReasonBinding
 import com.tokopedia.tokofood.purchase.purchasepage.view.TokoFoodPurchaseActionListener
@@ -16,7 +18,13 @@ class TokoFoodPurchaseProductUnavailableReasonViewHolder(private val viewBinding
 
     override fun bind(element: TokoFoodPurchaseProductUnavailableReasonUiModel) {
         with(viewBinding) {
-
+            textDisabledTitle.text = element.reason
+            if (element.detail.isNotBlank()) {
+                textDisabledSubTitle.text = element.detail
+                textDisabledSubTitle.show()
+            } else {
+                textDisabledSubTitle.gone()
+            }
         }
     }
 
