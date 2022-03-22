@@ -20,12 +20,17 @@ import dagger.Provides
 class PlayWidgetModule {
 
     @Provides
-    fun provideWidgetMapper(userSession: UserSessionInterface, @ApplicationContext context: Context): PlayWidgetUiMapper {
-        return PlayWidgetUiMapper(userSession, context.applicationContext)
+    fun provideWidgetMapper(userSession: UserSessionInterface, playWidgetPreference: PlayWidgetPreference): PlayWidgetUiMapper {
+        return PlayWidgetUiMapper(userSession, playWidgetPreference)
     }
 
     @Provides
     fun providePlayWidgetUpdateChannelUseCase(graphqlRepository: GraphqlRepository): PlayWidgetUpdateChannelUseCase {
         return PlayWidgetUpdateChannelUseCase(graphqlRepository)
+    }
+
+    @Provides
+    fun providePlayWidgetPreference(@ApplicationContext context: Context): PlayWidgetPreference {
+        return PlayWidgetPreference(context)
     }
 }

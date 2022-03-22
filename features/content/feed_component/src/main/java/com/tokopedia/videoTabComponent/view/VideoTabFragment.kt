@@ -22,6 +22,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
+import com.tokopedia.play.widget.pref.PlayWidgetPreference
 import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
@@ -89,6 +90,9 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
 
     @Inject
     lateinit var playWidgetAnalyticsListenerImp: PlayWidgetAnalyticsListenerImp
+
+    @Inject
+    lateinit var playWidgetPreference: PlayWidgetPreference
 
     override fun getScreenName(): String {
         return "VideoTabFragment"
@@ -229,7 +233,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                 playDataResponse.data,
                 playDataResponse.meta,
                 shopId = userSession.shopId,
-                context = requireContext(),
+                playWidgetPreference = playWidgetPreference,
             )
         )
     }
@@ -243,7 +247,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                 playDataResponse.data,
                 playDataResponse.meta,
                 shopId = userSession.shopId,
-                context = requireContext(),
+                playWidgetPreference = playWidgetPreference,
             )
         )
 
@@ -258,7 +262,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
             playDataResponse.data,
             playDataResponse.meta,
             shopId = userSession.shopId,
-            context = requireContext()
+            playWidgetPreference = playWidgetPreference,
         )
 
         adapter.updateList(mappedData, playFeedVideoTabViewModel.currentSourceId, playFeedVideoTabViewModel.currentSourceType, playWidgetAnalyticsListenerImp.filterCategory)

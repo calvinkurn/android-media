@@ -36,7 +36,7 @@ import javax.inject.Inject
 
 class PlayWidgetUiMapper @Inject constructor(
     private val userSession: UserSessionInterface,
-    private val context: Context,
+    private val playWidgetPreference: PlayWidgetPreference,
 ) {
 
     private val htmlTextTransformer = DefaultHtmlTextTransformer()
@@ -58,7 +58,7 @@ class PlayWidgetUiMapper @Inject constructor(
     }
 
     private fun mapWidgetConfig(data: PlayWidget): PlayWidgetConfigUiModel = PlayWidgetConfigUiModel(
-        autoPlay = PlayWidgetPreference.getAutoPlay(context, data.meta.autoplay),
+        autoPlay = playWidgetPreference.getAutoPlay(data.meta.autoplay),
         autoPlayAmount = data.meta.autoplayAmount,
         autoRefresh = data.meta.autoRefresh,
         autoRefreshTimer = data.meta.autoRefreshTimer,
