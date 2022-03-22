@@ -286,7 +286,7 @@ class SrwFrameLayout : FrameLayout {
 
     companion object {
         private val LAYOUT = R.layout.partial_topchat_srw
-        private const val TAG = "SRW_COACHMARK"
+        const val TAG = "SRW_COACHMARK"
     }
 }
 

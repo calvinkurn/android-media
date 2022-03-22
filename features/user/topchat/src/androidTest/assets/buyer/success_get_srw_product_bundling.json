@@ -7,7 +7,7 @@
       {
         "content": "Apakah stok tersedia?",
         "intent": "stock_availability",
-        "label": ""
+        "label": "Baru"
       }
     ]
   }

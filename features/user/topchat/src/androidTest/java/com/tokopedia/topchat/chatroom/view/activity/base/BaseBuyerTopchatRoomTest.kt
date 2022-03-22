@@ -14,6 +14,7 @@ import org.hamcrest.CoreMatchers.not
 open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
 
     protected var chatSrwResponseMultipleQuestion = ChatSmartReplyQuestionResponse()
+    protected var chatSrwProductBundlingResponse = ChatSmartReplyQuestionResponse()
     protected var wsMineResponseText: WebSocketResponse = WebSocketResponse()
     protected var wsInterlocutorResponseText: WebSocketResponse = WebSocketResponse()
     protected var wsSellerResponseText: WebSocketResponse = WebSocketResponse()
@@ -38,6 +39,10 @@ open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
         )
         chatSrwResponseMultipleQuestion = AndroidFileUtil.parse(
             "buyer/success_get_srw_multiple_questions.json",
+            ChatSmartReplyQuestionResponse::class.java
+        )
+        chatSrwProductBundlingResponse = AndroidFileUtil.parse(
+            "buyer/success_get_srw_product_bundling.json",
             ChatSmartReplyQuestionResponse::class.java
         )
         wsMineResponseText = AndroidFileUtil.parse(
