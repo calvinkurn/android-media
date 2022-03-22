@@ -60,3 +60,5 @@ fun Long.toAmountStringByDivider(
         append(suffix)
     }
 }
+
+val Long.Companion.ZERO get() = 0L

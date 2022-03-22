@@ -473,7 +473,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         val indexOfSelectedSortFilterItem = mockSomFilterUiModels.filterIsInstance<SomFilterUiModel>()
                 .find {
                     it.nameFilter == idFilter
-                }!!.somFilterData.indexOfFirst { it.id == SomConsts.SORT_ASCENDING }
+                }!!.somFilterData.indexOfFirst { it.id == SomConsts.SORT_ASCENDING.toLong() }
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
@@ -538,7 +538,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
                     it.nameFilter == idFilter
                 }!!.somFilterData
                 .indexOfFirst {
-                    it.id == selectedOrderTypeFilterItemId
+                    it.id == selectedOrderTypeFilterItemId.toLong()
                 }
         coEvery {
             getSomOrderFilterUseCase.execute()
@@ -571,7 +571,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
                     it.nameFilter == idFilter
                 }!!.somFilterData
                 .indexOfFirst {
-                    it.id == selectedCourierFilterItemId
+                    it.id == selectedCourierFilterItemId.toLong()
                 }
         coEvery {
             getSomOrderFilterUseCase.execute()
@@ -604,7 +604,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
                     it.nameFilter == idFilter
                 }!!.somFilterData
                 .indexOfFirst {
-                    it.id == selectedCourierFilterItemId
+                    it.id == selectedCourierFilterItemId.toLong()
                 }
         coEvery {
             getSomOrderFilterUseCase.execute()
@@ -703,14 +703,14 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         }
     }
 
-    private fun getSelectedSortFilterId(somFilterUiModels: List<BaseSomFilter>): Int {
+    private fun getSelectedSortFilterId(somFilterUiModels: List<BaseSomFilter>): Long {
         return somFilterUiModels.filterIsInstance<SomFilterUiModel>()
             .find {
                 it.nameFilter == SomConsts.FILTER_SORT
             }!!.somFilterData
             .find {
                 it.isSelected
-            }?.id ?: SomConsts.SORT_BY_PAYMENT_DATE_DESCENDING
+            }?.id ?: SomConsts.SORT_BY_PAYMENT_DATE_DESCENDING.toLong()
     }
 
     private fun getSelectedStatusOrderFilterIds(somFilterUiModels: List<BaseSomFilter>): List<Int> {
@@ -726,7 +726,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             }
     }
 
-    private fun getSelectedOrderTypeFilterIds(somFilterUiModels: List<BaseSomFilter>): MutableSet<Int> {
+    private fun getSelectedOrderTypeFilterIds(somFilterUiModels: List<BaseSomFilter>): MutableSet<Long> {
         return somFilterUiModels.filterIsInstance<SomFilterUiModel>()
             .find {
                 it.nameFilter == SomConsts.FILTER_TYPE_ORDER
@@ -740,7 +740,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             .toMutableSet()
     }
 
-    private fun getSelectedShippingListFilterIds(somFilterUiModels: List<BaseSomFilter>): MutableSet<Int> {
+    private fun getSelectedShippingListFilterIds(somFilterUiModels: List<BaseSomFilter>): MutableSet<Long> {
         return somFilterUiModels.filterIsInstance<SomFilterUiModel>()
             .find {
                 it.nameFilter == SomConsts.FILTER_COURIER
@@ -754,7 +754,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             .toMutableSet()
     }
 
-    private fun getSelectedIsShippingPrintedFilterId(somFilterUiModels: List<BaseSomFilter>): Int {
+    private fun getSelectedIsShippingPrintedFilterId(somFilterUiModels: List<BaseSomFilter>): Long {
         return somFilterUiModels.filterIsInstance<SomFilterUiModel>()
             .find {
                 it.nameFilter == SomConsts.FILTER_LABEL

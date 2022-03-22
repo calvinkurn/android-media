@@ -572,7 +572,7 @@ class SomListViewModel @Inject constructor(
 
     fun getTopAdsCategory() {
         launchCatchError(block = {
-            somListGetTopAdsCategoryUseCase.setParams(userSession.shopId.toIntOrZero())
+            somListGetTopAdsCategoryUseCase.setParams(userSession.shopId.toLongOrZero())
             _topAdsCategoryResult.postValue(Success(somListGetTopAdsCategoryUseCase.executeOnBackground()))
         }, onError = {
             _topAdsCategoryResult.postValue(Fail(it))
