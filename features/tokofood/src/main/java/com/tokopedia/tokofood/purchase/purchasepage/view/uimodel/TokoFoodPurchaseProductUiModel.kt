@@ -5,6 +5,7 @@ import com.tokopedia.tokofood.purchase.purchasepage.view.adapter.TokoFoodPurchas
 
 data class TokoFoodPurchaseProductUiModel(
         var isDisabled: Boolean = false,
+        var id: String = "",
         var name: String = "",
         var imageUrl: String = "",
         var addOns: List<String> = emptyList(),

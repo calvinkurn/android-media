@@ -53,10 +53,11 @@ object TokoFoodPurchaseUiModelMapper {
         )
     }
 
-    fun mapProductUiModel(isUnavailable: Boolean): TokoFoodPurchaseProductUiModel {
+    fun mapProductUiModel(isUnavailable: Boolean, id: String): TokoFoodPurchaseProductUiModel {
         return TokoFoodPurchaseProductUiModel(
                 isDisabled = isUnavailable,
-                name = "Milo Macchiato",
+                id = id,
+                name = "Milo Macchiato $id",
                 imageUrl = "https://img-global.cpcdn.com/recipes/1db6e302172f3f01/680x482cq70/es-milo-macchiato-janji-jiwa-foto-resep-utama.jpg",
                 price = 25000,
                 quantity = 1,
