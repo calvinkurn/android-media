@@ -52,7 +52,8 @@ class DynamicLegoBannerViewHolder(itemView: View,
 
     override fun bind(element: DynamicLegoBannerDataModel) {
         isCacheData = element.isCache
-        isLego24UsingRollenceVariant = HomeComponentRollenceController.isHomeComponentLego24BannerUsingRollenceVariant()
+//        isLego24UsingRollenceVariant = HomeComponentRollenceController.isHomeComponentLego24BannerUsingRollenceVariant()
+        isLego24UsingRollenceVariant = true //temporary for design review
         setHeaderComponent(element)
         setChannelDivider(element)
         setGrids(element)
