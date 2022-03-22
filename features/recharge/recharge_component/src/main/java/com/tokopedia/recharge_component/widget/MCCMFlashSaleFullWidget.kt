@@ -154,13 +154,13 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
         var highestCount = 0
         var attrCount = 0
         for (denom in listDenomFull) {
-            if (denom.title.isNotEmpty()) attrCount += 1
-            if (denom.description.isNotEmpty()) attrCount += 1
-            if (denom.quotaInfo.isNotEmpty() || denom.expiredDate.isNotEmpty()) attrCount += 1
+            if (denom.title.isNotEmpty()) attrCount++
+            if (denom.description.isNotEmpty()) attrCount++
+            if (denom.quotaInfo.isNotEmpty() || denom.expiredDate.isNotEmpty()) attrCount++
             if (denom.specialLabel.isNotEmpty() || denom.status == DenomConst.DENOM_STATUS_OUT_OF_STOCK)
-            if (denom.price.isNotEmpty()) attrCount += 1
-            if (denom.flashSaleLabel.isNotEmpty()) attrCount += 1
-            if (denom.flashSalePercentage.isMoreThanZero()) attrCount += 1
+            if (denom.price.isNotEmpty()) attrCount++
+            if (denom.flashSaleLabel.isNotEmpty()) attrCount++
+            if (denom.flashSalePercentage.isMoreThanZero()) attrCount++
 
             if (attrCount > highestCount) {
                 highestCount = attrCount
