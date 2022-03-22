@@ -146,7 +146,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                     is Success -> {
                         setAdapter()
                         playWidgetAnalyticsListenerImp.filterCategory =
-                            FeedPlayVideoTabMapper.getTabData(it.data.playGetContentSlot)[0].items.first().label
+                            FeedPlayVideoTabMapper.getTabData(it.data.playGetContentSlot).firstOrNull()?.items?.firstOrNull()?.label ?: ""
                         onSuccessInitialPlayTabData(
                             it.data.playGetContentSlot
                         )
