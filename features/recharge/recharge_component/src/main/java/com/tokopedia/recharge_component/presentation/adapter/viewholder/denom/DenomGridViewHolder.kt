@@ -30,7 +30,7 @@ class DenomGridViewHolder (
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(denomGrid: DenomData, denomType: DenomWidgetEnum,
-             isSelectedItem: Boolean, position: Int){
+             isSelectedItem: Boolean, position: Int, isPlacebo: Boolean = false){
 
         with(binding){
             tgDenomGridTitle.run {
@@ -190,13 +190,15 @@ class DenomGridViewHolder (
             }
 
             cardDenomGrid.run {
-                layoutParams.width = if (denomType == DenomWidgetEnum.GRID_TYPE){
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                } else getDimens(R.dimen.widget_denom_grid_width)
+                if (!isPlacebo) {
+                    layoutParams.width = if (denomType == DenomWidgetEnum.GRID_TYPE){
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    } else getDimens(R.dimen.widget_denom_grid_width)
 
-                layoutParams.height = if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE){
-                    getDimens (R.dimen.widget_denom_grid_height)
-                } else ViewGroup.LayoutParams.WRAP_CONTENT
+                    layoutParams.height = if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE){
+                        getDimens (R.dimen.widget_denom_grid_height)
+                    } else ViewGroup.LayoutParams.WRAP_CONTENT
+                }
 
                 setBackgroundColor(ContextCompat.getColor(rootView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
 
