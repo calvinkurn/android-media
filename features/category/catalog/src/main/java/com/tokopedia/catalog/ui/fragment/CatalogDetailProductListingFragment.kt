@@ -51,6 +51,7 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -59,9 +60,8 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import kotlinx.android.synthetic.main.fragment_catalog_detail_product_listing.*
 import java.util.*
 import javax.inject.Inject
@@ -70,7 +70,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         BaseCategoryAdapter.OnItemChangeView,
         QuickFilterListener,
         CatalogProductCardListener,
-        WishListActionListener,
         SortFilterBottomSheet.Callback{
 
     @Inject
@@ -80,9 +79,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     lateinit var viewModel: CatalogDetailProductListingViewModel
 
     @Inject
-    lateinit var removeWishlistActionUseCase: RemoveWishListUseCase
+    lateinit var removeWishlistActionUseCase: DeleteWishlistV2UseCase
     @Inject
-    lateinit var addWishlistActionUseCase: AddWishListUseCase
+    lateinit var addWishlistActionUseCase: AddToWishlistV2UseCase
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
@@ -518,8 +517,10 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                 CatalogDetailAnalytics.ActionKeys.CLICK_THREE_DOTS,
                 "${viewModel.catalogName} - $catalogId - ${CatalogDetailAnalytics.ActionKeys.ACTION_REMOVE_WISHLIST}",userSession.userId,catalogId)
-        removeWishlistActionUseCase.createObservable(productId,
-                userId, this)
+        removeWishlistActionUseCase.setParams(productId, userId)
+        removeWishlistActionUseCase.execute(
+                onSuccess = { onSuccessRemoveWishlist(productId) },
+                onError = { onErrorRemoveWishlist(ErrorHandler.getErrorMessage(context, it), productId) })
     }
 
     private fun addWishList(productId: String, userId: String, adapterPosition: Int) {
@@ -528,8 +529,13 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                 CatalogDetailAnalytics.ActionKeys.CLICK_THREE_DOTS,
                 "${viewModel.catalogName} - $catalogId - ${CatalogDetailAnalytics.ActionKeys.ACTION_ADD_WISHLIST}",userSession.userId,catalogId)
-        addWishlistActionUseCase.createObservable(productId, userId,
-                this)
+        addWishlistActionUseCase.setParams(productId, userId)
+        addWishlistActionUseCase.execute(
+                onSuccess = {
+                    onSuccessAddWishlist(productId)},
+                onError = {
+                    onErrorAddWishList(ErrorHandler.getErrorMessage(context, it), productId)
+                })
     }
 
     private fun launchLoginActivity(productId: String) {
@@ -548,26 +554,26 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         product_recyclerview.requestLayout()
     }
 
-    override fun onErrorAddWishList(errorMessage: String?, productId: String) {
+    private fun onErrorAddWishList(errorMessage: String?, productId: String) {
         enableWishListButton(productId)
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
-    override fun onSuccessAddWishlist(productId: String) {
+    private fun onSuccessAddWishlist(productId: String) {
         productNavListAdapter?.updateWishlistStatus(productId, true)
         enableWishListButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist))
+        NetworkErrorHelper.showSnackbar(activity, getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg))
     }
 
-    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String) {
+    private fun onErrorRemoveWishlist(errorMessage: String?, productId: String) {
         enableWishListButton(productId)
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
-    override fun onSuccessRemoveWishlist(productId: String) {
+    private fun onSuccessRemoveWishlist(productId: String) {
         productNavListAdapter?.updateWishlistStatus(productId, false)
         enableWishListButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
+        NetworkErrorHelper.showSnackbar(activity, getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg))
     }
 
     override fun onDestroyView() {

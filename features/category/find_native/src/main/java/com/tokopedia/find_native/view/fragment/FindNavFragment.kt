@@ -48,13 +48,13 @@ import com.tokopedia.find_native.viewmodel.FindNavViewModel
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import kotlinx.android.synthetic.main.find_nav_fragment.*
 import kotlinx.android.synthetic.main.layout_find_related.*
 import java.util.*
@@ -67,8 +67,7 @@ private const val REQUEST_PRODUCT_ITEM_CLICK = 1002
 
 class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         BaseCategoryAdapter.OnItemChangeView,
-        QuickFilterListener, WishListActionListener,
-        FindRelatedLinkAdapter.RelatedLinkClickListener, FindPriceListAdapter.PriceListClickListener {
+        QuickFilterListener, FindRelatedLinkAdapter.RelatedLinkClickListener, FindPriceListAdapter.PriceListClickListener {
 
     private var findNavScreenName: String = "Find"
 
@@ -82,10 +81,10 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     lateinit var gcmHandler: GCMHandler
 
     @Inject
-    lateinit var removeWishlistActionUseCase: RemoveWishListUseCase
+    lateinit var removeWishlistActionUseCase: DeleteWishlistV2UseCase
 
     @Inject
-    lateinit var addWishListActionUseCase: AddWishListUseCase
+    lateinit var addWishListActionUseCase: AddToWishlistV2UseCase
     private lateinit var component: FindNavComponent
     private var quickFilterAdapter: QuickFilterAdapter? = null
     private var productNavListAdapter: ProductNavListAdapter? = null
@@ -550,23 +549,23 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         return getSelectedFilter().containsKey(option.key)
     }
 
-    override fun onErrorAddWishList(errorMessage: String?, productId: String) {
+    private fun onErrorAddWishList(errorMessage: String?, productId: String) {
         enableWishListButton(productId)
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
-    override fun onSuccessAddWishlist(productId: String) {
+    private fun onSuccessAddWishlist(productId: String) {
         productNavListAdapter?.updateWishlistStatus(productId.toInt(), true)
         enableWishListButton(productId)
         NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_add_wishlist))
     }
 
-    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String) {
+    private fun onErrorRemoveWishlist(errorMessage: String?, productId: String) {
         enableWishListButton(productId)
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
-    override fun onSuccessRemoveWishlist(productId: String) {
+    private fun onSuccessRemoveWishlist(productId: String) {
         productNavListAdapter?.updateWishlistStatus(productId.toInt(), false)
         enableWishListButton(productId)
         NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_remove_wishlist))
@@ -590,11 +589,20 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     }
 
     private fun removeWishList(productId: String, userId: String) {
-        removeWishlistActionUseCase.createObservable(productId, userId, this)
+        removeWishlistActionUseCase.setParams(productId, userId)
+        removeWishlistActionUseCase.execute(
+                onSuccess = { onSuccessRemoveWishlist(productId) },
+                onError = { onErrorRemoveWishlist(ErrorHandler.getErrorMessage(context, it), productId) })
     }
 
     private fun addWishList(productId: String, userId: String) {
-        addWishListActionUseCase.createObservable(productId, userId, this)
+        addWishListActionUseCase.setParams(productId, userId)
+        addWishListActionUseCase.execute(
+                onSuccess = {
+                    onSuccessAddWishlist(productId)},
+                onError = {
+                    onErrorAddWishList(ErrorHandler.getErrorMessage(context, it), productId)
+                })
     }
 
     private fun launchLoginActivity() {

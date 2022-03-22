@@ -13,10 +13,12 @@ import com.tokopedia.catalog.usecase.listing.CatalogCategoryProductUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogDynamicFilterUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogGetProductListUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogQuickFilterUseCase
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
 import dagger.Provides
 
@@ -92,16 +94,20 @@ class CatalogUseCaseModule {
 
     @CatalogScope
     @Provides
+    fun provideGraphqlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
+
+    @CatalogScope
+    @Provides
     fun getAddWishListUseCase(context: Context)
-            : AddWishListUseCase {
-        return AddWishListUseCase(context)
+            : AddToWishlistV2UseCase {
+        return AddToWishlistV2UseCase(provideGraphqlRepository())
     }
 
     @CatalogScope
     @Provides
     fun getRemoveWishListUseCase(context: Context)
-            : RemoveWishListUseCase {
-        return RemoveWishListUseCase(context)
+            : DeleteWishlistV2UseCase {
+        return DeleteWishlistV2UseCase(provideGraphqlRepository())
     }
 
     @CatalogScope
