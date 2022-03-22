@@ -4,8 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.tokopedia.buyerorder.databinding.LayoutHorizontalTextViewBinding
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.BaseCustomView
 
 /**
@@ -23,11 +22,7 @@ class HorizontalCoupleTextView constructor(
     private var isShowSeparator: Boolean = false
         set(value){
             field = value
-            if (value){
-                binding.lineSeparator.show()
-            }else{
-                binding.lineSeparator.hide()
-            }
+            binding.lineSeparator.showWithCondition(value)
         }
 
 
