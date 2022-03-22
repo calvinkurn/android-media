@@ -1,7 +1,6 @@
 package com.tokopedia.logger.repository
 
 import com.google.gson.Gson
-import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudEmbraceImpl
@@ -20,7 +19,7 @@ import com.tokopedia.logger.utils.LoggerReporting
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import kotlin.coroutines.CoroutineContext
-import kotlin.math.log
+
 
 class LoggerRepository(
     private val logDao: LoggerDao,
@@ -134,7 +133,7 @@ class LoggerRepository(
         }
     }
 
-    suspend fun sendScalyrLogToServer(
+    private suspend fun sendScalyrLogToServer(
         config: ScalyrConfig,
         logs: List<Logger>,
         scalyrEventList: List<ScalyrEvent>
@@ -181,10 +180,8 @@ class LoggerRepository(
             }
             LoggerReporting.getInstance().tagMapsNewRelic[tagMapsValue]?.let {
                 if (priorityName == LoggerReporting.SF) {
-//                    messageNewRelicList.add(addEventNewRelicSF(message))
                     messageNewRelicList.add(NewRelicBody(Constants.EVENT_ANDROID_SF_NEW_RELIC, jsonToMap(message)))
                 } else {
-//                    messageNewRelicList.add(addEventNewRelic(message))
                     messageNewRelicList.add(NewRelicBody(Constants.EVENT_ANDROID_NEW_RELIC, jsonToMap(message)))
                 }
             }
@@ -215,19 +212,6 @@ class LoggerRepository(
             return false
         }
         return loggerCloudEmbraceImpl.sendToLogServer(embraceBodyList)
-    }
-
-    private fun addEventNewRelic(message: String): String {
-        val gson = Gson().fromJson(message, JsonObject::class.java)
-        gson.addProperty(Constants.EVENT_TYPE_NEW_RELIC, Constants.EVENT_ANDROID_NEW_RELIC)
-        return gson.toString()
-    }
-
-    private fun addEventNewRelicSF(message: String): String {
-        val gson = Gson().fromJson(message, JsonObject::class.java)
-        gson.addProperty(Constants.EVENT_TYPE_NEW_RELIC, Constants.EVENT_ANDROID_SF_NEW_RELIC)
-        gson.remove(Constants.PRIORITY_LOG)
-        return gson.toString()
     }
 
     fun truncate(str: String): String {
