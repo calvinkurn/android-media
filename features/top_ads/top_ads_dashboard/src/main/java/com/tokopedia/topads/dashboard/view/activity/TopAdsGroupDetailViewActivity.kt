@@ -143,7 +143,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     private var bidTypeData: ArrayList<TopAdsBidSettingsModel>? = arrayListOf()
     private var placementType: Int = 0
     private val bidSwitchManualBottomSheet by lazy(LazyThreadSafetyMode.NONE) {
-        BidSwitchManualBudgetBottomSheet(maxSuggestKeyword,minSuggestKeyword,suggestedBid,::onSaveClickedInManualBottomSheet)
+        BidSwitchManualBudgetBottomSheet(maxSuggestKeyword,minSuggestKeyword,suggestedBid,isWhiteListedUser,::onSaveClickedInManualBottomSheet)
     }
     private val bidInfoBottomSheet by lazy(LazyThreadSafetyMode.NONE) { BidInfoBottomSheet() }
 
