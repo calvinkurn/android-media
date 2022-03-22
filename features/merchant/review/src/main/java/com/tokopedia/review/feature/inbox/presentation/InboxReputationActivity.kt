@@ -25,6 +25,7 @@ import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.review.R
 import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
@@ -251,14 +252,12 @@ open class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputatio
         viewPager?.adapter = sectionAdapter
         if (GlobalConfig.isSellerApp()) {
             if (isExistParamTab(tab)) {
-                if (tab == ReviewApplinkConst.RATING_PRODUCT_TAB) {
-                    viewPager?.currentItem = TAB_RATING_PRODUCT
-                } else if (tab == ReviewApplinkConst.SELLER_INBOX_REVIEW_TAB) {
-                    viewPager?.currentItem = TAB_SELLER_INBOX_REVIEW
-                } else if (tab == ReviewApplinkConst.BUYER_REVIEW_TAB) {
-                    viewPager?.currentItem = TAB_BUYER_REVIEW
-                } else if (tab == ReviewApplinkConst.PENALTY_AND_REWARD_TAB) {
-                    viewPager?.currentItem = TAB_PENALTY_AND_REWARD
+                viewPager?.currentItem = when (tab) {
+                    ReviewApplinkConst.RATING_PRODUCT_TAB -> TAB_RATING_PRODUCT
+                    ReviewApplinkConst.SELLER_INBOX_REVIEW_TAB -> TAB_SELLER_INBOX_REVIEW
+                    ReviewApplinkConst.BUYER_REVIEW_TAB -> TAB_BUYER_REVIEW
+                    ReviewApplinkConst.PENALTY_AND_REWARD_TAB -> TAB_PENALTY_AND_REWARD
+                    else -> viewPager?.currentItem.orZero()
                 }
             }
         }
