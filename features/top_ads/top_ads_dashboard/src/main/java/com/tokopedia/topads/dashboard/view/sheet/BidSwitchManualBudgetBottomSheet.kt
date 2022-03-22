@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.topads.common.data.util.Utils.addBidValidationListener
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
+import com.tokopedia.topads.common.view.sheet.InfoBottomSheet
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
@@ -18,6 +18,7 @@ class BidSwitchManualBudgetBottomSheet(
     private val onSaveClicked: (String, String) -> Unit,
 ) : BottomSheetUnify() {
 
+    private val infoBottomSheet by lazy(LazyThreadSafetyMode.NONE) { InfoBottomSheet(InfoBottomSheet.TYPE_DASAR,true) }
     private var tfPencarian: TextFieldUnify? = null
     private var tfRecommendasi: TextFieldUnify? = null
     private var btnSave: UnifyButton? = null
@@ -75,7 +76,7 @@ class BidSwitchManualBudgetBottomSheet(
             }
         }
         setAction(drawableRight) {
-            //to refactor InfoBS and show here
+            infoBottomSheet.show(childFragmentManager)
         }
     }
 
