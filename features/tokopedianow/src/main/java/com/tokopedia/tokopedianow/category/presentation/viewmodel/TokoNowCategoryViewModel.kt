@@ -93,8 +93,8 @@ class TokoNowCategoryViewModel @Inject constructor (
     private val openScreenTrackingUrlMutableLiveData = SingleLiveEvent<CategoryTrackerModel>()
     val openScreenTrackingUrlLiveData: LiveData<CategoryTrackerModel> = openScreenTrackingUrlMutableLiveData
 
-    private val sharingMutableLiveData = SingleLiveEvent<CategorySharingModel>()
-    val sharingLiveData: LiveData<CategorySharingModel> = sharingMutableLiveData
+    private val shareMutableLiveData = SingleLiveEvent<CategorySharingModel>()
+    val shareLiveData: LiveData<CategorySharingModel> = shareMutableLiveData
 
     val categoryIdTracking: String
 
@@ -305,7 +305,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         val constructedLink = getConstructedLink(categoryModel.categoryDetail.data.url, categoryIdLvl2, categoryIdLvl3)
         val utmCampaignList = getUtmCampaignList(categoryIdLvl2, categoryIdLvl3)
 
-        sharingMutableLiveData.value = CategorySharingModel(
+        shareMutableLiveData.value = CategorySharingModel(
             categoryIdLvl2 = categoryIdLvl2,
             categoryIdLvl3 = categoryIdLvl3,
             title = title,
@@ -317,7 +317,7 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     private fun getTitleCategory(categoryIdLvl2: String, categoryModel: CategoryModel): String {
         return if (categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID) {
-            categoryModel.quickFilter.filter.firstOrNull()?.title.orEmpty()
+            categoryModel.quickFilter.filter.first().title
         } else {
             categoryModel.categoryDetail.data.name
         }

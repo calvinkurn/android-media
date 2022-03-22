@@ -5,9 +5,22 @@ import java.lang.reflect.Method
 object TestUtils {
 
     inline fun <reified T>Any.getPrivateField(name: String): T {
-        return this::class.java.getDeclaredField(name).let {
-            it.isAccessible = true
-            return@let it.get(this) as T
+        try {
+            return this::class.java.getDeclaredField(name).let {
+                it.isAccessible = true
+                return@let it.get(this) as T
+            }
+        } catch (e: NoSuchFieldException) {
+            // if there is no declared field on the current class, search another in parent class
+            val superClass = this::class.java.superclass
+            if (superClass == null) {
+                throw e
+            } else {
+                return superClass.getDeclaredField(name).let {
+                    it.isAccessible = true
+                    return@let it.get(this) as T
+                }
+            }
         }
     }
 

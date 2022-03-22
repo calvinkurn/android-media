@@ -193,7 +193,7 @@ class TokoNowCategoryFragment:
         super.observeViewModel()
 
         getViewModel().openScreenTrackingUrlLiveData.observe(this::sendOpenScreenTracking)
-        getViewModel().sharingLiveData.observe(this::setCategorySharingModel)
+        getViewModel().shareLiveData.observe(this::setCategorySharingModel)
     }
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
