@@ -2634,7 +2634,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             mutableSetOf()
         } else {
             somListSortFilterTab?.addCounter(1)
-            mutableSetOf(filterOrderType)
+            mutableSetOf(filterOrderType.toLong())
         }
         setDefaultSortByValue()
         viewModel.setOrderTypeFilter(orderTypes)

@@ -27,10 +27,10 @@ data class SomListGetOrderListParam(
         var statusList: List<Int> = listOf(),
         @SerializedName("shipping_list")
         @Expose
-        var shippingList: MutableSet<Int> = mutableSetOf(),
+        var shippingList: MutableSet<Long> = mutableSetOf(),
         @SerializedName("order_type_list")
         @Expose
-        var orderTypeList: MutableSet<Int> = mutableSetOf(),
+        var orderTypeList: MutableSet<Long> = mutableSetOf(),
         @SerializedName("sort_by")
         @Expose
         var sortBy: Int = SomConsts.SORT_BY_PAYMENT_DATE_DESCENDING,
