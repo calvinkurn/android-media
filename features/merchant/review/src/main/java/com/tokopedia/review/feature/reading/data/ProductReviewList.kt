@@ -55,6 +55,9 @@ data class ProductReview(
     @SerializedName("imageAttachments")
     @Expose
     var imageAttachments: List<ProductReviewAttachments> = listOf(),
+    @SerializedName("videoAttachments")
+    @Expose
+    var videoAttachments: List<ProductReviewAttachments> = listOf(),
     @SerializedName("likeDislike")
     @Expose
     var likeDislike: LikeDislike = LikeDislike(),
@@ -97,7 +100,7 @@ data class ProductReviewAttachments(
     val imageThumbnailUrl: String = "",
     @SerializedName("imageUrl")
     @Expose
-    val imageUrl: String = ""
+    val uri: String = ""
 )
 
 data class ProductReviewShopInfo(

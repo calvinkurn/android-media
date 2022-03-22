@@ -64,6 +64,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.reputationCommon)
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
     implementation projectOrAar(rootProject.ext.features.reviewInbox)
+    implementation projectOrAar(rootProject.ext.features.reviewCommon)
 
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.applink)

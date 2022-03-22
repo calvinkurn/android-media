@@ -41,7 +41,11 @@ import com.tokopedia.review.feature.imagepreview.presentation.adapter.ReviewImag
 import com.tokopedia.review.feature.imagepreview.presentation.adapter.ReviewImagePreviewLayoutManager
 import com.tokopedia.review.feature.imagepreview.presentation.di.DaggerReviewImagePreviewComponent
 import com.tokopedia.review.feature.imagepreview.presentation.di.ReviewImagePreviewComponent
-import com.tokopedia.review.feature.imagepreview.presentation.listener.*
+import com.tokopedia.review.feature.imagepreview.presentation.listener.EndlessScrollListener
+import com.tokopedia.review.feature.imagepreview.presentation.listener.ReviewImagePreviewListener
+import com.tokopedia.review.feature.imagepreview.presentation.listener.ReviewImagePreviewLoadMoreListener
+import com.tokopedia.review.feature.imagepreview.presentation.listener.ReviewImagePreviewSwipeListener
+import com.tokopedia.review.feature.imagepreview.presentation.listener.SnapPagerScrollListener
 import com.tokopedia.review.feature.imagepreview.presentation.uimodel.ReviewImagePreviewBottomSheetUiModel
 import com.tokopedia.review.feature.imagepreview.presentation.uimodel.ReviewImagePreviewUiModel
 import com.tokopedia.review.feature.imagepreview.presentation.viewmodel.ReviewImagePreviewViewModel
@@ -67,8 +71,6 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         private const val POSITION_INDEX_COUNTER = 1
         const val GALLERY_SOURCE_CREDIBILITY_SOURCE = "gallery"
         const val READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE = "reading image preview"
-        const val KEY_CACHE_ID = "cacheId"
-        const val KEY_FINAL_LIKE_COUNT = "final like count"
         fun newInstance(
             cacheManagerId: String,
             isFromGallery: Boolean
@@ -336,7 +338,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     }
 
     private fun setAdapterDataFromReading() {
-        adapter.addData(productReview.imageAttachments.map { ReviewImagePreviewUiModel(it.imageUrl) })
+        adapter.addData(productReview.imageAttachments.map { ReviewImagePreviewUiModel(it.uri) })
         setRecyclerViewCurrentItem()
     }
 

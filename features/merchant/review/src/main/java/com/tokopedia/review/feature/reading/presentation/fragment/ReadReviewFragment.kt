@@ -147,7 +147,12 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     override fun getAdapterTypeFactory(): ReadReviewAdapterTypeFactory {
-        return ReadReviewAdapterTypeFactory(this, this, this)
+        return ReadReviewAdapterTypeFactory(
+            readReviewItemListener = this,
+            attachedImagesClickListener = this,
+            reviewBasicInfoListener = this,
+            mediaRecyclerViewPool = RecyclerView.RecycledViewPool()
+        )
     }
 
     override fun createAdapterInstance(): BaseListAdapter<ReadReviewUiModel, ReadReviewAdapterTypeFactory> {

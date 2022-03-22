@@ -59,13 +59,14 @@
         app:typographyWeight="reguler"
         tools:text="Saya sangat puas sekali!! Awalnya saya gak percaya. Dengan memakai handphone ini, saya bisa mendengarkan suaara jernih... Selengkapnya" />
 
-    <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewAttachedImages
-        android:id="@+id/read_review_attached_images"
-        android:layout_width="wrap_content"
+    <com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
+        android:id="@+id/read_review_attached_media"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
         android:layout_marginTop="4dp"
-        android:orientation="horizontal"
         android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/read_review_item_review"
         tools:visibility="visible" />
@@ -76,7 +77,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/read_review_attached_images" />
+        app:layout_constraintTop_toBottomOf="@id/read_review_attached_media" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/read_review_like_button"

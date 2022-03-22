@@ -199,6 +199,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.devMonitoringTools)
+    implementation projectOrAar(rootProject.ext.features.reviewCommon)
     implementation projectOrAar(rootProject.ext.features.reviewInbox)
     implementation projectOrAar(rootProject.ext.features.inboxCommon)
     implementation projectOrAar(rootProject.ext.features.shopCommon)

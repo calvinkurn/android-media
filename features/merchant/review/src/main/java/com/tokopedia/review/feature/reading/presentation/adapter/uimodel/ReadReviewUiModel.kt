@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.review.feature.reading.data.ProductReview
 import com.tokopedia.review.feature.reading.presentation.adapter.ReadReviewAdapterTypeFactory
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 
 data class ReadReviewUiModel(
         val reviewData: ProductReview,
@@ -13,6 +14,7 @@ data class ReadReviewUiModel(
         val productImage: String = "",
         val productName: String = "",
         val productId: String = "",
+        val mediaThumbnails: ReviewMediaThumbnailUiModel,
         val impressHolder: ImpressHolder = ImpressHolder()
 ) : Visitable<ReadReviewAdapterTypeFactory> {
 

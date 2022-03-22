@@ -27,6 +27,12 @@ import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterBotto
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortTypeConstants
 import com.tokopedia.review.feature.reading.presentation.uimodel.ToggleLikeUiModel
 import com.tokopedia.review.feature.reading.utils.ReadReviewUtils
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -135,25 +141,58 @@ class ReadReviewViewModel @Inject constructor(
                 isShopViewHolder = false,
                 shopId = shopId,
                 shopName = shopName,
-                productId = productId.value ?: ""
+                productId = productId.value ?: "",
+                mediaThumbnails = ReviewMediaThumbnailUiModel(mapProductReviewAttachmentsToReviewMediaThumbnails(it))
             )
         }
     }
 
+    private fun mapProductReviewAttachmentsToReviewMediaThumbnails(productReview: ProductReview): List<ReviewMediaThumbnailVisitable> {
+        return mutableListOf<ReviewMediaThumbnailVisitable>().apply {
+            val imageThumbnails = productReview.imageAttachments.map {
+                ReviewMediaImageThumbnailUiModel(
+                    uiState = ReviewMediaImageThumbnailUiState.Showing(
+                        uri = it.uri, removable = false
+                    )
+                )
+            }
+            val videoThumbnails = productReview.videoAttachments.map {
+                ReviewMediaVideoThumbnailUiModel(
+                    uiState = ReviewMediaVideoThumbnailUiState.Showing(
+                        uri = it.uri, removable = false, playable = true, showDuration = false
+                    )
+                )
+            }
+            addAll(videoThumbnails)
+            addAll(imageThumbnails)
+        }
+    }
+
     fun mapShopReviewToReadReviewUiModel(
-            listShopReview: List<ShopReview>,
-            shopId: String,
-            shopName: String
+        listShopReview: List<ShopReview>,
+        shopId: String,
+        shopName: String
     ): List<ReadReviewUiModel> {
         return listShopReview.map {
             ReadReviewUiModel(
-                    reviewData = mapShopReviewDataToProductReviewData(it),
-                    isShopViewHolder = true,
-                    shopId = shopId,
-                    shopName = shopName,
-                    productImage = it.product.productImageURL,
-                    productName = it.product.productName,
-                    productId = it.product.productID
+                reviewData = mapShopReviewDataToProductReviewData(it),
+                isShopViewHolder = true,
+                shopId = shopId,
+                shopName = shopName,
+                productImage = it.product.productImageURL,
+                productName = it.product.productName,
+                productId = it.product.productID,
+                mediaThumbnails = ReviewMediaThumbnailUiModel(mapShopReviewAttachmentsToReviewMediaThumbnails(it))
+            )
+        }
+    }
+
+    private fun mapShopReviewAttachmentsToReviewMediaThumbnails(shopReview: ShopReview): List<ReviewMediaThumbnailVisitable> {
+        return shopReview.attachments.map {
+            ReviewMediaImageThumbnailUiModel(
+                uiState = ReviewMediaImageThumbnailUiState.Showing(
+                    uri = it.fullsizeURL, removable = false
+                )
             )
         }
     }

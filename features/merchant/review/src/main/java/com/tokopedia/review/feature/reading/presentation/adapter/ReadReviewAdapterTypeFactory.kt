@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.reading.presentation.adapter
 
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
@@ -16,7 +17,8 @@ import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewItem
 class ReadReviewAdapterTypeFactory(
     private val readReviewItemListener: ReadReviewItemListener,
     private val attachedImagesClickListener: ReadReviewAttachedImagesListener,
-    private val reviewBasicInfoListener: ReviewBasicInfoListener
+    private val reviewBasicInfoListener: ReviewBasicInfoListener,
+    private val mediaRecyclerViewPool: RecyclerView.RecycledViewPool
 ) : ReadReviewTypeFactory, BaseAdapterTypeFactory() {
 
     override fun type(loadingMoreModel: LoadingMoreModel): Int {
@@ -33,7 +35,8 @@ class ReadReviewAdapterTypeFactory(
                 parent,
                 readReviewItemListener,
                 attachedImagesClickListener,
-                reviewBasicInfoListener
+                reviewBasicInfoListener,
+                mediaRecyclerViewPool
             )
             ReadReviewLoadingViewHolder.LAYOUT -> ReadReviewLoadingViewHolder(parent)
             else -> return super.createViewHolder(parent, type)

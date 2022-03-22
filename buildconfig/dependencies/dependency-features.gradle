@@ -152,6 +152,7 @@ ext {
             tokopediaNow                    : ":features:tokopedianow",
             reputationCommon                : ":features:merchant:reputation_common",
             review                          : ":features:merchant:review",
+            reviewCommon                    : ":features:merchant:review_common",
             reviewInbox                     : ":features:merchant:review_inbox",
             sellerActiveCommon              : ":features:merchant:seller_active_common",
             sellerAppWidget                 : ":features:merchant:seller_app_widget",
