@@ -14,13 +14,16 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
         return ShopProductListFragment.newInstance(intent.getStringExtra(PARAM_SHOP_ID) ?: "",
             intent.getStringExtra(PARAM_SOURCE) ?: "",
             intent.getStringExtra(
-                PARAM_SHOP_NAME) ?: "")
+                PARAM_SHOP_NAME) ?: "",
+            intent.getStringExtra(
+                PARAM_SHOP_BADGE) ?: "")
     }
 
     companion object {
         const val PRODUCT_PAGE_TITLE = "Tag Produk"
-        private const val PARAM_SHOP_NAME = "shop_name"
-        private const val PARAM_SHOP_ID = "shopid"
-        private const val PARAM_SOURCE = "source"
+        const val PARAM_SHOP_NAME = "shop_name"
+        const val PARAM_SHOP_BADGE = "shop_badge"
+        const val PARAM_SHOP_ID = "shopid"
+        const val PARAM_SOURCE = "source"
     }
 }

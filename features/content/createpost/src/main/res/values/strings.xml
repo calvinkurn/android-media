@@ -76,5 +76,15 @@
     <string name="feed_product_page_search_bar_placeholder_text">Cari produk di %s </string>
     <string name="feed_product_page_filter_title">Urutkan</string>
     <string name="feed_content_default_filter_value">Pembaruan Terakhir</string>
+    <string name="content_creation_search_bs_header">Pilih produk dari</string>
+    <string name="content_creation_tagging_page_header_text">Pilih produk dari <![CDATA["<font color='#212121'><b> %s </b></font> ]]></string>
+    <string name="content_creation_search_bs_item_tokopedia">Tokopedia</string>
+    <string name="content_creation_search_bs_header_item_tokopedia">Akun saya</string>
+    <string name="content_creation_search_bs_item_terakhir">Terakhir Dibeli</string>
+    <string name="content_creation_search_bs_item_wishlist">Wishlist</string>
+    <string name="content_creation_search_bs_header_item_shop">Toko saya</string>
+    <string name="content_creation_search_coachmark_header">Nge-tag produk dari mana-mana</string>
+    <string name="content_creation_search_coachmark_desc">Kamu bahkan bisa nge-tag dari yang terakhir
+dibeli, Wishlist, dan bahkan produk tokomu.</string>
 
 </resources>

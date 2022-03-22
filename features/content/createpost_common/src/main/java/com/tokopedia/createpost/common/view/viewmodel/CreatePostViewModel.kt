@@ -22,7 +22,8 @@ data class CreatePostViewModel(
     var currentCorouselIndex: Int = 0,
     var mediaWidth: Int = 0,
     var mediaHeight: Int = 0,
-    var shopName: String = ""
+    var shopName: String = "",
+    var shopBadge: String = ""
 ) : Parcelable {
     val isEditState: Boolean
         get() = postId.isNotBlank()

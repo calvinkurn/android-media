@@ -33,6 +33,7 @@ import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker_insta.common.BundleData
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.user.session.UserSessionInterface
@@ -83,6 +84,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         toolbar_common?.toolbarIcon?.showWithCondition(header.avatar.isNotBlank())
         toolbar_common?.toolbarTitle?.text = getString(R.string.feed_content_post_sebagai)
         toolbar_common?.toolbarSubtitle?.text = MethodChecker.fromHtml(header.title)
+        toolbar_common?.toolbarExpandIcon?.gone()
     }
 
     override fun openProductTaggingPageOnPreviewMediaClick(position: Int) {

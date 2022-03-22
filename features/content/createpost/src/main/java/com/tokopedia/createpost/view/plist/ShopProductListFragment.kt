@@ -1,6 +1,7 @@
 package com.tokopedia.createpost.view.plist
 
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,26 +11,44 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.createpost.common.view.plist.*
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
+import com.tokopedia.createpost.view.listener.SearchCategoryBottomSheetListener
+import com.tokopedia.createpost.view.bottomSheet.SearchCategoryTypeBottomSheet
+import com.tokopedia.createpost.view.bottomSheet.SearchTypeData
+import com.tokopedia.createpost.view.plist.ShopProductListActivity.Companion.PARAM_SHOP_BADGE
+import com.tokopedia.createpost.view.plist.ShopProductListActivity.Companion.PARAM_SHOP_ID
+import com.tokopedia.createpost.view.plist.ShopProductListActivity.Companion.PARAM_SHOP_NAME
+import com.tokopedia.createpost.view.plist.ShopProductListActivity.Companion.PARAM_SOURCE
+import com.tokopedia.createpost.view.util.CreatePostPrefs
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.fragment_shop_plist_page.view.*
 import kotlinx.android.synthetic.main.layout_parent_product_list.*
 import javax.inject.Inject
 
-class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageListener {
+class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageListener,
+    SearchCategoryBottomSheetListener {
 
     @Inject
     lateinit var createPostAnalytics: CreatePostAnalytics
     lateinit var sortListItems: List<ShopPagePListSortItem>
+    lateinit var headerViewText: Typography
+    lateinit var searchCategoryBottomSheet:SearchCategoryTypeBottomSheet
+    val coachMarkItem = ArrayList<CoachMark2Item>()
+    private  lateinit var coachMark: CoachMark2
+
 
     val presenter: ShopPageProductListViewModel by lazy { ViewModelProviders.of(this)[ShopPageProductListViewModel::class.java] }
     var getImeiBS: ShopPListSortFilterBs? = null
@@ -68,6 +87,9 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
     }
 
     private fun initViews(view: View) {
+        headerViewText = view.findViewById(R.id.search_type_header)
+
+       headerViewText.text = MethodChecker.fromHtml(String.format(getString(R.string.content_creation_tagging_page_header_text)," Tokopedia"))
 
         view.recycler_view.layoutManager = GridLayoutManager(activity, 2)
         view.recycler_view.adapter = mAdapter
@@ -76,9 +98,14 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         view.sb_shop_product.searchBarIcon.setImageDrawable(null)
         presenter.getSortData()
         val shopName = arguments?.getString(PARAM_SHOP_NAME) ?: ""
+        val shopBadge = arguments?.getString(PARAM_SHOP_BADGE) ?: ""
         val shopNamePlaceHolderText = String.format(
             requireContext().getString(R.string.feed_product_page_search_bar_placeholder_text),
             shopName)
+
+        view.search_type_header.setOnClickListener {
+           openBottomSheet(shopName, shopBadge)
+        }
 
         view.sb_shop_product.searchBarPlaceholder = shopNamePlaceHolderText
         view.cu_sort_chip.chip_container.setOnClickListener {
@@ -106,6 +133,37 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
             createPostAnalytics.eventClickOnSearchBar()
         }
 
+        coachMark = CoachMark2(activity as Context)
+
+        coachMarkItem.add(
+            CoachMark2Item(
+                headerViewText,
+                getString(R.string.content_creation_search_coachmark_header),
+                getString(R.string.content_creation_search_coachmark_desc),
+                CoachMark2.POSITION_BOTTOM
+            )
+        )
+        if (CreatePostPrefs.getShouldShowCoachMarkValue(activity as Context))
+            showFabCoachMark()
+
+    }
+    private fun showFabCoachMark() {
+        CreatePostPrefs.saveShouldShowCoachMarkValue(activity as Context)
+        if (::coachMark.isInitialized) {
+            coachMark.showCoachMark(coachMarkItem)
+        }
+    }
+    private fun openBottomSheet(shopName: String, shopBadge: String) {
+        if (::coachMark.isInitialized) {
+            coachMark.hideCoachMark()
+        }
+        searchCategoryBottomSheet = SearchCategoryTypeBottomSheet()
+        context?.let {
+            searchCategoryBottomSheet.show(
+                Bundle.EMPTY,
+                childFragmentManager, this, shopName, shopBadge, it
+            )
+        }
     }
     private fun addSortListObserver() = presenter.sortLiveData.observe(this, Observer {
         it?.let {
@@ -247,15 +305,13 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         private val CONTAINER_EMPTY = 2
         private val CONTAINER_ERROR = 3
         private val SCREEN_NAME = "Product Tag Listing"
-        private const val PARAM_SHOP_NAME = "shop_name"
-        private const val PARAM_SHOP_ID = "shopid"
-        private const val PARAM_SOURCE = "source"
 
-        fun newInstance(shopId: String, source: String, shopName: String): ShopProductListFragment {
+        fun newInstance(shopId: String, source: String, shopName: String, shopBadge: String): ShopProductListFragment {
             val bundle = Bundle()
             bundle.putString(PARAM_SHOP_ID, shopId)
             bundle.putString(PARAM_SOURCE, source)
             bundle.putString(PARAM_SHOP_NAME, shopName)
+            bundle.putString(PARAM_SHOP_BADGE, shopBadge)
             val fragment = ShopProductListFragment()
             fragment.arguments = bundle
             return fragment
@@ -276,5 +332,12 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
     override fun sortProductCriteriaClicked(criteria: String) {
         mAdapter.resetOriginalList()
         createPostAnalytics.eventClickOnSortCriteria(criteria)
+    }
+
+    override fun onItemCLick(searchTypeData: SearchTypeData) {
+        if (::searchCategoryBottomSheet.isInitialized)
+            searchCategoryBottomSheet.dismiss()
+        if (::headerViewText.isInitialized)
+            headerViewText.text = MethodChecker.fromHtml(String.format(getString(R.string.content_creation_tagging_page_header_text)," ${searchTypeData.text}"))
     }
 }
