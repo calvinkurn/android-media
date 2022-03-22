@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.MotionEvent
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -365,7 +366,12 @@ open class PickerActivity : BaseActivity()
 
     override fun tabVisibility(isShown: Boolean) {
         if (!param.get().isCommonPageType()) return
-        binding?.tabContainer?.showWithCondition(isShown)
+
+        // we used the find view by Id back because
+        // we faced a crash while using view binding for this
+        findViewById<RelativeLayout>(
+            R.id.tab_container
+        ).showWithCondition(isShown)
     }
 
     override fun mediaSelected(): List<MediaUiModel> {
