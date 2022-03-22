@@ -102,6 +102,28 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.error_available_stock_quantity_exceeding_max_limit)
     }
 
+    // product weight string properties
+
+    fun getEmptyProductWeightErrorMessage(): String {
+        return getString(R.string.error_empty_weight).orEmpty()
+    }
+
+    fun getMinLimitProductWeightErrorMessage(minStock: Int): String {
+        return try {
+            context?.getString(R.string.error_minimum_weight, minStock)
+        } catch (e: Resources.NotFoundException) {
+            null
+        }.orEmpty()
+    }
+
+    fun getMaxLimitProductWeightErrorMessage(maxStock: Int): String {
+        return try {
+            context?.getString(R.string.error_max_weight, maxStock)
+        } catch (e: Resources.NotFoundException) {
+            null
+        }.orEmpty()
+    }
+
     // product order quantity string properties
 
     fun getEmptyOrderQuantityErrorMessage(): String? {

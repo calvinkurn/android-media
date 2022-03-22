@@ -78,6 +78,11 @@
     <string name="error_product_price_less_than_min_limit">Harga kurang dari batas min. Rp100</string>
     <string name="error_product_price_exceeding_max_limit">Harga melebihi batas maks. Rp100 juta</string>
 
+    <!-- add edit product weight -->
+    <string name="error_empty_weight">Berat wajib diisi.</string>
+    <string name="error_minimum_weight">Minimal %d g.</string>
+    <string name="error_max_weight">Maksimum %d g.</string>
+
     <!-- add edit product price recommendation -->
     <string name="title_price_recommendation">Rekomendasi Harga Pasar</string>
     <string name="title_price_recommendation_applied">Rekomendasi harga sudah diterapkan</string>
@@ -231,6 +236,7 @@
     <string name="label_unit">Satuan</string>
     <string name="label_weight">Berat</string>
     <string name="label_weight_gram">Gram</string>
+    <string name="label_weight_gram_lowercase">gram</string>
     <string name="label_weight_kilogram">Kilogram</string>
     <string name="error_weight_not_valid">Berat harus diisi antara %1$s &#8212; %2$s</string>
     <string name="action_end_button">Selesai</string>

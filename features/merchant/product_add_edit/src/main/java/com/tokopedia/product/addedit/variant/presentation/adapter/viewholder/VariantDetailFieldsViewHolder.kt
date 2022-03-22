@@ -110,7 +110,12 @@ class VariantDetailFieldsViewHolder(
         weightField?.setModeToNumberInput()
         weightField?.textFieldInput?.afterTextChanged {
             if (isRendered) {
-                variantDetailFieldsViewHolderListener.onWeightInputTextChanged(it, visitablePosition)
+                val weightInput = it.replace(".", "")
+                weightInput.format("%f")
+                val validatedInputModel = variantDetailFieldsViewHolderListener
+                    .onWeightInputTextChanged(weightInput, visitablePosition)
+                weightField?.setError(validatedInputModel.isWeightError)
+                weightField?.setMessage(validatedInputModel.weightFieldErrorMessage)
             }
         }
     }

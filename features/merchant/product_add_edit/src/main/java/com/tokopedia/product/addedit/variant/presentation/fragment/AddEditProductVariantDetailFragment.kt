@@ -55,6 +55,7 @@ import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import okhttp3.internal.toLongOrDefault
 import java.math.BigInteger
 import javax.inject.Inject
 
@@ -225,7 +226,9 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onWeightInputTextChanged(weightInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
-        return VariantDetailInputLayoutModel () //TODO: implement validation
+        val validatedInputModel = viewModel.validateProductVariantWeightInput(weightInput.toIntOrNull(), adapterPosition)
+        viewModel.editVariantDetailInputMap(adapterPosition, validatedInputModel)
+        return validatedInputModel
     }
 
     override fun onMultipleEditFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
@@ -295,7 +298,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observeSelectedVariantSize() {
-        viewModel.selectedVariantSize.observe(viewLifecycleOwner, Observer { size ->
+        viewModel.selectedVariantSize.observe(viewLifecycleOwner, { size ->
             // clear old elements before rendering new elements
             variantDetailFieldsAdapter?.clearAllElements()
             // reset the collapsed fields counter
@@ -315,14 +318,14 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observeHasWholesale() {
-        viewModel.hasWholesale.observe(viewLifecycleOwner, Observer {
+        viewModel.hasWholesale.observe(viewLifecycleOwner, {
             variantDetailFieldsAdapter?.updatePriceEditingStatus(viewModel.getAvailableFields(), !it)
             tickerVariantWholesale?.visibility = if (it) View.VISIBLE else View.GONE
         })
     }
 
     private fun observeInputStatus() {
-        viewModel.errorCounter.observe(viewLifecycleOwner, Observer {
+        viewModel.errorCounter.observe(viewLifecycleOwner, {
             buttonSave?.isEnabled = it.orZero() <= 0
         })
     }

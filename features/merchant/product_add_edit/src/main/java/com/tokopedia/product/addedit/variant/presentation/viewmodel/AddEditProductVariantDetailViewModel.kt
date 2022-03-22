@@ -5,6 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.common.constant.ProductStatus
@@ -14,9 +15,11 @@ import com.tokopedia.product.addedit.common.util.InputPriceUtil
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.DEFAULT_IS_PRIMARY_INDEX
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_PRODUCT_WEIGHT_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_WEIGHT_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.extension.getSelectionLevelOptionTitle
@@ -379,6 +382,30 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         inputModel.stockFieldErrorMessage = ""
         updateInputStockErrorStatusMap(adapterPosition, false)
 
+        return inputModel
+    }
+
+    fun validateProductVariantWeightInput(weightInput: Int?, adapterPosition: Int): VariantDetailInputLayoutModel {
+        val inputModel = inputLayoutModelMap[adapterPosition] ?: VariantDetailInputLayoutModel()
+        if (weightInput == null) {
+            inputModel.weightFieldErrorMessage = provider.getEmptyProductWeightErrorMessage()
+            inputModel.weight = Int.ZERO
+        } else {
+            inputModel.weightFieldErrorMessage = when {
+                weightInput < MIN_PRODUCT_WEIGHT_LIMIT -> {
+                    provider.getMinLimitProductWeightErrorMessage(MIN_PRODUCT_WEIGHT_LIMIT)
+                }
+                weightInput > MAX_PRODUCT_WEIGHT_LIMIT -> {
+                    provider.getMaxLimitProductWeightErrorMessage(MAX_PRODUCT_WEIGHT_LIMIT)
+                }
+                else -> {
+                    ""
+                }
+            }
+            inputModel.weight = weightInput
+        }
+        //updateInputStockErrorStatusMap(adapterPosition, inputModel.isWeightError)
+        inputModel.isWeightError = inputModel.weightFieldErrorMessage.isNotEmpty()
         return inputModel
     }
 
