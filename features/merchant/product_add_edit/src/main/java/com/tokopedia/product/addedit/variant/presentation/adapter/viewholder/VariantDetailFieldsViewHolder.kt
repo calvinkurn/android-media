@@ -6,38 +6,28 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatTextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.util.setModeToNumberInput
 import com.tokopedia.product.addedit.common.util.setRecyclerViewEditorActionListener
 import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.VariantDetailFieldsUiModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
-import java.text.NumberFormat
-import java.util.*
 
-class VariantDetailFieldsViewHolder(itemView: View?,
-                                    onStatusSwitchCheckedChangeListener: OnStatusSwitchCheckedChangeListener,
-                                    onPriceInputTextChangedListener: OnPriceInputTextChangedListener,
-                                    onStockInputTextChangedListener: OnStockInputTextChangedListener,
-                                    onSkuInputTextChangedListener: OnSkuInputTextChangedListener) :
-        AbstractViewHolder<VariantDetailFieldsUiModel>(itemView) {
+class VariantDetailFieldsViewHolder(
+    itemView: View?,
+    variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolderListener
+): AbstractViewHolder<VariantDetailFieldsUiModel>(itemView) {
 
-    interface OnStatusSwitchCheckedChangeListener {
-        fun onCheckedChanged(isChecked: Boolean, adapterPosition: Int)
-    }
-
-    interface OnPriceInputTextChangedListener {
+    interface VariantDetailFieldsViewHolderListener {
+        fun onStatusSwitchChanged(isChecked: Boolean, adapterPosition: Int)
         fun onPriceInputTextChanged(priceInput: String, adapterPosition: Int): VariantDetailInputLayoutModel
-    }
-
-    interface OnStockInputTextChangedListener {
         fun onStockInputTextChanged(stockInput: String, adapterPosition: Int): VariantDetailInputLayoutModel
-    }
-
-    interface OnSkuInputTextChangedListener {
         fun onSkuInputTextChanged(skuInput: String, adapterPosition: Int)
+        fun onWeightInputTextChanged(weightInput: String, adapterPosition: Int): VariantDetailInputLayoutModel
     }
 
     private var unitValueLabel: AppCompatTextView? = null
@@ -45,32 +35,38 @@ class VariantDetailFieldsViewHolder(itemView: View?,
     private var priceField: TextFieldUnify? = null
     private var stockField: TextFieldUnify? = null
     private var skuField: TextFieldUnify? = null
+    private var weightField: TextFieldUnify? = null
 
     private var isRendered = false
     private var visitablePosition = 0
     private var isPriceFieldEdited = false
 
     init {
-        unitValueLabel = itemView?.findViewById(com.tokopedia.product.addedit.R.id.tv_unit_value_label)
-        statusSwitch = itemView?.findViewById(com.tokopedia.product.addedit.R.id.su_variant_status)
-        priceField = itemView?.findViewById(com.tokopedia.product.addedit.R.id.tfu_price_field)
-        stockField = itemView?.findViewById(com.tokopedia.product.addedit.R.id.tfu_stock_field)
-        skuField = itemView?.findViewById(com.tokopedia.product.addedit.R.id.tfu_sku_field)
+        unitValueLabel = itemView?.findViewById(R.id.tv_unit_value_label)
+        statusSwitch = itemView?.findViewById(R.id.su_variant_status)
+        priceField = itemView?.findViewById(R.id.tfu_price_field)
+        stockField = itemView?.findViewById(R.id.tfu_stock_field)
+        skuField = itemView?.findViewById(R.id.tfu_sku_field)
+        weightField = itemView?.findViewById(R.id.tfu_weight_field)
 
         // handle action listener for null view error handling
         priceField?.setRecyclerViewEditorActionListener()
         stockField?.setRecyclerViewEditorActionListener()
         skuField?.setRecyclerViewEditorActionListener()
+        weightField?.setRecyclerViewEditorActionListener()
 
-        statusSwitch?.setOnClickListener {
-            val isChecked = statusSwitch?.isChecked ?: false
-            onStatusSwitchCheckedChangeListener.onCheckedChanged(isChecked, visitablePosition)
-        }
+        // setup listeners
+        setupPriceFieldListener(variantDetailFieldsViewHolderListener)
+        setupStockFieldListener(variantDetailFieldsViewHolderListener)
+        setupWeightFieldListener(variantDetailFieldsViewHolderListener)
+        setupSkuFieldListener(variantDetailFieldsViewHolderListener)
+        setupStatusSwitchListener(variantDetailFieldsViewHolderListener)
+    }
 
+    private fun setupPriceFieldListener(variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolderListener) {
+        priceField?.setModeToNumberInput()
         priceField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
-
-            }
+            override fun afterTextChanged(p0: Editable?) {}
 
             override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {
                 isPriceFieldEdited = start != after
@@ -79,89 +75,59 @@ class VariantDetailFieldsViewHolder(itemView: View?,
             override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
                 if (isRendered && isPriceFieldEdited) {
                     // clean any kind of number formatting here
-                    var priceInput = charSequence?.toString()?.replace(".", "") ?: ""
+                    val priceInput = charSequence?.toString()?.replace(".", "") ?: ""
                     // remove scientific notation e.g. 20E7
                     priceInput.format("%f")
                     // handle the price input
-                    val validatedInputModel = onPriceInputTextChangedListener.onPriceInputTextChanged(priceInput, visitablePosition)
+                    val validatedInputModel = variantDetailFieldsViewHolderListener.onPriceInputTextChanged(priceInput, visitablePosition)
                     priceField?.setError(validatedInputModel.isPriceError)
                     priceField?.setMessage(validatedInputModel.priceFieldErrorMessage)
-                    // format the price with period delimiter
-                    priceField?.textFieldInput?.let {
-                        // remove the listener to prevent recursive callback
-                        it.removeTextChangedListener(this)
-                        // add the period delimiters
-                        if (priceInput.isNotBlank()) {
-                            priceInput = NumberFormat.getNumberInstance(Locale.US).format(priceInput.toBigDecimal()).replace(",", ".")
-                        }
-                        // set the text
-                        it.setText(priceInput)
-                        it.setSelection(priceInput.length)
-                        // reset the listener
-                        it.addTextChangedListener(this)
-                    }
                 } else if (isRendered && !isPriceFieldEdited) {
                     // handle the price input if field is cleared
-                    val validatedInputModel = onPriceInputTextChangedListener.onPriceInputTextChanged(charSequence.toString(), visitablePosition)
+                    val validatedInputModel = variantDetailFieldsViewHolderListener.onPriceInputTextChanged(charSequence.toString(), visitablePosition)
                     priceField?.setError(validatedInputModel.isPriceError)
                     priceField?.setMessage(validatedInputModel.priceFieldErrorMessage)
                 }
             }
         })
+    }
 
-        stockField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
-
+    private fun setupStockFieldListener(variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolderListener) {
+        stockField?.setModeToNumberInput()
+        stockField?.textFieldInput?.afterTextChanged {
+            if (isRendered) {
+                val stockInput = it.replace(".", "")
+                stockInput.format("%f")
+                val validatedInputModel = variantDetailFieldsViewHolderListener
+                    .onStockInputTextChanged(stockInput, visitablePosition)
+                stockField?.setError(validatedInputModel.isStockError)
+                stockField?.setMessage(validatedInputModel.stockFieldErrorMessage)
             }
+        }
+    }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
+    private fun setupWeightFieldListener(variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolderListener) {
+        weightField?.setModeToNumberInput()
+        weightField?.textFieldInput?.afterTextChanged {
+            if (isRendered) {
+                variantDetailFieldsViewHolderListener.onWeightInputTextChanged(it, visitablePosition)
             }
+        }
+    }
 
-            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                if (isRendered) {
-                    // clean any kind of number formatting here
-                    var stockInput = charSequence?.toString()?.replace(".", "") ?: ""
-                    // remove scientific notation e.g. 20E7
-                    stockInput.format("%f")
-                    // handle the stock input
-                    val validatedInputModel = onStockInputTextChangedListener.onStockInputTextChanged(stockInput, visitablePosition)
-                    stockField?.setError(validatedInputModel.isStockError)
-                    stockField?.setMessage(validatedInputModel.stockFieldErrorMessage)
-                    // format the stock with period delimiter
-                    stockField?.textFieldInput?.let {
-                        // remove the listener to prevent recursive callback
-                        it.removeTextChangedListener(this)
-                        // add the period delimiters
-                        if (stockInput.isNotBlank()) {
-                            stockInput = NumberFormat.getNumberInstance(Locale.US).format(stockInput.toBigDecimal()).replace(",", ".")
-                        }
-                        // set the text
-                        it.setText(stockInput)
-                        it.setSelection(stockInput.length)
-                        // reset the listener
-                        it.addTextChangedListener(this)
-                    }
-                }
+    private fun setupSkuFieldListener(variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolderListener) {
+        skuField?.textFieldInput?.afterTextChanged {
+            if (isRendered) {
+                variantDetailFieldsViewHolderListener.onSkuInputTextChanged(it, visitablePosition)
             }
-        })
+        }
+    }
 
-        skuField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
-
-            }
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
-
-            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                if (isRendered) {
-                    val skuInput = charSequence?.toString() ?: ""
-                    onSkuInputTextChangedListener.onSkuInputTextChanged(skuInput, visitablePosition)
-                }
-            }
-        })
+    private fun setupStatusSwitchListener(variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolderListener) {
+        statusSwitch?.setOnClickListener {
+            val isChecked = statusSwitch?.isChecked ?: false
+            variantDetailFieldsViewHolderListener.onStatusSwitchChanged(isChecked, visitablePosition)
+        }
     }
 
     override fun bind(element: VariantDetailFieldsUiModel?) {
@@ -179,6 +145,7 @@ class VariantDetailFieldsViewHolder(itemView: View?,
             stockField?.setError(variantDetailInputLayoutModel.isStockError)
             stockField?.setMessage(variantDetailInputLayoutModel.stockFieldErrorMessage)
             skuField?.textFieldInput?.setText(variantDetailInputLayoutModel.sku)
+            weightField?.textFieldInput?.setText(variantDetailInputLayoutModel.weight.toString())
             // show / hide sku field
             if (variantDetailInputLayoutModel.isSkuFieldVisible) skuField?.show()
             else skuField?.hide()

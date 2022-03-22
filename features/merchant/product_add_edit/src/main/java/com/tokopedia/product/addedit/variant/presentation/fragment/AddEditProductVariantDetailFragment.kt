@@ -60,12 +60,9 @@ import javax.inject.Inject
 
 class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         VariantDetailHeaderViewHolder.OnCollapsibleHeaderClickListener,
-        VariantDetailFieldsViewHolder.OnStatusSwitchCheckedChangeListener,
-        VariantDetailFieldsViewHolder.OnPriceInputTextChangedListener,
-        VariantDetailFieldsViewHolder.OnStockInputTextChangedListener,
         MultipleVariantEditSelectBottomSheet.MultipleVariantEditListener,
         SelectVariantMainBottomSheet.SelectVariantMainListener,
-        VariantDetailFieldsViewHolder.OnSkuInputTextChangedListener,
+        VariantDetailFieldsViewHolder.VariantDetailFieldsViewHolderListener,
         AddEditProductPerformanceMonitoringListener
 {
 
@@ -147,11 +144,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         multipleVariantEditSelectBottomSheet.setData(variantInputModel)
 
         variantDetailFieldsAdapter = VariantDetailFieldsAdapter(VariantDetailInputTypeFactoryImpl(
-                this,
-                this,
-                this,
-                this,
-                this))
+                this, this))
         recyclerViewVariantDetailFields?.adapter = variantDetailFieldsAdapter
         recyclerViewVariantDetailFields?.layoutManager = LinearLayoutManager(context)
         recyclerViewVariantDetailFields?.itemAnimator = null
@@ -206,7 +199,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         return viewModel.isVariantDetailHeaderCollapsed(headerPosition)
     }
 
-    override fun onCheckedChanged(isChecked: Boolean, adapterPosition: Int) {
+    override fun onStatusSwitchChanged(isChecked: Boolean, adapterPosition: Int) {
         val updatedInputModel = viewModel.updateSwitchStatus(isChecked, adapterPosition)
         viewModel.editVariantDetailInputMap(adapterPosition, updatedInputModel)
 
@@ -229,6 +222,10 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     override fun onSkuInputTextChanged(skuInput: String, adapterPosition: Int) {
         val updatedInputModel = viewModel.updateVariantSkuInput(skuInput, adapterPosition)
         viewModel.editVariantDetailInputMap(adapterPosition, updatedInputModel)
+    }
+
+    override fun onWeightInputTextChanged(weightInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
+        return VariantDetailInputLayoutModel () //TODO: implement validation
     }
 
     override fun onMultipleEditFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {

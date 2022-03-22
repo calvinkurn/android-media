@@ -41,14 +41,6 @@ class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInpu
         notifyItemRangeInserted(targetPosition, viewModels.size)
     }
 
-    fun updateSkuVisibilityStatus(variantDetailFieldMapLayout: Map<Int, VariantDetailInputLayoutModel>, isVisible: Boolean) {
-        variantDetailFieldMapLayout.forEach { (adapterPosition, variantDetailInputModel) ->
-            variantDetailInputModel.isSkuFieldVisible = isVisible
-            val variantDetailFieldsViewModel = VariantDetailFieldsUiModel(variantDetailInputModel)
-            notifyElement(adapterPosition, variantDetailFieldsViewModel)
-        }
-    }
-
     fun updatePriceEditingStatus(variantDetailFieldMapLayout: Map<Int, VariantDetailInputLayoutModel>, isEnabled: Boolean) {
         variantDetailFieldMapLayout.forEach { (adapterPosition, variantDetailInputModel) ->
             variantDetailInputModel.priceEditEnabled = isEnabled

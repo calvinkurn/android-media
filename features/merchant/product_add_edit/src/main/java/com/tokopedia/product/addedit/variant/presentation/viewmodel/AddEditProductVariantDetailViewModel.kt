@@ -434,6 +434,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 isActive = productVariant.status == STATUS_ACTIVE_STRING,
                 sku = productVariant.sku,
                 stock = productVariant.stock.toString(),
+                weight = productVariant.weight,
                 headerPosition = headerPosition,
                 isSkuFieldVisible = isSkuFieldVisible,
                 unitValueLabel = unitValueLabel,
