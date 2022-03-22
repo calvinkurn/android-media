@@ -1,23 +1,16 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.applink.ApplinkConst
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
 import com.google.android.gms.cast.framework.CastStateListener
 import com.google.gson.Gson
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.linker.LinkerManager
-import com.tokopedia.linker.LinkerUtils
-import com.tokopedia.linker.interfaces.ShareCallback
-import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.linker.model.LinkerError
-import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.R
@@ -52,6 +45,8 @@ import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
@@ -81,7 +76,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlinx.coroutines.flow.collect
 import kotlin.math.max
 
 /**
@@ -155,22 +149,22 @@ class PlayViewModel @AssistedInject constructor(
 
     private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 50)
 
-    private val data = repo.getChannelData(channelId) ?: error("Channel data cannot be null")
+    private var selectedUpcomingCampaign: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty
 
     /**
      * Data State
      */
     private val _channelDetail = MutableStateFlow(PlayChannelDetailUiModel())
-    private val _partnerInfo = MutableStateFlow(data.partnerInfo)
+    private val _partnerInfo = MutableStateFlow(PlayPartnerInfo())
     private val _bottomInsets = MutableStateFlow(emptyMap<BottomInsetsType, BottomInsetsState>())
-    private val _status = MutableStateFlow(data.status)
+    private val _status = MutableStateFlow(PlayStatusUiModel.Empty)
     private val _interactive = MutableStateFlow<PlayInteractiveUiState>(PlayInteractiveUiState.NoInteractive)
     private val _leaderboardInfo = MutableStateFlow<PlayLeaderboardWrapperUiModel>(PlayLeaderboardWrapperUiModel.Unknown)
     private val _leaderboardUserBadgeState = MutableStateFlow(PlayLeaderboardBadgeUiState())
     private val _likeInfo = MutableStateFlow(PlayLikeInfoUiModel())
     private val _channelReport = MutableStateFlow(PlayChannelReportUiModel())
-    private val _tagItems = MutableStateFlow(data.tagItems)
-    private val _quickReply = MutableStateFlow(data.quickReplyInfo)
+    private val _tagItems = MutableStateFlow(TagItemUiModel.Empty)
+    private val _quickReply = MutableStateFlow(PlayQuickReplyInfoUiModel.Empty)
 
     private val _interactiveUiState = combine(
         _interactive, _bottomInsets, _status
@@ -826,6 +820,7 @@ class PlayViewModel @AssistedInject constructor(
             CloseSharingOptionAction -> handleCloseSharingOption()
             is ClickSharingOptionAction -> handleSharingOption(action.shareModel)
             is SharePermissionAction -> handleSharePermission(action.label)
+            is SendUpcomingReminder -> handleSendReminder(action.section, false)
         }
     }
 
@@ -866,6 +861,11 @@ class PlayViewModel @AssistedInject constructor(
         handleLikeInfo(channelData.likeInfo)
         handlePinnedInfo(channelData.pinnedInfo)
         handleLeaderboardInfo(channelData.leaderboardInfo)
+
+        _partnerInfo.value = channelData.partnerInfo
+        _status.value = channelData.status
+        _tagItems.value = channelData.tagItems
+        _quickReply.value = channelData.quickReplyInfo
     }
 
     fun focusPage(channelData: PlayChannelData) {
@@ -995,18 +995,35 @@ class PlayViewModel @AssistedInject constructor(
      * then we don't need to retrieve the product.
      */
     private fun updateTagItems() {
-        if (!_tagItems.value.product.canShow) return
+        if (!_tagItems.value.product.canShow) {
+            _tagItems.update { it.copy(resultState = ResultState.Success) }
+            return
+        }
+
         _tagItems.update { it.copy(resultState = ResultState.Loading) }
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val tagItem = repo.getTagItem(channelId)
             _tagItems.value = tagItem
 
+            checkReminderStatus()
+
             sendProductTrackerToBro(
-                productList = tagItem.product.productList
+                productList = tagItem.product.productSectionList
+                    .filterIsInstance<ProductSectionUiModel.Section>()
+                    .flatMap { it.productList }
             )
         }) { err ->
             _tagItems.update { it.copy(resultState = ResultState.Fail(err)) }
         }
+    }
+
+    private fun checkReminderStatus(){
+        if(userSession.isLoggedIn)
+            _tagItems.value.product.productSectionList.
+            filter { it is ProductSectionUiModel.Section && it.config.type == ProductSectionType.Upcoming }
+                .forEach { campaign ->
+                    checkUpcomingCampaignSub(campaign as ProductSectionUiModel.Section)
+                }
     }
 
     /**
@@ -1464,20 +1481,18 @@ class PlayViewModel @AssistedInject constructor(
                     channelStateProcessor.setIsFreeze(result.isFreeze)
                 }
             }
-            is ProductTag -> {
-                val (mappedProductTags, shouldShow) = playSocketToModelMapper.mapProductTag(result)
+            is ProductSection -> {
+                val mappedData = playSocketToModelMapper.mapProductSection(result)
+
                 _tagItems.update {
                     it.copy(
                         product = it.product.copy(
-                            productList = mappedProductTags,
-                            canShow = shouldShow
+                            productSectionList = mappedData.first
                         ),
+                        maxFeatured = mappedData.second,
+                        bottomSheetTitle = mappedData.third
                     )
                 }
-
-                sendProductTrackerToBro(
-                    productList = mappedProductTags
-                )
             }
             is MerchantVoucher -> {
                 val mappedVouchers = playSocketToModelMapper.mapMerchantVoucher(result)
@@ -1737,6 +1752,7 @@ class PlayViewModel @AssistedInject constructor(
             REQUEST_CODE_LOGIN_FOLLOW -> handleClickFollow(isFromLogin = true)
             REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE -> handleClickFollowInteractive()
             REQUEST_CODE_LOGIN_LIKE -> handleClickLike(isFromLogin = true)
+            REQUEST_CODE_LOGIN_UPCO_REMINDER -> handleSendReminder(selectedUpcomingCampaign, isFromLogin = true)
             else -> {}
         }
     }
@@ -1896,11 +1912,9 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun handleOpenSharingOption(isScreenshot: Boolean) {
         viewModelScope.launch {
-            if(isScreenshot)
-                playAnalytic.takeScreenshotForSharing(channelId, partnerId, channelType.value)
-
             if(playShareExperience.isCustomSharingAllow()) {
-                playAnalytic.impressShareBottomSheet(channelId, partnerId, channelType.value)
+                if(isScreenshot) playAnalytic.takeScreenshotForSharing(channelId, partnerId, channelType.value)
+                else playAnalytic.impressShareBottomSheet(channelId, partnerId, channelType.value)
 
                 _uiEvent.emit(OpenSharingOptionEvent(
                     title = _channelDetail.value.channelInfo.title,
@@ -1921,7 +1935,7 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun handleSharingOption(shareModel: ShareModel) {
         viewModelScope.launch {
-            playAnalytic.clickSharingOption(channelId, partnerId, channelType.value, shareModel.socialMediaName, playShareExperience.isScreenshotBottomSheet())
+            playAnalytic.clickSharingOption(channelId, partnerId, channelType.value, shareModel.channel, playShareExperience.isScreenshotBottomSheet())
 
             val playShareExperienceData = getPlayShareExperienceData()
 
@@ -2019,6 +2033,56 @@ class PlayViewModel @AssistedInject constructor(
         )
     }
 
+    private fun handleSendReminder(sectionUiModel: ProductSectionUiModel.Section, isFromLogin: Boolean){
+        selectedUpcomingCampaign = sectionUiModel
+        needLogin(REQUEST_CODE_LOGIN_UPCO_REMINDER) {
+            if(isFromLogin) checkUpcomingCampaignSub(selectedUpcomingCampaign)
+            sendReminder()
+        }
+    }
+
+    private fun sendReminder(){
+        viewModelScope.launchCatchError(block = {
+            playAnalytic.clickUpcomingReminder(selectedUpcomingCampaign, channelId, channelType)
+            val data = repo.subscribeUpcomingCampaign(campaignId = selectedUpcomingCampaign.id.toLongOrZero(), reminderType = selectedUpcomingCampaign.config.reminder)
+            val message = if(data.first) {
+                updateReminderUi(selectedUpcomingCampaign.config.reminder.reversed(selectedUpcomingCampaign.id.toLongOrZero()), selectedUpcomingCampaign.id)
+                if(data.second.isNotEmpty()) UiString.Text(data.second) else UiString.Resource(R.string.play_product_upcoming_reminder_success)
+            } else {
+                if(data.second.isNotEmpty()) UiString.Text(data.second) else UiString.Resource(R.string.play_product_upcoming_reminder_error)
+            }
+            _uiEvent.emit(ShowInfoEvent(message))
+        }){
+            _uiEvent.emit(ShowErrorEvent(it))
+        }
+    }
+
+    private fun checkUpcomingCampaignSub(productUiModel: ProductSectionUiModel.Section){
+        viewModelScope.launchCatchError(block = {
+            val data = repo.checkUpcomingCampaign(campaignId = productUiModel.id.toLongOrZero())
+            if (data) updateReminderUi(productUiModel.config.reminder.reversed(productUiModel.id.toLongOrZero()), productUiModel.id)
+        }){
+        }
+    }
+
+    private fun updateReminderUi(reminderType: PlayUpcomingBellStatus, campaignId: String){
+        _tagItems.update { tagItemUiModel ->
+            tagItemUiModel.copy(
+                product = tagItemUiModel.product.copy(
+                    productSectionList = tagItemUiModel.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().
+                           map { item ->
+                               if(item.id == campaignId) item.copy(config = item.config.copy(reminder = reminderType))
+                               else item
+                            }
+                )
+            )
+        }
+    }
+
+    fun sendUpcomingReminderImpression(sectionUiModel: ProductSectionUiModel.Section){
+        playAnalytic.impressUpcomingReminder(sectionUiModel, channelId, channelType)
+    }
+
     companion object {
         private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
         private const val FIREBASE_REMOTE_CONFIG_KEY_INTERACTIVE = "android_main_app_enable_play_interactive"
@@ -2035,6 +2099,7 @@ class PlayViewModel @AssistedInject constructor(
         private const val REQUEST_CODE_LOGIN_FOLLOW = 571
         private const val REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE = 572
         private const val REQUEST_CODE_LOGIN_LIKE = 573
+        private const val REQUEST_CODE_LOGIN_UPCO_REMINDER = 574
 
         private const val WEB_SOCKET_SOURCE_PLAY_VIEWER = "Viewer"
     }

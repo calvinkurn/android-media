@@ -3,6 +3,7 @@ package com.tokopedia.sellerhome.view.helper
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant
+import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.WidgetHeight
@@ -11,6 +12,7 @@ import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.domain.usecase.BaseGqlUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetAnnouncementDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetBarChartDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCalendarDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetCardDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetCarouselDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetLineGraphDataUseCase
@@ -27,10 +29,13 @@ import com.tokopedia.sellerhomecommon.presentation.model.BarChartDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BaseDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.LastUpdatedDataInterface
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneDataUiModel
@@ -75,6 +80,8 @@ class SellerHomeLayoutHelper @Inject constructor(
     private val getAnnouncementUseCase: Lazy<GetAnnouncementDataUseCase>,
     private val getRecommendationUseCase: Lazy<GetRecommendationDataUseCase>,
     private val getMilestoneDataUseCase: Lazy<GetMilestoneDataUseCase>,
+    private val getCalendarDataUseCase: Lazy<GetCalendarDataUseCase>,
+    private val remoteConfig: Lazy<SellerHomeRemoteConfig>,
     private val dispatcher: CoroutineDispatchers
 ) {
 
@@ -102,14 +109,17 @@ class SellerHomeLayoutHelper @Inject constructor(
      */
     suspend fun getInitialWidget(
         widgets: List<BaseWidgetUiModel<*>>,
-        deviceHeightDp: Float
+        deviceHeightDp: Float,
+        isFromCache: Boolean
     ): Flow<List<BaseWidgetUiModel<*>>> {
         val widgetFlow = flow { emit(widgets) }
-        val predictedInitialWidgetFlow = getPredictedInitialWidget(widgets, deviceHeightDp)
+        val predictedInitialWidgetFlow = getPredictedInitialWidget(
+            widgets, deviceHeightDp, isFromCache
+        )
         return widgetFlow.combine(predictedInitialWidgetFlow) { widgetsFromFlow, initialWidgets ->
-            widgetsFromFlow
-                .map { widget -> initialWidgets.find { it.id == widget.id } ?: widget }
-                .filter { !it.isNeedToBeRemoved }
+            widgetsFromFlow.map { widget ->
+                initialWidgets.find { it.id == widget.id } ?: widget
+            }.filter { !it.isNeedToBeRemoved }
         }
     }
 
@@ -122,7 +132,8 @@ class SellerHomeLayoutHelper @Inject constructor(
      */
     private fun getPredictedInitialWidget(
         widgetList: List<BaseWidgetUiModel<*>>,
-        deviceHeightDp: Float
+        deviceHeightDp: Float,
+        isFromCache: Boolean
     ): Flow<List<BaseWidgetUiModel<*>>> {
         var remainingHeight = deviceHeightDp
         var hasCardCalculated = false
@@ -130,9 +141,8 @@ class SellerHomeLayoutHelper @Inject constructor(
             val requestedHeight = WidgetHeight.getWidgetHeight(widget.widgetType)
             if (remainingHeight > 0f) {
                 widget.apply { isLoading = true }
-            } else {
-                widget
-            }.also {
+            }
+            return@map widget.also {
                 if (widget.widgetType == WidgetType.CARD) {
                     if (!hasCardCalculated) {
                         remainingHeight -= requestedHeight
@@ -143,7 +153,7 @@ class SellerHomeLayoutHelper @Inject constructor(
                 }
             }
         }
-        return getLoadedInitialWidgetData(newWidgetList)
+        return getLoadedInitialWidgetData(newWidgetList, isFromCache)
     }
 
     /**
@@ -152,16 +162,18 @@ class SellerHomeLayoutHelper @Inject constructor(
      * @param   widgetList  predicted initial widget list
      * @return  flow that return list of all loaded widget
      */
-    private fun getLoadedInitialWidgetData(widgetList: List<BaseWidgetUiModel<*>>): Flow<List<BaseWidgetUiModel<*>>> {
+    private fun getLoadedInitialWidgetData(
+        widgetList: List<BaseWidgetUiModel<*>>,
+        isFromCache: Boolean
+    ): Flow<List<BaseWidgetUiModel<*>>> {
         val loadedWidgetList = widgetList.filter { it.isLoading }
-
-        val newWidgetList = loadedWidgetList.toMutableList()
-        loadedWidgetList.filter { it.widgetType == WidgetType.SECTION }.forEach { section ->
-            newWidgetList.indexOf(section).let { index ->
-                newWidgetList[index] = section.copyWidget().apply { isLoaded = true }
+            .map {
+                if (it.widgetType == WidgetType.SECTION) {
+                    it.isLoaded = true
+                }
+                return@map it
             }
-        }
-        return getWidgetsData(newWidgetList)
+        return getWidgetsData(loadedWidgetList, isFromCache)
     }
 
     /**
@@ -170,44 +182,69 @@ class SellerHomeLayoutHelper @Inject constructor(
      * @param   widgets     list of widgets which their data need to be loaded
      * @return  flow that return list of combined widget list that has their data loaded
      */
-    private fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>): Flow<List<BaseWidgetUiModel<*>>> {
+    private fun getWidgetsData(
+        widgets: List<BaseWidgetUiModel<*>>,
+        isFromCache: Boolean
+    ): Flow<List<BaseWidgetUiModel<*>>> {
         val groupedWidgets = widgets.groupBy { it.widgetType } as MutableMap
         val lineGraphDataFlow = groupedWidgets.getWidgetDataByType<LineGraphDataUiModel>(
-            WidgetType.LINE_GRAPH
+            WidgetType.LINE_GRAPH,
+            isFromCache
         )
         val announcementDataFlow = groupedWidgets.getWidgetDataByType<AnnouncementDataUiModel>(
-            WidgetType.ANNOUNCEMENT
+            WidgetType.ANNOUNCEMENT,
+            isFromCache
         )
-        val cardDataFlow = groupedWidgets.getWidgetDataByType<CardDataUiModel>(WidgetType.CARD)
+        val cardDataFlow = groupedWidgets.getWidgetDataByType<CardDataUiModel>(
+            WidgetType.CARD,
+            isFromCache
+        )
         val progressDataFlow = groupedWidgets.getWidgetDataByType<ProgressDataUiModel>(
-            WidgetType.PROGRESS
+            WidgetType.PROGRESS,
+            isFromCache
         )
-        val carouselDataFlow =
-            groupedWidgets.getWidgetDataByType<CarouselDataUiModel>(WidgetType.CAROUSEL)
+        val carouselDataFlow = groupedWidgets.getWidgetDataByType<CarouselDataUiModel>(
+            WidgetType.CAROUSEL,
+            isFromCache
+        )
         val postDataFlow = groupedWidgets.getWidgetDataByType<PostListDataUiModel>(
-            WidgetType.POST_LIST
+            WidgetType.POST_LIST,
+            isFromCache
         )
-        val tableDataFlow = groupedWidgets.getWidgetDataByType<TableDataUiModel>(WidgetType.TABLE)
+        val tableDataFlow = groupedWidgets.getWidgetDataByType<TableDataUiModel>(
+            WidgetType.TABLE,
+            isFromCache
+        )
         val pieChartDataFlow = groupedWidgets.getWidgetDataByType<PieChartDataUiModel>(
-            WidgetType.PIE_CHART
+            WidgetType.PIE_CHART,
+            isFromCache
         )
         val barChartDataFlow = groupedWidgets.getWidgetDataByType<BarChartDataUiModel>(
-            WidgetType.BAR_CHART
+            WidgetType.BAR_CHART,
+            isFromCache
         )
         val multiLineGraphDataFlow = groupedWidgets.getWidgetDataByType<MultiLineGraphDataUiModel>(
-            WidgetType.MULTI_LINE_GRAPH
+            WidgetType.MULTI_LINE_GRAPH,
+            isFromCache
         )
         val recommendationDataFlow = groupedWidgets.getWidgetDataByType<RecommendationDataUiModel>(
-            WidgetType.RECOMMENDATION
+            WidgetType.RECOMMENDATION,
+            isFromCache
         )
         val milestoneDataFlow = groupedWidgets.getWidgetDataByType<MilestoneDataUiModel>(
-            WidgetType.MILESTONE
+            WidgetType.MILESTONE,
+            isFromCache
+        )
+        val calendarDataFlow = groupedWidgets.getWidgetDataByType<CalendarDataUiModel>(
+            WidgetType.CALENDAR,
+            isFromCache
         )
 
         return combine(
             lineGraphDataFlow, announcementDataFlow, cardDataFlow, progressDataFlow,
             carouselDataFlow, postDataFlow, tableDataFlow, pieChartDataFlow,
-            barChartDataFlow, multiLineGraphDataFlow, recommendationDataFlow, milestoneDataFlow
+            barChartDataFlow, multiLineGraphDataFlow, recommendationDataFlow, milestoneDataFlow,
+            calendarDataFlow
         ) { widgetDataList ->
             val widgetsData = widgetDataList.flatMap { it }
             widgetsData.mapToWidgetModel(widgets)
@@ -223,7 +260,8 @@ class SellerHomeLayoutHelper @Inject constructor(
      * @return  flow that will emit list of data for current widget type
      */
     private inline fun <reified D : BaseDataUiModel> MutableMap<String, List<BaseWidgetUiModel<*>>>.getWidgetDataByType(
-        widgetType: String
+        widgetType: String,
+        isFromCache: Boolean
     ): Flow<List<BaseDataUiModel>> {
         return flow {
             val widgetList = this@getWidgetDataByType[widgetType]
@@ -231,7 +269,7 @@ class SellerHomeLayoutHelper @Inject constructor(
                 try {
                     widgetList?.let {
                         when (widgetType) {
-                            WidgetType.LINE_GRAPH -> getLineGraphData(it)
+                            WidgetType.LINE_GRAPH -> getLineGraphData(it, isFromCache)
                             WidgetType.ANNOUNCEMENT -> getAnnouncementData(it)
                             WidgetType.CARD -> getCardData(it)
                             WidgetType.PROGRESS -> getProgressData(it)
@@ -243,6 +281,7 @@ class SellerHomeLayoutHelper @Inject constructor(
                             WidgetType.MULTI_LINE_GRAPH -> getMultiLineGraphData(it)
                             WidgetType.RECOMMENDATION -> getRecommendationData(it)
                             WidgetType.MILESTONE -> getMilestoneData(it)
+                            WidgetType.CALENDAR -> getCalendarData(it)
                             else -> null
                         }
                     }.orEmpty()
@@ -272,6 +311,7 @@ class SellerHomeLayoutHelper @Inject constructor(
     ): List<BaseWidgetUiModel<*>> {
         val newWidgetList = widgets.toMutableList()
         forEach { widgetData ->
+            hideLastUpdatedRefreshButton(widgetData)
             newWidgetList.indexOfFirst {
                 it.dataKey == widgetData.dataKey
             }.takeIf { it > -1 }?.let { index ->
@@ -292,6 +332,10 @@ class SellerHomeLayoutHelper @Inject constructor(
         return newWidgetList
     }
 
+    private fun <D> hideLastUpdatedRefreshButton(widgetData: D) {
+        (widgetData as? LastUpdatedDataInterface)?.lastUpdated?.needToUpdated = false
+    }
+
     /**
      * Determine whether the widget need to be removed from its original list, which depends on its data value.
      * This will only take cloud values in consideration, not cache.
@@ -304,7 +348,7 @@ class SellerHomeLayoutHelper @Inject constructor(
         widget: BaseWidgetUiModel<*>,
         widgetData: BaseDataUiModel
     ): Boolean {
-        return !widgetData.showWidget || (!widget.isShowEmpty && widgetData.shouldRemove())
+        return !widgetData.showWidget || (!widget.isShowEmpty && widgetData.isWidgetEmpty())
     }
 
     private fun removeEmptySections(
@@ -325,24 +369,31 @@ class SellerHomeLayoutHelper @Inject constructor(
         widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<CardWidgetUiModel>(widgets)
         val params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-        getCardDataUseCase.get().params = params
+        val useCase = getCardDataUseCase.get()
+        useCase.params = params
         withContext(dispatcher.main) {
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_CARD_TRACE
         }
-        return getDataFromUseCase(getCardDataUseCase.get())
+        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
+                && useCase.isFirstLoad
+        return getDataFromUseCase(useCase, shouldUseCache)
     }
 
-    private suspend fun getLineGraphData(widgets: List<BaseWidgetUiModel<*>>): List<LineGraphDataUiModel> {
+    private suspend fun getLineGraphData(
+        widgets: List<BaseWidgetUiModel<*>>,
+        shouldUseCache: Boolean
+    ): List<LineGraphDataUiModel> {
         widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<LineGraphWidgetUiModel>(widgets)
         val params = GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-        getLineGraphDataUseCase.get().params = params
+        val useCase = getLineGraphDataUseCase.get()
+        useCase.params = params
         withContext(dispatcher.main) {
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_LINE_GRAPH_TRACE
         }
-        return getDataFromUseCase(getLineGraphDataUseCase.get())
+        return getDataFromUseCase(useCase, shouldUseCache)
     }
 
     private suspend fun getProgressData(widgets: List<BaseWidgetUiModel<*>>): List<ProgressDataUiModel> {
@@ -350,12 +401,15 @@ class SellerHomeLayoutHelper @Inject constructor(
         val today = DateTimeUtil.format(Date().time, SellerHomeViewModel.DATE_FORMAT)
         val dataKeys = Utils.getWidgetDataKeys<ProgressWidgetUiModel>(widgets)
         val params = GetProgressDataUseCase.getRequestParams(today, dataKeys)
-        getProgressDataUseCase.get().params = params
+        val useCase = getProgressDataUseCase.get()
+        useCase.params = params
         withContext(dispatcher.main) {
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_PROGRESS_TRACE
         }
-        return getDataFromUseCase(getProgressDataUseCase.get())
+        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
+                && useCase.isFirstLoad
+        return getDataFromUseCase(useCase, shouldUseCache)
     }
 
     private suspend fun getPostData(widgets: List<BaseWidgetUiModel<*>>): List<PostListDataUiModel> {
@@ -367,24 +421,30 @@ class SellerHomeLayoutHelper @Inject constructor(
                 return@map TableAndPostDataKey(it.dataKey, postFilters, it.maxData, it.maxDisplay)
             }
         val params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-        getPostDataUseCase.get().params = params
+        val useCase = getPostDataUseCase.get()
+        useCase.params = params
         withContext(dispatcher.main) {
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_POST_LIST_TRACE
         }
-        return getDataFromUseCase(getPostDataUseCase.get())
+        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
+                && useCase.isFirstLoad
+        return getDataFromUseCase(useCase, shouldUseCache)
     }
 
     private suspend fun getCarouselData(widgets: List<BaseWidgetUiModel<*>>): List<CarouselDataUiModel> {
         widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<CarouselWidgetUiModel>(widgets)
         val params = GetCarouselDataUseCase.getRequestParams(dataKeys)
-        getCarouselDataUseCase.get().params = params
+        val useCase = getCarouselDataUseCase.get()
+        useCase.params = params
         withContext(dispatcher.main) {
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_CAROUSEL_TRACE
         }
-        return getDataFromUseCase(getCarouselDataUseCase.get())
+        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
+                && useCase.isFirstLoad
+        return getDataFromUseCase(useCase, shouldUseCache)
     }
 
     private suspend fun getTableData(widgets: List<BaseWidgetUiModel<*>>): List<TableDataUiModel> {
@@ -396,84 +456,122 @@ class SellerHomeLayoutHelper @Inject constructor(
                 return@map TableAndPostDataKey(it.dataKey, postFilters, it.maxData, it.maxDisplay)
             }
         val params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-        getTableDataUseCase.get().params = params
+        val useCase = getTableDataUseCase.get()
+        useCase.params = params
         withContext(dispatcher.main) {
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
         }
-        return getDataFromUseCase(getTableDataUseCase.get())
+        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
+                && useCase.isFirstLoad
+        return getDataFromUseCase(useCase, shouldUseCache)
     }
 
     private suspend fun getPieChartData(widgets: List<BaseWidgetUiModel<*>>): List<PieChartDataUiModel> {
         widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<PieChartWidgetUiModel>(widgets)
         val params = GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-        getPieChartDataUseCase.get().params = params
+        val useCase = getPieChartDataUseCase.get()
+        useCase.params = params
         withContext(dispatcher.main) {
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_PIE_CHART_TRACE
         }
-        return getDataFromUseCase(getPieChartDataUseCase.get())
+        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
+                && useCase.isFirstLoad
+        return getDataFromUseCase(useCase, shouldUseCache)
     }
 
     private suspend fun getBarChartData(widgets: List<BaseWidgetUiModel<*>>): List<BarChartDataUiModel> {
         widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<BarChartWidgetUiModel>(widgets)
         val params = GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-        getBarChartDataUseCase.get().params = params
+        val useCase = getBarChartDataUseCase.get()
+        useCase.params = params
         withContext(dispatcher.main) {
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_BAR_CHART_TRACE
         }
-        return getDataFromUseCase(getBarChartDataUseCase.get())
+        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
+                && useCase.isFirstLoad
+        return getDataFromUseCase(useCase, shouldUseCache)
     }
 
     private suspend fun getMultiLineGraphData(widgets: List<BaseWidgetUiModel<*>>): List<MultiLineGraphDataUiModel> {
-        widgets.onEach { it.isLoaded = true }
+        widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<MultiLineGraphWidgetUiModel>(widgets)
         val params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
-        getMultiLineGraphUseCase.get().params = params
+        val useCase = getMultiLineGraphUseCase.get()
+        useCase.params = params
         withContext(dispatcher.main) {
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_MULTI_LINE_GRAPH_TRACE
         }
-        return getMultiLineGraphUseCase.get().executeOnBackground()
+        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
+                && useCase.isFirstLoad
+        return getDataFromUseCase(useCase, shouldUseCache)
     }
 
     private suspend fun getRecommendationData(widgets: List<BaseWidgetUiModel<*>>): List<RecommendationDataUiModel> {
-        widgets.onEach { it.isLoaded = true }
+        widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<RecommendationWidgetUiModel>(widgets)
         val params = GetRecommendationDataUseCase.createParams(dataKeys)
-        getRecommendationUseCase.get().params = params
+        val useCase = getRecommendationUseCase.get()
+        useCase.params = params
         withContext(dispatcher.main) {
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_RECOMMENDATION_TRACE
         }
-        return getRecommendationUseCase.get().executeOnBackground()
+        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
+                && useCase.isFirstLoad
+        return getDataFromUseCase(useCase, shouldUseCache)
     }
 
     private suspend fun getMilestoneData(widgets: List<BaseWidgetUiModel<*>>): List<MilestoneDataUiModel> {
-        widgets.forEach { it.isLoaded = true }
+        widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<MilestoneWidgetUiModel>(widgets)
         val params = GetMilestoneDataUseCase.createParams(dataKeys)
-        getMilestoneDataUseCase.get().params = params
+        val useCase = getMilestoneDataUseCase.get()
+        useCase.params = params
         withContext(dispatcher.main) {
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_MILESTONE_TRACE
         }
-        return getMilestoneDataUseCase.get().executeOnBackground()
+        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
+                && useCase.isFirstLoad
+        return getDataFromUseCase(useCase, shouldUseCache)
+    }
+
+    private suspend fun getCalendarData(widgets: List<BaseWidgetUiModel<*>>): List<CalendarDataUiModel> {
+        widgets.setLoading()
+        val dataKeys = widgets.filterIsInstance<CalendarWidgetUiModel>().map {
+            it.filter
+        }
+        val params = GetCalendarDataUseCase.createParams(dataKeys)
+        val useCase = getCalendarDataUseCase.get()
+        useCase.params = params
+        withContext(dispatcher.main) {
+            startWidgetCustomMetricTag.value =
+                SellerHomePerformanceMonitoringConstant.SELLER_HOME_CALENDAR_TRACE
+        }
+        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
+                && useCase.isFirstLoad
+        return getDataFromUseCase(useCase, shouldUseCache)
     }
 
     private suspend fun getAnnouncementData(widgets: List<BaseWidgetUiModel<*>>): List<AnnouncementDataUiModel> {
-        widgets.onEach { it.isLoaded = true }
+        widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<AnnouncementWidgetUiModel>(widgets)
         val params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
-        getAnnouncementUseCase.get().params = params
+        val useCase = getAnnouncementUseCase.get()
+        useCase.params = params
         withContext(dispatcher.main) {
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_ANNOUNCEMENT_TRACE
         }
-        return getAnnouncementUseCase.get().executeOnBackground()
+        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
+                && useCase.isFirstLoad
+        return getDataFromUseCase(useCase, shouldUseCache)
     }
 
     private fun List<BaseWidgetUiModel<*>>.setLoading() {
@@ -483,12 +581,19 @@ class SellerHomeLayoutHelper @Inject constructor(
         }
     }
 
-    private suspend fun <T : Any> getDataFromUseCase(useCase: BaseGqlUseCase<T>): T {
-        useCase.setUseCache(false)
-        return useCase.executeUseCase()
-    }
-
-    private suspend fun <T : Any> BaseGqlUseCase<T>.executeUseCase() = withContext(dispatcher.io) {
-        executeOnBackground()
+    private suspend fun <T : Any> getDataFromUseCase(
+        useCase: BaseGqlUseCase<T>,
+        useCache: Boolean
+    ): T {
+        useCase.isFirstLoad = false
+        useCase.setUseCache(useCache)
+        return withContext(dispatcher.io) {
+            try {
+                useCase.executeOnBackground()
+            } catch (e: Exception) {
+                useCase.setUseCache(false)
+                useCase.executeOnBackground()
+            }
+        }
     }
 }

@@ -48,7 +48,7 @@ import com.tokopedia.saldodetails.saldoDetail.domain.data.GqlMerchantCreditRespo
 import com.tokopedia.saldodetails.saldoDetail.domain.data.Saldo
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.ui.SaldoTransactionHistoryFragment
 import com.tokopedia.saldodetails.saldoHoldInfo.SaldoHoldInfoActivity
-import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -204,7 +204,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         initRemoteConfig()
         initListeners()
         initialVar()
-        context?.let { UpdateShopActiveService.startService(it) }
+        context?.let { UpdateShopActiveWorker.execute(it) }
     }
 
     private fun initRemoteConfig() {
@@ -477,6 +477,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         }
 
         drawButton!!.setOnClickListener {
+            saldoDetailsAnalytics.sendClickPaymentEvents(SaldoDetailsConstants.Action.SALDO_WITHDRAWAL_CLICK)
             try {
                 if (!userSession.isMsisdnVerified) {
                     showMustVerify()
@@ -745,6 +746,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         )
         holdBalanceTicker?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                saldoDetailsAnalytics.sendClickPaymentEvents(SaldoDetailsConstants.Action.SALDO_HOLD_STATUS_CLICK)
                 val intent = Intent(context, SaldoHoldInfoActivity::class.java)
                 startActivity(intent)
             }

@@ -1,8 +1,8 @@
 package com.tokopedia.youtube_common.domain.usecase
 
 import android.net.Uri
-import com.tokopedia.authentication.AuthHelper
-import com.tokopedia.authentication.HEADER_USER_AGENT
+import com.tokopedia.network.authentication.AuthHelper
+import com.tokopedia.network.authentication.HEADER_USER_AGENT
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.coroutines.usecase.RestRequestUseCase
 import com.tokopedia.common.network.data.model.RequestType

@@ -14,6 +14,7 @@ object GiftBoxTrackerConstants {
     const val ITEMS = "items"
     const val SCREEN_NAME = "screenName"
     const val DAILY_GIFT_BOX = "daily-gift-box"
+    const val SHOP_ID = "shopId"
 }
 
 object GiftBoxEvent {
@@ -22,6 +23,8 @@ object GiftBoxEvent {
     const val SELECT_CONTENT = "select_content"
     const val VIEW_ITEM_LIST = "view_item_list"
     const val OPEN_SCREEN = "openScreen"
+    const val CLICK_BGP = "clickBGP"
+    const val VIEW_BGP_IRIS = "viewBGPIris"
 }
 
 object GiftBoxCategory {

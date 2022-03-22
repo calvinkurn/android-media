@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
@@ -164,7 +164,7 @@ class ShopNoteDetailFragment: BaseDaggerFragment() {
         setViewState(VIEW_CONTENT)
         shopNoteDetail?.run {
             (activity as AppCompatActivity).supportActionBar?.title = shopNoteDetail.title
-            val latestUpdate  = shopNoteDetail.updateTimeUtc.toIntOrZero()
+            val latestUpdate  = shopNoteDetail.updateTimeUtc.toLongOrZero()
             textViewDate?.text = getString(
                     R.string.shop_note_detail_date_format,
                     NoteUtil.convertUnixToFormattedDate(latestUpdate),

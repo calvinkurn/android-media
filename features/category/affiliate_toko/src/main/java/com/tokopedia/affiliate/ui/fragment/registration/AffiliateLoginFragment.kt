@@ -132,6 +132,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
                 affiliateNavigationInterface?.handleBackButton(false)
             }
             actionTextView?.setOnClickListener {
+                sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_PELJARI,if(userSessionInterface.isLoggedIn)AffiliateAnalytics.LabelKeys.LOGIN else AffiliateAnalytics.LabelKeys.NON_LOGIN)
                 AffiliateWebViewBottomSheet.newInstance("", AFFILIATE_MICRO_SITE_LINK).show(childFragmentManager,"")
             }
         }
@@ -147,11 +148,13 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
             affiliate_sign_up_btn.text = getString(R.string.affiliate_masuk)
             affiliate_sign_up_btn.isVisible = true
             affiliate_sign_up_btn.setOnClickListener {
+                sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_MASUK)
                 startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN),
                     AFFILIATE_LOGIN_REQUEST_CODE)
             }
 
             affiliate_keluar_btn.setOnClickListener {
+                sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_DAFTAR)
                 startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.REGISTER),
                         AFFILIATE_REGISTER_REQUEST_CODE)
             }
@@ -168,11 +171,12 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
             affiliate_sign_up_btn.text = getString(R.string.affiliate_daftar_sekarang)
             affiliate_sign_up_btn.isVisible = true
             affiliate_sign_up_btn.setOnClickListener {
-                sendTrackerDaftar()
+                sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_DAFTAR_SEKARANG)
                 affiliateNavigationInterface?.navigateToPortfolioFragment()
             }
 
             affiliate_keluar_btn.setOnClickListener {
+                sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_KELUAR)
                 showDialogLogout()
             }
 
@@ -183,13 +187,14 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
         }
     }
 
-    private fun sendTrackerDaftar() {
-        val loginText = if(userSessionInterface.isLoggedIn)"login" else "non login"
+    private fun sendButtonClick(eventAction: String,label: String= "") {
         AffiliateAnalytics.sendEvent(
-                AffiliateAnalytics.EventKeys.CLICK_REGISTER,
-                AffiliateAnalytics.ActionKeys.CLICK_DAFTAR_SEKARANG,
-                AffiliateAnalytics.CategoryKeys.REGISTRATION_PAGE,
-                loginText, userSessionInterface.userId)
+            AffiliateAnalytics.EventKeys.CLICK_PG,
+            eventAction,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_REGISTRATION_PAGE,
+            label,
+            userSessionInterface.userId
+        )
     }
 
     private fun showDialogLogout() {

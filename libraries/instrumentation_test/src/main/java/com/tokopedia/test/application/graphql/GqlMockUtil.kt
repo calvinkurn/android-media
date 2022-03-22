@@ -1,10 +1,28 @@
 package com.tokopedia.test.application.graphql
 
+import android.content.Context
+import com.google.gson.Gson
+import com.tokopedia.cachemanager.gson.GsonSingleton
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.test.application.util.InstrumentationMockHelper
+import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
+import timber.log.Timber
+import java.io.IOException
+import java.io.InputStream
 import java.lang.reflect.Type
 
 object GqlMockUtil {
+
+    inline fun <reified T : Any> createSuccessResponseFromRaw(
+        context: Context,
+        res: Int,
+    ): GraphqlResponse {
+        val rawResource: InputStream = context.resources.openRawResource(res)
+        val content = rawResource.bufferedReader().use { it.readText() }
+        val contentObj = Gson().fromJson(content, T::class.java)
+        return createSuccessResponse(contentObj)
+    }
 
     /**
      * Convenient utils method to create success response when mocking GraphqlResponse (typically

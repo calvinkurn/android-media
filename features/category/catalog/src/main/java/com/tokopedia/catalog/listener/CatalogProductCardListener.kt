@@ -1,5 +1,7 @@
 package com.tokopedia.catalog.listener
 
+import com.tokopedia.catalog.model.datamodel.CatalogForYouModel
+import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
 import com.tokopedia.catalog.model.raw.CatalogProductItem
 
 
@@ -18,4 +20,9 @@ interface CatalogProductCardListener {
     }
 
     fun hasThreeDots() = false
+
+    fun onCatalogForYouClick(adapterPosition: Int , catalogComparison: CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison) {}
+
+    fun onCatalogForYouImpressed(model : CatalogForYouModel, adapterPosition: Int){}
+
 }
