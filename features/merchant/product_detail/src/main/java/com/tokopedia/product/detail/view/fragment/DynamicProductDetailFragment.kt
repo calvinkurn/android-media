@@ -13,7 +13,6 @@ import android.util.SparseIntArray
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
@@ -83,7 +82,6 @@ import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
@@ -511,13 +509,19 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun reloadFintechWidget() {
-        productId?.let {
-            pdpUiUpdater?.updateFintechDataWithProductId(
-                it,
-                viewModel.userSessionInterface.isLoggedIn
-            )
+        pdpUiUpdater?.let { pdpUiUpdater->
+            pdpUiUpdater.fintechWidgetMap?.let { fintechWidgetDataModel ->
+                if (fintechWidgetDataModel.isLoggedIn != viewModel.isUserSessionActive) {
+                    productId?.let { productId->
+                        pdpUiUpdater.updateFintechDataWithProductId(
+                            productId,
+                            viewModel.userSessionInterface.isLoggedIn
+                        )
+                    }
+                    updateUi()
+                }
+            }
         }
-
     }
 
     override fun onDestroy() {
