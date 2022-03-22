@@ -4,6 +4,7 @@ import android.graphics.Paint
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.View
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.dpToPx
@@ -17,7 +18,6 @@ import com.tokopedia.tokofood.purchase.purchasepage.view.TokoFoodPurchaseActionL
 import com.tokopedia.tokofood.purchase.purchasepage.view.uimodel.TokoFoodPurchaseProductUiModel
 import com.tokopedia.tokofood.purchase.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import kotlinx.coroutines.Job
 
 class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchaseProductBinding,
                                         private val listener: TokoFoodPurchaseActionListener)
@@ -27,15 +27,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
         val LAYOUT = R.layout.item_purchase_product
     }
 
-    private var delayChangeQty: Job? = null
-
-    override fun onViewRecycled() {
-        super.onViewRecycled()
-        delayChangeQty?.cancel()
-    }
-
     override fun bind(element: TokoFoodPurchaseProductUiModel) {
-        renderAlpha(element)
         renderTopDivider(viewBinding, element)
         renderProductBasicInformation(viewBinding, element)
         renderProductAddOn(viewBinding, element)
@@ -45,11 +37,11 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
         renderDelete(viewBinding, element)
     }
 
-    private fun renderAlpha(element: TokoFoodPurchaseProductUiModel) {
+    private fun View.renderAlpha(element: TokoFoodPurchaseProductUiModel) {
         if (element.isDisabled) {
-            itemView.alpha = 0.5f
+            alpha = 0.5f
         } else {
-            itemView.alpha = 1.0f
+            alpha = 1.0f
         }
     }
 
@@ -69,7 +61,9 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
     private fun renderProductBasicInformation(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductUiModel) {
         with(viewBinding) {
             imageProduct.setImageUrl(element.imageUrl)
+            imageProduct.renderAlpha(element)
             textProductName.text = element.name
+            textProductName.renderAlpha(element)
         }
     }
 
@@ -83,6 +77,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
                     containerAddOn.addView(productAddOnView.root)
                 }
                 containerAddOn.show()
+                containerAddOn.renderAlpha(element)
             } else {
                 containerAddOn.gone()
             }
@@ -95,13 +90,16 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
                 textProductOriginalPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.originalPrice, false).removeDecimalSuffix()
                 textProductOriginalPrice.paintFlags = textProductOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 textProductOriginalPrice.show()
+                textProductOriginalPrice.renderAlpha(element)
             } else {
                 textProductOriginalPrice.gone()
             }
             textProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.price, false).removeDecimalSuffix()
+            textProductPrice.renderAlpha(element)
             if (element.discountPercentage.isNotBlank()) {
                 labelSlashPricePercentage.text = element.discountPercentage
                 labelSlashPricePercentage.show()
+                labelSlashPricePercentage.renderAlpha(element)
             } else {
                 labelSlashPricePercentage.gone()
             }
