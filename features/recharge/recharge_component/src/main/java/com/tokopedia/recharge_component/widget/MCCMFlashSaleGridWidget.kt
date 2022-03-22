@@ -126,7 +126,7 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
     }
 
     /** Give the recyclerview the information of the possible highest item card.
-     * This logic needs to be updated if there are changes in view positioning */
+     * This logic may need to be updated if there are changes in view positioning */
     private fun getHighestCard(listDenomFull: List<DenomData>): DenomData {
         var highestDenom = listDenomFull[0]
         var highestCount = 0
@@ -195,7 +195,7 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
                 ConstraintSet.BOTTOM
             )
 
-            // start to start parent
+            // start to end recyclerview
             constraintSet.connect(
                 view.root.id,
                 ConstraintSet.START,
