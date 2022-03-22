@@ -1,6 +1,7 @@
 package com.tokopedia.home_recom.viewmodel
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -16,6 +17,7 @@ import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
 import com.tokopedia.home_recom.model.entity.PrimaryProductEntity
 import com.tokopedia.home_recom.util.RecomServerLogger
 import com.tokopedia.home_recom.util.RecomServerLogger.TOPADS_RECOM_PAGE_BE_ERROR
+import com.tokopedia.home_recom.util.RecomServerLogger.TOPADS_RECOM_PAGE_GENERAL_ERROR
 import com.tokopedia.home_recom.util.RecomServerLogger.TOPADS_RECOM_PAGE_HIT_DYNAMIC_SLOTTING
 import com.tokopedia.home_recom.util.RecomServerLogger.TOPADS_RECOM_PAGE_TIMEOUT_EXCEEDED
 import com.tokopedia.home_recom.util.RecommendationRollenceController
@@ -72,7 +74,7 @@ open class RecommendationPageViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher.getMainDispatcher()) {
 
     companion object {
-        const val PARAM_JOB_TIMEOUT_DEFAULT = 1000L
+        const val PARAM_JOB_TIMEOUT_DEFAULT = 5000L
         const val PARAM_SUCCESS_200 = 200
         const val PARAM_SUCCESS_300 = 300
         const val POS_CPM = 1
@@ -235,6 +237,12 @@ open class RecommendationPageViewModel @Inject constructor(
                 queryParam = queryParam
             )
         }) {
+            RecomServerLogger.logServer(
+                tag = TOPADS_RECOM_PAGE_GENERAL_ERROR,
+                throwable = it,
+                productId = productId,
+                queryParam = queryParam
+            )
             it.printStackTrace()
         }
     }

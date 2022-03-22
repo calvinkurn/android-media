@@ -492,7 +492,7 @@ class ShopHomeViewModelTest {
                 productDetails = listOf(ShopHomeBundleProductUiModel()),
                 {},
                 onErrorAddToCart,
-                bundleQuantity = 1
+                productQuantity = 1
         )
 
         verify { onErrorAddToCart.invoke(any()) }
@@ -534,7 +534,7 @@ class ShopHomeViewModelTest {
                 productDetails = listOf(ShopHomeBundleProductUiModel()),
                 onFinishAddToCart = onFinishAddToCart,
                 {},
-                bundleQuantity = 1
+                productQuantity = 1
         )
 
         verify { onFinishAddToCart.invoke(any()) }
