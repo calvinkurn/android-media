@@ -104,13 +104,17 @@ class ManageProductViewModel @Inject constructor(
             productUiModel.isViewing = isViewing
             productUiModel.isEditing = isEditing
             productUiModel.isVariantHeaderExpanded = false
-            productUiModel.isError = false
-            productUiModel.errorMessage = ""
+            if(isViewing) {
+                productUiModel.isError = false
+                productUiModel.errorMessage = ""
+            }
             productUiModel.variants.forEach { variantUiModel ->
                 variantUiModel.isViewing = isViewing
                 variantUiModel.isEditing = isEditing
-                variantUiModel.isError = false
-                variantUiModel.errorMessage = ""
+                if(isViewing) {
+                    variantUiModel.isError = false
+                    variantUiModel.errorMessage = ""
+                }
             }
         }
         return mutableProductList.toList()
@@ -145,12 +149,19 @@ class ManageProductViewModel @Inject constructor(
         }
     }
 
-    fun applyValidationResult(productList: List<ProductUiModel>,
-                              validationResults: List<VoucherValidationPartialProduct>): List<ProductUiModel> {
+    fun applyValidationResult(
+        isEditing: Boolean,
+        productList: List<ProductUiModel>,
+        validationResults: List<VoucherValidationPartialProduct>
+    ): List<ProductUiModel> {
         val mutableProductList = productList.toMutableList()
         validationResults.forEach { validationResult ->
             val productUiModel = mutableProductList.first {
                 it.id == validationResult.parentProductId
+            }
+            if(isEditing) {
+                productUiModel.isError = !validationResult.isEligible
+                productUiModel.errorMessage = validationResult.reason
             }
             productUiModel.hasVariant = validationResult.isVariant
             productUiModel.variants = mapVariantDataToUiModel(
@@ -170,7 +181,7 @@ class ManageProductViewModel @Inject constructor(
             sold: Int
     ): List<VariantUiModel> {
         return variantValidationData.map { data ->
-            VariantUiModel(
+            val variantUiModel = VariantUiModel(
                     isViewing = isViewing,
                     isEditing = isEditing,
                     variantId = data.productId,
@@ -178,10 +189,16 @@ class ManageProductViewModel @Inject constructor(
                     sku = "SKU : " + data.sku,
                     price = data.price.toString(),
                     priceTxt = data.priceFormat,
-                    soldNStock = "Terjual " + sold.toString() + " | " + "Stok " + data.stock.toString(),
-                    isError = !data.is_eligible,
-                    errorMessage = data.reason
+                    soldNStock = "Terjual " + sold.toString() + " | " + "Stok " + data.stock.toString()
             )
+            if(isEditing){
+               variantUiModel.copy(
+                   isError = !data.is_eligible,
+                   errorMessage = data.reason
+               )
+            } else {
+                variantUiModel
+            }
         }
     }
 
