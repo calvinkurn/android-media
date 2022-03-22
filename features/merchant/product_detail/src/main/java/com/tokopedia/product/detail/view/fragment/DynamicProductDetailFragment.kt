@@ -1710,10 +1710,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    private fun enableVideo(): Boolean {
-        return remoteConfig.getBoolean(ProductDetailConstant.ENABLE_VIDEO_PDP, true) ?: false
-    }
-
     private fun updateVariantDataAndUi(variantProcessedData: List<VariantCategory>?,
                                        doSomethingAfterVariantUpdated: (() -> Unit)? = null) {
         val selectedOptionIds = if (pdpUiUpdater?.productSingleVariant != null) pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant?.values?.toList()
@@ -2166,27 +2162,27 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun onSuccessGetDataP1(productInfo: DynamicProductInfoP1) {
-            updateProductId()
+        updateProductId()
 
-            productId?.let {
-                pdpUiUpdater?.updateFintechData(
-                    it,
-                    viewModel.variantData,
-                    productInfo,
-                    viewModel.userSessionInterface.isLoggedIn
-                )
-            }
-            renderVariant(viewModel.variantData, pdpUiUpdater?.productSingleVariant != null)
-            val hint = if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) {
-                String.format(getString(R.string.pdp_search_hint_tokonow), productInfo.basic.category.name)
-            } else {
-                String.format(getString(R.string.pdp_search_hint), productInfo.basic.category.name)
-            }
-            navAbTestCondition(
-                    { setNavToolbarSearchHint(hint) },
-                    {
-                        //no op
-                    })
+        productId?.let {
+            pdpUiUpdater?.updateFintechData(
+                it,
+                viewModel.variantData,
+                productInfo,
+                viewModel.userSessionInterface.isLoggedIn
+            )
+        }
+        renderVariant(viewModel.variantData, pdpUiUpdater?.productSingleVariant != null)
+        val hint = if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) {
+            String.format(getString(R.string.pdp_search_hint_tokonow), productInfo.basic.category.name)
+        } else {
+            String.format(getString(R.string.pdp_search_hint), productInfo.basic.category.name)
+        }
+        navAbTestCondition(
+                { setNavToolbarSearchHint(hint) },
+                {
+                    //no op
+                })
 
         pdpUiUpdater?.updateDataP1(context, productInfo, true)
         pdpUiUpdater?.updateInitialMedia(productInfo.data.media)
