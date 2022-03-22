@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -195,6 +196,10 @@ class DenomGridViewHolder (
                     denomGridListener.onDenomGridClicked(denomGrid, denomType, position, "", true)
                 }
             }
+
+            root.addOnImpressionListener(denomGrid, {
+                denomGridListener.onDenomGridImpression(denomGrid, denomType, position)
+            })
         }
     }
 }

@@ -142,9 +142,9 @@ class PlayFeedWidgetAutoPlayCoordinator(
                     null
                 else {
                     val actualPosition = Rect()
-                    view!!.getGlobalVisibleRect(actualPosition)
+                    view.getGlobalVisibleRect(actualPosition)
                     val screen = Rect(0, 0, getScreenWidth(), getScreenHeight())
-                    if (!view!!.isShown || !actualPosition.intersect(screen)) {
+                    if (!view.isShown || !actualPosition.intersect(screen)) {
                         null
                     } else
                         AutoPlayModel(view, it)

@@ -366,6 +366,7 @@ public interface ApplinkConst {
     String HOME_CREDIT_SELFIE_WITHOUT_TYPE = "tokopedia://fintech/home-credit/selfie";
     String HOME_CREDIT_SELFIE_WITH_TYPE = "tokopedia://fintech/home-credit/selfie/{type}";
     String PAYLATER = "tokopedia://fintech/paylater";
+    String ACTIVATION_GOPAY = "tokopedia://fintech/activate_gopay";
     String OPTIMIZED_CHECKOUT = "tokopedia://fintech/opt-checkout";
     String INBOX_HOST = "inbox";
     String INBOX = "tokopedia://inbox";
@@ -458,6 +459,7 @@ public interface ApplinkConst {
         String CATALOG_DETAIL_NEW = "kupon/detail";
         String CATALOG_LIST_NEW = "kupon";
         String CATALOG_LIST_VALUE = "tukar-point";
+        String COUPON_LIST = "kupon-saya";
         String HISTORY = "tokopedia://tokopoints/history";
     }
 

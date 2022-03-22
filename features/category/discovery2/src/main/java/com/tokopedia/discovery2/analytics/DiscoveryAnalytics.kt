@@ -1857,11 +1857,11 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             shopMap[KEY_CREATIVE] = (componentsItems.creativeName ?: EMPTY_STRING)
         }
         list.add(shopMap)
-        val eventModel = EventModel(event = EVENT_PROMO_VIEW,action = ACTION_SHOP_CARD_VIEW, label = "", category = "")
+        val eventModel = EventModel(event = EVENT_PROMO_VIEW,action = ACTION_SHOP_CARD_VIEW, label = "", category = eventDiscoveryCategory)
         eventModel.key = "${componentsItems.creativeName}"
         val customDimensionMap = HashMap<String, Any>()
         customDimensionMap[PAGE_TYPE] = pageType
-        customDimensionMap[PAGE_PATH] = pagePath
+        customDimensionMap[PAGE_PATH] = removedDashPageIdentifier
         customDimensionMap[BUSINESS_UNIT] = HOME_BROWSE
         customDimensionMap[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         customDimensionMap[USER_ID] = userSession.userId

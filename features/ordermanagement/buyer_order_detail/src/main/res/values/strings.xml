@@ -43,6 +43,7 @@
     <string name="copy_label_awb_number">bom_awb</string>
     <string name="copy_label_receiver_address">bom_receiver_address</string>
     <string name="copy_label_dropship">bom_dropship</string>
+    <string name="bom_recommendation_lbl">Rekomendasi untukmu</string>
 
     <!--Product Bundling-->
     <string name="buyer_order_detail_bundling_price_total">Total Harga Paket</string>
