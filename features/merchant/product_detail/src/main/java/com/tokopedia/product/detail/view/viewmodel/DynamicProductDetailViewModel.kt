@@ -497,7 +497,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, layoutId: String = "",
-                     userLocationLocal: LocalCacheModel, affiliateUniqueString: String = "", uuid: String = "", urlQuery: String = "", extParam: String = "") {
+                     userLocationLocal: LocalCacheModel, urlQuery: String = "", extParam: String = "") {
         launchCatchError(dispatcher.io, block = {
             alreadyHitRecom = mutableListOf()
             shopDomain = productParams.shopDomain
