@@ -168,16 +168,26 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             if (addressDataFromPinpoint == null) {
                 addressDataFromPinpoint = data?.getParcelableExtra(EXTRA_ADDRESS_NEW)
             }
+            val kotaKecamatanFromEditPinpoint = data?.getStringExtra(EXTRA_KOTA_KECAMATAN)
 
             // if user make any changes from pinpoint page, then update data in this page
             if (addressDataFromPinpoint != null) {
+                if (isEdit) {
+                    if (addressDataFromPinpoint.latitude != saveDataModel?.latitude || addressDataFromPinpoint.longitude != saveDataModel?.longitude) {
+                        if (kotaKecamatanFromEditPinpoint != currentKotaKecamatan) {
+                            view?.let { view -> Toaster.build(view, "Pinpoint, kota & kecamatan berhasil diperbarui. Yuk, pastikan alamatmu sudah sesuai.", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
+                        } else {
+                            view?.let { view -> Toaster.build(view, "Pinpoint-mu berhasil diperbarui. Yuk, pastikan alamatmu sudah sesuai.", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
+                        }
+                        binding?.formAddress?.etAlamatNew?.textFieldInput?.requestFocus()
+                    }
+                }
                 saveDataModel = addressDataFromPinpoint
-                currentKotaKecamatan = data?.getStringExtra(EXTRA_KOTA_KECAMATAN)
+                currentKotaKecamatan = kotaKecamatanFromEditPinpoint
                 binding?.formAddressNegative?.etKotaKecamatan?.textFieldInput?.setText(currentKotaKecamatan)
                 binding?.cardAddress?.addressDistrict?.text = currentKotaKecamatan
                 saveDataModel?.let {
                     if (it.latitude.isNotEmpty() || it.longitude.isNotEmpty()) {
-                        // todo add is edit flag here (D7)
                         currentLat = it.latitude.toDouble()
                         currentLong = it.longitude.toDouble()
                         binding?.cardAddressNegative?.icLocation?.setImage(IconUnify.LOCATION)
