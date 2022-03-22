@@ -167,8 +167,8 @@ class DealsCategoryFragment : DealsBaseFragment(),
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
               return when (position) {
-                0 -> if (adapter.data.first()::class == DealsBrandsDataView::class) 2 else if (adapter.data.first()::class == DealsEmptyDataView::class) 2 else 1
-                adapter.data.lastIndex -> if (adapter.data[adapter.data.lastIndex]::class == LoadingMoreUnifyModel::class) 2 else 1
+                0 -> if (adapter.getItems().first()::class == DealsBrandsDataView::class) 2 else if (adapter.getItems().first()::class == DealsEmptyDataView::class) 2 else 1
+                adapter.getItems().lastIndex -> if (adapter.getItems()[adapter.getItems().lastIndex]::class == LoadingMoreUnifyModel::class) 2 else 1
                 else -> 1
               }
             }
