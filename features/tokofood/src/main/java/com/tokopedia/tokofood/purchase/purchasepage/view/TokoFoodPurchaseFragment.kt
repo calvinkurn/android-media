@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
@@ -18,12 +20,21 @@ import com.tokopedia.tokofood.purchase.purchasepage.view.adapter.TokoFoodPurchas
 import com.tokopedia.tokofood.purchase.purchasepage.view.di.DaggerTokoFoodPurchaseComponent
 import com.tokopedia.tokofood.purchase.purchasepage.view.toolbar.TokoFoodPurchaseToolbar
 import com.tokopedia.tokofood.purchase.purchasepage.view.toolbar.TokoFoodPurchaseToolbarListener
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import javax.inject.Inject
 
 class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchaseAdapterTypeFactory>(),
         TokoFoodPurchaseActionListener, TokoFoodPurchaseToolbarListener {
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private var viewBinding by autoClearedNullable<LayoutFragmentPurchaseBinding>()
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(TokoFoodPurchaseViewModel::class.java)
+    }
+
     private var toolbar: TokoFoodPurchaseToolbar? = null
     private var recyclerView: RecyclerView? = null
     private lateinit var adapter: TokoFoodPurchaseAdapter
@@ -50,6 +61,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         setBackground()
         initializeToolbar(view)
         initializeRecyclerViewScrollListener()
+        observeList()
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
@@ -73,7 +85,13 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun loadData(page: Int) {
+        showLoading()
+        viewModel.loadData()
+    }
 
+    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, TokoFoodPurchaseAdapterTypeFactory> {
+        adapter = TokoFoodPurchaseAdapter(adapterTypeFactory)
+        return adapter
     }
 
     override fun getAdapterTypeFactory(): TokoFoodPurchaseAdapterTypeFactory {
@@ -127,6 +145,64 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 }
             }
         })
+    }
+
+    private fun observeList() {
+        viewModel.visitables.observe(viewLifecycleOwner, {
+            adapter.updateList(it)
+        })
+    }
+
+    override fun getPreviousItems(currentIndex: Int, count: Int): List<Visitable<*>> {
+        return viewModel.getPreviousItems(currentIndex, count)
+    }
+
+    override fun onTextChangeShippingAddressClicked() {
+        view?.let {
+            Toaster.build(it, "onTextChangeShippingAddressClicked", Toaster.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onTextSetPinpointClicked() {
+        view?.let {
+            Toaster.build(it, "onTextSetPinpointClicked", Toaster.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onTextAddItemClicked() {
+        view?.let {
+            Toaster.build(it, "onTextAddItemClicked", Toaster.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onTextBulkDeleteUnavailableProductsClicked() {
+        view?.let {
+            Toaster.build(it, "onTextBulkDeleteUnavailableProductsClicked", Toaster.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onQuantityChanged(newQuantity: Int) {
+        view?.let {
+            Toaster.build(it, "onQuantityChanged", Toaster.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onIconDeleteProductClicked() {
+        view?.let {
+            Toaster.build(it, "onDeleteProductClicked", Toaster.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onTextChangeNotesClicked() {
+        view?.let {
+            Toaster.build(it, "onTextChangeNotesClicked", Toaster.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onTextChangeNoteAndVariantClicked() {
+        view?.let {
+            Toaster.build(it, "onTextChangeNoteAndVariantClicked", Toaster.LENGTH_SHORT).show()
+        }
     }
 
 }

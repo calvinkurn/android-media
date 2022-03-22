@@ -48,15 +48,15 @@
         tools:text="Rumah" />
 
     <com.tokopedia.unifycomponents.Label
-        android:id="@+id/label2"
+        android:id="@+id/label_main_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
+        android:text="Utama"
         app:labelType="general_light_red"
         app:layout_constraintBottom_toBottomOf="@+id/text_address_name"
         app:layout_constraintStart_toEndOf="@+id/text_address_name"
-        app:layout_constraintTop_toTopOf="@+id/text_address_name"
-        tools:text="Utama" />
+        app:layout_constraintTop_toTopOf="@+id/text_address_name" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_receiver_name_and_phone"

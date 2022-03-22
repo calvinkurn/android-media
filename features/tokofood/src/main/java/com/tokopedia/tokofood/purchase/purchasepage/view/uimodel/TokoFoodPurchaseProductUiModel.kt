@@ -8,11 +8,14 @@ data class TokoFoodPurchaseProductUiModel(
         var name: String = "",
         var imageUrl: String = "",
         var addOns: List<String> = emptyList(),
+        var hasAddOnsOption: Boolean = false,
         var originalPrice: Long = 0L,
         var price: Long = 0L,
         var discountPercentage: String = "",
         var notes: String = "",
-        var quantity: Int = 0
+        var quantity: Int = 0,
+        var minQuantity: Int = 0,
+        var maxQuantity: Int = 0
 ) : Visitable<TokoFoodPurchaseAdapterTypeFactory> {
 
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {

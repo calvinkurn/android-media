@@ -19,15 +19,49 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_pinpoint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="8dp">
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icon_no_pinpoint"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                app:icon_name="LOCATION_OFF"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_no_pinpoint"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="@string/text_purchase_message_need_pinpoint"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/icon_no_pinpoint"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_3" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_shipping"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="8dp"
-            android:paddingBottom="8dp">
+            android:paddingBottom="8dp"
+            tools:visibility="gone">
 
             <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/image_gojek_logo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/image_shipping_logo"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_marginStart="14dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -38,7 +72,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                app:layout_constraintStart_toEndOf="@+id/image_gojek_logo"
+                app:layout_constraintStart_toEndOf="@+id/image_shipping_logo"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_3"
                 app:typographyWeight="bold"
@@ -51,7 +85,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginEnd="14dp"
-                app:layout_constraintStart_toEndOf="@+id/image_gojek_logo"
+                app:layout_constraintStart_toEndOf="@+id/image_shipping_logo"
                 app:layout_constraintTop_toBottomOf="@+id/text_shipping_courier_name"
                 app:typographyType="body_3"
                 tools:text="Tiba dalam 30-60 menit" />

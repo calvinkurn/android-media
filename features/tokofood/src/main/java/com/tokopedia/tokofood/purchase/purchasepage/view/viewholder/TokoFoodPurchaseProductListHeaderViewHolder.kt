@@ -16,7 +16,15 @@ class TokoFoodPurchaseProductListHeaderViewHolder(private val viewBinding: ItemP
 
     override fun bind(element: TokoFoodPurchaseProductListHeaderUiModel) {
         with(viewBinding) {
-
+            textProductListHeader.text = element.title
+            textProductListAction.text = element.action
+            textProductListAction.setOnClickListener {
+                if (element.state == TokoFoodPurchaseProductListHeaderUiModel.STATE_AVAILABLE) {
+                    listener.onTextAddItemClicked()
+                } else {
+                    listener.onTextBulkDeleteUnavailableProductsClicked()
+                }
+            }
         }
     }
 

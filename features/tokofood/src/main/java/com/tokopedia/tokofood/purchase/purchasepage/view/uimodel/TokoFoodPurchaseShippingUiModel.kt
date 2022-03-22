@@ -6,7 +6,8 @@ import com.tokopedia.tokofood.purchase.purchasepage.view.adapter.TokoFoodPurchas
 data class TokoFoodPurchaseShippingUiModel(
         var shippingCourierName: String = "",
         var shippingEta: String = "",
-        var shippingLogoUrl: String = ""
+        var shippingLogoUrl: String = "",
+        var isNeedPinpoint: Boolean = false
 ) : Visitable<TokoFoodPurchaseAdapterTypeFactory> {
 
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {

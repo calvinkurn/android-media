@@ -25,7 +25,8 @@ object TokoFoodPurchaseUiModelMapper {
         return TokoFoodPurchaseShippingUiModel(
                 shippingCourierName = "Gojek Instan (Rp0)",
                 shippingEta = "Tiba dalam 30-60 menit",
-                shippingLogoUrl = "https://1000logos.net/wp-content/uploads/2020/11/Gojek-Logo-1024x640.png"
+                shippingLogoUrl = "https://1000logos.net/wp-content/uploads/2020/11/Gojek-Logo-1024x640.png",
+                isNeedPinpoint = true
         )
     }
 
@@ -58,7 +59,13 @@ object TokoFoodPurchaseUiModelMapper {
                 name = "Milo Macchiato",
                 imageUrl = "https://img-global.cpcdn.com/recipes/1db6e302172f3f01/680x482cq70/es-milo-macchiato-janji-jiwa-foto-resep-utama.jpg",
                 price = 25000,
-                quantity = 1
+                quantity = 1,
+                minQuantity = 1,
+                maxQuantity = 10,
+                notes = "Pesanannya jangan sampai salah ya! udah haus bang. Pesanannya jangan sampai salah ya! udah haus bang...",
+                addOns = listOf("addOn1", "addon2", "addon3"),
+                originalPrice = 50000,
+                discountPercentage = "50%"
         )
     }
 

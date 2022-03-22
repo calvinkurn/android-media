@@ -16,7 +16,7 @@ class TokoFoodPurchaseGeneralTickerViewHolder(private val viewBinding: ItemPurch
 
     override fun bind(element: TokoFoodPurchaseGeneralTickerUiModel) {
         with(viewBinding) {
-
+            tickerGeneral.setHtmlDescription(element.message)
         }
     }
 
