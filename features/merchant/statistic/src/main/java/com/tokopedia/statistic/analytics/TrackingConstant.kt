@@ -33,7 +33,7 @@ object TrackingConstant {
     const val VIEW_STATISTIC_IRIS = "viewStatistikIris"
     const val VIEW_HOMEPAGE_IRIS = "viewHomepageIris"
     const val VIEW_PG_IRIS = "viewPGIris"
-    const val CLICK_PG = "viewPG"
+    const val CLICK_PG = "clickPG"
     const val CLICK_STATISTIC = "clickStatistik"
     const val VIEW_PRODUCT_INSIGHT_IRIS = "viewProductInsightIris"
     const val CLICK_PRODUCT_INSIGHT = "clickProductInsight"
