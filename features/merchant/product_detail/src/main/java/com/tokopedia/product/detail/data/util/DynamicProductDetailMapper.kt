@@ -360,7 +360,7 @@ object DynamicProductDetailMapper {
         val mappedThumbnails = data.detail?.images?.let { images ->
             val hasNext = data.isHasNext
             images.mapIndexedNotNull { index, image ->
-                image.uriLarge?.let { uri ->
+                image.uriThumbnail?.let { uri ->
                     val lastItem = index == images.size - 1
                     if (lastItem && hasNext) {
                         ReviewMediaImageThumbnailUiModel(

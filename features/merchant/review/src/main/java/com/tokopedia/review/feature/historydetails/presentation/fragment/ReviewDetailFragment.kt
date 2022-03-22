@@ -341,7 +341,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                     val mappedAttachment = attachments.map {
                         ReviewMediaImageThumbnailUiModel(
                             uiState = ReviewMediaImageThumbnailUiState.Showing(
-                                uri = it.fullSize, removable = false
+                                uri = it.thumbnail, removable = false
                             )
                         )
                     }

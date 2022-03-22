@@ -152,14 +152,14 @@ class ReadReviewViewModel @Inject constructor(
             val imageThumbnails = productReview.imageAttachments.map {
                 ReviewMediaImageThumbnailUiModel(
                     uiState = ReviewMediaImageThumbnailUiState.Showing(
-                        uri = it.uri, removable = false
+                        uri = it.imageThumbnailUrl, removable = false
                     )
                 )
             }
             val videoThumbnails = productReview.videoAttachments.map {
                 ReviewMediaVideoThumbnailUiModel(
                     uiState = ReviewMediaVideoThumbnailUiState.Showing(
-                        uri = it.uri, removable = false, playable = true, showDuration = false
+                        uri = it.imageThumbnailUrl, removable = false, playable = true, showDuration = false
                     )
                 )
             }
@@ -191,7 +191,7 @@ class ReadReviewViewModel @Inject constructor(
         return shopReview.attachments.map {
             ReviewMediaImageThumbnailUiModel(
                 uiState = ReviewMediaImageThumbnailUiState.Showing(
-                    uri = it.fullsizeURL, removable = false
+                    uri = it.thumbnailURL, removable = false
                 )
             )
         }
