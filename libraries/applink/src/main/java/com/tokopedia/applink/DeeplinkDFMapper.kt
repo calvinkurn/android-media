@@ -189,7 +189,6 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_BASE = "df_base"
     const val DF_BASE_SELLER_APP = "df_base_sellerapp"
     const val DF_CATEGORY_TRADE_IN = "df_category_trade_in"
-    const val DF_CONTENT_AFFILIATE = "df_content_affiliate"
     const val DF_MERCHANT_SELLER = "df_merchant_seller"
     const val DF_MERCHANT_REVIEW = "df_merchant_review"
     const val DF_OPERATIONAL_CONTACT_US = "df_operational_contact_us"
@@ -210,6 +209,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_CONTENT_PLAY_BROADCASTER = "df_content_play_broadcaster"
     const val DF_IMAGE_PICKER_INSTA = "df_imagepicker_insta"
     const val DF_CREATE_POST = "df_createpost"
+    const val DF_CONTENT_AFFILIATE = DF_CREATE_POST
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
