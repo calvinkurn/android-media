@@ -75,10 +75,7 @@ class OtherMenuAdapter(
         MenuItemUiModel(
             title = context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_review)
                 .orEmpty(),
-            clickApplink = UriUtil.buildUriAppendParam(
-                ApplinkConst.REPUTATION,
-                mapOf(ReviewApplinkConst.PARAM_TAB to ReviewApplinkConst.BUYER_REVIEW_TAB)
-            ),
+            clickApplink = ApplinkConst.REPUTATION,
             eventActionSuffix = SettingTrackingConstant.REVIEW,
             iconUnify = IconUnify.STAR
         ),
