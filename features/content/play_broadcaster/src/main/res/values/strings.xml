@@ -106,8 +106,9 @@
     <string name="play_live_broadcast_network_loss_desc">Segera sambungkan ke koneksi yang stabil, atau akhiri siarannya.</string>
     <string name="play_live_broadcast_network_loss">Yaah, koneksimu putus</string>
 
-    <string name="play_summary_title">Laporan Live Streaming</string>
-    <string name="play_summary_button_save_video">Simpan Video di Halaman Toko</string>
+    <string name="play_summary_title">Laporan Live</string>
+    <string name="play_summary_button_post_video">Posting Video</string>
+    <string name="play_summary_button_post_video_now">Posting Video Sekarang</string>
     <string name="play_summary_button_delete_video">Hapus Video</string>
     <string name="play_summary_total_game_participant"><![CDATA[Peserta Game <font color=#03AC0E>Lihat Pemenang</font></b>]]></string>
     <string name="play_summary_total_view">Penonton</string>
@@ -255,4 +256,9 @@
     <string name="play_bro_product_summary_empty_action_text">Tambah Produk</string>
     <string name="play_bro_product_summary_fail_to_delete_product">Produk gagal dihapus</string>
     <string name="play_bro_product_summary_success_delete_product">%d produk telah dihapus.</string>
+
+    <!-- Post Video -->
+    <string name="play_bro_add_tag_title">Tambah Tag</string>
+    <string name="play_bro_select_tag_title">Pilih tag agar videomu mudah ditemukan</string>
+    <string name="play_bro_cant_post_video_message">Karena durasi kurang dari 60 detik, Live-mu tidak bisa di-posting jadi video.</string>
 </resources>
