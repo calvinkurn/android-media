@@ -1056,10 +1056,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun showMoreActionBottomSheet() {
-        val fragmentFactory = childFragmentManager.fragmentFactory
-        val sheet = fragmentFactory.instantiate(
-            requireActivity().classLoader,
-            PlayMoreActionBottomSheet::class.java.name) as PlayMoreActionBottomSheet
+        val sheet  = getBottomSheetInstance()
         sheet.show(childFragmentManager)
     }
 
@@ -1116,10 +1113,8 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun getBottomSheetInstance() : PlayMoreActionBottomSheet {
-        if (!::bottomSheet.isInitialized) {
-            bottomSheet = childFragmentManager.fragmentFactory.instantiate(requireActivity().classLoader, PlayMoreActionBottomSheet::class.java.name) as PlayMoreActionBottomSheet
-        }
-        return bottomSheet
+        val sheet = PlayMoreActionBottomSheet.get(childFragmentManager)
+        return sheet ?: childFragmentManager.fragmentFactory.instantiate(requireActivity().classLoader, PlayMoreActionBottomSheet::class.java.name) as PlayMoreActionBottomSheet
     }
 
     fun hideBottomSheet() {

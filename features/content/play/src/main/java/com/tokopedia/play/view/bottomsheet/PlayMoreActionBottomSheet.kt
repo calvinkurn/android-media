@@ -65,6 +65,10 @@ class PlayMoreActionBottomSheet @Inject constructor(
 
         private const val MAX_PERCENT_HEIGHT = 0.9
         private const val MIN_PERCENT_HEIGHT = 0.2
+
+        fun get(manager: FragmentManager): PlayMoreActionBottomSheet? {
+            return manager.findFragmentByTag(TAG) as? PlayMoreActionBottomSheet
+        }
     }
 
     private var childView: View? = null
