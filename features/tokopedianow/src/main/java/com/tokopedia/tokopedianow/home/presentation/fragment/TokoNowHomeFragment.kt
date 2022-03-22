@@ -174,7 +174,7 @@ class TokoNowHomeFragment: Fragment(),
         const val DEFAULT_QUANTITY = 0
         const val SHARE_HOME_URL = "https://www.tokopedia.com/now"
         const val SHARE_QUEST_URL = "https://www.tokopedia.com/now/quest-channel"
-        const val DEEPLINK_SHARE_QUEST_PATH = "?url=https://www.tokopedia.com/now/quest-channel"
+        const val DEEPLINK_SHARE_QUEST_PATH = "url=https://www.tokopedia.com/now/quest-channel"
         const val THUMBNAIL_AND_OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/now/PN-RICH.jpg"
         const val PAGE_SHARE_NAME = "Tokonow"
         const val SHARE = "share"

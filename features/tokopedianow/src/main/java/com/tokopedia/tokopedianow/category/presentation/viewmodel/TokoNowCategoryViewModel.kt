@@ -324,7 +324,7 @@ class TokoNowCategoryViewModel @Inject constructor (
     }
 
     private fun getConstructedLink(categoryUrl: String, categoryIdLvl2: String, categoryIdLvl3: String): Pair<String, String> {
-        var deeplinkParam = "/${TokoNowCategoryFragment.DEFAULT_DEEPLINK_PARAM}/${categoryL1}"
+        var deeplinkParam = "${TokoNowCategoryFragment.DEFAULT_DEEPLINK_PARAM}/${categoryL1}"
         var url = categoryUrl
         if (categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID) {
             deeplinkParam += "/$categoryIdLvl2"
