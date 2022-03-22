@@ -78,7 +78,7 @@ class PdpSimulationAnalytics @Inject constructor(
 
 
     private fun sendGeneralEvent(map: MutableMap<String, Any>) {
-        z
+        map[KEY_USER_ID] = userSession.get().userId
         map[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_FINTECH
         map[KEY_CURRENT_SITE] = CURRENT_SITE_FINTECH
         analyticTracker.sendGeneralEvent(map)
