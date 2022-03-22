@@ -8,8 +8,8 @@
 
     <FrameLayout
         android:id="@+id/container_img_header_main"
-        android:layout_width="128dp"
-        android:layout_height="128dp"
+        android:layout_width="144dp"
+        android:layout_height="144dp"
         android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -29,7 +29,7 @@
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             android:layout_gravity="end|bottom"
-            android:layout_margin="6dp"
+            android:layout_margin="8dp"
             app:srcCompat="@drawable/ic_enlarge_icon" />
 
     </FrameLayout>
