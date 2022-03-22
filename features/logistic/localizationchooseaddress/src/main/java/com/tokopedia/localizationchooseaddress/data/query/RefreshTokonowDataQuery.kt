@@ -4,13 +4,13 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
 object RefreshTokonowDataQuery : GqlQueryInterface {
     override fun getOperationNameList() = listOf(
-        "RefreshTokonowData"
+        "TokonowRefreshUserLCAData"
     )
 
     override fun getQuery(): String {
         return """
-    query RefreshTokonowData(${'$'}tokonowLastUpdate:String!, ${'$'}districtID:String!, ${'$'}latitude:String!, ${'$'}longitude:String!, ${'$'}shopID:String!, ${'$'}warehouseID:String!, ${'$'}serviceType:String!, ${'$'}warehouses:[WarehouseUserPreference!]!){
-      RefreshTokonowData(
+    query TokonowRefreshUserLCAData(${'$'}tokonowLastUpdate:String!, ${'$'}districtID:String!, ${'$'}latitude:String!, ${'$'}longitude:String!, ${'$'}shopID:String!, ${'$'}warehouseID:String!, ${'$'}serviceType:String!, ${'$'}warehouses:[WarehouseUserPreference!]!){
+      TokonowRefreshUserLCAData(
         tokonowLastUpdate: ${'$'}tokonowLastUpdate,
         districtID: ${'$'}districtID, 
         latitude: ${'$'}latitude, 
@@ -40,5 +40,5 @@ object RefreshTokonowDataQuery : GqlQueryInterface {
     """.trimIndent()
     }
 
-    override fun getTopOperationName() = "RefreshTokonowData"
+    override fun getTopOperationName() = "TokonowRefreshUserLCAData"
 }

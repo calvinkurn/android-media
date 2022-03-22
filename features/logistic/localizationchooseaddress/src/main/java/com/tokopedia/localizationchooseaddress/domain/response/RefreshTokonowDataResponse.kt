@@ -12,7 +12,7 @@ data class RefreshTokonowDataResponse(
     data class Data(
 
         @Expose
-        @SerializedName("RefreshTokonowData")
+        @SerializedName("TokonowRefreshUserLCAData")
         val refreshTokonowData: RefreshTokonowData = RefreshTokonowData()
     ) {
         data class RefreshTokonowData(
