@@ -561,8 +561,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     payLaterActivationViewModel.selectedProductId,
                     checkoutData.userState ?: "",
                     checkoutData.gateway_name.orEmpty(),
-                    checkoutData.tenureDetail[selectedTenurePosition].monthly_installment.orEmpty(),
-                    checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
+                    checkoutData.tenureDetail[selectedTenurePosition]?.monthly_installment.orEmpty(),
+                    checkoutData.tenureDetail[selectedTenurePosition]?.tenure.toString(),
                     quantity.toString(),
                     checkoutData.userAmount ?: "",
                     variantName

@@ -25,7 +25,6 @@ class PdpSimulationAnalytics @Inject constructor(
 
         val label = computeLabel(
             event.productId,
-            userSession.get().userId,
             event.userStatus,
             event.tenureOption.toString(),
             event.emiAmount,
@@ -79,7 +78,7 @@ class PdpSimulationAnalytics @Inject constructor(
 
 
     private fun sendGeneralEvent(map: MutableMap<String, Any>) {
-        map[KEY_USER_ID] = userSession.get().userId
+        z
         map[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_FINTECH
         map[KEY_CURRENT_SITE] = CURRENT_SITE_FINTECH
         analyticTracker.sendGeneralEvent(map)
@@ -164,8 +163,17 @@ class PdpSimulationAnalytics @Inject constructor(
             CLICK_EVENT_NAME_FIN_TECH_V3,
             CTA_CHECKOUT_EVENT_CATEGORY,
             CTA_CHECKOUT_CLICKED_ACTION,
-            " $productId -$userStatus -LINKED - $partnerName - $emiAmount - $tenure - $quantity - $limit - $variantName"
-
+            computeLabel(
+                productId,
+                userStatus,
+                "LINKED",
+                partnerName,
+                emiAmount,
+                tenure,
+                quantity,
+                limit,
+                variantName
+            )
         )
         sendGeneralEvent(map)
     }
@@ -271,7 +279,7 @@ class PdpSimulationAnalytics @Inject constructor(
         const val OCC_CHANGE_PARTNER_ACTION = "change partner cta - clicked activated buyer"
         const val BOTTOMSHEET_CHANGE_PARTNER_CLICK_ACTION =
             "partner option cta - click activated buyer"
-        const val BOTTOMSHEET_INSTALLMENT_ACTION="open simulation bottom sheet - impression"
+        const val BOTTOMSHEET_INSTALLMENT_ACTION = "open simulation bottom sheet - impression"
         const val OCC_EVENT_CATEGORY = "fin - optimize occ page"
         const val CTA_CHECKOUT_CLICKED_ACTION = "CTA beli langsung - click activated buyers"
         const val CTA_CHECKOUT_EVENT_CATEGORY = "fin - occ page"
