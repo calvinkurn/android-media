@@ -1101,14 +1101,19 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         currentPostalCode = postalCode
 
         // reset lat long
-        currentLat = 0.0
-        currentLong = 0.0
-        saveDataModel?.latitude = "0.0"
-        saveDataModel?.longitude = "0.0"
-        this.isPinpoint = false
-        binding?.run {
-            cardAddressNegative.icLocation.setImage(IconUnify.LOCATION_OFF)
-            cardAddressNegative.addressDistrict.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_not_defined)).spannedString }
+        if (!isEdit) {
+            currentLat = 0.0
+            currentLong = 0.0
+            saveDataModel?.latitude = "0.0"
+            saveDataModel?.longitude = "0.0"
+            this.isPinpoint = false
+            binding?.run {
+                cardAddressNegative.icLocation.setImage(IconUnify.LOCATION_OFF)
+                cardAddressNegative.addressDistrict.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_not_defined)).spannedString }
+            }
+        } else {
+            view?.let { view -> Toaster.build(view, "Kota & kecamatan berhasil diperbarui. Yuk, pastikan alamatmu sudah sesuai.", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
+            binding?.formAddress?.etAlamatNew?.textFieldInput?.requestFocus()
         }
 
         if (isPinpoint) goToPinpointPage()
