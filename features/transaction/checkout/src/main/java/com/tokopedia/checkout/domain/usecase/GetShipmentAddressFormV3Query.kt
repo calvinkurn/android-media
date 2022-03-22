@@ -524,6 +524,7 @@ fun getQueryShipmentAddressFormV3(): String {
                           sp_id
                         }
                       }
+                      poml_auto_applied
                     }
                     benefit_summary_info {
                       final_benefit_amount_str

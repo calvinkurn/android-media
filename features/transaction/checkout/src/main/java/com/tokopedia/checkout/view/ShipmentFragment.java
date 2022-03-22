@@ -1123,11 +1123,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void sendEnhancedEcommerceAnalyticsCheckout(Map<String, Object> stringObjectMap,
                                                        Map<String, String> tradeInCustomDimension,
                                                        String transactionId,
+                                                       String userId,
+                                                       boolean promoFlag,
                                                        String eventCategory,
                                                        String eventAction,
                                                        String eventLabel) {
         checkoutAnalyticsCourierSelection.sendEnhancedECommerceCheckout(
-                stringObjectMap, tradeInCustomDimension, transactionId, eventCategory, eventAction, eventLabel
+                stringObjectMap, tradeInCustomDimension, transactionId, userId, promoFlag, eventCategory, eventAction, eventLabel
         );
         checkoutAnalyticsCourierSelection.flushEnhancedECommerceCheckout();
     }
