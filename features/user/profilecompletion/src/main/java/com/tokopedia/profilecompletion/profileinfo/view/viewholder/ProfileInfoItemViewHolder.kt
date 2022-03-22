@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.databinding.ProfileItemViewBinding
 import com.tokopedia.profilecompletion.profileinfo.view.uimodel.ProfileInfoItemUiModel
@@ -25,6 +26,7 @@ class ProfileInfoItemViewHolder(val view: View,
 			element?.action?.invoke()
 			listener.onRightIconClicked(element)
 		}
+		if (element?.showVerifiedTag == true) binding?.tvVerification?.visible()
 	binding?.fragmentProfileItemTitle?.text = element?.title
 	binding?.fragmentProfileItemValue?.text = if (element?.itemValue.isNullOrBlank()) element?.placeholder else element?.itemValue
 		if (element?.itemValue.isNullOrBlank()) {

@@ -16,13 +16,14 @@
         android:id="@+id/fragmentProfileItemTitle"
         android:layout_weight="4.5"
         tools:text="Title"
+        android:layout_gravity="start"
         android:layout_width="0dp"
         android:textColor="@color/Unify_NN600"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
         android:layout_height="wrap_content"/>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_click"
         android:layout_width="0dp"
         android:layout_weight="7.5"
@@ -32,7 +33,10 @@
             app:typographyType="body_2"
             app:typographyWeight="reguler"
             android:id="@+id/fragmentProfileItemValue"
-            android:layout_weight="7"
+            app:layout_constraintHorizontal_weight="7"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/fragmentProfileItemIcon"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="Subtitle"
             android:maxLines="1"
             android:layout_width="0dp"
@@ -40,14 +44,34 @@
             android:textColor="@color/Unify_NN950"
             android:layout_height="wrap_content"/>
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_verification"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            android:text="@string/no_verified"
+            android:padding="@dimen/unify_space_4"
+            android:layout_marginTop="@dimen/unify_space_2"
+            android:textColor="@color/Unify_NN600"
+            app:typographyWeight="bold"
+            app:typographyType="small"
+            android:background="@color/Unify_NN100"
+            app:layout_constraintEnd_toStartOf="@id/fragmentProfileItemIcon"
+            app:layout_constraintTop_toBottomOf="@id/fragmentProfileItemValue"/>
+
         <com.tokopedia.iconunify.IconUnify
-            android:layout_weight="0.5"
+            app:layout_constraintStart_toEndOf="@id/fragmentProfileItemValue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_weight="0.5"
             android:id="@+id/fragmentProfileItemIcon"
             app:icon_name="CHEVRON_RIGHT"
             android:layout_width="22dp"
             android:layout_height="22dp"/>
 
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

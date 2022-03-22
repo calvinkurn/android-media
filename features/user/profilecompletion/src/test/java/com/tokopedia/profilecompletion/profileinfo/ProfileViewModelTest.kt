@@ -4,10 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.profilecompletion.profileinfo.data.ProfileFeedResponse
-import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoResponse
-import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoUiModel
-import com.tokopedia.profilecompletion.profileinfo.data.ProfileRoleResponse
+import com.tokopedia.profilecompletion.profileinfo.data.*
 import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileFeedInfoUseCase
 import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileInfoUseCase
 import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileRoleUseCase
@@ -55,7 +52,7 @@ class ProfileViewModelTest {
     private lateinit var profileInfoObserver: Observer<ProfileInfoUiModel>
 
     @RelaxedMockK
-    private lateinit var errorMessageObserver: Observer<String>
+    private lateinit var errorMessageObserver: Observer<ProfileInfoError>
 
     @RelaxedMockK
     private lateinit var savePhotoObserver: Observer<String>
@@ -123,7 +120,7 @@ class ProfileViewModelTest {
         //Then
         coVerify(exactly = 1) {
             profileInfoUsecase(Unit)
-            errorMessageObserver.onChanged(dummyError.message)
+            errorMessageObserver.onChanged(ProfileInfoError.GeneralError(dummyError))
         }
     }
 
@@ -191,7 +188,7 @@ class ProfileViewModelTest {
         coVerify {
             uploaderUsecase(any())
             saveProfilePictureUsecase(any())
-            errorMessageObserver.onChanged(dummyErrorMsg)
+            errorMessageObserver.onChanged(ProfileInfoError.ErrorSavePhoto(dummyErrorMsg))
         }
     }
 
@@ -208,7 +205,7 @@ class ProfileViewModelTest {
         coVerify {
             uploaderUsecase(any())
             saveProfilePictureUsecase(any())
-            errorMessageObserver.onChanged(dummyError.message)
+            errorMessageObserver.onChanged(ProfileInfoError.ErrorSavePhoto(dummyError.message))
         }
     }
 
@@ -223,7 +220,7 @@ class ProfileViewModelTest {
         //Then
         coVerify {
             uploaderUsecase(any())
-            errorMessageObserver.onChanged(dummyUploadResultFailed.message)
+            errorMessageObserver.onChanged(ProfileInfoError.ErrorSavePhoto(dummyUploadResultFailed.message))
         }
     }
 
@@ -239,7 +236,7 @@ class ProfileViewModelTest {
         //Then
         coVerify {
             uploaderUsecase(any())
-            errorMessageObserver.onChanged(dummyErrors.message)
+            errorMessageObserver.onChanged(ProfileInfoError.ErrorSavePhoto(dummyErrors.message))
         }
     }
 }

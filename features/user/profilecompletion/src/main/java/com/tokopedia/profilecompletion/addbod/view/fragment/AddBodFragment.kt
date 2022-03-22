@@ -73,7 +73,6 @@ class AddBodFragment: BaseDaggerFragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         maxDate = GregorianCalendar(getCurrentLocale(requireContext())).apply {
             set(this.get(Calendar.YEAR), get(Calendar.MONTH), get(Calendar.DAY_OF_MONTH))
         }
@@ -81,11 +80,14 @@ class AddBodFragment: BaseDaggerFragment(){
         setListener()
         initVar()
         initDatepicker()
-
-        chooseDate.editText.setFocusable(false)
-
+        initViews()
         initObserver()
         parentContainer
+    }
+
+    private fun initViews() {
+        if (chooseDate.editText.text.isBlank()) btnSave.isEnabled = false
+        chooseDate.editText.setFocusable(false)
     }
 
     private fun setListener() {
@@ -123,7 +125,6 @@ class AddBodFragment: BaseDaggerFragment(){
         val date = simpleDateFormat.parse(selectedDate)
         val stringDate = simpleDateFormat.format(date)
         val bod = arguments?.getString(ApplinkConstInternalGlobal.PARAM_BOD)
-        println("get data $stringDate $bod")
         btnSave.isEnabled = stringDate != bod
     }
 

@@ -19,12 +19,17 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.network.constant.ResponseStatus
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.R.string.*
@@ -59,7 +64,12 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.phonenumber.PhoneNumberUtil
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.android.synthetic.main.fragment_profile_info.*
 import java.io.File
+import java.lang.RuntimeException
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.ProfileInfoItemInterface, ProfileInfoTitleViewHolder.ProfileInfoTitleInterface {
@@ -112,7 +122,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 	super.onViewCreated(view, savedInstanceState)
 	initViews()
 	setupObserver()
-	viewModel.getProfileInfo()
+	getProfileInfo()
     }
 
     private fun initViews() {
@@ -134,7 +144,28 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 				showToasterError(it.errorMsg ?: "")
 			}
 			is ProfileInfoError.GeneralError -> {
-				showToasterError(it.errorMsg ?: "")
+				when (it.error) {
+					is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
+					view?.let {
+						showGlobalError(GlobalError.NO_CONNECTION)
+					}
+				}
+					is RuntimeException -> {
+						when (it.error.localizedMessage.toIntOrNull()) {
+							ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(
+								GlobalError.NO_CONNECTION
+							)
+							ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
+							ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
+							else -> {
+								showGlobalError(GlobalError.SERVER_ERROR)
+							}
+						}
+					}
+					else -> {
+					showToasterError(it.error.message ?: "")
+				}
+				}
 			}
 		}
 	}
@@ -194,7 +225,26 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 	}
     }
 
+	private fun getProfileInfo() {
+		viewModel.getProfileInfo()
+		binding?.shimmerProfileInfo?.root?.visible()
+		binding?.globalError?.gone()
+	}
+
+	private fun showGlobalError(type: Int) {
+		binding?.shimmerProfileInfo?.root?.gone()
+		binding?.containerProfileInfo?.gone()
+		binding?.globalError?.setType(type)
+		binding?.globalError?.setActionClickListener {
+			getProfileInfo()
+		}
+		binding?.globalError?.show()
+	}
+
     private fun setProfileData(data: ProfileInfoUiModel) {
+		binding?.shimmerProfileInfo?.root?.visible()
+		if (binding?.containerProfileInfo?.visibility == View.GONE) binding?.containerProfileInfo?.visible()
+
         val listItem = listOf(
 	    ProfileInfoTitleUiModel(ProfileInfoConstants.PROFILE_INFO_SECTION, getString(R.string.profile_info_title)),
 	    ProfileInfoItemUiModel(ProfileInfoConstants.NAME, title = getString(R.string.title_item_name), itemValue = data.profileInfoData.fullName) {
@@ -222,12 +272,12 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 	    		)),
 	    ProfileInfoItemUiModel(ProfileInfoConstants.USER_ID, title = getString(R.string.title_user_id), itemValue = userSession.userId, rightIcon = IconUnify.COPY),
 	    ProfileInfoItemUiModel(ProfileInfoConstants.EMAIL, title = getString(R.string.title_email), itemValue = getEmailValue(data),
-			placeholder = getString(R.string.placeholder_email)
+			showVerifiedTag = !data.profileInfoData.isEmailDone, placeholder = getString(R.string.placeholder_email)
 		) {
 			onEmailClicked(data)
 	    } ,
 	    ProfileInfoItemUiModel(ProfileInfoConstants.PHONE, title = getString(title_phone), itemValue = data.profileInfoData.msisdn,
-			placeholder = getString(R.string.placeholder_phone)
+			showVerifiedTag = !data.profileInfoData.isMsisdnVerified, placeholder = getString(R.string.placeholder_phone)
 		) {
 			onPhoneClicked(data)
 	    },
@@ -261,7 +311,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 			)
 			startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_CHANGE_NAME)
 		} else {
-			tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRYPOINT_NAME)
+			tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_BOTTOMSHEET)
 			openBottomSheetWarning(ProfileInfoConstants.NAME, data.profileRoleData.changeNameMessageInfoTitle, data.profileRoleData.changeNameMessageInfo)
 		}
 	}
@@ -316,7 +366,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRY_POINT_DOB)
 				goToChangeDob(data.profileInfoData.birthDay)
 			} else {
-				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRY_POINT_DOB)
+				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_BOTTOMSHEET)
 				openBottomSheetWarning(ProfileInfoConstants.BIRTH_DATE, data.profileRoleData.changeDobMessageInfoTitle, data.profileRoleData.changeDobMessageInfo)
 			}
 		}

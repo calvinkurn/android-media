@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoError
@@ -14,6 +15,8 @@ import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileRoleUseCase
 import com.tokopedia.profilecompletion.profileinfo.usecase.SaveProfilePictureUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.io.File
@@ -39,8 +42,12 @@ class ProfileViewModel @Inject constructor(
     private val _saveImageProfileResponse = MutableLiveData<String>()
     val saveImageProfileResponse: LiveData<String> = _saveImageProfileResponse
 
+    private val coroutineErrorHandler = CoroutineExceptionHandler { _, error ->
+        mutableErrorMessage.value = ProfileInfoError.GeneralError(error)
+    }
+
     fun getProfileInfo() {
-        launch {
+        launch (coroutineErrorHandler) {
             try {
                 val profileInfo = async { profileInfoUseCase(Unit) }
                 val profileRole = async { profileRoleUseCase(Unit) }
@@ -52,7 +59,13 @@ class ProfileViewModel @Inject constructor(
                     profileFeed.await().profileFeedData
                 )
             } catch (e: Exception) {
-                mutableErrorMessage.value = ProfileInfoError.GeneralError(e.message)
+                when (e) {
+                    is CancellationException -> {
+
+                    } else -> {
+                    mutableErrorMessage.value = ProfileInfoError.GeneralError(e)
+                }
+                }
             }
         }
     }

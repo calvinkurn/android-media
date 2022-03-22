@@ -395,8 +395,8 @@ class ProfileInfoTracker {
 	const val LABEL_FAILED = "failed"
 	const val LABEL_CHANGE_PROFILE_PAGE = " - change profile page"
 	const val LABEL_ENTRYPOINT_NAME = "name"
-	const val LABEL_ENTRYPOINT_USERNAME = " - username"
-	const val LABEL_ENTRYPOINT_BIO = " - bio"
+	const val LABEL_ENTRYPOINT_USERNAME = "username"
+	const val LABEL_ENTRYPOINT_BIO = "bio"
 	const val LABEL_ENTRY_POINT_USER_ID = "userid"
 	const val LABEL_ENTRY_POINT_EMAIL = "email"
 	const val LABEL_ENTRY_POINT_PHONE = "phone"
@@ -404,6 +404,7 @@ class ProfileInfoTracker {
 	const val LABEL_ENTRY_POINT_DOB = "dob"
 	const val LABEL_PROFILE_INFO = "info profil"
 	const val LABEL_PERSONAL_INFO = "info pribadi"
+	const val LABEL_BOTTOMSHEET = "bottomsheet"
 
 	const val BUSSINESS_UNIT = "user platform"
 	const val CURRENT_SITE = "tokopediamarketplace"
