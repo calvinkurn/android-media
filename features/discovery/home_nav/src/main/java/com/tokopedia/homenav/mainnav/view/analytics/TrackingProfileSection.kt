@@ -1,5 +1,6 @@
 package com.tokopedia.homenav.mainnav.view.analytics
 
+import android.os.Bundle
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
@@ -14,6 +15,9 @@ object TrackingProfileSection: BaseTrackerConst() {
     private const val CLICK_USER_ACCOUNT = "user account"
     private const val CLICK_SHOP_ACCOUNT = "shop account"
     private const val CLICK_OPEN_SHOP = "open shop"
+    private const val CLICK_ON_SHOP_BUTTON = "click on shop button"
+    private const val EVENT_LABEL_SHOP_FORMAT = "%s - %s"
+    private const val DEFAULT_VALUE = ""
 
     fun onClickLoginButton(userId: String){
         getTracker().sendGeneralEvent(
@@ -72,6 +76,25 @@ object TrackingProfileSection: BaseTrackerConst() {
                         .appendBusinessUnit(BusinessUnit.DEFAULT)
                         .build())
     }
+
+    fun onClickShopNotHaveShopAndNotAdmin() {
+        val bundle = Bundle()
+        bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
+        bundle.putString(
+            Action.KEY,
+            CLICK_ON_SHOP_BUTTON
+        )
+        bundle.putString(Category.KEY, GLOBAL_MENU)
+        bundle.putString(
+            Label.KEY,
+            EVENT_LABEL_SHOP_FORMAT.format(DEFAULT_VALUE, DEFAULT_VALUE)
+        )
+        bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
+        bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+
+        getTracker().sendEnhanceEcommerceEvent(Event.CLICK_HOMEPAGE, bundle)
+    }
+
     fun onClickShopProfileSection(userId: String){
         getTracker().sendGeneralEvent(
                 BaseTrackerBuilder()

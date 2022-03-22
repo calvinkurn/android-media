@@ -40,6 +40,9 @@ class SellerViewHolder(
 
     private fun onShopClicked(canGoToSellerMenu: Boolean) {
         TrackingProfileSection.onClickShopProfileSection(userSession.userId)
+        if (!userSession.isShopOwner) {
+            TrackingProfileSection.onClickShopNotHaveShopAndNotAdmin()
+        }
         if (canGoToSellerMenu) {
             RouteManager.route(itemView.context, ApplinkConstInternalSellerapp.SELLER_MENU)
         } else {
@@ -52,6 +55,7 @@ class SellerViewHolder(
             onShopClicked(profileSeller.canGoToSellerAccount)
         else {
             RouteManager.route(context, ApplinkConst.CREATE_SHOP)
+            TrackingProfileSection.onClickShopNotHaveShopAndNotAdmin()
             TrackingProfileSection.onClickOpenShopSection(mainNavListener.getUserId())
         }
     }
