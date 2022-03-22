@@ -328,8 +328,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         switchAutoBidLayout?.let {
             it.onCheckBoxStateChanged = { isAutomatic ->
                 if (isAutomatic) {
-                    viewModel.changeBidState(isAutomatic, groupId ?: 0)
-                    updateUiAfterBidStateChanges(true)
+                    saveBidStateChangedData(true)
                 }
                 else {
                     //changing switch state to true(otomatic), will be changing to false if user saves bid in bottom sheet
@@ -344,32 +343,23 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         }
     }
 
-    private fun updateUiAfterBidStateChanges(isAutomatic: Boolean,bidPencarian: String = "", bidRecomendasi: String = "") {
-        if (isAutomatic) {
-            perClick.hide()
-            perClickRekomendasi.hide()
-            editPancarianBudget.hide()
-            editRekomendasiBudget.hide()
-            budgetPerClick.text = getString(com.tokopedia.topads.common.R.string.group_detail_bid_otomatis)
-            budgetperclickRekomendasi.text = getString(com.tokopedia.topads.common.R.string.group_detail_bid_otomatis)
-        } else {
-            perClick.show()
-            perClickRekomendasi.show()
-            editPancarianBudget.show()
-            editRekomendasiBudget.show()
-            budgetPerClick.text = String.format(getString(com.tokopedia.topads.common.R.string.topads_common_rp),bidPencarian)
-            budgetperclickRekomendasi.text = String.format(getString(com.tokopedia.topads.common.R.string.topads_common_rp),bidRecomendasi)
+    private fun saveBidStateChangedData(
+        isAutomatic: Boolean, suggestedBid: String = "",
+        bidPencarian: String = "", bidRecomendasi: String = "",
+    ) {
+        viewModel.changeBidState(
+            isAutomatic, groupId ?: 0,
+            suggestedBid.toFloatOrZero(),
+            bidPencarian.toFloatOrZero(),
+            bidRecomendasi.toFloatOrZero()
+        ) {
+            loadData()
         }
     }
 
     private fun onSaveClickedInManualBottomSheet(bidPencarian: String, bidRecomendasi: String) {
         switchAutoBidLayout.switchBidEditKeyword?.isChecked = false
-        viewModel.changeBidState(false,
-            groupId ?: 0,
-            suggestedBid.toFloatOrZero(),
-            bidPencarian.toFloatOrZero(),
-            bidRecomendasi.toFloatOrZero())
-        updateUiAfterBidStateChanges(false,bidPencarian,bidRecomendasi)
+        saveBidStateChangedData(false,suggestedBid,bidPencarian,bidRecomendasi)
     }
 
     private fun initView() {

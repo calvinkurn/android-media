@@ -141,7 +141,8 @@ class GroupDetailViewModel @Inject constructor(
 
     fun changeBidState(
         isAutomatic: Boolean, groupId: Int,
-        suggestBidPerClick: Float = 0f, bidPencarian: Float = 0f, bidRecomendasi: Float = 0f
+        suggestBidPerClick: Float = 0f, bidPencarian: Float = 0f, bidRecomendasi: Float = 0f,
+        onSuccess: () -> Unit
     ) {
         val dataGrp = hashMapOf<String, Any?>(
             ParamObject.ACTION_TYPE to ParamObject.ACTION_EDIT,
@@ -164,7 +165,7 @@ class GroupDetailViewModel @Inject constructor(
             )
         }
 
-        topAdsCreated(dataGrp, dataKey, {}, {})
+        topAdsCreated(dataGrp, dataKey, onSuccess, {})
     }
 
     fun topAdsCreated(dataGrp: HashMap<String, Any?>,dataKey: HashMap<String,Any?>, onSuccess: (() -> Unit), onError: ((error: String?) -> Unit)) {
