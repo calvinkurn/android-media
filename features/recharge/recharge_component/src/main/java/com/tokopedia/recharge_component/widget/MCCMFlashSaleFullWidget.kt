@@ -12,6 +12,7 @@ import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
@@ -194,6 +195,7 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
             // setup layout params
             val layoutParams = ViewGroup.LayoutParams(getDimens(R.dimen.widget_denom_full_width), LayoutParams.WRAP_CONTENT)
             view.root.layoutParams = layoutParams
+            view.root.invisible()
 
             addView(view.root)
 
