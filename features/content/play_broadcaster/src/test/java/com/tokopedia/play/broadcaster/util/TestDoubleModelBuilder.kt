@@ -7,7 +7,6 @@ import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelU
 import com.tokopedia.play.broadcaster.domain.usecase.SetChannelTagsUseCase
 import com.tokopedia.play.broadcaster.testdouble.MockChannelConfigStore
 import com.tokopedia.play.broadcaster.testdouble.MockCoverDataStore
-import com.tokopedia.play.broadcaster.testdouble.MockProductDataStore
 import com.tokopedia.play.broadcaster.testdouble.MockSetupDataStore
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
@@ -26,24 +25,18 @@ class TestDoubleModelBuilder {
      */
     fun buildSetupDataStore(
             dispatcher: CoroutineDispatchers = CoroutineTestDispatchers,
-            productDataStore: ProductDataStore = buildProductDataStore(dispatcher),
             coverDataStore: CoverDataStore = buildCoverDataStore(dispatcher),
             scheduleDataStore: BroadcastScheduleDataStore = buildBroadcastScheduleDataStore(dispatcher),
             titleDataStore: TitleDataStore = buildTitleDataStore(dispatcher),
             tagsDataStore: TagsDataStore = buildTagsDataStore(dispatcher),
             interactiveDataStore: InteractiveDataStore = buildInteractiveDataStore()
     ) = MockSetupDataStore(
-            mProductDataStore = productDataStore,
             mCoverDataStore = coverDataStore,
             mScheduleDataStore = scheduleDataStore,
             mTitleDataStore = titleDataStore,
             mTagsDataStore = tagsDataStore,
             mInteractiveDataStore = interactiveDataStore
     )
-
-    fun buildProductDataStore(
-            dispatcher: CoroutineDispatchers = CoroutineTestDispatchers
-    ) = MockProductDataStore(dispatcher)
 
     fun buildCoverDataStore(
             dispatcher: CoroutineDispatchers = CoroutineTestDispatchers,

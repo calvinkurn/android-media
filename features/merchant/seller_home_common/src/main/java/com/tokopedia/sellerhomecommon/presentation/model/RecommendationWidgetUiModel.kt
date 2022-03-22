@@ -25,7 +25,8 @@ data class RecommendationWidgetUiModel(
         override var isFromCache: Boolean,
         override var emptyState: WidgetEmptyStateUiModel,
         override var impressHolder: ImpressHolder = ImpressHolder(),
-        override var isNeedToBeRemoved: Boolean = false
+        override var isNeedToBeRemoved: Boolean = false,
+        override var showLoadingState: Boolean = false,
 ) : BaseWidgetUiModel<RecommendationDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

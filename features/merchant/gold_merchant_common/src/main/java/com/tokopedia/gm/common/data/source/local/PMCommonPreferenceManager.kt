@@ -10,12 +10,10 @@ import javax.inject.Inject
  */
 
 class PMCommonPreferenceManager @Inject constructor(
-        @ApplicationContext private val appContext: Context
+    @ApplicationContext private val appContext: Context
 ) {
     companion object {
         private const val PREF_NAME = "pm_common_shared_preferences"
-
-        const val KEY_HAS_OPENED_END_PERIOD_INTERRUPT_PAGE = "key_has_opened_end_period_interrupt_page"
 
         const val KEY_RECOMMENDATION_COACH_MARK = "key_recommendation_coach_mark"
     }

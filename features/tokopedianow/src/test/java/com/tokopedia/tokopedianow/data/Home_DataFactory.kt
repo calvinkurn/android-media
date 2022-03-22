@@ -348,10 +348,10 @@ fun createMixLeftDataModel(
 fun createCategoryGridDataModel(
     id: String,
     title: String,
-    categoryList: List<TokoNowCategoryItemUiModel>?,
+    categoryList: TokoNowCategoryListUiModel?,
     @TokoNowLayoutState state: Int
 ): TokoNowCategoryGridUiModel {
-    return TokoNowCategoryGridUiModel(id = id, title =  title, categoryList = categoryList, state = state)
+    return TokoNowCategoryGridUiModel(id = id, title =  title, categoryListUiModel = categoryList, state = state)
 }
 
 fun createHomeTickerDataModel(tickers: List<TickerData> = listOf(createTickerData())): HomeTickerUiModel {

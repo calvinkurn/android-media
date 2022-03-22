@@ -320,6 +320,9 @@ object ConstantTransactionAnalytics {
         const val VIEW_ERROR_TOASTER_MESSAGE = "view error toaster message"
         const val VIEW_TOP_UP_GOPAY_BUTTON = "view top up gopay button"
         const val CLICK_TOP_UP_GOPAY_BUTTON = "click top up gopay button"
+        const val VIEW_PAYMENT_METHOD = "view payment method"
+        const val VIEW_TENURE_OPTION = "view tenure option"
+        const val CLICK_TENURE_OPTIONS_BOTTOMSHEET = "click tenure options bottomsheet"
 
         // OCC PP
         const val PP_IMPRESSION_ON_INSURANCE_SECTION = "pp - ins section impression"
@@ -370,6 +373,11 @@ object ConstantTransactionAnalytics {
         // Cart Bo Affordability
         const val CLICK_ARROW_IN_BO_TICKER_TO_REACH_SHOP_PAGE = "click arrow in BO Ticker to reach shop page"
         const val VIEW_BO_TICKER_WORDING = "view BO Ticker wording"
+
+        // Gifting
+        const val VIEW_ADD_ONS_WIDGET = "view add ons widget"
+        const val CLICK_ADD_ONS_DETAIL = "click add ons detail"
+        const val CLICK_SIMPAN_ON_ADD_ONS_BOTTOMSHEET = "click simpan on add ons bottomsheet"
     }
 
     object EventLabel {
@@ -413,6 +421,10 @@ object ConstantTransactionAnalytics {
         // Cart Bo Affordability
         const val BO_FULFILL = "fulfill"
         const val BO_UNFULFILL = "unfulfill"
+
+        // Gifting
+        const val ADD_ON_CHECKED = "add on checked"
+        const val ADD_ON_NOT_CHECKED = "add on not checked"
     }
 
     object ExtraKey {

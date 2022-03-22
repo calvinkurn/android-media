@@ -1,13 +1,15 @@
 package com.tokopedia.product.detail.view.listener
 
-import android.app.Application
 import android.util.SparseIntArray
+import android.view.View
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelStore
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.mvcwidget.trackers.MvcSource
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
+import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
@@ -22,12 +24,12 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 interface DynamicProductDetailListener {
-    fun getApplicationContext(): Application?
-    fun getLifecycleFragment(): Lifecycle
     fun refreshPage()
     fun isNavOld(): Boolean
     fun getFragmentTrackingQueue(): TrackingQueue?
     fun getVariantString(): String
+    fun getParentViewModelStoreOwner(): ViewModelStore
+    fun getParentLifeCyclerOwner():LifecycleOwner
 
     /**
      * ProductMediaViewHolder
@@ -38,6 +40,8 @@ interface DynamicProductDetailListener {
     fun getProductVideoCoordinator(): ProductVideoCoordinator?
 
     fun onMerchantVoucherSummaryClicked(shopId: String, @MvcSource source: Int, productId: String)
+
+
 
     /**
      * ProductSnapshotViewHolder
@@ -59,6 +63,7 @@ interface DynamicProductDetailListener {
     fun goToApplink(url: String)
 
     fun onBbiInfoClick(url: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
+    fun showCustomInfoCoachMark(componentName: String, viewTarget: View)
 
     /**
      * BestSellerViewHolder
@@ -86,6 +91,14 @@ interface DynamicProductDetailListener {
      * ProductMerchantVoucherViewHolder
      */
     fun isOwner(): Boolean
+
+    /**
+     * FintechWidgetViewHolder
+     */
+    fun fintechRedirection(
+        fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass,
+        redirectionUrl: String
+    )
 
     /**
      * ProductShopCredibilityViewHolder
@@ -165,7 +178,8 @@ interface DynamicProductDetailListener {
     /**
      * ProductDetailInfoViewHolder
      */
-    fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>, componentTrackDataModel: ComponentTrackDataModel)
+    fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>,
+                                    componentTrackDataModel: ComponentTrackDataModel)
 
     /**
      * ProductReportViewHolder
@@ -199,9 +213,9 @@ interface DynamicProductDetailListener {
     /**
      * ContentWidgetViewHolder
      */
-    fun onImpressChannelCard(componentTrackDataModel: ComponentTrackDataModel, item: PlayWidgetMediumChannelUiModel)
-    fun onClickChannelCard(componentTrackDataModel: ComponentTrackDataModel, item:PlayWidgetMediumChannelUiModel)
+    fun onImpressChannelCard(componentTrackDataModel: ComponentTrackDataModel, item: PlayWidgetChannelUiModel)
+    fun onClickChannelCard(componentTrackDataModel: ComponentTrackDataModel, item:PlayWidgetChannelUiModel)
     fun onClickBannerCard(componentTrackDataModel: ComponentTrackDataModel)
     fun onClickViewAll(componentTrackDataModel: ComponentTrackDataModel)
-    fun onClickToggleReminderChannel(componentTrackDataModel: ComponentTrackDataModel, item: PlayWidgetMediumChannelUiModel, isRemindMe: Boolean)
+    fun onClickToggleReminderChannel(componentTrackDataModel: ComponentTrackDataModel, item: PlayWidgetChannelUiModel, isRemindMe: Boolean)
 }

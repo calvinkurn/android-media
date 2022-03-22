@@ -29,6 +29,7 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_OPERATIONAL_HOURS_KEY
@@ -112,6 +113,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private var shopIsOnHolidayContainer: CardUnify? = null
     private var shopIsOnHolidayEndDateText: Typography? = null
     private var openShopButton: UnifyButton? = null
+    private var imageOngoingHoliday: ImageUnify? = null
     private var containerScroller: NestedScrollView? = null
 
     private var shopAbTestPlatform: ShopAbTestPlatform? = null
@@ -252,7 +254,11 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         shopIsOnHolidayContainer = view?.findViewById(R.id.holiday_toggle_container)
         shopIsOnHolidayEndDateText = view?.findViewById(R.id.tv_holiday_end)
         openShopButton = view?.findViewById(R.id.btn_open_shop)
+        imageOngoingHoliday = view?.findViewById(R.id.img_shop_holiday)
         containerScroller = view?.findViewById(R.id.ops_hour_scroller_container)
+
+        // setup image ongoing holiday container image
+        imageOngoingHoliday?.loadImage(getString(R.string.shop_operational_hour_image_ongoing_holiday_container_url))
     }
 
     private fun getHolidayDatePickerBottomSheetView(): View {
@@ -482,7 +488,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 getInitialData()
             }
             if (result is Fail) {
-                setShopHolidayScheduleStatusMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                setShopHolidayScheduleStatusMessage = getString(R.string.shop_operational_hour_create_holiday_schedule_fail)
                 setShopHolidayScheduleStatusType = Toaster.TYPE_ERROR
                 hideLoader()
                 showToaster(setShopHolidayScheduleStatusMessage, setShopHolidayScheduleStatusType)

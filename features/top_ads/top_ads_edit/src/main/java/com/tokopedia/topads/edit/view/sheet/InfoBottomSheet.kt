@@ -10,27 +10,35 @@ import com.tokopedia.topads.edit.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.topads_info_bs.*
 
+class InfoBottomSheet(
+    private val bottomSheetType: Int, private val isWhiteListUser: Boolean,
+) : BottomSheetUnify() {
 
-const val TYPE_DASAR = 0
-class InfoBottomSheet : BottomSheetUnify(){
-    private var contentView: View? = null
-    private var bottomSheetType : Int = 0
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
         initChildLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     private fun initChildLayout() {
-        contentView = View.inflate(context, R.layout.topads_info_bs, null)
+        val contentView = View.inflate(
+            context,
+            if (isWhiteListUser && bottomSheetType == TYPE_DASAR)
+                R.layout.layout_topads_edit_split_bid_info_bs
+            else
+                R.layout.topads_info_bs,
+            null
+        )
         setChild(contentView)
         showKnob = true
         isDragable = true
         isHideable = true
         showCloseIcon = false
-        if(bottomSheetType == TYPE_DASAR){
+
+        if (bottomSheetType == TYPE_DASAR) {
             setTitle(getString(R.string.topads_create_bs_title2))
-        }else
+        } else
             setTitle(getString(R.string.topads_create_bs_title1))
     }
 
@@ -41,27 +49,29 @@ class InfoBottomSheet : BottomSheetUnify(){
     }
 
     private fun initView() {
+        if (isWhiteListUser && bottomSheetType == TYPE_DASAR) return
         context?.let {
-            if(bottomSheetType == TYPE_DASAR){
+            if (bottomSheetType == TYPE_DASAR) {
                 infoDesc?.text = getString(R.string.topads_create_bs_desc2)
-                image?.setImageDrawable(AppCompatResources.getDrawable(it, R.drawable.topads_create_tips2))
-            }
-            else {
+                image?.setImageDrawable(
+                    AppCompatResources.getDrawable(it, R.drawable.topads_create_tips2)
+                )
+            } else {
                 infoDesc?.text = getString(R.string.topads_create_bs_desc1)
-                image?.setImageDrawable(AppCompatResources.getDrawable(it, R.drawable.topads_create_tips1))
+                image?.setImageDrawable(
+                    AppCompatResources.getDrawable(it, R.drawable.topads_create_tips1)
+                )
             }
         }
     }
 
-    fun show(
-            fragmentManager: FragmentManager,
-            type: Int) {
-        this.bottomSheetType = type
+    fun show(fragmentManager: FragmentManager) {
         show(fragmentManager, TOPADS_BOTTOM_SHEET_ACTION_TAG)
     }
 
     companion object {
         private const val TOPADS_BOTTOM_SHEET_ACTION_TAG = "ACTION_FILTER_BOTTOM_SHEET_TAG"
-        fun newInstance(): InfoBottomSheet = InfoBottomSheet()
+        const val TYPE_DASAR = 0
+        const val TYPE_KATA_KUNCI = 1
     }
 }
