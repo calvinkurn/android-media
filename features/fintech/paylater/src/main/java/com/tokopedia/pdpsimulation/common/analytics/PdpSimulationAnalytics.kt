@@ -114,8 +114,38 @@ class PdpSimulationAnalytics @Inject constructor(
                 pdpSimulationEvent.variantName,
             )
 
-            else -> {}
+            is PdpSimulationEvent.ClickCTACheckoutPage -> sendCTACheckoutClicked(
+                pdpSimulationEvent.productId,
+                pdpSimulationEvent.userStatus,
+                pdpSimulationEvent.partnerName,
+                pdpSimulationEvent.emiAmount,
+                pdpSimulationEvent.tenure,
+                pdpSimulationEvent.quantity,
+                pdpSimulationEvent.limit,
+                pdpSimulationEvent.variantName,
+            )
+
         }
+    }
+
+    private fun sendCTACheckoutClicked(
+        productId: String,
+        userStatus: String,
+        partnerName: String,
+        emiAmount: String,
+        tenure: String,
+        quantity: String,
+        limit: String,
+        variantName: String
+    ) {
+        val map = TrackAppUtils.gtmData(
+            CLICK_EVENT_NAME_FIN_TECH_V3,
+            CTA_CHECKOUT_EVENT_CATEGORY,
+            CTA_CHECKOUT_CLICKED_ACTION,
+            " $productId -$userStatus -LINKED - $partnerName - $emiAmount - $tenure - $quantity - $limit - $variantName"
+
+        )
+        sendGeneralEvent(map)
     }
 
     private fun sendOccChangePartnerEvent(
@@ -220,6 +250,8 @@ class PdpSimulationAnalytics @Inject constructor(
         const val BOTTOMSHEET_CHANGE_PARTNER_CLICK_ACTION =
             "partner option cta - click activated buyer"
         const val OCC_EVENT_CATEGORY = "fin - optimize occ page"
+        const val CTA_CHECKOUT_CLICKED_ACTION = "CTA beli langsung - click activated buyers"
+        const val CTA_CHECKOUT_EVENT_CATEGORY = "fin - occ page"
     }
 
 }

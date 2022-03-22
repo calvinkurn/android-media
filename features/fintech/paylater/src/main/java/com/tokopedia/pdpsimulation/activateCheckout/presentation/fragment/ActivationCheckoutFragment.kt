@@ -546,9 +546,27 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             openPriceBreakDownBottomSheet()
         }
         proceedToCheckout.setOnClickListener {
+            sendCTAClickEvent()
             payLaterActivationViewModel.addProductToCart(
                 payLaterActivationViewModel.selectedProductId,
                 quantity
+            )
+        }
+    }
+
+    private fun sendCTAClickEvent() {
+        payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let { checkoutData ->
+            sendAnalyticEvent(
+                PdpSimulationEvent.ClickCTACheckoutPage(
+                    payLaterActivationViewModel.selectedProductId,
+                    checkoutData.userState ?: "",
+                    checkoutData.gateway_name.orEmpty(),
+                    checkoutData.tenureDetail[selectedTenurePosition].monthly_installment.orEmpty(),
+                    checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
+                    quantity.toString(),
+                    checkoutData.userAmount ?: "",
+                    variantName
+                )
             )
         }
     }
