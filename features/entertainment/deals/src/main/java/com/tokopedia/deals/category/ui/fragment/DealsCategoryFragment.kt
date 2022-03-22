@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
@@ -85,9 +84,8 @@ class DealsCategoryFragment : DealsBaseFragment(),
     }
 
     private fun initViewModel() {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        dealCategoryViewModel = viewModelProvider.get(DealCategoryViewModel::class.java)
-        baseViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(DealsBaseViewModel::class.java)
+        dealCategoryViewModel = ViewModelProvider(this, viewModelFactory).get(DealCategoryViewModel::class.java)
+        baseViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(DealsBaseViewModel::class.java)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
