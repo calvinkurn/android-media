@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
@@ -97,27 +96,27 @@ class DealsCategoryFragment : DealsBaseFragment(),
     }
 
     private fun observeLayout() {
-        dealCategoryViewModel.observableDealsCategoryLayout.observe(viewLifecycleOwner, Observer {
+        dealCategoryViewModel.observableDealsCategoryLayout.observe(viewLifecycleOwner, {
             isLoadingInitialData = true
             handleRanderList(it)
             handleShimering(it)
         })
 
-        dealCategoryViewModel.errorMessage.observe(viewLifecycleOwner, Observer {
+        dealCategoryViewModel.errorMessage.observe(viewLifecycleOwner, {
             isLoadingInitialData = true
             renderList(listOf(getErrorNetworkModel()), false)
         })
 
-        dealCategoryViewModel.observableProducts.observe(viewLifecycleOwner, Observer {
+        dealCategoryViewModel.observableProducts.observe(viewLifecycleOwner, {
             val nextPage = it.size >= DEFAULT_MIN_ITEMS_PRODUCT
             renderList(it, nextPage)
         })
 
-        dealCategoryViewModel.observableChips.observe(viewLifecycleOwner, Observer {
+        dealCategoryViewModel.observableChips.observe(viewLifecycleOwner, {
             chips = it
         })
 
-        baseViewModel.observableCurrentLocation.observe(viewLifecycleOwner, Observer {
+        baseViewModel.observableCurrentLocation.observe(viewLifecycleOwner, {
             onBaseLocationChanged(it)
         })
 
