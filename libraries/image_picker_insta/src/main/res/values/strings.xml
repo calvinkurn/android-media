@@ -23,6 +23,11 @@
     <string name="imagepicker_smw_in_getting_uri">Something went wrong in getting uri.</string>
     <string name="imagepicker_crop_vid_excep">Cropping Video exception.</string>
     <string name="imagepicker_crop_vid_cancel">Cropping Video cancelled.</string>
+    <string name="imagepicker_coachmark_header">Bisa ganti Profil sesukamu, dong~</string>
+    <string name="imagepicker_coachmark_text">Kini kamu bisa ganti ke Profil toko atau jadi
+pembeli buat nge-posting di Feed!</string>
+    <string name="imagepicker_content_creator_bottom_sheet_header">Pilih akun</string>
+
 
 
 </resources>

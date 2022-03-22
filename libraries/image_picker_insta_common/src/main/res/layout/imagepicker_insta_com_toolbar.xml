@@ -9,6 +9,7 @@
     app:layout_constraintTop_toTopOf="parent">
 
 <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/toolbar_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -33,13 +34,13 @@
         />
 
     <LinearLayout
+        android:id="@+id/toolbar_text_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/img_com_toolbar_icon"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -63,7 +64,20 @@
             android:lines="1"
             app:typographyType="heading_4"
             app:typographyWeight="bold" />
+
     </LinearLayout>
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/content_creator_expand_icon"
+        android:layout_width="@dimen/unify_space_24"
+        android:layout_height="@dimen/unify_space_24"
+        android:layout_marginEnd="@dimen/unify_space_24"
+        app:icon_color_light_enable="@color/Unify_N400"
+        app:icon_name = "CHEVRON_DOWN"
+        app:icon_enable_state="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/toolbar_text_layout"
+         />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 </merge>

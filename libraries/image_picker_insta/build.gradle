@@ -59,4 +59,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.imagePickerInstaCommon)
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.unifyDependencies.coach_mark
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+     implementation rootProject.ext.unifyDependencies.icons
 }

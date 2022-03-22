@@ -4,12 +4,11 @@ import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import com.tokopedia.iconunify.IconUnify
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.imagepicker_insta.common.R
-import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.unifyprinciples.Typography
 
 class ImagePickerCommonToolbar @JvmOverloads constructor(
@@ -20,6 +19,8 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
     lateinit var toolbarTitle: Typography
     lateinit var toolbarSubtitle: Typography
     lateinit var toolbarNavIcon: AppCompatImageView
+    lateinit var toolbarExpandIcon: IconUnify
+    lateinit var toolbarParent: ConstraintLayout
 
     fun getLayout() = R.layout.imagepicker_insta_com_toolbar
 
@@ -37,5 +38,8 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
         toolbarTitle = findViewById(R.id.img_com_toolbar_title)
         toolbarSubtitle = findViewById(R.id.img_com_toolbar_subtitle)
         toolbarNavIcon  = findViewById(R.id.img_com_toolbar_nav_icon)
+        toolbarParent  = findViewById(R.id.toolbar_parent)
+        toolbarExpandIcon  = findViewById(R.id.content_creator_expand_icon)
+
     }
 }

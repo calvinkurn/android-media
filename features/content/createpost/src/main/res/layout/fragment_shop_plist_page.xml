@@ -6,6 +6,23 @@
     android:background="@color/Unify_Background"
     tools:context="com.tokopedia.createpost.view.plist.ShopProductListActivity">
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/search_type_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/feed_component_dp_10"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        android:gravity="center_vertical"
+        app:drawableRightCompat="@drawable/ic_arrow_down_black"
+        android:drawablePadding="@dimen/feed_component_dp_4"
+        android:drawableTint="@color/Unify_NN950"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/content_creation_search_bs_header"/>
+
+
     <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/sb_shop_product"
         android:layout_width="0dp"
@@ -16,7 +33,7 @@
         android:clickable="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_type_header"
         app:search_bar_clearable="true"
         app:search_bar_placeholder="Cari produk di Fellow Official" />
 
@@ -36,7 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
-        android:paddingBottom="@dimen/dp_140"
+        android:paddingBottom="@dimen/dp_160"
         android:layout_marginStart="12dp"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginEnd="12dp"

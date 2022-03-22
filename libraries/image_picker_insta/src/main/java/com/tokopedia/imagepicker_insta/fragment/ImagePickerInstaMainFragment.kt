@@ -1,6 +1,7 @@
 package com.tokopedia.imagepicker_insta.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -17,9 +18,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.otaliastudios.cameraview.size.AspectRatio
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.coachmark.*
 import com.tokopedia.imagepicker_insta.LiveDataResult
 import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity
+import com.tokopedia.imagepicker_insta.bottomsheets.CreatorTypesBottomSheet
 import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.imagepicker_insta.common.ImagePickerRouter.DEFAULT_MULTI_SELECT_LIMIT
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
@@ -30,10 +33,7 @@ import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
 import com.tokopedia.imagepicker_insta.mediacapture.MediaRepository
 import com.tokopedia.imagepicker_insta.models.*
 import com.tokopedia.imagepicker_insta.toPx
-import com.tokopedia.imagepicker_insta.util.AlbumUtil
-import com.tokopedia.imagepicker_insta.util.CameraUtil
-import com.tokopedia.imagepicker_insta.util.PermissionUtil
-import com.tokopedia.imagepicker_insta.util.VideoUtil
+import com.tokopedia.imagepicker_insta.util.*
 import com.tokopedia.imagepicker_insta.util.VideoUtil.getImageDimensions
 import com.tokopedia.imagepicker_insta.util.VideoUtil.getVideoDimensions
 import com.tokopedia.imagepicker_insta.viewmodel.PickerViewModel
@@ -42,6 +42,7 @@ import com.tokopedia.imagepicker_insta.views.MediaView
 import com.tokopedia.imagepicker_insta.views.NoPermissionsView
 import com.tokopedia.imagepicker_insta.views.ToggleImageView
 import com.tokopedia.imagepicker_insta.views.adapters.ImageAdapter
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -76,6 +77,8 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     lateinit var loadingMediaText: String
     lateinit var queryConfiguration: QueryConfiguration
     var maxMultiSelect: Int = DEFAULT_MULTI_SELECT_LIMIT
+    val coachMarkItem = ArrayList<CoachMark2Item>()
+    private  lateinit var coachMark: CoachMark2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,8 +87,9 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        val menuTitle = (activity as? ImagePickerInstaActivity)?.menuTitle ?: activity?.getString(R.string.imagepicker_insta_lanjut)
-        if(!menuTitle.isNullOrEmpty()) {
+        val menuTitle = (activity as? ImagePickerInstaActivity)?.menuTitle
+            ?: activity?.getString(R.string.imagepicker_insta_lanjut)
+        if (!menuTitle.isNullOrEmpty()) {
             MenuManager.addCustomMenu(activity, menuTitle, hasReadPermission(), menu) {
                 proceedNextStep()
                 TrackerProvider.tracker?.onNextButtonClick()
@@ -124,13 +128,17 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         }
 
         if (!selectedImageAdapterData.isNullOrEmpty()) {
-            val filteredResults = arrayListOf<Pair<ImageAdapterData,ZoomInfo>>()
+            val filteredResults = arrayListOf<Pair<ImageAdapterData, ZoomInfo>>()
             selectedImageAdapterData.forEach {
-                if (zoomImageAdapterDataMap[it]!=null) {
-                    filteredResults.add(Pair(it,zoomImageAdapterDataMap[it]!!))
+                if (zoomImageAdapterDataMap[it] != null) {
+                    filteredResults.add(Pair(it, zoomImageAdapterDataMap[it]!!))
                 }
             }
-            viewModel.getUriOfSelectedMedia(selectedMediaView.assetView.width, selectedMediaView.assetView.height, filteredResults)
+            viewModel.getUriOfSelectedMedia(
+                selectedMediaView.assetView.width,
+                selectedMediaView.assetView.height,
+                filteredResults
+            )
         } else {
             showToast(getString(R.string.imagepicker_insta_samf), Toaster.TYPE_NORMAL)
         }
@@ -231,9 +239,10 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     }
 
-    fun prepareDataFromActivity(){
-        var maxDuration = (activity as? ImagePickerInstaActivity)?.videoMaxDurationInSeconds?:VideoUtil.DEFAULT_DURATION_MAX_LIMIT
-        if(maxDuration == 0L){
+    fun prepareDataFromActivity() {
+        var maxDuration = (activity as? ImagePickerInstaActivity)?.videoMaxDurationInSeconds
+            ?: VideoUtil.DEFAULT_DURATION_MAX_LIMIT
+        if (maxDuration == 0L) {
             maxDuration = VideoUtil.DEFAULT_DURATION_MAX_LIMIT
         }
 
@@ -241,21 +250,61 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             maxMultiSelect = (activity as ImagePickerInstaActivity).maxMultiSelectAllowed
         }
 
-        queryConfiguration  = QueryConfiguration(maxDuration)
+        queryConfiguration = QueryConfiguration(maxDuration)
     }
 
-    fun setupToolbar(v: View) {
+    private fun setupToolbar(v: View) {
         val toolbarCommon: ImagePickerCommonToolbar = v.findViewById(R.id.toolbar_common)
         toolbarCommon.toolbarNavIcon.setOnClickListener {
             TrackerProvider.tracker?.onBackButtonFromPicker()
             activity?.finish()
         }
+        toolbarCommon.toolbarExpandIcon.setOnClickListener {
+            openBottomSheet()
+        }
+
+        toolbarCommon.toolbarParent.addOneTimeGlobalLayoutListener {
+            coachMark = CoachMark2(activity as Context)
+
+            coachMarkItem.add(
+                CoachMark2Item(
+                    toolbarCommon.toolbarParent,
+                    getString(R.string.imagepicker_coachmark_header),
+                    getString(R.string.imagepicker_coachmark_text),
+                    CoachMark2.POSITION_BOTTOM
+                )
+            )
+            if (Prefs.getShouldShowCoachMarkValue(activity as Context))
+            showFabCoachMark()
+        }
+
 
         (activity as ImagePickerInstaActivity).run {
             setSupportActionBar(toolbarCommon)
             setToolbarIcon(this, toolbarCommon.toolbarIcon)
             toolbarCommon.toolbarTitle.text = this.toolbarTitle
             toolbarCommon.toolbarSubtitle.text = this.toolbarSubTitle
+        }
+    }
+    private fun openBottomSheet(){
+        var creatorListData= mutableListOf<CreatorListData>()
+        (activity as ImagePickerInstaActivity).run{
+            creatorListData.add(CreatorListData(name = toolbarSubTitle, icon = toolbarIconUrl))
+            creatorListData.add(CreatorListData(name = toolbarSubTitle, icon = toolbarIconUrl))
+        }
+
+        val contentProductTagBS = CreatorTypesBottomSheet()
+        contentProductTagBS.show(Bundle.EMPTY,
+            childFragmentManager,
+            creatorListData,
+           )
+
+    }
+
+    private fun showFabCoachMark() {
+        Prefs.saveShouldShowCoachMarkValue(activity as Context)
+        if (::coachMark.isInitialized) {
+            coachMark.showCoachMark(coachMarkItem)
         }
     }
 
@@ -413,9 +462,19 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     override fun showErrorToast(@AdapterErrorType type: Int) {
-        when(type){
-            AdapterErrorType.MULTISELECT-> showToast(getString(R.string.imagepicker_max_limit_reached,maxMultiSelect), Toaster.TYPE_ERROR)
-            AdapterErrorType.VIDEO_DURATION-> showToast(getString(R.string.imagepicker_max_vid_dur,queryConfiguration.videoMaxDuration), Toaster.TYPE_ERROR)
+        when (type) {
+            AdapterErrorType.MULTISELECT -> showToast(
+                getString(
+                    R.string.imagepicker_max_limit_reached,
+                    maxMultiSelect
+                ), Toaster.TYPE_ERROR
+            )
+            AdapterErrorType.VIDEO_DURATION -> showToast(
+                getString(
+                    R.string.imagepicker_max_vid_dur,
+                    queryConfiguration.videoMaxDuration
+                ), Toaster.TYPE_ERROR
+            )
         }
     }
 
@@ -424,7 +483,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
         viewLifecycleOwner.lifecycleScope.launch {
             MediaRepository.getMediaChangeFlow().collect {
-                viewModel.handleFileAddedEvent(arrayListOf(it),queryConfiguration)
+                viewModel.handleFileAddedEvent(arrayListOf(it), queryConfiguration)
             }
         }
 
@@ -444,19 +503,19 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             }
         }
 
-            viewModel.folderFlow.onEach {
-                when (it.status) {
-                    LiveDataResult.STATUS.LOADING -> {
-                    }
-
-                    LiveDataResult.STATUS.SUCCESS -> {
-                        updateFolders(it.data)
-                    }
-                    LiveDataResult.STATUS.ERROR -> {
-                        updateFolders(null)
-                    }
+        viewModel.folderFlow.onEach {
+            when (it.status) {
+                LiveDataResult.STATUS.LOADING -> {
                 }
-            }.launchIn(viewLifecycleOwner.lifecycleScope)
+
+                LiveDataResult.STATUS.SUCCESS -> {
+                    updateFolders(it.data)
+                }
+                LiveDataResult.STATUS.ERROR -> {
+                    updateFolders(null)
+                }
+            }
+        }.launchIn(viewLifecycleOwner.lifecycleScope)
 
 
         imageMultiSelect.toggleCallback = { isMultiSelect ->
@@ -496,18 +555,16 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
                     if (!isMultiSelectEnable()) {
                         zoomImageAdapterDataMap.clear()
-                    }
-                    else {
+                    } else {
                         val firstSelectedMedia = imageAdapter.selectionOrder.getOrderList().last()
-                        if(imageAdapterData.asset is PhotosData) {
-                            zoomInfo = getZoomInfoForImage(firstSelectedMedia, imageAdapterData)
-                        }
-                        else{
-                            zoomInfo = getZoomInfoForVideo(firstSelectedMedia, imageAdapterData)
+                        zoomInfo = if (imageAdapterData.asset is PhotosData) {
+                            getZoomInfoForImage(firstSelectedMedia, imageAdapterData)
+                        } else {
+                            getZoomInfoForVideo(firstSelectedMedia, imageAdapterData)
                         }
                         zoomImageAdapterDataMap[imageAdapterData] = zoomInfo
                     }
-                    if(zoomInfo == null){
+                    if (zoomInfo == null) {
                         zoomInfo = prepareZoomInfo(imageAdapterData)
                     }
                     selectedMediaView.loadAsset(imageAdapterData, zoomInfo)
@@ -528,9 +585,14 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         }
     }
 
-    private fun getZoomInfoForVideo(firstSelectedMedia: ImageAdapterData, originalImageAdapterData: ImageAdapterData): ZoomInfo {
-        val originalWidth = originalImageAdapterData.asset.contentUri.getVideoDimensions(requireContext()).width
-        val originalHeight = originalImageAdapterData.asset.contentUri.getVideoDimensions(requireContext()).height
+    private fun getZoomInfoForVideo(
+        firstSelectedMedia: ImageAdapterData,
+        originalImageAdapterData: ImageAdapterData
+    ): ZoomInfo {
+        val originalWidth =
+            originalImageAdapterData.asset.contentUri.getVideoDimensions(requireContext()).width
+        val originalHeight =
+            originalImageAdapterData.asset.contentUri.getVideoDimensions(requireContext()).height
 
         val width = zoomImageAdapterDataMap[firstSelectedMedia]?.bmpWidth
         val height = zoomImageAdapterDataMap[firstSelectedMedia]?.bmpHeight
@@ -538,13 +600,13 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         var ratio = 0.0f
 
         try {
-            if (width != null && height != null)
-            {
+            if (width != null && height != null) {
                 val ar = AspectRatio.of(width, height)
-                ratio = (ar.x.toFloat()/ar.y)
+                ratio = (ar.x.toFloat() / ar.y)
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        catch (e: Exception) {e.printStackTrace()}
 
         /*
         * As we are supposed to maintain the orientation PORTRAIT
@@ -554,20 +616,24 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
         val zoomInfo = ZoomInfo()
         zoomInfo.bmpWidth = originalWidth
-        if(ratio != 0.0F) {
+        if (ratio != 0.0F) {
             zoomInfo.bmpHeight = originalWidth.div(ratio).toInt()
-        }
-        else{
+        } else {
             zoomInfo.bmpHeight = originalHeight
         }
         return zoomInfo
     }
 
-    private fun getZoomInfoForImage(firstSelectedMedia: ImageAdapterData, originalImageAdapterData: ImageAdapterData): ZoomInfo {
+    private fun getZoomInfoForImage(
+        firstSelectedMedia: ImageAdapterData,
+        originalImageAdapterData: ImageAdapterData
+    ): ZoomInfo {
 
         // getting original width of the new selected video
-        val originalWidth = originalImageAdapterData.asset.contentUri.getImageDimensions(requireContext()).width
-        val originalHeight = originalImageAdapterData.asset.contentUri.getVideoDimensions(requireContext()).height
+        val originalWidth =
+            originalImageAdapterData.asset.contentUri.getImageDimensions(requireContext()).width
+        val originalHeight =
+            originalImageAdapterData.asset.contentUri.getVideoDimensions(requireContext()).height
 
         //TODO get selected media ki list ka first index
         val width = zoomImageAdapterDataMap[firstSelectedMedia]?.bmpWidth
@@ -576,13 +642,13 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         var ratio = 0.0f
 
         try {
-            if (width != null && height != null)
-            {
+            if (width != null && height != null) {
                 val ar = AspectRatio.of(width, height)
-                ratio = (ar.x.toFloat()/ar.y)
+                ratio = (ar.x.toFloat() / ar.y)
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        catch (e: Exception) {e.printStackTrace()}
 
         /*
         * As we are supposed to maintain the orientation PORTRAIT
@@ -593,10 +659,9 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
         val zoomInfo = ZoomInfo()
         zoomInfo.bmpWidth = originalWidth
-        if(ratio != 0.0F) {
+        if (ratio != 0.0F) {
             zoomInfo.bmpHeight = originalWidth.div(ratio).toInt()
-        }
-        else{
+        } else {
             zoomInfo.bmpHeight = originalHeight
         }
         return zoomInfo
@@ -727,12 +792,11 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         if (zoomInfo == null) {
             zoomInfo = ZoomInfo()
 
-            if(imageAdapterData.asset is PhotosData){
+            if (imageAdapterData.asset is PhotosData) {
                 val size = imageAdapterData.asset.contentUri.getImageDimensions(requireContext())
                 zoomInfo.bmpWidth = size.width
                 zoomInfo.bmpHeight = size.height
-            }
-            else{
+            } else {
                 val size = imageAdapterData.asset.contentUri.getVideoDimensions(requireContext())
                 zoomInfo.bmpWidth = size.width
                 zoomInfo.bmpHeight = size.height
@@ -753,7 +817,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             //Update current UI
             val uriList = data?.extras?.getParcelableArrayList<Uri>(BundleData.URIS)
             if (!uriList.isNullOrEmpty()) {
-                viewModel.handleFileAddedEvent(uriList,queryConfiguration)
+                viewModel.handleFileAddedEvent(uriList, queryConfiguration)
             }
         } else {
             activity?.setResult(Activity.RESULT_OK, data)
