@@ -5,8 +5,11 @@ import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.play.domain.CheckUpcomingCampaignReminderUseCase
 import com.tokopedia.play.domain.GetProductTagItemSectionUseCase
+import com.tokopedia.play.domain.PostUpcomingCampaignReminderUseCase
 import com.tokopedia.play.domain.repository.PlayViewerTagItemRepository
+import com.tokopedia.play.view.type.PlayUpcomingBellStatus
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.tagitem.*
@@ -15,12 +18,15 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 import javax.inject.Inject
 
 class PlayViewerTagItemRepositoryImpl @Inject constructor(
     private val getProductTagItemsUseCase: GetProductTagItemSectionUseCase,
     private val getProductVariantUseCase: GetProductVariantUseCase,
     private val addToCartUseCase: AddToCartUseCase,
+    private val checkUpcomingCampaignReminderUseCase: CheckUpcomingCampaignReminderUseCase,
+    private val postUpcomingCampaignReminderUseCase: PostUpcomingCampaignReminderUseCase,
     private val mapper: PlayUiModelMapper,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
@@ -101,5 +107,19 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
             if (e is ResponseErrorException) throw MessageErrorException(e.localizedMessage)
             else throw e
         }
+    }
+
+    override suspend fun checkUpcomingCampaign(campaignId: Long): Boolean = withContext(dispatchers.io){
+        val response = checkUpcomingCampaignReminderUseCase.apply {
+                setRequestParams(CheckUpcomingCampaignReminderUseCase.createParam(campaignId).parameters)
+        }.executeOnBackground()
+        return@withContext response.response.isAvailable
+    }
+
+    override suspend fun subscribeUpcomingCampaign(campaignId: Long, reminderType: PlayUpcomingBellStatus): Pair<Boolean, String> = withContext(dispatchers.io)  {
+        val response = postUpcomingCampaignReminderUseCase.apply {
+                setRequestParams(PostUpcomingCampaignReminderUseCase.createParam(campaignId, reminderType).parameters)
+        }.executeOnBackground()
+        return@withContext Pair(response.response.success, if(response.response.errorMessage.isNotEmpty()) response.response.errorMessage else response.response.message)
     }
 }

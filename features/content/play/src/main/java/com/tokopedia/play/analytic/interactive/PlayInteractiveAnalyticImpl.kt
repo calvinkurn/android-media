@@ -2,6 +2,8 @@ package com.tokopedia.play.analytic.interactive
 
 import com.tokopedia.play.analytic.*
 import com.tokopedia.play.view.type.PlayChannelType
+import com.tokopedia.play.view.type.PlayUpcomingBellStatus
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
