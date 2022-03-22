@@ -306,6 +306,9 @@ class MainNavViewModel @Inject constructor(
                     state = NAV_PROFILE_STATE_SUCCESS,
                     profileSellerDataModel = ProfileSellerDataModel(
                         isGetShopLoading = true
+                    ),
+                    profileAffiliateDataModel = ProfileAffiliateDataModel(
+                        isGetAffiliateLoading = true
                     )
                 )
                 updateWidget(accountHeaderModel, INDEX_MODEL_ACCOUNT)

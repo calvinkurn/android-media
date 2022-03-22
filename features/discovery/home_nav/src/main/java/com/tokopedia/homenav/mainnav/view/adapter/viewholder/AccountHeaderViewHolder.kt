@@ -326,11 +326,10 @@ class AccountHeaderViewHolder(itemView: View,
         element: AccountHeaderDataModel,
         listSellers: MutableList<Visitable<*>>
     ) {
-        if(element.profileAffiliateDataModel.isRegister && !element.profileSellerDataModel.hasShop) {
+        if (element.profileAffiliateDataModel.isRegister && !element.profileSellerDataModel.hasShop && !element.profileSellerDataModel.isGetShopError) {
             listSellers.add(element.profileAffiliateDataModel)
             listSellers.add(element.profileSellerDataModel)
-        }
-        else {
+        } else {
             listSellers.add(element.profileSellerDataModel)
             listSellers.add(element.profileAffiliateDataModel)
         }
