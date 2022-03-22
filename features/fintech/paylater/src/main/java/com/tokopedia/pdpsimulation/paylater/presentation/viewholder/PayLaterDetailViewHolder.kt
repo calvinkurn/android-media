@@ -41,10 +41,10 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
     private fun setUpRecommendation(element: Detail) {
         if (element.recommendationDetail?.flag == true) {
 
-            itemView.clDetailParent.background =if (!itemView.context.isDarkMode()) {
-                MethodChecker.getDrawable(context, R.drawable.bg_paylater_recommended_gradient)
-            }else{
+            itemView.clDetailParent.background =if (itemView.context.isDarkMode()) {
                 MethodChecker.getDrawable(context, R.drawable.bg_paylater_recommended_dark_gradient)
+            }else{
+                MethodChecker.getDrawable(context, R.drawable.bg_paylater_recommended_gradient)
             }
             itemView.clPartnerCard.background = MethodChecker.getDrawable(
                 context,
