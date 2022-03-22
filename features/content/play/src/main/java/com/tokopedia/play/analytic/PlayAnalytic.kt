@@ -255,20 +255,41 @@ class PlayAnalytic(
         }
     }
 
-    fun clickATCBuyWithVariantRSProduct(product: PlayProductUiModel.Product, productAction: ProductAction, sectionInfo: ProductSectionUiModel.Section){
+    fun clickATCBuyWithVariantRSProduct(product: PlayProductUiModel.Product, productAction: ProductAction, sectionInfo: ProductSectionUiModel.Section, shopInfo: PlayPartnerInfo){
         val action = if(productAction == ProductAction.AddToCart) "atc" else "buy"
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                KEY_EVENT to KEY_TRACK_ADD_TO_CART,
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_ACTION to "$KEY_TRACK_CLICK $action in varian page in ongoing section",
-                KEY_EVENT_LABEL to "$mChannelId - ${product.id} - ${mChannelType.value} - ${sectionInfo.id}",
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_CLIENT_ID to TrackApp.getInstance().gtm.cachedClientIDString,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
-            )
+
+        trackingQueue.putEETracking(
+            EventModel(
+                KEY_TRACK_ADD_TO_CART,
+                KEY_TRACK_GROUP_CHAT_ROOM,
+                "$KEY_TRACK_CLICK - $action in varian page in ongoing section",
+                "$mChannelId - ${product.id} - ${mChannelType.value} - ${sectionInfo.id}"
+            ),
+            hashMapOf(
+                "ecommerce" to hashMapOf(
+                    "currencyCode" to "IDR",
+                    "add" to hashMapOf(
+                        "products" to listOf(
+                            hashMapOf(
+                            "name" to product.title,
+                            "id" to product.id,
+                            "price" to when(product.price) {
+                                is DiscountedPrice -> product.price.discountedPriceNumber
+                                is OriginalPrice -> product.price.priceNumber
+                            },
+                            "brand" to "",
+                            "category" to "",
+                            "variant" to "",
+                            "category_id" to "",
+                            "quantity" to product.minQty,
+                            "shop_id" to shopInfo.id,
+                            "shop_name" to shopInfo.name,
+                            "shop_type" to shopInfo.type.value
+                        ))
+                        )
+                    )
+            ),
+            generateBaseTracking(product = product, sectionInfo.config.type)
         )
     }
 
@@ -281,12 +302,18 @@ class PlayAnalytic(
         when(productAction) {
             ProductAction.AddToCart ->
                 when (bottomInsetsType) {
-                    BottomInsetsType.VariantSheet -> clickAtcButtonInVariant(trackingQueue, product, cartId, shopInfo)
+                    BottomInsetsType.VariantSheet -> {
+                        if(sectionInfo.config.type != ProductSectionType.Active) clickAtcButtonInVariant(trackingQueue, product, cartId, shopInfo)
+                        else clickATCBuyWithVariantRSProduct(product, productAction, sectionInfo, shopInfo)
+                    }
                     else -> clickAtcButtonProductWithNoVariant(trackingQueue, product, sectionInfo, cartId, shopInfo)
                 }
             ProductAction.Buy -> {
                 when (bottomInsetsType) {
-                    BottomInsetsType.VariantSheet -> clickBeliButtonInVariant(trackingQueue, product, cartId, shopInfo)
+                    BottomInsetsType.VariantSheet -> {
+                        if(sectionInfo.config.type != ProductSectionType.Active) clickBeliButtonInVariant(trackingQueue, product, cartId, shopInfo)
+                        else clickATCBuyWithVariantRSProduct(product, productAction, sectionInfo, shopInfo)
+                    }
                     else -> clickBeliButtonProductWithNoVariant(trackingQueue, product, sectionInfo, cartId, shopInfo)
                 }
             }

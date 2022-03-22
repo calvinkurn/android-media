@@ -407,8 +407,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun shouldCheckProductVariant(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, action: ProductAction) {
         if (product.isVariantAvailable) {
             openVariantSheet(product, action)
-            if(sectionInfo.config.type != ProductSectionType.Active) analytic.clickActionProductWithVariant(product.id, action, sectionInfo)
-            else analytic.clickATCBuyWithVariantRSProduct(product, action, sectionInfo)
+            analytic.clickActionProductWithVariant(product.id, action, sectionInfo)
         } else {
             shouldDoActionProduct(product, sectionInfo,action,BottomInsetsType.ProductSheet)
         }
