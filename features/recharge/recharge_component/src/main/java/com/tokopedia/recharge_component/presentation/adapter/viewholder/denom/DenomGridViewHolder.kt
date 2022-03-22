@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.getDimens
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.databinding.ViewRechargeDenomGridBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
@@ -60,6 +61,21 @@ class DenomGridViewHolder (
                     show()
                     setStatusOutOfStockColor(denomGrid.status, context)
                     text = denomGrid.price
+
+                    if (labelDenomGridSpecial.isVisible) {
+                        setMargin(
+                            getDimens(unifyDimens.unify_space_0),
+                            getDimens(com.tokopedia.recharge_component.R.dimen.widget_denom_grid_margin_price),
+                            getDimens(unifyDimens.unify_space_0),
+                            getDimens(unifyDimens.unify_space_0))
+                    } else {
+                        setMargin(
+                            getDimens(unifyDimens.unify_space_0),
+                            getDimens(unifyDimens.spacing_lvl2),
+                            getDimens(unifyDimens.unify_space_0),
+                            getDimens(unifyDimens.unify_space_0))
+                    }
+
                 } else hide()
             }
 
