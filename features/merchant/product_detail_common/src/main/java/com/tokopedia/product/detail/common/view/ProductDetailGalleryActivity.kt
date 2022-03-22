@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.common.view
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.image_gallery.ImageGallery
@@ -37,10 +38,13 @@ class ProductDetailGalleryActivity : AppCompatActivity() {
         val isAutoPlay = DeviceConnectionInfo.isConnectWifi(this)
 
         val selectedPosition = data.getSelectedPosition()
-        imageGallery?.apply {
+
+        val imageGallery = imageGallery ?: return
+
+        imageGallery.apply {
             setImages(
                 arrayDrawable = data.generateImageGalleryItems(isAutoPlay),
-                defaultIndex = selectedPosition
+                defaultIndex = selectedPosition.takeIf { it > -1 } ?: 0
             )
 
             onOverlayHiddenChange = { isHidden ->
@@ -51,10 +55,17 @@ class ProductDetailGalleryActivity : AppCompatActivity() {
         closeButton?.setOnClickListener { finish() }
 
         if (selectedPosition == -1) {
-            imageGallery?.showToasterSuccess(
-                message = getString(R.string.pdp_common_gallery_default_selected)
-            )
+            showToaster(imageGallery)
         }
+
+    }
+
+    private fun showToaster(view: View) {
+        view.showToasterSuccess(
+            message = getString(R.string.pdp_common_gallery_default_selected),
+            heightOffset = R.dimen.pdp_common_80_dp,
+            ctaText = getString(R.string.pdp_common_oke)
+        )
     }
 
     companion object {

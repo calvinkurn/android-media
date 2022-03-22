@@ -481,17 +481,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }) {}
     }
 
-    private fun addPartialImage(imageUrl: String): List<Media> {
-        listOfParentMedia?.let {
-            if (imageUrl.isEmpty() && imageUrl == it.firstOrNull()?.uRLOriginal) return@let
-
-            val listOfUpdateImage = it.toMutableList()
-            listOfUpdateImage.add(0, Media(type = "image", uRL300 = imageUrl, uRLOriginal = imageUrl, uRLThumbnail = imageUrl))
-            return listOfUpdateImage
-        }
-        return listOf()
-    }
-
     fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, layoutId: String = "",
                      userLocationLocal: LocalCacheModel, urlQuery: String = "", extParam: String = "") {
         launchCatchError(dispatcher.io, block = {
