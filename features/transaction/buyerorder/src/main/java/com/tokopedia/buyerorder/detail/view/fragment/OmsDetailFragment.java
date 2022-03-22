@@ -33,6 +33,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -73,6 +74,7 @@ import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.detail.view.activity.OrderListwebViewActivity;
 import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter;
 import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView;
+import com.tokopedia.buyerorder.detail.view.customview.HorizontalCoupleTextView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.recharge.data.response.AdditionalTickerInfo;
@@ -375,10 +377,12 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setTitle(Title title) {
-        DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
-        doubleTextView.setTopText(title.getLabel());
-        doubleTextView.setBottomText(title.getValue());
-        statusDetail.addView(doubleTextView);
+        HorizontalCoupleTextView coupleTextView = new HorizontalCoupleTextView(requireContext(), null, 0);
+        coupleTextView.setLabel(title.getLabel());
+        coupleTextView.setValue(title.getValue());
+        coupleTextView.isShowSeparator(true);
+
+        statusDetail.addView(coupleTextView);
     }
 
     @Override
@@ -410,33 +414,35 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setPricing(Pricing pricing, Boolean isCategoryEvent) {
-        DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
-        doubleTextView.setTopText(pricing.getLabel());
+        HorizontalCoupleTextView coupleTextView = new HorizontalCoupleTextView(requireContext(), null, 0);
+        coupleTextView.setLabel(pricing.getLabel());
+
         String value = pricing.getValue();
         if (pricing.getValue().equalsIgnoreCase(getResources().getString(R.string.zero_rupiah)) && isCategoryEvent){
             value = getResources().getString(R.string.free_rupiah);
         }
-        doubleTextView.setBottomText(value);
-        doubleTextView.setBottomTextSize(16);
-        doubleTextView.setBottomGravity(Gravity.RIGHT);
-        infoValue.addView(doubleTextView);
+
+        coupleTextView.setValue(value);
+        infoValue.addView(coupleTextView);
     }
 
     @Override
     public void setPaymentData(PaymentData paymentData, Boolean isCategoryEvent) {
-        DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
-        doubleTextView.setTopText(paymentData.getLabel());
+        HorizontalCoupleTextView coupleTextView = new HorizontalCoupleTextView(requireContext(), null, 0);
+        coupleTextView.setLabel(paymentData.getLabel());
         String value = paymentData.getValue();
         if (paymentData.getValue().equalsIgnoreCase(getResources().getString(R.string.zero_rupiah)) && isCategoryEvent){
             value = getResources().getString(R.string.free_rupiah);
         }
-        doubleTextView.setBottomText(value);
+        coupleTextView.setValue(value);
         if (!paymentData.getTextColor().equals("")) {
-            doubleTextView.setBottomTextColor(Color.parseColor(paymentData.getTextColor()));
+            try {
+                coupleTextView.setValueColor(Color.parseColor(paymentData.getTextColor()));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
-        doubleTextView.setBottomTextSize(16);
-        doubleTextView.setBottomGravity(Gravity.RIGHT);
-        totalPrice.addView(doubleTextView);
+        totalPrice.addView(coupleTextView);
     }
 
     @Override
@@ -561,16 +567,17 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setPayMethodInfo(PayMethod payMethod, Boolean isCategoryEvent) {
-        DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
-        doubleTextView.setTopText(payMethod.getLabel());
+        HorizontalCoupleTextView coupleTextView = new HorizontalCoupleTextView(requireContext(), null, 0);
+        coupleTextView.setLabel(payMethod.getLabel());
+
         ///change value from Rp0 to Gratis
         String value = payMethod.getValue();
         if (payMethod.getValue().equalsIgnoreCase(getResources().getString(R.string.zero_rupiah)) && isCategoryEvent){
             value = getResources().getString(R.string.free_rupiah);
         }
-        doubleTextView.setBottomText(value);
-        doubleTextView.setBottomGravity(Gravity.END);
-        paymentMethodInfo.addView(doubleTextView);
+
+        coupleTextView.setValue(value);
+        paymentMethodInfo.addView(coupleTextView);
     }
 
     @Override
