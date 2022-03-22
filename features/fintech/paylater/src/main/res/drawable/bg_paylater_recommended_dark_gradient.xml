@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <gradient
         android:angle="270"
-        android:startColor="#001D2025"
-        android:endColor="#FF012838"
+        android:startColor="@color/paylater_dms_gradient_dark_start"
+        android:endColor="@color/paylater_dms_gradient_dark_end"
         android:type="linear" />
 </shape>
