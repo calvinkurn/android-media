@@ -326,10 +326,10 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRY_POINT_EMAIL)
 				goToChangeEmail()
 			} else if (data.profileInfoData.msisdn.isNotEmpty() && !data.profileInfoData.isMsisdnVerified) {
-				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRY_POINT_EMAIL)
+				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_POPUP)
 				showVerifyEmailDialog()
 			} else {
-				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRY_POINT_EMAIL)
+				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_POPUP)
 				showChangeEmailDialog()
 			}
 		}

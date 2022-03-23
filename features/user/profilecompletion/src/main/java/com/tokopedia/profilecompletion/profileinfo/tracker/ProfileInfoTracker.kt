@@ -405,6 +405,7 @@ class ProfileInfoTracker {
 	const val LABEL_PROFILE_INFO = "info profil"
 	const val LABEL_PERSONAL_INFO = "info pribadi"
 	const val LABEL_BOTTOMSHEET = "bottomsheet"
+	const val LABEL_POPUP = "popup"
 
 	const val BUSSINESS_UNIT = "user platform"
 	const val CURRENT_SITE = "tokopediamarketplace"
