@@ -14,7 +14,7 @@ class RechargeItemCategoryAdapter(
 ) : RecyclerView.Adapter<RechargeItemCategoryAdapter.DigitalItemSubmenuCategoryViewHolder>() {
 
     override fun onBindViewHolder(viewHolder: DigitalItemSubmenuCategoryViewHolder, position: Int) {
-        viewHolder.bind(items[position], listener)
+        viewHolder.bind(items[position], listener, position == items.size - 1)
     }
 
     override fun onCreateViewHolder(
@@ -37,13 +37,18 @@ class RechargeItemCategoryAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
             element: RechargeHomepageSections.Item,
-            onItemBindListener: RechargeHomepageItemListener
+            onItemBindListener: RechargeHomepageItemListener,
+            isLastItem: Boolean = false
         ) {
             with(binding) {
                 binding.categoryImage.loadImage(element.mediaUrl)
                 binding.categoryName.text = element.title
                 root.setOnClickListener {
                     onItemBindListener.onRechargeSectionItemClicked(element)
+                }
+
+                if (isLastItem) {
+                    onItemBindListener.onRechargeAllCategoryShowCoachmark(binding.root)
                 }
             }
 

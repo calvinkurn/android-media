@@ -17,8 +17,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.analytics.RechargeHomepageAnalytics
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeBinding
@@ -66,6 +69,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     lateinit var rechargeHomepageAnalytics: RechargeHomepageAnalytics
 
     lateinit var adapter: RechargeHomepageAdapter
+    private lateinit var localCacheHandler: LocalCacheHandler
 
     private var searchBarTransitionRange = 0
 
@@ -101,6 +105,8 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
                     RechargeHomepageDynamicLegoBannerCallback(this)
                 ), this
             )
+
+            localCacheHandler = LocalCacheHandler(it, PREFERENCES_NAME)
         }
 
         arguments?.let {
@@ -440,6 +446,28 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun onRechargeAllCategoryShowCoachmark(view: View) {
+        context?.let {
+            val isCoachmarkShown = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, false)
+            if (!isCoachmarkShown) {
+                val coachMarkItems = arrayListOf(
+                    CoachMark2Item(
+                        view,
+                        getString(R.string.recharge_home_all_category_coach_mark_title),
+                        getString(R.string.recharge_home_all_category_coach_mark_subtitle),
+                        CoachMark2.POSITION_BOTTOM
+                    )
+                )
+
+                val coachmark = CoachMark2(it)
+                coachmark.showCoachMark(coachMarkItems)
+
+                localCacheHandler.putBoolean(SHOW_COACH_MARK_KEY, true)
+                localCacheHandler.applyEditor()
+            }
+        }
+    }
+
     override fun onRechargeSectionEmpty(sectionID: String) {
         val index = adapter.data.indexOfFirst {
             (it is RechargeHomepageSectionModel && it.visitableId().equals(sectionID)) ||
@@ -521,6 +549,9 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         const val SECTION_SPACING_DP = 16
 
         private const val OFFSET_ALPHA = 255f
+
+        private const val PREFERENCES_NAME = "shp_preferences"
+        private const val SHOW_COACH_MARK_KEY = "shp_see_all_category_is_coach_mark_shown"
 
         fun newInstance(
             platformId: Int,
