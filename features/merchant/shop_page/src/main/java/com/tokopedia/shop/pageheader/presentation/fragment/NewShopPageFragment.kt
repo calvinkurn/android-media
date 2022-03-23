@@ -1961,10 +1961,18 @@ class NewShopPageFragment :
         }
     }
 
+    /**
+     * Please be aware for change this function name, make sure to change it in FeedShopFragment.kt too
+     * since this method its call via reflection
+     */
     fun showBottomSheetSellerMigration() {
         (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
+    /**
+     * Please be aware for change this function name, make sure to change it in FeedShopFragment.kt too
+     * since this method its call via reflection
+     */
     fun hideBottomSheetSellerMigration() {
         (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
     }
@@ -2495,6 +2503,10 @@ class NewShopPageFragment :
         screenShotDetector?.onRequestPermissionsResult(requestCode, grantResults, this)
     }
 
+    /**
+     * Please be aware for change this function name, make sure to change it in FeedShopFragment.kt too
+     * since this method its call via reflection
+     */
     fun setupShopPageFab(config: ShopPageFabConfig) {
         shopPageFab?.let { fab ->
             fab.color = config.color
@@ -2506,10 +2518,18 @@ class NewShopPageFragment :
         }
     }
 
+    /**
+     * Please be aware for change this function name, make sure to change it in FeedShopFragment.kt too
+     * since this method its call via reflection
+     */
     fun showShopPageFab() {
         shopPageFab?.show()
     }
 
+    /**
+     * Please be aware for change this function name, make sure to change it in FeedShopFragment.kt too
+     * since this method its call via reflection
+     */
     fun hideShopPageFab() {
         shopPageFab?.hide()
     }
