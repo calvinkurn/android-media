@@ -294,7 +294,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                         userSession.userId,
                         atcData.data.cartId,
                         viewModel.digitalCheckoutPassData.productId.toString(),
-                        viewModel.operatorData.attributes.name,
+                        viewModel.selectedGridProduct.denomData.title,
                         atcData.data.priceProduct
                     )
                     navigateToCart(atcData.data.categoryId)
@@ -984,17 +984,15 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onDenomGridImpression(
-        listDenomGrid: List<DenomData>,
-        layoutType: DenomWidgetEnum
-    ) {
-        if (layoutType == DenomWidgetEnum.GRID_TYPE) {
+    override fun onDenomGridImpression(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int) {
+        if (layoutType == DenomWidgetEnum.GRID_TYPE){
             digitalPDPAnalytics.impressionProductCluster(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 DigitalPDPCategoryUtil.getOperatorName(operatorId),
                 loyaltyStatus,
                 userSession.userId,
-                listDenomGrid
+                denomGrid,
+                position
             )
         }
     }

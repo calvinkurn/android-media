@@ -5,7 +5,9 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.repository.PlayViewerTagItemRepositoryImpl
+import com.tokopedia.play.domain.CheckUpcomingCampaignReminderUseCase
 import com.tokopedia.play.domain.GetProductTagItemSectionUseCase
+import com.tokopedia.play.domain.PostUpcomingCampaignReminderUseCase
 import com.tokopedia.play.domain.repository.PlayViewerTagItemRepository
 import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.util.assertEqualTo
@@ -43,6 +45,8 @@ class PlayViewerTagItemsRepositoryTest {
     private val mockGetProductTagUseCase: GetProductTagItemSectionUseCase = mockk(relaxed = true)
     private val mockGetProductVariantUseCase: GetProductVariantUseCase = mockk(relaxed = true)
     private val mockAddToCartUseCase: AddToCartUseCase = mockk(relaxed = true)
+    private val mockCheckUpcomingCampaignReminderUseCase: CheckUpcomingCampaignReminderUseCase = mockk(relaxed = true)
+    private val mockPostUpcomingCampaignReminderUseCase: PostUpcomingCampaignReminderUseCase = mockk(relaxed = true)
 
     private val modelBuilder = ModelBuilder()
 
@@ -52,6 +56,8 @@ class PlayViewerTagItemsRepositoryTest {
             mockGetProductTagUseCase,
             mockGetProductVariantUseCase,
             mockAddToCartUseCase,
+            mockCheckUpcomingCampaignReminderUseCase,
+            mockPostUpcomingCampaignReminderUseCase,
             mockMapper,
             mockUserSession,
             testDispatcher

@@ -98,10 +98,7 @@ object PayLaterHelper {
         val result: String = if (price is Int)
             kursIndonesia.format(price.toLong())
         else kursIndonesia.format(price)
-        val res = result.replace(",", ".")
-        return if (res.startsWith("Rp"))
-            res
-        else "Rp$res"
+        return result.replace(",", ".")
     }
 
     fun getProductNameList(modelList: ArrayList<BasePayLaterWidgetUiModel>?): String {

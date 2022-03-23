@@ -5,10 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.removeFirst
+import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.vouchercreation.common.extension.splitByThousand
 import com.tokopedia.vouchercreation.common.utils.ResourceProvider
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
@@ -20,8 +22,9 @@ import com.tokopedia.vouchercreation.product.list.domain.model.response.ProductL
 import com.tokopedia.vouchercreation.product.list.domain.usecase.*
 import com.tokopedia.vouchercreation.product.list.view.model.*
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
-import kotlin.math.abs
+import kotlin.collections.ArrayList
 
 class AddProductViewModel @Inject constructor(
         private val resourceProvider: ResourceProvider,
@@ -36,8 +39,6 @@ class AddProductViewModel @Inject constructor(
     companion object {
         private const val FIRST_PAGE = 1
         private const val PAGE_SIZE = 10
-        private const val ONE = 1
-        private const val THOUSAND = 1000
         const val SELLER_WAREHOUSE_TYPE = 1
         const val EMPTY_STRING = ""
         const val BENEFIT_TYPE_IDR = "idr"
@@ -45,6 +46,7 @@ class AddProductViewModel @Inject constructor(
         const val COUPON_TYPE_CASHBACK = "cashback"
         const val COUPON_TYPE_SHIPPING = "shipping"
         const val SORT_DEFAULT = "DEFAULT"
+        private const val PRODUCT_SOLD_COUNT_LAST_DIGIT_TO_DISPLAY = 1
     }
 
     private var productUiModels: List<ProductUiModel> = listOf()
@@ -182,15 +184,14 @@ class AddProductViewModel @Inject constructor(
 
     fun mapProductDataToProductUiModel(productDataList: List<ProductData>): List<ProductUiModel> {
         return productDataList.map { productData ->
-            // TODO: implement proper string formatting
             ProductUiModel(
                     imageUrl = productData.pictures.first().urlThumbnail,
                     id = productData.id,
                     productName = productData.name,
                     sku = getFormattedSku(productData.sku),
-                    price = "Rp " + productData.price.max.toString(),
+                    price =  getFormattedProductPrice(productData.price.max),
                     sold = productData.txStats.sold,
-                    soldNStock = "Terjual " + productData.txStats.sold + " | " + "Stok " + productData.stock.toString(),
+                    soldNStock = getFormattedStatisticText(productData.txStats.sold, productData.stock),
                     hasVariant = productData.isVariant
             )
         }
@@ -201,15 +202,14 @@ class AddProductViewModel @Inject constructor(
         return skuTemplate.format(sku)
     }
 
-    private fun getFormattedPrice(price: Double): String {
-        val formattedPrice = (price / THOUSAND).toInt()
-        val priceTemplate = resourceProvider.getFormattedProductPrice()
-        return priceTemplate.format(formattedPrice.toString())
+    private fun getFormattedStatisticText(sold: Int, stock: Int): String {
+        val formattedSoldCount = sold.thousandFormatted(PRODUCT_SOLD_COUNT_LAST_DIGIT_TO_DISPLAY)
+        val statisticTemplate = resourceProvider.getFormattedProductStatistic()
+        return statisticTemplate.format(formattedSoldCount, stock.splitByThousand(Locale.ENGLISH))
     }
 
-    private fun getFormattedStatisticText(sold: Int, stock: Int): String {
-        val statisticTemplate = resourceProvider.getFormattedProductStatistic()
-        return statisticTemplate.format()
+    private fun getFormattedProductPrice(productPrice: Long): String {
+        return String.format(resourceProvider.getProductPrice(), productPrice.splitByThousand())
     }
 
     fun mapWarehouseLocationToSelections(warehouses: List<Warehouses>,
@@ -298,10 +298,10 @@ class AddProductViewModel @Inject constructor(
                     isSelected = isSelectAll && data.is_eligible,
                     variantId = data.productId,
                     variantName = data.productName,
-                    sku = "SKU : " + data.sku,
+                    sku = getFormattedSku(data.sku),
                     price = data.price.toString(),
                     priceTxt = data.priceFormat,
-                    soldNStock = "Terjual " + sold.toString() + " | " + "Stok " + data.stock.toString(),
+                    soldNStock = getFormattedStatisticText(sold, data.stock),
                     isError = !data.is_eligible,
                     errorMessage = data.reason
             )
