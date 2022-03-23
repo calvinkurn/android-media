@@ -1,7 +1,7 @@
 package com.tokopedia.cart.domain.usecase
 
-fun getQueryCartRevampV3(): String {
-    return """
+const val CART_REVAMP_V3_QUERY =
+        """
         query cart_revamp_v3(${'$'}lang: String, ${'$'}selected_cart_id: String, ${'$'}additional_params: CartRevampAdditionalParams) {
           status
           cart_revamp_v3(lang:${'$'}lang, selected_cart_id: ${'$'}selected_cart_id, additional_params:${'$'}additional_params) {
@@ -778,5 +778,4 @@ fun getQueryCartRevampV3(): String {
             }
           }
         }
-    """.trimIndent()
-}
+        """

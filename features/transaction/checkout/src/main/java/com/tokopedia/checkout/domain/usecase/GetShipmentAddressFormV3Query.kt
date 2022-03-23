@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.domain.usecase
 
-fun getQueryShipmentAddressFormV3(): String {
-    return """
+const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
+        """
         query shipment_address_form_v3(${'$'}params: ShipmentAddressFormParams) {
           shipment_address_form_v3(params: ${'$'}params) {
             status
@@ -592,6 +592,4 @@ fun getQueryShipmentAddressFormV3(): String {
               }
             }
           }
-        }
-    """.trimIndent()
-}
+        }"""
