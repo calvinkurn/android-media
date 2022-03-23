@@ -5,6 +5,7 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseAccordionBinding
 import com.tokopedia.tokofood.purchase.purchasepage.view.TokoFoodPurchaseActionListener
 import com.tokopedia.tokofood.purchase.purchasepage.view.uimodel.TokoFoodPurchaseAccordionUiModel
+import com.tokopedia.tokofood.purchase.renderAlpha
 
 class TokoFoodPurchaseAccordionViewHolder(private val viewBinding: ItemPurchaseAccordionBinding,
                                           private val listener: TokoFoodPurchaseActionListener)
@@ -26,6 +27,8 @@ class TokoFoodPurchaseAccordionViewHolder(private val viewBinding: ItemPurchaseA
             itemView.setOnClickListener {
                 listener.onToggleShowHideUnavailableItemsClicked()
             }
+
+            itemView.renderAlpha(element)
         }
     }
 

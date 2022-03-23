@@ -10,6 +10,7 @@ import com.tokopedia.tokofood.databinding.SubItemPurchaseSummaryTransactionBindi
 import com.tokopedia.tokofood.purchase.purchasepage.view.TokoFoodPurchaseActionListener
 import com.tokopedia.tokofood.purchase.purchasepage.view.uimodel.TokoFoodPurchaseSummaryTransactionUiModel
 import com.tokopedia.tokofood.purchase.removeDecimalSuffix
+import com.tokopedia.tokofood.purchase.renderAlpha
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class TokoFoodPurchaseSummaryTransactionViewHolder(private val viewBinding: ItemPurchaseSummaryTransactionBinding,

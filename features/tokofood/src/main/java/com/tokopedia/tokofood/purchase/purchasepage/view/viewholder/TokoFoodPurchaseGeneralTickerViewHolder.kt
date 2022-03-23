@@ -5,6 +5,7 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseGeneralTickerBinding
 import com.tokopedia.tokofood.purchase.purchasepage.view.TokoFoodPurchaseActionListener
 import com.tokopedia.tokofood.purchase.purchasepage.view.uimodel.TokoFoodPurchaseGeneralTickerUiModel
+import com.tokopedia.unifycomponents.ticker.Ticker
 
 class TokoFoodPurchaseGeneralTickerViewHolder(private val viewBinding: ItemPurchaseGeneralTickerBinding,
                                               private val listener: TokoFoodPurchaseActionListener)
@@ -17,6 +18,11 @@ class TokoFoodPurchaseGeneralTickerViewHolder(private val viewBinding: ItemPurch
     override fun bind(element: TokoFoodPurchaseGeneralTickerUiModel) {
         with(viewBinding) {
             tickerGeneral.setHtmlDescription(element.message)
+            if (element.isErrorTicker) {
+                tickerGeneral.tickerType = Ticker.TYPE_ERROR
+            } else {
+                tickerGeneral.tickerType = Ticker.TYPE_ANNOUNCEMENT
+            }
         }
     }
 

@@ -6,128 +6,114 @@ import com.tokopedia.tokofood.purchase.purchasepage.view.uimodel.*
 
 object TokoFoodPurchaseUiModelMapper {
 
-    fun mapGeneralTickerUiModel(): TokoFoodPurchaseGeneralTickerUiModel {
-        return TokoFoodPurchaseGeneralTickerUiModel(
-                message = "Thi will be note relevant to any info and error on checkout"
-        )
-    }
-
-    fun mapAddressUiModel(): TokoFoodPurchaseAddressUiModel {
-        return TokoFoodPurchaseAddressUiModel(
-                addressName = "Rumah",
-                isMainAddress = true,
-                receiverName = "Adrian",
-                receiverPhone = "081234567890",
-                cityName = "Jakarta Selatan",
-                districtName = "Setiabudi",
-                addressDetail = "Tokopedia Tower Ciputra World 2, Jl. Prof. DR. Satrio No.Kav. 11, Karet Semanggi, Setiabudi, Jakarta Selatan"
-        )
-    }
-
-    fun mapShippingUiModel(): TokoFoodPurchaseShippingUiModel {
-        return TokoFoodPurchaseShippingUiModel(
-                shippingCourierName = "Gojek Instan (Rp0)",
-                shippingEta = "Tiba dalam 30-60 menit",
-                shippingLogoUrl = "https://1000logos.net/wp-content/uploads/2020/11/Gojek-Logo-1024x640.png",
-                shippingPrice = 0,
-                isNeedPinpoint = true
-        )
-    }
-
-    fun mapProductListHeaderUiModel(mIsUnavailable: Boolean): TokoFoodPurchaseProductListHeaderUiModel {
-        if (mIsUnavailable) {
-            return TokoFoodPurchaseProductListHeaderUiModel(
-                    title = "Tidak bisa diproses (3)",
-                    action = "Hapus",
-                    isUnavailableHeader = mIsUnavailable
-            )
-        } else {
-            return TokoFoodPurchaseProductListHeaderUiModel(
-                    title = "Daftar Pesanan",
-                    action = "Tambah Pesanan",
-                    isUnavailableHeader = mIsUnavailable
-            )
+    fun mapGeneralTickerUiModel(isShippingUnavailable: Boolean): TokoFoodPurchaseGeneralTickerUiModel {
+        return TokoFoodPurchaseGeneralTickerUiModel().apply {
+            isErrorTicker = isShippingUnavailable
+            message = "Thi will be note relevant to any info and error on checkout"
         }
     }
 
-    fun mapProductUnavailableReasonUiModel(): TokoFoodPurchaseProductUnavailableReasonUiModel {
-        return TokoFoodPurchaseProductUnavailableReasonUiModel(
-                reason = "Stok Habis",
-                detail = ""
-        )
+    fun mapAddressUiModel(): TokoFoodPurchaseAddressUiModel {
+        return TokoFoodPurchaseAddressUiModel().apply {
+            addressName = "Rumah"
+            isMainAddress = true
+            receiverName = "Adrian"
+            receiverPhone = "081234567890"
+            cityName = "Jakarta Selatan"
+            districtName = "Setiabudi"
+            addressDetail = "Tokopedia Tower Ciputra World 2, Jl. Prof. DR. Satrio No.Kav. 11, Karet Semanggi, Setiabudi, Jakarta Selatan"
+        }
     }
 
-    fun mapTickerErrorShopLevelUiModel(): TokoFoodPurchaseTickerErrorShopLevelUiModel {
-        return TokoFoodPurchaseTickerErrorShopLevelUiModel(
-                message = "Yah, ada 3 item tidak bisa diproses. Kamu bisa lanjut pesan yang lainnya, ya. <a href=\"\">Lihat</a>"
-        )
+    fun mapShippingUiModel(): TokoFoodPurchaseShippingUiModel {
+        return TokoFoodPurchaseShippingUiModel().apply {
+            shippingCourierName = "Gojek Instan (Rp0)"
+            shippingEta = "Tiba dalam 30-60 menit"
+            shippingLogoUrl = "https://1000logos.net/wp-content/uploads/2020/11/Gojek-Logo-1024x640.png"
+            shippingPrice = 0
+            isNeedPinpoint = true
+            isShippingUnavailable = false
+            isDisabled = isShippingUnavailable
+        }
     }
 
-    fun mapProductUiModel(isUnavailable: Boolean, id: String): TokoFoodPurchaseProductUiModel {
-        return TokoFoodPurchaseProductUiModel(
-                isDisabled = isUnavailable,
-                id = id,
-                name = "Milo Macchiato $id",
-                imageUrl = "https://img-global.cpcdn.com/recipes/1db6e302172f3f01/680x482cq70/es-milo-macchiato-janji-jiwa-foto-resep-utama.jpg",
-                price = 25000,
-                quantity = 1,
-                minQuantity = 1,
-                maxQuantity = 10,
-                notes = if (id.toIntOrNull().isOdd()) "Pesanannya jangan sampai salah ya! udah haus bang. Pesanannya jangan sampai salah ya! udah haus bang..." else "",
-                addOns = listOf("addOn1", "addon2", "addon3"),
-                originalPrice = 50000,
-                discountPercentage = "50%"
-        )
+    fun mapProductListHeaderUiModel(isShippingUnavailable: Boolean, mIsUnavailable: Boolean): TokoFoodPurchaseProductListHeaderUiModel {
+        return if (mIsUnavailable) {
+            TokoFoodPurchaseProductListHeaderUiModel().apply {
+                title = "Tidak bisa diproses (3)"
+                action = "Hapus"
+                isUnavailableHeader = mIsUnavailable
+                isDisabled = isShippingUnavailable
+            }
+        } else {
+            TokoFoodPurchaseProductListHeaderUiModel().apply {
+                title = "Daftar Pesanan"
+                action = "Tambah Pesanan"
+                isUnavailableHeader = mIsUnavailable
+                isDisabled = isShippingUnavailable
+            }
+        }
+    }
+
+    fun mapProductUnavailableReasonUiModel(isShippingUnavailable: Boolean): TokoFoodPurchaseProductUnavailableReasonUiModel {
+        return TokoFoodPurchaseProductUnavailableReasonUiModel().apply {
+            reason = "Stok Habis"
+            detail = ""
+            isDisabled = isShippingUnavailable
+        }
+    }
+
+    fun mapTickerErrorShopLevelUiModel(isShippingUnavailable: Boolean): TokoFoodPurchaseTickerErrorShopLevelUiModel {
+        return TokoFoodPurchaseTickerErrorShopLevelUiModel().apply {
+            message = "Yah, ada 3 item tidak bisa diproses. Kamu bisa lanjut pesan yang lainnya, ya. <a href=\"\">Lihat</a>"
+            isDisabled = isShippingUnavailable
+        }
+    }
+
+    fun mapProductUiModel(isShippingUnavailable: Boolean, mIsUnavailable: Boolean, id: String): TokoFoodPurchaseProductUiModel {
+        return TokoFoodPurchaseProductUiModel().apply {
+            isUnavailable = mIsUnavailable
+            this.id = id
+            name = "Milo Macchiato $id"
+            imageUrl = "https://img-global.cpcdn.com/recipes/1db6e302172f3f01/680x482cq70/es-milo-macchiato-janji-jiwa-foto-resep-utama.jpg"
+            price = 25000
+            quantity = 1
+            minQuantity = 1
+            maxQuantity = 10
+            notes = if (id.toIntOrNull().isOdd()) "Pesanannya jangan sampai salah ya! udah haus bang. Pesanannya jangan sampai salah ya! udah haus bang..." else ""
+            addOns = listOf("addOn1", "addon2", "addon3")
+            originalPrice = 50000
+            discountPercentage = "50%"
+            isDisabled = isShippingUnavailable
+        }
     }
 
     fun mapPromoUiModel(): TokoFoodPurchasePromoUiModel {
-        return TokoFoodPurchasePromoUiModel(
-                state = ExplorePromo.STATE_DEFAULT,
-                title = "Makin hemat pakai promo",
-                description = ""
-        )
+        return TokoFoodPurchasePromoUiModel().apply {
+            state = ExplorePromo.STATE_DEFAULT
+            title = "Makin hemat pakai promo"
+            description = ""
+        }
     }
 
     fun mapSummaryTransactionUiModel(): TokoFoodPurchaseSummaryTransactionUiModel {
-        return TokoFoodPurchaseSummaryTransactionUiModel(
-//                transactions = listOf(
-//                        TokoFoodPurchaseSummaryTransactionUiModel.Transaction(
-//                                title = "Total Harga (3 item)",
-//                                value = 75000,
-//                                defaultValueForZero = TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_ZERO
-//                        ),
-//                        TokoFoodPurchaseSummaryTransactionUiModel.Transaction(
-//                                title = "Biaya Bungkus dari Restoran",
-//                                value = 6000,
-//                                defaultValueForZero = TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_ZERO
-//                        ),
-//                        TokoFoodPurchaseSummaryTransactionUiModel.Transaction(
-//                                title = "Ongkir",
-//                                value = 0,
-//                                defaultValueForZero = TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_FREE
-//                        ),
-//                        TokoFoodPurchaseSummaryTransactionUiModel.Transaction(
-//                                title = "Biaya Jasa Aplikasi",
-//                                value = 4000,
-//                                defaultValueForZero = TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_ZERO
-//                        )
-//                )
-        )
+        return TokoFoodPurchaseSummaryTransactionUiModel()
     }
 
     fun mapTotalAmountUiModel(): TokoFoodPurchaseTotalAmountUiModel {
-        return TokoFoodPurchaseTotalAmountUiModel(
-                totalAmount = 0,
-                isDisabled = false
-        )
+        return TokoFoodPurchaseTotalAmountUiModel().apply {
+            totalAmount = 0
+            isDisabled = false
+        }
     }
 
-    fun mapAccordionUiModel(): TokoFoodPurchaseAccordionUiModel {
-        return TokoFoodPurchaseAccordionUiModel(
-                isCollapsed = false,
-                showMoreWording = "Tampilkan Lebih Banyak",
-                showLessWording = "Tampilkan Lebih Sedikit"
-        )
+    fun mapAccordionUiModel(isShippingUnavailable: Boolean): TokoFoodPurchaseAccordionUiModel {
+        return TokoFoodPurchaseAccordionUiModel().apply {
+            isCollapsed = false
+            showMoreWording = "Tampilkan Lebih Banyak"
+            showLessWording = "Tampilkan Lebih Sedikit"
+            isDisabled = isShippingUnavailable
+        }
     }
 
 }

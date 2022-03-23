@@ -8,6 +8,7 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseShippingBinding
 import com.tokopedia.tokofood.purchase.purchasepage.view.TokoFoodPurchaseActionListener
 import com.tokopedia.tokofood.purchase.purchasepage.view.uimodel.TokoFoodPurchaseShippingUiModel
+import com.tokopedia.tokofood.purchase.renderAlpha
 
 class TokoFoodPurchaseShippingViewHolder(private val viewBinding: ItemPurchaseShippingBinding,
                                          private val listener: TokoFoodPurchaseActionListener)
@@ -23,6 +24,7 @@ class TokoFoodPurchaseShippingViewHolder(private val viewBinding: ItemPurchaseSh
         } else {
             renderShipping(viewBinding, element)
         }
+        itemView.renderAlpha(element)
     }
 
     private fun renderPinpoint(viewBinding: ItemPurchaseShippingBinding, element: TokoFoodPurchaseShippingUiModel) {

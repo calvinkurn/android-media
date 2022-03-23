@@ -128,7 +128,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         val unavailableProducts = mutableListOf<TokoFoodPurchaseProductUiModel>()
         loop@ for ((index, data) in dataList.withIndex()) {
             when {
-                data is TokoFoodPurchaseProductUiModel && data.isDisabled -> {
+                data is TokoFoodPurchaseProductUiModel && data.isUnavailable -> {
                     if (firstItemIndex == -1) firstItemIndex = index
                     unavailableProducts.add(data)
                 }
@@ -151,35 +151,46 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
     }
 
     fun loadData() {
-        // Todo : Load from API --> map to UiModel
+        // Todo : Load from API, if success then map to UiModel, if error show global error
+        val isSuccess = true
+        if (isSuccess) {
+            constructRecycleViewItem()
+            calculateTotal()
+        } else {
+            _uiEvent.value = UiEvent(state = UiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE)
+        }
+    }
+
+    private fun constructRecycleViewItem() {
         val tmpData = mutableListOf<Visitable<*>>()
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapGeneralTickerUiModel())
+        val shippingData = TokoFoodPurchaseUiModelMapper.mapShippingUiModel()
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapGeneralTickerUiModel(shippingData.isShippingUnavailable))
         tmpData.add(TokoFoodPurchaseDividerUiModel(id = "1"))
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapAddressUiModel())
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapShippingUiModel())
+        tmpData.add(shippingData)
         tmpData.add(TokoFoodPurchaseDividerUiModel(id = "2"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductListHeaderUiModel(false))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapTickerErrorShopLevelUiModel())
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(false, "1"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(false, "2"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(false, "3"))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductListHeaderUiModel(shippingData.isShippingUnavailable, false))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapTickerErrorShopLevelUiModel(shippingData.isShippingUnavailable))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingUnavailable, false, "1"))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingUnavailable, false, "2"))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingUnavailable, false, "3"))
         tmpData.add(TokoFoodPurchaseDividerUiModel(id = "3"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductListHeaderUiModel(true))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUnavailableReasonUiModel())
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(true, "4"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(true, "5"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(true, "6"))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductListHeaderUiModel(shippingData.isShippingUnavailable, true))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUnavailableReasonUiModel(shippingData.isShippingUnavailable))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingUnavailable, true, "4"))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingUnavailable, true, "5"))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingUnavailable, true, "6"))
         tmpData.add(TokoFoodPurchaseDividerUiModel(id = "4"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapAccordionUiModel())
-        tmpData.add(TokoFoodPurchaseDividerUiModel(id = "5"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapPromoUiModel())
-        tmpData.add(TokoFoodPurchaseDividerUiModel(id = "6"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapSummaryTransactionUiModel())
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapAccordionUiModel(shippingData.isShippingUnavailable))
+        if (!shippingData.isShippingUnavailable) {
+            tmpData.add(TokoFoodPurchaseDividerUiModel(id = "5"))
+            tmpData.add(TokoFoodPurchaseUiModelMapper.mapPromoUiModel())
+            tmpData.add(TokoFoodPurchaseDividerUiModel(id = "6"))
+            tmpData.add(TokoFoodPurchaseUiModelMapper.mapSummaryTransactionUiModel())
+        }
         tmpData.add(TokoFoodPurchaseDividerUiModel(id = "7"))
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapTotalAmountUiModel())
         _visitables.value = tmpData
-
-        calculateTotal()
     }
 
     private fun deleteProducts(visitables: List<Visitable<*>>, productCount: Int) {
@@ -238,10 +249,10 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         var count = 0
         loop@ for (data in dataList) {
             when {
-                data is TokoFoodPurchaseProductUiModel && !data.isDisabled -> {
+                data is TokoFoodPurchaseProductUiModel && !data.isUnavailable -> {
                     count++
                 }
-                (data is TokoFoodPurchaseProductUiModel && data.isDisabled) || data is TokoFoodPurchasePromoUiModel -> {
+                (data is TokoFoodPurchaseProductUiModel && data.isUnavailable) || data is TokoFoodPurchasePromoUiModel -> {
                     break@loop
                 }
             }
@@ -354,6 +365,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         var summaryTransactionUiModelIndex = -1
         var totalAmountUiModel: TokoFoodPurchaseTotalAmountUiModel? = null
         var totalAmountUiModelIndex = -1
+        var shippingUiModel: TokoFoodPurchaseShippingUiModel? = null
         var totalProduct = 0
         var subTotal = 0L
         var wrappingFee = 0L
@@ -362,11 +374,14 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         loop@ for ((index, data) in dataList.withIndex()) {
             when {
                 data is TokoFoodPurchaseShippingUiModel -> {
-                    shippingFee = data.shippingPrice
-                    wrappingFee = data.wrappingFee
-                    serviceFee = data.serviceFee
+                    shippingUiModel = data
+                    if (!data.isShippingUnavailable) {
+                        shippingFee = data.shippingPrice
+                        wrappingFee = data.wrappingFee
+                        serviceFee = data.serviceFee
+                    }
                 }
-                data is TokoFoodPurchaseProductUiModel && !data.isDisabled -> {
+                data is TokoFoodPurchaseProductUiModel && !data.isUnavailable && !data.isDisabled -> {
                     subTotal += (data.price * data.quantity)
                     totalProduct++
                 }
@@ -407,10 +422,11 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         }
 
         totalAmountUiModel?.let {
-            val newTotalAmountData = totalAmountUiModel.copy(
-                    isDisabled = false,
-                    totalAmount = subTotal + shippingFee + wrappingFee + serviceFee
-            )
+            val newTotalAmountData = totalAmountUiModel.copy()
+            newTotalAmountData.apply {
+                isDisabled = shippingUiModel?.isShippingUnavailable ?: false
+                totalAmount = subTotal + shippingFee + wrappingFee + serviceFee
+            }
             dataList[totalAmountUiModelIndex] = newTotalAmountData
         }
 
@@ -435,7 +451,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
     }
 
     fun updateAddressPinpoint() {
-        // Todo : hit API set address pinpoint, then reload purchase page if success and show toaster
+        // Todo : hit API set address pinpoint, then reload purchase page if success
     }
 
 }

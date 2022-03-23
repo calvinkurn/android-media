@@ -5,6 +5,7 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchasePromoBinding
 import com.tokopedia.tokofood.purchase.purchasepage.view.TokoFoodPurchaseActionListener
 import com.tokopedia.tokofood.purchase.purchasepage.view.uimodel.TokoFoodPurchasePromoUiModel
+import com.tokopedia.tokofood.purchase.renderAlpha
 
 class TokoFoodPurchasePromoViewHolder(private val viewBinding: ItemPurchasePromoBinding,
                                       private val listener: TokoFoodPurchaseActionListener)

@@ -7,6 +7,7 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseProductUnavailableReasonBinding
 import com.tokopedia.tokofood.purchase.purchasepage.view.TokoFoodPurchaseActionListener
 import com.tokopedia.tokofood.purchase.purchasepage.view.uimodel.TokoFoodPurchaseProductUnavailableReasonUiModel
+import com.tokopedia.tokofood.purchase.renderAlpha
 
 class TokoFoodPurchaseProductUnavailableReasonViewHolder(private val viewBinding: ItemPurchaseProductUnavailableReasonBinding,
                                                          private val listener: TokoFoodPurchaseActionListener)
@@ -25,6 +26,8 @@ class TokoFoodPurchaseProductUnavailableReasonViewHolder(private val viewBinding
             } else {
                 textDisabledSubTitle.gone()
             }
+
+            itemView.renderAlpha(element)
         }
     }
 

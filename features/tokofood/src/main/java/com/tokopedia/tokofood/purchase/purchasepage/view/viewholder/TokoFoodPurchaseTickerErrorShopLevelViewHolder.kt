@@ -5,6 +5,7 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseTickerErrorShopLevelBinding
 import com.tokopedia.tokofood.purchase.purchasepage.view.TokoFoodPurchaseActionListener
 import com.tokopedia.tokofood.purchase.purchasepage.view.uimodel.TokoFoodPurchaseTickerErrorShopLevelUiModel
+import com.tokopedia.tokofood.purchase.renderAlpha
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 
 class TokoFoodPurchaseTickerErrorShopLevelViewHolder(private val viewBinding: ItemPurchaseTickerErrorShopLevelBinding,
@@ -27,6 +28,8 @@ class TokoFoodPurchaseTickerErrorShopLevelViewHolder(private val viewBinding: It
                     // No-op
                 }
             })
+
+            itemView.renderAlpha(element)
         }
     }
 

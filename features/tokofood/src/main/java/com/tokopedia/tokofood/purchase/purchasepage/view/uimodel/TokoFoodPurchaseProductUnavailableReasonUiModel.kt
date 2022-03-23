@@ -6,7 +6,7 @@ import com.tokopedia.tokofood.purchase.purchasepage.view.adapter.TokoFoodPurchas
 data class TokoFoodPurchaseProductUnavailableReasonUiModel(
         var reason: String = "",
         var detail: String = ""
-) : Visitable<TokoFoodPurchaseAdapterTypeFactory> {
+) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseUiModel() {
 
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {
         return typeFactory.type(this)

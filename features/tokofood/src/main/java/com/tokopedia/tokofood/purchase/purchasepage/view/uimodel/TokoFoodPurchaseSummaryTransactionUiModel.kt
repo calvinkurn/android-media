@@ -8,7 +8,7 @@ data class TokoFoodPurchaseSummaryTransactionUiModel(
         var wrappingFee: Transaction = Transaction(),
         var shippingFee: Transaction = Transaction(),
         var serviceFee: Transaction = Transaction()
-) : Visitable<TokoFoodPurchaseAdapterTypeFactory> {
+) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseUiModel() {
 
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {
         return typeFactory.type(this)

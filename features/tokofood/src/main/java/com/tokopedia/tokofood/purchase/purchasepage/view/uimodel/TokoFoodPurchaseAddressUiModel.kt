@@ -11,7 +11,7 @@ data class TokoFoodPurchaseAddressUiModel(
         var cityName: String = "",
         var districtName: String = "",
         var isMainAddress: Boolean = false
-) : Visitable<TokoFoodPurchaseAdapterTypeFactory> {
+) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseUiModel() {
 
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {
         return typeFactory.type(this)

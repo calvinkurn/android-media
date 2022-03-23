@@ -5,7 +5,7 @@ import com.tokopedia.tokofood.purchase.purchasepage.view.adapter.TokoFoodPurchas
 
 data class TokoFoodPurchaseTickerErrorShopLevelUiModel(
         var message: String = ""
-) : Visitable<TokoFoodPurchaseAdapterTypeFactory> {
+) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseUiModel() {
 
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {
         return typeFactory.type(this)

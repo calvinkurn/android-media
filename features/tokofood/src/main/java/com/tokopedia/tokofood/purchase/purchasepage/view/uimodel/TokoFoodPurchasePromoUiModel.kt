@@ -7,7 +7,7 @@ data class TokoFoodPurchasePromoUiModel(
         var state: Int = 0,
         var title: String = "",
         var description: String = ""
-) : Visitable<TokoFoodPurchaseAdapterTypeFactory> {
+) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseUiModel() {
 
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {
         return typeFactory.type(this)

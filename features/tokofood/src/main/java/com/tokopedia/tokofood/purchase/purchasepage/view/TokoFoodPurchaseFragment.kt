@@ -173,6 +173,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     private fun observeUiEvent() {
         viewModel.uiEvent.observe(viewLifecycleOwner, {
             when (it.state) {
+                UiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE -> renderGlobalError()
                 UiEvent.EVENT_REMOVE_ALL_PRODUCT -> navigateToMerchantPage()
                 UiEvent.EVENT_SUCCESS_REMOVE_PRODUCT -> onSuccessRemoveProduct(it.data as Int)
                 UiEvent.EVENT_SCROLL_TO_UNAVAILABLE_ITEMS -> scrollToIndex(it.data as Int)
@@ -180,6 +181,10 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 UiEvent.EVENT_NAVIGATE_TO_SET_PINPOINT -> navigateToSetPinpoint(it.data as LocationPass)
             }
         })
+    }
+
+    private fun renderGlobalError() {
+
     }
 
     private fun navigateToSetPinpoint(locationPass: LocationPass) {

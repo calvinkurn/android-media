@@ -7,7 +7,7 @@ data class TokoFoodPurchaseAccordionUiModel(
         var isCollapsed: Boolean = false,
         var showMoreWording: String = "",
         var showLessWording: String = ""
-) : Visitable<TokoFoodPurchaseAdapterTypeFactory> {
+) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseUiModel() {
 
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {
         return typeFactory.type(this)

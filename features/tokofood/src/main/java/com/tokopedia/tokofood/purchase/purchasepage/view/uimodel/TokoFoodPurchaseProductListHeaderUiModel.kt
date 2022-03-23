@@ -7,7 +7,7 @@ data class TokoFoodPurchaseProductListHeaderUiModel(
         var title: String = "",
         var action: String = "",
         var isUnavailableHeader: Boolean = false
-) : Visitable<TokoFoodPurchaseAdapterTypeFactory> {
+) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseUiModel() {
 
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {
         return typeFactory.type(this)

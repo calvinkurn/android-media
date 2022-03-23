@@ -6,7 +6,7 @@ import com.tokopedia.tokofood.purchase.purchasepage.view.adapter.TokoFoodPurchas
 data class TokoFoodPurchaseDividerUiModel(
         var id: String = "",
         var height: Int = 0
-) : Visitable<TokoFoodPurchaseAdapterTypeFactory> {
+) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseUiModel() {
 
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {
         return typeFactory.type(this)

@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokofood.purchase.purchasepage.view.adapter.TokoFoodPurchaseAdapterTypeFactory
 
 data class TokoFoodPurchaseProductUiModel(
-        var isDisabled: Boolean = false,
+        var isUnavailable: Boolean = false,
         var id: String = "",
         var name: String = "",
         var imageUrl: String = "",
@@ -17,7 +17,7 @@ data class TokoFoodPurchaseProductUiModel(
         var quantity: Int = 0,
         var minQuantity: Int = 0,
         var maxQuantity: Int = 0
-) : Visitable<TokoFoodPurchaseAdapterTypeFactory> {
+) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseUiModel() {
 
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {
         return typeFactory.type(this)

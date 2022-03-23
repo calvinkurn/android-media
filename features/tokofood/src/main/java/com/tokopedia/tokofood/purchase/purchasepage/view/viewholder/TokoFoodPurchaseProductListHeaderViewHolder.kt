@@ -5,6 +5,7 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseProductListHeaderBinding
 import com.tokopedia.tokofood.purchase.purchasepage.view.TokoFoodPurchaseActionListener
 import com.tokopedia.tokofood.purchase.purchasepage.view.uimodel.TokoFoodPurchaseProductListHeaderUiModel
+import com.tokopedia.tokofood.purchase.renderAlpha
 
 class TokoFoodPurchaseProductListHeaderViewHolder(private val viewBinding: ItemPurchaseProductListHeaderBinding,
                                                   private val listener: TokoFoodPurchaseActionListener)
@@ -25,6 +26,8 @@ class TokoFoodPurchaseProductListHeaderViewHolder(private val viewBinding: ItemP
                     listener.onTextBulkDeleteUnavailableProductsClicked()
                 }
             }
+
+            itemView.renderAlpha(element)
         }
     }
 
