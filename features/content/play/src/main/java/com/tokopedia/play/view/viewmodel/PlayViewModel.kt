@@ -768,7 +768,11 @@ class PlayViewModel @AssistedInject constructor(
         val currentValue = _observableKebabSheets.value
         val defaultUserReportListState = currentValue?.get(KebabMenuType.UserReportList)?.isHidden ?: true
         val defaultUserReportSubmissionState = currentValue?.get(KebabMenuType.UserReportSubmission)?.isHidden ?: true
+
+        /**Make sure the default state for kebab menu is threedots must need to be shown. If you have any feedback please comment
+         * */
         return mapOf(
+            KebabMenuType.ThreeDots to BottomInsetsState.Shown(100, false),
             KebabMenuType.UserReportList to BottomInsetsState.Hidden(defaultUserReportListState),
             KebabMenuType.UserReportSubmission to BottomInsetsState.Hidden(defaultUserReportSubmissionState)
         )
