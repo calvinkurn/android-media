@@ -190,6 +190,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 price = variantDetailInput.price.replace(".", "").toBigIntegerOrNull().orZero()
                 sku = variantDetailInput.sku
                 stock = variantDetailInput.stock.toIntOrZero()
+                weight = variantDetailInput.weight
                 status = if (variantDetailInput.isActive) STATUS_ACTIVE_STRING else STATUS_INACTIVE_STRING
                 // the minimum product variant price will replace the main product price
                 if (price < productInputModel.value?.detailInputModel?.price ?: 0.toBigInteger()) {
@@ -236,6 +237,10 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                     // assign new value if input sku is not empty
                     if (inputModel.sku.isNotEmpty()) {
                         sku = inputModel.sku
+                    }
+                    // assign new value if input weight is not empty
+                    if (inputModel.weight.isNotEmpty()) {
+                        weight = inputModel.weight.toIntOrZero()
                     }
 
                     status = if(variantDetailInputMap[selectedCombination] == true) STATUS_ACTIVE_STRING else STATUS_INACTIVE_STRING

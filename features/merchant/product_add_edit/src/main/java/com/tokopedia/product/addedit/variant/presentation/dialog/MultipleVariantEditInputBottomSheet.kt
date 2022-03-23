@@ -193,11 +193,13 @@ class MultipleVariantEditInputBottomSheet(
         contentView?.apply {
             val price = tfuPrice.getText().replace(".", "")
             val stock = tfuStock.getText().replace(".", "")
+            val weight = tfuWeight.getText().replace(".", "")
             val sku = tfuSku.getText()
             val inputData = MultipleVariantEditInputModel(
                 price = price,
                 stock = stock,
-                sku = sku
+                sku = sku,
+                weight = weight
             )
             multipleVariantEditInputListener?.onMultipleEditInputFinished(inputData)
         }
