@@ -44,6 +44,7 @@ import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.dialo
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.ShopAdminInfoUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.ValidateAdminEmailEvent
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.ValidateEmailUiModel
+import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.navigator.InvitationConfirmationNavigator
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.viewmodel.AdminInvitationConfirmationViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -71,14 +72,16 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         ).get(AdminInvitationConfirmationViewModel::class.java)
     }
 
+    private val navigator by lazy {
+        context?.let { InvitationConfirmationNavigator(it, invitationConfirmationParam) }
+    }
+
     private var binding by autoClearedNullable<FragmentAdminInvitationConfirmationBinding>()
     private var confirmationBinding by autoClearedNullable<ItemAdminConfirmationInvitationBinding>()
     private var expiredBinding by autoClearedNullable<ItemAdminInvitationExpiredBinding>()
     private var rejectedBinding by autoClearedNullable<ItemAdminInvitationRejectedBinding>()
 
     private var confirmRejectDialog: AdminInvitationConfirmRejectDialog? = null
-
-    private var shopName = ""
 
     override fun getScreenName(): String = ""
 
@@ -178,7 +181,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                 is Success -> {
                     if (it.data.isSuccess) {
                         //is success reject/accepted, need confirmation to BE
-                        goToInvitationAccepted()
+                        navigator?.goToInvitationAccepted()
                     } else {
                         val message = it.data.message.ifEmpty {
                             getString(R.string.error_message_confirmation_rejected)
@@ -214,18 +217,10 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         viewModel.getAdminInfo(userSession.shopId.toLongOrZero())
     }
 
-    private fun goToInvitationAccepted() {
-        val params = mapOf<String, Any>(Constants.SHOP_NAME_PARAM to shopName)
-        val appLink = UriUtil.buildUriAppendParams(
-            ApplinkConstInternalMarketplace.ADMIN_INVITATION_ACCEPTED,
-            params
-        )
-        RouteManager.route(context, appLink)
-    }
 
     private fun showAdminType(adminStatus: String) {
         when (adminStatus) {
-            AdminStatus.ACTIVE -> goToShopAccount()
+            AdminStatus.ACTIVE -> navigator?.goToShopAccount()
             AdminStatus.WAITING_CONFIRMATION -> {
                 viewModel.getShopAdminInfo(userSession.shopId)
             }
@@ -282,7 +277,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         expiredBinding?.run {
             imgInvitationExpires.setImageUrl(AdminImageUrl.IL_INVITATION_EXPIRES)
             btnInvitationExpires.setOnClickListener {
-                goToShopAccount()
+                navigator?.goToShopAccount()
             }
         }
     }
@@ -291,13 +286,13 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         rejectedBinding?.run {
             imgInvitationRejected.setImageUrl(AdminImageUrl.IL_INVITATION_REJECTED)
             btnInvitationRejected.setOnClickListener {
-                goToShopAccount()
+                navigator?.goToShopAccount()
             }
         }
     }
 
     private fun setShopAdminInfo(shopAdminInfoUiModel: ShopAdminInfoUiModel) {
-        this.shopName = shopAdminInfoUiModel.shopName
+        invitationConfirmationParam.setShopName(shopAdminInfoUiModel.shopName)
         confirmationBinding?.run {
             imgAdminConfirmationInvitation.setImageUrl(
                 AdminImageUrl.IL_CONFIRMATION_INVITATION
@@ -307,7 +302,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                 shopAdminInfoUiModel.shopName
             )
             imgShopAdminAvatar.setImageUrl(shopAdminInfoUiModel.iconUrl)
-            tvShopTitle.text = shopName
+            tvShopTitle.text = invitationConfirmationParam.getShopName()
 
             if (userSession.email.isNullOrEmpty()) {
                 adminInvitationWithEmailSection.root.hide()
@@ -377,15 +372,6 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                 it.startActivityForResult(intent, REQUEST_LOGIN)
             }
         }
-    }
-
-    private fun goToShopAccount() {
-        val appLink = if (GlobalConfig.isSellerApp()) {
-            ApplinkConstInternalSellerapp.SELLER_HOME
-        } else {
-            ApplinkConstInternalSellerapp.SELLER_MENU
-        }
-        RouteManager.route(context, appLink)
     }
 
     private fun showLoading() {
