@@ -52,7 +52,7 @@ class ValidateUseMvcTest {
     @Test
     fun `WHEN validate mvc success THEN should update validate use mvc data`() {
         //given
-        val validateUseResponse = ValidateUseMvcData(status = "OK")
+        val validateUseResponse = ValidateUseMvcData(status = "OK", success = true)
         coEvery { validateUseMvcUseCase.setParam(any()).execute(any(), any()) } answers {
             firstArg<(ValidateUseMvcData) -> Unit>().invoke(validateUseResponse)
         }
@@ -82,7 +82,7 @@ class ValidateUseMvcTest {
     @Test
     fun `WHEN validate mvc failed on move to cart THEN should set state failed validate use move to cart`() {
         //given
-        val validateUseResponse = ValidateUseMvcData(status = "OK", progressPercentage = 100)
+        val validateUseResponse = ValidateUseMvcData(status = "OK", success = true)
         coEvery { validateUseMvcUseCase.setParam(any()).execute(any(), any()) } answers {
             firstArg<(ValidateUseMvcData) -> Unit>().invoke(validateUseResponse)
         }
@@ -100,36 +100,9 @@ class ValidateUseMvcTest {
     }
 
     @Test
-    fun `WHEN move to cart without data THEN should not validate mvc with apply true and directly set state move to cart`() {
-        //when
-        viewModel.moveToCart()
-
-        //then
-        coVerify(inverse = true) { validateUseMvcUseCase.setParam(match { it.apply }).execute(any(), any()) }
-        assert(viewModel.miniCartSimplifiedState.value == MiniCartSimplifiedState(state = MiniCartSimplifiedState.STATE_MOVE_TO_CART))
-    }
-
-    @Test
-    fun `WHEN move to cart without full progress THEN should not validate mvc with apply true and directly set state move to cart`() {
+    fun `WHEN move to cart THEN should validate mvc with apply true`() {
         //given
-        val validateUseResponse = ValidateUseMvcData(status = "OK", progressPercentage = 90)
-        coEvery { validateUseMvcUseCase.setParam(any()).execute(any(), any()) } answers {
-            firstArg<(ValidateUseMvcData) -> Unit>().invoke(validateUseResponse)
-        }
-        viewModel.getLatestWidgetState()
-
-        //when
-        viewModel.moveToCart()
-
-        //then
-        coVerify(inverse = true) { validateUseMvcUseCase.setParam(match { it.apply }).execute(any(), any()) }
-        assert(viewModel.miniCartSimplifiedState.value == MiniCartSimplifiedState(state = MiniCartSimplifiedState.STATE_MOVE_TO_CART))
-    }
-
-    @Test
-    fun `WHEN move to cart with full progress THEN should validate mvc with apply true`() {
-        //given
-        val validateUseResponse = ValidateUseMvcData(status = "OK", progressPercentage = 100)
+        val validateUseResponse = ValidateUseMvcData(status = "OK", success = true)
         coEvery { validateUseMvcUseCase.setParam(any()).execute(any(), any()) } answers {
             firstArg<(ValidateUseMvcData) -> Unit>().invoke(validateUseResponse)
         }
@@ -143,9 +116,9 @@ class ValidateUseMvcTest {
     }
 
     @Test
-    fun `WHEN move to cart with full progress success THEN should set state move to cart`() {
+    fun `WHEN move to cart success THEN should set state move to cart`() {
         //given
-        val validateUseResponse = ValidateUseMvcData(status = "OK", progressPercentage = 100)
+        val validateUseResponse = ValidateUseMvcData(status = "OK", success = true)
         coEvery { validateUseMvcUseCase.setParam(any()).execute(any(), any()) } answers {
             firstArg<(ValidateUseMvcData) -> Unit>().invoke(validateUseResponse)
         }

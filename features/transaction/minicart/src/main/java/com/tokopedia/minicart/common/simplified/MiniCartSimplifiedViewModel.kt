@@ -97,12 +97,7 @@ class MiniCartSimplifiedViewModel @Inject constructor(private val getMiniCartLis
     }
 
     fun moveToCart() {
-        val currentProgressPercentage = _validateUseMvcData.value?.progressPercentage ?: 0
-        if (currentProgressPercentage >= 100) {
-            validateUseMvc(true)
-        } else {
-            _miniCartSimplifiedState.value = MiniCartSimplifiedState(state = MiniCartSimplifiedState.STATE_MOVE_TO_CART)
-        }
+        validateUseMvc(true)
     }
 
     private fun validateUseMvc(isMoveToCart: Boolean) {
