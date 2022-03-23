@@ -60,6 +60,14 @@ sealed class PdpSimulationEvent {
         val limit: String,
         val variantName: String
     ):PdpSimulationEvent()
+
+    data class ClickTenureEvent(
+        val productId: String,
+        val userStatus: String,
+        val productPrice:String,
+        val tenure: String,
+        val partnerName: String
+    ):PdpSimulationEvent()
 }
 
 open class PayLaterAnalyticsBase {

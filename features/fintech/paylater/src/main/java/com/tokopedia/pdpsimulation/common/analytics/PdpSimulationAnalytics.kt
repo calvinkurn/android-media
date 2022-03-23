@@ -145,8 +145,31 @@ class PdpSimulationAnalytics @Inject constructor(
                 pdpSimulationEvent.limit,
                 pdpSimulationEvent.variantName,
             )
-
+            is PdpSimulationEvent.ClickTenureEvent -> sendTenureClickAnalytic(
+                pdpSimulationEvent.productId,
+                pdpSimulationEvent.userStatus,
+                pdpSimulationEvent.productPrice,
+                pdpSimulationEvent.tenure,
+                pdpSimulationEvent.partnerName
+            )
         }
+    }
+
+    private fun sendTenureClickAnalytic(productId: String, userStatus: String, productPrice: String, tenure: String, partnerName: String) {
+        val map = TrackAppUtils.gtmData(
+            CLICK_EVENT_NAME_FIN_TECH_V3,
+            OCC_EVENT_CATEGORY,
+            OCC_TENURE_OPTION_CLICK,
+            computeLabel(
+                productId,
+                "LINKED",
+                userStatus,
+                productPrice,
+                tenure,
+                partnerName
+            )
+        )
+        sendGeneralEvent(map)
     }
 
     private fun sendCTACheckoutClicked(
@@ -283,6 +306,7 @@ class PdpSimulationAnalytics @Inject constructor(
         const val OCC_EVENT_CATEGORY = "fin - optimize occ page"
         const val CTA_CHECKOUT_CLICKED_ACTION = "CTA beli langsung - click activated buyers"
         const val CTA_CHECKOUT_EVENT_CATEGORY = "fin - occ page"
+        const val OCC_TENURE_OPTION_CLICK = "tenure option - click"
     }
 
 }

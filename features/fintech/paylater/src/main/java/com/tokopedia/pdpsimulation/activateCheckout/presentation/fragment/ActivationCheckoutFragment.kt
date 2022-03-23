@@ -781,7 +781,22 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
         amountToPay.text = tenureSelectedModel.priceText.orEmpty()
         paymentDuration.text = "x${tenureSelectedModel.tenure.orEmpty()}"
+        sendTenureSelectedAnalytics(newPositionToSelect)
         updateRecyclerViewData(newPositionToSelect, tenureSelectedModel)
+    }
+
+    private fun sendTenureSelectedAnalytics(newPositionToSelect:Int) {
+        payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let{ checkoutData ->
+            sendAnalyticEvent(
+                PdpSimulationEvent.ClickTenureEvent(
+                    payLaterActivationViewModel.selectedProductId,
+                    checkoutData.userState?:"",
+                    payLaterActivationViewModel.price.toString(),
+                    checkoutData.tenureDetail[newPositionToSelect].tenure.toString(),
+                    checkoutData.gateway_name?:""
+                )
+            )
+        }
     }
 
     private fun updateRecyclerViewData(
