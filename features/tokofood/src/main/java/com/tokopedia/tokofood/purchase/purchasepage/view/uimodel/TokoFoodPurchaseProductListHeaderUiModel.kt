@@ -6,16 +6,11 @@ import com.tokopedia.tokofood.purchase.purchasepage.view.adapter.TokoFoodPurchas
 data class TokoFoodPurchaseProductListHeaderUiModel(
         var title: String = "",
         var action: String = "",
-        var state: Int = STATE_AVAILABLE
+        var isUnavailableHeader: Boolean = false
 ) : Visitable<TokoFoodPurchaseAdapterTypeFactory> {
 
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {
         return typeFactory.type(this)
-    }
-
-    companion object {
-        const val STATE_AVAILABLE = 1
-        const val STATE_UNAVAILABLE = 2
     }
 
 }

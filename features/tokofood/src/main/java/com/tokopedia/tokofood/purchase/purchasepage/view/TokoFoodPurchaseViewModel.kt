@@ -106,6 +106,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapShippingUiModel())
         tmpData.add(TokoFoodPurchaseDividerUiModel(id = "2"))
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductListHeaderUiModel(false))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapTickerErrorShopLevelUiModel())
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(false, "1"))
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(false, "2"))
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(false, "3"))
@@ -252,5 +253,23 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         dataList[mAccordionData.first] = newAccordionUiModel
         val index = mAccordionData.first - 1
         dataList.addAll(index, tmpCollapsedUnavailableItems)
+    }
+
+    fun scrollToUnavailableItem() {
+        val dataList = getVisitablesValue()
+        var targetIndex = -1
+        loop@ for ((index, data) in dataList.withIndex()) {
+            if (data is TokoFoodPurchaseProductListHeaderUiModel && data.isUnavailableHeader) {
+                targetIndex = index
+                break@loop
+            }
+        }
+
+        if (targetIndex > -1) {
+            _uiEvent.value = UiEvent(
+                    state = UiEvent.STATE_SCROLL_TO_UNAVAILABLE_ITEMS,
+                    data = targetIndex
+            )
+        }
     }
 }

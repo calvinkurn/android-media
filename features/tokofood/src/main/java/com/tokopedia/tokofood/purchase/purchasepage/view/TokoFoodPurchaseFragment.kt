@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -159,6 +160,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         viewModel.uiEvent.observe(viewLifecycleOwner, {
             when (it.state) {
                 UiEvent.STATE_REMOVE_ALL_PRODUCT -> navigateToMerchantPage()
+                UiEvent.STATE_SCROLL_TO_UNAVAILABLE_ITEMS -> scrollToIndex(it.data as Int)
             }
         })
     }
@@ -166,6 +168,20 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     private fun navigateToMerchantPage() {
         // Todo : navigate to merchant page
         activity?.finish()
+    }
+
+    private fun scrollToIndex(index: Int) {
+        activity?.let { activity ->
+            recyclerView?.layoutManager?.let {
+                val linearSmoothScroller = object : LinearSmoothScroller(activity) {
+                    override fun getVerticalSnapPreference(): Int {
+                        return SNAP_TO_START
+                    }
+                }
+                linearSmoothScroller.targetPosition = index
+                it.startSmoothScroll(linearSmoothScroller)
+            }
+        }
     }
 
     override fun getNextItems(currentIndex: Int, count: Int): List<Visitable<*>> {
@@ -218,6 +234,10 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     override fun onToggleShowHideUnavailableItemsClicked() {
         viewModel.toggleUnavailableProductsAccordion()
+    }
+
+    override fun onTextShowUnavailableItemClicked() {
+        viewModel.scrollToUnavailableItem()
     }
 
 }

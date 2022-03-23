@@ -7,10 +7,14 @@
     android:layout_marginEnd="16dp">
 
     <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_error_shop_level"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:closeButtonVisibility="gone"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:tickerShapeType="loose"
         app:tickerType="error" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

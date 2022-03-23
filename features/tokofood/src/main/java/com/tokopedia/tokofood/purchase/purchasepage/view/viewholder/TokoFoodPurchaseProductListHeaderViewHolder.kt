@@ -19,7 +19,7 @@ class TokoFoodPurchaseProductListHeaderViewHolder(private val viewBinding: ItemP
             textProductListHeader.text = element.title
             textProductListAction.text = element.action
             textProductListAction.setOnClickListener {
-                if (element.state == TokoFoodPurchaseProductListHeaderUiModel.STATE_AVAILABLE) {
+                if (!element.isUnavailableHeader) {
                     listener.onTextAddItemClicked()
                 } else {
                     listener.onTextBulkDeleteUnavailableProductsClicked()

@@ -31,18 +31,18 @@ object TokoFoodPurchaseUiModelMapper {
         )
     }
 
-    fun mapProductListHeaderUiModel(isUnavailable: Boolean): TokoFoodPurchaseProductListHeaderUiModel {
-        if (isUnavailable) {
+    fun mapProductListHeaderUiModel(mIsUnavailable: Boolean): TokoFoodPurchaseProductListHeaderUiModel {
+        if (mIsUnavailable) {
             return TokoFoodPurchaseProductListHeaderUiModel(
                     title = "Tidak bisa diproses (3)",
                     action = "Hapus",
-                    state = TokoFoodPurchaseProductListHeaderUiModel.STATE_UNAVAILABLE
+                    isUnavailableHeader = mIsUnavailable
             )
         } else {
             return TokoFoodPurchaseProductListHeaderUiModel(
                     title = "Daftar Pesanan",
                     action = "Tambah Pesanan",
-                    state = TokoFoodPurchaseProductListHeaderUiModel.STATE_AVAILABLE
+                    isUnavailableHeader = mIsUnavailable
             )
         }
     }
@@ -51,6 +51,12 @@ object TokoFoodPurchaseUiModelMapper {
         return TokoFoodPurchaseProductUnavailableReasonUiModel(
                 reason = "Stok Habis",
                 detail = ""
+        )
+    }
+
+    fun mapTickerErrorShopLevelUiModel(): TokoFoodPurchaseTickerErrorShopLevelUiModel {
+        return TokoFoodPurchaseTickerErrorShopLevelUiModel(
+                message = "Yah, ada 3 item tidak bisa diproses. Kamu bisa lanjut pesan yang lainnya, ya. <a href=\"\">Lihat</a>"
         )
     }
 

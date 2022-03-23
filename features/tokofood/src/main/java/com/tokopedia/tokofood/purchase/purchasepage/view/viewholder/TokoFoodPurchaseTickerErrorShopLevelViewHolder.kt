@@ -5,6 +5,7 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseTickerErrorShopLevelBinding
 import com.tokopedia.tokofood.purchase.purchasepage.view.TokoFoodPurchaseActionListener
 import com.tokopedia.tokofood.purchase.purchasepage.view.uimodel.TokoFoodPurchaseTickerErrorShopLevelUiModel
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 
 class TokoFoodPurchaseTickerErrorShopLevelViewHolder(private val viewBinding: ItemPurchaseTickerErrorShopLevelBinding,
                                                      private val listener: TokoFoodPurchaseActionListener)
@@ -16,7 +17,16 @@ class TokoFoodPurchaseTickerErrorShopLevelViewHolder(private val viewBinding: It
 
     override fun bind(element: TokoFoodPurchaseTickerErrorShopLevelUiModel) {
         with(viewBinding) {
+            tickerErrorShopLevel.setHtmlDescription(element.message)
+            tickerErrorShopLevel.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    listener.onTextShowUnavailableItemClicked()
+                }
 
+                override fun onDismiss() {
+                    // No-op
+                }
+            })
         }
     }
 
