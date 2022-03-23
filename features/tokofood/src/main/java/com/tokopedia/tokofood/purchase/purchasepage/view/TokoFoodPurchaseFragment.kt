@@ -20,6 +20,7 @@ import com.tokopedia.tokofood.purchase.purchasepage.view.adapter.TokoFoodPurchas
 import com.tokopedia.tokofood.purchase.purchasepage.view.di.DaggerTokoFoodPurchaseComponent
 import com.tokopedia.tokofood.purchase.purchasepage.view.toolbar.TokoFoodPurchaseToolbar
 import com.tokopedia.tokofood.purchase.purchasepage.view.toolbar.TokoFoodPurchaseToolbarListener
+import com.tokopedia.tokofood.purchase.purchasepage.view.uimodel.TokoFoodPurchaseProductUiModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -176,9 +177,10 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun onTextBulkDeleteUnavailableProductsClicked() {
-        view?.let {
-            Toaster.build(it, "onTextBulkDeleteUnavailableProductsClicked", Toaster.LENGTH_SHORT).show()
-        }
+        viewModel.bulkDeleteUnavailableProducts()
+//        view?.let {
+//            Toaster.build(it, "onTextBulkDeleteUnavailableProductsClicked", Toaster.LENGTH_SHORT).show()
+//        }
     }
 
     override fun onQuantityChanged(newQuantity: Int) {
@@ -187,10 +189,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         }
     }
 
-    override fun onIconDeleteProductClicked() {
-        view?.let {
-            Toaster.build(it, "onDeleteProductClicked", Toaster.LENGTH_SHORT).show()
-        }
+    override fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductUiModel) {
+        viewModel.deleteProduct(element.id)
+//        view?.let {
+//            Toaster.build(it, "onDeleteProductClicked", Toaster.LENGTH_SHORT).show()
+//        }
     }
 
     override fun onTextChangeNotesClicked() {
@@ -207,9 +210,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     override fun onToggleShowHideUnavailableItemsClicked() {
         viewModel.toggleUnavailableProductsAccordion()
-//        view?.let {
-//            Toaster.build(it, "onToggleShowHideUnavailableItemsClicked", Toaster.LENGTH_SHORT).show()
-//        }
     }
 
 }

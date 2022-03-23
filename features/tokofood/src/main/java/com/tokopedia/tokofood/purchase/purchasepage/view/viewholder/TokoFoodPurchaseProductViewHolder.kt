@@ -194,7 +194,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
 
             buttonDeleteProduct.show()
             buttonDeleteProduct.setOnClickListener {
-                listener.onIconDeleteProductClicked()
+                listener.onIconDeleteProductClicked(element)
             }
         }
     }

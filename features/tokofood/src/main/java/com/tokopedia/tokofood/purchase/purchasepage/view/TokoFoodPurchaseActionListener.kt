@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.purchase.purchasepage.view
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.tokofood.purchase.purchasepage.view.uimodel.TokoFoodPurchaseProductUiModel
 
 interface TokoFoodPurchaseActionListener {
 
@@ -16,7 +17,7 @@ interface TokoFoodPurchaseActionListener {
 
     fun onQuantityChanged(newQuantity: Int)
 
-    fun onIconDeleteProductClicked()
+    fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductUiModel)
 
     fun onTextChangeNotesClicked()
 
