@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
@@ -1114,6 +1115,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun getBottomSheetInstance() : PlayMoreActionBottomSheet {
         val sheet = PlayMoreActionBottomSheet.get(childFragmentManager)
+        sheet?.setShowListener { sheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
         return sheet ?: childFragmentManager.fragmentFactory.instantiate(requireActivity().classLoader, PlayMoreActionBottomSheet::class.java.name) as PlayMoreActionBottomSheet
     }
 
