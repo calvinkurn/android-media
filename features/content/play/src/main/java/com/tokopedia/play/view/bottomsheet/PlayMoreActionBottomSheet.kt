@@ -53,13 +53,13 @@ class PlayMoreActionBottomSheet @Inject constructor(
     PlayUserReportSheetViewComponent.Listener,
     PlayUserReportSubmissionViewComponent.Listener {
 
+    private var displayMetrix = DisplayMetrics()
+
     private val userReportSheetHeight: Int
         get() = (displayMetrix.heightPixels * MAX_PERCENT_HEIGHT).toInt()
 
     private val kebabMenuSheetHeight: Int
         get() = (displayMetrix.heightPixels * MIN_PERCENT_HEIGHT).toInt()
-
-    private var displayMetrix = DisplayMetrics()
 
     companion object {
         private const val TAG = "PlayMoreActionBottomSheet"
@@ -222,7 +222,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
     }
 
     private fun doActionUserReport(){
-//        analytic.clickUserReport()
+        analytic.clickUserReport()
         playViewModel.onShowUserReportSheet(userReportSheetHeight)
         playViewModel.getUserReportList()
     }
@@ -232,7 +232,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
     }
 
     private fun onSubmitUserReport(reasonId: Int, description: String) {
-//        analytic.clickUserReportSubmissionDialogSubmit()
+        analytic.clickUserReportSubmissionDialogSubmit()
         val channelData = playViewModel.latestCompleteChannelData
 
         playViewModel.submitUserReport(
@@ -371,7 +371,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
         description: String
     ) {
         val isUse = description.isNotEmpty()
-//        analytic.clickUserReportSubmissionBtnSubmit(isUse)
+        analytic.clickUserReportSubmissionBtnSubmit(isUse)
 
         showDialog(title = getString(R.string.play_user_report_verification_dialog_title), description = getString(R.string.play_user_report_verification_dialog_desc),
             primaryCTAText = getString(R.string.play_user_report_verification_dialog_btn_ok), secondaryCTAText = getString(R.string.play_pip_cancel),

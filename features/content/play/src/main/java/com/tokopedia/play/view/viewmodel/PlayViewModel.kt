@@ -776,11 +776,9 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun getDefaultKebabInsets(): Map<KebabMenuType, BottomInsetsState> {
         val currentValue = _observableKebabSheets.value
-        val defaultThreeDotsState = currentValue?.get(KebabMenuType.ThreeDots)?.isHidden ?: true
         val defaultUserReportListState = currentValue?.get(KebabMenuType.UserReportList)?.isHidden ?: true
         val defaultUserReportSubmissionState = currentValue?.get(KebabMenuType.UserReportSubmission)?.isHidden ?: true
         return mapOf(
-            KebabMenuType.ThreeDots to BottomInsetsState.Hidden(defaultThreeDotsState),
             KebabMenuType.UserReportList to BottomInsetsState.Hidden(defaultUserReportListState),
             KebabMenuType.UserReportSubmission to BottomInsetsState.Hidden(defaultUserReportSubmissionState)
         )
