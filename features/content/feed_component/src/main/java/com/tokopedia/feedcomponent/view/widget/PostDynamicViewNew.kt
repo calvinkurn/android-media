@@ -165,8 +165,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private var handlerAnim: Handler? = null
     private var handlerHide: Handler? = null
     private var feedAddViewJob: Job? = null
-    private var vodFullScreenIcon: CardView? = null
-    private var vodFullScreenIconImgView: ImageView? = null
+    private var vodFullScreenIcon: ImageView? = null
 
     private var isLihatProductVisible = false
 
@@ -199,7 +198,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
             gridList = findViewById(R.id.gridList)
             followCount = findViewById(R.id.follow_count)
             vodFullScreenIcon = findViewById(R.id.vod_full_screen_icon)
-            vodFullScreenIconImgView = findViewById(R.id.vod_full_screen_icon_img_view)
         }
     }
 

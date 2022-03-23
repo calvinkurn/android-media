@@ -133,27 +133,19 @@
         app:srcCompat="@drawable/ic_feed_volume_mute_large"
         android:contentDescription="@string/feed_post_content_desc_volume_btn" />
 
-    <androidx.cardview.widget.CardView
+    <ImageView
         android:id="@+id/vod_full_screen_icon"
         android:layout_width="@dimen/layout_lvl4"
         android:layout_height="@dimen/layout_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl4"
-        app:cardBackgroundColor="@color/Unify_NN900"
-        app:cardCornerRadius="@dimen/unify_space_16"
+        android:src="@drawable/ic_fullscreen_vod"
         android:layout_marginEnd="@dimen/unify_space_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-            <ImageView
-                android:id="@+id/vod_full_screen_icon_img_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:srcCompat="@drawable/ic_fullscreen"
-                android:contentDescription="@string/feed_post_content_desc_full_screen" />
-    </androidx.cardview.widget.CardView>
+
+    </ImageView>
 
     <ImageView
         android:id="@+id/ic_vod_play"
