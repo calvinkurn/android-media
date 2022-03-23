@@ -41,5 +41,22 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:theme="@style/Theme.AppCompat.Transparent.NoActionBar.AdditionalCheck"
+            android:name=".view.activity.BiometricOfferingActivity"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/applink_account_biometric_offering"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
     </application>
 </manifest>

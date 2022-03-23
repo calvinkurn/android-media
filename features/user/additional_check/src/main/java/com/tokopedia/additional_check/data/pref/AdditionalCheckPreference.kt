@@ -14,6 +14,7 @@ class AdditionalCheckPreference @Inject constructor(val context: Context) {
         private const val USER_ADDITIONAL_CHECK = "user_additional_check"
         private const val USER_ADDITIONAL_CHECK_INTERVAL_KEY = "user_additional_check"
         private const val USER_LINK_ACCOUNT_REMINDER_INTERVAL_KEY = "user_account_link_reminder"
+        private const val USER_ADDITIONAL_CHECK_NEXT_OFFER_KEY = "user_additional_check_next_offering"
     }
 
     private var sharedPrefs: SharedPreferences? = null
@@ -25,7 +26,7 @@ class AdditionalCheckPreference @Inject constructor(val context: Context) {
     }
 
     fun setInterval(interval: Int){
-        val days = interval * 60000
+        val days = interval * 86400
         val nextCheck = days + System.currentTimeMillis()
         sharedPrefs?.edit()?.putLong(USER_ADDITIONAL_CHECK_INTERVAL_KEY, nextCheck)?.apply()
     }
@@ -33,5 +34,22 @@ class AdditionalCheckPreference @Inject constructor(val context: Context) {
     fun isNeedCheck(): Boolean {
         val interval = sharedPrefs?.getLong(USER_ADDITIONAL_CHECK_INTERVAL_KEY, 0)
         return System.currentTimeMillis() > interval ?: 0
+    }
+
+    fun setNextOffering(nextOffer: String){
+        sharedPrefs?.edit()?.putString(USER_ADDITIONAL_CHECK_NEXT_OFFER_KEY, nextOffer)?.apply()
+    }
+
+    fun getNextOffer(): String {
+        if(sharedPrefs?.contains(USER_ADDITIONAL_CHECK_NEXT_OFFER_KEY) == true) {
+            if(sharedPrefs?.getString(USER_ADDITIONAL_CHECK_NEXT_OFFER_KEY, "")?.isNotEmpty() == true) {
+                return sharedPrefs?.getString(USER_ADDITIONAL_CHECK_NEXT_OFFER_KEY, "") ?: ""
+            }
+        }
+        return ""
+    }
+
+    fun clearNextOffer() {
+        sharedPrefs?.edit()?.remove(USER_ADDITIONAL_CHECK_NEXT_OFFER_KEY)?.apply()
     }
 }
