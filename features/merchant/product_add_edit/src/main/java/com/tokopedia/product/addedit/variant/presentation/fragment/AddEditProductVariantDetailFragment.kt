@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -43,6 +42,7 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_TRACKER_ON
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
+import com.tokopedia.product.addedit.variant.presentation.dialog.MultipleVariantEditListener
 import com.tokopedia.product.addedit.variant.presentation.dialog.MultipleVariantEditSelectBottomSheet
 import com.tokopedia.product.addedit.variant.presentation.dialog.SelectVariantMainBottomSheet
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
@@ -55,16 +55,15 @@ import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import okhttp3.internal.toLongOrDefault
 import java.math.BigInteger
 import javax.inject.Inject
 
 class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         VariantDetailHeaderViewHolder.OnCollapsibleHeaderClickListener,
-        MultipleVariantEditSelectBottomSheet.MultipleVariantEditListener,
         SelectVariantMainBottomSheet.SelectVariantMainListener,
         VariantDetailFieldsViewHolder.VariantDetailFieldsViewHolderListener,
-        AddEditProductPerformanceMonitoringListener
+        AddEditProductPerformanceMonitoringListener,
+        MultipleVariantEditListener
 {
 
     companion object {
@@ -231,7 +230,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         return validatedInputModel
     }
 
-    override fun onMultipleEditFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
+    override fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
         viewModel.updateProductInputModel(multipleVariantEditInputModel)
     }
 
@@ -241,6 +240,10 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     override fun onMultipleEditInputValidateStock(stock: BigInteger): String {
         return viewModel.validateProductVariantStockInput(stock)
+    }
+
+    override fun onMultipleEditInputValidateWeight(weight: BigInteger): String {
+        return viewModel.validateProductVariantWeightInput(weight.toInt())
     }
 
     override fun onSelectVariantMainFinished(combination: List<Int>) {

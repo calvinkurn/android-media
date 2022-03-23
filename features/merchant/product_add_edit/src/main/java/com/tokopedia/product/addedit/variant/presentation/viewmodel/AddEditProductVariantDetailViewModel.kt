@@ -391,17 +391,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
             inputModel.weightFieldErrorMessage = provider.getEmptyProductWeightErrorMessage()
             inputModel.weight = Int.ZERO
         } else {
-            inputModel.weightFieldErrorMessage = when {
-                weightInput < MIN_PRODUCT_WEIGHT_LIMIT -> {
-                    provider.getMinLimitProductWeightErrorMessage(MIN_PRODUCT_WEIGHT_LIMIT)
-                }
-                weightInput > MAX_PRODUCT_WEIGHT_LIMIT -> {
-                    provider.getMaxLimitProductWeightErrorMessage(MAX_PRODUCT_WEIGHT_LIMIT)
-                }
-                else -> {
-                    ""
-                }
-            }
+            inputModel.weightFieldErrorMessage = validateProductVariantWeightInput(weightInput)
             inputModel.weight = weightInput
         }
         //updateInputStockErrorStatusMap(adapterPosition, inputModel.isWeightError)
@@ -427,6 +417,18 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         return when {
             stockInput < MIN_PRODUCT_STOCK_LIMIT.toBigInteger() -> {
                 provider.getMinLimitProductStockErrorMessage(MIN_PRODUCT_STOCK_LIMIT)
+            }
+            else -> ""
+        }
+    }
+
+    fun validateProductVariantWeightInput(weightInput: Int): String {
+        return when {
+            weightInput < MIN_PRODUCT_WEIGHT_LIMIT -> {
+                provider.getMinLimitProductWeightErrorMessage(MIN_PRODUCT_WEIGHT_LIMIT)
+            }
+            weightInput > MAX_PRODUCT_WEIGHT_LIMIT -> {
+                provider.getMaxLimitProductWeightErrorMessage(MAX_PRODUCT_WEIGHT_LIMIT)
             }
             else -> ""
         }

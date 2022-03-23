@@ -340,6 +340,7 @@
     <string name="label_variant_sku">SKU (Stock Keeping Unit)</string>
     <string name="label_rupiah">Rp</string>
     <string name="label_variant_multiple_price">Harga</string>
+    <string name="label_variant_multiple_weight">Berat</string>
     <string name="label_variant_multiple_stock">Stok</string>
     <string name="label_variant_multiple_sku">SKU (Stock Keeping Unit)</string>
     <string name="label_variant_multiple_select_all">Semua</string>

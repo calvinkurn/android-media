@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.addedit.R
@@ -19,13 +20,12 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
-import java.math.BigInteger
 
 class MultipleVariantEditInputBottomSheet(
         private var enableEditSku: Boolean = false,
         private var enableEditPrice: Boolean = false,
         private val couldShowMultiLocationTicker: Boolean = false,
-        private val multipleVariantEditInputListener: MultipleVariantEditInputListener? = null
+        private val multipleVariantEditInputListener: MultipleVariantEditListener? = null
 ): BottomSheetUnify() {
 
     companion object {
@@ -36,18 +36,11 @@ class MultipleVariantEditInputBottomSheet(
     private var tfuStock: TextFieldUnify? = null
     private var tfuSku: TextFieldUnify? = null
     private var tfuPrice: TextFieldUnify? = null
+    private var tfuWeight: TextFieldUnify? = null
     private var buttonApply: UnifyButton? = null
 
-    private var isPriceError = false
-    private var isStockError = false
     private var trackerShopId = ""
     private var trackerIsEditMode = false
-
-    interface MultipleVariantEditInputListener {
-        fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel)
-        fun onMultipleEditInputValidatePrice(price: BigInteger): String
-        fun onMultipleEditInputValidateStock(stock: BigInteger): String
-    }
 
     init {
         setCloseClickListener {
@@ -56,6 +49,7 @@ class MultipleVariantEditInputBottomSheet(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        clearContentPadding = true
         initChildLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -97,30 +91,38 @@ class MultipleVariantEditInputBottomSheet(
         tfuStock = contentView?.findViewById(R.id.tfuStock)
         tfuSku = contentView?.findViewById(R.id.tfuSku)
         tfuPrice = contentView?.findViewById(R.id.tfuPrice)
+        tfuWeight = contentView?.findViewById(R.id.tfuWeight)
         buttonApply = contentView?.findViewById(R.id.buttonApply)
 
-        tfuSku?.visibility = if (enableEditSku) View.VISIBLE else View.GONE
         tfuPrice?.visibility = if (enableEditPrice) View.VISIBLE else View.GONE
         tfuPrice.setModeToNumberInput()
         tfuPrice?.textFieldInput?.afterTextChanged {
             if (enableEditPrice) {
                 validatePrice()
-                updateSubmitButtonInput()
             }
         }
+
         tfuStock.setModeToNumberInput()
         tfuStock?.textFieldInput?.afterTextChanged {
             validateStock()
-            updateSubmitButtonInput()
         }
+
+        tfuWeight.setModeToNumberInput()
+        tfuWeight?.textFieldInput?.afterTextChanged {
+            validateWeight()
+        }
+
+        tfuSku?.visibility = if (enableEditSku) View.VISIBLE else View.GONE
         tfuSku?.textFieldInput?.afterTextChanged {
             updateSubmitButtonInput()
         }
+
         buttonApply?.setOnClickListener {
             submitInput()
             updateSubmitButtonInput()
             sendTrackerTrackManageAllPriceData()
         }
+
         contentView?.findViewById<Ticker>(R.id.ticker_multiple_variant_multi_location)?.let { multiLocationTicker ->
             multiLocationTicker.showWithCondition(couldShowMultiLocationTicker)
         }
@@ -150,65 +152,56 @@ class MultipleVariantEditInputBottomSheet(
     }
 
     private fun validatePrice() {
-        if (tfuPrice.getText().isNotEmpty()) {
-            val inputText = tfuPrice.getTextBigIntegerOrZero()
-            val errorMessage = multipleVariantEditInputListener?.onMultipleEditInputValidatePrice(inputText).orEmpty()
-            val isErrorValidating = errorMessage.isNotEmpty()
+        val inputText = tfuPrice.getTextBigIntegerOrZero()
+        val errorMessage = multipleVariantEditInputListener?.onMultipleEditInputValidatePrice(inputText).orEmpty()
+        val isErrorValidating = errorMessage.isNotEmpty()
 
-            tfuPrice?.setMessage(errorMessage)
-            tfuPrice?.setError(isErrorValidating)
-            isPriceError = isErrorValidating
-        } else {
-            // ignore validation if field is empty
-            tfuPrice?.setMessage("")
-            tfuPrice?.setError(false)
-            isPriceError = false
-        }
+        tfuPrice?.setMessage(errorMessage)
+        tfuPrice?.setError(isErrorValidating)
+        updateSubmitButtonInput()
     }
 
     private fun validateStock() {
-        if (tfuStock.getText().isNotEmpty()) {
-            val inputText = tfuStock.getTextBigIntegerOrZero()
-            val errorMessage = multipleVariantEditInputListener?.onMultipleEditInputValidateStock(inputText).orEmpty()
-            val isErrorValidating = errorMessage.isNotEmpty()
+        val inputText = tfuStock.getTextBigIntegerOrZero()
+        val errorMessage = multipleVariantEditInputListener?.onMultipleEditInputValidateStock(inputText).orEmpty()
+        val isErrorValidating = errorMessage.isNotEmpty()
 
-            tfuStock?.setMessage(errorMessage)
-            tfuStock?.setError(isErrorValidating)
-            isStockError = isErrorValidating
-        } else {
-            // ignore validation if field is empty
-            tfuStock?.setMessage("")
-            tfuStock?.setError(false)
-            isStockError = false
-        }
+        tfuStock?.setMessage(errorMessage)
+        tfuStock?.setError(isErrorValidating)
+        updateSubmitButtonInput()
+    }
+
+    private fun validateWeight() {
+        val inputText = tfuWeight.getTextBigIntegerOrZero()
+        val errorMessage = multipleVariantEditInputListener?.onMultipleEditInputValidateWeight(inputText).orEmpty()
+        val isErrorValidating = errorMessage.isNotEmpty()
+
+        tfuWeight?.setMessage(errorMessage)
+        tfuWeight?.setError(isErrorValidating)
+        updateSubmitButtonInput()
     }
 
     private fun updateSubmitButtonInput() {
-        val isPriceEmpty = tfuPrice.getText().isEmpty()
-        val isStockEmpty = tfuStock.getText().isEmpty()
-        val isSkuEmpty = tfuSku.getText().isEmpty()
+        val isPriceError = tfuPrice?.isTextFieldError.orTrue()
+        val isStockError = tfuStock?.isTextFieldError.orTrue()
+        val isWeightError = tfuWeight?.isTextFieldError.orTrue()
 
-        buttonApply?.isEnabled = if (isPriceEmpty && isStockEmpty && isSkuEmpty) {
-            false
-        } else {
-            !isPriceError && !isStockError
-        }
+        buttonApply?.isEnabled = !isPriceError && !isStockError && !isWeightError
     }
 
     private fun submitInput() {
-        if (!isPriceError && !isStockError) {
-            contentView?.apply {
-                val price = tfuPrice.getText().replace(".", "")
-                val stock = tfuStock.getText().replace(".", "")
-                val sku = tfuSku.getText()
-                val inputData = MultipleVariantEditInputModel(
-                        price = price,
-                        stock = stock,
-                        sku = sku
-                )
-                multipleVariantEditInputListener?.onMultipleEditInputFinished(inputData)
-            }
-            dismiss()
+        contentView?.apply {
+            val price = tfuPrice.getText().replace(".", "")
+            val stock = tfuStock.getText().replace(".", "")
+            val sku = tfuSku.getText()
+            val inputData = MultipleVariantEditInputModel(
+                price = price,
+                stock = stock,
+                sku = sku
+            )
+            multipleVariantEditInputListener?.onMultipleEditInputFinished(inputData)
         }
+        dismiss()
     }
 }
+
