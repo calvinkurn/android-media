@@ -1,6 +1,5 @@
 package com.tokopedia.tokofood.example
 
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,11 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
-import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokofood.databinding.FragmentLivedataInputAndTextaBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -56,7 +51,7 @@ class FragmentA : BaseTokofoodFragment() {
             // TokofoodRouteManager.routePrioritizeInternal(requireContext(), "tokopedia://tokofood/b")
         }
         binding.buttonGoToBDeeplink.setOnClickListener {
-            RouteManager.route(requireContext(), "tokopedia://tokofood/b?input=abc")
+            RouteManager.route(requireContext(), "tokopedia-android-internal://tokofood/b?input=abc")
         }
         binding.et1.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -71,32 +66,28 @@ class FragmentA : BaseTokofoodFragment() {
     }
 
     fun init() {
-        //lifecycleScope.launchWhenStarted can also be used, but wasteful.
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                activityViewModel?.outputFlow?.collect {
-                    when (it) {
-                        is Result.Success -> {
-                            binding.tvRes.text = it.data
-                        }
-                        is Result.Failure -> {
-                            binding.tvRes.text = it.error.toString()
-                        }
-                        is Result.Loading -> {
-                            binding.tvRes.text = "Lagi Loading nih. Sabar.."
-                        }
+        //lifecycleScope.launch{lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {} use after upgrade to lifecycle 2.4.0
+        lifecycleScope.launchWhenResumed {
+            activityViewModel?.outputFlow?.collect {
+                when (it) {
+                    is Result.Success -> {
+                        binding.tvRes.text = it.data
                     }
-                    binding.swipeRefresh.isRefreshing = false
-                    println("HENDRY 1 $it")
+                    is Result.Failure -> {
+                        binding.tvRes.text = it.error.toString()
+                    }
+                    is Result.Loading -> {
+                        binding.tvRes.text = "Lagi Loading nih. Sabar.."
+                    }
                 }
+                binding.swipeRefresh.isRefreshing = false
+                println("HENDRY 1 $it")
             }
         }
 
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                activityViewModel?.outputFlow?.collect {
-                    println("HENDRY 2 $it")
-                }
+        lifecycleScope.launchWhenResumed {
+            activityViewModel?.outputFlow?.collect {
+                println("HENDRY 2 $it")
             }
         }
 

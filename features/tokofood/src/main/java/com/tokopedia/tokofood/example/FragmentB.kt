@@ -1,6 +1,5 @@
 package com.tokopedia.tokofood.example
 
-import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -9,15 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.tokofood.databinding.FragmentLivedataInputAndTextbBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -72,32 +67,28 @@ class FragmentB : BaseTokofoodFragment() {
     }
 
     fun init() {
-        //lifecycleScope.launchWhenStarted can also be used, but wasteful.
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                activityViewModel?.outputFlow?.collect {
-                    when (it) {
-                        is Result.Success -> {
-                            binding.tvRes.text = it.data
-                        }
-                        is Result.Failure -> {
-                            binding.tvRes.text = it.error.toString()
-                        }
-                        is Result.Loading -> {
-                            binding.tvRes.text = "Lagi Loading nih. Sabar.."
-                        }
+        //lifecycleScope.launch{lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {} use after upgrade to lifecycle 2.4.0
+        lifecycleScope.launchWhenResumed {
+            activityViewModel?.outputFlow?.collect {
+                when (it) {
+                    is Result.Success -> {
+                        binding.tvRes.text = it.data
                     }
-                    binding.swipeRefresh.isRefreshing = false
-                    println("HENDRY 1 $it")
+                    is Result.Failure -> {
+                        binding.tvRes.text = it.error.toString()
+                    }
+                    is Result.Loading -> {
+                        binding.tvRes.text = "Lagi Loading nih. Sabar.."
+                    }
                 }
+                binding.swipeRefresh.isRefreshing = false
+                println("HENDRY 1 $it")
             }
         }
 
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                activityViewModel?.outputFlow?.collect {
-                    println("HENDRY 2 $it")
-                }
+        lifecycleScope.launchWhenResumed {
+            activityViewModel?.outputFlow?.collect {
+                println("HENDRY 2 $it")
             }
         }
 
