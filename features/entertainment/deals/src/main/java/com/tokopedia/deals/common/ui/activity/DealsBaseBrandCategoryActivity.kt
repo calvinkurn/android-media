@@ -100,14 +100,14 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
                     }
                 }
 
-                adapter = DealsFragmentPagerAdapter(this, childCategoryList.toList(), getPageTAG(), tabNameList.toList())
+                adapter = DealsFragmentPagerAdapter(this, childCategoryList.toList(), getPageTAG(), tabNameList.toList(), false)
                 binding.vpDealsBrandCategory.offscreenPageLimit = 1
                 binding.vpDealsBrandCategory.adapter = adapter
 
                 redirectsToSpecificCategory(position)
             } else {
                 binding.tabDealsBrandCategory.hide()
-                adapter = DealsFragmentPagerAdapter(this, listOf(categoryId), getPageTAG(), listOf(categoryId))
+                adapter = DealsFragmentPagerAdapter(this, listOf(categoryId), getPageTAG(), listOf(categoryId), true)
                 binding.vpDealsBrandCategory.offscreenPageLimit = 1
                 binding.vpDealsBrandCategory.adapter = adapter
             }

@@ -44,6 +44,7 @@ import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.ui.activity.DealsSearchActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -380,6 +381,10 @@ class DealsCategoryFragment : DealsBaseFragment(),
         categoryID = arguments?.getString(DealsCategoryActivity.EXTRA_CATEGORY_ID, "") ?: ""
         getRecyclerView(view).tag = arguments?.getString(EXTRA_TAB_NAME, "") ?: ""
 
+        val isShowFilter = arguments?.getBoolean(EXTRA_IS_SHOW_FILTER, true) ?: true
+
+        binding.container.root.showWithCondition(isShowFilter)
+
         (activity as DealsBaseActivity).searchBarActionListener = this
 
         dealCategoryViewModel.getChipsData()
@@ -456,13 +461,15 @@ class DealsCategoryFragment : DealsBaseFragment(),
         const val INITIAL_SIZE_BASE_ITEM_VIEW = 2
 
         private const val EXTRA_TAB_NAME = ""
+        private const val EXTRA_IS_SHOW_FILTER = "is_show_filter"
 
-        fun getInstance(categoryId: String?, tabName: String = ""): DealsCategoryFragment = DealsCategoryFragment().also {
+        fun getInstance(categoryId: String?, tabName: String = "", isShowFilter: Boolean = true): DealsCategoryFragment = DealsCategoryFragment().also {
             it.arguments = Bundle().apply {
                 categoryId?.let { id ->
                     putString(DealsCategoryActivity.EXTRA_CATEGORY_ID, id)
                 }
                 putString(EXTRA_TAB_NAME, tabName)
+                putBoolean(EXTRA_IS_SHOW_FILTER, isShowFilter)
             }
         }
     }
