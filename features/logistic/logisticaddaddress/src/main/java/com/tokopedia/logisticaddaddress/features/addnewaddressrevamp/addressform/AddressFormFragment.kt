@@ -653,8 +653,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             }
         }
 
-        if (isEdit && pinpointKotaKecamatan.isNotEmpty()) {
-            if (currentKotaKecamatan != pinpointKotaKecamatan) {
+        if (isEdit && !isPositiveFlow) {
+            if (pinpointKotaKecamatan.isNotEmpty() && currentKotaKecamatan != pinpointKotaKecamatan) {
                 validated = false
                 view?.let {
                     Toaster.build(
