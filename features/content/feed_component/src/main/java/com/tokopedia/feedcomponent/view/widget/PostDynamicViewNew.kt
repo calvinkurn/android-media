@@ -165,7 +165,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private var handlerAnim: Handler? = null
     private var handlerHide: Handler? = null
     private var feedAddViewJob: Job? = null
-    private var vodFullScreenIcon: ImageView? = null
 
     private var isLihatProductVisible = false
 
@@ -197,7 +196,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
             addCommentHint = findViewById(R.id.comment_hint)
             gridList = findViewById(R.id.gridList)
             followCount = findViewById(R.id.follow_count)
-            vodFullScreenIcon = findViewById(R.id.vod_full_screen_icon)
         }
     }
 
@@ -1390,7 +1388,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             ic_vod_play?.setOnClickListener {
                 playVOD(feedXCard =  feedXCard, carouselView.activeIndex)
             }
-            vodFullScreenIcon?.setOnClickListener {
+            vod_full_screen_icon?.setOnClickListener {
                 isPaused = true
                 vod_lanjut_menonton_btn?.gone()
                 vod_frozen_view?.gone()
@@ -1483,7 +1481,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 hideViewWithAnimationVod(layoutLihatProdukParent, context)
             }
             vod_frozen_view?.gone()
-            vodFullScreenIcon?.visible()
+            vod_full_screen_icon?.visible()
 
 
 
@@ -1508,7 +1506,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         setMuteUnmuteVOD(vod_volumeIcon, finalId.toString(), feedXCard.followers.isFollowed, authorId, isVideoTap = true, isVOD = true, feedMedia.type)
                     }
                 }
-                vodFullScreenIcon?.setOnClickListener {
+                vod_full_screen_icon?.setOnClickListener {
                     isPaused = true
                     vod_lanjut_menonton_btn?.gone()
                     vod_frozen_view?.gone()
@@ -1540,7 +1538,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         hideVODLoading()
                         vod_timer_view.visible()
                         vod_volumeIcon?.visible()
-                        vodFullScreenIcon?.visible()
+                        vod_full_screen_icon?.visible()
                         vod_lanjut_menonton_btn?.gone()
                         vod_frozen_view?.gone()
 
@@ -1560,7 +1558,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                                         vod_lanjut_menonton_btn?.visible()
                                         vod_frozen_view?.visible()
-                                        vodFullScreenIcon?.gone()
+                                        vod_full_screen_icon?.gone()
                                         vod_lihat_product?.gone()
                                         vod_timer_view?.gone()
                                         isVODViewFrozen = true
