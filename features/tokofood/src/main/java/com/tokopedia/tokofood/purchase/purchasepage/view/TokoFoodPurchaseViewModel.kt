@@ -169,15 +169,14 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         calculateTotal()
     }
 
-    private fun deleteProducts(visitables: List<Visitable<*>>) {
+    private fun deleteProducts(visitables: List<Visitable<*>>, productCount: Int) {
         val dataList = getVisitablesValue()
         dataList.removeAll(visitables)
         if (!hasRemainingProduct()) {
-            _uiEvent.value = UiEvent(
-                    state = UiEvent.STATE_REMOVE_ALL_PRODUCT
-            )
+            _uiEvent.value = UiEvent(state = UiEvent.STATE_REMOVE_ALL_PRODUCT)
         } else {
             _visitables.value = dataList
+            _uiEvent.value = UiEvent(state = UiEvent.STATE_SUCCESS_REMOVE_PRODUCT, data = productCount)
         }
 
         calculateTotal()
@@ -202,7 +201,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
                 toBeDeleteItems.addAll(availableHeaderAndDivider)
             }
 
-            deleteProducts(toBeDeleteItems)
+            deleteProducts(toBeDeleteItems, 1)
         }
     }
 
@@ -237,6 +236,14 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         return count == 1
     }
 
+    fun validateBulkDelete() {
+        val unavailableProducts = getAllUnavailableProducts()
+        _uiEvent.value = UiEvent(
+                state = UiEvent.STATE_SHOW_BULK_DELETE_CONFIRMATION_DIALOG,
+                data = unavailableProducts.second.size
+        )
+    }
+
     fun bulkDeleteUnavailableProducts() {
         // Todo : hit API to remove product, once it's success, perform below code to remove local data
         val dataList = getVisitablesValue()
@@ -255,7 +262,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
             unavailableSectionItems.add(it.second)
         }
         tmpCollapsedUnavailableItems.clear()
-        deleteProducts(unavailableSectionItems)
+        deleteProducts(unavailableSectionItems, unavailableProducts.second.size)
     }
 
     fun toggleUnavailableProductsAccordion() {

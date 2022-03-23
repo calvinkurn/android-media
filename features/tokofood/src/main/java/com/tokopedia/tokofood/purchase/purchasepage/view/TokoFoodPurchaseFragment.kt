@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
 import com.tokopedia.tokofood.purchase.purchasepage.view.adapter.TokoFoodPurchaseAdapter
@@ -161,9 +162,35 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         viewModel.uiEvent.observe(viewLifecycleOwner, {
             when (it.state) {
                 UiEvent.STATE_REMOVE_ALL_PRODUCT -> navigateToMerchantPage()
+                UiEvent.STATE_SUCCESS_REMOVE_PRODUCT -> onSuccessRemoveProduct(it.data as Int)
                 UiEvent.STATE_SCROLL_TO_UNAVAILABLE_ITEMS -> scrollToIndex(it.data as Int)
+                UiEvent.STATE_SHOW_BULK_DELETE_CONFIRMATION_DIALOG -> showBulkDeleteConfirmationDialog(it.data as Int)
             }
         })
+    }
+
+    private fun showBulkDeleteConfirmationDialog(productCount: Int) {
+        activity?.let {
+            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle("Hapus $productCount item yang tidak bisa diproses?")
+                setDescription("Semua item ini akan dihapus dari keranjangmu.")
+                setPrimaryCTAText("Hapus")
+                setSecondaryCTAText("Kembali")
+                setPrimaryCTAClickListener {
+                    viewModel.bulkDeleteUnavailableProducts()
+                    dismiss()
+                }
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+            }.show()
+        }
+    }
+
+    private fun onSuccessRemoveProduct(productCount: Int) {
+        view?.let {
+            Toaster.build(it, "$productCount item berhasil dihapus.", Toaster.LENGTH_SHORT).show()
+        }
     }
 
     private fun navigateToMerchantPage() {
@@ -211,7 +238,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun onTextBulkDeleteUnavailableProductsClicked() {
-        viewModel.bulkDeleteUnavailableProducts()
+        viewModel.validateBulkDelete()
     }
 
     override fun onQuantityChanged() {

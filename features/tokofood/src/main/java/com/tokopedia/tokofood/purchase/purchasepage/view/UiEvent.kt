@@ -7,6 +7,8 @@ data class UiEvent(
 ) {
     companion object {
         const val STATE_REMOVE_ALL_PRODUCT = 10
-        const val STATE_SCROLL_TO_UNAVAILABLE_ITEMS = 11
+        const val STATE_SUCCESS_REMOVE_PRODUCT = 11
+        const val STATE_SCROLL_TO_UNAVAILABLE_ITEMS = 12
+        const val STATE_SHOW_BULK_DELETE_CONFIRMATION_DIALOG = 13
     }
 }
