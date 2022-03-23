@@ -1057,8 +1057,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun showMoreActionBottomSheet() {
-        val sheet  = getBottomSheetInstance()
-        sheet.show(childFragmentManager)
+        getBottomSheetInstance().show(childFragmentManager)
     }
 
     private fun doClickChatBox() {
@@ -1114,9 +1113,12 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun getBottomSheetInstance() : PlayMoreActionBottomSheet {
-        val sheet = PlayMoreActionBottomSheet.get(childFragmentManager)
-        sheet?.setShowListener { sheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
-        return sheet ?: childFragmentManager.fragmentFactory.instantiate(requireActivity().classLoader, PlayMoreActionBottomSheet::class.java.name) as PlayMoreActionBottomSheet
+        if(!::bottomSheet.isInitialized){
+            bottomSheet = childFragmentManager.fragmentFactory.instantiate(requireActivity().classLoader, PlayMoreActionBottomSheet::class.java.name) as PlayMoreActionBottomSheet
+            bottomSheet.setShowListener { bottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+        }
+
+        return bottomSheet
     }
 
     fun hideBottomSheet() {
