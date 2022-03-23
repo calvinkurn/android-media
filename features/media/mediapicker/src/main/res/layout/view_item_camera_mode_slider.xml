@@ -6,13 +6,13 @@
     android:layout_width="60dp"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.UnifyButton
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/btn_mode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_Static_White"
         android:layout_centerInParent="true"
+        app:typographyType="body_3"
         tools:text="VIDEO"
-        app:unifyButtonVariant="text"
-        app:unifyButtonSize="small"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
 </RelativeLayout>

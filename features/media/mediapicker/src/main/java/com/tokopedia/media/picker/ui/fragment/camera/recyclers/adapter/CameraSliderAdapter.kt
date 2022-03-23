@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.R
 import com.tokopedia.media.databinding.ViewItemCameraModeSliderBinding
 import com.tokopedia.media.picker.ui.uimodel.CameraSelectionUiModel
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
 class CameraSliderAdapter(
@@ -34,6 +35,7 @@ class CameraSliderAdapter(
 
         fun bind(element: CameraSelectionUiModel) {
             binding?.btnMode?.text = itemView.context.getString(element.name)
+            binding?.btnMode?.setWeight(if(element.isSelected) Typography.BOLD else Typography.REGULAR)
 
             itemView.setOnClickListener {
                 listener.onCameraSliderItemClicked(it)
