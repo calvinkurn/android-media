@@ -190,18 +190,21 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun onTextChangeShippingAddressClicked() {
+        // Todo : navigate to address list page
         view?.let {
             Toaster.build(it, "onTextChangeShippingAddressClicked", Toaster.LENGTH_SHORT).show()
         }
     }
 
     override fun onTextSetPinpointClicked() {
+        // Todo : navigate to pinpoint page
         view?.let {
             Toaster.build(it, "onTextSetPinpointClicked", Toaster.LENGTH_SHORT).show()
         }
     }
 
     override fun onTextAddItemClicked() {
+        // Todo : navigate to merchant page
         view?.let {
             Toaster.build(it, "onTextAddItemClicked", Toaster.LENGTH_SHORT).show()
         }
@@ -211,10 +214,8 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         viewModel.bulkDeleteUnavailableProducts()
     }
 
-    override fun onQuantityChanged(newQuantity: Int) {
-        view?.let {
-            Toaster.build(it, "onQuantityChanged", Toaster.LENGTH_SHORT).show()
-        }
+    override fun onQuantityChanged(element: TokoFoodPurchaseProductUiModel, newQuantity: Int) {
+        viewModel.updateQuantity(element, newQuantity)
     }
 
     override fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductUiModel) {
@@ -233,6 +234,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun onTextChangeNoteAndVariantClicked() {
+        // Todo : navigate to edit variant page
         view?.let {
             Toaster.build(it, "onTextChangeNoteAndVariantClicked", Toaster.LENGTH_SHORT).show()
         }

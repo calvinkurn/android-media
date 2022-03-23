@@ -4,11 +4,18 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokofood.purchase.purchasepage.view.adapter.TokoFoodPurchaseAdapterTypeFactory
 
 data class TokoFoodPurchaseSummaryTransactionUiModel(
-        var transactions: List<Transaction> = emptyList()
+        var subTotal: Transaction = Transaction(),
+        var wrappingFee: Transaction = Transaction(),
+        var shippingFee: Transaction = Transaction(),
+        var serviceFee: Transaction = Transaction()
 ) : Visitable<TokoFoodPurchaseAdapterTypeFactory> {
 
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    fun getTransactionList(): List<Transaction> {
+        return listOf(subTotal, wrappingFee, shippingFee, serviceFee)
     }
 
     data class Transaction(

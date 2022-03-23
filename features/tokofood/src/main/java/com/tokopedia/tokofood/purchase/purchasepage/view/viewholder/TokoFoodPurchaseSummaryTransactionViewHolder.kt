@@ -23,28 +23,27 @@ class TokoFoodPurchaseSummaryTransactionViewHolder(private val viewBinding: Item
     override fun bind(element: TokoFoodPurchaseSummaryTransactionUiModel) {
         with(viewBinding) {
             containerTransactionItem.removeAllViews()
-            element.transactions.forEach {
-                val summaryTransactionItem = SubItemPurchaseSummaryTransactionBinding.inflate(LayoutInflater.from(itemView.context))
-                summaryTransactionItem.textTransactionTitle.text = it.title
-                if (it.defaultValueForZero == TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_ZERO) {
-                    summaryTransactionItem.textTransactionValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.value, false).removeDecimalSuffix()
-                    summaryTransactionItem.textTransactionValue.show()
-                } else if (it.defaultValueForZero == TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_FREE) {
-                    if (it.value > 0) {
+            element.getTransactionList().forEach {
+                if (it.defaultValueForZero != TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_HIDE) {
+                    val summaryTransactionItem = SubItemPurchaseSummaryTransactionBinding.inflate(LayoutInflater.from(itemView.context))
+                    summaryTransactionItem.textTransactionTitle.text = it.title
+                    if (it.defaultValueForZero == TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_ZERO) {
                         summaryTransactionItem.textTransactionValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.value, false).removeDecimalSuffix()
+                        containerTransactionItem.addView(summaryTransactionItem.root)
+                    } else if (it.defaultValueForZero == TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_FREE) {
+                        if (it.value > 0) {
+                            summaryTransactionItem.textTransactionValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.value, false).removeDecimalSuffix()
+                        } else {
+                            summaryTransactionItem.textTransactionValue.text = "Gratis"
+                        }
+                        containerTransactionItem.addView(summaryTransactionItem.root)
                     } else {
-                        summaryTransactionItem.textTransactionValue.text = "Gratis"
-                    }
-                    summaryTransactionItem.textTransactionValue.show()
-                } else {
-                    if (it.value > 0) {
-                        summaryTransactionItem.textTransactionValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.value, false).removeDecimalSuffix()
-                        summaryTransactionItem.textTransactionValue.show()
-                    } else {
-                        summaryTransactionItem.textTransactionValue.gone()
+                        if (it.value > 0) {
+                            summaryTransactionItem.textTransactionValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.value, false).removeDecimalSuffix()
+                            containerTransactionItem.addView(summaryTransactionItem.root)
+                        }
                     }
                 }
-                containerTransactionItem.addView(summaryTransactionItem.root)
             }
             containerTransactionItem.show()
         }

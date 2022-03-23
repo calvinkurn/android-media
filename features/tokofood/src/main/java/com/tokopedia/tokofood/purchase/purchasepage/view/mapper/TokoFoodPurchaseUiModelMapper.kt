@@ -27,7 +27,8 @@ object TokoFoodPurchaseUiModelMapper {
                 shippingCourierName = "Gojek Instan (Rp0)",
                 shippingEta = "Tiba dalam 30-60 menit",
                 shippingLogoUrl = "https://1000logos.net/wp-content/uploads/2020/11/Gojek-Logo-1024x640.png",
-                isNeedPinpoint = true
+                shippingPrice = 0,
+                isNeedPinpoint = false
         )
     }
 
@@ -87,34 +88,34 @@ object TokoFoodPurchaseUiModelMapper {
 
     fun mapSummaryTransactionUiModel(): TokoFoodPurchaseSummaryTransactionUiModel {
         return TokoFoodPurchaseSummaryTransactionUiModel(
-                transactions = listOf(
-                        TokoFoodPurchaseSummaryTransactionUiModel.Transaction(
-                                title = "Total Harga (3 item)",
-                                value = 75000,
-                                defaultValueForZero = TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_ZERO
-                        ),
-                        TokoFoodPurchaseSummaryTransactionUiModel.Transaction(
-                                title = "Biaya Bungkus dari Restoran",
-                                value = 6000,
-                                defaultValueForZero = TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_ZERO
-                        ),
-                        TokoFoodPurchaseSummaryTransactionUiModel.Transaction(
-                                title = "Ongkir",
-                                value = 0,
-                                defaultValueForZero = TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_FREE
-                        ),
-                        TokoFoodPurchaseSummaryTransactionUiModel.Transaction(
-                                title = "Biaya Jasa Aplikasi",
-                                value = 4000,
-                                defaultValueForZero = TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_ZERO
-                        )
-                )
+//                transactions = listOf(
+//                        TokoFoodPurchaseSummaryTransactionUiModel.Transaction(
+//                                title = "Total Harga (3 item)",
+//                                value = 75000,
+//                                defaultValueForZero = TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_ZERO
+//                        ),
+//                        TokoFoodPurchaseSummaryTransactionUiModel.Transaction(
+//                                title = "Biaya Bungkus dari Restoran",
+//                                value = 6000,
+//                                defaultValueForZero = TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_ZERO
+//                        ),
+//                        TokoFoodPurchaseSummaryTransactionUiModel.Transaction(
+//                                title = "Ongkir",
+//                                value = 0,
+//                                defaultValueForZero = TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_FREE
+//                        ),
+//                        TokoFoodPurchaseSummaryTransactionUiModel.Transaction(
+//                                title = "Biaya Jasa Aplikasi",
+//                                value = 4000,
+//                                defaultValueForZero = TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_ZERO
+//                        )
+//                )
         )
     }
 
     fun mapTotalAmountUiModel(): TokoFoodPurchaseTotalAmountUiModel {
         return TokoFoodPurchaseTotalAmountUiModel(
-                totalAmount = 75000,
+                totalAmount = 0,
                 isDisabled = false
         )
     }

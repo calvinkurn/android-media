@@ -7,6 +7,9 @@ data class TokoFoodPurchaseShippingUiModel(
         var shippingCourierName: String = "",
         var shippingEta: String = "",
         var shippingLogoUrl: String = "",
+        var shippingPrice: Long = 0L,
+        var wrappingFee: Long = 0L,
+        var serviceFee: Long = 0L,
         var isNeedPinpoint: Boolean = false
 ) : Visitable<TokoFoodPurchaseAdapterTypeFactory> {
 

@@ -15,7 +15,7 @@ interface TokoFoodPurchaseActionListener {
 
     fun onTextBulkDeleteUnavailableProductsClicked()
 
-    fun onQuantityChanged(newQuantity: Int)
+    fun onQuantityChanged(element: TokoFoodPurchaseProductUiModel, newQuantity: Int)
 
     fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductUiModel)
 

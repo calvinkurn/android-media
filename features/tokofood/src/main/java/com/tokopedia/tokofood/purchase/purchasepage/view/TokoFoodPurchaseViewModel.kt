@@ -59,6 +59,30 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         return null
     }
 
+    private fun getSummaryTransactionUiModel(): Pair<Int, TokoFoodPurchaseSummaryTransactionUiModel>? {
+        val dataList = getVisitablesValue()
+        loop@ for ((index, data) in dataList.withIndex()) {
+            when (data) {
+                is TokoFoodPurchaseSummaryTransactionUiModel -> {
+                    return Pair(index, data)
+                }
+            }
+        }
+        return null
+    }
+
+    private fun getTotalAmountUiModel(): Pair<Int, TokoFoodPurchaseTotalAmountUiModel>? {
+        val dataList = getVisitablesValue()
+        loop@ for ((index, data) in dataList.withIndex()) {
+            when (data) {
+                is TokoFoodPurchaseTotalAmountUiModel -> {
+                    return Pair(index, data)
+                }
+            }
+        }
+        return null
+    }
+
     private fun getTickerErrorShopLevelUiModel(): Pair<Int, TokoFoodPurchaseTickerErrorShopLevelUiModel>? {
         val dataList = getVisitablesValue()
         loop@ for ((index, data) in dataList.withIndex()) {
@@ -141,10 +165,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         tmpData.add(TokoFoodPurchaseDividerUiModel(id = "7"))
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapTotalAmountUiModel())
         _visitables.value = tmpData
-    }
 
-    fun calculateTotal() {
-
+        calculateTotal()
     }
 
     private fun deleteProducts(visitables: List<Visitable<*>>) {
@@ -304,4 +326,86 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
             _visitables.value = dataList
         }
     }
+
+    fun updateQuantity(product: TokoFoodPurchaseProductUiModel, quantity: Int) {
+        val productData = getProductByProductId(product.id)
+        productData?.let {
+            val dataList = getVisitablesValue()
+            val newProductData = it.second.copy()
+            newProductData.quantity = quantity
+            dataList[it.first] = newProductData
+        }
+
+        calculateTotal()
+    }
+
+    fun calculateTotal() {
+        val dataList = getVisitablesValue()
+        var summaryTransactionUiModel: TokoFoodPurchaseSummaryTransactionUiModel? = null
+        var summaryTransactionUiModelIndex = -1
+        var totalAmountUiModel: TokoFoodPurchaseTotalAmountUiModel? = null
+        var totalAmountUiModelIndex = -1
+        var totalProduct = 0
+        var subTotal = 0L
+        var wrappingFee = 0L
+        var shippingFee = 0L
+        var serviceFee = 0L
+        loop@ for ((index, data) in dataList.withIndex()) {
+            when {
+                data is TokoFoodPurchaseShippingUiModel -> {
+                    shippingFee = data.shippingPrice
+                    wrappingFee = data.wrappingFee
+                    serviceFee = data.serviceFee
+                }
+                data is TokoFoodPurchaseProductUiModel && !data.isDisabled -> {
+                    subTotal += (data.price * data.quantity)
+                    totalProduct++
+                }
+                data is TokoFoodPurchaseSummaryTransactionUiModel -> {
+                    summaryTransactionUiModel = data
+                    summaryTransactionUiModelIndex = index
+                }
+                data is TokoFoodPurchaseTotalAmountUiModel -> {
+                    totalAmountUiModel = data
+                    totalAmountUiModelIndex = index
+                }
+            }
+        }
+
+        summaryTransactionUiModel?.let {
+            val newSummaryTransactionData = it.copy()
+            newSummaryTransactionData.subTotal = TokoFoodPurchaseSummaryTransactionUiModel.Transaction(
+                    title = "Total Harga ($totalProduct item)",
+                    value = subTotal,
+                    defaultValueForZero = TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_ZERO
+            )
+            newSummaryTransactionData.wrappingFee = TokoFoodPurchaseSummaryTransactionUiModel.Transaction(
+                    title = "Biaya Bungkus dari Restoran",
+                    value = wrappingFee,
+                    defaultValueForZero = TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_FREE
+            )
+            newSummaryTransactionData.shippingFee = TokoFoodPurchaseSummaryTransactionUiModel.Transaction(
+                    title = "Ongkir",
+                    value = shippingFee,
+                    defaultValueForZero = TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_FREE
+            )
+            newSummaryTransactionData.serviceFee = TokoFoodPurchaseSummaryTransactionUiModel.Transaction(
+                    title = "Biaya Jasa Aplikasi",
+                    value = serviceFee,
+                    defaultValueForZero = TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_FREE
+            )
+            dataList[summaryTransactionUiModelIndex] = newSummaryTransactionData
+        }
+
+        totalAmountUiModel?.let {
+            val newTotalAmountData = totalAmountUiModel.copy(
+                    isDisabled = false,
+                    totalAmount = subTotal + shippingFee + wrappingFee + serviceFee
+            )
+            dataList[totalAmountUiModelIndex] = newTotalAmountData
+        }
+
+        _visitables.value = dataList
+    }
+
 }
