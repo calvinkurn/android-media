@@ -56,7 +56,6 @@ import kotlinx.coroutines.flow.collectLatest
 import java.net.ConnectException
 import java.net.UnknownHostException
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -77,7 +76,6 @@ class PlayBottomSheetFragment @Inject constructor(
         private const val REQUEST_CODE_LOGIN = 191
 
         private const val PERCENT_VARIANT_SHEET_HEIGHT = 0.6
-        private const val PERCENT_FULL_SHEET_HEIGHT = 0.9
     }
 
     private val productSheetView by viewComponent { ProductSheetViewComponent(it, this) }
@@ -93,17 +91,12 @@ class PlayBottomSheetFragment @Inject constructor(
     private val variantSheetMaxHeight: Int
         get() = (requireView().height * PERCENT_VARIANT_SHEET_HEIGHT).toInt()
 
-    private val userReportSheetHeight: Int
-        get() = (requireView().height * PERCENT_FULL_SHEET_HEIGHT).toInt()
-
     private val playFragment: PlayFragment
         get() = requireParentFragment() as PlayFragment
 
     private lateinit var loadingDialog: PlayLoadingDialogFragment
 
     private lateinit var productAnalyticHelper: ProductAnalyticHelper
-
-    private var userReportTimeMillis: Date = Date()
 
     override fun getScreenName(): String = "Play Bottom Sheet"
 

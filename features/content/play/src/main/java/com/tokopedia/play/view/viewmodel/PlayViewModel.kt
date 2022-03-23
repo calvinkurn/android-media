@@ -23,7 +23,6 @@ import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.*
 import com.tokopedia.play.extensions.combine
 import com.tokopedia.play.extensions.isAnyShown
-import com.tokopedia.play.extensions.isAnyThreeDotsShown
 import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
@@ -174,7 +173,6 @@ class PlayViewModel @AssistedInject constructor(
     private val _channelReport = MutableStateFlow(PlayChannelReportUiModel())
     private val _tagItems = MutableStateFlow(TagItemUiModel.Empty)
     private val _quickReply = MutableStateFlow(PlayQuickReplyInfoUiModel.Empty)
-    private val _kebabBottomSheet = MutableStateFlow(emptyMap<KebabMenuType, BottomInsetsState>())
 
     private val _interactiveUiState = combine(
         _interactive, _bottomInsets, _status
@@ -250,12 +248,6 @@ class PlayViewModel @AssistedInject constructor(
         )
     }.flowOn(dispatchers.computation)
 
-    private val _threeDotsMenuUiState = _kebabBottomSheet.map {
-        PlayKebabMenuBottomSheetUiState(
-            kebabMenuType = it
-        )
-    }.flowOn(dispatchers.computation)
-
     /**
      * Until repeatOnLifecycle is available (by updating library version),
      * this can be used as an alternative to "complete" un-completable flow when page is not focused
@@ -276,10 +268,9 @@ class PlayViewModel @AssistedInject constructor(
         _status,
         _quickReply,
         _kebabMenuUiState.distinctUntilChanged(),
-        _threeDotsMenuUiState.distinctUntilChanged(),
     ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
         like, totalView, rtn, title, tagItems,
-        status, quickReply, kebabMenu, playKebabMenuBottomSheet ->
+        status, quickReply, kebabMenu ->
         PlayViewerNewUiState(
             channel = channelDetail,
             interactiveView = interactive,
@@ -294,7 +285,6 @@ class PlayViewModel @AssistedInject constructor(
             status = status,
             quickReply = quickReply,
             kebabMenu = kebabMenu,
-            playKebabMenuBottomSheetUiState = playKebabMenuBottomSheet,
         )
     }.flowOn(dispatchers.computation)
 

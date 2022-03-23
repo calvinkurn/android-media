@@ -817,7 +817,6 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderFeaturedProductView(prevState?.tagItems, state.tagItems, state.bottomInsets, state.status)
                 renderQuickReplyView(prevState?.quickReply, state.quickReply, prevState?.bottomInsets, state.bottomInsets, state.channel)
                 renderKebabMenuView(state.kebabMenu)
-                renderKebabView(state.playKebabMenuBottomSheetUiState)
 
                 handleStatus(state.status)
 
@@ -1576,9 +1575,6 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun renderKebabMenuView(kebabMenuUiState: PlayKebabMenuUiState) {
         if(kebabMenuUiState.shouldShow) kebabMenuView?.show()
         else kebabMenuView?.hide()
-    }
-
-    private fun renderKebabView(playKebabMenuBottomSheetUiState: PlayKebabMenuBottomSheetUiState){
     }
 
     private fun castViewOnStateChanged(

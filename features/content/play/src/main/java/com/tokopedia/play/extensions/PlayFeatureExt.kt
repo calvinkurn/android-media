@@ -11,12 +11,6 @@ import com.tokopedia.play.view.uimodel.state.KebabMenuType
 val Map<BottomInsetsType, BottomInsetsState>.isAnyShown: Boolean
     get() = values.any { it is BottomInsetsState.Shown }
 
-val Map<KebabMenuType, BottomInsetsState>.isAnyThreeDotsShown: Boolean
-    get() = values.any { it is BottomInsetsState.Shown }
-
-val Map<BottomInsetsType, BottomInsetsState>.isAnyHidden: Boolean
-    get() = values.any { it is BottomInsetsState.Hidden }
-
 val Map<BottomInsetsType, BottomInsetsState>.isKeyboardShown: Boolean
     get() = this[BottomInsetsType.Keyboard]?.isShown == true
 
