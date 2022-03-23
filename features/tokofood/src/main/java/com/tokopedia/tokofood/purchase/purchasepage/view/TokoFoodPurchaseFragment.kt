@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.purchase.purchasepage.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,8 +15,14 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.cartcommon.data.response.common.OutOfService
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.EXTRA_SELECTED_ADDRESS_DATA
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
 import com.tokopedia.tokofood.purchase.purchasepage.view.adapter.TokoFoodPurchaseAdapter
@@ -48,6 +55,9 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     companion object {
         const val HAS_ELEVATION = 6
         const val NO_ELEVATION = 0
+
+        const val REQUEST_CODE_CHANGE_ADDRESS = 111
+        const val REQUEST_CODE_SET_PINPOINT = 112
 
         fun createInstance(): TokoFoodPurchaseFragment {
             return TokoFoodPurchaseFragment()
@@ -163,12 +173,23 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     private fun observeUiEvent() {
         viewModel.uiEvent.observe(viewLifecycleOwner, {
             when (it.state) {
-                UiEvent.STATE_REMOVE_ALL_PRODUCT -> navigateToMerchantPage()
-                UiEvent.STATE_SUCCESS_REMOVE_PRODUCT -> onSuccessRemoveProduct(it.data as Int)
-                UiEvent.STATE_SCROLL_TO_UNAVAILABLE_ITEMS -> scrollToIndex(it.data as Int)
-                UiEvent.STATE_SHOW_BULK_DELETE_CONFIRMATION_DIALOG -> showBulkDeleteConfirmationDialog(it.data as Int)
+                UiEvent.EVENT_REMOVE_ALL_PRODUCT -> navigateToMerchantPage()
+                UiEvent.EVENT_SUCCESS_REMOVE_PRODUCT -> onSuccessRemoveProduct(it.data as Int)
+                UiEvent.EVENT_SCROLL_TO_UNAVAILABLE_ITEMS -> scrollToIndex(it.data as Int)
+                UiEvent.EVENT_SHOW_BULK_DELETE_CONFIRMATION_DIALOG -> showBulkDeleteConfirmationDialog(it.data as Int)
+                UiEvent.EVENT_NAVIGATE_TO_SET_PINPOINT -> navigateToSetPinpoint(it.data as LocationPass)
             }
         })
+    }
+
+    private fun navigateToSetPinpoint(locationPass: LocationPass) {
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
+        val bundle = Bundle().apply {
+            putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+            putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+        }
+        intent.putExtras(bundle)
+        startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
     }
 
     private fun showBulkDeleteConfirmationDialog(productCount: Int) {
@@ -220,22 +241,43 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_CODE_CHANGE_ADDRESS -> onResultFromChangeAddress(resultCode, data)
+            REQUEST_CODE_SET_PINPOINT -> onResultFromSetPinpoint(resultCode, data)
+        }
+    }
+
+    private fun onResultFromSetPinpoint(resultCode: Int, data: Intent?) {
+        data?.let {
+            val locationPass = it.getParcelableExtra(LogisticConstant.EXTRA_EXISTING_LOCATION) as? LocationPass
+            locationPass?.let {
+                viewModel.updateAddressPinpoint()
+            }
+        }
+    }
+
+    private fun onResultFromChangeAddress(resultCode: Int, data: Intent?) {
+        data?.let {
+            val chosenAddressModel = it.getParcelableExtra(EXTRA_SELECTED_ADDRESS_DATA) as? ChosenAddressModel
+            chosenAddressModel?.let {
+                viewModel.updateAddress(it)
+            }
+        }
+    }
+
     override fun getNextItems(currentIndex: Int, count: Int): List<Visitable<*>> {
         return viewModel.getNextItems(currentIndex, count)
     }
 
     override fun onTextChangeShippingAddressClicked() {
-        // Todo : navigate to address list page
-        view?.let {
-            Toaster.build(it, "onTextChangeShippingAddressClicked", Toaster.LENGTH_SHORT).show()
-        }
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
+        startActivityForResult(intent, REQUEST_CODE_CHANGE_ADDRESS)
     }
 
     override fun onTextSetPinpointClicked() {
-        // Todo : navigate to pinpoint page
-        view?.let {
-            Toaster.build(it, "onTextSetPinpointClicked", Toaster.LENGTH_SHORT).show()
-        }
+        viewModel.validateSetPinpoint()
     }
 
     override fun onTextAddItemClicked() {

@@ -8,6 +8,8 @@ data class TokoFoodPurchaseAddressUiModel(
         var receiverName: String = "",
         var receiverPhone: String = "",
         var addressDetail: String = "",
+        var cityName: String = "",
+        var districtName: String = "",
         var isMainAddress: Boolean = false
 ) : Visitable<TokoFoodPurchaseAdapterTypeFactory> {
 

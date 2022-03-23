@@ -18,6 +18,8 @@ object TokoFoodPurchaseUiModelMapper {
                 isMainAddress = true,
                 receiverName = "Adrian",
                 receiverPhone = "081234567890",
+                cityName = "Jakarta Selatan",
+                districtName = "Setiabudi",
                 addressDetail = "Tokopedia Tower Ciputra World 2, Jl. Prof. DR. Satrio No.Kav. 11, Karet Semanggi, Setiabudi, Jakarta Selatan"
         )
     }
@@ -28,7 +30,7 @@ object TokoFoodPurchaseUiModelMapper {
                 shippingEta = "Tiba dalam 30-60 menit",
                 shippingLogoUrl = "https://1000logos.net/wp-content/uploads/2020/11/Gojek-Logo-1024x640.png",
                 shippingPrice = 0,
-                isNeedPinpoint = false
+                isNeedPinpoint = true
         )
     }
 

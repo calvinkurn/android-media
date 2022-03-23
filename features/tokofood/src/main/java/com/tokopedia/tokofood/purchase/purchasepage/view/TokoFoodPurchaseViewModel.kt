@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.tokofood.purchase.purchasepage.view.mapper.TokoFoodPurchaseUiModelMapper
 import com.tokopedia.tokofood.purchase.purchasepage.view.uimodel.*
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
@@ -27,6 +29,18 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
 
     private fun getVisitablesValue(): MutableList<Visitable<*>> {
         return visitables.value ?: mutableListOf()
+    }
+
+    private fun getAddressUiModel(): Pair<Int, TokoFoodPurchaseAddressUiModel>? {
+        val dataList = getVisitablesValue()
+        loop@ for ((index, data) in dataList.withIndex()) {
+            when (data) {
+                is TokoFoodPurchaseAddressUiModel -> {
+                    return Pair(index, data)
+                }
+            }
+        }
+        return null
     }
 
     private fun getProductByProductId(productId: String): Pair<Int, TokoFoodPurchaseProductUiModel>? {
@@ -97,7 +111,6 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         }
         return null
     }
-
 
     private fun getUnavailableReasonUiModel(): Pair<Int, TokoFoodPurchaseProductUnavailableReasonUiModel>? {
         val dataList = getVisitablesValue()
@@ -173,10 +186,10 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         val dataList = getVisitablesValue()
         dataList.removeAll(visitables)
         if (!hasRemainingProduct()) {
-            _uiEvent.value = UiEvent(state = UiEvent.STATE_REMOVE_ALL_PRODUCT)
+            _uiEvent.value = UiEvent(state = UiEvent.EVENT_REMOVE_ALL_PRODUCT)
         } else {
             _visitables.value = dataList
-            _uiEvent.value = UiEvent(state = UiEvent.STATE_SUCCESS_REMOVE_PRODUCT, data = productCount)
+            _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_REMOVE_PRODUCT, data = productCount)
         }
 
         calculateTotal()
@@ -239,7 +252,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
     fun validateBulkDelete() {
         val unavailableProducts = getAllUnavailableProducts()
         _uiEvent.value = UiEvent(
-                state = UiEvent.STATE_SHOW_BULK_DELETE_CONFIRMATION_DIALOG,
+                state = UiEvent.EVENT_SHOW_BULK_DELETE_CONFIRMATION_DIALOG,
                 data = unavailableProducts.second.size
         )
     }
@@ -317,7 +330,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
 
         if (targetIndex > -1) {
             _uiEvent.value = UiEvent(
-                    state = UiEvent.STATE_SCROLL_TO_UNAVAILABLE_ITEMS,
+                    state = UiEvent.EVENT_SCROLL_TO_UNAVAILABLE_ITEMS,
                     data = targetIndex
             )
         }
@@ -402,6 +415,27 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         }
 
         _visitables.value = dataList
+    }
+
+    fun updateAddress(chosenAddressModel: ChosenAddressModel) {
+        // Todo : hit API change address, then reload purchase page if success and show toaster
+    }
+
+    fun validateSetPinpoint() {
+        val addressData = getAddressUiModel()
+        addressData?.let {
+            _uiEvent.value = UiEvent(
+                    state = UiEvent.EVENT_NAVIGATE_TO_SET_PINPOINT,
+                    data = LocationPass().apply {
+                        cityName = it.second.cityName
+                        districtName = it.second.districtName
+                    }
+            )
+        }
+    }
+
+    fun updateAddressPinpoint() {
+        // Todo : hit API set address pinpoint, then reload purchase page if success and show toaster
     }
 
 }
