@@ -15,7 +15,10 @@ data class GetAdminInfoResponse(
     data class GetAdminType(
         @SerializedName("admin_data")
         @Expose
-        val adminData: AdminData = AdminData()
+        val adminData: AdminData = AdminData(),
+        @SerializedName("shopID")
+        @Expose
+        val shopID: String = ""
     ) {
         data class AdminData(
             @SerializedName("status")

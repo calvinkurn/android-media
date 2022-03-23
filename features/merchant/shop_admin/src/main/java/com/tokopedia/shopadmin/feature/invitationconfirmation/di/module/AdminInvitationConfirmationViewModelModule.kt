@@ -15,7 +15,7 @@ abstract class AdminInvitationConfirmationViewModelModule {
 
     @AdminInvitationConfirmationScope
     @Binds
-    abstract fun bindViewModelShopPerformanceFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+    abstract fun bindAdminConfirmationInvitationViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap

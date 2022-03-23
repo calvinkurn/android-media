@@ -21,6 +21,7 @@ import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_PLAYSTORE
 import com.tokopedia.shopadmin.R
 import com.tokopedia.shopadmin.common.constants.AdminImageUrl
+import com.tokopedia.shopadmin.common.constants.Constants
 import com.tokopedia.shopadmin.common.utils.setTextMakeHyperlink
 import com.tokopedia.shopadmin.databinding.FragmentAdminInvitationAcceptedBinding
 import com.tokopedia.shopadmin.feature.invitationaccepted.di.component.AdminInvitationAcceptedComponent
@@ -43,11 +44,13 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private var binding by autoClearedNullable<FragmentAdminInvitationAcceptedBinding>()
-
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(AdminInvitationAcceptedViewModel::class.java)
     }
+
+    private var binding by autoClearedNullable<FragmentAdminInvitationAcceptedBinding>()
+
+    private var shopName = ""
 
     override fun getScreenName(): String = ""
 
@@ -62,6 +65,7 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setShopNameFromArgs()
         hideViewGroup()
         setupActionButton()
         observeAdminPermission()
@@ -72,8 +76,13 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
         getComponent(AdminInvitationAcceptedComponent::class.java).inject(this)
     }
 
+    private fun setShopNameFromArgs() {
+        this.shopName = arguments?.getString(Constants.SHOP_NAME_PARAM).orEmpty()
+    }
+
     private fun observeAdminPermission() {
         observe(viewModel.adminPermission) {
+            hideLoading()
             when (it) {
                 is Success -> {
                     setupViews(it.data)
@@ -81,12 +90,14 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
                 is Fail -> {
                     val message = ErrorHandler.getErrorMessage(context, it.throwable)
                     showToaster(message)
+                    showGlobalError()
                 }
             }
         }
     }
 
     private fun loadAdminPermission() {
+        showLoading()
         viewModel.getAdminPermission(userSession.shopId)
     }
 
@@ -96,7 +107,7 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
             imgHeaderInvitationAccepted.setImageUrl(AdminImageUrl.IL_WELCOME_INVITATION_ACCEPTED)
             tvAdminSuccessInvitation.text = getString(
                 R.string.title_admin_success_invitation_accepted,
-                userSession.name, userSession.shopAvatar
+                userSession.name, shopName
             )
             tvTnc.setTextMakeHyperlink(getString(R.string.label_tnc_invitation_accepted)) {
                 showTncBottomSheet()
@@ -194,10 +205,19 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
         binding?.loaderInvitationAccepted?.hide()
     }
 
-    companion object {
+    private fun showGlobalError() {
+        binding?.globalErrorInvitationAccepted?.show()
+    }
 
-        fun newInstance(): AdminInvitationAcceptedFragment {
-            return AdminInvitationAcceptedFragment()
+    companion object {
+        fun newInstance(bundle: Bundle?): AdminInvitationAcceptedFragment {
+            return if (bundle == null) {
+                AdminInvitationAcceptedFragment()
+            } else {
+                AdminInvitationAcceptedFragment().apply {
+                    arguments = bundle
+                }
+            }
         }
 
         const val COLUMN_TWO = 2

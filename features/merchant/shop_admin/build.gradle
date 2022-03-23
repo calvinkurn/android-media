@@ -68,6 +68,10 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.swipeRefresh
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.miscDependencies.liveDataKtx
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager

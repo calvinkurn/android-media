@@ -16,7 +16,8 @@ class GetShopAdminInfoUseCase @Inject constructor(
         useCase.setTypeClass(GetShopAdminInfoResponse::class.java)
     }
 
-    suspend fun execute(): ShopAdminInfoUiModel {
+    suspend fun execute(shopId: String): ShopAdminInfoUiModel {
+        useCase.setRequestParams(GetShopAdminInfoQuery.createRequestParams(shopId))
         return adminInvitationConfirmationMapper.mapToShopAdminInfoUiModel(useCase.executeOnBackground())
     }
 }

@@ -29,10 +29,6 @@
     <string name="title_not_yet_checked_tnc">Kamu belum menyetujui S&amp;K yang berlaku.</string>
     <string name="action_not_yet_checked_tnc">Oke</string>
     <string name="btn_go_to_shop">Masuk Toko</string>
-
-    <string-array name="tnc_summary_array">
-        <item>7 Hari Terakhir</item>
-    </string-array>
     
     <string name="title_tnc_header">Syarat dan Ketentuan Admin</string>
     <string name="title_tnc_summary">Ringkasan Syarat dan Ketentuan</string>
@@ -45,5 +41,8 @@
     <string name="secondary_btn_admin_confirmation_reject">Tidak</string>
     <string name="error_message_confirmation_accepted">Akses gagal diterima. Coba lagi, ya.</string>
     <string name="error_message_confirmation_rejected">Akses gagal ditolak. Coba lagi, ya.</string>
+
+    <!-- Invitation Confirmation -->
+    <string name="error_message_email_has_been_registered">E-mail ini sudah terdaftar, masukkan e-mail lain.</string>
 
 </resources>

@@ -1,20 +1,30 @@
 package com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewStub
+import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
@@ -23,22 +33,27 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shopadmin.R
 import com.tokopedia.shopadmin.common.constants.AdminImageUrl
 import com.tokopedia.shopadmin.common.constants.AdminStatus
+import com.tokopedia.shopadmin.common.constants.Constants
 import com.tokopedia.shopadmin.databinding.FragmentAdminInvitationConfirmationBinding
 import com.tokopedia.shopadmin.databinding.ItemAdminConfirmationInvitationBinding
 import com.tokopedia.shopadmin.databinding.ItemAdminInvitationExpiredBinding
 import com.tokopedia.shopadmin.databinding.ItemAdminInvitationRejectedBinding
 import com.tokopedia.shopadmin.feature.invitationconfirmation.di.component.AdminInvitationConfirmationComponent
+import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.param.InvitationConfirmationParam
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.dialog.AdminInvitationConfirmRejectDialog
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.ShopAdminInfoUiModel
+import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.ValidateAdminEmailEvent
+import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.ValidateEmailUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.viewmodel.AdminInvitationConfirmationViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
-class AdminInvitationConfirmationFragment: BaseDaggerFragment() {
+class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -46,21 +61,24 @@ class AdminInvitationConfirmationFragment: BaseDaggerFragment() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var invitationConfirmationParam: InvitationConfirmationParam
+
     private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(AdminInvitationConfirmationViewModel::class.java)
+        ViewModelProvider(
+            this,
+            viewModelFactory
+        ).get(AdminInvitationConfirmationViewModel::class.java)
     }
 
     private var binding by autoClearedNullable<FragmentAdminInvitationConfirmationBinding>()
-
     private var confirmationBinding by autoClearedNullable<ItemAdminConfirmationInvitationBinding>()
-
     private var expiredBinding by autoClearedNullable<ItemAdminInvitationExpiredBinding>()
-
     private var rejectedBinding by autoClearedNullable<ItemAdminInvitationRejectedBinding>()
 
     private var confirmRejectDialog: AdminInvitationConfirmRejectDialog? = null
 
-    private var shopManageID = ""
+    private var shopName = ""
 
     override fun getScreenName(): String = ""
 
@@ -77,6 +95,9 @@ class AdminInvitationConfirmationFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         observeAdminInfo()
         observeShopAdminInfo()
+        observeConfirmationReg()
+        observeValidationEmail()
+        actionGlobalError()
         loadAdminInfo()
     }
 
@@ -90,12 +111,46 @@ class AdminInvitationConfirmationFragment: BaseDaggerFragment() {
             if (resultCode == Activity.RESULT_OK) {
                 handleAfterLogin()
             }
-        } else {
+        } else if (requestCode == REQUEST_OTP) {
             if (resultCode == Activity.RESULT_OK) {
-                RouteManager.route(
-                    context,
-                    ApplinkConstInternalMarketplace.ADMIN_INVITATION_ACCEPTED
+                showLoadingConfirmationCta()
+                invitationConfirmationParam.setOtpToken(
+                    data?.getStringExtra(
+                        ApplinkConstInternalGlobal.PARAM_TOKEN
+                    ).orEmpty()
                 )
+                adminConfirmationReg(true)
+            }
+        }
+    }
+
+    private fun observeValidationEmail() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.validateEmail.collect {
+                when (it) {
+                    is ValidateAdminEmailEvent.Success -> {
+                        setValidateEmailMessage(it.validateEmailUiModel)
+                    }
+                    is ValidateAdminEmailEvent.Error -> {
+                        val message = ErrorHandler.getErrorMessage(context, it.error)
+                        showToaster(message)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setValidateEmailMessage(validateEmailUiModel: ValidateEmailUiModel) {
+        confirmationBinding?.adminInvitationWithNoEmailSection?.tfuAdminConfirmationEmail?.run {
+            if (!validateEmailUiModel.isSuccess && validateEmailUiModel.message.isNotEmpty()) {
+                setMessage(validateEmailUiModel.message)
+                setError(true)
+            } else if (!validateEmailUiModel.isSuccess && validateEmailUiModel.existsUser) {
+                setMessage(getString(R.string.error_message_email_has_been_registered))
+                setError(true)
+            } else {
+                setMessage("")
+                setError(false)
             }
         }
     }
@@ -110,6 +165,30 @@ class AdminInvitationConfirmationFragment: BaseDaggerFragment() {
                 is Fail -> {
                     val message = ErrorHandler.getErrorMessage(context, it.throwable)
                     showToaster(message)
+                    showGlobalError()
+                }
+            }
+        }
+    }
+
+    private fun observeConfirmationReg() {
+        observe(viewModel.confirmationReg) {
+            hideAllLoadingCta()
+            when (it) {
+                is Success -> {
+                    if (it.data.isSuccess) {
+                        //is success reject/accepted, need confirmation to BE
+                        goToInvitationAccepted()
+                    } else {
+                        val message = it.data.message.ifEmpty {
+                            getString(R.string.error_message_confirmation_rejected)
+                        }
+                        showToaster(message)
+                    }
+                }
+                is Fail -> {
+                    val message = ErrorHandler.getErrorMessage(context, it.throwable)
+                    showToaster(message)
                 }
             }
         }
@@ -120,12 +199,12 @@ class AdminInvitationConfirmationFragment: BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     showAdminType(it.data.adminTypeUiModel.status)
-                    shopManageID = it.data.adminDataUiModel.shopManageID
+                    invitationConfirmationParam.setShopId(it.data.adminTypeUiModel.shopID)
+                    invitationConfirmationParam.setShopManageId(it.data.adminDataUiModel.shopManageID)
                 }
                 is Fail -> {
                     hideLoading()
-                    val message = ErrorHandler.getErrorMessage(context, it.throwable)
-                    showToaster(message)
+                    showGlobalError()
                 }
             }
         }
@@ -135,11 +214,20 @@ class AdminInvitationConfirmationFragment: BaseDaggerFragment() {
         viewModel.getAdminInfo(userSession.shopId.toLongOrZero())
     }
 
+    private fun goToInvitationAccepted() {
+        val params = mapOf<String, Any>(Constants.SHOP_NAME_PARAM to shopName)
+        val appLink = UriUtil.buildUriAppendParams(
+            ApplinkConstInternalMarketplace.ADMIN_INVITATION_ACCEPTED,
+            params
+        )
+        RouteManager.route(context, appLink)
+    }
+
     private fun showAdminType(adminStatus: String) {
         when (adminStatus) {
             AdminStatus.ACTIVE -> goToShopAccount()
             AdminStatus.WAITING_CONFIRMATION -> {
-                viewModel.getShopAdminInfo()
+                viewModel.getShopAdminInfo(userSession.shopId)
             }
             AdminStatus.REJECT -> inflateInvitationRejected()
             AdminStatus.EXPIRED -> inflateInvitationExpired()
@@ -147,15 +235,25 @@ class AdminInvitationConfirmationFragment: BaseDaggerFragment() {
     }
 
     private fun inflateInvitationShopAdminInfo(shopAdminInfoUiModel: ShopAdminInfoUiModel) {
+        setupToolbar()
         val vsInvitationActive = binding?.root?.findViewById<View>(R.id.vsInvitationActive)
         if (vsInvitationActive is ViewStub) {
             vsInvitationActive.inflate()
             confirmationBinding = ItemAdminConfirmationInvitationBinding.bind(vsInvitationActive)
-            actionButton()
+            actionConfirmationButton()
         } else {
             vsInvitationActive?.show()
         }
         setShopAdminInfo(shopAdminInfoUiModel)
+    }
+
+    private fun setupToolbar() {
+        (activity as? AppCompatActivity)?.run {
+            supportActionBar?.hide()
+            binding?.headerInvitationConfirmation?.navigationIcon =
+                getIconUnifyDrawable(this, IconUnify.CLOSE)
+            setSupportActionBar(binding?.headerInvitationConfirmation)
+        }
     }
 
     private fun inflateInvitationExpired() {
@@ -199,15 +297,65 @@ class AdminInvitationConfirmationFragment: BaseDaggerFragment() {
     }
 
     private fun setShopAdminInfo(shopAdminInfoUiModel: ShopAdminInfoUiModel) {
+        this.shopName = shopAdminInfoUiModel.shopName
         confirmationBinding?.run {
             imgAdminConfirmationInvitation.setImageUrl(
                 AdminImageUrl.IL_CONFIRMATION_INVITATION
             )
-            tvAdminConfirmationTitle.text = getString(R.string.title_admin_confirmation_invitation,
-                shopAdminInfoUiModel.shopName)
+            tvAdminConfirmationTitle.text = getString(
+                R.string.title_admin_confirmation_invitation,
+                shopAdminInfoUiModel.shopName
+            )
             imgShopAdminAvatar.setImageUrl(shopAdminInfoUiModel.iconUrl)
-            tvShopTitle.text = shopAdminInfoUiModel.shopName
+            tvShopTitle.text = shopName
+
+            if (userSession.email.isNullOrEmpty()) {
+                adminInvitationWithEmailSection.root.hide()
+                adminInvitationWithNoEmailSection.root.show()
+                emailTypingListener()
+            } else {
+                adminInvitationWithEmailSection.root.show()
+                adminInvitationWithNoEmailSection.root.hide()
+            }
         }
+    }
+
+    private fun emailTypingListener() {
+        confirmationBinding?.adminInvitationWithNoEmailSection?.tfuAdminConfirmationEmail?.run {
+            textFieldWrapper.editText?.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    showKeyboard(this)
+                }
+            }
+            textFieldWrapper.editText?.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable) {}
+
+                override fun beforeTextChanged(
+                    s: CharSequence,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(
+                    s: CharSequence,
+                    start: Int,
+                    before: Int,
+                    count: Int
+                ) {
+                    val email = s.trim().toString()
+                    viewModel.validateAdminEmail(email)
+                }
+            })
+        }
+    }
+
+    private fun showKeyboard(view: View) {
+        view.requestFocus()
+        val imm =
+            view.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.showSoftInput(view, 0)
     }
 
     private fun handleAfterLogin() {
@@ -261,31 +409,83 @@ class AdminInvitationConfirmationFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun actionButton() {
+    private fun actionConfirmationButton() {
         confirmationBinding?.run {
             btnAccessReject.setOnClickListener {
                 showRejectConfirmationDialog()
             }
             btnAccessAccept.setOnClickListener {
-                viewModel.adminConfirmationReg()
+                goToOtp()
             }
         }
+    }
+
+    private fun goToOtp() {
+        context?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.COTP)
+            intent.apply {
+                putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, getEmailFromTextField())
+                putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_EMAIL)
+                putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, MODE_EMAIL)
+                putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
+                putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
+            }
+            startActivityForResult(intent, REQUEST_OTP)
+        }
+    }
+
+    private fun getEmailFromTextField(): String {
+        return confirmationBinding?.adminInvitationWithNoEmailSection?.tfuAdminConfirmationEmail?.textFieldWrapper?.editText.toString()
+            .trim()
+    }
+
+    private fun adminConfirmationReg(isAccepted: Boolean) {
+        val email = getEmailFromTextField().ifEmpty { userSession.email }
+        viewModel.adminConfirmationReg(userSession.userId, email, isAccepted)
     }
 
     private fun showLoadingDialog() {
         confirmRejectDialog?.getDialog()?.dialogPrimaryCTA?.isLoading = true
     }
 
+    private fun hideAllLoadingCta() {
+        hideLoadingConfirmationCta()
+        hideLoadingDialog()
+    }
+
     private fun hideLoadingDialog() {
         confirmRejectDialog?.getDialog()?.dialogPrimaryCTA?.isLoading = false
+    }
+
+    private fun showLoadingConfirmationCta() {
+        confirmationBinding?.btnAccessAccept?.isLoading = true
+    }
+
+    private fun hideLoadingConfirmationCta() {
+        confirmationBinding?.btnAccessAccept?.isLoading = false
+    }
+
+    private fun hideGlobalError() {
+        binding?.globalErrorConfirmationInvitation?.hide()
+    }
+
+    private fun showGlobalError() {
+        binding?.globalErrorConfirmationInvitation?.show()
+    }
+
+    private fun actionGlobalError() {
+        binding?.globalErrorConfirmationInvitation?.setActionClickListener {
+            loadAdminInfo()
+            hideGlobalError()
+        }
     }
 
     private fun showRejectConfirmationDialog() {
         confirmRejectDialog = getInstanceDialog().value
         confirmRejectDialog?.getDialog()?.run {
             setPrimaryCTAClickListener {
-                dialogPrimaryCTA.isLoading = true
-                viewModel.adminConfirmationReg()
+                showLoadingDialog()
+                adminConfirmationReg(false)
             }
             setSecondaryCTAClickListener {
                 dismiss()
@@ -311,5 +511,8 @@ class AdminInvitationConfirmationFragment: BaseDaggerFragment() {
         }
 
         private const val REQUEST_LOGIN = 459
+        private const val REQUEST_OTP = 659
+        private const val MODE_EMAIL = "email"
+        private const val OTP_TYPE_EMAIL = 150
     }
 }

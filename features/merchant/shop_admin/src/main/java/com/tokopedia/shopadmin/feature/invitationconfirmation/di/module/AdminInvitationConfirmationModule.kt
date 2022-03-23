@@ -4,14 +4,15 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.shopadmin.feature.invitationaccepted.di.module.AdminInvitationAcceptedViewModelModule
 import com.tokopedia.shopadmin.feature.invitationconfirmation.di.scope.AdminInvitationConfirmationScope
+import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.param.InvitationConfirmationParam
+import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.param.InvitationConfirmationParamImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
-@Module(includes = [AdminInvitationAcceptedViewModelModule::class])
+@Module(includes = [AdminInvitationConfirmationViewModelModule::class])
 class AdminInvitationConfirmationModule {
 
     @AdminInvitationConfirmationScope
@@ -24,5 +25,11 @@ class AdminInvitationConfirmationModule {
     @Provides
     fun provideUserGraphqlRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
+    }
+
+    @AdminInvitationConfirmationScope
+    @Provides
+    fun provideInvitationConfirmationParam(): InvitationConfirmationParam {
+        return InvitationConfirmationParamImpl()
     }
 }
