@@ -714,6 +714,17 @@
       "businessUnit": "play"
     },
     {
+      "eventAction": "unclick - content tag",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - .*",
+      "sessionIris": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "shopId": ".*",
+      "userId": ".*",
+      "businessUnit": "play"
+    },
+    {
       "eventAction": "click - cover image on report page",
       "event": "clickSellerBroadcast",
       "eventCategory": "seller broadcast",
