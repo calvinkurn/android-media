@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.util.Log;
 import android.view.View;
 import android.webkit.ConsoleMessage;
 import android.webkit.ValueCallback;
@@ -42,11 +41,12 @@ public class CommonWebViewClient extends WebChromeClient {
     @Override
     public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
         ConsoleMessage.MessageLevel msgType = consoleMessage.messageLevel();
-        Log.w("CONSOLE", consoleMessage.message());
+        //Log.w("CONSOLE", consoleMessage.message());
+        Toast.makeText(context, "onConsoleMessage" + consoleMessage.message(), Toast.LENGTH_SHORT).show();
+
         switch (msgType) {
             case WARNING:
             case ERROR:
-                Toast.makeText(context, "onConsoleMessage" + consoleMessage.message(), Toast.LENGTH_SHORT).show();
                /* Map<String, String> map = new HashMap<>();
                 map.put("type", msgType.name());
                 map.put("desc", consoleMessage.message());
