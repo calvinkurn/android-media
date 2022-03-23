@@ -63,6 +63,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         initializeToolbar(view)
         initializeRecyclerViewScrollListener()
         observeList()
+        observeUiEvent()
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
@@ -154,6 +155,19 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         })
     }
 
+    private fun observeUiEvent() {
+        viewModel.uiEvent.observe(viewLifecycleOwner, {
+            when (it.state) {
+                UiEvent.STATE_REMOVE_ALL_PRODUCT -> navigateToMerchantPage()
+            }
+        })
+    }
+
+    private fun navigateToMerchantPage() {
+        // Todo : navigate to merchant page
+        activity?.finish()
+    }
+
     override fun getNextItems(currentIndex: Int, count: Int): List<Visitable<*>> {
         return viewModel.getNextItems(currentIndex, count)
     }
@@ -178,9 +192,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     override fun onTextBulkDeleteUnavailableProductsClicked() {
         viewModel.bulkDeleteUnavailableProducts()
-//        view?.let {
-//            Toaster.build(it, "onTextBulkDeleteUnavailableProductsClicked", Toaster.LENGTH_SHORT).show()
-//        }
     }
 
     override fun onQuantityChanged(newQuantity: Int) {
@@ -191,9 +202,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     override fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductUiModel) {
         viewModel.deleteProduct(element.id)
-//        view?.let {
-//            Toaster.build(it, "onDeleteProductClicked", Toaster.LENGTH_SHORT).show()
-//        }
     }
 
     override fun onTextChangeNotesClicked() {

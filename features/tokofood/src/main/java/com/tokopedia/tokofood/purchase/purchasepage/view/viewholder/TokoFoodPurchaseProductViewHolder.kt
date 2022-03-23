@@ -5,9 +5,14 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseProductBinding
 import com.tokopedia.tokofood.databinding.SubItemPurchaseAddOnBinding
@@ -46,21 +51,16 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
         with(viewBinding) {
             val nextItem = listener.getNextItems(adapterPosition, 1).firstOrNull()
             nextItem?.let {
-                if (nextItem is TokoFoodPurchaseProductUiModel) {
-                    dividerBottom.show()
-                    val constraintSet = ConstraintSet()
-                    constraintSet.clone(containerPurchaseProduct)
-                    if (element.isDisabled) {
-                        constraintSet.connect(R.id.divider_bottom, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0)
-                        constraintSet.connect(R.id.divider_bottom, ConstraintSet.TOP, R.id.container_product_price, ConstraintSet.BOTTOM, 16.dpToPx(itemView.resources.displayMetrics))
-                    } else {
-                        constraintSet.connect(R.id.divider_bottom, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0)
-                        constraintSet.connect(R.id.divider_bottom, ConstraintSet.TOP, R.id.text_notes_or_variant_action, ConstraintSet.BOTTOM, 16.dpToPx(itemView.resources.displayMetrics))
-                    }
-                    constraintSet.applyTo(containerPurchaseProduct)
+                val constraintSet = ConstraintSet()
+                constraintSet.clone(containerPurchaseProduct)
+                if (element.isDisabled) {
+                    constraintSet.connect(R.id.divider_bottom, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0)
+                    constraintSet.connect(R.id.divider_bottom, ConstraintSet.TOP, R.id.container_product_price, ConstraintSet.BOTTOM, 16.dpToPx(itemView.resources.displayMetrics))
                 } else {
-                    dividerBottom.invisible()
+                    constraintSet.connect(R.id.divider_bottom, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0)
+                    constraintSet.connect(R.id.divider_bottom, ConstraintSet.TOP, R.id.text_notes_or_variant_action, ConstraintSet.BOTTOM, 16.dpToPx(itemView.resources.displayMetrics))
                 }
+                constraintSet.applyTo(containerPurchaseProduct)
             }
         }
     }
@@ -172,7 +172,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
             }
 
             qtyEditorProduct.show()
-            qtyEditorProduct.editText.clearFocus()
+            qtyEditorProduct.autoHideKeyboard = true
             qtyEditorProduct.minValue = element.minQuantity
             qtyEditorProduct.maxValue = element.maxQuantity
             qtyEditorProduct.setValue(element.quantity)
@@ -190,6 +190,17 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
 
                 }
             })
+            qtyEditorProduct.editText.imeOptions = EditorInfo.IME_ACTION_DONE
+            qtyEditorProduct.editText.setOnEditorActionListener { v, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    qtyEditorProduct.editText.context?.let {
+                        KeyboardHandler.DropKeyboard(it, v)
+                    }
+                    qtyEditorProduct.editText.clearFocus()
+                    true
+                } else false
+            }
+            qtyEditorProduct.editText.clearFocus()
         }
     }
 

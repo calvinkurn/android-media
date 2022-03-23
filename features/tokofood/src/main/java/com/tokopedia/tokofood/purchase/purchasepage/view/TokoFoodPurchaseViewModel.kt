@@ -7,10 +7,15 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.tokofood.purchase.purchasepage.view.mapper.TokoFoodPurchaseUiModelMapper
 import com.tokopedia.tokofood.purchase.purchasepage.view.uimodel.*
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import javax.inject.Inject
 
 class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDispatchers)
     : BaseViewModel(dispatcher.main) {
+
+    private val _uiEvent = SingleLiveEvent<UiEvent>()
+    val uiEvent: LiveData<UiEvent>
+        get() = _uiEvent
 
     // List of recyclerview items
     private val _visitables = MutableLiveData<MutableList<Visitable<*>>>()
@@ -24,12 +29,12 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         return visitables.value ?: mutableListOf()
     }
 
-    private fun getProductByProductId(productId: String): TokoFoodPurchaseProductUiModel? {
+    private fun getProductByProductId(productId: String): Pair<Int, TokoFoodPurchaseProductUiModel>? {
         val dataList = getVisitablesValue()
-        loop@ for (data in dataList) {
+        loop@ for ((index, data) in dataList.withIndex()) {
             when {
                 data is TokoFoodPurchaseProductUiModel && data.id == productId -> {
-                    return data
+                    return Pair(index, data)
                 }
                 data is TokoFoodPurchaseAccordionUiModel || data is TokoFoodPurchasePromoUiModel -> {
                     break@loop
@@ -128,20 +133,32 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
     private fun deleteProducts(visitables: List<Visitable<*>>) {
         val dataList = getVisitablesValue()
         dataList.removeAll(visitables)
-        _visitables.value = dataList
+        if (!hasRemainingProduct()) {
+            _uiEvent.value = UiEvent(
+                    state = UiEvent.STATE_REMOVE_ALL_PRODUCT
+            )
+        } else {
+            _visitables.value = dataList
+        }
+
     }
 
     fun deleteProduct(productId: String) {
         // Todo : hit API to remove product, once it's success, perform below code to remove local data
         val toBeDeletedProduct = getProductByProductId(productId)
         if (toBeDeletedProduct != null) {
+            val toBeDeleteItems = mutableListOf<Visitable<*>>()
             val dataList = getVisitablesValue()
-            dataList.remove(toBeDeletedProduct)
-            _visitables.value = dataList
+            toBeDeleteItems.add(toBeDeletedProduct.second)
 
-            if (!hasRemainingProduct()) {
-                // Todo: navigate to merchant page
+            if (isLastAvailableProduct()) {
+                val from = toBeDeletedProduct.first - 2
+                val to = toBeDeletedProduct.first
+                val availableHeaderAndDivider = dataList.subList(from, to).toMutableList()
+                toBeDeleteItems.addAll(availableHeaderAndDivider)
             }
+
+            deleteProducts(toBeDeleteItems)
         }
     }
 
@@ -158,6 +175,22 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
             }
         }
         return false
+    }
+
+    private fun isLastAvailableProduct(): Boolean {
+        val dataList = getVisitablesValue()
+        var count = 0
+        loop@ for (data in dataList) {
+            when {
+                data is TokoFoodPurchaseProductUiModel && !data.isDisabled -> {
+                    count++
+                }
+                (data is TokoFoodPurchaseProductUiModel && data.isDisabled) || data is TokoFoodPurchasePromoUiModel -> {
+                    break@loop
+                }
+            }
+        }
+        return count == 1
     }
 
     fun bulkDeleteUnavailableProducts() {
