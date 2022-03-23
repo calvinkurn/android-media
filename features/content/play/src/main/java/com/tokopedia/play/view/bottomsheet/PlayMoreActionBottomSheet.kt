@@ -85,6 +85,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        (requireContext() as Activity).windowManager.defaultDisplay.getMetrics(displayMetrix)
 
         val grandParentActivity = ((requireParentFragment() as PlayUserInteractionFragment).parentFragment) as PlayFragment
 
@@ -99,7 +100,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
         setObserve()
-        (requireContext() as Activity).windowManager.defaultDisplay.getMetrics(displayMetrix)
     }
 
     fun setState(isFreeze: Boolean) {}
