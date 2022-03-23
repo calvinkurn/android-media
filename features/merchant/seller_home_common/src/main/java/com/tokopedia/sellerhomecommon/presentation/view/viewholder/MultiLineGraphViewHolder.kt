@@ -14,6 +14,7 @@ import com.tokopedia.charts.common.ChartTooltip
 import com.tokopedia.charts.config.LineChartConfig
 import com.tokopedia.charts.model.*
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
@@ -69,7 +70,7 @@ class MultiLineGraphViewHolder(
 
         val data = element.data
         when {
-            data == null -> setOnLoadingState()
+            data == null || element.showLoadingState -> setOnLoadingState()
             data.error.isNotBlank() -> setOnErrorState(element)
             else -> setOnSuccessState(element)
         }
@@ -122,6 +123,7 @@ class MultiLineGraphViewHolder(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun setOnMetricStateChanged(metric: MultiLineMetricUiModel) {
         if (element?.isComparePeriodeOnly == true) {
             metricsAdapter.items.forEach {
@@ -185,22 +187,24 @@ class MultiLineGraphViewHolder(
 
     private fun setOnLoadingState() {
         binding.shcMlgSuccessState.gone()
+        binding.luvShcMultiLineGraph.setRefreshButtonVisibility(false)
         errorStateBinding.commonWidgetErrorState.gone()
+        emptyStateBinding.multiLineEmptyState.gone()
         loadingStateBinding.shcMlgLoadingState.visible()
     }
 
     private fun setOnErrorState(element: MultiLineGraphWidgetUiModel) {
         setupTitle(element.title)
         loadingStateBinding.shcMlgLoadingState.gone()
+        emptyStateBinding.multiLineEmptyState.gone()
         binding.shcMlgSuccessState.visible()
         emptyStateBinding.multiLineEmptyState.gone()
+        binding.luvShcMultiLineGraph.setRefreshButtonVisibility(false)
         getWidgetComponents().forEach {
             it.gone()
         }
         errorStateBinding.commonWidgetErrorState.visible()
-        errorStateBinding.imgWidgetOnError.loadImage(
-            com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
-        )
+        errorStateBinding.imgWidgetOnError.loadImage(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
 
         setTagNotification(element.tag)
         setupTooltip(element)
@@ -265,20 +269,43 @@ class MultiLineGraphViewHolder(
             val metricPosition = metricItems.indexOf(metric)
             scrollMetricToPosition(metricPosition)
 
+            setupLastUpdated(element)
             setupCta(element)
             setTagNotification(element.tag)
             setupTooltip(element)
 
+            horLineShcMultiLineGraphBtm.isVisible = luvShcMultiLineGraph.isVisible
+                    || tvShcMultiLineCta.isVisible
             root.addOnImpressionListener(element.impressHolder) {
                 listener.sendMultiLineGraphImpressionEvent(element)
             }
         }
     }
 
+    private fun setupLastUpdated(element: MultiLineGraphWidgetUiModel) {
+        element.data?.lastUpdated?.let { lastUpdated ->
+            val shouldShowRefreshBtn = element.data?.lastUpdated?.needToUpdated.orFalse()
+
+            binding.luvShcMultiLineGraph.run {
+                isVisible = lastUpdated.isEnabled
+                setLastUpdated(lastUpdated.lastUpdatedInMillis)
+                setRefreshButtonVisibility(shouldShowRefreshBtn)
+                setRefreshButtonClickListener {
+                    reloadWidget(element)
+                }
+            }
+        }
+    }
+
+    private fun reloadWidget(element: MultiLineGraphWidgetUiModel) {
+        listener.onReloadWidget(element)
+    }
+
     private fun setupEmptyState() {
         element?.let { element ->
             with(emptyStateBinding) {
                 val emptyState = element.emptyState
+                multiLineEmptyState.visible()
                 tvLineGraphEmptyStateTitle.text = emptyState.title
                 tvLineGraphEmptyStateDescription.text = emptyState.description
                 tvShcMultiLineEmptyStateCta.text = emptyState.ctaText
@@ -296,7 +323,7 @@ class MultiLineGraphViewHolder(
         return with(binding) {
             listOf(
                 rvShcGraphMetrics, lvShcCurrentPeriod, lvShcLastPeriod,
-                chartViewShcMultiLine, imgShcMultiLineCta, tvShcMultiLineCta
+                chartViewShcMultiLine, tvShcMultiLineCta
             )
         }
     }
@@ -305,15 +332,27 @@ class MultiLineGraphViewHolder(
         val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank()
         val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
         tvShcMultiLineCta.visibility = ctaVisibility
-        imgShcMultiLineCta.visibility = ctaVisibility
         if (isCtaVisible) {
             tvShcMultiLineCta.text = element.ctaText
             tvShcMultiLineCta.setOnClickListener {
                 openAppLink(element)
             }
-            imgShcMultiLineCta.setOnClickListener {
-                openAppLink(element)
-            }
+
+            val iconColor = root.context.getResColor(
+                com.tokopedia.unifyprinciples.R.color.Unify_G400
+            )
+            val iconWidth = root.context.resources.getDimension(
+                com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+            )
+            val iconHeight = root.context.resources.getDimension(
+                com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+            )
+            tvShcMultiLineCta.setUnifyDrawableEnd(
+                IconUnify.CHEVRON_RIGHT,
+                iconColor,
+                iconWidth,
+                iconHeight
+            )
         }
     }
 
@@ -342,6 +381,7 @@ class MultiLineGraphViewHolder(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun setupMetricCards(items: List<MultiLineMetricUiModel>) {
         with(binding) {
             shcMlgSuccessState.post {

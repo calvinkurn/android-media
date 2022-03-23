@@ -15,6 +15,7 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
@@ -77,6 +78,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
     private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_sellerapp_log_config_new_relic";
     private static final String REMOTE_CONFIG_EMBRACE_KEY_LOG = "android_sellerapp_log_config_embrace";
     private static final String PARSER_SCALYR_SA = "android-seller-app-p%s";
+    private final String EMBRACE_PRIMARY_CARRIER_KEY = "operatorNameMain";
+    private final String EMBRACE_SECONDARY_CARRIER_KEY = "operatorNameSecondary";
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -130,6 +133,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
 
         Loader.init(this);
         setEmbraceUserId();
+        EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {

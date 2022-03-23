@@ -3,7 +3,10 @@ package com.tokopedia.seller.menu.common.domain.mapper
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.utils.GoldMerchantUtil
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.domain.entity.ShopInfoById
 import com.tokopedia.seller.menu.common.domain.entity.UserShopInfoResponse
@@ -28,26 +31,36 @@ class UserShopInfoMapper @Inject constructor(private val userSession: UserSessio
         val isBeforeOnDate = isBeforeOnDate(dateShopCreated, targetDateText)
         val goldOsResult = shopInfoByIDResult?.goldOS
         val txStatsValue = shopInfoByIDResult?.statsByDate?.find { it.identifier == Constant.TRANSACTION_RM_SUCCESS }?.value.orZero()
+        val isBeforeOnDate =
+            isBeforeOnDate(userShopInfoResponse.userShopInfo.info.dateShopCreated, targetDateText)
+        val goldOsResult = userShopInfoResponse.shopInfoByID.result.firstOrNull()?.goldOS
+        val txStatsValue =
+            userShopInfoResponse.shopInfoByID.result.firstOrNull()?.statsByDate?.find { it.identifier == Constant.TRANSACTION_RM_SUCCESS }?.value.orZero()
+        val dateCreated = userShopInfoResponse.userShopInfo.info.dateShopCreated
         return UserShopInfoWrapper(
-                shopType = getShopType(goldGetPMOSStatusData, shopInfoByIDResult?.goldOS?.shopGrade),
-                userShopInfoUiModel = UserShopInfoWrapper.UserShopInfoUiModel(
-                        isBeforeOnDate = isBeforeOnDate,
-                        onDate = targetDateText,
-                        dateCreated = dateShopCreated,
-                        totalTransaction = txStatsValue,
-                        badge = goldOsResult?.badge ?: "",
-                        shopTierName = goldOsResult?.shopTierWording ?: "",
-                        shopTier = goldOsResult?.shopTier ?: -1,
-                        pmProGradeName = goldOsResult?.shopGradeWording ?: "",
-                        periodTypePmPro = periodTypePmPro,
-                        isNewSeller = GoldMerchantUtil.isNewSeller(dateShopCreated)
-                )
+            shopType = getShopType(userShopInfoResponse),
+            userShopInfoUiModel = UserShopInfoWrapper.UserShopInfoUiModel(
+                isBeforeOnDate = isBeforeOnDate,
+                onDate = targetDateText,
+                dateCreated = dateCreated,
+                totalTransaction = txStatsValue,
+                badge = goldOsResult?.badge ?: "",
+                shopTierName = goldOsResult?.shopTierWording ?: "",
+                shopTier = goldOsResult?.shopTier ?: -1,
+                pmProGradeName = goldOsResult?.shopGradeWording ?: "",
+                periodTypePmPro = userShopInfoResponse.goldGetPMSettingInfo.periodTypePmPro,
+                isNewSeller = GoldMerchantUtil.isNewSeller(dateCreated),
+                isEligiblePm = userShopInfoResponse.goldGetPMShopInfo.isEligiblePm.orFalse(),
+                isEligiblePmPro = userShopInfoResponse.goldGetPMShopInfo.isEligiblePmPro.orFalse()
+            )
         )
     }
 
     private fun getShopType(goldPMStatus: UserShopInfoResponse.GoldGetPMOSStatus.Data,
                             shopGrade: Int?): ShopType? {
         val statusPM = goldPMStatus.powerMerchant.status
+        val goldGetPMShopInfo = userShopInfoResponse.goldGetPMShopInfo
+        val shopGrade = userShopInfoResponse.shopInfoByID.result.firstOrNull()?.goldOS?.shopGrade
         return when {
             goldPMStatus.officialStore.status == OSStatus.ACTIVE -> {
                 ShopType.OfficialStore
@@ -68,8 +81,12 @@ class UserShopInfoMapper @Inject constructor(private val userSession: UserSessio
                         }
                         else -> {
                             SellerMenuErrorHandler.logExceptionToCrashlytics(
-                                    messageShopTypeErrorCrashlytics(goldPMStatus.powerMerchant.pmTier, shopGrade),
-                                    SellerMenuErrorHandler.ERROR_GET_SHOP_TYPE)
+                                messageShopTypeErrorCrashlytics(
+                                    goldPMStatus.powerMerchant.pmTier,
+                                    shopGrade
+                                ),
+                                SellerMenuErrorHandler.ERROR_GET_SHOP_TYPE
+                            )
                             null
                         }
                     }
@@ -84,14 +101,25 @@ class UserShopInfoMapper @Inject constructor(private val userSession: UserSessio
                         PowerMerchantStatus.NotActive
                     }
                     else -> {
-                        RegularMerchant.NeedUpgrade
+                        when {
+                            goldGetPMShopInfo.isPendingKyc() -> {
+                                RegularMerchant.Pending
+                            }
+                            goldGetPMShopInfo.isVerifiedKyc() -> {
+                                RegularMerchant.Verified
+                            }
+                            else -> {
+                                RegularMerchant.NeedUpgrade
+                            }
+                        }
                     }
                 }
             }
             else -> {
                 SellerMenuErrorHandler.logExceptionToCrashlytics(
-                        messageShopTypeErrorCrashlytics(goldPMStatus.powerMerchant.pmTier, shopGrade),
-                        SellerMenuErrorHandler.ERROR_GET_SHOP_TYPE)
+                    messageShopTypeErrorCrashlytics(goldPMStatus.powerMerchant.pmTier, shopGrade),
+                    SellerMenuErrorHandler.ERROR_GET_SHOP_TYPE
+                )
                 null
             }
         }
@@ -104,13 +132,15 @@ class UserShopInfoMapper @Inject constructor(private val userSession: UserSessio
     private fun isBeforeOnDate(createdDate: String, targetDateText: String): Boolean {
         return try {
             val PATTERN_DATE_SHOP_CREATED_INFO = "yyyy-MM-dd"
-            val simpleDateFormat = SimpleDateFormat(PATTERN_DATE_SHOP_CREATED_INFO, DateFormatUtils.DEFAULT_LOCALE)
+            val simpleDateFormat =
+                SimpleDateFormat(PATTERN_DATE_SHOP_CREATED_INFO, DateFormatUtils.DEFAULT_LOCALE)
             val joinDate = simpleDateFormat.parse(createdDate)
             val targetDate = simpleDateFormat.parse(targetDateText)
             joinDate?.before(targetDate) ?: false
         } catch (e: Exception) {
             SellerMenuErrorHandler.logExceptionToCrashlytics(
-                    e, SellerMenuErrorHandler.ERROR_GET_BEFORE_ON_DATE)
+                e, SellerMenuErrorHandler.ERROR_GET_BEFORE_ON_DATE
+            )
             false
         }
     }

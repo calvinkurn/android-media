@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.*
 import dagger.Binds
 import dagger.Module
@@ -23,11 +22,6 @@ abstract class PlayBroadcastViewModelModule {
     @IntoMap
     @ViewModelKey(PlayBroadcastPrepareViewModel::class)
     abstract fun getPlayPrepareViewModel(viewModel: PlayBroadcastPrepareViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(PlayBroadcastSummaryViewModel::class)
-    abstract fun getPlaySummaryViewModel(viewModel: PlayBroadcastSummaryViewModel): ViewModel
 
     @Binds
     @IntoMap
