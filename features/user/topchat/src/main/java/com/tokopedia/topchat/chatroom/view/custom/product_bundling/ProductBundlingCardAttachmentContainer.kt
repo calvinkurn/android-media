@@ -26,6 +26,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.MultipleBundlingItemAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel.Companion.BUNDLE_TYPE_MULTIPLE
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel.Companion.STATUS_ACTIVE
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel.Companion.STATUS_UPCOMING
 import com.tokopedia.topchat.common.Constant
@@ -169,7 +170,7 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindLayoutStyle(element: ProductBundlingUiModel) {
-        if (isCarousel(element)) {
+        if (isMultipleBundleItem(element)) {
             initRecyclerView(element)
             showRecyclerView()
         } else {
@@ -180,8 +181,8 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun isCarousel(element: ProductBundlingUiModel) : Boolean {
-        return element.productBundling.bundleItem.size > 1
+    private fun isMultipleBundleItem(element: ProductBundlingUiModel) : Boolean {
+        return element.productBundling.bundleType == BUNDLE_TYPE_MULTIPLE
     }
 
     private fun hideRecyclerView() {

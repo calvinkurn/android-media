@@ -46,8 +46,12 @@ class GetChatUseCaseStub @Inject constructor(
         "seller/success_get_chat_first_page_with_voucher.json"
     private val voucherAttachmentBuyerResponsePath =
         "buyer/success_get_chat_first_page_with_voucher.json"
-    private val productBundlingAttachment =
-        "success_get_chat_first_page_product_bundling.json"
+    private val productBundlingMultipleAttachment =
+        "product_bundling/success_get_chat_product_bundling_multiple.json"
+    private val productBundlingSingleAttachment =
+        "product_bundling/success_get_chat_product_bundling_single.json"
+    private val productBundlingOOS =
+        "product_bundling/success_get_chat_product_bundling_oos.json"
 
     var response: GetExistingChatPojo = GetExistingChatPojo()
         set(value) {
@@ -93,8 +97,18 @@ class GetChatUseCaseStub @Inject constructor(
             alterDateToToday(response)
         }
 
-    val productBundlingAttachmentChat: GetExistingChatPojo
-        get() = alterResponseOf(productBundlingAttachment) { response ->
+    val productBundlingAttachmentMultipleChat: GetExistingChatPojo
+        get() = alterResponseOf(productBundlingMultipleAttachment) { response ->
+            alterDateToToday(response)
+        }
+
+    val productBundlingAttachmentSingleChat: GetExistingChatPojo
+        get() = alterResponseOf(productBundlingSingleAttachment) { response ->
+            alterDateToToday(response)
+        }
+
+    val productBundlingAttachmentOOSChat: GetExistingChatPojo
+        get() = alterResponseOf(productBundlingOOS) { response ->
             alterDateToToday(response)
         }
 

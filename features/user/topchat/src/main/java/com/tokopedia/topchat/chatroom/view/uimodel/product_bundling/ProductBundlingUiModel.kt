@@ -55,5 +55,6 @@ class ProductBundlingUiModel constructor(
     companion object {
         const val STATUS_ACTIVE = 1
         const val STATUS_UPCOMING = 2
+        const val BUNDLE_TYPE_MULTIPLE = 2
     }
 }

@@ -57,7 +57,7 @@ data class ChatReplies(
 data class Contact(
         @Expose
         @SerializedName("role")
-        val role: String = "",
+        var role: String = "",
         @Expose
         @SerializedName("userId")
         val userId: Long = 0L,

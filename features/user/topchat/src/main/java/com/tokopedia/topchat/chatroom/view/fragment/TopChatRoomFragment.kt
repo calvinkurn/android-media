@@ -3053,7 +3053,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 ),
                 ProductBundlingData(
                     bundleId = "43",
-                    bundleType = 2,
+                    bundleType = 1,
                     bundleTitle = "Home Care Ramadhan",
                     bundleStatus = 1,
                     originalPrice = "Rp28.000",
@@ -3089,7 +3089,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             this.listProductBundling = arrayListOf(
                 ProductBundlingData(
                     bundleId = "43",
-                    bundleType = 2,
+                    bundleType = 1,
                     bundleTitle = "Home Care Ramadhan",
                     bundleStatus = 1,
                     originalPrice = "Rp28.000",
@@ -3212,7 +3212,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             this.listProductBundling = arrayListOf(
                 ProductBundlingData(
                     bundleId = "43",
-                    bundleType = 2,
+                    bundleType = 1,
                     bundleTitle = "Home Care Ramadhan",
                     bundleStatus = 1,
                     originalPrice = "Rp28.000",
@@ -3255,7 +3255,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             this.listProductBundling = arrayListOf(
                 ProductBundlingData(
                     bundleId = "43",
-                    bundleType = 2,
+                    bundleType = 1,
                     bundleTitle = "Home Care Ramadhan",
                     bundleStatus = 0,
                     originalPrice = "Rp28.000",
