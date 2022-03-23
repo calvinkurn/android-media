@@ -159,7 +159,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
 
     private fun handleInitialAutoBidState(it: String) {
         handleAutoBidState(it)
-        autoBidSwitch?.switchBidEditKeyword?.isChecked = it.isNotEmpty()
+        if(it.isNotEmpty()) autoBidSwitch?.switchToAutomatic() else autoBidSwitch?.switchToManual()
     }
 
     private fun handleAutoBidState(autoBidState: String) {
@@ -259,7 +259,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             }
         }
         strategies.clear()
-        if (autoBidSwitch?.isBidAutomatic() == true) {
+        if (autoBidSwitch?.isBidAutomatic == true) {
             strategies.add("auto_bid")
         }
         dataMap[POSITIVE_CREATE] = addedKeywordsPos

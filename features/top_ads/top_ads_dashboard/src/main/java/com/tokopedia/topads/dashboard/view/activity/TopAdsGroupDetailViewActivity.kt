@@ -331,8 +331,8 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
                     saveBidStateChangedData(true)
                 }
                 else {
-                    //changing switch state to true(otomatic), will be changing to false if user saves bid in bottom sheet
-                    switchAutoBidLayout.switchBidEditKeyword?.isChecked = true
+                    //changing switch state to automatic, will be changing to manual if user saves bid in bottom sheet
+                    switchAutoBidLayout.switchToAutomatic()
                     bidSwitchManualBottomSheet.show(supportFragmentManager, "")
                 }
             }
@@ -358,7 +358,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
 
     private fun onSaveClickedInManualBottomSheet(bidPencarian: String, bidRecomendasi: String) {
-        switchAutoBidLayout.switchBidEditKeyword?.isChecked = false
+        switchAutoBidLayout.switchToManual()
         saveBidStateChangedData(false,suggestedBid,bidPencarian,bidRecomendasi)
     }
 
@@ -476,7 +476,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         }
         if(data.strategies.isNotEmpty()) {
             autoBidStatus = data.strategies[0]
-            switchAutoBidLayout.switchBidEditKeyword?.isChecked = true
+            switchAutoBidLayout.switchToAutomatic()
             perClick.visibility = View.GONE
             perClickRekomendasi.visibility = View.GONE
             editPancarianBudget.visibility = View.GONE
@@ -484,7 +484,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             budgetPerClick.text = getString(com.tokopedia.topads.common.R.string.group_detail_bid_otomatis)
             budgetperclickRekomendasi.text = getString(com.tokopedia.topads.common.R.string.group_detail_bid_otomatis)
         } else {
-            switchAutoBidLayout.switchBidEditKeyword?.isChecked = false
+            switchAutoBidLayout.switchToManual()
             editPancarianBudget.visibility = View.VISIBLE
             autoBidStatus = ""
             perClick.visibility = View.VISIBLE

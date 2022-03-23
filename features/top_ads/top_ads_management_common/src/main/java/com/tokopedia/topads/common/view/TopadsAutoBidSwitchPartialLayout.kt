@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
-import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.topads.common.R
@@ -22,9 +21,10 @@ class TopadsAutoBidSwitchPartialLayout(
         private set
     var ivBidInfoEditKeyword: ImageUnify? = null
         private set
+
     var onInfoClicked: (() -> Unit)? = null
     var onCheckBoxStateChanged: ((Boolean) -> Unit)? = null     //true for automatic
-    fun isBidAutomatic() = switchBidEditKeyword?.isChecked ?: false
+    val isBidAutomatic get() = switchBidEditKeyword?.isChecked ?: false
 
     init {
         inflate(context, R.layout.topads_common_auto_bid_switch_partial_layout, this)
@@ -32,6 +32,13 @@ class TopadsAutoBidSwitchPartialLayout(
         setClick()
     }
 
+    fun switchToAutomatic() {
+        switchBidEditKeyword?.isChecked = true
+    }
+
+    fun switchToManual() {
+        switchBidEditKeyword?.isChecked = false
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setClick() {
@@ -42,7 +49,7 @@ class TopadsAutoBidSwitchPartialLayout(
         switchBidEditKeyword?.let {
             it.setOnTouchListener { view, motionEvent ->
                 if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                    showChangeBidTypeConfirmationDialog(isBidAutomatic()) {
+                    showChangeBidTypeConfirmationDialog(isBidAutomatic) {
                         it.isChecked = !it.isChecked
                         onCheckBoxStateChanged?.invoke(it.isChecked)
                     }
@@ -60,15 +67,15 @@ class TopadsAutoBidSwitchPartialLayout(
     }
 
     private fun showChangeBidTypeConfirmationDialog(
-        switchToAutomatic: Boolean, positiveClick: () -> Unit,
+        isSwitchedToAutomatic: Boolean, positiveClick: () -> Unit,
     ) {
         DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-            if (switchToAutomatic) {
-                setTitle(context.resources.getString(R.string.topads_common_automatic_dialog_title))
-                setDescription(context.resources.getString(R.string.topads_common_automatic_dialog_description))
-            } else {
+            if (isSwitchedToAutomatic) {
                 setTitle(context.resources.getString(R.string.topads_common_manual_dialog_title))
                 setDescription(context.resources.getString(R.string.topads_common_manual_dialog_description))
+            } else {
+                setTitle(context.resources.getString(R.string.topads_common_automatic_dialog_title))
+                setDescription(context.resources.getString(R.string.topads_common_automatic_dialog_description))
             }
             setPrimaryCTAText(context.resources.getString(R.string.topads_common_dialog_cta_text))
             setSecondaryCTAText(context.resources.getString(R.string.topads_common_batal))
