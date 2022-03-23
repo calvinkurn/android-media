@@ -151,6 +151,7 @@ class ShopHomeNplCampaignViewHolder(
                     if(productList.isNotEmpty())
                         productListCampaignAdapter?.addElement(ShopHomeCampaignCarouselClickableBannerAreaUiModel(clickableBannerAreaWidth))
                     productListCampaignAdapter?.addElement(productList)
+                    isNestedScrollingEnabled = false
                     adapter = productListCampaignAdapter
                     setHeightBasedOnProductCardMaxHeight(productList.map {
                         ShopPageHomeMapper.mapToProductCardCampaignModel(

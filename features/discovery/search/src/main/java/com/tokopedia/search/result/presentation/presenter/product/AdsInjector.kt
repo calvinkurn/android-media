@@ -1,7 +1,7 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.IS_FULFILLMENT
+import com.tokopedia.filter.common.helper.isPostProcessingFilter
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
 import timber.log.Timber
@@ -49,12 +49,9 @@ class AdsInjector {
         index: Int,
         searchParameter: Map<String, Any>,
     ) = isInjectAdsByTemplate(adsModel, index)
-        || isIgnoreTemplate(searchParameter)
+        || isPostProcessingFilter(searchParameter)
 
     private fun isInjectAdsByTemplate(adsModel: TopAdsModel, index: Int) =
         adsModel.templates.size > 0
             && adsModel.templates[index].isIsAd
-
-    private fun isIgnoreTemplate(searchParameter: Map<String, Any>) =
-        searchParameter[IS_FULFILLMENT].toString().toBoolean()
 }

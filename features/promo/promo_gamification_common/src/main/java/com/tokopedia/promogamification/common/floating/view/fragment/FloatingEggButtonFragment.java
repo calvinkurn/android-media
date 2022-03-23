@@ -527,10 +527,10 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         }
 
-
-        if (!TextUtils.isEmpty(imageUrl)) {
+        if (!TextUtils.isEmpty(imageUrl) && !(requireActivity()).isFinishing()) {
+            try {
             if (imageUrl.endsWith(".gif")) {
-                Glide.with(getContext())
+                Glide.with(requireActivity())
                         .asGif()
                         .load(imageUrl)
                         .diskCacheStrategy(DiskCacheStrategy.DATA)
@@ -545,7 +545,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                             }
                         });
             } else {
-                Glide.with(getContext())
+                Glide.with(requireActivity())
                         .asBitmap()
                         .load(imageUrl)
                         .diskCacheStrategy(DiskCacheStrategy.DATA)
@@ -561,6 +561,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
                             }
                         });
+            }
+            } catch (Exception e) {
+                Timber.e(e);
             }
         }
     }

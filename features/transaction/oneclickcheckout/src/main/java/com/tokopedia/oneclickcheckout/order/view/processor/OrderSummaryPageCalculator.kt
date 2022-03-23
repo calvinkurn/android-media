@@ -249,6 +249,8 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                     shippingDiscountAmount = cost.shippingDiscountAmount,
                     productDiscountAmount = cost.productDiscountAmount,
                     purchaseProtectionPrice = cost.purchaseProtectionPrice,
+                    addOnPrice = cost.addOnPrice,
+                    hasAddOn = cost.hasAddOn,
                     cashbacks = cost.cashbacks,
                     installmentData = installmentData,
                     totalPriceWithoutPaymentFees = cost.totalPriceWithoutPaymentFees,
@@ -271,6 +273,15 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             val mapParentWholesalePrice: HashMap<String, Double> = HashMap()
             val updatedProductIndex = arrayListOf<Int>()
             var totalPurchaseProtectionPrice = 0
+            var totalAddOnPrice = 0.0
+            var hasAddOn = false
+            // This is for add on shop level
+            val addOnShopLevel = orderCart.shop.addOn.addOnsDataItemModelList.firstOrNull()
+            if (addOnShopLevel != null) {
+                totalAddOnPrice += addOnShopLevel.addOnPrice.toDouble()
+                hasAddOn = true
+            }
+
             for (productIndex in orderCart.products.indices) {
                 val product = orderCart.products[productIndex]
                 if (!product.isError) {
@@ -309,6 +320,12 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                         purchaseProtectionPriceMultiplier = 1
                     }
                     totalPurchaseProtectionPrice += if (product.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED) purchaseProtectionPriceMultiplier * product.purchaseProtectionPlanData.protectionPricePerProduct else 0
+                    // This is for add on product level
+                    val addOnProductLevel = product.addOn.addOnsDataItemModelList.firstOrNull()
+                    if (addOnProductLevel != null) {
+                        totalAddOnPrice += addOnProductLevel.addOnPrice.toDouble()
+                        hasAddOn = true
+                    }
                 }
             }
             totalProductPrice += totalProductWholesalePrice
@@ -316,7 +333,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             val insurancePrice = shipping.getRealInsurancePrice().toDouble()
             val isUseInsurance = shipping.isUseInsurance()
             val (productDiscount, shippingDiscount, cashbacks) = calculatePromo(validateUsePromoRevampUiModel)
-            val subtotalWithoutDiscountsAndPaymentFee = totalProductPrice + totalPurchaseProtectionPrice + totalShippingPrice + insurancePrice
+            val subtotalWithoutDiscountsAndPaymentFee = totalProductPrice + totalPurchaseProtectionPrice + totalShippingPrice + insurancePrice + totalAddOnPrice
             val totalDiscounts = productDiscount + shippingDiscount
             val subtotal = subtotalWithoutDiscountsAndPaymentFee - totalDiscounts
             val orderCost = OrderCost(
@@ -329,11 +346,13 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                     shippingDiscountAmount = shippingDiscount,
                     productDiscountAmount = productDiscount,
                     purchaseProtectionPrice = totalPurchaseProtectionPrice,
+                    addOnPrice = totalAddOnPrice,
+                    hasAddOn = hasAddOn,
                     cashbacks = cashbacks,
                     totalPriceWithoutPaymentFees = subtotal,
                     totalPriceWithoutDiscountsAndPaymentFees = subtotalWithoutDiscountsAndPaymentFee,
                     totalItemPriceAndShippingFee = totalProductPrice + totalShippingPrice,
-                    totalAdditionalFee = insurancePrice + totalPurchaseProtectionPrice,
+                    totalAdditionalFee = insurancePrice + totalPurchaseProtectionPrice + totalAddOnPrice,
                     totalDiscounts = totalDiscounts,
             )
             return@withContext orderCost to updatedProductIndex

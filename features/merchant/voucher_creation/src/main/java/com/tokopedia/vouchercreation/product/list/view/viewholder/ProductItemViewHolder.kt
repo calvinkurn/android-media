@@ -9,28 +9,32 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.databinding.ItemProductListLayoutBinding
 import com.tokopedia.vouchercreation.product.list.view.adapter.VariantListAdapter
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
+import com.tokopedia.vouchercreation.product.list.view.model.VariantUiModel
 
 class ProductItemViewHolder(
         private val binding: ItemProductListLayoutBinding,
         private val productItemClickListener: OnProductItemClickListener
-) : RecyclerView.ViewHolder(binding.root), ProductItemVariantViewHolder.OnVariantItemClickListener {
+) : RecyclerView.ViewHolder(binding.root),
+        ProductItemVariantViewHolder.OnVariantItemClickListener,
+        VariantListAdapter.OnVariantSelectionRemovedListener {
 
     interface OnProductItemClickListener {
         fun onProductCheckBoxClicked(isSelected: Boolean, dataSetPosition: Int)
         fun onRemoveProductButtonClicked(adapterPosition: Int, dataSetPosition: Int)
         fun onProductVariantCheckBoxClicked(isSelected: Boolean, dataSetPosition: Int, variantIndex: Int): Int
         fun onProductVariantHeaderClicked(isExpanded: Boolean, dataSetPosition: Int)
+        fun onProductVariantRemoved(variantList: List<VariantUiModel>, dataSetPosition: Int)
     }
 
     private var context: Context? = null
-    private var variantListAdapter = VariantListAdapter(this)
+    private var variantListAdapter = VariantListAdapter(this, this)
 
     init {
         context = binding.root.context
     }
 
     fun bindData(productUiModel: ProductUiModel, dataSetPosition: Int) {
-
+        // reset all listeners because selection state will be bind from data
         resetListeners()
 
         // bind data set position
@@ -41,8 +45,8 @@ class ProductItemViewHolder(
 
         // product list item views
         binding.root.setTag(R.id.product, productUiModel)
+        binding.cbuProductItem.setIndeterminate(productUiModel.hasVariant)
         binding.cbuProductItem.isChecked = productUiModel.isSelected
-
         binding.iuProductImage.loadImage(productUiModel.imageUrl)
         binding.tpgProductName.text = productUiModel.productName
         binding.tpgSku.text = productUiModel.sku
@@ -52,13 +56,13 @@ class ProductItemViewHolder(
         // disable product selection if all variants are errors
         binding.cbuProductItem.isEnabled = productUiModel.isSelectable
 
-        // view mode
+        // view mode - no selection, no deletion
         val isViewing = productUiModel.isViewing
         if (isViewing) {
             binding.cbuProductItem.invisible()
             binding.iuRemoveProduct.hide()
         }
-        // edit mode
+        // edit mode - visible delete button
         val isEditing = productUiModel.isEditing
         if (isEditing) {
             binding.iuRemoveProduct.show()
@@ -81,8 +85,10 @@ class ProductItemViewHolder(
                 val isVariantHeaderExpanded = productUiModel.isVariantHeaderExpanded
                 binding.variantDivider.isVisible = isVariantHeaderExpanded
                 binding.rvProductVariants.isVisible = isVariantHeaderExpanded
-                if (isVariantHeaderExpanded) { context?.run { binding.iuChevron.setImageDrawable(getDrawable(R.drawable.ic_mvc_chevron_up)) } }
-                else { context?.run { binding.iuChevron.setImageDrawable(getDrawable(R.drawable.ic_mvc_chevron_down)) }
+                if (isVariantHeaderExpanded) {
+                    context?.run { binding.iuChevron.setImageDrawable(getDrawable(R.drawable.ic_mvc_chevron_up)) }
+                } else {
+                    context?.run { binding.iuChevron.setImageDrawable(getDrawable(R.drawable.ic_mvc_chevron_down)) }
                 }
             }
         } else {
@@ -95,7 +101,12 @@ class ProductItemViewHolder(
         if (productUiModel.isError) {
             binding.cbuProductItem.isClickable = false
             binding.errorLayout.show()
-            if (productUiModel.errorMessage.isNotBlank()) binding.tpgProductError.text = productUiModel.errorMessage
+            if (productUiModel.errorMessage.isNotBlank()) {
+                binding.iuRedExclamation.show()
+                binding.tpgProductError.text = productUiModel.errorMessage
+            } else {
+                binding.iuRedExclamation.hide()
+            }
         } else {
             binding.cbuProductItem.isClickable = true
             binding.errorLayout.hide()
@@ -112,7 +123,6 @@ class ProductItemViewHolder(
 
     private fun setupListeners() {
         binding.cbuProductItem.setOnCheckedChangeListener { _, isChecked ->
-            val product = binding.root.getTag(R.id.product) as ProductUiModel
             val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
             productItemClickListener.onProductCheckBoxClicked(isChecked, dataSetPosition)
             variantListAdapter.updateVariantSelections(isChecked)
@@ -128,25 +138,55 @@ class ProductItemViewHolder(
             // !isVariantHeaderExpanded => current condition after clicked
             binding.variantDivider.isVisible = !isVariantHeaderExpanded
             binding.rvProductVariants.isVisible = !isVariantHeaderExpanded
-            if (!isVariantHeaderExpanded) { context?.run { binding.iuChevron.setImageDrawable(getDrawable(R.drawable.ic_mvc_chevron_up)) } }
-            else { context?.run { binding.iuChevron.setImageDrawable(getDrawable(R.drawable.ic_mvc_chevron_down)) } }
+            if (!isVariantHeaderExpanded) {
+                context?.run { binding.iuChevron.setImageDrawable(getDrawable(R.drawable.ic_mvc_chevron_up)) }
+            } else {
+                context?.run { binding.iuChevron.setImageDrawable(getDrawable(R.drawable.ic_mvc_chevron_down)) }
+            }
             productItemClickListener.onProductVariantHeaderClicked(!isVariantHeaderExpanded, dataSetPosition)
         }
     }
 
     override fun onVariantCheckBoxClicked(isSelected: Boolean, variantIndex: Int) {
-        val isIndeterminate = binding.cbuProductItem.getIndeterminate()
-        val isChecked = binding.cbuProductItem.isChecked
+        // update variant selection to product data in product parent adapter
         val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
-        val selectedVariantSize = productItemClickListener.onProductVariantCheckBoxClicked(isSelected, dataSetPosition, variantIndex)
+        val selectedVariantSize = productItemClickListener.onProductVariantCheckBoxClicked(
+                isSelected,
+                dataSetPosition,
+                variantIndex
+        )
+        // remove listeners to prevent unwanted behaviors
+        resetListeners()
+        // change parent product selection start here
+        // if variant product selected
         if (isSelected) {
-            if (!isIndeterminate) binding.cbuProductItem.setIndeterminate(true)
-            if (!isChecked) binding.cbuProductItem.isChecked = true
-        } else {
-            if (selectedVariantSize.isZero()) {
-                if (isIndeterminate) binding.cbuProductItem.setIndeterminate(false)
-                if (selectedVariantSize.isZero()) binding.cbuProductItem.isChecked = false
+            // select parent product if one of its variant got selected
+            val isParentProductSelected = binding.cbuProductItem.isChecked
+            if (!isParentProductSelected) {
+                binding.cbuProductItem.isChecked = true
+                productItemClickListener.onProductCheckBoxClicked(true, dataSetPosition)
             }
         }
+        // if no variant item got selected set uncheck parent selection
+        else {
+            if (selectedVariantSize.isZero()) {
+                binding.cbuProductItem.isChecked = false
+                productItemClickListener.onProductCheckBoxClicked(false, dataSetPosition)
+            }
+        }
+        // return ui listeners
+        setupListeners()
+    }
+
+    override fun onVariantSelectionRemoved(variantList: List<VariantUiModel>) {
+        // update variant selection to product data in product parent adapter
+        val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
+        productItemClickListener.onProductVariantRemoved(variantList, dataSetPosition)
+    }
+
+    override fun onVariantSelectionsEmpty() {
+        // manage product purpose - delete product selection if there is no variant selection
+        val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
+        productItemClickListener.onRemoveProductButtonClicked(adapterPosition, dataSetPosition)
     }
 }

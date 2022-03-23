@@ -27,6 +27,8 @@ object ProductDetailCommonConstant {
     const val SHOP_ID_PARAM = "shopId"
     const val FIELDS_PARAM = "fields"
     const val PRODUCT_ID_PARAM = "productId"
+    const val GIFTABLE_PARAM = "isGiftable"
+    const val PARENT_ID_PARAM = "parentId"
 
 
     //notify me (teaser campaign)
@@ -93,6 +95,8 @@ object ProductDetailCommonConstant {
     const val REQUEST_CODE_CHECKOUT = 12382
     const val REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS = 1198
     const val REQUEST_CODE_TRADEIN_PDP = 2881
+    const val RQUEST_CODE_UPDATE_FINTECH_WIDGET = 1991
+    const val RQUEST_CODE_ACTIVATE_GOPAY = 1992
 
     //OVO
     const val OVO_INACTIVE_STATUS = 1;
