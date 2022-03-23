@@ -38,11 +38,24 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
     )
     private val listener: ViewListeners = ViewListeners()
     private val job = SupervisorJob()
+    private var uiState: ReviewMediaVideoThumbnailUiState? = null
 
     override val coroutineContext: CoroutineContext = Dispatchers.Main + job
 
     init {
         binding.icReviewMediaVideoThumbnailPlayButton.loadImage(R.drawable.ic_review_media_video_thumbnail_play)
+        binding.ivReviewMediaVideoThumbnail.onUrlLoaded = { success ->
+            when (uiState) {
+                is ReviewMediaVideoThumbnailUiState.Showing -> {
+                    binding.reviewMediaVideoThumbnailBrokenOverlay.showWithCondition(!success)
+                    binding.icReviewMediaVideoThumbnailBroken.showWithCondition(!success)
+                }
+                else -> {
+                    binding.reviewMediaVideoThumbnailBrokenOverlay.showWithCondition(!success)
+                    binding.icReviewMediaVideoThumbnailBroken.gone()
+                }
+            }
+        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -57,11 +70,12 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
     private fun WidgetReviewMediaVideoThumbnailBinding.setupVideoThumbnail(
         uiState: ReviewMediaVideoThumbnailUiState
     ) {
-        ivReviewMediaVideoThumbnail.urlSrc = uiState.uri
+        ivReviewMediaVideoThumbnail.setImageUrl(uiState.uri)
         icReviewMediaVideoThumbnailRemove.showWithCondition(uiState.removable)
         icReviewMediaVideoThumbnailPlayButton.showWithCondition(
             uiState is ReviewMediaVideoThumbnailUiState.Showing && uiState.playable
         )
+        tvReviewMediaVideoThumbnailDuration.showWithCondition(uiState.showDuration)
         if (uiState.showDuration) {
             launchCatchError(block = {
                 withContext(Dispatchers.IO) {
@@ -91,15 +105,16 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
                 }
             }, onError = {})
         }
-        tvReviewMediaVideoThumbnailDuration.showWithCondition(uiState.showDuration)
     }
 
     private fun WidgetReviewMediaVideoThumbnailBinding.showVideoThumbnail(
         uiState: ReviewMediaVideoThumbnailUiState.Showing
     ) {
+        groupReviewMediaVideoThumbnailSeeMore.gone()
         groupReviewMediaVideoThumbnailUploading.gone()
         groupReviewMediaVideoThumbnailUploadFailed.gone()
-        groupReviewMediaVideoThumbnailSeeMore.gone()
+        reviewMediaVideoThumbnailBrokenOverlay.gone()
+        icReviewMediaVideoThumbnailBroken.gone()
         setupVideoThumbnail(uiState)
     }
 
@@ -108,6 +123,8 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
     ) {
         groupReviewMediaVideoThumbnailUploading.gone()
         groupReviewMediaVideoThumbnailUploadFailed.gone()
+        reviewMediaVideoThumbnailBrokenOverlay.gone()
+        icReviewMediaVideoThumbnailBroken.gone()
         groupReviewMediaVideoThumbnailSeeMore.show()
         tvReviewMediaVideoThumbnailSeeMore.text = buildString {
             append("+")
@@ -119,8 +136,10 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
     private fun WidgetReviewMediaVideoThumbnailBinding.showVideoThumbnailUploadingState(
         uiState: ReviewMediaVideoThumbnailUiState.Uploading
     ) {
-        groupReviewMediaVideoThumbnailUploadFailed.gone()
         groupReviewMediaVideoThumbnailSeeMore.gone()
+        groupReviewMediaVideoThumbnailUploadFailed.gone()
+        reviewMediaVideoThumbnailBrokenOverlay.gone()
+        icReviewMediaVideoThumbnailBroken.gone()
         groupReviewMediaVideoThumbnailUploading.show()
         setupVideoThumbnail(uiState)
     }
@@ -128,13 +147,16 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
     private fun WidgetReviewMediaVideoThumbnailBinding.showVideoThumbnailUploadFailedState(
         uiState: ReviewMediaVideoThumbnailUiState.UploadFailed
     ) {
-        groupReviewMediaVideoThumbnailUploading.gone()
         groupReviewMediaVideoThumbnailSeeMore.gone()
+        groupReviewMediaVideoThumbnailUploading.gone()
+        reviewMediaVideoThumbnailBrokenOverlay.gone()
+        icReviewMediaVideoThumbnailBroken.gone()
         groupReviewMediaVideoThumbnailUploadFailed.show()
         setupVideoThumbnail(uiState)
     }
 
     fun updateUi(uiState: ReviewMediaVideoThumbnailUiState) {
+        this.uiState = uiState
         job.cancelChildren()
         when (uiState) {
             is ReviewMediaVideoThumbnailUiState.Showing -> {

@@ -85,6 +85,34 @@
                 app:typographyType="body_3"
                 app:typographyWeight="bold" />
 
+            <View
+                android:id="@+id/review_media_video_thumbnail_broken_overlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_review_media_broken_media_thumbnail"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/iv_review_media_video_thumbnail"
+                app:layout_constraintEnd_toEndOf="@id/iv_review_media_video_thumbnail"
+                app:layout_constraintStart_toStartOf="@id/iv_review_media_video_thumbnail"
+                app:layout_constraintTop_toTopOf="@id/iv_review_media_video_thumbnail"
+                tools:visibility="visible" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/ic_review_media_video_thumbnail_broken"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:visibility="gone"
+                app:icon_color_light_disabled="@color/Unify_Static_White"
+                app:icon_color_light_enable="@color/Unify_Static_White"
+                app:icon_color_night_disabled="@color/Unify_Static_White"
+                app:icon_color_night_enable="@color/Unify_Static_White"
+                app:icon_name="VIDEO_BROKEN"
+                app:layout_constraintBottom_toBottomOf="@id/iv_review_media_video_thumbnail"
+                app:layout_constraintEnd_toEndOf="@id/iv_review_media_video_thumbnail"
+                app:layout_constraintStart_toStartOf="@id/iv_review_media_video_thumbnail"
+                app:layout_constraintTop_toTopOf="@id/iv_review_media_video_thumbnail"
+                tools:visibility="visible" />
+
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/group_review_media_video_thumbnail_uploading"
                 android:layout_width="wrap_content"
