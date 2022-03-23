@@ -154,9 +154,11 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         // Todo : Load from API, if success then map to UiModel, if error show global error
         val isSuccess = true
         if (isSuccess) {
+            _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
             constructRecycleViewItem()
             calculateTotal()
         } else {
+            // Todo : Set throwable from network
             _uiEvent.value = UiEvent(state = UiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE)
         }
     }
