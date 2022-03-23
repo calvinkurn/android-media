@@ -35,7 +35,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.productcard.ProductCardModel
@@ -168,8 +168,8 @@ abstract class BaseSearchCategoryViewModel(
     protected val isShowMiniCartMutableLiveData = MutableLiveData<Boolean?>(null)
     val isShowMiniCartLiveData: LiveData<Boolean?> = isShowMiniCartMutableLiveData
 
-    protected val miniCartWidgetMutableLiveData = MutableLiveData<MiniCartSimplifiedData2?>(null)
-    val miniCartWidgetLiveData: LiveData<MiniCartSimplifiedData2?> = miniCartWidgetMutableLiveData
+    protected val miniCartWidgetMutableLiveData = MutableLiveData<MiniCartSimplifiedData?>(null)
+    val miniCartWidgetLiveData: LiveData<MiniCartSimplifiedData?> = miniCartWidgetMutableLiveData
 
     protected val updatedVisitableIndicesMutableLiveData = SingleLiveEvent<List<Int>>()
     val updatedVisitableIndicesLiveData: LiveData<List<Int>> =
@@ -1008,7 +1008,7 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun String.isValidId() = this.isNotEmpty() && this != "0"
 
-    open fun onViewUpdateCartItems(miniCartSimplifiedData: MiniCartSimplifiedData2) {
+    open fun onViewUpdateCartItems(miniCartSimplifiedData: MiniCartSimplifiedData) {
         updateMiniCartWidgetData(miniCartSimplifiedData)
 
         viewModelScope.launchCatchError(
@@ -1017,7 +1017,7 @@ abstract class BaseSearchCategoryViewModel(
         )
     }
 
-    private fun updateMiniCartWidgetData(miniCartSimplifiedData: MiniCartSimplifiedData2) {
+    private fun updateMiniCartWidgetData(miniCartSimplifiedData: MiniCartSimplifiedData) {
         chooseAddressData?.let {
             val outOfCoverage = it.isOutOfCoverage()
             val showMiniCart = miniCartSimplifiedData.isShowMiniCartWidget
@@ -1027,7 +1027,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private suspend fun updateMiniCartInBackground(
-            miniCartSimplifiedData: MiniCartSimplifiedData2
+            miniCartSimplifiedData: MiniCartSimplifiedData
     ) {
         withContext(baseDispatcher.io) {
             cartService.updateMiniCartItems(miniCartSimplifiedData)

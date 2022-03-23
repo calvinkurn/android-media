@@ -12,7 +12,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
@@ -256,7 +256,7 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
         }
     }
 
-    protected fun onGetMiniCart_thenReturn(response: MiniCartSimplifiedData2) {
+    protected fun onGetMiniCart_thenReturn(response: MiniCartSimplifiedData) {
         coEvery {
             getMiniCartUseCase.executeOnBackground()
         } returns response

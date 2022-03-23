@@ -1,6 +1,6 @@
 package com.tokopedia.tokopedianow.home.domain.mapper
 
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.LabelGroup
 import com.tokopedia.productcard.ProductCardModel.LabelGroupVariant
@@ -31,7 +31,7 @@ object HomeRepurchaseMapper {
     fun mapToRepurchaseUiModel(
         item: TokoNowRepurchaseUiModel,
         response: RepurchaseData,
-        miniCartData: MiniCartSimplifiedData2? = null
+        miniCartData: MiniCartSimplifiedData? = null
     ): TokoNowRepurchaseUiModel {
         val state = TokoNowLayoutState.SHOW
         val productList = mapToProductCardUiModel(response, miniCartData)
@@ -40,7 +40,7 @@ object HomeRepurchaseMapper {
 
     private fun mapToProductCardUiModel(
         response: RepurchaseData,
-        miniCartData: MiniCartSimplifiedData2? = null
+        miniCartData: MiniCartSimplifiedData? = null
     ): List<TokoNowProductCardUiModel> {
         return response.products.map {
             TokoNowProductCardUiModel(
@@ -56,7 +56,7 @@ object HomeRepurchaseMapper {
     
     private fun createProductCardModel(
         product: RepurchaseProduct,
-        miniCartData: MiniCartSimplifiedData2? = null
+        miniCartData: MiniCartSimplifiedData? = null
     ): ProductCardModel {
         val quantity = getAddToCartQuantity(product.id, miniCartData)
 

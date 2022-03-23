@@ -1,7 +1,7 @@
 package com.tokopedia.product.detail.data.model
 
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
@@ -53,7 +53,7 @@ data class ProductInfoP2UiData(
         var merchantVoucherSummary: MerchantVoucherSummary = MerchantVoucherSummary(),
         var imageReviews: ImageReview? = null,
         var helpfulReviews: List<Review>? = null,
-        var miniCart: MutableMap<MiniCartItemKey, MiniCartItem2>? = null,
+        var miniCart: MutableMap<MiniCartItemKey, MiniCartItem>? = null,
         var alternateCopy: List<AlternateCopy> = listOf(),
         var bundleInfoMap: Map<String, BundleInfo> = emptyMap(),
         var rating: ProductRatingCount = ProductRatingCount(),

@@ -1,6 +1,6 @@
 package com.tokopedia.product.detail.view.listener
 
-import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import rx.subscriptions.CompositeSubscription
 
 /**
@@ -16,6 +16,6 @@ interface PartialButtonActionListener {
     fun topChatButtonClicked()
     fun editProductButtonClicked()
     fun getRxCompositeSubcription(): CompositeSubscription
-    fun updateQuantityNonVarTokoNow(quantity: Int, miniCart: MiniCartItem2.MiniCartItemProduct, oldValue:Int)
+    fun updateQuantityNonVarTokoNow(quantity: Int, miniCart: MiniCartItem.MiniCartItemProduct, oldValue:Int)
     fun onDeleteAtcClicked()
 }

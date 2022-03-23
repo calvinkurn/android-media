@@ -16,7 +16,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -128,7 +128,7 @@ abstract class TokoNowHomeViewModelTestFixture {
         Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
     }
 
-    protected fun verifyMiniCartResponseSuccess(expectedResponse: MiniCartSimplifiedData2) {
+    protected fun verifyMiniCartResponseSuccess(expectedResponse: MiniCartSimplifiedData) {
         val actualResponse = viewModel.miniCart.value
         Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
     }
@@ -318,11 +318,11 @@ abstract class TokoNowHomeViewModelTestFixture {
         }
     }
 
-    protected fun onGetMiniCart_thenReturn(miniCartSimplifiedData: MiniCartSimplifiedData2) {
+    protected fun onGetMiniCart_thenReturn(miniCartSimplifiedData: MiniCartSimplifiedData) {
         every {
             getMiniCartUseCase.execute(any(), any())
         } answers {
-            firstArg<(MiniCartSimplifiedData2) -> Unit>().invoke(miniCartSimplifiedData)
+            firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(miniCartSimplifiedData)
         }
     }
 

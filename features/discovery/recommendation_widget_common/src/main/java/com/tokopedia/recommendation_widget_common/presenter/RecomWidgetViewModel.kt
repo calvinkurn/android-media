@@ -13,9 +13,9 @@ import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
@@ -67,8 +67,8 @@ open class RecomWidgetViewModel @Inject constructor(
         get() = _errorGetRecommendation
 
 
-    val miniCartData: LiveData<MutableMap<MiniCartItemKey, MiniCartItem2>> get() = _miniCartData
-    private val _miniCartData = MutableLiveData<MutableMap<MiniCartItemKey, MiniCartItem2>>()
+    val miniCartData: LiveData<MutableMap<MiniCartItemKey, MiniCartItem>> get() = _miniCartData
+    private val _miniCartData = MutableLiveData<MutableMap<MiniCartItemKey, MiniCartItem>>()
 
     private val _atcRecomTokonow = MutableLiveData<RecomAtcTokonowResponse>()
     val atcRecomTokonow: LiveData<RecomAtcTokonowResponse> get() = _atcRecomTokonow
@@ -203,7 +203,7 @@ open class RecomWidgetViewModel @Inject constructor(
         }
     }
 
-    fun updateMiniCartWithPageData(miniCartSimplifiedData: MiniCartSimplifiedData2) {
+    fun updateMiniCartWithPageData(miniCartSimplifiedData: MiniCartSimplifiedData) {
         val data = miniCartSimplifiedData.miniCartItems
         _miniCartData.postValue(data.toMutableMap())
     }

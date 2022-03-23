@@ -20,6 +20,7 @@ class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBi
     }
 
     fun bind(cartItemHolderData: CartItemHolderData) {
+        // TODO: BUNDLING NOW COLLAPSE
         renderImage(cartItemHolderData)
         renderVariant(cartItemHolderData)
         renderPrice(cartItemHolderData)

@@ -10,9 +10,9 @@ import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
@@ -84,8 +84,8 @@ class TestRecomWidgetViewModel {
     )
     private val mockPageNameTokonow = "tokonow"
     private val miniCartItemKey = MiniCartItemKey("Sukses")
-    private val miniCartItem = MiniCartItem2.MiniCartItemProduct(productId = "Sukses")
-    private val mockMiniCartWithPageData = MiniCartSimplifiedData2(
+    private val miniCartItem = MiniCartItem.MiniCartItemProduct(productId = "Sukses")
+    private val mockMiniCartWithPageData = MiniCartSimplifiedData(
         miniCartItems = mapOf(miniCartItemKey to miniCartItem)
     )
     private val mockUserLoggedIn = true
@@ -105,8 +105,8 @@ class TestRecomWidgetViewModel {
     private val timeOut = "Time out"
     private val mockThrowableTimeOut = Throwable(timeOut)
     val miniCartKey = MiniCartItemKey(recomItem.productId.toString())
-    val miniCart = MiniCartItem2.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
-    val miniCartSimplifiedDataMock = MiniCartSimplifiedData2(miniCartItems = mapOf(miniCartKey to miniCart))
+    val miniCart = MiniCartItem.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
+    val miniCartSimplifiedDataMock = MiniCartSimplifiedData(miniCartItems = mapOf(miniCartKey to miniCart))
 
     private val recomItemForAtc = RecommendationItem(
         productId = 1234,

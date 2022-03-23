@@ -6,7 +6,7 @@ import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecomCarouselWidgetBasicListener
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
@@ -103,7 +103,7 @@ class TokoNowRecommendationCarouselViewHolder(
         )
     }
 
-    override fun onMiniCartUpdatedFromRecomWidget(miniCartSimplifiedData: MiniCartSimplifiedData2) {
+    override fun onMiniCartUpdatedFromRecomWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
         recommendationCarouselWidgetBindPageNameListener?.onMiniCartUpdatedFromRecomWidget(
             miniCartSimplifiedData
         )
@@ -271,7 +271,7 @@ class TokoNowRecommendationCarouselViewHolder(
 
     interface TokonowRecomBindPageNameListener {
 
-        fun onMiniCartUpdatedFromRecomWidget(miniCartSimplifiedData: MiniCartSimplifiedData2)
+        fun onMiniCartUpdatedFromRecomWidget(miniCartSimplifiedData: MiniCartSimplifiedData)
 
         fun onRecomTokonowAtcSuccess(message: String)
 

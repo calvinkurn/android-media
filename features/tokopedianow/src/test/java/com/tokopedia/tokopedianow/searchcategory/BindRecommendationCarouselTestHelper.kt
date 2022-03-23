@@ -1,9 +1,9 @@
 package com.tokopedia.tokopedianow.searchcategory
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -206,12 +206,12 @@ class BindRecommendationCarouselTestHelper(
     }
 
     private fun `Given get mini cart simplified use case will be successful`(
-            miniCartSimplifiedData: MiniCartSimplifiedData2
+            miniCartSimplifiedData: MiniCartSimplifiedData
     ) {
         every {
             getMiniCartListSimplifiedUseCase.execute(any(), any())
         } answers {
-            firstArg<(MiniCartSimplifiedData2) -> Unit>().invoke(miniCartSimplifiedData)
+            firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(miniCartSimplifiedData)
         }
     }
 
@@ -220,7 +220,7 @@ class BindRecommendationCarouselTestHelper(
     }
 
     private fun `Then assert quantity is updated from mini cart`(
-            miniCartSimplifiedData: MiniCartSimplifiedData2,
+            miniCartSimplifiedData: MiniCartSimplifiedData,
     ) {
         val recommendationItems = recommendationWidgetList.first().recommendationItemList
         val miniCartItems = miniCartSimplifiedData.miniCartItems
@@ -230,11 +230,11 @@ class BindRecommendationCarouselTestHelper(
     }
 
     private fun `Then assert product item non variant quantity`(
-            miniCartItems: Map<MiniCartItemKey, MiniCartItem2>,
+            miniCartItems: Map<MiniCartItemKey, MiniCartItem>,
             productItems: List<RecommendationItem>,
     ) {
         val miniCartItemsNonVariant = miniCartItems.values.mapNotNull {
-            if (it is MiniCartItem2.MiniCartItemProduct && it.productParentId == NO_VARIANT_PARENT_PRODUCT_ID) it else null
+            if (it is MiniCartItem.MiniCartItemProduct && it.productParentId == NO_VARIANT_PARENT_PRODUCT_ID) it else null
         }
 
         miniCartItemsNonVariant.forEach { miniCartItem ->
@@ -247,15 +247,15 @@ class BindRecommendationCarouselTestHelper(
         }
     }
 
-    private fun createInvalidNonVariantQtyReason(miniCartItem: MiniCartItem2.MiniCartItemProduct) =
+    private fun createInvalidNonVariantQtyReason(miniCartItem: MiniCartItem.MiniCartItemProduct) =
             "Product \"${miniCartItem.productId}\" non variant quantity is invalid."
 
     private fun `Then assert product item variant quantity`(
-            miniCartItems: Map<MiniCartItemKey, MiniCartItem2>,
+            miniCartItems: Map<MiniCartItemKey, MiniCartItem>,
             productItems: List<RecommendationItem>,
     ) {
         val miniCartItemsVariant = miniCartItems.values.mapNotNull {
-            if (it is MiniCartItem2.MiniCartItemParentProduct) it else null
+            if (it is MiniCartItem.MiniCartItemParentProduct) it else null
         }
 //        val miniCartItemsVariantGroup = miniCartItemsVariant.groupBy { it.productParentId }
 
@@ -293,7 +293,7 @@ class BindRecommendationCarouselTestHelper(
         `Then assert updated visitable indices has recom position`(recomWidgetPosition)
     }
 
-    private fun `When view update cart items`(miniCartSimplifiedData: MiniCartSimplifiedData2) {
+    private fun `When view update cart items`(miniCartSimplifiedData: MiniCartSimplifiedData) {
         baseViewModel.onViewUpdateCartItems(miniCartSimplifiedData)
     }
 

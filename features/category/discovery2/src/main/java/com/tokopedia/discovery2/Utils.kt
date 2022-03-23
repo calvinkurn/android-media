@@ -24,7 +24,7 @@ import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
@@ -376,7 +376,7 @@ class Utils {
         }
 
         fun updateProductAddedInCart(products:List<ComponentsItem>,
-                                             map: Map<MiniCartItemKey, MiniCartItem2>?) {
+                                             map: Map<MiniCartItemKey, MiniCartItem>?) {
             if (map == null) return
             products.forEach { componentsItem ->
                 componentsItem.data?.firstOrNull()?.let { dataItem ->

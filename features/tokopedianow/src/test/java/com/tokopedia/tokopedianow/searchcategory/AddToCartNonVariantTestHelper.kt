@@ -12,8 +12,8 @@ import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.minicart.common.domain.data.MiniCartItem2
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.network.exception.ResponseErrorException
@@ -204,12 +204,12 @@ class AddToCartNonVariantTestHelper(
     }
 
     fun `Given get mini cart simplified use case will be successful`(
-            miniCartSimplifiedData: MiniCartSimplifiedData2
+            miniCartSimplifiedData: MiniCartSimplifiedData
     ) {
         every {
             getMiniCartListSimplifiedUseCase.execute(any(), any())
         } answers {
-            firstArg<(MiniCartSimplifiedData2) -> Unit>().invoke(miniCartSimplifiedData)
+            firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(miniCartSimplifiedData)
         }
     }
 
@@ -270,12 +270,12 @@ class AddToCartNonVariantTestHelper(
     }
 
     fun updateMiniCartData(
-            updatedMiniCartData: MiniCartSimplifiedData2,
+            updatedMiniCartData: MiniCartSimplifiedData,
             productId: String,
             updatedQuantity: Int
     ) {
         updatedMiniCartData.miniCartItems.values.forEach {
-            if (it is MiniCartItem2.MiniCartItemProduct && it.productId == productId)
+            if (it is MiniCartItem.MiniCartItemProduct && it.productId == productId)
                 it.quantity = updatedQuantity
         }
     }
@@ -714,7 +714,7 @@ class AddToCartNonVariantTestHelper(
     }
 
     private fun getRecommendationItemCurrentQty(
-            miniCartSimplifiedData: MiniCartSimplifiedData2,
+            miniCartSimplifiedData: MiniCartSimplifiedData,
             recommendationItemForATC: RecommendationItem,
     ) = miniCartSimplifiedData
             .miniCartItems
@@ -757,7 +757,7 @@ class AddToCartNonVariantTestHelper(
 
     private fun `Given view setup to update quantity recom item`(
             recommendationWidgets: List<RecommendationWidget>,
-            miniCartData: MiniCartSimplifiedData2,
+            miniCartData: MiniCartSimplifiedData,
             productIdToUpdate: String,
             updatedQuantity: Int,
     ) {

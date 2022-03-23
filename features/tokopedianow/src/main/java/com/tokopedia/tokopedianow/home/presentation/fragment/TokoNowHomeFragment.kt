@@ -45,7 +45,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.product.detail.common.AtcVariantHelper
@@ -343,7 +343,7 @@ class TokoNowHomeFragment: Fragment(),
         viewModelTokoNow.removeTickerWidget(id)
     }
 
-    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData2) {
+    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         if (!miniCartSimplifiedData.isShowMiniCartWidget) {
             miniCartWidget?.hide()
             miniCartWidget?.hideCoachMark()
@@ -1049,7 +1049,7 @@ class TokoNowHomeFragment: Fragment(),
         movingPosition = 0
     }
 
-    private fun setupMiniCart(data: MiniCartSimplifiedData2) {
+    private fun setupMiniCart(data: MiniCartSimplifiedData) {
         val showMiniCartWidget = data.isShowMiniCartWidget
         val outOfCoverage = localCacheModel?.isOutOfCoverage() == true
 

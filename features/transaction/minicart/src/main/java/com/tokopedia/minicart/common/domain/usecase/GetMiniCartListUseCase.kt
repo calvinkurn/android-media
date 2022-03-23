@@ -31,6 +31,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
         if (params == null) {
             throw RuntimeException("Parameter is null!")
         }
+        // TODO: BUNDLING NOW MINI CART
 
         val request = GraphqlRequest(QUERY, MiniCartGqlResponse::class.java, params)
         val response = graphqlRepository.response(listOf(request)).getSuccessData<MiniCartGqlResponse>()

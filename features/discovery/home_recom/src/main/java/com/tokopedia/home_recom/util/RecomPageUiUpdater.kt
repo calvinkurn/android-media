@@ -3,7 +3,7 @@ package com.tokopedia.home_recom.util
 import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
-import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
@@ -33,7 +33,7 @@ class RecomPageUiUpdater(var dataList: MutableList<HomeRecommendationDataModel>)
         }
     }
 
-    fun updateRecomWithMinicartData(miniCart: MutableMap<MiniCartItemKey, MiniCartItem2>?) {
+    fun updateRecomWithMinicartData(miniCart: MutableMap<MiniCartItemKey, MiniCartItem>?) {
         val newDataList = mutableListOf<HomeRecommendationDataModel>()
         dataList.filterIsInstance(RecommendationItemDataModel::class.java).forEach {
             val recomItem = it.productItem.copy()

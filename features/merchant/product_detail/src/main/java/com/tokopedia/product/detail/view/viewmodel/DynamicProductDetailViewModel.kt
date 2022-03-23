@@ -24,7 +24,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
@@ -192,7 +192,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val miniCartData: LiveData<Boolean>
         get() = _miniCartData
 
-    private val _quantityUpdated = MutableLiveData<Pair<Int, MiniCartItem2.MiniCartItemProduct>>()
+    private val _quantityUpdated = MutableLiveData<Pair<Int, MiniCartItem.MiniCartItemProduct>>()
 
     private val _updateCartLiveData = MutableLiveData<Result<String>>()
     val updateCartLiveData: LiveData<Result<String>>
@@ -304,7 +304,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         iniQuantityFlow()
     }
 
-    fun updateQuantity(quantity: Int, miniCartItem: MiniCartItem2.MiniCartItemProduct) {
+    fun updateQuantity(quantity: Int, miniCartItem: MiniCartItem.MiniCartItemProduct) {
         _quantityUpdated.value = quantity to miniCartItem
     }
 
@@ -345,7 +345,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
         val miniCartData = _p2Data.value?.miniCart?.getMiniCartItemProduct(productId)
         if (miniCartData == null) {
-            _p2Data.value?.miniCart?.set(MiniCartItemKey(productId), MiniCartItem2.MiniCartItemProduct(
+            _p2Data.value?.miniCart?.set(MiniCartItemKey(productId), MiniCartItem.MiniCartItemProduct(
                     cartId = cartId,
                     productId = productId,
                     quantity = quantity,
@@ -356,7 +356,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private fun hitUpdateCart(quantity: Int, request: MiniCartItem2.MiniCartItemProduct): Flow<Result<String>> {
+    private fun hitUpdateCart(quantity: Int, request: MiniCartItem.MiniCartItemProduct): Flow<Result<String>> {
         return flow {
             val copyOfMiniCartItem = request.copy(quantity = quantity)
             val updateCartRequest = UpdateCartRequest(
@@ -403,7 +403,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         this.talkLastAction = talkLastAction
     }
 
-    fun getMiniCartItem(): MiniCartItem2.MiniCartItemProduct? {
+    fun getMiniCartItem(): MiniCartItem.MiniCartItemProduct? {
         return p2Data.value?.miniCart?.getMiniCartItemProduct(getDynamicProductInfoP1?.basic?.productID ?: "")
     }
 
@@ -752,7 +752,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     fun loadRecommendation(pageName: String,
                            productId: String,
                            isTokoNow: Boolean,
-                           miniCart: MutableMap<MiniCartItemKey, MiniCartItem2>?) {
+                           miniCart: MutableMap<MiniCartItemKey, MiniCartItem>?) {
         if (GlobalConfig.isSellerApp()) {
             return
         }
@@ -982,7 +982,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    fun deleteRecomItemFromCart(recomItem: RecommendationItem, miniCartItem: MiniCartItem2.MiniCartItemProduct?) {
+    fun deleteRecomItemFromCart(recomItem: RecommendationItem, miniCartItem: MiniCartItem.MiniCartItemProduct?) {
         launchCatchError(block = {
             miniCartItem?.let {
                 deleteCartUseCase.get().setParams(listOf(miniCartItem.cartId))
@@ -1024,7 +1024,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    fun updateRecomCartNonVariant(recomItem: RecommendationItem, quantity: Int, miniCartItem: MiniCartItem2.MiniCartItemProduct?) {
+    fun updateRecomCartNonVariant(recomItem: RecommendationItem, quantity: Int, miniCartItem: MiniCartItem.MiniCartItemProduct?) {
         launchCatchError(block = {
             miniCartItem?.let {
                 val copyOfMiniCartItem = UpdateCartRequest(cartId = it.cartId, quantity = quantity, notes = it.notes)

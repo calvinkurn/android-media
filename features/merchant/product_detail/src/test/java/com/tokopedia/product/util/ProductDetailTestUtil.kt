@@ -3,7 +3,7 @@ package com.tokopedia.product.util
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.CommonUtils
-import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
@@ -100,8 +100,8 @@ object ProductDetailTestUtil {
         return ProductDetailDataModel(getDynamicProductInfoP1, initialLayoutData, p1VariantData)
     }
 
-    fun generateMiniCartMock(productId: String): Map<MiniCartItemKey, MiniCartItem2> {
-        return mapOf(MiniCartItemKey(productId) to MiniCartItem2.MiniCartItemProduct(cartId = "111", productId = productId, quantity = 4, notes = "notes gan"))
+    fun generateMiniCartMock(productId: String): Map<MiniCartItemKey, MiniCartItem> {
+        return mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(cartId = "111", productId = productId, quantity = 4, notes = "notes gan"))
     }
 
     fun generateNotifyMeMock(): Map<String, ProductUpcomingData> {

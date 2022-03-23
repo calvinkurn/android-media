@@ -1,6 +1,6 @@
 package com.tokopedia.product.detail.common.data.model.aggregator
 
-import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 
 /**
@@ -8,5 +8,5 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
  */
 data class AggregatorMiniCartUiModel(
         val variantAggregator: ProductVariantAggregatorUiData = ProductVariantAggregatorUiData(),
-        val miniCartData: Map<MiniCartItemKey, MiniCartItem2>? = null
+        val miniCartData: Map<MiniCartItemKey, MiniCartItem>? = null
 )

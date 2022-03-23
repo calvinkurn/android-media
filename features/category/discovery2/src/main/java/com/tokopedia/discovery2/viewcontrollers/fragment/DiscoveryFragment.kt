@@ -81,7 +81,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.mvcwidget.AnimatedInfos
@@ -111,7 +111,6 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.sticky_header_recycler_view.view.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import com.tokopedia.unifyprinciples.R as RUnify
@@ -158,7 +157,7 @@ class DiscoveryFragment :
     private lateinit var parentLayout: FrameLayout
     private var pageInfoHolder:PageInfo? = null
     private var miniCartWidget: MiniCartWidget? = null
-    private var miniCartData:MiniCartSimplifiedData2? = null
+    private var miniCartData:MiniCartSimplifiedData? = null
     private var miniCartInitialized:Boolean = false
 
     private val analytics: BaseDiscoveryAnalytics by lazy {
@@ -1457,7 +1456,7 @@ class DiscoveryFragment :
         )
     }
 
-    private fun setupMiniCart(data: MiniCartSimplifiedData2) {
+    private fun setupMiniCart(data: MiniCartSimplifiedData) {
         if(data.isShowMiniCartWidget) {
             val shopIds = listOf(userAddressData?.shop_id.orEmpty())
             if (!miniCartInitialized) {
@@ -1478,7 +1477,7 @@ class DiscoveryFragment :
         syncWithCart(data)
     }
 
-    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData2) {
+    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         if (!miniCartSimplifiedData.isShowMiniCartWidget) {
             miniCartWidget?.hide()
         }
@@ -1486,7 +1485,7 @@ class DiscoveryFragment :
         syncWithCart(miniCartSimplifiedData)
     }
 
-    private fun syncWithCart(data:MiniCartSimplifiedData2){
+    private fun syncWithCart(data:MiniCartSimplifiedData){
 //        val map = HashMap<String,MiniCartItem>()
 //        data.miniCartItems.associateByTo (map,{ it.productId })
 //        val variantMap = data.miniCartItems.groupBy { it.productParentId }

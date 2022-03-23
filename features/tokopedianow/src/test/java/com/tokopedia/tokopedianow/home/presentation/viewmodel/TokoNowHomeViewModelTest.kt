@@ -11,9 +11,9 @@ import com.tokopedia.home_component.model.ChannelStyle
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
-import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.NonVariant
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -926,8 +926,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             title = "Kamu pernah beli",
             products = listOf(RepurchaseProduct(id = productId, stock = 5, maxOrder = 4, minOrder = 3))
         )
-        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem2.MiniCartItemProduct(productId = productId, quantity = 1))
-        val miniCartResponse = MiniCartSimplifiedData2(miniCartItems = miniCartItems)
+        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1))
+        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
 
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
         onGetRepurchaseWidget_thenReturn(repurchaseResponse)
@@ -1001,8 +1001,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             title = "Kamu pernah beli",
             products = listOf(RepurchaseProduct(id = productId, maxOrder = 5, minOrder = 3))
         )
-        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem2.MiniCartItemProduct(productId = productId, quantity = 1))
-        val miniCartResponse = MiniCartSimplifiedData2(miniCartItems = miniCartItems)
+        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1))
+        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
 
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
         onGetRepurchaseWidget_thenReturn(repurchaseResponse)
@@ -1122,15 +1122,15 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `when getMiniCartItem should return mini cart item by ID`() {
         val productId = "1"
 
-        val miniCartItem = MiniCartItem2.MiniCartItemProduct(productId = productId)
-        val miniCartResponse = MiniCartSimplifiedData2(miniCartItems = mapOf(MiniCartItemKey(productId) to miniCartItem))
+        val miniCartItem = MiniCartItem.MiniCartItemProduct(productId = productId)
+        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = mapOf(MiniCartItemKey(productId) to miniCartItem))
 
         onGetMiniCart_thenReturn(miniCartResponse)
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
 
         viewModel.getMiniCart(listOf("1"), "2")
 
-        val expectedResult = MiniCartItem2.MiniCartItemProduct(productId = productId)
+        val expectedResult = MiniCartItem.MiniCartItemProduct(productId = productId)
         val actualResult = viewModel.getMiniCartItem(productId)
 
         verifyGetMiniCartUseCaseCalled()
@@ -1141,8 +1141,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `given productId not match when getMiniCartItem should return NULL`() {
         val productId = "3"
 
-        val miniCartItem = MiniCartItem2.MiniCartItemProduct(productId = "1")
-        val miniCartResponse = MiniCartSimplifiedData2(miniCartItems = mapOf(MiniCartItemKey("1") to miniCartItem))
+        val miniCartItem = MiniCartItem.MiniCartItemProduct(productId = "1")
+        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = mapOf(MiniCartItemKey("1") to miniCartItem))
 
         onGetMiniCart_thenReturn(miniCartResponse)
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
@@ -1414,8 +1414,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
 
         val updateCartResponse = UpdateCartV2Data()
-        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem2.MiniCartItemProduct(productId = productId, quantity = 1, cartId = cartId))
-        val miniCartResponse = MiniCartSimplifiedData2(miniCartItems = miniCartItems)
+        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1, cartId = cartId))
+        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
 
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
         onGetMiniCart_thenReturn(miniCartResponse)
@@ -1481,8 +1481,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             homeRecomResponse
         )
 
-        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem2.MiniCartItemProduct(productId = productId, quantity = 1, cartId = cartId))
-        val miniCartResponse = MiniCartSimplifiedData2(miniCartItems = miniCartItems)
+        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1, cartId = cartId))
+        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
 
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
         onGetMiniCart_thenReturn(miniCartResponse)
@@ -1533,8 +1533,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             homeRecomResponse
         )
 
-        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem2.MiniCartItemProduct(productId = productId, quantity = 1, cartId = cartId))
-        val miniCartResponse = MiniCartSimplifiedData2(miniCartItems = miniCartItems)
+        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1, cartId = cartId))
+        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
 
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
         onGetMiniCart_thenReturn(miniCartResponse)
@@ -1600,8 +1600,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             homeRecomResponse
         )
 
-        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem2.MiniCartItemProduct(productId = productId, quantity = 1, cartId = cartId))
-        val miniCartResponse = MiniCartSimplifiedData2(miniCartItems = miniCartItems)
+        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1, cartId = cartId))
+        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
 
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
         onGetMiniCart_thenReturn(miniCartResponse)
@@ -2275,7 +2275,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `when setProductAddToCartQuantity throw exception should not set homeLayoutList value`() {
         onGetHomeLayoutItemList_returnNull()
 
-        viewModel.setProductAddToCartQuantity(MiniCartSimplifiedData2())
+        viewModel.setProductAddToCartQuantity(MiniCartSimplifiedData())
 
         viewModel.homeLayoutList
             .verifyValueEquals(null)

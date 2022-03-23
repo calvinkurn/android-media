@@ -5,6 +5,7 @@ import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
 import com.tokopedia.minicart.common.data.response.minicartlist.Action
 import com.tokopedia.minicart.common.data.response.minicartlist.WholesalePrice
 
+// TODO: BUNDLING NOW MINI CART
 data class MiniCartProductUiModel(
         var cartId: String = "",
         var productId: String = "",

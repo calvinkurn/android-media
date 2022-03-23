@@ -144,6 +144,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     }
 
     private fun renderCollapsedCartItems(cartShopHolderData: CartShopHolderData) {
+        // TODO: BUNDLING NOW COLLAPSED
         val maxIndex = min(10, cartShopHolderData.productUiModelList.size)
         val cartCartCollapsedProductAdapter = CartCollapsedProductAdapter(actionListener)
         cartCartCollapsedProductAdapter.cartCollapsedProductHolderDataList = cartShopHolderData.productUiModelList.subList(0, maxIndex)

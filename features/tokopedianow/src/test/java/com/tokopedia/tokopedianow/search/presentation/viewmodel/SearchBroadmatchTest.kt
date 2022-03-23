@@ -1,9 +1,9 @@
 package com.tokopedia.tokopedianow.search.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
@@ -160,12 +160,12 @@ class SearchBroadmatchTest: SearchTestFixtures() {
     }
 
     private fun `Given get mini cart simplified use case will be successful`(
-        miniCartSimplifiedData: MiniCartSimplifiedData2
+        miniCartSimplifiedData: MiniCartSimplifiedData
     ) {
         every {
             getMiniCartListSimplifiedUseCase.execute(any(), any())
         } answers {
-            firstArg<(MiniCartSimplifiedData2) -> Unit>().invoke(miniCartSimplifiedData)
+            firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(miniCartSimplifiedData)
         }
     }
 
@@ -174,7 +174,7 @@ class SearchBroadmatchTest: SearchTestFixtures() {
     }
 
     private fun `Then assert broadmatch item quantity is updated`(
-        miniCartSimplifiedData: MiniCartSimplifiedData2
+        miniCartSimplifiedData: MiniCartSimplifiedData
     ) {
         val miniCartItems = miniCartSimplifiedData.miniCartItems
         val visitableList = tokoNowSearchViewModel.visitableListLiveData.value!!
@@ -185,14 +185,14 @@ class SearchBroadmatchTest: SearchTestFixtures() {
     }
 
     private fun `Then assert broad match item quantity`(
-            miniCartItems: Map<MiniCartItemKey, MiniCartItem2>,
+            miniCartItems: Map<MiniCartItemKey, MiniCartItem>,
             broadMatchList: List<BroadMatchDataView>,
     ) {
         val broadMatchProductItems = broadMatchList.flatMap { it.broadMatchItemDataViewList }
 
         miniCartItems.forEach { miniCartItem ->
             val item = miniCartItem.value
-            if (item is MiniCartItem2.MiniCartItemProduct) {
+            if (item is MiniCartItem.MiniCartItemProduct) {
                 val broadMatchItem = broadMatchProductItems.find {
                     it.id == item.productId
                 } ?: return@forEach
@@ -203,12 +203,12 @@ class SearchBroadmatchTest: SearchTestFixtures() {
         }
     }
 
-    private fun createInvalidNonVariantQtyReason(miniCartItem: MiniCartItem2.MiniCartItemProduct) =
+    private fun createInvalidNonVariantQtyReason(miniCartItem: MiniCartItem.MiniCartItemProduct) =
         "Product \"${miniCartItem.productId}\" quantity is invalid."
 
     private fun `Then assert updated indices`(
-        miniCartItems: Map<MiniCartItemKey, MiniCartItem2>,
-        visitableList: List<Visitable<*>>,
+            miniCartItems: Map<MiniCartItemKey, MiniCartItem>,
+            visitableList: List<Visitable<*>>,
     ) {
         val expectedUpdatedIndices = createExpectedUpdatedIndices(miniCartItems, visitableList)
         val actualUpdatedIndices = tokoNowSearchViewModel.updatedVisitableIndicesLiveData.value!!
@@ -218,8 +218,8 @@ class SearchBroadmatchTest: SearchTestFixtures() {
     }
 
     private fun createExpectedUpdatedIndices(
-        miniCartItems: Map<MiniCartItemKey, MiniCartItem2>,
-        visitableList: List<Visitable<*>>,
+            miniCartItems: Map<MiniCartItemKey, MiniCartItem>,
+            visitableList: List<Visitable<*>>,
     ): Set<Int> {
         val expectedUpdatedIndices = mutableSetOf<Int>()
 
@@ -227,7 +227,7 @@ class SearchBroadmatchTest: SearchTestFixtures() {
             if (visitable is BroadMatchDataView) {
                 miniCartItems.forEach { miniCartItem ->
                     val item = miniCartItem.value
-                    if (item is MiniCartItem2.MiniCartItemProduct) {
+                    if (item is MiniCartItem.MiniCartItemProduct) {
                         visitable.broadMatchItemDataViewList.forEach {
                             val isInMiniCart = it.id == item.productId
 
@@ -255,7 +255,7 @@ class SearchBroadmatchTest: SearchTestFixtures() {
         `Then assert broadmatch item quantity is updated`(miniCartSimplifiedData)
     }
 
-    private fun `When view update cart items`(miniCartSimplifiedData: MiniCartSimplifiedData2) {
+    private fun `When view update cart items`(miniCartSimplifiedData: MiniCartSimplifiedData) {
         tokoNowSearchViewModel.onViewUpdateCartItems(miniCartSimplifiedData)
     }
 }

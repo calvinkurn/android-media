@@ -3,8 +3,8 @@ package com.tokopedia.tokopedianow.repurchase.domain.mapper
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.minicart.common.domain.data.MiniCartItem2
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
@@ -249,11 +249,11 @@ object RepurchaseLayoutMapper {
         }
     }
 
-    fun MutableList<Visitable<*>>.updateProductATCQuantity(miniCart: MiniCartSimplifiedData2) {
+    fun MutableList<Visitable<*>>.updateProductATCQuantity(miniCart: MiniCartSimplifiedData) {
 //        val variantGroup = miniCart.miniCartItems.groupBy { it.productParentId }
 
         miniCart.miniCartItems.values.map { miniCartItem ->
-            if (miniCartItem is MiniCartItem2.MiniCartItemProduct) {
+            if (miniCartItem is MiniCartItem.MiniCartItemProduct) {
                 val productId = miniCartItem.productId
                 val parentId = miniCartItem.productParentId
                 val quantity = if (parentId != DEFAULT_PARENT_ID) {
@@ -267,12 +267,12 @@ object RepurchaseLayoutMapper {
         }
     }
 
-    fun MutableList<Visitable<*>>.updateDeletedATCQuantity(miniCart: MiniCartSimplifiedData2, type: String) {
+    fun MutableList<Visitable<*>>.updateDeletedATCQuantity(miniCart: MiniCartSimplifiedData, type: String) {
         when (type) {
             PRODUCT_REPURCHASE -> {
                 val productList = filterIsInstance<RepurchaseProductUiModel>()
                 val cartProductIds = miniCart.miniCartItems.values.mapNotNull {
-                    if (it is MiniCartItem2.MiniCartItemProduct) it.productId else null
+                    if (it is MiniCartItem.MiniCartItemProduct) it.productId else null
                 }
                 val deletedProducts = productList.filter { it.id !in cartProductIds }
 //                val variantGroup = miniCart.miniCartItems.groupBy { it.productParentId }
@@ -298,7 +298,7 @@ object RepurchaseLayoutMapper {
                 firstOrNull { it is TokoNowRecommendationCarouselUiModel }?.let { uiModel ->
                     val layoutUiModel = uiModel as TokoNowRecommendationCarouselUiModel
                     val cartProductIds = miniCart.miniCartItems.values.mapNotNull {
-                        if (it is MiniCartItem2.MiniCartItemProduct) it.productId else null
+                        if (it is MiniCartItem.MiniCartItemProduct) it.productId else null
                     }
                     val deletedProducts = layoutUiModel.carouselData.recommendationData.recommendationItemList.filter { it.productId.toString() !in cartProductIds }
 //                    val variantGroup = miniCart.miniCartItems.groupBy { it.productParentId }

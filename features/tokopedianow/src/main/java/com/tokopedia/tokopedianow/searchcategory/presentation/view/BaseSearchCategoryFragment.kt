@@ -45,7 +45,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.network.utils.ErrorHandler
@@ -677,14 +677,14 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().onViewClickCategoryFilterChip(option, isSelected)
     }
 
-    private fun updateMiniCartWidget(miniCartSimplifiedData: MiniCartSimplifiedData2?) {
+    private fun updateMiniCartWidget(miniCartSimplifiedData: MiniCartSimplifiedData?) {
         miniCartSimplifiedData ?: return
 
         miniCartWidget?.updateData(miniCartSimplifiedData)
         recomWidgetViewModel?.updateMiniCartWithPageData(miniCartSimplifiedData)
     }
 
-    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData2) {
+    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         getViewModel().onViewUpdateCartItems(miniCartSimplifiedData)
         recomWidgetViewModel?.updateMiniCartWithPageData(miniCartSimplifiedData)
     }
@@ -947,7 +947,7 @@ abstract class BaseSearchCategoryFragment:
         )
     }
 
-    override fun onMiniCartUpdatedFromRecomWidget(miniCartSimplifiedData: MiniCartSimplifiedData2) {
+    override fun onMiniCartUpdatedFromRecomWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
         getViewModel().refreshMiniCart()
     }
 

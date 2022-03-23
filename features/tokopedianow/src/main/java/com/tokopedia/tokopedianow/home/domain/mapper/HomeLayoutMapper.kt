@@ -5,8 +5,8 @@ import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.minicart.common.domain.data.MiniCartItem2
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -118,7 +118,7 @@ object HomeLayoutMapper {
             response: List<HomeLayoutResponse>,
             hasTickerBeenRemoved: Boolean,
             removeAbleWidgets: List<HomeRemoveAbleWidget>,
-            miniCartData: MiniCartSimplifiedData2?,
+            miniCartData: MiniCartSimplifiedData?,
             localCacheModel: LocalCacheModel,
             isLoggedIn: Boolean
     ) {
@@ -155,10 +155,10 @@ object HomeLayoutMapper {
     }
 
     fun MutableList<HomeLayoutItemUiModel>.addMoreHomeLayout(
-        response: List<HomeLayoutResponse>,
-        removeAbleWidgets: List<HomeRemoveAbleWidget>,
-        miniCartData: MiniCartSimplifiedData2?,
-        serviceType: String
+            response: List<HomeLayoutResponse>,
+            removeAbleWidgets: List<HomeRemoveAbleWidget>,
+            miniCartData: MiniCartSimplifiedData?,
+            serviceType: String
     ) {
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
             if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
@@ -238,7 +238,7 @@ object HomeLayoutMapper {
     fun MutableList<HomeLayoutItemUiModel>.mapProductPurchaseData(
         item: TokoNowRepurchaseUiModel,
         response: RepurchaseData,
-        miniCartData: MiniCartSimplifiedData2? = null
+        miniCartData: MiniCartSimplifiedData? = null
     ) {
         updateItemById(item.id) {
             val uiModel = mapToRepurchaseUiModel(item, response, miniCartData)
@@ -246,7 +246,7 @@ object HomeLayoutMapper {
         }
     }
 
-    fun getAddToCartQuantity(productId: String, miniCartData: MiniCartSimplifiedData2?): Int {
+    fun getAddToCartQuantity(productId: String, miniCartData: MiniCartSimplifiedData?): Int {
         return miniCartData?.run {
             val miniCartItem = miniCartData.miniCartItems.getMiniCartItemProduct(productId)
             val productParentId = miniCartItem?.productParentId ?: DEFAULT_PARENT_ID
@@ -263,14 +263,14 @@ object HomeLayoutMapper {
     }
 
     fun MutableList<HomeLayoutItemUiModel>.updateRepurchaseProductQuantity(
-        miniCartData: MiniCartSimplifiedData2,
+            miniCartData: MiniCartSimplifiedData,
     ) {
         updateAllProductQuantity(miniCartData, REPURCHASE_PRODUCT)
         updateDeletedProductQuantity(miniCartData, REPURCHASE_PRODUCT)
     }
 
     fun MutableList<HomeLayoutItemUiModel>.updateProductRecomQuantity(
-        miniCartData: MiniCartSimplifiedData2,
+            miniCartData: MiniCartSimplifiedData,
     ) {
         updateAllProductQuantity(miniCartData, PRODUCT_RECOM)
         updateDeletedProductQuantity(miniCartData, PRODUCT_RECOM)
@@ -278,11 +278,11 @@ object HomeLayoutMapper {
 
     // Update all product with quantity from cart
     private fun MutableList<HomeLayoutItemUiModel>.updateAllProductQuantity(
-        miniCartData: MiniCartSimplifiedData2,
-        @TokoNowLayoutType type: String
+            miniCartData: MiniCartSimplifiedData,
+            @TokoNowLayoutType type: String
     ) {
         miniCartData.miniCartItems.values.map { miniCartItem ->
-            if (miniCartItem is MiniCartItem2.MiniCartItemProduct) {
+            if (miniCartItem is MiniCartItem.MiniCartItemProduct) {
                 val productId = miniCartItem.productId
                 val quantity = getAddToCartQuantity(productId, miniCartData)
                 updateProductQuantity(productId, quantity, type)
@@ -304,15 +304,15 @@ object HomeLayoutMapper {
 
     // Update quantity to 0 for deleted product in cart
     private fun MutableList<HomeLayoutItemUiModel>.updateDeletedProductQuantity(
-        miniCartData: MiniCartSimplifiedData2,
-        @TokoNowLayoutType type: String
+            miniCartData: MiniCartSimplifiedData,
+            @TokoNowLayoutType type: String
     ) {
         when (type) {
             REPURCHASE_PRODUCT -> {
                 firstOrNull { it.layout is TokoNowRepurchaseUiModel }?.run {
                     val layout = layout as TokoNowRepurchaseUiModel
                     val cartProductIds = miniCartData.miniCartItems.values.mapNotNull {
-                        if (it is MiniCartItem2.MiniCartItemProduct) it.productId else null
+                        if (it is MiniCartItem.MiniCartItemProduct) it.productId else null
                     }
                     val deletedProducts = layout.productList.filter { it.productId !in cartProductIds }
 //                    val variantGroup = miniCartData.miniCartItems.groupBy { it.productParentId }
@@ -337,7 +337,7 @@ object HomeLayoutMapper {
                 filter { it.layout is HomeProductRecomUiModel }.forEach { homeLayoutItemUiModel->
                     val layout = homeLayoutItemUiModel.layout as HomeProductRecomUiModel
                     val cartProductIds = miniCartData.miniCartItems.values.mapNotNull {
-                        if (it is MiniCartItem2.MiniCartItemProduct) it.productId else null
+                        if (it is MiniCartItem.MiniCartItemProduct) it.productId else null
                     }
                     val deletedProducts = layout.recomWidget.recommendationItemList.filter { it.productId.toString() !in cartProductIds }
 //                    val variantGroup = miniCartData.miniCartItems.groupBy { it.productParentId }
@@ -476,9 +476,9 @@ object HomeLayoutMapper {
      * @see HomeLayoutItemState.NOT_LOADED
      */
     private fun mapToHomeUiModel(
-        response: HomeLayoutResponse,
-        miniCartData: MiniCartSimplifiedData2? = null,
-        serviceType: String
+            response: HomeLayoutResponse,
+            miniCartData: MiniCartSimplifiedData? = null,
+            serviceType: String
     ): HomeLayoutItemUiModel? {
         val loadedState = HomeLayoutItemState.LOADED
         val notLoadedState = HomeLayoutItemState.NOT_LOADED

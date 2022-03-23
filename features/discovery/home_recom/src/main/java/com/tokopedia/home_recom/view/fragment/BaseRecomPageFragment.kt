@@ -34,7 +34,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -264,7 +264,7 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
         }
     }
 
-    fun updateMinicartWidgetVisibility(miniCartSimplifiedData: MiniCartSimplifiedData2) {
+    fun updateMinicartWidgetVisibility(miniCartSimplifiedData: MiniCartSimplifiedData) {
         miniCartWidget?.let {
             if (miniCartSimplifiedData.miniCartItems.isEmpty()) {
                 it.gone()

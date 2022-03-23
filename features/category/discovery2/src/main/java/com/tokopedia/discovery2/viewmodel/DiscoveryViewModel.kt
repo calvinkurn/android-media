@@ -44,8 +44,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.minicart.common.domain.data.MiniCartItem2
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -82,15 +82,15 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private val discoveryBottomNavLiveData = MutableLiveData<Result<ComponentsItem>>()
     private val discoveryAnchorTabLiveData = MutableLiveData<Result<ComponentsItem>>()
 
-    var miniCartSimplifiedData: MiniCartSimplifiedData2? = null
+    var miniCartSimplifiedData: MiniCartSimplifiedData? = null
 
     val miniCartAdd: LiveData<Result<AddToCartDataModel>>
         get() = _miniCartAdd
     private val _miniCartAdd = SingleLiveEvent<Result<AddToCartDataModel>>()
 
-    val miniCart: LiveData<Result<MiniCartSimplifiedData2>>
+    val miniCart: LiveData<Result<MiniCartSimplifiedData>>
         get() = _miniCart
-    private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData2>>()
+    private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
 
     val miniCartUpdate: LiveData<Result<UpdateCartV2Data>>
         get() = _miniCartUpdate
@@ -127,7 +127,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         get() = Dispatchers.Main + SupervisorJob()
 
 
-    fun getMiniCartItem(productId: String): MiniCartItem2.MiniCartItemProduct? {
+    fun getMiniCartItem(productId: String): MiniCartItem.MiniCartItemProduct? {
         val items = miniCartSimplifiedData?.miniCartItems.orEmpty()
         return items.getMiniCartItemProduct(productId)
     }
@@ -169,10 +169,10 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     private fun updateItemCart(
-        parentPosition:Int,
-        position:Int,
-        miniCartItem: MiniCartItem2.MiniCartItemProduct,
-        quantity: Int) {
+            parentPosition:Int,
+            position:Int,
+            miniCartItem: MiniCartItem.MiniCartItemProduct,
+            quantity: Int) {
         miniCartItem.quantity = quantity
         val updateCartRequest = UpdateCartRequest(
             cartId = miniCartItem.cartId,
@@ -207,7 +207,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         }
     }
 
-    private fun removeItemCart(parentPosition: Int, position: Int, miniCartItem: MiniCartItem2.MiniCartItemProduct) {
+    private fun removeItemCart(parentPosition: Int, position: Int, miniCartItem: MiniCartItem.MiniCartItemProduct) {
         deleteCartUseCase.setParams(
             cartIdList = listOf(miniCartItem.cartId)
         )

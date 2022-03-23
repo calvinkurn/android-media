@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.searchcategory.UpdateCartTestHelper
 import com.tokopedia.tokopedianow.searchcategory.UpdateCartTestHelper.Callback
@@ -76,7 +76,7 @@ class CategoryUpdateCartTest: CategoryTestFixtures(), Callback {
     fun `when choose address null should NOT update miniCart live data`() {
         `Given address data null`()
 
-        tokoNowCategoryViewModel.onViewUpdateCartItems(MiniCartSimplifiedData2())
+        tokoNowCategoryViewModel.onViewUpdateCartItems(MiniCartSimplifiedData())
 
         tokoNowCategoryViewModel.miniCartWidgetLiveData
             .verifyValueEquals(null)
@@ -87,7 +87,7 @@ class CategoryUpdateCartTest: CategoryTestFixtures(), Callback {
 
     @Test
     fun `when warehouseId 0 should update isShowMiniCartLiveData false`() {
-        val miniCartSimplifiedData = MiniCartSimplifiedData2(isShowMiniCartWidget = true)
+        val miniCartSimplifiedData = MiniCartSimplifiedData(isShowMiniCartWidget = true)
 
         `Given choose address data`(LocalCacheModel(warehouse_id = "0"))
 
@@ -100,7 +100,7 @@ class CategoryUpdateCartTest: CategoryTestFixtures(), Callback {
 
     @Test
     fun `when warehouseId NOT equals 0 should update isShowMiniCartLiveData true`() {
-        val miniCartSimplifiedData = MiniCartSimplifiedData2(isShowMiniCartWidget = true)
+        val miniCartSimplifiedData = MiniCartSimplifiedData(isShowMiniCartWidget = true)
 
         `Given choose address data`(LocalCacheModel(warehouse_id = "1"))
 
@@ -113,7 +113,7 @@ class CategoryUpdateCartTest: CategoryTestFixtures(), Callback {
 
     @Test
     fun `when isShowMiniCartWidget false should update isShowMiniCartLiveData false`() {
-        val miniCartSimplifiedData = MiniCartSimplifiedData2(isShowMiniCartWidget = false)
+        val miniCartSimplifiedData = MiniCartSimplifiedData(isShowMiniCartWidget = false)
 
         `Given choose address data`(LocalCacheModel(warehouse_id = "1"))
 

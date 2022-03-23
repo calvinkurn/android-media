@@ -21,7 +21,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.AutoPlayController
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
@@ -426,7 +426,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
         }
     }
 
-    private fun updateWithCart(list: List<ComponentsItem>, map: Map<MiniCartItemKey, MiniCartItem2>?) : Boolean {
+    private fun updateWithCart(list: List<ComponentsItem>, map: Map<MiniCartItemKey, MiniCartItem>?) : Boolean {
         var shouldRefresh = false
         if (map == null) return shouldRefresh
         list.forEach { item ->
@@ -498,14 +498,14 @@ fun setComponent(componentId: String, pageName: String, componentsItem: Componen
     }
 }
 
-fun getCartData(pageName: String):Map<MiniCartItemKey, MiniCartItem2>?{
+fun getCartData(pageName: String):Map<MiniCartItemKey, MiniCartItem>?{
     discoveryPageData[pageName]?.let {
         return it.cartMap
     }
     return null
 }
 
-fun setCartData(cartMap:Map<MiniCartItemKey, MiniCartItem2>, pageName: String){
+fun setCartData(cartMap:Map<MiniCartItemKey, MiniCartItem>, pageName: String){
     discoveryPageData[pageName]?.let {
         it.cartMap = cartMap
     }

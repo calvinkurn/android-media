@@ -32,7 +32,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
@@ -250,7 +250,7 @@ class InfiniteTokonowRecomFragment :
         return null
     }
 
-    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData2) {
+    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         getMiniCartData()
     }
 

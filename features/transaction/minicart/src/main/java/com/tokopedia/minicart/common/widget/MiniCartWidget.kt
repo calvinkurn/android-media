@@ -33,7 +33,7 @@ import com.tokopedia.minicart.chatlist.MiniCartChatListBottomSheet
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -437,7 +437,7 @@ class MiniCartWidget @JvmOverloads constructor(
     * Function to trigger update mini cart data
     * This will trigger widget to update the UI with provided data
     * */
-    fun updateData(miniCartSimplifiedData: MiniCartSimplifiedData2) {
+    fun updateData(miniCartSimplifiedData: MiniCartSimplifiedData) {
         setTotalAmountLoading(true)
         viewModel?.setMiniCartABTestData(miniCartSimplifiedData.miniCartWidgetData.isOCCFlow, miniCartSimplifiedData.miniCartWidgetData.buttonBuyWording)
         viewModel?.updateMiniCartSimplifiedData(miniCartSimplifiedData)
@@ -452,7 +452,7 @@ class MiniCartWidget @JvmOverloads constructor(
         }
     }
 
-    private fun renderWidget(miniCartSimplifiedData: MiniCartSimplifiedData2) {
+    private fun renderWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
         if (miniCartSimplifiedData.miniCartWidgetData.containsOnlyUnavailableItems) {
             renderUnavailableWidget(miniCartSimplifiedData)
         } else {
@@ -464,7 +464,7 @@ class MiniCartWidget @JvmOverloads constructor(
         validateAmountCtaLabel(miniCartSimplifiedData)
     }
 
-    private fun validateAmountCtaLabel(miniCartSimplifiedData: MiniCartSimplifiedData2) {
+    private fun validateAmountCtaLabel(miniCartSimplifiedData: MiniCartSimplifiedData) {
         if (viewModel?.miniCartABTestData?.value?.isOCCFlow == true) {
             // Change button from `Beli Langsung` to `Beli` if ellipsis
             totalAmount?.post {
@@ -481,7 +481,7 @@ class MiniCartWidget @JvmOverloads constructor(
         }
     }
 
-    private fun renderAvailableWidget(miniCartSimplifiedData: MiniCartSimplifiedData2) {
+    private fun renderAvailableWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
         totalAmount?.apply {
             setLabelTitle(context.getString(R.string.mini_cart_widget_label_see_cart))
             setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartSimplifiedData.miniCartWidgetData.totalProductPrice, false).removeDecimalSuffix())
@@ -497,7 +497,7 @@ class MiniCartWidget @JvmOverloads constructor(
         imageChevronUnavailable?.gone()
     }
 
-    private fun renderUnavailableWidget(miniCartSimplifiedData: MiniCartSimplifiedData2) {
+    private fun renderUnavailableWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
         totalAmount?.apply {
             setLabelTitle("")
             setAmount("")

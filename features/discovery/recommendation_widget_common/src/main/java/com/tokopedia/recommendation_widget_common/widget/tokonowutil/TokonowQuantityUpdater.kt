@@ -1,6 +1,6 @@
 package com.tokopedia.recommendation_widget_common.widget.tokonowutil
 
-import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
@@ -14,7 +14,7 @@ object TokonowQuantityUpdater {
 
     fun updateRecomWithMinicartData(
         data: RecommendationCarouselData,
-        miniCart: MutableMap<MiniCartItemKey, MiniCartItem2>?
+        miniCart: MutableMap<MiniCartItemKey, MiniCartItem>?
     ) {
         val newdata = mutableListOf<RecommendationItem>()
         data.recommendationData.recommendationItemList.forEach {

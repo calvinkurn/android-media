@@ -2,7 +2,7 @@ package com.tokopedia.minicart.common.analytics
 
 import android.os.Bundle
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
-import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
@@ -160,7 +160,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         }
     }
 
-    private fun getBundleProduct(product: MiniCartItem2.MiniCartItemProduct): Bundle {
+    private fun getBundleProduct(product: MiniCartItem.MiniCartItemProduct): Bundle {
         return Bundle().apply {
             putString(DIMENSION_104, product.campaignId.toEnhancedEcommerceDefaultValueIfEmpty())
             putString(DIMENSION_38, product.attribution.toEnhancedEcommerceDefaultValueIfEmpty())
@@ -334,7 +334,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
 
     // 10, 11, 12 Widget - DONE
     @JvmName("eventClickBuyFromWidget")
-    fun eventClickBuy(page: Page, products: List<MiniCartItem2>, isOCCFlow: Boolean) {
+    fun eventClickBuy(page: Page, products: List<MiniCartItem>, isOCCFlow: Boolean) {
         var eventAction = ""
         var eventCategory = ""
         when (page) {
@@ -372,7 +372,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
             putString(KEY_CHECKOUT_STEP, VALUE_CHECKOUT_STEP_ONE)
             val items = ArrayList<Bundle>()
             products.forEach { product ->
-                if (product is MiniCartItem2.MiniCartItemProduct && !product.isError) {
+                if (product is MiniCartItem.MiniCartItemProduct && !product.isError) {
                     val bundle = getBundleProduct(product)
                     items.add(bundle)
                 }

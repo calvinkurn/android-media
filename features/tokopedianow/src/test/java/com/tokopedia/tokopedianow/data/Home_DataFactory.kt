@@ -10,10 +10,10 @@ import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.response.Tokonow
-import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
@@ -257,14 +257,14 @@ fun createChooseAddress(): GetStateChosenAddressQglResponse {
     )
 }
 
-fun createMiniCartSimplifier(): MiniCartSimplifiedData2 {
-    return MiniCartSimplifiedData2(
+fun createMiniCartSimplifier(): MiniCartSimplifiedData {
+    return MiniCartSimplifiedData(
             miniCartWidgetData = MiniCartWidgetData(
                     totalProductCount = 1,
                     totalProductPrice = 100
             ),
             miniCartItems = mapOf(
-                    MiniCartItemKey("125") to MiniCartItem2.MiniCartItemProduct(
+                    MiniCartItemKey("125") to MiniCartItem.MiniCartItemProduct(
                             isError = false,
                             cartId = "123",
                             productId = "125",
@@ -272,7 +272,7 @@ fun createMiniCartSimplifier(): MiniCartSimplifiedData2 {
                             quantity = 12,
                             notes = "Hai"
                     ),
-                    MiniCartItemKey("126", type = MiniCartItemType.PARENT) to MiniCartItem2.MiniCartItemParentProduct(
+                    MiniCartItemKey("126", type = MiniCartItemType.PARENT) to MiniCartItem.MiniCartItemParentProduct(
                             parentId = "126",
                             totalQuantity = 12,
                     ),

@@ -18,8 +18,8 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
-import com.tokopedia.minicart.common.domain.data.MiniCartItem2
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -115,7 +115,7 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _homeLayoutList
     val keywordSearch: LiveData<SearchPlaceholder>
         get() = _keywordSearch
-    val miniCart: LiveData<Result<MiniCartSimplifiedData2>>
+    val miniCart: LiveData<Result<MiniCartSimplifiedData>>
         get() = _miniCart
     val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
         get() = _chooseAddress
@@ -136,7 +136,7 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
-    private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData2>>()
+    private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
     private val _miniCartAdd = MutableLiveData<Result<AddToCartDataModel>>()
     private val _miniCartUpdate = MutableLiveData<Result<UpdateCartV2Data>>()
@@ -147,7 +147,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _setUserPreference = MutableLiveData<Result<SetUserPreferenceData>>()
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
-    private var miniCartSimplifiedData: MiniCartSimplifiedData2? = null
+    private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
     private var hasTickerBeenRemoved = false
     private var channelToken = ""
 
@@ -349,12 +349,12 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
-    fun getMiniCartItem(productId: String): MiniCartItem2.MiniCartItemProduct? {
+    fun getMiniCartItem(productId: String): MiniCartItem.MiniCartItemProduct? {
         val items = miniCartSimplifiedData?.miniCartItems.orEmpty()
         return items.getMiniCartItemProduct(productId)
     }
 
-    fun setProductAddToCartQuantity(miniCart: MiniCartSimplifiedData2) {
+    fun setProductAddToCartQuantity(miniCart: MiniCartSimplifiedData) {
         launchCatchError(block = {
             setMiniCartAndProductQuantity(miniCart)
             val data = HomeLayoutListUiModel(
@@ -618,9 +618,9 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private fun updateItemCart(
-        miniCartItem: MiniCartItem2.MiniCartItemProduct,
-        quantity: Int,
-        @TokoNowLayoutType type: String
+            miniCartItem: MiniCartItem.MiniCartItemProduct,
+            quantity: Int,
+            @TokoNowLayoutType type: String
     ) {
         miniCartItem.quantity = quantity
         val cartId = miniCartItem.cartId
@@ -644,7 +644,7 @@ class TokoNowHomeViewModel @Inject constructor(
         })
     }
 
-    private fun removeItemCart(miniCartItem: MiniCartItem2.MiniCartItemProduct, @TokoNowLayoutType type: String) {
+    private fun removeItemCart(miniCartItem: MiniCartItem.MiniCartItemProduct, @TokoNowLayoutType type: String) {
         deleteCartUseCase.setParams(
             cartIdList = listOf(miniCartItem.cartId)
         )
@@ -659,17 +659,17 @@ class TokoNowHomeViewModel @Inject constructor(
         })
     }
 
-    private fun setMiniCartAndProductQuantity(miniCart: MiniCartSimplifiedData2) {
+    private fun setMiniCartAndProductQuantity(miniCart: MiniCartSimplifiedData) {
         setMiniCartSimplifiedData(miniCart)
         updateProductQuantity(miniCart)
     }
 
-    private fun updateProductQuantity(miniCart: MiniCartSimplifiedData2) {
+    private fun updateProductQuantity(miniCart: MiniCartSimplifiedData) {
         homeLayoutItemList.updateRepurchaseProductQuantity(miniCart)
         homeLayoutItemList.updateProductRecomQuantity(miniCart)
     }
 
-    private fun setMiniCartSimplifiedData(miniCart: MiniCartSimplifiedData2) {
+    private fun setMiniCartSimplifiedData(miniCart: MiniCartSimplifiedData) {
         miniCartSimplifiedData = miniCart
     }
 

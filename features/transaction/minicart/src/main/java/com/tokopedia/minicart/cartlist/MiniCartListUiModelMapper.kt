@@ -20,10 +20,10 @@ import com.tokopedia.minicart.common.data.response.minicartlist.CartDetail
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.data.response.minicartlist.ShipmentInformation
 import com.tokopedia.minicart.common.data.response.minicartlist.Shop
-import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import java.text.NumberFormat
@@ -323,27 +323,12 @@ class MiniCartListUiModelMapper @Inject constructor() {
         }
     }
 
-//    fun reverseMapUiModel(miniCartListUiModel: MiniCartListUiModel?, tmpHiddenUnavailableItems: List<Visitable<*>>?): MiniCartSimplifiedData {
-//        if (miniCartListUiModel == null) {
-//            return MiniCartSimplifiedData()
-//        } else {
-//            return MiniCartSimplifiedData().apply {
-//                val miniCartItemsMapResult = mapMiniCartItems(miniCartListUiModel.visitables, tmpHiddenUnavailableItems)
-//                miniCartItems = miniCartItemsMapResult.first
-//                isShowMiniCartWidget = miniCartItems.isNotEmpty()
-//                miniCartWidgetData = miniCartListUiModel.miniCartWidgetUiModel
-//                miniCartWidgetData.containsOnlyUnavailableItems = miniCartItemsMapResult.second
-//                miniCartWidgetData.unavailableItemsCount = miniCartItemsMapResult.third
-//            }
-//        }
-//    }
-
-    fun reverseMapUiModel2(miniCartListUiModel: MiniCartListUiModel?, tmpHiddenUnavailableItems: List<Visitable<*>>?): MiniCartSimplifiedData2 {
+    fun reverseMapUiModel(miniCartListUiModel: MiniCartListUiModel?, tmpHiddenUnavailableItems: List<Visitable<*>>?): MiniCartSimplifiedData {
         if (miniCartListUiModel == null) {
-            return MiniCartSimplifiedData2()
+            return MiniCartSimplifiedData()
         } else {
-            return MiniCartSimplifiedData2().apply {
-                val miniCartItemsMapResult = mapMiniCartItems2(miniCartListUiModel.visitables, tmpHiddenUnavailableItems)
+            return MiniCartSimplifiedData().apply {
+                val miniCartItemsMapResult = mapMiniCartItems(miniCartListUiModel.visitables, tmpHiddenUnavailableItems)
                 miniCartItems = miniCartItemsMapResult.first
                 isShowMiniCartWidget = miniCartItems.isNotEmpty()
                 miniCartWidgetData = miniCartListUiModel.miniCartWidgetUiModel
@@ -353,57 +338,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
         }
     }
 
-//    private fun mapMiniCartItems(visitables: List<Visitable<*>>, tmpHiddenUnavailableItems: List<Visitable<*>>?): Triple<List<MiniCartItem>, Boolean, Int> {
-//        val tmpVisitables = mutableListOf<Visitable<*>>()
-//        tmpVisitables.addAll(visitables)
-//        if (tmpHiddenUnavailableItems != null) {
-//            tmpVisitables.addAll(tmpHiddenUnavailableItems)
-//        }
-//        var hasAvailableItem = false
-//        var unavailableItemCount = 0
-//        val miniCartItems = mutableListOf<MiniCartItem>()
-//        tmpVisitables.forEach { visitable ->
-//            if (visitable is MiniCartProductUiModel) {
-//                val miniCartItem = MiniCartItem().apply {
-//                    isError = visitable.isProductDisabled
-//                    cartId = visitable.cartId
-//                    productId = visitable.productId
-//                    productParentId = visitable.parentId
-//                    quantity = visitable.productQty
-//                    notes = visitable.productNotes
-//                    campaignId = visitable.campaignId
-//                    attribution = visitable.attribution
-//                    productWeight = visitable.productWeight
-//                    productSlashPriceLabel = visitable.productSlashPriceLabel
-//                    warehouseId = visitable.warehouseId
-//                    shopId = visitable.shopId
-//                    shopName = visitable.shopName
-//                    shopType = visitable.shopType
-//                    categoryId = visitable.categoryId
-//                    freeShippingType = visitable.freeShippingType
-//                    category = visitable.category
-//                    productName = visitable.productName
-//                    productVariantName = visitable.productVariantName
-//                    productPrice = visitable.productPrice
-//                }
-//                miniCartItems.add(miniCartItem)
-//
-//                if (miniCartItem.isError) {
-//                    unavailableItemCount++
-//                }
-//
-//                if (!hasAvailableItem && !miniCartItem.isError) {
-//                    hasAvailableItem = true
-//                }
-//            }
-//        }
-//
-//        val isShowMiniCartWidget = miniCartItems.isNotEmpty()
-//        val containsOnlyUnavailableItems = isShowMiniCartWidget && !hasAvailableItem
-//        return Triple(miniCartItems, containsOnlyUnavailableItems, unavailableItemCount)
-//    }
-
-    private fun mapMiniCartItems2(visitables: List<Visitable<*>>, tmpHiddenUnavailableItems: List<Visitable<*>>?): Triple<Map<MiniCartItemKey, MiniCartItem2>, Boolean, Int> {
+    private fun mapMiniCartItems(visitables: List<Visitable<*>>, tmpHiddenUnavailableItems: List<Visitable<*>>?): Triple<Map<MiniCartItemKey, MiniCartItem>, Boolean, Int> {
         val tmpVisitables = mutableListOf<Visitable<*>>()
         tmpVisitables.addAll(visitables)
         if (tmpHiddenUnavailableItems != null) {
@@ -411,11 +346,11 @@ class MiniCartListUiModelMapper @Inject constructor() {
         }
         var hasAvailableItem = false
         var unavailableItemCount = 0
-        val miniCartItems = hashMapOf<MiniCartItemKey, MiniCartItem2>()
+        val miniCartItems = hashMapOf<MiniCartItemKey, MiniCartItem>()
         tmpVisitables.forEach { visitable ->
             if (visitable is MiniCartProductUiModel) {
                 val key = MiniCartItemKey(visitable.productId)
-                val miniCartItem = MiniCartItem2.MiniCartItemProduct().apply {
+                val miniCartItem = MiniCartItem.MiniCartItemProduct().apply {
                     isError = visitable.isProductDisabled
                     cartId = visitable.cartId
                     productId = visitable.productId
@@ -450,17 +385,17 @@ class MiniCartListUiModelMapper @Inject constructor() {
                 if (miniCartItem.productParentId.isNotBlankOrZero()) {
                     val parentKey = MiniCartItemKey(miniCartItem.productParentId, type = MiniCartItemType.PARENT)
                     if (!miniCartItems.contains(parentKey)) {
-                        miniCartItems[parentKey] = MiniCartItem2.MiniCartItemParentProduct(
+                        miniCartItems[parentKey] = MiniCartItem.MiniCartItemParentProduct(
                                 parentId = miniCartItem.productParentId,
                                 totalQuantity = miniCartItem.quantity,
                                 products = hashMapOf(key to miniCartItem)
                         )
                     } else {
-                        val currentParentItem = miniCartItems[parentKey] as MiniCartItem2.MiniCartItemParentProduct
+                        val currentParentItem = miniCartItems[parentKey] as MiniCartItem.MiniCartItemParentProduct
                         val products = HashMap(currentParentItem.products)
                         products[key] = miniCartItem
                         val totalQuantity = currentParentItem.totalQuantity + miniCartItem.quantity
-                        miniCartItems[parentKey] = MiniCartItem2.MiniCartItemParentProduct(
+                        miniCartItems[parentKey] = MiniCartItem.MiniCartItemParentProduct(
                                 miniCartItem.productParentId, totalQuantity, products
                         )
                     }

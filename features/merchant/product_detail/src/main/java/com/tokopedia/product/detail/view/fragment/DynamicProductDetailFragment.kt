@@ -73,7 +73,7 @@ import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBotto
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.minicart.common.domain.data.MiniCartItem2
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
@@ -3077,7 +3077,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         viewModel.deleteProductInCart(viewModel.getDynamicProductInfoP1?.basic?.productID ?: "")
     }
 
-    override fun updateQuantityNonVarTokoNow(quantity: Int, miniCart: MiniCartItem2.MiniCartItemProduct, oldValue: Int) {
+    override fun updateQuantityNonVarTokoNow(quantity: Int, miniCart: MiniCartItem.MiniCartItemProduct, oldValue: Int) {
         if (!viewModel.isUserSessionActive) {
             doLoginWhenUserClickButton()
             return

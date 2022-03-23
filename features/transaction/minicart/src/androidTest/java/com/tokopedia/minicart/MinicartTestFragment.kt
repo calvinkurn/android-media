@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData2
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.minicart.test.R
@@ -43,7 +43,7 @@ class MinicartTestFragment : Fragment(), MiniCartWidgetListener {
         miniCartWidget = view.findViewById<MiniCartWidget>(R.id.mini_cart_widget)
     }
 
-    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData2) {
+    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         activity?.let {
             Toast.makeText(it, this.javaClass.name + "  - onCartItemsUpdated", Toast.LENGTH_SHORT).show()
         }
