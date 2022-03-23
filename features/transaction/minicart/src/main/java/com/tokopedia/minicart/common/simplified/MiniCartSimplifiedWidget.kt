@@ -57,7 +57,9 @@ class MiniCartSimplifiedWidget : BaseCustomView {
 
     private var animationDebounceJob: Job? = null
     private var lastFailedValidateMoveToCartMessage: String = ""
-    private var lastFailedValidateMoveToCart: Long = FAILED_VALIDATE_MOVE_TO_CART_DEFAULT
+    private var lastFailedValidateMoveToCart: Long = FAILED_VALIDATE_TIME_DEFAULT
+    private var lastFailedValidateErrorMessage: String = ""
+    private var lastFailedValidateError: Long = FAILED_VALIDATE_TIME_DEFAULT
 
     /*
     * Function to initialize the widget
@@ -140,7 +142,20 @@ class MiniCartSimplifiedWidget : BaseCustomView {
         setTotalAmountLoading(false)
         promoProgressBar.visibility = GONE
         binding.miniCartSimplifiedTotalAmount.hideTopContent()
-        showToasterError(fragment, state.throwable)
+        val throwable = state.throwable
+        val currentTime = SystemClock.elapsedRealtime()
+        if (throwable is MessageErrorException && throwable.message == lastFailedValidateErrorMessage) {
+            // show toaster when first time error or over time limit after last error
+            if (lastFailedValidateError == FAILED_VALIDATE_TIME_DEFAULT || currentTime - lastFailedValidateError >= FAILED_VALIDATE_TIME_LIMIT) {
+                lastFailedValidateError = currentTime
+                lastFailedValidateErrorMessage = throwable.message ?: ""
+                showToasterError(fragment, throwable)
+            }
+        } else {
+            lastFailedValidateError = FAILED_VALIDATE_TIME_DEFAULT
+            lastFailedValidateErrorMessage = ""
+            showToasterError(fragment, throwable)
+        }
     }
 
     private fun onFailedValidateUseMvcMoveToCart(fragment: Fragment, state: MiniCartSimplifiedState) {
@@ -150,16 +165,19 @@ class MiniCartSimplifiedWidget : BaseCustomView {
         val throwable = state.throwable
         val currentTime = SystemClock.elapsedRealtime()
         if (throwable is MessageErrorException && throwable.message == lastFailedValidateMoveToCartMessage) {
-            if (lastFailedValidateMoveToCart > FAILED_VALIDATE_MOVE_TO_CART_DEFAULT && currentTime - lastFailedValidateMoveToCart < FAILED_VALIDATE_MOVE_TO_CART_LIMIT) {
+            // move to cart if last error time is below time limit, if not, then should show toaster
+            if (lastFailedValidateMoveToCart > FAILED_VALIDATE_TIME_DEFAULT && currentTime - lastFailedValidateMoveToCart < FAILED_VALIDATE_TIME_LIMIT) {
                 widgetListener?.onClickCheckCart(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CART), false)
-                lastFailedValidateMoveToCart = FAILED_VALIDATE_MOVE_TO_CART_DEFAULT
+                lastFailedValidateMoveToCart = FAILED_VALIDATE_TIME_DEFAULT
+                lastFailedValidateError = FAILED_VALIDATE_TIME_DEFAULT
             } else {
                 lastFailedValidateMoveToCart = currentTime
                 lastFailedValidateMoveToCartMessage = throwable.message ?: ""
+                showToasterError(fragment, throwable)
             }
         } else {
-            lastFailedValidateMoveToCart = currentTime
-            lastFailedValidateMoveToCartMessage = throwable?.message ?: ""
+            lastFailedValidateMoveToCart = FAILED_VALIDATE_TIME_DEFAULT
+            lastFailedValidateMoveToCartMessage = ""
             showToasterError(fragment, throwable)
         }
     }
@@ -172,7 +190,8 @@ class MiniCartSimplifiedWidget : BaseCustomView {
     private fun onMoveToCart() {
         setTotalAmountLoading(false)
         widgetListener?.onClickCheckCart(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CART), true)
-        lastFailedValidateMoveToCart = FAILED_VALIDATE_MOVE_TO_CART_DEFAULT
+        lastFailedValidateMoveToCart = FAILED_VALIDATE_TIME_DEFAULT
+        lastFailedValidateError = FAILED_VALIDATE_TIME_DEFAULT
     }
 
     private fun observeMiniCartWidgetUiModel(fragment: Fragment) {
@@ -187,7 +206,8 @@ class MiniCartSimplifiedWidget : BaseCustomView {
             renderPromoWidget(it)
             setTotalAmountLoading(false)
             sendEventMvcProgressBarImpression(isClickCheckCart = false)
-            lastFailedValidateMoveToCart = FAILED_VALIDATE_MOVE_TO_CART_DEFAULT
+            lastFailedValidateMoveToCart = FAILED_VALIDATE_TIME_DEFAULT
+            lastFailedValidateError = FAILED_VALIDATE_TIME_DEFAULT
         }
     }
 
@@ -310,7 +330,7 @@ class MiniCartSimplifiedWidget : BaseCustomView {
         private const val ANIMATION_DEBOUNCE_DELAY = 2000L
         private const val TOASTER_BOTTOM_HEIGHT = 100
 
-        private const val FAILED_VALIDATE_MOVE_TO_CART_LIMIT = 10 * 60 * 1000
-        private const val FAILED_VALIDATE_MOVE_TO_CART_DEFAULT = -1L
+        private const val FAILED_VALIDATE_TIME_LIMIT = 10 * 60 * 1000
+        private const val FAILED_VALIDATE_TIME_DEFAULT = -1L
     }
 }
