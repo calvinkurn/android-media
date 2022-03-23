@@ -73,15 +73,16 @@ class FragmentB : BaseTokofoodFragment() {
                 when (it) {
                     is Result.Success -> {
                         binding.tvRes.text = it.data
+                        binding.swipeRefresh.isRefreshing = false
                     }
                     is Result.Failure -> {
                         binding.tvRes.text = it.error.toString()
+                        binding.swipeRefresh.isRefreshing = false
                     }
                     is Result.Loading -> {
                         binding.tvRes.text = "Lagi Loading nih. Sabar.."
                     }
                 }
-                binding.swipeRefresh.isRefreshing = false
                 println("HENDRY 1 $it")
             }
         }

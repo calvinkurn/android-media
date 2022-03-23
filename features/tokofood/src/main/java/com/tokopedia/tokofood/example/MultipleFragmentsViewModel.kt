@@ -11,13 +11,17 @@ import kotlinx.coroutines.flow.*
 @ExperimentalCoroutinesApi
 class MultipleFragmentsViewModel(val savedStateHandle: SavedStateHandle) : ViewModel() {
     val inputFlow = MutableSharedFlow<String>(1)
+    private val forceRefreshFlow = MutableSharedFlow<Boolean>(1).apply { tryEmit(true) }
+
     companion object {
         const val INPUT_KEY = "string_input"
     }
 
-    val outputFlow = inputFlow
-        .debounce(300)
-        .distinctUntilChanged()
+    val outputFlow = combine(
+        inputFlow.debounce(300).distinctUntilChanged(),
+        forceRefreshFlow
+    ) { input, isForce -> Pair(input, isForce) }
+        .map { it.first }
         .flatMapLatest {
             flow {
                 emit(Result.Loading())
@@ -34,18 +38,18 @@ class MultipleFragmentsViewModel(val savedStateHandle: SavedStateHandle) : ViewM
     }
 
     fun refresh() {
-        inputFlow.tryEmit(getLatestInput())
+        forceRefreshFlow.tryEmit(true)
     }
 
     fun getLatestInput(): String {
         return inputFlow.replayCache.firstOrNull() ?: ""
     }
 
-    fun onSavedInstanceState(){
+    fun onSavedInstanceState() {
         savedStateHandle[INPUT_KEY] = inputFlow.replayCache.firstOrNull()
     }
 
-    fun onRestoreSavednstanceState(){
-        inputFlow.tryEmit(savedStateHandle[INPUT_KEY]?: "")
+    fun onRestoreSavednstanceState() {
+        inputFlow.tryEmit(savedStateHandle[INPUT_KEY] ?: "")
     }
 }
