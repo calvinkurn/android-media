@@ -8,12 +8,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.view.View;
-import android.webkit.ConsoleMessage;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -38,7 +36,7 @@ public class CommonWebViewClient extends WebChromeClient {
 
     }
 
-    @Override
+    /*@Override
     public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
         ConsoleMessage.MessageLevel msgType = consoleMessage.messageLevel();
         //Log.w("CONSOLE", consoleMessage.message());
@@ -47,15 +45,15 @@ public class CommonWebViewClient extends WebChromeClient {
         switch (msgType) {
             case WARNING:
             case ERROR:
-               /* Map<String, String> map = new HashMap<>();
+               *//* Map<String, String> map = new HashMap<>();
                 map.put("type", msgType.name());
                 map.put("desc", consoleMessage.message());
 
-                ServerLogger.log(Priority.P1, "WEBVIEW_ERROR", map);*/
+                ServerLogger.log(Priority.P1, "WEBVIEW_ERROR", map);*//*
                 break;
         }
         return true;
-    }
+    }*/
 
 
     @Override
