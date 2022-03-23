@@ -25,9 +25,9 @@ import com.tokopedia.network.utils.OkHttpRetryPolicy;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.wishlist.common.domain.interactor.GetProductIsWishlistedUseCase;
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase;
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase;
+import com.tokopedia.wishlistcommon.domain.GetProductIsWishlistedUseCase;
 
 import java.util.concurrent.TimeUnit;
 
@@ -147,21 +147,21 @@ public class KolModule {
 
     @KolScope
     @Provides
-    public AddWishListUseCase provideAddWishListUseCase(@ApplicationContext Context context){
-        return new AddWishListUseCase(context);
+    public AddToWishlistV2UseCase provideAddWishListUseCase(){
+        return new AddToWishlistV2UseCase(provideGraphQlRepository());
     }
 
     @KolScope
     @Provides
-    public RemoveWishListUseCase provideRemoveWishListUseCase(@ApplicationContext Context context){
-        return new RemoveWishListUseCase(context);
+    public DeleteWishlistV2UseCase provideRemoveWishListUseCase(){
+        return new DeleteWishlistV2UseCase(provideGraphQlRepository());
     }
 
     @KolScope
     @Provides
     @Named(KolConstant.KEY_QUERY_IS_WISHLISTED)
     public String getQueryProductIsWishlisted(@ApplicationContext Context context){
-        return GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.wishlist.common.R.raw.gql_get_is_wishlisted);
+        return GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.wishlist_common.R.raw.gql_get_is_wishlisted);
     }
 
     @KolScope

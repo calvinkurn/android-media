@@ -2252,16 +2252,19 @@ class FeedPlusFragment : BaseDaggerFragment(),
             productTagBS.dismissedByClosing = true
             productTagBS.dismiss()
         }
-        feedViewModel.addWishlist(
-            postId,
-            productId,
-            shopId,
-            0,
-            type,
-            isFollowed,
-            ::onWishListFail,
-            ::onWishListSuccess
+        context?.let {
+            feedViewModel.addWishlist(
+                    postId,
+                    productId,
+                    shopId,
+                    0,
+                    type,
+                    isFollowed,
+                    ::onWishListFail,
+                    ::onWishListSuccess,
+                    it
         )
+        }
     }
 
     private fun onWishListFail(s: String) {

@@ -546,7 +546,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 ""
         )
 
-        feedViewModel.addWishlist(
+        context?.let {
+            feedViewModel.addWishlist(
                 postId,
                 productId,
                 shopId,
@@ -554,8 +555,10 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 type,
                 isFollowed,
                 ::onWishListFail,
-                ::onWishListSuccess
+                ::onWishListSuccess,
+                    it
         )
+        }
     }
 
     private fun onWishListFail(s: String) {

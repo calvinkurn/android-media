@@ -302,7 +302,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     private fun toggleWishlist(isWishListAction: Boolean, productId: String, pos: Int){
         if (mediaPreviewViewModel.isSessionActive){
-            mediaPreviewViewModel.toggleWishlist(isWishListAction, productId, pos, this::onErrorToggleWishlist)
+            context?.let { mediaPreviewViewModel.toggleWishlist(isWishListAction, productId, pos, this::onErrorToggleWishlist, it) }
         } else {
             context?.let { startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQ_CODE_LOGIN) }
         }
