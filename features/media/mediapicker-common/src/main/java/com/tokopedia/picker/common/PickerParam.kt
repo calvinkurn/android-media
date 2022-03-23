@@ -21,7 +21,7 @@ data class PickerParam(
     private var maxImageFileSize: Long = 10_000_000, // 10 mb
     private var minImageResolution: Int = 300, // px
     private var maxImageResolution: Int = 20000, // px
-    private var minStorageThreshold: Long = 17_000_000_000, // 150 mb
+    private var minStorageThreshold: Long = 150_000_000, // 150 mb
     private var isIncludeAnimation: Boolean = false,
     private var withEditor: Boolean = false,
     private var pageSource: PickerPageSource = PickerPageSource.UNKNOWN,

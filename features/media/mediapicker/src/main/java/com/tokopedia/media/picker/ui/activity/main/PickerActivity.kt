@@ -2,36 +2,29 @@ package com.tokopedia.media.picker.ui.activity.main
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.MotionEvent
-import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
-import com.tokopedia.media.databinding.ActivityPickerBinding
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.di.module.PickerModule
 import com.tokopedia.media.picker.ui.PickerFragmentFactory
 import com.tokopedia.media.picker.ui.PickerFragmentFactoryImpl
-import com.tokopedia.media.picker.ui.PickerNavigator
 import com.tokopedia.media.picker.ui.PickerUiConfig
+import com.tokopedia.media.picker.ui.activity.main.component.BottomNavComponent
+import com.tokopedia.media.picker.ui.activity.main.component.ParentContainerComponent
 import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnChangePublished
 import com.tokopedia.media.picker.ui.uimodel.hasVideoBy
 import com.tokopedia.media.picker.ui.uimodel.safeRemove
-import com.tokopedia.media.picker.utils.addOnTabSelected
 import com.tokopedia.media.picker.utils.delegates.permissionGranted
-import com.tokopedia.media.picker.utils.dimensionPixelOffsetOf
-import com.tokopedia.media.picker.utils.setBottomMargin
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity.Companion.EXTRA_INTENT_PREVIEW
 import com.tokopedia.picker.common.*
@@ -48,7 +41,6 @@ import com.tokopedia.picker.common.utils.toSec
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
 import com.tokopedia.utils.image.ImageProcessingUtil
-import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 /**
@@ -93,12 +85,12 @@ import javax.inject.Inject
 open class PickerActivity : BaseActivity()
     , PermissionFragment.Listener
     , NavToolbarComponent.Listener
-    , PickerActivityListener {
+    , PickerActivityListener
+    , BottomNavComponent.Listener {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
     @Inject lateinit var param: ParamCacheManager
 
-    private val binding: ActivityPickerBinding? by viewBinding()
     private val hasPermissionGranted: Boolean by permissionGranted()
 
     protected val medias = arrayListOf<MediaUiModel>()
@@ -110,20 +102,26 @@ open class PickerActivity : BaseActivity()
         )[PickerViewModel::class.java]
     }
 
-    private val navigator: PickerNavigator? by lazy {
-        PickerNavigator(
-            this,
-            R.id.container,
-            supportFragmentManager,
-            createFragmentFactory()
+    private val navToolbar by uiComponent {
+        NavToolbarComponent(
+            parent = it,
+            listener = this,
+            useArrowIcon = false
         )
     }
 
-    private val navToolbar by uiComponent {
-        NavToolbarComponent(
-            listener = this,
+    private val container by uiComponent {
+        ParentContainerComponent(
             parent = it,
-            useArrowIcon = false
+            fragmentManager = supportFragmentManager,
+            fragmentFactory = createFragmentFactory()
+        )
+    }
+
+    private val bottomNavTab by uiComponent {
+        BottomNavComponent(
+            parent = it,
+            listener = this
         )
     }
 
@@ -175,30 +173,6 @@ open class PickerActivity : BaseActivity()
         )
     }
 
-    override fun onPermissionGranted() {
-        navigateByPageType()
-    }
-
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        navigator?.cameraFragment()?.gestureDetector?.onTouchEvent(ev)
-        return super.dispatchTouchEvent(ev)
-    }
-
-    override fun onCloseClicked() {
-        finish()
-    }
-
-    override fun onContinueClicked() {
-        onPreviewItemSelected(medias)
-    }
-
-    override fun onPreviewItemSelected(medias: List<MediaUiModel>) {
-        val intent = Intent(this, PickerPreviewActivity::class.java).apply {
-            putExtra(EXTRA_INTENT_PREVIEW, ArrayList(medias))
-        }
-        startActivityForResult(intent, REQUEST_PREVIEW_PAGE)
-    }
-
     private fun setupParamQueryAndDataIntent() {
         val pickerParam = PickerIntent.get(intent)
 
@@ -237,7 +211,7 @@ open class PickerActivity : BaseActivity()
             navigateByPageType()
         } else {
             navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
-            navigator?.open(FragmentType.PERMISSION)
+            container.open(FragmentType.PERMISSION)
         }
     }
 
@@ -273,70 +247,24 @@ open class PickerActivity : BaseActivity()
         when (param.get().pageType()) {
             PageType.CAMERA -> {
                 navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
-                navigator?.open(FragmentType.CAMERA)
+                container.open(FragmentType.CAMERA)
             }
             PageType.GALLERY -> {
                 navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
-                navigator?.open(FragmentType.GALLERY)
+                container.open(FragmentType.GALLERY)
             }
             else -> {
                 navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
 
                 // display the tab navigation
-                setupTabView()
+                bottomNavTab.setupView()
 
                 // start position of tab
-                onTabStartPositionChanged()
+                bottomNavTab.onStartPositionChanged(
+                    PickerUiConfig.startPageIndex
+                )
             }
         }
-    }
-
-    private fun onTabStartPositionChanged() {
-        var position = PickerUiConfig.startPageIndex
-        val tabCount = binding?.tabPage?.tabLayout?.tabCount.orZero()
-
-        if (position > tabCount) {
-            position = 0
-        }
-
-        binding?.tabPage?.tabLayout?.getTabAt(position)?.select()
-        onTabSelectionChanged(position)
-    }
-
-    private fun setupTabView() {
-        binding?.tabContainer?.show()
-
-        // setup as transparent tab layout background
-        binding?.tabPage?.tabLayout?.setBackgroundColor(Color.TRANSPARENT)
-
-        binding?.tabPage?.addNewTab(getString(R.string.picker_title_camera))
-        binding?.tabPage?.addNewTab(getString(R.string.picker_title_gallery))
-
-        binding?.tabPage?.tabLayout?.addOnTabSelected(
-            ::onTabSelectionChanged
-        )
-    }
-
-    private fun onTabSelectionChanged(position: Int) {
-        if (position == PAGE_CAMERA_INDEX) {
-            onCameraTabSelected()
-        } else if (position == PAGE_GALLERY_INDEX) {
-            onGalleryTabSelected()
-        }
-    }
-
-    private fun onCameraTabSelected() {
-        navigator?.open(FragmentType.CAMERA)
-        navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
-        binding?.container?.setBottomMargin(0)
-    }
-
-    private fun onGalleryTabSelected() {
-        navigator?.open(FragmentType.GALLERY)
-        navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
-
-        val marginBottom = dimensionPixelOffsetOf(R.dimen.picker_page_margin_bottom)
-        binding?.container?.setBottomMargin(marginBottom)
     }
 
     private fun onPageSourceNotFound(param: PickerParam) {
@@ -361,17 +289,50 @@ open class PickerActivity : BaseActivity()
     }
 
     private fun onEditorIntent(path: ArrayList<String>) {
+        // TODO
+    }
 
+    override fun onPermissionGranted() {
+        navigateByPageType()
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        container.cameraFragment()?.gestureDetector?.onTouchEvent(ev)
+        return super.dispatchTouchEvent(ev)
+    }
+
+    override fun onCloseClicked() {
+        finish()
+    }
+
+    override fun onContinueClicked() {
+        val intent = Intent(this, PickerPreviewActivity::class.java).apply {
+            putExtra(EXTRA_INTENT_PREVIEW, ArrayList(medias))
+        }
+
+        startActivityForResult(intent, REQUEST_PREVIEW_PAGE)
+    }
+
+    override fun onCameraThumbnailClicked() {
+        onContinueClicked()
+    }
+
+    override fun onCameraTabSelected() {
+        container.open(FragmentType.CAMERA)
+        navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
+        container.resetBottomNavMargin()
+    }
+
+    override fun onGalleryTabSelected() {
+        container.open(FragmentType.GALLERY)
+        navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
+        container.addBottomNavMargin()
     }
 
     override fun tabVisibility(isShown: Boolean) {
         if (!param.get().isCommonPageType()) return
 
-        // we used the find view by Id back because
-        // we faced a crash while using view binding for this
-        findViewById<RelativeLayout>(
-            R.id.tab_container
-        ).showWithCondition(isShown)
+        bottomNavTab.container().showWithCondition(isShown)
     }
 
     override fun mediaSelected(): List<MediaUiModel> {
@@ -483,7 +444,7 @@ open class PickerActivity : BaseActivity()
     }
 
     private fun onShowToaster(message: String) {
-        binding?.rootView?.let {
+        container.container().let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT).show()
         }
     }
@@ -504,9 +465,6 @@ open class PickerActivity : BaseActivity()
         const val REQUEST_PREVIEW_PAGE = 123
 
         private const val LAST_MEDIA_SELECTION = "last_media_selection"
-
-        private const val PAGE_CAMERA_INDEX = 0
-        private const val PAGE_GALLERY_INDEX = 1
     }
 
 }

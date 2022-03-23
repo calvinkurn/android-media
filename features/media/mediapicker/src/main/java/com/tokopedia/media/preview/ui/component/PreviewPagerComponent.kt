@@ -17,7 +17,7 @@ class PreviewPagerComponent(
     private var previousViewPagerIndex = 0
 
     private val viewPager by lazy {
-        componentView() as ViewPager
+        container() as ViewPager
     }
 
     private val adapter by lazy {

@@ -51,14 +51,19 @@ open class CameraFragment : BaseDaggerFragment()
     private val binding: FragmentCameraBinding? by viewBinding()
     private var listener: PickerActivityListener? = null
 
-    private val preview by uiComponent { CameraPreviewComponent(param.get(), this, it) }
-    private val controller by uiComponent { CameraControllerComponent(param.get(), this, it) }
+    private val preview by uiComponent {
+        CameraPreviewComponent(param.get(), this, it)
+    }
+
+    private val controller by uiComponent {
+        CameraControllerComponent(param.get(), listener, this, it)
+    }
 
     private val medias = mutableListOf<MediaUiModel>()
 
     private var videoDurationTimer: CountDownTimer? = null
     private var isTakingPictureMode = true
-    private var isFlashOn = false
+    private var isInitFlashState = false
 
     private val viewModel by lazy {
         ViewModelProvider(
@@ -111,8 +116,8 @@ open class CameraFragment : BaseDaggerFragment()
         isTakingPictureMode = mode == CameraControllerComponent.PHOTO_MODE
     }
 
-    override fun onImageThumbnailClicked() {
-        listener?.onPreviewItemSelected(medias)
+    override fun onCameraThumbnailClicked() {
+        listener?.onCameraThumbnailClicked()
     }
 
     override fun onDestroyView() {
@@ -128,22 +133,13 @@ open class CameraFragment : BaseDaggerFragment()
         listener = (context as PickerActivity)
     }
 
-    override fun isFacingCameraIsFront(): Boolean {
+    override fun isFrontCamera(): Boolean {
         return preview.isFacingCameraIsFront()
     }
 
-    override fun isCameraFlashOn(): Boolean {
-        return isFlashOn
-    }
-
     override fun onFlashClicked() {
-        if (isFlashOn) {
-            isFlashOn = false
-            controller.setFlashMode(isFlashOn)
-        } else {
-            isFlashOn = true
-            controller.setFlashMode(isFlashOn)
-        }
+        preview.setCameraFlashIndex()
+        setCameraFlashState()
     }
 
     override fun onFlipClicked() {
@@ -152,47 +148,31 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     override fun onTakeMediaClicked() {
-        if (preview.isVideoMode() && preview.isTakingVideo()) {
+        if (controller.isVideoMode() && preview.isTakingVideo()) {
             preview.stopVideo()
             return
         }
-
-        if (preview.isVideoMode() && listener?.isMinStorageThreshold() == true) {
-            listener?.onShowMinStorageThresholdToast()
-            return
-        }
-
-        preview.enableFlashTorch()
 
         showShutterEffect {
             if (isTakingPictureMode) {
                 preview.onStartTakePicture()
             } else {
+                preview.enableFlashTorch()
                 preview.onStartTakeVideo()
                 onVideoDurationChanged()
             }
         }
     }
 
-    override fun hasMediaLimitReached(): Boolean {
-        return listener?.hasMediaLimitReached()?: false
-    }
-
-    override fun hasVideoLimitReached(): Boolean {
-        return listener?.hasVideoLimitReached()?: false
-    }
-
-    override fun onShowToastMediaLimit() {
-        listener?.onShowMediaLimitReachedToast()
-    }
-
-    override fun onShowToastVideoLimit() {
-        listener?.onShowVideoLimitReachedToast()
-    }
-
     override fun onCameraOpened(options: CameraOptions) {
-        controller.isFlashSupported(preview.hasFlashFeatureOnCamera())
         controller.hasFrontCamera(preview.hasFrontCamera())
+        preview.initCameraFlash()
+
+        // isInitFlashState to make sure we init the flash only once
+        if (!isInitFlashState && preview.hasFlashFeatureOnCamera()) {
+            setCameraFlashState()
+            isInitFlashState = true
+        }
     }
 
     override fun onVideoRecordingStart() {
@@ -205,8 +185,7 @@ open class CameraFragment : BaseDaggerFragment()
 
     override fun onVideoTaken(result: VideoResult) {
         val fileToModel = result.file.cameraToUiModel()
-        if (isMinVideoDuration(fileToModel)) return
-
+        minVideoDurationValidation(fileToModel)
         onShowMediaThumbnail(fileToModel)
     }
 
@@ -267,7 +246,17 @@ open class CameraFragment : BaseDaggerFragment()
         stateOnCameraCapturePublished(element)
     }
 
-    private fun isMinVideoDuration(model: MediaUiModel): Boolean {
+    private fun setCameraFlashState() {
+        val activeFlash = preview.cameraFlash()
+
+        controller.isFlashSupported(activeFlash != null)
+
+        if (activeFlash != null) {
+            controller.setFlashMode(activeFlash.ordinal)
+        }
+    }
+
+    private fun minVideoDurationValidation(model: MediaUiModel): Boolean {
         if (listener?.isMinVideoDuration(model) == true) {
             listener?.onShowVideoMinDurationToast()
             safeFileDelete(model.path)

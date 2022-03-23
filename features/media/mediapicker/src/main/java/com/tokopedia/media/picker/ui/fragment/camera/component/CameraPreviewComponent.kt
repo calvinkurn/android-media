@@ -14,13 +14,13 @@ import com.otaliastudios.cameraview.gesture.Gesture
 import com.otaliastudios.cameraview.gesture.GestureAction
 import com.otaliastudios.cameraview.size.AspectRatio
 import com.otaliastudios.cameraview.size.SizeSelectors
-import com.tokopedia.picker.common.basecomponent.UiComponent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
-import com.tokopedia.picker.common.PickerParam
-import com.tokopedia.picker.common.utils.FileCamera
 import com.tokopedia.media.picker.utils.exceptionHandler
+import com.tokopedia.picker.common.PickerParam
+import com.tokopedia.picker.common.basecomponent.UiComponent
+import com.tokopedia.picker.common.utils.FileCamera
 
 class CameraPreviewComponent(
     private val param: PickerParam,
@@ -39,6 +39,11 @@ class CameraPreviewComponent(
         }
     }
 
+    // flash collection
+    private var flashList = arrayListOf<Flash>()
+    private var activeFlash = Flash.OFF
+    private var flashIndex = 0
+
     fun setupView(owner: LifecycleOwner) {
         cameraView.clearCameraListeners()
         cameraView.setLifecycleOwner(owner)
@@ -46,16 +51,49 @@ class CameraPreviewComponent(
         cameraView.mapGesture(Gesture.TAP, GestureAction.AUTO_FOCUS)
     }
 
+    fun initCameraFlash() {
+        if (cameraView.cameraOptions == null) return
+        if (flashList.isNotEmpty()) return
+
+        val supportedFlashes = cameraView.cameraOptions?.supportedFlash?: return
+
+        for (flash: Flash in supportedFlashes) {
+            if (flash != Flash.TORCH) {
+                flashList.add(flash)
+            }
+        }
+    }
+
+    fun setCameraFlashIndex() {
+        flashIndex = (flashIndex + 1) % flashList.size
+    }
+
+    fun cameraFlash(): Flash? {
+        if (flashIndex < 0 || flashList.size <= flashIndex) return null
+
+        activeFlash = flashList[flashIndex]
+
+        // prevent the flash mode is TORCH
+        if (activeFlash.ordinal == Flash.TORCH.ordinal) {
+            flashIndex = (flashIndex + 1) % flashList.size
+            activeFlash = flashList[flashIndex]
+        }
+
+        cameraView.set(activeFlash)
+
+        return activeFlash
+    }
+
     fun onStartTakePicture() {
         cameraView.set(Mode.PICTURE)
-        cameraView.takePictureSnapshot()
+        cameraView.takePicture()
     }
 
     fun onStartTakeVideo() {
         cameraView.set(Mode.VIDEO)
         cameraView.set(Audio.ON)
 
-        cameraView.takeVideoSnapshot(
+        cameraView.takeVideo(
             FileCamera.createVideo(),
             param.maxVideoDuration().toInt()
         )
@@ -82,7 +120,7 @@ class CameraPreviewComponent(
     }
 
     fun enableFlashTorch() {
-        if (hasFlashFeatureOnCamera() && listener.isCameraFlashOn()) {
+        if (hasFlashFeatureOnCamera() && isFlashOn()) {
             cameraView.flash = Flash.TORCH
         }
     }
@@ -97,20 +135,19 @@ class CameraPreviewComponent(
 
     fun isTakingVideo() = cameraView.isTakingVideo
 
+    fun hasFlashFeatureOnCamera() = flashList.isNotEmpty()
+
+    fun isFlashOn() = activeFlash == Flash.ON || activeFlash == Flash.AUTO
+
     fun hasFrontCamera() = cameraView
         .cameraOptions
         ?.supportedFacing
         ?.isNotEmpty() == true
 
-    fun hasFlashFeatureOnCamera() = cameraView
-        .cameraOptions
-        ?.supportedFlash
-        ?.contains(Flash.TORCH) == true
-
     private fun fullScreenCameraView() {
         spaceToolBar.hide()
 
-        val parent = componentView() as ConstraintLayout
+        val parent = container() as ConstraintLayout
 
         ConstraintSet().apply {
             clone(parent)
@@ -128,7 +165,7 @@ class CameraPreviewComponent(
     private fun customRatioCameraView(ratio: String) {
         spaceToolBar.show()
 
-        val parent = componentView() as ConstraintLayout
+        val parent = container() as ConstraintLayout
 
         ConstraintSet().apply {
             clone(parent)
@@ -155,19 +192,18 @@ class CameraPreviewComponent(
 
         override fun onVideoRecordingEnd() {
             super.onVideoRecordingEnd()
-            disableFlashTorch()
             listener.onVideoRecordingEnd()
+            disableFlashTorch()
         }
 
         override fun onVideoTaken(result: VideoResult) {
             super.onVideoTaken(result)
-            disableFlashTorch()
             listener.onVideoTaken(result)
+            disableFlashTorch()
         }
 
         override fun onPictureTaken(result: PictureResult) {
             super.onPictureTaken(result)
-            disableFlashTorch()
             listener.onPictureTaken(result)
         }
 
@@ -178,8 +214,8 @@ class CameraPreviewComponent(
     }
 
     private fun disableFlashTorch() {
-        if (hasFlashFeatureOnCamera() && listener.isCameraFlashOn()) {
-            cameraView.flash = Flash.OFF
+        if (hasFlashFeatureOnCamera() && isFlashOn()) {
+            cameraView.flash = activeFlash
         }
     }
 
@@ -190,7 +226,6 @@ class CameraPreviewComponent(
     }
 
     interface Listener {
-        fun isCameraFlashOn(): Boolean
         fun onCameraOpened(options: CameraOptions)
         fun onVideoRecordingStart()
         fun onVideoRecordingEnd()
