@@ -4,10 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.topads.common.R
-import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.topads.common.constant.TopAdsRemoteImageUrl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.topads_common_info_bs.*
 
@@ -51,16 +50,16 @@ class InfoBottomSheet(
 
     private fun initView() {
         if (isWhiteListUser && bottomSheetType == TYPE_DASAR) {
-            image?.setImageUrl(TopAdsCommonConstant.TOPADS_CREATE_TIPS2)
+            image?.setImageUrl(TopAdsRemoteImageUrl.CREATE_TIPS2)
             return
         }
         context?.let {
             if (bottomSheetType == TYPE_DASAR) {
                 infoDesc?.text = getString(R.string.topads_create_bs_desc2)
-                image?.setImageUrl(TopAdsCommonConstant.TOPADS_CREATE_TIPS2)
+                image?.setImageUrl(TopAdsRemoteImageUrl.CREATE_TIPS2)
             } else {
                 infoDesc?.text = getString(R.string.topads_create_bs_desc1)
-                image?.setImageUrl(TopAdsCommonConstant.TOPADS_CREATE_TIPS1)
+                image?.setImageUrl(TopAdsRemoteImageUrl.CREATE_TIPS1)
             }
         }
     }

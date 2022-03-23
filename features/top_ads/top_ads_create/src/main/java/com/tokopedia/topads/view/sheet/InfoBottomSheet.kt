@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.topads.common.constant.TopAdsRemoteImageUrl
 import com.tokopedia.topads.create.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -49,11 +49,11 @@ class InfoBottomSheet : BottomSheetUnify(){
         context?.let {
             if(bottomSheetType == TYPE_DASAR){
                 infoDesc?.text = getString(R.string.topads_create_bs_desc2)
-                image?.setImageUrl(TopAdsCommonConstant.TOPADS_CREATE_TIPS2)
+                image?.setImageUrl(TopAdsRemoteImageUrl.CREATE_TIPS2)
             }
             else {
                 infoDesc?.text = getString(R.string.topads_create_bs_desc1)
-                image?.setImageUrl(TopAdsCommonConstant.TOPADS_CREATE_TIPS1)
+                image?.setImageUrl(TopAdsRemoteImageUrl.CREATE_TIPS1)
             }
         }
     }
