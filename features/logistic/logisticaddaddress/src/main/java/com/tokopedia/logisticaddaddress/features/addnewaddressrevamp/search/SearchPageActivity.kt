@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.DaggerAddNewAddressRevampComponent
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface

@@ -55,6 +55,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtil
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.DistrictCenterUiModel
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.IMAGE_OUTSIDE_INDONESIA
@@ -148,9 +149,35 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
                 finishActivity(newAddress, false)
             } else if (requestCode == REQUEST_SEARCH_PAGE) {
-                val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
-                val isFromAddressForm = data?.getBooleanExtra(EXTRA_FROM_ADDRESS_FORM, false)
-                isFromAddressForm?.let { finishActivity(newAddress, it) }
+                if (!isEdit) {
+                    val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
+                    val isFromAddressForm = data?.getBooleanExtra(EXTRA_FROM_ADDRESS_FORM, false)
+                    isFromAddressForm?.let { finishActivity(newAddress, it) }
+                } else {
+                    currentPlaceId = data?.getStringExtra(EXTRA_PLACE_ID)
+                    currentLat = data?.getDoubleExtra(EXTRA_LAT, 0.0) ?: 0.0
+                    currentLong = data?.getDoubleExtra(EXTRA_LONG, 0.0) ?: 0.0
+//                    saveAddressDataModel = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
+//                    isPositiveFlow = it.getBoolean(EXTRA_IS_POSITIVE_FLOW)
+//                    currentDistrictName = it.getString(EXTRA_DISTRICT_NAME)
+//                    districtId = saveAddressDataModel?.districtId
+//                    if (districtId == null) {
+//                        districtId = it.getLong(EXTRA_DISTRICT_ID)
+//                    }
+//                    isPolygon = it.getBoolean(EXTRA_IS_POLYGON, false)
+//                    zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
+//                    currentKotaKecamatan = it.getString(EXTRA_KOTA_KECAMATAN)
+//                    currentPostalCode = it.getString(EXTRA_POSTAL_CODE)
+//                    isFromAddressForm = it.getBoolean(EXTRA_FROM_ADDRESS_FORM)
+//                    isEdit = it.getBoolean(EXTRA_IS_EDIT
+                    if (!currentPlaceId.isNullOrEmpty()) {
+                        currentPlaceId?.let { viewModel.getDistrictLocation(it) }
+                    } else if (currentLong != 0.0 && currentLat != 0.0) {
+                        viewModel.getDistrictData(currentLat, currentLong)
+                    } else {
+                        goToAddressForm()
+                    }
+                }
             }
         }
     }
@@ -435,6 +462,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         currentLong = data.longitude.toDouble()
         moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
 
+        currentKotaKecamatan = "${data.provinceName}, ${data.cityName}, ${data.districtName}"
         val savedModel = saveAddressMapper.map(data, zipCodes)
         viewModel.setAddress(savedModel)
         with(data.errMessage) {
@@ -791,16 +819,27 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun goToSearchPage() {
-        if (!isPositiveFlow) {
-            // back to addressform, reset ana state to search page
-            activity?.run {
-                setResult(Activity.RESULT_OK, Intent().apply {
-                    putExtra(EXTRA_RESET_TO_SEARCH_PAGE, true)
-                })
-                finish()
+        if (!isEdit) {
+            if (!isPositiveFlow) {
+                // back to addressform, reset ana state to search page
+                activity?.run {
+                    setResult(Activity.RESULT_OK, Intent().apply {
+                        putExtra(EXTRA_RESET_TO_SEARCH_PAGE, true)
+                    })
+                    finish()
+                }
+            } else {
+                activity?.finish()
             }
         } else {
-            activity?.finish()
+            context?.let {
+                startActivityForResult(
+                    Intent(it, SearchPageActivity::class.java).apply {
+                        putExtra(EXTRA_IS_EDIT, isEdit)
+                    },
+                    REQUEST_SEARCH_PAGE
+                )
+            }
         }
     }
 

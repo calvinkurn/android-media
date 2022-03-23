@@ -90,6 +90,8 @@ object KeroLogisticQuery {
               city_id
               province_id
               district_name
+              city_name
+              province_name
               postal_code
               latitude
               longitude

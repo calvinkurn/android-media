@@ -81,6 +81,8 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     private var isPolygon: Boolean = false
     private var distrcitId: Long? = null
 
+    private var isEdit: Boolean = false
+
     private val requiredPermissions: Array<String>
         get() = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -107,6 +109,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
             saveDataModel = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
             isPolygon = it.getBoolean(EXTRA_IS_POLYGON)
             distrcitId = it.getLong(EXTRA_DISTRICT_ID)
+            isEdit = it.getBoolean(EXTRA_IS_EDIT, false)
         }
         if (saveDataModel != null) {
             saveDataModel?.let {
@@ -205,12 +208,22 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         binding.searchPageInput.searchBarTextField.setText("")
         binding.tvMessageSearch.text = getString(R.string.txt_message_initial_load)
         binding.tvMessageSearch.setOnClickListener {
-            AddNewAddressRevampAnalytics.onClickIsiAlamatManualSearch(userSession.userId)
-            Intent(context, AddressFormActivity::class.java).apply {
-                putExtra(EXTRA_IS_POSITIVE_FLOW, false)
-                putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
-                putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
-                startActivityForResult(this, REQUEST_ADDRESS_FORM_PAGE)
+            if (!isEdit) {
+                AddNewAddressRevampAnalytics.onClickIsiAlamatManualSearch(userSession.userId)
+                Intent(context, AddressFormActivity::class.java).apply {
+                    putExtra(EXTRA_IS_POSITIVE_FLOW, false)
+                    putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
+                    putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
+                    startActivityForResult(this, REQUEST_ADDRESS_FORM_PAGE)
+                }
+            } else {
+                activity?.run {
+                    setResult(Activity.RESULT_OK, Intent().apply {
+//                        putExtra(LogisticConstant.EXTRA_ADDRESS_NEW, data)
+//                        putExtra(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
+                    })
+                    finish()
+                }
             }
         }
     }
@@ -481,7 +494,23 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         bundle.putBoolean(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
         bundle.putBoolean(EXTRA_IS_POLYGON, isPolygon)
         distrcitId?.let { bundle.putLong(EXTRA_DISTRICT_ID, it) }
-        startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, REQUEST_PINPOINT_PAGE)
+        if (!isEdit) {
+            startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, REQUEST_PINPOINT_PAGE)
+        } else {
+            activity?.run {
+                setResult(Activity.RESULT_OK, Intent().apply {
+                    putExtra(EXTRA_PLACE_ID, placeId)
+                    latitude?.let { putExtra(EXTRA_LAT, it) }
+                    longitude?.let { putExtra(EXTRA_LONG, it) }
+                    putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
+                    putExtra(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
+                    putExtra(EXTRA_IS_POLYGON, isPolygon)
+                    distrcitId?.let { putExtra(EXTRA_DISTRICT_ID, it) }
+                    putExtra(EXTRA_IS_EDIT, isEdit)
+                })
+                finish()
+            }
+        }
     }
 
     companion object {
@@ -503,6 +532,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                     putBoolean(EXTRA_FROM_PINPOINT, bundle.getBoolean(EXTRA_FROM_PINPOINT))
                     putBoolean(EXTRA_IS_POLYGON, bundle.getBoolean(EXTRA_IS_POLYGON))
                     putLong(EXTRA_DISTRICT_ID, bundle.getLong(EXTRA_DISTRICT_ID))
+                    putBoolean(EXTRA_IS_EDIT, bundle.getBoolean(EXTRA_IS_EDIT))
                 }
             }
         }
