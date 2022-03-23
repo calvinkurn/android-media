@@ -459,6 +459,7 @@ public interface ApplinkConst {
         String CATALOG_DETAIL_NEW = "kupon/detail";
         String CATALOG_LIST_NEW = "kupon";
         String CATALOG_LIST_VALUE = "tukar-point";
+        String COUPON_LIST = "kupon-saya";
         String HISTORY = "tokopedia://tokopoints/history";
     }
 

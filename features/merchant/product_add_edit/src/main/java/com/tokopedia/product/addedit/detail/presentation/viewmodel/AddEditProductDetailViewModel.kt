@@ -7,6 +7,7 @@ import androidx.lifecycle.asFlow
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.TEMP_IMAGE_EXTENSION
@@ -693,7 +694,7 @@ class AddEditProductDetailViewModel @Inject constructor(
     }
 
     fun validateSelectedSpecificationList(): Boolean {
-        return !hasRequiredSpecification.value.orTrue() || mSelectedSpecificationList.value.orEmpty().any {
+        return !hasRequiredSpecification.value.orFalse() || mSelectedSpecificationList.value.orEmpty().any {
             it.specificationVariant == SIGNAL_STATUS_VARIANT
         }
     }
