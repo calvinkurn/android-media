@@ -5,7 +5,6 @@ import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.util.callPrivateFunc
 import com.tokopedia.product.addedit.util.getOrAwaitValue
-import com.tokopedia.product.addedit.util.getPrivateProperty
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
@@ -188,7 +187,7 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
                         isPrimary=false,
                         combination= listOf(1, 0)))
 
-        viewModel.editVariantDetailInputMap(4,
+        viewModel.updateVariantDetailInputMap(4,
                 viewModel.generateVariantDetailInputModel(2, 3, "8", true))
 
         viewModel.updateVariantDetailInputMap(5,
@@ -405,7 +404,7 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
 
     @Test
     fun `When editVariantDetailInputMap using invalid fieldPosition, expect inputLayoutModelMap unchanged`() {
-        viewModel.editVariantDetailInputMap(999, VariantDetailInputLayoutModel())
+        viewModel.updateVariantDetailInputMap(999, VariantDetailInputLayoutModel())
         val result = viewModel.getVariantDetailHeaderData(999)
         assert(result.isEmpty())
     }

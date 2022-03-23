@@ -40,6 +40,9 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 
     var productInputModel = MutableLiveData<ProductInputModel>()
 
+    private val mInputDataValid = MutableLiveData<Boolean>()
+    val inputDataValid: LiveData<Boolean> get() = mInputDataValid
+
     val selectedVariantSize = MediatorLiveData<Int>().apply {
         addSource(productInputModel) {
             productInputModel.value?.run {
@@ -52,21 +55,15 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         it.detailInputModel.wholesaleList.isNotEmpty()
     }
 
-    val isEditMode: Boolean get() = productInputModel.value?.productId.orZero() > 0
+    val isEditMode: Boolean get() = productInputModel.getValueOrDefault().productId.orZero() > 0
     var isMultiLocationShop: Boolean = false
         private set
 
-    private val mErrorCounter = MutableLiveData(0)
-    val errorCounter: LiveData<Int> get() = mErrorCounter
-
     private var inputFieldSize = 0
     private var collapsedFields = 0
-
     private val headerStatusMap: HashMap<Int, Boolean> = hashMapOf()
     private val currentHeaderPositionMap: HashMap<Int, Int> = hashMapOf()
     private val inputLayoutModelMap: HashMap<Int, VariantDetailInputLayoutModel> = hashMapOf()
-    private var inputPriceErrorStatusMap: HashMap<Int, Boolean> = hashMapOf()
-    private var inputStockErrorStatusMap: HashMap<Int, Boolean> = hashMapOf()
 
     fun getInputFieldSize(): Int {
         return inputFieldSize
@@ -150,12 +147,21 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         }
     }
 
-    fun updateVariantDetailInputMap(fieldPosition: Int, variantDetailInputLayoutModel: VariantDetailInputLayoutModel) {
+    fun addToVariantDetailInputMap(fieldPosition: Int, variantDetailInputLayoutModel: VariantDetailInputLayoutModel) {
         inputLayoutModelMap[fieldPosition] = variantDetailInputLayoutModel
     }
 
-    fun editVariantDetailInputMap(fieldPosition: Int, variantDetailInputLayoutModel: VariantDetailInputLayoutModel) {
-        if (inputLayoutModelMap.containsKey(fieldPosition)) inputLayoutModelMap[fieldPosition] = variantDetailInputLayoutModel
+    fun updateVariantDetailInputMap(fieldPosition: Int, variantDetailInputLayoutModel: VariantDetailInputLayoutModel) {
+        if (inputLayoutModelMap.containsKey(fieldPosition)) {
+            inputLayoutModelMap[fieldPosition] = variantDetailInputLayoutModel
+            refreshInputDataValidStatus()
+        }
+    }
+
+    private fun refreshInputDataValidStatus() {
+        mInputDataValid.value = !inputLayoutModelMap.any {
+            it.value.isPriceError || it.value.isStockError || it.value.isWeightError
+        }
     }
 
     fun updateProductInputModel(productInputModel: ProductInputModel) {
@@ -222,18 +228,10 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                     // assign new value if input price is not empty
                     if (inputModel.price.isNotEmpty()) {
                         price = inputModel.price.toBigIntegerOrNull().orZero()
-                        // reset error statuses to false
-                        inputPriceErrorStatusMap.forEach {
-                            inputPriceErrorStatusMap[it.key] = false
-                        }
                     }
                     // assign new value if input stock is not empty
                     if (inputModel.stock.isNotEmpty()) {
                         stock = inputModel.stock.toIntOrZero()
-                        // reset error statuses to false
-                        inputStockErrorStatusMap.forEach {
-                            inputStockErrorStatusMap[it.key] = false
-                        }
                     }
                     // assign new value if input sku is not empty
                     if (inputModel.sku.isNotEmpty()) {
@@ -285,7 +283,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     }
 
     fun getCurrentHeaderPosition(headerPosition: Int): Int {
-        return currentHeaderPositionMap[headerPosition] ?: 0
+        return currentHeaderPositionMap[headerPosition].orZero()
     }
 
     fun getVariantDetailHeaderData(headerPosition: Int): MutableList<VariantDetailInputLayoutModel> {
@@ -318,70 +316,40 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     }
 
     fun updateSwitchStatus(isChecked: Boolean, adapterPosition: Int): VariantDetailInputLayoutModel {
-        val inputModel = inputLayoutModelMap[adapterPosition]
-                ?: VariantDetailInputLayoutModel()
+        val inputModel = inputLayoutModelMap[adapterPosition] ?: VariantDetailInputLayoutModel()
         inputModel.isActive = isChecked
         return inputModel
     }
 
     fun updateVariantSkuInput(sku: String, adapterPosition: Int): VariantDetailInputLayoutModel {
-        val inputModel = inputLayoutModelMap[adapterPosition]
-                ?: VariantDetailInputLayoutModel()
+        val inputModel = inputLayoutModelMap[adapterPosition] ?: VariantDetailInputLayoutModel()
         inputModel.sku = sku
         return inputModel
     }
 
     fun validateVariantPriceInput(priceInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
-        val inputModel = inputLayoutModelMap[adapterPosition]
-                ?: VariantDetailInputLayoutModel()
+        val inputModel = inputLayoutModelMap[adapterPosition] ?: VariantDetailInputLayoutModel()
         inputModel.price = priceInput
         if (priceInput.isEmpty()) {
-            inputModel.isPriceError = true
             inputModel.priceFieldErrorMessage = provider.getEmptyProductPriceErrorMessage()
-            updateInputPriceErrorStatusMap(adapterPosition, true)
-
-            return inputModel
+        } else {
+            val productPrice = priceInput.toBigIntegerOrNull().orZero()
+            inputModel.priceFieldErrorMessage = validateVariantPriceInput(productPrice)
         }
-        val productPrice: BigInteger = priceInput.toBigIntegerOrNull().orZero()
-        if (productPrice < MIN_PRODUCT_PRICE_LIMIT.toBigInteger()) {
-            inputModel.isPriceError = true
-            inputModel.priceFieldErrorMessage = provider.getMinLimitProductPriceErrorMessage()
-            updateInputPriceErrorStatusMap(adapterPosition, true)
-            return inputModel
-        }
-        inputModel.isPriceError = false
-        inputModel.priceFieldErrorMessage = ""
-        updateInputPriceErrorStatusMap(adapterPosition, false)
-
+        inputModel.isPriceError = inputModel.priceFieldErrorMessage.isNotEmpty()
         return inputModel
     }
 
-    private fun updateInputPriceErrorStatusMap(adapterPosition: Int, isError: Boolean) {
-        inputPriceErrorStatusMap[adapterPosition] = isError
-        mErrorCounter.value = inputPriceErrorStatusMap.count { it.value }
-    }
-
     fun validateProductVariantStockInput(stockInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
-        val inputModel = inputLayoutModelMap[adapterPosition]
-                ?: VariantDetailInputLayoutModel()
+        val inputModel = inputLayoutModelMap[adapterPosition] ?: VariantDetailInputLayoutModel()
         inputModel.stock = stockInput
         if (stockInput.isEmpty()) {
-            inputModel.isStockError = true
             inputModel.stockFieldErrorMessage = provider.getEmptyProductStockErrorMessage()
-            updateInputStockErrorStatusMap(adapterPosition, true)
-            return inputModel
+        } else {
+            val productStock = stockInput.toBigIntegerOrNull().orZero()
+            inputModel.stockFieldErrorMessage = validateProductVariantStockInput(productStock)
         }
-        val productStock: BigInteger = stockInput.toBigIntegerOrNull().orZero()
-        if (productStock < MIN_PRODUCT_STOCK_LIMIT.toBigInteger()) {
-            inputModel.isStockError = true
-            inputModel.stockFieldErrorMessage = provider.getMinLimitProductStockErrorMessage(MIN_PRODUCT_STOCK_LIMIT)
-            updateInputStockErrorStatusMap(adapterPosition, true)
-            return inputModel
-        }
-        inputModel.isStockError = false
-        inputModel.stockFieldErrorMessage = ""
-        updateInputStockErrorStatusMap(adapterPosition, false)
-
+        inputModel.isStockError = inputModel.stockFieldErrorMessage.isNotEmpty()
         return inputModel
     }
 
@@ -394,14 +362,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
             inputModel.weightFieldErrorMessage = validateProductVariantWeightInput(weightInput)
             inputModel.weight = weightInput
         }
-        //updateInputStockErrorStatusMap(adapterPosition, inputModel.isWeightError)
         inputModel.isWeightError = inputModel.weightFieldErrorMessage.isNotEmpty()
         return inputModel
-    }
-
-    private fun updateInputStockErrorStatusMap(adapterPosition: Int, isError: Boolean) {
-        inputStockErrorStatusMap[adapterPosition] = isError
-        mErrorCounter.value = inputStockErrorStatusMap.count { it.value }
     }
 
     fun validateVariantPriceInput(priceInput: BigInteger): String {

@@ -19,7 +19,6 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_NETWORK_METRICS
@@ -169,7 +168,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         }
 
         observeSelectedVariantSize()
-        observeInputStatus()
+        observeInputDataValid()
         observeHasWholesale()
 
         enableSku()
@@ -201,7 +200,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     override fun onStatusSwitchChanged(isChecked: Boolean, adapterPosition: Int) {
         val updatedInputModel = viewModel.updateSwitchStatus(isChecked, adapterPosition)
-        viewModel.editVariantDetailInputMap(adapterPosition, updatedInputModel)
+        viewModel.updateVariantDetailInputMap(adapterPosition, updatedInputModel)
 
         // tracking
         sendClickVariantStatusToggleData(isChecked)
@@ -209,24 +208,24 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     override fun onPriceInputTextChanged(priceInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
         val validatedInputModel = viewModel.validateVariantPriceInput(priceInput, adapterPosition)
-        viewModel.editVariantDetailInputMap(adapterPosition, validatedInputModel)
+        viewModel.updateVariantDetailInputMap(adapterPosition, validatedInputModel)
         return validatedInputModel
     }
 
     override fun onStockInputTextChanged(stockInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
         val validatedInputModel = viewModel.validateProductVariantStockInput(stockInput, adapterPosition)
-        viewModel.editVariantDetailInputMap(adapterPosition, validatedInputModel)
+        viewModel.updateVariantDetailInputMap(adapterPosition, validatedInputModel)
         return validatedInputModel
     }
 
     override fun onSkuInputTextChanged(skuInput: String, adapterPosition: Int) {
         val updatedInputModel = viewModel.updateVariantSkuInput(skuInput, adapterPosition)
-        viewModel.editVariantDetailInputMap(adapterPosition, updatedInputModel)
+        viewModel.updateVariantDetailInputMap(adapterPosition, updatedInputModel)
     }
 
     override fun onWeightInputTextChanged(weightInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
         val validatedInputModel = viewModel.validateProductVariantWeightInput(weightInput.toIntOrNull(), adapterPosition)
-        viewModel.editVariantDetailInputMap(adapterPosition, validatedInputModel)
+        viewModel.updateVariantDetailInputMap(adapterPosition, validatedInputModel)
         return validatedInputModel
     }
 
@@ -327,9 +326,9 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun observeInputStatus() {
-        viewModel.errorCounter.observe(viewLifecycleOwner, {
-            buttonSave?.isEnabled = it.orZero() <= 0
+    private fun observeInputDataValid() {
+        viewModel.inputDataValid.observe(viewLifecycleOwner, {
+            buttonSave?.isEnabled = it
         })
     }
 
@@ -354,7 +353,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             val variantDetailInputModel = viewModel.generateVariantDetailInputModel(
                     productVariantIndex, 0, unitValue.value, isSkuVisible)
             val fieldVisitablePosition = variantDetailFieldsAdapter?.addVariantDetailField(variantDetailInputModel)
-            fieldVisitablePosition?.let { viewModel.updateVariantDetailInputMap(fieldVisitablePosition, variantDetailInputModel) }
+            fieldVisitablePosition?.let { viewModel.addToVariantDetailInputMap(fieldVisitablePosition, variantDetailInputModel) }
         }
     }
 
@@ -381,7 +380,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
                 val variantDetailInputModel = viewModel.generateVariantDetailInputModel(
                         productVariantIndex, headerVisitablePosition, level2Value.value, isSkuVisible)
                 val fieldVisitablePosition = variantDetailFieldsAdapter?.addVariantDetailField(variantDetailInputModel)
-                fieldVisitablePosition?.let { viewModel.updateVariantDetailInputMap(fieldVisitablePosition, variantDetailInputModel) }
+                fieldVisitablePosition?.let { viewModel.addToVariantDetailInputMap(fieldVisitablePosition, variantDetailInputModel) }
                 productVariantIndex++
             }
         }
