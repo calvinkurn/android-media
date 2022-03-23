@@ -88,7 +88,9 @@ public abstract class BaseToolbarActivity extends BaseActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setTitle(this.getTitle());
-            actionBar.setHomeAsUpIndicator(ContextCompat.getDrawable(this, getCloseButton()));
+            if (isShowCloseButton()) {
+                actionBar.setHomeAsUpIndicator(ContextCompat.getDrawable(this, getCloseButton()));
+            }
         }
     }
 
