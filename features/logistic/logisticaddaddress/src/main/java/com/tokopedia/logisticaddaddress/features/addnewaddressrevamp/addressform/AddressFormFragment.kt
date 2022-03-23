@@ -84,6 +84,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private var currentPostalCode: String = ""
     private var isLatitudeNotEmpty: Boolean? = false
     private var isLongitudeNotEmpty: Boolean? = false
+    private var pinpointKotaKecamatan: String = ""
 
     private var isEdit: Boolean = false
     private var addressId: String = ""
@@ -175,11 +176,18 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 if (isEdit) {
                     if (addressDataFromPinpoint.latitude != saveDataModel?.latitude || addressDataFromPinpoint.longitude != saveDataModel?.longitude) {
                         if (kotaKecamatanFromEditPinpoint != currentKotaKecamatan) {
-                            view?.let { view -> Toaster.build(view, "Pinpoint, kota & kecamatan berhasil diperbarui. Yuk, pastikan alamatmu sudah sesuai.", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
+                            view?.let { view -> Toaster.build(view, getString(R.string.change_pinpoint_outside_district), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
                         } else {
-                            view?.let { view -> Toaster.build(view, "Pinpoint-mu berhasil diperbarui. Yuk, pastikan alamatmu sudah sesuai.", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
+                            view?.let { view -> Toaster.build(view, getString(R.string.change_pinpoint_edit_address), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
                         }
-                        binding?.formAddress?.etAlamatNew?.textFieldInput?.requestFocus()
+                        if (!isPositiveFlow) {
+                            binding?.formAddressNegative?.etAlamat?.textFieldInput?.requestFocus()
+                        } else {
+                            binding?.formAddress?.etAlamatNew?.textFieldInput?.requestFocus()
+                        }
+                    }
+                    if (kotaKecamatanFromEditPinpoint != null) {
+                        pinpointKotaKecamatan = kotaKecamatanFromEditPinpoint
                     }
                 }
                 saveDataModel = addressDataFromPinpoint
@@ -466,7 +474,6 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 //                else AddNewAddressRevampAnalytics.onClickIconNamaPenerimaNegative(userSession.userId)
                 showBottomSheetInfoPenerima()
             }
-            formAddress.etAlamatNew.textFieldInput.setText(data.address1)
         }
 
         if (!isPositiveFlow) {
@@ -508,6 +515,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     }
                 }
                 formAddressNegative.etLabel.textFieldInput.setText(data.addrName)
+                formAddressNegative.etAlamat.textFieldInput.setText(data.address1)
                 formAddressNegative.etLabel.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddressNegative.etLabel.textFieldWrapper, null))
                 formAddressNegative.etAlamat.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddressNegative.etAlamat.textFieldWrapper, null))
                 currentAlamat = formAddressNegative.etAlamat.textFieldInput.text.toString()
@@ -528,6 +536,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 cardAddressNegative.root.gone()
 
                 cardAddress.addressDistrict.text = formattedAddress
+                formAddress.etAlamatNew.textFieldInput.setText(data.address1)
 
                 formAddress.etLabel.textFieldInput.setText(data.addrName)
                 formAddress.etLabel.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddress.etLabel.textFieldWrapper, null))
@@ -644,11 +653,25 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             }
         }
 
-
-        if (!validated && isPositiveFlow) {
-            AddNewAddressRevampAnalytics.onClickSimpanErrorPositive(userSession.userId, field)
-        } else if (!validated && !isPositiveFlow) {
-            AddNewAddressRevampAnalytics.onClickSimpanErrorNegative(userSession.userId, field)
+        if (isEdit && pinpointKotaKecamatan.isNotEmpty()) {
+            if (currentKotaKecamatan != pinpointKotaKecamatan) {
+                validated = false
+                view?.let {
+                    Toaster.build(
+                        it,
+                        getString(R.string.error_district_pinpoint_mismatch),
+                        Toaster.LENGTH_SHORT,
+                        Toaster.TYPE_ERROR
+                    ).show()
+                }
+            }
+        }
+        if (!isEdit) {
+            if (!validated && isPositiveFlow) {
+                AddNewAddressRevampAnalytics.onClickSimpanErrorPositive(userSession.userId, field)
+            } else if (!validated && !isPositiveFlow) {
+                AddNewAddressRevampAnalytics.onClickSimpanErrorNegative(userSession.userId, field)
+            }
         }
         return validated
     }
@@ -1113,7 +1136,11 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             }
         } else {
             view?.let { view -> Toaster.build(view, "Kota & kecamatan berhasil diperbarui. Yuk, pastikan alamatmu sudah sesuai.", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
-            binding?.formAddress?.etAlamatNew?.textFieldInput?.requestFocus()
+            if (!isPositiveFlow) {
+                binding?.formAddressNegative?.etAlamat?.textFieldInput?.requestFocus()
+            } else {
+                binding?.formAddress?.etAlamatNew?.textFieldInput?.requestFocus()
+            }
         }
 
         if (isPinpoint) goToPinpointPage()

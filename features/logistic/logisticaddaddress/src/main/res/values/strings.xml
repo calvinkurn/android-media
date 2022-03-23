@@ -206,4 +206,7 @@
 
     <string name="postal_code_field_error">Kode pos terlalu pendek, min. 5 karakter</string>
     <string name="edit_address_revamp_change_pinpoint_positive_button_text">Ubah</string>
+    <string name="error_district_pinpoint_mismatch"><![CDATA[Oops, kota & kecamatan harus sama dengan pinpoint.]]></string>
+    <string name="change_pinpoint_outside_district"><![CDATA[Pinpoint, kota & kecamatan berhasil diperbarui. Yuk, pastikan alamatmu sudah sesuai.]]></string>
+    <string name="change_pinpoint_edit_address">Pinpoint-mu berhasil diperbarui. Yuk, pastikan alamatmu sudah sesuai.</string>
 </resources>
