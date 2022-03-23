@@ -82,13 +82,13 @@ class CameraControllerComponent(
         }
 
         btnFlip.setOnClickListener {
+            controllerListener.onFlipClicked()
+
             if (controllerListener.isFrontCamera()) {
                 btnFlash.invisible()
             } else {
                 btnFlash.show()
             }
-
-            controllerListener.onFlipClicked()
         }
     }
 

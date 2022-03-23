@@ -256,7 +256,9 @@ open class CameraFragment : BaseDaggerFragment()
     private fun setCameraFlashState() {
         val activeFlash = cameraView.cameraFlash()
 
-        controller.isFlashSupported(activeFlash != null)
+        if (!isFrontCamera()) {
+            controller.isFlashSupported(activeFlash != null)
+        }
 
         if (activeFlash != null) {
             controller.setFlashMode(activeFlash.ordinal)
