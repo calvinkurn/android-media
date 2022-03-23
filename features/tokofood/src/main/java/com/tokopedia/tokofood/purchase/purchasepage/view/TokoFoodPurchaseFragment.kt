@@ -189,7 +189,13 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     private fun onSuccessRemoveProduct(productCount: Int) {
         view?.let {
-            Toaster.build(it, "$productCount item berhasil dihapus.", Toaster.LENGTH_SHORT).show()
+            Toaster.build(
+                    view = it,
+                    text = "$productCount item berhasil dihapus.",
+                    duration = Toaster.LENGTH_SHORT,
+                    type = Toaster.TYPE_NORMAL,
+                    actionText = "Oke"
+            ).show()
         }
     }
 
@@ -254,6 +260,15 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 object : TokoFoodPurchaseNoteBottomSheet.Listener {
                     override fun onSaveNotesClicked(notes: String) {
                         viewModel.updateNotes(element, notes)
+                        view?.let {
+                            Toaster.build(
+                                    view = it,
+                                    text = "Sip! Catatan berhasil disimpan.",
+                                    duration = Toaster.LENGTH_SHORT,
+                                    type = Toaster.TYPE_NORMAL,
+                                    actionText = "Oke"
+                            ).show()
+                        }
                     }
                 }
         )
