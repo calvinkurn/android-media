@@ -290,17 +290,6 @@
       "businessUnit": "play"
     },
     {
-      "eventAction": "click etalase card",
-      "event": "clickSellerBroadcast",
-      "eventCategory": "seller broadcast",
-      "eventLabel": "\\d+ - .+",
-      "sessionIris": ".*",
-      "currentSite": "(tokopediamarketplace|tokopediaseller)",
-      "shopId": ".*",
-      "userId": ".*",
-      "businessUnit": "play"
-    },
-    {
       "eventAction": "view add cover and title",
       "event": "viewSellerBroadcastIris",
       "eventCategory": "seller broadcast",
