@@ -152,8 +152,13 @@ class MiniCartSimplifiedWidget : BaseCustomView {
                 showToasterError(fragment, throwable)
             }
         } else {
-            lastFailedValidateError = FAILED_VALIDATE_TIME_DEFAULT
-            lastFailedValidateErrorMessage = ""
+            if (throwable is MessageErrorException) {
+                lastFailedValidateError = currentTime
+                lastFailedValidateErrorMessage = throwable.message ?: ""
+            } else {
+                lastFailedValidateError = FAILED_VALIDATE_TIME_DEFAULT
+                lastFailedValidateErrorMessage = ""
+            }
             showToasterError(fragment, throwable)
         }
     }
@@ -176,8 +181,13 @@ class MiniCartSimplifiedWidget : BaseCustomView {
                 showToasterError(fragment, throwable)
             }
         } else {
-            lastFailedValidateMoveToCart = FAILED_VALIDATE_TIME_DEFAULT
-            lastFailedValidateMoveToCartMessage = ""
+            if (throwable is MessageErrorException) {
+                lastFailedValidateMoveToCart = currentTime
+                lastFailedValidateMoveToCartMessage = throwable.message ?: ""
+            } else {
+                lastFailedValidateMoveToCart = FAILED_VALIDATE_TIME_DEFAULT
+                lastFailedValidateMoveToCartMessage = ""
+            }
             showToasterError(fragment, throwable)
         }
     }
