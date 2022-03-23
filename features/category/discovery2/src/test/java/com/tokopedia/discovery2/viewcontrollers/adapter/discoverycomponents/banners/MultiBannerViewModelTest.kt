@@ -34,10 +34,15 @@ class MultiBannerViewModelTest {
     private val viewModel: MultiBannerViewModel by lazy {
         spyk(MultiBannerViewModel(application, componentsItem, 99))
     }
+
+    private val bannerUseCase: BannerUseCase by lazy {
+        mockk()
+    }
+
     val list = arrayListOf<DataItem>()
     var dataItem:DataItem = mockk()
-    var userSession:UserSession = mockk()
-    var context:Context = mockk()
+    var userSession: UserSession = mockk()
+    var context: Context = mockk()
 
     @Before
     fun setup() {
@@ -62,6 +67,31 @@ class MultiBannerViewModelTest {
         every { componentsItem.verticalProductFailState } returns false
         assert(viewModel.shouldShowShimmer())
 
+        every { componentsItem.noOfPagesLoaded } returns 0
+        every { componentsItem.properties?.dynamic } returns true
+        every { componentsItem.verticalProductFailState } returns true
+        assert(!viewModel.shouldShowShimmer())
+
+        every { componentsItem.noOfPagesLoaded } returns 0
+        every { componentsItem.properties?.dynamic } returns false
+        every { componentsItem.verticalProductFailState } returns false
+        assert(!viewModel.shouldShowShimmer())
+
+        every { componentsItem.noOfPagesLoaded } returns 0
+        every { componentsItem.properties?.dynamic } returns false
+        every { componentsItem.verticalProductFailState } returns true
+        assert(!viewModel.shouldShowShimmer())
+
+        every { componentsItem.noOfPagesLoaded } returns 0
+        every { componentsItem.properties } returns null
+        every { componentsItem.verticalProductFailState } returns true
+        assert(!viewModel.shouldShowShimmer())
+
+        every { componentsItem.noOfPagesLoaded } returns 0
+        every { componentsItem.properties } returns null
+        every { componentsItem.verticalProductFailState } returns false
+        assert(!viewModel.shouldShowShimmer())
+
         every { componentsItem.noOfPagesLoaded } returns 1
         every { componentsItem.properties?.dynamic } returns true
         every { componentsItem.verticalProductFailState } returns true
@@ -72,8 +102,23 @@ class MultiBannerViewModelTest {
         every { componentsItem.verticalProductFailState } returns false
         assert(!viewModel.shouldShowShimmer())
 
-        every { componentsItem.noOfPagesLoaded } returns 0
+        every { componentsItem.noOfPagesLoaded } returns 1
         every { componentsItem.properties?.dynamic } returns false
+        every { componentsItem.verticalProductFailState } returns false
+        assert(!viewModel.shouldShowShimmer())
+
+        every { componentsItem.noOfPagesLoaded } returns 1
+        every { componentsItem.properties?.dynamic } returns false
+        every { componentsItem.verticalProductFailState } returns false
+        assert(!viewModel.shouldShowShimmer())
+
+        every { componentsItem.noOfPagesLoaded } returns 1
+        every { componentsItem.properties } returns null
+        every { componentsItem.verticalProductFailState } returns false
+        assert(!viewModel.shouldShowShimmer())
+
+        every { componentsItem.noOfPagesLoaded } returns 1
+        every { componentsItem.properties } returns null
         every { componentsItem.verticalProductFailState } returns false
         assert(!viewModel.shouldShowShimmer())
 
@@ -81,12 +126,14 @@ class MultiBannerViewModelTest {
 
     @Test
     fun `test for onAttachToViewHolder`(){
+        viewModel.bannerUseCase = bannerUseCase
         runBlocking {
             every { componentsItem.properties?.dynamic } returns true
-            coEvery { viewModel.bannerUseCase.loadFirstPageComponents(any(), any()) } returns true
+            coEvery { bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint) } returns true
 
+            val list = ArrayList<ComponentsItem>()
+            every { componentsItem.getComponentsItem() } returns list
             viewModel.onAttachToViewHolder()
-
             TestCase.assertEquals(viewModel.getComponentData().value != null, true)
         }
     }

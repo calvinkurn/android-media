@@ -36,6 +36,9 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shop
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sliderbanner.SliderBannerViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.timerSprintSale.TimerSprintSaleItemViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tndbanner.DiscoveryTNDBannerViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsItemViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YouTubeViewViewModelTest
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
@@ -80,6 +83,10 @@ import org.junit.runners.Suite
         MerchantVoucherCarouselViewModelTest::class,
         MerchantVoucherListViewModelTest::class,
         DiscoMerchantVoucherViewModelTest::class,
+        TextComponentViewModelTest::class,
+        DiscoveryTNDBannerViewModelTest::class,
+        TokopointsViewModelTest::class,
+        TokopointsItemViewModelTest::class,
         MyCouponModelTest::class,
         MyCouponItemModelTest::class
 )

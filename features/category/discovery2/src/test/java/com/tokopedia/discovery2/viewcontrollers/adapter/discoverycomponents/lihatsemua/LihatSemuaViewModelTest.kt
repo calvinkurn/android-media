@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import io.mockk.*
 import org.junit.*
 
@@ -14,6 +15,7 @@ class LihatSemuaViewModelTest {
     private val application: Application = mockk()
     private val list = ArrayList<DataItem>()
     private val mockedDataItem:DataItem = mockk(relaxed = true)
+    private val mockedTimerUnifySingleItem: TimerUnifySingle = mockk(relaxed = true)
     private val viewModel: LihatSemuaViewModel by lazy {
         spyk(LihatSemuaViewModel(application, componentsItem, 99)).apply {
             onAttachToViewHolder()
@@ -46,6 +48,11 @@ class LihatSemuaViewModelTest {
     }
 
     @Test
+    fun `text for startTimer`(){
+        viewModel.startTimer(mockedTimerUnifySingleItem)
+    }
+
+    @Test
     fun `start Date if no data present`() {
         every { componentsItem.data } returns null
         Assert.assertEquals(viewModel.getStartDate(), "")
@@ -63,6 +70,22 @@ class LihatSemuaViewModelTest {
         every { componentsItem.data } returns list
         every { mockedDataItem.startDate  } returns "test date"
         Assert.assertEquals(viewModel.getStartDate(), "test date")
+
+        list.clear()
+        list.add(mockedDataItem)
+        every { componentsItem.data } returns list
+        every { mockedDataItem.startDate  } returns null
+        Assert.assertEquals(viewModel.getStartDate(), "")
+
+        list.clear()
+        list.add(mockedDataItem)
+        every { componentsItem.data } returns null
+        Assert.assertEquals(viewModel.getStartDate(), "")
+
+        list.clear()
+        list.add(mockedDataItem)
+        every { componentsItem.data?.firstOrNull() } returns null
+        Assert.assertEquals(viewModel.getStartDate(), "")
     }
 
     @Test
@@ -84,6 +107,24 @@ class LihatSemuaViewModelTest {
         every { componentsItem.data } returns list
         every { mockedDataItem.endDate } returns "test date"
         Assert.assertEquals(viewModel.getEndDate(), "test date")
+
+
+        list.clear()
+        list.add(mockedDataItem)
+        every { componentsItem.data } returns list
+        every { mockedDataItem.endDate  } returns null
+        Assert.assertEquals(viewModel.getEndDate(), "")
+
+        list.clear()
+        list.add(mockedDataItem)
+        every { componentsItem.data } returns null
+        Assert.assertEquals(viewModel.getEndDate(), "")
+
+        list.clear()
+        list.add(mockedDataItem)
+        every { componentsItem.data?.firstOrNull() } returns null
+        Assert.assertEquals(viewModel.getEndDate(), "")
+
     }
 
     @Test

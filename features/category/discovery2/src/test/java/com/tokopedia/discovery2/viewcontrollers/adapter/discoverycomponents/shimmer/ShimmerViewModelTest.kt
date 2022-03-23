@@ -32,8 +32,20 @@ class ShimmerViewModelTest {
     fun `design type test`() {
         every { componentsItem.properties } returns null
         assert(viewModel.getTemplateType() == Constant.ProductTemplate.GRID)
+        every { componentsItem.properties?.template } returns null
+        assert(viewModel.getTemplateType() == Constant.ProductTemplate.GRID)
         every { componentsItem.properties?.template } returns Constant.ProductTemplate.LIST
         assert(viewModel.getTemplateType() == Constant.ProductTemplate.LIST)
+    }
+
+    @Test
+    fun `test for getCalendarLayout`() {
+        every { componentsItem.properties } returns null
+        assert(viewModel.getCalendarLayout() == null)
+        every { componentsItem.properties?.calendarLayout } returns null
+        assert(viewModel.getCalendarLayout() == null)
+        every { componentsItem.properties?.calendarLayout } returns "calendarLayout"
+        assert(viewModel.getCalendarLayout() == "calendarLayout")
     }
 
     @Test

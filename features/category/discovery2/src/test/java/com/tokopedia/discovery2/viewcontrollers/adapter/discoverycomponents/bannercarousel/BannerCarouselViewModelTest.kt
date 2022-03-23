@@ -5,12 +5,13 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
+import com.tokopedia.discovery2.usecase.bannerusecase.BannerUseCase
 import io.mockk.*
+import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -20,6 +21,8 @@ class BannerCarouselViewModelTest {
     val rule = InstantTaskExecutorRule()
     private val componentsItem: ComponentsItem = mockk(relaxed = true)
     private val application: Application = mockk()
+    private val list = ArrayList<DataItem>()
+    private val mockedDataItem:DataItem = mockk(relaxed = true)
     private val dataList = ArrayList<DataItem>().apply {
         add(DataItem())
     }
@@ -28,14 +31,51 @@ class BannerCarouselViewModelTest {
         spyk(BannerCarouselViewModel(application, componentsItem, 0))
     }
 
+    private val bannerUseCase: BannerUseCase by lazy {
+        mockk()
+    }
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        Dispatchers.setMain(TestCoroutineDispatcher())
+    }
+
+    @Test
+    fun `test for fetchBannerData`(){
+        viewModel.bannerUseCase = bannerUseCase
+        every { componentsItem.properties?.dynamic } returns true
+        runBlocking {
+            coEvery {
+                bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint)} throws Exception("Error")
+            viewModel.onAttachToViewHolder()
+            TestCase.assertEquals(viewModel.hideShimmer.value ,true)
+            TestCase.assertEquals(viewModel.getTitleLiveData().value, "")
+
+            coEvery {
+                bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint)} returns true
+            list.clear()
+            list.add(mockedDataItem)
+            every { componentsItem.data } returns list
+            every { componentsItem.properties?.bannerTitle } returns "title"
+            viewModel.onAttachToViewHolder()
+            TestCase.assertEquals(viewModel.getComponents().value != null, true)
+        }
     }
 
     @Test
     fun `component value is present in live data`() {
         assert(viewModel.getComponents().value == componentsItem)
+    }
+
+    @Test
+    fun `test for useCase`() {
+        val viewModel: BannerCarouselViewModel =
+                spyk(BannerCarouselViewModel(application, componentsItem, 99))
+
+        val bannerUseCase = mockk<BannerUseCase>()
+        viewModel.bannerUseCase = bannerUseCase
+        assert(viewModel.bannerUseCase === bannerUseCase)
     }
 
     @Test
@@ -81,6 +121,70 @@ class BannerCarouselViewModelTest {
         verify { DiscoveryDataMapper.mapListToComponentList(any(), any(), any(), any(), any()) }
         assert(viewModelTest.getComponentData().value == list)
         unmockkObject(DiscoveryDataMapper)
+
+    }
+
+    @Test
+    fun `shouldShowShimmer test`() {
+        every { componentsItem.noOfPagesLoaded } returns 0
+        every { componentsItem.properties?.dynamic } returns true
+        every { componentsItem.verticalProductFailState } returns false
+        assert(viewModel.shouldShowShimmer())
+
+        every { componentsItem.noOfPagesLoaded } returns 0
+        every { componentsItem.properties?.dynamic } returns true
+        every { componentsItem.verticalProductFailState } returns true
+        assert(!viewModel.shouldShowShimmer())
+
+        every { componentsItem.noOfPagesLoaded } returns 0
+        every { componentsItem.properties?.dynamic } returns false
+        every { componentsItem.verticalProductFailState } returns false
+        assert(!viewModel.shouldShowShimmer())
+
+        every { componentsItem.noOfPagesLoaded } returns 0
+        every { componentsItem.properties?.dynamic } returns false
+        every { componentsItem.verticalProductFailState } returns true
+        assert(!viewModel.shouldShowShimmer())
+
+        every { componentsItem.noOfPagesLoaded } returns 0
+        every { componentsItem.properties } returns null
+        every { componentsItem.verticalProductFailState } returns true
+        assert(!viewModel.shouldShowShimmer())
+
+        every { componentsItem.noOfPagesLoaded } returns 0
+        every { componentsItem.properties } returns null
+        every { componentsItem.verticalProductFailState } returns false
+        assert(!viewModel.shouldShowShimmer())
+
+        every { componentsItem.noOfPagesLoaded } returns 1
+        every { componentsItem.properties?.dynamic } returns true
+        every { componentsItem.verticalProductFailState } returns true
+        assert(!viewModel.shouldShowShimmer())
+
+        every { componentsItem.noOfPagesLoaded } returns 1
+        every { componentsItem.properties?.dynamic } returns true
+        every { componentsItem.verticalProductFailState } returns false
+        assert(!viewModel.shouldShowShimmer())
+
+        every { componentsItem.noOfPagesLoaded } returns 1
+        every { componentsItem.properties?.dynamic } returns false
+        every { componentsItem.verticalProductFailState } returns false
+        assert(!viewModel.shouldShowShimmer())
+
+        every { componentsItem.noOfPagesLoaded } returns 1
+        every { componentsItem.properties?.dynamic } returns false
+        every { componentsItem.verticalProductFailState } returns false
+        assert(!viewModel.shouldShowShimmer())
+
+        every { componentsItem.noOfPagesLoaded } returns 1
+        every { componentsItem.properties } returns null
+        every { componentsItem.verticalProductFailState } returns false
+        assert(!viewModel.shouldShowShimmer())
+
+        every { componentsItem.noOfPagesLoaded } returns 1
+        every { componentsItem.properties } returns null
+        every { componentsItem.verticalProductFailState } returns false
+        assert(!viewModel.shouldShowShimmer())
 
     }
 

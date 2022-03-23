@@ -7,6 +7,7 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannercarousel.BannerCarouselViewModel
 import io.mockk.*
+import junit.framework.TestCase
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -29,6 +30,8 @@ class DynamicCategoryViewModelTest {
     @Test
     fun `test for component List`() {
         var viewModelTest = viewModel
+        every { componentsItem.data } returns null
+        TestCase.assertEquals(viewModelTest.getComponentLiveData().value?.size == 0,true)
         mockkObject(DiscoveryDataMapper)
         val list: ArrayList<ComponentsItem> = ArrayList()
         every { DiscoveryDataMapper.mapListToComponentList(any(), any(), any(), any(), any()) } returns list

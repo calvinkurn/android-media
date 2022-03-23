@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.usecase.SectionUseCase
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcarditem.ShopCardItemViewModel
 import io.mockk.*
@@ -25,24 +26,44 @@ class ShopCardItemModelTest {
     val rule = InstantTaskExecutorRule()
     private val componentsItem: ComponentsItem = mockk(relaxed = true)
     private val application: Application = mockk()
-    private var viewModel: ShopCardItemViewModel =
-        spyk(ShopCardItemViewModel(application, componentsItem, 99))
+    private val viewModel: ShopCardItemViewModel by lazy {
+        spyk(ShopCardItemViewModel(application, componentsItem, 99)).apply {
+            onAttachToViewHolder()
+        }
+    }
 
     @Before
     @Throws(Exception::class)
     fun setup() {
         MockKAnnotations.init(this)
+        Dispatchers.setMain(TestCoroutineDispatcher())
     }
 
+    @After
+    @Throws(Exception::class)
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
 
     @Test
     fun `component value is present in live data`() {
-        assert(viewModel.components == componentsItem)
+        assert(viewModel.getComponentLiveData().value == componentsItem)
     }
 
     @Test
     fun `test for position passed`(){
         assert(viewModel.position == 99)
     }
+
+    @Test
+    fun `test for components passed`(){
+        assert(viewModel.components === componentsItem)
+    }
+
+    @Test
+    fun `test for application`(){
+        assert(viewModel.application === application)
+    }
+
 
 }
