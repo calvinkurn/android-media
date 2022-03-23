@@ -17,10 +17,12 @@ import com.tokopedia.deals.R
 import com.tokopedia.deals.brand.model.DealsEmptyDataView
 import com.tokopedia.deals.brand.ui.activity.DealsBrandActivity
 import com.tokopedia.deals.category.di.DealsCategoryComponent
+import com.tokopedia.deals.category.listener.DealsCategoryFilterBottomSheetListener
 import com.tokopedia.deals.category.ui.activity.DealsCategoryActivity
 import com.tokopedia.deals.category.ui.adapter.DealsCategoryAdapter
 import com.tokopedia.deals.category.ui.viewmodel.DealCategoryViewModel
 import com.tokopedia.deals.common.analytics.DealsAnalytics
+import com.tokopedia.deals.common.listener.DealChipsListActionListener
 import com.tokopedia.deals.common.listener.DealsBrandActionListener
 import com.tokopedia.deals.common.listener.EmptyStateListener
 import com.tokopedia.deals.common.listener.OnBaseLocationActionListener
@@ -31,6 +33,7 @@ import com.tokopedia.deals.common.ui.activity.DealsBaseActivity
 import com.tokopedia.deals.common.ui.dataview.ChipDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
+import com.tokopedia.deals.common.ui.dataview.DealsChipsDataView
 import com.tokopedia.deals.common.ui.dataview.ProductCardDataView
 import com.tokopedia.deals.common.ui.fragment.DealsBaseFragment
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
@@ -48,6 +51,7 @@ import javax.inject.Inject
 class DealsCategoryFragment : DealsBaseFragment(),
         OnBaseLocationActionListener, SearchBarActionListener,
         DealsBrandActionListener, ProductCardListener,
+        DealChipsListActionListener, DealsCategoryFilterBottomSheetListener,
         EmptyStateListener {
 
     private var binding by autoCleared<FragmentDealsCategoryBinding>()
@@ -64,6 +68,8 @@ class DealsCategoryFragment : DealsBaseFragment(),
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var dealCategoryViewModel: DealCategoryViewModel
     private lateinit var baseViewModel: DealsBaseViewModel
+
+    private var filterBottomSheet: DealsCategoryFilterBottomSheet? = null
 
     private var chips: List<ChipDataView> = listOf()
 
@@ -255,6 +261,29 @@ class DealsCategoryFragment : DealsBaseFragment(),
     override fun onClickSeeAllBrand(seeAllUrl: String) {
         analytics.eventSeeAllBrandPopularOnCategoryPage()
         startActivity(DealsBrandActivity.getCallingIntent(requireContext(), null, categoryID))
+    }
+
+    /** DealChipsListActionListener **/
+    override fun onFilterChipClicked(chips: List<ChipDataView>) {
+        if (filterBottomSheet == null) {
+            filterBottomSheet = DealsCategoryFilterBottomSheet(this)
+        }
+        filterBottomSheet?.showCategories(DealsChipsDataView(chips))
+        filterBottomSheet?.show(childFragmentManager, "")
+    }
+
+    override fun onChipClicked(chips: List<ChipDataView>) {
+        analytics.eventClickChipsCategory()
+        this.chips = chips
+        applyFilter()
+    }
+
+    /** DealsCategoryFilterBottomSheetListener **/
+    override fun onFilterApplied(chips: DealsChipsDataView) {
+        analytics.eventApplyChipsCategory(chips)
+        this.chips = chips.chipList
+
+        applyFilter()
     }
 
     private fun getErrorNetworkModel(): ErrorNetworkModel {
