@@ -82,6 +82,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
         private const val PER_PAGE = 10
         private const val PAGE_SOURCE_KEY = "page_source"
         private const val REQUEST_CODE_USER_LOGIN = 101
+        private const val REQUEST_CODE_REDIRECT_TO_CART_FROM_MINI_CART = 102
         private const val VBS_EXT_PARAMS_PROMO_ID = "promoID"
         fun createInstance() = MvcLockedToProductFragment()
     }
@@ -125,7 +126,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     private var navigationToolbar: NavToolbar? = null
     private var swipeRefreshView:  SwipeToRefresh? = null
     private var rvProductList:  RecyclerView? = null
-
+    private var isPromoValid: Boolean? = null
 
     private fun getIntentData() {
         activity?.intent?.data?.let {
@@ -308,7 +309,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     }
 
     private fun shouldUpdateMiniCartWidget(): Boolean {
-        return isUserLogin && MvcLockedToProductUtil.isMvcPhase2() && !isSellerView
+        return isUserLogin && MvcLockedToProductUtil.isMvcPhase2() && !isSellerView && isPromoValid != false
     }
 
     private fun showToaster(message: String, duration: Int = Toaster.LENGTH_SHORT, type: Int) {
@@ -698,6 +699,12 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
             REQUEST_CODE_USER_LOGIN -> {
                 loadInitialData()
             }
+            REQUEST_CODE_REDIRECT_TO_CART_FROM_MINI_CART -> {
+                if(isPromoValid == false) {
+                    isPromoValid = null
+                    loadInitialData()
+                }
+            }
             else -> {
                 super.onActivityResult(requestCode, resultCode, data)
             }
@@ -742,6 +749,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     }
 
     override fun onClickCheckCart(intent: Intent, isPromoValid: Boolean) {
-        startActivity(intent)
+        this.isPromoValid = isPromoValid
+        startActivityForResult(intent, REQUEST_CODE_REDIRECT_TO_CART_FROM_MINI_CART)
     }
 }
