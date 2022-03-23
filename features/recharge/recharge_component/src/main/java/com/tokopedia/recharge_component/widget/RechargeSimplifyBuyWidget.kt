@@ -25,13 +25,4 @@ class RechargeSimplifyBuyWidget @JvmOverloads constructor(@NotNull context: Cont
             }
         }
     }
-
-    fun isLoadingButton(isLoadingActive: Boolean){
-        with(rechargeSimplifyBuyWidgetBinding){
-            btnSimplifyBuyWidget.run {
-                isLoading = isLoadingActive
-            }
-        }
-    }
-
 }
