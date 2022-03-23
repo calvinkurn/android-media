@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -79,9 +80,20 @@ import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
-import com.tokopedia.search.result.product.fulfillment.FulfillmentFilter
+import com.tokopedia.search.result.product.postprocessing.PostProcessingFilter
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
+import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringProvider
+import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC
+import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_BROADMATCH
+import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_PROCESS_FILTER
+import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_HEADLINE_ADS
+import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_CAROUSEL
+import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_WIDGET
+import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_MAP_PRODUCT_DATA_VIEW
+import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_SHOW_PRODUCT_LIST
+import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_TDN
+import com.tokopedia.search.result.product.performancemonitoring.runCustomMetric
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.UrlParamUtils
@@ -136,6 +148,7 @@ class ProductListPresenter @Inject constructor(
     private val topAdsUrlHitter: TopAdsUrlHitter,
     private val schedulersProvider: SchedulersProvider,
     private val topAdsHeadlineHelper : TopAdsHeadlineHelper,
+    performanceMonitoringProvider: PerformanceMonitoringProvider,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter {
 
@@ -165,6 +178,8 @@ class ProductListPresenter @Inject constructor(
     }
 
     private var compositeSubscription: CompositeSubscription? = CompositeSubscription()
+    private val performanceMonitoring: PageLoadTimePerformanceInterface? =
+        performanceMonitoringProvider.get()
 
     private var enableGlobalNavWidget = true
     private var additionalParams = ""
@@ -204,7 +219,7 @@ class ProductListPresenter @Inject constructor(
     override var pageComponentId: String = ""
         private set
     private val adsInjector = AdsInjector()
-    private val fulfillmentFilter = FulfillmentFilter()
+    private val postProcessingFilter = PostProcessingFilter()
 
     override fun attachView(view: ProductListSectionContract.View) {
         super.attachView(view)
@@ -454,12 +469,12 @@ class ProductListPresenter @Inject constructor(
         additionalParams = productDataView.additionalParams
 
         if (productDataView.productList.isEmpty()) {
-            fulfillmentFilter.checkFulfillmentFilter(searchParameter, totalData, ::loadMoreData) {
+            postProcessingFilter.checkPostProcessingFilter(searchParameter, totalData, ::loadMoreData) {
                 getViewToProcessEmptyResultDuringLoadMore(searchProductModel.searchProduct)
             }
         }
         else {
-            fulfillmentFilter.resetCount()
+            postProcessingFilter.resetCount()
             getViewToShowMoreData(searchParameter, searchProductModel, productDataView)
         }
 
@@ -616,8 +631,8 @@ class ProductListPresenter @Inject constructor(
 
         val useCaseRequestParams = createSearchProductRequestParams(requestParams)
 
-        view.stopPreparePagePerformanceMonitoring()
-        view.startNetworkRequestPerformanceMonitoring()
+        performanceMonitoring?.stopPreparePagePerformanceMonitoring()
+        performanceMonitoring?.startNetworkRequestPerformanceMonitoring()
 
         // Unsubscribe first in case user has slow connection,
         // and the previous loadDataUseCase has not finished yet.
@@ -671,11 +686,22 @@ class ProductListPresenter @Inject constructor(
         view.logWarning(UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>), throwable)
     }
 
-    private fun loadDataSubscriberOnNext(searchParameter: Map<String, Any>, searchProductModel: SearchProductModel) {
-        if (isViewNotAttached) return
+    private fun loadDataSubscriberOnNext(
+        searchParameter: Map<String, Any>,
+        searchProductModel: SearchProductModel,
+    ) {
+        performanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+        performanceMonitoring?.startRenderPerformanceMonitoring()
+        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC) {
+            getViewToProcessSearchProductModel(searchParameter, searchProductModel)
+        }
+    }
 
-        view.stopNetworkRequestPerformanceMonitoring()
-        view.startRenderPerformanceMonitoring()
+    private fun getViewToProcessSearchProductModel(
+        searchParameter: Map<String, Any>,
+        searchProductModel: SearchProductModel,
+    ) {
+        if (isViewNotAttached) return
 
         if (isSearchRedirected(searchProductModel))
             getViewToRedirectSearch(searchProductModel)
@@ -720,18 +746,23 @@ class ProductListPresenter @Inject constructor(
         view.setDefaultLayoutType(productDataView.defaultView)
 
         if (productDataView.productList.isEmpty()) {
-            fulfillmentFilter.checkFulfillmentFilter(searchParameter, totalData, ::loadData) {
+            postProcessingFilter.checkPostProcessingFilter(searchParameter, totalData, ::loadData) {
                 getViewToHandleEmptyProductList(
                     searchProductModel.searchProduct,
                     productDataView,
                 )
             }
         } else {
-            fulfillmentFilter.resetCount()
-            getViewToShowProductList(searchParameter, searchProductModel, productDataView)
+            postProcessingFilter.resetCount()
+
+            runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_SHOW_PRODUCT_LIST) {
+                getViewToShowProductList(searchParameter, searchProductModel, productDataView)
+            }
         }
 
-        processFilters(searchProductModel)
+        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_PROCESS_FILTER) {
+            processFilters(searchProductModel)
+        }
 
         view.updateScrollListener()
 
@@ -745,9 +776,14 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun createFirstProductDataView(searchProductModel: SearchProductModel): ProductDataView {
-        view.clearLastProductItemPositionFromCache()
+        return runCustomMetric(
+            performanceMonitoring,
+            SEARCH_RESULT_PLT_RENDER_LOGIC_MAP_PRODUCT_DATA_VIEW,
+        ) {
+            view.clearLastProductItemPositionFromCache()
 
-        return createProductDataView(searchProductModel)
+            createProductDataView(searchProductModel)
+        }
     }
 
     private fun getViewToHandleEmptyProductList(
@@ -1058,22 +1094,35 @@ class ProductListPresenter @Inject constructor(
         productList = createProductItemVisitableList(productDataView, searchParameter).toMutableList()
         list.addAll(productList)
 
-        processHeadlineAdsFirstPage(searchProductModel, list)
+        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_HEADLINE_ADS) {
+            processHeadlineAdsFirstPage(searchProductModel, list)
+        }
 
         additionalParams = productDataView.additionalParams
 
-        inspirationCarouselDataView = productDataView.inspirationCarouselDataView.toMutableList()
-        processInspirationCarouselPosition(searchParameter, list)
+        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_CAROUSEL) {
+            inspirationCarouselDataView = productDataView.inspirationCarouselDataView.toMutableList()
+            processInspirationCarouselPosition(searchParameter, list)
+        }
 
-        inspirationWidgetVisitable = productDataView.inspirationWidgetDataView.toMutableList()
-        processInspirationWidgetPosition(searchParameter, list)
+        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_WIDGET) {
+            inspirationWidgetVisitable = productDataView.inspirationWidgetDataView.toMutableList()
+            processInspirationWidgetPosition(searchParameter, list)
+        }
 
         processBannerAndBroadmatchInSamePosition(searchProduct, list)
         processBanner(searchProduct, list)
-        processBroadMatch(searchProduct, list)
 
-        topAdsImageViewModelList = searchProductModel.getTopAdsImageViewModelList().toMutableList()
-        processTopAdsImageViewModel(searchParameter, list)
+        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_BROADMATCH) {
+            processBroadMatch(searchProduct, list)
+        }
+
+        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_TDN) {
+            topAdsImageViewModelList =
+                searchProductModel.getTopAdsImageViewModelList().toMutableList()
+
+            processTopAdsImageViewModel(searchParameter, list)
+        }
 
         addSearchInTokopedia(searchProduct, list)
         firstProductPositionWithBOELabel = getFirstProductPositionWithBOELabel(list)
@@ -1083,7 +1132,6 @@ class ProductListPresenter @Inject constructor(
         view.backToTop()
         if (productDataView.totalData > getSearchRows().toIntOrZero())
             view.addLoading()
-        view.stopTracePerformanceMonitoring()
     }
 
     private fun addLastFilterDataView(

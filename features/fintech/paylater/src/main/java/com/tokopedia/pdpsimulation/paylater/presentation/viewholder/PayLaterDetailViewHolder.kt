@@ -14,6 +14,7 @@ import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteraction
 import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
@@ -40,19 +41,24 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
     private fun setUpRecommendation(element: Detail) {
         if (element.recommendationDetail?.flag == true) {
 
-            itemView.clDetailParent.background =
-                MethodChecker.getDrawable(context, R.drawable.bg_paylater_recommended_gradient)
+            itemView.clDetailParent.background =if (itemView.context.isDarkMode()) {
+                MethodChecker.getDrawable(context, R.drawable.bg_paylater_recommended_dark_gradient)
+            }else{
+                MethodChecker.getDrawable(context, R.drawable.bg_paylater_recommended_light_gradient)
+            }
             itemView.clPartnerCard.background = MethodChecker.getDrawable(
                 context,
                 R.drawable.bg_paylater_card_border_recommendation
             )
             itemView.tvRecommendationTitle.visible()
             itemView.tvRecommendationTitle.text = element.recommendationDetail.text
+            itemView.payLaterPartnerCard.cardType = CardUnify.TYPE_SHADOW
 
         } else {
 
             itemView.clDetailParent.background = null
             itemView.clPartnerCard.background = null
+            itemView.payLaterPartnerCard.cardType = CardUnify.TYPE_BORDER
 
             itemView.tvRecommendationTitle.gone()
         }

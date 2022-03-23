@@ -29,6 +29,7 @@ object DateTimeUtils {
     const val EXTRA_MINUTE = 30
     const val EXTRA_WEEK = 7
     const val EXTRA_DAYS = 30
+    const val EXTRA_DAYS_COUPON = 31
     const val MINUTE_INTERVAL = 30
     const val ROLLOUT_DATE_THRESHOLD_TIME = 1647536401000L
 
@@ -137,6 +138,19 @@ object DateTimeUtils {
                     add(Calendar.DATE, EXTRA_DAYS)
                 }
             }
+
+    fun Context.getCouponMaxStartDate() =
+        getToday().apply {
+            add(Calendar.DATE, EXTRA_DAYS_COUPON)
+        }
+
+    fun getCouponMaxEndDate(startCalendar: GregorianCalendar?): GregorianCalendar =
+        startCalendar?.let { startDate ->
+            GregorianCalendar().apply {
+                time = startDate.time
+                add(Calendar.DATE, EXTRA_DAYS_COUPON)
+            }
+        } ?: GregorianCalendar()
 
     internal fun getDisplayedDateString(context: Context?,
                                         startDate: String,

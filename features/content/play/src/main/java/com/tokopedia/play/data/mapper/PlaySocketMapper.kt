@@ -103,8 +103,8 @@ class PlaySocketMapper(
         return convertToModel(webSocketResponse.jsonObject, BannedFreeze::class.java)
     }
 
-    private fun mapToProductTag(): ProductTag? {
-        return convertToModel(webSocketResponse.jsonObject, ProductTag::class.java)
+    private fun mapToProductTag(): ProductSection? {
+        return convertToModel(webSocketResponse.jsonObject, ProductSection::class.java)
     }
 
     private fun mapToMerchantVoucher(): List<Voucher> {

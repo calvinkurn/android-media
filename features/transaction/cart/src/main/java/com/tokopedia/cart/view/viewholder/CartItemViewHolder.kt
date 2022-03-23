@@ -4,10 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
 import android.text.*
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.EditorInfo
+import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -15,13 +14,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.ProductInformationWithIcon
+import com.tokopedia.cart.databinding.ItemAddonCartIdentifierBinding
 import com.tokopedia.cart.databinding.ItemCartProductBinding
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.showSoftKeyboard
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
@@ -370,9 +373,22 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
     private fun renderProductProperties(data: CartItemHolderData) {
         val layoutProductInfo = binding.layoutProductInfo
         layoutProductInfo.gone()
+
+        var isProductInformationExist = false
+        val productInformationWithIcon = data.productInformationWithIcon
+        if (productInformationWithIcon.isNotEmpty()) {
+            isProductInformationExist = true
+            layoutProductInfo.removeAllViews()
+            productInformationWithIcon.forEach {
+                val productInfoWithIcon = createProductInfoTextWithIcon(it)
+                layoutProductInfo.addView(productInfoWithIcon)
+            }
+            layoutProductInfo.show()
+        }
+
         val productInformationList = data.productInformation
         if (productInformationList.isNotEmpty()) {
-            layoutProductInfo.removeAllViews()
+            if (!isProductInformationExist) layoutProductInfo.removeAllViews()
             productInformationList.forEach {
                 var tmpLabel = it
                 if (tmpLabel.toLowerCase(Locale.getDefault()).contains(LABEL_CASHBACK)) {
@@ -400,6 +416,18 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
             setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             setType(Typography.BODY_3)
             text = if (binding.layoutProductInfo.childCount > 0) ", $it" else it
+        }
+    }
+
+    private fun createProductInfoTextWithIcon(dataProduct: ProductInformationWithIcon): LinearLayout {
+        return LinearLayout(itemView.context).apply {
+            orientation = LinearLayout.HORIZONTAL
+            val identifierBinding = ItemAddonCartIdentifierBinding.inflate(LayoutInflater.from(itemView.context))
+            identifierBinding.run {
+                ivIdentifier.loadIcon(dataProduct.iconUrl)
+                labelIdentifier.text = dataProduct.text
+            }
+            this.addView(identifierBinding.root)
         }
     }
 

@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:card_type="border"
+    android:id="@+id/card_denom_full"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/unify_space_12">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_denom_full_title"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/tg_denom_full_desc"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintVertical_bias="0"
+            app:typographyType="body_2"
+            android:textColor="@color/Unify_NN950"
+            tools:text="Internet OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines"
+            tools:visibility="visible" />
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_denom_full_desc"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="1"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tg_denom_full_title"
+            app:layout_constraintBottom_toTopOf="@id/tg_denom_full_quota"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            app:typographyType="body_3"
+            android:textColor="@color/Neutral_N600"
+            tools:text="The description related to the product, max 1 line"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_denom_full_quota"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:ellipsize="end"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:layout_constraintTop_toBottomOf="@+id/tg_denom_full_desc"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/label_denom_full_special"
+            android:layout_marginTop="@dimen/spacing_lvl1"
+            tools:text="3 GB"
+            app:typographyType="body_1"
+            android:textColor="@color/Unify_N700_96"
+            />
+
+        <View
+            android:id="@+id/view_separator_type_denom_full"
+            app:layout_constraintTop_toTopOf="@+id/tg_denom_full_quota"
+            app:layout_constraintLeft_toRightOf="@+id/tg_denom_full_quota"
+            app:layout_constraintBottom_toBottomOf="@+id/tg_denom_full_quota"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:layout_width="1dp"
+            android:layout_height="@dimen/widget_view_separator_recommendation_big_card_height"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:background="@color/Unify_N700_96"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_denom_full_expired"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@+id/view_separator_type_denom_full"
+            app:layout_constraintLeft_toRightOf="@+id/view_separator_type_denom_full"
+            app:layout_constraintBottom_toBottomOf="@+id/view_separator_type_denom_full"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl1"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:textColor="@color/Unify_NN600"
+            tools:text="30 Days"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_denom_full_special"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:textColor="@color/Unify_YN500"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tg_denom_full_quota"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="Special Campaign"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_denom_full_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="1"
+            android:visibility="gone"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            app:layout_constraintTop_toBottomOf="@+id/label_denom_full_special"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Rp14.400"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_denom_full_discount"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:labelType="general_light_red"
+            app:layout_constraintLeft_toRightOf="@+id/tg_denom_full_price"
+            app:layout_constraintTop_toTopOf="@+id/tg_denom_full_price"
+            app:layout_constraintBottom_toBottomOf="@+id/tg_denom_full_price"
+            android:layout_marginLeft="@dimen/spacing_lvl2"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_denom_full_slash_price"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_lvl2"
+            android:textColor="@color/Neutral_N400"
+            android:visibility="gone"
+            app:layout_constraintLeft_toRightOf="@+id/label_denom_full_discount"
+            app:layout_constraintTop_toTopOf="@+id/tg_denom_full_price"
+            app:layout_constraintBottom_toBottomOf="@+id/tg_denom_full_price"
+            app:typographyType="small"
+            tools:text="Rp16.000"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.ProgressBarUnify
+            android:id="@+id/pg_denom_full_flash_sale"
+            android:layout_width="@dimen/widget_denom_full_progress_bar_flash_sale_width"
+            android:layout_height="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginBottom="@dimen/spacing_lvl1"
+            android:visibility="gone"
+            app:layout_constraintVertical_bias="1"
+            app:layout_constraintBottom_toTopOf="@id/tg_denom_full_sold_percentage_label"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tg_denom_full_price"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_denom_full_sold_percentage_label"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/unify_space_4"
+            android:textColor="@color/Unify_RN500"
+            android:visibility="gone"
+            app:layout_constraintVertical_bias="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:typographyType="small"
+            tools:text="Segera Habis"
+            tools:visibility="visible" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_cheveron_denom_full"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="@dimen/spacing_lvl5"
+            android:layout_height="@dimen/spacing_lvl5"
+            app:icon_name="CHEVRON_DOWN"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:icon_color_light_enable="@color/Unify_NN500"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

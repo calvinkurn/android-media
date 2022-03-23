@@ -18,6 +18,8 @@ object ShcConst {
 
     const val FORMAT_DD_MM_YYYY = "dd MMM yyyy"
 
+    const val TRAFFIC_INSIGHT_TAG_EXPIRED = 1649606400000
+
     object BottomSheet {
         const val TAG_MONTH_PICKER = "MonthPickerBottomSheet"
     }
