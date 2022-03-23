@@ -172,6 +172,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
             }
 
             qtyEditorProduct.show()
+            qtyEditorProduct.editText.clearFocus()
             qtyEditorProduct.minValue = element.minQuantity
             qtyEditorProduct.maxValue = element.maxQuantity
             qtyEditorProduct.setValue(element.quantity)
