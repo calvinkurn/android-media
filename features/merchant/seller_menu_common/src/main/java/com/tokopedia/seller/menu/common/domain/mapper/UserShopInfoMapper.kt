@@ -5,6 +5,7 @@ import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.utils.GoldMerchantUtil
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller.menu.common.constant.Constant
+import com.tokopedia.seller.menu.common.domain.entity.ShopInfoById
 import com.tokopedia.seller.menu.common.domain.entity.UserShopInfoResponse
 import com.tokopedia.seller.menu.common.errorhandler.SellerMenuErrorHandler
 import com.tokopedia.seller.menu.common.exception.SellerMenuException
@@ -19,33 +20,34 @@ import javax.inject.Inject
 
 class UserShopInfoMapper @Inject constructor(private val userSession: UserSessionInterface) {
 
-    fun mapToUserShopInfoUiModel(userShopInfoResponse: UserShopInfoResponse): UserShopInfoWrapper {
+    fun mapToUserShopInfoUiModel(dateShopCreated: String,
+                                 shopInfoByIDResult: UserShopInfoResponse.ShopInfoByID.Result?,
+                                 periodTypePmPro: String,
+                                 goldGetPMOSStatusData: UserShopInfoResponse.GoldGetPMOSStatus.Data): UserShopInfoWrapper {
         val targetDateText = "2021-06-14"
-        val isBeforeOnDate = isBeforeOnDate(userShopInfoResponse.userShopInfo.info.dateShopCreated, targetDateText)
-        val goldOsResult = userShopInfoResponse.shopInfoByID.result.firstOrNull()?.goldOS
-        val txStatsValue = userShopInfoResponse.shopInfoByID.result.firstOrNull()?.statsByDate?.find { it.identifier == Constant.TRANSACTION_RM_SUCCESS }?.value.orZero()
-        val dateCreated = userShopInfoResponse.userShopInfo.info.dateShopCreated
+        val isBeforeOnDate = isBeforeOnDate(dateShopCreated, targetDateText)
+        val goldOsResult = shopInfoByIDResult?.goldOS
+        val txStatsValue = shopInfoByIDResult?.statsByDate?.find { it.identifier == Constant.TRANSACTION_RM_SUCCESS }?.value.orZero()
         return UserShopInfoWrapper(
-                shopType = getShopType(userShopInfoResponse),
+                shopType = getShopType(goldGetPMOSStatusData, shopInfoByIDResult?.goldOS?.shopGrade),
                 userShopInfoUiModel = UserShopInfoWrapper.UserShopInfoUiModel(
                         isBeforeOnDate = isBeforeOnDate,
                         onDate = targetDateText,
-                        dateCreated = dateCreated,
+                        dateCreated = dateShopCreated,
                         totalTransaction = txStatsValue,
                         badge = goldOsResult?.badge ?: "",
                         shopTierName = goldOsResult?.shopTierWording ?: "",
                         shopTier = goldOsResult?.shopTier ?: -1,
                         pmProGradeName = goldOsResult?.shopGradeWording ?: "",
-                        periodTypePmPro = userShopInfoResponse.goldGetPMSettingInfo.periodTypePmPro,
-                        isNewSeller = GoldMerchantUtil.isNewSeller(dateCreated)
+                        periodTypePmPro = periodTypePmPro,
+                        isNewSeller = GoldMerchantUtil.isNewSeller(dateShopCreated)
                 )
         )
     }
 
-    private fun getShopType(userShopInfoResponse: UserShopInfoResponse): ShopType? {
-        val goldPMStatus = userShopInfoResponse.goldGetPMOSStatus.data
+    private fun getShopType(goldPMStatus: UserShopInfoResponse.GoldGetPMOSStatus.Data,
+                            shopGrade: Int?): ShopType? {
         val statusPM = goldPMStatus.powerMerchant.status
-        val shopGrade = userShopInfoResponse.shopInfoByID.result.firstOrNull()?.goldOS?.shopGrade
         return when {
             goldPMStatus.officialStore.status == OSStatus.ACTIVE -> {
                 ShopType.OfficialStore
