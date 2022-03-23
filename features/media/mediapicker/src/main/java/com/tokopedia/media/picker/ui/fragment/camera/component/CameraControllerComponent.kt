@@ -1,5 +1,8 @@
 package com.tokopedia.media.picker.ui.fragment.camera.component
 
+import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -65,6 +68,8 @@ class CameraControllerComponent(
     // index of camera mode based on rv position
     private var cameraModeIndex = 0
 
+    private var videoDurationTimer: CountDownTimer? = null
+
     init {
         setMaxDuration()
 
@@ -110,6 +115,7 @@ class CameraControllerComponent(
     }
 
     override fun release() {
+        resetVideoDuration()
         if (param.isIncludeVideoFile()) {
             lstCameraMode.viewTreeObserver.removeOnScrollChangedListener(this)
         }
@@ -164,14 +170,12 @@ class CameraControllerComponent(
         if (getActiveCameraMode() != VIDEO_MODE) return
         if (param.isIncludeVideoFile()) scrollToVideoMode()
 
+        resetVideoDuration()
+
         btnTakeCamera.animStopRecording()
         videoDurationContainer.hide()
         cameraControl.show()
         lstCameraMode.show()
-    }
-
-    fun setVideoDuration(duration: String) {
-        txtCountDown.text = duration
     }
 
     fun isFlashSupported(isShown: Boolean) {
@@ -192,9 +196,40 @@ class CameraControllerComponent(
         )
     }
 
+    fun onVideoDurationChanged() {
+        resetVideoDuration()
+
+        val maxDuration = param.maxVideoDuration()
+
+        videoDurationTimer = object : CountDownTimer(
+            param.maxVideoDuration(),
+            COUNTDOWN_INTERVAL
+        ) {
+            override fun onTick(milis: Long) {
+                Handler(Looper.getMainLooper()).post {
+                    val time = maxDuration - milis
+                    txtCountDown.text = time.videoFormat()
+                }
+            }
+
+            override fun onFinish() {
+                stopRecording()
+            }
+        }
+
+        videoDurationTimer?.start()
+    }
+
     fun isVideoMode() = getActiveCameraMode() == VIDEO_MODE
 
     private fun isPhotoMode() = getActiveCameraMode() == PHOTO_MODE
+
+    private fun resetVideoDuration() {
+        try {
+            videoDurationTimer?.cancel()
+            videoDurationTimer = null
+        } catch (t: Throwable) {}
+    }
 
     private fun onTakeCamera() {
         if (isVideoMode() && activityListener?.isMinStorageThreshold() == true) {
@@ -228,9 +263,7 @@ class CameraControllerComponent(
     }
 
     private fun setMaxDuration() {
-        txtMaxDuration.text = param.maxVideoDuration()
-            .toLong()
-            .videoFormat()
+        txtMaxDuration.text = param.maxVideoDuration().videoFormat()
     }
 
     private fun setPositionToCenterOfCameraMode() {
@@ -274,6 +307,7 @@ class CameraControllerComponent(
 
     companion object {
         private const val HALF_SIZE_OF_CAMERA_MODE_ITEM = 30f
+        private const val COUNTDOWN_INTERVAL = 1000L
 
         const val PHOTO_MODE = 0
         const val VIDEO_MODE = 1

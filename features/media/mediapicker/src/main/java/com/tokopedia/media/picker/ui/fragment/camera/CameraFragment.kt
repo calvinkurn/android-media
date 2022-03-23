@@ -37,7 +37,6 @@ import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.cameraToUiModel
 import com.tokopedia.picker.common.utils.FileCamera
 import com.tokopedia.picker.common.utils.safeFileDelete
-import com.tokopedia.picker.common.utils.videoFormat
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
@@ -131,7 +130,6 @@ open class CameraFragment : BaseDaggerFragment()
 
     override fun onDestroyView() {
         super.onDestroyView()
-        resetVideoDuration()
         exceptionHandler {
             listener = null
         }
@@ -168,7 +166,7 @@ open class CameraFragment : BaseDaggerFragment()
             } else {
                 cameraView.enableFlashTorch()
                 cameraView.onStartTakeVideo()
-                onVideoDurationChanged()
+                controller.onVideoDurationChanged()
             }
         }
     }
@@ -246,7 +244,6 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     private fun onStopRecordVideo() {
-        resetVideoDuration()
         controller.stopRecording()
         listener?.tabVisibility(true)
     }
@@ -285,35 +282,6 @@ open class CameraFragment : BaseDaggerFragment()
                 action()
             }, OVERLAY_SHUTTER_DELAY)
         }
-    }
-
-    private fun onVideoDurationChanged() {
-        resetVideoDuration()
-
-        val maxDuration = param.get().maxVideoDuration()
-
-        videoDurationTimer = object : CountDownTimer(
-            param.get().maxVideoDuration(),
-            COUNTDOWN_INTERVAL
-        ) {
-            override fun onTick(milis: Long) {
-                val time = maxDuration - milis
-                controller.setVideoDuration(time.videoFormat())
-            }
-
-            override fun onFinish() {
-                onStopRecordVideo()
-            }
-        }
-
-        videoDurationTimer?.start()
-    }
-
-    private fun resetVideoDuration() {
-        try {
-            videoDurationTimer?.cancel()
-            videoDurationTimer = null
-        } catch (t: Throwable) {}
     }
 
     override fun initInjector() {

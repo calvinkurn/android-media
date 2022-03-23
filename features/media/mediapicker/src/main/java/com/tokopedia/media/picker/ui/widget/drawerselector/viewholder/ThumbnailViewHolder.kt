@@ -41,24 +41,22 @@ class ThumbnailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     }
 
     private fun onShowDeletionDialog(path: String, onRemoved: () -> Unit = {}) {
-        val dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(context.getString(R.string.picker_title_deletion))
+            setDescription(context.getString(R.string.picker_deletion_message))
+            setPrimaryCTAText(context.getString(R.string.picker_button_delete_confirm))
+            setSecondaryCTAText(context.getString(R.string.picker_button_cancel))
 
-        dialog.setTitle(context.getString(R.string.picker_title_deletion))
-        dialog.setDescription(context.getString(R.string.picker_deletion_message))
-        dialog.setPrimaryCTAText(context.getString(R.string.picker_button_delete_confirm))
-        dialog.setSecondaryCTAText(context.getString(R.string.picker_button_cancel))
+            setPrimaryCTAClickListener {
+                safeFileDelete(path)
+                onRemoved()
+                dismiss()
+            }
 
-        dialog.setPrimaryCTAClickListener {
-            safeFileDelete(path)
-            onRemoved()
-            dialog.dismiss()
-        }
-
-        dialog.setOnDismissListener {
-            dialog.dismiss()
-        }
-
-        dialog.show()
+            setSecondaryCTAClickListener {
+                dismiss()
+            }
+        }.show()
     }
 
     fun setThumbnailSelected(isSelected: Boolean){
