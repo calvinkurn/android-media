@@ -117,6 +117,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         savedInstanceState: Bundle?
     ): View? {
         initInjector()
+        userProfileTracker = UserProfileTracker()
         return inflater.inflate(R.layout.up_fragment_user_profile, container, false)
     }
 
@@ -557,7 +558,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         textFollowingCount?.text =
             UserProfileUtils.getFormattedNumber(data.profileHeader.stats.totalFollowing)
 
-        userProfileTracker?.openUserProfile(screenName = screenName, userId, live = data.profileHeader.profile.liveplaychannel.islive)
+        userProfileTracker?.openUserProfile(screenName = "feed user profile", userId, live = data.profileHeader.profile.liveplaychannel.islive)
 
         setProfileImg(data.profileHeader.profile)
 
