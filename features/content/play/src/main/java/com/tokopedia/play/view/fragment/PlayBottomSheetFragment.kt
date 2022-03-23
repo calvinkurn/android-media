@@ -771,13 +771,13 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun observeUiEvent() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            playViewModel.uiEvent.collect {
-                when (it) {
+            playViewModel.uiEvent.collect { event ->
+                when (event) {
                     is BuySuccessEvent -> {
                         RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
                     }
                     is AtcSuccessEvent -> {
-                        val bottomInsetsType = if (it.isVariant) {
+                        val bottomInsetsType = if (event.isVariant) {
                             BottomInsetsType.VariantSheet
                         } else BottomInsetsType.ProductSheet //TEMPORARY
 
@@ -792,44 +792,35 @@ class PlayBottomSheetFragment @Inject constructor(
                             }
                         )
 
-                        if (it.isVariant) closeVariantSheet()
+                        if (event.isVariant) closeVariantSheet()
 
                         analytic.clickProductAction(
-                            product = it.product,
-                            cartId = it.cartId,
+                            product = event.product,
+                            cartId = event.cartId,
                             productAction = ProductAction.AddToCart,
                             bottomInsetsType = bottomInsetsType,
                             shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
-                            sectionInfo = it.sectionInfo ?: ProductSectionUiModel.Section.Empty,
+                            sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty,
+                        )
+                    }
+                    is ShowInfoEvent -> {
+                        doShowToaster(
+                            bottomSheetType = BottomInsetsType.ProductSheet,
+                            toasterType = Toaster.TYPE_NORMAL,
+                            message = getTextFromUiString(event.message)
+                        )
+                    }
+                    is ShowErrorEvent -> {
+                        doShowToaster(
+                            bottomSheetType = BottomInsetsType.ProductSheet,
+                            toasterType = Toaster.TYPE_ERROR,
+                            message = ErrorHandler.getErrorMessage(requireContext(), event.error)
                         )
                     }
                     else -> {}
                 }
             }
         }
-    }
-
-    private fun observeUiEvent(){
-            viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-                playViewModel.uiEvent.collect { event ->
-                    when (event) {
-                        is ShowInfoEvent -> {
-                            doShowToaster(
-                                bottomSheetType = BottomInsetsType.ProductSheet,
-                                toasterType = Toaster.TYPE_NORMAL,
-                                message = getTextFromUiString(event.message)
-                            )
-                        }
-                        is ShowErrorEvent -> {
-                            doShowToaster(
-                                bottomSheetType = BottomInsetsType.ProductSheet,
-                                toasterType = Toaster.TYPE_ERROR,
-                                message = ErrorHandler.getErrorMessage(requireContext(), event.error)
-                            )
-                        }
-                    }
-                }
-            }
     }
 
     private fun getTextFromUiString(uiString: UiString): String {
