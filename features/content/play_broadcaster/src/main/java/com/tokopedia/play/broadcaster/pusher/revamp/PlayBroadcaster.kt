@@ -3,113 +3,47 @@ package com.tokopedia.play.broadcaster.pusher.revamp
 import android.content.Context
 import android.os.Handler
 import android.view.SurfaceHolder
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.broadcaster.revamp.Broadcaster
-import com.tokopedia.broadcaster.revamp.util.log.DefaultBroadcasterLogger
+import com.tokopedia.broadcaster.revamp.state.BroadcastInitState
+import com.tokopedia.broadcaster.revamp.state.BroadcastState
 import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
-import com.tokopedia.play.broadcaster.pusher.mediator.PlayLivePusherMediator
-import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherTimer
-import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherTimerListener
-import com.tokopedia.play.broadcaster.ui.model.DurationConfigUiModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
 /**
  * Created by meyta.taliti on 03/03/22.
  */
 class PlayBroadcaster(
-    private val activityContext: Context,
-    private val handler: Handler?,
-    private val callback: Callback,
+    activityContext: Context,
+    handler: Handler?,
     private val broadcaster: Broadcaster,
-    private val localCache: LocalCacheHandler,
-    private val timer: PlayLivePusherTimer,
-    private val dispatcher: CoroutineDispatchers,
-) : Broadcaster by broadcaster, Broadcaster.Callback {
+    private val callback: Callback,
+) : Broadcaster by broadcaster {
 
     @ActivityRetainedScope
     class Factory @Inject constructor(
         private val broadcaster: Broadcaster,
-        private val localCache: LocalCacheHandler,
-        private val timer: PlayLivePusherTimer,
-        private val dispatcher: CoroutineDispatchers,
     ) {
         fun create(
             activityContext: Context,
             handler: Handler?,
-            callback: Callback,
+            callback: Callback
         ): PlayBroadcaster {
-            return PlayBroadcaster(
-                activityContext,
-                handler,
-                callback,
-                broadcaster,
-                localCache,
-                timer,
-                dispatcher
-            )
+            return PlayBroadcaster(activityContext, handler, broadcaster, callback)
         }
     }
 
-    val remainLiveDuration: Long
-        get() = timer.remainingDurationInMillis
-
-    private var isBroadcastStarted = false
-    private var mPauseDuration = 0L
-    private var mMaxDuration = 0L
-
-    private val job: Job = SupervisorJob()
-    private val scope = CoroutineScope(job + dispatcher.main)
+    private var isStarted = false
 
     init {
-        broadcaster.setCallback(this)
+        broadcaster.init(activityContext, handler)
     }
 
-    // call this onDestroy() to avoid memory leak
-    fun destroy() {
-        timer.destroy()
-        broadcaster.setCallback(null)
-        scope.cancel()
-    }
-
-    fun setCountUpCallback(callback: PlayLivePusherTimerListener) {
-        timer.setListener(callback)
-    }
-
-    fun setupDuration(durationConfig: DurationConfigUiModel) {
-        mPauseDuration = durationConfig.pauseDuration
-        mMaxDuration = durationConfig.maxDuration
-        timer.setDuration(durationConfig.remainingDuration, mMaxDuration)
-    }
-
-    fun setCurrentDuration(duration: Long) {
-        timer.restart(duration, mMaxDuration)
-    }
-
-    fun startCountUp() {
-        if (isBroadcastStarted) timer.resume()
-        else timer.start()
-    }
-
-    fun start(
-        rtmpUrl: String,
-        onSuccess: () -> Unit,
-        onError: (message: String) -> Unit,
-    ) {
-        broadcaster.setLogger(object : DefaultBroadcasterLogger() {
-            override fun e(msg: String) {
-                super.e(msg)
-                onError(msg)
-            }
-        })
+    override fun start(rtmpUrl: String) {
         broadcaster.start(rtmpUrl)
-        isBroadcastStarted = true
-        onSuccess()
-        removeLastPauseMillis()
+        isStarted = true
     }
 
     override fun create(holder: SurfaceHolder, surfaceSize: Broadcaster.Size) {
@@ -122,55 +56,45 @@ class PlayBroadcaster(
         updateAspectFrameSize()
     }
 
-    fun shouldStop() {
-        isBroadcastStarted = false
-        timer.stop()
+    override fun stop() {
+        isStarted = false
         broadcaster.release()
     }
 
-    fun pause() {
-        timer.pause()
-        setLastPauseMillis()
+    override fun destroy() {
+        broadcaster.destroy()
     }
 
-    // info: only set false when user manually click stop
-    fun isBroadcastStartedBefore() = isBroadcastStarted
+    /**
+     * only return false when user manually click stop
+     */
+    fun isStartedBefore() = isStarted
 
-    fun isEligibleContinueBroadcast(): Boolean {
-        val lastPauseMillis = localCache.getLong(PlayLivePusherMediator.KEY_PAUSE_TIME, 0L)
-        val currentMillis = System.currentTimeMillis()
-        if (lastPauseMillis > 0 && ((currentMillis - lastPauseMillis) > mPauseDuration)) {
-            localCache.remove(PlayLivePusherMediator.KEY_PAUSE_TIME)
-            return true
+    fun getBroadcastState(): Flow<BroadcastState> = callbackFlow {
+        val listener = object : Broadcaster.Listener {
+            override fun onBroadcastStateChanged(state: BroadcastState) {
+                trySend(state)
+            }
         }
-        return false
+
+        addListener(listener)
+        awaitClose { removeListener(listener) }
     }
 
-    override fun getHandler(): Handler? {
-        return handler
-    }
+    fun getBroadcastInitState(): Flow<BroadcastInitState> = callbackFlow {
+        val listener = object : Broadcaster.Listener {
+            override fun onBroadcastInitStateChanged(state: BroadcastInitState) {
+                trySend(state)
+            }
+        }
 
-    override fun getActivityContext(): Context {
-        return activityContext
-    }
-
-    private fun setLastPauseMillis() {
-        localCache.putLong(KEY_PAUSE_TIME, System.currentTimeMillis())
-        localCache.applyEditor()
-    }
-
-    private fun removeLastPauseMillis() {
-        localCache.remove(PlayLivePusherMediator.KEY_PAUSE_TIME)
-        localCache.applyEditor()
+        addListener(listener)
+        awaitClose { removeListener(listener) }
     }
 
     private fun updateAspectFrameSize() {
         val size = broadcaster.activeCameraVideoSize ?: return
         callback.updateAspectRatio(size.height.toDouble() / size.width.toDouble())
-    }
-
-    companion object {
-        const val KEY_PAUSE_TIME = "play_broadcast_pause_time"
     }
 
     interface Callback {

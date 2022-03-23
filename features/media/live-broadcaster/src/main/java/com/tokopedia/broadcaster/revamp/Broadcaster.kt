@@ -3,6 +3,8 @@ package com.tokopedia.broadcaster.revamp
 import android.content.Context
 import android.os.Handler
 import android.view.SurfaceHolder
+import com.tokopedia.broadcaster.revamp.state.BroadcastInitState
+import com.tokopedia.broadcaster.revamp.state.BroadcastState
 import com.tokopedia.broadcaster.revamp.util.log.BroadcasterLogger
 
 /**
@@ -10,9 +12,13 @@ import com.tokopedia.broadcaster.revamp.util.log.BroadcasterLogger
  */
 interface Broadcaster {
 
-    fun setCallback(callback: Callback?)
+    fun addListener(listener: Listener)
+
+    fun removeListener(listener: Listener)
 
     fun setLogger(logger: BroadcasterLogger)
+
+    fun init(activityContext: Context, handler: Handler?)
 
     fun create(holder: SurfaceHolder, surfaceSize: Size)
 
@@ -24,20 +30,26 @@ interface Broadcaster {
 
     fun release()
 
+    fun destroy()
+
     fun flip()
 
     fun snapShot()
+
+    val broadcastState: BroadcastState
+
+    val broadcastInitState: BroadcastInitState
 
     /**
      * please update aspect ratio to actual value, after create() & flip()
      */
     val activeCameraVideoSize: Size?
 
-    interface Callback {
+    interface Listener {
 
-        fun getHandler(): Handler?
+        fun onBroadcastStateChanged(state: BroadcastState) {}
 
-        fun getActivityContext(): Context
+        fun onBroadcastInitStateChanged(state: BroadcastInitState) {}
     }
 
     data class Size(

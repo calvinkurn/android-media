@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.ui.state
 
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.TermsAndConditionUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 
 /**
@@ -12,6 +12,7 @@ data class PlayBroadcastUiState(
     val pinnedMessage: PinnedMessageUiState,
     val selectedProduct: List<ProductTagSectionUiModel>,
     val isExiting: Boolean,
+    val status: BroadcastStatus,
 )
 
 data class PlayChannelUiState(
@@ -23,4 +24,10 @@ data class PinnedMessageUiState(
 	val message: String,
 	val editStatus: PinnedMessageEditStatus,
 )
+
+enum class BroadcastStatus {
+    Start, Stop, Idle
+}
+
+
 

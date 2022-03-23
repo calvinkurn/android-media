@@ -15,6 +15,7 @@ import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSoc
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.pusher.*
+import com.tokopedia.play.broadcaster.pusher.revamp.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
@@ -72,7 +73,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val productMapper: PlayBroProductUiMapper,
     private val channelInteractiveMapper: PlayChannelInteractiveMapper,
     private val repo: PlayBroadcastRepository,
-    private val logger: PlayLogger
+    private val logger: PlayLogger,
+    private val broadcastTimer: PlayBroadcastTimer
 ) : ViewModel() {
 
     @AssistedFactory
@@ -100,8 +102,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = _observableTotalLike
 //    val observableLiveViewState: LiveData<PlayLiveViewState>
 //        get() = _observableLiveViewState
-//    val observableLiveTimerState: LiveData<PlayLiveTimerState>
-//        get() = _observableLiveTimerState
     val observableChatList: LiveData<out List<PlayChatUiModel>>
         get() = _observableChatList
     val observableNewChat: LiveData<Event<PlayChatUiModel>>
@@ -135,6 +135,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = getCurrentSetupDataStore().getSelectedInteractiveDuration()
     val interactiveDurations: List<Long>
         get() = getCurrentSetupDataStore().getInteractiveDurations()
+            .filter { it < broadcastTimer.remainingDuration }
 //    val observableLivePusherStatistic: LiveData<LivePusherStatistic>
 //        get() = _observableLivePusherStats
 //    val observableLivePusherInfo: LiveData<PlayLiveLogState>
@@ -156,7 +157,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 //    private val _observableLiveViewState = MutableLiveData<PlayLiveViewState>()
-//    private val _observableLiveTimerState = MutableLiveData<PlayLiveTimerState>()
     private val _observableEvent = MutableLiveData<EventUiModel>()
     private val _observableInteractiveConfig = MutableLiveData<InteractiveConfigUiModel>()
     private val _observableInteractiveState = MutableLiveData<BroadcastInteractiveState>()
@@ -171,6 +171,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     )
     private val _productSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
     private val _isExiting = MutableStateFlow(false)
+    private val _status = MutableStateFlow(BroadcastStatus.Idle)
 
     private val _channelUiState = _configInfo
         .filterNotNull()
@@ -192,19 +193,26 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _channelUiState.distinctUntilChanged(),
         _pinnedMessageUiState.distinctUntilChanged(),
         _productSectionList,
-        _isExiting
-    ) { channelState, pinnedMessage, productMap, isExiting ->
+        _isExiting,
+        _status,
+    ) { channelState, pinnedMessage, productMap, isExiting, status ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
             selectedProduct = productMap,
             isExiting = isExiting,
+            status = status
         )
     }
 
     private val _uiEvent = MutableSharedFlow<PlayBroadcastEvent>(extraBufferCapacity = 100)
     val uiEvent: Flow<PlayBroadcastEvent>
         get() = _uiEvent
+
+    val timerState = broadcastTimer.state
+
+    val isPastPauseDuration: Boolean
+        get() = broadcastTimer.isPastPauseDuration
 
     private val ingestUrl: String
         get() = hydraConfigStore.getIngestUrl()
@@ -276,6 +284,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             }
         }
 
+        viewModelScope.launch(dispatcher.computation) {
+            _status.collectLatest {
+                if (it == BroadcastStatus.Start) {
+                    startWebSocket()
+                    getInteractiveConfig()
+                    getPinnedMessage()
+                }
+            }
+        }
+
         _observableChatList.value = mutableListOf()
 //        livePusherMediator.addListener(liveViewStateListener)
 //        livePusherMediator.addListener(liveChannelStateListener)
@@ -298,6 +316,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             PlayBroadcastAction.CancelEditPinnedMessage -> handleCancelEditPinnedMessage()
             is PlayBroadcastAction.SetCover -> handleSetCover(event.cover)
             is PlayBroadcastAction.SetProduct -> handleSetProduct(event.productTagSectionList)
+            is PlayBroadcastAction.DoResumeLive -> handleDoResumeLive()
+            is PlayBroadcastAction.ResumeLive -> handleResumeLive()
+            is PlayBroadcastAction.PauseLive -> handlePauseLive()
         }
     }
 
@@ -343,6 +364,14 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 setCoverConfig(configUiModel.coverConfig)
                 setDurationConfig(configUiModel.durationConfig)
                 setScheduleConfig(configUiModel.scheduleConfig)
+
+                broadcastTimer.setupDuration(
+                    configUiModel.durationConfig.remainingDuration,
+                    configUiModel.durationConfig.maxDuration
+                )
+                broadcastTimer.setupPauseDuration(
+                    configUiModel.durationConfig.pauseDuration
+                )
             }
 
         }) {
@@ -413,18 +442,31 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    fun updateChannelStatusToPause() {
-        viewModelScope.launchCatchError(block = {
-            updateChannelStatus(PlayChannelStatusType.Pause)
-        }) {
-        }
-    }
-
     fun updateChannelStatusToStop() {
         viewModelScope.launchCatchError(block = {
             closeWebSocket()
             updateChannelStatus(PlayChannelStatusType.Stop)
         }) {
+        }
+    }
+
+    fun doUpdateChannelStatus(status: PlayChannelStatusType) {
+        viewModelScope.launchCatchError(block = {
+            updateChannelStatus(status)
+        }) {
+            _uiEvent.emit(
+                PlayBroadcastEvent.ShowError(it) {
+                    doUpdateChannelStatus(status)
+                }
+            )
+        }
+    }
+
+    fun doGetChannelInfo() {
+        viewModelScope.launchCatchError(block = {
+
+        }) {
+
         }
     }
 
@@ -450,8 +492,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun updateChannelStatus(status: PlayChannelStatusType) = withContext(dispatcher.io) {
-        repo.updateChannelStatus(channelId, status)
+    private suspend fun updateChannelStatus(status: PlayChannelStatusType): String {
+        return withContext(dispatcher.io) {
+            repo.updateChannelStatus(channelId, status)
+        }
     }
 
 //    @Throws(IllegalAccessException::class)
@@ -569,9 +613,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.launch { onInteractiveFinished() }
     }
 
-    fun createInteractiveSession(title: String, duration: Long, remainLiveDuration: Long) {
+    fun createInteractiveSession(title: String, duration: Long) {
         _observableCreateInteractiveSession.value = NetworkResult.Loading
-        if (!isCreateSessionAllowed(duration, remainLiveDuration)) {
+        if (!isCreateSessionAllowed(duration)) {
             _observableCreateInteractiveSession.value = NetworkResult.Fail(Throwable("not allowed to create session"))
             return
         }
@@ -588,9 +632,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun isCreateSessionAllowed(duration: Long, remainLiveDuration: Long): Boolean {
+    private fun isCreateSessionAllowed(duration: Long): Boolean {
         val delayGqlDuration = INTERACTIVE_GQL_CREATE_DELAY
-        return remainLiveDuration > duration + delayGqlDuration
+        return broadcastTimer.remainingDuration > duration + delayGqlDuration
     }
 
     fun getLeaderboardData() {
@@ -835,10 +879,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun restartLiveDuration(duration: LiveDuration) {
         viewModelScope.launchCatchError(block = {
-            _configInfo.value?.durationConfig?.maxDuration?.let {
-                val durationInMillis = TimeUnit.SECONDS.toMillis(duration.duration)
-//                livePusherMediator.restartLiveTimer(durationInMillis, it)
-            }
+            val durationInMillis = TimeUnit.SECONDS.toMillis(duration.duration)
+            broadcastTimer.restart(durationInMillis)
         }) { }
     }
 
@@ -903,6 +945,67 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         setSelectedProduct(productSectionList)
     }
 
+    private fun handleDoResumeLive() {
+        viewModelScope.launchCatchError(block = {
+            _uiEvent.emit(PlayBroadcastEvent.ShowLoading)
+            val err = getChannelById(channelId)
+            if (err != null) _uiEvent.emit(PlayBroadcastEvent.ShowError(err))
+            else {
+                val channelInfo = (_observableChannelInfo.value as? NetworkResult.Success)?.data
+                if (channelInfo == null) {
+                    _uiEvent.emit(PlayBroadcastEvent.ShowError(Throwable("this error not supposed to happen")))
+                } else {
+                    if (channelInfo.status == ChannelType.Pause
+                        || channelInfo.status == ChannelType.Active) {
+                        _status.value = BroadcastStatus.Start
+                    } else {
+                        broadcastTimer.stop()
+                        _status.value = BroadcastStatus.Stop
+                        _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
+                    }
+                }
+            }
+        }) {
+            _uiEvent.emit(PlayBroadcastEvent.ShowError(it))
+        }
+    }
+
+    private fun handleResumeLive() {
+        viewModelScope.launchCatchError(block = {
+            if (broadcastTimer.isPastPauseDuration) {
+                _uiEvent.emit(PlayBroadcastEvent.ShowResumeLiveDialog)
+            } else {
+                _uiEvent.emit(PlayBroadcastEvent.ShowLoading)
+                val err = getChannelById(channelId)
+                if (err != null) _uiEvent.emit(PlayBroadcastEvent.ShowError(err))
+                else {
+                    val channelInfo = (_observableChannelInfo.value as? NetworkResult.Success)?.data
+                    if (channelInfo == null) {
+                        _uiEvent.emit(PlayBroadcastEvent.ShowError(Throwable("this error not supposed to happen")))
+                    } else {
+                        if (channelInfo.status == ChannelType.Pause
+                            || channelInfo.status == ChannelType.Active) {
+                            _uiEvent.emit(PlayBroadcastEvent.ShowResumeLiveDialog)
+                        } else {
+                            broadcastTimer.stop()
+                            _status.value = BroadcastStatus.Stop
+                            _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
+                        }
+                    }
+                }
+            }
+        }) {
+            _uiEvent.emit(PlayBroadcastEvent.ShowError(it))
+        }
+    }
+
+    private fun handlePauseLive() {
+        viewModelScope.launchCatchError(block = {
+            updateChannelStatus(PlayChannelStatusType.Pause)
+            broadcastTimer.pause()
+        }) {}
+    }
+
     /**
      * UI
      */
@@ -941,6 +1044,18 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     fun getShopIconUrl(): String = userSession.shopAvatar
 
     fun getShopName(): String = userSession.shopName
+
+    fun startTimer() {
+        broadcastTimer.start()
+    }
+
+    fun pauseTimer() {
+        broadcastTimer.pause()
+    }
+
+    fun stopTimer() {
+        broadcastTimer.stop()
+    }
 
     companion object {
 

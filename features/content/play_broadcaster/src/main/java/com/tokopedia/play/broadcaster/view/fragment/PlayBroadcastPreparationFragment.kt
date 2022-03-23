@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.broadcaster.revamp.state.BroadcastState
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
@@ -258,6 +258,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 //        observeLiveStreamState()
 
         observeUiState()
+        observeBroadcastState()
     }
 
     private fun observeTitle() {
@@ -301,7 +302,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun observeCreateLiveStream() {
         viewModel.observableCreateLiveStream.observe(viewLifecycleOwner) {
             when (it) {
-                is NetworkResult.Success -> startLive(it.data.ingestUrl)
+                is NetworkResult.Success -> startBroadcast(it.data.ingestUrl)
                 is NetworkResult.Fail -> {
                     showLoading(false)
                     toaster.showError(
@@ -315,16 +316,26 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
     }
 
-    private fun startLive(ingestUrl: String) {
-        broadcaster.start(ingestUrl,
-            onSuccess = {
-                updateChannelStatus()
-            },
-            onError = {
-                showLoading(false)
-                // todo: show error message and retry maybe?
+    private fun observeBroadcastState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            broadcaster.getBroadcastState().collectLatest {
+                when(it) {
+                    is BroadcastState.Error -> {
+                        showLoading(false)
+                        toaster.showError(
+                            err = it.cause,
+                            customErrMessage = it.cause.message,
+                        )
+                    }
+                    BroadcastState.Started -> updateChannelStatus()
+                    else -> {}
+                }
             }
-        )
+        }
+    }
+
+    private fun startBroadcast(ingestUrl: String) {
+        broadcaster.start(ingestUrl)
     }
 
     private fun updateChannelStatus() {
@@ -332,7 +343,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             onSuccess = {
                 showLoading(false)
                 openBroadcastLivePage()
-                broadcaster.startCountUp()
+                parentViewModel.startTimer()
             },
             onError = {
                 showLoading(false)

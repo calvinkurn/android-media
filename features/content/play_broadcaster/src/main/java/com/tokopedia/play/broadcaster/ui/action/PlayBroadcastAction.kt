@@ -16,4 +16,8 @@ sealed class PlayBroadcastAction {
     data class SetProduct(val productTagSectionList: List<ProductTagSectionUiModel>) : PlayBroadcastAction()
 
     object ExitLive : PlayBroadcastAction()
+
+    object ResumeLive : PlayBroadcastAction()
+    object DoResumeLive : PlayBroadcastAction()
+    object PauseLive : PlayBroadcastAction()
 }
