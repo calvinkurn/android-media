@@ -116,6 +116,7 @@ object ParamObject {
     const val BUDGET_LIMITED = "isBudgetLimited"
     const val PUBLISHED = "published"
     const val ISWHITELISTEDUSER = "isWhiteListedUser"
+    const val IS_AUTO_BID_TOGGLE_ENABLED = "autoBidToggle"
 
     const val PRODUCT_AUTO_SEARCH = "product_auto_search"
     const val PRODUCT_SEARCH = "product_search"

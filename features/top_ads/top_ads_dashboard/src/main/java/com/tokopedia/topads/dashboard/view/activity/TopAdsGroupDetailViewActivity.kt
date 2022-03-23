@@ -579,6 +579,10 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         groupId = intent?.extras?.getString(GROUP_ID)?.toIntOrZero()
         priceSpent = intent?.extras?.getString(TopAdsDashboardConstant.PRICE_SPEND)
         isWhiteListedUser = intent?.extras?.getBoolean(ISWHITELISTEDUSER)?:false
+
+        if(intent?.extras?.getBoolean(ParamObject.IS_AUTO_BID_TOGGLE_ENABLED) != true){
+            switchAutoBidLayout.hide()
+        }
     }
 
     private fun loadStatisticsData() {

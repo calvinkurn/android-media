@@ -7,7 +7,6 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.constant.Constants
@@ -30,11 +29,16 @@ object Utils {
     var locale = Locale("in", "ID")
     const val KALI = " kali"
 
+    /**
+     * This method helps to validate and update ui for edit bid textfield
+     * @param[block] has true value ,if validation passed and vice versa
+     */
     fun TextFieldUnify.addBidValidationListener(
         resources: Resources, minBid: String, maxBid: String, suggestedBid: String,
         block: ((Boolean) -> Unit)? = null,
     ) {
-        this.setMessage(String.format(
+        val textField = this
+        textField.setMessage(String.format(
             resources.getString(R.string.topads_common_keyword_recommended_budget), suggestedBid
         ))
         textFieldInput.addTextChangedListener(
@@ -42,31 +46,32 @@ object Utils {
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
                     val result = number.toInt()
-                    this@addBidValidationListener.setError(true)
+                    textField.setError(true)
                     when {
                         result < minBid.toDoubleOrZero() -> {
-                            this@addBidValidationListener.setMessage(MethodChecker.fromHtml(String.format(
-                                resources.getString(R.string.min_bid_error_new),
-                                minBid)))
+                            textField.setMessage(String.format(
+                                resources.getString(R.string.min_bid_error_new), minBid
+                            ))
                             block?.invoke(true)
                         }
                         result > maxBid.toDoubleOrZero() -> {
-                            this@addBidValidationListener.setMessage(MethodChecker.fromHtml(String.format(
-                                resources.getString(R.string.max_bid_error_new),
-                                maxBid)))
+                            textField.setMessage(String.format(
+                                resources.getString(R.string.max_bid_error_new), maxBid
+                            ))
                             block?.invoke(true)
                         }
                         result % 50 != 0 -> {
-                            this@addBidValidationListener.setMessage(MethodChecker.fromHtml(String.format(
-                                resources.getString(R.string.topads_common_error_multiple_50),
-                                "50")))
+                            textField.setMessage(String.format(
+                                resources.getString(R.string.topads_common_error_multiple_50), "50"
+                            ))
                             block?.invoke(true)
                         }
                         else -> {
-                            this@addBidValidationListener.setError(false)
-                            this@addBidValidationListener.setMessage(String.format(
+                            textField.setError(false)
+                            textField.setMessage(String.format(
                                 resources.getString(R.string.topads_common_keyword_recommended_budget),
-                                suggestedBid))
+                                suggestedBid
+                            ))
                             block?.invoke(false)
                         }
                     }
