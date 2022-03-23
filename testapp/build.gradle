@@ -128,7 +128,4 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
-	implementation project(rootProject.ext.features.recommendationWidgetCommon)
-	implementation project(rootProject.ext.features.notifCenter)
-	implementation project(rootProject.ext.features.orderhistory)
 }
