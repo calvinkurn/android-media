@@ -34,10 +34,11 @@ object Utils {
      * @param[block] has true value ,if validation passed and vice versa
      */
     fun TextFieldUnify.addBidValidationListener(
-        resources: Resources, minBid: String, maxBid: String, suggestedBid: String,
+        minBid: String, maxBid: String, suggestedBid: String,
         block: ((Boolean) -> Unit)? = null,
     ) {
         val textField = this
+        val resources = textField.context.resources
         textField.setMessage(String.format(
             resources.getString(R.string.topads_common_keyword_recommended_budget), suggestedBid
         ))

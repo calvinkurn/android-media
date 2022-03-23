@@ -50,12 +50,10 @@ class BidSwitchManualBudgetBottomSheet(
             dismiss()
         }
 
-        tfPencarian?.addBidValidationListener(resources, minBid, maxBid, suggestedBid) { isError ->
+        tfPencarian?.addBidValidationListener(minBid, maxBid, suggestedBid) { isError ->
             btnSave?.isEnabled = !isError
         }
-        tfRecommendasi?.addBidValidationListener(
-            resources, minBid, maxBid, suggestedBid
-        ) { isError ->
+        tfRecommendasi?.addBidValidationListener(minBid, maxBid, suggestedBid) { isError ->
             btnSave?.isEnabled = !isError
         }
     }
