@@ -15,9 +15,9 @@ object TokofoodRouteManager {
         // tokopedia://tokofood
         if (uri.host == "tokofood") {
             var f: BaseMultiFragment? = null
-            if (uri.path == "home") { // tokopedia://tokofood/home
+            if (uri.path == "/home") { // tokopedia://tokofood/home
                 f = FragmentA()
-            } else if (uri.path == "b") { // tokopedia://tokofood/b
+            } else if (uri.path == "/b") { // tokopedia://tokofood/b
                 f = FragmentB()
             }
             if (f != null) {

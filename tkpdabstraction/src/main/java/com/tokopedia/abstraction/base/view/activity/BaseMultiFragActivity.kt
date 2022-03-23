@@ -60,14 +60,19 @@ abstract class BaseMultiFragActivity : BaseToolbarActivity() {
     fun navigateToNewFragment(fragment: Fragment) {
         val fragmentCount = getFragmentCount()
         val ft = supportFragmentManager.beginTransaction()
-            .setCustomAnimations(
+        if (fragmentCount > 0) {
+            ft.setCustomAnimations(
                 R.anim.slide_in_right,
                 R.anim.slide_out_left,
                 R.anim.slide_in_left,
-                R.anim.slide_out_right)
-            .replace(R.id.frame_content,
-                fragment, fragmentCount.toString())
-        if (fragmentCount > 0){
+                R.anim.slide_out_right
+            )
+        }
+        ft.replace(
+            R.id.frame_content,
+            fragment, fragmentCount.toString()
+        )
+        if (fragmentCount > 0) {
             ft.addToBackStack(fragmentCount.toString())
         }
         ft.commit()
