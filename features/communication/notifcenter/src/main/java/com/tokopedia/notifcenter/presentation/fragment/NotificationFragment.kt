@@ -35,6 +35,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
+import com.tokopedia.wishlist_common.R as Rwishlist
 import com.tokopedia.notifcenter.analytics.MarkAsSeenAnalytic
 import com.tokopedia.notifcenter.analytics.NotificationAnalytic
 import com.tokopedia.notifcenter.analytics.NotificationTopAdsAnalytic
@@ -78,8 +79,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import timber.log.Timber
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import javax.inject.Inject
 
 open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
@@ -180,7 +180,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         context?.let {
             trackingQueue = TrackingQueue(it)
             recommendationLifeCycleAware = RecommendationLifeCycleAware(
-                topAdsAnalytic, trackingQueue, rvAdapter, viewModel, this, it
+                topAdsAnalytic, trackingQueue, rvAdapter, this, it
             )
         }
         rvTypeFactory?.recommendationListener = recommendationLifeCycleAware
@@ -685,20 +685,27 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         product: ProductData,
         position: Int
     ) {
-        viewModel.addWishListNormal(product.productId,
-            object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                    showErrorMessage(errorMessage ?: "")
-                    rvAdapter?.updateFailedAddToWishlist(notification, product, position)
-                }
+        context?.let {
+            viewModel.addWishListNormal(product.productId,
+                    object : WishlistV2ActionListener {
+                        override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                            showErrorMessage(errorMessage ?: "")
+                            rvAdapter?.updateFailedAddToWishlist(notification, product, position)
+                        }
 
-                override fun onSuccessAddWishlist(productId: String?) {
-                    showMessage(R.string.title_success_add_to_wishlist)
-                }
+                        override fun onSuccessAddWishlist(productId: String?) {
+                            val msg = getString(Rwishlist.string.on_success_add_to_wishlist_msg)
+                            val ctaText = getString(Rwishlist.string.cta_success_add_to_wishlist)
+                            view?.let {
+                                Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL,
+                                        ctaText,  View.OnClickListener { goToWishlist()}).show()
+                            }
+                        }
 
-                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
-                override fun onSuccessRemoveWishlist(productId: String?) {}
-            })
+                        override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
+                        override fun onSuccessRemoveWishlist(productId: String?) {}
+                    }, it)
+        }
     }
 
     override fun goToWishlist() {

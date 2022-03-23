@@ -37,11 +37,11 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
-import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import javax.inject.Inject
 
 class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFactory>(),
-        OrderHistoryViewHolder.Listener, WishListActionListener {
+        OrderHistoryViewHolder.Listener, WishlistV2ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -157,7 +157,7 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
     }
 
     override fun onClickAddToWishList(product: Product) {
-        viewModel.addToWishList(product.productId, session.userId, this)
+        context?.let { viewModel.addToWishList(product.productId, session.userId, this, it) }
     }
 
     override fun onClickCardProduct(product: Product, position: Int) {
@@ -171,23 +171,23 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
 
     override fun onSuccessAddWishlist(productId: String?) {
         view?.let {
-            val successMessage = it.context.getString(R.string.title_orderhistory_success_atc)
-            val ctaText = it.context.getString(R.string.cta_orderhistory_success_atw)
+            val successMessage = it.context.getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+            val ctaText = it.context.getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
             Toaster.make(
                     it,
                     successMessage,
                     Toaster.LENGTH_SHORT,
                     Toaster.TYPE_NORMAL,
-                    ctaText,
-                    View.OnClickListener { goToWishList() }
-            )
+                    ctaText
+            ) { goToWishList() }
         }
     }
 
     override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
         if (errorMessage == null) return
+        val ctaText = context?.getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist) ?: ""
         view?.let {
-            Toaster.make(it, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+            Toaster.make(it, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, ctaText)
         }
     }
 

@@ -1,5 +1,6 @@
 package com.tokopedia.notifcenter.presentation.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -33,18 +34,14 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
+import com.tokopedia.network.utils.ErrorHandler
 import javax.inject.Inject
-
-interface INotificationViewModel {
-    fun addWishlist(model: RecommendationItem, callback: (Boolean, Throwable?) -> Unit)
-    fun removeWishList(model: RecommendationItem, callback: (Boolean, Throwable?) -> Unit)
-}
 
 class NotificationViewModel @Inject constructor(
     private val notifcenterDetailUseCase: NotifcenterDetailUseCase,
@@ -55,14 +52,13 @@ class NotificationViewModel @Inject constructor(
     private val markAsReadUseCase: MarkNotificationAsReadUseCase,
     private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
     private val getRecommendationUseCase: GetRecommendationUseCase,
-    private val addWishListUseCase: AddWishListUseCase,
+    private val addWishListUseCase: AddToWishlistV2UseCase,
     private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
-    private val removeWishListUseCase: RemoveWishListUseCase,
     private val userSessionInterface: UserSessionInterface,
     private var addToCartUseCase: AddToCartUseCase,
     private var notifOrderListUseCase: NotifOrderListUseCase,
     private val dispatcher: CoroutineDispatchers
-) : BaseViewModel(dispatcher.io), INotificationViewModel {
+) : BaseViewModel(dispatcher.io) {
 
     var filter: Long = NotifcenterDetailUseCase.FILTER_NONE
         set(value) {
@@ -292,53 +288,6 @@ class NotificationViewModel @Inject constructor(
         filter = NotifcenterDetailUseCase.FILTER_NONE
     }
 
-    override fun addWishlist(
-        model: RecommendationItem,
-        callback: ((Boolean, Throwable?) -> Unit)
-    ) {
-        if (model.isTopAds) {
-            addWishListTopAds(model, callback)
-        } else {
-            addWishListNormal(model.productId.toString(), object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                    callback.invoke(false, Throwable(errorMessage))
-                }
-
-                override fun onSuccessAddWishlist(productId: String?) {
-                    callback.invoke(true, null)
-                }
-
-                override fun onErrorRemoveWishlist(
-                    errorMessage: String?, productId: String?
-                ) {
-                }
-
-                override fun onSuccessRemoveWishlist(productId: String?) {}
-            })
-        }
-    }
-
-    override fun removeWishList(
-        model: RecommendationItem,
-        callback: (((Boolean, Throwable?) -> Unit))
-    ) {
-        removeWishListUseCase.createObservable(
-            model.productId.toString(),
-            userSessionInterface.userId,
-            object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
-                override fun onSuccessAddWishlist(productId: String?) {}
-                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                    callback.invoke(false, Throwable(errorMessage))
-                }
-
-                override fun onSuccessRemoveWishlist(productId: String?) {
-                    callback.invoke(true, null)
-                }
-            }
-        )
-    }
-
     fun clearNotifCounter(
         @RoleType
         role: Int?
@@ -374,10 +323,16 @@ class NotificationViewModel @Inject constructor(
     }
 
     fun addWishListNormal(
-        productId: String,
-        wishListActionListener: WishListActionListener
+            productId: String,
+            callback: WishlistV2ActionListener,
+            context: Context
     ) {
-        addWishListUseCase.createObservable(productId, userSessionInterface.userId, wishListActionListener)
+        addWishListUseCase.setParams(productId, userSessionInterface.userId)
+        addWishListUseCase.execute(
+                onSuccess = {
+                    callback.onSuccessAddWishlist(productId)},
+                onError = {
+                    callback.onErrorAddWishList(ErrorHandler.getErrorMessage(context, it), productId) })
     }
 
     fun loadTopAdsBannerData() {

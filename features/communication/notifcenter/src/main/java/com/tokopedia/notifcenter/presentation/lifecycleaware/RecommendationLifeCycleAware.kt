@@ -16,10 +16,9 @@ import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityRe
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.notifcenter.R
+import com.tokopedia.wishlist_common.R as Rwishlist
 import com.tokopedia.notifcenter.analytics.NotificationTopAdsAnalytic
 import com.tokopedia.notifcenter.presentation.adapter.NotificationAdapter
-import com.tokopedia.notifcenter.presentation.viewmodel.INotificationViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
@@ -31,7 +30,6 @@ class RecommendationLifeCycleAware constructor(
         private val topAdsAnalytic: NotificationTopAdsAnalytic,
         private var trackingQueue: TrackingQueue?,
         private val rvAdapter: NotificationAdapter?,
-        private var viewModel: INotificationViewModel?,
         private var fragment: Fragment?,
         private var context: Context?
 ) : LifecycleObserver, RecommendationListener {
@@ -48,7 +46,6 @@ class RecommendationLifeCycleAware constructor(
         fragment = null
         context = null
         trackingQueue = null
-        viewModel = null
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -91,9 +88,10 @@ class RecommendationLifeCycleAware constructor(
 
     private fun showSuccessAddWishlist() {
         val view: View = fragment?.activity?.findViewById(android.R.id.content) ?: return
-        val message = getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist)
+        val message = getString(Rwishlist.string.on_success_add_to_wishlist_msg)
+        val ctaText = getString(Rwishlist.string.cta_success_add_to_wishlist)
         Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
-                getString(R.string.recom_go_to_wishlist),
+                ctaText,
                 View.OnClickListener { v: View? ->
                     RouteManager.route(context, ApplinkConst.WISHLIST)
                 }
@@ -106,9 +104,10 @@ class RecommendationLifeCycleAware constructor(
 
     private fun showSuccessRemoveWishlist() {
         val view: View? = fragment?.activity?.findViewById(android.R.id.content)
-        val message = getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist)
+        val message = getString(Rwishlist.string.on_success_remove_from_wishlist_msg)
+        val ctaText = getString(Rwishlist.string.cta_success_remove_from_wishlist)
         if (view == null) return
-        Toaster.build(view, message, Toaster.LENGTH_LONG).show()
+        Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText).show()
     }
 
     private fun handleWishlistActionFailed() {
@@ -155,17 +154,6 @@ class RecommendationLifeCycleAware constructor(
 
     private fun onImpressionOrganic(item: RecommendationItem) {
         topAdsAnalytic.addInboxTopAdsProductViewImpressions(item, item.position, item.isTopAds)
-    }
-
-    override fun onWishlistClick(
-            item: RecommendationItem, isAddWishlist: Boolean,
-            callback: (Boolean, Throwable?) -> Unit
-    ) {
-        if (isAddWishlist) {
-            viewModel?.addWishlist(item, callback)
-        } else {
-            viewModel?.removeWishList(item, callback)
-        }
     }
 
     private fun onClickTopAds(item: RecommendationItem) {
