@@ -907,7 +907,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
             type = LinkerData.USER_PROFILE_SOCIAL
             uri = userWebLink
-            id = userId
+            id = this@UserProfileFragment.userName
             //set and share in the Linker Data
             feature = shareModel.feature
             channel = shareModel.channel
