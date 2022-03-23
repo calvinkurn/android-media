@@ -93,7 +93,7 @@ class CameraViewComponent(
         cameraView.set(Mode.VIDEO)
         cameraView.set(Audio.ON)
 
-        cameraView.takeVideo(
+        cameraView.takeVideoSnapshot(
             FileCamera.createVideo(),
             param.maxVideoDuration().toInt()
         )
