@@ -40,4 +40,7 @@ object CheckoutConstant {
     const val TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS = 2
     const val TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST = 0
     const val TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN = 4
+
+    const val DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO = "Gagal mengaplikasikan bebas ongkir"
+    const val DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO = "Terjadi kesalahan. Ulangi beberapa saat lagi"
 }

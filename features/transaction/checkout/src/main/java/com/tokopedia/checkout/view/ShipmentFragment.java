@@ -2671,11 +2671,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void resetCourier(int position) {
-        shipmentAdapter.resetCourier(position);
         ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position);
-        if (shipmentCartItemModel != null) {
-            addShippingCompletionTicker(shipmentCartItemModel.isEligibleNewShippingExperience());
-        }
+        resetCourier(shipmentCartItemModel);
     }
 
     @Override
