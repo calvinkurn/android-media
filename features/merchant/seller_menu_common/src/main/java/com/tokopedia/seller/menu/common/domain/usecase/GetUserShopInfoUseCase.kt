@@ -1,5 +1,6 @@
 package com.tokopedia.seller.menu.common.domain.usecase
 
+import com.tokopedia.gm.common.domain.interactor.GetPMShopInfoUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
@@ -16,7 +17,7 @@ class GetUserShopInfoUseCase @Inject constructor(
 
     companion object {
         val USER_SHOP_INFO_QUERY = """
-            query GetUserShop(${'$'}shopId: Int!) {
+            query GetUserShop(${'$'}shopId: Int!, ${'$'}filter: GetPMShopInfoFilter) {
               userShopInfo {
                 info {
                   date_shop_created
@@ -55,6 +56,11 @@ class GetUserShopInfoUseCase @Inject constructor(
               goldGetPMSettingInfo(shopID: ${'$'}shopId, source: "goldmerchant") {
                 period_type_pm_pro
               }
+              goldGetPMShopInfo(shop_id: ${'$'}shopId, source: "android-goldmerchant", filter: ${'$'}filter) {
+                kyc_status_id
+                is_eligible_pm
+                is_eligible_pm_pro
+              }
               goldGetPMOSStatus(
                  shopID: ${'$'}shopId,
                  includeOS: true){
@@ -73,9 +79,15 @@ class GetUserShopInfoUseCase @Inject constructor(
         """.trimIndent()
 
         private const val SHOP_ID_KEY = "shopId"
+        private const val KEY_FILTER = "filter"
+        private const val KEY_INCLUDING_PM_PRO_ELIGIBILITY = "including_pm_pro_eligibility"
 
         fun createRequestParams(shopId: Long) = HashMap<String, Any>().apply {
+            val filter: Map<String, Boolean> = mapOf(
+                KEY_INCLUDING_PM_PRO_ELIGIBILITY to true
+            )
             put(SHOP_ID_KEY, shopId)
+            put(KEY_FILTER, filter)
         }
     }
 

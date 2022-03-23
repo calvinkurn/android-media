@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -217,6 +218,7 @@ class DenomFullViewHolder(
                 } else hide()
 
                 setOnClickListener {
+                    if (denomFull.status != DenomConst.DENOM_STATUS_OUT_OF_STOCK)
                     denomFullListener.onChevronDenomClicked(denomFull, position, denomType)
                 }
             }
@@ -246,6 +248,10 @@ class DenomFullViewHolder(
                 if(denomFull.status != DenomConst.DENOM_STATUS_OUT_OF_STOCK) {
                     denomFullListener.onDenomFullClicked(denomFull, denomType, position, "", true)
                 }
+            }
+
+            root.addOnImpressionListener(denomFull) {
+                denomFullListener.onDenomFullImpression(denomFull, denomType, position)
             }
         }
     }

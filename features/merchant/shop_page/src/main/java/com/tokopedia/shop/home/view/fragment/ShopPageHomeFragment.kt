@@ -1545,7 +1545,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         productDetails = productDetails,
                         onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
                         onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
-                        bundleQuantity = selectedMultipleBundle.minOrder
+                        productQuantity = selectedMultipleBundle.minOrder
                 )
             }
         }
@@ -1587,7 +1587,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         productDetails = listOf(bundleProducts),
                         onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
                         onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
-                        bundleQuantity = selectedBundle.minOrder
+                        productQuantity = selectedBundle.minOrder
                 )
             }
         }
