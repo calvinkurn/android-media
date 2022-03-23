@@ -69,3 +69,5 @@ data class AtcProductVariantAction(val id: String) : PlayViewerNewAction()
 data class SelectVariantOptionAction(val option: VariantOptionWithAttribute) : PlayViewerNewAction()
 
 data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()
+
+data class SendUpcomingReminder(val section: ProductSectionUiModel.Section): PlayViewerNewAction()

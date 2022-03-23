@@ -16,6 +16,8 @@ internal const val KEY_TRACK_CLICK_GROUP_CHAT = "clickGroupChat"
 internal const val KEY_TRACK_CLICK_UPCOMING = "clickUpcoming"
 internal const val KEY_TRACK_CLICK_COMMUNICATION = "clickCommunication"
 internal const val KEY_TRACK_VIEW_COMMUNICATION_IRIS = "viewCommunicationIris"
+internal const val KEY_TRACK_CLICK_TOP_ADS = "clickTopAds"
+internal const val KEY_TRACK_VIEW_TOP_ADS = "viewTopAdsIris"
 
 internal const val KEY_TRACK_CLICK = "click"
 internal const val KEY_TRACK_GROUP_CHAT_ROOM = "groupchat room"

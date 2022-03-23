@@ -2,7 +2,9 @@ package com.tokopedia.play.broadcaster.viewmodel.websocket
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.play.broadcaster.domain.model.GetSocketCredentialResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
+import com.tokopedia.play.broadcaster.domain.usecase.GetSocketCredentialUseCase
 import com.tokopedia.play.broadcaster.fake.FakePlayWebSocket
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.model.interactive.InteractiveUiModelBuilder
@@ -12,6 +14,7 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertFalse
+import com.tokopedia.play.broadcaster.util.assertTrue
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.view.state.PlayLiveTimerState
@@ -51,6 +54,7 @@ class PlayBroWebSocketViewModelTest {
         streamAllowed = true,
         channelId = "123"
     )
+    private val mockException = uiModelBuilder.buildException()
 
     @Before
     fun setUp() {
@@ -315,6 +319,30 @@ class PlayBroWebSocketViewModelTest {
         robot.use {
             it.getViewModel().stopLiveStream(false)
             fakePlayWebSocket.isOpen().assertFalse()
+        }
+    }
+
+    @Test
+    fun `when user receive closed websocket event because of error, it should reconnect websocket again`() {
+        val mockSocketCredentialUseCase = mockk<GetSocketCredentialUseCase>(relaxed = true)
+        val mockSocketCredential = GetSocketCredentialResponse.SocketCredential()
+
+        coEvery { mockSocketCredentialUseCase.executeOnBackground() } returns mockSocketCredential
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            playBroadcastWebSocket = fakePlayWebSocket,
+            getSocketCredentialUseCase = mockSocketCredentialUseCase,
+        )
+
+        robot.use {
+            fakePlayWebSocket.isOpen().assertFalse()
+
+            robot.executeViewModelPrivateFunction("startWebSocket")
+            fakePlayWebSocket.invokeFailure(mockException)
+
+            fakePlayWebSocket.isOpen().assertTrue()
         }
     }
 }

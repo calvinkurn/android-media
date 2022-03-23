@@ -14,6 +14,6 @@
     <string name="bottom_sheet_more_info">Keterangan seputar tagihan</string>
     <string name="qr_scanner_title_scan_barcode">Scan Barcode</string>
     <string name="selection_null_product_error">Produk sedang tidak tersedia, silahkan coba beberapa saat lagi.</string>
-    <string name="empty_state_paket_data_title">Tidak ada pilihan Paket Data</string>
-    <string name="empty_state_paket_data_desc">Yah... Paket Data buat nomor ini sedang tidak tersedia. Tunggu sebentar lalu coba lagi, ya.</string>
+    <string name="empty_state_paket_data_title">Tidak ada pilihan %s</string>
+    <string name="empty_state_paket_data_desc">Yah... %s buat nomor ini sedang tidak tersedia. Tunggu sebentar lalu coba lagi, ya.</string>
 </resources>

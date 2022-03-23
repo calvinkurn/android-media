@@ -75,6 +75,9 @@ class UohListViewModelTest {
     lateinit var topAdsImageViewUseCase: TopAdsImageViewUseCase
 
     @RelaxedMockK
+    lateinit var getUohPmsCounterUseCase: GetUohPmsCounterUseCase
+
+    @RelaxedMockK
     lateinit var atcUseCase: AddToCartUseCase
 
     @Before
@@ -83,7 +86,7 @@ class UohListViewModelTest {
         uohListViewModel = UohListViewModel(dispatcher, getUohFilterCategoryUseCase, uohListUseCase,
                 getRecommendationUseCase, uohFinishOrderUseCase, atcMultiProductsUseCase,
                 lsPrintFinishOrderUseCase, flightResendEmailUseCase, trainResendEmailUseCase,
-                rechargeSetFailUseCase, topAdsImageViewUseCase, atcUseCase)
+                rechargeSetFailUseCase, topAdsImageViewUseCase, atcUseCase, getUohPmsCounterUseCase)
 
         val order1 = UohListOrder.Data.UohOrders.Order(orderUUID = "abc", verticalID = "",
                 verticalCategory = "", userID = "", status = "", verticalStatus = "", searchableText = "",
@@ -582,4 +585,59 @@ class UohListViewModelTest {
         //then
         assert(uohListViewModel.recommendationListResult.value is Fail)
     }
+
+    @Test
+    fun getUohCounterSuccess_shouldReturnSuccess(){
+        //given
+        coEvery { getUohPmsCounterUseCase.executeSuspend() }.answers{
+            Success(PmsNotification(
+                    notifications = Notifications(
+                            buyerOrderStatus = BuyerOrderStatus(
+                                    paymentStatus = 1
+                            )
+                    )
+            ))
+        }
+
+        //when
+        uohListViewModel.loadPmsCounter()
+
+        //then
+        assert(uohListViewModel.getUohPmsCounterResult.value is Success)
+    }
+
+    @Test
+    fun getUohCounterSuccess_counterShouldBeCorrect(){
+        //given
+        val counter = 6
+        coEvery { getUohPmsCounterUseCase.executeSuspend() }.answers{
+            Success(PmsNotification(
+                    notifications = Notifications(
+                            buyerOrderStatus = BuyerOrderStatus(
+                                    paymentStatus = counter
+                            )
+                    )
+            ))
+        }
+
+        //when
+        uohListViewModel.loadPmsCounter()
+
+        //then
+        val result = uohListViewModel.getUohPmsCounterResult.value as Success<PmsNotification>
+        assert(result.data.notifications.buyerOrderStatus.paymentStatus == counter)
+    }
+
+    @Test
+    fun getUohCounterFail_shouldReturnFail(){
+        //given
+        coEvery { getUohPmsCounterUseCase.executeSuspend() } returns Fail(Exception())
+
+        //when
+        uohListViewModel.loadPmsCounter()
+
+        //then
+        assert(uohListViewModel.getUohPmsCounterResult.value is Fail)
+    }
+
 }

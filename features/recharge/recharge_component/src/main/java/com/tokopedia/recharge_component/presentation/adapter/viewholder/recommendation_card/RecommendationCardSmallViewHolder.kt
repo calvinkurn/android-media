@@ -1,5 +1,6 @@
 package com.tokopedia.recharge_component.presentation.adapter.viewholder.recommendation_card
 
+import android.graphics.Paint
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -26,6 +27,7 @@ class RecommendationCardSmallViewHolder(
                 if (recommendation.slashPrice.isNotEmpty()) {
                     show()
                     text = recommendation.slashPrice
+                    paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 } else hide()
             }
 
