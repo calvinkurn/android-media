@@ -515,18 +515,15 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun reloadFintechWidget() {
-        pdpUiUpdater?.let { pdpUiUpdater->
-            pdpUiUpdater.fintechWidgetMap?.let { fintechWidgetDataModel ->
-                if (fintechWidgetDataModel.isLoggedIn != viewModel.isUserSessionActive) {
-                    productId?.let { productId->
-                        pdpUiUpdater.updateFintechDataWithProductId(
-                            productId,
-                            viewModel.userSessionInterface.isLoggedIn
-                        )
-                    }
-                    updateUi()
-                }
+        if (pdpUiUpdater == null || pdpUiUpdater?.fintechWidgetMap == null) return
+        if (pdpUiUpdater?.fintechWidgetMap?.isLoggedIn != viewModel.isUserSessionActive) {
+            productId?.let {
+                pdpUiUpdater?.updateFintechDataWithProductId(
+                    it,
+                    viewModel.userSessionInterface.isLoggedIn
+                )
             }
+            updateUi()
         }
     }
 
