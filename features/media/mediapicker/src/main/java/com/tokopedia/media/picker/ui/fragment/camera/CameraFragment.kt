@@ -2,6 +2,7 @@ package com.tokopedia.media.picker.ui.fragment.camera
 
 import android.content.Context
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.view.GestureDetector
@@ -34,9 +35,10 @@ import com.tokopedia.picker.common.ParamCacheManager
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.cameraToUiModel
-import com.tokopedia.picker.common.utils.FileGenerator
+import com.tokopedia.picker.common.utils.FileCamera
+import com.tokopedia.picker.common.utils.safeFileDelete
+import com.tokopedia.picker.common.utils.videoFormat
 import com.tokopedia.utils.view.binding.viewBinding
-import java.io.File
 import javax.inject.Inject
 
 open class CameraFragment : BaseDaggerFragment()
@@ -49,8 +51,12 @@ open class CameraFragment : BaseDaggerFragment()
     private val binding: FragmentCameraBinding? by viewBinding()
     private var listener: PickerActivityListener? = null
 
+    private val preview by uiComponent { CameraPreviewComponent(param.get(), this, it) }
+    private val controller by uiComponent { CameraControllerComponent(param.get(), this, it) }
+
     private val medias = mutableListOf<MediaUiModel>()
 
+    private var videoDurationTimer: CountDownTimer? = null
     private var isTakingPictureMode = true
     private var isFlashOn = false
 
@@ -59,14 +65,6 @@ open class CameraFragment : BaseDaggerFragment()
             this,
             factory
         )[CameraViewModel::class.java]
-    }
-
-    private val preview by uiComponent {
-        CameraPreviewComponent(param.get(), this, it)
-    }
-
-    private val controller by uiComponent {
-        CameraControllerComponent(param.get(), this, it)
     }
 
     val gestureDetector by lazy {
@@ -119,6 +117,7 @@ open class CameraFragment : BaseDaggerFragment()
 
     override fun onDestroyView() {
         super.onDestroyView()
+        resetVideoDuration()
         exceptionHandler {
             listener = null
         }
@@ -165,7 +164,7 @@ open class CameraFragment : BaseDaggerFragment()
                 preview.onStartTakePicture()
             } else {
                 preview.onStartTakeVideo()
-//                controller.onVideoDurationChanged()
+                onVideoDurationChanged()
             }
         }
     }
@@ -207,8 +206,8 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     override fun onPictureTaken(result: PictureResult) {
-        FileGenerator.createFileCameraCapture(preview.pictureSize(), result.data) {
-            if (it == null) return@createFileCameraCapture
+        FileCamera.createPhoto(preview.pictureSize(), result.data) {
+            if (it == null) return@createPhoto
             val fileToModel = it.cameraToUiModel()
 
             onShowMediaThumbnail(fileToModel)
@@ -253,6 +252,7 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     private fun onStopRecordVideo() {
+        resetVideoDuration()
         controller.stopRecording()
         listener?.tabVisibility(true)
     }
@@ -265,19 +265,11 @@ open class CameraFragment : BaseDaggerFragment()
     private fun isMinVideoDuration(model: MediaUiModel): Boolean {
         if (listener?.isMinVideoDuration(model) == true) {
             listener?.onShowVideoMinDurationToast()
-            deleteFile(model.path)
+            safeFileDelete(model.path)
             return true
         }
 
         return false
-    }
-
-    private fun deleteFile(path: String) {
-        val file = File(path)
-
-        if (file.exists()) {
-            file.delete()
-        }
     }
 
     private fun showShutterEffect(action: () -> Unit) {
@@ -289,6 +281,35 @@ open class CameraFragment : BaseDaggerFragment()
                 action()
             }, OVERLAY_SHUTTER_DELAY)
         }
+    }
+
+    private fun onVideoDurationChanged() {
+        resetVideoDuration()
+
+        val maxDuration = param.get().maxVideoDuration()
+
+        videoDurationTimer = object : CountDownTimer(
+            param.get().maxVideoDuration(),
+            COUNTDOWN_INTERVAL
+        ) {
+            override fun onTick(milis: Long) {
+                val time = maxDuration - milis
+                controller.setVideoDuration(time.videoFormat())
+            }
+
+            override fun onFinish() {
+                onStopRecordVideo()
+            }
+        }
+
+        videoDurationTimer?.start()
+    }
+
+    private fun resetVideoDuration() {
+        try {
+            videoDurationTimer?.cancel()
+            videoDurationTimer = null
+        } catch (t: Throwable) {}
     }
 
     override fun initInjector() {
@@ -303,6 +324,7 @@ open class CameraFragment : BaseDaggerFragment()
 
     companion object {
         private const val OVERLAY_SHUTTER_DELAY = 100L
+        private const val COUNTDOWN_INTERVAL = 1000L
     }
 
 }

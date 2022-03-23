@@ -11,7 +11,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.picker.common.databinding.WidgetMediaThumbnailDebugBinding
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.utils.extractVideoDuration
-import com.tokopedia.picker.common.utils.toVideoDurationFormat
+import com.tokopedia.picker.common.utils.videoFormat
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_3
 import com.tokopedia.unifyprinciples.Typography.Companion.SMALL
 
@@ -60,7 +60,7 @@ class DebugMediaThumbnailWidget @JvmOverloads constructor(
 
     private fun videoDuration(filePath: String) {
         val duration = extractVideoDuration(context, filePath)
-        binding.txtDuration.text = duration.toVideoDurationFormat()
+        binding.txtDuration.text = duration.videoFormat()
     }
 
 }

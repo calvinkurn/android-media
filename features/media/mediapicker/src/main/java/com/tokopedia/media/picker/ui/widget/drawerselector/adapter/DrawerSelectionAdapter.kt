@@ -28,7 +28,7 @@ class DrawerSelectionAdapter(
 
     var backgroundColorPlaceHolder: Int = 0
     var placeholderPreview: Int = 0
-    var canReorder = false
+    var isDraggable = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -43,7 +43,7 @@ class DrawerSelectionAdapter(
             ITEM_TYPE -> {
                 val media = medias[position]
 
-                if (canReorder) {
+                if (isDraggable) {
                     setupAreaRect(holder)
                     setupLongClickListener(holder)
                     setupDragListener(holder, position)
@@ -52,6 +52,7 @@ class DrawerSelectionAdapter(
                 if (holder is ThumbnailViewHolder) {
                     holder.bind(
                         media,
+                        isDraggable,
                         onClicked = { listener?.onItemClicked(media) },
                         onRemoved = { removeData(media, true) }
                     )

@@ -9,12 +9,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
 import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.media.databinding.FragmentPermissionBinding
+import com.tokopedia.media.picker.di.DaggerPickerComponent
+import com.tokopedia.media.picker.di.module.PickerModule
 import com.tokopedia.media.picker.ui.fragment.permission.recyclers.adapter.PermissionAdapter
 import com.tokopedia.media.picker.ui.fragment.permission.recyclers.utils.ItemDividerDecoration
 import com.tokopedia.media.picker.ui.uimodel.PermissionUiModel
@@ -185,7 +188,13 @@ open class PermissionFragment : BaseDaggerFragment() {
         listener = null
     }
 
-    override fun initInjector() {}
+    override fun initInjector() {
+        DaggerPickerComponent.builder()
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .pickerModule(PickerModule())
+            .build()
+            .inject(this)
+    }
 
     override fun getScreenName() = "Permission"
 

@@ -8,6 +8,7 @@ import com.tokopedia.media.picker.ui.activity.album.AlbumActivity
 import com.tokopedia.media.picker.ui.activity.main.PickerActivity
 import com.tokopedia.media.picker.ui.fragment.camera.CameraFragment
 import com.tokopedia.media.picker.ui.fragment.gallery.GalleryFragment
+import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment
 import dagger.Component
 
 @PickerScope
@@ -20,6 +21,7 @@ import dagger.Component
 interface PickerComponent {
     fun inject(activity: PickerActivity)
     fun inject(activity: AlbumActivity)
+    fun inject(fragment: PermissionFragment)
     fun inject(fragment: CameraFragment)
     fun inject(fragment: GalleryFragment)
 }

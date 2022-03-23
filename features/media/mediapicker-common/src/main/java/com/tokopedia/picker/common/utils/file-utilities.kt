@@ -12,6 +12,14 @@ import java.net.URLConnection
 
 const val DEFAULT_DURATION_LABEL = "00:00"
 
+fun safeFileDelete(path: String) {
+    val file = File(path)
+
+    if (file.exists()) {
+        file.delete()
+    }
+}
+
 private fun fileExtension(path: String): String {
     val extension = MimeTypeMap.getFileExtensionFromUrl(path)
     if (!extension.isNullOrEmpty()) return extension
@@ -28,6 +36,20 @@ fun getBitmapOptions(filePath: String): BitmapFactory.Options {
     bitmapOptions.inJustDecodeBounds = true
     BitmapFactory.decodeFile(filePath, bitmapOptions)
     return bitmapOptions
+}
+
+fun isMaxImageRes(path: String, value: Int): Boolean {
+    val bitmapOptions = getBitmapOptions(path)
+    val width = bitmapOptions.outWidth
+    val height = bitmapOptions.outHeight
+    return width > value && height > value
+}
+
+fun isMinImageRes(path: String, value: Int): Boolean {
+    val bitmapOptions = getBitmapOptions(path)
+    val width = bitmapOptions.outWidth
+    val height = bitmapOptions.outHeight
+    return width < value && height < value
 }
 
 fun isGifFormat(path: String): Boolean {
@@ -77,7 +99,7 @@ fun extractVideoDuration(context: Context?, filePath: String): Long? {
     )
 }
 
-fun Long?.toVideoDurationFormat(): String {
+fun Long?.videoFormat(): String {
     val duration = this?: 0L
 
     if (duration == 0L) return DEFAULT_DURATION_LABEL
