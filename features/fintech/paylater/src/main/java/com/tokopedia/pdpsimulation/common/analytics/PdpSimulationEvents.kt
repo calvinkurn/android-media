@@ -49,17 +49,6 @@ sealed class PdpSimulationEvent {
         val limit: String,
         val variantName: String
     ) : PdpSimulationEvent()
-
-    data class ClickCTACheckoutPage(
-        val productId: String,
-        val userStatus: String,
-        val partnerName: String,
-        val emiAmount: String,
-        val tenure: String,
-        val quantity: String,
-        val limit: String,
-        val variantName: String
-    ):PdpSimulationEvent()
 }
 
 open class PayLaterAnalyticsBase {

@@ -164,7 +164,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
             }
             calendarCardUnify.setOnClickListener {
                 if (!cta.isNullOrEmpty()) {
-                    if (!Utils.isSaleOver(endDate ?: "", TIMER_DATE_FORMAT)) {
+                    if (!Utils.isSaleOver(endDate ?: "", TIMER_DATE_FORMAT) && !Utils.isFutureSale(startDate ?: "", TIMER_DATE_FORMAT)) {
                         RouteManager.route(itemView.context, cta)
                         (fragment as DiscoveryFragment).getDiscoveryAnalytics()
                             .trackEventClickCalendarWidget(

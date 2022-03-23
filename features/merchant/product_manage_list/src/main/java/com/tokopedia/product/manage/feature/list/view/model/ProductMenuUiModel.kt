@@ -15,8 +15,8 @@ sealed class ProductMenuUiModel(
 ): Visitable<ProductMenuAdapterFactory> {
 
     companion object {
-        // Wed Apr 14 2022 00:00:00
-        private const val PRODUCT_COUPON_END_DATE = 1649869200000
+        // Wed Mar 30 2022 00:00:00
+        private const val PRODUCT_COUPON_END_DATE = 1648573200000
     }
 
     data class Preview(override val product: ProductUiModel): ProductMenuUiModel(

@@ -22,8 +22,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
 import com.tokopedia.linker.LinkerManager
@@ -36,7 +38,11 @@ import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.seller.menu.common.analytics.*
+import com.tokopedia.seller.menu.common.analytics.NewOtherMenuTracking
+import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
+import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
+import com.tokopedia.seller.menu.common.analytics.sendEventImpressionStatisticMenuItem
+import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
@@ -93,7 +99,6 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
         const val TOPADS_BOTTOMSHEET_TAG = "topads_bottomsheet"
 
-        const val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
         const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
 
         const val SHOP_BADGE = "shop badge"
@@ -262,8 +267,6 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     override fun goToSettings() {
         startActivity(Intent(context, MenuSettingActivity::class.java))
     }
-
-    override fun getIsMVCProductEnabled(): Boolean = getIsProductCouponEnabled()
 
     override fun getRecyclerView(): RecyclerView? = getRecyclerView(view)
 
@@ -648,10 +651,11 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     private fun goToReputationHistory() {
-        val reputationHistoryIntent =
-            RouteManager.getIntent(context, ApplinkConst.REPUTATION).apply {
-                putExtra(GO_TO_REPUTATION_HISTORY, true)
-            }
+        val appLink = UriUtil.buildUriAppendParam(
+            ApplinkConst.REPUTATION,
+            mapOf(ReviewApplinkConst.PARAM_TAB to ReviewApplinkConst.BUYER_REVIEW_TAB)
+        )
+        val reputationHistoryIntent = RouteManager.getIntent(context, appLink)
         startActivity(reputationHistoryIntent)
     }
 
@@ -874,14 +878,6 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         return urlString.split("/").toMutableList().also { list ->
             list[list.lastIndex] = replacementValue
         }.joinToString("/")
-    }
-
-    private fun getIsProductCouponEnabled(): Boolean {
-        return try {
-            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
-        } catch (ex: Exception) {
-            false
-        }
     }
 
     private fun View.showToasterError(errorMessage: String, onRetryAction: () -> Unit) {
