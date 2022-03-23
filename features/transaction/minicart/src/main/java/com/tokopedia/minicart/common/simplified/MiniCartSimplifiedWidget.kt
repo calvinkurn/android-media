@@ -18,7 +18,6 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.promo.domain.data.ValidateUseMvcData
 import com.tokopedia.minicart.common.promo.widget.PromoProgressBarWidget
-import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
 import com.tokopedia.minicart.databinding.WidgetMiniCartSimplifiedBinding
 import com.tokopedia.network.exception.MessageErrorException
@@ -50,7 +49,7 @@ class MiniCartSimplifiedWidget : BaseCustomView {
 
     private var viewModel: MiniCartSimplifiedViewModel? = null
 
-    private var miniCartWidgetListener: MiniCartWidgetListener? = null
+    private var widgetListener: MiniCartSimplifiedWidgetListener? = null
 
     private var binding: WidgetMiniCartSimplifiedBinding =
             WidgetMiniCartSimplifiedBinding.inflate(LayoutInflater.from(context), this, true)
@@ -65,7 +64,7 @@ class MiniCartSimplifiedWidget : BaseCustomView {
     * */
     fun initialize(shopIds: List<String>, promoId: String, promoCode: String,
                    businessUnit: String, currentSite: String, fragment: Fragment,
-                   pageSource: MiniCartAnalytics.Page, listener: MiniCartWidgetListener) {
+                   pageSource: MiniCartAnalytics.Page, listener: MiniCartSimplifiedWidgetListener) {
         if (viewModel == null) {
             val application = fragment.activity?.application
             initializeInjector(application)
@@ -104,8 +103,8 @@ class MiniCartSimplifiedWidget : BaseCustomView {
         }
     }
 
-    private fun initializeListener(listener: MiniCartWidgetListener) {
-        miniCartWidgetListener = listener
+    private fun initializeListener(listener: MiniCartSimplifiedWidgetListener) {
+        widgetListener = listener
     }
 
     private fun initializeViewModel(fragment: Fragment) {
@@ -152,7 +151,7 @@ class MiniCartSimplifiedWidget : BaseCustomView {
         val currentTime = SystemClock.elapsedRealtime()
         if (throwable is MessageErrorException && throwable.message == lastFailedValidateMoveToCartMessage) {
             if (lastFailedValidateMoveToCart > FAILED_VALIDATE_MOVE_TO_CART_DEFAULT && currentTime - lastFailedValidateMoveToCart < FAILED_VALIDATE_MOVE_TO_CART_LIMIT) {
-                RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
+                widgetListener?.onClickCheckCart(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CART), false)
                 lastFailedValidateMoveToCart = FAILED_VALIDATE_MOVE_TO_CART_DEFAULT
             } else {
                 lastFailedValidateMoveToCart = currentTime
@@ -172,13 +171,14 @@ class MiniCartSimplifiedWidget : BaseCustomView {
 
     private fun onMoveToCart() {
         setTotalAmountLoading(false)
-        RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
+        widgetListener?.onClickCheckCart(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CART), true)
+        lastFailedValidateMoveToCart = FAILED_VALIDATE_MOVE_TO_CART_DEFAULT
     }
 
     private fun observeMiniCartWidgetUiModel(fragment: Fragment) {
         viewModel?.miniCartSimplifiedData?.observe(fragment.viewLifecycleOwner) {
             renderWidget(it)
-            miniCartWidgetListener?.onCartItemsUpdated(it)
+            widgetListener?.onCartItemsUpdated(it)
         }
     }
 
@@ -187,6 +187,7 @@ class MiniCartSimplifiedWidget : BaseCustomView {
             renderPromoWidget(it)
             setTotalAmountLoading(false)
             sendEventMvcProgressBarImpression(isClickCheckCart = false)
+            lastFailedValidateMoveToCart = FAILED_VALIDATE_MOVE_TO_CART_DEFAULT
         }
     }
 

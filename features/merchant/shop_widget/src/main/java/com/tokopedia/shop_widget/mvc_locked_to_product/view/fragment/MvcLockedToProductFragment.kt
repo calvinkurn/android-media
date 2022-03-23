@@ -27,7 +27,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.simplified.MiniCartSimplifiedWidget
-import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.minicart.common.simplified.MiniCartSimplifiedWidgetListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
@@ -73,7 +73,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     MvcLockedToProductSortSectionViewHolder.Listener,
     MvcLockedToProductSortListBottomSheet.Callback,
     MvcLockedToProductGridViewHolder.Listener,
-    MiniCartWidgetListener {
+        MiniCartSimplifiedWidgetListener {
 
     companion object {
         private const val CART_LOCAL_CACHE_NAME = "CART"
@@ -741,4 +741,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
         viewModel?.setMiniCartData(miniCartSimplifiedData)
     }
 
+    override fun onClickCheckCart(intent: Intent, isPromoValid: Boolean) {
+        startActivity(intent)
+    }
 }
