@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.example
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,9 +12,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.tokofood.base.ExampleTokofoodActivity
 import com.tokopedia.tokofood.databinding.FragmentLivedataInputAndTextaBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -28,9 +29,10 @@ class FragmentA : BaseMultiFragment() {
     private lateinit var binding: FragmentLivedataInputAndTextaBinding
 
     private var doubleTapExit = false
+    private var parent: HasViewModel<MultipleFragmentsViewModel>? = null
 
     val activityViewModel: MultipleFragmentsViewModel?
-        get() = (activity as? ExampleTokofoodActivity)?.viewModel
+        get() = parent?.viewModel()
 
     override fun getFragmentToolbar(): Toolbar {
         return binding.toolbar
@@ -54,7 +56,7 @@ class FragmentA : BaseMultiFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.buttonGoToB.setOnClickListener {
             val f = FragmentB()
-            (activity as? ExampleTokofoodActivity)?.navigateToNewFragment(f)
+            (activity as? BaseMultiFragActivity)?.navigateToNewFragment(f)
             // OR CAN ALSO BE LIKE BELOW
             // TokofoodRouteManager.routePrioritizeInternal(requireContext(), "tokopedia://tokofood/b")
         }
@@ -106,6 +108,11 @@ class FragmentA : BaseMultiFragment() {
         binding.swipeRefresh.setOnRefreshListener {
             activityViewModel?.refresh()
         }
+    }
+
+    override fun onAttachActivity(context: Context?) {
+        super.onAttachActivity(context)
+        parent = (activity as? HasViewModel<MultipleFragmentsViewModel>)
     }
 
     override fun onFragmentBackPressed(): Boolean {

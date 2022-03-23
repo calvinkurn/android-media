@@ -1,15 +1,12 @@
-package com.tokopedia.tokofood.base
+package com.tokopedia.tokofood.example
 
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.viewModels
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
-import com.tokopedia.tokofood.example.FragmentA
-import com.tokopedia.tokofood.example.MultipleFragmentsViewModel
-import com.tokopedia.tokofood.example.TokofoodRouteManager
 
-class ExampleTokofoodActivity : BaseMultiFragActivity() {
+class ExampleTokofoodActivity : BaseMultiFragActivity(), HasViewModel {
 
     val viewModel: MultipleFragmentsViewModel by viewModels()
 
@@ -30,4 +27,6 @@ class ExampleTokofoodActivity : BaseMultiFragActivity() {
         super.onSaveInstanceState(outState)
         viewModel.onSavedInstanceState()
     }
+
+    override fun viewModel(): MultipleFragmentsViewModel = viewModel
 }

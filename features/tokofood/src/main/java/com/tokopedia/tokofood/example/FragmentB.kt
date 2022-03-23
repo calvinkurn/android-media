@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.example
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,7 +12,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
-import com.tokopedia.tokofood.base.ExampleTokofoodActivity
 import com.tokopedia.tokofood.databinding.FragmentLivedataInputAndTextbBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -24,8 +24,10 @@ class FragmentB : BaseMultiFragment() {
 
     private lateinit var binding: FragmentLivedataInputAndTextbBinding
 
+    private var parent: HasViewModel<MultipleFragmentsViewModel>? = null
+
     val activityViewModel: MultipleFragmentsViewModel?
-        get() = (activity as? ExampleTokofoodActivity)?.viewModel
+        get() = parent?.viewModel()
 
     override fun onFragmentBackPressed(): Boolean {
         return false
@@ -104,5 +106,10 @@ class FragmentB : BaseMultiFragment() {
         binding.swipeRefresh.setOnRefreshListener {
             activityViewModel?.refresh()
         }
+    }
+
+    override fun onAttachActivity(context: Context?) {
+        super.onAttachActivity(context)
+        parent = activity as? HasViewModel<MultipleFragmentsViewModel>
     }
 }

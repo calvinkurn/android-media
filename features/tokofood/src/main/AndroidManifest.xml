@@ -25,7 +25,7 @@
         </activity>
         <activity
             android:theme="@style/Theme.WhiteUnify"
-            android:name=".base.ExampleTokofoodActivity"
+            android:name=".example.ExampleTokofoodActivity"
             android:label="Tokofood">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

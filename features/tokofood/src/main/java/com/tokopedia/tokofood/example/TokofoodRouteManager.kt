@@ -4,9 +4,9 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.tokofood.base.ExampleTokofoodActivity
 
 object TokofoodRouteManager {
     val DATA_KEY = "data"
@@ -36,10 +36,10 @@ object TokofoodRouteManager {
      * Otherwise, it will go to Activity
      */
     fun routePrioritizeInternal(context: Context, uriString: String) {
-        val activity: ExampleTokofoodActivity? = if (context is Fragment) {
-            (context.requireActivity() as? ExampleTokofoodActivity)
+        val activity: BaseMultiFragActivity? = if (context is Fragment) {
+            (context.requireActivity() as? BaseMultiFragActivity)
         } else {
-            (context as? ExampleTokofoodActivity)
+            (context as? BaseMultiFragActivity)
         }
         if (activity == null) {
             RouteManager.route(context, uriString)
