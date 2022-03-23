@@ -216,7 +216,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                     galleryRoutingData.totalImageCount,
                     galleryRoutingData.productId,
                     it.attachmentId,
-                    it.imageNumber - POSITION_INDEX_COUNTER,
+                    it.mediaNumber - POSITION_INDEX_COUNTER,
                     viewModel.getUserId(),
                     trackingQueue
                 )
@@ -644,7 +644,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         with(galleryRoutingData) {
             if (isFirstTimeUpdate) currentRecyclerViewPosition = currentPosition
             this.loadedReviews.firstOrNull {
-                it.imageNumber == currentRecyclerViewPosition
+                it.mediaNumber == currentRecyclerViewPosition
             }?.let { selectedReview ->
                 with(selectedReview) {
                     reviewImagePreviewDetail?.apply {
@@ -766,7 +766,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         }
         reviewGalleryImageThumbnailUiModel = reviewGalleryImageThumbnailUiModel.copy(
             feedbackId = feedbackId,
-            imageNumber = imageNumber
+            mediaNumber = imageNumber
         )
         return reviewGalleryImageThumbnailUiModel
     }

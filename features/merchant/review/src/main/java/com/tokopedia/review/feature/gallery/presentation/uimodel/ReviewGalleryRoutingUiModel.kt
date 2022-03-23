@@ -12,6 +12,6 @@ data class ReviewGalleryRoutingUiModel(
 ) {
 
     fun getSelectedReview(position: Int = currentPosition): ReviewGalleryImageThumbnailUiModel? {
-        return loadedReviews.firstOrNull { it.imageNumber == position }
+        return loadedReviews.firstOrNull { it.mediaNumber == position }
     }
 }

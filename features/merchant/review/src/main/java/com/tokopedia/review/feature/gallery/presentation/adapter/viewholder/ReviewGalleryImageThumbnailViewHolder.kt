@@ -9,9 +9,11 @@ import com.tokopedia.review.R
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.databinding.ItemReviewGalleryImageThumbnailBinding
 import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryImageThumbnailUiModel
+import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryMediaThumbnailListener
 
 class ReviewGalleryImageThumbnailViewHolder(
-    view: View
+    view: View,
+    reviewGalleryMediaThumbnailListener: ReviewGalleryMediaThumbnailListener
 ) : AbstractViewHolder<ReviewGalleryImageThumbnailUiModel>(view) {
 
     companion object {
@@ -19,12 +21,17 @@ class ReviewGalleryImageThumbnailViewHolder(
     }
 
     private val binding = ItemReviewGalleryImageThumbnailBinding.bind(view)
+    private var element: ReviewGalleryImageThumbnailUiModel? = null
 
     init {
         setupLayout()
+        binding.root.setOnClickListener {
+            element?.let { reviewGalleryMediaThumbnailListener.onThumbnailClicked(it) }
+        }
     }
 
     override fun bind(element: ReviewGalleryImageThumbnailUiModel) {
+        this.element = element
         with(binding) {
             setupBrokenOverlay()
             setupThumbnail(element.imageUrl)

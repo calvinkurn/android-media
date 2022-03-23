@@ -9,22 +9,29 @@ import com.tokopedia.review.R
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.databinding.ItemReviewGalleryVideoThumbnailBinding
 import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryVideoThumbnailUiModel
+import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryMediaThumbnailListener
 
 class ReviewGalleryVideoThumbnailViewHolder(
-    view: View
-): AbstractViewHolder<ReviewGalleryVideoThumbnailUiModel>(view) {
+    view: View,
+    reviewGalleryMediaThumbnailListener: ReviewGalleryMediaThumbnailListener
+) : AbstractViewHolder<ReviewGalleryVideoThumbnailUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_review_gallery_video_thumbnail
     }
 
     private val binding = ItemReviewGalleryVideoThumbnailBinding.bind(view)
+    private var element: ReviewGalleryVideoThumbnailUiModel? = null
 
     init {
         setupLayout()
+        binding.root.setOnClickListener {
+            element?.let { reviewGalleryMediaThumbnailListener.onThumbnailClicked(it) }
+        }
     }
 
     override fun bind(element: ReviewGalleryVideoThumbnailUiModel) {
+        this.element = element
         with(binding) {
             setupBrokenOverlay()
             setupPlayButton()

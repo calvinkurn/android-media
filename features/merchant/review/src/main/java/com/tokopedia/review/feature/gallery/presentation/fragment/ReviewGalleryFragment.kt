@@ -35,7 +35,9 @@ import com.tokopedia.review.feature.gallery.di.ReviewGalleryComponent
 import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryAdapter
 import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryAdapterTypeFactory
 import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryImageThumbnailUiModel
+import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryMediaThumbnailUiModel
 import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryHeaderListener
+import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryMediaThumbnailListener
 import com.tokopedia.review.feature.gallery.presentation.uimodel.ReviewGalleryRoutingUiModel
 import com.tokopedia.review.feature.gallery.presentation.viewmodel.ReviewGalleryViewModel
 import com.tokopedia.review.feature.gallery.presentation.widget.ReviewGalleryLoadingView
@@ -54,7 +56,7 @@ import javax.inject.Inject
 class ReviewGalleryFragment :
     BaseListFragment<ReviewGalleryImageThumbnailUiModel, ReviewGalleryAdapterTypeFactory>(),
     HasComponent<ReviewGalleryComponent>, ReviewPerformanceMonitoringContract,
-    ReadReviewHeaderListener, ReviewGalleryHeaderListener {
+    ReadReviewHeaderListener, ReviewGalleryHeaderListener, ReviewGalleryMediaThumbnailListener {
 
     companion object {
         const val REVIEW_GALLERY_SPAN_COUNT = 2
@@ -153,12 +155,7 @@ class ReviewGalleryFragment :
     }
 
     override fun onItemClicked(t: ReviewGalleryImageThumbnailUiModel) {
-        ReviewGalleryTracking.trackClickImage(
-            t.attachmentId,
-            t.feedbackId,
-            viewModel.getProductId()
-        )
-        goToImagePreview(t)
+        // noop
     }
 
     override fun loadData(page: Int) {
@@ -166,7 +163,7 @@ class ReviewGalleryFragment :
     }
 
     override fun getAdapterTypeFactory(): ReviewGalleryAdapterTypeFactory {
-        return ReviewGalleryAdapterTypeFactory()
+        return ReviewGalleryAdapterTypeFactory(this)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<ReviewGalleryImageThumbnailUiModel, ReviewGalleryAdapterTypeFactory> {
@@ -231,6 +228,15 @@ class ReviewGalleryFragment :
     override fun loadInitialData() {
         getProductIdFromArguments()
         super.loadInitialData()
+    }
+
+    override fun onThumbnailClicked(reviewGalleryMediaThumbnailUiModel: ReviewGalleryMediaThumbnailUiModel) {
+        ReviewGalleryTracking.trackClickImage(
+            reviewGalleryMediaThumbnailUiModel.attachmentId,
+            reviewGalleryMediaThumbnailUiModel.feedbackId,
+            viewModel.getProductId()
+        )
+        goToImagePreview(reviewGalleryMediaThumbnailUiModel)
     }
 
     private fun getProductIdFromArguments() {
@@ -346,7 +352,7 @@ class ReviewGalleryFragment :
         }
         reviewGalleryImageThumbnailUiModel = reviewGalleryImageThumbnailUiModel.copy(
             feedbackId = feedbackId,
-            imageNumber = imageNumber
+            mediaNumber = imageNumber
         )
         return reviewGalleryImageThumbnailUiModel
     }
@@ -401,7 +407,7 @@ class ReviewGalleryFragment :
         }
     }
 
-    private fun goToImagePreview(reviewGalleryImageThumbnailUiModel: ReviewGalleryImageThumbnailUiModel) {
+    private fun goToImagePreview(reviewGalleryMediaThumbnailUiModel: ReviewGalleryMediaThumbnailUiModel) {
         context?.let {
             val cacheManager = SaveInstanceCacheManager(it, true)
             cacheManager.put(
@@ -410,7 +416,7 @@ class ReviewGalleryFragment :
                     currentPage,
                     getImageCount(),
                     adapter.data,
-                    reviewGalleryImageThumbnailUiModel.imageNumber,
+                    reviewGalleryMediaThumbnailUiModel.mediaNumber,
                     viewModel.getShopId()
                 )
             )

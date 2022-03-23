@@ -11,8 +11,11 @@ import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewG
 import com.tokopedia.review.feature.gallery.presentation.adapter.viewholder.ReviewGalleryImageThumbnailViewHolder
 import com.tokopedia.review.feature.gallery.presentation.adapter.viewholder.ReviewGalleryLoadingViewHolder
 import com.tokopedia.review.feature.gallery.presentation.adapter.viewholder.ReviewGalleryVideoThumbnailViewHolder
+import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryMediaThumbnailListener
 
-class ReviewGalleryAdapterTypeFactory : ReviewGalleryTypeFactory, BaseAdapterTypeFactory() {
+class ReviewGalleryAdapterTypeFactory(
+    private val reviewGalleryMediaThumbnailListener: ReviewGalleryMediaThumbnailListener
+) : ReviewGalleryTypeFactory, BaseAdapterTypeFactory() {
 
     override fun type(reviewGalleryImageThumbnailUiModel: ReviewGalleryImageThumbnailUiModel): Int {
         return ReviewGalleryImageThumbnailViewHolder.LAYOUT
@@ -28,8 +31,8 @@ class ReviewGalleryAdapterTypeFactory : ReviewGalleryTypeFactory, BaseAdapterTyp
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            ReviewGalleryImageThumbnailViewHolder.LAYOUT -> ReviewGalleryImageThumbnailViewHolder(parent)
-            ReviewGalleryVideoThumbnailViewHolder.LAYOUT -> ReviewGalleryVideoThumbnailViewHolder(parent)
+            ReviewGalleryImageThumbnailViewHolder.LAYOUT -> ReviewGalleryImageThumbnailViewHolder(parent, reviewGalleryMediaThumbnailListener)
+            ReviewGalleryVideoThumbnailViewHolder.LAYOUT -> ReviewGalleryVideoThumbnailViewHolder(parent, reviewGalleryMediaThumbnailListener)
             ReviewGalleryLoadingViewHolder.LAYOUT -> ReviewGalleryLoadingViewHolder(parent)
             else -> return super.createViewHolder(parent, type)
         }
