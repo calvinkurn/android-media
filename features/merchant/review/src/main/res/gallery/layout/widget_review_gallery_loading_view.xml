@@ -15,55 +15,51 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/review_pending_shimmering_star" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/review_gallery_rating_loading"
         android:layout_width="@dimen/layout_lvl7"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_marginStart="@dimen/layout_lvl1"
-        app:corners="8"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintBottom_toBottomOf="@id/review_gallery_rating_star_loading"
         app:layout_constraintStart_toEndOf="@id/review_gallery_rating_star_loading"
-        app:layout_constraintTop_toTopOf="@id/review_gallery_rating_star_loading" />
+        app:layout_constraintTop_toTopOf="@id/review_gallery_rating_star_loading"
+        app:loader_type="rect" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/review_gallery_satisfaction_rate_loading"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/dp_10"
         android:layout_marginStart="@dimen/layout_lvl3"
         android:layout_marginEnd="@dimen/layout_lvl8"
         android:layout_marginBottom="@dimen/layout_lvl1"
-        app:corners="8"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintBottom_toTopOf="@id/review_gallery_rating_and_review_count_loading"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/review_gallery_rating_loading" />
+        app:layout_constraintStart_toEndOf="@id/review_gallery_rating_loading"
+        app:loader_type="rect" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/review_gallery_rating_and_review_count_loading"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/dp_10"
         android:layout_marginStart="@dimen/layout_lvl3"
         android:layout_marginEnd="@dimen/layout_lvl7"
-        app:corners="8"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintBottom_toBottomOf="@id/review_gallery_rating_loading"
         app:layout_constraintEnd_toEndOf="@id/review_gallery_satisfaction_rate_loading"
         app:layout_constraintStart_toEndOf="@id/review_gallery_rating_loading"
-        app:layout_constraintTop_toTopOf="@id/review_gallery_rating_loading" />
+        app:layout_constraintTop_toTopOf="@id/review_gallery_rating_loading"
+        app:loader_type="rect" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/review_gallery_see_all_loading"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/dp_10"
         android:layout_marginStart="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl5"
-        app:corners="8"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="@id/review_gallery_rating_and_review_count_loading"
         app:layout_constraintStart_toEndOf="@id/review_gallery_rating_loading"
-        app:layout_constraintTop_toBottomOf="@id/review_gallery_rating_and_review_count_loading" />
+        app:layout_constraintTop_toBottomOf="@id/review_gallery_rating_and_review_count_loading"
+        app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/review_gallery_rating_bar_divider_loading"

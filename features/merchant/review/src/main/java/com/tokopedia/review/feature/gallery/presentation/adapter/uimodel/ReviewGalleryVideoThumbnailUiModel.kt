@@ -4,12 +4,12 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryAdapterTypeFactory
 import com.tokopedia.review.feature.reading.data.UserReviewStats
 
-data class ReviewGalleryUiModel(
-    val imageUrl: String = "",
+data class ReviewGalleryVideoThumbnailUiModel(
+    val thumbnailUrl: String = "",
     val rating: Int = 0,
     val variantName: String = "",
     val feedbackId: String = "",
-    val fullImageUrl: String = "",
+    val videoUrl: String = "",
     val reviewerName: String = "",
     var isLiked: Boolean = false,
     var totalLiked: Int = 0,
@@ -24,9 +24,7 @@ data class ReviewGalleryUiModel(
     val userImage: String = "",
     val badRatingReason: String = ""
 ) : Visitable<ReviewGalleryAdapterTypeFactory> {
-
     override fun type(typeFactory: ReviewGalleryAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
-
 }

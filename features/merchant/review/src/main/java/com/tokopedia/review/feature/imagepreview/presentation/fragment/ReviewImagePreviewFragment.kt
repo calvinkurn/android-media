@@ -32,7 +32,7 @@ import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.review.feature.credibility.presentation.activity.ReviewCredibilityActivity
 import com.tokopedia.review.feature.gallery.data.Detail
 import com.tokopedia.review.feature.gallery.data.ProductrevGetReviewImage
-import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryUiModel
+import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryImageThumbnailUiModel
 import com.tokopedia.review.feature.gallery.presentation.fragment.ReviewGalleryFragment
 import com.tokopedia.review.feature.gallery.presentation.uimodel.ReviewGalleryRoutingUiModel
 import com.tokopedia.review.feature.imagepreview.analytics.ReviewImagePreviewTracking
@@ -719,8 +719,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         return if (isLiked) LikeDislike.LIKED else 0
     }
 
-    private fun mapToUiModel(productrevGetReviewImage: ProductrevGetReviewImage): List<ReviewGalleryUiModel> {
-        val reviewImages = mutableListOf<ReviewGalleryUiModel>()
+    private fun mapToUiModel(productrevGetReviewImage: ProductrevGetReviewImage): List<ReviewGalleryImageThumbnailUiModel> {
+        val reviewImages = mutableListOf<ReviewGalleryImageThumbnailUiModel>()
         productrevGetReviewImage.reviewImages.forEachIndexed { index, reviewImage ->
             reviewImages.add(
                 getReviewGalleryUiModelBasedOnDetail(
@@ -739,10 +739,10 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         feedbackId: String,
         attachmentId: String,
         imageNumber: Int
-    ): ReviewGalleryUiModel {
-        var reviewGalleryUiModel = ReviewGalleryUiModel()
+    ): ReviewGalleryImageThumbnailUiModel {
+        var reviewGalleryImageThumbnailUiModel = ReviewGalleryImageThumbnailUiModel()
         detail.reviewDetail.firstOrNull { it.feedbackId == feedbackId }?.apply {
-            reviewGalleryUiModel = reviewGalleryUiModel.copy(
+            reviewGalleryImageThumbnailUiModel = reviewGalleryImageThumbnailUiModel.copy(
                 rating = this.rating,
                 variantName = this.variantName,
                 reviewerName = this.user.fullName,
@@ -758,17 +758,17 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             )
         }
         detail.reviewGalleryImages.firstOrNull { it.attachmentId == attachmentId }?.apply {
-            reviewGalleryUiModel = reviewGalleryUiModel.copy(
+            reviewGalleryImageThumbnailUiModel = reviewGalleryImageThumbnailUiModel.copy(
                 imageUrl = this.thumbnailURL,
                 fullImageUrl = this.fullsizeURL,
                 attachmentId = this.attachmentId
             )
         }
-        reviewGalleryUiModel = reviewGalleryUiModel.copy(
+        reviewGalleryImageThumbnailUiModel = reviewGalleryImageThumbnailUiModel.copy(
             feedbackId = feedbackId,
             imageNumber = imageNumber
         )
-        return reviewGalleryUiModel
+        return reviewGalleryImageThumbnailUiModel
     }
 
     private fun goToReviewCredibility(userId: String) {

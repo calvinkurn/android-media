@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
@@ -31,8 +32,9 @@ import com.tokopedia.review.feature.gallery.data.Detail
 import com.tokopedia.review.feature.gallery.data.ProductrevGetReviewImage
 import com.tokopedia.review.feature.gallery.di.DaggerReviewGalleryComponent
 import com.tokopedia.review.feature.gallery.di.ReviewGalleryComponent
+import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryAdapter
 import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryAdapterTypeFactory
-import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryUiModel
+import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryImageThumbnailUiModel
 import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryHeaderListener
 import com.tokopedia.review.feature.gallery.presentation.uimodel.ReviewGalleryRoutingUiModel
 import com.tokopedia.review.feature.gallery.presentation.viewmodel.ReviewGalleryViewModel
@@ -50,7 +52,7 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class ReviewGalleryFragment :
-    BaseListFragment<ReviewGalleryUiModel, ReviewGalleryAdapterTypeFactory>(),
+    BaseListFragment<ReviewGalleryImageThumbnailUiModel, ReviewGalleryAdapterTypeFactory>(),
     HasComponent<ReviewGalleryComponent>, ReviewPerformanceMonitoringContract,
     ReadReviewHeaderListener, ReviewGalleryHeaderListener {
 
@@ -150,7 +152,7 @@ class ReviewGalleryFragment :
         component?.inject(this)
     }
 
-    override fun onItemClicked(t: ReviewGalleryUiModel) {
+    override fun onItemClicked(t: ReviewGalleryImageThumbnailUiModel) {
         ReviewGalleryTracking.trackClickImage(
             t.attachmentId,
             t.feedbackId,
@@ -165,6 +167,10 @@ class ReviewGalleryFragment :
 
     override fun getAdapterTypeFactory(): ReviewGalleryAdapterTypeFactory {
         return ReviewGalleryAdapterTypeFactory()
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<ReviewGalleryImageThumbnailUiModel, ReviewGalleryAdapterTypeFactory> {
+        return ReviewGalleryAdapter(adapterTypeFactory)
     }
 
     override fun getRecyclerViewResourceId(): Int {
@@ -296,7 +302,7 @@ class ReviewGalleryFragment :
         }
     }
 
-    private fun mapToUiModel(productrevGetReviewImage: ProductrevGetReviewImage): List<ReviewGalleryUiModel> {
+    private fun mapToUiModel(productrevGetReviewImage: ProductrevGetReviewImage): List<ReviewGalleryImageThumbnailUiModel> {
         return productrevGetReviewImage.reviewImages.map {
                 getReviewGalleryUiModelBasedOnDetail(
                     productrevGetReviewImage.detail,
@@ -312,10 +318,10 @@ class ReviewGalleryFragment :
         feedbackId: String,
         attachmentId: String,
         imageNumber: Int
-    ): ReviewGalleryUiModel {
-        var reviewGalleryUiModel = ReviewGalleryUiModel()
+    ): ReviewGalleryImageThumbnailUiModel {
+        var reviewGalleryImageThumbnailUiModel = ReviewGalleryImageThumbnailUiModel()
         detail.reviewDetail.firstOrNull { it.feedbackId == feedbackId }?.apply {
-            reviewGalleryUiModel = reviewGalleryUiModel.copy(
+            reviewGalleryImageThumbnailUiModel = reviewGalleryImageThumbnailUiModel.copy(
                 rating = this.rating,
                 variantName = this.variantName,
                 reviewerName = this.user.fullName,
@@ -332,17 +338,17 @@ class ReviewGalleryFragment :
             )
         }
         detail.reviewGalleryImages.firstOrNull { it.attachmentId == attachmentId }?.apply {
-            reviewGalleryUiModel = reviewGalleryUiModel.copy(
+            reviewGalleryImageThumbnailUiModel = reviewGalleryImageThumbnailUiModel.copy(
                 imageUrl = this.fullsizeURL,
                 fullImageUrl = this.fullsizeURL,
                 attachmentId = this.attachmentId
             )
         }
-        reviewGalleryUiModel = reviewGalleryUiModel.copy(
+        reviewGalleryImageThumbnailUiModel = reviewGalleryImageThumbnailUiModel.copy(
             feedbackId = feedbackId,
             imageNumber = imageNumber
         )
-        return reviewGalleryUiModel
+        return reviewGalleryImageThumbnailUiModel
     }
 
     private fun getReviewStatistics(): List<ProductReviewDetail> {
@@ -395,7 +401,7 @@ class ReviewGalleryFragment :
         }
     }
 
-    private fun goToImagePreview(reviewGalleryUiModel: ReviewGalleryUiModel) {
+    private fun goToImagePreview(reviewGalleryImageThumbnailUiModel: ReviewGalleryImageThumbnailUiModel) {
         context?.let {
             val cacheManager = SaveInstanceCacheManager(it, true)
             cacheManager.put(
@@ -404,7 +410,7 @@ class ReviewGalleryFragment :
                     currentPage,
                     getImageCount(),
                     adapter.data,
-                    reviewGalleryUiModel.imageNumber,
+                    reviewGalleryImageThumbnailUiModel.imageNumber,
                     viewModel.getShopId()
                 )
             )
