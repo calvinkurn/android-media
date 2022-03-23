@@ -52,6 +52,7 @@ ext {
             core_legacy             : ":libraries:core_legacy",
             coreNetwork             : ":libraries:core_network",
             datePickerRange         : ":libraries:date_picker_range",
+            dataExplorer            : ":libraries:data_explorer",
             deviceFingerprint       : ":libraries:device_fingerprint",
             deviceInfo              : ":libraries:device_info",
             devMonitoringTools      : ":libraries:dev_monitoring_tools",
