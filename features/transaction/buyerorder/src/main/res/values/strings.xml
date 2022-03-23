@@ -17,7 +17,7 @@
     <string name="purchase_detail">Detail Pembelian</string>
     <string name="voucher_code_title_deals">Voucher Deals</string>
     <string name="event_ticket_booking_multiple">x Kode Booking</string>
-    <string name="voucher_code_title">Kode Booking :</string>
+    <string name="voucher_code_title">Kode Voucher :</string>
     <string name="detail_label_events">Detail E-Tiket</string>
     <string name="tanggal_events">Tanggal Events </string>
     <string name="text_valid_till">Berlaku hingga </string>
