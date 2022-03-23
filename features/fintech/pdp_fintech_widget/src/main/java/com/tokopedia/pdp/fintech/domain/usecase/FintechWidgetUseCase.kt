@@ -55,8 +55,7 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
         listofAmountandUrls.forEach { (key, value) ->
             listOfVariantDetail.add(
                 WidgetRequestModel(
-                    amount = value.price?.toDouble() ?: 0.0,
-                    redirectionUrl = value.url
+                    amount = value.price?.toDouble() ?: 0.0
                 )
             )
         }
@@ -89,6 +88,5 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
 data class WidgetRequestModel(
     @SerializedName("amount")
     val amount: Double,
-    @SerializedName("redirect_url")
-    val redirectionUrl: String?
-)
+
+    )

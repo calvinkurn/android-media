@@ -29,12 +29,12 @@ class ContentWidgetViewHolder(
     }
 
     override fun bind(element: ContentWidgetDataModel) {
-        val playWidgetUiModel = element.playWidgetUiModel
-        if (playWidgetUiModel is PlayWidgetUiModel.Medium && playWidgetUiModel.items.size < MINIMUM_ITEMS) {
+        val playWidgetState = element.playWidgetState
+        if (playWidgetState.model.items.size < MINIMUM_ITEMS) {
             hideComponent()
         } else showComponent()
         playWidgetAnalyticListener.componentTrackDataModel = getComponentTrackData(element)
-        playWidgetViewHolder.bind(element.playWidgetUiModel, this)
+        playWidgetViewHolder.bind(element.playWidgetState, this)
     }
 
     private fun hideComponent() {

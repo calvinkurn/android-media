@@ -14,6 +14,7 @@ import com.tokopedia.play.broadcaster.domain.model.ProductTagging
 import com.tokopedia.play.broadcaster.domain.model.TotalLike
 import com.tokopedia.play.broadcaster.domain.model.TotalView
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
+import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import java.lang.reflect.Type
@@ -39,7 +40,7 @@ class PlayBroadcastWebSocketMapper(
             PlaySocketEnum.LiveDuration.value -> convertToModel(response.jsonObject, LiveDuration::class.java)
             PlaySocketEnum.LiveStats.value -> convertToModel(response.jsonObject, LiveStats::class.java)
             PlaySocketEnum.NewMetric.value -> NewMetricList(convertToModel(response.jsonArray, newMetricListType) ?: emptyList())
-            PlaySocketEnum.ProductTag.value -> convertToModel(response.jsonObject, ProductTagging::class.java)
+            PlaySocketEnum.ProductTag.value -> convertToModel(response.jsonObject, SectionedProductTagSocketResponse::class.java)
             PlaySocketEnum.Chat.value -> convertToModel(response.jsonObject, Chat::class.java)
             PlaySocketEnum.Freeze.value -> convertToModel(response.jsonObject, Freeze::class.java)
             PlaySocketEnum.Banned.value -> convertToModel(response.jsonObject, Banned::class.java)

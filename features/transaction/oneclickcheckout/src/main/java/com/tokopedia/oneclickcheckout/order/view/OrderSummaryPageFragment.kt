@@ -78,6 +78,7 @@ import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderPromoCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderShopCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderTotalPaymentCard
+import com.tokopedia.oneclickcheckout.order.view.mapper.AddOnMapper
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE
 import com.tokopedia.oneclickcheckout.payment.activation.PaymentActivationWebViewBottomSheet
@@ -89,6 +90,9 @@ import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
 import com.tokopedia.oneclickcheckout.payment.topup.view.PaymentTopUpWebViewActivity
 import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -185,6 +189,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             REQUEST_CODE_ADD_NEW_ADDRESS -> onResultFromAddNewAddress(resultCode, data)
             REQUEST_CODE_LINK_ACCOUNT -> onResultFromLinkAccount(resultCode, data)
             REQUEST_CODE_WALLET_ACTIVATION -> refresh()
+            REQUEST_CODE_ADD_ON -> onResultFromAddOn(resultCode, data)
         }
     }
 
@@ -285,6 +290,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             }
         }
         refresh()
+    }
+
+    private fun onResultFromAddOn(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            val result = data.getParcelableExtra<SaveAddOnStateResult>(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA_RESULT)
+            result?.let {
+                viewModel.updateAddOn(it)
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -721,6 +735,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         Toaster.build(v, it.message).show()
                     }
                 }
+                is OccGlobalEvent.PopUp -> {
+                    showPopUpDialog(it.popUp)
+                }
             }
         }
     }
@@ -801,11 +818,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                             serviceType = if (shouldUpdateTokoNowData) addressModel.tokoNow.serviceType else localCache.service_type)
                 } else if (shouldUpdateTokoNowData) {
                     ChooseAddressUtils.updateTokoNowData(
-                        context = it,
-                        shopId = addressModel.tokoNow.shopId,
-                        warehouseId = addressModel.tokoNow.warehouseId,
-                        warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(addressModel.tokoNow.warehouses),
-                        serviceType = addressModel.tokoNow.serviceType
+                            context = it,
+                            shopId = addressModel.tokoNow.shopId,
+                            warehouseId = addressModel.tokoNow.warehouseId,
+                            warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(addressModel.tokoNow.warehouses),
+                            serviceType = addressModel.tokoNow.serviceType
                     )
                 }
             }
@@ -1209,6 +1226,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun showPopUpDialog(popUpData: PopUpData) {
+        activity?.let {
+            DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(popUpData.title)
+                setDescription(popUpData.description)
+                setPrimaryCTAText(popUpData.button.text)
+                setPrimaryCTAClickListener {
+                    dismiss()
+                }
+                show()
+            }
+        }
+    }
+
     private fun getOrderShopCardListener(): OrderShopCard.OrderShopCardListener = object : OrderShopCard.OrderShopCardListener {
         override fun onClickLihatProductError(index: Int) {
             binding.rvOrderSummaryPage.layoutManager?.let {
@@ -1249,6 +1280,18 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         override fun getLastPurchaseProtectionCheckState(productId: Long): Int {
             return lastPurchaseProtectionCheckStates[productId]
                     ?: PurchaseProtectionPlanData.STATE_EMPTY
+        }
+
+        override fun onClickAddOnButton(addOnButtonType: Int, addOn: AddOnsDataModel, product: OrderProduct, shop: OrderShop) {
+            // No need to open add on bottom sheet if action = 0
+            if (addOn.addOnsButtonModel.action != 0) {
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
+                intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA,
+                        AddOnMapper.mapAddOnBottomSheetParam(addOnButtonType, addOn, product, shop, viewModel.orderCart, viewModel.addressState.value.address, userSession.get().name)
+                )
+                intent.putExtra(AddOnConstant.EXTRA_ADD_ON_SOURCE, AddOnConstant.ADD_ON_SOURCE_OCC)
+                startActivityForResult(intent, REQUEST_CODE_ADD_ON)
+            }
         }
     }
 
@@ -1536,6 +1579,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         const val REQUEST_CODE_LINK_ACCOUNT = 22
         const val REQUEST_CODE_WALLET_ACTIVATION = 23
+
+        const val REQUEST_CODE_ADD_ON = 24
 
         const val QUERY_PRODUCT_ID = "product_id"
         const val QUERY_SOURCE = "source"

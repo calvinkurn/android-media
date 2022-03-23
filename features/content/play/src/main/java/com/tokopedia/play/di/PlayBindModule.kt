@@ -1,5 +1,7 @@
 package com.tokopedia.play.di
 
+import com.tokopedia.play.analytic.campaign.PlayCampaignAnalytic
+import com.tokopedia.play.analytic.campaign.PlayCampaignAnalyticImpl
 import com.tokopedia.play.analytic.interactive.PlayInteractiveAnalytic
 import com.tokopedia.play.analytic.interactive.PlayInteractiveAnalyticImpl
 import com.tokopedia.play.analytic.like.PlayLikeAnalytic
@@ -95,6 +97,10 @@ abstract class PlayBindModule {
     @Binds
     @PlayScope
     abstract fun bindShareExperienceAnalytic(analytic: PlayShareExperienceAnalyticImpl): PlayShareExperienceAnalytic
+
+    @Binds
+    @PlayScope
+    abstract fun bindCampaignAnalytic(analytic: PlayCampaignAnalyticImpl): PlayCampaignAnalytic
 
     /**
      * Utils

@@ -159,6 +159,11 @@ object CartUiModelMapper {
                         enable = availableGroup.shipmentInformation.enableBoAffordability,
                         errorText = cartData.messages.errorBoAffordability
                 )
+                addOnText = availableGroup.giftingAddOn.tickerText
+                addOnImgUrl = availableGroup.giftingAddOn.iconUrl
+                if (availableGroup.giftingAddOn.addOnIds.isNotEmpty()) {
+                    addOnId = availableGroup.giftingAddOn.addOnIds[0]
+                }
             }
             cartShopHolderDataList.add(shopUiModel)
         }
@@ -368,6 +373,7 @@ object CartUiModelMapper {
             productImage = product.productImage.imageSrc100Square
             productId = product.productId
             productInformation = product.productInformation
+            productInformationWithIcon = product.productInformationWithIcon
             productAlertMessage = product.productAlertMessage
             productPrice = product.productPrice
             productOriginalPrice = product.productOriginalPrice
