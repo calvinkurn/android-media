@@ -29,6 +29,9 @@ class TokoFoodPurchaseTotalAmountViewHolder(private val viewBinding: ItemPurchas
                 totalAmountPurchase.setLabelTitle("Total Tagihan")
                 val totalAmountString = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.totalAmount, false).removeDecimalSuffix()
                 totalAmountPurchase.setAmount(totalAmountString)
+                totalAmountPurchase.amountCtaView.setOnClickListener {
+                    listener.onButtonCheckoutClicked()
+                }
             }
         }
     }

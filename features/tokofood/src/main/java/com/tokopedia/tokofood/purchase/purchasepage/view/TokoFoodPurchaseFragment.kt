@@ -14,12 +14,14 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
 import com.tokopedia.tokofood.purchase.purchasepage.view.adapter.TokoFoodPurchaseAdapter
 import com.tokopedia.tokofood.purchase.purchasepage.view.adapter.TokoFoodPurchaseAdapterTypeFactory
 import com.tokopedia.tokofood.purchase.purchasepage.view.di.DaggerTokoFoodPurchaseComponent
+import com.tokopedia.tokofood.purchase.purchasepage.view.subview.TokoFoodPurchaseGlobalErrorBottomSheet
 import com.tokopedia.tokofood.purchase.purchasepage.view.subview.TokoFoodPurchaseNoteBottomSheet
 import com.tokopedia.tokofood.purchase.purchasepage.view.toolbar.TokoFoodPurchaseToolbar
 import com.tokopedia.tokofood.purchase.purchasepage.view.toolbar.TokoFoodPurchaseToolbarListener
@@ -290,4 +292,28 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         viewModel.scrollToUnavailableItem()
     }
 
+    override fun onButtonCheckoutClicked() {
+        // Todo : hit checkout API, validate response, show global error / toaster, reload
+        val bottomSheet = TokoFoodPurchaseGlobalErrorBottomSheet(
+                outOfService = null,
+                listener = object : TokoFoodPurchaseGlobalErrorBottomSheet.Listener {
+                    override fun onGoToHome() {
+
+                    }
+
+                    override fun onRetry() {
+
+                    }
+
+                    override fun onCheckOtherMerchant() {
+
+                    }
+
+                    override fun onStayOnCurrentPage() {
+
+                    }
+                }
+        )
+        bottomSheet.show(parentFragmentManager, "")
+    }
 }

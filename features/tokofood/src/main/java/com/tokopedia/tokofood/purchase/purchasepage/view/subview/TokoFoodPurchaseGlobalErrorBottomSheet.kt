@@ -12,13 +12,15 @@ import com.tokopedia.tokofood.databinding.LayoutBottomSheetPurchaseGlobalErrorBi
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.setImage
 
-class TokoFoodPurchaseGlobalErrorBottomSheet(private val outOfService: OutOfService, val listener: Listener) : BottomSheetUnify() {
+class TokoFoodPurchaseGlobalErrorBottomSheet(private val outOfService: OutOfService?, val listener: Listener) : BottomSheetUnify() {
 
     var viewBinding: LayoutBottomSheetPurchaseGlobalErrorBinding? = null
 
     interface Listener {
         fun onGoToHome()
-        fun onRefreshErrorPage()
+        fun onRetry()
+        fun onCheckOtherMerchant()
+        fun onStayOnCurrentPage()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -64,12 +66,12 @@ class TokoFoodPurchaseGlobalErrorBottomSheet(private val outOfService: OutOfServ
                             layoutGlobalError.errorAction.text = buttonData.message
                             layoutGlobalError.setActionClickListener {
                                 when (buttonData.id) {
-                                    Button.ID_START_SHOPPING, Button.ID_HOMEPAGE -> {
+                                    Button.ID_HOMEPAGE -> {
                                         listener.onGoToHome()
                                         dismiss()
                                     }
                                     Button.ID_RETRY -> {
-                                        listener.onRefreshErrorPage()
+                                        listener.onRetry()
                                         dismiss()
                                     }
                                 }
@@ -90,7 +92,7 @@ class TokoFoodPurchaseGlobalErrorBottomSheet(private val outOfService: OutOfServ
             } else {
                 layoutGlobalError.setType(defaultType)
                 layoutGlobalError.setActionClickListener {
-                    listener.onRefreshErrorPage()
+                    listener.onRetry()
                     dismiss()
                 }
             }
