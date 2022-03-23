@@ -25,7 +25,7 @@ import com.tokopedia.media.picker.di.module.PickerModule
 import com.tokopedia.media.picker.ui.activity.main.PickerActivity
 import com.tokopedia.media.picker.ui.activity.main.PickerActivityListener
 import com.tokopedia.media.picker.ui.fragment.camera.component.CameraControllerComponent
-import com.tokopedia.media.picker.ui.fragment.camera.component.CameraPreviewComponent
+import com.tokopedia.media.picker.ui.fragment.camera.component.CameraViewComponent
 import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnCameraCapturePublished
 import com.tokopedia.media.picker.ui.uimodel.safeRemove
@@ -43,7 +43,7 @@ import javax.inject.Inject
 
 open class CameraFragment : BaseDaggerFragment()
     , CameraControllerComponent.Listener
-    , CameraPreviewComponent.Listener {
+    , CameraViewComponent.Listener {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
     @Inject lateinit var param: ParamCacheManager
@@ -51,12 +51,21 @@ open class CameraFragment : BaseDaggerFragment()
     private val binding: FragmentCameraBinding? by viewBinding()
     private var listener: PickerActivityListener? = null
 
-    private val preview by uiComponent {
-        CameraPreviewComponent(param.get(), this, it)
+    private val cameraView by uiComponent {
+        CameraViewComponent(
+            param = param.get(),
+            listener = this,
+            parent = it
+        )
     }
 
     private val controller by uiComponent {
-        CameraControllerComponent(param.get(), listener, this, it)
+        CameraControllerComponent(
+            param = param.get(),
+            activityListener = listener,
+            controllerListener = this,
+            parent = it
+        )
     }
 
     private val medias = mutableListOf<MediaUiModel>()
@@ -98,18 +107,18 @@ open class CameraFragment : BaseDaggerFragment()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObservable()
-        preview.setupView(viewLifecycleOwner)
+        cameraView.setupView(viewLifecycleOwner)
         controller.setupView()
     }
 
     override fun onResume() {
         super.onResume()
-        preview.open()
+        cameraView.open()
     }
 
     override fun onPause() {
         super.onPause()
-        preview.close()
+        cameraView.close()
     }
 
     override fun onCameraModeChanged(mode: Int) {
@@ -134,42 +143,42 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     override fun isFrontCamera(): Boolean {
-        return preview.isFacingCameraIsFront()
+        return cameraView.isFacingCameraIsFront()
     }
 
     override fun onFlashClicked() {
-        preview.setCameraFlashIndex()
+        cameraView.setCameraFlashIndex()
         setCameraFlashState()
     }
 
     override fun onFlipClicked() {
-        if (preview.isTakingPicture() || preview.isTakingVideo()) return
-        preview.toggleFacing()
+        if (cameraView.isTakingPicture() || cameraView.isTakingVideo()) return
+        cameraView.toggleFacing()
     }
 
     override fun onTakeMediaClicked() {
-        if (controller.isVideoMode() && preview.isTakingVideo()) {
-            preview.stopVideo()
+        if (controller.isVideoMode() && cameraView.isTakingVideo()) {
+            cameraView.stopVideo()
             return
         }
 
         showShutterEffect {
             if (isTakingPictureMode) {
-                preview.onStartTakePicture()
+                cameraView.onStartTakePicture()
             } else {
-                preview.enableFlashTorch()
-                preview.onStartTakeVideo()
+                cameraView.enableFlashTorch()
+                cameraView.onStartTakeVideo()
                 onVideoDurationChanged()
             }
         }
     }
 
     override fun onCameraOpened(options: CameraOptions) {
-        controller.hasFrontCamera(preview.hasFrontCamera())
-        preview.initCameraFlash()
+        controller.hasFrontCamera(cameraView.hasFrontCamera())
+        cameraView.initCameraFlash()
 
         // isInitFlashState to make sure we init the flash only once
-        if (!isInitFlashState && preview.hasFlashFeatureOnCamera()) {
+        if (!isInitFlashState && cameraView.hasFlashFeatureOnCamera()) {
             setCameraFlashState()
             isInitFlashState = true
         }
@@ -185,12 +194,13 @@ open class CameraFragment : BaseDaggerFragment()
 
     override fun onVideoTaken(result: VideoResult) {
         val fileToModel = result.file.cameraToUiModel()
-        minVideoDurationValidation(fileToModel)
+        if (minVideoDurationValidation(fileToModel)) return
+
         onShowMediaThumbnail(fileToModel)
     }
 
     override fun onPictureTaken(result: PictureResult) {
-        FileCamera.createPhoto(preview.pictureSize(), result.data) {
+        FileCamera.createPhoto(cameraView.pictureSize(), result.data) {
             if (it == null) return@createPhoto
             val fileToModel = it.cameraToUiModel()
 
@@ -247,7 +257,7 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     private fun setCameraFlashState() {
-        val activeFlash = preview.cameraFlash()
+        val activeFlash = cameraView.cameraFlash()
 
         controller.isFlashSupported(activeFlash != null)
 
