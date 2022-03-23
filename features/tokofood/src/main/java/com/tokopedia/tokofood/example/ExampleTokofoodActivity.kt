@@ -6,7 +6,7 @@ import androidx.activity.viewModels
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 
-class ExampleTokofoodActivity : BaseMultiFragActivity(), HasViewModel {
+class ExampleTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragmentsViewModel> {
 
     val viewModel: MultipleFragmentsViewModel by viewModels()
 
