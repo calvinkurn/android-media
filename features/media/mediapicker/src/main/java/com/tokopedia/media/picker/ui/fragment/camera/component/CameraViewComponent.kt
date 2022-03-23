@@ -129,20 +129,18 @@ class CameraViewComponent(
 
     fun pictureSize() = cameraView.pictureSize
 
-    fun isVideoMode() = cameraView.mode == Mode.VIDEO
-
     fun isTakingPicture() = cameraView.isTakingPicture
 
     fun isTakingVideo() = cameraView.isTakingVideo
 
     fun hasFlashFeatureOnCamera() = flashList.isNotEmpty()
 
-    fun isFlashOn() = activeFlash == Flash.ON || activeFlash == Flash.AUTO
-
     fun hasFrontCamera() = cameraView
         .cameraOptions
         ?.supportedFacing
         ?.isNotEmpty() == true
+
+    private fun isFlashOn() = activeFlash == Flash.ON
 
     private fun fullScreenCameraView() {
         spaceToolBar.hide()

@@ -3,6 +3,7 @@ package com.tokopedia.media.preview.ui.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.show
@@ -47,6 +48,10 @@ class PickerPreviewActivity : BaseActivity()
         )
     }
 
+    private val viewModel by lazy {
+        ViewModelProvider(this)[PreviewViewModel::class.java]
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preview)
@@ -78,14 +83,24 @@ class PickerPreviewActivity : BaseActivity()
     }
 
     override fun onContinueClicked() {
-        uiModel.map { it.path }.let {
-            val result = ArrayList(it)
+        val result = uiModel
+            .map { it.path }
+            .map {
+                viewModel.dispatchFileToPublic(
+                    context = applicationContext,
+                    filePath = it
+                )
 
-            if (param.get().withEditor()) {
-                onEditorIntent(result)
-            } else {
-                onFinishIntent(result)
+                it
             }
+            .toList()
+
+        val resultArrayList = ArrayList(result)
+
+        if (param.get().withEditor()) {
+            onEditorIntent(resultArrayList)
+        } else {
+            onFinishIntent(resultArrayList)
         }
     }
 
