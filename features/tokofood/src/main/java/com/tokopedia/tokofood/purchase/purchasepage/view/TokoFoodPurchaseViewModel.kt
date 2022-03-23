@@ -59,6 +59,22 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         return null
     }
 
+    private fun getTickerErrorShopLevelUiModel(): Pair<Int, TokoFoodPurchaseTickerErrorShopLevelUiModel>? {
+        val dataList = getVisitablesValue()
+        loop@ for ((index, data) in dataList.withIndex()) {
+            when (data) {
+                is TokoFoodPurchaseTickerErrorShopLevelUiModel -> {
+                    return Pair(index, data)
+                }
+                is TokoFoodPurchaseProductUiModel -> {
+                    break@loop
+                }
+            }
+        }
+        return null
+    }
+
+
     private fun getUnavailableReasonUiModel(): Pair<Int, TokoFoodPurchaseProductUnavailableReasonUiModel>? {
         val dataList = getVisitablesValue()
         loop@ for ((index, data) in dataList.withIndex()) {
@@ -153,7 +169,11 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
             toBeDeleteItems.add(toBeDeletedProduct.second)
 
             if (isLastAvailableProduct()) {
-                val from = toBeDeletedProduct.first - 2
+                var from = toBeDeletedProduct.first - 2
+                val tickerShopErrorData = getTickerErrorShopLevelUiModel()
+                if (tickerShopErrorData != null) {
+                    from = toBeDeletedProduct.first - 3
+                }
                 val to = toBeDeletedProduct.first
                 val availableHeaderAndDivider = dataList.subList(from, to).toMutableList()
                 toBeDeleteItems.addAll(availableHeaderAndDivider)
