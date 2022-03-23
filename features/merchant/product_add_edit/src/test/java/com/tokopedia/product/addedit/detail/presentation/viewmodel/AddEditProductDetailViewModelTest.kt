@@ -1486,7 +1486,7 @@ class AddEditProductDetailViewModelTest {
         viewModel.updateSelectedSpecification(selectedSpec)
         val resultFilledState = viewModel.validateSelectedSpecificationList()
 
-        assertFalse(resultEmptyState)
+        assertTrue(resultEmptyState)
         assertTrue(resultFilledState)
     }
 

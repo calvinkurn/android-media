@@ -39,6 +39,7 @@ import javax.inject.Inject
  */
 class PlayCoverSetupViewModel @AssistedInject constructor(
     @Assisted productList: List<ProductUiModel>,
+    @Assisted private val channelId: String,
     private val hydraConfigStore: HydraConfigStore,
     private val dispatcher: CoroutineDispatchers,
     private val setupDataStore: PlayBroadcastSetupDataStore,
@@ -50,11 +51,11 @@ class PlayCoverSetupViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(productList: List<ProductUiModel>): PlayCoverSetupViewModel
+        fun create(
+            productList: List<ProductUiModel>,
+            channelId: String,
+        ): PlayCoverSetupViewModel
     }
-
-    private val channelId: String
-        get() = hydraConfigStore.getChannelId()
 
     val cropState: CoverSetupState
         get() {

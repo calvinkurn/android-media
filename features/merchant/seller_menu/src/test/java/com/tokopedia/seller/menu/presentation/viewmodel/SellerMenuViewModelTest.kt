@@ -1,13 +1,11 @@
 package com.tokopedia.seller.menu.presentation.viewmodel
 
-import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.Tab
 import com.tokopedia.seller.menu.common.view.uimodel.ShopOrderUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingFail
-import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingResponse
 import com.tokopedia.seller.menu.domain.query.ShopScoreLevelResponse
 import com.tokopedia.seller.menu.presentation.uimodel.NotificationUiModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
@@ -43,7 +41,7 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
     @Test
     fun `when getShopAccountTickerPeriod success should set live data success`() {
         coroutineTestRule.runBlockingTest {
-            val shopInfoPeriodResponse = ShopInfoPeriodUiModel(periodType = TRANSITION_PERIOD)
+            val shopInfoPeriodResponse = ShopInfoPeriodUiModel()
 
             onGetShopInfoPeriodUseCase_thenReturn(shopInfoPeriodResponse)
 

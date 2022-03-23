@@ -8,6 +8,7 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -37,7 +38,9 @@ import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FAVNUM_PERMISSION_CHECKER_IS_DENIED
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FIXED_PADDING_ADJUSTMENT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INPUT_ACTION_TRACKING_DELAY
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.LOADER_DIALOG_TEXT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MAXIMUM_VALID_NUMBER_LENGTH
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MINIMUM_OPERATOR_PREFIX
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MINIMUM_VALID_NUMBER_LENGTH
@@ -59,13 +62,14 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWa
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicScrollListener
 import com.tokopedia.digital_product_detail.presentation.utils.toggle
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
-import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
@@ -95,7 +99,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 
 /**
  * @author by firmanda on 04/01/21
@@ -137,6 +140,7 @@ class DigitalPDPDataPlanFragment :
     private var categoryId = TelcoCategoryType.CATEGORY_PAKET_DATA
     private var inputNumberActionType = InputNumberActionType.MANUAL
     private var actionTypeTrackingJob: Job? = null
+    private var loader: LoaderDialog? = null
 
     private lateinit var localCacheHandler: LocalCacheHandler
 
@@ -167,6 +171,7 @@ class DigitalPDPDataPlanFragment :
         getDataFromBundle()
         setupKeyboardWatcher()
         setupDynamicScrollListener()
+        setupDynamicScrollViewPadding()
         initClientNumberWidget()
         observeData()
         getCatalogMenuDetail()
@@ -395,7 +400,7 @@ class DigitalPDPDataPlanFragment :
         viewModel.addToCartResult.observe(viewLifecycleOwner, { atcData ->
             when (atcData) {
                 is RechargeNetworkResult.Success -> {
-                    onLoadingBuyWidget(false)
+                    hideLoadingDialog()
                     digitalPDPAnalytics.addToCart(
                         categoryId.toString(),
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -403,19 +408,19 @@ class DigitalPDPDataPlanFragment :
                         userSession.userId,
                         atcData.data.cartId,
                         viewModel.digitalCheckoutPassData.productId.toString(),
-                        operator.attributes.name,
+                        viewModel.selectedFullProduct.denomData.title,
                         atcData.data.priceProduct
                     )
                     navigateToCart(atcData.data.categoryId)
                 }
 
                 is RechargeNetworkResult.Fail -> {
-                    onLoadingBuyWidget(false)
+                    hideLoadingDialog()
                     showErrorToaster(atcData.error)
                 }
 
                 is RechargeNetworkResult.Loading -> {
-                    onLoadingBuyWidget(true)
+                    showLoadingDialog()
                 }
             }
         })
@@ -539,10 +544,8 @@ class DigitalPDPDataPlanFragment :
             if (favoriteNumber.isNotEmpty()) {
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
-
-                val extendedPadding = getDimens(unifyDimens.layout_lvl8)
-                binding?.rechargePdpPaketDataSvContainer?.setPadding(0, extendedPadding, 0, 0)
             }
+            setupDynamicScrollViewPadding(FIXED_PADDING_ADJUSTMENT)
         }
     }
 
@@ -555,9 +558,8 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun onFailedGetFavoriteNumber(throwable: Throwable) {
-        binding?.run {
-            rechargePdpPaketDataClientNumberWidget.setFilterChipShimmer(false, true)
-        }
+        binding?.rechargePdpPaketDataClientNumberWidget?.setFilterChipShimmer(false, true)
+        setupDynamicScrollViewPadding()
     }
 
     private fun onSuccessGetPrefixOperator() {
@@ -817,7 +819,8 @@ class DigitalPDPDataPlanFragment :
 
     private fun onShowBuyWidget(denomFull: DenomData) {
         binding?.let {
-            it.rechargePdpPaketDataBuyWidget.showBuyWidget(denomFull, this)
+            it.rechargePdpPaketDataBuyWidget.show()
+            it.rechargePdpPaketDataBuyWidget.renderBuyWidget(denomFull, this)
         }
     }
 
@@ -827,10 +830,15 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    private fun onLoadingBuyWidget(isLoading: Boolean) {
-        binding?.let {
-            it.rechargePdpPaketDataBuyWidget.isLoadingButton(isLoading)
+    private fun showLoadingDialog() {
+        loader = LoaderDialog(requireContext()).apply {
+            setLoadingText(LOADER_DIALOG_TEXT)
         }
+        loader?.show()
+    }
+
+    private fun hideLoadingDialog() {
+        loader?.dialog?.dismiss()
     }
 
     private fun initEmptyState(banners: List<TopupBillsBanner>) {
@@ -876,8 +884,9 @@ class DigitalPDPDataPlanFragment :
     private fun showGlobalErrorState() {
         binding?.globalErrorPaketData?.run {
             show()
-            errorTitle.text = getString(R.string.empty_state_paket_data_title)
-            errorDescription.text = getString(R.string.empty_state_paket_data_desc)
+            val categoryName = DigitalPDPCategoryUtil.getCategoryName(categoryId)
+            errorTitle.text = getString(R.string.empty_state_paket_data_title, categoryName)
+            errorDescription.text = getString(R.string.empty_state_paket_data_desc, categoryName)
             errorAction.hide()
         }
     }
@@ -1060,6 +1069,20 @@ class DigitalPDPDataPlanFragment :
     private fun navigateToLoginPage(requestCode: Int = REQUEST_CODE_LOGIN) {
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
         startActivityForResult(intent, requestCode)
+    }
+
+    private fun setupDynamicScrollViewPadding(extraPadding: Int = 0) {
+        binding?.rechargePdpPaketDataClientNumberWidget
+            ?.viewTreeObserver?.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    binding?.rechargePdpPaketDataClientNumberWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    binding?.run {
+                        val dynamicPadding = rechargePdpPaketDataClientNumberWidget.height.pxToDp(
+                            resources.displayMetrics) + extraPadding
+                        rechargePdpPaketDataSvContainer.setPadding(0, dynamicPadding, 0, 0)
+                    }
+                }
+            })
     }
 
     //region ClientNumberInputFieldListener
@@ -1302,25 +1325,28 @@ class DigitalPDPDataPlanFragment :
     }
 
     override fun onDenomFullImpression(
-        listDenomFull: List<DenomData>,
+        denomFull: DenomData,
         layoutType: DenomWidgetEnum,
+        position: Int
     ) {
-        if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE) {
+        if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE){
             digitalPDPAnalytics.impressionProductMCCM(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
-                listDenomFull,
+                denomFull,
                 layoutType,
+                position
             )
-        } else if (layoutType == DenomWidgetEnum.FULL_TYPE) {
+        } else if (layoutType == DenomWidgetEnum.FULL_TYPE){
             digitalPDPAnalytics.impressionProductCluster(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
-                listDenomFull,
+                denomFull,
+                position
             )
         }
     }

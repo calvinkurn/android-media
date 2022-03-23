@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval"
-    android:tileMode="disabled"
-    android:gravity="top" >
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval" android:tileMode="disabled" android:gravity="top">
     <size android:width="10dp" android:height="10dp"/>
-    <solid
-        android:width="8dp"
-        android:color="@color/Unify_G500"/>
-    <stroke
-        android:width="2dp"
-        android:color="@color/Unify_NN0" />
+    <solid android:width="8dp" android:color="@color/Unify_G500"/>
+    <stroke android:width="2dp" android:color="@color/Unify_NN0"/>
 </shape>

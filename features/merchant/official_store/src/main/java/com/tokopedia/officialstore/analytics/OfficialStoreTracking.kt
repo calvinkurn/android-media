@@ -72,7 +72,6 @@ class OfficialStoreTracking(context: Context) {
     private val CAMPAIGN_CODE = "campaignCode"
 
     private val OS_MICROSITE = "os microsite - "
-    private val OS_MICROSITE_SINGLE = "os microsite"
 
     private val ALL_BRANDS = "all brands"
     private val VIEW_ALL = "view all"
@@ -1157,6 +1156,7 @@ class OfficialStoreTracking(context: Context) {
 
     companion object {
         private const val RADIX_10 = 10
+        const val OS_MICROSITE_SINGLE = "os microsite"
     }
 
 }
