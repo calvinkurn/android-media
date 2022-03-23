@@ -9,7 +9,7 @@ ext {
     kotlinVersion = "1.5.30"
 
     navigationVersion = "2.3.0"
-    lifeCycleVersion = "2.2.0"
+    lifeCycleVersion = "2.4.0"
     lifeCycleExtensionsVersion = "2.2.0"
     archCoreVersion = "2.1.0"
     workManagerVersion = "2.6.0"
@@ -257,6 +257,7 @@ ext {
             coroutineCore         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion",
             coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion",
             coroutineTest         : "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineVersion",
+            fragmentKtx           : "androidx.fragment:fragment-ktx:$androidxFragment",
             guava24               : 'com.google.guava:guava:24.1-jre',
             incap                 : "net.ltgt.gradle.incap:incap:0.2",
             incapProcessor        : "net.ltgt.gradle.incap:incap-processor:0.2",

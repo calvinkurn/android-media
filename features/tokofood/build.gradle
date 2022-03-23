@@ -78,9 +78,12 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.swipeRefresh
 
     implementation rootProject.ext.miscDependencies.chips
+    implementation rootProject.ext.miscDependencies.fragmentKtx
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
 
     implementation rootProject.ext.networkDependencies.glide
 
