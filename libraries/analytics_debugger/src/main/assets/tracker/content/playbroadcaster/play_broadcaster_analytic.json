@@ -104,6 +104,16 @@
     },
     {
       "event": "clickSellerBroadcast",
+      "eventAction": "click - search bar",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - .*",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickSellerBroadcast",
       "eventAction": "click - save product card",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
