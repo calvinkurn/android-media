@@ -42,7 +42,7 @@
                 android:id="@+id/banner_image"
                 android:layout_width="match_parent"
                 android:layout_height="220dp"
-                android:scaleType="fitCenter"
+                android:scaleType="centerCrop"
                 app:unify_image_corner_radius="0"
                 app:unify_image_type="rect"
                 app:layout_constraintTop_toTopOf="parent"/>
