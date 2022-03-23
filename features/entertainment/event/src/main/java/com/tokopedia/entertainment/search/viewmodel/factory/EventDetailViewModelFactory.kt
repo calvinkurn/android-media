@@ -13,7 +13,7 @@ class EventDetailViewModelFactory @Inject constructor(
         private val gqlRepository: GraphqlRepository
 ) : ViewModelProvider.NewInstanceFactory() {
 
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return EventDetailViewModel(dispatcher, gqlRepository) as T
     }
 }

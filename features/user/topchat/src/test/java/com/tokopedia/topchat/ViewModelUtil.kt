@@ -14,7 +14,7 @@ fun ViewModel.callOnCleared() {
             viewModelStore,
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel?> create(
+                override fun <T : ViewModel> create(
                         modelClass: Class<T>
                 ): T = this@callOnCleared as T
             }
