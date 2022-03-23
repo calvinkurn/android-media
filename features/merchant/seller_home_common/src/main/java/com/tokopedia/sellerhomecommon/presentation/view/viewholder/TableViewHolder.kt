@@ -3,14 +3,16 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcWidgetTableBinding
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
@@ -51,7 +53,7 @@ class TableViewHolder(
 
         val data: TableDataUiModel? = element.data
         when {
-            data == null -> showLoadingState()
+            data == null || element.showLoadingState -> showLoadingState()
             data.error.isNotBlank() -> {
                 showErrorState()
                 listener.setOnErrorWidget(adapterPosition, element, data.error)
@@ -88,9 +90,11 @@ class TableViewHolder(
                         listener.sendTableHyperlinkClickEvent(element.dataKey, url, isEmpty)
                     }
                 }
+                setupLastUpdatedInfo(element)
             } else {
                 if (element.isShowEmpty) {
                     setOnTableEmpty(element)
+                    setupLastUpdatedInfo(element)
                 } else {
                     if (listener.getIsShouldRemoveWidget()) {
                         itemView.toggleWidgetHeight(false)
@@ -101,9 +105,27 @@ class TableViewHolder(
                     }
                 }
             }
-        }
+            setupCta(element)
 
-        setupCta(element)
+            horLineShcTableBtm.isVisible = btnTableCta.isVisible || luvShcTable.isVisible
+        }
+    }
+
+    private fun setupLastUpdatedInfo(element: TableWidgetUiModel) {
+        binding.luvShcTable.run {
+            element.data?.lastUpdated?.let { lastUpdated ->
+                isVisible = lastUpdated.isEnabled
+                setLastUpdated(lastUpdated.lastUpdatedInMillis)
+                setRefreshButtonVisibility(lastUpdated.needToUpdated)
+                setRefreshButtonClickListener {
+                    refreshWidget(element)
+                }
+            }
+        }
+    }
+
+    private fun refreshWidget(element: TableWidgetUiModel) {
+        listener.onReloadWidget(element)
     }
 
     private fun setOnTableEmpty(element: TableWidgetUiModel) = with(binding) {
@@ -113,9 +135,8 @@ class TableViewHolder(
         ) {
             imgShcTableEmpty.run {
                 visible()
-                ImageHandler.loadImageWithoutPlaceholderAndError(
-                    this,
-                    element.emptyState.imageUrl.takeIf { it.isNotBlank() })
+                val imageUrl = element.emptyState.imageUrl.takeIf { it.isNotBlank() }
+                loadImage(imageUrl)
             }
             tvShcTableEmptyTitle.run {
                 text = element.emptyState.title
@@ -150,6 +171,8 @@ class TableViewHolder(
         tvShcTableEmptyTitle.gone()
         tvShcTableEmptyDescription.gone()
         btnShcTableEmpty.gone()
+        luvShcTable.gone()
+        btnTableCta.gone()
     }
 
     private fun showErrorState() = with(binding) {
@@ -162,9 +185,10 @@ class TableViewHolder(
         tvShcTableEmptyTitle.gone()
         tvShcTableEmptyDescription.gone()
         btnShcTableEmpty.gone()
+        luvShcTable.gone()
+        btnTableCta.gone()
 
-        ImageHandler.loadImageWithId(
-            errorStateBinding.imgWidgetOnError,
+        errorStateBinding.imgWidgetOnError.loadImage(
             com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
         )
     }
@@ -175,14 +199,25 @@ class TableViewHolder(
         val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
         with(binding) {
             btnTableCta.visibility = ctaVisibility
-            icTableCta.visibility = ctaVisibility
 
             if (isCtaVisible) {
+                val iconColor = root.context.getResColor(
+                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                )
+                val iconWidth = root.context.resources.getDimension(
+                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                )
+                val iconHeight = root.context.resources.getDimension(
+                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                )
+                btnTableCta.setUnifyDrawableEnd(
+                    IconUnify.CHEVRON_RIGHT,
+                    iconColor,
+                    iconWidth,
+                    iconHeight
+                )
                 btnTableCta.text = element.ctaText
                 btnTableCta.setOnClickListener {
-                    onSeeMoreClicked(element)
-                }
-                icTableCta.setOnClickListener {
                     onSeeMoreClicked(element)
                 }
             }

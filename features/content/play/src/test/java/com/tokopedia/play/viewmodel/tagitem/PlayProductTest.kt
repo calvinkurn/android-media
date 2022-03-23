@@ -9,6 +9,7 @@ import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.util.assertEqualTo
 import com.tokopedia.play.util.assertNotEqualTo
 import com.tokopedia.play.util.assertTrue
+import com.tokopedia.play.view.type.PlayUpcomingBellStatus
 import com.tokopedia.play.view.type.ProductSectionType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
@@ -73,7 +74,8 @@ class PlayProductTest {
                     timerInfo = "Dimulai dalam",
                     background = ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(),
                         imageUrl = "\"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_1fada4fe-8444-4911-b3e0-b70b54b119b6_1500_946.jpg\""),
-                    title = "L'oreal New Launch"
+                    title = "L'oreal New Launch",
+                    reminder = PlayUpcomingBellStatus.On(3L)
                 )
             )
         }
@@ -118,7 +120,8 @@ class PlayProductTest {
                     timerInfo = "Dimulai dalam",
                     background = ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(),
                         imageUrl = "\"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_1fada4fe-8444-4911-b3e0-b70b54b119b6_1500_946.jpg\""),
-                    title = "L'oreal New Launch"
+                    title = "L'oreal New Launch",
+                    reminder = PlayUpcomingBellStatus.On(3L)
                 )
             )
         }
@@ -169,7 +172,8 @@ class PlayProductTest {
                     timerInfo = "Dimulai dalam",
                     background = ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(),
                         imageUrl = "\"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_1fada4fe-8444-4911-b3e0-b70b54b119b6_1500_946.jpg\""),
-                    title = "L'oreal New Launch"
+                    title = "L'oreal New Launch",
+                    reminder = PlayUpcomingBellStatus.On(3L)
                 )
             )
         }

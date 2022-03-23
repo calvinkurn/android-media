@@ -488,6 +488,11 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                         productDetailData.id.toString(),
                         productDetailData.name,
                         productDetailData.imageUrl)
+                RecomServerLogger.logServer(
+                    RecomServerLogger.TOPADS_RECOM_PAGE_HIT_ADS_TRACKER_IMPRESSION,
+                    productId = productId,
+                    queryParam = queryParam
+                )
             }
         }
     }
