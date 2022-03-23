@@ -37,7 +37,8 @@ class PlayCoverPreview : ConstraintLayout {
         true
     )
 
-    private var isCoverAvailable = false
+    var isCoverAvailable = false
+        private set
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(Dispatchers.Main + job)
@@ -82,6 +83,4 @@ class PlayCoverPreview : ConstraintLayout {
     fun setShopName(shopName: String) {
         binding.tvCoverShopName.text = shopName
     }
-
-    fun isCoverAvailable() = isCoverAvailable
 }

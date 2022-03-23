@@ -36,7 +36,7 @@ class CoverFormView : ConstraintLayout {
     init {
         binding.icCloseCoverForm.setOnClickListener { mListener?.onCloseCoverForm() }
         binding.clCoverFormPreview.setOnClickListener {
-            mListener?.onClickCoverPreview(binding.clCoverFormPreview.isCoverAvailable())
+            mListener?.onClickCoverPreview(binding.clCoverFormPreview.isCoverAvailable)
         }
     }
 
