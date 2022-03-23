@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.pdpsimulation.paylater.domain.model.BasePayLaterWidgetUiModel
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterArgsDescriptor
+import com.tokopedia.pdpsimulation.paylater.domain.model.SeeMoreOptionsUiModel
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
@@ -112,4 +113,55 @@ object PayLaterHelper {
         }
         return nameList.joinToString(",")
     }
+
+    fun extractLinkingStatus(payLaterList: ArrayList<BasePayLaterWidgetUiModel>):String{
+        val allLinkingStatus :ArrayList<String?> = ArrayList()
+       for(i in 0 until payLaterList.size)
+       {
+           if(payLaterList[i] is Detail)
+               allLinkingStatus.add((payLaterList[i] as Detail).linkingStatus)
+           else if(payLaterList[i] is SeeMoreOptionsUiModel)
+           {
+               for(j in 0 until (payLaterList[i] as SeeMoreOptionsUiModel).remainingItems.size)
+                   allLinkingStatus.add((payLaterList[i] as SeeMoreOptionsUiModel).remainingItems[j].linkingStatus)
+               break;
+           }
+       }
+        return allLinkingStatus.toString()
+    }
+
+
+    fun extractUserStatus(payLaterList: ArrayList<BasePayLaterWidgetUiModel>):String{
+        val allUserStatus :ArrayList<String?> = ArrayList()
+        for(i in 0 until payLaterList.size)
+        {
+            if(payLaterList[i] is Detail)
+                allUserStatus.add((payLaterList[i] as Detail).userState)
+            else if(payLaterList[i] is SeeMoreOptionsUiModel)
+            {
+                for(j in 0 until (payLaterList[i] as SeeMoreOptionsUiModel).remainingItems.size)
+                    allUserStatus.add((payLaterList[i] as SeeMoreOptionsUiModel).remainingItems[j].userState)
+                break;
+            }
+        }
+        return allUserStatus.toString()
+    }
+
+
+   fun  extractPartnerName (payLaterList: ArrayList<BasePayLaterWidgetUiModel>):String{
+       val allPartnerName :ArrayList<String?> = ArrayList()
+       for(i in 0 until payLaterList.size)
+       {
+           if(payLaterList[i] is Detail)
+               allPartnerName.add((payLaterList[i] as Detail).gatewayDetail?.name?:"")
+           else if(payLaterList[i] is SeeMoreOptionsUiModel)
+           {
+               for(j in 0 until (payLaterList[i] as SeeMoreOptionsUiModel).remainingItems.size)
+                   allPartnerName.add((payLaterList[i] as SeeMoreOptionsUiModel).remainingItems[j].gatewayDetail?.name?:"")
+               break;
+           }
+       }
+       return allPartnerName.toString()
+   }
+
 }

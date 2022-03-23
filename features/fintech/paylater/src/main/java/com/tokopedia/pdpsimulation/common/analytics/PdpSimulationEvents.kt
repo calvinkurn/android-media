@@ -91,3 +91,8 @@ class PayLaterCtaClick : PayLaterAnalyticsBase() {
     var limit: String = ""
     var emiAmount: String = ""
 }
+
+class PayLaterTenureClick :PayLaterAnalyticsBase()
+{
+    var productPrice:String = ""
+}
