@@ -197,7 +197,7 @@ class DenomGridViewHolder (
                     } else getDimens(R.dimen.widget_denom_grid_width)
 
                     layoutParams.height = if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE){
-                        getDimens (R.dimen.widget_denom_grid_height)
+                        ViewGroup.LayoutParams.MATCH_PARENT
                     } else ViewGroup.LayoutParams.WRAP_CONTENT
                 }
 

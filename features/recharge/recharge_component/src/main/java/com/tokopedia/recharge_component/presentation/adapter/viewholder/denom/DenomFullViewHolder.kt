@@ -230,7 +230,7 @@ class DenomFullViewHolder(
                     } else getDimens(R.dimen.widget_denom_full_width)
 
                     layoutParams.height = if (denomType == DenomWidgetEnum.MCCM_FULL_TYPE){
-                        getDimens (R.dimen.widget_denom_full_height)
+                        ViewGroup.LayoutParams.MATCH_PARENT
                     } else ViewGroup.LayoutParams.WRAP_CONTENT
                 }
 
