@@ -24,15 +24,11 @@ import kotlinx.coroutines.launch
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class FragmentA : BaseMultiFragment() {
+class FragmentA : BaseTokofoodFragment() {
 
     private lateinit var binding: FragmentLivedataInputAndTextaBinding
 
     private var doubleTapExit = false
-    private var parent: HasViewModel<MultipleFragmentsViewModel>? = null
-
-    val activityViewModel: MultipleFragmentsViewModel?
-        get() = parent?.viewModel()
 
     override fun getFragmentToolbar(): Toolbar {
         return binding.toolbar
@@ -55,8 +51,7 @@ class FragmentA : BaseMultiFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.buttonGoToB.setOnClickListener {
-            val f = FragmentB()
-            (activity as? BaseMultiFragActivity)?.navigateToNewFragment(f)
+            navigateToNewFragment(FragmentB())
             // OR CAN ALSO BE LIKE BELOW
             // TokofoodRouteManager.routePrioritizeInternal(requireContext(), "tokopedia://tokofood/b")
         }
@@ -108,11 +103,6 @@ class FragmentA : BaseMultiFragment() {
         binding.swipeRefresh.setOnRefreshListener {
             activityViewModel?.refresh()
         }
-    }
-
-    override fun onAttachActivity(context: Context?) {
-        super.onAttachActivity(context)
-        parent = (activity as? HasViewModel<MultipleFragmentsViewModel>)
     }
 
     override fun onFragmentBackPressed(): Boolean {
