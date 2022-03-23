@@ -1493,8 +1493,6 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        Thread.sleep(5000)
-        assertSrwPreviewContentIsVisible()
         assertSrwCoachMark(true, context.getString(R.string.coach_product_bundling_title))
     }
 
@@ -1512,7 +1510,6 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsVisible()
         assertSrwCoachMark(false, context.getString(R.string.coach_product_bundling_title))
     }
 
