@@ -17,11 +17,13 @@ import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.CheckoutData
+import com.tokopedia.pdpsimulation.activateCheckout.domain.model.InstallmentBottomSheetDetail
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOptimizedModel
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureDetail
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureSelectedModel
 import com.tokopedia.pdpsimulation.activateCheckout.helper.DataMapper
 import com.tokopedia.pdpsimulation.activateCheckout.helper.OccBundleHelper
+import com.tokopedia.pdpsimulation.activateCheckout.helper.OccBundleHelper.setBundleForInstalmentBottomSheet
 import com.tokopedia.pdpsimulation.activateCheckout.listner.ActivationListner
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.adapter.ActivationTenureAdapter
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet
@@ -583,12 +585,13 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private fun openPriceBreakDownBottomSheet() {
         installmentModel?.let {
-            val bundle = Bundle().apply {
-                putParcelable(
-                    PayLaterInstallmentFeeInfo.INSTALLMENT_DETAIL,
-                    installmentModel
-                )
-            }
+          var bundle =   setBundleForInstalmentBottomSheet( InstallmentBottomSheetDetail(
+                installmentDetail =  it,
+                gatwayToChipMap =  payLaterActivationViewModel.gatewayToChipMap,
+                selectedProductPrice = payLaterActivationViewModel.price.toString(),
+                gatewayIdSelected =  payLaterActivationViewModel.selectedGatewayId.toInt(),
+                selectedTenure = selectedTenurePosition
+            ))
             bottomSheetNavigator.showBottomSheet(PayLaterInstallmentFeeInfo::class.java, bundle)
         }
     }

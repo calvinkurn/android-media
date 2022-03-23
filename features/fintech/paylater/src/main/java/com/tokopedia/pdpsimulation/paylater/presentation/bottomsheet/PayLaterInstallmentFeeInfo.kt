@@ -7,6 +7,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.common.analytics.OccBottomSheetImpression
+import com.tokopedia.pdpsimulation.common.analytics.PayLaterAnalyticsBase
 import com.tokopedia.pdpsimulation.common.analytics.PayLaterBottomSheetImpression
 import com.tokopedia.pdpsimulation.paylater.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.paylater.domain.model.InstallmentDetails
@@ -21,7 +23,7 @@ class PayLaterInstallmentFeeInfo : BottomSheetUnify() {
 
     private var installmentDetails: InstallmentDetails? = null
     private val childLayoutRes = R.layout.paylater_additional_fee_info_bottomsheet
-    private var impression: PayLaterBottomSheetImpression? = null
+    private var impression: PayLaterAnalyticsBase? = null
 
     private fun getAdapterTypeFactory() =
         PayLaterAdapterFactoryImpl(PayLaterOptionInteraction({}, {}, {}, {}, {}))
@@ -64,9 +66,18 @@ class PayLaterInstallmentFeeInfo : BottomSheetUnify() {
         sendEvent(impression)
     }
 
-    private fun sendEvent(impression: PayLaterBottomSheetImpression?) {
-        if (impression != null)
-            activity?.let { (it as PdpSimulationCallback).sendAnalytics(impression) }
+    private fun sendEvent(impression: PayLaterAnalyticsBase?) {
+        if (impression != null) {
+            if (impression is PayLaterBottomSheetImpression)
+                activity?.let {
+                    (it as PdpSimulationCallback).sendAnalytics(impression)
+                }
+            if (impression is OccBottomSheetImpression)
+                activity?.let {
+                    (it as PdpSimulationCallback).sendAnalytics(impression)
+                }
+        }
+
     }
 
     private fun setDefaultParams() {

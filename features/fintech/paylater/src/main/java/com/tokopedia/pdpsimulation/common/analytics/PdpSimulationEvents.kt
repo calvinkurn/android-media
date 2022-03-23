@@ -92,6 +92,12 @@ class PayLaterCtaClick : PayLaterAnalyticsBase() {
     var emiAmount: String = ""
 }
 
+@Parcelize
+class OccBottomSheetImpression : PayLaterAnalyticsBase(), Parcelable
+{
+    var productPrice:String = ""
+}
+
 class PayLaterTenureClick :PayLaterAnalyticsBase()
 {
     var productPrice:String = ""
