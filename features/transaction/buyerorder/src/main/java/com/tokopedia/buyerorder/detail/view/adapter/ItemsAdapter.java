@@ -463,13 +463,13 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         eventAddress.setText(metaDataInfo.getLocationDesc());
                     }
 
-                    if (metaDataInfo.getIsHiburan() == 1) {
+                    if (metaDataInfo.isHiburan() == 1) {
                         if (!TextUtils.isEmpty(metaDataInfo.getEndTime())) {
                             tanggalEventsTitle.setVisibility(View.VISIBLE);
                             tanggalEventsTitle.setText(context.getResources().getString(R.string.text_valid_till));
                             tanggalEvents.setText(metaDataInfo.getEndTime());
                         }
-                    } else if (metaDataInfo.getIsHiburan() == 0) {
+                    } else if (metaDataInfo.isHiburan() == 0) {
                         if (!TextUtils.isEmpty(metaDataInfo.getEndTime()) && !TextUtils.isEmpty(metaDataInfo.getStartTime())) {
                             tanggalEventsTitle.setVisibility(View.VISIBLE);
                             tanggalEventsTitle.setText(context.getResources().getString(R.string.tanggal_events));

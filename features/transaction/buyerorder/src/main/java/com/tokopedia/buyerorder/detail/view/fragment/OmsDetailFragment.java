@@ -770,11 +770,11 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                     if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
                         if (!TextUtils.isEmpty(item.getCategory()) && "Deal".equalsIgnoreCase(item.getCategory())) {
                             if (getView() != null) {
-                                Toaster.build(getView(), String.format("%s %s", getContext().getResources().getString(R.string.deal_voucher_code_copied), metaDataInfo.getEntityaddress().getEmail()), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "Ok", v1 -> { }).show();
+                                Toaster.build(getView(), String.format("%s %s", getString(R.string.deal_voucher_code_copied), metaDataInfo.getEntityAddress().getEmail()), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "Ok", v1 -> { }).show();
                             }
                         } else {
                             if (getView() != null) {
-                                Toaster.build(getView(), String.format("%s %s", getContext().getResources().getString(R.string.event_voucher_code_copied), metaDataInfo.getEntityaddress().getEmail()), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "Ok", v1 -> { }).show();
+                                Toaster.build(getView(), String.format("%s %s", getString(R.string.event_voucher_code_copied), metaDataInfo.getEntityAddress().getEmail()), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "Ok", v1 -> { }).show();
                             }
                         }
                         if (getContext() != null) {

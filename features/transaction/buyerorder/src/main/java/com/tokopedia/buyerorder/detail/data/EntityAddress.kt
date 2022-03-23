@@ -1,37 +1,14 @@
-package com.tokopedia.buyerorder.detail.data;
+package com.tokopedia.buyerorder.detail.data
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
+import com.google.gson.annotations.Expose
 
-public class EntityAddress {
-
+data class EntityAddress(
     @SerializedName("email")
     @Expose
-    private String email;
+    val email: String = "",
 
     @SerializedName("name")
     @Expose
-    private String name;
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "ClassPojo [email = " + email + ", name = " + name + "]";
-    }
-
-}
+    val name: String = ""
+)

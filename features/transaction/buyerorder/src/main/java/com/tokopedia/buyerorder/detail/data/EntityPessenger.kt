@@ -1,27 +1,14 @@
-package com.tokopedia.buyerorder.detail.data;
+package com.tokopedia.buyerorder.detail.data
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
-public class EntityPessenger {
+data class EntityPessenger(
     @SerializedName("title")
-    private String title;
+    @Expose
+    val title: String = "",
 
     @SerializedName("value")
-    private String value;
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-}
+    @Expose
+    val value: String = ""
+)

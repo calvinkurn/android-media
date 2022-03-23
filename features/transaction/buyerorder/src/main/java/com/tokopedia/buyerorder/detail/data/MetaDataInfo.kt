@@ -1,305 +1,138 @@
-package com.tokopedia.buyerorder.detail.data;
+package com.tokopedia.buyerorder.detail.data
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
+import com.google.gson.annotations.Expose
 
-import java.util.List;
-
-public class MetaDataInfo {
-
+data class MetaDataInfo(
     @SerializedName("end_date")
     @Expose
-    private String endDate;
+    val endDate: String = "",
+
     @SerializedName("end_time")
     @Expose
-    private String endTime;
+    val endTime: String = "",
+
     @SerializedName("entity_address")
     @Expose
-    private EntityAddress entityAddress;
+    val entityAddress: EntityAddress = EntityAddress(),
+
     @SerializedName("entity_packages")
     @Expose
-    private List<EntityPackage> entityPackages;
+    val entityPackages: List<EntityPackage> = emptyList(),
+
     @SerializedName("entity_brand_name")
     @Expose
-    private String entityBrandName;
+    val entityBrandName: String = "",
+
     @SerializedName("entity_image")
     @Expose
-    private String entityImage;
+    val entityImage: String = "",
+
     @SerializedName("product_image")
     @Expose
-    private String productImage;
+    val productImage: String = "",
+
     @SerializedName("entity_product_id")
     @Expose
-    private int entityProductId;
+    val entityProductId: Int = 0,
+
     @SerializedName("entity_product_name")
     @Expose
-    private String entityProductName;
+    val entityProductName: String = "",
+
     @SerializedName("product_name")
     @Expose
-    private String productName;
+    val productName: String = "",
+
     @SerializedName("start_date")
     @Expose
-    private String startDate;
+    val startDate: String = "",
+
     @SerializedName("start_time")
     @Expose
-    private String startTime;
+    val startTime: String = "",
+
     @SerializedName("total_ticket_count")
     @Expose
-    private int totalTicketCount;
+    val totalTicketCount: Int = 0,
+
     @SerializedName("quantity")
     @Expose
-    private int quantity;
+    val quantity: Int = 0,
+
     @SerializedName("total_ticket_price")
     @Expose
-    private int totalTicketPrice;
+    val totalTicketPrice: Int = 0,
 
     @SerializedName("total_price")
     @Expose
-    private int totalPrice;
+    val totalPrice: Int = 0,
 
     @SerializedName("entity_passengers")
     @Expose
-    private List<EntityPessenger> entityPessengers;
+    val entityPessengers: List<EntityPessenger> = emptyList(),
 
     @SerializedName("passenger_forms")
     @Expose
-    private List<PassengerForm> passengerForms;
+    val passengerForms: List<PassengerForm> = emptyList(),
 
     @SerializedName("is_hiburan")
     @Expose
-    private int isHiburan;
+    var isHiburan: Int = 0,
 
     @SerializedName("name")
     @Expose
-    private String name;
+    val name: String = "",
 
     @SerializedName("location_name")
     @Expose
-    private String locationName;
+    val locationName: String = "",
 
     @SerializedName("location_desc")
     @Expose
-    private String locationDesc;
+    val locationDesc: String = "",
 
     @SerializedName("seo_url")
     @Expose
-    private String seoUrl;
+    val seoUrl: String = "",
 
     @SerializedName("insurance_type")
     @Expose
-    private String insuranceType;
+    val insuranceType: String = "",
 
     @SerializedName("product_quantity_fmt")
     @Expose
-    private String productQuantity;
+    val productQuantity: String = "",
 
     @SerializedName("insurance_length_fmt")
     @Expose
-    private String insuranceLength;
+    val insuranceLength: String = "",
 
     @SerializedName("premium_price_fmt")
     @Expose
-    private String premiumPrice;
+    val premiumPrice: String = "",
 
     @SerializedName("product_image_url")
     @Expose
-    private String prouductImage;
+    val prouductImage: String = "",
 
     @SerializedName("product_price_fmt")
     @Expose
-    private String productPrice;
+    val productPrice: String = "",
 
     @SerializedName("product_app_url")
     @Expose
-    private String productAppUrl;
+    val productAppUrl: String = "",
 
     @SerializedName("custom_link_app_url")
     @Expose
-    private String customLinkAppUrl;
+    val customLinkAppUrl: String = "",
 
     @SerializedName("custom_link_label")
     @Expose
-    private String customLinkLabel;
+    val customLinkLabel: String = "",
 
     @SerializedName("custom_link_type")
     @Expose
-    private String customLinkType;
-
-    public String getEndDate() {
-        return endDate;
-    }
-
-    public String getEndTime(){
-        return endTime;
-    }
-
-    public String getProductQuantity() {
-        return productQuantity;
-    }
-
-    public String getInsuranceLength() {
-        return insuranceLength;
-    }
-
-    public String getInsuranceType() {
-        return insuranceType;
-    }
-
-    public String getPremiumPrice() {
-        return premiumPrice;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getLocationName() {
-        return locationName;
-    }
-
-    public String getLocationDesc() {
-        return locationDesc;
-    }
-
-    public String getProuductImage() {
-        return prouductImage;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public String getProductPrice() {
-        return productPrice;
-    }
-
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
-    }
-
-    public EntityAddress getEntityAddress() {
-        return entityAddress;
-    }
-
-    public void setEntityAddress(EntityAddress entityAddress) {
-        this.entityAddress = entityAddress;
-    }
-
-    public List<EntityPackage> getEntityPackages() {
-        return entityPackages;
-    }
-
-    public void setEntityPackages(List<EntityPackage> entityPackages) {
-        this.entityPackages = entityPackages;
-    }
-
-    public String getEntityBrandName() {
-        return entityBrandName;
-    }
-
-    public void setEntityBrandName(String entityBrandName) {
-        this.entityBrandName = entityBrandName;
-    }
-
-    public String getEntityImage() {
-        return entityImage;
-    }
-
-    public String getProductImage() {
-        return productImage;
-    }
-
-    public void setEntityImage(String entityImage) {
-        this.entityImage = entityImage;
-    }
-
-    public int getEntityProductId() {
-        return entityProductId;
-    }
-
-    public void setEntityProductId(int entityProductId) {
-        this.entityProductId = entityProductId;
-    }
-
-    public String getEntityProductName() {
-        return entityProductName;
-    }
-
-    public void setEntityProductName(String entityProductName) {
-        this.entityProductName = entityProductName;
-    }
-
-    public String getStartDate() {
-        return startDate;
-    }
-
-    public String getStartTime() {
-        return startTime;
-    }
-
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
-
-    public int getTotalTicketCount() {
-        return totalTicketCount;
-    }
-
-    public int getQuantity(){return quantity;}
-
-    public void setTotalTicketCount(int totalTicketCount) {
-        this.totalTicketCount = totalTicketCount;
-    }
-
-    public int getTotalTicketPrice() {
-        return totalTicketPrice;
-    }
-
-    public int getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalTicketPrice(int totalTicketPrice) {
-        this.totalTicketPrice = totalTicketPrice;
-    }
-
-    public EntityAddress getEntityaddress() {
-        return entityAddress;
-    }
-
-    public void setEntity_address(EntityAddress entityaddress) {
-        this.entityAddress = entityaddress;
-    }
-
-    public List<EntityPessenger> getEntityPessengers() {
-        return entityPessengers;
-    }
-
-    public List<PassengerForm> getPassengerForms() {
-        return passengerForms;
-    }
-
-    public void setEntityPessengers(List<EntityPessenger> entityPessengers) {
-        this.entityPessengers = entityPessengers;
-    }
-
-    public int getIsHiburan() {
-        return isHiburan;
-    }
-
-    public void setIsHiburan(int isHiburan) {
-        this.isHiburan = isHiburan;
-    }
-
-    public String getSeoUrl() {
-        return seoUrl;
-    }
-
-    public String getProductAppUrl(){return productAppUrl;}
-
-    public String getCustomLinkAppUrl(){ return customLinkAppUrl;}
-
-    public String getCustomLinkLabel(){ return customLinkLabel;}
-
-    public String getCustomLinkType(){ return customLinkType;}
-}
+    val customLinkType: String = "",
+)

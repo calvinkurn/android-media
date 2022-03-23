@@ -1,32 +1,18 @@
-package com.tokopedia.buyerorder.detail.data;
+package com.tokopedia.buyerorder.detail.data
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
+import com.google.gson.annotations.Expose
 
-import java.util.List;
-
-public class PassengerInformation {
+data class PassengerInformation(
     @SerializedName("name")
     @Expose
-    private String name;
+    val name: String = "",
 
     @SerializedName("value")
     @Expose
-    private String value;
+    val value: String = "",
 
     @SerializedName("title")
     @Expose
-    private String title;
-
-    public String getName() {
-        return name;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-}
+    val title: String = ""
+)
