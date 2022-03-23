@@ -140,7 +140,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
                     textNotesOrVariantAction.text = getString(R.string.text_purchase_add_notes)
                 }
                 textNotesOrVariantAction.setOnClickListener {
-                    listener.onTextChangeNotesClicked()
+                    listener.onTextChangeNotesClicked(element)
                 }
             }
             textNotesOrVariantAction.show()

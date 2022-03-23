@@ -19,7 +19,7 @@ interface TokoFoodPurchaseActionListener {
 
     fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductUiModel)
 
-    fun onTextChangeNotesClicked()
+    fun onTextChangeNotesClicked(element: TokoFoodPurchaseProductUiModel)
 
     fun onTextChangeNoteAndVariantClicked()
 

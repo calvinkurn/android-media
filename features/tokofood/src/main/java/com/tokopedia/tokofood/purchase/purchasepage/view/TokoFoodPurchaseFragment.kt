@@ -19,6 +19,7 @@ import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
 import com.tokopedia.tokofood.purchase.purchasepage.view.adapter.TokoFoodPurchaseAdapter
 import com.tokopedia.tokofood.purchase.purchasepage.view.adapter.TokoFoodPurchaseAdapterTypeFactory
 import com.tokopedia.tokofood.purchase.purchasepage.view.di.DaggerTokoFoodPurchaseComponent
+import com.tokopedia.tokofood.purchase.purchasepage.view.subview.TokoFoodPurchaseNoteBottomSheet
 import com.tokopedia.tokofood.purchase.purchasepage.view.toolbar.TokoFoodPurchaseToolbar
 import com.tokopedia.tokofood.purchase.purchasepage.view.toolbar.TokoFoodPurchaseToolbarListener
 import com.tokopedia.tokofood.purchase.purchasepage.view.uimodel.TokoFoodPurchaseProductUiModel
@@ -220,10 +221,15 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         viewModel.deleteProduct(element.id)
     }
 
-    override fun onTextChangeNotesClicked() {
-        view?.let {
-            Toaster.build(it, "onTextChangeNotesClicked", Toaster.LENGTH_SHORT).show()
-        }
+    override fun onTextChangeNotesClicked(element: TokoFoodPurchaseProductUiModel) {
+        val addOnBottomSheet = TokoFoodPurchaseNoteBottomSheet(element.notes,
+                object : TokoFoodPurchaseNoteBottomSheet.Listener {
+                    override fun onSaveNotesClicked(notes: String) {
+                        viewModel.updateNotes(element, notes)
+                    }
+                }
+        )
+        addOnBottomSheet.show(parentFragmentManager, "")
     }
 
     override fun onTextChangeNoteAndVariantClicked() {

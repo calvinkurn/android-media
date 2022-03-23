@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="16dp">
 
     <com.tokopedia.unifycomponents.TextAreaUnify2
         android:id="@+id/text_field_note"
@@ -17,10 +19,10 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/button_save_notes"
-        android:text="Simpan"
-        android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Simpan"
         app:layout_constraintTop_toBottomOf="@+id/text_field_note" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

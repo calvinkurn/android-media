@@ -292,4 +292,16 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
             )
         }
     }
+
+    fun updateNotes(product: TokoFoodPurchaseProductUiModel, notes: String) {
+        val productData = getProductByProductId(product.id)
+        productData?.let {
+            val dataList = getVisitablesValue()
+            val newProductData = it.second.copy()
+            newProductData.notes = notes
+            dataList[it.first] = newProductData
+
+            _visitables.value = dataList
+        }
+    }
 }
