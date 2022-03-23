@@ -214,8 +214,8 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         viewModel.bulkDeleteUnavailableProducts()
     }
 
-    override fun onQuantityChanged(element: TokoFoodPurchaseProductUiModel, newQuantity: Int) {
-        viewModel.updateQuantity(element, newQuantity)
+    override fun onQuantityChanged() {
+        viewModel.calculateTotal()
     }
 
     override fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductUiModel) {

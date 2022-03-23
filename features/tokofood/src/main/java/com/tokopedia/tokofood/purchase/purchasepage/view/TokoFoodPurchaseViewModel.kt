@@ -180,6 +180,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
             _visitables.value = dataList
         }
 
+        calculateTotal()
     }
 
     fun deleteProduct(productId: String) {
@@ -325,18 +326,6 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
 
             _visitables.value = dataList
         }
-    }
-
-    fun updateQuantity(product: TokoFoodPurchaseProductUiModel, quantity: Int) {
-        val productData = getProductByProductId(product.id)
-        productData?.let {
-            val dataList = getVisitablesValue()
-            val newProductData = it.second.copy()
-            newProductData.quantity = quantity
-            dataList[it.first] = newProductData
-        }
-
-        calculateTotal()
     }
 
     fun calculateTotal() {
