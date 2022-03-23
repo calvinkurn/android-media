@@ -32,7 +32,7 @@ import com.tokopedia.abstraction.common.utils.view.MenuTintUtils;
 public abstract class BaseToolbarActivity extends BaseActivity {
 
     private final static int TEXT_COLOR_BACKGROUND_WHITE = com.tokopedia.unifyprinciples.R.color.Unify_N700;
-    protected @Nullable Toolbar toolbar;
+    protected Toolbar toolbar;
 
     protected abstract void setupFragment(Bundle savedInstanceState);
 
