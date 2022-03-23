@@ -19,6 +19,7 @@
     <string name="applink_link_account">/link-account</string>
     <string name="applink_link_account_webview">/link-account-webview</string>
     <string name="applink_account_link_acc_reminder">/link-acc-reminder</string>
+    <string name="applink_account_biometric_offering">/biometric-offering</string>
 
     <string name="title_applink_chatbot">Chat Sekarang</string>
     <string name="title_applink_campaign_shake_landing">Promo</string>

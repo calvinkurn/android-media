@@ -2,21 +2,29 @@ package com.tokopedia.additional_check.subscriber
 
 import android.app.Activity
 import android.app.Application
+import android.content.Intent
 import android.os.Bundle
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.additional_check.data.OfferingData
 import com.tokopedia.additional_check.data.ShowInterruptData
 import com.tokopedia.additional_check.data.TwoFactorResult
+import com.tokopedia.additional_check.data.pref.AdditionalCheckPreference
 import com.tokopedia.additional_check.di.AdditionalCheckModules
 import com.tokopedia.additional_check.di.DaggerAdditionalCheckComponents
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_NONE
+import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_PHONE
+import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_PIN
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.REMOTE_CONFIG_2FA
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.REMOTE_CONFIG_2FA_SELLER_APP
 import com.tokopedia.additional_check.view.TwoFactorFragment
 import com.tokopedia.additional_check.view.TwoFactorViewModel
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import javax.inject.Inject
@@ -38,7 +46,8 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
             "RegisterFingerprintOnboardingActivity", "VerificationActivity", "PinOnboardingActivity",
             "LogoutActivity", "LoginActivity","GiftBoxTapTapActivity", "GiftBoxDailyActivity", "RegisterInitialActivity",
             "RegisterEmailActivity", "AddNameRegisterPhoneActivity", "SmartLockActivity", "OvoRegisterInitialActivity", "OvoFinalPageActivity",
-            "SettingProfileActivity", "LinkAccountReminderActivity", "SilentVerificationActivity", "LinkAccountWebViewActivity"
+            "SettingProfileActivity", "LinkAccountReminderActivity", "SilentVerificationActivity", "LinkAccountWebViewActivity", "BiometricOfferingActivity",
+            "RegisterFingerprintActivity", "VerifyFingerprintActivity"
     )
 
     private val exceptionPageSeller = listOf(
@@ -46,13 +55,10 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
             "RegisterFingerprintOnboardingActivity", "VerificationActivity", "PinOnboardingActivity",
             "LogoutActivity", "LoginActivity","GiftBoxTapTapActivity", "GiftBoxDailyActivity", "RegisterInitialActivity",
             "RegisterEmailActivity", "ChooseAccountActivity", "SmartLockActivity" , "ShopOpenRevampActivity" , "PinpointMapActivity",
-            "SettingProfileActivity", "LinkAccountReminderActivity", "SilentVerificationActivity", "LinkAccountWebViewActivity"
+            "SettingProfileActivity", "LinkAccountReminderActivity", "SilentVerificationActivity", "LinkAccountWebViewActivity", "BiometricOfferingActivity",
+            "RegisterFingerprintActivity", "VerifyFingerprintActivity"
     )
 
-    // Account linking reminder bottom sheet only showing in this page
-    private val whiteListedPageAccountLinkReminder = listOf(
-        "MainParentActivity", "DeveloperOptionActivity"
-    )
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         if(!exceptionPage.contains(activity.javaClass.simpleName)) {
@@ -102,9 +108,14 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     }
 
     private fun checking(activity: Activity) {
-        viewModel.check(onSuccess = {
-            handleResponse(activity, showInterruptData = it)
-        }, onError = {
+//        viewModel.check(onSuccess = {
+//            handleResponse(activity, showInterruptData = it)
+//        }, onError = {
+//            it.printStackTrace()
+//        })
+        viewModel.getOffering(BiometricPromptHelper.isBiometricAvailableActivity(activity), {
+            handleResponseOfferingData(activity, it)
+        }, {
             it.printStackTrace()
         })
     }
@@ -112,6 +123,21 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     override fun onActivityDestroyed(activity: Activity) {}
 
     override fun onActivityPaused(activity: Activity) {}
+
+
+    private fun handleResponseOfferingData(activity: Activity?, offeringList: MutableList<OfferingData>){
+//        val newOfferingList = mutableListOf(
+//            OfferingData(name = "pin", false),
+//            OfferingData(name = "biometric", false),
+//        )
+
+        if(offeringList.isNotEmpty()) {
+            val firstIntent = mapToApplink(activity!!, offeringList.first(), true)
+            if(firstIntent != null) {
+                activity.startActivity(firstIntent)
+            }
+        }
+    }
 
     private fun handleResponse(activity: Activity?, showInterruptData: ShowInterruptData){
         if(showInterruptData.error.isEmpty()) {
@@ -169,4 +195,83 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     override fun onActivityStarted(activity: Activity) {}
 
     override fun onActivityStopped(activity: Activity) {}
+
+    companion object {
+        fun mapToApplink(activity: Activity, offer: OfferingData, isFirst: Boolean = false): Intent? {
+            val result = TwoFactorResult(
+                showSkipButton = offer.enableSkip,
+                popupType = POPUP_TYPE_NONE
+            )
+
+            val intent: Intent? = when(offer.name) {
+                "pin" -> {
+                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.TWO_FACTOR_REGISTER)
+                    result.popupType = POPUP_TYPE_PIN
+                    intent
+                }
+                "phone" -> {
+                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.TWO_FACTOR_REGISTER)
+                    result.popupType = POPUP_TYPE_PHONE
+                    intent
+                }
+                "accounts-link" -> {
+                    if(isFirst) {
+                        if(whiteListedPageAccountLinkReminder.contains(activity.javaClass.simpleName)) {
+                            return RouteManager.getIntent(
+                                activity,
+                                ApplinkConstInternalGlobal.LINK_ACC_REMINDER
+                            )
+                        }
+                    }
+                    return RouteManager.getIntent(
+                        activity,
+                        ApplinkConstInternalGlobal.LINK_ACC_REMINDER
+                    )
+                }
+                "biometric" -> {
+                    if(isFirst) {
+                        if(whiteListedPageBiometricOffering.contains(activity.javaClass.simpleName)) {
+                            return RouteManager.getIntent(
+                                activity,
+                                ApplinkConstInternalUserPlatform.BIOMETRIC_OFFERING
+                            )
+                        }
+                    }
+                    return RouteManager.getIntent(
+                        activity,
+                        ApplinkConstInternalUserPlatform.BIOMETRIC_OFFERING
+                    )
+                }
+                else -> null
+            }
+            intent?.apply {
+                putExtras(Bundle().apply {
+                    putBoolean(TwoFactorFragment.IS_FROM_2FA, true)
+                    putParcelable(TwoFactorFragment.RESULT_POJO_KEY, result)
+                })
+            }
+            return intent
+        }
+
+        fun mapStringToOfferData(additionalCheckPreference: AdditionalCheckPreference, activity: Activity, offerData: String): Intent? {
+            return try {
+                val offerData = Gson().fromJson(offerData, OfferingData::class.java)
+                additionalCheckPreference.clearNextOffer()
+                mapToApplink(activity, offerData)
+            }catch (e: Exception){
+                null
+            }
+        }
+
+        // Account linking reminder bottom sheet only showing in this page
+        private val whiteListedPageAccountLinkReminder = listOf(
+            "MainParentActivity", "DeveloperOptionActivity"
+        )
+
+        // Biometric offering bottom sheet only showing in this page
+        private val whiteListedPageBiometricOffering = listOf(
+            "MainParentActivity", "DeveloperOptionActivity"
+        )
+
+    }
 }

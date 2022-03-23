@@ -14,11 +14,13 @@ import com.tokopedia.additional_check.common.ADD_PHONE_NUMBER_PAGE
 import com.tokopedia.additional_check.common.ADD_PIN_PAGE
 import com.tokopedia.additional_check.common.ActivePageListener
 import com.tokopedia.additional_check.data.TwoFactorResult
+import com.tokopedia.additional_check.data.pref.AdditionalCheckPreference
 import com.tokopedia.additional_check.databinding.FragmentTwoFactorBinding
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_BOTH
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_PHONE
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_PIN
 import com.tokopedia.additional_check.internal.TwoFactorTracker
+import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber
 import com.tokopedia.additional_check.view.activity.TwoFactorActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -39,6 +41,8 @@ class TwoFactorFragment: BaseDaggerFragment() {
 
     var model: TwoFactorResult? = TwoFactorResult()
 
+    lateinit var additionalCheckPreference: AdditionalCheckPreference
+
     override fun getScreenName(): String = "twoFactorFragment"
     override fun initInjector() {}
 
@@ -54,6 +58,7 @@ class TwoFactorFragment: BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         model = arguments?.getParcelable(RESULT_POJO_KEY)
+        additionalCheckPreference = AdditionalCheckPreference(requireContext())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -120,7 +125,15 @@ class TwoFactorFragment: BaseDaggerFragment() {
             binding.imgViewTwoFactor.run {
                 ImageHandler.LoadImage(this, PIN_SUCCESS_IMG)
             }
-            binding.btnTwoFactor.setOnClickListener { activity?.finish() }
+            binding.btnTwoFactor.setOnClickListener {
+                if(additionalCheckPreference.getNextOffer().isNotEmpty() && activity != null) {
+                    val nextIntent = TwoFactorCheckerSubscriber.mapStringToOfferData(additionalCheckPreference, requireActivity(), additionalCheckPreference.getNextOffer())
+                    nextIntent?.run {
+                        startActivity(this)
+                    }
+                }
+                activity?.finish()
+            }
         }
     }
 
@@ -138,6 +151,9 @@ class TwoFactorFragment: BaseDaggerFragment() {
     private fun goToAddPhone(){
         context?.run {
             val i = RouteManager.getIntent(this, ApplinkConstInternalGlobal.ADD_PHONE)
+            i.putExtras(Bundle().apply {
+                putBoolean(IS_FROM_2FA, arguments?.getBoolean(IS_FROM_2FA, false) ?: false)
+            })
             startActivityForResult(i, ADD_PHONE_REQ_CODE)
         }
     }
@@ -151,6 +167,9 @@ class TwoFactorFragment: BaseDaggerFragment() {
             }
             ADD_PHONE_REQ_CODE -> {
                 if(resultCode == Activity.RESULT_OK) {
+                    if(additionalCheckPreference.getNextOffer().isNotEmpty()) {
+                        additionalCheckPreference.clearNextOffer()
+                    }
                     validateToken = data?.getStringExtra(ApplinkConstInternalGlobal.PARAM_TOKEN).toString()
                     goToAddPin(validateToken)
                 }
@@ -165,6 +184,7 @@ class TwoFactorFragment: BaseDaggerFragment() {
 
     companion object {
         const val RESULT_POJO_KEY = "modelKey"
+        const val IS_FROM_2FA = "is_from_2fa_checker"
 
         private const val PIN_ONBOARDING_IMG = "https://ecs7.tokopedia.net/android/user/image_pin_two_factor.png"
         private const val PHONE_ONBOARDING_IMG = "https://ecs7.tokopedia.net/android/user/image_phone_two_factor.png"
