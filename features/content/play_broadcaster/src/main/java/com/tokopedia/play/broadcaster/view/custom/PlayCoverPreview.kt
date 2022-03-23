@@ -82,4 +82,6 @@ class PlayCoverPreview : ConstraintLayout {
     fun setShopName(shopName: String) {
         binding.tvCoverShopName.text = shopName
     }
+
+    fun isCoverAvailable() = isCoverAvailable
 }
