@@ -5,7 +5,7 @@ import com.tokopedia.tokofood.purchase.purchasepage.view.uimodel.TokoFoodPurchas
 
 interface TokoFoodPurchaseActionListener {
 
-    fun getPreviousItems(currentIndex: Int, count: Int): List<Visitable<*>>
+    fun getNextItems(currentIndex: Int, count: Int): List<Visitable<*>>
 
     fun onTextChangeShippingAddressClicked()
 

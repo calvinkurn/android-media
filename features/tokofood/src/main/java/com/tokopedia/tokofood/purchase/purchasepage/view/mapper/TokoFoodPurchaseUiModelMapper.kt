@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.purchase.purchasepage.view.mapper
 
 import com.tokopedia.explorepromo.ExplorePromo
+import com.tokopedia.kotlin.extensions.view.isOdd
 import com.tokopedia.tokofood.purchase.purchasepage.view.uimodel.*
 
 object TokoFoodPurchaseUiModelMapper {
@@ -63,7 +64,7 @@ object TokoFoodPurchaseUiModelMapper {
                 quantity = 1,
                 minQuantity = 1,
                 maxQuantity = 10,
-                notes = "Pesanannya jangan sampai salah ya! udah haus bang. Pesanannya jangan sampai salah ya! udah haus bang...",
+                notes = if (id.toIntOrNull().isOdd()) "Pesanannya jangan sampai salah ya! udah haus bang. Pesanannya jangan sampai salah ya! udah haus bang..." else "",
                 addOns = listOf("addOn1", "addon2", "addon3"),
                 originalPrice = 50000,
                 discountPercentage = "50%"

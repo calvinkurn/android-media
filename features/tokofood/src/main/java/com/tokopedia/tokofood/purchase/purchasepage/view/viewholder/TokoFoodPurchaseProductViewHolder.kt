@@ -7,10 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseProductBinding
 import com.tokopedia.tokofood.databinding.SubItemPurchaseAddOnBinding
@@ -28,13 +25,13 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
     }
 
     override fun bind(element: TokoFoodPurchaseProductUiModel) {
-        renderTopDivider(viewBinding, element)
         renderProductBasicInformation(viewBinding, element)
         renderProductAddOn(viewBinding, element)
         renderProductPrice(viewBinding, element)
         renderProductNotes(viewBinding, element)
         renderProductQuantity(viewBinding, element)
         renderDelete(viewBinding, element)
+        renderBottomDivider(viewBinding, element)
     }
 
     private fun View.renderAlpha(element: TokoFoodPurchaseProductUiModel) {
@@ -45,14 +42,24 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
         }
     }
 
-    private fun renderTopDivider(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductUiModel) {
+    private fun renderBottomDivider(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductUiModel) {
         with(viewBinding) {
-            val previousItem = listener.getPreviousItems(adapterPosition, 1).firstOrNull()
-            previousItem?.let {
-                if (previousItem is TokoFoodPurchaseProductUiModel) {
-                    dividerTop.show()
+            val nextItem = listener.getNextItems(adapterPosition, 1).firstOrNull()
+            nextItem?.let {
+                if (nextItem is TokoFoodPurchaseProductUiModel) {
+                    dividerBottom.show()
+                    val constraintSet = ConstraintSet()
+                    constraintSet.clone(containerPurchaseProduct)
+                    if (element.isDisabled) {
+                        constraintSet.connect(R.id.divider_bottom, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0)
+                        constraintSet.connect(R.id.divider_bottom, ConstraintSet.TOP, R.id.container_product_price, ConstraintSet.BOTTOM, 16.dpToPx(itemView.resources.displayMetrics))
+                    } else {
+                        constraintSet.connect(R.id.divider_bottom, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0)
+                        constraintSet.connect(R.id.divider_bottom, ConstraintSet.TOP, R.id.text_notes_or_variant_action, ConstraintSet.BOTTOM, 16.dpToPx(itemView.resources.displayMetrics))
+                    }
+                    constraintSet.applyTo(containerPurchaseProduct)
                 } else {
-                    dividerTop.gone()
+                    dividerBottom.invisible()
                 }
             }
         }

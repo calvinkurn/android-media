@@ -82,13 +82,14 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         return Pair(firstItemIndex, unavailableProducts)
     }
 
-    fun getPreviousItems(currentIndex: Int, count: Int): List<Visitable<*>> {
+    fun getNextItems(currentIndex: Int, count: Int): List<Visitable<*>> {
         val dataList = getVisitablesValue()
-        var from = currentIndex - count
-        if (from < 0) {
-            from = 0
+        val from = currentIndex + 1
+        val to = from + count
+        if (from > dataList.size || to >= dataList.size) {
+            return emptyList()
         }
-        return dataList.subList(from, currentIndex)
+        return dataList.subList(from, to)
     }
 
     fun loadData() {

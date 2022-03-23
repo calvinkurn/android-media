@@ -154,8 +154,8 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         })
     }
 
-    override fun getPreviousItems(currentIndex: Int, count: Int): List<Visitable<*>> {
-        return viewModel.getPreviousItems(currentIndex, count)
+    override fun getNextItems(currentIndex: Int, count: Int): List<Visitable<*>> {
+        return viewModel.getNextItems(currentIndex, count)
     }
 
     override fun onTextChangeShippingAddressClicked() {
