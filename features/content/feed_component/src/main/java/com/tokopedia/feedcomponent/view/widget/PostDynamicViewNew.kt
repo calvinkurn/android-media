@@ -2,7 +2,6 @@ package com.tokopedia.feedcomponent.view.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.CountDownTimer
 import android.os.Handler
@@ -17,6 +16,7 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -49,8 +49,6 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TOPADS_VARIANT_EXPERIMENT_CLEAN
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TOPADS_VARIANT_EXPERIMENT_INFO
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineListener
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
@@ -67,7 +65,6 @@ import kotlinx.android.synthetic.main.item_post_long_video_vod.view.*
 import kotlinx.android.synthetic.main.item_post_video_new.view.*
 import kotlinx.coroutines.*
 import java.net.URLEncoder
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.round
 
@@ -168,6 +165,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private var handlerAnim: Handler? = null
     private var handlerHide: Handler? = null
     private var feedAddViewJob: Job? = null
+    private var vodFullScreenIcon: CardView? = null
+    private var vodFullScreenIconImgView: ImageView? = null
 
     private var isLihatProductVisible = false
 
@@ -199,6 +198,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
             addCommentHint = findViewById(R.id.comment_hint)
             gridList = findViewById(R.id.gridList)
             followCount = findViewById(R.id.follow_count)
+            vodFullScreenIcon = findViewById(R.id.vod_full_screen_icon)
+            vodFullScreenIconImgView = findViewById(R.id.vod_full_screen_icon_img_view)
         }
     }
 
@@ -1391,7 +1392,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             ic_vod_play?.setOnClickListener {
                 playVOD(feedXCard =  feedXCard, carouselView.activeIndex)
             }
-            vod_full_screen_icon?.setOnClickListener {
+            vodFullScreenIcon?.setOnClickListener {
                 isPaused = true
                 vod_lanjut_menonton_btn?.gone()
                 vod_frozen_view?.gone()
@@ -1484,7 +1485,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 hideViewWithAnimationVod(layoutLihatProdukParent, context)
             }
             vod_frozen_view?.gone()
-            vod_full_screen_icon?.visible()
+            vodFullScreenIcon?.visible()
 
 
 
@@ -1509,7 +1510,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         setMuteUnmuteVOD(vod_volumeIcon, finalId.toString(), feedXCard.followers.isFollowed, authorId, isVideoTap = true, isVOD = true, feedMedia.type)
                     }
                 }
-                vod_full_screen_icon?.setOnClickListener {
+                vodFullScreenIcon?.setOnClickListener {
                     isPaused = true
                     vod_lanjut_menonton_btn?.gone()
                     vod_frozen_view?.gone()
@@ -1541,7 +1542,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         hideVODLoading()
                         vod_timer_view.visible()
                         vod_volumeIcon?.visible()
-                        vod_full_screen_icon?.visible()
+                        vodFullScreenIcon?.visible()
                         vod_lanjut_menonton_btn?.gone()
                         vod_frozen_view?.gone()
 
@@ -1561,7 +1562,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                                         vod_lanjut_menonton_btn?.visible()
                                         vod_frozen_view?.visible()
-                                        vod_full_screen_icon?.gone()
+                                        vodFullScreenIcon?.gone()
                                         vod_lihat_product?.gone()
                                         vod_timer_view?.gone()
                                         isVODViewFrozen = true

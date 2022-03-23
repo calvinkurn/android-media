@@ -147,9 +147,8 @@
 
             <ImageView
                 android:id="@+id/vod_full_screen_icon_img_view"
-                android:layout_width="@dimen/layout_lvl4"
-                android:layout_height="@dimen/layout_lvl4"
-                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:srcCompat="@drawable/ic_fullscreen"
