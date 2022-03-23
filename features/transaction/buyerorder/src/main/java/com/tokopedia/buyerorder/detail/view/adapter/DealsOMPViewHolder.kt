@@ -9,7 +9,10 @@ import com.tokopedia.buyerorder.detail.data.ActionButton
 import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo
 import com.tokopedia.buyerorder.detail.data.OrderDetails
-import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter.*
+import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter.KEY_POPUP
+import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter.KEY_REDIRECT
+import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter.KEY_REDIRECT_EXTERNAL
+import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter.KEY_VOUCHER_CODE
 import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView
 import com.tokopedia.buyerorder.detail.view.customview.RedeemVoucherView
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter
