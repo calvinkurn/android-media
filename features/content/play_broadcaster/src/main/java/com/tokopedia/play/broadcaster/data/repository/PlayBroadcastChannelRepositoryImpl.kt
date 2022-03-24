@@ -1,16 +1,20 @@
 package com.tokopedia.play.broadcaster.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
 import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
+import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
+import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -53,5 +57,47 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
             )
         }.executeOnBackground()
         return@withContext response.id
+    }
+
+    override suspend fun updateSchedule(
+        channelId: String,
+        selectedDate: Date?
+    ): BroadcastScheduleUiModel {
+        return if (selectedDate == null) deleteSchedule(channelId)
+        else setSchedule(channelId, selectedDate)
+    }
+
+    private suspend fun setSchedule(
+        channelId: String,
+        selectedDate: Date
+    ): BroadcastScheduleUiModel = withContext(dispatchers.io) {
+        val formattedDate = selectedDate.toFormattedString(DATE_FORMAT_RFC3339)
+
+        updateChannelUseCase.apply {
+            setQueryParams(
+                PlayBroadcastUpdateChannelUseCase.createUpdateBroadcastScheduleRequest(
+                    channelId = channelId,
+                    status = PlayChannelStatusType.ScheduledLive,
+                    date = formattedDate
+                )
+            )
+        }.executeOnBackground()
+
+        return@withContext BroadcastScheduleUiModel.Scheduled(
+            time = selectedDate,
+            formattedTime = formattedDate
+        )
+    }
+
+    private suspend fun deleteSchedule(channelId: String) = withContext(dispatchers.io) {
+        updateChannelUseCase.apply {
+            setQueryParams(
+                PlayBroadcastUpdateChannelUseCase.createDeleteBroadcastScheduleRequest(
+                    channelId = channelId
+                )
+            )
+        }.executeOnBackground()
+
+        return@withContext BroadcastScheduleUiModel.NoSchedule
     }
 }

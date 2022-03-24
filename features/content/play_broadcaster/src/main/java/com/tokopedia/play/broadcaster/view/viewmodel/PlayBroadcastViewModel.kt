@@ -24,6 +24,7 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.pusher.*
 import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
+import com.tokopedia.play.broadcaster.setup.product.model.ProductChooserUiState
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
@@ -34,6 +35,7 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleFormUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.*
@@ -197,6 +199,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     )
     private val _productSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
     private val _isExiting = MutableStateFlow(false)
+    private val _schedule = MutableStateFlow(ScheduleUiModel.Empty)
 
     private val _channelUiState = _configInfo
         .filterNotNull()
@@ -218,15 +221,21 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _channelUiState.distinctUntilChanged(),
         _pinnedMessageUiState.distinctUntilChanged(),
         _productSectionList,
+        _schedule,
         _isExiting
-    ) { channelState, pinnedMessage, productMap, isExiting ->
+    ) { channelState, pinnedMessage, productMap, schedule, isExiting ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
             selectedProduct = productMap,
+            schedule = schedule,
             isExiting = isExiting,
         )
-    }
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        PlayBroadcastUiState.Empty,
+    )
 
     private val _uiEvent = MutableSharedFlow<PlayBroadcastEvent>(extraBufferCapacity = 100)
     val uiEvent: Flow<PlayBroadcastEvent>
@@ -324,6 +333,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             PlayBroadcastAction.CancelEditPinnedMessage -> handleCancelEditPinnedMessage()
             is PlayBroadcastAction.SetCover -> handleSetCover(event.cover)
             is PlayBroadcastAction.SetProduct -> handleSetProduct(event.productTagSectionList)
+            is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
+            PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
         }
     }
 
@@ -896,6 +907,42 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleSetProduct(productSectionList: List<ProductTagSectionUiModel>) {
         setSelectedProduct(productSectionList)
+    }
+
+    private fun handleSetSchedule(selectedDate: Date) {
+        _schedule.update {
+            it.copy(state = NetworkState.Loading)
+        }
+        viewModelScope.launchCatchError(dispatcher.io, block = {
+            _schedule.update {
+                it.copy(
+                    schedule = repo.updateSchedule(channelId, selectedDate),
+                    state = NetworkState.Success,
+                )
+            }
+        }) {
+            _schedule.update {
+                it.copy(state = NetworkState.Failed)
+            }
+        }
+    }
+
+    private fun handleDeleteSchedule() {
+        _schedule.update {
+            it.copy(state = NetworkState.Loading)
+        }
+        viewModelScope.launchCatchError(dispatcher.io, block = {
+            _schedule.update {
+                it.copy(
+                    schedule = repo.updateSchedule(channelId, null),
+                    state = NetworkState.Success,
+                )
+            }
+        }) {
+            _schedule.update {
+                it.copy(state = NetworkState.Failed)
+            }
+        }
     }
 
     /**

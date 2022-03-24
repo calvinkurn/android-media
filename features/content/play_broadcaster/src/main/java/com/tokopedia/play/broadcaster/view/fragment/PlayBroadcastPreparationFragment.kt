@@ -11,6 +11,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.datepicker.OnDateChangedListener
+import com.tokopedia.datepicker.R as datePickerR
+import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
@@ -18,10 +21,14 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
+import com.tokopedia.play.broadcaster.setup.schedule.view.ScheduleSetupBottomSheet
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
+import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
@@ -48,11 +55,14 @@ import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.max
 
 /**
  * Created By : Jonathan Darwin on January 24, 2022
@@ -338,17 +348,32 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
-                renderProductMenu(prevState, state)
+                renderProductMenu(prevState?.selectedProduct, state.selectedProduct)
+                renderSchedule(state.schedule)
             }
         }
     }
 
-    private fun renderProductMenu(prevState: PlayBroadcastUiState?, state: PlayBroadcastUiState) {
-        if (prevState?.selectedProduct != state.selectedProduct) {
+    private fun renderProductMenu(
+        prevState: List<ProductTagSectionUiModel>?,
+        state: List<ProductTagSectionUiModel>
+    ) {
+        if (prevState != state) {
             binding.viewPreparationMenu.isSetProductChecked(
-                state.selectedProduct.any { it.products.isNotEmpty() }
+                state.any { it.products.isNotEmpty() }
             )
         }
+    }
+
+    private fun renderSchedule(
+        schedule: ScheduleUiModel
+    ) {
+        val datePicker = childFragmentManager.findFragmentByTag(
+            SCHEDULE_TAG
+        ) as? DateTimePickerUnify ?: return
+
+        datePicker.datePickerButton.isLoading = schedule.state == NetworkState.Loading
+        datePicker.datePickerButton.isEnabled = schedule.state != NetworkState.Loading
     }
 
     /** Form */
@@ -408,6 +433,22 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         childFragmentManager.beginTransaction()
             .add(ProductSetupFragment::class.java, null, null)
             .commit()
+    }
+
+    override fun onClickSetSchedule() {
+        val currentDate = GregorianCalendar()
+        val schedule = parentViewModel.uiState.value.schedule.schedule
+        openScheduleBottomSheet(
+            minDate = currentDate,
+            maxDate = GregorianCalendar().apply {
+                add(Calendar.DATE, 10)
+            },
+            selectedDate = if (schedule is BroadcastScheduleUiModel.Scheduled) {
+                GregorianCalendar().apply {
+                    time = schedule.time
+                }
+            } else null,
+        )
     }
 
     /** Callback Title Form */
@@ -528,7 +569,42 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         analytic.openBroadcastScreen(parentViewModel.channelId)
     }
 
+    private fun openScheduleBottomSheet(
+        minDate: GregorianCalendar,
+        maxDate: GregorianCalendar,
+        selectedDate: GregorianCalendar?,
+    ) {
+        val datePicker = DateTimePickerUnify(
+            context = requireContext(),
+            minDate = minDate,
+            defaultDate = selectedDate ?: GregorianCalendar(),
+            maxDate = maxDate,
+            type = DateTimePickerUnify.TYPE_DATETIMEPICKER,
+        )
+
+        datePicker.setInfoVisible(true)
+        datePicker.setInfo(getString(R.string.play_bro_schedule_info))
+        datePicker.setTitle(getString(R.string.play_bro_schedule_label))
+        datePicker.setAction(getString(R.string.play_bro_schedule_delete)) {
+            if (it.isEnabled) parentViewModel.submitAction(PlayBroadcastAction.DeleteSchedule)
+        }
+        datePicker.setShowListener {
+            val action = datePicker.bottomSheetAction as? Typography ?: return@setShowListener
+            action.isEnabled = selectedDate != null
+
+            datePicker.datePickerButton.text = getString(R.string.play_label_save)
+            datePicker.datePickerButton.setOnClickListener {
+                parentViewModel.submitAction(
+                    PlayBroadcastAction.SetSchedule(datePicker.getDate().time)
+                )
+            }
+        }
+        datePicker.show(childFragmentManager, SCHEDULE_TAG)
+    }
+
     companion object {
         private const val TIMER_TEXT_COUNTDOWN_INTERVAL = 1000L
+
+        private const val SCHEDULE_TAG = "schedule_picker"
     }
 }

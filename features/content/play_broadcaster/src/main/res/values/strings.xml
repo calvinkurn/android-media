@@ -165,6 +165,8 @@
     <string name="play_broadcast_delete_schedule_dialog_title">Yakin mau hapus jadwal?</string>
     <string name="play_broadcast_delete_schedule_dialog_desc">Jika dihapus, maka pengingat siaran untuk calon penontonmu batal dikirimkan.</string>
     <string name="play_broadcast_schedule_deleted">Jadwal sudah dihapus</string>
+    <string name="play_bro_schedule_info">Kamu bisa tentukan jadwal kalau kamu belum mau Live sekarang. Jadi bisa siap-siap, deh.</string>
+    <string name="play_bro_schedule_delete">Hapus Jadwal</string>
 
     <string name="album">Album</string>
 
@@ -220,6 +222,7 @@
     <string name="play_bro_title_label">Judul</string>
     <string name="play_bro_cover_label">Cover</string>
     <string name="play_bro_product_label">Produk</string>
+    <string name="play_bro_schedule_label">Atur Jadwal</string>
     <string name="play_bro_save">Simpan</string>
 
     <string name="play_bro_title_form_hint">Tulis Judul Live</string>
