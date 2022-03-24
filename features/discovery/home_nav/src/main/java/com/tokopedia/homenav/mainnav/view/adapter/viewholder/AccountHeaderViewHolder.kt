@@ -332,7 +332,7 @@ class AccountHeaderViewHolder(itemView: View,
         val listSellers = mutableListOf<Visitable<*>>()
         setPositionSellerAndAffiliate(element, listSellers)
         valuateRecyclerViewDecoration(recyclerSeller)
-        val typeFactoryImpl = SellerTypeFactoryImpl(mainNavListener, element)
+        val typeFactoryImpl = SellerTypeFactoryImpl(mainNavListener)
         adapter = SellerAdapter(listSellers, typeFactoryImpl)
         recyclerSeller.adapter = adapter
     }

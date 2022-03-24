@@ -6,7 +6,7 @@
       "event": "clickHomepage",
       "eventAction": "click on profile section - login",
       "eventCategory": "global menu",
-      "eventLabel": ".* / .* / .* / .* / .*",
+      "eventLabel": ".*",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
       "userId": ".*",

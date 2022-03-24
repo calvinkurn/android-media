@@ -27,8 +27,7 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class SellerViewHolder(
     itemView: View,
-    private val mainNavListener: MainNavListener,
-    private val accountHeaderDataModel: AccountHeaderDataModel
+    private val mainNavListener: MainNavListener
 ) : AbstractViewHolder<ProfileSellerDataModel>(itemView) {
 
     private val binding: HomeNavItemSellerBinding? by viewBinding()
@@ -39,14 +38,15 @@ class SellerViewHolder(
     }
 
     private fun shopClicked(profileSeller: ProfileSellerDataModel, context: Context) {
-        TrackingProfileSection.onClickShopAndAffiliate(accountHeaderDataModel)
         if (profileSeller.hasShop) {
+            TrackingProfileSection.onClickShopAndAffiliate(TrackingProfileSection.CLICK_SHOP_ACCOUNT)
             if (profileSeller.canGoToSellerAccount) {
                 RouteManager.route(itemView.context, ApplinkConstInternalSellerapp.SELLER_MENU)
             } else {
                 LocationAdminDialog(itemView.context).show()
             }
         } else {
+            TrackingProfileSection.onClickShopAndAffiliate(TrackingProfileSection.CLICK_OPEN_SHOP)
             RouteManager.route(context, ApplinkConst.CREATE_SHOP)
         }
     }
