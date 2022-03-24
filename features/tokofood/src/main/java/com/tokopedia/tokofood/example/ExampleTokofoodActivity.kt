@@ -3,6 +3,7 @@ package com.tokopedia.tokofood.example
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 
@@ -15,11 +16,11 @@ class ExampleTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFr
         viewModel.onRestoreSavednstanceState()
     }
 
-    override fun getRootFragment(): BaseMultiFragment {
+    override fun getRootFragment(): Fragment {
         return FragmentA()
     }
 
-    override fun mapUriToFragment(uri: Uri): BaseMultiFragment? {
+    override fun mapUriToFragment(uri: Uri): Fragment? {
         // tokopedia://tokofood
         if (uri.host == "tokofood") {
             var f: BaseMultiFragment? = null

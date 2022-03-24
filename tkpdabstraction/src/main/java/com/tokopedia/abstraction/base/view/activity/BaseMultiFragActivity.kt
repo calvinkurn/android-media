@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.R
-import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 
 /**
  * Activity that enable navigation to multi fragments
@@ -53,12 +52,12 @@ abstract class BaseMultiFragActivity : BaseToolbarActivity() {
         navigateToNewFragment(getRootFragment())
     }
 
-    protected abstract fun getRootFragment(): BaseMultiFragment
+    protected abstract fun getRootFragment(): Fragment
 
     /**
      * should return null if uri is not supported in this activity
      */
-    protected abstract fun mapUriToFragment(uri: Uri): BaseMultiFragment?
+    protected abstract fun mapUriToFragment(uri: Uri): Fragment?
 
     fun navigateToNewFragment(fragment: Fragment) {
         val fragmentCount = getFragmentCount()
