@@ -6,7 +6,7 @@ internal object ValidateReferralUser {
     const val OPERATION_NAME = "gamiReferralValidateUser"
 
     val QUERY = """
-        query ValidateReferralUser(${'$'}${ValidateReferralUserUseCase.SLUG}: String){
+        query ValidateReferralUser(${'$'}${ValidateReferralUserUseCase.SLUG}: String!){
             gamiReferralValidateUser(slug:${'$'}${ValidateReferralUserUseCase.SLUG}) {
                 resultStatus {
                   code
