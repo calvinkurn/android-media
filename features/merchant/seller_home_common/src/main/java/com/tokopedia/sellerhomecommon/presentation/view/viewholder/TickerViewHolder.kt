@@ -46,12 +46,14 @@ class TickerViewHolder(
             tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
 
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                    val item = itemData as? TickerItemUiModel
                     if (!RouteManager.route(context, linkUrl.toString())) {
-                        val item = itemData as? TickerItemUiModel
                         item?.let {
                             RouteManager.route(context, it.redirectUrl)
-                            listener.sendTickerCtaClickEvent(item)
                         }
+                    }
+                    item?.let {
+                        listener.sendTickerCtaClickEvent(it)
                     }
                 }
             })
