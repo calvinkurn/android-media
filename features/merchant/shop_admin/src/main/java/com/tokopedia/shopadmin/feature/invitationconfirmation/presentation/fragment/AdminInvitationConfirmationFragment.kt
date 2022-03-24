@@ -214,9 +214,9 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
 
     private fun redirectAfterConfirmReg(adminConfirmationRegUiModel: AdminConfirmationRegUiModel) {
         if (adminConfirmationRegUiModel.acceptBecomeAdmin) {
-            navigator?.goToShopAccount()
-        } else {
             navigator?.goToInvitationAccepted()
+        } else {
+            inflateInvitationRejected()
         }
     }
 
@@ -250,6 +250,9 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
             binding?.headerInvitationConfirmation?.navigationIcon =
                 getIconUnifyDrawable(this, IconUnify.CLOSE)
             setSupportActionBar(binding?.headerInvitationConfirmation)
+            binding?.headerInvitationConfirmation?.setOnClickListener {
+                navigator?.goToHomeBuyer()
+            }
         }
     }
 
@@ -279,7 +282,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         expiredBinding?.run {
             imgInvitationExpires.setImageUrl(AdminImageUrl.IL_INVITATION_EXPIRES)
             btnInvitationExpires.setOnClickListener {
-                navigator?.goToShopAccount()
+                navigator?.goToHomeBuyer()
             }
         }
     }
@@ -288,7 +291,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         rejectedBinding?.run {
             imgInvitationRejected.setImageUrl(AdminImageUrl.IL_INVITATION_REJECTED)
             btnInvitationRejected.setOnClickListener {
-                navigator?.goToShopAccount()
+                navigator?.goToHomeBuyer()
             }
         }
     }

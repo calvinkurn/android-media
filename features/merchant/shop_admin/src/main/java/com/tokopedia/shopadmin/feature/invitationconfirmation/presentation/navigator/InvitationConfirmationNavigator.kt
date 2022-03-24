@@ -1,6 +1,7 @@
 package com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.navigator
 
 import android.content.Context
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -29,5 +30,9 @@ class InvitationConfirmationNavigator(
             ApplinkConstInternalSellerapp.SELLER_MENU
         }
         RouteManager.route(context, appLink)
+    }
+
+    fun goToHomeBuyer() {
+        RouteManager.route(context, ApplinkConst.HOME)
     }
 }
