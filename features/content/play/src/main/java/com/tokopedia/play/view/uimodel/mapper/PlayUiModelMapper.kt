@@ -96,7 +96,7 @@ class PlayUiModelMapper @Inject constructor(
             stock = if (stock == null) OutOfStock
             else StockAvailable(stock.stock ?: 0),
             isVariantAvailable = true,
-            price = if (child.campaign?.isActive == true) {
+            price = if (child.campaign?.discountedPercentage != 0f) {
                 DiscountedPrice(
                     originalPrice = child.campaign?.originalPriceFmt.toEmptyStringIfNull(),
                     discountedPriceNumber = child.campaign?.discountedPrice ?: 0.0,
