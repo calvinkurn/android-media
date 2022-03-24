@@ -40,6 +40,7 @@ import com.tokopedia.digital.home.presentation.listener.RechargeHomepageReminder
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
 import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel
 import com.tokopedia.digital.home.widget.RechargeSearchBarWidget
+import com.tokopedia.home_component.util.convertDpToPixel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
@@ -448,7 +449,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     override fun onRechargeAllCategoryShowCoachmark(view: View) {
         context?.let {
-            val screenWidth = getScreenWidth(it as Activity)
+            val screenWidth = getScreenWidth(it as Activity) - convertDpToPixel(COACHMARK_SPACING_DP, it)
 
             val isCoachmarkShown = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, false)
             if (!isCoachmarkShown) {
@@ -564,6 +565,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
         const val TOOLBAR_TRANSITION_RANGE_DP = 8
         const val SECTION_SPACING_DP = 16
+        const val COACHMARK_SPACING_DP = 24f
 
         private const val OFFSET_ALPHA = 255f
 
