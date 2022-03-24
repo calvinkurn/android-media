@@ -243,7 +243,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     public void onBackPressed() {
         List<Fragment> list = getSupportFragmentManager().getFragments();
         for(Fragment fragment : list) {
-            if(fragment instanceof TkpdBaseV4Fragment) {
+            if(fragment instanceof TkpdBaseV4Fragment && fragment.isVisible()) {
                 boolean handled = ((TkpdBaseV4Fragment)fragment).onFragmentBackPressed();
                 if (handled) {
                     return;

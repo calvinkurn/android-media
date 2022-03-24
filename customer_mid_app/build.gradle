@@ -120,6 +120,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.sortFilter
     implementation rootProject.ext.unifyDependencies.pin
     implementation rootProject.ext.unifyDependencies.accordion
+    implementation rootProject.ext.unifyDependencies.dateFilter
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.supportLibDependencies.supportV13
     implementation rootProject.ext.miscDependencies.lottie
