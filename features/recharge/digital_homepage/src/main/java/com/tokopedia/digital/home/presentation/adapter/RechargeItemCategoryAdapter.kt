@@ -47,11 +47,15 @@ class RechargeItemCategoryAdapter(
                     onItemBindListener.onRechargeSectionItemClicked(element)
                 }
 
-                if (isLastItem) {
+                if (isLastItem && element.title.equals(SEE_ALL_TITLE, true)) {
                     onItemBindListener.onRechargeAllCategoryShowCoachmark(binding.root)
                 }
             }
 
+        }
+
+        companion object {
+            private const val SEE_ALL_TITLE = "Semua Kategori"
         }
 
     }
