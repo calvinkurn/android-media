@@ -2,6 +2,7 @@ package com.tokopedia.shop_widget.thematicwidget.uimodel
 
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop_widget.thematicwidget.typefactory.ProductCardTypeFactory
 
 data class ProductCardUiModel(
@@ -35,7 +36,7 @@ data class ProductCardUiModel(
     var totalProduct: Int = 0,
     var totalProductWording: String = "",
     var rvState: Parcelable? = null
-): Visitable<ProductCardTypeFactory> {
+): Visitable<ProductCardTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: ProductCardTypeFactory): Int {
         return typeFactory.type(this)
     }

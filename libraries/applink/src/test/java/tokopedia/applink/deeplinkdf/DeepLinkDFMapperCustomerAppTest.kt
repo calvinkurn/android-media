@@ -622,7 +622,7 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `check internal toko points appLink then should return DF_PROMO_TOKOPOINTS in customerapp`() {
-        val appLink = "${DeeplinkConstant.SCHEME_INTERNAL}://tokopoints"
+        val appLink = "${DeeplinkConstant.SCHEME_INTERNAL}://rewards"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_PROMO_TOKOPOINTS)
     }
 
@@ -898,7 +898,7 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `check liveness detection appLink then should return DF_USER_LIVENESS in customerapp`() {
-        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/liveness-detection"
+        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/liveness-detection?projectId=0"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_LIVENESS)
     }
 
@@ -1008,5 +1008,11 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     fun `check play broadcaster appLink then should return DF_CONTENT_PLAY_BROADCASTER in customerapp`() {
         val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://play-broadcaster"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_CONTENT_PLAY_BROADCASTER)
+    }
+
+    @Test
+    fun `check telephony masking appLink then should return DF_OPERATIONAL_CONTACT_US in customerapp`() {
+        val internalApplink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/telephony-masking"
+        assertEqualDeepLinkCustomerApp(internalApplink, DeeplinkDFMapper.DF_OPERATIONAL_CONTACT_US)
     }
 }

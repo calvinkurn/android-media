@@ -10,6 +10,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.consts.NumberConstant
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getToday
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.isBeforeRollout
 import com.tokopedia.vouchercreation.common.utils.FragmentRouter
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
@@ -38,7 +41,6 @@ class CreateCouponProductActivity : AppCompatActivity() {
         private const val EMPTY_STRING = ""
         private const val APP_LINK = "create-voucher-product"
         private const val COUPON_START_DATE_OFFSET_IN_HOUR = 3
-        private const val COUPON_END_DATE_OFFSET_IN_DAYS = 30
     }
 
     @Inject
@@ -67,7 +69,13 @@ class CreateCouponProductActivity : AppCompatActivity() {
         setContentView(R.layout.activity_mvc_create_coupon)
         router.replace(supportFragmentManager, R.id.parent_view, couponPreviewFragment)
         println(productId) //TODO: Auto select product based on productId
-        couponPreviewFragment.setCouponInformationData(populateDefaultCouponStartEndDate())
+
+        val startEndDate = if (isBeforeRollout()) {
+            populateDefaultCouponStartEndDateBeforeRollout()
+        } else {
+            populateDefaultCouponStartEndDate()
+        }
+        couponPreviewFragment.setCouponInformationData(startEndDate)
     }
 
     private fun setupDependencyInjection() {
@@ -112,6 +120,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
         val maxProductLimit = couponPreviewFragment.getMaxAllowedProduct()
         val manageProductIntent = Intent(this, ManageProductActivity::class.java).apply {
             putExtras(Bundle().apply {
+                putString(BUNDLE_KEY_SELECTED_WAREHOUSE_ID, couponPreviewFragment.getSelectedWarehouseId())
                 putBoolean(ManageProductFragment.BUNDLE_KEY_IS_EDITING, true)
                 putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
                 putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
@@ -189,6 +198,22 @@ class CreateCouponProductActivity : AppCompatActivity() {
         )
     }
 
+    private fun populateDefaultCouponStartEndDateBeforeRollout(): CouponInformation {
+        val startDate = getToday().apply {
+            timeInMillis = DateTimeUtils.ROLLOUT_DATE_THRESHOLD_TIME
+        }
+        val endDate = getToday().apply {
+            timeInMillis = DateTimeUtils.ROLLOUT_DATE_THRESHOLD_TIME
+            add(Calendar.DAY_OF_MONTH, DateTimeUtils.EXTRA_DAYS_COUPON)
+        }
+        return CouponInformation(
+            CouponInformation.Target.NOT_SELECTED,
+            EMPTY_STRING,
+            EMPTY_STRING,
+            CouponInformation.Period(startDate.time, endDate.time)
+        )
+    }
+
     private fun getCouponDefaultStartDate() : Date {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.HOUR_OF_DAY, COUPON_START_DATE_OFFSET_IN_HOUR)
@@ -197,7 +222,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
 
     private fun getCouponDefaultEndDate(): Date {
         val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_MONTH, COUPON_END_DATE_OFFSET_IN_DAYS)
+        calendar.add(Calendar.DAY_OF_MONTH, DateTimeUtils.EXTRA_DAYS_COUPON)
         return calendar.time
     }
 
@@ -212,6 +237,8 @@ class CreateCouponProductActivity : AppCompatActivity() {
             } else if (requestCode == REQUEST_CODE_MANAGE_PRODUCT) {
                 val selectedProducts = data?.getParcelableArrayListExtra<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)?.toList() ?: listOf()
                 couponPreviewFragment.setProducts(selectedProducts)
+                val selectedWarehouseId = data?.getStringExtra(BUNDLE_KEY_SELECTED_WAREHOUSE_ID)
+                couponPreviewFragment.setSelectedWarehouseId(selectedWarehouseId ?: "")
             }
         }
     }

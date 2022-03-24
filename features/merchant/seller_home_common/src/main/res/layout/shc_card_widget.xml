@@ -76,6 +76,21 @@
             app:layout_constraintTop_toTopOf="@+id/tvCardTitle"
             tools:visibility="visible" />
 
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icShcRefreshCard"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/bg_shc_shadow_circle"
+            android:padding="6dp"
+            android:visibility="gone"
+            app:icon_name="RELOAD"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvCardValue"
             android:layout_width="@dimen/layout_lvl0"
@@ -134,7 +149,7 @@
             android:layout_width="@dimen/layout_lvl6"
             android:layout_height="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/layout_lvl1"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="18dp"
             android:visibility="gone"
             app:loader_corner_radius="5dp"
             app:loader_type="rect"

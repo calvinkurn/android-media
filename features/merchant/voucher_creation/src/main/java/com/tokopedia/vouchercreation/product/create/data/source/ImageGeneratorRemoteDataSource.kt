@@ -17,7 +17,7 @@ class ImageGeneratorRemoteDataSource @Inject constructor(
         voucherBenefitType: String,
         voucherCashbackType: String,
         voucherCashbackPercentage: Int,
-        voucherNominalAmount: Number,
+        voucherNominalAmount: Int,
         voucherNominalSymbol: String,
         shopLogo: String,
         shopName: String,
@@ -26,8 +26,8 @@ class ImageGeneratorRemoteDataSource @Inject constructor(
         voucherFinishTime: String,
         productCount: Int,
         firstProductImageUrl: String,
-        secondProductImageUrl: String,
-        thirdProductImageUrl: String,
+        secondProductImageUrl: String?,
+        thirdProductImageUrl: String?,
         audienceTarget: String
     ): ResponseBody {
         return imageGeneratorService.previewImage(

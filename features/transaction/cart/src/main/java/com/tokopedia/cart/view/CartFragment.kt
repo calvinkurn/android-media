@@ -39,13 +39,12 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo
-import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.*
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -126,9 +125,9 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_FLOW
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
-import com.tokopedia.purchase_platform.common.constant.EmbraceConstant
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
@@ -309,7 +308,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             if (savedInstanceState != null) {
                 loadCachedData()
             } else {
-                EmbraceMonitoring.startMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_LOAD_CART)
+                EmbraceMonitoring.startMoments(EmbraceKey.KEY_MP_CART)
+                EmbraceMonitoring.startMoments(EmbraceKey.KEY_MP_CART_INCOMPLETE)
                 cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE)
                 cartAllPerformanceMonitoring = PerformanceMonitoring.start(CART_ALL_TRACE)
             }
@@ -565,7 +565,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun initRecyclerView() {
-        val gridLayoutManager = object: GridLayoutManager(context, 2) {
+        val gridLayoutManager = object : GridLayoutManager(context, 2) {
             override fun supportsPredictiveItemAnimations() = false
 
             override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State?) {
@@ -1262,6 +1262,17 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         routeToApplink(appLink)
     }
 
+    override fun onClickAddOnCart(productId: String, addOnId: String) {
+        activity?.let {
+            RouteManager.route(it, UriUtil.buildUri(ApplinkConst.GIFTING, addOnId))
+        }
+        cartPageAnalytics.eventClickAddOnsWidget(productId)
+    }
+
+    override fun addOnImpression(productId: String) {
+        cartPageAnalytics.eventViewAddOnsWidget(productId)
+    }
+
     private fun onErrorAddWishList(errorMessage: String, productId: String) {
         showToastMessageRed(errorMessage)
         cartAdapter.notifyByProductId(productId, false)
@@ -1732,7 +1743,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             binding?.vDisabledGoToCourierPageButton?.gone()
             binding?.goToCourierPageButton?.isEnabled = true
             binding?.goToCourierPageButton?.setOnClickListener {
-                EmbraceMonitoring.startMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_ACT_BUY)
+                EmbraceMonitoring.startMoments(EmbraceKey.KEY_ACT_BUY)
                 checkGoToShipment("")
             }
         }
@@ -2422,9 +2433,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         PromoRevampAnalytics.eventCartEmptyPromoApplied(listPromos)
     }
 
-    override fun stopCartPerformanceTrace() {
+    override fun stopCartPerformanceTrace(isSuccessLoadCart: Boolean) {
         if (!isTraceCartStopped) {
-            EmbraceMonitoring.stopMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_LOAD_CART)
+            EmbraceMonitoring.stopMoments(EmbraceKey.KEY_MP_CART)
+            if (!isSuccessLoadCart) {
+                EmbraceMonitoring.stopMoments(EmbraceKey.KEY_MP_CART_INCOMPLETE)
+            }
             cartPerformanceMonitoring?.stopTrace()
             isTraceCartStopped = true
         }

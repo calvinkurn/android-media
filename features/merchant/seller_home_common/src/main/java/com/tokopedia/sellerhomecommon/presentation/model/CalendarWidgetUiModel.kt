@@ -30,6 +30,7 @@ data class CalendarWidgetUiModel(
     override var isFromCache: Boolean,
     override var isNeedToBeRemoved: Boolean = false,
     override var emptyState: WidgetEmptyStateUiModel,
+    override var showLoadingState: Boolean = false,
     var filter: CalendarFilterDataKeyUiModel = getDefaultCalendarFilter(dataKey)
 ) : BaseWidgetUiModel<CalendarDataUiModel> {
 

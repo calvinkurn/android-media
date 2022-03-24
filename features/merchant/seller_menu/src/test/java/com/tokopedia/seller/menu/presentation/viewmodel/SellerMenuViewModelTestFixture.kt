@@ -1,7 +1,7 @@
 package com.tokopedia.seller.menu.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
+import com.tokopedia.gm.common.domain.interactor.GetShopCreatedInfoUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaData
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaResponse
@@ -43,7 +43,7 @@ open class SellerMenuViewModelTestFixture {
     private lateinit var getAllShopInfoUseCase: GetAllShopInfoUseCase
     private lateinit var getProductListMetaUseCase: GetProductListMetaUseCase
     private lateinit var getSellerMenuNotifications: GetSellerNotificationUseCase
-    private lateinit var getShopInfoPeriodUseCase: GetShopInfoPeriodUseCase
+    private lateinit var getShopCreatedInfoUseCase: GetShopCreatedInfoUseCase
     private lateinit var getShopScoreLevelUseCase: GetShopScoreLevelUseCase
     private lateinit var userSession: UserSessionInterface
 
@@ -54,13 +54,13 @@ open class SellerMenuViewModelTestFixture {
         getAllShopInfoUseCase = mockk(relaxed = true)
         getProductListMetaUseCase = mockk(relaxed = true)
         getSellerMenuNotifications = mockk(relaxed = true)
-        getShopInfoPeriodUseCase = mockk(relaxed = true)
+        getShopCreatedInfoUseCase = mockk(relaxed = true)
         getShopScoreLevelUseCase = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
 
         viewModel = SellerMenuViewModel(
                 getAllShopInfoUseCase,
-                getShopInfoPeriodUseCase,
+                getShopCreatedInfoUseCase,
                 getProductListMetaUseCase,
                 getSellerMenuNotifications,
                 getShopScoreLevelUseCase,
@@ -70,11 +70,11 @@ open class SellerMenuViewModelTestFixture {
     }
 
     protected fun onGetShopInfoPeriodUseCase_thenReturn(response: ShopInfoPeriodUiModel) {
-        coEvery { getShopInfoPeriodUseCase.executeOnBackground() } returns response
+        coEvery { getShopCreatedInfoUseCase.executeOnBackground() } returns response
     }
 
     protected fun onGetGetShopInfoPeriodUseCase_thenReturnError(error: Throwable) {
-        coEvery { getShopInfoPeriodUseCase.executeOnBackground() } throws error
+        coEvery { getShopCreatedInfoUseCase.executeOnBackground() } throws error
     }
 
     protected fun onGetAllShopInfoUseCase_thenReturn(response: Pair<PartialSettingResponse, PartialSettingResponse>) {

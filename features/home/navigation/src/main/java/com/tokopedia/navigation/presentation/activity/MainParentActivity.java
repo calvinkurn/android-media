@@ -118,6 +118,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import dagger.Lazy;
+import rx.android.BuildConfig;
 
 /**
  * Created by meta on 19/06/18.
@@ -196,6 +197,7 @@ public class MainParentActivity extends BaseActivity implements
     public static final String PARAM_HOME = "home";
     public static final String PARAM_ACTIVITY_WISHLIST_V2 = "activity_wishlist_v2";
     private static final String ENABLE_REVAMP_WISHLIST_V2 = "android_revamp_wishlist_v2";
+    private static final String SUFFIX_ALPHA = "-alpha";
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
@@ -223,7 +225,6 @@ public class MainParentActivity extends BaseActivity implements
     private Handler handler = new Handler();
     private FrameLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
-    private boolean useNewInbox = false;
     private boolean useNewNotificationOnNewInbox = false;
     private RemoteConfigInstance remoteConfigInstance;
 
@@ -268,7 +269,6 @@ public class MainParentActivity extends BaseActivity implements
 
         super.onCreate(savedInstanceState);
         initInjector();
-        initInboxAbTest();
         presenter.get().setView(this);
         if (savedInstanceState != null) {
             presenter.get().setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
@@ -299,16 +299,6 @@ public class MainParentActivity extends BaseActivity implements
         AppAuthWorker.Companion.scheduleWorker(getApplicationContext(), false);
     }
 
-    private void initInboxAbTest() {
-        try {
-            useNewInbox = RemoteConfigInstance.getInstance().getABTestPlatform().getString(
-                    RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-            ).equals(RollenceKey.VARIANT_NEW_INBOX);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     private void installDFonBackground() {
         List<String> moduleNameList = new ArrayList<>();
         if (userSession.get().isLoggedIn()) {
@@ -325,6 +315,9 @@ public class MainParentActivity extends BaseActivity implements
         moduleNameList.add(DeeplinkDFMapper.DF_ENTERTAINMENT);
         moduleNameList.add(DeeplinkDFMapper.DF_TOKOPEDIA_NOW);
         moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_REVIEW);
+        if (BuildConfig.VERSION_NAME.endsWith(SUFFIX_ALPHA) && remoteConfig.get().getBoolean(RemoteConfigKey.ENABLE_APLHA_OBSERVER, true)) {
+            moduleNameList.add(DeeplinkDFMapper.DF_ALPHA_TESTING);
+        }
         DFInstaller.installOnBackground(this.getApplication(), moduleNameList, "Home");
     }
 
@@ -886,9 +879,6 @@ public class MainParentActivity extends BaseActivity implements
             if (fragment instanceof AllNotificationListener && notification != null) {
                 int totalInbox = notification.getTotalInbox();
                 int totalNotification = notification.getTotalNotif();
-                if (useNewInbox) {
-                    totalInbox = notification.totalNewInbox;
-                }
                 if (useNewNotificationOnNewInbox) {
                     totalNotification = notification.totalNotificationOnNewInbox;
                 }
@@ -975,7 +965,8 @@ public class MainParentActivity extends BaseActivity implements
         return cache.getBoolean(GlobalNavConstant.Cache.KEY_IS_FIRST_TIME, false);
     }
 
-    private void checkAppUpdateAndInApp() {
+    @Override
+    public void checkAppUpdateAndInApp() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // if download finished or flexible update is in progress, we do not need to show the update dialog
             AppUpdateManagerWrapper.checkUpdateInFlexibleProgressOrCompleted(this, isOnProgress -> {
