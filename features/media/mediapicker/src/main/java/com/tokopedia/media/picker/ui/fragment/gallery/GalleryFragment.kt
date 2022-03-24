@@ -169,7 +169,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         binding?.emptyState?.emptyNavigation?.visibility =
             if (cacheManager.getParam().pageType() == PickerPageType.COMMON) {
                 binding?.emptyState?.emptyNavigation?.setOnClickListener {
-                    listener?.onGalleryEmptyNavigation()
+                    listener?.navigateToCameraPage()
                 }
                 View.VISIBLE
             } else View.GONE
