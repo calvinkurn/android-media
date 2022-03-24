@@ -2,6 +2,7 @@ package com.tokopedia.digital.home.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital.home.databinding.LayoutDigitalHomeCategoryItemSubmenuBinding
 import com.tokopedia.digital.home.model.RechargeHomepageSections
@@ -48,7 +49,13 @@ class RechargeItemCategoryAdapter(
                 }
 
                 if (isLastItem && element.title.equals(SEE_ALL_TITLE, true)) {
-                    onItemBindListener.onRechargeAllCategoryShowCoachmark(binding.root)
+                    binding.root.viewTreeObserver.addOnGlobalLayoutListener(object :
+                        ViewTreeObserver.OnGlobalLayoutListener {
+                        override fun onGlobalLayout() {
+                            binding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                            onItemBindListener.onRechargeAllCategoryShowCoachmark(binding.root)
+                        }
+                    })
                 }
             }
 
