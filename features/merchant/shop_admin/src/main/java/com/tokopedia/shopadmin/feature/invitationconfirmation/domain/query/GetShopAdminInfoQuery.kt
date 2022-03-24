@@ -11,7 +11,7 @@ object GetShopAdminInfoQuery: GqlQueryInterface {
     private const val SOURCE = "getShopAdminInfo-android"
 
     private val GQL_QUERY = """
-        query $OPERATION_NAME(${'$'}source: String!, ${'$'}shop_id: Int!) {
+        query ${OPERATION_NAME}(${'$'}source: String!, ${'$'}shop_id: Int!) {
            shop {
               shop_name
               logo
@@ -24,10 +24,10 @@ object GetShopAdminInfoQuery: GqlQueryInterface {
         }
     """.trimIndent()
 
-    fun createRequestParams(shopId: String): Map<String, Any> {
+    fun createRequestParams(shopId: Long): Map<String, Any> {
         return RequestParams.create().apply {
             putString(SOURCE_KEY, SOURCE)
-            putString(SHOP_ID_KEY, shopId)
+            putLong(SHOP_ID_KEY, shopId)
         }.parameters
     }
 

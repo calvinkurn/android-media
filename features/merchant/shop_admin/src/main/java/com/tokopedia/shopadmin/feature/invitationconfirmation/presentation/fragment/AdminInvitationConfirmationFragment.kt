@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.view.ViewStub
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -21,6 +22,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
@@ -29,6 +31,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shopadmin.R
 import com.tokopedia.shopadmin.common.constants.AdminImageUrl
 import com.tokopedia.shopadmin.common.constants.AdminStatus
+import com.tokopedia.shopadmin.common.utils.setTypeGlobalError
 import com.tokopedia.shopadmin.databinding.FragmentAdminInvitationConfirmationBinding
 import com.tokopedia.shopadmin.databinding.ItemAdminConfirmationInvitationBinding
 import com.tokopedia.shopadmin.databinding.ItemAdminInvitationExpiredBinding
@@ -43,11 +46,13 @@ import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.navigator.InvitationConfirmationNavigator
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.viewmodel.AdminInvitationConfirmationViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
@@ -92,7 +97,8 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeAdminInfo()
+        userSession.email = ""
+        observeAdminType()
         observeShopAdminInfo()
         observeConfirmationReg()
         observeValidationEmail()
@@ -124,7 +130,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
     }
 
     private fun observeValidationEmail() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+        lifecycleScope.launchWhenResumed {
             viewModel.validateEmail.collect {
                 when (it) {
                     is ValidateAdminEmailEvent.Success -> {
@@ -159,12 +165,13 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
             hideLoading()
             when (it) {
                 is Success -> {
+                    invitationConfirmationParam.setShopManageId(it.data.shopManageId)
                     inflateInvitationShopAdminInfo(it.data)
                 }
                 is Fail -> {
                     val message = ErrorHandler.getErrorMessage(context, it.throwable)
                     showToaster(message)
-                    showGlobalError()
+                    showGlobalError(it.throwable)
                 }
             }
         }
@@ -192,24 +199,24 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun observeAdminInfo() {
-        observe(viewModel.adminInfo) {
+    private fun observeAdminType() {
+        observe(viewModel.adminType) {
             when (it) {
                 is Success -> {
-                    showAdminType(it.data.adminTypeUiModel.status)
-                    invitationConfirmationParam.setShopId(it.data.adminTypeUiModel.shopID)
-                    invitationConfirmationParam.setShopManageId(it.data.adminDataUiModel.shopManageID)
+                    invitationConfirmationParam.setShopId(it.data.shopID)
+                    showAdminType(it.data.status)
                 }
                 is Fail -> {
                     hideLoading()
-                    showGlobalError()
+                    showGlobalError(it.throwable)
+                    setupToolbar(true)
                 }
             }
         }
     }
 
     private fun loadAdminInfo() {
-        viewModel.getAdminInfo(userSession.shopId.toLongOrZero())
+        viewModel.getAdminInfo()
     }
 
     private fun redirectAfterConfirmReg(adminConfirmationRegUiModel: AdminConfirmationRegUiModel) {
@@ -224,7 +231,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         when (adminStatus) {
             AdminStatus.ACTIVE -> navigator?.goToShopAccount()
             AdminStatus.WAITING_CONFIRMATION -> {
-                viewModel.getShopAdminInfo(userSession.shopId)
+                viewModel.getShopAdminInfo(invitationConfirmationParam.getShopId().toLongOrZero())
             }
             AdminStatus.REJECT -> inflateInvitationRejected()
             AdminStatus.EXPIRED -> inflateInvitationExpired()
@@ -232,50 +239,87 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
     }
 
     private fun inflateInvitationShopAdminInfo(shopAdminInfoUiModel: ShopAdminInfoUiModel) {
-        setupToolbar()
-        val vsInvitationActive = binding?.root?.findViewById<View>(R.id.vsInvitationActive)
-        if (vsInvitationActive is ViewStub) {
-            vsInvitationActive.inflate()
-            confirmationBinding = ItemAdminConfirmationInvitationBinding.bind(vsInvitationActive)
-            actionConfirmationButton()
-        } else {
-            vsInvitationActive?.show()
+        setupToolbar(false)
+        binding?.run {
+            val invitationActiveVs = root.findViewById<View>(R.id.vsInvitationActive)
+            if (invitationActiveVs is ViewStub) {
+                invitationActiveVs.inflate()
+                setupConfirmationBinding(root)
+                actionConfirmationButton()
+            } else {
+                vsInvitationActive.show()
+            }
+            setShopAdminInfo(shopAdminInfoUiModel)
         }
-        setShopAdminInfo(shopAdminInfoUiModel)
     }
 
-    private fun setupToolbar() {
+    private fun setupConfirmationBinding(root: View) {
+        if (confirmationBinding == null) {
+            confirmationBinding =
+                ItemAdminConfirmationInvitationBinding.bind(root.findViewById(R.id.vsInvitationActive))
+        }
+    }
+
+    private fun setupToolbar(isError: Boolean) {
         (activity as? AppCompatActivity)?.run {
-            supportActionBar?.hide()
-            binding?.headerInvitationConfirmation?.navigationIcon =
-                getIconUnifyDrawable(this, IconUnify.CLOSE)
-            setSupportActionBar(binding?.headerInvitationConfirmation)
-            binding?.headerInvitationConfirmation?.setOnClickListener {
-                navigator?.goToHomeBuyer()
+            binding?.headerInvitationConfirmation?.apply {
+                val drawableIcon = if (isError)
+                    ContextCompat.getDrawable(this@run, R.drawable.ic_shop_admin_arrow_back)
+                else
+                    ContextCompat.getDrawable(this@run, R.drawable.ic_shop_admin_close)
+                navigationIcon = drawableIcon
+                setSupportActionBar(this)
+                show()
+
+                binding?.headerInvitationConfirmation?.setOnClickListener {
+                    navigator?.goToHomeBuyer()
+                }
             }
         }
     }
 
     private fun inflateInvitationExpired() {
-        val vsInvitationExpired = binding?.root?.findViewById<View>(R.id.vsInvitationExpired)
-        if (vsInvitationExpired is ViewStub) {
-            vsInvitationExpired.inflate()
-            expiredBinding = ItemAdminInvitationExpiredBinding.bind(vsInvitationExpired)
-        } else {
-            vsInvitationExpired?.show()
+        hideLoading()
+        setupToolbar(false)
+        binding?.run {
+            val vsInvitationExpired = root.findViewById<View>(R.id.vsInvitationExpired)
+            if (vsInvitationExpired is ViewStub) {
+                vsInvitationExpired.inflate()
+                setupExpiredBinding(root)
+            } else {
+                vsInvitationExpired?.show()
+            }
+            setInvitationExpired()
         }
-        setInvitationExpired()
+    }
+
+    private fun setupExpiredBinding(root: View) {
+        if (expiredBinding == null) {
+            expiredBinding =
+                ItemAdminInvitationExpiredBinding.bind(root.findViewById(R.id.vsInvitationExpired))
+        }
     }
 
     private fun inflateInvitationRejected() {
-        val vsInvitationReject = binding?.root?.findViewById<View>(R.id.vsInvitationReject)
-        if (vsInvitationReject is ViewStub) {
-            vsInvitationReject.inflate()
-            expiredBinding = ItemAdminInvitationExpiredBinding.bind(vsInvitationReject)
-        } else {
-            vsInvitationReject?.show()
+        hideLoading()
+        setupToolbar(false)
+        binding?.run {
+            val vsInvitationReject = root.findViewById<View>(R.id.vsInvitationReject)
+            if (vsInvitationReject is ViewStub) {
+                vsInvitationReject.inflate()
+                setupRejectBinding(root)
+            } else {
+                vsInvitationReject?.show()
+            }
+            setInvitationRejected()
         }
-        setInvitationRejected()
+    }
+
+    private fun setupRejectBinding(root: View) {
+        if (rejectedBinding == null) {
+            rejectedBinding =
+                ItemAdminInvitationRejectedBinding.bind(root.findViewById(R.id.vsInvitationReject))
+        }
     }
 
     private fun setInvitationExpired() {
@@ -289,6 +333,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
 
     private fun setInvitationRejected() {
         rejectedBinding?.run {
+            tvInvitationRejectedDesc.text = getString(R.string.desc_invitation_rejected, invitationConfirmationParam.getShopName())
             imgInvitationRejected.setImageUrl(AdminImageUrl.IL_INVITATION_REJECTED)
             btnInvitationRejected.setOnClickListener {
                 navigator?.goToHomeBuyer()
@@ -322,40 +367,27 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
 
     private fun emailTypingListener() {
         confirmationBinding?.adminInvitationWithNoEmailSection?.tfuAdminConfirmationEmail?.run {
-            textFieldWrapper.editText?.setOnFocusChangeListener { _, hasFocus ->
-                if (hasFocus) {
-                    showKeyboard(this)
-                }
-            }
             textFieldWrapper.editText?.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable) {}
+                override fun afterTextChanged(s: Editable) {
+                    val email = s.trim().toString()
+                    viewModel.validateAdminEmail(email)
+                }
 
                 override fun beforeTextChanged(
                     s: CharSequence,
                     start: Int,
                     count: Int,
                     after: Int
-                ) {
-                }
+                ) {}
 
                 override fun onTextChanged(
                     s: CharSequence,
                     start: Int,
                     before: Int,
                     count: Int
-                ) {
-                    val email = s.trim().toString()
-                    viewModel.validateAdminEmail(email)
-                }
+                ) {}
             })
         }
-    }
-
-    private fun showKeyboard(view: View) {
-        view.requestFocus()
-        val imm =
-            view.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-        imm?.showSoftInput(view, 0)
     }
 
     private fun handleAfterLogin() {
@@ -460,8 +492,11 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         binding?.globalErrorConfirmationInvitation?.hide()
     }
 
-    private fun showGlobalError() {
-        binding?.globalErrorConfirmationInvitation?.show()
+    private fun showGlobalError(throwable: Throwable) {
+        binding?.globalErrorConfirmationInvitation?.run {
+            setTypeGlobalError(throwable)
+            show()
+        }
     }
 
     private fun actionGlobalError() {
@@ -506,5 +541,6 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         private const val REQUEST_OTP = 659
         private const val MODE_EMAIL = "email"
         private const val OTP_TYPE_EMAIL = 150
+        private const val ICON_SIZE = 24
     }
 }

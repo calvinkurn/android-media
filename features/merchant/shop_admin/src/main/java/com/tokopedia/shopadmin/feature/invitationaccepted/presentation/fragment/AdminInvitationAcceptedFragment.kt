@@ -7,12 +7,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.shopadmin.ShopAdminDeepLinkMapper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
@@ -26,6 +28,7 @@ import com.tokopedia.shopadmin.R
 import com.tokopedia.shopadmin.common.constants.AdminImageUrl
 import com.tokopedia.shopadmin.common.constants.Constants
 import com.tokopedia.shopadmin.common.utils.setTextMakeHyperlink
+import com.tokopedia.shopadmin.common.utils.setTypeGlobalError
 import com.tokopedia.shopadmin.databinding.FragmentAdminInvitationAcceptedBinding
 import com.tokopedia.shopadmin.feature.invitationaccepted.di.component.AdminInvitationAcceptedComponent
 import com.tokopedia.shopadmin.feature.invitationaccepted.presentation.adapter.ItemFeatureAccessAdapter
@@ -83,7 +86,7 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
     }
 
     private fun setShopNameFromArgs() {
-        this.shopName = arguments?.getString(Constants.SHOP_NAME_PARAM).orEmpty()
+        this.shopName = arguments?.getString(ShopAdminDeepLinkMapper.SHOP_NAME).orEmpty()
     }
 
     private fun observeAdminPermission() {
@@ -96,7 +99,7 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
                 is Fail -> {
                     val message = ErrorHandler.getErrorMessage(context, it.throwable)
                     showToaster(message)
-                    showGlobalError()
+                    showGlobalError(it.throwable)
                 }
             }
         }
@@ -213,8 +216,11 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
         binding?.loaderInvitationAccepted?.hide()
     }
 
-    private fun showGlobalError() {
-        binding?.globalErrorInvitationAccepted?.show()
+    private fun showGlobalError(throwable: Throwable) {
+        binding?.globalErrorInvitationAccepted?.run {
+            setTypeGlobalError(throwable)
+            show()
+        }
     }
 
     companion object {

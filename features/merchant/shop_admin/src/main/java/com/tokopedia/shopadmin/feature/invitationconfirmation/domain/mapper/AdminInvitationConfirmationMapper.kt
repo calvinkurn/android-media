@@ -5,8 +5,6 @@ import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.model.GetAd
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.model.GetShopAdminInfoResponse
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.model.ValidateAdminEmailResponse
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.AdminConfirmationRegUiModel
-import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.AdminDataUiModel
-import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.AdminInfoUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.ShopAdminInfoUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.AdminTypeUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.ValidateEmailUiModel
@@ -14,16 +12,10 @@ import javax.inject.Inject
 
 class AdminInvitationConfirmationMapper @Inject constructor() {
 
-    fun mapToAdminInfoUiModel(getAdminInfoResponse: GetAdminInfoResponse): AdminInfoUiModel {
-        return AdminInfoUiModel(
-            adminTypeUiModel = mapToAdminTypeUiModel(getAdminInfoResponse),
-            adminDataUiModel = mapToAdminDataUiModel(getAdminInfoResponse)
-        )
-    }
-
     fun mapToShopAdminInfoUiModel(shopAdminInfoResponse: GetShopAdminInfoResponse): ShopAdminInfoUiModel {
         val shop = shopAdminInfoResponse.shop
-        return ShopAdminInfoUiModel(shopName = shop.shopName, shop.logo)
+        val shopManageID = shopAdminInfoResponse.getAdminInfo.adminData.firstOrNull()?.shopManageId.orEmpty()
+        return ShopAdminInfoUiModel(shopName = shop.shopName, shop.logo, shopManageID)
     }
 
     fun mapToValidateAdminUiModel(validateAdminEmailResponse: ValidateAdminEmailResponse.ValidateAdminEmail): ValidateEmailUiModel {
@@ -42,14 +34,9 @@ class AdminInvitationConfirmationMapper @Inject constructor() {
         )
     }
 
-    private fun mapToAdminTypeUiModel(adminInfoResponse: GetAdminInfoResponse): AdminTypeUiModel {
+    fun mapToAdminTypeUiModel(adminInfoResponse: GetAdminInfoResponse): AdminTypeUiModel {
         val adminType = adminInfoResponse.getAdminType
-        return AdminTypeUiModel(adminType.adminData.status, adminType.shopID)
-    }
-
-    private fun mapToAdminDataUiModel(getAdminInfoResponse: GetAdminInfoResponse): AdminDataUiModel {
-        return AdminDataUiModel(
-            getAdminInfoResponse.getAdminInfo.adminData.firstOrNull()?.shopManageId.orEmpty()
-        )
+//        return AdminTypeUiModel(adminType.adminData.status, adminType.shopID)
+        return AdminTypeUiModel("2", adminType.shopID)
     }
 }

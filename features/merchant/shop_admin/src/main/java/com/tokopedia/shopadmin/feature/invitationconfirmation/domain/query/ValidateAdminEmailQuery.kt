@@ -11,8 +11,8 @@ object ValidateAdminEmailQuery: GqlQueryInterface {
     private const val EMAIL_KEY = "email"
 
     private val GQL_QUERY = """
-        mutation validateAdminEmail(${'$'}email: String!, ${'$'}manageID: String!, ${'$'}${'$'}shopID: String!)
-            validateAdminEmail(input: {
+        mutation ${OPERATION_NAME}(${'$'}email: String!, ${'$'}manageID: String!, ${'$'}shopID: String!) {
+            ${OPERATION_NAME}(input: {
                 source : "validate-admin-email-android",
                 email : ${'$'}email,
                 manageID: ${'$'}manageID,

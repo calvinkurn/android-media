@@ -2,5 +2,6 @@ package com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.mode
 
 data class ShopAdminInfoUiModel(
     val shopName: String,
-    val iconUrl: String
+    val iconUrl: String,
+    val shopManageId: String
 )

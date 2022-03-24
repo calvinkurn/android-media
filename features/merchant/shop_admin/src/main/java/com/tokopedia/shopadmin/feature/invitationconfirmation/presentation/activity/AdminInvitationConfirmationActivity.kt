@@ -1,5 +1,6 @@
 package com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.activity
 
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -10,6 +11,11 @@ import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.fragm
 
 class AdminInvitationConfirmationActivity: BaseSimpleActivity(), HasComponent<AdminInvitationConfirmationComponent> {
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        hideToolbar()
+    }
+
     override fun getNewFragment(): Fragment {
         return AdminInvitationConfirmationFragment.newInstance()
     }
@@ -19,6 +25,10 @@ class AdminInvitationConfirmationActivity: BaseSimpleActivity(), HasComponent<Ad
             .builder()
             .baseAppComponent((application as? BaseMainApplication)?.baseAppComponent)
             .build()
+    }
+
+    private fun hideToolbar() {
+        supportActionBar?.hide()
     }
 
 }

@@ -23,12 +23,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:text_field_label_static="true"
         app:text_field_input_type="textEmailAddress"
         app:text_field_label="@string/placeholder_email"
         app:text_field_placeholder="@string/placeholder_email"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvAdminConfirmationWithNoEmailLabel"
+        app:layout_constraintEnd_toEndOf="@id/tvAdminConfirmationWithNoEmailLabel"
         app:layout_constraintTop_toBottomOf="@id/tvAdminConfirmationWithNoEmailLabel"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
