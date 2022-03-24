@@ -398,6 +398,10 @@ open class PickerActivity : BaseActivity()
         }
     }
 
+    override fun navigateToCameraPage() {
+        binding?.tabPage?.tabLayout?.getTabAt(PAGE_CAMERA_INDEX)?.select()
+    }
+
     companion object {
         private const val REQUEST_PREVIEW_PAGE = 123
 

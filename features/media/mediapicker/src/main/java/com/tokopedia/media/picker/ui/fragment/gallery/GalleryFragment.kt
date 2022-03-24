@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
 import com.tokopedia.media.common.PickerCacheManager
+import com.tokopedia.media.common.types.PickerPageType
 import com.tokopedia.media.common.types.PickerSelectionType
 import com.tokopedia.media.common.uimodel.MediaUiModel
 import com.tokopedia.media.databinding.FragmentGalleryBinding
@@ -160,7 +161,18 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     private fun hasMediaList(isShown: Boolean) {
         setupWidgetAlbumSelector(isShown)
         setupSelectionDrawerWidget(isShown)
-        binding?.emptyState?.root?.showWithCondition(!isShown)
+        setupEmptyState(!isShown)
+    }
+
+    private fun setupEmptyState(isShown: Boolean) {
+        binding?.emptyState?.root?.showWithCondition(isShown)
+        binding?.emptyState?.emptyNavigation?.visibility =
+            if (cacheManager.getParam().pageType() == PickerPageType.COMMON) {
+                binding?.emptyState?.emptyNavigation?.setOnClickListener {
+                    listener?.navigateToCameraPage()
+                }
+                View.VISIBLE
+            } else View.GONE
     }
 
     private fun setupSelectionDrawerWidget(isShown: Boolean) {
@@ -252,5 +264,4 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         private const val RC_ALBUM_SELECTOR = 123
         private const val LIST_SPAN_COUNT = 3
     }
-
 }
