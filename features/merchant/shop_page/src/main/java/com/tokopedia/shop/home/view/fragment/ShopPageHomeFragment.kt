@@ -1545,7 +1545,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         productDetails = productDetails,
                         onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
                         onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
-                        bundleQuantity = selectedMultipleBundle.minOrder
+                        productQuantity = selectedMultipleBundle.minOrder
                 )
             }
         }
@@ -1554,7 +1554,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 userId = userId,
                 bundleId = selectedMultipleBundle.bundleId,
                 bundleName = bundleName,
-                bundlePriceCut = selectedMultipleBundle.discountPercentage.toString()
+                bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
+                bundlePrice = selectedMultipleBundle.displayPriceRaw
         )
     }
 
@@ -1587,7 +1588,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         productDetails = listOf(bundleProducts),
                         onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
                         onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
-                        bundleQuantity = selectedBundle.minOrder
+                        productQuantity = selectedBundle.minOrder
                 )
             }
         }
@@ -1597,6 +1598,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 bundleId = selectedBundle.bundleId,
                 bundleName = bundleName,
                 bundlePriceCut = selectedBundle.discountPercentage.toString(),
+                bundlePrice = selectedBundle.displayPriceRaw,
                 selectedPackage = selectedBundle.minOrderWording,
                 productId = bundleProducts.productId
         )

@@ -228,7 +228,7 @@ class SpecialReleaseViewHolder(
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
-        specialReleaseComponentListener?.onSpecialReleaseItemSeeAllClicked(
+        specialReleaseComponentListener?.onSpecialReleaseItemSeeAllCardClicked(
             channelModel = channel,
             applink = applink
         )

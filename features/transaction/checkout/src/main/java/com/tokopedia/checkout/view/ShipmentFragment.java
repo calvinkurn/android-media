@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.analytics.performance.util.EmbraceKey;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
@@ -107,7 +108,6 @@ import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
-import com.tokopedia.purchase_platform.common.constant.EmbraceConstant;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel;
@@ -836,7 +836,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void stopEmbraceTrace() {
         Map<String, Object> emptyMap = new HashMap<>();
-        EmbraceMonitoring.INSTANCE.stopMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_ACT_BUY, null, emptyMap);
+        EmbraceMonitoring.INSTANCE.stopMoments(EmbraceKey.KEY_ACT_BUY, null, emptyMap);
     }
 
     @Override
@@ -3324,6 +3324,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             AddOnsDataModel addOnsDataModel = cartItemModel.getAddOnProductLevelModel();
             AddOnBottomSheetModel addOnBottomSheetModel = addOnsDataModel.getAddOnsBottomSheetModel();
 
+            // No need to open add on bottom sheet if action = 0
+            if (addOnsDataModel.getAddOnsButtonModel().getAction() == 0) return;
+
             AvailableBottomSheetData availableBottomSheetData = new AvailableBottomSheetData();
             UnavailableBottomSheetData unavailableBottomSheetData = new UnavailableBottomSheetData();
 
@@ -3350,6 +3353,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (getActivity() != null && shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
             AddOnsDataModel addOnsDataModel = shipmentCartItemModel.getAddOnsOrderLevelModel();
             AddOnBottomSheetModel addOnBottomSheetModel = addOnsDataModel.getAddOnsBottomSheetModel();
+
+            // No need to open add on bottom sheet if action = 0
+            if (addOnsDataModel.getAddOnsButtonModel().getAction() == 0) return;
 
             AvailableBottomSheetData availableBottomSheetData = new AvailableBottomSheetData();
             UnavailableBottomSheetData unavailableBottomSheetData = new UnavailableBottomSheetData();
@@ -3434,10 +3440,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             popUpDialog.setDescription(popUpData.getDescription());
             popUpDialog.setPrimaryCTAText(popUpData.getButton().getText());
             popUpDialog.setPrimaryCTAClickListener(() -> {
-                shipmentPresenter.processInitialLoadCheckoutPage(
-                        true, isOneClickShipment(), isTradeIn(), true,
-                        true, null, getDeviceId(), getCheckoutLeasingId()
-                );
                 popUpDialog.dismiss();
                 return Unit.INSTANCE;
             });
