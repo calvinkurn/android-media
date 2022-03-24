@@ -1,13 +1,13 @@
 package com.tokopedia.digital.home.presentation.fragment
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.util.DisplayMetrics
+import android.view.*
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -448,6 +448,8 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     override fun onRechargeAllCategoryShowCoachmark(view: View) {
         context?.let {
+            val screenWidth = getScreenWidth(it as Activity)
+
             val isCoachmarkShown = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, false)
             if (!isCoachmarkShown) {
                 val coachMarkItems = arrayListOf(
@@ -460,6 +462,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
                 )
 
                 val coachmark = CoachMark2(it)
+                coachmark.width = screenWidth
                 coachmark.showCoachMark(coachMarkItems)
 
                 localCacheHandler.putBoolean(SHOW_COACH_MARK_KEY, true)
@@ -537,6 +540,20 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         binding.digitalHomepageOrderList.setOnClickListener {
             rechargeHomepageAnalytics.eventClickOrderList()
             RouteManager.route(activity, rechargeHomepageSectionSkeleton.searchBarAppLink)
+        }
+    }
+
+    @SuppressLint("DeprecatedMethod")
+    fun getScreenWidth(activity: Activity): Int {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val windowMetrics: WindowMetrics = activity.windowManager.currentWindowMetrics
+            val insets = windowMetrics.windowInsets
+                .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+            windowMetrics.bounds.width() - insets.left - insets.right
+        } else {
+            val displayMetrics = DisplayMetrics()
+            activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
+            displayMetrics.widthPixels
         }
     }
 
