@@ -4,9 +4,10 @@
     android:layout_height="wrap_content"
     android:background="@color/Unify_Background"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        app:corners="16"
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         android:id="@+id/title"
         android:layout_width="@dimen/layout_lvl8"
         android:layout_height="@dimen/spacing_lvl3"
@@ -16,8 +17,9 @@
         android:layout_marginTop="@dimen/spacing_lvl5"
         />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        app:corners="16"
+    <com.tokopedia.unifycomponents.LoaderUnify
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         android:id="@+id/see_all"
         android:layout_width="@dimen/layout_lvl6"
         android:layout_height="@dimen/spacing_lvl3"

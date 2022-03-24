@@ -11,9 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl9"
-        app:corners="16" />
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
 
 </LinearLayout>

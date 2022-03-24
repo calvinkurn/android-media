@@ -5,7 +5,7 @@
     android:background="@color/Unify_Background"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/iv_umrah_banner_salam"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_dp_320"
         android:background="@drawable/background_event_pdp_shimmering"
-        app:use_gradient="true"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
