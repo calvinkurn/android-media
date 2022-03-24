@@ -14,10 +14,6 @@ object GetReferralSenderHome {
                 reason
             }
             sharingMetadata {
-                ogImage
-                ogTitle
-                ogDescription
-                textDescription
                 sharingURL
             }
           }
