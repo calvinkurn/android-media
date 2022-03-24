@@ -85,23 +85,13 @@ internal object RecyclerViewUtils {
         val viewTop = viewLocation[1]
         val viewBottom = viewHeight + viewTop //Get the bottom of view.
 
-        var visiblePercent: Float = 0f
-        if (viewTop >= recyclerViewTop) {  //if view's top is inside the recycler view.
-            visiblePercent = 100f
-            //Get the bottom of recycler view
-            if (viewBottom >= recyclerViewBottom) {   //If view's bottom is outside from recycler view
-                //Find the visible part of view by subtracting view's top from recyclerview's bottom
-                val visiblePart = recyclerViewBottom - viewTop
-                visiblePercent = visiblePart.toFloat() / viewHeight * 100
-            }
-        } else {      //if view's top is outside the recycler view.
-            if (viewBottom > recyclerViewTop) { //if view's bottom is outside the recycler view
-                //Find the visible part of view by subtracting recycler view's top from view's bottom
-                val visiblePart = viewBottom - recyclerViewTop
-                visiblePercent = visiblePart.toFloat() / viewHeight * 100
-            }
-        }
-        return visiblePercent
+        return getVisiblePartPercentage(
+            viewTop,
+            viewBottom,
+            viewHeight,
+            recyclerViewTop,
+            recyclerViewBottom
+        )
     }
 
     private fun getHorizontalVisibilityPercentage(
@@ -119,20 +109,33 @@ internal object RecyclerViewUtils {
         val viewLeft = viewLocation[0]
         val viewRight = viewWidth + viewLeft
 
-        var visiblePercent: Float = 0f
-        if (viewLeft >= recyclerViewLeft) {  //if view's left is inside the recycler view.
+        return getVisiblePartPercentage(
+            viewLeft,
+            viewRight,
+            viewWidth,
+            recyclerViewLeft,
+            recyclerViewRight
+        )
+    }
+
+    private fun getVisiblePartPercentage(
+        viewStart: Int,
+        viewEnd: Int,
+        viewTotalPart: Int,
+        recyclerViewStart: Int,
+        recyclerViewEnd: Int,
+    ): Float {
+        var visiblePercent = 0f
+        if (viewStart >= recyclerViewStart) {
             visiblePercent = 100f
-            //Get the right of recycler view
-            if (viewRight >= recyclerViewRight) {   //If view's right is outside from recycler view
-                //Find the visible part of view by subtracting view's left from recyclerview's right
-                val visiblePart = recyclerViewRight - viewLeft
-                visiblePercent = visiblePart.toFloat() / viewWidth * 100
+            if (viewEnd >= recyclerViewEnd) {
+                val visiblePart = recyclerViewEnd - viewStart
+                visiblePercent = visiblePart.toFloat() / viewTotalPart * 100
             }
-        } else {      //if view's right is outside the recycler view.
-            if (viewRight > recyclerViewLeft) { //if view's right is outside the recycler view
-                //Find the visible part of view by subtracting recycler view's left from view's right
-                val visiblePart = viewRight - recyclerViewLeft
-                visiblePercent = visiblePart.toFloat() / viewWidth * 100
+        } else {
+            if (viewEnd > recyclerViewStart) {
+                val visiblePart = viewEnd - recyclerViewStart
+                visiblePercent = visiblePart.toFloat() / viewTotalPart * 100
             }
         }
         return visiblePercent
@@ -158,49 +161,30 @@ internal object RecyclerViewUtils {
         val viewTop = viewLocation[1]
         val viewBottom = viewHeight + viewTop //Get the bottom of view.
 
-        val visibleHeight =
-            getVisibleHeight(viewTop, viewBottom, recyclerViewTop, recyclerViewBottom)
-        val visibleWidth = getVisibleWidth(viewLeft, viewRight, recyclerViewLeft, recyclerViewRight)
+        val visibleHeight = getVisiblePart(viewTop, viewBottom, recyclerViewTop, recyclerViewBottom)
+        val visibleWidth = getVisiblePart(viewLeft, viewRight, recyclerViewLeft, recyclerViewRight)
         val visibleArea = visibleHeight * visibleWidth
 
         return visibleArea.toFloat() / viewArea * 100
     }
 
-    private fun getVisibleHeight(
-        viewTop: Int,
-        viewBottom: Int,
-        recyclerViewTop: Int,
-        recyclerViewBottom: Int,
-    ) : Int {
-        var visibleHeight = viewBottom - viewTop
-        if (viewTop >= recyclerViewTop) {
-            if (viewBottom >= recyclerViewBottom) {
-                visibleHeight = recyclerViewBottom - viewTop
+    private fun getVisiblePart(
+        viewStart: Int,
+        viewEnd: Int,
+        recyclerViewStart: Int,
+        recyclerViewEnd: Int,
+    ): Int {
+        var visiblePart = 0
+        if (viewStart >= recyclerViewStart) {
+            visiblePart = viewEnd - viewStart
+            if (viewEnd >= recyclerViewEnd) {
+                visiblePart = recyclerViewEnd - viewStart
             }
         } else {
-            if (viewBottom > recyclerViewTop) {
-                visibleHeight = viewBottom - recyclerViewTop
+            if (viewEnd > recyclerViewStart) {
+                visiblePart = viewEnd - recyclerViewStart
             }
         }
-        return visibleHeight
-    }
-
-    private fun getVisibleWidth(
-        viewLeft: Int,
-        viewRight: Int,
-        recyclerViewLeft: Int,
-        recyclerViewRight: Int,
-    ) : Int {
-        var visibleWidth = viewRight - viewLeft
-        if (viewLeft >= recyclerViewLeft) {
-            if (viewRight >= recyclerViewRight) {
-                visibleWidth = recyclerViewRight - viewLeft
-            }
-        } else {
-            if (viewRight > recyclerViewLeft) {
-                visibleWidth = viewRight - recyclerViewLeft
-            }
-        }
-        return visibleWidth
+        return visiblePart
     }
 }
