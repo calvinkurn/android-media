@@ -306,14 +306,12 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             val split = duration.split(":")
 
             val (hour, minute) = when (split.size) {
-                3 -> {
-                    /** HH:mm:ss */
-                    Pair(split[0].toInt(), split[1].toInt())
-                }
-                2 -> {
-                    /** mm:ss */
-                    Pair(0, split[0].toInt())
-                }
+                /** HH:mm:ss */
+                3 -> Pair(split[0].toInt(), split[1].toInt())
+
+                /** mm:ss */
+                2 -> Pair(0, split[0].toInt())
+
                 else -> Pair(0, 0)
             }
 
