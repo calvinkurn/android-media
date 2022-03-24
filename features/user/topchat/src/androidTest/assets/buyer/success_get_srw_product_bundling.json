@@ -5,8 +5,8 @@
     "title": "Tanya ke Chupacup Indonesia",
     "list": [
       {
-        "content": "Apakah stok tersedia?",
-        "intent": "stock_availability",
+        "content": "Min, ada Paket Bundling?",
+        "intent": "product_bundling",
         "label": "Baru"
       }
     ]

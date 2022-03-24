@@ -9,8 +9,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY
 import com.tokopedia.attachcommon.data.ResultProduct
@@ -24,9 +23,11 @@ import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTes
 import com.tokopedia.topchat.chatroom.view.activity.base.changeTimeStampTo
 import com.tokopedia.topchat.chatroom.view.activity.base.hasQuestion
 import com.tokopedia.topchat.chatroom.view.activity.base.matchProductWith
+import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.assertViewInRecyclerViewAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwResult.assertSrwCoachMark
 import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwResult.assertSrwLabel
 import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwResult.assertSrwLabelVisibility
+import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwRobot.clickSrwQuestion
 import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
 import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
@@ -1511,6 +1512,26 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         assertSrwCoachMark(false, context.getString(R.string.coach_product_bundling_title))
+    }
+
+    @Test
+    fun should_send_SRW_question() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwProductBundlingResponse
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
+        generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        CoachMarkPreference.setShown(context, SrwFrameLayout.TAG, false)
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+
+        //When
+        clickSrwQuestion(0)
+
+        // Then
+        assertViewInRecyclerViewAt(1, R.id.tvMessage, withText("Min, ada Paket Bundling?"))
     }
 
     // TODO: SRW should hide broadcast handler if visible
