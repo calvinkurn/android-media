@@ -43,6 +43,7 @@ import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.picker.common.utils.toMb
+import com.tokopedia.picker.common.utils.toReadableTime
 import com.tokopedia.picker.common.utils.toSec
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
@@ -426,18 +427,9 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun onShowVideoMaxDurationToast() {
-        var maxVideoDuration = param.get().maxVideoDuration().toSec()
-        val unitOfTime = if(maxVideoDuration < 60) {
-            "detik"
-        } else {
-            maxVideoDuration /= 60
-            "menit"
-        }
-
         onShowValidationToaster(
             R.string.picker_video_duration_max_limit,
-            maxVideoDuration,
-            unitOfTime
+            param.get().maxVideoDuration().toSec().toReadableTime(this)
         )
     }
 
@@ -469,13 +461,8 @@ open class PickerActivity : BaseActivity()
         )
     }
 
-    private fun onShowValidationToaster(messageId: Int, param: Number) {
+    private fun onShowValidationToaster(messageId: Int, param: Any) {
         val content = getString(messageId, param)
-        onShowToaster(content)
-    }
-
-    private fun onShowValidationToaster(messageId: Int, param: Number, param2nd: String) {
-        val content = getString(messageId, param, param2nd)
         onShowToaster(content)
     }
 
