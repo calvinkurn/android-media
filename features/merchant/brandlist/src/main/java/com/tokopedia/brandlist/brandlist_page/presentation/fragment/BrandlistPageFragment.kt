@@ -464,7 +464,11 @@ class BrandlistPageFragment :
     }
 
     private fun resetCurrentBrandRecom() {
-        BrandlistPageMapper.mappingRemoveBrandRecom(adapter)
+        recyclerView?.let {
+            if (!it.isComputingLayout) {
+                BrandlistPageMapper.mappingRemoveBrandRecom(adapter)
+            }
+        }
     }
 
     override fun onClickSearchButton() {
