@@ -110,8 +110,7 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
                     && it.promoCode.isNotEmpty() && !it.disabled
         }
         logisticPromoChosen?.let {
-            val disableMsg = it.disableText
-            courierItemData.logPromoMsg = disableMsg
+            courierItemData.logPromoMsg = it.disableText
             courierItemData.logPromoDesc = it.description
             courierItemData.logPromoCode = it.promoCode
             courierItemData.discountedRate = it.discountedRate
