@@ -186,7 +186,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     }
 
     private fun initVar() {
-        webChromeWebviewClient = CommonWebViewClient(this, progressBar)
+        webChromeWebviewClient = CommonWebViewClient(this@TopPayActivity, this, progressBar)
     }
 
     @SuppressLint("SetJavaScriptEnabled")
