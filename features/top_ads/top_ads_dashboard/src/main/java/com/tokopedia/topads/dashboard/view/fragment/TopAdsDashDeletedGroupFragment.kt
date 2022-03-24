@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.topads.common.data.internal.ParamObject.KEY_AD_TYPE
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.TopAdsDeletedAdsResponse
 import com.tokopedia.topads.dashboard.data.utils.Utils
@@ -22,7 +23,6 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.unifycomponents.LoaderUnify
 import javax.inject.Inject
 
-private const val AD_TYPE_SHOP_ADS = "1"
 class TopAdsDashDeletedGroupFragment : BaseDaggerFragment() {
 
     private lateinit var adapter: DeletedGroupItemsListAdapter
@@ -33,6 +33,7 @@ class TopAdsDashDeletedGroupFragment : BaseDaggerFragment() {
     private var totalPage = 0
     private var currentPageNum = 1
     private lateinit var loader: LoaderUnify
+    private val adType: String? by lazy { arguments?.getString(KEY_AD_TYPE) }
 
 
     @Inject
@@ -86,18 +87,19 @@ class TopAdsDashDeletedGroupFragment : BaseDaggerFragment() {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (currentPageNum < totalPage) {
                     currentPageNum++
-                    fetchNextPage(currentPageNum)
+                    adType?.let { fetchNextPage(currentPageNum, it) }
+
                 }
             }
         }
     }
 
-    private fun fetchNextPage(page: Int) {
+    private fun fetchNextPage(page: Int, adType: String) {
         val startDate =
-            Utils.format.format((parentFragment as TopAdsProductIklanFragment).startDate)
-        val endDate = Utils.format.format((parentFragment as TopAdsProductIklanFragment).endDate)
+            Utils.format.format((parentFragment as TopAdsBaseTabFragment).startDate)
+        val endDate = Utils.format.format((parentFragment as TopAdsBaseTabFragment).endDate)
         topAdsDashboardPresenter.getDeletedAds(
-            page, AD_TYPE_SHOP_ADS,
+            page, adType,
             startDate, endDate, ::onSuccessResult, ::onEmptyResult
         )
 
@@ -106,7 +108,7 @@ class TopAdsDashDeletedGroupFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews(view)
-        fetchFirstPage()
+        adType?.let { fetchFirstPage(it) }
     }
 
     private fun initViews(view: View) {
@@ -115,14 +117,15 @@ class TopAdsDashDeletedGroupFragment : BaseDaggerFragment() {
     }
 
 
-    private fun fetchFirstPage() {
+    fun fetchFirstPage(adType: String) {
         currentPageNum = 1
+        adapter.clearList()
         loader.show()
         val startDate =
-            Utils.format.format((parentFragment as TopAdsProductIklanFragment).startDate)
-        val endDate = Utils.format.format((parentFragment as TopAdsProductIklanFragment).endDate)
+            Utils.format.format((parentFragment as TopAdsBaseTabFragment).startDate)
+        val endDate = Utils.format.format((parentFragment as TopAdsBaseTabFragment).endDate)
         topAdsDashboardPresenter.getDeletedAds(
-            currentPageNum, AD_TYPE_SHOP_ADS,
+            currentPageNum, adType,
             startDate, endDate, ::onSuccessResult, ::onEmptyResult
         )
     }
@@ -141,12 +144,13 @@ class TopAdsDashDeletedGroupFragment : BaseDaggerFragment() {
         } else
             (totalCount / page.perPage) + 1
         recyclerviewScrollListener.updateStateAfterGetData()
-        (parentFragment as TopAdsProductIklanFragment).setDeletedGroupCount(totalCount)
+        (parentFragment as TopAdsBaseTabFragment).setDeletedGroupCount(totalCount)
     }
 
     private fun getList(list: List<TopAdsDeletedAdsResponse.TopadsDeletedAds.TopAdsDeletedAdsItem>): MutableList<DeletedGroupItemsItemModel> {
         val itemList = ArrayList<DeletedGroupItemsItemModel>()
         list.forEach {
+            it.AdType = adType ?: ""
             val model = DeletedGroupItemsItemModel(it)
             itemList.add(model)
         }
@@ -156,7 +160,7 @@ class TopAdsDashDeletedGroupFragment : BaseDaggerFragment() {
 
     private fun onEmptyResult() {
         if (adapter.itemCount > 0) return
-        (parentFragment as TopAdsProductIklanFragment).setDeletedGroupCount(totalCount)
+        (parentFragment as TopAdsBaseTabFragment).setDeletedGroupCount(adapter.itemCount)
         adapter.submitList(arrayListOf(DeletedGroupItemsEmptyModel()))
         loader.hide()
     }

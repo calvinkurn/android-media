@@ -8,6 +8,7 @@
     <dimen name="top_ads_dp_14">14dp</dimen>
     <dimen name="top_ads_dp_40">40dp</dimen>
     <dimen name="dp_55">55dp</dimen>
+    <dimen name="top_ads_dp_52">52dp</dimen>
     <dimen name="dp_90">90dp</dimen>
 
     <dimen name="edit_icon_size">12dp</dimen>
@@ -22,4 +23,5 @@
     <dimen name="topads_dashboard_dp_60">60dp</dimen>
     <dimen name="topads_dashboard_dp_56">56dp</dimen>
     <dimen name="topads_dashboard_dp_25">25dp</dimen>
+    <dimen name="topads_dp_120">120dp</dimen>
 </resources>
