@@ -1,21 +1,18 @@
 package com.tokopedia.tokopoints.notification.view;
 
-import android.app.Dialog;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.example.tokopoints.notification.R;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.tokopoints.notification.model.PopupNotification;
 import com.tokopedia.tokopoints.notification.utils.AnalyticsTrackerUtil;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class TokoPointsPopupNotificationBottomSheet extends BottomSheets {
 

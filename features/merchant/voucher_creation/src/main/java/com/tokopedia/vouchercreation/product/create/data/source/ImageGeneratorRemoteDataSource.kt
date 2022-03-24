@@ -26,8 +26,8 @@ class ImageGeneratorRemoteDataSource @Inject constructor(
         voucherFinishTime: String,
         productCount: Int,
         firstProductImageUrl: String,
-        secondProductImageUrl: String,
-        thirdProductImageUrl: String,
+        secondProductImageUrl: String?,
+        thirdProductImageUrl: String?,
         audienceTarget: String
     ): ResponseBody {
         return imageGeneratorService.previewImage(

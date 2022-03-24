@@ -21,6 +21,13 @@ fun getQueryShipmentAddressFormV3(): String {
               open_prerequisite_site
               eligible_new_shipping_experience
               pop_up_message
+              pop_up {
+                title
+                description
+                button {
+                  text
+                }
+              }
               error_ticker
               group_address {
                 errors
