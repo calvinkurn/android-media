@@ -43,6 +43,10 @@ class BottomNavComponent(
         onTabSelectionChanged(position)
     }
 
+    fun navigateToCameraTab() {
+        tabUnify.tabLayout.getTabAt(PAGE_CAMERA_INDEX)?.select()
+    }
+
     private fun transparentBackground() {
         tabUnify.tabLayout.setBackgroundColor(Color.TRANSPARENT)
     }

@@ -335,6 +335,10 @@ open class PickerActivity : BaseActivity()
         bottomNavTab.container().showWithCondition(isShown)
     }
 
+    override fun navigateToCameraPage() {
+        bottomNavTab.navigateToCameraTab()
+    }
+
     override fun mediaSelected(): List<MediaUiModel> {
         return medias
     }
@@ -459,10 +463,6 @@ open class PickerActivity : BaseActivity()
             .pickerModule(PickerModule())
             .build()
             .inject(this)
-    }
-
-    override fun navigateToCameraPage() {
-        binding?.tabPage?.tabLayout?.getTabAt(PAGE_CAMERA_INDEX)?.select()
     }
 
     companion object {
