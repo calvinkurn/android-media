@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.common.feature.promo.domain.usecase
 
 const val VALIDATE_USE_QUERY = """
-    mutation validate_use_promo_revamp(${"$"}params: PromoStackRequest, ${"$"}chosen_address: ChosenAddressParam) {
+    mutation validateUsePromoRevamp(${"$"}params: PromoStackRequest, ${"$"}chosen_address: ChosenAddressParam) {
       validate_use_promo_revamp(params: ${"$"}params, chosen_address: ${"$"}chosen_address) {
         status
         message

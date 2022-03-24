@@ -2,7 +2,7 @@ package com.tokopedia.checkout.domain.usecase
 
 const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
         """
-        query shipment_address_form_v3(${'$'}params: ShipmentAddressFormParams) {
+        query shipmentAddressFormV3(${'$'}params: ShipmentAddressFormParams) {
           shipment_address_form_v3(params: ${'$'}params) {
             status
             error_message
