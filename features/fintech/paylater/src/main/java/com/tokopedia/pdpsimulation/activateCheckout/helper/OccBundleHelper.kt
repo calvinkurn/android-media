@@ -64,6 +64,7 @@ object OccBundleHelper {
                     productPrice = installmentBottomSheetDetail.selectedProductPrice
                     userStatus =checkoutData.userState ?: ""
                     tenureOption = checkoutData.tenureDetail[installmentBottomSheetDetail.selectedTenure].tenure
+                    payLaterPartnerName = checkoutData.gateway_name?:""
                 }
                 putParcelable(PayLaterInstallmentFeeInfo.IMPRESSION_DETAIL, eventImpression)
             }
