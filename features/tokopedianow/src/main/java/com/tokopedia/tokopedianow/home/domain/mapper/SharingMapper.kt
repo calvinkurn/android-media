@@ -42,7 +42,8 @@ object SharingMapper {
             id = response.id,
             state = state,
             descRes = descRes,
-            btnTextRes = btnTextRes
+            btnTextRes = btnTextRes,
+            slug = response.widgetParam
         )
         return HomeLayoutItemUiModel(layout, state)
     }

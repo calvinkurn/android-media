@@ -14,6 +14,7 @@ sealed class HomeSharingWidgetUiModel (
         override val state: HomeLayoutItemState = HomeLayoutItemState.NOT_LOADED,
         override val btnTextRes: Int,
         val descRes: Int,
+        val slug: String
     ): HomeSharingWidgetUiModel(
         id,
         state,
