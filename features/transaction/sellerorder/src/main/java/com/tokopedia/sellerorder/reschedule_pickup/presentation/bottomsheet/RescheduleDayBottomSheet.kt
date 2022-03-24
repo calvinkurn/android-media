@@ -10,6 +10,7 @@ import com.tokopedia.sellerorder.databinding.BottomsheetRescheduleDayBinding
 import com.tokopedia.sellerorder.reschedule_pickup.data.model.GetReschedulePickupResponse
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
+import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.lifecycle.autoCleared
 
 class RescheduleDayBottomSheet(
@@ -55,7 +56,7 @@ class RescheduleDayBottomSheet(
     private fun setupView() {
         setTitle(getString(R.string.title_reschedule_day_bottomsheet))
         val listWidgetData = ArrayList<ListItemUnify>().apply {
-            addAll(dayOptions.map { day -> ListItemUnify(title = day.day, description = "") })
+            addAll(dayOptions.map { day -> ListItemUnify(title = formatDay(day.day), description = "") })
         }
 
         binding.rvDay.run {
@@ -67,6 +68,10 @@ class RescheduleDayBottomSheet(
                 }
             }
         }
+    }
+
+    private fun formatDay(day: String) : String {
+        return DateUtil.formatDate("yyyy-MM-dd", "EEEE, dd MMM yyyy", day)
     }
 
     fun show(manager: FragmentManager?) {

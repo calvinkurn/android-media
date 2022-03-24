@@ -55,7 +55,7 @@ class RescheduleTimeBottomSheet(
     private fun setupView() {
         setTitle(getString(R.string.title_reschedule_time_bottomsheet))
         val listWidgetData = ArrayList<ListItemUnify>().apply {
-            addAll(timeOption.map { time -> ListItemUnify(title = time.time, description = "") })
+            addAll(timeOption.map { time -> ListItemUnify(title = "${time.time} WIB", description = "") })
         }
 
         binding.rvTime.run {
