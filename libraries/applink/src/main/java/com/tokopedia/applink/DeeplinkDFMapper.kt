@@ -588,12 +588,12 @@ object DeeplinkDFMapper : CoroutineScope {
             )
 
             // Shop Admin
-            add(DFP({ it.startsWith(ApplinkConstInternalMarketplace.ADMIN_INVITATION_ACCEPTED) ||
-                    it.startsWith(ApplinkConstInternalMarketplace.ADMIN_INVITATION_CONFIRMATION) ||
-                    it.startsWith(ADMIN_INVITATION_CONFIRMATION) ||
-                    it.startsWith(ADMIN_INVITATION_ACCEPTED) ||
-                    it.startsWith(SellerApp.ADMIN_INVITATION_CONFIRMATION) ||
-                    it.startsWith(SellerApp.ADMIN_INVITATION_ACCEPTED)
+            add(DFP({ it.startsWith(ApplinkConstInternalMarketplace.ADMIN_ACCEPTED) ||
+                    it.startsWith(ApplinkConstInternalMarketplace.ADMIN_INVITATION) ||
+                    it.startsWith(ADMIN_INVITATION) ||
+                    it.startsWith(ADMIN_ACCEPTED) ||
+                    it.startsWith(SellerApp.ADMIN_INVITATION) ||
+                    it.startsWith(SellerApp.ADMIN_ACCEPTED)
                 }, DF_BASE, R.string.title_shop_admin)
             )
 

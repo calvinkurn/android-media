@@ -314,6 +314,26 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check shop admin invitation appLink then should return tokopedia internal shop admin invitation in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-admin/invitation-page"
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.ADMIN_INVITATION, expectedDeepLink)
+    }
+
+    @Test
+    fun `check shop admin accepted appLink then should return tokopedia internal shop admin accepted in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-admin/accepted-page"
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.ADMIN_ACCEPTED, expectedDeepLink)
+    }
+
+    @Test
+    fun `check shop admin accepted appLink with shop name param then should return tokopedia internal shop admin accepted with shop name param in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-admin/accepted-page?shop_name=toko"
+        val shopNameParam = mapOf("shop_name" to "toko")
+        val actualDeeplink = UriUtil.buildUriAppendParam(ApplinkConst.SellerApp.ADMIN_ACCEPTED, shopNameParam)
+        assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
+    }
+
+    @Test
     fun `check sellerapp webview deeplink`() {
         val queryParam = "?titlebar=false&allow_override=false&need_login=false&title=abc&pull_to_refresh=false&url=https://www.tokopedia.com/help"
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/webview" + queryParam

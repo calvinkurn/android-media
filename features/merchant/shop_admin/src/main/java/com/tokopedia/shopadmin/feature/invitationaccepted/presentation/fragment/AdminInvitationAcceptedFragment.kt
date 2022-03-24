@@ -7,8 +7,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.hide
@@ -66,6 +68,9 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+        }
         setShopNameFromArgs()
         hideViewGroup()
         setupActionButton()
@@ -124,10 +129,12 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
 
     private fun setupFeatureAccessList(featureAccessList: List<AdminPermissionUiModel>) {
         binding?.rvFeatureAccess?.run {
-            layoutManager = GridLayoutManager(
+            layoutManager = object : GridLayoutManager(
                 context, COLUMN_TWO,
-                GridLayoutManager.VERTICAL, false
-            )
+                VERTICAL, false
+            ) {
+                override fun canScrollVertically(): Boolean = false
+            }
             adapter = ItemFeatureAccessAdapter(featureAccessList)
         }
     }

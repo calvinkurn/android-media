@@ -201,11 +201,11 @@ object ApplinkConstInternalMarketplace {
 
     //AdminInvitationConfirmationActivity
     @JvmField
-    val ADMIN_INVITATION_CONFIRMATION = "$INTERNAL_MARKETPLACE/admin-invitation-confirmation"
+    val ADMIN_INVITATION = "$INTERNAL_MARKETPLACE/shop-admin/invitation-page"
 
     //AdminInvitationAcceptedActivity
     @JvmField
-    val ADMIN_INVITATION_ACCEPTED = "$INTERNAL_MARKETPLACE/admin-invitation-accepted"
+    val ADMIN_ACCEPTED = "$INTERNAL_MARKETPLACE/shop-admin/accepted-page"
 
     //ShopScorePerformanceActivity
     @JvmField
