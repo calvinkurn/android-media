@@ -557,7 +557,11 @@ class TopSectionVH(
                     }
                 } else {
                     progressBar?.setValue(progressCurrent, true)
-                    progressBar?.setProgressIcon(itemView.resources.getDrawable(R.drawable.tp_tier_progress))
+                    if (progressCurrent == 0) {
+                        progressBar?.setProgressIcon(null)
+                    } else {
+                        progressBar?.setProgressIcon(itemView.resources.getDrawable(R.drawable.tp_tier_progress))
+                    }
                     progressBarIconAnimation(
                         container
                     ) {
