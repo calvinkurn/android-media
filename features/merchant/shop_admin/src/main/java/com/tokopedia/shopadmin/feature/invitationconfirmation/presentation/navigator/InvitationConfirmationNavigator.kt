@@ -17,7 +17,7 @@ class InvitationConfirmationNavigator(
     fun goToInvitationAccepted() {
         val params = mapOf<String, Any>(Constants.SHOP_NAME_PARAM to invitationConfirmationParam.getShopName())
         val appLink = UriUtil.buildUriAppendParams(
-            ApplinkConstInternalMarketplace.ADMIN_INVITATION_ACCEPTED,
+            ApplinkConstInternalMarketplace.ADMIN_INVITATION,
             params
         )
         RouteManager.route(context, appLink)
