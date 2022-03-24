@@ -349,7 +349,6 @@ class DigitalPDPDataPlanFragment :
         viewModel.observableDenomMCCMData.observe(viewLifecycleOwner, { denomData ->
             when (denomData) {
                 is RechargeNetworkResult.Success -> {
-
                     if (productId >= 0) {
                         viewModel.setAutoSelectedDenom(
                             denomData.data.denomFull.listDenomData,
@@ -537,11 +536,6 @@ class DigitalPDPDataPlanFragment :
                 getCatalogMenuDetail()
             }
         }
-        onFailedRecommendation()
-    }
-
-    private fun onFailedRecommendation() {
-        binding?.rechargePdpPaketDataRecommendationWidget?.renderFailRecommendation()
     }
 
     private fun onSuccessGetFavoriteNumber(favoriteNumber: List<TopupBillsPersoFavNumberItem>) {
@@ -582,7 +576,7 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun onFailedGetRecommendations() {
-        binding?.rechargePdpPaketDataRecommendationWidget?.renderFailRecommendation()
+        binding?.rechargePdpPaketDataRecommendationWidget?.hide()
     }
 
     private fun onSuccessSortFilter(initialSelectedCounter: Int = 0) {
@@ -673,18 +667,22 @@ class DigitalPDPDataPlanFragment :
             } else {
                 selectedInitialPosition = null
             }
-            it.rechargePdpPaketDataDenomFullWidget.renderDenomFullLayout(
-                this,
-                denomData,
-                selectedInitialPosition
-            )
-            it.rechargePdpPaketDataDenomFullWidget.show()
+            if (denomData.listDenomData.isNotEmpty()) {
+                it.rechargePdpPaketDataDenomFullWidget.renderDenomFullLayout(
+                    this,
+                    denomData,
+                    selectedInitialPosition
+                )
+                it.rechargePdpPaketDataDenomFullWidget.show()
+            } else {
+                it.rechargePdpPaketDataDenomFullWidget.hide()
+            }
         }
     }
 
     private fun onFailedDenomFull() {
         binding?.let {
-            it.rechargePdpPaketDataDenomFullWidget.renderFailDenomFull()
+            it.rechargePdpPaketDataDenomFullWidget.hide()
         }
     }
 
@@ -712,17 +710,21 @@ class DigitalPDPDataPlanFragment :
             } else {
                 selectedInitialPosition = null
             }
-            it.rechargePdpPaketDataPromoWidget.show()
-            it.rechargePdpPaketDataPromoWidget.renderMCCMFull(
-                this, denomFull,
-                getString(com.tokopedia.unifyprinciples.R.color.Unify_N0), selectedInitialPosition
-            )
+            if (denomFull.listDenomData.isNotEmpty()) {
+                it.rechargePdpPaketDataPromoWidget.show()
+                it.rechargePdpPaketDataPromoWidget.renderMCCMFull(
+                    this, denomFull,
+                    getString(com.tokopedia.unifyprinciples.R.color.Unify_N0), selectedInitialPosition
+                )
+            } else {
+                it.rechargePdpPaketDataPromoWidget.hide()
+            }
         }
     }
 
     private fun onLoadingAndFailMCCM() {
         binding?.let {
-            it.rechargePdpPaketDataPromoWidget.renderFailMCCMFull()
+            it.rechargePdpPaketDataPromoWidget.hide()
         }
     }
 
@@ -795,12 +797,16 @@ class DigitalPDPDataPlanFragment :
 
     private fun renderRecommendation(data: RecommendationWidgetModel) {
         binding?.let {
-            it.rechargePdpPaketDataRecommendationWidget.show()
-            it.rechargePdpPaketDataRecommendationWidget.renderRecommendationLayout(
-                this,
-                data.title,
-                data.recommendations
-            )
+            if (data.recommendations.isNotEmpty()) {
+                it.rechargePdpPaketDataRecommendationWidget.show()
+                it.rechargePdpPaketDataRecommendationWidget.renderRecommendationLayout(
+                    this,
+                    data.title,
+                    data.recommendations
+                )
+            } else {
+                it.rechargePdpPaketDataRecommendationWidget.hide()
+            }
         }
     }
 
@@ -813,13 +819,14 @@ class DigitalPDPDataPlanFragment :
 
     private fun onShowBuyWidget(denomFull: DenomData) {
         binding?.let {
-            it.rechargePdpPaketDataBuyWidget.showBuyWidget(denomFull, this)
+            it.rechargePdpPaketDataBuyWidget.show()
+            it.rechargePdpPaketDataBuyWidget.renderBuyWidget(denomFull, this)
         }
     }
 
     private fun onHideBuyWidget() {
         binding?.let {
-            it.rechargePdpPaketDataBuyWidget.hideBuyWidget()
+            it.rechargePdpPaketDataBuyWidget.hide()
         }
     }
 
@@ -870,7 +877,6 @@ class DigitalPDPDataPlanFragment :
         binding?.run {
             if (rechargePdpPaketDataEmptyStateWidget.isVisible) {
                 rechargePdpPaketDataEmptyStateWidget.hide()
-                rechargePdpPaketDataRecommendationWidget.show()
             }
         }
     }

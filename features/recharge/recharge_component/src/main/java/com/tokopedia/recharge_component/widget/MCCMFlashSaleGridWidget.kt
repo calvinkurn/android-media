@@ -31,7 +31,6 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
     fun renderMCCMGrid(denomGridListener: RechargeDenomGridListener, denomData: DenomWidgetModel, textColor: String, selectedProductIndex: Int? = null){
         with(widgetRechargeMCCMFlashSaleGridWidget){
             if (!denomData.listDenomData.isNullOrEmpty()) {
-                root.show()
                 headerMccmGrid.setChannel(
                     DenomMCCMFlashSaleMapper.getChannelMCCM(
                         denomData.mainTitle,
@@ -53,7 +52,6 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
     fun renderFlashSaleGrid(denomGridListener: RechargeDenomGridListener, denomData: DenomWidgetModel, textColor: String, selectedProductIndex: Int? = null){
         with(widgetRechargeMCCMFlashSaleGridWidget){
             if (!denomData.listDenomData.isNullOrEmpty()) {
-                root.show()
                 headerMccmGrid.setChannel(
                     DenomMCCMFlashSaleMapper.getChannelFlashSale(
                         denomData.mainTitle,
@@ -72,10 +70,6 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
                 renderAdapter(denomGridListener, denomData.mainTitle, denomData.listDenomData, DenomWidgetEnum.FLASH_GRID_TYPE, selectedProductIndex)
             }
         }
-    }
-
-    fun renderFailMCCMGrid(){
-        widgetRechargeMCCMFlashSaleGridWidget.root.hide()
     }
 
     fun clearSelectedProduct(){

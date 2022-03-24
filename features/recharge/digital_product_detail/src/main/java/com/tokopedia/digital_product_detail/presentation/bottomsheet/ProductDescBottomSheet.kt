@@ -73,7 +73,7 @@ class ProductDescBottomSheet(
                 }
             }
 
-            buyWidgetProductDesc.showBuyWidget(denomData, listener)
+            buyWidgetProductDesc.renderBuyWidget(denomData, listener)
         }
         setTitle(getString(R.string.bottom_sheet_prod_desc_title))
         setChild(binding?.root)

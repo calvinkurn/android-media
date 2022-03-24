@@ -459,10 +459,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onFailedRecommendation() {
-        binding?.rechargePdpPulsaRecommendationWidget?.renderFailRecommendation()
-    }
-
     private fun onSuccessGetFavoriteNumber(favoriteNumber: List<TopupBillsPersoFavNumberItem>) {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             setFilterChipShimmer(false, favoriteNumber.isEmpty())
@@ -507,7 +503,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 getCatalogMenuDetail()
             }
         }
-        onFailedRecommendation()
     }
 
     private fun onFailedGetFavoriteNumber(throwable: Throwable) {
@@ -525,7 +520,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun onFailedGetRecommendations() {
-        binding?.rechargePdpPulsaRecommendationWidget?.renderFailRecommendation()
+        binding?.rechargePdpPulsaRecommendationWidget?.hide()
     }
 
     private fun initClientNumberWidget() {
@@ -624,18 +619,22 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             } else {
                 selectedInitialPosition = null
             }
-            it.rechargePdpPulsaDenomGridWidget.renderDenomGridLayout(
-                this,
-                denomData,
-                selectedInitialPosition
-            )
-            it.rechargePdpPulsaDenomGridWidget.show()
+            if (denomData.listDenomData.isNotEmpty()) {
+                it.rechargePdpPulsaDenomGridWidget.renderDenomGridLayout(
+                    this,
+                    denomData,
+                    selectedInitialPosition
+                )
+                it.rechargePdpPulsaDenomGridWidget.show()
+            } else {
+                it.rechargePdpPulsaDenomGridWidget.hide()
+            }
         }
     }
 
     private fun onFailedDenomGrid() {
         binding?.let {
-            it.rechargePdpPulsaDenomGridWidget.renderFailDenomGrid()
+            it.rechargePdpPulsaDenomGridWidget.hide()
         }
     }
 
@@ -680,17 +679,21 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             } else {
                 selectedInitialPosition = null
             }
-            it.rechargePdpPulsaPromoWidget.show()
-            it.rechargePdpPulsaPromoWidget.renderMCCMGrid(
-                this, denomGrid,
-                getString(com.tokopedia.unifyprinciples.R.color.Unify_N0), selectedInitialPosition
-            )
+            if (denomGrid.listDenomData.isNotEmpty()) {
+                it.rechargePdpPulsaPromoWidget.show()
+                it.rechargePdpPulsaPromoWidget.renderMCCMGrid(
+                    this, denomGrid,
+                    getString(com.tokopedia.unifyprinciples.R.color.Unify_N0), selectedInitialPosition
+                )
+            } else {
+                it.rechargePdpPulsaPromoWidget.hide()
+            }
         }
     }
 
     private fun onLoadingAndFailMCCM() {
         binding?.let {
-            it.rechargePdpPulsaPromoWidget.renderFailMCCMGrid()
+            it.rechargePdpPulsaPromoWidget.hide()
         }
     }
 
@@ -702,13 +705,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private fun onShowBuyWidget(denomGrid: DenomData) {
         binding?.let {
-            it.rechargePdpPulsaBuyWidget.showBuyWidget(denomGrid, this)
+            it.rechargePdpPulsaBuyWidget.show()
+            it.rechargePdpPulsaBuyWidget.renderBuyWidget(denomGrid, this)
         }
     }
 
     private fun onHideBuyWidget() {
         binding?.let {
-            it.rechargePdpPulsaBuyWidget.hideBuyWidget()
+            it.rechargePdpPulsaBuyWidget.hide()
         }
     }
 
