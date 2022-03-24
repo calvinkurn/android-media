@@ -74,6 +74,7 @@ class SearchApiConst {
         const val USE_PAGE = "use_page"
         const val SRP_COMPONENT_ID = "srp_component_id"
         const val TYPO = "typo"
+        const val CAROUSEL_TYPE = "carousel_type"
 
         const val DEFAULT_VALUE_OF_PARAMETER_DEVICE = "android"
         const val DEFAULT_VALUE_OF_PARAMETER_MOBILE = "mobile"
@@ -99,5 +100,6 @@ class SearchApiConst {
         const val DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE = "filter"
         const val DEFAULT_VALUE_OF_NAVSOURCE_TOKONOW = "tokonow"
         const val HOME = "home"
+        const val CAROUSEL_TYPE_VIDEO = "video"
     }
 }

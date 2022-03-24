@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 class VideoCarouselItemAdapter(
     diffCallback: DiffUtil.ItemCallback<VideoCarouselItemModel> = VideoCarouselItemDiffUtil()
 ) : ListAdapter<VideoCarouselItemModel, VideoCarouselItemViewHolder>(diffCallback) {
-    private var listener: VideoCarouselListener? = null
+    private var listener: VideoCarouselItemListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoCarouselItemViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -18,8 +18,7 @@ class VideoCarouselItemAdapter(
             view.setOnClickListener {
                 val currentPosition = adapterPosition
                 if (currentPosition != RecyclerView.NO_POSITION) {
-                    val item = getItem(currentPosition)
-                    listener?.onWidgetOpenAppLink(it, item.applink)
+                    listener?.onVideoCarouselItemClicked(currentPosition)
                 }
             }
         }
@@ -27,9 +26,10 @@ class VideoCarouselItemAdapter(
 
     override fun onBindViewHolder(holder: VideoCarouselItemViewHolder, position: Int) {
         holder.bind(getItem(position))
+        listener?.onVideoCarouselItemImpressed(position)
     }
 
-    fun setListener(listener: VideoCarouselListener?) {
+    fun setListener(listener: VideoCarouselItemListener?) {
         this.listener = listener
     }
 }

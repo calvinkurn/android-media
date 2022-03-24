@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.video_widget.util.LayoutManagerUtil
+import com.tokopedia.video_widget.util.RecyclerViewUtils.getRecyclerViewLocationAndHeight
+import com.tokopedia.video_widget.util.RecyclerViewUtils.getViewVisibilityOnRecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -23,6 +25,10 @@ import kotlin.coroutines.CoroutineContext
 class VideoPlayerAutoplay(
     private val remoteConfig: RemoteConfig,
 ) : CoroutineScope, LifecycleObserver {
+    companion object {
+        private const val VISIBILITY_PERCENTAGE_THRESHOLD = 50f
+    }
+
     private var productVideoAutoPlayJob: Job? = null
     private var videoPlayer: VideoPlayer? = null
 
@@ -86,7 +92,7 @@ class VideoPlayerAutoplay(
     }
 
     fun registerLifecycleObserver(lifecycleOwner: LifecycleOwner) {
-        if(!isAutoplayProductVideoEnabled) return
+        if (!isAutoplayProductVideoEnabled) return
         lifecycleOwner.lifecycle.addObserver(this)
     }
 
@@ -99,12 +105,13 @@ class VideoPlayerAutoplay(
     }
 
     private fun startVideoAutoplay() {
-        productVideoAutoPlayJob?.cancel()
         val currentlyVisibleVideoPlayers = filterVisibleProductVideoPlayer()
         if (currentlyVisibleVideoPlayers != visibleVideoPlayers) {
             visibleVideoPlayers = currentlyVisibleVideoPlayers
             val visibleItemIterable = currentlyVisibleVideoPlayers.iterator()
             videoPlayerIterator = visibleItemIterable
+            productVideoAutoPlayJob?.cancel()
+            videoPlayer?.stopVideo()
             productVideoAutoPlayJob = launch {
                 isPaused = false
                 playNextVideo(visibleItemIterable)
@@ -113,7 +120,7 @@ class VideoPlayerAutoplay(
     }
 
     private fun filterVisibleProductVideoPlayer(): List<VideoPlayer> {
-        if(isAdapterEmpty) return emptyList()
+        if (isAdapterEmpty) return emptyList()
         firstVisibleItemIndex = LayoutManagerUtil.getFirstVisibleItemIndex(layoutManager, false)
         lastVisibleItemIndex = LayoutManagerUtil.getLastVisibleItemIndex(layoutManager)
         return if (hasVisibleViewHolders) getVisibleViewHolderList() else emptyList()
@@ -121,10 +128,20 @@ class VideoPlayerAutoplay(
 
     private fun getVisibleViewHolderList(): List<VideoPlayer> {
         val visibleVideoPlayerProviders = mutableListOf<VideoPlayerProvider>()
+        val (recyclerViewPosition, recyclerViewHeight) = getRecyclerViewLocationAndHeight(
+            recyclerView
+        )
         for (index in firstVisibleItemIndex..lastVisibleItemIndex) {
             val viewHolder = recyclerView?.findViewHolderForAdapterPosition(index) ?: continue
             if (viewHolder is VideoPlayerProvider) {
-                visibleVideoPlayerProviders.add(viewHolder)
+                val viewVisibilityPercentage = getViewVisibilityOnRecyclerView(
+                    viewHolder.itemView,
+                    recyclerViewPosition,
+                    recyclerViewHeight
+                )
+                if (viewVisibilityPercentage > VISIBILITY_PERCENTAGE_THRESHOLD) {
+                    visibleVideoPlayerProviders.add(viewHolder)
+                }
             }
         }
         return visibleVideoPlayerProviders
@@ -144,12 +161,12 @@ class VideoPlayerAutoplay(
 
     private fun canPlayNextVideo(
         visibleItemIterator: Iterator<VideoPlayer>
-    ) : Boolean {
+    ): Boolean {
         return isActive && !isPaused && visibleItemIterator.hasNext()
     }
 
     private suspend fun playVideo(
-        visibleItem : VideoPlayer,
+        visibleItem: VideoPlayer,
         visibleItemIterator: Iterator<VideoPlayer>
     ) {
         visibleItem.playVideo()
@@ -212,7 +229,7 @@ class VideoPlayerAutoplay(
     }
 
     fun stopVideoAutoplay() {
-        if(!isAutoplayProductVideoEnabled) return
+        if (!isAutoplayProductVideoEnabled) return
         videoPlayer?.stopVideo()
         videoPlayer = null
         productVideoAutoPlayJob?.cancel()

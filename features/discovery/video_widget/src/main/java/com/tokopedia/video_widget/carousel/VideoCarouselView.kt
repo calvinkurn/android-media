@@ -9,13 +9,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.video_widget.R
+import com.tokopedia.video_widget.VideoPlayer
+import com.tokopedia.video_widget.VideoPlayerState
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flowOf
 
-class VideoCarouselView : BaseCustomView {
+class VideoCarouselView : BaseCustomView, VideoPlayer {
     private val snapHelper = StartSnapHelper()
     private val defaultRecyclerViewDecorator = VideoCarouselDefaultDecorator()
     private val adapter = VideoCarouselItemAdapter()
-    private var listener: VideoCarouselListener? = null
+    private var listener: VideoCarouselItemListener? = null
     private var internalListener: VideoCarouselInternalListener? = null
+    private var videoPlayerStateFlow : MutableStateFlow<VideoPlayerState>? = null
 
     private val titleTextView: Typography by lazy {
         findViewById(R.id.carousel_title_textview)
@@ -98,17 +104,32 @@ class VideoCarouselView : BaseCustomView {
 
     }
 
-    fun setWidgetListener(listener: VideoCarouselListener?) {
+    fun setWidgetListener(listener: VideoCarouselItemListener?) {
         this.listener = listener
         adapter.setListener(listener)
     }
 
-    fun setWidgetInternalListener(internalListener: VideoCarouselInternalListener?) {
+    internal fun setWidgetInternalListener(internalListener: VideoCarouselInternalListener?) {
         this.internalListener = internalListener
     }
 
     override fun onDetachedFromWindow() {
         internalListener?.onWidgetDetached(this)
         super.onDetachedFromWindow()
+    }
+
+    override val hasVideo: Boolean
+        get() = adapter.itemCount > 0
+
+    override fun playVideo(): Flow<VideoPlayerState> {
+        if(!hasVideo) return flowOf(VideoPlayerState.NoVideo)
+        videoPlayerStateFlow = MutableStateFlow(VideoPlayerState.Starting)
+        internalListener?.playVideo(recyclerView)
+        return videoPlayerStateFlow as Flow<VideoPlayerState>
+    }
+
+    override fun stopVideo() {
+        internalListener?.stopVideo()
+        videoPlayerStateFlow?.tryEmit(VideoPlayerState.Ended)
     }
 }

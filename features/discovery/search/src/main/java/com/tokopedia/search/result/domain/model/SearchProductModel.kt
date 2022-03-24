@@ -806,6 +806,10 @@ data class SearchProductModel(
             @SerializedName("component_id")
             @Expose
             val componentId: String = "",
+
+            @SerializedName("customvideo_url")
+            @Expose
+            val customVideoURL: String = "",
     ) {
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
     }

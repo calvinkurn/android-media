@@ -27,10 +27,18 @@ class VideoCarouselWidgetCoordinator(
         mainCoroutineDispatcher
     )
 
-    private var listener: VideoCarouselListener? = null
+    private var listener: VideoCarouselItemListener? = null
     private val internalListener = object : VideoCarouselInternalListener {
-        override fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView) {
-            autoPlayCoordinator.onWidgetCardsScrollChanged(widgetCardsContainer)
+        override fun playVideo(container: RecyclerView) {
+            autoPlayCoordinator.playVideo(container)
+        }
+
+        override fun stopVideo() {
+            autoPlayCoordinator.stopVideo()
+        }
+
+        override fun onWidgetCardsScrollChanged(container: RecyclerView) {
+            autoPlayCoordinator.onWidgetCardsScrollChanged(container)
         }
 
         override fun onWidgetDetached(widget: View) {
@@ -64,7 +72,7 @@ class VideoCarouselWidgetCoordinator(
         widget.setWidgetListener(listener)
     }
 
-    fun setListener(listener: VideoCarouselListener?) {
+    fun setListener(listener: VideoCarouselItemListener?) {
         this.listener = listener
         widget?.setWidgetListener(listener)
     }

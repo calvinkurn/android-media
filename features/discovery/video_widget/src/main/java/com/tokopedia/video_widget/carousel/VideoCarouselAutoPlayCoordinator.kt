@@ -15,6 +15,7 @@ class VideoCarouselAutoPlayCoordinator(
     private val mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
 ) : VideoCarouselInternalListener {
     private var autoPlayJob: Job? = null
+    private var canStartAutoPlay: Boolean = false
 
     private val videoPlayerMap = mutableMapOf<CarouselVideoPlayer, CarouselVideoPlayerReceiver?>()
 
@@ -22,13 +23,29 @@ class VideoCarouselAutoPlayCoordinator(
 
     private lateinit var mConfig: VideoCarouselConfigUiModel
 
-    override fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView) {
-        startAutoPlay(widgetCardsContainer)
+    override fun playVideo(container: RecyclerView) {
+        canStartAutoPlay = true
+        startAutoPlay(container)
+    }
+
+    override fun stopVideo() {
+        stopVideoAutoPlay()
+    }
+
+    override fun onWidgetCardsScrollChanged(container: RecyclerView) {
+        if (canStartAutoPlay) {
+            startAutoPlay(container)
+        }
     }
 
     override fun onWidgetDetached(widget: View) {
+        stopVideoAutoPlay()
+    }
+
+    private fun stopVideoAutoPlay() {
         autoPlayJob?.cancel()
         videoPlayerMap.entries.forEach { clearPlayerEntry(it) }
+        canStartAutoPlay = false
     }
 
     fun onPause() {

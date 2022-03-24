@@ -4,8 +4,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.CAROUSEL_TYPE
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.CAROUSEL_TYPE_VIDEO
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.IDENTIFIER
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.SRP_COMPONENT_ID
 import com.tokopedia.discovery.common.constants.SearchConstant
@@ -38,6 +39,7 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.SavedOption
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -113,7 +115,6 @@ import rx.Subscriber
 import rx.functions.Action1
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
-import java.util.HashSet
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.math.max
@@ -140,7 +141,7 @@ class ProductListPresenter @Inject constructor(
         private val saveLastFilterUseCase: Lazy<UseCase<Int>>,
         private val topAdsUrlHitter: TopAdsUrlHitter,
         private val schedulersProvider: SchedulersProvider,
-        private val topAdsHeadlineHelper : TopAdsHeadlineHelper
+        private val topAdsHeadlineHelper : TopAdsHeadlineHelper,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
         ProductListSectionContract.Presenter {
 
@@ -153,6 +154,7 @@ class ProductListPresenter @Inject constructor(
                 SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST,
                 SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID,
                 SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS,
+                SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO,
                 SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT,
         )
         private const val SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search"
@@ -229,6 +231,22 @@ class ProductListPresenter @Inject constructor(
                 ""
             )
             RollenceKey.SEARCH_ADVANCED_NEGATIVE_NO_ADS == abTestKeywordAdvNeg
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private val isABTestVideoWidget: Boolean by lazy {
+        getABTestVideoWidget()
+    }
+
+    private fun getABTestVideoWidget() : Boolean {
+        return try {
+            val abTestVideoWidget = view.abTestRemoteConfig?.getString(
+                RollenceKey.SEARCH_VIDEO_WIDGET,
+                ""
+            )
+            RollenceKey.SEARCH_VIDEO_WIDGET_VARIANT == abTestVideoWidget
         } catch (e: Exception) {
             false
         }
@@ -327,6 +345,7 @@ class ProductListPresenter @Inject constructor(
         putRequestParamsSearchParameters(requestParams, searchParameter)
         putRequestParamsTopAdsParameters(requestParams)
         putRequestParamsDepartmentIdIfNotEmpty(requestParams, searchParameter)
+        putRequestParamsCarouselTypeIfEnabled(requestParams)
     }
 
     private fun putRequestParamsSearchParameters(requestParams: RequestParams, searchParameter: Map<String, Any>) {
@@ -387,6 +406,12 @@ class ProductListPresenter @Inject constructor(
         if (departmentId.isNotEmpty()) {
             requestParams.putString(SearchApiConst.SC, departmentId)
             requestParams.putString(TopAdsParams.KEY_DEPARTEMENT_ID, departmentId)
+        }
+    }
+
+    private fun putRequestParamsCarouselTypeIfEnabled(requestParams: RequestParams) {
+        if(isABTestVideoWidget) {
+            requestParams.putString(CAROUSEL_TYPE, CAROUSEL_TYPE_VIDEO)
         }
     }
 
@@ -1341,9 +1366,14 @@ class ProductListPresenter @Inject constructor(
     private fun isInvalidInspirationCarousel(data: InspirationCarouselDataView): Boolean {
         if (data.position <= 0) return true
         val firstOption = data.options.getOrNull(0)
-        return data.layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
+        return isInvalidInspirationCarouselLayout(data.layout)
                 && firstOption != null
                 && !firstOption.hasProducts()
+    }
+
+    private fun isInvalidInspirationCarouselLayout(layout: String) : Boolean {
+        return layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
+                || (!isABTestVideoWidget && layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO)
     }
 
     private fun shouldShowInspirationCarousel(layout: String) = showInspirationCarouselLayout.contains(layout)

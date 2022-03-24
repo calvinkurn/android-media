@@ -65,4 +65,8 @@ object RollenceKey {
 
     // Fulfillment Rebranding
     const val FULFILLMENT_REBRANDING = "fulfill_rebranding"
+
+    // Video Carousel Widget
+    const val SEARCH_VIDEO_WIDGET = "VideoWidget"
+    const val SEARCH_VIDEO_WIDGET_VARIANT = "experiment_variant"
 }

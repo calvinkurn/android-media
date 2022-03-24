@@ -101,6 +101,7 @@ class VideoCarouselCardView : BaseCustomView, CarouselVideoPlayerReceiver {
     }
 
     override fun setPlayer(player: CarouselVideoPlayer?) {
+        renderPlayButton()
         this.player?.listener = null
         this.player = player
         videoView.player = player?.getPlayer()

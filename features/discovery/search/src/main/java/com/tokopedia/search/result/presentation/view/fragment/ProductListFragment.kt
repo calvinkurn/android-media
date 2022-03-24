@@ -106,9 +106,12 @@ import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl
 import com.tokopedia.search.result.product.ProductListParameterListener
+import com.tokopedia.search.result.product.VideoCarouselListenerDelegate
 import com.tokopedia.search.result.product.emptystate.EmptyStateListenerDelegate
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDelegate
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselTrackingUnificationDataMapper
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
+import com.tokopedia.search.result.product.querykeyprovider.QueryKeyProvider
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
 import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
 import com.tokopedia.search.utils.SearchLogger
@@ -131,6 +134,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.video_widget.VideoPlayerAutoplay
+import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
 import org.json.JSONArray
 import timber.log.Timber
 import javax.inject.Inject
@@ -152,7 +156,9 @@ class ProductListFragment: BaseDaggerFragment(),
     ChooseAddressListener,
     BannerListener,
     LastFilterListener,
-    ProductListParameterListener {
+    ProductListParameterListener,
+    QueryKeyProvider,
+    InspirationCarouselTrackingUnificationDataMapper {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -223,6 +229,7 @@ class ProductListFragment: BaseDaggerFragment(),
     private val productVideoAutoplay : VideoPlayerAutoplay by lazy {
         VideoPlayerAutoplay(remoteConfig)
     }
+    private lateinit var videoCarouselWidgetCoordinator : VideoCarouselWidgetCoordinator
 
     //region onCreate Fragments
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -291,6 +298,7 @@ class ProductListFragment: BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
 
         restoreInstanceState(savedInstanceState)
+        initVideoCarouselWidgetController()
         initViews(view)
         addDefaultSelectedSort()
         initProductVideoAutoplayLifecycleObserver()
@@ -312,6 +320,10 @@ class ProductListFragment: BaseDaggerFragment(),
 
     private fun initProductVideoAutoplayLifecycleObserver() {
         productVideoAutoplay.registerLifecycleObserver(viewLifecycleOwner)
+    }
+
+    private fun initVideoCarouselWidgetController() {
+        videoCarouselWidgetCoordinator = VideoCarouselWidgetCoordinator(this)
     }
     //endregion
 
@@ -361,6 +373,14 @@ class ProductListFragment: BaseDaggerFragment(),
             this,
         )
 
+        val videoCarouselListenerDelegate = VideoCarouselListenerDelegate(
+            activity,
+            trackingQueue,
+            inspirationCarouselTrackingUnification,
+            this,
+            this
+        )
+
         val productListTypeFactory = ProductListTypeFactoryImpl(
             productListener = this,
             tickerListener = this,
@@ -384,7 +404,9 @@ class ProductListFragment: BaseDaggerFragment(),
             bannerListener = this,
             lastFilterListener = this,
             inspirationSizeListener = inspirationWidgetListenerDelegate,
-            violationListener = ViolationListenerDelegate(activity)
+            violationListener = ViolationListenerDelegate(activity),
+            videoCarouselListener = videoCarouselListenerDelegate,
+            videoCarouselWidgetCoordinator = videoCarouselWidgetCoordinator,
         )
 
         productListAdapter = ProductListAdapter(itemChangeView = this, typeFactory = productListTypeFactory)
@@ -1420,7 +1442,7 @@ class ProductListFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun createCarouselTrackingUnificationData(
+    override fun createCarouselTrackingUnificationData(
         product: InspirationCarouselDataView.Option.Product
     ): InspirationCarouselTrackingUnification.Data =
         InspirationCarouselTrackingUnification.Data(

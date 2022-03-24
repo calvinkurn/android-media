@@ -17,10 +17,13 @@ import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.video_widget.VideoPlayerCache
+import com.tokopedia.video_widget.util.DimensionUtils
 import java.lang.ref.WeakReference
 
 class CarouselVideoPlayer(context: Context) {
     companion object {
+        private const val MINIMUM_DENSITY_MATRIX = 1.5f
+
         private const val DEFAULT_CLIP_DURATION = 5_000_000L // 5 second in microsecond
         private const val ONE_MICRO_SECOND = 1_000_000L // 1 second in microsecond
     }
@@ -34,7 +37,7 @@ class CarouselVideoPlayer(context: Context) {
     var videoUrl: String? = null
     var shouldCache: Boolean = false
 
-    private var maxDuration : Long = DEFAULT_CLIP_DURATION
+    private var maxDuration: Long = DEFAULT_CLIP_DURATION
 
     init {
         exoPlayer.volume = 0F
@@ -59,11 +62,22 @@ class CarouselVideoPlayer(context: Context) {
     fun start() {
         val context = context ?: return
         if (videoUrl == null || videoUrl?.isBlank() == true) return
+        if (!canPlay(context)) return
 
         val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl), shouldCache)
 
         exoPlayer.playWhenReady = true
         exoPlayer.prepare(mediaSource, true, false)
+    }
+
+    private fun canPlay(context: Context): Boolean {
+        return DeviceConnectionInfo.isConnectWifi(context)
+                && isDeviceHasRequirementAutoPlay()
+    }
+
+    private fun isDeviceHasRequirementAutoPlay(): Boolean {
+        val context = context ?: return false
+        return DimensionUtils.getDensityMatrix(context) >= MINIMUM_DENSITY_MATRIX
     }
 
     fun stop() {
@@ -82,12 +96,12 @@ class CarouselVideoPlayer(context: Context) {
     }
 
     fun setMaxDurationInMicroSecond(duration: Long) {
-        val newDuration = if(duration > 0L) duration else 0L
+        val newDuration = if (duration > 0L) duration else 0L
         this.maxDuration = newDuration
     }
 
     fun setMaxDurationInSecond(duration: Int) {
-        val newDuration = if(duration > 0) duration else 0
+        val newDuration = if (duration > 0) duration else 0
         this.maxDuration = newDuration * ONE_MICRO_SECOND
     }
 

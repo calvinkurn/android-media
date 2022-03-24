@@ -23,7 +23,7 @@ class VideoPlayerController(
     }
 
     private var videoURL = ""
-    private var videoPlayerStateFlow : MutableStateFlow<VideoPlayerState>? = null
+    private var videoPlayerStateFlow: MutableStateFlow<VideoPlayerState>? = null
     private val helper: VideoPlayerViewHelper by lazy(LazyThreadSafetyMode.NONE) {
         VideoPlayerViewHelper.Builder(rootView.context, videoView)
             .setExoPlayerEventsListener(this)
@@ -73,7 +73,7 @@ class VideoPlayerController(
         get() = videoURL.isNotBlank()
 
     override fun playVideo(): Flow<VideoPlayerState> {
-        if(!hasVideo) return flowOf(VideoPlayerState.NoVideo)
+        if (!hasVideo) return flowOf(VideoPlayerState.NoVideo)
         videoPlayerStateFlow = MutableStateFlow(VideoPlayerState.Starting)
         helper.play(videoURL)
         return videoPlayerStateFlow as Flow<VideoPlayerState>
