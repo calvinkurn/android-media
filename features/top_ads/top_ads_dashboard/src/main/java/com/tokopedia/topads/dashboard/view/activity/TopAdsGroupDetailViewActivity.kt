@@ -107,29 +107,29 @@ private const val CLICK_TAB_NEG_KATA_KUNCI = "click - tab kata kunci negatif"
 private const val CLICK_GROUP_EDIT_ICON = "click - edit form"
 class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<TopAdsDashboardComponent>, CompoundButton.OnCheckedChangeListener, ChangePlacementFilter {
 
-    private lateinit var switchAutoBidLayout : TopadsAutoBidSwitchPartialLayout
-    private lateinit var swipeRefreshLayout : SwipeRefreshLayout
-    private lateinit var viewPagerFrag : ViewPager
-    private lateinit var appBarLayout2 : AppBarLayout
-    private lateinit var collapsingToolbar2 : CollapsingToolbarLayout
-    private lateinit var headerToolbar : HeaderUnify
-    private lateinit var graphLayout : CardUnify
-    private lateinit var topadsDashboardContent : LinearLayout
-    private lateinit var tabLayout : TabsUnify
-    private lateinit var editPancarianBudget : IconUnify
-    private lateinit var editRekomendasiBudget : IconUnify
-    private lateinit var perClickRekomendasi : Typography
-    private lateinit var budgetperclickRekomendasi : Typography
-    private lateinit var biayaRekommendasi : Typography
-    private lateinit var biayaPencarian : Typography
-    private lateinit var pager : ViewPager
-    private lateinit var perClick : Typography
-    private lateinit var budgetPerClick : Typography
-    private lateinit var btnSwitch : SwitchUnify
-    private lateinit var txtGroupName : Typography
-    private lateinit var dailyBudgetSpent : Typography
-    private lateinit var dailyBudget : Typography
-    private lateinit var dailyBudgetProgressBar : ProgressBarUnify
+    private var switchAutoBidLayout : TopadsAutoBidSwitchPartialLayout ?= null
+    private var swipeRefreshLayout : SwipeRefreshLayout ?= null
+    private var viewPagerFrag : ViewPager ?= null
+    private var appBarLayout2 : AppBarLayout ?= null
+    private var collapsingToolbar2 : CollapsingToolbarLayout ?= null
+    private var headerToolbar : HeaderUnify ?= null
+    private var graphLayout : CardUnify ?= null
+    private var topadsDashboardContent : LinearLayout ?= null
+    private var tabLayout : TabsUnify ?= null
+    private var editPancarianBudget : IconUnify ?= null
+    private var editRekomendasiBudget : IconUnify ?= null
+    private var perClickRekomendasi : Typography ?= null
+    private var budgetperclickRekomendasi : Typography ?= null
+    private var biayaRekommendasi : Typography ?= null
+    private var biayaPencarian : Typography ?= null
+    private var pager : ViewPager ?= null
+    private var perClick : Typography ?= null
+    private var budgetPerClick : Typography ?= null
+    private var btnSwitch : SwitchUnify ?= null
+    private var txtGroupName : Typography ?= null
+    private var dailyBudgetSpent : Typography ?= null
+    private var dailyBudget : Typography ?= null
+    private var dailyBudgetProgressBar : ProgressBarUnify ?= null
 
     private var dataStatistic: DataStatistic? = null
     private var selectedStatisticType: Int = 0
@@ -151,9 +151,6 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         BidSwitchManualBudgetBottomSheet(maxSuggestKeyword,minSuggestKeyword,suggestedBid,isWhiteListedUser,::onSaveClickedInManualBottomSheet)
     }
     private val bidInfoBottomSheet by lazy(LazyThreadSafetyMode.NONE) { BidInfoBottomSheet() }
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
 
     override fun getLayoutId(): Int {
         return R.layout.topads_dash_fragment_group_detail_view_layout
@@ -200,13 +197,11 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         viewModelProvider.get(GroupDetailViewModel::class.java)
     }
 
-    private lateinit var detailPagerAdapter: TopAdsDashboardBasePagerAdapter
-
     private fun renderTabAndViewPager() {
-        viewPagerFrag.adapter = getViewPagerAdapter()
-        viewPagerFrag.offscreenPageLimit = CONST_3
-        viewPagerFrag.currentItem = 0
-        tabLayout.setupWithViewPager(viewPagerFrag)
+        viewPagerFrag?.adapter = getViewPagerAdapter()
+        viewPagerFrag?.offscreenPageLimit = CONST_3
+        viewPagerFrag?.currentItem = 0
+        viewPagerFrag?.let { tabLayout?.setupWithViewPager(it) }
     }
 
     private fun getViewPagerAdapter(): PagerAdapter {
@@ -230,7 +225,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         list.add(FragmentTabItem(PRODUK, ProductTabFragment.createInstance(bundle)))
         list.add(FragmentTabItem(KATA_KUNCI, KeywordTabFragment.createInstance(bundle)))
         list.add(FragmentTabItem(NEG_KATA_KUNCI, NegKeywordTabFragment.createInstance(bundle)))
-        detailPagerAdapter = TopAdsDashboardBasePagerAdapter(supportFragmentManager, 0)
+        val detailPagerAdapter = TopAdsDashboardBasePagerAdapter(supportFragmentManager, 0)
         detailPagerAdapter.setList(list)
         return detailPagerAdapter
     }
@@ -245,13 +240,13 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         selectedStatisticType = TopAdsStatisticsType.PRODUCT_ADS
         getBundleArguments()
         loadData()
-        swipeRefreshLayout.setOnRefreshListener {
+        swipeRefreshLayout?.setOnRefreshListener {
             loadData()
         }
-        headerToolbar.setNavigationOnClickListener {
+        headerToolbar?.setNavigationOnClickListener {
             super.onBackPressed()
         }
-        headerToolbar.addRightIcon(0).apply {
+        headerToolbar?.addRightIcon(0)?.apply {
             clearImage()
             setImageDrawable(getIconUnifyDrawable(context, IconUnify.EDIT, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)))
             setOnClickListener {
@@ -266,7 +261,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
                 startActivityForResult(intent, EDIT_GROUP_REQUEST_CODE)
             }
         }
-        appBarLayout2.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
+        appBarLayout2?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
             when {
                 offset == 0 -> {
                     if (mCurrentState != TopAdsProductIklanFragment.State.EXPANDED) {
@@ -289,7 +284,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             }
         })
 
-        editPancarianBudget.setOnClickListener {
+        editPancarianBudget?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
                 EDIT_BIAYA_PENCERIAN, "")
             val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(false))
@@ -299,7 +294,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             }
         }
 
-        editRekomendasiBudget.setOnClickListener {
+        editRekomendasiBudget?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
                 EDIT_BIAYA_REKOMENDASI, "")
             val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(true))
@@ -337,7 +332,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
                 }
                 else {
                     //changing switch state to automatic, will be changing to manual if user saves bid in bottom sheet
-                    switchAutoBidLayout.switchToAutomatic()
+                    switchAutoBidLayout?.switchToAutomatic()
                     bidSwitchManualBottomSheet.show(supportFragmentManager, "")
                 }
             }
@@ -363,7 +358,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
 
     private fun onSaveClickedInManualBottomSheet(bidPencarian: String, bidRecomendasi: String) {
-        switchAutoBidLayout.switchToManual()
+        switchAutoBidLayout?.switchToManual()
         saveBidStateChangedData(false,suggestedBid,bidPencarian,bidRecomendasi)
     }
 
@@ -467,59 +462,59 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         priceDaily = data.daiyBudget
 
         if(isWhiteListedUser) {
-            editRekomendasiBudget.visibility = View.VISIBLE
-            perClickRekomendasi.visibility = View.VISIBLE
-            budgetperclickRekomendasi.visibility = View.VISIBLE
-            biayaRekommendasi.visibility = View.VISIBLE
-            biayaPencarian.text = getString(R.string.topads_dash_biaya_pencarian)
+            editRekomendasiBudget?.visibility = View.VISIBLE
+            perClickRekomendasi?.visibility = View.VISIBLE
+            budgetperclickRekomendasi?.visibility = View.VISIBLE
+            biayaRekommendasi?.visibility = View.VISIBLE
+            biayaPencarian?.text = getString(R.string.topads_dash_biaya_pencarian)
         } else {
-            editRekomendasiBudget.visibility = View.GONE
-            perClickRekomendasi.visibility = View.GONE
-            budgetperclickRekomendasi.visibility = View.GONE
-            biayaRekommendasi.visibility = View.GONE
-            biayaPencarian.text = getString(com.tokopedia.topads.common.R.string.topads_create_bs_title2)
+            editRekomendasiBudget?.visibility = View.GONE
+            perClickRekomendasi?.visibility = View.GONE
+            budgetperclickRekomendasi?.visibility = View.GONE
+            biayaRekommendasi?.visibility = View.GONE
+            biayaPencarian?.text = getString(com.tokopedia.topads.common.R.string.topads_create_bs_title2)
         }
         if(data.strategies.isNotEmpty()) {
             autoBidStatus = data.strategies[0]
-            switchAutoBidLayout.switchToAutomatic()
-            perClick.visibility = View.GONE
-            perClickRekomendasi.visibility = View.GONE
-            editPancarianBudget.visibility = View.GONE
-            editRekomendasiBudget.visibility = View.GONE
-            budgetPerClick.text = getString(com.tokopedia.topads.common.R.string.group_detail_bid_otomatis)
-            budgetperclickRekomendasi.text = getString(com.tokopedia.topads.common.R.string.group_detail_bid_otomatis)
+            switchAutoBidLayout?.switchToAutomatic()
+            perClick?.visibility = View.GONE
+            perClickRekomendasi?.visibility = View.GONE
+            editPancarianBudget?.visibility = View.GONE
+            editRekomendasiBudget?.visibility = View.GONE
+            budgetPerClick?.text = getString(com.tokopedia.topads.common.R.string.group_detail_bid_otomatis)
+            budgetperclickRekomendasi?.text = getString(com.tokopedia.topads.common.R.string.group_detail_bid_otomatis)
         } else {
-            switchAutoBidLayout.switchToManual()
-            editPancarianBudget.visibility = View.VISIBLE
+            switchAutoBidLayout?.switchToManual()
+            editPancarianBudget?.visibility = View.VISIBLE
             autoBidStatus = ""
-            perClick.visibility = View.VISIBLE
+            perClick?.visibility = View.VISIBLE
             data.bidSettings?.forEach {
                 if(it.bidType.equals(PRODUCT_SEARCH)) {
-                    budgetPerClick.text = "Rp " + it.priceBid?.toInt()
+                    budgetPerClick?.text = "Rp " + it.priceBid?.toInt()
                     searchBid = it.priceBid
                 } else if(it.bidType.equals(PRODUCT_BROWSE)) {
-                    budgetperclickRekomendasi.text = "Rp " + it.priceBid?.toInt()
+                    budgetperclickRekomendasi?.text = "Rp " + it.priceBid?.toInt()
                     rekommendedBid = it.priceBid
                 }
 
             }
 
         }
-        txtGroupName.text = groupName
-        btnSwitch.setOnCheckedChangeListener(null)
-        btnSwitch.isChecked = data.status == ParamObject.PUBLISHED
-        btnSwitch.setOnCheckedChangeListener(this)
+        txtGroupName?.text = groupName
+        btnSwitch?.setOnCheckedChangeListener(null)
+        btnSwitch?.isChecked = data.status == ParamObject.PUBLISHED
+        btnSwitch?.setOnCheckedChangeListener(this)
         if (priceDaily == 0.0F) {
-            dailyBudgetSpent.text = TopAdsDashboardConstant.TIDAK_DIBATASI
-            dailyBudget.visibility = View.GONE
-            dailyBudgetProgressBar.visibility = View.GONE
+            dailyBudgetSpent?.text = TopAdsDashboardConstant.TIDAK_DIBATASI
+            dailyBudget?.visibility = View.GONE
+            dailyBudgetProgressBar?.visibility = View.GONE
         } else {
-            dailyBudget.visibility = View.VISIBLE
-            dailyBudget.text = String.format(resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), priceDaily.toInt())
-            dailyBudgetSpent.text = priceSpent
-            dailyBudgetProgressBar.visibility = View.VISIBLE
+            dailyBudget?.visibility = View.VISIBLE
+            dailyBudget?.text = String.format(resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), priceDaily.toInt())
+            dailyBudgetSpent?.text = priceSpent
+            dailyBudgetProgressBar?.visibility = View.VISIBLE
             Utils.convertMoneyToValue(priceSpent ?: "0").let {
-                dailyBudgetProgressBar.setValue(it, false)
+                dailyBudgetProgressBar?.setValue(it, false)
             }
         }
         renderTabAndViewPager()
@@ -551,7 +546,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
                 KEYWORD_NAME,
                 getString(com.tokopedia.topads.common.R.string.topads_group_detail_budget_rekomendasi)
             )
-            bundle.putString(DAILY_BUDGET, budgetperclickRekomendasi.text.toString().removeCommaRawString())
+            bundle.putString(DAILY_BUDGET, budgetperclickRekomendasi?.text.toString().removeCommaRawString())
             bundle.putBoolean(FROM_REKOMENDASI, true)
         }
         else {
@@ -559,7 +554,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
                 KEYWORD_NAME,
                 getString(com.tokopedia.topads.common.R.string.topads_group_detail_budget_pancarian)
             )
-            bundle.putString(DAILY_BUDGET, budgetPerClick.text.toString().removeCommaRawString())
+            bundle.putString(DAILY_BUDGET, budgetPerClick?.text.toString().removeCommaRawString())
             bundle.putBoolean(FROM_REKOMENDASI, false)
         }
         bundle.putBoolean(FROM_DETAIL, true)
@@ -568,7 +563,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
 
     private fun onStateChanged(state: TopAdsProductIklanFragment.State?) {
-        swipeRefreshLayout.isEnabled = state == TopAdsProductIklanFragment.State.EXPANDED
+        swipeRefreshLayout?.isEnabled = state == TopAdsProductIklanFragment.State.EXPANDED
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -586,7 +581,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         isWhiteListedUser = intent?.extras?.getBoolean(ISWHITELISTEDUSER)?:false
 
         if(intent?.extras?.getBoolean(ParamObject.IS_AUTO_BID_TOGGLE_ENABLED) != true){
-            switchAutoBidLayout.hide()
+            switchAutoBidLayout?.hide()
         }
     }
 
@@ -596,12 +591,12 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
 
     private fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {
-        swipeRefreshLayout.isRefreshing = false
+        swipeRefreshLayout?.isRefreshing = false
         this.dataStatistic = dataStatistic
         if (this.dataStatistic != null && dataStatistic.cells.isNotEmpty()) {
             topAdsTabAdapter?.setSummary(dataStatistic.summary, resources.getStringArray(R.array.top_ads_tab_statistics_labels))
         }
-        val fragment = pager.adapter?.instantiateItem(pager, pager.currentItem) as? Fragment
+        val fragment = pager?.let { it.adapter?.instantiateItem(it, it.currentItem) as? Fragment }
         if (fragment != null && fragment is TopAdsDashStatisticFragment) {
             fragment.showLineGraph(this.dataStatistic)
         }
