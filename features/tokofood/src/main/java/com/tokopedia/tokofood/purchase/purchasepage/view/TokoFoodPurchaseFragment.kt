@@ -56,8 +56,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     private var toolbar: TokoFoodPurchaseToolbar? = null
-    private var recyclerView: RecyclerView? = null
-    private lateinit var adapter: TokoFoodPurchaseAdapter
 
     companion object {
         const val HAS_ELEVATION = 6
@@ -74,8 +72,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewBinding = LayoutFragmentPurchaseBinding.inflate(inflater, container, false)
         val view = viewBinding?.root
-        recyclerView = getRecyclerView(view)
-        (recyclerView?.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+        (getRecyclerView(view)?.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         return view
     }
 
@@ -125,6 +122,8 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     override fun loadInitialData() {
         super.loadInitialData()
+        viewBinding?.layoutGlobalErrorPurchase?.gone()
+        viewBinding?.recyclerViewPurchase?.show()
         showLoading()
         viewModel.loadData()
     }
@@ -134,8 +133,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, TokoFoodPurchaseAdapterTypeFactory> {
-        adapter = TokoFoodPurchaseAdapter(adapterTypeFactory)
-        return adapter
+        return TokoFoodPurchaseAdapter(adapterTypeFactory)
     }
 
     override fun getAdapterTypeFactory(): TokoFoodPurchaseAdapterTypeFactory {
@@ -180,7 +178,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     private fun initializeRecyclerViewScrollListener() {
-        recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        getRecyclerView(view)?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 // No-op
             }
@@ -197,7 +195,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     private fun observeList() {
         viewModel.visitables.observe(viewLifecycleOwner, {
-            adapter.updateList(it)
+            (adapter as TokoFoodPurchaseAdapter).updateList(it)
         })
     }
 
@@ -240,14 +238,8 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             it.recyclerViewPurchase.gone()
             val errorType = getGlobalErrorType(throwable)
             it.layoutGlobalErrorPurchase.setType(errorType)
-            if (errorType == GlobalError.SERVER_ERROR) {
-                it.layoutGlobalErrorPurchase.setActionClickListener {
-                    // Todo : Navigate to home
-                }
-            } else {
-                it.layoutGlobalErrorPurchase.setActionClickListener {
-                    loadInitialData()
-                }
+            it.layoutGlobalErrorPurchase.setActionClickListener {
+                loadInitialData()
             }
         }
     }
@@ -307,7 +299,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     private fun scrollToIndex(index: Int) {
         activity?.let { activity ->
-            recyclerView?.layoutManager?.let {
+            getRecyclerView(view)?.layoutManager?.let {
                 val linearSmoothScroller = object : LinearSmoothScroller(activity) {
                     override fun getVerticalSnapPreference(): Int {
                         return SNAP_TO_START
@@ -422,7 +414,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     }
 
                     override fun onRetry() {
-
+                        loadInitialData()
                     }
 
                     override fun onCheckOtherMerchant() {
