@@ -132,7 +132,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 .asLiveData(viewModelScope.coroutineContext + dispatcher.computation)
     val observableEvent: LiveData<EventUiModel>
         get() = _observableEvent
-    val observableBroadcastSchedule = getCurrentSetupDataStore().getObservableSchedule()
     val observableInteractiveConfig: LiveData<InteractiveConfigUiModel>
         get() = _observableInteractiveConfig
     val observableInteractiveState: LiveData<BroadcastInteractiveState>
@@ -804,7 +803,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun setBroadcastSchedule(schedule: BroadcastScheduleUiModel) {
-        getCurrentSetupDataStore().setBroadcastSchedule(schedule)
+        _schedule.update {
+            it.copy(schedule = schedule)
+        }
     }
 
     private fun setChannelInfo(channelInfo: ChannelInfoUiModel) {
@@ -833,6 +834,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         hydraConfigStore.setMinScheduleDate(scheduleConfigModel.minimum)
         hydraConfigStore.setMaxScheduleDate(scheduleConfigModel.maximum)
         hydraConfigStore.setDefaultScheduleDate(scheduleConfigModel.default)
+
+        _schedule.update {
+            it.copy(
+                config = ScheduleConfigUiModel(
+                    maxDate = scheduleConfigModel.maximum,
+                    minDate = scheduleConfigModel.minimum,
+                    defaultDate = scheduleConfigModel.default,
+                )
+            )
+        }
     }
 
     private fun restartLiveDuration(duration: LiveDuration) {

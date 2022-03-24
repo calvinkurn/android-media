@@ -349,7 +349,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 renderProductMenu(prevState?.selectedProduct, state.selectedProduct)
-                renderSchedule(state.schedule)
+                renderSchedule(prevState?.schedule, state.schedule)
             }
         }
     }
@@ -366,14 +366,27 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun renderSchedule(
-        schedule: ScheduleUiModel
+        prevState: ScheduleUiModel?,
+        state: ScheduleUiModel,
     ) {
+        binding.viewPreparationMenu.isSetScheduleChecked(
+            state.schedule is BroadcastScheduleUiModel.Scheduled
+        )
+
         val datePicker = childFragmentManager.findFragmentByTag(
             SCHEDULE_TAG
         ) as? DateTimePickerUnify ?: return
 
-        datePicker.datePickerButton.isLoading = schedule.state == NetworkState.Loading
-        datePicker.datePickerButton.isEnabled = schedule.state != NetworkState.Loading
+        datePicker.datePickerButton.isLoading = state.state == NetworkState.Loading
+        datePicker.datePickerButton.isEnabled = state.state != NetworkState.Loading
+
+        if (state.state == NetworkState.Loading) {
+            datePicker.isCancelable = false
+        }
+
+        if (prevState?.state != state.state && state.state == NetworkState.Success) {
+            datePicker.dismiss()
+        }
     }
 
     /** Form */
@@ -436,18 +449,20 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     override fun onClickSetSchedule() {
-        val currentDate = GregorianCalendar()
-        val schedule = parentViewModel.uiState.value.schedule.schedule
+        val schedule = parentViewModel.uiState.value.schedule
         openScheduleBottomSheet(
-            minDate = currentDate,
-            maxDate = GregorianCalendar().apply {
-                add(Calendar.DATE, 10)
+            minDate = GregorianCalendar().apply {
+                time = schedule.config.minDate
             },
-            selectedDate = if (schedule is BroadcastScheduleUiModel.Scheduled) {
-                GregorianCalendar().apply {
-                    time = schedule.time
-                }
-            } else null,
+            maxDate = GregorianCalendar().apply {
+                time = schedule.config.maxDate
+            },
+            selectedDate = GregorianCalendar().apply {
+                time = if (schedule.schedule is BroadcastScheduleUiModel.Scheduled) {
+                    schedule.schedule.time
+                } else schedule.config.defaultDate
+            },
+            hasSchedule = schedule.schedule is BroadcastScheduleUiModel.Scheduled,
         )
     }
 
@@ -572,7 +587,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun openScheduleBottomSheet(
         minDate: GregorianCalendar,
         maxDate: GregorianCalendar,
-        selectedDate: GregorianCalendar?,
+        selectedDate: GregorianCalendar,
+        hasSchedule: Boolean,
     ) {
         val datePicker = DateTimePickerUnify(
             context = requireContext(),
@@ -588,9 +604,14 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         datePicker.setAction(getString(R.string.play_bro_schedule_delete)) {
             if (it.isEnabled) parentViewModel.submitAction(PlayBroadcastAction.DeleteSchedule)
         }
+        datePicker.isCancelable = false
+        datePicker.overlayClickDismiss = false
+        datePicker.setCloseClickListener {
+            if (parentViewModel.uiState.value.schedule.state != NetworkState.Loading) datePicker.dismiss()
+        }
         datePicker.setShowListener {
             val action = datePicker.bottomSheetAction as? Typography ?: return@setShowListener
-            action.isEnabled = selectedDate != null
+            action.isEnabled = hasSchedule
 
             datePicker.datePickerButton.text = getString(R.string.play_label_save)
             datePicker.datePickerButton.setOnClickListener {
