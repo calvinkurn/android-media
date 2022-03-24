@@ -449,7 +449,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     override fun onRechargeAllCategoryShowCoachmark(view: View) {
         context?.let {
-            val screenWidth = getScreenWidth(it as Activity) - convertDpToPixel(COACHMARK_SPACING_DP, it)
+            val coachmarkMargin = convertDpToPixel(COACHMARK_SPACING_DP, it)
 
             val isCoachmarkShown = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, false)
             if (!isCoachmarkShown) {
@@ -463,7 +463,8 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
                 )
 
                 val coachmark = CoachMark2(it)
-                coachmark.width = screenWidth
+                coachmark.simpleMarginLeft = coachmarkMargin
+                coachmark.simpleMarginRight = coachmarkMargin
                 coachmark.showCoachMark(coachMarkItems)
 
                 localCacheHandler.putBoolean(SHOW_COACH_MARK_KEY, true)
@@ -565,7 +566,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
         const val TOOLBAR_TRANSITION_RANGE_DP = 8
         const val SECTION_SPACING_DP = 16
-        const val COACHMARK_SPACING_DP = 24f
+        const val COACHMARK_SPACING_DP = 12f
 
         private const val OFFSET_ALPHA = 255f
 
