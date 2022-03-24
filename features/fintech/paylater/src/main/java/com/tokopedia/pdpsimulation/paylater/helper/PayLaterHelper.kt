@@ -21,6 +21,9 @@ object PayLaterHelper {
     private const val TYPE_WEB_VIEW = 2
     private const val TYPE_HOW_TO_USE = 3
     private const val TYPE_HOW_TO_USE_II = 4
+    var partnerlinkingStatus = ""
+    var useStatus = ""
+    var partnerName =""
 
     fun handleClickNavigation(
         context: Context?,
@@ -114,54 +117,35 @@ object PayLaterHelper {
         return nameList.joinToString(",")
     }
 
-    fun extractLinkingStatus(payLaterList: ArrayList<BasePayLaterWidgetUiModel>):String{
-        val allLinkingStatus :ArrayList<String?> = ArrayList()
-       for(i in 0 until payLaterList.size)
-       {
-           if(payLaterList[i] is Detail)
-               allLinkingStatus.add((payLaterList[i] as Detail).linkingStatus)
-           else if(payLaterList[i] is SeeMoreOptionsUiModel)
-           {
-               for(j in 0 until (payLaterList[i] as SeeMoreOptionsUiModel).remainingItems.size)
-                   allLinkingStatus.add((payLaterList[i] as SeeMoreOptionsUiModel).remainingItems[j].linkingStatus)
-               break;
-           }
-       }
-        return allLinkingStatus.toString()
-    }
-
-
-    fun extractUserStatus(payLaterList: ArrayList<BasePayLaterWidgetUiModel>):String{
-        val allUserStatus :ArrayList<String?> = ArrayList()
-        for(i in 0 until payLaterList.size)
-        {
-            if(payLaterList[i] is Detail)
-                allUserStatus.add((payLaterList[i] as Detail).userState)
-            else if(payLaterList[i] is SeeMoreOptionsUiModel)
-            {
-                for(j in 0 until (payLaterList[i] as SeeMoreOptionsUiModel).remainingItems.size)
-                    allUserStatus.add((payLaterList[i] as SeeMoreOptionsUiModel).remainingItems[j].userState)
-                break;
+    fun extractDetailFromList(payLaterList: ArrayList<BasePayLaterWidgetUiModel>){
+        try {
+            val allLinkingStatus: ArrayList<String?> = ArrayList()
+            val allUserStatus: ArrayList<String?> = ArrayList()
+            val allPartnerName: ArrayList<String?> = ArrayList()
+            for (i in 0 until payLaterList.size) {
+                if (payLaterList[i] is Detail) {
+                    allLinkingStatus.add((payLaterList[i] as Detail).linkingStatus)
+                    allUserStatus.add((payLaterList[i] as Detail).userState)
+                    allPartnerName.add((payLaterList[i] as Detail).gatewayDetail?.name ?: "")
+                } else if (payLaterList[i] is SeeMoreOptionsUiModel) {
+                    for (j in 0 until (payLaterList[i] as SeeMoreOptionsUiModel).remainingItems.size) {
+                        allLinkingStatus.add((payLaterList[i] as SeeMoreOptionsUiModel).remainingItems[j].linkingStatus)
+                        allUserStatus.add((payLaterList[i] as SeeMoreOptionsUiModel).remainingItems[j].userState)
+                        allPartnerName.add(
+                            (payLaterList[i] as SeeMoreOptionsUiModel).remainingItems[j].gatewayDetail?.name
+                                ?: ""
+                        )
+                    }
+                    break;
+                }
             }
+            if(allLinkingStatus.isNotEmpty())partnerlinkingStatus = allLinkingStatus.toString()
+            if(allUserStatus.isNotEmpty())useStatus = allUserStatus.toString()
+            if(allPartnerName.isNotEmpty())partnerName = allPartnerName.toString()
+        }catch (e:Exception) {
+
         }
-        return allUserStatus.toString()
     }
 
-
-   fun  extractPartnerName (payLaterList: ArrayList<BasePayLaterWidgetUiModel>):String{
-       val allPartnerName :ArrayList<String?> = ArrayList()
-       for(i in 0 until payLaterList.size)
-       {
-           if(payLaterList[i] is Detail)
-               allPartnerName.add((payLaterList[i] as Detail).gatewayDetail?.name?:"")
-           else if(payLaterList[i] is SeeMoreOptionsUiModel)
-           {
-               for(j in 0 until (payLaterList[i] as SeeMoreOptionsUiModel).remainingItems.size)
-                   allPartnerName.add((payLaterList[i] as SeeMoreOptionsUiModel).remainingItems[j].gatewayDetail?.name?:"")
-               break;
-           }
-       }
-       return allPartnerName.toString()
-   }
 
 }

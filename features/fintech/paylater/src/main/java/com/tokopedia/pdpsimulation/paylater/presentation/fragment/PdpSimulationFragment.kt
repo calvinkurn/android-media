@@ -27,9 +27,10 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
 import com.tokopedia.pdpsimulation.paylater.helper.BottomSheetNavigator
 import com.tokopedia.pdpsimulation.paylater.helper.PayLaterBundleGenerator
 import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper
-import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper.extractLinkingStatus
-import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper.extractPartnerName
-import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper.extractUserStatus
+import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper.extractDetailFromList
+import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper.partnerName
+import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper.partnerlinkingStatus
+import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper.useStatus
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterAdapterFactoryImpl
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterSimulationAdapter
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterSimulationTenureAdapter
@@ -80,13 +81,14 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun sendTenureCLick(tenure: Int, payLaterList: ArrayList<BasePayLaterWidgetUiModel>) {
+        extractDetailFromList(payLaterList)
         sendEvent(PayLaterTenureClick().apply {
             productId = payLaterArgsDescriptor.productId
-            linkingStatus = extractLinkingStatus(payLaterList)
-            userStatus = extractUserStatus(payLaterList)
+            linkingStatus = partnerlinkingStatus
+            userStatus = useStatus
             productPrice = payLaterViewModel.finalProductPrice.toString()
             tenureOption = tenure
-            payLaterPartnerName = extractPartnerName(payLaterList)
+            payLaterPartnerName = partnerName
         })
     }
 
