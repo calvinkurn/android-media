@@ -12,6 +12,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
  */
 abstract class BaseMultiFragActivity : BaseToolbarActivity() {
 
+    /**
+     * This function is used in case we use flag SINGLE_TOP to activity
+     */
     final override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         val uri = intent?.data
