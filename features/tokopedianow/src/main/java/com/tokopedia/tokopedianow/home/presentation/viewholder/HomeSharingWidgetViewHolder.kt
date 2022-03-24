@@ -21,9 +21,11 @@ class HomeSharingWidgetViewHolder(
 ) : AbstractViewHolder<HomeSharingWidgetUiModel>(itemView) {
 
     companion object {
+        private const val IMG_SHARING_EDUCATION = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_sharing_education.png"
+        private const val DEFAULT_DESC_RES = -1
+
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_home_sharing_widget
-        const val IMG_SHARING_EDUCATION = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_sharing_education.png"
     }
 
     private var binding: ItemTokopedianowHomeSharingWidgetBinding? by viewBinding()
@@ -56,11 +58,9 @@ class HomeSharingWidgetViewHolder(
         }
     }
 
-    private fun setupUi(serviceType: String = "", descRes: Int = -1, btnTextRes: Int) {
+    private fun setupUi(serviceType: String = "", descRes: Int = DEFAULT_DESC_RES, btnTextRes: Int) {
         binding?.apply {
-            tpSharingEducation.text = if (descRes == -1) {
-                itemView.resources.getString(descRes)
-            } else {
+            tpSharingEducation.text = if (descRes == DEFAULT_DESC_RES) {
                 MethodChecker.fromHtml(
                     getServiceTypeFormattedCopy(
                         context = root.context,
@@ -68,6 +68,8 @@ class HomeSharingWidgetViewHolder(
                         serviceType = serviceType
                     )
                 )
+            } else {
+                itemView.resources.getString(descRes)
             }
 
             btnSharingEducation.text = itemView.resources.getString(btnTextRes)
