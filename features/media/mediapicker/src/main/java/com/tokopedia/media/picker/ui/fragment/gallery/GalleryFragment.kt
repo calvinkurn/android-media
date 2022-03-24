@@ -222,6 +222,11 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
                     listener?.onShowVideoMinDurationToast()
                     return false
                 }
+
+                if (listener?.isMaxVideoSize(media) == true) {
+                    listener?.onShowVideoMaxFileSizeToast()
+                    return false
+                }
             } else if (!isSelected && !media.isVideo()) {
                 // image validation
                 if (listener?.isMaxImageResolution(media) == true) {
