@@ -182,6 +182,8 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
         bestSellerDataModel?.let { listener.onBestSellerThreeDotsClick(it, item, adapterPosition) }
     }
 
+    override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {}
+
     companion object{
         val LAYOUT = R.layout.best_seller_view_holder
         private const val CLASS_NAME = "com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder"

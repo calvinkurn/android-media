@@ -56,6 +56,7 @@ import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -556,24 +557,38 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     private fun onErrorAddWishList(errorMessage: String?, productId: String) {
         enableWishListButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+        view?.let { v ->
+            errorMessage?.let { errorMsg ->
+                Toaster.build(v, errorMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+        }
     }
 
     private fun onSuccessAddWishlist(productId: String) {
         productNavListAdapter?.updateWishlistStatus(productId, true)
         enableWishListButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg))
+        val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+        val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+        view?.let {
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText).show()
+        }
     }
 
     private fun onErrorRemoveWishlist(errorMessage: String?, productId: String) {
         enableWishListButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+        view?.let { v ->
+            errorMessage?.let { errorMsg ->
+                Toaster.build(v, errorMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+        }
     }
 
     private fun onSuccessRemoveWishlist(productId: String) {
         productNavListAdapter?.updateWishlistStatus(productId, false)
         enableWishListButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg))
+        val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg)
+        val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist)
+        view?.let {
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText).show()
+        }
     }
 
     override fun onDestroyView() {

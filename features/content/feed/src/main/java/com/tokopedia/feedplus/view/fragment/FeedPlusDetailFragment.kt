@@ -573,10 +573,10 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     ) {
         Toaster.build(
                 requireView(),
-                getString(R.string.feed_added_to_wishlist),
+                getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,
-                getString(R.string.feed_go_to_wishlist),
+                getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
                 View.OnClickListener {
                     feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
                     RouteManager.route(context, ApplinkConst.WISHLIST)

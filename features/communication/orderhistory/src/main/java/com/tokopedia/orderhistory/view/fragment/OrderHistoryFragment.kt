@@ -173,21 +173,20 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
         view?.let {
             val successMessage = it.context.getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
             val ctaText = it.context.getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
-            Toaster.make(
+            Toaster.build(
                     it,
                     successMessage,
                     Toaster.LENGTH_SHORT,
                     Toaster.TYPE_NORMAL,
                     ctaText
-            ) { goToWishList() }
+            ) { goToWishList() }.show()
         }
     }
 
     override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
         if (errorMessage == null) return
-        val ctaText = context?.getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist) ?: ""
         view?.let {
-            Toaster.make(it, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, ctaText)
+            Toaster.build(it, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         }
     }
 

@@ -198,10 +198,9 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
         if (view == null) return;
 
-        Toaster.INSTANCE.showNormalWithAction(view, message, Snackbar.LENGTH_LONG,
-                getString(R.string.recom_go_to_wishlist),
-                v -> RouteManager.route(getActivity(), ApplinkConst.WISHLIST)
-        );
+        Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
+                getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
+                v -> RouteManager.route(getActivity(), ApplinkConst.WISHLIST)).show();
     }
 
     private void showSuccessRemoveWishlist() {
@@ -212,7 +211,8 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
         if (view == null) return;
 
-        Toaster.INSTANCE.showNormal(view, message, Snackbar.LENGTH_LONG);
+        Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
+                getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist), v -> {}).show();
     }
 
     private void handleWishlistActionFailed() {
@@ -220,8 +220,9 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
         View rootView = getView().getRootView();
 
-        Toaster.INSTANCE.showError(rootView,
-                ErrorHandler.getErrorMessage(rootView.getContext(), null), Snackbar.LENGTH_LONG);
+        Toaster.build(rootView,
+                ErrorHandler.getErrorMessage(rootView.getContext(), null), Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR).show();
     }
 
     @Override

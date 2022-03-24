@@ -8,6 +8,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 interface RecommendationListener {
     fun onProductClick(item: RecommendationItem, layoutType: String? = null, vararg position: Int)
     fun onProductImpression(item: RecommendationItem)
+    fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: ((Boolean, Throwable?) -> Unit))
     fun onThreeDotsClick(item: RecommendationItem, vararg position: Int) {
 
     }

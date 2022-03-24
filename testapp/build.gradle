@@ -128,4 +128,13 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
+	implementation project(rootProject.ext.features.navigation)
+	implementation project(rootProject.ext.features.promoMvcWidget)
+	implementation project(rootProject.ext.features.feed)
+	implementation project(rootProject.ext.features.catalog)
+	implementation project(rootProject.ext.features.notifCenter)
+	implementation project(rootProject.ext.features.findNative)
+	implementation project(rootProject.ext.features.orderhistory)
+	implementation project(rootProject.ext.features.categoryLevels)
+	implementation project(rootProject.ext.features.kol)
 }

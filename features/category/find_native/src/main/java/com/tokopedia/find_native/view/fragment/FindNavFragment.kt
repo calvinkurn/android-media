@@ -50,6 +50,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -551,26 +552,39 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
 
     private fun onErrorAddWishList(errorMessage: String?, productId: String) {
         enableWishListButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+        view?.let { v ->
+            errorMessage?.let { errorMsg ->
+                Toaster.build(v, errorMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+        }
     }
 
     private fun onSuccessAddWishlist(productId: String) {
         productNavListAdapter?.updateWishlistStatus(productId.toInt(), true)
         enableWishListButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_add_wishlist))
+        val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+        val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+        view?.let {
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText).show()
+        }
     }
 
     private fun onErrorRemoveWishlist(errorMessage: String?, productId: String) {
         enableWishListButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+        view?.let { v ->
+            errorMessage?.let { errorMsg ->
+                Toaster.build(v, errorMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+        }
     }
 
     private fun onSuccessRemoveWishlist(productId: String) {
         productNavListAdapter?.updateWishlistStatus(productId.toInt(), false)
         enableWishListButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_remove_wishlist))
+        val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg)
+        val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist)
+        view?.let {
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText).show()
+        }
     }
-
 
     private fun enableWishListButton(productId: String) {
         productNavListAdapter?.setWishlistButtonEnabled(productId = if (productId.toIntOrNull() != null) {

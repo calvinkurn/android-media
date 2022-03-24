@@ -19,6 +19,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.wishlist_common.R as Rwishlist
 import com.tokopedia.notifcenter.analytics.NotificationTopAdsAnalytic
 import com.tokopedia.notifcenter.presentation.adapter.NotificationAdapter
+import com.tokopedia.notifcenter.presentation.viewmodel.INotificationViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
@@ -30,6 +31,7 @@ class RecommendationLifeCycleAware constructor(
         private val topAdsAnalytic: NotificationTopAdsAnalytic,
         private var trackingQueue: TrackingQueue?,
         private val rvAdapter: NotificationAdapter?,
+        private var viewModel: INotificationViewModel?,
         private var fragment: Fragment?,
         private var context: Context?
 ) : LifecycleObserver, RecommendationListener {
@@ -107,7 +109,7 @@ class RecommendationLifeCycleAware constructor(
         val message = getString(Rwishlist.string.on_success_remove_from_wishlist_msg)
         val ctaText = getString(Rwishlist.string.cta_success_remove_from_wishlist)
         if (view == null) return
-        Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText).show()
+        Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText, View.OnClickListener {}).show()
     }
 
     private fun handleWishlistActionFailed() {
@@ -154,6 +156,17 @@ class RecommendationLifeCycleAware constructor(
 
     private fun onImpressionOrganic(item: RecommendationItem) {
         topAdsAnalytic.addInboxTopAdsProductViewImpressions(item, item.position, item.isTopAds)
+    }
+
+    override fun onWishlistClick(
+            item: RecommendationItem, isAddWishlist: Boolean,
+            callback: (Boolean, Throwable?) -> Unit
+    ) {
+        if (isAddWishlist) {
+            viewModel?.addWishlist(item, callback)
+        } else {
+            viewModel?.removeWishList(item, callback)
+        }
     }
 
     private fun onClickTopAds(item: RecommendationItem) {
