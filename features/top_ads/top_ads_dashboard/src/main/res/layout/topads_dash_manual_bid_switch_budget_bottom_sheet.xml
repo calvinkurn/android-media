@@ -7,7 +7,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_description_bid_switch_bs"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:text="@string/topads_common_auto_bid_switch_manual_bs_description"
         android:textColor="@color/light_N700_68"
@@ -18,7 +18,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtPencarianTitle"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:text="@string/topads_common_iklan_pencarian_title"
@@ -30,7 +30,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtRecommendasiTitle"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:text="@string/topads_common_iklan_recommendasi_title"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,7 +41,7 @@
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/tf_pencarian_bid_switch_bs"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl3"
