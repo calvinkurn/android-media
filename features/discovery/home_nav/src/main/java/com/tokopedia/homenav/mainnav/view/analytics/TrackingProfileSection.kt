@@ -1,6 +1,7 @@
 package com.tokopedia.homenav.mainnav.view.analytics
 
 import android.os.Bundle
+import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
@@ -18,7 +19,9 @@ object TrackingProfileSection: BaseTrackerConst() {
     private const val CLICK_ON_SHOP_BUTTON = "click on shop button"
     private const val CLICK_ON_AFFILIATE_BUTTON = "click on affiliate button"
     private const val EVENT_LABEL_SHOP_FORMAT = "%s - %s"
+    private const val EVENT_LABEL_SHOP_AFFILIATE_FORMAT = "%s / %s / %s / %s / %s"
     private const val DEFAULT_VALUE = ""
+    private const val CREATE_AFFILIATE = "create affiliate"
 
     fun onClickLoginButton(userId: String){
         getTracker().sendGeneralEvent(
@@ -89,6 +92,54 @@ object TrackingProfileSection: BaseTrackerConst() {
         bundle.putString(
             Label.KEY,
             EVENT_LABEL_SHOP_FORMAT.format(DEFAULT_VALUE, DEFAULT_VALUE)
+        )
+        bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
+        bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+
+        getTracker().sendEnhanceEcommerceEvent(Event.CLICK_HOMEPAGE, bundle)
+    }
+
+    fun onClickShopAndAffiliate(
+        accountHeaderDataModel: AccountHeaderDataModel
+    ) {
+        val userAccount = accountHeaderDataModel.profileDataModel.userName
+        val shopAccount : String
+        val openShop : String
+        if (accountHeaderDataModel.profileSellerDataModel.hasShop) {
+            shopAccount = accountHeaderDataModel.profileSellerDataModel.shopName
+            openShop = DEFAULT_VALUE
+        }
+        else {
+            shopAccount = DEFAULT_VALUE
+            openShop = CLICK_OPEN_SHOP
+        }
+
+        val affiliateAccount: String
+        val createAffiliate: String
+        if (accountHeaderDataModel.profileAffiliateDataModel.isRegister) {
+            affiliateAccount = accountHeaderDataModel.profileAffiliateDataModel.affiliateName
+            createAffiliate = DEFAULT_VALUE
+        } else {
+            affiliateAccount = DEFAULT_VALUE
+            createAffiliate = CREATE_AFFILIATE
+        }
+
+        val bundle = Bundle()
+        bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
+        bundle.putString(
+            Action.KEY,
+            CLICK_ON_PROFILE_SECTION_LOGIN
+        )
+        bundle.putString(Category.KEY, GLOBAL_MENU)
+        bundle.putString(
+            Label.KEY,
+            EVENT_LABEL_SHOP_AFFILIATE_FORMAT.format(
+                userAccount,
+                shopAccount,
+                openShop,
+                affiliateAccount,
+                createAffiliate
+            )
         )
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)

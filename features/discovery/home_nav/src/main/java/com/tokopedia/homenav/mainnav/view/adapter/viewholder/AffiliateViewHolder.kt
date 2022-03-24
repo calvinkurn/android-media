@@ -10,6 +10,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HomeNavItemAffiliateBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
+import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileAffiliateDataModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -22,7 +23,8 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class AffiliateViewHolder (
     itemView: View,
-    private val mainNavListener: MainNavListener
+    private val mainNavListener: MainNavListener,
+    private val accountHeaderDataModel: AccountHeaderDataModel
 ) : AbstractViewHolder<ProfileAffiliateDataModel>(itemView){
 
    private val binding: HomeNavItemAffiliateBinding? by viewBinding()
@@ -53,11 +55,11 @@ class AffiliateViewHolder (
     }
 
     private fun affiliateClicked(profileAffiliate: ProfileAffiliateDataModel, context: Context) {
+        TrackingProfileSection.onClickShopAndAffiliate(accountHeaderDataModel)
         if (profileAffiliate.isRegister)
             RouteManager.route(context, profileAffiliate.affiliateAppLink)
         else {
             RouteManager.route(context, profileAffiliate.affiliateAppLink)
-            TrackingProfileSection.onClickRegisterAffiliate()
         }
     }
 

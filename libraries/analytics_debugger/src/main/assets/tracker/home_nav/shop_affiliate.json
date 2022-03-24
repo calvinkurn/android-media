@@ -1,17 +1,17 @@
 {
-  "readme": "Home Nav click affiliate for register affiliate",
+  "readme": "Home Nav click shop and affiliate",
   "mode": "exact",
   "query": [
     {
       "event": "clickHomepage",
-      "eventAction": "click on affiliate button",
+      "eventAction": "click on profile section - login",
       "eventCategory": "global menu",
-      "eventLabel": ".*",
+      "eventLabel": ".* / .* / .* / .* / .*",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
+      "userId": ".*",
       "clientId": ".*",
-      "sessionIris": ".*",
-      "userId": ".*"
+      "sessionIris": ".*"
     }
   ]
 }

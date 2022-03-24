@@ -12,6 +12,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HomeNavItemSellerBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
+import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileSellerDataModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -19,7 +20,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -28,7 +28,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class SellerViewHolder(
     itemView: View,
     private val mainNavListener: MainNavListener,
-    private val userSession: UserSessionInterface
+    private val accountHeaderDataModel: AccountHeaderDataModel
 ) : AbstractViewHolder<ProfileSellerDataModel>(itemView) {
 
     private val binding: HomeNavItemSellerBinding? by viewBinding()
@@ -38,25 +38,16 @@ class SellerViewHolder(
         val LAYOUT = R.layout.home_nav_item_seller
     }
 
-    private fun onShopClicked(canGoToSellerMenu: Boolean) {
-        TrackingProfileSection.onClickShopProfileSection(userSession.userId)
-        if (!userSession.isShopOwner) {
-            TrackingProfileSection.onClickShopNotHaveShopAndNotAdmin()
-        }
-        if (canGoToSellerMenu) {
-            RouteManager.route(itemView.context, ApplinkConstInternalSellerapp.SELLER_MENU)
-        } else {
-            LocationAdminDialog(itemView.context).show()
-        }
-    }
-
     private fun shopClicked(profileSeller: ProfileSellerDataModel, context: Context) {
-        if (profileSeller.hasShop)
-            onShopClicked(profileSeller.canGoToSellerAccount)
-        else {
+        TrackingProfileSection.onClickShopAndAffiliate(accountHeaderDataModel)
+        if (profileSeller.hasShop) {
+            if (profileSeller.canGoToSellerAccount) {
+                RouteManager.route(itemView.context, ApplinkConstInternalSellerapp.SELLER_MENU)
+            } else {
+                LocationAdminDialog(itemView.context).show()
+            }
+        } else {
             RouteManager.route(context, ApplinkConst.CREATE_SHOP)
-            TrackingProfileSection.onClickShopNotHaveShopAndNotAdmin()
-            TrackingProfileSection.onClickOpenShopSection(mainNavListener.getUserId())
         }
     }
 
