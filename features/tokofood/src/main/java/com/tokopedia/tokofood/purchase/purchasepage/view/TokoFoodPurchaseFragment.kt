@@ -39,7 +39,6 @@ import com.tokopedia.tokofood.purchase.purchasepage.view.toolbar.TokoFoodPurchas
 import com.tokopedia.tokofood.purchase.purchasepage.view.uimodel.TokoFoodPurchaseProductUiModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.lang.Exception
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -86,6 +85,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         initializeToolbar(view)
         initializeRecyclerViewScrollListener()
         observeList()
+        observeFragmentUiModel()
         observeUiEvent()
     }
 
@@ -109,7 +109,22 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         }
     }
 
+    override fun showLoading() {
+        super.showLoading()
+        toolbar?.showLoading()
+    }
+
+    override fun hideLoading() {
+        super.hideLoading()
+        toolbar?.hideLoading()
+    }
+
     override fun loadData(page: Int) {
+
+    }
+
+    override fun loadInitialData() {
+        super.loadInitialData()
         showLoading()
         viewModel.loadData()
     }
@@ -130,9 +145,13 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     private fun initializeToolbar(view: View) {
         activity?.let {
             viewBinding?.toolbarPurchase?.removeAllViews()
-            toolbar = TokoFoodPurchaseToolbar(it).apply {
+            val tokoFoodPurchaseToolbar = TokoFoodPurchaseToolbar(it).apply {
                 listener = this@TokoFoodPurchaseFragment
+                showLoading()
             }
+
+            toolbar = tokoFoodPurchaseToolbar
+
             toolbar?.let {
                 viewBinding?.toolbarPurchase?.addView(toolbar)
                 (activity as AppCompatActivity).setSupportActionBar(viewBinding?.toolbarPurchase)
@@ -178,11 +197,23 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         })
     }
 
+    private fun observeFragmentUiModel() {
+        viewModel.fragmentUiModel.observe(viewLifecycleOwner, {
+            toolbar?.setToolbarData(it.shopName, it.shopLocation)
+        })
+    }
+
     private fun observeUiEvent() {
         viewModel.uiEvent.observe(viewLifecycleOwner, {
             when (it.state) {
-                UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE -> renderRecyclerView()
-                UiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE -> renderGlobalError(it.throwable ?: ResponseErrorException())
+                UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE -> {
+                    hideLoading()
+                    renderRecyclerView()
+                }
+                UiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE -> {
+                    hideLoading()
+                    renderGlobalError(it.throwable ?: ResponseErrorException())
+                }
                 UiEvent.EVENT_REMOVE_ALL_PRODUCT -> navigateToMerchantPage()
                 UiEvent.EVENT_SUCCESS_REMOVE_PRODUCT -> onSuccessRemoveProduct(it.data as Int)
                 UiEvent.EVENT_SCROLL_TO_UNAVAILABLE_ITEMS -> scrollToIndex(it.data as Int)
@@ -211,7 +242,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 }
             } else {
                 it.layoutGlobalErrorPurchase.setActionClickListener {
-                    // Todo : refresh purchase page
+                    loadInitialData()
                 }
             }
         }

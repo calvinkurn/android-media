@@ -10,6 +10,8 @@ import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Locatio
 import com.tokopedia.tokofood.purchase.purchasepage.view.mapper.TokoFoodPurchaseUiModelMapper
 import com.tokopedia.tokofood.purchase.purchasepage.view.uimodel.*
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDispatchers)
@@ -18,6 +20,10 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
     private val _uiEvent = SingleLiveEvent<UiEvent>()
     val uiEvent: LiveData<UiEvent>
         get() = _uiEvent
+
+    private val _fragmentUiModel = MutableLiveData<FragmentUiModel>()
+    val fragmentUiModel: LiveData<FragmentUiModel>
+        get() = _fragmentUiModel
 
     // List of recyclerview items
     private val _visitables = MutableLiveData<MutableList<Visitable<*>>>()
@@ -152,14 +158,18 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
 
     fun loadData() {
         // Todo : Load from API, if success then map to UiModel, if error show global error
-        val isSuccess = true
-        if (isSuccess) {
-            _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
-            constructRecycleViewItem()
-            calculateTotal()
-        } else {
-            // Todo : Set throwable from network
-            _uiEvent.value = UiEvent(state = UiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE)
+        launch {
+            delay(3000) // Hit API
+            val isSuccess = true
+            if (isSuccess) {
+                _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
+                _fragmentUiModel.value = FragmentUiModel(shopName = "Kopi Kenangan", shopLocation = "Tokopedia Tower")
+                constructRecycleViewItem()
+                calculateTotal()
+            } else {
+                // Todo : Set throwable from network
+                _uiEvent.value = UiEvent(state = UiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE)
+            }
         }
     }
 
@@ -222,7 +232,9 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
                 if (tickerShopErrorData != null) {
                     from = toBeDeletedProduct.first - 3
                 }
-                val to = toBeDeletedProduct.first
+                var to = toBeDeletedProduct.first
+                if (from < 0) from = 0
+                if (to >= dataList.size) to = dataList.size - 1
                 val availableHeaderAndDivider = dataList.subList(from, to).toMutableList()
                 toBeDeleteItems.addAll(availableHeaderAndDivider)
             }
@@ -276,8 +288,10 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         val unavailableSectionItems = mutableListOf<Visitable<*>>()
 
         val unavailableProducts = getAllUnavailableProducts()
-        val indexOfUnavailableHeaderDivider = unavailableProducts.first - 3
-        val indexOfFirstUnavailableProduct = unavailableProducts.first
+        var indexOfUnavailableHeaderDivider = unavailableProducts.first - 3
+        var indexOfFirstUnavailableProduct = unavailableProducts.first
+        if (indexOfUnavailableHeaderDivider < 0) indexOfUnavailableHeaderDivider = 0
+        if (indexOfFirstUnavailableProduct >= dataList.size) indexOfFirstUnavailableProduct = dataList.size - 1
         val unavailableSectionDividerHeaderAndReason = dataList.subList(indexOfUnavailableHeaderDivider, indexOfFirstUnavailableProduct)
         unavailableSectionItems.addAll(unavailableSectionDividerHeaderAndReason)
         unavailableSectionItems.addAll(unavailableProducts.second)
@@ -314,9 +328,11 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         dataList[mAccordionData.first] = newAccordionUiModel
         val unavailableReasonData = getUnavailableReasonUiModel()
         unavailableReasonData?.let { mUnavailableReasonData ->
-            val from = mUnavailableReasonData.first + 2
-            val to = mAccordionData.first - 1
+            var from = mUnavailableReasonData.first + 2
+            var to = mAccordionData.first - 1
             tmpCollapsedUnavailableItems.clear()
+            if (from < 0) from = 0
+            if (to >= dataList.size) to = dataList.size - 1
             tmpCollapsedUnavailableItems = dataList.subList(from, to).toMutableList()
         }
         dataList.removeAll(tmpCollapsedUnavailableItems)
