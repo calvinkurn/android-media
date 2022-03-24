@@ -20,7 +20,22 @@ class ExampleTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFr
     }
 
     override fun mapUriToFragment(uri: Uri): BaseMultiFragment? {
-        return TokofoodRouteManager.mapUriToFragment(uri)
+        // tokopedia://tokofood
+        if (uri.host == "tokofood") {
+            var f: BaseMultiFragment? = null
+            if (uri.path == "/home") { // tokopedia://tokofood/home
+                f = FragmentA()
+            } else if (uri.path == "/b") { // tokopedia://tokofood/b
+                f = FragmentB()
+            }
+            if (f != null) {
+                f.arguments = Bundle().apply {
+                    putString(Constant.DATA_KEY, uri.toString())
+                }
+                return f
+            }
+        }
+        return null
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

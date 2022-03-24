@@ -47,8 +47,6 @@ class FragmentA : BaseTokofoodFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.buttonGoToB.setOnClickListener {
             navigateToNewFragment(FragmentB())
-            // OR CAN ALSO BE LIKE BELOW
-            // TokofoodRouteManager.routePrioritizeInternal(requireContext(), "tokopedia://tokofood/b")
         }
         binding.buttonGoToBDeeplink.setOnClickListener {
             RouteManager.route(requireContext(), "tokopedia-android-internal://tokofood/b?input=abc")
