@@ -1,7 +1,7 @@
 package com.tokopedia.picker.common
 
 enum class PageSource(val value: String) {
-    AddEditProduct("Add Product"),
+    AddEditProduct("Add Edit Product"),
     Feed("Feed"),
     ChatBot("Chat Bot"),
     TopChat("Top Chat"),
