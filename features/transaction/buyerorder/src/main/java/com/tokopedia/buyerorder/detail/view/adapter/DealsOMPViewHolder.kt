@@ -19,6 +19,7 @@ import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageCircle
 import kotlinx.android.synthetic.main.voucher_item_card_deals.view.*
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -36,10 +37,10 @@ class DealsOMPViewHolder(private val setEventDetails: ItemsAdapter.SetEventDetai
         val metadata = Gson().fromJson(item.metaData, MetaDataInfo::class.java)
 
         itemView?.apply {
-            iv_deal?.loadImage(
-                    if (metadata.productImage.isNullOrEmpty()) {
-                        item.imageUrl
-                    } else metadata.productImage
+            iv_deals?.loadImageCircle(
+                if (metadata.productImage.isEmpty()) {
+                    item.imageUrl
+                } else metadata.productImage
             )
 
             tv_deal_intro?.text = if (metadata.name.isNullOrEmpty()){
