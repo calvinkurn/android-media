@@ -4,7 +4,6 @@ import com.tokopedia.picker.common.uimodel.MediaUiModel
 
 interface PickerActivityListener {
     fun tabVisibility(isShown: Boolean)
-    fun onCameraThumbnailClicked()
 
     fun mediaSelected(): List<MediaUiModel>
     fun hasVideoLimitReached(): Boolean
@@ -26,4 +25,7 @@ interface PickerActivityListener {
     fun onShowImageMaxResToast()
     fun onShowImageMaxFileSizeToast()
     fun onShowMinStorageThresholdToast()
+
+    fun onCameraThumbnailClicked()
+    fun navigateToCameraPage()
 }
