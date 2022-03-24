@@ -13,6 +13,8 @@ import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_INACTIVE_STRING
 import com.tokopedia.product.addedit.common.util.InputPriceUtil
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.common.util.VariantResourceProvider
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.DEFAULT_IS_PRIMARY_INDEX
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_PRODUCT_WEIGHT_LIMIT
@@ -33,9 +35,10 @@ import java.math.BigInteger
 import javax.inject.Inject
 
 class AddEditProductVariantDetailViewModel @Inject constructor(
-        val provider: ResourceProvider,
-        private val userSession: UserSessionInterface,
-        coroutineDispatcher: CoroutineDispatcher
+    val provider: ResourceProvider,
+    val variantResourceProvider: VariantResourceProvider,
+    private val userSession: UserSessionInterface,
+    coroutineDispatcher: CoroutineDispatcher
 ) : BaseViewModel(coroutineDispatcher) {
 
     var productInputModel = MutableLiveData<ProductInputModel>()
@@ -336,7 +339,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         val inputModel = inputLayoutModelMap[adapterPosition] ?: VariantDetailInputLayoutModel()
         inputModel.price = priceInput
         if (priceInput.isEmpty()) {
-            inputModel.priceFieldErrorMessage = provider.getEmptyProductPriceErrorMessage()
+            inputModel.priceFieldErrorMessage = variantResourceProvider.getEmptyProductPriceErrorMessage()
         } else {
             val productPrice = priceInput.toBigIntegerOrNull().orZero()
             inputModel.priceFieldErrorMessage = validateVariantPriceInput(productPrice)
@@ -349,7 +352,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         val inputModel = inputLayoutModelMap[adapterPosition] ?: VariantDetailInputLayoutModel()
         inputModel.stock = stockInput
         if (stockInput.isEmpty()) {
-            inputModel.stockFieldErrorMessage = provider.getEmptyProductStockErrorMessage()
+            inputModel.stockFieldErrorMessage = variantResourceProvider.getEmptyProductStockErrorMessage()
         } else {
             val productStock = stockInput.toBigIntegerOrNull().orZero()
             inputModel.stockFieldErrorMessage = validateProductVariantStockInput(productStock)
@@ -361,7 +364,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     fun validateProductVariantWeightInput(weightInput: Int?, adapterPosition: Int): VariantDetailInputLayoutModel {
         val inputModel = inputLayoutModelMap[adapterPosition] ?: VariantDetailInputLayoutModel()
         if (weightInput == null) {
-            inputModel.weightFieldErrorMessage = provider.getEmptyProductWeightErrorMessage()
+            inputModel.weightFieldErrorMessage = variantResourceProvider.getEmptyProductWeightErrorMessage()
             inputModel.weight = Int.ZERO
         } else {
             inputModel.weightFieldErrorMessage = validateProductVariantWeightInput(weightInput)
@@ -374,7 +377,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     fun validateVariantPriceInput(priceInput: BigInteger): String {
         return when {
             priceInput < MIN_PRODUCT_PRICE_LIMIT.toBigInteger() -> {
-                provider.getMinLimitProductPriceErrorMessage()
+                variantResourceProvider.getMinLimitProductPriceErrorMessage(MIN_PRODUCT_PRICE_LIMIT)
             }
             else -> ""
         }
@@ -383,7 +386,10 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     fun validateProductVariantStockInput(stockInput: BigInteger): String {
         return when {
             stockInput < MIN_PRODUCT_STOCK_LIMIT.toBigInteger() -> {
-                provider.getMinLimitProductStockErrorMessage(MIN_PRODUCT_STOCK_LIMIT)
+                variantResourceProvider.getMinLimitProductStockErrorMessage(MIN_PRODUCT_STOCK_LIMIT)
+            }
+            stockInput > MAX_PRODUCT_STOCK_LIMIT.toBigInteger() -> {
+                variantResourceProvider.getMaxLimitProductStockErrorMessage(MAX_PRODUCT_STOCK_LIMIT)
             }
             else -> ""
         }
@@ -392,10 +398,10 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     fun validateProductVariantWeightInput(weightInput: Int): String {
         return when {
             weightInput < MIN_PRODUCT_WEIGHT_LIMIT -> {
-                provider.getMinLimitProductWeightErrorMessage(MIN_PRODUCT_WEIGHT_LIMIT)
+                variantResourceProvider.getMinLimitProductWeightErrorMessage(MIN_PRODUCT_WEIGHT_LIMIT)
             }
             weightInput > MAX_PRODUCT_WEIGHT_LIMIT -> {
-                provider.getMaxLimitProductWeightErrorMessage(MAX_PRODUCT_WEIGHT_LIMIT)
+                variantResourceProvider.getMaxLimitProductWeightErrorMessage(MAX_PRODUCT_WEIGHT_LIMIT)
             }
             else -> ""
         }
