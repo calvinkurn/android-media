@@ -134,4 +134,9 @@
     <string name="tokopedianow_15m_empty_state_title">Tunggu Tokopedia NOW! 15 menit tiba tersedia di lokasimu</string>
     <string name="tokopedianow_15m_empty_state_desc">Nantikan kabar dari kami, ya. Saat ini, kamu bisa nikmati layanan 2 jam tiba dulu.</string>
     <string name="tokopedianow_15m_empty_state_primary_btn">Belanja 2 Jam Tiba</string>
+
+    <string name="tokopedianow_referral_widget_desc_sender">Ajak temanmu belanja di Tokopedia NOW!, dapat kupon cashback hingga Rp200rb. Selengkapnya</string>
+    <string name="tokopedianow_referral_widget_desc_receiver">Kamu sudah dapat referral dari temanmu. Yuk, belanja sekarang, dapatkan kupon cashback Rp20rb!</string>
+    <string name="tokopedianow_referral_widget_button_text">Bagikan ke Temanmu</string>
+    <string name="tokopedianow_referral_widget_button_text_receiver">Cek Detail</string>
 </resources>

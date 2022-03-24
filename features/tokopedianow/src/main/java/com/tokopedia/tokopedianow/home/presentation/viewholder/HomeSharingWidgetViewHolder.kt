@@ -10,29 +10,42 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.SHARING_WIDGET_RESOURCE_ID
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeFormattedCopy
-import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeSharingEducationWidgetBinding
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeSharingWidgetBinding
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingEducationWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class HomeSharingEducationWidgetViewHolder(
+class HomeSharingWidgetViewHolder(
     itemView: View,
     private val listener: HomeSharingEducationListener? = null
-) : AbstractViewHolder<HomeSharingEducationWidgetUiModel>(itemView) {
+) : AbstractViewHolder<HomeSharingWidgetUiModel>(itemView) {
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokopedianow_home_sharing_education_widget
+        val LAYOUT = R.layout.item_tokopedianow_home_sharing_widget
         const val IMG_SHARING_EDUCATION = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_sharing_education.png"
     }
 
-    private var binding: ItemTokopedianowHomeSharingEducationWidgetBinding? by viewBinding()
+    private var binding: ItemTokopedianowHomeSharingWidgetBinding? by viewBinding()
 
-    override fun bind(element: HomeSharingEducationWidgetUiModel) {
+    override fun bind(element: HomeSharingWidgetUiModel) {
         binding?.apply {
             if (element.state == HomeLayoutItemState.LOADED) {
                 cvSharingEducation.show()
-                setupUi(element.serviceType)
+                when(element) {
+                    is HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel -> {
+                        setupUi(
+                            descRes = element.descRes,
+                            btnTextRes = element.btnTextRes
+                        )
+                    }
+                    is HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel -> {
+                        setupUi(
+                            serviceType = element.serviceType,
+                            btnTextRes = element.btnTextRes
+                        )
+                    }
+                }
                 btnSharingEducation.setOnClickListener {
                     listener?.onShareBtnSharingEducationClicked()
                 }
@@ -43,16 +56,21 @@ class HomeSharingEducationWidgetViewHolder(
         }
     }
 
-    private fun setupUi(serviceType: String) {
+    private fun setupUi(serviceType: String = "", descRes: Int = -1, btnTextRes: Int) {
         binding?.apply {
-            tpSharingEducation.text = MethodChecker.fromHtml(
-                getServiceTypeFormattedCopy(
-                    context = root.context,
-                    key = SHARING_WIDGET_RESOURCE_ID,
-                    serviceType = serviceType
+            tpSharingEducation.text = if (descRes == -1) {
+                itemView.resources.getString(descRes)
+            } else {
+                MethodChecker.fromHtml(
+                    getServiceTypeFormattedCopy(
+                        context = root.context,
+                        key = SHARING_WIDGET_RESOURCE_ID,
+                        serviceType = serviceType
+                    )
                 )
-            )
+            }
 
+            btnSharingEducation.text = itemView.resources.getString(btnTextRes)
             iuSharingEducation.setImageUrl(IMG_SHARING_EDUCATION)
             iCloseSharingEducation.setImage(IconUnify.CLOSE)
             iCloseSharingEducation.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
