@@ -426,9 +426,18 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun onShowVideoMaxDurationToast() {
+        var maxVideoDuration = param.get().maxVideoDuration().toSec()
+        val unitOfTime = if(maxVideoDuration < 60) {
+            "detik"
+        } else {
+            maxVideoDuration /= 60
+            "menit"
+        }
+
         onShowValidationToaster(
             R.string.picker_video_duration_max_limit,
-            param.get().maxVideoDuration().toSec()
+            maxVideoDuration,
+            unitOfTime
         )
     }
 
@@ -462,6 +471,11 @@ open class PickerActivity : BaseActivity()
 
     private fun onShowValidationToaster(messageId: Int, param: Number) {
         val content = getString(messageId, param)
+        onShowToaster(content)
+    }
+
+    private fun onShowValidationToaster(messageId: Int, param: Number, param2nd: String) {
+        val content = getString(messageId, param, param2nd)
         onShowToaster(content)
     }
 
