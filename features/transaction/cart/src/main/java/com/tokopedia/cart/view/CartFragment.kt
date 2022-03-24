@@ -898,7 +898,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             val statusBarBackground = binding?.statusBarBg
 
             val args = arguments?.getString(CartFragment::class.java.simpleName)
-            if (args?.isNotEmpty() == true) {
+            if (args?.is
+
+                            mpty() == true) {
                 isToolbarWithBackButton = false
             }
 

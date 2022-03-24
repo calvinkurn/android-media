@@ -92,14 +92,14 @@ class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    fun providesTkpTkpdAddWishListUseCase(@ApplicationContext context: Context): AddToWishlistV2UseCase {
-        return AddToWishlistV2UseCase(provideGraphQlRepository(context))
+    fun providesTkpTkpdAddWishListUseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
+        return AddToWishlistV2UseCase(graphqlRepository)
     }
 
     @FeedPlusScope
     @Provides
-    fun providesTkpdRemoveWishListUseCase(@ApplicationContext context: Context): DeleteWishlistV2UseCase {
-        return DeleteWishlistV2UseCase(provideGraphQlRepository(context))
+    fun providesTkpdRemoveWishListUseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
+        return DeleteWishlistV2UseCase(graphqlRepository)
     }
 
     @FeedPlusScope

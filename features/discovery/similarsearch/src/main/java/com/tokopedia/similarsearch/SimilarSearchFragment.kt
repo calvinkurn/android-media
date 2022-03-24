@@ -314,7 +314,11 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
     private fun handleAddWishlistEvent(isSuccess: Boolean) {
         if (isSuccess) {
-            showSnackbar(R.string.similar_search_add_wishlist_success)
+            val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+            val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+            view?.let {
+                Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText).show()
+            }
         }
         else {
             showSnackbar(R.string.similar_search_add_wishlist_failed, Toaster.TYPE_ERROR)
@@ -335,7 +339,11 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
     private fun handleRemoveWishlistEvent(isSuccess: Boolean) {
         if (isSuccess) {
-            showSnackbar(R.string.similar_search_remove_wishlist_success)
+            val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg)
+            val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist)
+            view?.let {
+                Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText).show()
+            }
         }
         else {
             showSnackbar(R.string.similar_search_remove_wishlist_failed, Toaster.TYPE_ERROR)

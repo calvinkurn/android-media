@@ -20,16 +20,15 @@ import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import rx.Subscriber
 
 internal class ProductCardOptionsViewModel(
         dispatcherProvider: CoroutineDispatchers,
         val productCardOptionsModel: ProductCardOptionsModel?,
-        private val addWishListUseCase: AddWishListUseCase,
-        private val removeWishListUseCase: RemoveWishListUseCase,
+        private val addWishListUseCase: AddToWishlistV2UseCase,
+        private val removeWishListUseCase: DeleteWishlistV2UseCase,
         private val topAdsWishlistUseCase: UseCase<Boolean>,
         private val addToCartUseCase: UseCase<AddToCartDataModel>,
         private val userSession: UserSessionInterface
@@ -95,24 +94,10 @@ internal class ProductCardOptionsViewModel(
     }
 
     private fun doWishlistAction(isAddWishlist: Boolean) {
-        val wishListActionListener = createWishlistActionListener()
-
         postLoadingEvent()
 
-        if (!isAddWishlist) removeWishlist(wishListActionListener)
-        else addWishlist(wishListActionListener)
-    }
-
-    private fun createWishlistActionListener(): WishListActionListener {
-        return object: WishListActionListener {
-            override fun onSuccessRemoveWishlist(productId: String?) = onSuccessRemoveWishlist()
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) = onErrorRemoveWishlist()
-
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) = onErrorAddWishlist()
-
-            override fun onSuccessAddWishlist(productId: String?) = onSuccessAddWishlist()
-        }
+        if (!isAddWishlist) removeWishlist()
+        else addWishlist()
     }
 
     private fun onSuccessRemoveWishlist() {
@@ -139,18 +124,20 @@ internal class ProductCardOptionsViewModel(
         isLoadingEventLiveData.postValue(Event(true))
     }
 
-    private fun removeWishlist(wishListActionListener: WishListActionListener) {
+    private fun removeWishlist() {
         try {
-            tryRemoveWishlist(wishListActionListener)
+            tryRemoveWishlist()
         }
         catch(throwable: Throwable) {
             catchRemoveWishlistError(throwable)
         }
     }
 
-    private fun tryRemoveWishlist(wishListActionListener: WishListActionListener) {
-        removeWishListUseCase.unsubscribe()
-        removeWishListUseCase.createObservable(getProductId(), userSession.userId, wishListActionListener)
+    private fun tryRemoveWishlist() {
+        removeWishListUseCase.setParams(getProductId(), userSession.userId)
+        removeWishListUseCase.execute(
+                onSuccess = { onSuccessRemoveWishlist() },
+                onError = { onErrorRemoveWishlist() })
     }
 
     private fun catchRemoveWishlistError(throwable: Throwable?) {
@@ -158,12 +145,12 @@ internal class ProductCardOptionsViewModel(
         onErrorRemoveWishlist()
     }
 
-    private fun addWishlist(wishListActionListener: WishListActionListener) {
+    private fun addWishlist() {
         if (productCardOptionsModel?.isTopAds == true) {
             addWishlistTopAds()
         }
         else {
-            addWishlistNonTopAds(wishListActionListener)
+            addWishlistNonTopAds()
         }
     }
 
@@ -186,18 +173,23 @@ internal class ProductCardOptionsViewModel(
         override fun onCompleted() { }
     }
 
-    private fun addWishlistNonTopAds(wishListActionListener: WishListActionListener) {
+    private fun addWishlistNonTopAds() {
         try {
-            tryAddWishlist(wishListActionListener)
+            tryAddWishlist()
         }
         catch(throwable: Throwable) {
             catchAddWishlistError(throwable)
         }
     }
 
-    private fun tryAddWishlist(wishListActionListener: WishListActionListener) {
-        addWishListUseCase.unsubscribe()
-        addWishListUseCase.createObservable(getProductId(), userSession.userId, wishListActionListener)
+    private fun tryAddWishlist() {
+        addWishListUseCase.setParams(getProductId(), userSession.userId)
+        addWishListUseCase.execute(
+                onSuccess = {
+                    onSuccessAddWishlist()},
+                onError = {
+                    onErrorAddWishlist()
+                })
     }
 
     private fun catchAddWishlistError(throwable: Throwable?) {

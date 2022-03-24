@@ -17,9 +17,8 @@ import com.tokopedia.recentview.data.mapper.RecentViewMapper
 import com.tokopedia.recentview.domain.usecase.RecentViewUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.data.interceptor.MojitoInterceptor
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -58,53 +57,12 @@ class RecentViewModule {
 
     @RecentViewScope
     @Provides
-    fun provideMojitoInterceptor(@ApplicationContext context: Context,
-                                 networkRouter: NetworkRouter,
-                                 userSession: UserSessionInterface): MojitoInterceptor {
-        return MojitoInterceptor(context, networkRouter, userSession)
-    }
-
-    @RecentViewScope
-    @Provides
-    @RecentViewQualifier
-    fun provideMojitoOkHttpClient(@ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
-                                  @RecentViewQualifier retryPolicy: OkHttpRetryPolicy,
-                                  @RecentViewQualifier chuckInterceptor: ChuckerInterceptor,
-                                  errorResponseInterceptor: HeaderErrorResponseInterceptor,
-                                  mojitoInterceptor: MojitoInterceptor): OkHttpClient {
-        val clientBuilder = OkHttpClient.Builder()
-                .connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
-                .readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
-                .writeTimeout(retryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
-                .addInterceptor(mojitoInterceptor)
-                .addInterceptor(errorResponseInterceptor)
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            clientBuilder.addInterceptor(httpLoggingInterceptor)
-            clientBuilder.addInterceptor(chuckInterceptor)
-        }
-        return clientBuilder.build()
-    }
-
-    @RecentViewScope
-    @Provides
     fun provideRecentProductService(builder: Retrofit.Builder,
                                     @RecentViewQualifier okHttpClient: OkHttpClient): RecentViewApi {
         return builder.baseUrl(RecentViewUrl.MOJITO_DOMAIN)
                 .client(okHttpClient)
                 .build()
                 .create(RecentViewApi::class.java)
-    }
-
-    @RecentViewScope
-    @Provides
-    fun providesTkpTkpdAddWishListUseCase(@ApplicationContext context: Context): AddWishListUseCase {
-        return AddWishListUseCase(context)
-    }
-
-    @RecentViewScope
-    @Provides
-    fun providesTkpdRemoveWishListUseCase(@ApplicationContext context: Context): RemoveWishListUseCase {
-        return RemoveWishListUseCase(context)
     }
 
     @Provides
@@ -116,6 +74,18 @@ class RecentViewModule {
     @RecentViewScope
     fun providesGraphqlRepository(): GraphqlRepository {
         return getInstance().graphqlRepository
+    }
+
+    @RecentViewScope
+    @Provides
+    fun providesTkpTkpdAddWishListUseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
+        return AddToWishlistV2UseCase(graphqlRepository)
+    }
+
+    @RecentViewScope
+    @Provides
+    fun providesTkpdRemoveWishListUseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
+        return DeleteWishlistV2UseCase(graphqlRepository)
     }
 
     @Provides

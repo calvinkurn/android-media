@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
@@ -47,6 +48,6 @@ class AtcVariantModule {
 
     @AtcVariantScope
     @Provides
-    fun provideAddWishListUseCase(): AddToWishlistV2UseCase =
-            AddToWishlistV2UseCase(provideGraphQlRepository())
+    fun provideAddWishListUseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase =
+            AddToWishlistV2UseCase(graphqlRepository)
 }

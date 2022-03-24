@@ -87,11 +87,11 @@ class OfficialStoreHomeModule {
 
     @OfficialStoreHomeScope
     @Provides
-    fun provideAddWishlistUseCase(@ApplicationContext context: Context): AddToWishlistV2UseCase = AddToWishlistV2UseCase(provideGraphqlRepository())
+    fun provideAddWishlistUseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase = AddToWishlistV2UseCase(graphqlRepository)
 
     @OfficialStoreHomeScope
     @Provides
-    fun provideRemoveWishlistUseCase(@ApplicationContext context: Context): DeleteWishlistV2UseCase = DeleteWishlistV2UseCase(provideGraphqlRepository())
+    fun provideRemoveWishlistUseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase = DeleteWishlistV2UseCase(graphqlRepository)
 
     @OfficialStoreHomeScope
     @Provides

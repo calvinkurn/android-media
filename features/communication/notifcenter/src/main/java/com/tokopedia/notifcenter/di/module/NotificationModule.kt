@@ -37,18 +37,14 @@ class NotificationModule {
 
     @Provides
     @NotificationScope
-    fun provideAddWishlistUseCase(
-            @NotificationContext context: Context
-    ): AddToWishlistV2UseCase {
-        return AddToWishlistV2UseCase(provideGraphqlRepository())
+    fun provideAddWishlistUseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
+        return AddToWishlistV2UseCase(graphqlRepository)
     }
 
     @Provides
     @NotificationScope
-    fun provideRemoveWishlistUseCase(
-            @NotificationContext context: Context
-    ): DeleteWishlistV2UseCase {
-        return DeleteWishlistV2UseCase(provideGraphqlRepository())
+    fun provideRemoveWishlistUseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
+        return DeleteWishlistV2UseCase(graphqlRepository)
     }
 
     @NotificationScope

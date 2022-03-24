@@ -41,14 +41,14 @@ class FindNavModule {
 
     @FindNavScope
     @Provides
-    fun getAddWishListUseCase(context: Context): AddToWishlistV2UseCase {
-        return AddToWishlistV2UseCase(provideGraphqlRepository())
+    fun getAddWishListUseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
+        return AddToWishlistV2UseCase(graphqlRepository)
     }
 
     @FindNavScope
     @Provides
-    fun getRemoveWishListUseCase(context: Context): DeleteWishlistV2UseCase {
-        return DeleteWishlistV2UseCase(provideGraphqlRepository())
+    fun getRemoveWishListUseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
+        return DeleteWishlistV2UseCase(graphqlRepository)
     }
 
 }

@@ -572,7 +572,9 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                     recommendationWidgetViewModel.removeWishlist(productDetailData.id.toString()){ state, throwable ->
                         callback(state, throwable)
                         if(state){
-                            showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
+                            val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg)
+                            val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist)
+                            showToastSuccessWithAction(msg, ctaText) {}
                         } else {
                             showToastError(MessageErrorException())
                         }
@@ -581,7 +583,9 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                     recommendationWidgetViewModel.addWishlist(productDetailData.id.toString(), productDetailData.wishlistUrl, productDetailData.isTopads){ state, throwable ->
                         callback(state, throwable)
                         if(state){
-                            showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist))
+                            val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+                            val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+                            showToastSuccessWithAction(msg, ctaText) { goToWishlist() }
                         } else {
                             showToastError(MessageErrorException())
                         }

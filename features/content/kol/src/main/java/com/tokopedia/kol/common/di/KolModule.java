@@ -147,14 +147,14 @@ public class KolModule {
 
     @KolScope
     @Provides
-    public AddToWishlistV2UseCase provideAddWishListUseCase(){
-        return new AddToWishlistV2UseCase(provideGraphQlRepository());
+    public AddToWishlistV2UseCase provideAddWishListUseCase(GraphqlRepository graphqlRepository){
+        return new AddToWishlistV2UseCase(graphqlRepository);
     }
 
     @KolScope
     @Provides
-    public DeleteWishlistV2UseCase provideRemoveWishListUseCase(){
-        return new DeleteWishlistV2UseCase(provideGraphQlRepository());
+    public DeleteWishlistV2UseCase provideRemoveWishListUseCase(GraphqlRepository graphqlRepository){
+        return new DeleteWishlistV2UseCase(graphqlRepository);
     }
 
     @KolScope

@@ -32,7 +32,7 @@ class OrderHistoryModule {
 
     @OrderHistoryScope
     @Provides
-    internal fun provideAddWishListUseCase(@OrderHistoryContext context: Context): AddToWishlistV2UseCase {
-        return AddToWishlistV2UseCase(provideGraphQlRepository())
+    internal fun provideAddWishListUseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
+        return AddToWishlistV2UseCase(graphqlRepository)
     }
 }

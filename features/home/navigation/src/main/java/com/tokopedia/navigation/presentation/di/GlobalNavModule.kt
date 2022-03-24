@@ -61,10 +61,10 @@ class GlobalNavModule {
     fun provideGraphqlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
     @Provides
-    fun provideAddWishlistUseCase(@ApplicationContext context: Context): AddToWishlistV2UseCase = AddToWishlistV2UseCase(provideGraphqlRepository())
+    fun provideAddWishlistUseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase = AddToWishlistV2UseCase(graphqlRepository)
 
     @Provides
-    fun provideRemoveWishlistUseCase(@ApplicationContext context: Context): DeleteWishlistV2UseCase = DeleteWishlistV2UseCase(provideGraphqlRepository())
+    fun provideRemoveWishlistUseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase = DeleteWishlistV2UseCase(graphqlRepository)
 
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {

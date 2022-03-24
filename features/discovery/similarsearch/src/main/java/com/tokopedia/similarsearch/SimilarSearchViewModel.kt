@@ -24,9 +24,8 @@ import com.tokopedia.similarsearch.utils.asObjectDataLayerImpressionAndClick
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import rx.Subscriber
 import kotlin.math.min
 import com.tokopedia.usecase.UseCase as RxUseCase
@@ -35,8 +34,8 @@ internal class SimilarSearchViewModel(
         dispatcherProvider: CoroutineDispatchers,
         private val similarSearchQuery: String,
         private val getSimilarProductsUseCase: UseCase<SimilarProductModel>,
-        private val addWishlistUseCase: AddWishListUseCase,
-        private val removeWishListUseCase: RemoveWishListUseCase,
+        private val addWishlistUseCase: AddToWishlistV2UseCase,
+        private val removeWishListUseCase: DeleteWishlistV2UseCase,
         private val addToCartUseCase: RxUseCase<AddToCartDataModel>,
         private val userSession: UserSessionInterface
 ): BaseViewModel(dispatcherProvider.main) {
@@ -232,34 +231,10 @@ internal class SimilarSearchViewModel(
             return
         }
 
-        val originalProductWishListActionListener = createOriginalProductWishlistActionListener()
         toggleWishlistForProduct(
                 originalProduct.id,
-                originalProduct.isWishlisted,
-                originalProductWishListActionListener
+                originalProduct.isWishlisted
         )
-    }
-
-    private fun createOriginalProductWishlistActionListener() = object : WishListActionListener {
-        override fun onSuccessRemoveWishlist(productId: String?) {
-            removeWishlistEventLiveData.postValue(Event(true))
-
-            postUpdateWishlistOriginalProductEvent(productId,false)
-        }
-
-        override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-            removeWishlistEventLiveData.postValue(Event(false))
-        }
-
-        override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-            addWishlistEventLiveData.postValue(Event(false))
-        }
-
-        override fun onSuccessAddWishlist(productId: String?) {
-            addWishlistEventLiveData.postValue(Event(true))
-
-            postUpdateWishlistOriginalProductEvent(productId,true)
-        }
     }
 
     fun postUpdateWishlistOriginalProductEvent(productId: String?, isWishlisted: Boolean) {
@@ -273,12 +248,24 @@ internal class SimilarSearchViewModel(
         return routeToLoginPageEventLiveData
     }
 
-    private fun toggleWishlistForProduct(productId: String, isWishlisted: Boolean, wishListActionListener: WishListActionListener) {
+    private fun toggleWishlistForProduct(productId: String, isWishlisted: Boolean) {
         if (!isWishlisted) {
-            addWishlistUseCase.createObservable(productId, userSession.userId, wishListActionListener)
+            addWishlistUseCase.setParams(productId, userSession.userId)
+            addWishlistUseCase.execute(
+                    onSuccess = {
+                        addWishlistEventLiveData.postValue(Event(true))
+                        postUpdateWishlistOriginalProductEvent(productId,true)},
+                    onError = {
+                        addWishlistEventLiveData.postValue(Event(false))
+                    })
         }
         else {
-            removeWishListUseCase.createObservable(productId, userSession.userId, wishListActionListener)
+            removeWishListUseCase.setParams(productId, userSession.userId)
+            removeWishListUseCase.execute(
+                    onSuccess = {
+                        removeWishlistEventLiveData.postValue(Event(true))
+                        postUpdateWishlistOriginalProductEvent(productId,false) },
+                    onError = { removeWishlistEventLiveData.postValue(Event(false)) })
         }
     }
 
