@@ -566,7 +566,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
         const val TOOLBAR_TRANSITION_RANGE_DP = 8
         const val SECTION_SPACING_DP = 16
-        const val COACHMARK_SPACING_DP = -16f
+        const val COACHMARK_SPACING_DP = 0f
 
         private const val OFFSET_ALPHA = 255f
 
