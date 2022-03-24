@@ -354,8 +354,8 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.submitAction(CopyLinkAction)
     }
 
-    override fun onPartnerNameClicked(view: PartnerInfoViewComponent) {
-        playViewModel.submitAction(ClickPartnerNameAction)
+    override fun onPartnerInfoClicked(view: PartnerInfoViewComponent, applink: String) {
+        playViewModel.submitAction(ClickPartnerNameAction(applink))
     }
 
     override fun onFollowButtonClicked(view: PartnerInfoViewComponent) {
@@ -1433,7 +1433,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
         interactiveView?.showFollowMode(
             partner.status is PlayPartnerFollowStatus.Followable &&
-                    !partner.status.isFollowing
+                    partner.status.followStatus == PartnerFollowableStatus.NotFollowed
         )
 
         when (state.visibility) {

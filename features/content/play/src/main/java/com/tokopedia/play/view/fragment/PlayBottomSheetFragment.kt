@@ -40,7 +40,9 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
+import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
+import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.viewcomponent.*
@@ -192,8 +194,8 @@ class PlayBottomSheetFragment @Inject constructor(
         shouldOpenProductDetail(product, sectionInfo, position)
     }
 
-    override fun onEmptyButtonClicked(view: ProductSheetViewComponent, partnerId: Long) {
-        openShopPage(partnerId)
+    override fun onEmptyButtonClicked(view: ProductSheetViewComponent) {
+        dismissSheets()
     }
 
     override fun onProductsImpressed(
@@ -399,10 +401,6 @@ class PlayBottomSheetFragment @Inject constructor(
         productAnalyticHelper = ProductAnalyticHelper(analytic)
     }
 
-    private fun openShopPage(partnerId: Long) {
-        openPageByApplink(ApplinkConst.SHOP, partnerId.toString(), pipMode = true)
-    }
-
     private fun closeProductSheet() {
         playViewModel.onHideProductSheet()
     }
@@ -566,6 +564,11 @@ class PlayBottomSheetFragment @Inject constructor(
                 .setPrimaryClip(ClipData.newPlainText("play-room-bottom-sheet", content))
     }
 
+    private fun dismissSheets(){
+        playFragment.hideKeyboard()
+        playViewModel.hideInsets(isKeyboardHandled = true)
+    }
+
     /**
      * Observe
      */
@@ -599,8 +602,7 @@ class PlayBottomSheetFragment @Inject constructor(
         viewModel.observableUserReportSubmission.observe(viewLifecycleOwner, DistinctObserver {
             when (it) {
                 is PlayResult.Success -> {
-                    playFragment.hideKeyboard()
-                    playViewModel.hideInsets(isKeyboardHandled = true)
+                    dismissSheets()
                     listenKeyboard()
                 }
                 is PlayResult.Failure -> doShowToaster(
@@ -735,7 +737,7 @@ class PlayBottomSheetFragment @Inject constructor(
                     prevState?.tagItems,
                     state.tagItems,
                     state.tagItems.bottomSheetTitle,
-                    state.partner.id
+                    state.channel.emptyBottomSheetInfo
                 )
 
                 renderVoucherSheet(state.tagItems)
@@ -758,7 +760,7 @@ class PlayBottomSheetFragment @Inject constructor(
         prevTagItem: TagItemUiModel?,
         tagItem: TagItemUiModel,
         bottomSheetTitle: String,
-        partnerId: Long,
+        emptyBottomSheetInfoUi: PlayEmptyBottomSheetInfoUiModel,
     ) {
         if (tagItem.resultState.isLoading && tagItem.product.productSectionList.isEmpty()) {
             productSheetView.showPlaceholder()
@@ -775,7 +777,7 @@ class PlayBottomSheetFragment @Inject constructor(
                 title = bottomSheetTitle,
             )
         } else {
-            productSheetView.showEmpty(partnerId)
+            productSheetView.showEmpty(emptyBottomSheetInfoUi)
         }
     }
 
