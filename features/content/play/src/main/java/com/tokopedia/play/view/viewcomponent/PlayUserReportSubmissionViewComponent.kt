@@ -1,10 +1,8 @@
 package com.tokopedia.play.view.viewcomponent
 
-import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -86,22 +84,14 @@ class PlayUserReportSubmissionViewComponent(
 
         etSubmission.setOnClickListener {
             etSubmission.requestFocus()
-            showKeyboard()
         }
 
         btnSubmit.setOnClickListener {
             etSubmission.clearFocus()
-            showKeyboard(false)
 
             val desc = etSubmission.editText.text.toString()
             listener.onShowVerificationDialog(this@PlayUserReportSubmissionViewComponent, reasonId = item.reasoningId, description = desc)
         }
-    }
-
-    private fun showKeyboard(shouldShow: Boolean = true) {
-        val imm = etSubmission.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        if (shouldShow) imm.showSoftInput(etSubmission, InputMethodManager.SHOW_IMPLICIT)
-        else imm.hideSoftInputFromWindow(etSubmission.windowToken, 0)
     }
 
     private fun getFieldMessage(isError: Boolean) : String{
