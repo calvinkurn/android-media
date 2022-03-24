@@ -15,7 +15,6 @@ import javax.inject.Inject
 class RechargeSubmitCcUseCase @Inject constructor(val repository: RestRepository) : RestRequestUseCase(repository) {
 
     var mapParam = mutableMapOf<String, String>()
-
     fun setMapParam(map: HashMap<String, String>) {
         this.mapParam = map
     }
