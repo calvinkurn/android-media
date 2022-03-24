@@ -31,6 +31,7 @@ import com.tokopedia.media.picker.utils.addOnTabSelected
 import com.tokopedia.media.picker.utils.delegates.permissionGranted
 import com.tokopedia.media.picker.utils.dimensionPixelOffsetOf
 import com.tokopedia.media.picker.utils.setBottomMargin
+import com.tokopedia.media.picker.utils.toVideoMaxDurationTextFormat
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity.Companion.EXTRA_INTENT_PREVIEW
 import com.tokopedia.picker.common.*
@@ -43,7 +44,6 @@ import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.picker.common.utils.toMb
-import com.tokopedia.picker.common.utils.toReadableTime
 import com.tokopedia.picker.common.utils.toSec
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
@@ -429,7 +429,7 @@ open class PickerActivity : BaseActivity()
     override fun onShowVideoMaxDurationToast() {
         onShowValidationToaster(
             R.string.picker_video_duration_max_limit,
-            param.get().maxVideoDuration().toSec().toReadableTime(this)
+            param.get().maxVideoDuration().toSec().toVideoMaxDurationTextFormat(this)
         )
     }
 
