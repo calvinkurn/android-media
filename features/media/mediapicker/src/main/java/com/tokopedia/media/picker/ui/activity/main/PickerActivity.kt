@@ -420,14 +420,14 @@ open class PickerActivity : BaseActivity()
     override fun onShowImageMinResToast() {
         onShowValidationToaster(
             R.string.picker_image_res_min_limit,
-            param.get().maxImageResolution()
+            param.get().minImageResolution()
         )
     }
 
     override fun onShowImageMaxResToast() {
         onShowValidationToaster(
             R.string.picker_image_res_max_limit,
-            param.get().minImageResolution()
+            param.get().maxImageResolution()
         )
     }
 

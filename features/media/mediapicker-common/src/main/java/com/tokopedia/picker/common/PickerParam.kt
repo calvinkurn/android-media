@@ -24,7 +24,7 @@ data class PickerParam(
     private var minStorageThreshold: Long = 150_000_000, // 150 mb
     private var isIncludeAnimation: Boolean = false,
     private var withEditor: Boolean = false,
-    private var pageSource: PickerPageSource = PickerPageSource.UNKNOWN,
+    private var pageSource: PageSource = PageSource.Unknown,
     private var includeMedias: List<File> = emptyList(),
     private var excludedMedias: List<File> = emptyList(),
 ) : Parcelable {
@@ -53,7 +53,7 @@ data class PickerParam(
     fun withEditor() = withEditor
 
     // setter
-    fun pageSource(value: PickerPageSource) = apply { pageSource = value }
+    fun pageSource(value: PageSource) = apply { pageSource = value }
     fun cameraRatio(value: CameraRatio) = apply { cameraRatio = value }
     fun maxMediaItem(value: Int) = apply { maxMediaItem = value }
     fun maxVideoItem(value: Int) = apply { maxVideoItem = value }
