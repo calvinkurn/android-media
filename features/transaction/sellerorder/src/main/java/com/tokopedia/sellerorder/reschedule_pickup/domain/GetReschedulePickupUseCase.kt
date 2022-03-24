@@ -25,7 +25,7 @@ class GetReschedulePickupUseCase @Inject constructor(private val useCase: Graphq
                             GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData(
                                 chooseDay = listOf(
                                     GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData.DayOption(
-                                        day = "Kamis, 9 Desember 2021",
+                                        day = "2022-02-02",
                                         chooseTime = listOf(
                                             GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData.DayOption.TimeOption(
                                                 time = "08:00 WIB"
@@ -39,7 +39,7 @@ class GetReschedulePickupUseCase @Inject constructor(private val useCase: Graphq
                                         )
                                     ),
                                     GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData.DayOption(
-                                        day = "Jumat, 10 Desember 2021",
+                                        day = "2022-02-03",
                                         chooseTime = listOf(
                                             GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData.DayOption.TimeOption(
                                                 time = "11:00 WIB"
@@ -53,7 +53,7 @@ class GetReschedulePickupUseCase @Inject constructor(private val useCase: Graphq
                                         )
                                     ),
                                     GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData.DayOption(
-                                        day = "Senin, 13 Desember 2021",
+                                        day = "2022-02-04",
                                         chooseTime = listOf(
                                             GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData.DayOption.TimeOption(
                                                 time = "14:00 WIB"

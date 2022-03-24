@@ -8,12 +8,13 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.BottomsheetRescheduleTimeBinding
 import com.tokopedia.sellerorder.reschedule_pickup.data.model.GetReschedulePickupResponse
+import com.tokopedia.sellerorder.reschedule_pickup.data.model.RescheduleTimeOptionModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.utils.lifecycle.autoCleared
 
 class RescheduleTimeBottomSheet(
-    private val timeOption: List<GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData.DayOption.TimeOption>,
+    private val timeOption: List<RescheduleTimeOptionModel>,
     private val listener: ChooseTimeListener
 ) : BottomSheetUnify() {
 
@@ -30,7 +31,7 @@ class RescheduleTimeBottomSheet(
     }
 
     interface ChooseTimeListener {
-        fun onTimeChosen(timeChosen: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData.DayOption.TimeOption)
+        fun onTimeChosen(timeChosen: RescheduleTimeOptionModel)
     }
 
     override fun onCreateView(
@@ -55,7 +56,7 @@ class RescheduleTimeBottomSheet(
     private fun setupView() {
         setTitle(getString(R.string.title_reschedule_time_bottomsheet))
         val listWidgetData = ArrayList<ListItemUnify>().apply {
-            addAll(timeOption.map { time -> ListItemUnify(title = "${time.time} WIB", description = "") })
+            addAll(timeOption.map { time -> ListItemUnify(title = time.formattedTime, description = "") })
         }
 
         binding.rvTime.run {

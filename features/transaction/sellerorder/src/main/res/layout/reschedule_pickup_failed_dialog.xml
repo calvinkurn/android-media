@@ -8,25 +8,26 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/reschedule_loading_loader"
-        android:layout_width="@dimen/layout_lvl4"
-        android:layout_height="@dimen/layout_lvl4"
-        android:layout_gravity="center_horizontal" />
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/ic_illustration_gagal" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:typographyType="heading_2"
         android:gravity="center"
-        android:text="@string/title_reschedule_pickup_loading_dialog"/>
+        android:text="@string/title_failed_reschedule_pickup_dialog"/>
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_description_error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:typographyType="body_2"
         android:gravity="center"
-        android:text="@string/description_reschedule_pickup_loading_dialog"/>
+        tools:text="@string/description_reschedule_pickup_loading_dialog"/>
 
 
 </LinearLayout>

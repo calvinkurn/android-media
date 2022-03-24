@@ -8,13 +8,14 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.BottomsheetRescheduleDayBinding
 import com.tokopedia.sellerorder.reschedule_pickup.data.model.GetReschedulePickupResponse
+import com.tokopedia.sellerorder.reschedule_pickup.data.model.RescheduleDayOptionModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.lifecycle.autoCleared
 
 class RescheduleDayBottomSheet(
-    private val dayOptions: List<GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData.DayOption>,
+    private val dayOptions: List<RescheduleDayOptionModel>,
     private val listener: ChooseDayListener
 ) : BottomSheetUnify() {
 
@@ -31,7 +32,7 @@ class RescheduleDayBottomSheet(
     }
 
     interface ChooseDayListener {
-        fun onDayChosen(dayChosen: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData.DayOption)
+        fun onDayChosen(dayChosen: RescheduleDayOptionModel)
     }
 
     override fun onCreateView(
@@ -56,7 +57,7 @@ class RescheduleDayBottomSheet(
     private fun setupView() {
         setTitle(getString(R.string.title_reschedule_day_bottomsheet))
         val listWidgetData = ArrayList<ListItemUnify>().apply {
-            addAll(dayOptions.map { day -> ListItemUnify(title = formatDay(day.day), description = "") })
+            addAll(dayOptions.map { day -> ListItemUnify(title = day.formattedDay, description = "") })
         }
 
         binding.rvDay.run {
@@ -68,10 +69,6 @@ class RescheduleDayBottomSheet(
                 }
             }
         }
-    }
-
-    private fun formatDay(day: String) : String {
-        return DateUtil.formatDate("yyyy-MM-dd", "EEEE, dd MMM yyyy", day)
     }
 
     fun show(manager: FragmentManager?) {

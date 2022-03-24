@@ -6,15 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.sellerorder.R
-import com.tokopedia.sellerorder.databinding.BottomsheetRescheduleDayBinding
 import com.tokopedia.sellerorder.databinding.BottomsheetRescheduleReasonBinding
 import com.tokopedia.sellerorder.reschedule_pickup.data.model.GetReschedulePickupResponse
+import com.tokopedia.sellerorder.reschedule_pickup.data.model.RescheduleReasonOptionModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.utils.lifecycle.autoCleared
 
 class RescheduleReasonBottomSheet(
-    private val reasonOptions: List<GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData.ReasonOption>,
+    private val reasonOptionModels: List<RescheduleReasonOptionModel>,
     private val listener: ChooseReasonListener
 ) : BottomSheetUnify() {
 
@@ -31,7 +31,7 @@ class RescheduleReasonBottomSheet(
     }
 
     interface ChooseReasonListener {
-        fun onReasonChosen(reasonChosen: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData.ReasonOption)
+        fun onReasonChosen(reasonChosen: RescheduleReasonOptionModel)
     }
 
     override fun onCreateView(
@@ -56,14 +56,14 @@ class RescheduleReasonBottomSheet(
     private fun setupView() {
         setTitle(getString(R.string.title_reschedule_reason_bottomsheet))
         val listWidgetData = ArrayList<ListItemUnify>().apply {
-            addAll(reasonOptions.map { reason -> ListItemUnify(title = reason.reason, description = "") })
+            addAll(reasonOptionModels.map { reason -> ListItemUnify(title = reason.reason, description = "") })
         }
 
         binding.rvReason.run {
             setData(listWidgetData)
             onLoadFinish {
                 setOnItemClickListener { adapterView, view, index, l ->
-                    listener.onReasonChosen(reasonOptions[index])
+                    listener.onReasonChosen(reasonOptionModels[index])
                     dismiss()
                 }
             }
