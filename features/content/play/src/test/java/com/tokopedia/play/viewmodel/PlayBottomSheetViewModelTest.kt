@@ -67,30 +67,6 @@ class PlayBottomSheetViewModelTest {
     }
 
     @Test
-    fun `when get product variant is success, then it should show the un-clicked variant list`() {
-        val product = productModelBuilder.buildProductLine()
-        val action = ProductAction.AddToCart
-        val selectedVariants = VariantCommonMapper.mapVariantIdentifierToHashMap(mockProductVariantResponse.data)
-        val categoryVariants = VariantCommonMapper.processVariant(mockProductVariantResponse.data,
-                mapOfSelectedVariant = selectedVariants)
-        val expectedModel = modelBuilder.buildVariantSheetUiModel(
-                product = product,
-                action = action,
-                parentVariant = mockProductVariantResponse.data,
-                mapOfSelectedVariants = selectedVariants,
-                listOfVariantCategory = categoryVariants.orEmpty(),
-                stockWording = null
-        )
-        val expectedResult = PlayResult.Success(expectedModel)
-
-        playBottomSheetViewModel.getProductVariant(product, action)
-
-        Assertions
-                .assertThat(playBottomSheetViewModel.observableProductVariant.getOrAwaitValue())
-                .isEqualToComparingFieldByFieldRecursively(expectedResult)
-    }
-
-    @Test
     fun `when add to cart is success, then it should return the the correct feedback`() {
 
         coEvery { mockRepo.addItemToCart(any(), any(), any(), any(), any()) } returns modelBuilder.buildAddToCartModelResponseSuccess()
