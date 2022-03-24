@@ -356,6 +356,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
         super.onResume()
         refreshCartCounterData()
         updateMiniCartWidget()
+        isPromoValid = null
     }
 
     private fun refreshCartCounterData() {
@@ -701,7 +702,6 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
             }
             REQUEST_CODE_REDIRECT_TO_CART_FROM_MINI_CART -> {
                 if(isPromoValid == false) {
-                    isPromoValid = null
                     loadInitialData()
                 }
             }
