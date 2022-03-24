@@ -167,6 +167,10 @@ class DrawerSelectionWidget : FrameLayout {
         }
     }
 
+    fun scrollTo(index: Int) {
+        binding?.rvThumbnail?.scrollToPosition(index)
+    }
+
     interface Listener {
         fun onItemClicked(media: MediaUiModel)
         fun onDataSetChanged(action: DrawerActionType)

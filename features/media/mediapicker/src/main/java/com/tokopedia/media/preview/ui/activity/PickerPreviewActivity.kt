@@ -33,6 +33,8 @@ class PickerPreviewActivity : BaseActivity()
 
     private val binding: ActivityPreviewBinding? by viewBinding()
     private val uiModel = arrayListOf<MediaUiModel>()
+
+    // variable for control index item to be rendered first
     private var drawerIndexSelected = 0
 
     private val navToolbar by uiComponent {
@@ -158,7 +160,10 @@ class PickerPreviewActivity : BaseActivity()
 
     private fun initView() {
         setupToolbar()
-        pickerPager.setupView(uiModel)
+
+        drawerIndexSelected = uiModel.size - 1
+
+        pickerPager.setupView(uiModel, drawerIndexSelected)
         setupSelectionDrawerOrActionButton()
     }
 
@@ -178,6 +183,7 @@ class PickerPreviewActivity : BaseActivity()
             binding?.drawerSelector?.addAllData(uiModel)
             binding?.drawerSelector?.show()
 
+            binding?.drawerSelector?.scrollTo(drawerIndexSelected)
 
             binding?.drawerSelector?.post {
                 // set selected index on drawerSelector initialize

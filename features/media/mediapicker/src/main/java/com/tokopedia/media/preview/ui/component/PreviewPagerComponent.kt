@@ -31,9 +31,10 @@ class PreviewPagerComponent(
         viewPager.addOnPageChangeListener(viewPagerListener())
     }
 
-    fun setupView(medias: List<MediaUiModel>) {
+    fun setupView(medias: List<MediaUiModel>, firstRenderIndex: Int) {
         setData(medias)
         viewPager.adapter = adapter
+        viewPager.currentItem = firstRenderIndex
         viewPager.addOnAttachStateChangeListener(attachStateListener())
     }
 
