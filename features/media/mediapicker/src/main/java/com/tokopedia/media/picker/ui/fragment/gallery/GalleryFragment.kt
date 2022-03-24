@@ -160,7 +160,15 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     private fun hasMediaList(isShown: Boolean) {
         setupWidgetAlbumSelector(isShown)
         setupSelectionDrawerWidget(isShown)
-        binding?.emptyState?.root?.showWithCondition(!isShown)
+        setupEmptyState(!isShown)
+    }
+
+    private fun setupEmptyState(isShown: Boolean) {
+        binding?.emptyState?.root?.showWithCondition(isShown)
+        binding?.emptyState?.emptyNavigation?.showWithCondition(param.get().isCommonPageType())
+        binding?.emptyState?.emptyNavigation?.setOnClickListener {
+            listener?.navigateToCameraPage()
+        }
     }
 
     private fun setupSelectionDrawerWidget(isShown: Boolean) {
@@ -265,5 +273,4 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         private const val RC_ALBUM_SELECTOR = 123
         private const val LIST_SPAN_COUNT = 3
     }
-
 }
