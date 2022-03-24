@@ -356,8 +356,7 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
 
     private fun setRescheduleDetailSummary(courierName: String, day: String, time: String) {
         binding?.layoutRescheduleDetail?.visibility = View.VISIBLE
-        binding?.rescheduleDetail?.text =
-            getString(R.string.template_reschedule_detail_summary, courierName, day, time)
+        binding?.layoutRescheduleDetail?.setHtmlDescription(getString(R.string.template_reschedule_detail_summary, courierName, day, time))
     }
 
     private fun validateInput() {

@@ -198,46 +198,19 @@
                 app:layout_constraintTop_toBottomOf="@id/et_time"
                 tools:visibility="visible" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/layout_reschedule_detail"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="23dp"
                 android:visibility="gone"
+                app:closeButtonVisibility="gone"
+                app:tickerType="announcement"
+                app:tickerShapeType="loose"
                 app:layout_constraintBottom_toTopOf="@id/et_reason"
                 app:layout_constraintEnd_toEndOf="@id/right_padding"
                 app:layout_constraintStart_toStartOf="@id/left_padding"
-                app:layout_constraintTop_toBottomOf="@id/et_time">
-
-                <com.tokopedia.iconunify.IconUnify
-                    android:id="@+id/icon_reschedule_detail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    app:icon_name="INFORMATION"
-                    android:paddingEnd="8dp"
-                    app:layout_constraintBottom_toBottomOf="@id/reschedule_detail"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/title_reschedule_detail" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/title_reschedule_detail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    app:layout_constraintStart_toEndOf="@id/icon_reschedule_detail"
-                    app:layout_constraintTop_toBottomOf="@id/reschedule_detail"
-                    app:typographyType="body_3"
-                    android:text="@string/label_title_reschedule_detail" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/reschedule_detail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toEndOf="@id/icon_reschedule_detail"
-                    app:layout_constraintTop_toBottomOf="@id/title_reschedule_detail"
-                    app:typographyType="heading_6"
-                    tools:text="Instan maksimal Rabu, 23 Des 2021, 16:00 WIB" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                app:layout_constraintTop_toBottomOf="@id/et_time" />
 
             <com.tokopedia.unifycomponents.TextFieldUnify2
                 android:id="@+id/et_reason"

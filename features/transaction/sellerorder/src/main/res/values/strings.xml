@@ -369,7 +369,7 @@
     <string name="label_title_order_detail_reschedule_pick_up">Detail Pesanan</string>
     <string name="label_title_reschedule_detail">Estimasi pickup:</string>
     <string name="label_subtitle_reschedule_pick_up"><![CDATA[Cek info detail pengaturan ulang jadwal pick-up di sini.]]></string>
-    <string name="template_reschedule_detail_summary">%1$s maksimal %2$s, %3$s</string>
+    <string name="template_reschedule_detail_summary"><![CDATA[Estimasi pickup: <b>%1$s maksimal %2$s, %3$s</b>]]></string>
     <string name="title_reschedule_day_bottomsheet">Pilih Hari</string>
     <string name="title_reschedule_reason_bottomsheet">Alasan Perubahan Jadwal</string>
     <string name="title_reschedule_time_bottomsheet">Pilih Waktu</string>
