@@ -1,10 +1,9 @@
 package com.tokopedia.vouchercreation.product.voucherlist.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
@@ -31,9 +30,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
 
 @ExperimentalCoroutinesApi
 class CouponListViewModelTest {
@@ -227,28 +223,4 @@ class CouponListViewModelTest {
         emptyList(),
         emptyList(),
         0)
-
-    @Suppress("UNCHECKED_CAST")
-    private fun <T> LiveData<T>.getOrAwaitValue(
-        time: Long = 2,
-        timeUnit: TimeUnit = TimeUnit.SECONDS
-    ): T {
-        var data: T? = null
-        val latch = CountDownLatch(1)
-        val observer = object : Observer<T> {
-            override fun onChanged(o: T?) {
-                data = o
-                latch.countDown()
-                this@getOrAwaitValue.removeObserver(this)
-            }
-        }
-
-        this.observeForever(observer)
-
-        if (!latch.await(time, timeUnit)) {
-            throw TimeoutException("LiveData value was never set.")
-        }
-
-        return data as T
-    }
 }
