@@ -260,7 +260,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         }
         strategies.clear()
         if (autoBidSwitch?.isBidAutomatic == true) {
-            strategies.add("auto_bid")
+            strategies.add(ParamObject.AUTO_BID_STATE)
         }
         dataMap[POSITIVE_CREATE] = addedKeywordsPos
         dataMap[POSITIVE_DELETE] = deletedKeywordsPos
