@@ -90,7 +90,7 @@ data class HomeLayoutResponse(
     @SerializedName("token")
     var token: String = "",
     @Expose
-    @SerializedName("token")
+    @SerializedName("widgetParam")
     var widgetParam: String = "",
     @Expose
     @SerializedName("timestamp")
