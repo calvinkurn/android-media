@@ -18,11 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
@@ -33,7 +29,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shopadmin.R
 import com.tokopedia.shopadmin.common.constants.AdminImageUrl
 import com.tokopedia.shopadmin.common.constants.AdminStatus
-import com.tokopedia.shopadmin.common.constants.Constants
 import com.tokopedia.shopadmin.databinding.FragmentAdminInvitationConfirmationBinding
 import com.tokopedia.shopadmin.databinding.ItemAdminConfirmationInvitationBinding
 import com.tokopedia.shopadmin.databinding.ItemAdminInvitationExpiredBinding
@@ -41,6 +36,7 @@ import com.tokopedia.shopadmin.databinding.ItemAdminInvitationRejectedBinding
 import com.tokopedia.shopadmin.feature.invitationconfirmation.di.component.AdminInvitationConfirmationComponent
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.param.InvitationConfirmationParam
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.dialog.AdminInvitationConfirmRejectDialog
+import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.AdminConfirmationRegUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.ShopAdminInfoUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.ValidateAdminEmailEvent
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.ValidateEmailUiModel
@@ -180,8 +176,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     if (it.data.isSuccess) {
-                        //is success reject/accepted, need confirmation to BE
-                        navigator?.goToInvitationAccepted()
+                        redirectAfterConfirmReg(it.data)
                     } else {
                         val message = it.data.message.ifEmpty {
                             getString(R.string.error_message_confirmation_rejected)
@@ -217,6 +212,13 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         viewModel.getAdminInfo(userSession.shopId.toLongOrZero())
     }
 
+    private fun redirectAfterConfirmReg(adminConfirmationRegUiModel: AdminConfirmationRegUiModel) {
+        if (adminConfirmationRegUiModel.acceptBecomeAdmin) {
+            navigator?.goToShopAccount()
+        } else {
+            navigator?.goToInvitationAccepted()
+        }
+    }
 
     private fun showAdminType(adminStatus: String) {
         when (adminStatus) {
@@ -425,9 +427,9 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
             .trim()
     }
 
-    private fun adminConfirmationReg(isAccepted: Boolean) {
+    private fun adminConfirmationReg(acceptBecomeAdmin: Boolean) {
         val email = getEmailFromTextField().ifEmpty { userSession.email }
-        viewModel.adminConfirmationReg(userSession.userId, email, isAccepted)
+        viewModel.adminConfirmationReg(userSession.userId, email, acceptBecomeAdmin)
     }
 
     private fun showLoadingDialog() {

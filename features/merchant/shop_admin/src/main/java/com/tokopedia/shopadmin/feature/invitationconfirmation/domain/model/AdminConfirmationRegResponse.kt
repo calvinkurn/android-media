@@ -9,5 +9,8 @@ data class AdminConfirmationRegResponse(
     val success: Boolean = false,
     @SerializedName("message")
     @Expose
-    val message: String = ""
+    val message: String = "",
+    @SerializedName("acceptBecomeAdmin")
+    @Expose
+    val acceptBecomeAdmin: Boolean = false
 )

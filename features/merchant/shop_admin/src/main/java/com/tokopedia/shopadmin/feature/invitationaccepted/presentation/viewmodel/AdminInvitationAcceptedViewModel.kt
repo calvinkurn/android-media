@@ -23,7 +23,7 @@ class AdminInvitationAcceptedViewModel @Inject constructor(
     val adminPermission: LiveData<Result<List<AdminPermissionUiModel>>>
         get() = _adminPermission
 
-    fun getAdminPermission(shopId: String) {
+    fun getAdminPermission(shopId: Long) {
         launchCatchError(block = {
             val invitationAcceptedResponse = withContext(coroutineDispatchers.io) {
                 getAdminPermissionListUseCase.get().execute(shopId)

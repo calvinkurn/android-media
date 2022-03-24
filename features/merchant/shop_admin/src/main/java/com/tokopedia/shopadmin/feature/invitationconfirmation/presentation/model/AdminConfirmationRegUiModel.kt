@@ -2,5 +2,6 @@ package com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.mode
 
 data class AdminConfirmationRegUiModel(
     val isSuccess: Boolean,
-    val message: String = ""
+    val message: String = "",
+    val acceptBecomeAdmin: Boolean
 )
