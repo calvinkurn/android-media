@@ -1997,15 +1997,16 @@ class PlayViewModel @AssistedInject constructor(
         sectionInfo: ProductSectionUiModel.Section,
         product: PlayProductUiModel.Product,
         action: ProductAction
-    ) = needLogin {
-
+    ) {
         if (product.isVariantAvailable) openVariantDetail(product, action)
         else {
-            addProductToCart(product) { cartId ->
-                _uiEvent.emit(
-                    if (action == ProductAction.Buy) BuySuccessEvent(product, false, cartId, sectionInfo)
-                    else AtcSuccessEvent(product, false, cartId, sectionInfo)
-                )
+            needLogin {
+                addProductToCart(product) { cartId ->
+                    _uiEvent.emit(
+                        if (action == ProductAction.Buy) BuySuccessEvent(product, false, cartId, sectionInfo)
+                        else AtcSuccessEvent(product, false, cartId, sectionInfo)
+                    )
+                }
             }
         }
     }
