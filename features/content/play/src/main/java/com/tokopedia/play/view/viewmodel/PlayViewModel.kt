@@ -149,6 +149,8 @@ class PlayViewModel @AssistedInject constructor(
 
     private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 50)
 
+    private var selectedUpcomingCampaign: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty
+
     /**
      * Data State
      */
@@ -818,6 +820,7 @@ class PlayViewModel @AssistedInject constructor(
             CloseSharingOptionAction -> handleCloseSharingOption()
             is ClickSharingOptionAction -> handleSharingOption(action.shareModel)
             is SharePermissionAction -> handleSharePermission(action.label)
+            is SendUpcomingReminder -> handleSendReminder(action.section, false)
         }
     }
 
@@ -1002,6 +1005,8 @@ class PlayViewModel @AssistedInject constructor(
             val tagItem = repo.getTagItem(channelId)
             _tagItems.value = tagItem
 
+            checkReminderStatus()
+
             sendProductTrackerToBro(
                 productList = tagItem.product.productSectionList
                     .filterIsInstance<ProductSectionUiModel.Section>()
@@ -1010,6 +1015,15 @@ class PlayViewModel @AssistedInject constructor(
         }) { err ->
             _tagItems.update { it.copy(resultState = ResultState.Fail(err)) }
         }
+    }
+
+    private fun checkReminderStatus(){
+        if(userSession.isLoggedIn)
+            _tagItems.value.product.productSectionList.
+            filter { it is ProductSectionUiModel.Section && it.config.type == ProductSectionType.Upcoming }
+                .forEach { campaign ->
+                    checkUpcomingCampaignSub(campaign as ProductSectionUiModel.Section)
+                }
     }
 
     /**
@@ -1738,6 +1752,7 @@ class PlayViewModel @AssistedInject constructor(
             REQUEST_CODE_LOGIN_FOLLOW -> handleClickFollow(isFromLogin = true)
             REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE -> handleClickFollowInteractive()
             REQUEST_CODE_LOGIN_LIKE -> handleClickLike(isFromLogin = true)
+            REQUEST_CODE_LOGIN_UPCO_REMINDER -> handleSendReminder(selectedUpcomingCampaign, isFromLogin = true)
             else -> {}
         }
     }
@@ -2018,6 +2033,56 @@ class PlayViewModel @AssistedInject constructor(
         )
     }
 
+    private fun handleSendReminder(sectionUiModel: ProductSectionUiModel.Section, isFromLogin: Boolean){
+        selectedUpcomingCampaign = sectionUiModel
+        needLogin(REQUEST_CODE_LOGIN_UPCO_REMINDER) {
+            if(isFromLogin) checkUpcomingCampaignSub(selectedUpcomingCampaign)
+            sendReminder()
+        }
+    }
+
+    private fun sendReminder(){
+        viewModelScope.launchCatchError(block = {
+            playAnalytic.clickUpcomingReminder(selectedUpcomingCampaign, channelId, channelType)
+            val data = repo.subscribeUpcomingCampaign(campaignId = selectedUpcomingCampaign.id.toLongOrZero(), reminderType = selectedUpcomingCampaign.config.reminder)
+            val message = if(data.first) {
+                updateReminderUi(selectedUpcomingCampaign.config.reminder.reversed(selectedUpcomingCampaign.id.toLongOrZero()), selectedUpcomingCampaign.id)
+                if(data.second.isNotEmpty()) UiString.Text(data.second) else UiString.Resource(R.string.play_product_upcoming_reminder_success)
+            } else {
+                if(data.second.isNotEmpty()) UiString.Text(data.second) else UiString.Resource(R.string.play_product_upcoming_reminder_error)
+            }
+            _uiEvent.emit(ShowInfoEvent(message))
+        }){
+            _uiEvent.emit(ShowErrorEvent(it))
+        }
+    }
+
+    private fun checkUpcomingCampaignSub(productUiModel: ProductSectionUiModel.Section){
+        viewModelScope.launchCatchError(block = {
+            val data = repo.checkUpcomingCampaign(campaignId = productUiModel.id.toLongOrZero())
+            if (data) updateReminderUi(productUiModel.config.reminder.reversed(productUiModel.id.toLongOrZero()), productUiModel.id)
+        }){
+        }
+    }
+
+    private fun updateReminderUi(reminderType: PlayUpcomingBellStatus, campaignId: String){
+        _tagItems.update { tagItemUiModel ->
+            tagItemUiModel.copy(
+                product = tagItemUiModel.product.copy(
+                    productSectionList = tagItemUiModel.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().
+                           map { item ->
+                               if(item.id == campaignId) item.copy(config = item.config.copy(reminder = reminderType))
+                               else item
+                            }
+                )
+            )
+        }
+    }
+
+    fun sendUpcomingReminderImpression(sectionUiModel: ProductSectionUiModel.Section){
+        playAnalytic.impressUpcomingReminder(sectionUiModel, channelId, channelType)
+    }
+
     companion object {
         private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
         private const val FIREBASE_REMOTE_CONFIG_KEY_INTERACTIVE = "android_main_app_enable_play_interactive"
@@ -2034,6 +2099,7 @@ class PlayViewModel @AssistedInject constructor(
         private const val REQUEST_CODE_LOGIN_FOLLOW = 571
         private const val REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE = 572
         private const val REQUEST_CODE_LOGIN_LIKE = 573
+        private const val REQUEST_CODE_LOGIN_UPCO_REMINDER = 574
 
         private const val WEB_SOCKET_SOURCE_PLAY_VIEWER = "Viewer"
     }

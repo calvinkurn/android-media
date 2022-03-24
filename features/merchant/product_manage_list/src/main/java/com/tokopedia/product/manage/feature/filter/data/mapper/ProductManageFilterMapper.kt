@@ -208,6 +208,7 @@ class ProductManageFilterMapper {
                         FilterOption.FilterByCondition.WholesaleOnly.id -> FilterOption.FilterByCondition.WholesaleOnly
                         FilterOption.FilterByCondition.PreorderOnly.id -> FilterOption.FilterByCondition.PreorderOnly
                         FilterOption.FilterByCondition.CampaignOnly.id -> FilterOption.FilterByCondition.CampaignOnly
+                        FilterOption.FilterByCondition.StockAlertOnly.id -> FilterOption.FilterByCondition.StockAlertOnly
                         else -> FilterOption.FilterByCondition.FeaturedOnly
                     }
                     selectedData.add(mappedData)

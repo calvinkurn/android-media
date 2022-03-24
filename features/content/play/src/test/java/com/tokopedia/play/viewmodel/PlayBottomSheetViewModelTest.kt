@@ -9,6 +9,7 @@ import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.model.PlayProductTagsModelBuilder
 import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.type.PlayUpcomingBellStatus
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.type.ProductSectionType
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
@@ -48,7 +49,7 @@ class PlayBottomSheetViewModelTest {
     private val mockProductVariantResponse: GetProductVariantResponse = modelBuilder.buildProductVariant()
     private val sectionMockData: ProductSectionUiModel.Section = UiModelBuilder.get().buildProductSection(
                                 productList = listOf(productModelBuilder.buildProductLine()),
-                                config = UiModelBuilder.get().buildSectionConfig(type = ProductSectionType.Active),
+                                config = UiModelBuilder.get().buildSectionConfig(type = ProductSectionType.Active, reminderStatus = PlayUpcomingBellStatus.Off(0L)),
                                 id = "")
 
     private lateinit var playBottomSheetViewModel: PlayBottomSheetViewModel

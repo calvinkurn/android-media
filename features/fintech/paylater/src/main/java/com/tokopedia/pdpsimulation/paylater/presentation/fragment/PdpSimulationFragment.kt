@@ -105,7 +105,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     private fun openInstallmentBottomSheet(detail: Detail) {
         bottomSheetNavigator.showBottomSheet(
             PayLaterInstallmentFeeInfo::class.java,
-            PayLaterBundleGenerator.getInstallmentBundle(detail.installementDetails)
+            PayLaterBundleGenerator.getInstallmentBundle(detail)
         )
     }
 
