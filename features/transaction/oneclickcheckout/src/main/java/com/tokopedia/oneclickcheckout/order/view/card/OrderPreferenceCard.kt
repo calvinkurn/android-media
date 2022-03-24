@@ -288,8 +288,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 if (profile.enable) {
                     val shippingRecommendationData = shipment.shippingRecommendationData
                     if (shippingRecommendationData != null) {
-                        val list: ArrayList<RatesViewModelType> =
-                            ArrayList(shippingRecommendationData.shippingDurationUiModels)
+                        val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationUiModels)
                         val logisticPromoList = shippingRecommendationData.listLogisticPromo
                         if (logisticPromoList.isNotEmpty()) {
                             list.addAll(0, logisticPromoList + listOf<RatesViewModelType>(DividerModel()))
