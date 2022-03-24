@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/spacing_lvl3"
     android:layout_marginRight="@dimen/spacing_lvl3"
-    android:layout_marginTop="@dimen/spacing_lvl2"
+    android:layout_marginTop="@dimen/spacing_lvl1"
     android:background="@color/Unify_Background"
     android:orientation="horizontal"
     android:visibility="visible">
@@ -21,7 +21,6 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:layout_centerVertical="true"
         android:ellipsize="end"
         android:maxLines="1"
         android:padding="@dimen/spacing_lvl3"
@@ -40,7 +39,6 @@
         android:paddingVertical="@dimen/spacing_lvl3"
         android:paddingHorizontal="@dimen/spacing_lvl4"
         android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
         android:text="@string/redeem_deals_btn"
         android:textColor="@color/Unify_N0"/>
 
@@ -60,4 +58,15 @@
             android:layout_height="@dimen/layout_lvl4"
             android:layout_gravity="center"/>
     </FrameLayout>
+
+    <View
+        android:id="@+id/divider_voucher"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/deals_voucher_divider_size"
+        android:layout_marginHorizontal="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_below="@id/redeem_btn_deals"
+        android:visibility="visible"
+        android:background="@drawable/dash_line_grey"/>
 </RelativeLayout>
