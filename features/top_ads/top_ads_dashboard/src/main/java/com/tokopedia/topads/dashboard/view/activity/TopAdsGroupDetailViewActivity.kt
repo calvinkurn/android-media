@@ -50,6 +50,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.BID_
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_3
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.FROM_DETAIL
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.FROM_REKOMENDASI
@@ -75,7 +76,11 @@ import com.tokopedia.topads.dashboard.view.fragment.*
 import com.tokopedia.topads.dashboard.view.interfaces.ChangePlacementFilter
 import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.BidSwitchManualBudgetBottomSheet
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.setCounter
+import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.TabsUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -199,7 +204,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
 
     private fun renderTabAndViewPager() {
         viewPagerFrag.adapter = getViewPagerAdapter()
-        viewPagerFrag.offscreenPageLimit = 3
+        viewPagerFrag.offscreenPageLimit = CONST_3
         viewPagerFrag.currentItem = 0
         tabLayout.setupWithViewPager(viewPagerFrag)
     }
@@ -502,7 +507,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         }
         txtGroupName.text = groupName
         btnSwitch.setOnCheckedChangeListener(null)
-        btnSwitch.isChecked = data.status == "published"
+        btnSwitch.isChecked = data.status == ParamObject.PUBLISHED
         btnSwitch.setOnCheckedChangeListener(this)
         if (priceDaily == 0.0F) {
             dailyBudgetSpent.text = TopAdsDashboardConstant.TIDAK_DIBATASI
