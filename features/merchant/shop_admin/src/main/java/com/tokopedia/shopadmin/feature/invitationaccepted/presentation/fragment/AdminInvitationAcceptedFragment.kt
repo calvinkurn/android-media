@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.APPLINK_PLAYSTORE
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.PACKAGE_SELLER_APP
@@ -98,7 +99,7 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
 
     private fun loadAdminPermission() {
         showLoading()
-        viewModel.getAdminPermission(userSession.shopId)
+        viewModel.getAdminPermission(userSession.shopId.toLongOrZero())
     }
 
     private fun setupViews(item: List<AdminPermissionUiModel>) {

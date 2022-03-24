@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.shopadmin.R
 import com.tokopedia.shopadmin.databinding.BottomsheetTncAdminBinding
 import com.tokopedia.shopadmin.feature.invitationaccepted.presentation.adapter.ItemTncAdminAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -20,8 +21,14 @@ class TncAdminBottomSheet : BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = BottomsheetTncAdminBinding.inflate(inflater, container, false)
-        return binding?.root
+        setChildView(inflater, container)
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun setChildView(inflater: LayoutInflater, container: ViewGroup?) {
+        val view = inflater.inflate(R.layout.bottomsheet_tnc_admin, container, false)
+        binding = BottomsheetTncAdminBinding.bind(view)
+        setChild(view)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
