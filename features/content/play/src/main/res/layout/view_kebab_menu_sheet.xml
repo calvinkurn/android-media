@@ -10,7 +10,6 @@
         android:background="@drawable/bg_play_bottom_sheet"
         android:clickable="true"
         android:focusable="true"
-        android:paddingTop="@dimen/spacing_lvl4"
         app:behavior_hideable="true"
         app:behavior_skipCollapsed="true"
         tools:ignore="SpeakableTextPresentCheck"
