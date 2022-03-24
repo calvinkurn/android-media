@@ -18,6 +18,10 @@ import kotlinx.coroutines.flow.collect
 @ExperimentalCoroutinesApi
 class FragmentB : BaseTokofoodFragment() {
 
+    companion object {
+        const val ARGUMENT_INPUT_KEY = "input"
+    }
+
     private lateinit var binding: FragmentLivedataInputAndTextbBinding
 
     override fun onFragmentBackPressed(): Boolean {
@@ -35,9 +39,9 @@ class FragmentB : BaseTokofoodFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            val data = arguments?.getString("data") ?: ""
+            val data = arguments?.getString(Constant.DATA_KEY) ?: ""
             val uriData = Uri.parse(data)
-            val input = uriData.getQueryParameter("input")?: ""
+            val input = uriData.getQueryParameter(ARGUMENT_INPUT_KEY)?: ""
             activityViewModel?.setInput(input)
         }
     }

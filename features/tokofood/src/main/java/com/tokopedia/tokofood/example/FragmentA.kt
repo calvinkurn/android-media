@@ -11,6 +11,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokofood.databinding.FragmentLivedataInputAndTextaBinding
+import com.tokopedia.tokofood.example.FragmentB.Companion.ARGUMENT_INPUT_KEY
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
@@ -49,7 +50,9 @@ class FragmentA : BaseTokofoodFragment() {
             navigateToNewFragment(FragmentB())
         }
         binding.buttonGoToBDeeplink.setOnClickListener {
-            RouteManager.route(requireContext(), "tokopedia-android-internal://tokofood/b?input=abc")
+            RouteManager.route(requireContext(),
+                "tokopedia-android-internal://tokofood/b?$ARGUMENT_INPUT_KEY=abc"
+            )
         }
         binding.et1.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
