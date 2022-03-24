@@ -13,6 +13,7 @@ import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteract
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
+import com.tokopedia.play.broadcaster.analytic.setup.schedule.PlayBroScheduleAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
 import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherImpl
@@ -99,6 +100,7 @@ class PlayBroadcastModule {
         setupCoverAnalytic: PlayBroSetupCoverAnalytic,
         setupProductAnalytic: PlayBroSetupProductAnalytic,
         summaryAnalytic: PlayBroadcastSummaryAnalytic,
+        scheduleAnalytic: PlayBroScheduleAnalytic,
     ): PlayBroadcastAnalytic {
         return PlayBroadcastAnalytic(
             userSession,
@@ -108,6 +110,7 @@ class PlayBroadcastModule {
             setupCoverAnalytic,
             setupProductAnalytic,
             summaryAnalytic,
+            scheduleAnalytic,
         )
     }
 

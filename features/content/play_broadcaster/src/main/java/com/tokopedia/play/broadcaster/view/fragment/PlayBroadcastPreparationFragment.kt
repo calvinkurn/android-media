@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
@@ -79,6 +80,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     /** Others */
     private val fragmentViewContainer = FragmentViewContainer()
+
+    private lateinit var earlyLiveStreamDialog: DialogUnify
 
     override fun getScreenName(): String = "Play Prepare Page"
 
@@ -243,15 +246,15 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 analytic.clickStartStreaming(parentViewModel.channelId)
 
                 /** TODO: comment this first because we havent revamped the schedule functionality yet */
-//                val schedule = scheduleViewModel.schedule
-//                if (schedule is BroadcastScheduleUiModel.Scheduled) {
-//                    val currentTime = Date()
-//                    if (currentTime.before(schedule.time)) {
-//                        getEarlyLiveStreamDialog().show()
-//                        analytic.viewDialogConfirmStartLiveBeforeScheduledOnFinalSetupPage()
-//                        return@setOnClickListener
-//                    }
-//                }
+                val schedule = parentViewModel.uiState.value.schedule.schedule
+                if (schedule is BroadcastScheduleUiModel.Scheduled) {
+                    val currentTime = Date()
+                    if (currentTime.before(schedule.time)) {
+                        getEarlyLiveStreamDialog().show()
+                        analytic.viewDialogConfirmDeleteSchedule()
+                        return@setOnClickListener
+                    }
+                }
 
                 if(viewModel.isCoverAvailable()) startCountDown()
                 else {
@@ -588,6 +591,24 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun openBroadcastLivePage() {
         broadcastCoordinator.navigateToFragment(PlayBroadcastUserInteractionFragment::class.java)
         analytic.openBroadcastScreen(parentViewModel.channelId)
+    }
+
+    private fun getEarlyLiveStreamDialog(): DialogUnify {
+        if (!::earlyLiveStreamDialog.isInitialized) {
+            earlyLiveStreamDialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setPrimaryCTAText(getString(R.string.play_broadcast_start_streaming_action))
+                setPrimaryCTAClickListener {
+                    analytic.clickStartLiveBeforeScheduleTime()
+                    startCountDown()
+                    dismiss()
+                }
+                setSecondaryCTAText(getString(R.string.play_broadcast_cancel_streaming_action))
+                setSecondaryCTAClickListener { dismiss() }
+                setTitle(getString(R.string.play_broadcast_early_streaming_dialog_title))
+                setDescription(getString(R.string.play_broadcast_early_streaming_dialog_desc))
+            }
+        }
+        return earlyLiveStreamDialog
     }
 
     companion object {
