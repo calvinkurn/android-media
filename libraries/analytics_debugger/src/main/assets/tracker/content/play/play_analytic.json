@@ -678,14 +678,6 @@
       "currentSite": "tokopediamarketplace",
       "userId": ".*",
       "businessUnit": "play"
-      "event": "viewTopAdsIris",
-      "eventAction": "impression - remind me in upcoming section",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - \\d+",
-      "businessUnit": "play",
-      "currentSite": "tokopediamarketplace",
-      "sessionIris": ".*",
-      "userId": ".*"
     },
     {
       "event": "clickTopAds",
