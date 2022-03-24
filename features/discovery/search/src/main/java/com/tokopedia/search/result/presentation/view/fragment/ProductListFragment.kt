@@ -323,7 +323,10 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun initVideoCarouselWidgetController() {
-        videoCarouselWidgetCoordinator = VideoCarouselWidgetCoordinator(this)
+        videoCarouselWidgetCoordinator = VideoCarouselWidgetCoordinator(
+            lifecycleOwner = this,
+            hasExternalAutoPlayController = true,
+        )
     }
     //endregion
 

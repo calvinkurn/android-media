@@ -16,6 +16,7 @@ import kotlinx.coroutines.cancelChildren
 class VideoCarouselWidgetCoordinator(
     lifecycleOwner: LifecycleOwner? = null,
     mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
+    private val hasExternalAutoPlayController: Boolean = false,
 ) : LifecycleObserver {
     private val scope = CoroutineScope(mainCoroutineDispatcher)
 
@@ -24,7 +25,8 @@ class VideoCarouselWidgetCoordinator(
 
     private val autoPlayCoordinator = VideoCarouselAutoPlayCoordinator(
         scope,
-        mainCoroutineDispatcher
+        mainCoroutineDispatcher,
+        hasExternalAutoPlayController,
     )
 
     private var listener: VideoCarouselItemListener? = null

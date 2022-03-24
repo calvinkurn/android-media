@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.video_widget.util.LayoutManagerUtil
-import com.tokopedia.video_widget.util.RecyclerViewUtils.getRecyclerViewLocationAndHeight
+import com.tokopedia.video_widget.util.RecyclerViewUtils.getRecyclerViewLocationAndMeasurement
 import com.tokopedia.video_widget.util.RecyclerViewUtils.getViewVisibilityOnRecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -128,7 +128,7 @@ class VideoPlayerAutoplay(
 
     private fun getVisibleViewHolderList(): List<VideoPlayer> {
         val visibleVideoPlayerProviders = mutableListOf<VideoPlayerProvider>()
-        val (recyclerViewPosition, recyclerViewHeight) = getRecyclerViewLocationAndHeight(
+        val (recyclerViewPosition, recyclerViewMeasurement) = getRecyclerViewLocationAndMeasurement(
             recyclerView
         )
         for (index in firstVisibleItemIndex..lastVisibleItemIndex) {
@@ -137,7 +137,7 @@ class VideoPlayerAutoplay(
                 val viewVisibilityPercentage = getViewVisibilityOnRecyclerView(
                     viewHolder.itemView,
                     recyclerViewPosition,
-                    recyclerViewHeight
+                    recyclerViewMeasurement
                 )
                 if (viewVisibilityPercentage > VISIBILITY_PERCENTAGE_THRESHOLD) {
                     visibleVideoPlayerProviders.add(viewHolder)

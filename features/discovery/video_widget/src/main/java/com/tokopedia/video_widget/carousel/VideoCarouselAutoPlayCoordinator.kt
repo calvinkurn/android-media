@@ -3,6 +3,9 @@ package com.tokopedia.video_widget.carousel
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.video_widget.util.LayoutManagerUtil
+import com.tokopedia.video_widget.util.RecyclerViewUtils
+import com.tokopedia.video_widget.util.ViewMeasurement
+import com.tokopedia.video_widget.util.VisibilityMeasurementMethod
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -12,8 +15,14 @@ import kotlinx.coroutines.launch
 
 class VideoCarouselAutoPlayCoordinator(
     private val scope: CoroutineScope,
-    private val mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
+    private val mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
+    private val hasExternalAutoPlayController: Boolean,
 ) : VideoCarouselInternalListener {
+    companion object {
+        private const val MAX_DELAY = 500L // set delay before play to 0.5s
+        private const val VISIBILITY_PERCENTAGE_THRESHOLD = 50f
+    }
+
     private var autoPlayJob: Job? = null
     private var canStartAutoPlay: Boolean = false
 
@@ -23,8 +32,11 @@ class VideoCarouselAutoPlayCoordinator(
 
     private lateinit var mConfig: VideoCarouselConfigUiModel
 
+    private val canUpdateAutoPlay: Boolean
+        get() = !hasExternalAutoPlayController || canStartAutoPlay
+
     override fun playVideo(container: RecyclerView) {
-        canStartAutoPlay = true
+        if (hasExternalAutoPlayController) canStartAutoPlay = true
         startAutoPlay(container)
     }
 
@@ -33,9 +45,7 @@ class VideoCarouselAutoPlayCoordinator(
     }
 
     override fun onWidgetCardsScrollChanged(container: RecyclerView) {
-        if (canStartAutoPlay) {
-            startAutoPlay(container)
-        }
+        if (canUpdateAutoPlay) startAutoPlay(container)
     }
 
     override fun onWidgetDetached(widget: View) {
@@ -45,7 +55,7 @@ class VideoCarouselAutoPlayCoordinator(
     private fun stopVideoAutoPlay() {
         autoPlayJob?.cancel()
         videoPlayerMap.entries.forEach { clearPlayerEntry(it) }
-        canStartAutoPlay = false
+        if (hasExternalAutoPlayController) canStartAutoPlay = false
     }
 
     fun onPause() {
@@ -136,16 +146,18 @@ class VideoCarouselAutoPlayCoordinator(
 
         return try {
             val firstCompleteVisiblePosition =
-                LayoutManagerUtil.getFirstVisibleItemIndex(layoutManager, true)
+                LayoutManagerUtil.getFirstVisibleItemIndex(layoutManager, false)
             val lastCompleteVisiblePosition =
                 LayoutManagerUtil.getLastVisibleItemIndex(layoutManager)
 
-            val allVisibleViews = (firstCompleteVisiblePosition..lastCompleteVisiblePosition)
-                .mapNotNull {
-                    val view = layoutManager.findViewByPosition(it)
-                    if (view == null) null
-                    else AutoPlayModel(view, it)
-                }
+            val positionRange = firstCompleteVisiblePosition..lastCompleteVisiblePosition
+            val (recyclerViewPosition, recyclerViewMeasurement) = RecyclerViewUtils.getRecyclerViewLocationAndMeasurement(
+                recyclerView
+            )
+            val allVisibleViews = positionRange.mapNotNull { position ->
+                val view = layoutManager.findViewByPosition(position)
+                getAutoPlayModel(view, recyclerViewPosition, recyclerViewMeasurement, position)
+            }
 
             allVisibleViews
         } catch (e: Throwable) {
@@ -153,11 +165,26 @@ class VideoCarouselAutoPlayCoordinator(
         }
     }
 
-    private fun getMaxAutoPlayCard(): Int {
-        return if (::mConfig.isInitialized) mConfig.autoPlayAmount else 0
+    private fun getAutoPlayModel(
+        view: View?,
+        recyclerViewPosition: IntArray,
+        recyclerViewMeasurement: ViewMeasurement,
+        position: Int,
+    ): AutoPlayModel? {
+        if (view == null) return null
+
+        val viewVisibilityPercentage = RecyclerViewUtils.getViewVisibilityOnRecyclerView(
+            view,
+            recyclerViewPosition,
+            recyclerViewMeasurement,
+            VisibilityMeasurementMethod.HorizontalOnly
+        )
+        return if (viewVisibilityPercentage > VISIBILITY_PERCENTAGE_THRESHOLD) {
+            AutoPlayModel(view, position)
+        } else null
     }
 
-    companion object {
-        private const val MAX_DELAY = 500L // set delay before play to 0.5s
+    private fun getMaxAutoPlayCard(): Int {
+        return if (::mConfig.isInitialized) mConfig.autoPlayAmount else 0
     }
 }
