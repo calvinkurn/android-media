@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
-import android.net.Network
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,8 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.datepicker.OnDateChangedListener
-import com.tokopedia.datepicker.R as datePickerR
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -21,16 +18,14 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
-import com.tokopedia.play.broadcaster.setup.schedule.view.ScheduleSetupBottomSheet
+import com.tokopedia.play.broadcaster.setup.schedule.util.SchedulePicker
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
-import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
 import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
-import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
 import com.tokopedia.play.broadcaster.view.custom.actionbar.ActionBarView
@@ -45,6 +40,7 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
+import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.PlayToaster
@@ -53,16 +49,11 @@ import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
-import com.tokopedia.play_common.view.updatePadding
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.math.max
 
 /**
  * Created By : Jonathan Darwin on January 24, 2022
@@ -96,6 +87,22 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val toaster by viewLifecycleBound(
         creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
     )
+
+    private val schedulePicker by lifecycleBound(
+        creator = { SchedulePicker(this) }
+    )
+
+    private val schedulePickerListener = object : SchedulePicker.Listener {
+        override fun onDeleteSchedule(wrapper: SchedulePicker) {
+            parentViewModel.submitAction(PlayBroadcastAction.DeleteSchedule)
+        }
+
+        override fun onSaveSchedule(wrapper: SchedulePicker, date: Date) {
+            parentViewModel.submitAction(
+                PlayBroadcastAction.SetSchedule(date)
+            )
+        }
+    }
 
     /** Lifecycle */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -349,7 +356,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 renderProductMenu(prevState?.selectedProduct, state.selectedProduct)
-                renderSchedule(prevState?.schedule, state.schedule)
+                renderScheduleMenu(state.schedule)
+                renderSchedulePicker(prevState?.schedule, state.schedule)
             }
         }
     }
@@ -365,27 +373,25 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
     }
 
-    private fun renderSchedule(
-        prevState: ScheduleUiModel?,
-        state: ScheduleUiModel,
+    private fun renderScheduleMenu(
+        state: ScheduleUiModel
     ) {
         binding.viewPreparationMenu.isSetScheduleChecked(
             state.schedule is BroadcastScheduleUiModel.Scheduled
         )
+    }
 
-        val datePicker = childFragmentManager.findFragmentByTag(
-            SCHEDULE_TAG
-        ) as? DateTimePickerUnify ?: return
-
-        datePicker.datePickerButton.isLoading = state.state == NetworkState.Loading
-        datePicker.datePickerButton.isEnabled = state.state != NetworkState.Loading
-
-        if (state.state == NetworkState.Loading) {
-            datePicker.isCancelable = false
-        }
+    private fun renderSchedulePicker(
+        prevState: ScheduleUiModel?,
+        state: ScheduleUiModel,
+    ) {
+        schedulePicker.setLoading(state.state == NetworkState.Loading)
+        schedulePicker.setHasSchedule(
+            state.schedule is BroadcastScheduleUiModel.Scheduled
+        )
 
         if (prevState?.state != state.state && state.state == NetworkState.Success) {
-            datePicker.dismiss()
+            schedulePicker.dismiss()
         }
     }
 
@@ -450,7 +456,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     override fun onClickSetSchedule() {
         val schedule = parentViewModel.uiState.value.schedule
-        openScheduleBottomSheet(
+        schedulePicker.show(
             minDate = GregorianCalendar().apply {
                 time = schedule.config.minDate
             },
@@ -462,7 +468,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     schedule.schedule.time
                 } else schedule.config.defaultDate
             },
-            hasSchedule = schedule.schedule is BroadcastScheduleUiModel.Scheduled,
+            listener = schedulePickerListener,
         )
     }
 
@@ -584,48 +590,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         analytic.openBroadcastScreen(parentViewModel.channelId)
     }
 
-    private fun openScheduleBottomSheet(
-        minDate: GregorianCalendar,
-        maxDate: GregorianCalendar,
-        selectedDate: GregorianCalendar,
-        hasSchedule: Boolean,
-    ) {
-        val datePicker = DateTimePickerUnify(
-            context = requireContext(),
-            minDate = minDate,
-            defaultDate = selectedDate ?: GregorianCalendar(),
-            maxDate = maxDate,
-            type = DateTimePickerUnify.TYPE_DATETIMEPICKER,
-        )
-
-        datePicker.setInfoVisible(true)
-        datePicker.setInfo(getString(R.string.play_bro_schedule_info))
-        datePicker.setTitle(getString(R.string.play_bro_schedule_label))
-        datePicker.setAction(getString(R.string.play_bro_schedule_delete)) {
-            if (it.isEnabled) parentViewModel.submitAction(PlayBroadcastAction.DeleteSchedule)
-        }
-        datePicker.isCancelable = false
-        datePicker.overlayClickDismiss = false
-        datePicker.setCloseClickListener {
-            if (parentViewModel.uiState.value.schedule.state != NetworkState.Loading) datePicker.dismiss()
-        }
-        datePicker.setShowListener {
-            val action = datePicker.bottomSheetAction as? Typography ?: return@setShowListener
-            action.isEnabled = hasSchedule
-
-            datePicker.datePickerButton.text = getString(R.string.play_label_save)
-            datePicker.datePickerButton.setOnClickListener {
-                parentViewModel.submitAction(
-                    PlayBroadcastAction.SetSchedule(datePicker.getDate().time)
-                )
-            }
-        }
-        datePicker.show(childFragmentManager, SCHEDULE_TAG)
-    }
-
     companion object {
         private const val TIMER_TEXT_COUNTDOWN_INTERVAL = 1000L
-
-        private const val SCHEDULE_TAG = "schedule_picker"
     }
 }
