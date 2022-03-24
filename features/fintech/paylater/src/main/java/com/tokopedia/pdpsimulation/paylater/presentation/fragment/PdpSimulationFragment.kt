@@ -28,9 +28,6 @@ import com.tokopedia.pdpsimulation.paylater.helper.BottomSheetNavigator
 import com.tokopedia.pdpsimulation.paylater.helper.PayLaterBundleGenerator
 import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper
 import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper.extractDetailFromList
-import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper.partnerName
-import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper.partnerlinkingStatus
-import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper.useStatus
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterAdapterFactoryImpl
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterSimulationAdapter
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterSimulationTenureAdapter
@@ -81,14 +78,14 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun sendTenureCLick(tenure: Int, payLaterList: ArrayList<BasePayLaterWidgetUiModel>) {
-        extractDetailFromList(payLaterList)
+        val allStatusOfPartner = extractDetailFromList(payLaterList)
         sendEvent(PayLaterTenureClick().apply {
             productId = payLaterArgsDescriptor.productId
-            linkingStatus = partnerlinkingStatus
-            userStatus = useStatus
+            linkingStatus = allStatusOfPartner?.first?:""
+            userStatus = allStatusOfPartner?.second?:""
             productPrice = payLaterViewModel.finalProductPrice.toString()
             tenureOption = tenure
-            payLaterPartnerName = partnerName
+            payLaterPartnerName = allStatusOfPartner?.third.toString()
         })
     }
 
