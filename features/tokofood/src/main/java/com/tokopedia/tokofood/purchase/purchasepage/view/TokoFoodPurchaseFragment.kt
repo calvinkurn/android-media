@@ -129,6 +129,10 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         viewModel.loadData()
     }
 
+    override fun isLoadMoreEnabledByDefault(): Boolean {
+        return false
+    }
+
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, TokoFoodPurchaseAdapterTypeFactory> {
         adapter = TokoFoodPurchaseAdapter(adapterTypeFactory)
         return adapter
