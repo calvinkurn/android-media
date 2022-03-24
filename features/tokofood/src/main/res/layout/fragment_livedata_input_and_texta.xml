@@ -50,6 +50,12 @@
                 android:layout_height="wrap_content"
                 android:text="Go To Fragment B with deeplink" />
 
+            <Button
+                android:id="@+id/buttonGoToBDeeplinkInternal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Go To Fragment B with deeplink Prioritize internal" />
+
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
