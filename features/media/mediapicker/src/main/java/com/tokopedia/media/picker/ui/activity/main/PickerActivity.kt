@@ -398,7 +398,7 @@ open class PickerActivity : BaseActivity()
         }
     }
 
-    override fun onGalleryEmptyNavigation() {
+    override fun navigateToCameraPage() {
         binding?.tabPage?.tabLayout?.getTabAt(PAGE_CAMERA_INDEX)?.select()
     }
 
