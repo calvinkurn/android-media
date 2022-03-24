@@ -72,7 +72,7 @@
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:layout_marginHorizontal="@dimen/spacing_lvl4">
             <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/iv_deals"
+                android:id="@+id/iv_deal"
                 android:layout_width="@dimen/layout_lvl7"
                 android:layout_height="@dimen/layout_lvl7"
                 android:background="@color/Unify_N50"
@@ -84,9 +84,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/spacing_lvl3"
-                app:layout_constraintTop_toTopOf="@id/iv_deals"
-                app:layout_constraintBottom_toBottomOf="@id/iv_deals"
-                app:layout_constraintStart_toEndOf="@id/iv_deals"
+                app:layout_constraintTop_toTopOf="@id/iv_deal"
+                app:layout_constraintBottom_toBottomOf="@id/iv_deal"
+                app:layout_constraintStart_toEndOf="@id/iv_deal"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:orientation="vertical">
                 <com.tokopedia.unifyprinciples.Typography

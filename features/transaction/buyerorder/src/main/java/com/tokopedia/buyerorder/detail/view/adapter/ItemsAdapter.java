@@ -39,6 +39,7 @@ import com.tokopedia.buyerorder.detail.view.customview.RedeemVoucherView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.detail.data.OrderCategory;
+import com.tokopedia.unifycomponents.LoaderUnify;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.utils.view.DoubleTextView;
@@ -286,7 +287,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private TextView validDate;
         private TextView productQuantity;
         private TextView productPrice;
-        private ProgressBar progressBar;
+        private LoaderUnify progressBar;
         private LinearLayout tapActionLayoutDeals, tapActionLayoutEvents;
         private LinearLayout statusDetail;
         private LinearLayout voucherCodeLayout;
@@ -700,7 +701,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private class DefaultViewHolder extends RecyclerView.ViewHolder {
         private View itemView;
         private TextView validDate;
-        private ProgressBar progressBar;
+        private LoaderUnify progressBar;
         private CustomTicketView customTicketView1;
         private CustomTicketView customTicketView2;
         private View llValid;

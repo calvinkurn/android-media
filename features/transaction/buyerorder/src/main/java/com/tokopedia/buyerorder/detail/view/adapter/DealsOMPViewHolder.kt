@@ -37,7 +37,7 @@ class DealsOMPViewHolder(private val setEventDetails: ItemsAdapter.SetEventDetai
         val metadata = Gson().fromJson(item.metaData, MetaDataInfo::class.java)
 
         with(binding){
-            ivDeals.loadImageCircle(
+            ivDeal.loadImageCircle(
                 if (metadata.productImage.isEmpty()) {
                     item.imageUrl
                 } else metadata.productImage
