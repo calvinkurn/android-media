@@ -2,13 +2,14 @@ package com.tokopedia.play.widget.pref
 
 import android.content.Context
 import android.preference.PreferenceManager
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on January 19, 2022
  */
 class PlayWidgetPreference @Inject constructor(
-    context: Context
+    @ApplicationContext context: Context
 ) {
     private val sharedPref = PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
 
