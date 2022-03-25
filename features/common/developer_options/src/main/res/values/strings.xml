@@ -53,6 +53,7 @@
     <string name="enable_fpm_log">View FPM Log</string>
     <string name="enable_analytics_log_notif">Enable Analytics Log on Notification</string>
     <string name="cassava">Cassava</string>
+    <string name="data_explorer_entry">Data Explorer</string>
     <string name="view_analytics_log">View Analytics Log</string>
     <string name="view_iris_save_log">View Iris Save Log</string>
     <string name="view_iris_send_log">View Iris Send Log</string>
