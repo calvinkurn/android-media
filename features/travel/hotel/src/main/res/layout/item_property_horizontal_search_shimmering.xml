@@ -78,8 +78,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/hotel_rate_shimmer"
             app:layout_constraintEnd_toEndOf="@id/hotel_rate_shimmer"
-            app:layout_constraintTop_toBottomOf="@+id/hotel_discount_shimmer"
-            app:use_gradient="true" />
+            app:layout_constraintTop_toBottomOf="@+id/hotel_discount_shimmer" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

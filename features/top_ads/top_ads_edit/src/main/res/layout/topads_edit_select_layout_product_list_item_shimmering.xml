@@ -25,7 +25,6 @@
             app:loader_type="rect"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:use_gradient="true"
             tools:src="@tools:sample/avatars" />
 
 
@@ -39,8 +38,7 @@
             app:loader_corner_radius="4dp"
             app:loader_type="rect"
             app:layout_constraintStart_toEndOf="@+id/product_image"
-            app:layout_constraintTop_toTopOf="parent"
-            app:use_gradient="true" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/include"
@@ -52,8 +50,7 @@
             app:loader_corner_radius="4dp"
             app:loader_type="rect"
             app:layout_constraintStart_toEndOf="@+id/product_image"
-            app:layout_constraintTop_toBottomOf="@+id/product_name"
-            app:use_gradient="true"/>
+            app:layout_constraintTop_toBottomOf="@+id/product_name" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/product_price"
@@ -66,8 +63,7 @@
             app:loader_corner_radius="4dp"
             app:loader_type="rect"
             app:layout_constraintStart_toEndOf="@+id/product_image"
-            app:layout_constraintTop_toBottomOf="@+id/include"
-            app:use_gradient="true"/>
+            app:layout_constraintTop_toBottomOf="@+id/include" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/checkBox"
@@ -78,7 +74,6 @@
             app:loader_type="rect"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:use_gradient="true" />
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

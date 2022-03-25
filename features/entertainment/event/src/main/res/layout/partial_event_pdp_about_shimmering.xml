@@ -31,7 +31,6 @@
         android:layout_width="@dimen/dimen_dp_360"
         android:layout_height="@dimen/spacing_lvl4"
         app:typographyType="body_3"
-        app:use_gradient="true"
         android:background="@drawable/background_event_pdp_shimmering"
         />
     <com.tokopedia.unifycomponents.LoaderUnify

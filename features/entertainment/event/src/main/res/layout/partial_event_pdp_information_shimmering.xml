@@ -42,8 +42,7 @@
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:background="@drawable/background_event_pdp_shimmering"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title_two"
-        app:use_gradient="true" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_title_two" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/tv_title_four"
