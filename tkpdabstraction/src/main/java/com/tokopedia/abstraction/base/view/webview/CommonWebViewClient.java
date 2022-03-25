@@ -31,6 +31,16 @@ public class CommonWebViewClient extends WebChromeClient {
     FilePickerInterface filePickerInterface;
     Context context;
 
+    public CommonWebViewClient(FilePickerInterface filePickerInterface, ProgressBar progressBar) {
+        if (filePickerInterface instanceof Activity || filePickerInterface instanceof Fragment) {
+            this.filePickerInterface = filePickerInterface;
+            this.progressBar = progressBar;
+        } else {
+            throw new RuntimeException("Should be instance of Activity or Fragmant");
+        }
+
+    }
+
     public CommonWebViewClient(Context context, FilePickerInterface filePickerInterface, ProgressBar progressBar) {
         this.context = context;
         if (filePickerInterface instanceof Activity || filePickerInterface instanceof Fragment) {
