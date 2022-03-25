@@ -14,19 +14,9 @@ class RefreshTokonowDataUsecase @Inject constructor(private val useCase: Graphql
     }
 
     suspend fun execute(localCacheModel: LocalCacheModel): RefreshTokonowDataResponse.Data {
-//        useCase.setGraphqlQuery(RefreshTokonowDataQuery)
-//        useCase.setRequestParams(generateParam(localCacheModel))
-//        return useCase.executeOnBackground()
-        return RefreshTokonowDataResponse.Data(
-            RefreshTokonowDataResponse.Data.RefreshTokonowData(
-                RefreshTokonowDataResponse.Data.RefreshTokonowData.RefreshTokonowDataSuccess(
-                    shopId = localCacheModel.shop_id,
-                    serviceType = localCacheModel.service_type,
-                    lastUpdate = "2021-07-16T05:51:54+07:00",
-                    warehouseId = "250508"
-                )
-            )
-        )
+        useCase.setGraphqlQuery(RefreshTokonowDataQuery)
+        useCase.setRequestParams(generateParam(localCacheModel))
+        return useCase.executeOnBackground()
     }
 
     private fun generateParam(localCacheModel: LocalCacheModel): Map<String, Any?> {

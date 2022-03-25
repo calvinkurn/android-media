@@ -1244,7 +1244,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         } else {
             context?.let { context ->
                 binding?.btnPrimary?.isLoading = false
-                val somOrderHasCancellationRequestDialog = somOrderHasCancellationRequestDialog
+                        val somOrderHasCancellationRequestDialog = somOrderHasCancellationRequestDialog
                         ?: SomOrderHasRequestCancellationDialog(context)
                 this.somOrderHasCancellationRequestDialog = somOrderHasCancellationRequestDialog
                 somOrderHasCancellationRequestDialog.apply {

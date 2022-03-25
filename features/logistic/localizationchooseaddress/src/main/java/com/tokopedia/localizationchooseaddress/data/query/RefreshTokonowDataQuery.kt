@@ -9,7 +9,7 @@ object RefreshTokonowDataQuery : GqlQueryInterface {
 
     override fun getQuery(): String {
         return """
-    query TokonowRefreshUserLCAData(${'$'}tokonowLastUpdate:String!, ${'$'}districtID:String!, ${'$'}latitude:String!, ${'$'}longitude:String!, ${'$'}shopID:String!, ${'$'}warehouseID:String!, ${'$'}serviceType:String!, ${'$'}warehouses:[WarehouseUserPreference!]!){
+    query TokonowRefreshUserLCAData(${'$'}tokonowLastUpdate:String!, ${'$'}districtID:String!, ${'$'}latitude:String, ${'$'}longitude:String, ${'$'}shopID:String!, ${'$'}warehouseID:String!, ${'$'}serviceType:String!, ${'$'}warehouses:[RefreshUserLCAWarehouse!]!){
       TokonowRefreshUserLCAData(
         tokonowLastUpdate: ${'$'}tokonowLastUpdate,
         districtID: ${'$'}districtID, 
