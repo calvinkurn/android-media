@@ -1,0 +1,3 @@
+package com.tokopedia.pdpsimulation.paylater.presentation.fragment
+
+class PdpSimulationFragmentTest 
