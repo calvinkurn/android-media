@@ -49,7 +49,7 @@ class PreviewPagerComponent(
         return index
     }
 
-    fun getSelectedIndex() : Int {
+    fun getSelectedIndex(): Int {
         return viewPager.currentItem
     }
 
