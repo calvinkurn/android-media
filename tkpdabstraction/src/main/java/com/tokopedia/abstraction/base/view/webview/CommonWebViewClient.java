@@ -54,19 +54,20 @@ public class CommonWebViewClient extends WebChromeClient {
 
     @Override
     public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-        //ConsoleMessage.MessageLevel msgType = consoleMessage.messageLevel();
-        Toast.makeText(context, "onConsoleMessage" + consoleMessage.message(), Toast.LENGTH_SHORT).show();
+        ConsoleMessage.MessageLevel msgType = consoleMessage.messageLevel();
+        if (context != null)
+        Toast.makeText(context, "onConsoleMessage" + consoleMessage.message() + msgType.name(), Toast.LENGTH_SHORT).show();
 
-//        switch (msgType) {
-//            case WARNING:
-//            case ERROR:
-//                Map<String, String> map = new HashMap<>();
-//                map.put("type", msgType.name());
-//                map.put("desc", consoleMessage.message());
-//
-//                //ServerLogger.log(Priority.P1, "WEBVIEW_ERROR", map);
-//                break;
-//        }
+        switch (msgType) {
+            case WARNING:
+            case ERROR:
+                Map<String, String> map = new HashMap<>();
+                map.put("type", msgType.name());
+                map.put("desc", consoleMessage.message());
+
+                //ServerLogger.log(Priority.P1, "WEBVIEW_ERROR", map);
+                break;
+        }
         return true;
     }
 
