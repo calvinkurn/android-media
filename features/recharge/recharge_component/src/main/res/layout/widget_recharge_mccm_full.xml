@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:visibility="visible"
     android:layout_marginLeft="@dimen/spacing_lvl4"
     android:layout_marginTop="@dimen/unify_space_12"
@@ -9,7 +9,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_mccm_full"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -19,19 +20,22 @@
             android:id="@+id/header_mccm_full"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
             />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_mccm_full"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/unify_space_0"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             android:nestedScrollingEnabled="false"
             android:paddingLeft="@dimen/spacing_lvl3"
             android:clipToPadding="false"
+            app:layout_constraintTop_toBottomOf="@id/header_mccm_full"
+            app:layout_constraintBottom_toBottomOf="parent"
             />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.tokopedia.unifycomponents.CardUnify>

@@ -29,7 +29,7 @@ class DenomFullViewHolder(
 ): RecyclerView.ViewHolder(binding.root) {
 
     fun bind(denomFull: DenomData, denomType: DenomWidgetEnum,
-             isSelectedItem: Boolean, isOnlyOneSize: Boolean, position: Int){
+             isSelectedItem: Boolean, isOnlyOneSize: Boolean, position: Int, isPlacebo: Boolean = false){
 
         with(binding){
             tgDenomFullTitle.run {
@@ -224,17 +224,15 @@ class DenomFullViewHolder(
             }
 
             cardDenomFull.run {
-                layoutParams.width = if (denomType == DenomWidgetEnum.FULL_TYPE || isOnlyOneSize){
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                } else getDimens(R.dimen.widget_denom_full_width)
+                if (!isPlacebo) {
+                    layoutParams.width = if (denomType == DenomWidgetEnum.FULL_TYPE || isOnlyOneSize){
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    } else getDimens(R.dimen.widget_denom_full_width)
 
-                layoutParams.height = if (denomType == DenomWidgetEnum.MCCM_FULL_TYPE){
-                    if (denomFull.flashSalePercentage.isMoreThanZero()) {
-                        getDimens(R.dimen.widget_denom_full_height_countdown)
-                    } else {
-                        getDimens(R.dimen.widget_denom_full_height)
-                    }
-                } else ViewGroup.LayoutParams.WRAP_CONTENT
+                    layoutParams.height = if (denomType == DenomWidgetEnum.MCCM_FULL_TYPE){
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    } else ViewGroup.LayoutParams.WRAP_CONTENT
+                }
 
                 cardType = if(denomFull.status == DenomConst.DENOM_STATUS_OUT_OF_STOCK) CardUnify.TYPE_BORDER_DISABLED
                     else if (isSelectedItem) CardUnify.TYPE_BORDER_ACTIVE
