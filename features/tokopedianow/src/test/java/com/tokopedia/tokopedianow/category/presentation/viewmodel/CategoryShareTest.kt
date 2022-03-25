@@ -6,7 +6,7 @@ import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.category.domain.model.CategorySharingModel
 import com.tokopedia.tokopedianow.category.presentation.view.TokoNowCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
-import com.tokopedia.tokopedianow.util.TestUtils.getPrivateField
+import com.tokopedia.tokopedianow.util.TestUtils.getParentPrivateField
 import org.junit.Assert
 import org.junit.Test
 
@@ -15,7 +15,7 @@ class CategoryShareTest : CategoryTestFixtures() {
     private val categoryModel = "category/first-page-8-products-share.json".jsonToObject<CategoryModel>()
 
     private val privateQueryParamMutable by lazy {
-        tokoNowCategoryViewModel.getPrivateField<MutableMap<String, String>>("queryParamMutable")
+        tokoNowCategoryViewModel.getParentPrivateField<MutableMap<String, String>>("queryParamMutable")
     }
 
     @Test
@@ -145,7 +145,7 @@ class CategoryShareTest : CategoryTestFixtures() {
     }
 
     private fun getConstructedLink(categoryUrl: String, categoryIdLvl2: String, categoryIdLvl3: String): Pair<String, String> {
-        var deeplinkParam = "/${TokoNowCategoryFragment.DEFAULT_DEEPLINK_PARAM}/${tokoNowCategoryViewModel.categoryL1}"
+        var deeplinkParam = "${TokoNowCategoryFragment.DEFAULT_DEEPLINK_PARAM}/${tokoNowCategoryViewModel.categoryL1}"
         var url = categoryUrl
         if (categoryIdLvl2.isNotBlank() && categoryIdLvl2 != TokoNowCategoryFragment.DEFAULT_CATEGORY_ID) {
             deeplinkParam += "/$categoryIdLvl2"
@@ -188,6 +188,9 @@ class CategoryShareTest : CategoryTestFixtures() {
     }
 
     private fun `Then assert share live data`(sharingModel: CategorySharingModel) {
+        println(tokoNowCategoryViewModel.shareLiveData.value)
+        println(sharingModel)
+
         Assert.assertTrue(tokoNowCategoryViewModel.shareLiveData.value == sharingModel)
     }
 }

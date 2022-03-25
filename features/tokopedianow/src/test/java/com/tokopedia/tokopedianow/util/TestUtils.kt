@@ -1,26 +1,22 @@
 package com.tokopedia.tokopedianow.util
 
+import com.tokopedia.tokopedianow.util.TestUtils.getPrivateField
 import java.lang.reflect.Method
 
 object TestUtils {
 
     inline fun <reified T>Any.getPrivateField(name: String): T {
-        try {
-            return this::class.java.getDeclaredField(name).let {
-                it.isAccessible = true
-                return@let it.get(this) as T
-            }
-        } catch (e: NoSuchFieldException) {
-            // if there is no declared field on the current class, search another in parent class
-            val superClass = this::class.java.superclass
-            if (superClass == null) {
-                throw e
-            } else {
-                return superClass.getDeclaredField(name).let {
-                    it.isAccessible = true
-                    return@let it.get(this) as T
-                }
-            }
+        return this::class.java.getDeclaredField(name).let {
+            it.isAccessible = true
+            return@let it.get(this) as T
+        }
+    }
+
+    inline fun <reified T>Any.getParentPrivateField(name: String): T {
+        val superClass = this::class.java.superclass
+        return superClass.getDeclaredField(name).let {
+            it.isAccessible = true
+            return@let it.get(this) as T
         }
     }
 
