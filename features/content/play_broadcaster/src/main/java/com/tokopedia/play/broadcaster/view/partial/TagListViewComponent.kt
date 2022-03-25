@@ -20,11 +20,7 @@ class TagListViewComponent(
         container: ViewGroup,
         private val binding: LayoutTagRecommendationBinding,
         private val listener: Listener
-) : ViewComponent(container, binding.root.id), TagViewHolder.Listener {
-
-    private val placeholder by lazy(mode = LazyThreadSafetyMode.NONE) {
-        listOf(TagRecommendationListAdapter.Model.Placeholder)
-    }
+) : ViewComponent(container, binding.root.id), TagViewHolder.Tag.Listener {
 
     private val adapter = TagRecommendationListAdapter(this)
 
@@ -47,16 +43,12 @@ class TagListViewComponent(
 
     fun setTags(tags: List<PlayTagUiModel>) {
         binding.localLoadTagError.hide()
-        adapter.setItemsAndAnimateChanges(
-            tags.map {
-                TagRecommendationListAdapter.Model.Tag(it)
-            }
-        )
+        adapter.setItemsAndAnimateChanges(tags)
     }
 
     fun setPlaceholder() {
         binding.localLoadTagError.hide()
-        adapter.setItemsAndAnimateChanges(placeholder)
+        adapter.setItemsAndAnimateChanges(List(1) { })
     }
 
     fun setError() {
