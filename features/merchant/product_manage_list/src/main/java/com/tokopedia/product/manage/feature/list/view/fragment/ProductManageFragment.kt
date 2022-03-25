@@ -149,6 +149,7 @@ import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPrice
 import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragment.ProductManageQuickEditPriceFragment
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
 import com.tokopedia.product.manage.feature.violation.view.bottomsheet.ViolationReasonBottomSheet
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
@@ -203,6 +204,9 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     @Inject
     lateinit var productManageSession: ProductManageSession
+
+    @Inject
+    lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     protected var binding by autoClearedNullable<FragmentProductManageSellerBinding>()
 
@@ -1036,7 +1040,11 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, ProductManageAdapterFactoryImpl> {
-        return ProductManageListAdapter(adapterTypeFactory, userSession.deviceId.orEmpty())
+        return if (getIsAdapterEnableDiffutil()) {
+            ProductManageListDiffutilAdapter(adapterTypeFactory, userSession.deviceId.orEmpty())
+        } else {
+            ProductManageListAdapter(adapterTypeFactory, userSession.deviceId.orEmpty())
+        }
     }
 
     override fun getAdapterTypeFactory(): ProductManageAdapterFactoryImpl {
@@ -2737,11 +2745,17 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         }
     }
 
+    private fun getIsAdapterEnableDiffutil(): Boolean {
+        return remoteConfig.getBoolean(PRODUCT_MANAGE_ADAPTER_ENABLE_DIFFUTIL, true)
+    }
+
     companion object {
         private const val BOTTOM_SHEET_TAG = "BottomSheetTag"
 
         private const val VOUCHER_CREATION_PREF = "voucher_creation"
         private const val IS_PRODUCT_COUPON_FIRST_TIME = "is_product_coupon_first_time"
+
+        private const val PRODUCT_MANAGE_ADAPTER_ENABLE_DIFFUTIL = "product_manage_adapter_enable_diffutil"
 
         private const val MIN_FEATURED_PRODUCT = 0
         private const val MAX_FEATURED_PRODUCT = 5
