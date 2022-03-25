@@ -39,7 +39,15 @@ class TagListViewComponent(
     }
 
     fun setTags(tags: List<PlayTagUiModel>) {
-        adapter.setItemsAndAnimateChanges(tags)
+        adapter.setItemsAndAnimateChanges(
+            tags.map {
+                TagRecommendationListAdapter.Model.Tag(it)
+            }
+        )
+    }
+
+    fun setPlaceholder() {
+        /** TODO: set placeholder */
     }
 
     interface Listener {
