@@ -188,15 +188,9 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         if(prev == value) return
 
         when(value) {
-            NetworkResult.Loading -> {
-                tagListView.setPlaceholder()
-            }
-            is NetworkResult.Success -> {
-                tagListView.setTags(value.data.tags.toList())
-            }
-            is NetworkResult.Fail -> {
-                tagListView.setError()
-            }
+            NetworkResult.Loading -> tagListView.setPlaceholder()
+            is NetworkResult.Success -> tagListView.setTags(value.data.tags.toList())
+            is NetworkResult.Fail -> tagListView.setError()
         }
     }
 

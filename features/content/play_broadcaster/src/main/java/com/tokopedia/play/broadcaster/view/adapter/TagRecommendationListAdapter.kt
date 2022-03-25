@@ -34,6 +34,6 @@ class TagRecommendationListAdapter(
 
     sealed class Model {
         data class Tag(val data: PlayTagUiModel): Model()
-        data class Placeholder(val data: List<PlayTagPlaceholderUiModel>): Model()
+        data class Placeholder(val data: PlayTagPlaceholderUiModel): Model()
     }
 }

@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.databinding.LayoutTagRecommendationBinding
 import com.tokopedia.play.broadcaster.ui.itemdecoration.TagItemDecoration
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagPlaceholderUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.TagViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.TagRecommendationListAdapter
@@ -23,6 +24,21 @@ class TagListViewComponent(
         private val binding: LayoutTagRecommendationBinding,
         private val listener: Listener
 ) : ViewComponent(container, binding.root.id), TagViewHolder.Listener {
+
+    private val placeholder by lazy(mode = LazyThreadSafetyMode.NONE) {
+        List(PLACEHOLDER_COUNT) {
+            TagRecommendationListAdapter.Model.Placeholder(
+                data = PlayTagPlaceholderUiModel(
+                    size = when((0..2).random() % 3) {
+                        0 -> PlayTagPlaceholderUiModel.Size.SMALL
+                        1 -> PlayTagPlaceholderUiModel.Size.MEDIUM
+                        2 -> PlayTagPlaceholderUiModel.Size.LARGE
+                        else -> PlayTagPlaceholderUiModel.Size.MEDIUM
+                    }
+                )
+            )
+        }
+    }
 
     private val adapter = TagRecommendationListAdapter(this)
 
@@ -53,18 +69,22 @@ class TagListViewComponent(
     }
 
     fun setPlaceholder() {
-        /** TODO: set placeholder */
         binding.localLoadTagError.hide()
+        adapter.setItemsAndAnimateChanges(placeholder)
     }
 
     fun setError() {
-        binding.localLoadTagError.show()
         adapter.setItemsAndAnimateChanges(emptyList())
+        binding.localLoadTagError.show()
     }
 
     interface Listener {
 
         fun onTagClicked(view: TagListViewComponent, tag: PlayTagUiModel)
         fun onTagRefresh(view: TagListViewComponent)
+    }
+
+    companion object {
+        private const val PLACEHOLDER_COUNT = 9
     }
 }
