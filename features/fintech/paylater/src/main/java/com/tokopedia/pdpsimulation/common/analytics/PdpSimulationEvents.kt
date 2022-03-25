@@ -60,6 +60,14 @@ sealed class PdpSimulationEvent {
         val limit: String,
         val variantName: String
     ):PdpSimulationEvent()
+
+    data class ClickTenureEvent(
+        val productId: String,
+        val userStatus: String,
+        val productPrice:String,
+        val tenure: String,
+        val partnerName: String
+    ):PdpSimulationEvent()
 }
 
 open class PayLaterAnalyticsBase {
@@ -82,4 +90,15 @@ class PayLaterCtaClick : PayLaterAnalyticsBase() {
  class PayLaterBottomSheetImpression: PayLaterAnalyticsBase(), Parcelable {
     var limit: String = ""
     var emiAmount: String = ""
+}
+
+@Parcelize
+class OccBottomSheetImpression : PayLaterAnalyticsBase(), Parcelable
+{
+    var productPrice:String = ""
+}
+
+class PayLaterTenureClick :PayLaterAnalyticsBase()
+{
+    var productPrice:String = ""
 }
