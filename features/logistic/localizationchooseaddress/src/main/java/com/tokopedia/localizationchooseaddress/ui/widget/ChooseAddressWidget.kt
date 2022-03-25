@@ -83,6 +83,7 @@ class ChooseAddressWidget : ConstraintLayout,
         val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
         if (fragment != null) {
             viewModel.getChosenAddress.observe(fragment.viewLifecycleOwner, {
+                viewModel.isFirstLoad = false
                 when (it) {
                     is Success -> {
                         if (it.data.errorCode.code == ERROR_CODE_EMPTY_STATE_CHOSEN_ADDRESS) {
@@ -189,12 +190,13 @@ class ChooseAddressWidget : ConstraintLayout,
         updateWidget()
         if ((chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && viewModel.isFirstLoad) || localData.address_id.isEmpty()) {
             initObservers()
-            if (chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && viewModel.isFirstLoad) {
-                viewModel.getTokonowData(localData)
-            }
             if (localData.address_id.isEmpty()) {
                 chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
                     ?.let { viewModel.getStateChosenAddress(it, isSupportWarehouseLoc) }
+            } else {
+                if (chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && viewModel.isFirstLoad) {
+                    viewModel.getTokonowData(localData)
+                }
             }
         }
 
