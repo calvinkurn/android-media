@@ -84,6 +84,7 @@ import com.tokopedia.product.manage.common.feature.variant.presentation.data.Get
 import com.tokopedia.product.manage.common.feature.variant.presentation.ui.QuickEditVariantStockBottomSheet
 import com.tokopedia.product.manage.common.session.ProductManageSession
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
+import com.tokopedia.product.manage.common.view.adapter.base.BaseProductManageAdapter
 import com.tokopedia.product.manage.common.view.ongoingpromotion.bottomsheet.OngoingPromotionBottomSheet
 import com.tokopedia.product.manage.databinding.DialogProductAddBinding
 import com.tokopedia.product.manage.databinding.FragmentProductManageSellerBinding
@@ -117,6 +118,7 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.product.manage.feature.list.constant.ProductManageUrl
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListAdapter
+import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListDiffutilAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductListItemDecoration
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactoryImpl
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductManageMoreMenuViewHolder
@@ -218,7 +220,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         ProductManageAddEditMenuBottomSheet(sellerFeatureCarouselClickListener, this, childFragmentManager)
     }
 
-    private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }
+    private val productManageListAdapter by lazy { adapter as BaseProductManageAdapter }
     private var defaultFilterOptions: List<FilterOption> = emptyList()
     private var itemsChecked: MutableList<ProductUiModel> = mutableListOf()
     private var performanceMonitoring: PerformanceMonitoring? = null
