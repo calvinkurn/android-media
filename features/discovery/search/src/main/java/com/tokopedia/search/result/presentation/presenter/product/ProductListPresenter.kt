@@ -6,8 +6,6 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.CAROUSEL_TYPE
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.CAROUSEL_TYPE_VIDEO
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.IDENTIFIER
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.SRP_COMPONENT_ID
 import com.tokopedia.discovery.common.constants.SearchConstant
@@ -358,7 +356,6 @@ class ProductListPresenter @Inject constructor(
         putRequestParamsSearchParameters(requestParams, searchParameter)
         putRequestParamsTopAdsParameters(requestParams)
         putRequestParamsDepartmentIdIfNotEmpty(requestParams, searchParameter)
-        putRequestParamsCarouselTypeIfEnabled(requestParams)
     }
 
     private fun putRequestParamsSearchParameters(requestParams: RequestParams, searchParameter: Map<String, Any>) {
@@ -419,12 +416,6 @@ class ProductListPresenter @Inject constructor(
         if (departmentId.isNotEmpty()) {
             requestParams.putString(SearchApiConst.SC, departmentId)
             requestParams.putString(TopAdsParams.KEY_DEPARTEMENT_ID, departmentId)
-        }
-    }
-
-    private fun putRequestParamsCarouselTypeIfEnabled(requestParams: RequestParams) {
-        if(isABTestVideoWidget) {
-            requestParams.putString(CAROUSEL_TYPE, CAROUSEL_TYPE_VIDEO)
         }
     }
 
