@@ -7,7 +7,6 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
@@ -18,7 +17,6 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.elyeproj.loaderviewlibrary.LoaderTextView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.iconunify.IconUnify
@@ -44,6 +42,7 @@ import com.tokopedia.sellerhome.settings.view.animator.SecondaryShopInfoAnimator
 import com.tokopedia.sellerhome.settings.view.customview.TopadsTopupView
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -86,8 +85,8 @@ class OtherMenuViewHolder(
     private var balanceTopadsCard: CardUnify? = null
     private var balanceSaldoTextView: Typography? = null
     private var balanceTopadsTopupView: TopadsTopupView? = null
-    private var shimmerSaldo: LoaderTextView? = null
-    private var shimmerTopads: LoaderTextView? = null
+    private var shimmerSaldo: LoaderUnify? = null
+    private var shimmerTopads: LoaderUnify? = null
     private var errorLayoutSaldo: ConstraintLayout? = null
     private var errorLayoutTopads: ConstraintLayout? = null
 

@@ -17,42 +17,45 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/product_image"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            app:corners="8"
+            app:loader_corner_radius="4dp"
+            app:loader_type="rect"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:use_gradient="true"
             tools:src="@tools:sample/avatars" />
 
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/product_name"
             style="@style/TextView.Title.Bold"
             android:layout_width="@dimen/dp_180"
             android:layout_height="10dp"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            app:corners="8"
+            app:loader_corner_radius="4dp"
+            app:loader_type="rect"
             app:layout_constraintStart_toEndOf="@+id/product_image"
             app:layout_constraintTop_toTopOf="parent"
             app:use_gradient="true" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/include"
             android:layout_width="@dimen/dp_80"
             android:layout_height="10dp"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="4dp"
-            app:corners="8"
+            app:loader_corner_radius="4dp"
+            app:loader_type="rect"
             app:layout_constraintStart_toEndOf="@+id/product_image"
             app:layout_constraintTop_toBottomOf="@+id/product_name"
             app:use_gradient="true"/>
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/product_price"
             android:layout_width="@dimen/dp_80"
             android:layout_height="10dp"
@@ -60,17 +63,19 @@
             android:layout_marginLeft="8dp"
             android:layout_marginTop="4dp"
             android:textColor="@color/topads_common_shimmer_color"
-            app:corners="8"
+            app:loader_corner_radius="4dp"
+            app:loader_type="rect"
             app:layout_constraintStart_toEndOf="@+id/product_image"
             app:layout_constraintTop_toBottomOf="@+id/include"
             app:use_gradient="true"/>
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/checkBox"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:checked="false"
-            app:corners="8"
+            app:loader_corner_radius="4dp"
+            app:loader_type="rect"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

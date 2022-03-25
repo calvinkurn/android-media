@@ -15,10 +15,10 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home_page_banner.R
 import com.tokopedia.home_page_banner.ext.CrossFadeFactory
+import com.tokopedia.unifycomponents.LoaderUnify
 import kotlinx.android.synthetic.main.layout_shimmering_image_view.view.*
 
 
@@ -30,7 +30,7 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, private va
         private const val TRUNCATED_URL_PREFIX = "https://ecs7.tokopedia.net/img/cache/"
     }
 
-    private var loaderImageView: LoaderImageView?=null
+    private var loaderImageView: LoaderUnify?=null
 
     init {
         init()
@@ -38,7 +38,7 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, private va
 
     private fun init(){
         View.inflate(context, R.layout.layout_shimmering_image_view, this)
-        loaderImageView = LoaderImageView(context, attrs)
+        loaderImageView = attrs?.let { LoaderUnify(context, it) }
         this.addView(loaderImageView)
     }
 

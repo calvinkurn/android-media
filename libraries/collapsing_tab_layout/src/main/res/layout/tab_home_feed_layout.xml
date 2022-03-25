@@ -21,11 +21,12 @@
             android:layout_gravity="center_vertical"
             android:scaleType="centerCrop"
             />
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/tabShimmeringView"
             android:layout_width="@dimen/tab_home_feed_width"
             android:layout_height="@dimen/tab_home_feed_max_height"
-            app:corners="16"/>
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect"/>
 
     </androidx.cardview.widget.CardView>
 

@@ -58,7 +58,6 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.traceroute
 
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)

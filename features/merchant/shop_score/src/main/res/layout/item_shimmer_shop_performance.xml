@@ -8,16 +8,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/load_banner"
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_shimmer_banner_shop_performance"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:corners="8"/>
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/load_tv_title_1"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl6"
@@ -25,9 +26,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/load_banner"
-        app:corners="8"/>
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/load_tv_desc_1"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/spacing_lvl6"
@@ -35,9 +37,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/load_tv_title_1"
         app:layout_constraintWidth_percent="0.6"
-        app:corners="8"/>
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/load_tv_title_2"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl6"
@@ -45,9 +48,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/load_tv_desc_1"
-        app:corners="8"/>
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/load_tv_desc_2"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/spacing_lvl6"
@@ -55,9 +59,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/load_tv_title_2"
         app:layout_constraintWidth_percent="0.6"
-        app:corners="8"/>
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/load_tv_title_3"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl6"
@@ -65,9 +70,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/load_tv_desc_2"
-        app:corners="8"/>
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/load_tv_desc_3"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/spacing_lvl6"
@@ -75,9 +81,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/load_tv_title_3"
         app:layout_constraintWidth_percent="0.6"
-        app:corners="8"/>
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/load_tv_title_4"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl6"
@@ -85,9 +92,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/load_tv_desc_3"
-        app:corners="8"/>
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/load_tv_desc_4"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/spacing_lvl6"
@@ -95,9 +103,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/load_tv_title_4"
         app:layout_constraintWidth_percent="0.6"
-        app:corners="8"/>
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/load_tv_title_5"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl6"
@@ -105,9 +114,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/load_tv_desc_4"
-        app:corners="8"/>
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/load_tv_desc_5"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/spacing_lvl6"
@@ -115,9 +125,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/load_tv_title_5"
         app:layout_constraintWidth_percent="0.6"
-        app:corners="8"/>
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/load_tv_title_6"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl6"
@@ -125,9 +136,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/load_tv_desc_5"
-        app:corners="8"/>
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/load_tv_desc_6"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/spacing_lvl6"
@@ -135,9 +147,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/load_tv_title_6"
         app:layout_constraintWidth_percent="0.6"
-        app:corners="8"/>
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/load_tv_title_7"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl6"
@@ -145,9 +158,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/load_tv_desc_6"
-        app:corners="8"/>
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/load_tv_desc_7"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/spacing_lvl6"
@@ -155,6 +169,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/load_tv_title_7"
         app:layout_constraintWidth_percent="0.6"
-        app:corners="8"/>
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

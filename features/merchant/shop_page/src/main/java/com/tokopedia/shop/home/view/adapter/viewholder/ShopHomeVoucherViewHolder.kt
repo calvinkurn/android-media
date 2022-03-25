@@ -9,7 +9,6 @@ import android.widget.ImageView
 
 import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
-import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -21,6 +20,7 @@ import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeMerchantVoucherBinding
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -47,7 +47,7 @@ class ShopHomeVoucherViewHolder(
     private var merchantVoucherWidget: MvcView? = null
     private var merchantVoucherReload: CardView? = null
     private var merchantVoucherUiModel: ShopHomeVoucherUiModel? = null
-    private var merchantVoucherShimmering: LoaderImageView? = null
+    private var merchantVoucherShimmering: LoaderUnify? = null
     private var textReload: Typography? = null
     private var imageReload: ImageView? = null
     private var textReloadDesc: Typography? = null

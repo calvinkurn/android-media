@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.Group
-import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -19,6 +18,7 @@ import com.tokopedia.shop.home.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.home.view.activity.ShopHomePageYoutubePlayerActivity
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -41,7 +41,7 @@ class ShopHomeVideoViewHolder(
     }
     private val viewBinding: WidgetShopPageVideoYoutubeBinding? by viewBinding()
     private var youTubeThumbnailShopPageImageUnify: ShopCarouselBannerImageUnify? = null
-    private var loaderImageView: LoaderImageView? = null
+    private var loaderImageView: LoaderUnify? = null
     private var youTubeVideoModel: ShopHomeDisplayWidgetUiModel? = null
 
     private var btnYoutubePlayer: AppCompatImageView? = null

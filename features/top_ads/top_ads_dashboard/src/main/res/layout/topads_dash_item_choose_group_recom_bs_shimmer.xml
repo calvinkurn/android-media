@@ -16,49 +16,48 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/product_name"
             style="@style/TextView.Title.Bold"
             android:layout_width="@dimen/dp_180"
             android:layout_height="10dp"
             android:layout_marginStart="8dp"
-            app:corners="8"
+            app:loader_type="rect"
+            app:loader_corner_radius="4dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:use_gradient="true" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/include"
             android:layout_width="@dimen/dp_80"
             android:layout_height="10dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
-            app:corners="8"
+            app:loader_type="rect"
+            app:loader_corner_radius="4dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/product_name"
-            app:use_gradient="true" />
+            app:layout_constraintTop_toBottomOf="@+id/product_name" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/product_price"
             android:layout_width="@dimen/dp_80"
             android:layout_height="10dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
-            android:textColor="#FA591D"
-            app:corners="8"
+            app:loader_type="rect"
+            app:loader_corner_radius="4dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/include"
-            app:use_gradient="true" />
+            app:layout_constraintTop_toBottomOf="@+id/include" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/checkBox"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:checked="false"
-            app:corners="8"
+            app:loader_type="rect"
+            app:loader_corner_radius="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:use_gradient="true" />
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

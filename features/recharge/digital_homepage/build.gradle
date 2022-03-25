@@ -77,11 +77,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
 
     testImplementation rootProject.ext.testDependencies.mockk

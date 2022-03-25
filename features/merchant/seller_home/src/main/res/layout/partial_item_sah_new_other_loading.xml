@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_sah_new_other_shop_title"
         android:layout_width="@dimen/sah_new_other_item_shop_shimmer_title_width"
         android:layout_height="@dimen/layout_lvl2"
@@ -12,9 +12,10 @@
         app:layout_constraintBottom_toTopOf="@id/shimmer_sah_new_other_shop_desc"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:corners="@integer/setting_shimmer_radius"/>
+        app:loader_type="rect"
+        app:loader_corner_radius="20dp"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_sah_new_other_shop_desc"
         android:layout_width="@dimen/sah_new_other_item_shop_shimmer_desc_width"
         android:layout_height="@dimen/layout_lvl2"
@@ -23,6 +24,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shimmer_sah_new_other_shop_title"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:corners="@integer/setting_shimmer_radius"/>
+        app:loader_type="rect"
+        app:loader_corner_radius="20dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -28,7 +28,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
 }
 
 project.ext {

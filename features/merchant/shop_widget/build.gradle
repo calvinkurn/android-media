@@ -66,7 +66,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.features.productCard)
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.unifyDependencies.global_error
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
