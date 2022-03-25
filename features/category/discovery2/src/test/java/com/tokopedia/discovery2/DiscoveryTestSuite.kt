@@ -35,6 +35,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shim
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardItemModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sliderbanner.SliderBannerViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spacing.SpacingViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.timerSprintSale.TimerSprintSaleItemViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tndbanner.DiscoveryTNDBannerViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsItemViewModelTest
@@ -88,7 +89,8 @@ import org.junit.runners.Suite
         TokopointsViewModelTest::class,
         TokopointsItemViewModelTest::class,
         MyCouponModelTest::class,
-        MyCouponItemModelTest::class
+        MyCouponItemModelTest::class,
+        SpacingViewModelTest::class,
 )
 
 

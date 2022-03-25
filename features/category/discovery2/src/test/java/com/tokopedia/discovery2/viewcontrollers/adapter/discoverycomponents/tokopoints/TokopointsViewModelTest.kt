@@ -57,19 +57,18 @@ class TokopointsViewModelTest {
 
     @Test
     fun `test for fetchTokopointsListData`() {
-//        viewModel.tokopointsListDataUseCase = tokopointsListDataUseCase
-//        every { componentsItem.pageEndPoint } returns "dummy"
-//        runBlocking {
-//            coEvery {
-//                tokopointsListDataUseCase.getTokopointsDataUseCase(componentsItem.id, componentsItem.pageEndPoint)} throws Exception("Error")
-//            viewModel.fetchTokopointsListData(componentsItem.pageEndPoint)
-//            TestCase.assertEquals(viewModel.getTokopointsItemsListData().value == null,true)
-//
-//            coEvery {
-//                tokopointsListDataUseCase.getTokopointsDataUseCase(componentsItem.id, componentsItem.pageEndPoint)} returns true
-//            viewModel.fetchTokopointsListData(componentsItem.pageEndPoint)
-//            TestCase.assertEquals(viewModel.getTokopointsItemsListData().value != null, true)
-//        }
+        viewModel.tokopointsListDataUseCase = tokopointsListDataUseCase
+        runBlocking {
+            coEvery {
+                tokopointsListDataUseCase.getTokopointsDataUseCase(any(), any())} throws Exception("Error")
+            viewModel.fetchTokopointsListData(componentsItem.pageEndPoint)
+            TestCase.assertEquals(viewModel.getTokopointsItemsListData().value == null,true)
+
+            coEvery {
+                tokopointsListDataUseCase.getTokopointsDataUseCase(any(), any())} returns true
+            viewModel.fetchTokopointsListData(componentsItem.pageEndPoint)
+            TestCase.assertEquals(viewModel.getTokopointsItemsListData().value != null, true)
+        }
     }
 
     @After
