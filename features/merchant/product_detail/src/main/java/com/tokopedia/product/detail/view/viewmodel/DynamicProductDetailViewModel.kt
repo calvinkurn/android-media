@@ -1050,14 +1050,16 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     fun hitAffiliateCookie(productInfo: DynamicProductInfoP1,
                            deviceId: String,
                            affiliateUuid: String,
-                           uuid: String) {
+                           uuid: String,
+                           affiliateChannel:String) {
         if (affiliateUuid.isEmpty()) return
         launchCatchError(block = {
             val affiliateParam = DynamicProductDetailMapper.generateAffiliateCookieRequest(
                     productInfo = productInfo,
                     affiliateUuid = affiliateUuid,
                     deviceId = deviceId,
-                    uuid = uuid
+                    uuid = uuid,
+                    affiliateChannel = affiliateChannel
             )
             val result = createAffiliateCookieUseCase
                     .get()

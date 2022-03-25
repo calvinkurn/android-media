@@ -21,6 +21,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.affiliate.AffiliateCookieRequest
+import com.tokopedia.product.detail.data.model.affiliate.AffiliateLinkDetail
 import com.tokopedia.product.detail.data.model.affiliate.AffiliateProductDetail
 import com.tokopedia.product.detail.data.model.affiliate.AffiliateRequestDetail
 import com.tokopedia.product.detail.data.model.affiliate.AffiliateRequestHeader
@@ -69,6 +70,8 @@ import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.Shop
 
 object DynamicProductDetailMapper {
+
+    private const val PDP_SOURCE_AFFILIATE = "pdp"
 
     /**
      * Map network data into UI data by type, just assign type and name here. The data will be assigned in fragment
@@ -437,7 +440,8 @@ object DynamicProductDetailMapper {
     fun generateAffiliateCookieRequest(productInfo: DynamicProductInfoP1,
                                        affiliateUuid: String,
                                        deviceId: String,
-                                       uuid: String): AffiliateCookieRequest {
+                                       uuid: String,
+                                       affiliateChannel: String): AffiliateCookieRequest {
         val categoryId = productInfo.basic.category.detail.lastOrNull()?.id ?: ""
         return AffiliateCookieRequest(
                 header = AffiliateRequestHeader(
@@ -453,6 +457,12 @@ object DynamicProductDetailMapper {
                         categoryId = categoryId,
                         isVariant = productInfo.isProductVariant(),
                         stockQty = productInfo.getFinalStock().toDoubleOrZero()
+                ),
+                affiliateLinkDetail = AffiliateLinkDetail(
+                        affiliateLink = "",
+                        channel = affiliateChannel,
+                        linkType = PDP_SOURCE_AFFILIATE,
+                        linkIdentifier = "0"
                 ),
                 affiliateShopDetail = AffiliateShopDetail(
                         shopId = productInfo.basic.shopID

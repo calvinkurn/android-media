@@ -1470,7 +1470,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
                 productInfo = mockProductInfoP1,
                 deviceId = "123",
                 affiliateUuid = "123",
-                uuid = "1111"
+                uuid = "1111",
+                affiliateChannel = "affiliate channel"
         )
 
         val slotParams = slot<Map<String, Any>>()
@@ -1483,6 +1484,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertEquals(slotParamsCaptured.header.deviceId, "123")
         Assert.assertEquals(slotParamsCaptured.header.irisSessionId, "iris")
         Assert.assertEquals(slotParamsCaptured.header.uuid, "1111")
+        Assert.assertEquals(slotParamsCaptured.affiliateLinkDetail.channel, "affiliate channel")
+        Assert.assertEquals(slotParamsCaptured.affiliateLinkDetail.linkType, "pdp")
+        Assert.assertEquals(slotParamsCaptured.affiliateLinkDetail.linkIdentifier, "0")
         Assert.assertEquals(slotParamsCaptured.affiliateProductDetail.categoryId, "312")
         Assert.assertEquals(slotParamsCaptured.affiliateProductDetail.productId, "321")
         Assert.assertEquals(slotParamsCaptured.affiliateProductDetail.stockQty.toInt(), 10)
@@ -1511,7 +1515,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
                 productInfo = DynamicProductInfoP1(),
                 deviceId = "123",
                 affiliateUuid = "123",
-                uuid = "1111"
+                uuid = "1111",
+                affiliateChannel = "affiliate channel"
         )
 
         coVerify {
@@ -1543,7 +1548,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
                 productInfo = DynamicProductInfoP1(),
                 deviceId = "123",
                 affiliateUuid = "123",
-                uuid = "1111"
+                uuid = "1111",
+                affiliateChannel = "affiliate channel"
         )
 
         coVerify {
@@ -1598,7 +1604,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
                 productInfo = mockProductInfoP1,
                 deviceId = "123",
                 affiliateUuid = "",
-                uuid = "1111"
+                uuid = "1111",
+                affiliateChannel = "affiliate channel"
         )
 
         coVerify(inverse = true) {
@@ -1620,7 +1627,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
                 productInfo = DynamicProductInfoP1(),
                 deviceId = "123",
                 affiliateUuid = "123",
-                uuid = "1111"
+                uuid = "1111",
+                affiliateChannel = "affiliate channel"
         )
 
         coVerify {
