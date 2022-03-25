@@ -22,7 +22,7 @@ class TokoFoodHomeFragment: BaseTokofoodFragment() {
     private var navToolbar: NavToolbar? = null
 
     override fun getFragmentTitle(): String? {
-        return ""
+        return null
     }
 
     override fun getFragmentToolbar(): Toolbar? {
@@ -57,10 +57,11 @@ class TokoFoodHomeFragment: BaseTokofoodFragment() {
 
     private fun setupTopNavigation() {
         navToolbar?.let { toolbar ->
-            activity?.let {
-                toolbar.setupToolbarWithStatusBar(it)
+           activity?.let {
+                toolbar.showShadow(true)
+                toolbar.setupToolbarWithStatusBar(it, applyPadding = false, applyPaddingNegative = true)
                 toolbar.setToolbarTitle(getString(R.string.tokofood_title))
-            }
+           }
         }
     }
 
