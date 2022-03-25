@@ -2,28 +2,19 @@ package com.tokopedia.vouchercreation.product.detail.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.interceptor.akamai.map
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.mapper.CouponMapper
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponDetailWithMetadata
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponUiModel
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponDetailFacadeUseCase
-import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponDetailUseCase
-import com.tokopedia.vouchercreation.product.create.domain.usecase.InitiateCouponUseCase
 import com.tokopedia.vouchercreation.product.share.domain.entity.ShopWithTopProducts
 import com.tokopedia.vouchercreation.product.share.domain.usecase.GetShopAndTopProductsUseCase
-import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.InitiateVoucherUiModel
-import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.impl.annotations.SpyK
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -74,57 +65,33 @@ class CouponDetailViewModelTest {
 
     @Test
     fun `When get coupon detail success, should emit success to observer`() = runBlocking {
+        //Given
         val couponMetadata = mockk<CouponDetailWithMetadata>()
 
         coEvery { getCouponDetailFacadeUseCase.execute(COUPON_ID) } returns couponMetadata
 
-
+        //When
         viewModel.getCouponDetail(COUPON_ID)
 
+        //Then
         coVerify { couponDetailObserver.onChanged(Success(couponMetadata)) }
-
     }
 
 
 
     @Test
     fun `When get coupon detail success1, should emit success to observer`() = runBlocking {
+        //Given
         val shopMetadata = mockk<ShopWithTopProducts>()
-        val fakeCouponUiModel = CouponUiModel(
-            1,
-            "",
-            VoucherTypeConst.CASHBACK,
-            "",
-            "",
-            "",
-            "",
-            1,
-            "",
-            0,
-            "",
-            0,
-            0,
-            0,
-            0,
-            0,
-            "",
-            "",
-            "",
-            "",
-            "",
-            false,
-            "",
-            listOf(),
-            emptyList(),
-            0
-        )
+        val couponUiModel = mockk<CouponUiModel>()
 
-        coEvery { getShopAndTopProductsUseCase.execute(fakeCouponUiModel) } returns shopMetadata
+        coEvery { getShopAndTopProductsUseCase.execute(couponUiModel) } returns shopMetadata
 
+        //When
+        viewModel.getShopAndTopProducts(couponUiModel)
 
-        viewModel.getShopAndTopProducts(fakeCouponUiModel)
-
+        //Then
         coVerify { shopAndTopProductsObserver.onChanged(Success(shopMetadata)) }
-
     }
+
 }
