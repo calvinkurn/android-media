@@ -5,9 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.getText
@@ -94,7 +97,7 @@ class MultipleVariantEditInputBottomSheet(
         tfuWeight = contentView?.findViewById(R.id.tfuWeight)
         buttonApply = contentView?.findViewById(R.id.buttonApply)
 
-        tfuPrice?.visibility = if (enableEditPrice) View.VISIBLE else View.GONE
+        tfuPrice?.setFieldVisibility(enableEditPrice, tfuStock)
         tfuPrice.setModeToNumberInput()
         tfuPrice?.textFieldInput?.afterTextChanged {
             if (enableEditPrice) {
@@ -112,7 +115,7 @@ class MultipleVariantEditInputBottomSheet(
             validateWeight()
         }
 
-        tfuSku?.visibility = if (enableEditSku) View.VISIBLE else View.GONE
+        tfuSku?.setFieldVisibility(enableEditSku, tfuWeight)
         tfuSku?.textFieldInput?.afterTextChanged {
             updateSubmitButtonInput()
         }
@@ -204,6 +207,13 @@ class MultipleVariantEditInputBottomSheet(
             multipleVariantEditInputListener?.onMultipleEditInputFinished(inputData)
         }
         dismiss()
+    }
+
+    private fun TextFieldUnify.setFieldVisibility(isVisible: Boolean, nearView: View?) {
+        this.isVisible = isVisible
+        nearView?.updateLayoutParams<ConstraintLayout.LayoutParams> {
+            startToStart = if (isVisible) R.id.guideline else R.id.guidelineStartMargin
+        }
     }
 }
 
