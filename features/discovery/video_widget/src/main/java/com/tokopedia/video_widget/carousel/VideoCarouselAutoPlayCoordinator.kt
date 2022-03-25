@@ -177,7 +177,7 @@ class VideoCarouselAutoPlayCoordinator(
             view,
             recyclerViewPosition,
             recyclerViewMeasurement,
-            VisibilityMeasurementMethod.HorizontalOnly
+            VisibilityMeasurementMethod.Horizontal
         )
         return if (viewVisibilityPercentage > VISIBILITY_PERCENTAGE_THRESHOLD) {
             AutoPlayModel(view, position)

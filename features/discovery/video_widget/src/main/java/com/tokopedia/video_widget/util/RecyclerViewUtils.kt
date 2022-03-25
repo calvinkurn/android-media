@@ -3,11 +3,14 @@ package com.tokopedia.video_widget.util
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-typealias ViewMeasurement = Pair<Int, Int>
+internal data class ViewMeasurement(
+    val width: Int,
+    val height: Int
+)
 
-sealed interface VisibilityMeasurementMethod {
-    object VerticalOnly : VisibilityMeasurementMethod
-    object HorizontalOnly : VisibilityMeasurementMethod
+internal sealed interface VisibilityMeasurementMethod {
+    object Vertical : VisibilityMeasurementMethod
+    object Horizontal : VisibilityMeasurementMethod
     object Area : VisibilityMeasurementMethod
 }
 
@@ -27,7 +30,7 @@ internal object RecyclerViewUtils {
         view: View,
         recyclerViewLocation: IntArray, //location of recycler view on screen
         recyclerViewMeasurement: ViewMeasurement, // measurement of recycler view,
-        measurementMethod: VisibilityMeasurementMethod = VisibilityMeasurementMethod.VerticalOnly,
+        measurementMethod: VisibilityMeasurementMethod = VisibilityMeasurementMethod.Vertical,
     ): Float {
         val viewLocation = IntArray(2)
         view.getLocationOnScreen(viewLocation)
@@ -55,13 +58,13 @@ internal object RecyclerViewUtils {
                 viewLocation,
                 viewMeasurement
             )
-            VisibilityMeasurementMethod.HorizontalOnly -> getHorizontalVisibilityPercentage(
+            VisibilityMeasurementMethod.Horizontal -> getHorizontalVisibilityPercentage(
                 recyclerViewLocation,
                 recyclerViewMeasurement,
                 viewLocation,
                 viewMeasurement
             )
-            VisibilityMeasurementMethod.VerticalOnly -> getVerticalVisibilityPercentage(
+            VisibilityMeasurementMethod.Vertical -> getVerticalVisibilityPercentage(
                 recyclerViewLocation,
                 recyclerViewMeasurement,
                 viewLocation,
