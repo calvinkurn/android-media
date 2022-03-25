@@ -1,7 +1,8 @@
-package com.tokopedia.tokomember_seller_dashboard
+package com.tokopedia.tokomember_seller_dashboard.view.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.tokopedia.tokomember_seller_dashboard.R
 
 class TokomemberDashHomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

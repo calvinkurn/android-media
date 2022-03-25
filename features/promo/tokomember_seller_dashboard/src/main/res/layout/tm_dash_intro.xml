@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background">
+
+    <ScrollView
+        android:id="@+id/scrollContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/buttonContainer">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true">
+
+            <RelativeLayout
+                android:id="@+id/containerBgvideo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/ivBg"
+                    android:layout_width="match_parent"
+                    android:layout_height="310dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/tm_intro_bg" />
+
+                <com.tokopedia.unifycomponents.CardUnify
+                    android:id="@+id/frame_video"
+                    android:layout_width="match_parent"
+                    android:layout_height="184dp"
+                    android:layout_below="@id/ivBg"
+                    android:layout_marginStart="@dimen/unify_space_16"
+                    android:layout_marginTop="-80dp"
+                    android:layout_marginEnd="@dimen/unify_space_16"
+                    android:visibility="visible"
+                    app:card_type="shadow"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ivBg">
+
+                    <com.tokopedia.videoplayer.view.widget.VideoPlayerView
+                        android:id="@+id/layout_video"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        app:autoSize="true" />
+                </com.tokopedia.unifycomponents.CardUnify>
+
+            </RelativeLayout>
+
+            <com.tokopedia.header.HeaderUnify
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:unify_header_is_show_back_button="true"
+                app:unify_header_is_show_shadow="false"
+                app:unify_header_transparent_mode="true" />
+
+            <com.tokopedia.unifycomponents.CardUnify
+                android:id="@+id/cardTokomember"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/header">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/tokomemberCardContainer"
+                    android:layout_width="wrap_content"
+                    android:paddingTop="@dimen/unify_space_4"
+                    android:paddingBottom="@dimen/unify_space_4"
+                    android:paddingStart="@dimen/unify_space_8"
+                    android:paddingEnd="@dimen/unify_space_8"
+                    android:layout_height="match_parent">
+
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/ivIconTokomember"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/tm_tokomember_icon" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tokomember"
+                        android:textColor="@color/Unify_GN500"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/ivIconTokomember"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:typographyType="small" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.tokopedia.unifycomponents.CardUnify>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Pendapatan toko meningkat Pelanggan makin lekat"
+                android:textColor="@color/Unify_N0"
+                app:layout_constraintStart_toStartOf="@id/cardTokomember"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                app:layout_constraintTop_toBottomOf="@+id/cardTokomember"
+                app:typographyType="heading_2" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:text="Ada banyak keuntungan untuk tokomu dengan ikut TokoMember, lho!"
+                android:textColor="@color/Unify_N0"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                app:layout_constraintStart_toStartOf="@+id/cardTokomember"
+                app:layout_constraintTop_toBottomOf="@id/tvTitle"
+                app:typographyType="body_2" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvSectionOne"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="23% pembeli makin tertarik untuk belanja lagi dan jadi pelanggan setia di tokomu."
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                app:layout_constraintStart_toStartOf="@id/cardTokomember"
+                app:layout_constraintTop_toBottomOf="@id/containerBgvideo"
+                app:typographyType="body_2" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/ivSectionOne"
+                android:layout_width="match_parent"
+                android:layout_height="186dp"
+                android:layout_marginTop="34dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvSectionOne" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvSectionTwo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="Transaksi meningkat hingga 9% dan potensi belanja meningkat 2-3x setelah pembeli menjadi member tokomu."
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                app:layout_constraintStart_toStartOf="@id/cardTokomember"
+                app:layout_constraintTop_toBottomOf="@id/ivSectionOne"
+                app:typographyType="body_2" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/ivSectionTwo"
+                android:layout_width="match_parent"
+                android:layout_height="186dp"
+                android:layout_marginTop="34dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvSectionTwo" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvSectionThree"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="Dengan gabung TokoMember, kemungkinan pembeli baru untuk kembali ke tokomu lebih besar hingga 3-4x lipat."
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                app:layout_constraintStart_toStartOf="@id/cardTokomember"
+                app:layout_constraintTop_toBottomOf="@id/ivSectionTwo"
+                app:typographyType="body_2" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/ivSectionThree"
+                android:layout_width="match_parent"
+                android:layout_height="186dp"
+                android:layout_marginTop="34dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvSectionThree" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvSectionFour"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="Daftar sekarang, yuk! Caranya mudah, cukup buat kartu, program, dan kupon."
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                app:layout_constraintStart_toStartOf="@id/cardTokomember"
+                app:layout_constraintTop_toBottomOf="@id/ivSectionThree"
+                app:typographyType="body_2" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/ivSectionFour"
+                android:layout_width="match_parent"
+                android:layout_height="186dp"
+                android:layout_marginTop="34dp"
+                android:layout_marginBottom="60dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvSectionFour" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/buttonContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/unify_space_16"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnContinue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/tm_dash_daftar_gratis"
+            app:unifyButtonSize="large"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnWebview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:text="@string/tm_dash_selengkapnya"
+            app:unifyButtonSize="large"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost" />
+
+    </LinearLayout>
+
+</RelativeLayout>
