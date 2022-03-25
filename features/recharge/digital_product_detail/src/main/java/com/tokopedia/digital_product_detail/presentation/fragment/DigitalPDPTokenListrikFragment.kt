@@ -392,7 +392,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     }
 
     private fun onFailedGetRecommendations() {
-        binding?.rechargePdpTokenListrikRecommendationWidget?.renderFailRecommendation()
+        binding?.rechargePdpTokenListrikRecommendationWidget?.hide()
     }
 
     private fun getRecommendations() {
@@ -447,7 +447,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     }
 
     private fun onFailedRecommendation() {
-        binding?.rechargePdpTokenListrikRecommendationWidget?.renderFailRecommendation()
+        binding?.rechargePdpTokenListrikRecommendationWidget?.hide()
     }
 
     private fun renderRecommendation(data: RecommendationWidgetModel) {
@@ -506,18 +506,22 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             } else {
                 selectedInitialPosition = null
             }
-            it.rechargePdpTokenListrikDenomGridWidget.renderDenomGridLayout(
-                this,
-                denomData,
-                selectedInitialPosition
-            )
-            it.rechargePdpTokenListrikDenomGridWidget.show()
+            if (denomData.listDenomData.isNotEmpty()) {
+                it.rechargePdpTokenListrikDenomGridWidget.renderDenomGridLayout(
+                    this,
+                    denomData,
+                    selectedInitialPosition
+                )
+                it.rechargePdpTokenListrikDenomGridWidget.show()
+            } else {
+                it.rechargePdpTokenListrikDenomGridWidget.hide()
+            }
         }
     }
 
     private fun onFailedDenomGrid() {
         binding?.let {
-            it.rechargePdpTokenListrikDenomGridWidget.renderFailDenomGrid()
+            it.rechargePdpTokenListrikDenomGridWidget.hide()
         }
     }
 
@@ -532,13 +536,14 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
 
     private fun onShowBuyWidget(denomGrid: DenomData) {
         binding?.let {
-            it.rechargePdpTokenListrikBuyWidget.showBuyWidget(denomGrid, this)
+            it.rechargePdpTokenListrikBuyWidget.show()
+            it.rechargePdpTokenListrikBuyWidget.renderBuyWidget(denomGrid, this)
         }
     }
 
     private fun onHideBuyWidget() {
         binding?.let {
-            it.rechargePdpTokenListrikBuyWidget.hideBuyWidget()
+            it.rechargePdpTokenListrikBuyWidget.hide()
         }
     }
 

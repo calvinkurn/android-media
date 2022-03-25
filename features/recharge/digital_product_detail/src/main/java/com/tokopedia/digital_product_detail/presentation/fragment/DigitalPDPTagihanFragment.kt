@@ -499,7 +499,8 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
 
     private fun onShowBuyWidget() {
         binding?.let {
-            it.rechargePdpTagihanListrikBuyWidget.showSimplifyBuyWidget(this)
+            it.rechargePdpTagihanListrikBuyWidget.show()
+            it.rechargePdpTagihanListrikBuyWidget.renderSimplifyBuyWidget(this)
         }
     }
 

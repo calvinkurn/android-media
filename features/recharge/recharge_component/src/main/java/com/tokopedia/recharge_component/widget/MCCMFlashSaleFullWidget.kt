@@ -46,7 +46,6 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
     ){
         with(widgetRechargeMCCMFlashSaleFullWidget){
             if (!denomData.listDenomData.isNullOrEmpty()) {
-                root.show()
                 headerMccmFull.setChannel(
                     DenomMCCMFlashSaleMapper.getChannelMCCM(
                         denomData.mainTitle,
@@ -75,7 +74,6 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
     ){
         with(widgetRechargeMCCMFlashSaleFullWidget) {
             if (!denomData.listDenomData.isNullOrEmpty()) {
-                root.show()
                 headerMccmFull.setChannel(DenomMCCMFlashSaleMapper.getChannelFlashSale(
                     denomData.mainTitle,
                     denomData.subTitle,
@@ -95,10 +93,6 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
                 )
             }
         }
-    }
-
-    fun renderFailMCCMFull(){
-        widgetRechargeMCCMFlashSaleFullWidget.root.hide()
     }
 
     fun clearSelectedProduct(){
