@@ -14,6 +14,7 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.PREFIX_ALL
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.category.domain.model.CategorySharingModel
 import com.tokopedia.tokopedianow.category.domain.model.CategoryTrackerModel
@@ -317,7 +318,7 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     private fun getTitleCategory(categoryIdLvl2: String, categoryModel: CategoryModel): String {
         return if (categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID) {
-            categoryModel.quickFilter.filter.first().title
+            categoryModel.quickFilter.filter.first().title.removePrefix(PREFIX_ALL).trim()
         } else {
             categoryModel.categoryDetail.data.name
         }

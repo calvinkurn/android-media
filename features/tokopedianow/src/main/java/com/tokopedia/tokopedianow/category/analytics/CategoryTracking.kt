@@ -69,6 +69,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getDataLayer
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getTracker
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.ACTION_FIELD
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.ADD
@@ -161,6 +162,7 @@ object CategoryTracking {
         const val LABEL_GROUP_HALAL = "Halal"
         const val TOKONOW_CATEGORY_SCREEN = "tokonow/category/%s"
         const val TOKONOW_OOC_SCREEN_NAME = "tokonow/category"
+        const val PREFIX_ALL = "Semua"
     }
 
     fun sendGeneralEvent(dataLayer: Map<String, Any>) {
@@ -668,17 +670,21 @@ object CategoryTracking {
 
     /* Thanos : https://mynakama.tokopedia.com/datatracker/requestdetail/1963 */
 
-    private fun getCategoryIdShareFeature(categoryId: String): String = if (categoryId.isNotBlank()) {
-        categoryId
-    } else {
-        DEFAULT_CATEGORY_ID
+    private fun getCurrentCategoryId(categoryIdLvl1: String, categoryIdLvl2: String, categoryIdLvl3: String): String {
+        return if (categoryIdLvl3.isNotBlank() && categoryIdLvl3 != DEFAULT_CATEGORY_ID) {
+            categoryIdLvl3
+        } else if (categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID) {
+            categoryIdLvl2
+        } else {
+            categoryIdLvl1
+        }
     }
 
     // - 1
     fun trackClickShareButtonTopNav(userId: String, categoryIdLvl1: String, categoryIdLvl2: String, categoryIdLvl3: String) {
-        val label = "${getCategoryIdShareFeature(categoryIdLvl3)} - ${getCategoryIdShareFeature(categoryIdLvl2)} - ${getCategoryIdShareFeature(categoryIdLvl1)}"
+        val label = "${categoryIdLvl3.getOrDefaultZeroString()} - ${categoryIdLvl2.getOrDefaultZeroString()} - ${categoryIdLvl1.getOrDefaultZeroString()}"
 
-        val pageSource = "$PAGE_NAME_TOKOPEDIA_NOW.$DEFAULT_NULL_VALUE.$DEFAULT_NULL_VALUE.$DEFAULT_NULL_VALUE"
+        val pageSource = "$PAGE_NAME_TOKOPEDIA_NOW.$DEFAULT_NULL_VALUE.$DEFAULT_NULL_VALUE.${getCurrentCategoryId(categoryIdLvl1, categoryIdLvl2, categoryIdLvl3)}"
 
         val dataLayer = getDataLayer(
             EVENT_CLICK_COMMUNICATION,
@@ -690,14 +696,14 @@ object CategoryTracking {
         dataLayer[TokoNowCommonAnalyticConstants.KEY.KEY_PAGE_SOURCE] = pageSource
         dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
         dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[KEY_USER_ID] = userId
+        dataLayer[KEY_USER_ID] = userId.getOrDefaultZeroString()
 
         getTracker().sendGeneralEvent(dataLayer)
     }
 
     // - 2
     fun trackClickCloseShareBottomSheet(userId: String, categoryIdLvl1: String, categoryIdLvl2: String, categoryIdLvl3: String) {
-        val label = "${getCategoryIdShareFeature(categoryIdLvl3)} - ${getCategoryIdShareFeature(categoryIdLvl2)} - ${getCategoryIdShareFeature(categoryIdLvl1)}"
+        val label = "${categoryIdLvl3.getOrDefaultZeroString()} - ${categoryIdLvl2.getOrDefaultZeroString()} - ${categoryIdLvl1.getOrDefaultZeroString()}"
 
         val dataLayer = getDataLayer(
             EVENT_CLICK_COMMUNICATION,
@@ -708,14 +714,14 @@ object CategoryTracking {
 
         dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
         dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[KEY_USER_ID] = userId
+        dataLayer[KEY_USER_ID] = userId.getOrDefaultZeroString()
 
         getTracker().sendGeneralEvent(dataLayer)
     }
 
     // - 3
     fun trackClickChannelShareBottomSheet(channel: String, userId: String, categoryIdLvl1: String, categoryIdLvl2: String, categoryIdLvl3: String) {
-        val label = "$channel - ${getCategoryIdShareFeature(categoryIdLvl3)} - ${getCategoryIdShareFeature(categoryIdLvl2)} - ${getCategoryIdShareFeature(categoryIdLvl1)}"
+        val label = "$channel - ${categoryIdLvl3.getOrDefaultZeroString()} - ${categoryIdLvl2.getOrDefaultZeroString()} - ${categoryIdLvl1.getOrDefaultZeroString()}"
 
         val dataLayer = getDataLayer(
             EVENT_CLICK_TOKONOW,
@@ -726,14 +732,14 @@ object CategoryTracking {
 
         dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
         dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[KEY_USER_ID] = userId
+        dataLayer[KEY_USER_ID] = userId.getOrDefaultZeroString()
 
         getTracker().sendGeneralEvent(dataLayer)
     }
 
     // - 4
     fun trackImpressChannelShareBottomSheet(userId: String, categoryIdLvl1: String, categoryIdLvl2: String, categoryIdLvl3: String) {
-        val label = "${getCategoryIdShareFeature(categoryIdLvl3)} - ${getCategoryIdShareFeature(categoryIdLvl2)} - ${getCategoryIdShareFeature(categoryIdLvl1)}"
+        val label = "${categoryIdLvl3.getOrDefaultZeroString()} - ${categoryIdLvl2.getOrDefaultZeroString()} - ${categoryIdLvl1.getOrDefaultZeroString()}"
 
         val dataLayer = getDataLayer(
             TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_TOKONOW_IRIS,
@@ -744,14 +750,14 @@ object CategoryTracking {
 
         dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
         dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[KEY_USER_ID] = userId
+        dataLayer[KEY_USER_ID] = userId.getOrDefaultZeroString()
 
         getTracker().sendGeneralEvent(dataLayer)
     }
 
     // - 5
     fun trackImpressChannelShareBottomSheetScreenShot(userId: String, categoryIdLvl1: String, categoryIdLvl2: String, categoryIdLvl3: String) {
-        val label = "${getCategoryIdShareFeature(categoryIdLvl3)} - ${getCategoryIdShareFeature(categoryIdLvl2)} - ${getCategoryIdShareFeature(categoryIdLvl1)}"
+        val label = "${categoryIdLvl3.getOrDefaultZeroString()} - ${categoryIdLvl2.getOrDefaultZeroString()} - ${categoryIdLvl1.getOrDefaultZeroString()}"
 
         val dataLayer = getDataLayer(
             TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_TOKONOW_IRIS,
@@ -762,14 +768,14 @@ object CategoryTracking {
 
         dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
         dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[KEY_USER_ID] = userId
+        dataLayer[KEY_USER_ID] = userId.getOrDefaultZeroString()
 
         getTracker().sendGeneralEvent(dataLayer)
     }
 
     // - 6
     fun trackClickCloseScreenShotShareBottomSheet(userId: String, categoryIdLvl1: String, categoryIdLvl2: String, categoryIdLvl3: String) {
-        val label = "${getCategoryIdShareFeature(categoryIdLvl3)} - ${getCategoryIdShareFeature(categoryIdLvl2)} - ${getCategoryIdShareFeature(categoryIdLvl1)}"
+        val label = "${categoryIdLvl3.getOrDefaultZeroString()} - ${categoryIdLvl2.getOrDefaultZeroString()} - ${categoryIdLvl1.getOrDefaultZeroString()}"
 
         val dataLayer = getDataLayer(
             EVENT_CLICK_TOKONOW,
@@ -780,14 +786,14 @@ object CategoryTracking {
 
         dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
         dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[KEY_USER_ID] = userId
+        dataLayer[KEY_USER_ID] = userId.getOrDefaultZeroString()
 
         getTracker().sendGeneralEvent(dataLayer)
     }
 
     // - 7
     fun trackClickChannelShareBottomSheetScreenshot(channel: String, userId: String, categoryIdLvl1: String, categoryIdLvl2: String, categoryIdLvl3: String) {
-        val label = "$channel - ${getCategoryIdShareFeature(categoryIdLvl3)} - ${getCategoryIdShareFeature(categoryIdLvl2)} - ${getCategoryIdShareFeature(categoryIdLvl1)}"
+        val label = "$channel - ${categoryIdLvl3.getOrDefaultZeroString()} - ${categoryIdLvl2.getOrDefaultZeroString()} - ${categoryIdLvl1.getOrDefaultZeroString()}"
 
         val dataLayer = getDataLayer(
             EVENT_CLICK_TOKONOW,
@@ -798,14 +804,14 @@ object CategoryTracking {
 
         dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
         dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[KEY_USER_ID] = userId
+        dataLayer[KEY_USER_ID] = userId.getOrDefaultZeroString()
 
         getTracker().sendGeneralEvent(dataLayer)
     }
 
     // - 8
     fun trackClickAccessMediaAndFiles(accessText: String, userId: String, categoryIdLvl1: String, categoryIdLvl2: String, categoryIdLvl3: String) {
-        val label = "$accessText - ${getCategoryIdShareFeature(categoryIdLvl3)} - ${getCategoryIdShareFeature(categoryIdLvl2)} - ${getCategoryIdShareFeature(categoryIdLvl1)}"
+        val label = "$accessText - ${categoryIdLvl3.getOrDefaultZeroString()} - ${categoryIdLvl2.getOrDefaultZeroString()} - ${categoryIdLvl1.getOrDefaultZeroString()}"
 
         val dataLayer = getDataLayer(
             EVENT_CLICK_COMMUNICATION,
@@ -816,7 +822,7 @@ object CategoryTracking {
 
         dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
         dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[KEY_USER_ID] = userId
+        dataLayer[KEY_USER_ID] = userId.getOrDefaultZeroString()
 
         getTracker().sendGeneralEvent(dataLayer)
     }

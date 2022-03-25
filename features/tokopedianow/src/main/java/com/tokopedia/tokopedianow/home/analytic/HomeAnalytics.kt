@@ -113,6 +113,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITHOUT_VARI
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITH_HALAL_LABEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITH_VARIANT
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CLOSE_QUEST_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_BANNER_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_LEGO_3
@@ -692,7 +693,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         dataLayer[KEY_PAGE_SOURCE] = pageSource
         dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
         dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[KEY_USER_ID] = userSession.userId
+        dataLayer[KEY_USER_ID] = userSession.userId.getOrDefaultZeroString()
 
         getTracker().sendGeneralEvent(dataLayer)
     }
@@ -711,7 +712,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
 
         dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
         dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[KEY_USER_ID] = userSession.userId
+        dataLayer[KEY_USER_ID] = userSession.userId.getOrDefaultZeroString()
 
         getTracker().sendGeneralEvent(dataLayer)
     }
@@ -730,7 +731,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
 
         dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
         dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[KEY_USER_ID] = userSession.userId
+        dataLayer[KEY_USER_ID] = userSession.userId.getOrDefaultZeroString()
 
         getTracker().sendGeneralEvent(dataLayer)
     }
@@ -749,7 +750,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
 
         dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
         dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[KEY_USER_ID] = userSession.userId
+        dataLayer[KEY_USER_ID] = userSession.userId.getOrDefaultZeroString()
 
         getTracker().sendGeneralEvent(dataLayer)
     }
@@ -768,7 +769,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
 
         dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
         dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[KEY_USER_ID] = userSession.userId
+        dataLayer[KEY_USER_ID] = userSession.userId.getOrDefaultZeroString()
 
         getTracker().sendGeneralEvent(dataLayer)
     }
@@ -787,7 +788,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
 
         dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
         dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[KEY_USER_ID] = userSession.userId
+        dataLayer[KEY_USER_ID] = userSession.userId.getOrDefaultZeroString()
 
         getTracker().sendGeneralEvent(dataLayer)
     }
@@ -806,7 +807,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
 
         dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
         dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[KEY_USER_ID] = userSession.userId
+        dataLayer[KEY_USER_ID] = userSession.userId.getOrDefaultZeroString()
 
         getTracker().sendGeneralEvent(dataLayer)
     }
@@ -825,7 +826,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
 
         dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
         dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[KEY_USER_ID] = userSession.userId
+        dataLayer[KEY_USER_ID] = userSession.userId.getOrDefaultZeroString()
 
         getTracker().sendGeneralEvent(dataLayer)
     }
@@ -844,7 +845,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
 
         dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARING_EXPERIENCE
         dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[KEY_USER_ID] = userSession.userId
+        dataLayer[KEY_USER_ID] = userSession.userId.getOrDefaultZeroString()
 
         getTracker().sendGeneralEvent(dataLayer)
     }

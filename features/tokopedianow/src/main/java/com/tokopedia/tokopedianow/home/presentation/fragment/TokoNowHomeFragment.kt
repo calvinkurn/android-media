@@ -33,7 +33,6 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.model.LinkerData.NOW_TYPE
-import com.tokopedia.linker.model.LinkerData.WEBVIEW_TYPE
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
@@ -93,6 +92,7 @@ import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffe
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.util.SharedPreferencesUtil
+import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger
 import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.ATC_QUANTITY_ERROR
 import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.ErrorType.ERROR_CHOOSE_ADDRESS
@@ -174,12 +174,10 @@ class TokoNowHomeFragment: Fragment(),
         const val DEFAULT_QUANTITY = 0
         const val SHARE_HOME_URL = "https://www.tokopedia.com/now"
         const val SHARE_QUEST_URL = "https://www.tokopedia.com/now/quest-channel"
-        const val DEEPLINK_SHARE_QUEST_PATH = "url=https://www.tokopedia.com/now/quest-channel"
         const val THUMBNAIL_AND_OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/now/PN-RICH.jpg"
         const val PAGE_SHARE_NAME = "Tokonow"
         const val SHARE = "share"
         const val PAGE_TYPE_HOME = "home"
-        const val PAGE_TYPE_QUEST = "quest"
         const val SUCCESS_CODE = "200"
 
         fun newInstance() = TokoNowHomeFragment()
@@ -515,10 +513,10 @@ class TokoNowHomeFragment: Fragment(),
 
     override fun onShareBtnSharingEducationClicked() {
         updateShareHomeData(
-            pageIdConstituents = listOf(PAGE_TYPE_QUEST),
+            pageIdConstituents = listOf(PAGE_TYPE_HOME),
             isScreenShot = false,
             thumbNailTitle = resources.getString(R.string.tokopedianow_home_share_thumbnail_title),
-            linkerType = WEBVIEW_TYPE
+            linkerType = NOW_TYPE
         )
 
         shareClicked(shareHomeTokonow)
@@ -800,13 +798,13 @@ class TokoNowHomeFragment: Fragment(),
         analytics.trackClickShareButtonTopNav()
     }
 
-    private fun updateShareHomeData(pageIdConstituents: List<String>, isScreenShot: Boolean, thumbNailTitle: String, linkerType: String) {
+    private fun updateShareHomeData(pageIdConstituents: List<String>, isScreenShot: Boolean, thumbNailTitle: String, linkerType: String, id: String = "") {
         shareHomeTokonow?.pageIdConstituents = pageIdConstituents
         shareHomeTokonow?.isScreenShot = isScreenShot
         shareHomeTokonow?.thumbNailTitle = thumbNailTitle
         shareHomeTokonow?.linkerType = linkerType
-        shareHomeTokonow?.id = if(linkerType == NOW_TYPE) "" else DEEPLINK_SHARE_QUEST_PATH
-        shareHomeTokonow?.sharingUrl = if (linkerType == NOW_TYPE) SHARE_HOME_URL else SHARE_QUEST_URL
+        shareHomeTokonow?.id = id
+        shareHomeTokonow?.sharingUrl = SHARE_HOME_URL
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
@@ -1431,7 +1429,7 @@ class TokoNowHomeFragment: Fragment(),
             init(this@TokoNowHomeFragment)
             setUtmCampaignData(
                     pageName = PAGE_SHARE_NAME,
-                    userId = shareHomeTokonow?.userId.orEmpty(),
+                    userId = userSession.userId.getOrDefaultZeroString(),
                     pageIdConstituents = shareHomeTokonow?.pageIdConstituents.orEmpty(),
                     feature = SHARE
             )
@@ -1454,7 +1452,6 @@ class TokoNowHomeFragment: Fragment(),
     private fun createShareHomeTokonow(): ShareTokonow {
         return ShareTokonow(
                 sharingText = resources.getString(R.string.tokopedianow_home_share_main_text),
-                userId = userSession.userId,
                 thumbNailImage = THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
                 ogImageUrl = THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
                 specificPageName = resources.getString(R.string.tokopedianow_home_share_title),

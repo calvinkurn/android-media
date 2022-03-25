@@ -44,6 +44,7 @@ import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareRequest
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
+import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
@@ -275,7 +276,6 @@ class TokoNowCategoryFragment:
 
     private fun createShareHomeTokonow(): ShareTokonow {
         return ShareTokonow(
-            userId = userSession.userId,
             thumbNailImage = TokoNowHomeFragment.THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
             ogImageUrl = TokoNowHomeFragment.THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
             linkerType = NOW_TYPE
@@ -328,7 +328,7 @@ class TokoNowCategoryFragment:
             init(this@TokoNowCategoryFragment)
             setUtmCampaignData(
                 pageName = PAGE_SHARE_NAME,
-                userId = shareHomeTokonow?.userId.orEmpty(),
+                userId = userSession.userId.getOrDefaultZeroString(),
                 pageIdConstituents = shareHomeTokonow?.pageIdConstituents.orEmpty(),
                 feature = SHARE
             )
