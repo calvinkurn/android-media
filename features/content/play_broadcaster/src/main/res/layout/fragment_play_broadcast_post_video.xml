@@ -53,27 +53,16 @@
         app:layout_constraintTop_toBottomOf="@id/tv_bro_post_video_page_title"
         app:layout_constraintVertical_chainStyle="packed" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_bro_post_video_select_tag_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:text="@string/play_bro_select_tag_title"
-        app:layout_constraintEnd_toEndOf="@id/tv_bro_post_video_page_title"
-        app:layout_constraintStart_toStartOf="@id/ic_bro_summary_back"
-        app:layout_constraintTop_toBottomOf="@id/cl_cover_preview"
-        app:typographyType="heading_3" />
-
     <include
         android:id="@+id/layout_tag_recommendation"
         layout="@layout/layout_tag_recommendation"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toTopOf="@id/view_bro_post_video_bottom_divider"
-        app:layout_constraintEnd_toEndOf="@id/tv_bro_post_video_select_tag_title"
-        app:layout_constraintStart_toStartOf="@id/tv_bro_post_video_select_tag_title"
-        app:layout_constraintTop_toBottomOf="@id/tv_bro_post_video_select_tag_title"
+        app:layout_constraintEnd_toEndOf="@id/tv_bro_post_video_page_title"
+        app:layout_constraintStart_toStartOf="@id/ic_bro_summary_back"
+        app:layout_constraintTop_toBottomOf="@id/cl_cover_preview"
         />
 
     <View

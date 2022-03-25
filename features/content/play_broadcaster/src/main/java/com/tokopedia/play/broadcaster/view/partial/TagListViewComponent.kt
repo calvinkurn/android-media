@@ -6,6 +6,7 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.databinding.LayoutTagRecommendationBinding
 import com.tokopedia.play.broadcaster.ui.itemdecoration.TagItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
@@ -43,17 +44,23 @@ class TagListViewComponent(
 
     fun setTags(tags: List<PlayTagUiModel>) {
         binding.localLoadTagError.hide()
+        binding.tvBroSelectTagTitle.showWithCondition(tags.isNotEmpty())
+
         adapter.setItemsAndAnimateChanges(tags)
     }
 
     fun setPlaceholder() {
         binding.localLoadTagError.hide()
+        binding.tvBroSelectTagTitle.show()
+
         adapter.setItemsAndAnimateChanges(List(1) { })
     }
 
     fun setError() {
         adapter.setItemsAndAnimateChanges(emptyList())
+
         binding.localLoadTagError.show()
+        binding.tvBroSelectTagTitle.show()
     }
 
     interface Listener {
