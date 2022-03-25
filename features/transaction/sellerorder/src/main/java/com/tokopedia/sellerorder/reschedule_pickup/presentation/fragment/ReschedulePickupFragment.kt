@@ -71,7 +71,7 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
     private var binding by autoClearedNullable<FragmentReschedulePickupBinding>()
     private var toaster: Snackbar? = null
     private var loadingDialog: ReschedulePickupLoadingDialog? = null
-    private var failedDialog: ReschedulePickupFailedDialog? = null
+//    private var failedDialog: ReschedulePickupFailedDialog? = null
     private var orderId: String = ""
     private var courierName: String = ""
     private var day: RescheduleDayOptionModel? = null
@@ -297,11 +297,11 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
     private fun showErrorDialog(
         bodyText: String,
     ) {
-        failedDialog = ReschedulePickupFailedDialog(requireContext()).apply {
+        ReschedulePickupFailedDialog(requireContext()).apply {
             init()
             setErrorMessage(bodyText)
+            show()
         }
-        failedDialog?.show()
     }
 
     private fun setWrapperWatcherOtherReason(wrapper: TextInputLayout): TextWatcher {
