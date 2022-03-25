@@ -10,6 +10,9 @@ import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodFragment
+import com.tokopedia.tokofood.common.util.Result
+import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentLivedataInputAndTextaBinding
 import com.tokopedia.tokofood.example.FragmentB.Companion.ARGUMENT_INPUT_KEY
 import kotlinx.coroutines.ExperimentalCoroutinesApi

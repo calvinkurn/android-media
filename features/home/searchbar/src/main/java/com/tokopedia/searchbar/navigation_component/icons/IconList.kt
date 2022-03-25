@@ -28,6 +28,7 @@ object IconList {
     const val ID_SEARCH = IconUnify.SEARCH
     const val ID_INFORMATION = IconUnify.INFORMATION
     const val ID_BILL = IconUnify.BILL
+    const val ID_LIST_TRANSACTION = IconUnify.LIST_TRANSACTION
     const val NAME_MESSAGE = "Inbox"
     const val NAME_NOTIFICATION = "Notif"
     const val NAME_CART = "Cart"
@@ -40,6 +41,7 @@ object IconList {
     const val NAME_SEARCH = "Search"
     const val NAME_INFORMATION = "Information"
     const val NAME_BILL= "Bill"
+    const val NAME_LIST_TRANSACTION = "List Transaction"
 
     const val ID_NAV_LOTTIE_WISHLIST = 91
     const val ID_NAV_ANIMATED_WISHLIST = 92
@@ -212,6 +214,21 @@ object IconList {
             }
         }
     }
+
+    internal object ListTransactionIcon: IconConfigItem {
+        override fun get(pageSource: String, disableRouteManager: Boolean, disableDefaultGtmTracker: Boolean, onClick: ()-> Unit): IconToolbar {
+            return IconToolbar(
+                id = ID_LIST_TRANSACTION,
+                applink = "",
+                disableRouteManager = disableRouteManager,
+                name = NAME_LIST_TRANSACTION,
+                disableDefaultGtmTracker = disableDefaultGtmTracker
+            ) {
+                onClick.invoke()
+            }
+        }
+    }
+
     //Lottie icon
     internal object LottieWishlistIcon: IconConfigItem {
         override fun get(pageSource: String, disableRouteManager: Boolean, disableDefaultGtmTracker: Boolean, onClick: ()-> Unit): IconToolbar {

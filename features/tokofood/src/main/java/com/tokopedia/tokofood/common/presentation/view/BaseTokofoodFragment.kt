@@ -1,7 +1,9 @@
-package com.tokopedia.tokofood.example
+package com.tokopedia.tokofood.common.presentation.view
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
+import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
+import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 
 abstract class BaseTokofoodFragment : BaseMultiFragment() {
     private var parentActivity: HasViewModel<MultipleFragmentsViewModel>? = null
