@@ -33,7 +33,6 @@ import kotlinx.coroutines.flow.*
 /**
  * @author by jessica on 27/05/20
  */
-
 class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     @Assisted val channelId: String,
     @Assisted val productSectionList: List<ProductTagSectionUiModel>,
