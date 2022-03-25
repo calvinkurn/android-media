@@ -6,15 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -45,7 +49,7 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 
 class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchaseAdapterTypeFactory>(),
-        TokoFoodPurchaseActionListener, TokoFoodPurchaseToolbarListener {
+        TokoFoodPurchaseActionListener, TokoFoodPurchaseToolbarListener, IBaseMultiFragment {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -84,6 +88,18 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         observeList()
         observeFragmentUiModel()
         observeUiEvent()
+    }
+
+    override fun getFragmentToolbar(): Toolbar? {
+        return null
+    }
+
+    override fun getFragmentTitle(): String? {
+        return ""
+    }
+
+    override fun navigateToNewFragment(fragment: Fragment) {
+        (activity as? BaseMultiFragActivity)?.navigateToNewFragment(fragment)
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
@@ -156,6 +172,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
             toolbar?.let {
                 viewBinding?.toolbarPurchase?.addView(toolbar)
+                it.setContentInsetsAbsolute(0, 0);
                 (activity as AppCompatActivity).setSupportActionBar(viewBinding?.toolbarPurchase)
             }
 

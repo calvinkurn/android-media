@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
-import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 
 class ExampleTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragmentsViewModel> {
 

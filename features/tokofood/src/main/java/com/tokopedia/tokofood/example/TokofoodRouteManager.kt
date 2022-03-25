@@ -6,24 +6,28 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
+import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.tokofood.purchase.purchasepage.view.TokoFoodPurchaseFragment
 
 object TokofoodRouteManager {
 
     fun mapUriToFragment(uri: Uri): BaseMultiFragment? {
         // tokopedia://tokofood
         if (uri.host == "tokofood") {
-            var f: BaseMultiFragment? = null
+            var f: IBaseMultiFragment? = null
             if (uri.path == "/home") { // tokopedia://tokofood/home
                 f = FragmentA()
             } else if (uri.path == "/b") { // tokopedia://tokofood/b
                 f = FragmentB()
+            } else if (uri.path == "/purchase") {
+                f = TokoFoodPurchaseFragment.createInstance()
             }
             if (f != null) {
-                f.arguments = Bundle().apply {
-                    putString(Constant.DATA_KEY, uri.toString())
-                }
-                return f
+//                f.arguments = Bundle().apply {
+//                    putString(Constant.DATA_KEY, uri.toString())
+//                }
+//                return f
             }
         }
         return null
