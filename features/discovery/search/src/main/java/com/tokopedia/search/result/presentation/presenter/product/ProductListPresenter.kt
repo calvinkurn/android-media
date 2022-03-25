@@ -162,9 +162,9 @@ class ProductListPresenter @Inject constructor(
                 SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST,
                 SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID,
                 SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS,
-                SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO,
                 SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT,
         )
+        private val showInspirationCarouselLayoutWithVideo = showInspirationCarouselLayout + SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO
         private const val SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search"
         private const val DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu"
         private const val DEFAULT_USER_ID = "0"
@@ -1368,7 +1368,14 @@ class ProductListPresenter @Inject constructor(
                 || (!isABTestVideoWidget && data.isVideoLayout())
     }
 
-    private fun shouldShowInspirationCarousel(layout: String) = showInspirationCarouselLayout.contains(layout)
+    private fun shouldShowInspirationCarousel(layout: String): Boolean {
+        val validInspirationCarouselLayout = if(!isABTestVideoWidget) {
+            showInspirationCarouselLayout
+        } else {
+            showInspirationCarouselLayoutWithVideo
+        }
+        return validInspirationCarouselLayout.contains(layout)
+    }
 
     private fun constructInspirationCarouselVisitableList(data: InspirationCarouselDataView) =
         when {
