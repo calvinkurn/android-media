@@ -697,7 +697,7 @@ class WishlistViewModelGetWishlistDataTest {
 
         every { userSessionInterface.userId } returns mockUserId
 
-        // Get wishlist use case successfully returns 4 wishlist item data
+        // Get wishlist use case successfully returns 25 wishlist item data
         coEvery { getWishlistDataUseCase.getData(any()) } returns WishlistEntityData(
                 items = listOf(
                         WishlistItem(id="1"), WishlistItem(id="2"), WishlistItem(id="3"), WishlistItem(id="4"), WishlistItem(id="5"),
@@ -733,7 +733,7 @@ class WishlistViewModelGetWishlistDataTest {
 
         every { userSessionInterface.userId } returns mockUserId
 
-        // Get wishlist use case successfully returns 4 wishlist item data
+        // Get wishlist use case return failed
         coEvery { getWishlistDataUseCase.getData(any()) } returns WishlistEntityData(isSuccess = false)
 
         // View model get wishlist data
