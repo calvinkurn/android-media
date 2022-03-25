@@ -29,18 +29,29 @@ class ProfileInfoItemViewHolder(val view: View,
 		}
 		if (element?.showVerifiedTag == true) binding?.tvVerification?.visible()
 		else binding?.tvVerification?.gone()
-	binding?.fragmentProfileItemTitle?.text = element?.title
-	binding?.fragmentProfileItemValue?.text = if (element?.itemValue.isNullOrBlank()) element?.placeholder else element?.itemValue
+		binding?.fragmentProfileItemTitle?.text = element?.title
+		binding?.fragmentProfileItemValue?.text =
+			if (element?.itemValue.isNullOrBlank()) element?.placeholder else element?.itemValue
 		if (element?.itemValue.isNullOrBlank()) {
-			binding?.fragmentProfileItemValue?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+			binding?.fragmentProfileItemValue?.setTextColor(
+				MethodChecker.getColor(
+					view.context,
+					com.tokopedia.unifyprinciples.R.color.Unify_NN400
+				)
+			)
 		} else {
-			binding?.fragmentProfileItemValue?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+			binding?.fragmentProfileItemValue?.setTextColor(
+				MethodChecker.getColor(
+					view.context,
+					com.tokopedia.unifyprinciples.R.color.Unify_NN950
+				)
+			)
 		}
-	if (element?.rightIcon != -1) {
-		binding?.fragmentProfileItemIcon?.setImage(element?.rightIcon)
-	} else {
-		binding?.fragmentProfileItemIcon?.hide()
-	}
+		if (element?.rightIcon != -1) {
+			binding?.fragmentProfileItemIcon?.setImage(element?.rightIcon)
+		} else {
+			binding?.fragmentProfileItemIcon?.hide()
+		}
     }
 
     companion object {

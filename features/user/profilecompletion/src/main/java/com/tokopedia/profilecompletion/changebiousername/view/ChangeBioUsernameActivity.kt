@@ -52,6 +52,5 @@ class ChangeBioUsernameActivity : BaseSimpleActivity(), HasComponent<ProfileComp
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        supportActionBar?.title = "hohoho"
     }
 }

@@ -18,17 +18,17 @@ class ProfileRoleUseCase @Inject constructor(
 
     override fun graphqlQuery(): String =
 	"""
-       	query userProfileRole(){
-	    userProfileRole{
-		isAllowedChangeDob
-		isAllowedChangeName
-		isAllowedChangeGender
-		chancesChangeName
-		chancesChangeGender
-        changeNameMessageInfoTitle
-        changeNameMessageInfo
-        changeDobMessageInfo
-        changeDobMessageInfoTitle
-	    }
+       	query userProfileRole() {
+	        userProfileRole {
+		    isAllowedChangeDob
+		    isAllowedChangeName
+		    isAllowedChangeGender
+		    chancesChangeName
+		    chancesChangeGender
+            changeNameMessageInfoTitle
+            changeNameMessageInfo
+            changeDobMessageInfo
+            changeDobMessageInfoTitle
+	        }
         }""".trimIndent()
 }

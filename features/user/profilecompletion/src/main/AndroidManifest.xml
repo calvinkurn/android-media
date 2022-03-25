@@ -7,7 +7,7 @@
         android:supportsRtl="true">
         <activity
             android:name=".settingprofile.view.activity.SettingProfileActivity"
-            android:label="Ubah Profil"
+            android:label="@string/title_setting_profile"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden"
