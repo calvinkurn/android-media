@@ -7,12 +7,20 @@ import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
+import com.tokopedia.product.manage.common.util.ProductManageAdapterLogger
 import com.tokopedia.product.manage.common.view.adapter.differ.ProductManageDiffer
+import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListDiffutilAdapter
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 abstract class BaseProductManageAdapter<T, F: AdapterTypeFactory>(
-    baseListAdapterTypeFactory: F
+    baseListAdapterTypeFactory: F,
+    private val deviceId: String
 ): BaseListAdapter<T, F>(baseListAdapterTypeFactory) {
+
+    companion object {
+        private const val WITH_DIFFUTIL = "with diffutil"
+        private const val WITHOUT_DIFFUTIL = "without diffutil"
+    }
 
     abstract fun updateProduct(itemList: List<Visitable<*>>)
 
@@ -46,5 +54,15 @@ abstract class BaseProductManageAdapter<T, F: AdapterTypeFactory>(
     abstract fun setMultiSelectEnabled(multiSelectEnabled: Boolean)
 
     abstract fun filterProductList(predicate: (ProductUiModel) -> Boolean)
+
+    protected fun logUpdate(methodName: String) {
+        val diffutilIdentifier =
+            if (this is ProductManageListDiffutilAdapter) {
+                WITH_DIFFUTIL
+            } else {
+                WITHOUT_DIFFUTIL
+            }
+        ProductManageAdapterLogger.logUpdate(deviceId, "$methodName - $diffutilIdentifier")
+    }
 
 }

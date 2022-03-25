@@ -22,14 +22,16 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
  */
 class ProductManageListDiffutilAdapter(
     baseListAdapterTypeFactory: ProductManageAdapterFactoryImpl,
-    private val deviceId: String
+    deviceId: String
 ) : BaseProductManageAdapter<Visitable<*>, ProductManageAdapterFactoryImpl>(
-    baseListAdapterTypeFactory
+    baseListAdapterTypeFactory,
+    deviceId
 ) {
 
     private val differ: ProductManageDiffer = ProductListDiffer()
 
     override fun showLoading() {
+        logUpdate(ProductManageAdapterLogger.MethodName.SHOW_LOADING)
         if (!isLoading) {
             val items = getItems()
             if (isShowLoadingMore) {
@@ -42,6 +44,7 @@ class ProductManageListDiffutilAdapter(
     }
 
     override fun hideLoading() {
+        logUpdate(ProductManageAdapterLogger.MethodName.HIDE_LOADING)
         if(isLoading) {
             val items = getItems()
             items.removeAt(lastIndex)
@@ -50,18 +53,21 @@ class ProductManageListDiffutilAdapter(
     }
 
     override fun removeErrorNetwork() {
+        logUpdate(ProductManageAdapterLogger.MethodName.REMOVE_ERROR_NETWORK)
         val items = getItems()
         items.remove(errorNetworkModel)
         submitList(items)
     }
 
     override fun addElement(itemList: MutableList<out Visitable<Any>>?) {
+        logUpdate(ProductManageAdapterLogger.MethodName.ADD_ELEMENT)
         val items = getItems()
         items.addAll(itemList?.toList().orEmpty())
         submitList(items)
     }
 
     override fun clearAllElements() {
+        logUpdate(ProductManageAdapterLogger.MethodName.CLEAR_ALL_ELEMENTS)
         submitList(emptyList())
     }
 
@@ -240,10 +246,6 @@ class ProductManageListDiffutilAdapter(
 
     private fun getItems(): MutableList<Visitable<*>> {
         return visitables.toMutableList()
-    }
-
-    private fun logUpdate(methodName: String) {
-        ProductManageAdapterLogger.logUpdate(deviceId, methodName)
     }
 
 }
