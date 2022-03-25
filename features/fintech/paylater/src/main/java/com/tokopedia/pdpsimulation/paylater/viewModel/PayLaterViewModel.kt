@@ -3,13 +3,14 @@ package com.tokopedia.pdpsimulation.paylater.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.pdpsimulation.TkpdIdlingResourceProvider
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
-import com.tokopedia.pdpsimulation.paylater.domain.model.BaseProductDetailClass
-import com.tokopedia.pdpsimulation.paylater.domain.model.GetProductV3
+import com.tokopedia.pdpsimulation.common.domain.model.BaseProductDetailClass
+import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
+import com.tokopedia.pdpsimulation.common.domain.usecase.ProductDetailUseCase
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
-import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterSimulationV2UseCase
-import com.tokopedia.pdpsimulation.paylater.domain.usecase.ProductDetailUseCase
+import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
+import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterSimulationV3UseCase
+import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterUiMapperUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -17,50 +18,40 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class PayLaterViewModel @Inject constructor(
-    private val paylaterGetSimulationV2usecase: PayLaterSimulationV2UseCase,
+    private val paylaterGetSimulationV3UseCase: PayLaterSimulationV3UseCase,
     private val productDetailUseCase: ProductDetailUseCase,
-
+    private val mapperUseCase: PayLaterUiMapperUseCase,
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
 
-
-    private val _payLaterOptionsDetailLiveData = MutableLiveData<Result<PayLaterGetSimulation>>()
-    val payLaterOptionsDetailLiveData: LiveData<Result<PayLaterGetSimulation>> =
+    private val _payLaterOptionsDetailLiveData =
+        MutableLiveData<Result<ArrayList<SimulationUiModel>>>()
+    val payLaterOptionsDetailLiveData: LiveData<Result<ArrayList<SimulationUiModel>>> =
         _payLaterOptionsDetailLiveData
-
-    /**
-     * @param refreshData -> This parameter is to check when to refresh data in on resume
-     * @param sortPosition -> Give the old filter position when so after refresh can go to previous state
-     * @param partnerDisplayPosition -> Give the old viewpager position so after refresh can go to previous state
-     */
-    var refreshData = false
-    var sortPosition = 0
-    var partnerDisplayPosition = 0
 
     private val _productDetailLiveData = MutableLiveData<Result<GetProductV3>>()
     val productDetailLiveData: LiveData<Result<GetProductV3>> = _productDetailLiveData
 
+    // tenure to be auto-selected by default coming from applink
+    var defaultTenure = 0
 
-    private var idlingResourceProvider =
-        TkpdIdlingResourceProvider.provideIdlingResource("SIMULATION")
+    // index of selected tenure/simulation in list
+    // if failure -> 0
+    // if tenure found -> then intended simulation
+    // if tenure not found -> then max simulation
+    var defaultSelectedSimulation: Int = 0
 
-
-    fun getPayLaterAvailableDetail(price: Long) {
-        idlingResourceProvider?.increment()
-        paylaterGetSimulationV2usecase.cancelJobs()
-        paylaterGetSimulationV2usecase.getPayLaterProductDetails(
+    fun getPayLaterAvailableDetail(price: Double, productId: String) {
+        paylaterGetSimulationV3UseCase.cancelJobs()
+        paylaterGetSimulationV3UseCase.getPayLaterSimulationDetails(
             ::onAvailableDetailSuccess,
             ::onAvailableDetailFail,
-            price
+            price, productId
         )
-
-
     }
-
 
     fun getProductDetail(productId: String) {
         productDetailUseCase.cancelJobs()
-
         productDetailUseCase.getProductDetail(
             ::onAvailableProductDetail,
             ::onFailProductDetail,
@@ -69,38 +60,44 @@ class PayLaterViewModel @Inject constructor(
     }
 
     private fun onAvailableProductDetail(baseProductDetailClass: BaseProductDetailClass) {
-        baseProductDetailClass.getProductV3?.let {
-            _productDetailLiveData.value = Success(it)
+        baseProductDetailClass.getProductV3?.let { data ->
+            if (data.pictures?.size == 0 || data.productName.isNullOrEmpty() || ((data.campaingnDetail?.discountedPrice?.equals(
+                    0.0
+                ) == true) && data.price?.equals(0.0) == true)
+            )
+                onFailProductDetail(IllegalStateException("Data invalid"))
+            else _productDetailLiveData.postValue(Success(data))
         }
     }
 
     private fun onFailProductDetail(throwable: Throwable) {
-        _productDetailLiveData.value = Fail(throwable)
+        _productDetailLiveData.postValue(Fail(throwable))
     }
-
 
     private fun onAvailableDetailFail(throwable: Throwable) {
-        idlingResourceProvider?.decrement()
-        _payLaterOptionsDetailLiveData.value = Fail(throwable)
+        _payLaterOptionsDetailLiveData.postValue(Fail(throwable))
     }
 
-    private fun onAvailableDetailSuccess(paylaterGetSimulation: PayLaterGetSimulation?) {
-        idlingResourceProvider?.decrement()
-        paylaterGetSimulation?.let {
-            _payLaterOptionsDetailLiveData.value = Success(it)
-        }
+    private fun onAvailableDetailSuccess(payLaterGetSimulation: PayLaterGetSimulation?) {
+        mapperUseCase.cancelJobs()
+        mapperUseCase.mapResponseToUi(
+            { data ->
+                if (data.isNotEmpty()) {
+                    data.mapIndexed { index, simulationUiModel ->
+                        if (simulationUiModel.isSelected)
+                            defaultSelectedSimulation = index
+                    }
+                }
+                _payLaterOptionsDetailLiveData.postValue(Success(data))
+            }, payLaterGetSimulation, defaultTenure
+        )
     }
-
 
     override fun onCleared() {
-        paylaterGetSimulationV2usecase.cancelJobs()
+        paylaterGetSimulationV3UseCase.cancelJobs()
         productDetailUseCase.cancelJobs()
+        mapperUseCase.cancelJobs()
         super.onCleared()
     }
 
-
-    companion object {
-        const val DATA_FAILURE = "NULL DATA"
-        const val PAY_LATER_NOT_APPLICABLE = "Pay Later Not Applicable"
-    }
 }

@@ -3,6 +3,7 @@ package com.tokopedia.digital.home.presentation.adapter.viewholder
 import android.graphics.Color
 import android.view.Gravity
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -98,19 +99,36 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
                     DigitalUnifyCardAdapterTypeFactory(digitalUnifyCardListener),
                     element
                 )
-                addOnScrollListener(object : ParallaxScrollEffectListener(layoutManagers) {
-                    override fun translatedX(translatedX: Float) {
-                        bind.parallaxView.translationX = translatedX
-                    }
-
-                    override fun setAlpha(alpha: Float) {
-                        bind.parallaxImage.alpha = alpha
-                    }
-
-                    override fun getPixelSize(): Int =
-                        itemView.resources.getDimensionPixelSize(com.tokopedia.digital.home.R.dimen.product_card_custom_banner_width)
-                })
             }
+
+            parallaxImage.viewTreeObserver.addOnGlobalLayoutListener(object :
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    parallaxImage.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                    rvRechargeProduct.setPadding(
+                        parallaxImage.measuredWidth + parallaxImage.paddingStart,
+                        rvRechargeProduct.paddingTop,
+                        rvRechargeProduct.paddingRight,
+                        rvRechargeProduct.paddingBottom
+                    )
+
+                    rvRechargeProduct.addOnScrollListener(object :
+                        ParallaxScrollEffectListener(layoutManagers) {
+                        override fun translatedX(translatedX: Float) {
+                            bind.parallaxView.translationX = translatedX
+                        }
+
+                        override fun setAlpha(alpha: Float) {
+                            bind.parallaxImage.alpha = alpha
+                        }
+
+                        override fun getPixelSize(): Int =
+                            parallaxImage.measuredWidth + parallaxImage.paddingStart
+                    })
+                }
+
+            })
         }
     }
 
@@ -148,6 +166,10 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
             override fun onItemClicked(item: DigitalUnifyModel, index: Int) {
                 if (section.items.size > index)
                     listener.onRechargeSectionItemClicked(section.items[index])
+            }
+
+            override fun onItemImpression(item: DigitalUnifyModel, index: Int) {
+
             }
         }
 }

@@ -9,10 +9,6 @@ public interface SearchConstant {
     String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
 
     String SEARCH_RESULT_PAGE = "search result page";
-    String SEARCH_RESULT_TRACE = "search_result_trace";
-    String SEARCH_RESULT_PLT_PREPARE_METRICS = "search_result_plt_prepare_metrics";
-    String SEARCH_RESULT_PLT_NETWORK_METRICS = "search_result_plt_network_metrics";
-    String SEARCH_RESULT_PLT_RENDER_METRICS = "search_result_plt_render_metrics";
 
     String SEARCH_VIEW_MODEL_FACTORY = "search_view_model_factory";
 

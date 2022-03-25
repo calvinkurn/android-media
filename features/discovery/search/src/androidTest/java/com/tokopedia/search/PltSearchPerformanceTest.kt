@@ -64,18 +64,16 @@ class PltSearchPerformanceTest {
     }
 
     private fun savePLTPerformanceResultData() {
-        val performanceData = activityRule.activity.pltPerformanceResultData
-        performanceData?.let {
-            val dataSource = getDataSource(it)
+        val performanceData = activityRule.activity.getPltPerformanceData()
+        val dataSource = getDataSource(performanceData)
 
-            PerformanceDataFileUtils.writePLTPerformanceFile(
-                    activityRule.activity,
-                    TEST_CASE_PAGE_LOAD_TIME_SEARCH_PERFORMANCE,
-                    it,
-                    dataSource,
-                    GqlNetworkAnalyzerInterceptor.getNetworkData()
-            )
-        }
+        PerformanceDataFileUtils.writePLTPerformanceFile(
+            activityRule.activity,
+            TEST_CASE_PAGE_LOAD_TIME_SEARCH_PERFORMANCE,
+            performanceData,
+            dataSource,
+            GqlNetworkAnalyzerInterceptor.getNetworkData()
+        )
     }
 
     private fun getDataSource(it: PltPerformanceData): String {

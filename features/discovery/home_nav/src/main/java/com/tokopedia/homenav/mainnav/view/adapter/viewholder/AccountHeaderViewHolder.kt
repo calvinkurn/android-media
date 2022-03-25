@@ -55,27 +55,17 @@ class AccountHeaderViewHolder(itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.holder_account_header
-        const val TEXT_LOGIN_AS = "Masuk Sebagai %s"
-        private const val GREETINGS_0_2 = "Selamat tidur~"
-        private const val GREETINGS_3_4 =  "Lagi begadang? Kangen, ya?"
-        private const val GREETINGS_5_9 =  "Selamat pagi! Semongko!"
-        private const val GREETINGS_10_14 =  "Udah makan siang?"
-        private const val GREETINGS_15_17 = "Selamat sore! Ngopi, kuy?"
-        private const val GREETINGS_18_23 = "Jangan lupa makan malam~"
-        private const val GREETINGS_DEFAULT = "Hai Toppers"
+        private const val GREETINGS_5_10 = "Pagi! Udah sarapan?"
+        private const val GREETINGS_10_16 =  "Semangat jalani hari ini!"
+        private const val GREETINGS_16_21 =  "Nyantai sambil belanja, yuk~"
+        private const val GREETINGS_22_5 =  " Lagi cari apa nih kamu?"
 
-        private const val HOURS_0 = 0
-        private const val HOURS_2 = 2
-        private const val HOURS_3 = 3
-        private const val HOURS_4 = 4
         private const val HOURS_5 = 5
         private const val HOURS_9 = 9
         private const val HOURS_10 = 10
-        private const val HOURS_14 = 14
         private const val HOURS_15 = 15
-        private const val HOURS_17 = 17
-        private const val HOURS_18 = 18
-        private const val HOURS_23 = 23
+        private const val HOURS_16 = 16
+        private const val HOURS_21 = 21
 
         private const val ANIMATION_DURATION_MS: Long = 300
         private const val GREETINGS_DELAY = 1000L
@@ -120,6 +110,7 @@ class AccountHeaderViewHolder(itemView: View,
         layoutLogin.visibility = View.VISIBLE
         val userImage: ImageUnify = layoutLoginHeader.findViewById(R.id.img_user_login)
         val usrBadge: ImageUnify = layoutLoginHeader.findViewById(R.id.usr_badge)
+        val usrEmoji: Typography = layoutLoginHeader.findViewById(R.id.usr_emoji)
         val usrOvoBadge: ImageUnify = layoutLoginHeader.findViewById(R.id.usr_ovo_badge)
         val btnSettings: IconUnify = layoutLoginHeader.findViewById(R.id.btn_settings)
         val btnTryAgain: CardView = layoutLoginHeader.findViewById(R.id.btn_try_again)
@@ -193,9 +184,10 @@ class AccountHeaderViewHolder(itemView: View,
                     tvName,
                     getCurrentGreetings(),
                     profileData.userName,
-                    usrBadge,
-                    getCurrentGreetingsIconStringUrl(),
-                    element.profileMembershipDataModel.badge
+                    usrEmoji,
+                    getCurrentGreetingsIconStringEmoji(),
+                    element.profileMembershipDataModel.badge,
+                    usrBadge
                 )
             }
         }
@@ -411,25 +403,19 @@ class AccountHeaderViewHolder(itemView: View,
 
     private fun getCurrentGreetings() : String {
         return when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-            in HOURS_0..HOURS_2 -> GREETINGS_0_2
-            in HOURS_3..HOURS_4 -> GREETINGS_3_4
-            in HOURS_5..HOURS_9 -> GREETINGS_5_9
-            in HOURS_10..HOURS_14 -> GREETINGS_10_14
-            in HOURS_15..HOURS_17 -> GREETINGS_15_17
-            in HOURS_18..HOURS_23 -> GREETINGS_18_23
-            else -> GREETINGS_DEFAULT
+            in HOURS_5..HOURS_9 -> GREETINGS_5_10
+            in HOURS_10..HOURS_15 -> GREETINGS_10_16
+            in HOURS_16..HOURS_21 -> GREETINGS_16_21
+            else -> GREETINGS_22_5
         }
     }
 
-    private fun getCurrentGreetingsIconStringUrl() : String {
+    private fun getCurrentGreetingsIconStringEmoji() : String {
         return when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-            in HOURS_0..HOURS_2 -> "https://ecs7.tokopedia.net/home-img/greet-sleep.png"
-            in HOURS_3..HOURS_4 -> "https://ecs7.tokopedia.net/home-img/greet-confused.png"
-            in HOURS_5..HOURS_9 -> "https://ecs7.tokopedia.net/home-img/greet-cloud-sun.png"
-            in HOURS_10..HOURS_14 -> "https://ecs7.tokopedia.net/home-img/greet-sun.png"
-            in HOURS_15..HOURS_17 -> "https://ecs7.tokopedia.net/home-img/greet-dusk.png"
-            in HOURS_18..HOURS_23 -> "https://ecs7.tokopedia.net/home-img/greet-moon.png"
-            else -> "https://ecs7.tokopedia.net/home-img/greet-sun.png"
+            in HOURS_5..HOURS_9 -> "\uD83C\uDF5E"
+            in HOURS_10..HOURS_15 -> "\uD83D\uDE4C"
+            in HOURS_16..HOURS_21 -> "\uD83D\uDECD️"
+            else -> "\uD83E\uDD14"
         }
     }
 
@@ -444,21 +430,33 @@ class AccountHeaderViewHolder(itemView: View,
 
     private var needToSwitchText: Boolean = isFirstTimeUserSeeNameAnimationOnSession()
 
-    private fun configureNameAndBadgeSwitcher(tvName: Typography, greetingString: String, nameString: String, ivBadge: ImageView, badgeGreetingsUrl: String, badgeUrl: String) {
+    private fun configureNameAndBadgeSwitcher(
+        tvName: Typography,
+        greetingString: String,
+        nameString: String,
+        tvBadge: Typography,
+        badgeEmojiString: String,
+        badgeUrl: String,
+        imgBadge: ImageUnify
+    ) {
         if (needToSwitchText) {
             tvName.text = greetingString
-            ivBadge.visible()
-            ivBadge.loadImage(badgeGreetingsUrl)
+            tvBadge.visible()
+            imgBadge.invisible()
+            tvBadge.text = badgeEmojiString
             launch {
                 delay(GREETINGS_DELAY)
+                tvBadge.invisible()
+                imgBadge.visible()
                 tvName.animateProfileName(nameString, ANIMATION_DURATION_MS)
-                ivBadge.animateProfileBadge(badgeUrl, ANIMATION_DURATION_MS)
+                imgBadge.animateProfileBadge(badgeUrl, ANIMATION_DURATION_MS)
                 setFirstTimeUserSeeNameAnimationOnSession(false)
             }
         } else {
             tvName.text = nameString
-            ivBadge.visible()
-            ivBadge.loadImage(badgeUrl)
+            tvBadge.invisible()
+            imgBadge.visible()
+            imgBadge.loadImage(badgeUrl)
         }
     }
 
