@@ -109,7 +109,7 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/name-shop-creation
     const val NAME_SHOP_CREATION = "$INTERNAL_GLOBAL/name-shop-creation"
 
-    const val LIVENESS_DETECTION = "$INTERNAL_GLOBAL/liveness-detection"
+    const val LIVENESS_DETECTION = "$INTERNAL_GLOBAL/liveness-detection?projectId={projectId}"
 
     const val USER_IDENTIFICATION_INFO_BASE = "$INTERNAL_GLOBAL/user-identification-info"
 
@@ -128,7 +128,7 @@ object ApplinkConstInternalGlobal {
 
     // UserIdentificationFormActivity
     // tokopedia-android-internal://global/user-identification-form
-    const val USER_IDENTIFICATION_FORM = "$USER_IDENTIFICATION_FORM_BASE?projectId={projectId}&type={type}&redirectUrl={redirectUrl}"
+    const val USER_IDENTIFICATION_FORM = "$USER_IDENTIFICATION_FORM_BASE?projectId={projectId}&redirectUrl={redirectUrl}"
     const val PARAM_PROJECT_ID = "projectId"
 
     const val PARAM_CALL_BACK = "callBack"
@@ -136,7 +136,7 @@ object ApplinkConstInternalGlobal {
     // UserIdentificationInfoSimpleActivity
     // tokopedia-android-internal://global/user-identification-only
     @JvmField
-    val USER_IDENTIFICATION_INFO_SIMPLE = "$INTERNAL_GLOBAL/user-identification-only?projectId={projectId}&showIntro={showIntro}&redirectUrl={redirectUrl}&type={type}"
+    val USER_IDENTIFICATION_INFO_SIMPLE = "$INTERNAL_GLOBAL/user-identification-only?projectId={projectId}&showIntro={showIntro}&redirectUrl={redirectUrl}"
     const val PARAM_SHOW_INTRO = "showIntro"
     const val PARAM_REDIRECT_URL = "redirectUrl"
     const val PARAM_KYC_TYPE = "type"

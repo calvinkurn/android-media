@@ -47,7 +47,7 @@ class PlayBroInteractiveLeaderboardViewModelTest {
         )
 
         robot.use {
-            robot.getViewModel().getLeaderboardData()
+            robot.getViewModel().getLeaderboardData("")
 
             val result = robot.getViewModel().observableLeaderboardInfo.getOrAwaitValue()
 
@@ -67,7 +67,7 @@ class PlayBroInteractiveLeaderboardViewModelTest {
         )
 
         robot.use {
-            robot.getViewModel().getLeaderboardData()
+            robot.getViewModel().getLeaderboardData("")
 
             val result = robot.getViewModel().observableLeaderboardInfo.getOrAwaitValue()
 

@@ -14,10 +14,11 @@ object PlayDateTimeFormatter {
     private const val Z = "Z"
     private const val GMT07 = "+0700"
 
-    private const val yyyyMMddTHHmmss = "yyyy-MM-dd'T'HH:mm:ss"
-    private const val ddMMMMyyyy_HHmm = "dd MMMM yyyy - HH:mm"
-    private const val ddMMMyyyy_HHmm = "dd MMM yyyy - HH:mm"
+    const val yyyyMMddTHHmmss = "yyyy-MM-dd'T'HH:mm:ss"
+    const val ddMMMMyyyy_HHmm = "dd MMMM yyyy - HH:mm"
+    const val ddMMMyyyy_HHmm = "dd MMM yyyy - HH:mm"
     const val ddMMMyyy_HHmmWIB = "dd MMM yyyy, HH:mm 'WIB'"
+    const val dMMMMyyyy = "d MMMM yyyy"
 
     private const val GMT_DIVIDER = 100
 
@@ -95,8 +96,18 @@ object PlayDateTimeFormatter {
                 return@let calendar
             }
         }
-        catch (e: Exception){
+        catch (e: Exception) {
             null
+        }
+    }
+
+    fun getTodayDateTime(pattern: String): String {
+        return try {
+            val outputFormatter = SimpleDateFormat(pattern, locale)
+            return outputFormatter.format(Date())
+        }
+        catch (e: Exception) {
+            ""
         }
     }
 }
