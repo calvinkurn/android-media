@@ -37,9 +37,9 @@ class PreviewPagerComponent(
         viewPager.addOnAttachStateChangeListener(attachStateListener())
     }
 
-    fun removeData(media: MediaUiModel) {
+    fun removeData(media: MediaUiModel) : Int {
         val element = getData(media)
-        adapter.remove(element)
+        return adapter.remove(element)
     }
 
     fun moveToOf(media: MediaUiModel) : Int{
@@ -47,6 +47,10 @@ class PreviewPagerComponent(
         val index = medias.indexOf(element)
         viewPager.setCurrentItem(index, false)
         return index
+    }
+
+    fun getSelectedIndex() : Int {
+        return viewPager.currentItem
     }
 
     override fun release() {
@@ -64,7 +68,7 @@ class PreviewPagerComponent(
                 }
             }
 
-            if(adapter.count > previousViewPagerIndex){
+            if(previousViewPagerIndex in 0 until medias.size){
                 val previousItem = medias[previousViewPagerIndex]
                 if (previousItem.data.isVideo()) {
                     previousItem.mVideoPlayer?.stop()
