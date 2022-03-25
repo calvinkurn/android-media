@@ -2,6 +2,7 @@ package com.tokopedia.play.view.uimodel
 
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.view.type.ProductAction
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 
@@ -14,7 +15,8 @@ class VariantSheetUiModel(
         val parentVariant: ProductVariant? = null,
         var stockWording: String? = null,
         var listOfVariantCategory: List<VariantCategory> = listOf(),
-        var mapOfSelectedVariants: MutableMap<String, String> = mutableMapOf()
+        var mapOfSelectedVariants: MutableMap<String, String> = mutableMapOf(),
+        val section: ProductSectionUiModel.Section,
 ) {
     fun isPartialySelected(): Boolean = mapOfSelectedVariants.any {
         it.value.toLongOrZero() == 0L

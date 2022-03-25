@@ -466,8 +466,10 @@ class BrandlistPageFragment :
     }
 
     private fun resetCurrentBrandRecom() {
-        if (recyclerView?.isComputingLayout == false) {
-            BrandlistPageMapper.mappingRemoveBrandRecom(adapter)
+        recyclerView?.let {
+            if (!it.isComputingLayout) {
+                BrandlistPageMapper.mappingRemoveBrandRecom(adapter)
+            }
         }
     }
 
