@@ -26,6 +26,7 @@ class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInpu
     }
 
     fun collapseUnitValueHeader(visitablePosition: Int, fieldSize: Int) {
+        (visitables[visitablePosition] as? VariantDetailHeaderUiModel)?.isCollapsed = true
         val targetPosition = visitablePosition + 1
         for (i in 1..fieldSize) {
             visitables.removeAt(targetPosition)
@@ -34,6 +35,7 @@ class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInpu
     }
 
     fun expandDetailFields(visitablePosition: Int, inputLayoutModels: List<VariantDetailInputLayoutModel>) {
+        (visitables[visitablePosition] as? VariantDetailHeaderUiModel)?.isCollapsed = false
         val targetPosition = visitablePosition + 1
         val viewModels = mutableListOf<VariantDetailFieldsUiModel>()
         inputLayoutModels.forEach { viewModels.add(VariantDetailFieldsUiModel(it)) }
@@ -41,11 +43,14 @@ class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInpu
         notifyItemRangeInserted(targetPosition, viewModels.size)
     }
 
-    fun updatePriceEditingStatus(variantDetailFieldMapLayout: Map<Int, VariantDetailInputLayoutModel>, isEnabled: Boolean) {
-        variantDetailFieldMapLayout.forEach { (adapterPosition, variantDetailInputModel) ->
-            variantDetailInputModel.priceEditEnabled = isEnabled
-            val variantDetailFieldsViewModel = VariantDetailFieldsUiModel(variantDetailInputModel)
-            notifyElement(adapterPosition, variantDetailFieldsViewModel)
+    fun updatePriceEditingStatus(isEnabled: Boolean) {
+        list.forEachIndexed { index, visitable ->
+            if (visitable is VariantDetailFieldsUiModel) {
+                visitable.variantDetailInputLayoutModel.priceEditEnabled = isEnabled
+                val variantDetailFieldsViewModel =
+                    VariantDetailFieldsUiModel(visitable.variantDetailInputLayoutModel)
+                notifyElement(index, variantDetailFieldsViewModel)
+            }
         }
     }
 

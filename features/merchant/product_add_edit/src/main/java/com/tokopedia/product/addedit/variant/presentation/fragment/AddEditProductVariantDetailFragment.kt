@@ -18,6 +18,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.addedit.R
@@ -321,8 +322,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     private fun observeHasWholesale() {
         viewModel.hasWholesale.observe(viewLifecycleOwner, {
-            variantDetailFieldsAdapter?.updatePriceEditingStatus(viewModel.getAvailableFields(), !it)
-            tickerVariantWholesale?.visibility = if (it) View.VISIBLE else View.GONE
+            variantDetailFieldsAdapter?.updatePriceEditingStatus(!it)
+            tickerVariantWholesale?.isVisible = it
         })
     }
 
@@ -397,14 +398,14 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         bottomSheet.setEnableEditPrice(!hasWholesale)
         bottomSheet.setTrackerShopId(userSession.shopId)
         bottomSheet.setTrackerIsEditMode(viewModel.isEditMode)
-        bottomSheet.show(fragmentManager)
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun showSelectPrimaryBottomSheet() {
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel
         val bottomSheet = SelectVariantMainBottomSheet(this)
         bottomSheet.setData(variantInputModel)
-        bottomSheet.show(fragmentManager)
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun submitVariantInput() {

@@ -19,16 +19,25 @@ class VariantDetailHeaderViewHolder(itemView: View?, listener: OnCollapsibleHead
 
         itemView?.setOnClickListener {
             val isCollapsed = listener.onHeaderClicked(headerPosition)
-            if (isCollapsed) accordionIndicator?.setImageResource(com.tokopedia.product.addedit.R.drawable.product_add_edit_ic_chevron_up)
-            else accordionIndicator?.setImageResource(com.tokopedia.product.addedit.R.drawable.product_add_edit_ic_chevron_down)
+            changeIndicatorIcon(isCollapsed)
         }
     }
 
     override fun bind(element: VariantDetailHeaderUiModel?) {
         element?.run {
             headerPosition = element.position
-            unitValueHeader?.text = element.header
+            unitValueHeader?.text = element.headerTitle
+            changeIndicatorIcon(element.isCollapsed)
         }
+    }
+
+    private fun changeIndicatorIcon(isCollapsed: Boolean) {
+        accordionIndicator?.setImageResource(
+            if (isCollapsed)
+                com.tokopedia.product.addedit.R.drawable.product_add_edit_ic_chevron_up
+            else
+                com.tokopedia.product.addedit.R.drawable.product_add_edit_ic_chevron_down
+        )
     }
 
     companion object {

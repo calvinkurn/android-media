@@ -42,6 +42,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 ) : BaseViewModel(coroutineDispatcher) {
 
     var productInputModel = MutableLiveData<ProductInputModel>()
+    var isMultiLocationShop: Boolean = false
+        private set
 
     private val mInputDataValid = MutableLiveData<Boolean>()
     val inputDataValid: LiveData<Boolean> get() = mInputDataValid
@@ -59,14 +61,41 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     }
 
     val isEditMode: Boolean get() = productInputModel.getValueOrDefault().productId.orZero() > 0
-    var isMultiLocationShop: Boolean = false
-        private set
 
     private var inputFieldSize = 0
     private var collapsedFields = 0
     private val headerStatusMap: HashMap<Int, Boolean> = hashMapOf()
     private val currentHeaderPositionMap: HashMap<Int, Int> = hashMapOf()
     private val inputLayoutModelMap: HashMap<Int, VariantDetailInputLayoutModel> = hashMapOf()
+
+    private fun refreshInputDataValidStatus() {
+        mInputDataValid.value = !inputLayoutModelMap.any {
+            it.value.isPriceError || it.value.isStockError || it.value.isWeightError
+        }
+    }
+
+    private fun refreshCollapsedVariantDetailField() {
+        updateProductInputModel() // save the last input
+        // reset collapsed variables
+        collapsedFields = 0
+        headerStatusMap.forEach {
+            headerStatusMap[it.key] = false
+        }
+        // do refresh
+        productInputModel.value = productInputModel.value // force invoke livedata notify observer
+    }
+
+    private fun setDefaultPrimaryVariant() {
+        productInputModel.getValueOrDefault().variantInputModel.products.let { products ->
+            val isPrimaryVariantExist = products.any {
+                it.isPrimary
+            }
+
+            if (!isPrimaryVariantExist) {
+                products.getOrNull(DEFAULT_IS_PRIMARY_INDEX)?.isPrimary = true
+            }
+        }
+    }
 
     fun getInputFieldSize(): Int {
         return inputFieldSize
@@ -152,6 +181,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 
     fun addToVariantDetailInputMap(fieldPosition: Int, variantDetailInputLayoutModel: VariantDetailInputLayoutModel) {
         inputLayoutModelMap[fieldPosition] = variantDetailInputLayoutModel
+        refreshInputDataValidStatus()
     }
 
     fun updateVariantDetailInputMap(fieldPosition: Int, variantDetailInputLayoutModel: VariantDetailInputLayoutModel) {
@@ -161,27 +191,9 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         }
     }
 
-    private fun refreshInputDataValidStatus() {
-        mInputDataValid.value = !inputLayoutModelMap.any {
-            it.value.isPriceError || it.value.isStockError || it.value.isWeightError
-        }
-    }
-
     fun updateProductInputModel(productInputModel: ProductInputModel) {
         this.productInputModel.value = productInputModel
         setDefaultPrimaryVariant() // set default variant if don't have any
-    }
-
-    private fun setDefaultPrimaryVariant() {
-        productInputModel.getValueOrDefault().variantInputModel.products.let { products ->
-            val isPrimaryVariantExist = products.any {
-                it.isPrimary
-            }
-
-            if (!isPrimaryVariantExist) {
-                products.getOrNull(DEFAULT_IS_PRIMARY_INDEX)?.isPrimary = true
-            }
-        }
     }
 
     fun updateProductInputModel() {
@@ -297,30 +309,6 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     fun getVariantDetailHeaderData(headerPosition: Int): MutableList<VariantDetailInputLayoutModel> {
         val dataMap = inputLayoutModelMap.filterValues { it.headerPosition == headerPosition }
         return dataMap.values.toMutableList()
-    }
-
-    fun getAvailableFields(): Map<Int, VariantDetailInputLayoutModel> {
-        // without combinations and headers
-        if (headerStatusMap.isEmpty()) return inputLayoutModelMap
-        // with variant combinations and headers
-        val expandedHeaderPositions = mutableListOf<Int>()
-        headerStatusMap.forEach {
-            if (!it.value) expandedHeaderPositions.add(it.key)
-        }
-        val filteredMap = inputLayoutModelMap.filterValues { expandedHeaderPositions.contains(it.headerPosition) }
-        if (collapsedFields > 0) {
-            val fieldsMap = mutableMapOf<Int, VariantDetailInputLayoutModel>()
-            filteredMap.forEach {
-                val newFieldPosition = if (it.key <= collapsedFields) {
-                    it.key
-                } else {
-                    it.key - collapsedFields
-                }
-                fieldsMap[newFieldPosition] = it.value
-            }
-            return fieldsMap
-        }
-        return filteredMap
     }
 
     fun updateSwitchStatus(isChecked: Boolean, adapterPosition: Int): VariantDetailInputLayoutModel {
@@ -449,16 +437,4 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
             isMultiLocationShop && (isShopAdmin || isShopOwner)
         }
     }
-
-    private fun refreshCollapsedVariantDetailField() {
-        updateProductInputModel() // save the last input
-        // reset collapsed variables
-        collapsedFields = 0
-        headerStatusMap.forEach {
-            headerStatusMap[it.key] = false
-        }
-        // do refresh
-        productInputModel.value = productInputModel.value // force invoke livedata notify observer
-    }
-
 }
