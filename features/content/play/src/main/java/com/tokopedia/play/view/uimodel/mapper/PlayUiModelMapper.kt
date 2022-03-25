@@ -73,4 +73,10 @@ class PlayUiModelMapper @Inject constructor(
     fun mapUserReportSubmission(input: UserReportSubmissionResponse.Result): Boolean{
         return input.status == "success"
     }
+
+    fun mapFollowingKol(input: List<FollowKOL.FollowedKOL>): Pair<Boolean, String> = Pair(input.firstOrNull()?.status ?: false, input.firstOrNull()?.encryptedUserId ?: "")
+
+    fun mapUnfollowKol(input: KOLUnFollowStatus): Boolean {
+        return input.unFollowedKOLInfo.data.isSuccess == 1
+    }
 }

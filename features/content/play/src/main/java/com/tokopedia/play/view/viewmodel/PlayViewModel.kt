@@ -413,6 +413,8 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
+    private val _observableKolId = MutableLiveData<String>()
+
     //region helper
     private val hasWordsOrDotsRegex = Regex("(\\.+|[a-z]+)")
     private val amountStringStepArray = arrayOf("k", "m")
@@ -805,7 +807,7 @@ class PlayViewModel @AssistedInject constructor(
             ClickCloseLeaderboardSheetAction -> handleCloseLeaderboardSheet()
             ClickFollowAction -> handleClickFollow(isFromLogin = false)
             ClickFollowInteractiveAction -> handleClickFollowInteractive()
-            ClickPartnerNameAction -> handleClickPartnerName()
+            is ClickPartnerNameAction -> handleClickPartnerName(action.appLink)
             ClickRetryInteractiveAction -> handleClickRetryInteractive()
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
             ClickLikeAction -> handleClickLike(isFromLogin = false)
@@ -1181,23 +1183,31 @@ class PlayViewModel @AssistedInject constructor(
      * Update channel data
      */
 
-    /**
-     * Follow status should only be retrieved if and only if the partner is a [PartnerType.Shop]
-     * and if it is not the viewer's own shop id
-     */
     private fun updatePartnerInfo(partnerInfo: PlayPartnerInfo) {
-        if (partnerInfo.type == PartnerType.Shop && partnerInfo.id.toString() != userSession.shopId) {
+        if (partnerInfo.status !is PlayPartnerFollowStatus.NotFollowable && (partnerInfo.id.toString() != userSession.shopId || partnerInfo.id.toString() != userSession.userId)) {
             viewModelScope.launchCatchError(block = {
-                val isFollowing = if (userSession.isLoggedIn) {
-                    repo.getIsFollowingPartner(partnerId = partnerInfo.id)
-                } else false
-                _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(isFollowing)) }
+                val isFollowing = getFollowingStatus(partnerInfo)
+
+                val result = if(isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
+                _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(result)) }
             }, onError = {
 
             })
-        } else {
-            _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.NotFollowable) }
         }
+    }
+
+    private suspend fun getFollowingStatus(partnerInfo: PlayPartnerInfo) : Boolean {
+        return if (userSession.isLoggedIn) {
+            when(partnerInfo.type){
+                PartnerType.Shop -> repo.getIsFollowingPartner(partnerId = partnerInfo.id)
+                PartnerType.Buyer -> {
+                    val data = repo.getFollowingKOL(partnerInfo.id.toString())
+                    _observableKolId.value = data.second
+                    data.first
+                }
+                else -> false
+            }
+        } else false
     }
 
     private fun updateVideoMetaInfo(videoMetaInfo: PlayVideoMetaInfoUiModel) {
@@ -1546,18 +1556,24 @@ class PlayViewModel @AssistedInject constructor(
         val shopId = channelData.partnerInfo.id
 
         val followStatus = _partnerInfo.value.status as? PlayPartnerFollowStatus.Followable ?: return null
-        val shouldFollow = if (shouldForceFollow) true else !followStatus.isFollowing
+        val shouldFollow = if (shouldForceFollow) true else followStatus.followStatus == PartnerFollowableStatus.NotFollowed
         val followAction = if (shouldFollow) PartnerFollowAction.Follow else PartnerFollowAction.UnFollow
 
         _partnerInfo.setValue { (copy(isLoadingFollow = true)) }
 
         viewModelScope.launchCatchError(block = {
-            val isFollowing = repo.postFollowStatus(
+            val isFollowing = if(channelData.partnerInfo.type == PartnerType.Shop){
+                repo.postFollowStatus(
                     shopId = shopId.toString(),
                     followAction = followAction,
-            )
+                )
+            } else {
+                val data = repo.postFollowKol(followedKol = _observableKolId.value.toString(), followAction = followAction)
+                if(data) followAction == PartnerFollowAction.Follow else false
+            }
             _partnerInfo.setValue {
-                copy(isLoadingFollow = false, status = PlayPartnerFollowStatus.Followable(isFollowing))
+                val result = if(isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
+                copy(isLoadingFollow = false, status = PlayPartnerFollowStatus.Followable(result))
             }
         }) {
             _partnerInfo.setValue { (copy(isLoadingFollow = false)) }
@@ -1687,43 +1703,41 @@ class PlayViewModel @AssistedInject constructor(
      * if false, it depends on the current state
      */
     private fun handleClickFollow(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_FOLLOW) {
-        val action = doFollowUnfollow(shouldForceFollow = isFromLogin) ?: return@needLogin
-        val shopId = _partnerInfo.value.id
-        playAnalytic.clickFollowShop(channelId, channelType, shopId.toString(), action.value)
+        if (_partnerInfo.value.status !is PlayPartnerFollowStatus.NotFollowable){
+            val action = doFollowUnfollow(shouldForceFollow = isFromLogin) ?: return@needLogin
+            val shopId = _partnerInfo.value.id
+
+            if(_partnerInfo.value.type == PartnerType.Shop) playAnalytic.clickFollowShop(channelId, channelType, shopId.toString(), action.value)
+        }
     }
 
     /**
      * [PartnerFollowAction] from interactive will definitely [PartnerFollowAction.Follow]
      */
     private fun handleClickFollowInteractive() = needLogin(REQUEST_CODE_LOGIN_FOLLOW) {
-        doFollowUnfollow(shouldForceFollow = true) ?: return@needLogin
+        if (_partnerInfo.value.status !is PlayPartnerFollowStatus.NotFollowable) {
+            doFollowUnfollow(shouldForceFollow = true) ?: return@needLogin
 
-        viewModelScope.launch {
-            _uiEvent.emit(
-                ShowInfoEvent(message = UiString.Resource(R.string.play_interactive_follow_success))
-            )
-        }
+            viewModelScope.launch {
+                _uiEvent.emit(
+                    ShowInfoEvent(message = UiString.Resource(R.string.play_interactive_follow_success))
+                )
+            }
 
-        val interactiveId = repo.getActiveInteractiveId() ?: return@needLogin
-        playAnalytic.clickFollowShopInteractive(
+            val interactiveId = repo.getActiveInteractiveId() ?: return@needLogin
+            if (_partnerInfo.value.type == PartnerType.Shop) playAnalytic.clickFollowShopInteractive(
                 channelId,
                 channelType,
                 interactiveId,
-        )
+            )
+        }
     }
 
-    private fun handleClickPartnerName() {
+    private fun handleClickPartnerName(applink: String) {
         viewModelScope.launch {
             val partnerInfo = _partnerInfo.value
-
-            when (partnerInfo.type) {
-                PartnerType.Shop -> {
-                    playAnalytic.clickShop(channelId, channelType, partnerInfo.id.toString())
-                    _uiEvent.emit(OpenPageEvent(ApplinkConst.SHOP, listOf(partnerInfo.id.toString()), pipMode = true))
-                }
-                PartnerType.Buyer -> _uiEvent.emit(OpenPageEvent(ApplinkConst.PROFILE, listOf(partnerInfo.id.toString()), pipMode = true))
-                else -> {}
-            }
+            if (partnerInfo.type == PartnerType.Shop) playAnalytic.clickShop(channelId, channelType, partnerInfo.id.toString())
+            _uiEvent.emit(OpenPageEvent(applink = applink, pipMode = true))
         }
     }
 

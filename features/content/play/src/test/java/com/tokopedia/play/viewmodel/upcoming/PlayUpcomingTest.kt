@@ -20,6 +20,7 @@ import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
+import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.uimodel.state.PlayUpcomingState
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -404,12 +405,12 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.partner.followStatus.assertEqualTo(PlayPartnerFollowStatus.Followable(true))
+            state.partner.followStatus.isEqualTo(PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.Followed))
         }
     }
 
     @Test
-    fun `given a upcoming channel, when partner is not shop, then the partner state should be not followable`() {
+    fun `given a upcoming channel, when partner is buyer, then the partner state should be followable`() {
         /** Prepare */
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
@@ -426,7 +427,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.partner.followStatus.assertEqualTo(PlayPartnerFollowStatus.NotFollowable)
+            state.partner.followStatus.assertEqualTo(PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed))
         }
     }
 
@@ -470,7 +471,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.Refresh)
+            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.Refresh)
 
             events.assertNotEmpty()
             events.last().isEqualToIgnoringFields(mockEvent, PlayUpcomingUiEvent.ShowInfoEvent::message)
@@ -515,7 +516,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.WatchNow)
+            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.WatchNow)
         }
     }
 
