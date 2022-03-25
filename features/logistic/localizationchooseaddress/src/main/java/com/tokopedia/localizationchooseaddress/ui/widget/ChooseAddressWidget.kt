@@ -192,12 +192,7 @@ class ChooseAddressWidget : ConstraintLayout,
     private fun initChooseAddressFlow() {
         val localData = ChooseAddressUtils.getLocalizingAddressData(context)
         updateWidget()
-//        if ((chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && viewModel.isFirstLoad) || localData.address_id.isEmpty()) {
-//            initObservers()
         if (viewModel.isFirstLoad) {
-//                if (chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true || localData.address_id.isEmpty()) {
-//                    initObservers()
-//                }
             if (localData.address_id.isEmpty()) {
                 initObservers()
                 chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
@@ -207,18 +202,6 @@ class ChooseAddressWidget : ConstraintLayout,
                 viewModel.getTokonowData(localData)
             }
         }
-//            }
-//            if (localData.address_id.isEmpty() && viewModel.isFirstLoad) {
-//                chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
-//                    ?.let { viewModel.getStateChosenAddress(it, isSupportWarehouseLoc) }
-//            } else {
-//                if (chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && viewModel.isFirstLoad) {
-//                    viewModel.getTokonowData(localData)
-//                }
-//            }
-//        }
-
-
     }
 
     fun bindChooseAddress(listener: ChooseAddressWidgetListener) {
