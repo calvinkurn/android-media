@@ -35,7 +35,8 @@ data class Watermark(
 ) {
 
     init {
-        watermarkTextAndImage?.textShadowColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N100)
+        watermarkTextAndImage?.textShadowColor =
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N100)
 
         if (!isCombine) {
             createWatermarkImage(watermarkImg)

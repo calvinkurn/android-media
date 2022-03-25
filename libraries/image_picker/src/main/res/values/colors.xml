@@ -2,4 +2,11 @@
 <resources>
     <color name="dms_green_neutral_30">#4D03AC0E</color>
     <color name="dms_grey_neutral_200">#D6DFEB</color>
+    <color name="imagepicker_dms_white_two">#e0e0e0</color>
+    <color name="imagepicker_dms_main_green">#42b549</color>
+    <color name="imagepicker_dms_background_notification">#EA212D</color>
+    <color name="imagepicker_dms_grey_500">#9e9e9e</color>
+    <color name="imagepicker_dms_font_black_primary_70">#B3000000</color>
+    <color name="imagepicker_dms_background_dark_shadow">#D0000000</color>
+    <color name="imagepicker_dms_seek_bar">#505050</color>
 </resources>
