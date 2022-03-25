@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.feature.list.view.adapter
 
+import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
@@ -10,22 +11,66 @@ import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiMode
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.common.util.ProductManageAdapterLogger
 import com.tokopedia.product.manage.common.view.adapter.base.BaseProductManageAdapter
+import com.tokopedia.product.manage.common.view.adapter.differ.ProductManageDiffer
 import com.tokopedia.product.manage.feature.list.extension.findIndex
 import com.tokopedia.product.manage.feature.list.view.adapter.differ.ProductListDiffer
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactoryImpl
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
+/**
+ * Adapter using diff util
+ */
 class ProductManageListAdapter(
     baseListAdapterTypeFactory: ProductManageAdapterFactoryImpl,
     private val deviceId: String
-) : BaseProductManageAdapter<Visitable<*>, ProductManageAdapterFactoryImpl>(baseListAdapterTypeFactory, ProductListDiffer()) {
+) : BaseProductManageAdapter<Visitable<*>, ProductManageAdapterFactoryImpl>(
+    baseListAdapterTypeFactory
+) {
 
-    fun updateProduct(itemList: List<Visitable<*>>) {
+    private val differ: ProductManageDiffer = ProductListDiffer()
+
+    override fun showLoading() {
+        if (!isLoading) {
+            val items = getItems()
+            if (isShowLoadingMore) {
+                items.add(loadingMoreModel)
+            } else {
+                items.add(loadingModel)
+            }
+            submitList(items)
+        }
+    }
+
+    override fun hideLoading() {
+        if(isLoading) {
+            val items = getItems()
+            items.removeAt(lastIndex)
+            submitList(items)
+        }
+    }
+
+    override fun removeErrorNetwork() {
+        val items = getItems()
+        items.remove(errorNetworkModel)
+        submitList(items)
+    }
+
+    override fun addElement(itemList: MutableList<out Visitable<Any>>?) {
+        val items = getItems()
+        items.addAll(itemList?.toList().orEmpty())
+        submitList(items)
+    }
+
+    override fun clearAllElements() {
+        submitList(emptyList())
+    }
+
+    override fun updateProduct(itemList: List<Visitable<*>>) {
         logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_PRODUCT)
         submitList(itemList)
     }
 
-    fun removeEmptyAndUpdateLayout(itemList: List<Visitable<*>>) {
+    override fun removeEmptyAndUpdateLayout(itemList: List<Visitable<*>>) {
         logUpdate(ProductManageAdapterLogger.MethodName.REMOVE_AND_UPDATE_LAYOUT)
         val items = data.filter { it !is EmptyModel }.toMutableList().apply {
             addAll(itemList)
@@ -33,8 +78,10 @@ class ProductManageListAdapter(
         submitList(items)
     }
 
-    fun checkAllProducts(itemsChecked: MutableList<ProductUiModel>,
-                         onSetItemsChecked: (MutableList<ProductUiModel>) -> Unit) {
+    override fun checkAllProducts(
+        itemsChecked: MutableList<ProductUiModel>,
+        onSetItemsChecked: (MutableList<ProductUiModel>) -> Unit
+    ) {
         logUpdate(ProductManageAdapterLogger.MethodName.CHECK_ALL_PRODUCTS)
         val items = data.filterIsInstance<ProductUiModel>().toMutableList()
         val newItems = items.map { product ->
@@ -48,9 +95,11 @@ class ProductManageListAdapter(
         onSetItemsChecked(itemsChecked)
     }
 
-    fun unCheckMultipleProducts(productIds: List<String>? = null,
-                                itemsChecked: MutableList<ProductUiModel>,
-                                onSetItemsUnchecked: (MutableList<ProductUiModel>) -> Unit) {
+    override fun unCheckMultipleProducts(
+        productIds: List<String>?,
+        itemsChecked: MutableList<ProductUiModel>,
+        onSetItemsUnchecked: (MutableList<ProductUiModel>) -> Unit
+    ) {
         logUpdate(ProductManageAdapterLogger.MethodName.UNCHECK_MULTIPLE_PRODUCTS)
         val items = data.filterIsInstance<ProductUiModel>().toMutableList()
         val productIdList =
@@ -71,7 +120,7 @@ class ProductManageListAdapter(
         onSetItemsUnchecked(itemsChecked)
     }
 
-    fun updateEmptyState(emptyModel: EmptyModel) {
+    override fun updateEmptyState(emptyModel: EmptyModel) {
         logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_EMPTY_STATE)
         if (data.getOrNull(lastIndex) !is EmptyModel) {
             val list = data.toMutableList()
@@ -84,7 +133,7 @@ class ProductManageListAdapter(
         }
     }
 
-    fun updatePrice(productId: String, price: String) {
+    override fun updatePrice(productId: String, price: String) {
         logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_PRICE)
         submitList(productId) {
             val formattedPrice = price.toIntOrZero().getCurrencyFormatted()
@@ -93,19 +142,21 @@ class ProductManageListAdapter(
         }
     }
 
-    fun updatePrice(editResult: EditVariantResult) {
+    override fun updatePrice(editResult: EditVariantResult) {
         logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_PRICE_VARIANT)
         submitList(editResult.productId) {
             val editedMinPrice = editResult.variants.minByOrNull { it.price }?.price.orZero()
             val editedMaxPrice = editResult.variants.maxByOrNull { it.price }?.price.orZero()
 
-            val minPrice = PriceUiModel(editedMinPrice.toString(), editedMinPrice.getCurrencyFormatted())
-            val maxPrice = PriceUiModel(editedMaxPrice.toString(), editedMaxPrice.getCurrencyFormatted())
+            val minPrice =
+                PriceUiModel(editedMinPrice.toString(), editedMinPrice.getCurrencyFormatted())
+            val maxPrice =
+                PriceUiModel(editedMaxPrice.toString(), editedMaxPrice.getCurrencyFormatted())
             it.copy(minPrice = minPrice, maxPrice = maxPrice)
         }
     }
 
-    fun updateStock(productId: String, stock: Int?, status: ProductStatus?) {
+    override fun updateStock(productId: String, stock: Int?, status: ProductStatus?) {
         logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_STOCK)
         submitList(productId) {
             var product = it
@@ -115,12 +166,12 @@ class ProductManageListAdapter(
         }
     }
 
-    fun updateCashBack(productId: String, cashback: Int) {
+    override fun updateCashBack(productId: String, cashback: Int) {
         logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_CASHBACK)
         submitList(productId) { it.copy(cashBack = cashback) }
     }
 
-    fun deleteProduct(productId: String) {
+    override fun deleteProduct(productId: String) {
         logUpdate(ProductManageAdapterLogger.MethodName.DELETE_PRODUCT)
         val items = data.filterIsInstance<ProductUiModel>().toMutableList()
         items.findIndex(productId)?.let { index ->
@@ -129,7 +180,7 @@ class ProductManageListAdapter(
         }
     }
 
-    fun deleteProducts(productIds: List<String>) {
+    override fun deleteProducts(productIds: List<String>) {
         logUpdate(ProductManageAdapterLogger.MethodName.DELETE_PRODUCTS)
         val items = data.filterIsInstance<ProductUiModel>().toMutableList()
         productIds.forEach { id ->
@@ -140,12 +191,12 @@ class ProductManageListAdapter(
         submitList(items)
     }
 
-    fun updateFeaturedProduct(productId: String, isFeaturedProduct: Boolean) {
+    override fun updateFeaturedProduct(productId: String, isFeaturedProduct: Boolean) {
         logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_FEATURED_PRODUCT)
         submitList(productId) { it.copy(isFeatured = isFeaturedProduct) }
     }
 
-    fun setProductsStatuses(productIds: List<String>, productStatus: ProductStatus) {
+    override fun setProductsStatuses(productIds: List<String>, productStatus: ProductStatus) {
         logUpdate(ProductManageAdapterLogger.MethodName.SET_PRODUCTS_STATUSES)
         val items = data.filterIsInstance<ProductUiModel>().toMutableList()
         productIds.forEach { id ->
@@ -156,7 +207,7 @@ class ProductManageListAdapter(
         submitList(items)
     }
 
-    fun setMultiSelectEnabled(multiSelectEnabled: Boolean) {
+    override fun setMultiSelectEnabled(multiSelectEnabled: Boolean) {
         logUpdate(ProductManageAdapterLogger.MethodName.SET_MULTI_SELECT_ENABLED)
         val items = data.filterIsInstance<ProductUiModel>().map {
             it.copy(multiSelectActive = multiSelectEnabled, isChecked = false)
@@ -164,7 +215,7 @@ class ProductManageListAdapter(
         submitList(items)
     }
 
-    fun filterProductList(predicate: (ProductUiModel) -> Boolean) {
+    override fun filterProductList(predicate: (ProductUiModel) -> Boolean) {
         logUpdate(ProductManageAdapterLogger.MethodName.FILTER_PRODUCT_LIST)
         val productList = data.filterIsInstance<ProductUiModel>().filter { predicate.invoke(it) }
         submitList(productList)
@@ -177,6 +228,18 @@ class ProductManageListAdapter(
             items[it] = update.invoke(items[it])
             submitList(items)
         }
+    }
+
+    private fun submitList(items: List<Visitable<*>>) {
+        val diffUtilCallback = differ.create(visitables, items)
+        val result = DiffUtil.calculateDiff(diffUtilCallback)
+        visitables.clear()
+        visitables.addAll(items)
+        result.dispatchUpdatesTo(this)
+    }
+
+    private fun getItems(): MutableList<Visitable<*>> {
+        return visitables.toMutableList()
     }
 
     private fun logUpdate(methodName: String) {
