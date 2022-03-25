@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.view.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
-import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagPlaceholderUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.TagViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.delegate.TagAdapterDelegate
@@ -23,8 +22,6 @@ class TagRecommendationListAdapter(
     override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {
         if(oldItem is Model.Tag && newItem is Model.Tag)
             return oldItem.data.tag == newItem.data.tag
-        else if(oldItem is Model.Placeholder && newItem is Model.Placeholder)
-            return oldItem.data.size == newItem.data.size
         return oldItem == newItem
     }
 
@@ -34,6 +31,6 @@ class TagRecommendationListAdapter(
 
     sealed class Model {
         data class Tag(val data: PlayTagUiModel): Model()
-        data class Placeholder(val data: PlayTagPlaceholderUiModel): Model()
+        object Placeholder: Model()
     }
 }

@@ -14,9 +14,7 @@ class TagPlaceholderAdapterDelegate : TypedAdapterDelegate<TagRecommendationList
     override fun onBindViewHolder(
         item: TagRecommendationListAdapter.Model.Placeholder,
         holder: TagPlaceholderViewHolder
-    ) {
-        holder.bind(item)
-    }
+    ) { }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): TagPlaceholderViewHolder {
         return TagPlaceholderViewHolder.create(parent)

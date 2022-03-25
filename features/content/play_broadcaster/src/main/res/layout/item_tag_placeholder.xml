@@ -1,29 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <View
-        android:id="@+id/ph_tag_recommendation_small"
-        style="@style/PlayTagPlaceholder"
-        android:layout_width="@dimen/layout_lvl7"
-        android:layout_height="@dimen/play_bro_tag_placeholder_height"
-        android:visibility="gone" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/spacing_lvl3">
 
-    <View
-        android:id="@+id/ph_tag_recommendation_medium"
-        style="@style/PlayTagPlaceholder"
-        android:layout_width="@dimen/layout_lvl8"
-        android:layout_height="@dimen/play_bro_tag_placeholder_height"
-        android:visibility="gone"
-        tools:visibility="visible" />
+        <View
+            style="@style/PlayTagPlaceholder"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/play_bro_tag_placeholder_height"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:layout_weight="3" />
 
-    <View
-        android:id="@+id/ph_tag_recommendation_large"
-        style="@style/PlayTagPlaceholder"
-        android:layout_width="@dimen/layout_lvl9"
-        android:layout_height="@dimen/play_bro_tag_placeholder_height"
-        android:visibility="gone" />
+        <View
+            style="@style/PlayTagPlaceholder"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/play_bro_tag_placeholder_height"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:layout_weight="2" />
 
-</FrameLayout>
+        <View
+            style="@style/PlayTagPlaceholder"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/play_bro_tag_placeholder_height"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:layout_weight="4" />
+
+        <View
+            style="@style/PlayTagPlaceholder"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/play_bro_tag_placeholder_height"
+            android:layout_weight="3" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/spacing_lvl3">
+
+        <View
+            style="@style/PlayTagPlaceholder"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/play_bro_tag_placeholder_height"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:layout_weight="3" />
+
+        <View
+            style="@style/PlayTagPlaceholder"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/play_bro_tag_placeholder_height"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:layout_weight="3" />
+
+        <View
+            style="@style/PlayTagPlaceholder"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/play_bro_tag_placeholder_height"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:layout_weight="2" />
+
+        <View
+            style="@style/PlayTagPlaceholder"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/play_bro_tag_placeholder_height"
+            android:layout_weight="3" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/spacing_lvl3">
+
+        <View
+            style="@style/PlayTagPlaceholder"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/play_bro_tag_placeholder_height"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:layout_weight="3" />
+
+        <View
+            style="@style/PlayTagPlaceholder"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/play_bro_tag_placeholder_height"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:layout_weight="2" />
+
+        <View
+            style="@style/PlayTagPlaceholder"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/play_bro_tag_placeholder_height"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:layout_weight="4" />
+
+        <View
+            style="@style/PlayTagPlaceholder"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/play_bro_tag_placeholder_height"
+            android:layout_weight="3" />
+
+    </LinearLayout>
+
+</LinearLayout>

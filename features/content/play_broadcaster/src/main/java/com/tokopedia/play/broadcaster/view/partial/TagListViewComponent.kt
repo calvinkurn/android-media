@@ -1,8 +1,6 @@
 package com.tokopedia.play.broadcaster.view.partial
 
 import android.view.ViewGroup
-import androidx.annotation.IdRes
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
@@ -10,7 +8,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.databinding.LayoutTagRecommendationBinding
 import com.tokopedia.play.broadcaster.ui.itemdecoration.TagItemDecoration
-import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagPlaceholderUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.TagViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.TagRecommendationListAdapter
@@ -26,18 +23,7 @@ class TagListViewComponent(
 ) : ViewComponent(container, binding.root.id), TagViewHolder.Listener {
 
     private val placeholder by lazy(mode = LazyThreadSafetyMode.NONE) {
-        List(PLACEHOLDER_COUNT) {
-            TagRecommendationListAdapter.Model.Placeholder(
-                data = PlayTagPlaceholderUiModel(
-                    size = when((0..2).random() % 3) {
-                        0 -> PlayTagPlaceholderUiModel.Size.SMALL
-                        1 -> PlayTagPlaceholderUiModel.Size.MEDIUM
-                        2 -> PlayTagPlaceholderUiModel.Size.LARGE
-                        else -> PlayTagPlaceholderUiModel.Size.MEDIUM
-                    }
-                )
-            )
-        }
+        listOf(TagRecommendationListAdapter.Model.Placeholder)
     }
 
     private val adapter = TagRecommendationListAdapter(this)
@@ -82,9 +68,5 @@ class TagListViewComponent(
 
         fun onTagClicked(view: TagListViewComponent, tag: PlayTagUiModel)
         fun onTagRefresh(view: TagListViewComponent)
-    }
-
-    companion object {
-        private const val PLACEHOLDER_COUNT = 9
     }
 }

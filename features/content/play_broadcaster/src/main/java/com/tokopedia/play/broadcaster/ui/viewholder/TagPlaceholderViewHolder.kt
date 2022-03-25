@@ -5,22 +5,14 @@ import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.databinding.ItemTagPlaceholderBinding
-import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagPlaceholderUiModel
 import com.tokopedia.play.broadcaster.view.adapter.TagRecommendationListAdapter
 
 /**
  * Created By : Jonathan Darwin on March 25, 2022
  */
 class TagPlaceholderViewHolder private constructor(
-    private val binding: ItemTagPlaceholderBinding
+    binding: ItemTagPlaceholderBinding
 ) : BaseViewHolder(binding.root) {
-
-    fun bind(item: TagRecommendationListAdapter.Model.Placeholder) {
-        val size = item.data.size
-        binding.phTagRecommendationSmall.showWithCondition(size == PlayTagPlaceholderUiModel.Size.SMALL)
-        binding.phTagRecommendationMedium.showWithCondition(size == PlayTagPlaceholderUiModel.Size.MEDIUM)
-        binding.phTagRecommendationLarge.showWithCondition(size == PlayTagPlaceholderUiModel.Size.LARGE)
-    }
 
     companion object {
         fun create(parent: ViewGroup) : TagPlaceholderViewHolder {
