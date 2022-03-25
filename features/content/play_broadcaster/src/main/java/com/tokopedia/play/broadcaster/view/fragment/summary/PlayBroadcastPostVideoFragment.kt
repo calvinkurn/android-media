@@ -184,10 +184,20 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         }
     }
 
-    private fun renderTag(prev: TagUiState?, value: TagUiState) {
+    private fun renderTag(prev: NetworkResult<TagUiState>?, value: NetworkResult<TagUiState>) {
         if(prev == value) return
 
-        tagListView.setTags(value.tags.toList())
+        when(value) {
+            NetworkResult.Loading -> {
+                /** TODO: handle loading state */
+            }
+            is NetworkResult.Success -> {
+                tagListView.setTags(value.data.tags.toList())
+            }
+            is NetworkResult.Fail -> {
+                /** TODO: handle error state */
+            }
+        }
     }
 
     private fun openShopPageWithBroadcastStatus(isSaved: Boolean) {
