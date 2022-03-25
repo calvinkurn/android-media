@@ -98,7 +98,7 @@ class ChangeBioUsernameViewModel @Inject constructor(
                 if (status) {
                     _resultSubmitUsername.value = Success(result.response)
                 } else {
-                    _resultSubmitUsername.value = Fail(Throwable(""))
+                    _resultSubmitUsername.value = Fail(Throwable("status false"))
                 }
             } else {
                 _resultSubmitUsername.value = Fail(Throwable(resultValidation.errorMessage))
