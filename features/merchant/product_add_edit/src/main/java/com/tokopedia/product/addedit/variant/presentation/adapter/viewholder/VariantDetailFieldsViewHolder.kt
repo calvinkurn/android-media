@@ -5,10 +5,10 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.updateLayoutParams
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.afterTextChanged
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.setModeToNumberInput
 import com.tokopedia.product.addedit.common.util.setRecyclerViewEditorActionListener
@@ -135,6 +135,13 @@ class VariantDetailFieldsViewHolder(
         }
     }
 
+    private fun setSkuFieldVisibility(isVisible: Boolean) {
+        skuField?.isVisible = isVisible
+        weightField?.updateLayoutParams<ConstraintLayout.LayoutParams> {
+            startToStart = if (isVisible) R.id.guideline else priceField?.id.orZero()
+        }
+    }
+
     override fun bind(element: VariantDetailFieldsUiModel?) {
         element?.run {
             val variantDetailInputLayoutModel = this.variantDetailInputLayoutModel
@@ -152,8 +159,7 @@ class VariantDetailFieldsViewHolder(
             skuField?.textFieldInput?.setText(variantDetailInputLayoutModel.sku)
             weightField?.textFieldInput?.setText(variantDetailInputLayoutModel.weight.toString())
             // show / hide sku field
-            if (variantDetailInputLayoutModel.isSkuFieldVisible) skuField?.show()
-            else skuField?.hide()
+            setSkuFieldVisibility(variantDetailInputLayoutModel.isSkuFieldVisible)
             // enable / disable priceField
             priceField?.textFieldInput?.isEnabled = variantDetailInputLayoutModel.priceEditEnabled
             // flag to prevent exception from
