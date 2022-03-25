@@ -73,10 +73,12 @@ fun Long.toVideoMaxDurationTextFormat(context: Context): String {
     return if (this < 60) {
         "$this ${context.getString(mediaPickerR.string.picker_video_duration_max_limit_sec)}"
     } else {
+        val minResult = "${this / 60} ${context.getString(mediaPickerR.string.picker_video_duration_max_limit_min)}"
         val remainingSec = this % 60
 
-        "${this / 60} " + context.getString(mediaPickerR.string.picker_video_duration_max_limit_min) +
-                if (remainingSec == 0L) ""
-                else " $remainingSec ${context.getString(mediaPickerR.string.picker_video_duration_max_limit_sec)}"
+        return if (remainingSec == 0L)
+            minResult
+        else
+            minResult + "$remainingSec ${context.getString(mediaPickerR.string.picker_video_duration_max_limit_sec)}"
     }
 }
