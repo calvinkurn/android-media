@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationCarouselVideoBinding
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView.Option
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.video_widget.VideoPlayer
@@ -20,7 +19,7 @@ class InspirationCarouselVideoViewHolder(
     itemView: View,
     private val inspirationVideoCarouselListener: InspirationVideoCarouselListener,
     private val videoCarouselWidgetCoordinator: VideoCarouselWidgetCoordinator,
-) : AbstractViewHolder<InspirationCarouselDataView>(itemView),
+) : AbstractViewHolder<InspirationCarouselVideoDataView>(itemView),
     VideoPlayerProvider,
     VideoCarouselItemListener {
     companion object {
@@ -31,11 +30,11 @@ class InspirationCarouselVideoViewHolder(
     private var binding: SearchInspirationCarouselVideoBinding? by viewBinding()
     private var option: Option? = null
 
-    override fun bind(element: InspirationCarouselDataView) {
-        val data = element.options.getOrNull(0) ?: return
+    override fun bind(element: InspirationCarouselVideoDataView) {
+        val data = element.data.options.getOrNull(0) ?: return
         option = data
         val videoCarousel = binding?.videoCarousel ?: return
-        videoCarouselWidgetCoordinator.controlWidget(videoCarousel)
+        videoCarouselWidgetCoordinator.controlWidget(videoCarousel, this)
         videoCarouselWidgetCoordinator.connect(videoCarousel, data.toCarouselDataModel())
     }
 

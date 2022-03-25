@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView
 import com.tokopedia.search.result.presentation.model.BannedProductsTickerDataView
@@ -73,6 +72,7 @@ import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSiz
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListener
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaViewHolder
+import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoViewHolder
 import com.tokopedia.search.result.product.videowidget.InspirationVideoCarouselListener
 import com.tokopedia.search.result.product.violation.ViolationDataView
@@ -143,11 +143,11 @@ class ProductListTypeFactoryImpl(
     }
 
     override fun type(inspirationCarouselDataView: InspirationCarouselDataView): Int {
-        return if(inspirationCarouselDataView.layout == LAYOUT_INSPIRATION_CAROUSEL_VIDEO) {
-            InspirationCarouselVideoViewHolder.LAYOUT
-        } else {
-            InspirationCarouselViewHolder.LAYOUT
-        }
+        return InspirationCarouselViewHolder.LAYOUT
+    }
+
+    override fun type(inspirationCarouselDataView: InspirationCarouselVideoDataView): Int {
+        return InspirationCarouselVideoViewHolder.LAYOUT
     }
 
     override fun type(loadingMoreModel: LoadingMoreModel): Int {

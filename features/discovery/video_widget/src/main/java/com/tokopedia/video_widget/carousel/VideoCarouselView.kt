@@ -101,7 +101,7 @@ class VideoCarouselView : BaseCustomView, VideoPlayer {
     }
 
     fun recycle() {
-
+        this.listener = null
     }
 
     fun setWidgetListener(listener: VideoCarouselItemListener?) {

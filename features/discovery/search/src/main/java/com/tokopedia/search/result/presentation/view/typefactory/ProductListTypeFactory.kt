@@ -25,6 +25,7 @@ import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
 import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeDataView
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
+import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.result.product.violation.ViolationDataView
 
 interface ProductListTypeFactory {
@@ -34,6 +35,7 @@ interface ProductListTypeFactory {
     fun type(suggestionDataView: SuggestionDataView): Int
     fun type(globalNavDataView: GlobalNavDataView): Int
     fun type(inspirationCarouselDataView: InspirationCarouselDataView): Int
+    fun type(inspirationCarouselDataView: InspirationCarouselVideoDataView): Int
     fun type(titleViewModel: RecommendationTitleDataView): Int
     fun type(recommendationItemDataView: RecommendationItemDataView): Int
     fun type(bannedProductsEmptySearchDataView: BannedProductsEmptySearchDataView): Int

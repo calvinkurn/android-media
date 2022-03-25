@@ -68,7 +68,7 @@ class VideoCarouselWidgetCoordinator(
         scope.coroutineContext.cancelChildren()
     }
 
-    fun controlWidget(widget: VideoCarouselView) {
+    fun controlWidget(widget: VideoCarouselView, listener: VideoCarouselItemListener) {
         this.widget = widget
         widget.setWidgetInternalListener(internalListener)
         widget.setWidgetListener(listener)
