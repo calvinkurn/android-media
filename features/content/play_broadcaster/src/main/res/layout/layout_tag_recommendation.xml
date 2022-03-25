@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_tags_recommendation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" />
+
+    <com.tokopedia.unifycomponents.LocalLoad
+        android:id="@+id/local_load_tag_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:unify_local_load_description="@string/play_bro_tag_recommendation_error_desc"
+        app:unify_local_load_title="@string/play_bro_tag_recommendation_error_title"
+        tools:visibility="visible" />
+
+</FrameLayout>

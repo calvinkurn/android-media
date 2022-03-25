@@ -89,7 +89,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     ) { tags, selectedTags ->
         when(tags) {
             is NetworkResult.Loading -> NetworkResult.Loading
-            is NetworkResult.Fail -> NetworkResult.Fail(tags.error, tags.onRetry)
+            is NetworkResult.Fail -> NetworkResult.Fail(tags.error)
             is NetworkResult.Success -> {
                 NetworkResult.Success(
                     TagUiState(
@@ -292,9 +292,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
 
             _tags.value = NetworkResult.Success(response.recommendedTags.tags.toSet())
         }) {
-            _tags.value = NetworkResult.Fail(it) {
-                submitAction(PlayBroadcastSummaryAction.RefreshLoadTag)
-            }
+            _tags.value = NetworkResult.Fail(it)
         }
     }
 
