@@ -10,20 +10,22 @@ import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.header.HeaderUnify
+import com.tokopedia.people.R
+import com.tokopedia.people.di.DaggerUserProfileComponent
+import com.tokopedia.people.di.UserProfileModule
 import com.tokopedia.people.views.UserProfileFragment.Companion.EXTRA_DISPLAY_NAME
 import com.tokopedia.people.views.UserProfileFragment.Companion.EXTRA_IS_FOLLOWERS
 import com.tokopedia.people.views.UserProfileFragment.Companion.EXTRA_TOTAL_FOLLOWERS
 import com.tokopedia.people.views.UserProfileFragment.Companion.EXTRA_TOTAL_FOLLOWINGS
 import com.tokopedia.people.views.UserProfileFragment.Companion.EXTRA_USER_NAME
-import com.tokopedia.header.HeaderUnify
-import com.tokopedia.people.R
-import com.tokopedia.people.di.UserProfileModule
-import com.tokopedia.people.di.DaggerUserProfileComponent
 import com.tokopedia.unifycomponents.TabsUnify
 import javax.inject.Inject
 
 
 class FollowerFollowingListingFragment : BaseDaggerFragment() {
+
+    private var userId = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -119,7 +121,16 @@ class FollowerFollowingListingFragment : BaseDaggerFragment() {
             }
 
             override fun onPageSelected(position: Int) {
-
+                if(position == 0) {
+                    UserProfileTracker().openFollowersTab(
+                        userId
+                    )
+                }
+                else{
+                    UserProfileTracker().openFollowingTab(
+                        userId
+                    )
+                }
             }
 
 
@@ -134,6 +145,7 @@ class FollowerFollowingListingFragment : BaseDaggerFragment() {
         header?.apply {
 
             title = arguments?.getString(EXTRA_DISPLAY_NAME).toString()
+            userId = arguments?.getString(UserProfileFragment.EXTRA_USER_ID).toString()
             val subTitle = arguments?.getString(EXTRA_USER_NAME).toString()
 
             if (subTitle.isNotBlank()) {

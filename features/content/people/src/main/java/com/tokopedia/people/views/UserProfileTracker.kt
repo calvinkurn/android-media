@@ -343,12 +343,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    fun openFollowersTab(userId: String, self: Boolean){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    fun openFollowersTab(userId: String){
         val map = mutableMapOf<String, Any>()
         map[UserProfileAnalytics.Constants.EVENT] = UserProfileAnalytics.Event.EVENT_OPEN_SCREEN
         map[UserProfileAnalytics.Constants.SCREEN_NAME] = "feed user profile - follower tab"
@@ -413,12 +408,7 @@ class UserProfileTracker {
         UserProfileAnalytics().analyticTracker.sendGeneralEvent(map)
     }
 
-    fun openFollowingTab(userId: String, self: Boolean){
-        val label = if(self){
-            "self"
-        } else{
-            "visitor"
-        }
+    fun openFollowingTab(userId: String){
         val map = mutableMapOf<String, Any>()
         map[UserProfileAnalytics.Constants.EVENT] = UserProfileAnalytics.Event.EVENT_OPEN_SCREEN
         map[UserProfileAnalytics.Constants.SCREEN_NAME] = "feed user profile - following tab"

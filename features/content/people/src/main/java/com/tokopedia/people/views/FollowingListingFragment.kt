@@ -82,7 +82,6 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
         globalError = view?.findViewById(R.id.ge_followers)
         initObserver()
         initMainUi()
-        UserProfileTracker().openFollowingTab(userSessionInterface.userId,  arguments?.getString(UserProfileFragment.EXTRA_PROFILE_USER_ID)== userSessionInterface.userId)
     }
 
     private fun initObserver() {

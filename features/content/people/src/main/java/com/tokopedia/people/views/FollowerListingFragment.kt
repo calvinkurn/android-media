@@ -76,7 +76,7 @@ class FollowerListingFragment : BaseDaggerFragment(), AdapterCallback {
         globalError = view.findViewById(R.id.ge_followers)
         initObserver()
         initMainUi()
-        UserProfileTracker().openFollowersTab(userSessionInterface.userId,  arguments?.getString(UserProfileFragment.EXTRA_PROFILE_USER_ID)== userSessionInterface.userId)
+        UserProfileTracker().openFollowersTab(userSessionInterface.userId)
     }
 
     private fun initObserver() {
