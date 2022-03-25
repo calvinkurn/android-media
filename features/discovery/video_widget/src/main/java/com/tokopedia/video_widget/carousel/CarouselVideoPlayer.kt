@@ -3,6 +3,7 @@ package com.tokopedia.video_widget.carousel
 import android.content.Context
 import android.net.Uri
 import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -12,6 +13,8 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.trackselection.TrackSelector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.util.Util
@@ -24,6 +27,8 @@ class CarouselVideoPlayer(context: Context) {
     companion object {
         private const val MINIMUM_DENSITY_MATRIX = 1.5f
 
+        private const val MAXIMUM_VIDEO_BANDWIDTH = 600_000
+
         private const val DEFAULT_CLIP_DURATION = 5_000_000L // 5 second in microsecond
         private const val ONE_MICRO_SECOND = 1_000_000L // 1 second in microsecond
     }
@@ -31,7 +36,10 @@ class CarouselVideoPlayer(context: Context) {
     private val contextReference = WeakReference(context)
     private val context: Context?
         get() = contextReference.get()
-    private val exoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(context).build()
+    private val exoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(context)
+        .setLoadControl(DefaultLoadControl())
+        .setTrackSelector(initTrackSelector(context))
+        .build()
 
     var listener: VideoPlayerListener? = null
     var videoUrl: String? = null
@@ -53,6 +61,16 @@ class CarouselVideoPlayer(context: Context) {
                 }
             }
         })
+    }
+
+    private fun initTrackSelector(context: Context) : TrackSelector {
+        val defaultTrackSelector = DefaultTrackSelector.ParametersBuilder(context)
+            .setMaxVideoBitrate(MAXIMUM_VIDEO_BANDWIDTH)
+            .setExceedVideoConstraintsIfNecessary(true)
+            .build()
+        return DefaultTrackSelector(context).apply {
+            parameters = defaultTrackSelector
+        }
     }
 
     private fun whenIsPlayingChanged(isPlaying: Boolean) {
