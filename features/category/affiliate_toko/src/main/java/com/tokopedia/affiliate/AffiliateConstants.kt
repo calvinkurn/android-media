@@ -95,3 +95,5 @@ const val FACEBOOK_DEFAULT = "https://www.faceboook.com/"
 const val TWITTER_DEFAULT = "https://www.twitter.com/"
 
 const val YOUTUBE_DEFAULT = "https://www.youtube.com/"
+
+const val WWW = "www."

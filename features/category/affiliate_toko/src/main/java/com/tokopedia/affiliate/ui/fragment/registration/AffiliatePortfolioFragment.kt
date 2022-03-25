@@ -20,6 +20,7 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
+import com.tokopedia.affiliate.hideKeyboard
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
 import com.tokopedia.affiliate.interfaces.PortfolioClickInterface
 import com.tokopedia.affiliate.interfaces.PortfolioUrlTextUpdateInterface
@@ -202,6 +203,9 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
                 affiliatePortfolioViewModel.updateFocus(position + 1, b)
                 affiliatePortfolioViewModel.updateFocus(position,false)
             }
+            else{
+                view?.hideKeyboard(context)
+            }
         }
     }
 
@@ -228,9 +232,7 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
     }
 
     override fun addSocialMediaButtonClicked() {
-        view?.requestFocus()
-        val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-        imm?.showSoftInput(view, 0)
+        view?.hideKeyboard(context)
         AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
                 this, affiliatePortfolioViewModel.getCurrentSocialIds(),
                 "", "", "", "",
@@ -251,6 +253,7 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
                 }
             }
             affiliateNavigationInterface?.navigateToTermsFragment(arrayListOfChannels)
+            view?.hideKeyboard(context)
         }else {
             view?.let { view ->
                 Toaster.build(view, getString(com.tokopedia.affiliate_toko.R.string.affiliate_please_fill_one_social_media),
