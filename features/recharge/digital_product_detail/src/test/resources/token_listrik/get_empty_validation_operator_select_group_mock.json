@@ -1,0 +1,29 @@
+{
+  "rechargeCatalogOperatorSelectGroup": {
+    "text": "Client Number",
+    "style": "input_alphanumeric",
+    "validations": [],
+    "otherComponent": [],
+    "operatorGroup": [
+      {
+        "name": "",
+        "operators": [
+          {
+            "id": 6,
+            "attributes": {
+              "description": "",
+              "name": "Token Listrik",
+              "image": "",
+              "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/2/3/22166894/22166894_5ecb2ca6-481d-4b9b-9d17-f0e14a1d618e.jpg",
+              "prefix": [],
+              "custom_attributes": [],
+              "custom_data": {
+                "tabs": []
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

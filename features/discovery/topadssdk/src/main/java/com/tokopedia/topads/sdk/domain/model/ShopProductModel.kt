@@ -15,6 +15,7 @@ data class ShopProductModel(
             val shopName: String = "",
             val ratingCount: String = "",
             val ratingAverage: String = "",
+            val location: String = "",
             val isOfficial: Boolean = false,
             val isPMPro: Boolean = false,
             val goldShop: Int = 0,

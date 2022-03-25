@@ -6,7 +6,6 @@ import android.content.Intent
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
-import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
@@ -29,6 +28,7 @@ class OrderSummaryPageActivityTrackingTest {
 
     companion object {
         private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/one_click_checkout_order_summary.json"
+        private const val ANALYTIC_VALIDATOR_PROMO_RED_STATE_QUERY_FILE_NAME = "tracker/transaction/one_click_checkout_order_summary_promo_red_state.json"
     }
 
     @get:Rule
@@ -104,11 +104,16 @@ class OrderSummaryPageActivityTrackingTest {
             pay()
         }
 
+        assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
+        activityRule.activity.finishAndRemoveTask()
+    }
+
+    @Test
+    fun performOrderSummaryPagePromoRedStateTrackingActions() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_LAST_APPLY_WITH_LOW_MAXIMUM_PAYMENT_REVAMP_RESPONSE_PATH
         promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_CASHBACK_FULL_APPLIED_RESPONSE
-        Intents.release()
         activityRule.launchActivity(null)
-
+        performOrderSummaryPageBackAction()
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
@@ -127,7 +132,8 @@ class OrderSummaryPageActivityTrackingTest {
             clickButtonContinueWithRedPromo()
         }
 
-        assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
+        assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_PROMO_RED_STATE_QUERY_FILE_NAME), hasAllSuccess())
+        activityRule.activity.finishAndRemoveTask()
     }
 
     private fun performOrderSummaryPageBackAction() {

@@ -7,8 +7,12 @@ import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.model.PlayProductTagsModelBuilder
+import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.type.PlayUpcomingBellStatus
 import com.tokopedia.play.view.type.ProductAction
+import com.tokopedia.play.view.type.ProductSectionType
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
@@ -43,6 +47,10 @@ class PlayBottomSheetViewModelTest {
     private val modelBuilder = ModelBuilder()
     private val productModelBuilder = PlayProductTagsModelBuilder()
     private val mockProductVariantResponse: GetProductVariantResponse = modelBuilder.buildProductVariant()
+    private val sectionMockData: ProductSectionUiModel.Section = UiModelBuilder.get().buildProductSection(
+                                productList = listOf(productModelBuilder.buildProductLine()),
+                                config = UiModelBuilder.get().buildSectionConfig(type = ProductSectionType.Active, reminderStatus = PlayUpcomingBellStatus.Off(0L)),
+                                id = "")
 
     private lateinit var playBottomSheetViewModel: PlayBottomSheetViewModel
 
@@ -71,11 +79,12 @@ class PlayBottomSheetViewModelTest {
                 parentVariant = mockProductVariantResponse.data,
                 mapOfSelectedVariants = selectedVariants,
                 listOfVariantCategory = categoryVariants.orEmpty(),
-                stockWording = null
+                stockWording = null,
+                sectionUiModel = sectionMockData
         )
         val expectedResult = PlayResult.Success(expectedModel)
 
-        playBottomSheetViewModel.getProductVariant(product, action)
+        playBottomSheetViewModel.getProductVariant(product, action, sectionMockData)
 
         Assertions
                 .assertThat(playBottomSheetViewModel.observableProductVariant.getOrAwaitValue())
@@ -99,7 +108,8 @@ class PlayBottomSheetViewModelTest {
         playBottomSheetViewModel.addToCart(
                 product = productModelBuilder.buildProductLine(),
                 action = ProductAction.AddToCart,
-                type = BottomInsetsType.VariantSheet
+                type = BottomInsetsType.VariantSheet,
+                sectionInfo = sectionMockData
         )
 
         val actualValue = playBottomSheetViewModel.observableAddToCart.getOrAwaitValue()
@@ -109,11 +119,11 @@ class PlayBottomSheetViewModelTest {
                 .isInstanceOf(PlayResult.Success::class.java)
 
         Assertions
-                .assertThat((actualValue as PlayResult.Success).data.peekContent())
+                .assertThat((actualValue as PlayResult.Success).data.first.peekContent())
                 .isEqualToIgnoringGivenFields(expectedResult.data.peekContent(), "product", "errorMessage")
 
         Assertions
-                .assertThat(actualValue.data.peekContent().product)
+                .assertThat(actualValue.data.first.peekContent().product)
                 .isEqualToIgnoringGivenFields(expectedResult.data.peekContent().product, "impressHolder")
     }
 
@@ -136,7 +146,8 @@ class PlayBottomSheetViewModelTest {
         playBottomSheetViewModel.addToCart(
                 product = productModelBuilder.buildProductLine(),
                 action = ProductAction.AddToCart,
-                type = BottomInsetsType.VariantSheet
+                type = BottomInsetsType.VariantSheet,
+                sectionInfo = sectionMockData
         )
 
         val actualValue = playBottomSheetViewModel.observableAddToCart.getOrAwaitValue()
@@ -146,11 +157,11 @@ class PlayBottomSheetViewModelTest {
                 .isInstanceOf(PlayResult.Success::class.java)
 
         Assertions
-                .assertThat((actualValue as PlayResult.Success).data.peekContent())
+                .assertThat((actualValue as PlayResult.Success).data.first.peekContent())
                 .isEqualToIgnoringGivenFields(expectedResult.data.peekContent(), "product", "errorMessage")
 
         Assertions
-            .assertThat(actualValue.data.peekContent().product)
+            .assertThat(actualValue.data.first.peekContent().product)
             .isEqualToIgnoringGivenFields(expectedResult.data.peekContent().product, "impressHolder")
     }
 
@@ -159,7 +170,8 @@ class PlayBottomSheetViewModelTest {
         val eventProductAction = InteractionEvent.DoActionProduct(
                 product = modelBuilder.buildProductLineUiModel(),
                 action = ProductAction.Buy,
-                type = BottomInsetsType.VariantSheet
+                type = BottomInsetsType.VariantSheet,
+                sectionInfo = sectionMockData
         )
 
         coEvery { userSession.isLoggedIn } returns true
@@ -177,7 +189,8 @@ class PlayBottomSheetViewModelTest {
         val eventProductAction = InteractionEvent.DoActionProduct(
                 product = modelBuilder.buildProductLineUiModel(),
                 action = ProductAction.Buy,
-                type = BottomInsetsType.VariantSheet
+                type = BottomInsetsType.VariantSheet,
+                sectionInfo = sectionMockData
         )
 
         coEvery { userSession.isLoggedIn } returns false
@@ -194,7 +207,8 @@ class PlayBottomSheetViewModelTest {
     fun `when logged in, should be allowed to open product detail`() {
         val eventProductDetail = InteractionEvent.OpenProductDetail(
                 product = modelBuilder.buildProductLineUiModel(),
-                position = 0
+                position = 0,
+                sectionInfo = sectionMockData
         )
 
         coEvery { userSession.isLoggedIn } returns true
@@ -211,7 +225,8 @@ class PlayBottomSheetViewModelTest {
     fun `when not logged in, should be allowed to open product detail`() {
         val eventProductDetail = InteractionEvent.OpenProductDetail(
                 product = modelBuilder.buildProductLineUiModel(),
-                position = 0
+                position = 0,
+                sectionInfo = sectionMockData
         )
 
         coEvery { userSession.isLoggedIn } returns false
