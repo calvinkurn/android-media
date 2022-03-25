@@ -98,10 +98,12 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
                                 val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.85f)
                                 mixLeftBannerCard.alpha = 1 - alpha
                                 mixLeftBannerCard.scaleY = 1 - alpha
+                                mixLeftBannerCard.scaleX = 1 - alpha
                             } else {
                                 mixLeftBannerCard.translationX = 0f
                                 mixLeftBannerCard.alpha = 1f
                                 mixLeftBannerCard.scaleY = 1f
+                                mixLeftBannerCard.scaleX = 1f
                             }
                         }
                     } else if (linearLayoutManager.findFirstVisibleItemPosition() > 0 && dx != 0) {
@@ -144,8 +146,8 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
                 setupBackgroundData(mixLeft)
             })
             mProductCarouselComponentViewModel.getProductCarouselItemsListData().observe(lifecycle, { item ->
-                mDiscoveryRecycleAdapter.setDataList(item)
                 setupMixLeft(item)
+                mDiscoveryRecycleAdapter.setDataList(item)
             })
             mProductCarouselComponentViewModel.syncData.observe(lifecycle, { sync ->
                 if (sync) {
@@ -195,8 +197,10 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
                     mixLeftBanner.loadImageWithoutPlaceholder(it.bannerImageUrlMobile)
                 mixLeftBannerCard.show()
             }
+            carouselRecyclerViewDecorator.isMixLeftPresent = true
         } else {
             mixLeftBannerCard.hide()
+            carouselRecyclerViewDecorator.isMixLeftPresent = false
         }
     }
 

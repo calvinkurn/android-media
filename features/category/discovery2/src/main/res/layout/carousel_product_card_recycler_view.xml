@@ -41,7 +41,7 @@
             android:layout_marginTop="6dp"
             app:cardElevation="@dimen/dp_0"
             android:elevation="@dimen/dp_0"
-            android:layout_marginBottom="6dp"
+            android:layout_marginBottom="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp">
             <ImageView
