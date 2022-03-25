@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
@@ -180,7 +180,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
     private fun initUserPost(userId: String) {
         recyclerviewPost = view?.findViewById(R.id.recycler_view)
-        recyclerviewPost?.layoutManager = GridLayoutManager(activity, 2)
+        recyclerviewPost?.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         if (recyclerviewPost?.itemDecorationCount == 0) {
             context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
                 ?.let {
@@ -255,6 +255,11 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                     }
                     is Success -> {
                         mAdapter.onSuccess(it.data)
+//                        it.data.playGetContentSlot.data.forEach {
+//                            it.items.forEach {
+//                                setData(it)
+//                            }
+//                        }
                     }
                     is ErrorMessage -> {
                         mAdapter.onError()
@@ -262,6 +267,59 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 }
             }
         })
+
+//    private fun setData(item: PlayPostContentItem) {
+//
+//        var live = if (item.isLive) {
+//            PlayWidgetChannelType.Live
+//        } else {
+//            PlayWidgetChannelType.Vod
+//        }
+//        val playWidgetTotalView = PlayWidgetTotalView("", false)
+//        val lvFormatVal = item.stats.view.formatted.toIntOrNull()
+//        if (lvFormatVal == null || lvFormatVal == 0) {
+//            playWidgetTotalView.isVisible = false
+//        } else {
+//            playWidgetTotalView.isVisible = true
+//            playWidgetTotalView.totalViewFmt = item.stats.view.formatted
+//        }
+//
+//        val reminderType = if(item.configurations.reminder.isSet){
+//            PlayWidgetReminderType.NotReminded
+//        }
+//        else{
+//            PlayWidgetReminderType.Reminded
+//        }
+//
+//        val config = PlayWidgetConfigUiModel.Empty
+//        val backgroundUiModel = PlayWidgetBackgroundUiModel.Empty
+//        val playWidgetUiModel = PlayWidgetUiModel(title = item.title, actionTitle = "", actionAppLink = "", config = config, background = backgroundUiModel, items = listOf(
+//            PlayWidgetChannelUiModel(
+//                channelId = "",
+//                title = item.title,
+//                appLink = item.appLink,
+//                startTime = item.startTime,
+//                totalView = playWidgetTotalView,
+//                promoType = PlayWidgetPromoType.getByType(
+//                    "",
+//                    ""
+//                ),
+//                reminderType = reminderType,
+//                partner = PlayWidgetPartnerUiModel("", ""),
+//                video = PlayWidgetVideoUiModel(item.id, item.isLive, item.coverUrl, item.webLink),
+//                channelType = PlayWidgetChannelType.getByValue(item.airTime),
+//                hasGiveaway = false,
+//                share = PlayWidgetShareUiModel("", false),
+//                performanceSummaryLink = "",
+//                poolType = "",
+//                recommendationType = "",
+//                hasAction = false,
+//                channelTypeTransition = PlayWidgetChannelTypeTransition(null, PlayWidgetChannelType.getByValue(""))
+//            )
+//        ), isActionVisible = false)
+//        playWidgetLargeView?.setData(playWidgetUiModel)
+//
+//    }
 
     private fun addDoFollowedObserver() =
         mPresenter.profileDoFollowLiveData.observe(viewLifecycleOwner, Observer {
@@ -571,6 +629,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         profileUserId = data.profileHeader.profile.userID
         userWebLink = data.profileHeader.profile.sharelink.weblink
         textBio?.maxLines = MAX_LINE
+
+        data.profileHeader.profile.biography = data.profileHeader.profile.biography.replace("\n", "<br />")
 
         textBio?.postDelayed({
             textBio?.text = context?.let {
@@ -952,5 +1012,6 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         //This method will be mostly used for GTM Tracking stuff. So add the tracking accordingly
         userSession?.userId?.let { UserProfileTracker().clickCloseShareButton(it, profileUserId == it) }
     }
+
 }
 

@@ -3,27 +3,23 @@ package com.tokopedia.people.views
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.device.info.DeviceConnectionInfo
-import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.library.baseadapter.BaseItem
 import com.tokopedia.people.R
-import com.tokopedia.people.model.PlayPostContentItem
+import com.tokopedia.people.model.PlayPostContent
 import com.tokopedia.people.model.UserPostModel
+import com.tokopedia.people.utils.UserProfileVideoMapper
 import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.views.UserProfileFragment.Companion.VAL_FEEDS_PROFILE
 import com.tokopedia.people.views.UserProfileFragment.Companion.VAL_SOURCE_BUYER
-import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.Label
+import com.tokopedia.play.widget.ui.PlayWidgetLargeView
+import com.tokopedia.play.widget.ui.listener.PlayWidgetLargeListener
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.unifycomponents.Toaster
 
 open class UserPostBaseAdapter(
@@ -33,24 +29,27 @@ open class UserPostBaseAdapter(
     val userProfileTracker: UserProfileTracker?,
     val profileUserId: String,
     val userId: String
-) : BaseAdapter<PlayPostContentItem>(callback) {
+) : BaseAdapter<PlayPostContent>(callback), PlayWidgetLargeListener {
 
     var activityId = ""
     protected var cList: MutableList<BaseItem>? = null
     public var cursor: String = ""
 
     inner class ViewHolder(view: View) : BaseVH(view) {
-        internal var imgCover: ImageUnify = view.findViewById(R.id.img_banner)
-        internal var textLiveCount: TextView = view.findViewById(R.id.text_live_view_count)
-        internal var textName: TextView = view.findViewById(R.id.text_display_name)
-        internal var textUsername: TextView = view.findViewById(R.id.text_user_name)
-        internal var textLive: TextView = view.findViewById(R.id.text_live)
-        internal var textDate: TextView = view.findViewById(R.id.text_date)
-        internal var btnReminder: AppCompatImageView = view.findViewById(R.id.btn_reminder)
-        internal var textSpecialLabel: Label = view.findViewById(R.id.text_special_label)
+        internal var playWidgetLargeView: PlayWidgetLargeView =
+            view.findViewById(R.id.play_widget_large_view)
+
+        //        internal var imgCover: ImageUnify = view.findViewById(R.id.img_banner)
+//        internal var textLiveCount: TextView = view.findViewById(R.id.text_live_view_count)
+//        internal var textName: TextView = view.findViewById(R.id.text_display_name)
+//        internal var textUsername: TextView = view.findViewById(R.id.text_user_name)
+//        internal var textLive: TextView = view.findViewById(R.id.text_live)
+//        internal var textDate: TextView = view.findViewById(R.id.text_date)
+//        internal var btnReminder: AppCompatImageView = view.findViewById(R.id.btn_reminder)
+//        internal var textSpecialLabel: Label = view.findViewById(R.id.text_special_label)
         var isVisited = false
 
-        override fun bindView(item: PlayPostContentItem, position: Int) {
+        override fun bindView(item: PlayPostContent, position: Int) {
             setData(this, item, position)
         }
     }
@@ -94,19 +93,118 @@ open class UserPostBaseAdapter(
             isLastPage = true
             cursor = ""
         } else {
-            loadCompleted(data?.playGetContentSlot?.data[0]?.items, data)
+            loadCompleted(data?.playGetContentSlot.data, data)
             isLastPage = data?.playGetContentSlot?.playGetContentSlot?.nextCursor?.isEmpty()
             cursor = data?.playGetContentSlot?.playGetContentSlot?.nextCursor;
         }
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val visibleItemCount = recyclerView.layoutManager!!.childCount
+                val totalItemCount = recyclerView.layoutManager!!.itemCount
+                val firstVisibleItemPosition =
+                    (recyclerView.layoutManager as LinearLayoutManager?)!!.findFirstVisibleItemPosition()
+                if (!isLoading && !isLastPage) {
+                    if (visibleItemCount + firstVisibleItemPosition >= totalItemCount
+                        && firstVisibleItemPosition > 0
+                    ) {
+                        startDataLoading(userId)
+                    }
+                }
+            }
+        })
+//        val f = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+//        val l = (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+//        if (recyclerView.findViewHolderForAdapterPosition(l) != null && recyclerView?.findViewHolderForAdapterPosition(l) is PlayWidgetLargeViewHolder.Channel) {
+//            val vh = recyclerView?.findViewHolderForAdapterPosition(l) as PlayWidgetLargeViewHolder.
+//            val recyclerViewLargeWidget = vh.itemView.findViewById<RecyclerView>(R.id.play_widget_recycler_view)
+//            recyclerViewLargeWidget?.let { p.configureAutoplayForLargeAndJumboWidget(it) }
+//
+//        }
     }
 
     fun onError() {
         loadCompletedWithError()
     }
 
-    private fun setData(holder: ViewHolder, item: PlayPostContentItem, position: Int) {
+    private fun setData(holder: ViewHolder, playPostContent: PlayPostContent, position: Int) {
+        holder.playWidgetLargeView.setWidgetListener(this)
+        holder.playWidgetLargeView.setData(UserProfileVideoMapper.map(playPostContent, ""))
+        /*holder.playWidgetLargeView.setWidgetListener(this)
+        var live = if (item.isLive) {
+            PlayWidgetChannelType.Live
+        } else {
+            PlayWidgetChannelType.Vod
+        }
+        val playWidgetTotalView = PlayWidgetTotalView("", false)
+        val lvFormatVal = item.stats.view.formatted.toIntOrNull()
+        if (lvFormatVal == null || lvFormatVal == 0) {
+            playWidgetTotalView.isVisible = false
+        } else {
+            playWidgetTotalView.isVisible = true
+            playWidgetTotalView.totalViewFmt = item.stats.view.formatted
+        }
+
+        val reminderType = if(item.configurations.reminder.isSet){
+            PlayWidgetReminderType.NotReminded
+        }
+        else{
+            PlayWidgetReminderType.Reminded
+        }
+
         val itemContext = holder.itemView.context
-        holder.imgCover.setImageUrl(item.coverUrl)
+        val config = PlayWidgetConfigUiModel.Empty
+        val backgroundUiModel = PlayWidgetBackgroundUiModel.Empty
+        val playWidgetUiModel = PlayWidgetUiModel(title = item.title, actionTitle = "", actionAppLink = "", config = config, background = backgroundUiModel, items = listOf(
+            PlayWidgetChannelUiModel(
+                channelId = "",
+                title = item.title,
+                appLink = item.appLink,
+                startTime = item.startTime,
+                totalView = playWidgetTotalView,
+                promoType = PlayWidgetPromoType.getByType(
+                    "",
+                    ""
+                ),
+                reminderType = reminderType,
+                partner = PlayWidgetPartnerUiModel("", ""),
+                video = PlayWidgetVideoUiModel(item.id, item.isLive, item.coverUrl, item.webLink),
+                channelType = PlayWidgetChannelType.getByValue(item.airTime),
+                hasGiveaway = false,
+                share = PlayWidgetShareUiModel("", false),
+                performanceSummaryLink = "",
+                poolType = "",
+                recommendationType = "",
+                hasAction = false,
+                channelTypeTransition = PlayWidgetChannelTypeTransition(null, PlayWidgetChannelType.getByValue(""))
+            )
+        ), isActionVisible = false)
+        holder.playWidgetLargeView.setData(playWidgetUiModel)
+        holder.playWidgetLargeView.setAnalyticListener(object : PlayWidgetLargeAnalyticListener {
+            override fun onClickChannelCard(
+                view: PlayWidgetLargeView,
+                item1: PlayWidgetChannelUiModel,
+                channelPositionInList: Int,
+                isAutoPlay: Boolean){
+                userProfileTracker?.clickVideo(
+                    userId = userId,
+                    self = userId == profileUserId,
+                    live = item.isLive,
+                    activityId = activityId,
+                    imageUrl = item.webLink,
+                    videoPosition = position
+                )
+
+                Log.d("ProfileTag", "setData: $item")
+            }
+        })
+        holder.itemView.setOnClickListener {
+            Log.d("ProfileTag", "setData: $item")
+        } */
+        /*holder.imgCover.setImageUrl(item.coverUrl)
         holder.textName.text = item.title
 
         val lFormatVal = item.stats.view.formatted.toIntOrNull()
@@ -215,6 +313,25 @@ open class UserPostBaseAdapter(
                 videoPosition = position
             )
             RouteManager.route(itemContext, item.appLink)
+        } */
+    }
+
+
+    override fun onToggleReminderClicked(
+        view: PlayWidgetLargeView,
+        channelId: String,
+        reminderType: PlayWidgetReminderType,
+        position: Int
+    ) {
+        try {
+            addVideoPostReminderClickCallBack(
+                channelId,
+                reminderType.reminded,
+                position,
+                view.rootView
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -223,24 +340,20 @@ open class UserPostBaseAdapter(
         isActive: Boolean,
         position: Int,
         item: View
-    ) =
-        View.OnClickListener {
-            if (!DeviceConnectionInfo.isInternetAvailable(
-                    item.context
-                )
-            ) {
-                Toaster.build(
-                    item,
-                    item.context.getString(com.tokopedia.people.R.string.up_error_local_error),
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_ERROR
-                ).show()
-                return@OnClickListener
-            }
-
+    ) {
+        if (!DeviceConnectionInfo.isInternetAvailable(item.context)) {
+            Toaster.build(
+                item,
+                item.context.getString(com.tokopedia.people.R.string.up_error_local_error),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            ).show()
+        } else {
             viewModel.updatePostReminderStatus(channelId, isActive)
-            notifyItemChanged(position)
+            items.firstOrNull()?.items?.get(position)?.configurations?.reminder?.isSet = isActive
+            notifyDataSetChanged()
         }
+    }
 
 
     override fun onViewAttachedToWindow(vh: RecyclerView.ViewHolder) {
@@ -249,14 +362,14 @@ open class UserPostBaseAdapter(
         if (vh is ViewHolder) {
             val holder = vh as ViewHolder
             val data = items[holder.adapterPosition] ?: return
-            userProfileTracker?.impressionVideo(
-                userId = userId,
-                self = userId == profileUserId,
-                live = data.isLive,
-                activityId = activityId,
-                imageUrl = data.webLink,
-                videoPosition = vh.adapterPosition
-            )
+//            userProfileTracker?.impressionVideo(
+//                userId = userId,
+//                self = userId == profileUserId,
+//                live = data.isLive,
+//                activityId = activityId,
+//                imageUrl = data.webLink,
+//                videoPosition = vh.adapterPosition
+//            )
         }
     }
 

@@ -38,7 +38,7 @@ data class Profile (
     val username: String,
 
     @SerializedName("biography")
-    val biography: String,
+    var biography: String,
 
     @SerializedName("sharelink")
     val sharelink: Link,

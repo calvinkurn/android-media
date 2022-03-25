@@ -15,7 +15,7 @@ data class PlayGetContentSlot(
 
     @SerializedName("meta")
     val playGetContentSlot: PlayGetContentSlotMeta
-)
+): BaseItem()
 
 data class PlayGetContentSlotMeta(
     @SerializedName("is_autoplay")
@@ -43,7 +43,7 @@ data class PlayPostContent(
 
     @SerializedName("items")
     val items: MutableList<PlayPostContentItem>
-)
+): BaseItem()
 
 data class PlayPostContentItem(
     @SerializedName("app_link")

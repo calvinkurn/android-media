@@ -3,15 +3,23 @@ package com.tokopedia.people.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.people.Resources
 import com.tokopedia.people.Success
 import com.tokopedia.people.di.UserProfileScope
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.people.domains.*
-import com.tokopedia.people.model.*
+import com.tokopedia.people.domains.PlayPostContentUseCase
+import com.tokopedia.people.domains.ProfileFollowUseCase
+import com.tokopedia.people.domains.ProfileTheyFollowedUseCase
+import com.tokopedia.people.domains.ProfileUnfollowedUseCase
+import com.tokopedia.people.domains.UserDetailsUseCase
+import com.tokopedia.people.domains.VideoPostReminderUseCase
+import com.tokopedia.people.model.ProfileDoFollowModelBase
+import com.tokopedia.people.model.ProfileDoUnFollowModelBase
+import com.tokopedia.people.model.ProfileHeaderBase
+import com.tokopedia.people.model.UserPostModel
+import com.tokopedia.people.model.UserProfileIsFollow
+import com.tokopedia.people.model.VideoPostReimderModel
 import kotlinx.coroutines.Dispatchers
-
-import java.lang.NullPointerException
 import javax.inject.Inject
 
 @UserProfileScope
@@ -122,4 +130,5 @@ class UserProfileViewModel @Inject constructor(
         }, onError = {
         })
     }
+
 }
