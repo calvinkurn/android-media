@@ -8,32 +8,35 @@
     android:padding="16dp">
 
     <!--    region header-->
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_detail_img"
         android:layout_width="@dimen/dp_64"
         android:layout_height="@dimen/dp_64"
-        app:corners="@integer/corner_radius_shimmering"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_detail_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        app:corners="@integer/corner_radius_shimmering"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         app:layout_constraintBottom_toTopOf="@+id/loader_detail_title_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/loader_detail_img"
         app:layout_constraintTop_toTopOf="@+id/loader_detail_img" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_detail_title_2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        app:corners="@integer/corner_radius_shimmering"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="@+id/loader_detail_img"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/loader_detail_img"
@@ -42,21 +45,23 @@
     <!--endregion-->
 
     <!--    region shimmer item 1-->
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_detail_item_title_1"
         android:layout_width="@dimen/dp_120"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:corners="@integer/corner_radius_shimmering"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loader_detail_img" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_detail_item_value_1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_32"
-        app:corners="@integer/corner_radius_shimmering"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="@+id/loader_detail_item_title_1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/loader_detail_item_title_1"
@@ -73,21 +78,23 @@
     <!--endregion-->
 
     <!--    region shimmer item 2-->
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_detail_item_title_2"
         android:layout_width="@dimen/dp_120"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:corners="@integer/corner_radius_shimmering"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider_shimmer_1" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_detail_item_value_2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_32"
-        app:corners="@integer/corner_radius_shimmering"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="@+id/loader_detail_item_title_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/loader_detail_item_title_2"
@@ -104,26 +111,28 @@
     <!--endregion-->
 
     <!--    region shimmer item 3-->
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_detail_item_title_3"
         android:layout_width="@dimen/dp_120"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:corners="@integer/corner_radius_shimmering"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider_shimmer_2" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_detail_item_value_3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_32"
-        app:corners="@integer/corner_radius_shimmering"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="@+id/loader_detail_item_title_3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/loader_detail_item_title_3"
         app:layout_constraintTop_toTopOf="@+id/loader_detail_item_title_3"
-        app:width_weight="0.8" />
+        app:layout_constraintWidth_percent="0.8" />
 
     <View
         android:id="@+id/divider_shimmer_3"
@@ -135,26 +144,28 @@
     <!--endregion-->
 
     <!--    region shimmer item 4-->
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_detail_item_title_4"
         android:layout_width="@dimen/dp_120"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:corners="@integer/corner_radius_shimmering"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider_shimmer_3" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_detail_item_value_4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_32"
-        app:corners="@integer/corner_radius_shimmering"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="@+id/loader_detail_item_title_4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/loader_detail_item_title_4"
         app:layout_constraintTop_toTopOf="@+id/loader_detail_item_title_4"
-        app:width_weight="0.8" />
+        app:layout_constraintWidth_percent="0.8" />
 
     <View
         android:id="@+id/divider_shimmer_4"
@@ -166,24 +177,26 @@
     <!--endregion-->
 
     <!--    region footer-->
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_detail_tite_discussion"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:corners="@integer/corner_radius_shimmering"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider_shimmer_4" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_detail_discussion_btn"
         android:layout_width="@dimen/dp_96"
         android:layout_height="@dimen/dp_32"
         android:layout_marginTop="16dp"
-        app:corners="@integer/corner_radius_shimmering"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@+id/loader_detail_tite_discussion"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
