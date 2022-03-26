@@ -19,7 +19,6 @@ class SellerMenuUseCaseModule {
             getShopBadgeUseCase: GetShopBadgeUseCase,
             getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase,
             getUserShopInfoUseCase: GetUserShopInfoUseCase,
-            topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase,
             dispatcher: CoroutineDispatchers
     ): GetAllShopInfoUseCase {
         return GetAllShopInfoUseCase(
@@ -28,7 +27,6 @@ class SellerMenuUseCaseModule {
                 getShopBadgeUseCase,
                 getShopTotalFollowersUseCase,
                 getUserShopInfoUseCase,
-                topAdsDashboardDepositUseCase,
                 dispatcher
         )
     }

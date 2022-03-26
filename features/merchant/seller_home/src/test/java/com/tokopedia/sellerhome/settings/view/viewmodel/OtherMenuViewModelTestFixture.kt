@@ -8,6 +8,7 @@ import com.tokopedia.seller.menu.common.domain.usecase.*
 import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
 import com.tokopedia.sellerhome.domain.usecase.ShareInfoOtherUseCase
 import com.tokopedia.sellerhome.domain.usecase.TopAdsAutoTopupUseCase
+import com.tokopedia.sellerhome.domain.usecase.TopAdsDashboardDepositUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface

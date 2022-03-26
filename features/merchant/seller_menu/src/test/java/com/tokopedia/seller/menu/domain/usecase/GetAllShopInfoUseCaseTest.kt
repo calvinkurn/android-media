@@ -7,7 +7,6 @@ import com.tokopedia.seller.menu.common.domain.usecase.BalanceInfoUseCase
 import com.tokopedia.seller.menu.common.domain.usecase.GetShopBadgeUseCase
 import com.tokopedia.seller.menu.common.domain.usecase.GetShopTotalFollowersUseCase
 import com.tokopedia.seller.menu.common.domain.usecase.GetUserShopInfoUseCase
-import com.tokopedia.seller.menu.common.domain.usecase.TopAdsDashboardDepositUseCase
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
@@ -40,9 +39,6 @@ class GetAllShopInfoUseCaseTest {
     lateinit var getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase
 
     @RelaxedMockK
-    lateinit var topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase
-
-    @RelaxedMockK
     lateinit var getUserShopInfoUseCase: GetUserShopInfoUseCase
 
     @get:Rule
@@ -63,7 +59,6 @@ class GetAllShopInfoUseCaseTest {
             getShopBadgeUseCase,
             getShopTotalFollowersUseCase,
             getUserShopInfoUseCase,
-            topAdsDashboardDepositUseCase,
             coroutineTestRule.dispatchers
         )
     }
@@ -78,8 +73,7 @@ class GetAllShopInfoUseCaseTest {
         val topAdsDepositSuccess = anyFloat()
 
         val partialTopAdsInfo = PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo(
-                balanceSuccess,
-                topAdsDepositSuccess
+                balanceSuccess
         )
 
         val partialShopInfo = PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo(
@@ -107,10 +101,6 @@ class GetAllShopInfoUseCaseTest {
         } returns shopBadgeUrlSuccess
 
         coEvery {
-            topAdsDashboardDepositUseCase.executeOnBackground()
-        } returns topAdsDepositSuccess
-
-        coEvery {
             getUserShopInfoUseCase.executeOnBackground()
         } returns userShopInfoWrapper
 
@@ -120,7 +110,6 @@ class GetAllShopInfoUseCaseTest {
             balanceInfoUseCase.executeOnBackground()
             getShopTotalFollowersUseCase.executeOnBackground()
             getShopBadgeUseCase.executeOnBackground()
-            topAdsDashboardDepositUseCase.executeOnBackground()
             getUserShopInfoUseCase.executeOnBackground()
         }
 

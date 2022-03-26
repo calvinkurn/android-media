@@ -3,7 +3,7 @@ package com.tokopedia.seller.menu.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.seller.menu.common.domain.entity.TopAdsDepositDataModel
-import com.tokopedia.seller.menu.common.domain.usecase.TopAdsDashboardDepositUseCase
+import com.tokopedia.sellerhome.domain.usecase.TopAdsDashboardDepositUseCase
 import com.tokopedia.seller.menu.utils.TestHelper
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -38,7 +38,7 @@ class TopAdsDashboardDepositUseCaseTest {
     }
 
     private val useCase by lazy {
-        TopAdsDashboardDepositUseCase(gqlRepository)
+        com.tokopedia.sellerhome.domain.usecase.TopAdsDashboardDepositUseCase(gqlRepository)
     }
 
     @Test
@@ -53,7 +53,7 @@ class TopAdsDashboardDepositUseCaseTest {
             gqlRepository.response(any(), any())
         } returns successResponse
 
-        useCase.params = TopAdsDashboardDepositUseCase.createRequestParams(anyLong())
+        useCase.params = com.tokopedia.sellerhome.domain.usecase.TopAdsDashboardDepositUseCase.createRequestParams(anyLong())
         val topAdsDashboardDeposit = useCase.executeOnBackground()
 
         coVerify {
@@ -73,7 +73,7 @@ class TopAdsDashboardDepositUseCaseTest {
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
-        useCase.params = TopAdsDashboardDepositUseCase.createRequestParams(anyLong())
+        useCase.params = com.tokopedia.sellerhome.domain.usecase.TopAdsDashboardDepositUseCase.createRequestParams(anyLong())
         val topAdsDashboardDeposit = useCase.executeOnBackground()
 
         coVerify {
