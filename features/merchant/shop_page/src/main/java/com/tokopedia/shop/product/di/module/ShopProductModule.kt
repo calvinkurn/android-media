@@ -37,15 +37,6 @@ import com.tokopedia.shop.sort.domain.repository.ShopProductSortRepository
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.constant.WishListCommonUrl
-import com.tokopedia.wishlist.common.data.interceptor.WishListAuthInterceptor
-import com.tokopedia.wishlist.common.data.repository.WishListCommonRepositoryImpl
-import com.tokopedia.wishlist.common.data.source.WishListCommonDataSource
-import com.tokopedia.wishlist.common.data.source.cloud.WishListCommonCloudDataSource
-import com.tokopedia.wishlist.common.data.source.cloud.api.WishListCommonApi
-import com.tokopedia.wishlist.common.data.source.cloud.mapper.WishListProductListMapper
-import com.tokopedia.wishlist.common.domain.interactor.GetWishListUseCase
-import com.tokopedia.wishlist.common.domain.repository.WishListCommonRepository
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -122,70 +113,6 @@ class ShopProductModule {
     @Provides
     fun provideGMCommonRepository(gmCommonDataSource: GMCommonDataSource): GMCommonRepository {
         return GMCommonRepositoryImpl(gmCommonDataSource)
-    }
-
-    // WishList
-    @Provides
-    fun provideWishListAuthInterceptor(@ShopPageContext context: Context,
-                                       networkRouter: NetworkRouter,
-                                       userSessionInterface: UserSessionInterface): WishListAuthInterceptor {
-        return WishListAuthInterceptor(context, networkRouter, userSessionInterface)
-    }
-
-    @ShopProductWishListFeaturedQualifier
-    @Provides
-    fun provideWishListOkHttpClient(wishListAuthInterceptor: WishListAuthInterceptor,
-                                    @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
-                                    errorResponseInterceptor: HeaderErrorResponseInterceptor): OkHttpClient {
-        return Builder()
-            .addInterceptor(wishListAuthInterceptor)
-            .addInterceptor(errorResponseInterceptor)
-            .addInterceptor(httpLoggingInterceptor)
-            .build()
-    }
-
-    @ShopProductWishListFeaturedQualifier
-    @ShopProductScope
-    @Provides
-    fun provideWishListRetrofit(@ShopProductWishListFeaturedQualifier okHttpClient: OkHttpClient,
-                                retrofitBuilder: Retrofit.Builder): Retrofit {
-        return retrofitBuilder.baseUrl(WishListCommonUrl.BASE_URL).client(okHttpClient).build()
-    }
-
-    @ShopProductScope
-    @Provides
-    fun provideWishListCommonApi(@ShopProductWishListFeaturedQualifier retrofit: Retrofit): WishListCommonApi {
-        return retrofit.create(WishListCommonApi::class.java)
-    }
-
-    @ShopProductScope
-    @Provides
-    fun provideWishListProductListMapper(): WishListProductListMapper {
-        return WishListProductListMapper()
-    }
-
-    @ShopProductScope
-    @Provides
-    fun provideWishListCommonCloudDataSource(wishListCommonApi: WishListCommonApi): WishListCommonCloudDataSource {
-        return WishListCommonCloudDataSource(wishListCommonApi)
-    }
-
-    @ShopProductScope
-    @Provides
-    fun provideWishListCommonDataSource(wishListCommonCloudDataSource: WishListCommonCloudDataSource): WishListCommonDataSource {
-        return WishListCommonDataSource(wishListCommonCloudDataSource)
-    }
-
-    @ShopProductScope
-    @Provides
-    fun provideWishListCommonRepository(wishListCommonDataSource: WishListCommonDataSource): WishListCommonRepository {
-        return WishListCommonRepositoryImpl(wishListCommonDataSource)
-    }
-
-    @ShopProductScope
-    @Provides
-    fun provideGetWishListUseCase(wishListCommonRepository: WishListCommonRepository): GetWishListUseCase {
-        return GetWishListUseCase(wishListCommonRepository)
     }
 
     // Product

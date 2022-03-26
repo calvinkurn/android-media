@@ -25,8 +25,8 @@ import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
 import dagger.Lazy
 import dagger.Module
@@ -83,14 +83,14 @@ class ShopPageHomeModule {
 
     @ShopPageHomeScope
     @Provides
-    fun provideAddToWishListUseCase(@ShopPageContext context: Context?): AddWishListUseCase {
-        return AddWishListUseCase(context)
+    fun provideAddToWishListUseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
+        return AddToWishlistV2UseCase(graphqlRepository)
     }
 
     @ShopPageHomeScope
     @Provides
-    fun provideRemoveFromWishListUseCase(@ShopPageContext context: Context?): RemoveWishListUseCase {
-        return RemoveWishListUseCase(context)
+    fun provideRemoveFromWishListUseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
+        return DeleteWishlistV2UseCase(graphqlRepository)
     }
 
     @ShopPageHomeScope

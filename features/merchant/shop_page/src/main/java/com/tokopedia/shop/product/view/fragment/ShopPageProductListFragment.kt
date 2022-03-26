@@ -100,7 +100,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.wishlist.common.listener.WishListActionListener
 import javax.inject.Inject
 
 class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>(),
@@ -112,7 +111,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener,
         ShopProductAddViewHolder.ShopProductAddViewHolderListener,
         ShopProductsEmptyViewHolder.ShopProductsEmptyViewHolderListener,
-        WishListActionListener,
         ShopProductImpressionListener,
         ShopProductChangeGridSectionListener,
         SortFilterBottomSheet.Callback,
@@ -244,14 +242,14 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
     }
 
-    override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+    private fun onErrorAddWishList(errorMessage: String?) {
         onErrorAddToWishList(MessageErrorException(errorMessage))
     }
 
-    override fun onSuccessAddWishlist(productId: String) {
+    private fun onSuccessAddWishlist(productId: String) {
         showToastSuccess(
-                message = getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist),
-                ctaText = getString(com.tokopedia.wishlist.common.R.string.lihat_label),
+                message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
+                ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
                 ctaAction = {
                     goToWishlist()
                 }
@@ -259,12 +257,15 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         shopProductAdapter.updateWishListStatus(productId, true)
     }
 
-    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+    private fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
         NetworkErrorHelper.showCloseSnackbar(activity, errorMessage)
     }
 
-    override fun onSuccessRemoveWishlist(productId: String) {
-        showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
+    private fun onSuccessRemoveWishlist(productId: String) {
+        showToastSuccess(
+                message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
+                ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist),
+                ctaAction = null)
         shopProductAdapter.updateWishListStatus(productId, false)
     }
 
@@ -743,7 +744,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         if (productCardOptionsModel.wishlistResult.isSuccess) {
             onSuccessAddWishlist(productCardOptionsModel.productId)
         } else {
-            onErrorAddWishList(getString(com.tokopedia.wishlist.common.R.string.msg_error_add_wishlist), productCardOptionsModel.productId)
+            onErrorAddWishList(getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg))
         }
     }
 
@@ -751,7 +752,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         if (productCardOptionsModel.wishlistResult.isSuccess) {
             onSuccessRemoveWishlist(productCardOptionsModel.productId)
         } else {
-            onErrorRemoveWishlist(getString(com.tokopedia.wishlist.common.R.string.msg_error_remove_wishlist), productCardOptionsModel.productId)
+            onErrorRemoveWishlist(getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg), productCardOptionsModel.productId)
         }
     }
 

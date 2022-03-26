@@ -2485,7 +2485,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         shopHomeProductViewModel?.let {
-            showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
+            showToastSuccess(
+                    message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
+                    ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist),
+                    ctaAction = {}
+            )
             shopHomeAdapter.updateWishlistProduct(it.id ?: "", false)
             trackClickWishlist(shopHomeCarousellProductUiModel, shopHomeProductViewModel, false)
         }
@@ -2542,8 +2546,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     ) {
         shopHomeProductViewModel?.let {
             showToastSuccess(
-                message = getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist),
-                ctaText = getString(com.tokopedia.wishlist.common.R.string.lihat_label),
+                message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
+                ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
                 ctaAction = {
                     goToWishlist()
                 }
@@ -2698,7 +2702,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             )
         } else {
             onErrorAddWishlist(
-                getString(com.tokopedia.wishlist.common.R.string.msg_error_add_wishlist)
+                getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
             )
         }
     }
@@ -2711,7 +2715,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             )
         } else {
             onErrorRemoveWishList(
-                getString(com.tokopedia.wishlist.common.R.string.msg_error_remove_wishlist)
+                getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg)
             )
         }
     }
