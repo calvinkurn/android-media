@@ -39,7 +39,6 @@
         android:layout_marginEnd="@dimen/layout_lvl9"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/review_form_product_image_loading"
         app:layout_constraintTop_toBottomOf="@id/review_form_product_name_loading" />
@@ -72,7 +71,6 @@
         android:layout_marginEnd="@dimen/layout_lvl8"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="@id/review_form_rating_loading"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/review_form_rating_divider_loading" />
@@ -86,7 +84,6 @@
         android:layout_marginEnd="@dimen/layout_lvl2"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/review_form_text_area_title_loading" />
@@ -100,7 +97,6 @@
         android:layout_marginEnd="@dimen/layout_lvl1"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintEnd_toStartOf="@id/review_form_chips_loading_2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/review_form_text_area_loading" />
@@ -114,7 +110,6 @@
         android:layout_marginEnd="@dimen/layout_lvl1"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintEnd_toStartOf="@id/review_form_chips_loading_3"
         app:layout_constraintTop_toBottomOf="@id/review_form_text_area_loading" />
 
@@ -126,7 +121,6 @@
         android:layout_marginEnd="@dimen/layout_lvl1"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintEnd_toStartOf="@id/review_form_chips_loading_4"
         app:layout_constraintTop_toBottomOf="@id/review_form_text_area_loading" />
 
@@ -138,7 +132,6 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/review_form_text_area_loading" />
 
@@ -151,7 +144,6 @@
         android:layout_marginEnd="@dimen/layout_lvl1"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/review_form_chips_loading" />
 
@@ -164,7 +156,6 @@
         android:layout_marginEnd="@dimen/layout_lvl1"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintStart_toEndOf="@id/review_form_chips_loading_5"
         app:layout_constraintTop_toBottomOf="@id/review_form_chips_loading" />
 
@@ -176,7 +167,6 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintStart_toEndOf="@id/review_form_chips_loading_6"
         app:layout_constraintTop_toBottomOf="@id/review_form_chips_loading" />
 
@@ -188,7 +178,6 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/review_form_chips_loading_7"
         app:layout_constraintTop_toBottomOf="@id/review_form_chips_loading" />
@@ -202,7 +191,6 @@
         android:layout_marginEnd="@dimen/layout_lvl2"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/review_form_chips_loading_8" />
@@ -216,7 +204,6 @@
         android:layout_marginEnd="@dimen/layout_lvl8"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="@id/review_form_rating_loading"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/review_form_add_image_loading" />
@@ -238,7 +225,6 @@
         android:layout_marginEnd="@dimen/layout_lvl8"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="@id/review_form_rating_loading"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/review_form_progress_bar_divider_loading" />
@@ -252,7 +238,6 @@
         android:layout_marginEnd="@dimen/layout_lvl8"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="@id/review_form_progress_bar_loading"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/review_form_progress_bar_loading" />
@@ -266,7 +251,6 @@
         android:layout_marginEnd="@dimen/layout_lvl2"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/review_form_progress_bar_loading"
         app:layout_constraintTop_toBottomOf="@id/review_form_progress_bar_divider_loading" />

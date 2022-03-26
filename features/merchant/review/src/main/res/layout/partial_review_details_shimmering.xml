@@ -27,7 +27,6 @@
                 android:layout_marginLeft="12dp"
                 app:loader_corner_radius="4dp"
                 app:loader_type="rect"
-                app:custom_color="@color/Unify_N50"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
@@ -42,7 +41,6 @@
                 android:layout_marginLeft="12dp"
                 app:loader_corner_radius="4dp"
                 app:loader_type="rect"
-                app:custom_color="@color/Unify_N50"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@id/review_detail_shimmer_product_image"
                 app:layout_constraintEnd_toEndOf="parent" />
@@ -56,7 +54,6 @@
                 android:layout_marginRight="@dimen/layout_lvl6"
                 app:loader_corner_radius="4dp"
                 app:loader_type="rect"
-                app:custom_color="@color/Unify_N50"
                 app:layout_constraintTop_toBottomOf="@id/review_detail_shimmer_product_name"
                 app:layout_constraintStart_toStartOf="@id/review_detail_shimmer_product_name"
                 app:layout_constraintEnd_toEndOf="@id/review_detail_shimmer_product_name" />
@@ -74,7 +71,6 @@
         android:layout_marginLeft="@dimen/layout_lvl2"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_detail_shimmer_card"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -87,7 +83,6 @@
         android:layout_marginEnd="@dimen/layout_lvl2"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_detail_shimmer_rating" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -99,7 +94,6 @@
         android:layout_marginEnd="@dimen/layout_lvl2"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_detail_shimmer_name" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -111,7 +105,6 @@
         android:layout_marginRight="@dimen/layout_lvl7"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_detail_shimmer_content"
         app:layout_constraintStart_toStartOf="@id/review_detail_shimmer_rating"
         app:layout_constraintEnd_toEndOf="@id/review_detail_shimmer_response_2" />
@@ -134,7 +127,6 @@
         android:layout_marginTop="@dimen/layout_lvl3"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_detail_shimmer_content_2"
         app:layout_constraintStart_toEndOf="@id/review_detail_shimmer_response_tab" />
 
@@ -145,7 +137,6 @@
         android:layout_marginTop="@dimen/layout_lvl1"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_detail_shimmer_responder_name"
         app:layout_constraintStart_toStartOf="@id/review_detail_shimmer_responder_name"
         app:layout_constraintEnd_toEndOf="@id/review_detail_shimmer_content" />
@@ -159,7 +150,6 @@
         android:layout_marginRight="@dimen/layout_lvl9"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_detail_shimmer_response"
         app:layout_constraintStart_toStartOf="@id/review_detail_shimmer_responder_name"
         app:layout_constraintEnd_toEndOf="@id/review_detail_shimmer_response" />
