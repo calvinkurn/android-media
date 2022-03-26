@@ -20,7 +20,7 @@
         android:layout_width="@dimen/notif_dp_145"
         android:layout_height="@dimen/notif_dp_12"
         android:layout_marginStart="@dimen/notif_dp_10"
-        app:corners="@integer/notif_corner_radius_shimmering"
+        app:loader_corner_radius="10dp"
         app:layout_constraintBottom_toBottomOf="@+id/lu_icon"
         app:layout_constraintStart_toEndOf="@+id/lu_icon"
         app:layout_constraintTop_toTopOf="@+id/lu_icon"
