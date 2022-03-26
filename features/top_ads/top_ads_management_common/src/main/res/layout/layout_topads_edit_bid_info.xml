@@ -9,7 +9,7 @@
         android:id="@+id/txtDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/topads_edit_otomatis_description"
+        android:text="@string/topads_common_otomatis_description"
         app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
