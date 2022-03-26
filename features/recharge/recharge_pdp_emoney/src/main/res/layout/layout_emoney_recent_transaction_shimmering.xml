@@ -78,7 +78,6 @@
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/unify_space_12"
         android:layout_marginBottom="@dimen/layout_lvl1"
-        app:width_weight="0.7"
         app:loader_corner_radius="2dp"
         app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"

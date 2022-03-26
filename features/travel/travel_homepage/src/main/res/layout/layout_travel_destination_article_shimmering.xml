@@ -30,8 +30,7 @@
         app:loader_type="rect"
         app:layout_constraintWidth_percent="0.5"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:width_weight="0.5" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_img"

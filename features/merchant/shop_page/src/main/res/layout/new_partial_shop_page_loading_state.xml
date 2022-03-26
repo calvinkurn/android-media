@@ -513,7 +513,6 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="@dimen/dp_30"
         android:layout_marginRight="10dp"
-        app:corners="@integer/radius_40"
         app:loader_corner_radius="20dp"
         app:loader_type="rect"
         app:layout_constraintDimensionRatio="1:1"

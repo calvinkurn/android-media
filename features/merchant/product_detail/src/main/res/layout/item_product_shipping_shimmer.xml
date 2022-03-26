@@ -174,7 +174,6 @@
         android:layout_marginTop="24dp"
         app:layout_constraintTop_toBottomOf="@+id/shipment_shimmer_divider_3"
         app:layout_constraintStart_toStartOf="parent"
-        app:width_weight="0.3"
         app:layout_constraintWidth_percent="0.3"/>
 
     <com.tokopedia.unifycomponents.LoaderUnify
