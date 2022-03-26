@@ -1,8 +1,13 @@
-package com.tokopedia.seller.menu.common.domain.usecase
+package com.tokopedia.seller.menu.domain.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
+import com.tokopedia.seller.menu.common.domain.usecase.BalanceInfoUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.GetShopBadgeUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.GetShopTotalFollowersUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.GetUserShopInfoUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.TopAdsDashboardDepositUseCase
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
@@ -35,9 +40,6 @@ class GetAllShopInfoUseCaseTest {
     lateinit var getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase
 
     @RelaxedMockK
-    lateinit var topAdsAutoTypeUseCase: TopAdsAutoTopupUseCase
-
-    @RelaxedMockK
     lateinit var topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase
 
     @RelaxedMockK
@@ -56,13 +58,13 @@ class GetAllShopInfoUseCaseTest {
 
     private val mGetAllShopInfoUseCase by lazy {
         GetAllShopInfoUseCase(
-                userSession,
-                balanceInfoUseCase,
-                getShopBadgeUseCase,
-                getShopTotalFollowersUseCase,
-                getUserShopInfoUseCase,
-                topAdsDashboardDepositUseCase,
-                coroutineTestRule.dispatchers
+            userSession,
+            balanceInfoUseCase,
+            getShopBadgeUseCase,
+            getShopTotalFollowersUseCase,
+            getUserShopInfoUseCase,
+            topAdsDashboardDepositUseCase,
+            coroutineTestRule.dispatchers
         )
     }
 
