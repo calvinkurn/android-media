@@ -33,7 +33,6 @@
         android:id="@+id/loaderUnify3"
         android:layout_width="0dp"
         android:layout_height="8dp"
-        app:width_weight="0.4"
         app:layout_constraintWidth_percent="0.4"
         app:loader_corner_radius="10dp"
         app:loader_type="rect"

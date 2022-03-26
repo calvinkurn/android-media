@@ -129,7 +129,6 @@
                 android:layout_height="@dimen/dp_10"
                 app:loader_corner_radius="10dp"
                 app:loader_type="rect"
-                app:width_weight="0.4"
                 android:layout_marginTop="@dimen/dp_10"
                 android:layout_marginBottom="@dimen/dp_10"
                 android:layout_marginEnd="@dimen/dp_16" />

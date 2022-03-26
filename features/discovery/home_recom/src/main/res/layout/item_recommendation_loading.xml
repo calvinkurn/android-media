@@ -43,7 +43,7 @@
             app:layout_constraintStart_toEndOf="@+id/image_shimmering"
             app:layout_constraintTop_toBottomOf="@+id/text1"
             app:layout_constraintBottom_toTopOf="@+id/text3"
-            app:width_weight="0.6" />
+            app:layout_constraintWidth_percent="0.6"/>
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/text3"

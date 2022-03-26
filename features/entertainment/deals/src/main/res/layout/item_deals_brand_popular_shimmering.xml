@@ -23,10 +23,9 @@
             app:typographyType="body_3" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            app:corners="16"
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
-            app:loader_corner_radius="0dp"
+            app:loader_corner_radius="8dp"
             app:loader_type="rect"
             android:layout_height="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
@@ -36,7 +35,6 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_image" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            app:corners="16"
             android:id="@+id/tv_sub_title"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/spacing_lvl3"
@@ -44,7 +42,7 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginRight="@dimen/spacing_lvl3"
             android:layout_marginBottom="@dimen/deals_dp_12"
-            app:loader_corner_radius="0dp"
+            app:loader_corner_radius="8dp"
             app:loader_type="rect"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintWidth_percent="0.5"
