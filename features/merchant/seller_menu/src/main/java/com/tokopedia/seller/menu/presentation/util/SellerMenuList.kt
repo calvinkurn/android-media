@@ -1,6 +1,7 @@
 package com.tokopedia.seller.menu.presentation.util
 
 import android.content.Context
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
@@ -13,10 +14,13 @@ import com.tokopedia.seller.menu.common.view.uimodel.*
 import com.tokopedia.seller.menu.common.view.uimodel.SectionTitleUiModel.SectionTitleType.OTHER_SECTION_TITLE
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoLoadingUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.ShopInfoLoadingUiModel
 import com.tokopedia.seller.menu.presentation.activity.AdminRoleAuthorizeActivity
 import com.tokopedia.seller.menu.presentation.uimodel.OrderSectionTitleUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.ProductSectionTitleUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.SellerFeatureUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.ShopOrderUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.ShopProductUiModel
 import com.tokopedia.user.session.UserSessionInterface
 
 object SellerMenuList {
@@ -25,9 +29,9 @@ object SellerMenuList {
 
     fun create(context: Context,
                userSession: UserSessionInterface,
-               mapper: AdminPermissionMapper): List<SettingUiModel> {
+               mapper: AdminPermissionMapper): List<Visitable<*>> {
         val isShopOwner = userSession.isShopOwner
-        val menuList = mutableListOf<SettingUiModel>()
+        val menuList = mutableListOf<Visitable<*>>()
         val buyerInfoMenu = createBuyerInfoMenu(context, isShopOwner, mapper)
         val helpAndOtherMenu = createOtherInfoMenu(context, isShopOwner, mapper)
 

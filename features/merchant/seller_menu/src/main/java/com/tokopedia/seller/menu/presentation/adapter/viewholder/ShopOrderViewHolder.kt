@@ -1,4 +1,4 @@
-package com.tokopedia.seller.menu.common.view.viewholder
+package com.tokopedia.seller.menu.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -8,11 +8,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.seller.menu.common.R
+import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.constant.AdminFeature
-import com.tokopedia.seller.menu.common.databinding.ItemSellerMenuOrderSectionBinding
-import com.tokopedia.seller.menu.common.view.uimodel.ShopOrderUiModel
+import com.tokopedia.seller.menu.databinding.ItemSellerMenuOrderSectionBinding
+import com.tokopedia.seller.menu.presentation.uimodel.ShopOrderUiModel
 
 class ShopOrderViewHolder(
     itemView: View,

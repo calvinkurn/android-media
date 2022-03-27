@@ -31,7 +31,7 @@
         app:layout_constraintLeft_toRightOf="@id/textTitle"
         app:layout_constraintTop_toTopOf="@id/textTitle" />
 
-    <com.tokopedia.seller.menu.common.view.widget.SellerMenuFeatureCard
+    <com.tokopedia.seller.menu.presentation.widget.SellerMenuFeatureCard
         android:id="@+id/cardStatistics"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
         app:menuIcon="statistics"
         app:menuTitle="@string/seller_menu_shop_statistics" />
 
-    <com.tokopedia.seller.menu.common.view.widget.SellerMenuFeatureCard
+    <com.tokopedia.seller.menu.presentation.widget.SellerMenuFeatureCard
         android:id="@+id/cardPromo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
         app:menuIcon="promo"
         app:menuTitle="@string/seller_menu_ads_and_promo" />
 
-    <com.tokopedia.seller.menu.common.view.widget.SellerMenuFeatureCard
+    <com.tokopedia.seller.menu.presentation.widget.SellerMenuFeatureCard
         android:id="@+id/cardFeedAndPlay"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
         app:menuIcon="play"
         app:menuTitle="@string/seller_menu_feed_and_play" />
 
-    <com.tokopedia.seller.menu.common.view.widget.SellerMenuFeatureCard
+    <com.tokopedia.seller.menu.presentation.widget.SellerMenuFeatureCard
         android:id="@+id/cardFintech"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

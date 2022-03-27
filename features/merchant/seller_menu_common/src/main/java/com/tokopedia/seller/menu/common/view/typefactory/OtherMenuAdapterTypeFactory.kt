@@ -8,16 +8,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.view.uimodel.*
-import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoErrorUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoLoadingUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoUiModel
 import com.tokopedia.seller.menu.common.view.viewholder.*
 import com.tokopedia.user.session.UserSessionInterface
 
-class OtherMenuAdapterTypeFactory(
+open class OtherMenuAdapterTypeFactory(
     private val trackingListener: SettingTrackingListener,
-    private val shopInfoListener: ShopInfoViewHolder.ShopInfoListener? = null,
-    private val shopInfoErrorListener: ShopInfoErrorViewHolder.ShopInfoErrorListener? = null,
     private val sellerMenuTracker: SellerMenuTracker? = null,
     private val userSession: UserSessionInterface? = null
 ) : BaseAdapterTypeFactory(), OtherMenuTypeFactory {
@@ -33,46 +28,16 @@ class OtherMenuAdapterTypeFactory(
             MenuItemsViewHolder.LAYOUT -> MenuItemsViewHolder(parent, userSession, trackingListener, sellerMenuTracker)
             MenuItemsViewHolder.LAYOUT_NO_ICON -> MenuItemsViewHolder(parent, userSession, trackingListener, sellerMenuTracker)
             SettingTitleMenuViewHolder.LAYOUT -> SettingTitleMenuViewHolder(parent)
-            ShopInfoViewHolder.LAYOUT -> ShopInfoViewHolder(parent, shopInfoListener, trackingListener, userSession, sellerMenuTracker)
-            ShopInfoLoadingViewHolder.LAYOUT -> ShopInfoLoadingViewHolder(parent)
-            ShopInfoErrorViewHolder.LAYOUT -> ShopInfoErrorViewHolder(parent, shopInfoErrorListener)
-            ShopOrderViewHolder.LAYOUT -> ShopOrderViewHolder(parent, sellerMenuTracker)
             SellerMenuTitleViewHolder.SECTION_WITH_CTA_LAYOUT -> SellerMenuTitleViewHolder(parent, sellerMenuTracker)
             SellerMenuTitleViewHolder.SECTION_OTHER_LAYOUT -> SellerMenuTitleViewHolder(parent, sellerMenuTracker)
-            ShopProductViewHolder.LAYOUT -> ShopProductViewHolder(parent, sellerMenuTracker)
-            SellerFeatureViewHolder.LAYOUT -> SellerFeatureViewHolder(parent, sellerMenuTracker)
             SellerSettingsTitleViewHolder.LAYOUT -> SellerSettingsTitleViewHolder(parent)
             LoadingViewholder.LAYOUT -> SellerLoadingViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
 
-    override fun type(shopInfoUiModel: ShopInfoUiModel): Int {
-        return ShopInfoViewHolder.LAYOUT
-    }
-
-    override fun type(shopInfoLoadingUiModel: ShopInfoLoadingUiModel): Int {
-        return ShopInfoLoadingViewHolder.LAYOUT
-    }
-
-    override fun type(shopInfoErrorUiModel: ShopInfoErrorUiModel): Int {
-        return ShopInfoErrorViewHolder.LAYOUT
-    }
-
-    override fun type(shopOrderUiModel: ShopOrderUiModel): Int {
-        return ShopOrderViewHolder.LAYOUT
-    }
-
     override fun type(sectionTitleUiModel: SectionTitleUiModel): Int {
         return SellerMenuTitleViewHolder.getLayout(sectionTitleUiModel.type)
-    }
-
-    override fun type(shopProductUiModel: ShopProductUiModel): Int {
-        return ShopProductViewHolder.LAYOUT
-    }
-
-    override fun type(sellerFeatureUiModel: SellerFeatureUiModel): Int {
-        return SellerFeatureViewHolder.LAYOUT
     }
 
     override fun type(dividerUiModel: DividerUiModel): Int {

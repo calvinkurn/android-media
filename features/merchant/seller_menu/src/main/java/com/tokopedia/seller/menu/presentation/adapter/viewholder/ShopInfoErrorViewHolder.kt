@@ -1,11 +1,11 @@
-package com.tokopedia.seller.menu.common.view.viewholder
+package com.tokopedia.seller.menu.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.seller.menu.common.R
-import com.tokopedia.seller.menu.common.databinding.LayoutSellerMenuShopInfoErrorBinding
-import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoErrorUiModel
+import com.tokopedia.seller.menu.R
+import com.tokopedia.seller.menu.databinding.LayoutSellerMenuShopInfoErrorBinding
+import com.tokopedia.seller.menu.presentation.uimodel.ShopInfoErrorUiModel
 
 class ShopInfoErrorViewHolder(
     itemView: View,

@@ -1,18 +1,17 @@
-package com.tokopedia.seller.menu.common.view.viewholder
+package com.tokopedia.seller.menu.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.seller.menu.common.R
+import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.constant.AdminFeature
-import com.tokopedia.seller.menu.common.databinding.ItemSellerMenuProductSectionBinding
-import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
+import com.tokopedia.seller.menu.databinding.ItemSellerMenuProductSectionBinding
+import com.tokopedia.seller.menu.presentation.uimodel.ShopProductUiModel
 
 class ShopProductViewHolder(
         itemView: View,

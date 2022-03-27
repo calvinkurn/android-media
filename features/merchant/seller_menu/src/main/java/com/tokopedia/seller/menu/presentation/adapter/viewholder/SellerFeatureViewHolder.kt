@@ -1,4 +1,4 @@
-package com.tokopedia.seller.menu.common.view.viewholder
+package com.tokopedia.seller.menu.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -9,11 +9,11 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
-import com.tokopedia.seller.menu.common.R
+import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.constant.AdminFeature
-import com.tokopedia.seller.menu.common.databinding.ItemSellerMenuFeatureSectionBinding
-import com.tokopedia.seller.menu.common.view.uimodel.SellerFeatureUiModel
+import com.tokopedia.seller.menu.databinding.ItemSellerMenuFeatureSectionBinding
+import com.tokopedia.seller.menu.presentation.uimodel.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 
 class SellerFeatureViewHolder(

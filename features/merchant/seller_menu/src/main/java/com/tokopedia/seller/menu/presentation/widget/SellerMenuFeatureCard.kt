@@ -1,10 +1,10 @@
-package com.tokopedia.seller.menu.common.view.widget
+package com.tokopedia.seller.menu.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import com.tokopedia.seller.menu.common.R
-import com.tokopedia.seller.menu.common.databinding.LayoutSellerMenuFeatureCardBinding
+import com.tokopedia.seller.menu.R
+import com.tokopedia.seller.menu.databinding.LayoutSellerMenuFeatureCardBinding
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_PLAY_ICON
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_PROMO_ICON
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_FINANCE_ICON

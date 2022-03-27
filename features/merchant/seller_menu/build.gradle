@@ -62,6 +62,8 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
 
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
