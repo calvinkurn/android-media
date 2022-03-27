@@ -11,13 +11,14 @@ import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.constant.MenuItemType
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.uimodel.*
-import com.tokopedia.seller.menu.common.view.uimodel.SectionTitleUiModel.SectionTitleType.OTHER_SECTION_TITLE
+import com.tokopedia.seller.menu.presentation.uimodel.SectionTitleUiModel.SectionTitleType.OTHER_SECTION_TITLE
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.ShopInfoLoadingUiModel
 import com.tokopedia.seller.menu.presentation.activity.AdminRoleAuthorizeActivity
 import com.tokopedia.seller.menu.presentation.uimodel.OrderSectionTitleUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.ProductSectionTitleUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.SectionTitleUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.SellerFeatureUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.ShopOrderUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.ShopProductUiModel
@@ -58,7 +59,7 @@ object SellerMenuList {
         return menuList.toList()
     }
 
-    private fun createBuyerInfoMenu(context: Context, isShopOwner: Boolean, mapper: AdminPermissionMapper): List<SettingUiModel> {
+    private fun createBuyerInfoMenu(context: Context, isShopOwner: Boolean, mapper: AdminPermissionMapper): List<Visitable<*>> {
         val sectionTitle = context.getString(R.string.setting_menu_buyer_info)
 
         return listOf(
@@ -88,7 +89,7 @@ object SellerMenuList {
         )
     }
 
-    private fun createOtherInfoMenu(context: Context, isShopOwner: Boolean, mapper: AdminPermissionMapper): List<SettingUiModel> {
+    private fun createOtherInfoMenu(context: Context, isShopOwner: Boolean, mapper: AdminPermissionMapper): List<Visitable<*>> {
         val titleText = context.getString(R.string.setting_menu_other_info)
         val sectionTitle = SectionTitleUiModel(title = titleText, type = OTHER_SECTION_TITLE)
         val sellerEduApplink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW,

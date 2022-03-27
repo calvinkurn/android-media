@@ -1,17 +1,17 @@
-package com.tokopedia.seller.menu.common.view.viewholder
+package com.tokopedia.seller.menu.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
-import com.tokopedia.seller.menu.common.databinding.ItemSellerMenuTitleOtherSectionBinding
-import com.tokopedia.seller.menu.common.databinding.ItemSellerMenuTitleSectionBinding
-import com.tokopedia.seller.menu.common.view.uimodel.SectionTitleUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.SectionTitleUiModel.SectionTitleType
-import com.tokopedia.seller.menu.common.view.uimodel.SectionTitleUiModel.SectionTitleType.*
+import com.tokopedia.seller.menu.R
+import com.tokopedia.seller.menu.databinding.ItemSellerMenuTitleOtherSectionBinding
+import com.tokopedia.seller.menu.databinding.ItemSellerMenuTitleSectionBinding
+import com.tokopedia.seller.menu.presentation.uimodel.SectionTitleUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.SectionTitleUiModel.SectionTitleType
+import com.tokopedia.seller.menu.presentation.uimodel.SectionTitleUiModel.SectionTitleType.*
 import com.tokopedia.unifyprinciples.Typography
 
 class SellerMenuTitleViewHolder(
@@ -70,7 +70,7 @@ class SellerMenuTitleViewHolder(
         }
     }
 
-    private fun trackClickSection(menu: SectionTitleUiModel) {
+    private fun trackClickSection(menu: com.tokopedia.seller.menu.presentation.uimodel.SectionTitleUiModel) {
         when (menu.type) {
             PRODUCT_SECTION_TITLE -> tracker?.sendEventAddProductClick()
             ORDER_SECTION_TITLE -> tracker?.sendEventClickOrderHistory()

@@ -11,7 +11,7 @@ import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.IndentedSettingTitleUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.SectionTitleUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.SectionTitleUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SellerSettingsTitleUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SettingLoadingUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleMenuUiModel
@@ -20,7 +20,7 @@ import com.tokopedia.seller.menu.common.view.viewholder.DividerViewHolder
 import com.tokopedia.seller.menu.common.view.viewholder.IndentedSettingTitleViewHolder
 import com.tokopedia.seller.menu.common.view.viewholder.MenuItemsViewHolder
 import com.tokopedia.seller.menu.common.view.viewholder.SellerLoadingViewHolder
-import com.tokopedia.seller.menu.common.view.viewholder.SellerMenuTitleViewHolder
+import com.tokopedia.seller.menu.presentation.adapter.viewholder.SellerMenuTitleViewHolder
 import com.tokopedia.seller.menu.common.view.viewholder.SellerSettingsTitleViewHolder
 import com.tokopedia.seller.menu.common.view.viewholder.SettingTitleMenuViewHolder
 import com.tokopedia.seller.menu.common.view.viewholder.SettingTitleViewHolder

@@ -28,16 +28,10 @@ open class OtherMenuAdapterTypeFactory(
             MenuItemsViewHolder.LAYOUT -> MenuItemsViewHolder(parent, userSession, trackingListener, sellerMenuTracker)
             MenuItemsViewHolder.LAYOUT_NO_ICON -> MenuItemsViewHolder(parent, userSession, trackingListener, sellerMenuTracker)
             SettingTitleMenuViewHolder.LAYOUT -> SettingTitleMenuViewHolder(parent)
-            SellerMenuTitleViewHolder.SECTION_WITH_CTA_LAYOUT -> SellerMenuTitleViewHolder(parent, sellerMenuTracker)
-            SellerMenuTitleViewHolder.SECTION_OTHER_LAYOUT -> SellerMenuTitleViewHolder(parent, sellerMenuTracker)
             SellerSettingsTitleViewHolder.LAYOUT -> SellerSettingsTitleViewHolder(parent)
             LoadingViewholder.LAYOUT -> SellerLoadingViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
-    }
-
-    override fun type(sectionTitleUiModel: SectionTitleUiModel): Int {
-        return SellerMenuTitleViewHolder.getLayout(sectionTitleUiModel.type)
     }
 
     override fun type(dividerUiModel: DividerUiModel): Int {

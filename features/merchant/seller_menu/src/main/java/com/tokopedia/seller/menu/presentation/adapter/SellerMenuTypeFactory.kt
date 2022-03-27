@@ -1,5 +1,6 @@
 package com.tokopedia.seller.menu.presentation.adapter
 
+import com.tokopedia.seller.menu.presentation.uimodel.SectionTitleUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.SellerFeatureUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.ShopInfoErrorUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.ShopInfoLoadingUiModel
@@ -14,4 +15,5 @@ interface SellerMenuTypeFactory {
     fun type(shopOrderUiModel: ShopOrderUiModel): Int
     fun type(shopProductUiModel: ShopProductUiModel): Int
     fun type(sellerFeatureUiModel: SellerFeatureUiModel): Int
+    fun type(sectionTitleUiModel: SectionTitleUiModel): Int
 }

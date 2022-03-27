@@ -226,7 +226,7 @@ class ShopInfoViewHolder(
     private fun setShopStatusType(shopStatusUiModel: ShopStatusUiModel) {
         val shopType = shopStatusUiModel.userShopInfoWrapper.shopType
         val pmProEligibleIcon = shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel?.getPowerMerchantProEligibleIcon()
-        val itemView: View? = shopType?.shopTypeLayoutRes?.let {
+        val itemView: View? = shopType?.getLayoutRes()?.let {
             LayoutInflater.from(context).inflate(it, null, false)
         }
         val shopStatusLayout: View? = when (shopType) {
@@ -630,6 +630,15 @@ class ShopInfoViewHolder(
         description?.text = context.resources.getString(R.string.setting_error_description)
         refreshBtn?.setOnClickListener {
             listener?.onRefreshShopInfo()
+        }
+    }
+
+    private fun ShopType?.getLayoutRes(): Int {
+        return when(this) {
+            is RegularMerchant -> R.layout.setting_shop_status_regular
+            is PowerMerchantStatus -> R.layout.setting_shop_status_pm
+            is PowerMerchantProStatus -> R.layout.setting_shop_status_pm_pro
+            else -> R.layout.setting_shop_status_os
         }
     }
 
