@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.PartialNonProductBundleDetailBinding
@@ -24,7 +24,7 @@ class PartialSomDetailNonProductBundleDetailViewHolder(
                 root.hide()
             } else {
                 root.show()
-                setupProductClickListener(element.orderDetailId.toIntOrZero())
+                setupProductClickListener(element.orderDetailId.toLongOrZero())
                 setupProductImage(element.thumbnail)
                 setupProductName(element.name)
                 setupProductDescription(element.quantity, element.priceText)
@@ -33,7 +33,7 @@ class PartialSomDetailNonProductBundleDetailViewHolder(
         }
     }
 
-    private fun PartialNonProductBundleDetailBinding.setupProductClickListener(orderDetailId: Int) {
+    private fun PartialNonProductBundleDetailBinding.setupProductClickListener(orderDetailId: Long) {
         root.setOnClickListener {
             actionListener?.onClickProduct(orderDetailId)
         }
