@@ -27,7 +27,6 @@ import dagger.Lazy
 import io.mockk.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
-import okhttp3.internal.wait
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -248,11 +247,11 @@ class TestInfiniteRecomViewModel {
         Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
     }
 
-    //Newly added unit tests by Frenzel
     @Test
     fun `test success get recommendation first page tokonow should return success`() = runBlocking {
         coEvery { getRecommendationUseCase.getData(any()) } returns listOf(
-            RecommendationWidget(recommendationItemList = listOf(recommendation), isTokonow = true))
+            RecommendationWidget(recommendationItemList = listOf(recommendation), isTokonow = true)
+        )
 
         viewModel.getRecommendationFirstPage("", "", "", false)
 
