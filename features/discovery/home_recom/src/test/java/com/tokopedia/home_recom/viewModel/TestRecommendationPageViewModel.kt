@@ -28,10 +28,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.slot
+import io.mockk.*
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -54,19 +51,19 @@ class TestRecommendationPageViewModel {
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
     private val remoteConfig = mockk<FirebaseRemoteConfigImpl>(relaxed = true)
 
-    private val viewModel: RecommendationPageViewModel = RecommendationPageViewModel(
-            userSessionInterface = userSession,
-            dispatcher = RecommendationDispatcherTest(),
-            addWishListUseCase = addWishListUseCase,
-            getRecommendationUseCase = getRecommendationUseCase,
-            removeWishListUseCase = removeWishListUseCase,
-            topAdsWishlishedUseCase = topAdsWishlishedUseCase,
-            addToCartUseCase = addToCartUseCase,
-            getTopadsIsAdsUseCase = getTopadsIsAdsUseCase,
-            getPrimaryProductUseCase = getPrimaryProductUseCase,
-            getTopAdsHeadlineUseCase = getTopAdsHeadlineUseCase,
-            remoteConfig = remoteConfig
-    )
+    private val viewModel: RecommendationPageViewModel = spyk(RecommendationPageViewModel(
+        userSessionInterface = userSession,
+        dispatcher = RecommendationDispatcherTest(),
+        addWishListUseCase = addWishListUseCase,
+        getRecommendationUseCase = getRecommendationUseCase,
+        removeWishListUseCase = removeWishListUseCase,
+        topAdsWishlishedUseCase = topAdsWishlishedUseCase,
+        addToCartUseCase = addToCartUseCase,
+        getTopadsIsAdsUseCase = getTopadsIsAdsUseCase,
+        getPrimaryProductUseCase = getPrimaryProductUseCase,
+        getTopAdsHeadlineUseCase = getTopAdsHeadlineUseCase,
+        remoteConfig = remoteConfig
+    ), recordPrivateCalls = true)
     private val recommendation = RecommendationItem(productId = 1234)
     private val recommendationTopads = RecommendationItem(productId = 1234, isTopAds = true, wishlistUrl = "1234")
 
@@ -306,5 +303,25 @@ class TestRecommendationPageViewModel {
     fun `is login false`(){
         every { userSession.isLoggedIn } returns false
         Assert.assertTrue(!viewModel.isLoggedIn())
+    }
+
+    @Test
+    fun `test get recommendation list when eligible to show headline CPM`(){
+        val queryParam = ""
+        val productId = ""
+        every { getPrimaryProductUseCase.setParameter(any(), any()) } returns Unit
+        coEvery { getPrimaryProductUseCase.executeOnBackground() } returns PrimaryProductEntity()
+        every { getRecommendationUseCase.getRecomParams(any(), any(), any(), any()) } returns RequestParams()
+        every { getRecommendationUseCase.createObservable(any()).toBlocking().first() } returns listOf(
+            RecommendationWidget(
+                recommendationItemList = listOf(RecommendationItem())
+            )
+        )
+        every { viewModel invoke "eligibleToShowHeadlineCPM" withArguments listOf(queryParam) } returns true
+
+        viewModel.getRecommendationList(productId, queryParam)
+
+        verify { getTopAdsHeadlineUseCase.setParams(any()) }
+        coVerify { getTopAdsHeadlineUseCase.executeOnBackground() }
     }
 }
