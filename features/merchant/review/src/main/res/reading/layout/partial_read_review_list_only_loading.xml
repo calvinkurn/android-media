@@ -123,7 +123,6 @@
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:background="@color/Unify_N75"
-        app:corners="8"
         app:layout_constraintTop_toBottomOf="@id/read_review_image_loading_4" />
 
     <com.tokopedia.unifycomponents.ImageUnify

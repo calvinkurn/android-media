@@ -107,7 +107,6 @@
         android:layout_height="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/layout_lvl2"
         app:loader_corner_radius="4dp"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_history_shimmer_body_2"/>
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -201,7 +200,6 @@
         android:layout_height="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/layout_lvl2"
         app:loader_corner_radius="4dp"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_history_shimmer_body_4"/>
 
     <com.tokopedia.unifycomponents.LoaderUnify
