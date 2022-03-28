@@ -95,6 +95,7 @@ object ParamObject {
     const val ADDED_PRODUCTS = "addedProducts"
     const val DELETED_PRODUCTS = "deletedProducts"
 
+    const val AUTO_BID_STATE = "auto_bid"
     const val ACTIVE = "active"
     const val KEYWORD_TYPE_PHRASE = 11
     const val KEYWORD_TYPE_EXACT = 21
@@ -115,6 +116,7 @@ object ParamObject {
     const val BUDGET_LIMITED = "isBudgetLimited"
     const val PUBLISHED = "published"
     const val ISWHITELISTEDUSER = "isWhiteListedUser"
+    const val IS_AUTO_BID_TOGGLE_ENABLED = "autoBidToggle"
 
     const val PRODUCT_AUTO_SEARCH = "product_auto_search"
     const val PRODUCT_SEARCH = "product_search"

@@ -130,6 +130,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
     }
 
     fun onClickSubmit(): Boolean {
+        if(!::userSession.isInitialized) return false
         stepperModel?.selectedTopAdsProducts = getSelectedProducts()
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEcommerceCLickEvent(CLICK_LANJUTKAN, "{${userSession.shopId}} - {${stepperModel?.groupName}}", getSelectedProducts(), userSession.userId)
         when {
