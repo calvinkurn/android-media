@@ -57,87 +57,12 @@ class PlayBottomSheetViewModelTest {
     @Before
     fun setUp() {
         playBottomSheetViewModel = PlayBottomSheetViewModel(
-                mockGetProductVariantUseCase,
                 userSession,
                 dispatchers,
                 mockRepo
         )
 
         coEvery { mockGetProductVariantUseCase.executeOnBackground() } returns mockProductVariantResponse
-    }
-
-    @Test
-    fun `when add to cart is success, then it should return the the correct feedback`() {
-
-        coEvery { mockRepo.addItemToCart(any(), any(), any(), any(), any()) } returns modelBuilder.buildAddToCartModelResponseSuccess()
-
-        val expectedModel = modelBuilder.buildCartUiModel(
-            action = ProductAction.AddToCart,
-            product = productModelBuilder.buildProductLine(),
-            bottomInsetsType = BottomInsetsType.VariantSheet,
-        )
-        val expectedResult = PlayResult.Success(
-                Event(expectedModel)
-        )
-
-        playBottomSheetViewModel.addToCart(
-                product = productModelBuilder.buildProductLine(),
-                action = ProductAction.AddToCart,
-                type = BottomInsetsType.VariantSheet,
-                sectionInfo = sectionMockData
-        )
-
-        val actualValue = playBottomSheetViewModel.observableAddToCart.getOrAwaitValue()
-
-        Assertions
-                .assertThat(actualValue)
-                .isInstanceOf(PlayResult.Success::class.java)
-
-        Assertions
-                .assertThat((actualValue as PlayResult.Success).data.first.peekContent())
-                .isEqualToIgnoringGivenFields(expectedResult.data.peekContent(), "product", "errorMessage")
-
-        Assertions
-                .assertThat(actualValue.data.first.peekContent().product)
-                .isEqualToIgnoringGivenFields(expectedResult.data.peekContent().product, "impressHolder")
-    }
-
-    @Test
-    fun `when add to cart is error, then it should return the same error`() {
-        coEvery { mockRepo.addItemToCart(any(), any(), any(), any(), any()) } returns modelBuilder.buildAddToCartModelResponseFail()
-
-        val expectedModel = modelBuilder.buildCartUiModel(
-                action = ProductAction.AddToCart,
-                product = productModelBuilder.buildProductLine(),
-                bottomInsetsType = BottomInsetsType.VariantSheet,
-                isSuccess = false,
-                errorMessage = IllegalStateException("error message "),
-                cartId = ""
-        )
-        val expectedResult = PlayResult.Success(
-                Event(expectedModel)
-        )
-
-        playBottomSheetViewModel.addToCart(
-                product = productModelBuilder.buildProductLine(),
-                action = ProductAction.AddToCart,
-                type = BottomInsetsType.VariantSheet,
-                sectionInfo = sectionMockData
-        )
-
-        val actualValue = playBottomSheetViewModel.observableAddToCart.getOrAwaitValue()
-
-        Assertions
-                .assertThat(actualValue)
-                .isInstanceOf(PlayResult.Success::class.java)
-
-        Assertions
-                .assertThat((actualValue as PlayResult.Success).data.first.peekContent())
-                .isEqualToIgnoringGivenFields(expectedResult.data.peekContent(), "product", "errorMessage")
-
-        Assertions
-            .assertThat(actualValue.data.first.peekContent().product)
-            .isEqualToIgnoringGivenFields(expectedResult.data.peekContent().product, "impressHolder")
     }
 
     @Test
@@ -152,25 +77,6 @@ class PlayBottomSheetViewModelTest {
         coEvery { userSession.isLoggedIn } returns true
 
         val expectedResult = Event(LoginStateEvent.InteractionAllowed(eventProductAction))
-
-        playBottomSheetViewModel.doInteractionEvent(eventProductAction)
-
-        Assertions.assertThat(playBottomSheetViewModel.observableLoggedInInteractionEvent.getOrAwaitValue())
-                .isEqualToComparingFieldByFieldRecursively(expectedResult)
-    }
-
-    @Test
-    fun `when not logged in, should not be allowed to do product action`() {
-        val eventProductAction = InteractionEvent.DoActionProduct(
-                product = modelBuilder.buildProductLineUiModel(),
-                action = ProductAction.Buy,
-                type = BottomInsetsType.VariantSheet,
-                sectionInfo = sectionMockData
-        )
-
-        coEvery { userSession.isLoggedIn } returns false
-
-        val expectedResult = Event(LoginStateEvent.NeedLoggedIn(eventProductAction))
 
         playBottomSheetViewModel.doInteractionEvent(eventProductAction)
 
